@@ -14,7 +14,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DispatcherKvpReader.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: DispatcherKvpReader.java,v 1.3 2003/12/17 01:15:35 cholmesny Exp $
  */
 public class DispatcherKvpReader {
     /** Class logger */
@@ -36,7 +36,7 @@ public class DispatcherKvpReader {
             responseType = responseType.toUpperCase();
 
             if (responseType.equals("GETCAPABILITIES")) {
-                return Dispatcher.WFS_GET_CAPABILITIES_REQUEST;
+                return Dispatcher.GET_CAPABILITIES_REQUEST;
             } else if (responseType.equals("DESCRIBEFEATURETYPE")) {
                 return Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
             } else if (responseType.equals("GETFEATURE")) {
@@ -47,6 +47,33 @@ public class DispatcherKvpReader {
                 return Dispatcher.GET_FEATURE_LOCK_REQUEST;
             } else if (responseType.equals("LOCKFEATURE")) {
                 return Dispatcher.LOCK_REQUEST;
+            } else if (responseType.equals("GETMAP")) {
+                return Dispatcher.GET_MAP_REQUEST;
+            } else {
+                return Dispatcher.UNKNOWN;
+            }
+        } else {
+            return Dispatcher.UNKNOWN;
+        }
+    }
+
+    /**
+     * Returns the request type for a given KVP set.
+     *
+     * @param kvPairs DOCUMENT ME!
+     *
+     * @return Request type.
+     */
+    public static int getServiceType(Map kvPairs) {
+        String serviceType = ((String) kvPairs.get("SERVICE"));
+
+        if (serviceType != null) {
+            serviceType = serviceType.toUpperCase();
+
+            if (serviceType.equals("WFS")) {
+                return Dispatcher.WFS_SERVICE;
+            } else if (serviceType.equals("WMS")) {
+                return Dispatcher.WMS_SERVICE;
             } else {
                 return Dispatcher.UNKNOWN;
             }
