@@ -297,80 +297,30 @@ public class CapabilitiesResponse {
         throws WfsException {
         
         // holds final response variable
-        String tempResponse = new String();
+     
         
         // iterated convenience variables
-        File currentDirectory = new File( targetDirectoryName);
-        String currentFeatureType = new String();
-        String currentFileName = new String();
-
-        // keeps master list of files within the directory
-        String[] files = currentDirectory.list();
-        File[] file = currentDirectory.listFiles();
-                        
-        // Loop through all files in the directory
-        for (int i = 0; i < files.length; i++) {
-            // assign temp variables; convenience/confusion lesseners only
-            currentFileName = file[i].getName();
-            addFeatureType( currentFileName, responseVersion);
-        }
-        
-    }
-
-    
-    
-    /**
-     * Adds feature type metadata to the XML output stream.
-     * 
-     * @param featureTypeName The directory in which to search for files.
-     * @param responseVersion The expected version of the WFS response.
-     */
-    private void addFeatureType(String featureTypeName, String responseVersion) 
-        throws WfsException {
-        TypeRepository repository = TypeRepository.getInstance();
-	if (featureTypeName.indexOf(":") == -1) {
-	    featureTypeName = 
-		config.getDefaultNSPrefix() + ":" + featureTypeName;
-	}
-        TypeInfo responseFeatureType = repository.getType( featureTypeName );
-	String tempResponse = new String();
-        if (responseFeatureType != null) {
-	    tempResponse = 
-		responseFeatureType.getCapabilitiesXml( responseVersion );
+	TypeRepository repository = TypeRepository.getInstance();
+	List typeNames = repository.getAllTypeNames();
+        // Loop through all files in the repository.
+        for (Iterator i = typeNames.iterator(); i.hasNext();) {
+	    String featureTypeName = i.next().toString();
+	 TypeInfo responseFeatureType = repository.getType( featureTypeName );
+	 StringBuffer tempResponse = new StringBuffer();
+	 if (responseFeatureType != null) {
+	    tempResponse.append(
+		responseFeatureType.getCapabilitiesXml( responseVersion ));
         }
         try {
-            xmlOutFinal.write(tempResponse.getBytes());
+            xmlOutFinal.write(tempResponse.toString().getBytes());
         } catch (Exception e) {
             throw new WfsException( e, "Could not write XML output file", 
 				    CapabilitiesResponse.class.getName() );
         }
+
+        }
         
     }
-
-    
-    /**
-     * Internal utility to write a root element to the temporary buffer, then final buffer.
-     * Validates, marshals, strips encoding content, and writes to final buffer.
-     *
-     * @param xmlBranch.The XML branch root element (JAXB class).
-     *
-     private void writeToBuffer(MarshallableRootElement xmlBranch)
-     throws WfsException {
-     
-     xmlOutTemp.reset();
-     
-     try {
-     xmlBranch.validate();
-     xmlBranch.marshal(xmlOutTemp);
-     xmlOutTemp.writeToClean(xmlOutFinal);
-     }
-     catch (StructureValidationException e) {
-     throw new WfsException( e, "Internal XML file is not valid", CapabilitiesResponse.class.getName() );
-     }
-     catch (IOException e) {
-     throw new WfsException( e, "Had problems reading internal XML file", CapabilitiesResponse.class.getName() );
-     }
-     }*/
 
     
 
