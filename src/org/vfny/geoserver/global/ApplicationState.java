@@ -38,7 +38,7 @@ import org.geotools.validation.dto.TestSuiteDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.14 2004/02/25 23:55:38 jive Exp $
+ * @version $Id: ApplicationState.java,v 1.15 2004/04/03 13:13:03 cholmesny Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
@@ -502,7 +502,7 @@ public class ApplicationState implements PlugIn {
      */
     public Date getXmlTimestamp() {
         if( xmlTimestamp == null){
-            File serviceFile = new File(sc.getRealPath("/WEB-INF/service.xml"));
+            File serviceFile = new File(sc.getRealPath("/WEB-INF/services.xml"));
             xmlTimestamp = new Date( serviceFile.lastModified() );
         }
         return xmlTimestamp;    
