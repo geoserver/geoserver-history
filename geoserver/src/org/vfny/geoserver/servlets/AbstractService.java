@@ -94,7 +94,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.13 2004/02/09 23:29:43 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.14 2004/02/13 01:07:09 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -239,8 +239,8 @@ public abstract class AbstractService extends HttpServlet {
         // implements the main request/response logic
         try {
             XmlRequestReader requestReader = getXmlRequestReader();
-            serviceRequest = requestReader.read(request.getReader());
-            serviceRequest.setHttpServletRequest(request);
+            serviceRequest = requestReader.read(request.getReader(),request);
+            //serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
             sendError(response, se);
 
@@ -772,7 +772,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
