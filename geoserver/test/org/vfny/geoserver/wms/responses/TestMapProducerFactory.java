@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,7 +10,10 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.GetMapProducer;
+import org.vfny.geoserver.wms.responses.GetMapProducerFactorySpi;
+import org.vfny.geoserver.wms.responses.WMSMapContext;
 
 
 /**
