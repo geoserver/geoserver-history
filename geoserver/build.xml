@@ -51,6 +51,8 @@
   <property name="jar.a2j" value="${dir.lib}/a2jruntime.jar"/>
   <property name="jar.z3950" value="${dir.lib}/ki-jzkit-z3950.jar"/>
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
+  
+  <property name="test.name" value="config.ConfigSuite"/>
 
   <!-- paths -->
   <path id="path.lib">
@@ -111,6 +113,7 @@
     <echo message=""/>
     <echo message=" TEST TARGETS"/>
     <echo message="    unit:         compiles, runs unit tests"/>
+    <echo message="                    -param: test.name=[package.class]"/>
     <echo message="    test:         builds all classes to server, runs"/>
     <echo message="    test-clean:   builds clean to server, runs server"/>
     <echo message="    test-ext:     builds war to external server"/>
@@ -133,6 +136,7 @@
     <echo message=""/>
     <echo message=" Examples..."/>
     <echo message="    ant test-ext -Ddir.container=/usr/local/resin/webapps"/>
+    <echo message="    ant unit -Dtest.name=requests.DeleteSuite"/>
     <echo message="    ant all"/>
   </target>
 
@@ -177,7 +181,30 @@
 <!-- ====================================================================== -->
 
 <!-- UNIT -->
-  <target name="unit" depends="init, all">
+ <target name="unit" depends="init, all">
+    <javac srcdir="${dir.test}" 
+           destdir="${dir.build}" 
+           includes="**/*.java" 
+           classpathref="path.build" 
+           deprecation="on"/>
+    <antcall target="all"/>
+    <junit fork="false"
+           printsummary="on">
+      <formatter type="plain" usefile="false"/>
+      <sysproperty key="dataFolder" value="${basedir}/tests/unit/testData"/>
+
+      <classpath>
+        <fileset dir="${dir.lib}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+     
+       <test fork="true" 
+            name="org.vfny.geoserver.${test.name}"/>
+    </junit>
+  </target>
+
+  <target name="unit-requests" depends="init, all">
     <javac srcdir="${dir.test}" 
            destdir="${dir.build}" 
            includes="**/*.java" 
@@ -195,7 +222,53 @@
         </fileset>
       </classpath>
       <test fork="true" 
+            name="org.vfny.geoserver.requests.CapabilitiesSuite"/>
+      <test fork="true" 
+            name="org.vfny.geoserver.requests.DescribeSuite"/>
+  <test fork="true" 
+            name="org.vfny.geoserver.requests.UpdateSuite"/>
+<test fork="true" 
+            name="org.vfny.geoserver.requests.LockSuite"/>
+<test fork="true" 
             name="org.vfny.geoserver.requests.FeatureSuite"/>
+<test fork="true" 
+            name="org.vfny.geoserver.requests.DeleteSuite"/>
+    </junit>
+  </target>
+
+  <target name="unit-zserver" depends="init, all">
+    <javac srcdir="${dir.test}" 
+           destdir="${dir.build}" 
+           includes="**/*.java" 
+           classpathref="path.build" 
+           deprecation="on"/>
+    <antcall target="all"/>
+    <junit fork="false"
+           printsummary="on">
+      <formatter type="plain" usefile="false"/>
+      <sysproperty key="dataFolder" value="${basedir}/tests/unit/testData"/>
+
+      <classpath>
+        <fileset dir="${dir.lib}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+      <test fork="true" 
+            name="org.vfny.geoserver.zserver.ApplyXPathSuite"/>
+      <test fork="true" 
+            name="org.vfny.geoserver.zserver.GeoIndexerSuite"/>
+  <test fork="true" 
+            name="org.vfny.geoserver.zserver.GeoProfileSuite"/>
+<test fork="true" 
+            name="org.vfny.geoserver.zserver.GeoSearchSuite"/>
+<test fork="true" 
+            name="org.vfny.geoserver.zserver.GeoSummarySuite"/>
+<test fork="true" 
+            name="org.vfny.geoserver.zserver.NumericFieldSuite"/>
+<test fork="true" 
+            name="org.vfny.geoserver.zserver.RPNConverterSuite"/>
+<test fork="true" 
+            name="org.vfny.geoserver.zserver.XMLDocumentSuite"/>
     </junit>
   </target>
 
