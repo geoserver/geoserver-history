@@ -132,7 +132,7 @@ public class LoginForm extends ActionForm {
 	return confirm;
     }
 
-    public void setConfirm() {
-	this.confirm = confirm;
+    public void setConfirm(String confirm) {
+    	this.confirm = confirm;
     }
 }

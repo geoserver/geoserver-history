@@ -12,6 +12,7 @@ import org.geotools.data.FeatureResults;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
+import org.vfny.geoserver.responses.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -56,13 +57,18 @@ public class EncoderConfig {
      */
     private boolean writeHeader = true;
 
-    /**
+    public EncoderConfig(WMSMapContext mapCtx){
+    	throw new UnsupportedOperationException("Pending of implementation");
+    }
+
+    		/**
      * Creates a new EncoderConfig object.
      *
      * @param request DOCUMENT ME!
      * @param requestedLayers DOCUMENT ME!
      * @param resultLayers DOCUMENT ME!
      * @param styles DOCUMENT ME!
+     * @deprecated in favour of EncoderConfig(WMSMapContext)
      */
     public EncoderConfig(GetMapRequest request,
         FeatureTypeInfo[] requestedLayers, FeatureResults[] resultLayers,
@@ -76,7 +82,7 @@ public class EncoderConfig {
     public List getAttributes(String typeName) throws IOException {
         List atts = Collections.EMPTY_LIST;
 
-        if (!request.getAttributes().isEmpty()) {
+        if (!request.getUserSuppliedAttributes().isEmpty()) {
             int layerIndex = -1;
             int lCount = requestedLayers.length;
 
@@ -88,7 +94,7 @@ public class EncoderConfig {
                 }
             }
 
-            atts = (List) request.getAttributes().get(layerIndex);
+            atts = (List) request.getUserSuppliedAttributes().get(layerIndex);
         }
 
         return atts;

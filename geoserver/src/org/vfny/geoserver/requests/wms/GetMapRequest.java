@@ -1,18 +1,32 @@
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2002, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.requests.wms;
 
-import java.awt.Color;
-import java.util.Collections;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.WMSRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -25,27 +39,27 @@ import com.vividsolutions.jts.geom.Envelope;
  * one order relationship. If for a given layer the user do not wants to
  * specify any filter, it's position in the list of filters may be empty.
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetMapRequest.java,v 1.8 2004/03/14 16:00:54 groldan Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
-    private static final Color DEFAULT_BG = Color.white;
+    static final Color DEFAULT_BG = Color.white;
 
     /** DOCUMENT ME! */
-    private static final Filter[] NO_FILTERS = new Filter[0];
+    static final Filter[] NO_FILTERS = new Filter[0];
 
     /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
 
     /** set of mandatory request's parameters */
-    private MandatoryParameters mandatorys = new MandatoryParameters();
+    private MandatoryParameters mandatoryParams = new MandatoryParameters();
 
     /** set of optionals request's parameters */
-    private OptionalParameters optionals = new OptionalParameters();
+    private OptionalParameters optionalParams = new OptionalParameters();
 
     /** set of custom, non spec conformant, request's parameters */
-    private CustomParameters customs = new CustomParameters();
+    private CustomParameters customParams = new CustomParameters();
 
     /**
      * Creates a new GetMapRequest object.
@@ -56,13 +70,18 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * Gets the list of attributes to use in the request.  This is a custom
-     * element, not part of the normal wms request.
+     * Gets the list of attributes to return in output map formats that
+     * supports returning feature attributes as well as styled geometries
+     * (e.g. SVG).
+     * 
+     * <p>
+     * This is a custom element, not part of the normal wms request.
+     * </p>
      *
      * @return DOCUMENT ME!
      */
-    public List getAttributes() {
-        return customs.attributes;
+    public List getUserSuppliedAttributes() {
+        return this.customParams.attributes;
     }
 
     /**
@@ -71,7 +90,7 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public Envelope getBbox() {
-        return mandatorys.bbox;
+        return this.mandatoryParams.bbox;
     }
 
     /**
@@ -80,7 +99,7 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public java.awt.Color getBgColor() {
-        return optionals.bgColor;
+        return this.optionalParams.bgColor;
     }
 
     /**
@@ -89,7 +108,7 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public String getCrs() {
-        return optionals.crs;
+        return this.optionalParams.crs;
     }
 
     /**
@@ -98,7 +117,7 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public String getExceptions() {
-        return optionals.exceptions;
+        return this.optionalParams.exceptions;
     }
 
     /**
@@ -107,7 +126,7 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public String getFormat() {
-        return mandatorys.format;
+        return this.mandatoryParams.format;
     }
 
     /**
@@ -116,7 +135,7 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public int getHeight() {
-        return mandatorys.height;
+        return this.mandatoryParams.height;
     }
 
     /**
@@ -125,7 +144,7 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public FeatureTypeInfo[] getLayers() {
-        return mandatorys.layers;
+        return this.mandatoryParams.layers;
     }
 
     /**
@@ -134,7 +153,7 @@ public class GetMapRequest extends WMSRequest {
      * @return A list of Strings of the names of the styles.
      */
     public List getStyles() {
-        return mandatorys.styles;
+        return this.mandatoryParams.styles;
     }
 
     /**
@@ -142,8 +161,8 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public Filter[] getFilters() {
-        return customs.filters;
+    public Filter[] getUserSuppliedFilters() {
+        return this.customParams.filters;
     }
 
     /**
@@ -152,7 +171,7 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public boolean isTransparent() {
-        return optionals.transparent;
+        return this.optionalParams.transparent;
     }
 
     /**
@@ -161,15 +180,25 @@ public class GetMapRequest extends WMSRequest {
      * @return DOCUMENT ME!
      */
     public int getWidth() {
-        return mandatorys.width;
+        return this.mandatoryParams.width;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param writeSvgHeader DOCUMENT ME!
+     */
     public void setWriteSvgHeader(boolean writeSvgHeader) {
-        customs.writeSvgHeader = writeSvgHeader;
+        this.customParams.writeSvgHeader = writeSvgHeader;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public boolean getWriteSvgHeader() {
-        return customs.writeSvgHeader;
+        return this.customParams.writeSvgHeader;
     }
 
     /**
@@ -178,7 +207,7 @@ public class GetMapRequest extends WMSRequest {
      * @param attributes DOCUMENT ME!
      */
     public void setAttributes(List attributes) {
-        customs.attributes = attributes;
+        this.customParams.attributes = attributes;
     }
 
     /**
@@ -187,7 +216,7 @@ public class GetMapRequest extends WMSRequest {
      * @param bbox DOCUMENT ME!
      */
     public void setBbox(Envelope bbox) {
-        mandatorys.bbox = bbox;
+        this.mandatoryParams.bbox = bbox;
     }
 
     /**
@@ -196,7 +225,7 @@ public class GetMapRequest extends WMSRequest {
      * @param bgColor DOCUMENT ME!
      */
     public void setBgColor(java.awt.Color bgColor) {
-        optionals.bgColor = bgColor;
+        this.optionalParams.bgColor = bgColor;
     }
 
     /**
@@ -205,7 +234,7 @@ public class GetMapRequest extends WMSRequest {
      * @param crs DOCUMENT ME!
      */
     public void setCrs(String crs) {
-        optionals.crs = crs;
+        this.optionalParams.crs = crs;
     }
 
     /**
@@ -214,7 +243,7 @@ public class GetMapRequest extends WMSRequest {
      * @param exceptions DOCUMENT ME!
      */
     public void setExceptions(String exceptions) {
-        optionals.exceptions = exceptions;
+        this.optionalParams.exceptions = exceptions;
     }
 
     /**
@@ -223,7 +252,7 @@ public class GetMapRequest extends WMSRequest {
      * @param format DOCUMENT ME!
      */
     public void setFormat(String format) {
-        mandatorys.format = format;
+        this.mandatoryParams.format = format;
     }
 
     /**
@@ -232,7 +261,7 @@ public class GetMapRequest extends WMSRequest {
      * @param height DOCUMENT ME!
      */
     public void setHeight(int height) {
-        mandatorys.height = height;
+        this.mandatoryParams.height = height;
     }
 
     /**
@@ -241,7 +270,7 @@ public class GetMapRequest extends WMSRequest {
      * @param filters DOCUMENT ME!
      */
     public void setFilters(Filter[] filters) {
-        customs.filters = (filters == null) ? NO_FILTERS : filters;
+        this.customParams.filters = (filters == null) ? NO_FILTERS : filters;
     }
 
     /**
@@ -250,7 +279,7 @@ public class GetMapRequest extends WMSRequest {
      * @param layers DOCUMENT ME!
      */
     public void setLayers(FeatureTypeInfo[] layers) {
-        mandatorys.layers = layers;
+        this.mandatoryParams.layers = layers;
     }
 
     /**
@@ -259,7 +288,7 @@ public class GetMapRequest extends WMSRequest {
      * @param styles DOCUMENT ME!
      */
     public void setStyles(List styles) {
-        mandatorys.styles = styles;
+        this.mandatoryParams.styles = styles;
     }
 
     /**
@@ -268,7 +297,7 @@ public class GetMapRequest extends WMSRequest {
      * @param transparent DOCUMENT ME!
      */
     public void setTransparent(boolean transparent) {
-        optionals.transparent = transparent;
+        this.optionalParams.transparent = transparent;
     }
 
     /**
@@ -277,27 +306,43 @@ public class GetMapRequest extends WMSRequest {
      * @param width DOCUMENT ME!
      */
     public void setWidth(int width) {
-        mandatorys.width = width;
+        this.mandatoryParams.width = width;
     }
 
-    public void setCollectGeometries(boolean collect)
-    {
-      customs.collectGeometries = collect;
+    /**
+     * DOCUMENT ME!
+     *
+     * @param collect DOCUMENT ME!
+     */
+    public void setCollectGeometries(boolean collect) {
+        this.customParams.collectGeometries = collect;
     }
 
-    public void setGeneralizationFactor(double gfactor)
-    {
-      customs.generalizationFactor = gfactor;
+    /**
+     * DOCUMENT ME!
+     *
+     * @param gfactor DOCUMENT ME!
+     */
+    public void setGeneralizationFactor(double gfactor) {
+        this.customParams.generalizationFactor = gfactor;
     }
 
-    public boolean isCollectGeometries()
-    {
-      return customs.collectGeometries;
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public boolean isCollectGeometries() {
+        return this.customParams.collectGeometries;
     }
 
-    public double getGeneralizationFactor()
-    {
-      return customs.generalizationFactor;
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public double getGeneralizationFactor() {
+        return this.customParams.generalizationFactor;
     }
 
     /**
@@ -312,6 +357,12 @@ public class GetMapRequest extends WMSRequest {
         return Color.decode(hexColor);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @author Gabriel Roldan, Axios Engineering
+     * @version $Id$
+     */
     private class MandatoryParameters {
         /** ordered list of requested layers */
         FeatureTypeInfo[] layers;
@@ -321,12 +372,26 @@ public class GetMapRequest extends WMSRequest {
          * relationship with <code>layers</code>
          */
         List styles;
+
+        /** DOCUMENT ME!  */
         Envelope bbox;
+
+        /** DOCUMENT ME!  */
         int width;
+
+        /** DOCUMENT ME!  */
         int height;
+
+        /** DOCUMENT ME!  */
         String format;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @author Gabriel Roldan, Axios Engineering
+     * @version $Id$
+     */
     private class OptionalParameters {
         /**
          * the map's background color requested, or the default (white) if not
@@ -336,7 +401,11 @@ public class GetMapRequest extends WMSRequest {
 
         /** from SRS (1.1) or CRS (1.2) param */
         String crs;
+
+        /** DOCUMENT ME!  */
         String exceptions = SE_XML;
+
+        /** DOCUMENT ME!  */
         boolean transparent = false;
     }
 
@@ -366,8 +435,10 @@ public class GetMapRequest extends WMSRequest {
          */
         List attributes = Collections.EMPTY_LIST;
 
+        /** DOCUMENT ME!  */
         double generalizationFactor = -1;
 
+        /** DOCUMENT ME!  */
         boolean collectGeometries = false;
     }
 }
