@@ -1,6 +1,8 @@
 /* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root application directory.
+ * This code is licensed under the GPL 2.0 license, availible at the root 
+ * application directory.
  */
+
 package org.vfny.geoserver;
 
 import java.io.File;
@@ -21,24 +23,35 @@ import org.apache.catalina.Container;
 
 /**
  * This class handles the starting and stopping of the embedded Tomcat server.
+ * It does some rudementary checking to make sure that the required 
+ * filesystem and path variables are in place before it begins.
  *
  *@author Rob Hranac, TOPP
  *@version 0.9 beta, 11/01/01
- *
  */
 public class EmbeddedTomcat {
 
     /** Standard logging instance for the class */
-    private Category _log =
-        Category.getInstance(EmbeddedTomcat.class.getName());
+    private Category _log = Category.getInstance(EmbeddedTomcat.class.getName());
     
+    /** Sets the global test file for the instance to check if all is OK. */
+    private static final String TEST_FILE = "/lib/catalina/embedded.jar";
+      // TODO 3: Would be nicer to check entire directory structure.
+    /** Points to the server working directory. */
+    private static final String SERVER_DIR = "/server";
+    /** Time to wait and run thread before looking for stop file (in ms). */
+    private static final int STOP_CHECK_FREQUENCEY = 3000;
+    /** Stop file name. */
+    private static final String STOP_FILE = "/stop";
+
+
+    /** Remembers the catalina path */
     private String path = null;
+    /** Catalina embedded object */
     private Embedded embedded = null;
+    /** Catalina host object */
     private Host host = null;
     
-    private static boolean isAlive = true;
-
-    private static final String TEST_FILE = "/lib/catalina/embedded.jar";
     
     /**
      * Default Constructor
@@ -47,31 +60,34 @@ public class EmbeddedTomcat {
     public EmbeddedTomcat() {
     }
     
+
+    /**************************************************************************
+     * Internal maintenance methods                                           *
+     **************************************************************************/
     /**
      * Basic Accessor setting the value of the context path
      *
-     * @param path - the path
+     * @param path The catalina server path.
      */
     public void setPath(String path) {
-        this.path = path + "/server";
+        this.path = path + SERVER_DIR;
     }
     
     /**
      * Basic Accessor returning the value of the context path
      *
-     * @return - the context path
+     * @return path The catalina server path.
      */
     public String getPath() {
         return path;
     }
     
+
     /**
-     * This method Starts the Tomcat server.
+     * Starts the Tomcat server.
      */
     public void startTomcat() throws Exception {
         
-        //BasicConfigurator.configure();
-        //_log.info("Logger (LOG4J) initialized...");
         Engine engine = null;
         
         // Set the home directory
@@ -79,36 +95,23 @@ public class EmbeddedTomcat {
         
         // Create an embedded server
         embedded = new Embedded();
+
         // print all log statments to standard error
         embedded.setDebug(0);
         embedded.setLogger(new SystemOutLogger());
+
         // Create an engine
         engine = embedded.createEngine();
         engine.setDefaultHost("localhost");
-        
-        // Create a default virtual host
-        host = embedded.createHost("localhost", getPath() + "/webapps");
-        
-        // Create the ROOT context
-        Context context =
-            embedded.createContext("", getPath() + "/webapps/ROOT");
-        context.setLogger(embedded.getLogger());
-        //context.setDebug(5);
-        host.addChild(context);
-        
-        engine.addChild(host);
-        
-        //registerWar(getPath() + "/webapps", new URL(getPath() + "/webapps/geoserver.war"));
-        
-        // Install the assembled container hierarchy
         embedded.addEngine(engine);
+
         // Assemble and install a default HTTP connector
         Connector connector = embedded.createConnector(null, 8081, false);
         embedded.addConnector(connector);
-        // Start the embedded server
-        
-        embedded.start();
 
+        // Start the embedded server      
+        embedded.start();
+        
     }
     
     /**
@@ -122,10 +125,8 @@ public class EmbeddedTomcat {
     /**
      * Registers a WAR with the container.
      *
-     * @param contextPath - the context path under which the
-     *               application will be registered
-     * @param warFile - the URL of the WAR to be
-     * registered.
+     * @param contextPath Path under which the application will be registered
+     * @param warFile URL of the WAR to be registered.
      */
     public void registerWAR(String contextPath, URL warFile) throws Exception {
         
@@ -160,7 +161,8 @@ public class EmbeddedTomcat {
             throw new Exception("Context does not exist for named path : " + contextPath);
         }
     }
-    
+
+
     /**
      * Handles server creation and destruction.
      *
@@ -170,14 +172,13 @@ public class EmbeddedTomcat {
         
         EmbeddedTomcat tomcat = new EmbeddedTomcat();
         
-        // if geoserverHome is not defined, make a guess that it is the current
-        //  user directory.  check to make sure this is the case.  if this is no
+        // if geoserver home is not defined, make a guess that it is the current
+        //  user directory.  check to make sure this is the case.  if this is not
         //  the case, then bail out with appropriate error message.
         // also, set path to the shut down file.
         if (System.getProperty("GEOSERVER_HOME") != null) {
             File testHome =
-                new File(System.getProperty("GEOSERVER_HOME")
-                         + TEST_FILE);
+                new File(System.getProperty("GEOSERVER_HOME") + TEST_FILE);
             if (testHome.exists()) {
                 tomcat.setPath(System.getProperty("GEOSERVER_HOME"));
             } else {
@@ -189,8 +190,7 @@ public class EmbeddedTomcat {
             }
         } else {
             File testHome =
-                new File(System.getProperty("user.dir")
-                         + TEST_FILE);
+                new File(System.getProperty("user.dir") + TEST_FILE);
             if (testHome.exists()) {
                 tomcat.setPath(System.getProperty("user.dir"));
             } else {
@@ -204,19 +204,19 @@ public class EmbeddedTomcat {
         }
         
         // handle start conditions
-        File shutDown = new File(tomcat.getPath() + "/stop");
+        File shutDown = new File(tomcat.getPath() + STOP_FILE);
         if (args[0].equals("start")) {
             try {
                 // make sure to delete shut down signal file
                 shutDown.delete();
                 
                 // start tomcat server and notify user
-                System.out.println("starting server...");
+                System.out.println("Starting GeoServer...");
                 tomcat.startTomcat();
                 
-                // check for shutdown file every three seconds
+                // check for shutdown file at specified frequency
                 while (!shutDown.exists()) {
-                    Thread.sleep(3000);
+                    Thread.sleep(STOP_CHECK_FREQUENCEY);
                 }
                 
                 // stop server on termination
@@ -227,7 +227,7 @@ public class EmbeddedTomcat {
                 e.printStackTrace();
             }
         }
-        
+
         // handle stop conditions
         else if (args[0].equals("stop")) {
             System.out.println("stopping server...");

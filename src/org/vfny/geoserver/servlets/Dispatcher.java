@@ -35,188 +35,188 @@ import org.vfny.geoserver.responses.WfsException;
 public class Dispatcher extends HttpServlet {
 
 
-		/** Standard logging instance for class */
-		private Category _log = Category.getInstance(Dispatcher.class.getName());
+        /** Standard logging instance for class */
+        private Category _log = Category.getInstance(Dispatcher.class.getName());
 
-		/** Stores MIME type */
-		private static final String MIME_TYPE = "text/xml";
+        /** Stores MIME type */
+        private static final String MIME_TYPE = "text/xml";
 
-		/** Map metadata request type */
-		public static String META_REQUEST = "GetMeta";
+        /** Map metadata request type */
+        public static String META_REQUEST = "GetMeta";
 
-		/** Map get capabilities request type */
-		public static final int GET_CAPABILITIES_REQUEST = 1;
+        /** Map get capabilities request type */
+        public static final int GET_CAPABILITIES_REQUEST = 1;
 
-		/** Map describe feature type request type */
-		public static final int DESCRIBE_FEATURE_TYPE_REQUEST = 2;
+        /** Map describe feature type request type */
+        public static final int DESCRIBE_FEATURE_TYPE_REQUEST = 2;
 
-		/** Map get feature  request type */
-		public static final int GET_FEATURE_REQUEST = 3;
+        /** Map get feature  request type */
+        public static final int GET_FEATURE_REQUEST = 3;
 
-		/** Map get feature  request type */
-		public static final int UNKNOWN = -1;
+        /** Map get feature  request type */
+        public static final int UNKNOWN = -1;
 
-		/** Map get feature  request type */
-		public static final int ERROR = -2;
+        /** Map get feature  request type */
+        public static final int ERROR = -2;
 
-		/** Map get capabilities request type */
-		public static final String GET_CAPABILITIES_INTERFACE = "GetCapabilities";
+        /** Map get capabilities request type */
+        public static final String GET_CAPABILITIES_INTERFACE = "GetCapabilities";
 
-		/** Map describe feature type request type */
-		public static final String DESCRIBE_FEATURE_TYPE_INTERFACE = "DescribeFeatureType";
+        /** Map describe feature type request type */
+        public static final String DESCRIBE_FEATURE_TYPE_INTERFACE = "DescribeFeatureType";
 
-		/** Map get feature  request type */
-		public static final String GET_FEATURE_INTERFACE = "GetFeature";
-
-
-	 /**
-		* Passes the Post method to the Get method, with no modifications.
-		*
-		* @param request The servlet request object.
-		* @param response The servlet response object.
-		*/ 
-		public void doPost(HttpServletRequest request, HttpServletResponse response)
-				throws ServletException, IOException {
-
-				//BufferedReader tempReader = request.getReader();
-				String tempResponse = new String();
-				int targetRequest = 0;
-
-				_log.info("got to post request");
-
-				//request.getReader().mark(10000);
-
-				try {
-
-						if ( request.getReader() != null ) {
-								DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader() );
-								targetRequest = requestTypeAnalyzer.getRequestType();
-						}
-						else {
-								targetRequest = UNKNOWN;	
-						}
-
-				}
-
-				catch (WfsException wfs) {
-						targetRequest = ERROR;
-						tempResponse = wfs.getXmlResponse();
-				}
-
-				request.getReader().reset();
-
-				forwardRequest( tempResponse, targetRequest, request, response );
+        /** Map get feature  request type */
+        public static final String GET_FEATURE_INTERFACE = "GetFeature";
 
 
-		}
+     /**
+        * Passes the Post method to the Get method, with no modifications.
+        *
+        * @param request The servlet request object.
+        * @param response The servlet response object.
+        */ 
+        public void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
+
+                //BufferedReader tempReader = request.getReader();
+                String tempResponse = new String();
+                int targetRequest = 0;
+
+                _log.info("got to post request");
+
+                //request.getReader().mark(10000);
+
+                try {
+
+                        if ( request.getReader() != null ) {
+                                DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader() );
+                                targetRequest = requestTypeAnalyzer.getRequestType();
+                        }
+                        else {
+                                targetRequest = UNKNOWN;    
+                        }
+
+                }
+
+                catch (WfsException wfs) {
+                        targetRequest = ERROR;
+                        tempResponse = wfs.getXmlResponse();
+                }
+
+                request.getReader().reset();
+
+                forwardRequest( tempResponse, targetRequest, request, response );
 
 
-	 /**
-		* Handles all Get requests.
-		*
-		* This method implements the main matching logic for the class.
-		*
-		* @param request The servlet request object.
-		* @param response The servlet response object.
-		*/
-		public void doGet(HttpServletRequest request, HttpServletResponse response)
-				throws ServletException, IOException {
-
-				String tempResponse = new String();
-				int targetRequest = 0;
-
-				// Examine the incoming request and create appropriate server objects
-				//  to deal with each request
-				//				try {
-
-						if ( request.getQueryString() != null ) {
-								
-								DispatcherReaderKvp requestTypeAnalyzer = new DispatcherReaderKvp( request.getQueryString() );
-								targetRequest = requestTypeAnalyzer.getRequestType();
-						}								
-						else {
-						
-								targetRequest = UNKNOWN;	
-
-								// Special case: request string contained text, but didn't match a request
-								// For now, this passes to the general server meta-data, but this should be replaced with a FreeFS exception later
-						}
-						/*
-				}
-				
-				catch (WfsException wfs) {
-						targetRequest = ERROR;
-						tempResponse = wfs.getXmlResponse();
-				}
-				*/
-
-				_log.info("request is type: " + targetRequest);
-
-				forwardRequest( tempResponse, targetRequest, request, response );
-
-		}
+        }
 
 
-	 /**
-		* Handles all request forwarding.
-		*
-		* This method implements the main matching logic for this class.
-		*
-		* @param tempResponse Error response string.
-		* @param targetRequest Internally noted target response for forward.
-		* @param request Servlet request object.
-		* @param response Servlet request object.
-		*/
-		private void forwardRequest(String tempResponse, int targetRequest, HttpServletRequest request, HttpServletResponse response)
-				throws ServletException, IOException {
+     /**
+        * Handles all Get requests.
+        *
+        * This method implements the main matching logic for the class.
+        *
+        * @param request The servlet request object.
+        * @param response The servlet response object.
+        */
+        public void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
-				// Examine the incoming request and create appropriate server objects
-				//  to deal with each request
-				//  then pass to appropriate servlet
-				if ( targetRequest == GET_CAPABILITIES_REQUEST ) {
-						
-						RequestDispatcher dispatcher = request.getRequestDispatcher( GET_CAPABILITIES_INTERFACE );	
-						dispatcher.forward(request, response);
+                String tempResponse = new String();
+                int targetRequest = 0;
 
-				// Pass to appropriate servlet
-				} else if ( targetRequest == DESCRIBE_FEATURE_TYPE_REQUEST ) {
-						
-						RequestDispatcher dispatcher = request.getRequestDispatcher( DESCRIBE_FEATURE_TYPE_INTERFACE );	
-						dispatcher.forward(request, response);
-						
-				} else if	( targetRequest == GET_FEATURE_REQUEST ) {
+                // Examine the incoming request and create appropriate server objects
+                //  to deal with each request
+                //              try {
 
-						_log.info("sending to get feature");
-						
-						RequestDispatcher dispatcher = request.getRequestDispatcher( GET_FEATURE_INTERFACE );
-						dispatcher.forward(request, response);
+                        if ( request.getQueryString() != null ) {
+                                
+                                DispatcherReaderKvp requestTypeAnalyzer = new DispatcherReaderKvp( request.getQueryString() );
+                                targetRequest = requestTypeAnalyzer.getRequestType();
+                        }                               
+                        else {
+                        
+                                targetRequest = UNKNOWN;    
 
-				} else if	( targetRequest == ERROR ) {
-						
-						_log.info("is error type");
-			 
-						// set content type and return response, whatever it is 
-						response.setContentType(MIME_TYPE);
-						response.getWriter().write( tempResponse );
+                                // Special case: request string contained text, but didn't match a request
+                                // For now, this passes to the general server meta-data, but this should be replaced with a FreeFS exception later
+                        }
+                        /*
+                }
+                
+                catch (WfsException wfs) {
+                        targetRequest = ERROR;
+                        tempResponse = wfs.getXmlResponse();
+                }
+                */
 
-				}
+                _log.info("request is type: " + targetRequest);
 
-				// Special case: top-level URI requested, with no query GET data and no POST data
-				// Pass to meta-data HTML page
-				// Mostly for web-indexes (contains appropriate search engine, dynamic meta-data),
-				// those who are intersted in WFS but don't know how to talk to it, and lost web-surfers.
-				else {
+                forwardRequest( tempResponse, targetRequest, request, response );
 
-						response.getWriter().write( "unknown request" );
+        }
 
-						/*
-						RequestDispatcher dispatcher = request.getRequestDispatcher("metadata/default.jsp");
-						getServletContext().getNamedDispatcher("jsp");
-						dispatcher.forward(request, response);
-						*/
-				} 
 
-		}
+     /**
+        * Handles all request forwarding.
+        *
+        * This method implements the main matching logic for this class.
+        *
+        * @param tempResponse Error response string.
+        * @param targetRequest Internally noted target response for forward.
+        * @param request Servlet request object.
+        * @param response Servlet request object.
+        */
+        private void forwardRequest(String tempResponse, int targetRequest, HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
+
+                // Examine the incoming request and create appropriate server objects
+                //  to deal with each request
+                //  then pass to appropriate servlet
+                if ( targetRequest == GET_CAPABILITIES_REQUEST ) {
+                        
+                        RequestDispatcher dispatcher = request.getRequestDispatcher( GET_CAPABILITIES_INTERFACE );  
+                        dispatcher.forward(request, response);
+
+                // Pass to appropriate servlet
+                } else if ( targetRequest == DESCRIBE_FEATURE_TYPE_REQUEST ) {
+                        
+                        RequestDispatcher dispatcher = request.getRequestDispatcher( DESCRIBE_FEATURE_TYPE_INTERFACE ); 
+                        dispatcher.forward(request, response);
+                        
+                } else if   ( targetRequest == GET_FEATURE_REQUEST ) {
+
+                        _log.info("sending to get feature");
+                        
+                        RequestDispatcher dispatcher = request.getRequestDispatcher( GET_FEATURE_INTERFACE );
+                        dispatcher.forward(request, response);
+
+                } else if   ( targetRequest == ERROR ) {
+                        
+                        _log.info("is error type");
+             
+                        // set content type and return response, whatever it is 
+                        response.setContentType(MIME_TYPE);
+                        response.getWriter().write( tempResponse );
+
+                }
+
+                // Special case: top-level URI requested, with no query GET data and no POST data
+                // Pass to meta-data HTML page
+                // Mostly for web-indexes (contains appropriate search engine, dynamic meta-data),
+                // those who are intersted in WFS but don't know how to talk to it, and lost web-surfers.
+                else {
+
+                        response.getWriter().write( "unknown request" );
+
+                        /*
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("metadata/default.jsp");
+                        getServletContext().getNamedDispatcher("jsp");
+                        dispatcher.forward(request, response);
+                        */
+                } 
+
+        }
 
 
 }

@@ -30,7 +30,7 @@ public class Authenticator {
     
     /** Creates a list of hosts allowed for this server installation */
     private Hashtable allowedHosts = new Hashtable();
-		
+        
     
     /**
      * Enpty constuctor.
