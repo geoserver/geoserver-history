@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses.map;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -103,4 +104,13 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
         throws IllegalArgumentException {
         return new SVGMapProducer();
     }
+    
+    /* (non-Javadoc)
+	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 * This just returns java.util.Collections.EMPTY_MAP
+	 */
+	public Map getImplementationHints() {
+		return java.util.Collections.EMPTY_MAP;
+	}
+	
 }
