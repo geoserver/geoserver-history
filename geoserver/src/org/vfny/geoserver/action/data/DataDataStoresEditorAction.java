@@ -122,7 +122,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         try {
             DataStore victim = factory.createDataStore(paramValues);
-            System.out.println("temporary datastore:" + victim);
+            //System.out.println("temporary datastore:" + victim);
 
             if (victim == null) {
                 // We *really* could not use these params!
