@@ -38,7 +38,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.18 2004/03/27 10:52:25 cholmesny Exp $
+ * @version $Id: DescribeResponse.java,v 1.19 2004/03/31 05:08:02 cholmesny Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -197,8 +197,8 @@ public class DescribeResponse implements Response {
             //request.getBaseUrl should actually be GeoServer.getSchemaBaseUrl()
             //but that method is broken right now.  See the note there.
             tempResponse.append("\n\n<xs:import namespace=" + GML_URL
-                + " schemaLocation=\"" + request.getBaseUrl() + 
-                "data/capabilities/gml/2.1.2/feature.xsd\"/>\n\n");
+                + " schemaLocation=\"" + request.getSchemaBaseUrl() + 
+                "gml/2.1.2/feature.xsd\"/>\n\n");
             tempResponse.append(generateSpecifiedTypes(requestedTypes,
                     wfsRequest.getWFS()));
         } else {
