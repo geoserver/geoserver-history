@@ -42,7 +42,7 @@
   <!-- pc example -->
   <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
   <property name="dir.geotools" 
-            value="C:\java\workspace\geotools2\geotools-src"/>
+            value="e:\workspace\geotools2\geotools-src"/>
             
   <!-- linux example
   <property name="dir.container" value="/usr/local/resin-2.1.4/webapps"/>
@@ -750,7 +750,11 @@
       <fileset dir="${dir.geotools}/opengis/target/classes/"
                includes="**/*.class"/>
       <fileset dir="${dir.geotools}/graph/target/classes/"
-               includes="**/*.class"/>                                         
+               includes="**/*.class"/>     
+      <fileset dir="${dir.geotools}/validation/target/classes/">
+      		<include name="**/*.class"/>
+      		<include name="**/*.properties"/>
+	  </fileset>              
     </jar>    
     
     <!-- I am not sure why this is not part of the geotools jar -->
