@@ -5,16 +5,17 @@
 package org.vfny.geoserver.requests;
 
 /**
- * Defines a general Request type and provides accessor methods for unversal
+ * Defines a general Request type and provides accessor methods for universal
  * request information.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Request.java,v 1.3 2003/09/12 18:24:07 cholmesny Exp $
+ * @author Gabriel Roldan
+ * @version $Id: Request.java,v 1.3.4.1 2003/11/04 22:40:23 cholmesny Exp $
  */
 abstract public class Request {
     /** Request service */
-    protected String service = "WFS";
+    protected String service;
 
     /** Request type */
     protected String request = new String();
@@ -23,9 +24,12 @@ abstract public class Request {
     protected String version = new String();
 
     /**
-     * Empty constructor.
+     * Service indentifying constructor
+     *
+     * @param serviceType DOCUMENT ME!
      */
-    public Request() {
+    protected Request(String serviceType) {
+        this.service = serviceType;
     }
 
     /**
@@ -82,7 +86,6 @@ abstract public class Request {
         this.version = version;
     }
 
-   
     public boolean equals(Object o) {
         if (!(o instanceof Request)) {
             return false;

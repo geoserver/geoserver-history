@@ -4,12 +4,10 @@
  */
 package org.vfny.geoserver.requests;
 
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.*;
 import org.geotools.filter.Filter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
 
 /**
@@ -20,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Query.java,v 1.10 2003/09/15 16:34:54 cholmesny Exp $
+ * @version $Id: Query.java,v 1.10.4.1 2003/11/04 22:40:23 cholmesny Exp $
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?
@@ -103,7 +101,7 @@ public class Query {
         } else {
             //REVISIT: move this code to geotools?
             //REVISIT: not sure what to do if there are multiple
-            //delimiters.  
+            //delimiters.
             //REVISIT: should we examine the first value?  See
             //if the namespace or typename matches up right?
             //this is currently very permissive, just grabs

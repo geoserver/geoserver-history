@@ -5,18 +5,21 @@
 package org.vfny.geoserver.requests;
 
 /**
- * This class enforces a standard interface for GetCapabilities reqeusts
+ * This class enforces a standard interface for GetCapabilities requests.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesRequest.java,v 1.2 2003/09/12 18:23:48 cholmesny Exp $
+ * @version $Id: CapabilitiesRequest.java,v 1.2.4.1 2003/11/04 22:40:23 cholmesny Exp $
  */
 public class CapabilitiesRequest extends Request {
     /**
      * Empty constructor.
+     *
+     * @param serviceType DOCUMENT ME!
      */
-    public CapabilitiesRequest() {
-        super();
+    public CapabilitiesRequest(String serviceType) {
+        super(serviceType);
+        setRequest("GetCapabilities");
     }
 
     /**
@@ -40,5 +43,4 @@ public class CapabilitiesRequest extends Request {
     public boolean equals(Object o) {
         return super.equals(o);
     }
-
 }

@@ -4,11 +4,9 @@
  */
 package org.vfny.geoserver.requests;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.XMLFilterImpl;
-import java.util.logging.Logger;
+import org.xml.sax.*;
+import org.xml.sax.helpers.*;
+import java.util.logging.*;
 
 
 /**
@@ -16,7 +14,7 @@ import java.util.logging.Logger;
  * incoming XML stream.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: CapabilitiesHandler.java,v 1.2 2003/09/12 18:23:14 cholmesny Exp $
+ * @version $Id: CapabilitiesHandler.java,v 1.2.4.1 2003/11/04 22:40:23 cholmesny Exp $
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
@@ -24,7 +22,7 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
             "org.vfny.geoserver.requests");
 
     /** Internal Capabilities request for construction. */
-    private CapabilitiesRequest request = new CapabilitiesRequest();
+    private CapabilitiesRequest request = new CapabilitiesRequest("WFS");
 
     /**
      * Returns the GetCapabilities request.
