@@ -114,7 +114,6 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
     	if(format == null){
     		throw new IllegalStateException("Content type unknown since execute() has not been called yet");
     	}
-    	System.err.println("returning content type " + format);
         return format;
     }
 
