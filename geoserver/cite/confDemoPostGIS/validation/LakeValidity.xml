@@ -7,21 +7,16 @@
 	<name>Lake Integrity Checks</name>
 	<description>Checks to ensure the lakes are valid</description>
 	<test>
-		<name>Lake Valid</name>
-		<description>Checks that Lakes are represented by valid geometries</description>
-		<plugin>Is Valid Geometry</plugin>
-		<argument >
-			<name>typeRef</name>
+		<name>Lakes and Buildings</name>
+		<description>Ensures that no buildings are contained within lakes! (Or vice versa)</description>
+		<plugin>Polygon Not Overlapping Polygon</plugin>
+		<argument>
+			<name>polygonTypeRef</name>
 			<string>geoserver-demo:lakes</string>
 		</argument>
-	</test>
-	<test>
-		<name>Stream</name>
-		<description>Stream must not crosss itself (expect on a node)</description>
-		<plugin>Line Not Self Intersection</plugin>
 		<argument>
-			<name>typeRef</name>
-			<string>geoserver-demo:streams</string>
+			<name>restrictedPolygonTypeRef</name>
+			<string>geoserver-demo:buildings</string>
 		</argument>
 	</test>
 </suite>

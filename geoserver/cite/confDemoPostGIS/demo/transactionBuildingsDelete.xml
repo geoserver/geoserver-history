@@ -4,9 +4,9 @@
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:wfs="http://www.opengis.net/wfs"
 >
-<wfs:delete typename="gd:buildings">
+<wfs:Delete typeName="gd:buildings">
 	<ogc:Filter>
       <ogc:FeatureId fid="buildings.1063"/>
 	</ogc:Filter>
-</wfs:delete>
+</wfs:Delete>
 </wfs:Transaction>
