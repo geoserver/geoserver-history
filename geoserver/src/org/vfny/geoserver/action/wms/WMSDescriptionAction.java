@@ -54,6 +54,6 @@ public final class WMSDescriptionAction extends ConfigAction {
         config.setKeywords(array);
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("wmsConfigDescription");
+        return mapping.findForward("config");
     }
 }
