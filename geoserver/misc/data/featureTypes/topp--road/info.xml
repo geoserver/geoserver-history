@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example info.xml file for a Shapefile Datasource. -->
 <featureType>
+	<!-- Used for return of getCapabilities, and internally.  Required 
+     	     Must match the name of the shapefile (without the extension) -->
 	<Name>road</Name>
+
+	<!-- Must be an epsg code.  Others not yet supported.  Required -->
+	<SRS>32118</SRS>
+
+	<!-- These are optional service elements, not required but recommended.
+	     Used in the TypeInfo sections of the capabilities document. -->
 	<Title>Random Road Centerlines</Title>
 	<Abstract>This is some random road features</Abstract>
 	<Keywords>road, New York City, TOPP</Keywords>
-	<SRS>32118</SRS>
 	<LatLonBoundingBox minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
-	<MetadataURL>
-         <url>none</url>
-         <format>XML</format>
-         <type>FGDC</type>
-        </MetadataURL>
-        <DatasourceParams>
-         <filename>road.shp</filename>
-        </DatasourceParams>		
+
+ 	<!-- This section tells GeoServer the parameters for the backend 
+	     data to be served with this featureType.  Varies for 
+	     different datasources.  The following is for
+	     a Postgis datasource. -->
+	<DatasourceParams>
+         
+	<!-- The filename element can be used if the shapefile is
+	      contained in this directory.  It must have the .shp 
+	      extension. -->
+	<filename>road.shp</filename>
+ 
+	<!-- If the shapefile exists in another directory, the url
+	     element may be used. -->
+	<!--
+	    <url>file://opt/data/tiger/parks.shp</url>
+	 -->
+
+	</DatasourceParams>		
 </featureType>
