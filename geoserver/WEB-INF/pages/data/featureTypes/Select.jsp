@@ -2,7 +2,8 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:form action="/config/data/featureTypeSelect">
+<% try { %>
+<html:form action="/config/data/typeSelectSubmit">
   <table class="info">
 	<tr>
       <td class="label">
@@ -30,3 +31,8 @@
     </tr>
   </table>
 </html:form>
+<% } catch (Throwable hate ){
+   System.err.println( "FeatureType Editor problem:"+ hate );
+   hate.printStackTrace();
+   throw hate;
+} %>

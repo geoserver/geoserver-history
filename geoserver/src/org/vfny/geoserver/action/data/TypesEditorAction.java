@@ -61,7 +61,9 @@ public class TypesEditorAction extends ConfigAction {
         UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         
-        TypesEditorForm typeForm = (TypesEditorForm) form;        
+        System.out.println("form bean:"+form.getClass().getName() );
+        TypesEditorForm typeForm = (TypesEditorForm) form;
+        
         String action = typeForm.getAction();
         System.out.println("TypesEditorAction is "+action );
         if( action.equals("Submit")){

@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <% try { %>
-<html:form action="/config/data/featureTypeSubmit">
+<html:form action="/config/data/typeEditorSubmit">
   <table class="info">
 	<tr>
       <td class="label">
