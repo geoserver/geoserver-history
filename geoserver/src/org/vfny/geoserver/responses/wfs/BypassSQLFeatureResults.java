@@ -352,6 +352,8 @@ public class BypassSQLFeatureResults implements FeatureResults {
 		String value;
 		int i = 0;
 		
+		if (placeholder == null) return;	// no placeholders
+		
 		Iterator literals = placeholder.listIterator();
 	    try {
 	        while (literals.hasNext()) {
