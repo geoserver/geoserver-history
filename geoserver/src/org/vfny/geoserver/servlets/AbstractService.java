@@ -23,7 +23,7 @@ import javax.servlet.http.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: AbstractService.java,v 1.1.2.4 2003/11/13 23:57:46 jive Exp $
+ * @version $Id: AbstractService.java,v 1.1.2.5 2003/11/14 00:04:10 jive Exp $
  *
  * @task TODO: I changed this so it automatically buffers responses, so  as to
  *       better handle errors, not serving up nasty servlet errors if
@@ -123,37 +123,45 @@ public abstract class AbstractService extends HttpServlet {
      * @task TODO: move gzip response encoding to a filter servlet
      */
     protected void doService(HttpServletRequest request,
-        HttpServletResponse response, Request serviceRequest) {
-        try {
-            Response serviceResponse = getResponseHandler();
-
-	    
-            serviceResponse.execute(serviceRequest);
-
-            // set content type and return response, whatever it is
-            String contentType = serviceResponse.getContentType();
-            response.setContentType(contentType);
-
-            /*
-               boolean gzipIt = requestSupportsGzip(request);
-               if (gzipIt)
-               {
-                   LOGGER.finer("GZIPPING RESPONSE...");
-                   response.setHeader("content-encoding", "gzip");
-                   out = new GZIPOutputStream(out, 2048);
-               }
-             */
-
-            //TODO: make this user configurable.  For now it's better 
-            //to pick up errors correctly, as we've got quite a few of them.
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            serviceResponse.writeTo(buffer);
-            OutputStream out = response.getOutputStream();
-            out = new BufferedOutputStream(out, 2 * 1024 * 1024);
-	    buffer.writeTo(out);
-            out.flush();
-        } catch (Throwable e) {
-            sendError(response, e);
+                             HttpServletResponse response,
+                             Request serviceRequest) {    
+        if( saftyMode != null ){
+            saftyMode.doService( this, request, response, serviceRequest );            
+        }
+        else {                
+            
+                saftyMode.doService( this, request, response, serviceRequest );
+            try {
+                Response serviceResponse = getResponseHandler();
+    
+    	    
+                serviceResponse.execute(serviceRequest);
+    
+                // set content type and return response, whatever it is
+                String contentType = serviceResponse.getContentType();
+                response.setContentType(contentType);
+    
+                /*
+                   boolean gzipIt = requestSupportsGzip(request);
+                   if (gzipIt)
+                   {
+                       LOGGER.finer("GZIPPING RESPONSE...");
+                       response.setHeader("content-encoding", "gzip");
+                       out = new GZIPOutputStream(out, 2048);
+                   }
+                 */
+    
+                //TODO: make this user configurable.  For now it's better 
+                //to pick up errors correctly, as we've got quite a few of them.
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                serviceResponse.writeTo(buffer);
+                OutputStream out = response.getOutputStream();
+                out = new BufferedOutputStream(out, 2 * 1024 * 1024);
+    	    buffer.writeTo(out);
+                out.flush();
+            } catch (Throwable e) {
+                sendError(response, e);
+            }
         }
     }
 
