@@ -113,7 +113,6 @@
       <style id="normal" filename="normal.sld" default="true"/>
       <style id="population" filename="popshade.sld"/>
       <style id="manualVsWorkers" filename="usa_math.sld"/>
-      <style id="bbox" filename="usa_cental.sld"/>
   </styles>
 
 </catalog>
