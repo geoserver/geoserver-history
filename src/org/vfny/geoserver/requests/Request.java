@@ -5,16 +5,17 @@
 package org.vfny.geoserver.requests;
 
 /**
- * Defines a general Request type and provides accessor methods for unversal
+ * Defines a general Request type and provides accessor methods for universal
  * request information.
- *
+ * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Request.java,v 1.4 2003/12/10 15:56:35 cholmesny Exp $
+ * @author Gabriel Roldan
+ * @version $Id: Request.java,v 1.5 2003/12/16 18:46:08 cholmesny Exp $
  */
 abstract public class Request {
     /** Request service */
-    protected String service = "WFS";
+    protected String service;
 
     /** Request type */
     protected String request = new String();
@@ -23,9 +24,23 @@ abstract public class Request {
     protected String version = new String();
 
     /**
-     * Empty constructor.
+     * Service indentifying constructor.
+     *
+     * @param serviceType Name of services (like wms)
      */
-    public Request() {
+    protected Request(String serviceType) {
+        this.service = serviceType;
+    }
+
+    /**
+     * Service & Request indentifying constructor.
+     *
+     * @param serviceType Name of services (like wfs)
+     * @param requestType Name of request (like Transaction)
+     */
+    protected Request(String serviceType, String requestType) {
+        this.service = serviceType;
+        this.request = requestType;
     }
 
     /**
@@ -48,7 +63,10 @@ abstract public class Request {
 
     /**
      * Gets requested request type.
-     *
+     * <p>
+     * TODO: Could this bre renamed getType() for clarity?
+     * </p>
+     * 
      * @return The type of request.
      */
     public String getRequest() {
@@ -60,8 +78,8 @@ abstract public class Request {
      *
      * @param reqeust The type of request.
      */
-    public void setRequest(String request) {
-        this.request = request;
+    public void setRequest(String requestType) {
+        this.request = requestType;
     }
 
     /**
@@ -82,7 +100,6 @@ abstract public class Request {
         this.version = version;
     }
 
-   
     public boolean equals(Object o) {
         if (!(o instanceof Request)) {
             return false;

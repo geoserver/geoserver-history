@@ -1,126 +1,107 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE web-app
-  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-  "http://java.sun.com/dtd/web-app_2_3.dtd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
- <display-name>GeoServer </display-name>
+  <display-name>GeoServer</display-name>
   <description>Web Mapping and Feature Services</description>
+  <context-param>
+    <param-name>serviceStratagy</param-name>
+    <param-value>SPEED</param-value>
+  </context-param>
+  <servlet>
+    <servlet-name>DescribeFeatureType</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Describe</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Dispatcher</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.Dispatcher</servlet-class>
+  </servlet>
   <servlet>
     <servlet-name>FreefsLog</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.FreefsLog</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
-
-  <servlet>
-    <servlet-name>GetCapabilities</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Capabilities</servlet-class>
-  </servlet>
-
   <servlet>
     <servlet-name>GetFeature</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Feature</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Feature</servlet-class>
   </servlet>
-
-  <servlet>
-    <servlet-name>Dispatcher</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Dispatcher</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>DescribeFeatureType</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Describe</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>Transaction</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Transaction</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>LockFeature</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Lock</servlet-class>
-  </servlet>
-
   <servlet>
     <servlet-name>GetFeatureWithLock</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.FeatureWithLock</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.FeatureWithLock</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>GetMap</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wms.GetMap</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>LockFeature</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Lock</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Transaction</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Transaction</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>WFSGetCapabilities</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Capabilities</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>WMSGetCapabilities</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wms.Capabilities</servlet-class>
+  </servlet>
+  <servlet>
+   <servlet-name>TestWfsPost</servlet-name>
+   <servlet-class>org.vfny.geoserver.servlets.wfs.TestWfsPost</servlet-class>
   </servlet>
 
-
- <servlet>
-    <servlet-name>WMSServlet</servlet-name>
-    <display-name>WMSServlet</display-name>
-    <description>Default configuration created for servlet.</description>
-    <servlet-class>org.vfny.geoserver.wms.WMSServlet</servlet-class>
-    <init-param>
-      <param-name>WMSServerClass</param-name>
-      <param-value>org.vfny.geoserver.wms.gtserver.GtWmsServer</param-value>
-    </init-param>
-    <init-param>
-      <param-name>WMSFeatureFormatters</param-name>
-      <param-value>org.vfny.geoserver.wms.gtserver.TextFeatureFormatter</param-value>
-    </init-param>
-    <init-param>
-      <param-name>layersxml</param-name>
-      <param-value>layers.xml</param-value>
-    </init-param>
-    <init-param>
-        <param-name>cachesize</param-name>
-        <param-value>20</param-value>
-    </init-param>
-  </servlet>
-
- <servlet-mapping>
-    <servlet-name>WMSServlet</servlet-name>
-    <url-pattern>/wms/*</url-pattern>
+  <servlet-mapping>
+    <servlet-name>Dispatcher</servlet-name>
+    <url-pattern>/wfs/*</url-pattern>
   </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>FreefsLog</servlet-name>
     <url-pattern>/FreefsLog</url-pattern>
   </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>GetCapabilities</servlet-name>
-    <url-pattern>/GetCapabilities/*</url-pattern>
-  </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>DescribeFeatureType</servlet-name>
-    <url-pattern>/DescribeFeatureType/*</url-pattern>
+    <url-pattern>/wfs/DescribeFeatureType/*</url-pattern>
   </servlet-mapping>
-
+  <servlet-mapping>
+    <servlet-name>Dispatcher</servlet-name>
+    <url-pattern>/wfs/Dispatcher/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>WFSGetCapabilities</servlet-name>
+    <url-pattern>/wfs/GetCapabilities/*</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>GetFeature</servlet-name>
-    <url-pattern>/GetFeature/*</url-pattern>
+    <url-pattern>/wfs/GetFeature/*</url-pattern>
   </servlet-mapping>
-
   <servlet-mapping>
-    <servlet-name>Dispatcher</servlet-name>
-    <url-pattern>/Dispatcher/*</url-pattern>
-  </servlet-mapping>
-
- <servlet-mapping>
-    <servlet-name>Dispatcher</servlet-name>
-    <url-pattern>/wfs/*</url-pattern>
-  </servlet-mapping>
-
- <servlet-mapping>
-    <servlet-name>Transaction</servlet-name>
-    <url-pattern>/Transaction/*</url-pattern>
-  </servlet-mapping>
-
- <servlet-mapping>
-    <servlet-name>LockFeature</servlet-name>
-    <url-pattern>/LockFeature/*</url-pattern>
-  </servlet-mapping>
-
-   <servlet-mapping>
     <servlet-name>GetFeatureWithLock</servlet-name>
-    <url-pattern>/GetFeatureWithLock/*</url-pattern>
+    <url-pattern>/wfs/GetFeatureWithLock/*</url-pattern>
   </servlet-mapping>
-
-  <welcome-file-list><welcome-file>default.jsp</welcome-file></welcome-file-list>
-
+  <servlet-mapping>
+    <servlet-name>LockFeature</servlet-name>
+    <url-pattern>/wfs/LockFeature/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Transaction</servlet-name>
+    <url-pattern>/wfs/Transaction/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>WMSGetCapabilities</servlet-name>
+    <url-pattern>/wms/GetCapabilities</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>GetMap</servlet-name>
+    <url-pattern>/wms/GetMap</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>TestWfsPost</servlet-name>
+   <url-pattern>/wfs/TestWfsPost/*</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
 </web-app>
