@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.*;
 
 
 /**
@@ -106,7 +107,7 @@ public class WfsTransactionException extends WfsException {
      *
      * @return DOCUMENT ME!
      */
-    public String getXmlResponse(GeoServer gs) {
+    public String getXmlResponse(Request gs) {
         WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,handle,true);
         response.setLocator(locator);
 

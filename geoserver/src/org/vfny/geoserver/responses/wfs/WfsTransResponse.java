@@ -17,6 +17,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.responses.ResponseUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.vfny.geoserver.requests.*;
 
 
 /**
@@ -26,7 +27,7 @@ import org.w3c.dom.Element;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.4 2004/01/14 22:54:27 dmzwiers Exp $
+ * @version $Id: WfsTransResponse.java,v 1.5 2004/01/16 17:58:29 dmzwiers Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
@@ -164,10 +165,10 @@ public class WfsTransResponse {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void writeXmlResponse(Writer writer, GeoServer gs) throws IOException {
+    public void writeXmlResponse(Writer writer, Request request) throws IOException {
         //boolean verbose = ConfigInfo.getInstance().formatOutput();
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + gs.getCharSet().displayName()+ "\"?>";
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + request.getGeoServer().getCharSet().displayName()+ "\"?>";
 
         if (verbose) {
             writer.write("\n");
@@ -186,7 +187,7 @@ public class WfsTransResponse {
         writer.write(indent);
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
         
-        writer.write(gs.getSchemaBaseUrl());
+        writer.write(request.getBaseUrl());
         writer.write("wfs/1.0.0/WFS-transaction.xsd\">");
 
         //  + " http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">");
@@ -248,7 +249,7 @@ public class WfsTransResponse {
     }
 
     // this may not be needed anymore
-    public String getXmlResponse(GeoServer gs) {
+    public String getXmlResponse(Request gs) {
         StringWriter writer = new StringWriter();
 
         try {
