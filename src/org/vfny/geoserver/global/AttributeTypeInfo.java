@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.4 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: AttributeTypeInfo.java,v 1.5 2004/02/05 00:48:04 jive Exp $
  */
 public class AttributeTypeInfo implements AttributeTypeMetaData {
     /** Following Davids lead with use of DTO delegate */
@@ -85,6 +85,52 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
         return null;
     }
 
+    /**
+     * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
+     * 
+     * <p>
+     * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
+     * getFragment() to examine the actual user's definition.
+     * </p>
+     * 
+     * <p>
+     * Other than that getType should be one of the constants defined by
+     * GMLUtils.
+     * </p>
+     *
+     * @return The element, or <code>TYPE_FRAGMENT</code>
+     */    
+    String getType(){
+        if( delegate.isComplex() ){
+            return "(xml fragment)";
+        }
+        else {
+            return delegate.getType();
+        }        
+    }
+    
+    /**
+     * XML Fragment used to define stuff.
+     * 
+     * <p>
+     * This property is only used with getType() is equals to "(xml fragment)".
+     * </p>
+     * 
+     * <p>
+     * baseGMLTypes can only be used in your XML fragment.
+     * </p>
+     *
+     * @param fragment The fragment to set.
+     */    
+    String getFragment(){
+        if( delegate.isComplex() ){
+            return delegate.getType();
+        }
+        else {
+            return null;
+        }
+    }
+    
     /**
      * Implement containsMetaData.
      *
