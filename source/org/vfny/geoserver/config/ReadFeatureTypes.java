@@ -1,27 +1,27 @@
-/*
- * Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
+/* Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root application directory.
  */
 package org.vfny.geoserver.config;
 
 import java.io.*;
 import java.util.*;
-import javax.xml.bind.*;
-import javax.xml.marshal.*;
 
 import org.vfny.geoserver.config.configuration.*;
+
 
 /**
  * Reads all feature type data to abstract away from servlets.
  * 
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 alpha, 11/01/01
+ * @author Rob Hranac, Vision for New York
+ * @version $0.9 beta, 11/01/01$
  *
  */
 public class ReadFeatureTypes {
 
+
+		/** Final HTML return string for feature types */
 		private String returnHtml = new String();
+
 
 	 /**
 		* Empty constructor.
@@ -29,11 +29,12 @@ public class ReadFeatureTypes {
 		*/
 		public ReadFeatureTypes () {}
 
+
 	 /**
 		* This function lists all files in HTML for the meta-data pages.
 		* 
 		* The logic here is recursive: pass the function the main featureType directory and it
-		* will list all subdirectories and their files..
+		* will list all subdirectories and their files.
 		*
 		* @param targetDirectoryName The target directory from which to start listing files.
 		*/
@@ -64,6 +65,7 @@ public class ReadFeatureTypes {
 				return returnHtml;
 		}
 
+
 	 /**
 		* Internal private function to extract feature type name from a full path.
 		* 
@@ -77,6 +79,7 @@ public class ReadFeatureTypes {
 				return returnFileName;
 		}
 
+
 	 /**
 		* Internal private function to extract host name from a full path.
 		* 
@@ -89,6 +92,7 @@ public class ReadFeatureTypes {
 						returnFileName = newPath.nextToken();
 				return returnFileName;
 		}
+
 
 	 /**
 		* Internal private function to extract first 30 or fewer chars from the data description.

@@ -6,36 +6,47 @@ package org.vfny.geoserver.config;
 
 import java.io.*;
 import java.util.*;
-import javax.xml.bind.*;
-import javax.xml.marshal.*;
 
 import org.apache.log4j.Category;
 
+import org.exolab.castor.xml.*;
+
 import org.vfny.geoserver.config.configuration.*;
+
 
 /**
  * Reads all necessary configuration data and abstracts it away from the response servlets.
  * 
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 alpha, 11/01/01
- *
+ * @author Rob Hranac, Vision for New York
+ * @version $0.9 beta, 11/01/01$
  */
 public class ConfigurationBean {
 
-		// create standard logging instance for class
+
+		/** Standard logging instance for class */
 		private Category _log = Category.getInstance( ConfigurationBean.class.getName() );
 
-		// A JAXB class to read internal configuration information.
-		private FreeFSConfiguration configuration = new FreeFSConfiguration();
+		/** A Castor-generated class to read internal configuration information */
+		private GlobalConfiguration configuration = new GlobalConfiguration();
 
-		// Set up directory structure
-		private static final String ROOT_DIRECTORY = findRootResinDirectory();
+		/** Root directory of webserver */
+		private static final String ROOT_DIRECTORY = findRootDirectory();
+
+		/** Root directory for feature types */
 		private static final String FEATURE_TYPE_DIRECTORY = ROOT_DIRECTORY + "/data/featureTypes/";
-		private static final String CONFIGURATION_DIRECTORY = ROOT_DIRECTORY + "/data/configuration.xml";
+
+		/** Root directory of capabilities data */
 		private static final String CAPABILITIES_DIRECTORY = ROOT_DIRECTORY + "/data/capabilities/";
+
+		/** Global configuration filename */
+		private static final String CONFIGURATION_FILE = ROOT_DIRECTORY + "/data/configuration.xml";
+
+		/** Default name of feature type information */
 		private static final String FEATURE_TYPE_INFO_NAME = "info";
+
+		/** Default name for feature type schemas */
 		private static final String FEATURE_TYPE_SCHEMA_NAME = "schema";
+
 
 	 /**
 		* Constructor that reads in configuration information from FreeFS configuration file
@@ -43,96 +54,98 @@ public class ConfigurationBean {
 		* return document.
 		*/
 		public ConfigurationBean() {
+
 				try {
-						File configurationDocument = new File(CONFIGURATION_DIRECTORY);
-						FileInputStream configurationFS = new FileInputStream(configurationDocument);
-						configuration = configuration.unmarshal(configurationFS);
-						configurationFS.close();
-				} 
-				catch (Exception Exception) {
-						_log.info("Configuration couldn't create itself: " + Exception.toString() );	
+						FileReader featureTypeDocument = new FileReader( CONFIGURATION_FILE );
+						configuration = (GlobalConfiguration) Unmarshaller.unmarshal( GlobalConfiguration.class, featureTypeDocument);
 				}
+				catch( FileNotFoundException e ) {
+						_log.info("Configuration file does not exist: " + CONFIGURATION_FILE);
+				}
+				catch( MarshalException e ) {
+						_log.info("Castor could not unmarshal configuration file: " + CONFIGURATION_FILE);
+						_log.info("Castor says: " + e.toString() );
+				}
+				catch( ValidationException e ) {
+						_log.info("Castor says the configuration file is not valid XML: " + CONFIGURATION_FILE);
+						_log.info("Castor says: " + e.toString() );
+				}
+
 		}
 
-		private static String findRootResinDirectory() {	
-				return System.getProperty("user.dir") + "/webapps/geoserver";
-		}
 
-		public String getTitle() {
-				return configuration.getService().getTitle();
-		}
+		/** Returns root webserver application directory */
+		private static String findRootDirectory() {	return System.getProperty("user.dir") + "/webapps/geoserver";	}
 
-		public String getAbstract() {
-				return configuration.getService().getAbstract();
-		}
 
-		public String getKeywords() {
-				return configuration.getService().getKeywords();
-		}
+		/** Returns the user-specified title of this service */
+		public String getTitle() { return configuration.getTitle(); }
 
-		public String getOnlineResource() {
-				return configuration.getService().getOnlineResource();
-		}
 
-		public String getFees() {
-				return configuration.getService().getFees();
-		}
+		/** Returns user-specified abstract for this service */
+		public String getAbstract() { return configuration.getAbstract(); }
 
-		public String getAccessConstraints() {
-				return configuration.getService().getAccessConstraints();
-		}
 
-		public String getDatabaseName() {
-				return configuration.getDatabase().getName();
-		}
+		/** Returns user-specified keywords for this service  */
+		public String getKeywords() { return configuration.getKeywords(); }
 
-		public String getDatabaseUser() {
-				return configuration.getDatabase().getUser();
-		}
 
-		public String getDatabasePassword() {
-				return configuration.getDatabase().getPassword();
-		}
+		/** Returns URL for this service */
+		public String getOnlineResource() { return configuration.getOnlineResource(); }
 
-		public String getDatabasePort() {
-				return configuration.getDatabase().getPort();
-		}
 
-		public String getCurrentTime() {
+		/** Returns user-specified fees for this service */
+		public String getFees() { return configuration.getFees(); }
+
+
+		/** Returns user-specified access constraints for this service */
+		public String getAccessConstraints() { return configuration.getAccessConstraints(); }
+
+		/** 
+		 * Returns the current time as a string
+		 */
+		public String getCurrentTime() {  
 				java.util.Date now = new java.util.Date();
 				return now.toString();
 		}
 
-		public String getMaintainer() {
-				return configuration.getService().getMaintainer();
-		}
 
-		public String getFreeFsVersion() {
-				return "0.9b";
-		}
+		/** Returns user-specified maintainer for this service */
+		public String getMaintainer() { return configuration.getMaintainer(); }
 
-		public String getUrl() {
-				return configuration.getService().getURL();
-		}
 
-		public String getFeatureTypeDirectory() {
-				return FEATURE_TYPE_DIRECTORY;
-		}
+		/** Returns fixed version number for this service */
+		public String getFreeFsVersion() { return "0.9b"; }
 
-		public String getFeatureTypeInfoName() {
-				return FEATURE_TYPE_INFO_NAME;
-		}
 
-		public String getCapabilitiesDirectory() {
-				return CAPABILITIES_DIRECTORY;
-		}
+		/** Returns user-specified URL for this service */
+		public String getUrl() { return configuration.getURL(); }
 
-		public String getFeatureTypeSchemaName() {
-				return FEATURE_TYPE_SCHEMA_NAME;
-		}
 
+		/** Returns user-specified fees for this service */
+		public String getFeatureTypeDirectory() { return FEATURE_TYPE_DIRECTORY; }
+
+
+		/** Returns default feature type information name */
+		public String getFeatureTypeInfoName() { return FEATURE_TYPE_INFO_NAME; }
+
+
+		/** Returns root capabilities directory for this service */
+		public String getCapabilitiesDirectory() { return CAPABILITIES_DIRECTORY; }
+
+
+		/** Returns default feature type schema name */
+		public String getFeatureTypeSchemaName() { return FEATURE_TYPE_SCHEMA_NAME; }
+
+
+		/** 
+		 * Returns the current time as a string
+		 *
+		 * @param wfsName Name of the WFS
+		 */
 		public String getServiceXml(String wfsName) {
 
+				// SHOULD CHANGE THIS TO STRINGBUFFER
 				String tempResponse = new String();
 
 				// Set service section of Response, based on Configuration input
