@@ -12,7 +12,10 @@
 <tiles-definitions>
 
    	<definition name=".mainLayout" page="/WEB-INF/pages/layouts/mainLayout.jsp">
-		<put name="title" value="GeoServer"/>
+		<put name="title">
+			&lt;bean:message key="label.defaultTitle"/>
+		</put>
+		<put name="locationText" value=""/>
 		<put name="header" value=".headLayout"/>
 		<put name="sidebar" value=".sidebarLayout"/>
 		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
@@ -36,6 +39,7 @@
    	
    	<definition name="wfs.description" extends=".mainLayout">
    		<put name="body" value="wfs.description.tabLayout"/>
+		<put name="title" value="&lt;bean:message key='label.wfsConfig'/&gt;"/>
    	</definition>
    	
    	<definition name="wfs.description.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
