@@ -5,11 +5,8 @@
 package org.vfny.geoserver.global;
 
 import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.AttributeTypeMetaData;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureTypeMetaData;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -36,10 +33,9 @@ import java.util.Map;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.40 2004/06/12 12:18:18 groldan Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
  */
-public class FeatureTypeInfo extends GlobalLayerSupertype
-    implements FeatureTypeMetaData {
+public class FeatureTypeInfo extends GlobalLayerSupertype {
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
     /**
@@ -811,8 +807,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      *
      * @see org.geotools.data.FeatureTypeMetaData#getDataStoreMetaData()
      */
-    public DataStoreMetaData getDataStoreMetaData() {
-        return (DataStoreMetaData) data.getDataStoreInfo(dataStoreId);
+    public DataStoreInfo getDataStoreMetaData() {
+        return data.getDataStoreInfo(dataStoreId);
     }
 
     /**
@@ -888,7 +884,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      *
      * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
      */
-    public synchronized AttributeTypeMetaData AttributeTypeMetaData(
+    public synchronized AttributeTypeInfo AttributeTypeMetaData(
         String attributeName) {
         AttributeTypeInfo info = null;
 
