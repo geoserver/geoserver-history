@@ -18,10 +18,28 @@ import javax.servlet.http.*;
 
 
 /**
- * DOCUMENT ME!
+ * Represents a service that all others extend from.  Subclasses should provide
+ * response and exception handlers as appropriate.
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @author Chris Holmes
+ * @version $Id: AbstractService.java,v 1.1.2.2 2003/11/07 23:02:51 cholmesny Exp $
+ *
+ * @task TODO: I changed this so it automatically buffers responses, so  as to
+ *       better handle errors, not serving up nasty servlet errors if
+ *       something goes wrong during the transforms.  This obviously slows
+ *       things down and is not scalable.  First we should make it user
+ *       configurable.   This will allow users to say if they want things
+ *       absolutely complaint (returning errors other than the proper xml
+ *       ServiceExceptions is required by the spec, but if we hit an error
+ *       while writing to out we've already started writing.  Though perhaps
+ *       there's some way to access what is actually written?  I mean the
+ *       servlet container does it...), or if they want more performance at
+ *       the expense of being absolutely compliant.  This ideally should
+ *       happen very rarely, as the execute method should take care of most of
+ *       the errors that may arise, but it's still going to happen, since for
+ *       GetFeature we definitely do a good amount of working during the
+ *       transform.
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -106,10 +124,6 @@ public abstract class AbstractService extends HttpServlet {
             String contentType = serviceResponse.getContentType();
             response.setContentType(contentType);
 
-            OutputStream out = response.getOutputStream();
-
-            out = new BufferedOutputStream(out, 2 * 1024 * 1024);
-
             /*
                boolean gzipIt = requestSupportsGzip(request);
                if (gzipIt)
@@ -119,7 +133,15 @@ public abstract class AbstractService extends HttpServlet {
                    out = new GZIPOutputStream(out, 2048);
                }
              */
-            serviceResponse.writeTo(out);
+
+            //TODO: make this user configurable.  For now it's better 
+            //to pick up errors correctly, as we've got quite a few of them.
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            OutputStream out = response.getOutputStream();
+            out = new BufferedOutputStream(out, 2 * 1024 * 1024);
+            serviceResponse.writeTo(buffer);
+            buffer.writeTo(out);
+            out.flush();
         } catch (Throwable e) {
             sendError(response, e);
         }
@@ -191,12 +213,16 @@ public abstract class AbstractService extends HttpServlet {
      */
     protected void sendError(HttpServletResponse response, Throwable t) {
         LOGGER.info("Had an undefined error: " + t.getMessage());
+
+        //TODO: put the stack trace in the logger.
         t.printStackTrace();
 
+        String pre = "UNCAUGHT EXCEPTION";
         ExceptionHandler exHandler = getExceptionHandler();
-        ServiceException se = exHandler.newServiceException(t,
-                "UNCAUGHT EXCEPTION", null);
-        sendError(response, se);
+        ServiceException se = exHandler.newServiceException(t, pre, null);
+
+        //sendError(response, se);
+        send(response, se.getXmlResponse(true));
     }
 
     /**
