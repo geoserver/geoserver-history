@@ -4,10 +4,12 @@
  */
 package org.geotools.validation.xml;
 
+import org.vfny.geoserver.global.ConfigurationException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -20,9 +22,12 @@ import java.util.Map;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterUtils.java,v 1.6 2004/01/21 21:51:45 dmzwiers Exp $
+ * @version $Id: WriterUtils.java,v 1.7 2004/01/31 00:24:06 jive Exp $
  */
 class WriterUtils {
+    /** Used internally to create log information to detect errors. */
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.global");
 
     /** The output writer. */
     protected Writer writer;
@@ -47,6 +52,7 @@ class WriterUtils {
      * @param writer the writer which will be used for outputing the xml.
      */
     public WriterUtils(Writer writer) {
+        LOGGER.fine("In constructor WriterHelper");
         this.writer = writer;
     }
 
@@ -59,14 +65,14 @@ class WriterUtils {
      *
      * @param s The String to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
-    public void write(String s) throws ValidationException {
+    public void write(String s) throws ConfigurationException {
         try {
             writer.write(s);
             writer.flush();
         } catch (IOException e) {
-            throw new ValidationException("Write" + writer, e);
+            throw new ConfigurationException("Write" + writer, e);
         }
     }
 
@@ -79,14 +85,14 @@ class WriterUtils {
      *
      * @param s The String to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
-    public void writeln(String s) throws ValidationException {
+    public void writeln(String s) throws ConfigurationException {
         try {
             writer.write(s + "\n");
             writer.flush();
         } catch (IOException e) {
-            throw new ValidationException("Writeln" + writer, e);
+            throw new ConfigurationException("Writeln" + writer, e);
         }
     }
 
@@ -100,9 +106,9 @@ class WriterUtils {
      *
      * @param tagName The tag name to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
-    public void openTag(String tagName) throws ValidationException {
+    public void openTag(String tagName) throws ConfigurationException {
         writeln("<" + tagName + ">");
     }
 
@@ -117,10 +123,10 @@ class WriterUtils {
      * @param tagName The tag name to write.
      * @param attributes The tag attributes to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     public void openTag(String tagName, Map attributes)
-        throws ValidationException {
+        throws ConfigurationException {
         write("<" + tagName + " ");
 
         Iterator i = attributes.keySet().iterator();
@@ -143,9 +149,9 @@ class WriterUtils {
      *
      * @param tagName The tag name to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
-    public void closeTag(String tagName) throws ValidationException {
+    public void closeTag(String tagName) throws ConfigurationException {
         writeln("</" + tagName + ">");
     }
 
@@ -160,10 +166,10 @@ class WriterUtils {
      * @param tagName The tag name to write.
      * @param data The text data to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     public void textTag(String tagName, String data)
-        throws ValidationException {
+        throws ConfigurationException {
         writeln("<" + tagName + ">" + data + "</" + tagName + ">");
     }
 
@@ -178,10 +184,10 @@ class WriterUtils {
      * @param tagName The tag name to write.
      * @param value The text data to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     public void valueTag(String tagName, String value)
-        throws ValidationException {
+        throws ConfigurationException {
         writeln("<" + tagName + " value = \"" + value + "\" />");
     }
 
@@ -196,10 +202,10 @@ class WriterUtils {
      * @param tagName The tag name to write.
      * @param attributes The tag attributes to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     public void attrTag(String tagName, Map attributes)
-        throws ValidationException {
+        throws ConfigurationException {
         write("<" + tagName + " ");
 
         Iterator i = attributes.keySet().iterator();
@@ -224,10 +230,10 @@ class WriterUtils {
      * @param attributes The tag attributes to write.
      * @param data The tag text to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     public void textTag(String tagName, Map attributes, String data)
-        throws ValidationException {
+        throws ConfigurationException {
         write("<" + tagName + " ");
 
         Iterator i = attributes.keySet().iterator();
@@ -250,9 +256,9 @@ class WriterUtils {
      *
      * @param comment The comment text to write.
      *
-     * @throws ValidationException When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
-    public void comment(String comment) throws ValidationException {
+    public void comment(String comment) throws ConfigurationException {
         writeln("<!--");
         writeln(comment);
         writeln("-->");

@@ -9,8 +9,13 @@ import org.geotools.feature.Feature;
 
 /**
  * Collates results of validation operations.
- *
- * @author jgarnett
+ * <p>
+ * Following the lead the excelent design work in the JUnit testing framework
+ * validation results are collected by a ValidationResults object. This
+ * interface for the ValidationResults object also allows it to collect
+ * warning information.
+ * </p>
+ * @author Jody Garnett, Refractions Research, Inc
  */
 public interface ValidationResults {
     /**

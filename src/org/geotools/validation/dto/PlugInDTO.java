@@ -23,8 +23,8 @@ import java.util.Map;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: PlugInDTO.java,v 1.5 2004/01/22 23:22:47 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: PlugInDTO.java,v 1.6 2004/01/31 00:24:08 jive Exp $
  */
 public class PlugInDTO {
     /** the plug-in name */
@@ -40,17 +40,16 @@ public class PlugInDTO {
     private Map args;
 
     /**
-     * PlugInConfig constructor.
+     * PlugInDTO constructor.
      * 
      * <p>
      * Does nothing.
      * </p>
      */
-    public PlugInDTO() {
-    }
+    public PlugInDTO() {}
 
     /**
-     * PlugInConfig constructor.
+     * PlugInDTO constructor.
      * 
      * <p>
      * Creates a copy of the DTO passed in in this object.
@@ -71,7 +70,7 @@ public class PlugInDTO {
                 String key = (String) i.next();
 
                 //TODO clone value.
-                args.put(key, pi.getArgs().get(key));
+                args.put(key, new ArgumentDTO((ArgumentDTO)pi.getArgs().get(key)));
             }
         }
     }

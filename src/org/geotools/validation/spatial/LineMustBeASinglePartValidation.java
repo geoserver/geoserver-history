@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.validation.FeatureValidation;
+import org.geotools.validation.DefaultFeatureValidation;
 import org.geotools.validation.ValidationResults;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -34,19 +34,13 @@ import com.vividsolutions.jts.geom.LineString;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: LineIsSingleSegmentFeatureValidation.java,v 1.5 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: LineMustBeASinglePartValidation.java,v 1.1 2004/01/31 00:24:05 jive Exp $
  */
-public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
+public class LineMustBeASinglePartValidation extends DefaultFeatureValidation {
     /** The logger for the validation module. */
     private static final Logger LOGGER = Logger.getLogger(
             "org.geotools.validation");
             
-	private String name;				// name of the validation
-	private String description;			// description of the validation
-	private String[] typeNames;			// the TypeNames that this validation
-										//   is performed on.
-	
-
 	/**
 	 * LineIsSingleSegmentFeatureValidation constructor.
 	 * <p>
@@ -54,75 +48,7 @@ public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
 	 * </p>
 	 * 
 	 */
-	public LineIsSingleSegmentFeatureValidation() {
-	}
-	
-	/**
-	 * LineIsSingleSegmentFeatureValidation constructor.
-	 * <p>
-	 * Initializes allinformation needed to perform the validation.
-	 * </p>
-	 * @param name The name of the validation
-	 * @param description The description of this validation.
-	 * @param typeNames The TypeNames that this validation is tested on.
-	 */
-	public LineIsSingleSegmentFeatureValidation(String name, String description, String[] typeNames) {
-		this.name = name;
-		this.description = description;
-		this.typeNames = typeNames;
-	}
-
-	/**
-	 * Override setName.
-	 * <p>
-	 * Sets the name of this validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#setName(java.lang.String)
-	 * 
-	 * @param name The name of this validation.
-	 * @return returns the name of this validation.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Override getName.
-	 * <p>
-	 * Returns the name of this particular validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#getName()
-	 * 
-	 * @return The name of this particular validation.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Override setDescription.
-	 * <p>
-	 * Sets the description of this validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#setDescription(java.lang.String)
-	 * 
-	 * @param description The description of the validation.
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * Override getDescription.
-	 * <p>
-	 * Returns the description of this validation as a string.
-	 * </p>
-	 * @see org.geotools.validation.Validation#getDescription()
-	 * 
-	 * @return The description of this validation.
-	 */
-	public String getDescription() {
-		return description;
+	public LineMustBeASinglePartValidation() {
 	}
 
 	/**
@@ -137,34 +63,6 @@ public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
 	public int getPriority() {
 		return 10;
 	}
-
-	/**
-	 * Override setTypeNames.
-	 * <p>
-	 * Sets the TypeNames of the FeatureTypes used in this particular validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#setTypeNames(java.lang.String[])
-	 * 
-	 * @param names The TypeNames of the FeatureTypes used in this particular validation.
-	 */
-	public void setTypeNames(String[] names) {
-		this.typeNames = names;
-	}
-
-	/**
-	 * Override getTypeNames.
-	 * <p>
-	 * Returns the TypeNames of the FeatureTypes used in this particular validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#getTypeNames()
-	 * 
-	 * @return An array of TypeNames
-	 */
-	public String[] getTypeNames() {
-		return typeNames;
-	}
-	
-
 
 	/**
 	 * Override validate.

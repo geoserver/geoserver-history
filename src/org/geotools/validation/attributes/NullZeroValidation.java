@@ -34,14 +34,17 @@ import org.geotools.validation.ValidationResults;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: NullZeroFeatureValidation.java,v 1.4 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: NullZeroValidation.java,v 1.1 2004/01/31 00:24:07 jive Exp $
  */
-public class NullZeroFeatureValidation implements FeatureValidation {
-    private String path;
+public class NullZeroValidation implements FeatureValidation {
+    private String attributeName;
     private String name = "";
     private String description = "";
-    private String[] typeNames;
+    
+    private String typeRef;
 
+    public NullZeroValidation(){super();}
+    
     /**
      * Implement validate.
      * 
@@ -63,10 +66,10 @@ public class NullZeroFeatureValidation implements FeatureValidation {
      */
     public boolean validate(Feature feature, FeatureType type,
         ValidationResults results) throws Exception {
-        Object ft = feature.getAttribute(path);
+        Object ft = feature.getAttribute(attributeName);
 
         if (ft == null) {
-            results.error(feature, path + " is Empty");
+            results.error(feature, attributeName + " is Empty");
 
             return false;
         }
@@ -75,7 +78,7 @@ public class NullZeroFeatureValidation implements FeatureValidation {
             Number nb = (Number) ft;
 
             if (nb.intValue() == 0) {
-                results.error(feature, path + " is Zero");
+                results.error(feature, attributeName + " is Zero");
 
                 return false;
             }
@@ -136,43 +139,53 @@ public class NullZeroFeatureValidation implements FeatureValidation {
     }
 
     /**
-     * Implement setTypeNames.
+     * Implementation of getTypeNames.
      *
-     * @see org.geotools.validation.Validation#setTypeNames(java.lang.String[])
+     * @return Array of typeNames, or empty array for all, null for disabled
+     *
+     * @see org.geotools.validation.Validation#getTypeRefs()
      */
-    public void setTypeNames(String[] names) {
-        typeNames = names;
+    public String[] getTypeRefs() {
+        if( typeRef == null ){
+            return null;
+        }
+        if( typeRef.equals("*")){
+            return ALL;
+        }
+        return new String[]{ typeRef, };
     }
 
     /**
-     * Implement getTypeNames.
+     * Access typeName property.
      *
-     * @see org.geotools.validation.Validation#getTypeNames()
+     * @return Returns the typeName.
      */
-    public String[] getTypeNames() {
-        return typeNames;
+    public String getTypeRef() {
+        return typeRef;
     }
 
     /**
-     * getPath purpose.
+     * Set typeName to typeName.
+     *
+     * @param typeName The typeName to set.
+     */
+    public void setTypeRef(String typeName) {
+        this.typeRef = typeName;
+    }
+    
+    /**
+     * Access attributeName property.
      *
      * @return the path being stored for validation
      */
-    public String getPath() {
-        return path;
+    public String getAttributeName() {
+        return attributeName;
     }
 
     /**
-     * setPath purpose.
-     *
-     * @param string the path which would be used if the validation method was
-     *        executed.
-     *
-     * @see org.geotools.validation.NullZeroFeatureValidation#validate(org.geotools.feature.Feature,
-     *      org.geotools.feature.FeatureType,
-     *      org.geotools.validation.ValidationResults)
-     */
-    public void setPath(String string) {
-        path = string;
+     * set AttributeName to name. 
+     * @param name
+     */public void setAttributeName(String name) {
+        attributeName = name;
     }
 }

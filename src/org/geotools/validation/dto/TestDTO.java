@@ -23,8 +23,8 @@ import java.util.Map;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestDTO.java,v 1.6 2004/01/22 23:22:49 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: TestDTO.java,v 1.7 2004/01/31 00:24:08 jive Exp $
  */
 public class TestDTO {
     /** the test name */
@@ -52,8 +52,7 @@ public class TestDTO {
      * Does nothing
      * </p>
      */
-    public TestDTO() {
-    }
+    public TestDTO() {}
 
     /**
      * TestConfig constructor.
@@ -77,7 +76,7 @@ public class TestDTO {
                 String key = (String) i.next();
 
                 //TODO clone value.
-                args.put(key, t.getArgs().get(key));
+                args.put(key, new ArgumentDTO((ArgumentDTO)t.getArgs().get(key)));
             }
         }
     }
