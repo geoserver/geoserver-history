@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<metadata>
+<idinfo>
+<citation>
+<citeinfo>
+<origin>The Open Planning Project</origin>
+<pubdate>20030103</pubdate>
+<title>SAMPLE_METADATA_RAIL</title>
+<edition>1</edition>
+<geoform>Web Feature Server</geoform>
+<onlink>The Open Planning Project:&lt;URL:http://www.openplans.org&gt;</onlink>
+<onlink>GeoServer:&lt;URL:http://geoserver.sourceforge.net/&gt;</onlink>
+<onlink>The Federal Geographic Data Committee:&lt;URL:http://www.fgdc.gov/&gt;</onlink>
+</citeinfo>
+</citation>
+<descript>
+<abstract>
+This is just some sample FGDC metadata, that the zserver module can use
+to analyze and return to z39.50 clients.
+</abstract>
+<purpose>
+To show what FGDC metadata might look like.  For more information on metadata
+check out the FGDC home page.  Just filling in this document with appropriate
+values is not enough, the mp tool must be used to generate the .xml and .html
+files for zserver to work correctly.  And there are more metadata fields which
+might be of use.
+</purpose>
+</descript>
+<timeperd>
+<timeinfo>
+<rngdates>
+<begdate>2001</begdate>
+<enddate>20030123</enddate>
+</rngdates>
+</timeinfo>
+</timeperd>
+<status>
+<progress>Complete</progress>
+<update>Present -002 days, Continually, new data every 30 minutes, Time_Increment=0000000000.5</update>
+</status>
+<spdom>
+<bounding>
+<westbc>-180.0</westbc>
+<eastbc>-100.0</eastbc>
+<northbc>50.0</northbc>
+<southbc>0.0</southbc>
+</bounding>
+</spdom>
+<keywords>
+<theme>
+<themekt>None</themekt>
+<themekey>Rail</themekey>
+<themekey>Planning</themekey>
+<themekey>Sample</themekey>
+</theme>
+<place>
+<placekt>None</placekt>
+<placekey>Continental United States</placekey>
+<placekey>New York City</placekey>
+<placekey>North America</placekey>
+</place>
+<temporal>
+<tempkt>None</tempkt>
+<tempkey>Current</tempkey>
+</temporal>
+</keywords>
+<accconst>None</accconst>
+<useconst>None</useconst>
+<ptcontac>
+<cntinfo>
+<cntorgp>
+<cntorg>The Open Planning Project</cntorg>
+<cntper>Cholmesy</cntper>
+</cntorgp>
+<cntpos></cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>377 Broadway</address>
+<city>New York</city>
+<state>NY</state>
+<postal>10013</postal>
+<country>US</country>
+</cntaddr>
+<cntvoice></cntvoice>
+<cntfax></cntfax>
+<cntemail></cntemail>
+</cntinfo>
+</ptcontac>
+<secinfo>
+<secsys>Department of Defense Trusted Computer Systems Evaluation Criteria CSC-STD-001-83</secsys>
+<secclass>Unclassified</secclass>
+<sechandl></sechandl>
+</secinfo>
+</idinfo>
+<dataqual>
+<attracc>
+<attraccr></attraccr>
+</attracc>
+<logic></logic>
+<complete></complete>
+<lineage>
+<procstep>
+<procdesc></procdesc>
+<procdate></procdate>
+</procstep>
+</lineage>
+</dataqual>
+<spdoinfo>
+<indspref>Continental U.S.</indspref>
+<direct>Raster</direct>
+<rastinfo>
+<rasttype>Grid Cell</rasttype>
+<rowcount>512</rowcount>
+<colcount>768</colcount>
+<vrtcount></vrtcount>
+</rastinfo>
+</spdoinfo>
+<spref>
+<horizsys>
+<planar>
+<mapproj>
+<mapprojn>Lambert Conformal Conic</mapprojn>
+<lambertc>
+<stdparll>20.0</stdparll>
+<stdparll>40.0</stdparll>
+<longcm>-140.0</longcm>
+<latprjo>30.0</latprjo>
+<feast>0.0</feast>
+<fnorth>0.0</fnorth>
+</lambertc>
+</mapproj>
+<planci>
+<plance>row and column</plance>
+<coordrep>
+<absres>11.96</absres>
+<ordres>11.96</ordres>
+</coordrep>
+<plandu>kilometers</plandu>
+</planci>
+</planar>
+</horizsys>
+</spref>
+<distinfo>
+<distrib>
+<cntinfo>
+<cntorgp>
+<cntorg>Naval Research Laboratory</cntorg>
+<cntper>Naim Alper</cntper>
+</cntorgp>
+<cntpos>NEONS Database Administrator</cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>7 Grace Hopper Rd.</address>
+<city>Monterey</city>
+<state>CA</state>
+<postal>93943-5006</postal>
+<country>US</country>
+</cntaddr>
+<cntvoice>(408) 656-4702</cntvoice>
+<cntfax>(408) 656-4769</cntfax>
+<cntemail>alper@nrlmry.navy.mil</cntemail>
+<hours>0800 - 1700 PST Monday - Friday</hours>
+</cntinfo>
+</distrib>
+<resdesc></resdesc>
+<distliab></distliab>
+</distinfo>
+<metainfo>
+<metd>19960104</metd>
+<metc>
+<cntinfo>
+<cntorgp>
+<cntorg>Naval Research Laboratory</cntorg>
+</cntorgp>
+<cntpos>MEL regional site admin</cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>377 Broadway</address>
+<city>New York</city>
+<state>NY</state>
+<postal>10013</postal>
+<country>US</country>
+</cntaddr>
+<cntvoice>(999) 343-3942</cntvoice>
+<cntfax>(408) 652-4769</cntfax>
+<cntemail>alper@nrlmry.navy.mil</cntemail>
+</cntinfo>
+</metc>
+<metstdn>FGDC - Content Standards for Digital Geospatial Metadata</metstdn>
+<metstdv>FGDC-STD-001-1998</metstdv>
+<mettc>universal time</mettc>
+</metainfo>
+</metadata>
