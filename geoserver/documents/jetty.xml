@@ -19,7 +19,7 @@
   <Call name="addListener">
     <Arg>
       <New class="org.mortbay.http.SocketListener">
-        <Set name="Port"><SystemProperty name="jetty.port" default="8080"/></Set>
+        <Set name="Port"><SystemProperty name="GEOSERVER_PORT" default="8001"/></Set>
         <Set name="MinThreads">5</Set>
         <Set name="MaxThreads">50</Set>
         <Set name="MaxIdleTimeMs">30000</Set>
@@ -58,20 +58,6 @@
 
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-  <!-- Add a all web application within the webapps directory.         -->
-  <!-- + No virtual host specified                                     -->
-  <!-- + Look in the webapps directory relative to jetty.home or .     -->
-  <!-- + Use the webdefault.xml resource for the defaults descriptor   -->
-  <!-- + Upack the war file                                            -->
-  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-  <!--Set name="rootWebApp">root</Set>
-  <Call name="addWebApplications">
-    <Arg></Arg>
-    <Arg>./server</Arg>
-  </Call-->
-
-
-  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <!-- Add and configure a specific web application                    -->
   <!-- + Set Unpack WAR files                                          -->
   <!-- + Set Default Descriptor.  Resource, file or URL                -->
@@ -80,20 +66,20 @@
   <!-- UNCOMMENT TO ACTIVATE-->
   <Call name="addWebApplication">
     <Arg>/geoserver</Arg>
-    <Arg>./server/geoserver</Arg>
+    <Arg><SystemProperty name="jetty.home" default="."/>/server/geoserver</Arg>
 
     <Set name="extractWAR">false</Set> 
 
     <Set name="defaultsDescriptor">org/mortbay/jetty/servlet/webdefault.xml</Set>
 
-    <Set name="virtualHosts">
+    <!--Set name="virtualHosts">
       <Array type="java.lang.String">
         <Item></Item>
         <Item>127.0.0.1</Item>
         <Item>localhost</Item>
         <Item>www.acme.com</Item>
       </Array>
-    </Set>
+    </Set-->
   </Call>
   
 
