@@ -147,8 +147,8 @@ public abstract class AbstractService extends HttpServlet {
         super.init(config);
         LOGGER.info("Looking for configured service responses' strategy");
 
-        ServletContext context = config.getServletContext();
-        String stgyKey = context.getInitParameter("serviceStratagy");
+        ServletContext servContext = config.getServletContext();
+        String stgyKey = servContext.getInitParameter("serviceStratagy");
         Class stgyClass = BufferStrategy.class;
 	
         if (stgyKey == null) {
@@ -575,8 +575,8 @@ public abstract class AbstractService extends HttpServlet {
      */
     protected AbstractService.ServiceStrategy getServiceStrategy()
         throws ServiceException {
-	ServletContext context = getServletContext();
-        GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+	ServletContext servContext = getServletContext();
+        GeoServer geoServer = (GeoServer) servContext.getAttribute(GeoServer.WEB_CONTAINER_KEY);
         //If verbose exceptions is on then lets make sure they actually get the
         //exception by using the file strategy.
         if (geoServer.isVerboseExceptions()) {
@@ -592,10 +592,10 @@ public abstract class AbstractService extends HttpServlet {
      * @return DOCUMENT ME!
      */
     protected String getMimeType() {
-        ServletContext context = getServletContext();
+        ServletContext servContext = getServletContext();
 
         try {
-            return ((GeoServer) context.getAttribute("GeoServer")).getMimeType();
+            return ((GeoServer) servContext.getAttribute("GeoServer")).getMimeType();
         } catch (NullPointerException e) {
             return "text/xml; charset="
             + Charset.forName("UTF-8").displayName();
@@ -688,9 +688,9 @@ public abstract class AbstractService extends HttpServlet {
         }
 
         OutputStream out = new BufferedOutputStream(responseOut);
-        ServletContext context = getServletContext();
+        ServletContext servContext = getServletContext();
         response.setContentType(result.getContentType(
-                (GeoServer) context.getAttribute("GeoServer")));
+                (GeoServer) servContext.getAttribute("GeoServer")));
 
         try {
             result.writeTo(out);
