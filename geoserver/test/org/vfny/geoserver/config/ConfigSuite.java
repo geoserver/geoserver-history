@@ -92,31 +92,6 @@ public class ConfigSuite extends TestCase {
     }
 
 
-    /*public void test2() throws Exception {        
-        LOGGER.fine("locked: " + repo.isLocked("roads"));
-        assertTrue(!repo.isLocked("roads"));
-        String key = repo.lock("roads");
-        LOGGER.fine("locked: " + repo.isLocked("roads"));
-        assertTrue(repo.isLocked("roads"));
-        boolean success = repo.unlock("roads", key);
-        LOGGER.fine("locked: " + repo.isLocked("roads"));
-        assertTrue(!repo.isLocked("roads"));
-	}*/
-
-    /* REVISIT: Can't seem to get JUnit to sleep correctly
-       right now.
-    public void testExpiry() throws Exception {
-	LOGGER.fine("locked: " + repo.isLocked("roads"));
-        assertTrue(!repo.isLocked("roads"));
-        String key = repo.lock("roads", 1);
-        LOGGER.fine("locked: " + repo.isLocked("roads"));
-        assertTrue(repo.isLocked("roads"));
-	//wait(61000);
-        boolean success = repo.unlock("roads", key);
-        LOGGER.fine("locked: " + repo.isLocked("roads"));
-        assertTrue(!repo.isLocked("roads"));
-	}*/
-
     public void testServiceConfig() throws Exception {
 	ServiceConfig config = 
 	    ServiceConfig.getInstance(CONFIG_DIR + "service-config1.xml");
@@ -199,6 +174,27 @@ public class ConfigSuite extends TestCase {
 	assertEquals(config.getDefaultNSPrefix(), WfsConfig.DEFAULT_PREFIX);
 	assertEquals(TEST_URI, config.getNSUri("rail"));
 	
+    }
+
+    public void testZConfig() throws Exception {
+	ZServerConfig zConfig = 
+	    ZServerConfig.getInstance(CONFIG_DIR + "configuration.xml");
+	LOGGER.fine("run z= " + zConfig.run() + ", props is " + 
+		    zConfig.getProps());
+
+	assertTrue(zConfig.run());
+	assertEquals("3210", zConfig.getProps().getProperty("port"));
+    }
+	
+    public void testAdvanced() throws Exception {
+	LOGGER.fine("max features is " + config.getMaxFeatures());
+	LOGGER.fine("log level is " + config.getLogLevel());
+	LOGGER.fine("prefix delimiter is " + config.getFilePrefixDelimiter());
+	LOGGER.fine("format output is " + config.formatOutput());
+	assertEquals(455, config.getMaxFeatures());
+	assertEquals(Level.FINE, config.getLogLevel());
+	assertEquals(":", config.getFilePrefixDelimiter());
+	assertTrue(config.formatOutput());
     }
 
 }
