@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # Start Script for GEOSERVER
 #
-# $Id: startup.sh,v 1.3 2003/01/21 23:55:35 cholmesny Exp $
+# $Id: startup.sh,v 1.4 2003/09/19 15:10:30 cholmesny Exp $
 # -----------------------------------------------------------------------------
 
 # Make sure prerequisite environment variables are set
@@ -58,10 +58,14 @@ GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/embedded.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/geotools.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/a2jruntime.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/jdbcPostgres.jar
-GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/jts-1.0.0.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/JTS-1.3.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/xalan.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/xerces.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/lucene.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/castor.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/a2jruntime.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/ki-jzkit-iface.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/ki-jzkit-z3950.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/ki-util.jar
 
 exec "$_RUNJAVA" -classpath "$GEOSERVER_PATH" org.vfny.geoserver.EmbeddedTomcat "start" &
