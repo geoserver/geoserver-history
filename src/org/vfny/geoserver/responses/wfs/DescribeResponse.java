@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.6 2004/01/15 01:09:52 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.7 2004/01/15 21:53:07 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -92,7 +92,9 @@ public class DescribeResponse implements Response {
 
         // generates response, using general function
         xmlResponse = generateTypes(wfsRequest);
-
+//System.out.println("***** response *****");
+//System.out.println(xmlResponse);
+//System.out.println("***** end *****");
         if (!request.getGeoServer().isVerbose()) {
             //strip out the formatting.  This is pretty much the only way we
             //can do this, as the user files are going to have newline
@@ -102,6 +104,9 @@ public class DescribeResponse implements Response {
             xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
+//System.out.println("***** response *****");
+//System.out.println(xmlResponse);
+//System.out.println("***** end *****");
     }
 
     /**
@@ -169,8 +174,9 @@ public class DescribeResponse implements Response {
 
             //String targetNs = nsInfoType.getXmlns();
             tempResponse.append(TARGETNS_PREFIX + targetNs + TARGETNS_SUFFIX);
-            tempResponse.append("\n  " + namespace); //xmlns:" + nsPrefix + "=\"" + targetNs
-
+            //namespace
+            tempResponse.append("\n  " + "xmlns:" + namespace.getPrefix() + "=\"" + targetNs + "\""); 
+            //xmlns:" + nsPrefix + "=\"" + targetNs
             //+ "\"");
             tempResponse.append(GML_NAMESPACE);
             tempResponse.append(XS_NAMESPACE);
@@ -300,12 +306,16 @@ public class DescribeResponse implements Response {
             }
 
             if (!validTypes.contains(meta)) {
-                FeatureType ft = meta.getSchema();
+                //FeatureType ft = meta.getSchema();
 
-                File inputFile = new File(currentFile);
-                FeatureType ft2 = meta.getSchema();
-System.out.println("DecribeResponse:generateSpecifiedTypes:"+ft2.getTypeName());
-                generatedType = generateFromSchema(ft2);
+                //File inputFile = new File(currentFile);
+                //FeatureType ft2 = meta.getSchema();
+                //generatedType = generateFromSchema(ft2);
+            	try{
+            		generatedType = meta.getXMLSchema();
+            	}catch(IOException e){
+            		generatedType = "";
+            	}
 
                 if (!generatedType.equals("")) {
                     tempResponse = tempResponse + generatedType;

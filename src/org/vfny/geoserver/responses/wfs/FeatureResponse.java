@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.7 2004/01/14 22:54:26 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.8 2004/01/15 21:53:07 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -321,7 +321,7 @@ public class FeatureResponse implements Response {
             System.setProperty("javax.xml.transform.TransformerFactory",
                 "org.apache.xalan.processor.TransformerFactoryImpl");
 
-            FeatureType schema = meta.getSchema();
+            //FeatureType schema = meta.getSchema();
             transformer.setIndentation(2);
 
             GeoServer config = request.getGeoServer();
@@ -400,7 +400,8 @@ public class FeatureResponse implements Response {
             LOGGER.finest("filter is " + query.getFilter());
 
             if (!query.allRequested()) {
-                AttributeType[] mandatoryProps = meta.getSchema()
+            	// was getSchema()
+                AttributeType[] mandatoryProps = meta.getFeatureType()
                                                      .getAttributeTypes();
 
                 for (int i = 0; i < mandatoryProps.length; i++) {

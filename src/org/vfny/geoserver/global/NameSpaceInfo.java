@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.3 2004/01/15 21:53:06 dmzwiers Exp $
  */
 public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMetaData{
     /**
@@ -319,4 +319,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
     public FeatureTypeMetaData getFeatureTypeMetaData(String typeName) {
         return data.getFeatureTypeInfo( typeName );
     }    
+    
+    public String toString(){
+    	return getPrefix()+":"+getUri();
+    }
 }

@@ -100,7 +100,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Chris Holmes
  * @author Jody Garnett
 =======
- * @version $Id: AbstractService.java,v 1.6 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.7 2004/01/15 21:53:07 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -551,6 +551,8 @@ System.out.println(this.getClass().getName() + ":" + request.getRequestURL().toS
 
         try {
             result.writeTo(out);
+            out.flush();
+            responseOut.flush();
         } catch (IOException ioe) {
             //user just closed the socket stream, do nothing
             LOGGER.fine("connection closed by user: " + ioe.getMessage());
@@ -759,7 +761,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

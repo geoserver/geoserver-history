@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.5 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: GetMapDelegate.java,v 1.6 2004/01/15 21:53:06 dmzwiers Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -145,7 +145,7 @@ public abstract class GetMapDelegate implements Response {
             Query layerQuery;
 
             for (int i = 0; i < nLayers; i++) {
-                FeatureType schema = layers[i].getSchema();
+                FeatureType schema = layers[i].getFeatureType();
 
                 if (numFilters == nLayers) {
                     customFilter = filters[i];
@@ -168,7 +168,7 @@ public abstract class GetMapDelegate implements Response {
             throw new WmsException(ex,
                 "Can't build layer queries: " + ex.getMessage(),
                 getClass().getName() + "::parseFilters");
-        }
+        }catch(java.io.IOException e){throw new WmsException(e);}
 
         return queries;
     }
@@ -254,8 +254,8 @@ public abstract class GetMapDelegate implements Response {
      *       in count too.
      */
     private String[] guessProperties(FeatureTypeInfo layer, Filter filter,
-        List attributes) {
-        FeatureType type = layer.getSchema();
+        List attributes) throws java.io.IOException{
+        FeatureType type = layer.getFeatureType();
         List atts = new ArrayList(attributes);
         String geom_name = type.getDefaultGeometry().getName();
 
