@@ -65,7 +65,7 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
-  <property name="test.type" value="PostGis"/>
+  <!--<property name="test.type" value="CitePostGis"/>-->
 
   <!-- paths -->
   <path id="path.lib">
@@ -399,9 +399,9 @@
 <!-- EXTERNAL TEST -->
 <!-- deploys application to test server -->
   <target name="test-ext" depends="init">
-    <antcall target="war">
-      <param name="conf.path" value="${basedir}/misc/cite/confCite${test.type}.zip"/>
-    </antcall>
+    <!-- only one of the two will execute -->
+    <antcall target="user_conf"/>
+    <antcall target="misc_conf"/>
   
     <!-- copy to test server -->
     <delete includeEmptyDirs="true" failonerror="false">
@@ -416,6 +416,33 @@
         <include name="geoserver.war"/>
       </fileset>
     </copy>
+  </target>
+  
+  <target name="misc_conf" depends="init" if="test.type">
+    <antcall target="war">
+      <param name="conf.path" value="${basedir}/misc/cite/conf${test.type}.zip"/>
+    </antcall>
+  </target>
+  
+  <target name="user_conf" depends="init" if="dir.conf" unless="test.type">
+    <mkdir dir="${basedir}/data"/>
+    <copy todir="${basedir}/data" >
+      <fileset dir="${dir.conf}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    <zip destfile="${basedir}/misc/cite/confUser.zip">
+      <fileset dir="${basedir}">
+	    <include name="data/**/*"/>
+	  </fileset>
+    </zip>
+    <delete dir="${basedir}/data" failonerror="false"/>
+    
+    <antcall target="war">
+      <param name="conf.path" value="${basedir}/misc/cite/confUser.zip"/>
+    </antcall>
+    
+    <delete file="${basedir}/misc/cite/confUser.zip" failonerror="false"/>
   </target>
 
 <!-- ====================================================================== -->
