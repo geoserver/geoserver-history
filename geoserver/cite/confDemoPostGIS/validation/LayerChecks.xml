@@ -12,11 +12,11 @@
 		<plugin>Line Not Entering Polygon</plugin>
 		<argument >
 			<name>lineTypeRef</name>
-			<string>roads:roads</string>
+			<string>geoserver-demo:roads</string>
 		</argument>
 		<argument >
 			<name>restrictedPolygonTypeRef</name>
-			<string>lakes:lakes</string>
+			<string>geoserver-demo:lakes</string>
 		</argument>
 	</test>
 	<test>
@@ -25,11 +25,11 @@
 		<plugin>Lines Node Intersect</plugin>
 		<argument >
 			<name>lineTypeRef</name>
-			<string>rivers:rivers</string>
+			<string>geoserver-demo:rivers</string>
 		</argument>
 		<argument >
 			<name>restrictedLineTypeRef</name>
-			<string>streams:streams</string>
+			<string>geoserver-demo:streams</string>
 		</argument>
 	</test>
 </suite>
