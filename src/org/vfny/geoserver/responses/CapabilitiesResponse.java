@@ -6,27 +6,28 @@ package org.vfny.geoserver.responses;
 
 import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.config.TypeInfo;
-import org.vfny.geoserver.config.VersionBean;
 import org.vfny.geoserver.config.TypeRepository;
+import org.vfny.geoserver.config.VersionBean;
 import org.vfny.geoserver.requests.CapabilitiesRequest;
 import java.io.IOException;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
+
+
 //import javax.servlet.*;
 //import javax.servlet.http.*;
 
-
 /**
- * Handles a GetCapabilities request and creates a GetCapabilities response
- * GML string. Therefore, the get response is assembled not as a monolithic
+ * Handles a GetCapabilities request and creates a GetCapabilities response GML
+ * string. Therefore, the get response is assembled not as a monolithic
  * document, which would be much neater, but as a series of subdocuments.
  * Also, I  have implemented some horrible hacks in the auto-generated code to
  * get it to work in places.  My advice: don't regenerate this code.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesResponse.java,v 1.19 2003/09/15 22:48:05 cholmesny Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.20 2003/09/17 02:36:08 cholmesny Exp $
  */
 public class CapabilitiesResponse {
     /** Standard logging instance for class */
@@ -62,7 +63,8 @@ public class CapabilitiesResponse {
         .getCapabilitiesDir() + "additionalCapabilities.xml";
     private static final String WFS_XMLNS_URL = "http://www.opengis.net/wfs";
     private static final String OGC_XMLNS_URL = "http://www.opengis.net/ogc";
-    private static final String CAP_LOC = "http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd";
+    private static final String CAP_LOC = config.getSchemaBaseUrl()
+        + "wfs/1.0.0/WFS-capabilities.xsd";
     private static final String SCHEMA_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
     /** Version of the response */

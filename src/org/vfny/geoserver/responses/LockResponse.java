@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * Handles a Lock request and creates a LockResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: LockResponse.java,v 1.9 2003/09/15 22:48:06 cholmesny Exp $
+ * @version $Id: LockResponse.java,v 1.10 2003/09/17 02:36:09 cholmesny Exp $
  */
 public class LockResponse {
     /** Standard logging instance for class */
@@ -139,8 +139,11 @@ public class LockResponse {
 
         returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
             + "XMLSchema-instance\" " + nl);
-        returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis"
-            + ".net/wfs ../wfs/1.0.0/WFS-transaction.xsd\">" + nl);
+        returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis");
+        returnXml.append(".net/wfs ");
+        returnXml.append(ConfigInfo.getInstance().getSchemaBaseUrl());
+        returnXml.append("wfs/1.0.0/WFS-transaction.xsd\">");
+        returnXml.append(nl);
         returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);
 
         if (!lockAll) {

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.18 2003/09/15 22:48:06 cholmesny Exp $
+ * @version $Id: DescribeResponse.java,v 1.19 2003/09/17 02:36:09 cholmesny Exp $
  */
 public class DescribeResponse {
     /** Standard logging instance for class */
@@ -41,16 +41,17 @@ public class DescribeResponse {
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema\"";
     private static final String XS_NAMESPACE = "\n  xmlns:xs=" + SCHEMA_URI;
-    private static final String GML_NAMESPACE = "\n  xmlns:gml=\"http://www.opengis.net/gml\"";
+    private static final String GML_URL = "\"http://www.opengis.net/gml\"";
+    private static final String GML_NAMESPACE = "\n  xmlns:gml=" + GML_URL;
     private static final String HEADER = config.getXmlHeader()
         + "\n<xs:schema ";
     private static final String ELEMENT_FORM_DEFAULT = "\n  elementFormDefault=\"qualified\"";
     private static final String ATTR_FORM_DEFAULT = "\n  attributeFormDefault=\"unqualified\" version=\"1.0\">";
     private static final String TARGETNS_PREFIX = "\n  targetNamespace=\"";
     private static final String TARGETNS_SUFFIX = "\" ";
-    private static final String GML_IMPORT =
-        "\n\n<xs:import namespace=\"http://www.opengis.net/gml\""
-        + " schemaLocation=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\"/>\n\n";
+    private static final String GML_IMPORT = "\n\n<xs:import namespace="
+        + GML_URL + " schemaLocation=\"" + config.getSchemaBaseUrl()
+        + "gml/2.1.2/feature.xsd\"/>\n\n";
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</xs:schema>";

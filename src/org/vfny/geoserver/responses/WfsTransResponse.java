@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.10 2003/09/15 22:48:06 cholmesny Exp $
+ * @version $Id: WfsTransResponse.java,v 1.11 2003/09/17 02:36:09 cholmesny Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
@@ -34,7 +34,9 @@ public class WfsTransResponse {
     /** Status if one of more operations failed */
     public static final short FAILED = 1;
 
-    /** Status for transaction partially succeeding, data in incosistent state. */
+    /**
+     * Status for transaction partially succeeding, data in incosistent state.
+     */
     public static final short PARTIAL = 2;
 
     /** The name of the root element of the xml document */
@@ -169,9 +171,12 @@ public class WfsTransResponse {
         //}
         retXml.append(indent
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-        retXml.append(indent
-            + "xsi:schemaLocation=\"http://www.opengis.net/wfs"
-            + " http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">");
+        retXml.append(indent);
+        retXml.append("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
+        retXml.append(ConfigInfo.getInstance().getSchemaBaseUrl());
+        retXml.append("wfs/1.0.0/WFS-transaction.xsd\">");
+
+        //  + " http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">");
         appendInsertResults(retXml);
         retXml.append(indent + "<wfs:TransactionResult");
 
