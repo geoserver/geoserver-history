@@ -16,7 +16,7 @@ import org.vfny.geoserver.global.Log4JFormatter;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.18 2004/04/05 11:52:37 cholmesny Exp $
+ * @version $Id: GeoServer.java,v 1.19 2004/04/07 13:35:34 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -432,7 +432,6 @@ public class GeoServer extends GlobalLayerSupertype {
         cdto.setContactPerson(contactPerson);
         cdto.setContactPosition(contactPosition);
         cdto.setContactVoice(contactVoice);
-
         return dto;
     }
 
@@ -482,4 +481,16 @@ public class GeoServer extends GlobalLayerSupertype {
 
         return null;
     }
+    
+	public String toString() {
+		StringBuffer geoserver = new StringBuffer("[GeoServer: \n");
+		geoserver.append("   maxFeatures - " + maxFeatures);
+		geoserver.append("\n   verbose - " + verbose);
+		geoserver.append("\n   numDecimals - " + numDecimals);
+		geoserver.append("\n   charSet - " + charSet);
+		geoserver.append("\n   loggingLevel - " + loggingLevel);
+		geoserver.append("\n   adminUserName - " + adminUserName);
+		geoserver.append("\n   adminPassword - " + adminPassword);
+		return geoserver.toString();
+	}
 }
