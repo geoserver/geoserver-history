@@ -46,7 +46,7 @@ import org.vfny.geoserver.config.StyleConfig;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: UserContainer.java,v 1.9 2004/02/28 07:45:14 jive Exp $
+ * @version $Id: UserContainer.java,v 1.10 2004/03/09 05:38:18 jive Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";
@@ -83,7 +83,7 @@ public class UserContainer implements HttpSessionBindingListener {
 
     /** Selected styleId */
     private StyleConfig style;
-    
+        
     /**
      * Selected FeatureType Config held in session for editing/creation.
      * 

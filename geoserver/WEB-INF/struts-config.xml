@@ -82,19 +82,8 @@
     		name="dataFeatureTypesNewForm"
     		type="org.vfny.geoserver.form.data.DataFeatureTypesNewForm"/>
     	<form-bean
-    		name="dataFeatureTypesEditorForm"
-    		type="org.vfny.geoserver.form.data.DataFeatureTypesEditorForm"/>
-
-    	<form-bean
-    		name="dataAttributeTypesSelectForm"
-    		type="org.vfny.geoserver.form.data.DataAttributeTypesSelectForm"/>
-    	<form-bean
-    		name="dataAttributeTypesNewForm"
-    		type="org.vfny.geoserver.form.data.DataAttributeTypesNewForm"/>
-    	<form-bean
-    		name="dataAttributeTypesEditorForm"
-    		type="org.vfny.geoserver.form.data.DataAttributeTypesEditorForm"/>    		
-    		
+    		name="typesEditorForm"
+    		type="org.vfny.geoserver.form.data.TypesEditorForm"/>
     	<form-bean
     		name="validationTestSuiteSelectForm"
     		type="org.vfny.geoserver.form.validation.ValidationTestSuiteSelectForm"/>
@@ -612,11 +601,11 @@
 		<!-- DATA FeatureType Actions -->
         <action
         	path="/config/data/featureTypeSubmit"
-        	type="org.vfny.geoserver.action.data.DataFeatureTypesEditorAction"
-        	name="dataFeatureTypesEditorForm"
+        	type="org.vfny.geoserver.action.data.TypesEditorAction"
+        	name="typesEditorForm"
         	scope="request"
         	validate="true"
-        	input="config/data/featureType"/>        	        	
+        	input="config/data/featureType"/>
         <action
         	path="/config/data/featureTypeSelect"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesSelectAction"
@@ -632,27 +621,7 @@
         	validate="true"
         	input="config/data/featureType"/>   
         	       	
-        <action
-        	path="/config/data/attributeTypeSelect"
-        	type="org.vfny.geoserver.action.data.DataAttributeTypesSelectAction"
-        	name="dataAttributeTypesSelectForm"
-        	scope="request"
-        	validate="true"
-        	input="config/data/featureType"/>   
-        <action
-        	path="/config/data/attributeTypesNew"
-        	type="org.vfny.geoserver.action.data.DataAttributeTypesNewAction"
-        	name="dataAttributeTypesNewForm"
-        	scope="request"
-        	validate="true"
-        	input="config/data/featureType"/>
-        <action
-        	path="/config/data/attributeTypeSubmit"
-        	type="org.vfny.geoserver.action.data.DataAttributeTypesEditorAction"
-        	name="dataAttributeTypesEditorForm"
-        	scope="request"
-        	validate="true"
-        	input="config/data/featureType"/>
+		 <!-- DATA Validation -->
  
          <action
         	path="/config/validation/testSuiteSelect"

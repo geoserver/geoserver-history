@@ -42,8 +42,8 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
 
         DataConfig dataConfig = (DataConfig) getServlet().getServletContext()
                                                  .getAttribute(DataConfig.CONFIG_KEY);
+        
         FeatureTypeConfig ftConfig = dataConfig.getFeatureTypeConfig(selectedFeatureType);
-
         request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
         
         Locale locale = (Locale) request.getLocale();
@@ -54,7 +54,8 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
         if (edit.equals(buttonAction)) {
             request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE,
                 ftConfig);
-
+            
+            user.setFeatureTypeConfig( ftConfig );                       
             return mapping.findForward("config.data.type.editor");
         } else if (delete.equals(buttonAction)) {
             dataConfig.removeFeatureType(selectedFeatureType);

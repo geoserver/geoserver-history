@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * User interface FeatureType staging area.
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.18 2004/03/02 10:07:33 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.19 2004/03/09 05:38:19 jive Exp $
  */
 public class FeatureTypeConfig {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -240,7 +240,8 @@ public class FeatureTypeConfig {
         defaultStyle = dto.getDefaultStyle();
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
-        schemaBase = dto.getSchemaBase();
+        schemaBase = dto.getSchemaBase() != null ?
+                     dto.getSchemaBase() : "AbstractFeatureType";        
     }
 
     /**

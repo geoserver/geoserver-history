@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author rgould To change the template for this generated type comment go to
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataFeatureTypesEditorAction extends ConfigAction {
+public class TypesEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
@@ -58,7 +58,8 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
         }
 
         DataConfig dataConfig = (DataConfig) getDataConfig();
-        FeatureTypeConfig config = dataConfig.getFeatureTypeConfig(name); //TODO - RETRIEVE featuretype config		
+        FeatureTypeConfig config = dataConfig.getFeatureTypeConfig(name);
+        //TODO - RETRIEVE featuretype config		
 
         config.setAbstract(_abstract);
         config.setName(name);
