@@ -5,7 +5,7 @@
 <citeinfo>
 <origin>The Open Planning Project</origin>
 <pubdate>20030103</pubdate>
-<title>SAMPLE_METADATA_RAIL</title>
+<title>NYC Rail Centerlines</title>
 <edition>1</edition>
 <geoform>Web Feature Server</geoform>
 <onlink>The Open Planning Project:&lt;URL:http://www.openplans.org&gt;</onlink>
@@ -14,10 +14,7 @@
 </citeinfo>
 </citation>
 <descript>
-<abstract>
-This is just some sample FGDC metadata, that the zserver module can use
-to analyze and return to z39.50 clients.
-</abstract>
+<abstract>This is a simple rail coverage from the New York City basemap.</abstract>
 <purpose>
 To show what FGDC metadata might look like.  For more information on metadata
 check out the FGDC home page.  Just filling in this document with appropriate
@@ -40,10 +37,10 @@ might be of use.
 </status>
 <spdom>
 <bounding>
-<westbc>-180.0</westbc>
-<eastbc>-100.0</eastbc>
-<northbc>50.0</northbc>
-<southbc>0.0</southbc>
+<westbc>-74.27</westbc>
+<eastbc>-40.50</eastbc>
+<northbc>-73.80</northbc>
+<southbc>40.94</southbc>
 </bounding>
 </spdom>
 <keywords>
