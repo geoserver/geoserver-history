@@ -50,7 +50,7 @@ public class FreefsLog extends HttpServlet {
      *
      */ 
     public void init() {
-	Geotools.init("Log4JFormatter", Level.INFO);
+	Geotools.init("Log4JFormatter", Level.FINEST);
 	String root = this.getServletContext().getRealPath("/");
 	String path = root + CONFIG_DIR;
 	LOG.finest("init with path" + path);
@@ -82,7 +82,7 @@ public class FreefsLog extends HttpServlet {
     
     public void destroy() {
 	LOGGER.finer("shutting down zserver");
-	server.shutdown(1);
+	if (server != null) server.shutdown(1);
 	
     }
 
