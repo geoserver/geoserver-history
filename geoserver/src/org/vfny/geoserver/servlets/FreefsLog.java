@@ -7,6 +7,7 @@ package org.vfny.geoserver.servlets;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Iterator;
 import javax.servlet.http.*;
 //import javax.servlet.*;
 import org.geotools.resources.Geotools;
@@ -14,10 +15,11 @@ import org.geotools.resources.Log4JFormatter;
 import org.geotools.resources.MonolineFormatter;
 import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.zserver.GeoZServer;
+import org.vfny.geoserver.config.TypeRepository;
 //Logging system
 import java.util.logging.Logger;
 import java.util.logging.Level;
-
+import java.util.prefs.*;
 
 /**
  * Initializes all logging functions.
@@ -42,6 +44,8 @@ public class FreefsLog extends HttpServlet {
     /** Default name for configuration directory */
     private static final String CONFIG_DIR =  "data/";
 
+    private static final String BACKING_STORE_AVAIL = "BackingStoreAvail";
+    
     /**
      * The logger for the filter module.
      */
@@ -54,26 +58,31 @@ public class FreefsLog extends HttpServlet {
      *
      */ 
     public void init() {
-    String root = this.getServletContext().getRealPath("/");
-    String path = root + CONFIG_DIR;
-    LOG.finest("init with path" + path);
-    ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
-    //this is now set in WfsConfig, so it gets set earlier.
-    //Level level = cfgInfo.getLogLevel(); //Put this in user config file.
-    //Log4JFormatter.init("org.geotools", level);
-    //Log4JFormatter.init("org.vfny.geoserver", level);
-    Properties zserverProps = new Properties();
-    zserverProps.put("port", "5210"); //HACK -allow user to configure this!
-    zserverProps.put("datafolder", cfgInfo.getTypeDir());
-    zserverProps.put("fieldmap", path + cfgInfo.GEO_MAP_FILE);
-    zserverProps.put("database", root + CONFIG_DIR + "zserver-index");
-    try {
-        server = new GeoZServer(zserverProps);
-        server.start();
-    } catch (java.io.IOException e) {
-        LOGGER.info("zserver module could not start: " + e.getMessage());
-    }
-
+	//HACK: java.util.prefs are awful.  See 
+	//http://www.allaboutbalance.com/disableprefs.  When the site comes 
+	//back up we should implement their better way of fixing the problem.
+	System.setProperty("java.util.prefs.syncInterval", "5000000");
+	String root = this.getServletContext().getRealPath("/");
+	String path = root + CONFIG_DIR;
+	LOG.finer("init with path: " + path);
+	ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
+	//this is now set in WfsConfig, so it gets set earlier.
+	//Level level = cfgInfo.getLogLevel(); //Put this in user config file.
+	//Log4JFormatter.init("org.geotools", level);
+	//Log4JFormatter.init("org.vfny.geoserver", level);
+	//TODO: zserver configuration files and classes.
+	Properties zserverProps = new Properties();
+	zserverProps.put("port", "5210"); //HACK -allow user to configure this!
+	zserverProps.put("datafolder", cfgInfo.getTypeDir());
+	zserverProps.put("fieldmap", path + cfgInfo.GEO_MAP_FILE);
+	zserverProps.put("database", root + CONFIG_DIR + "zserver-index");
+	try {
+	    server = new GeoZServer(zserverProps);
+	    server.start();
+	} catch (java.io.IOException e) {
+	    LOGGER.info("zserver module could not start: " + e.getMessage());
+	}
+	
     }
     
     
@@ -92,6 +101,11 @@ public class FreefsLog extends HttpServlet {
      */    
     public void destroy() {
 	super.destroy();
+	TypeRepository repo = TypeRepository.getInstance();
+	for(Iterator i = repo.getAllTypeNames().iterator(); i.hasNext();){
+	    String curType = i.next().toString(); 
+	    repo.getType(curType).close();
+	}
 	LOGGER.finer("shutting down zserver");
     if (server != null) server.shutdown(1);
     
