@@ -112,7 +112,7 @@ public class SaveXMLAction extends ConfigAction {
     		}
     	}
     	// deletes of plug ins here
-    	File[] pluginFL = plugInDir.listFiles();
+    	/*File[] pluginFL = plugInDir.listFiles();
     	for(int j=0;j<pluginFL.length;j++){
     		String flName = pluginFL[j].getName();
     		flName = flName.substring(0,flName.length()-4);
@@ -120,7 +120,7 @@ public class SaveXMLAction extends ConfigAction {
     			// delete this
     			pluginFL[j].delete();
     		}
-    	}
+    	}*/
     	
     	
     	i = testSuites.keySet().iterator();
