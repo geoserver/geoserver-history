@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.22 2004/09/08 17:39:02 cholmesny Exp $
+ * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -56,8 +56,6 @@ public class GeoServer extends GlobalLayerSupertype {
     
     /** Should we throw the stack traces back in responses? */
     private boolean verboseExceptions = false;
-    
-    private boolean srsXmlStyle = false;
 
     /** Default Logging level */
     private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
@@ -362,7 +360,6 @@ public class GeoServer extends GlobalLayerSupertype {
             adminUserName = dto.getAdminUserName();
             adminPassword = dto.getAdminPassword();
             verboseExceptions = dto.isVerboseExceptions();
-            srsXmlStyle = dto.isSrsXmlStyle();
         } else {
             throw new ConfigurationException(
                 "load(GeoServerDTO) expected a non-null value");
@@ -390,7 +387,6 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setVerbose(verbose);
         dto.setAdminUserName(adminUserName);
         dto.setAdminPassword(adminPassword);
-        dto.setSrsXmlStyle(srsXmlStyle);
         dto.setVerboseExceptions(verboseExceptions);
 
         ContactDTO cdto = new ContactDTO();
@@ -499,25 +495,4 @@ public class GeoServer extends GlobalLayerSupertype {
 		this.verboseExceptions = showStackTraces;
 	}
 	
-	/**
-	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @return <tt>true</tt> if the srs is reported with the xml style
-	 */
-	public boolean isSrsXmlStyle() {
-		return srsXmlStyle;
-	}
-
-	/**
-	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @param doXmlStyle whether the srs style should be xml or not.
-	 */
-	public void setSrsXmlStyle(boolean doXmlStyle) {
-		this.srsXmlStyle = doXmlStyle;
-	}
 }
