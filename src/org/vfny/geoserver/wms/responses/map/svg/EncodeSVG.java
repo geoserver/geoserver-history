@@ -4,12 +4,12 @@
  */
 package org.vfny.geoserver.wms.responses.map.svg;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
+
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
@@ -19,13 +19,11 @@ import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.wms.responses.WMSMapContext;
+import org.vfny.geoserver.wms.WMSMapContext;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 
 
 /**

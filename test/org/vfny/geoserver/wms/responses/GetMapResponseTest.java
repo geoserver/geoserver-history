@@ -4,10 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import org.vfny.geoserver.wms.responses.GetMapProducer;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
-
 import junit.framework.TestCase;
+
+import org.vfny.geoserver.wms.GetMapProducer;
 
 
 

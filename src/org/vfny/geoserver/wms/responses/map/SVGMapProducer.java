@@ -10,9 +10,9 @@ import java.util.logging.Logger;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.GetMapProducer;
-import org.vfny.geoserver.wms.responses.WMSMapContext;
 import org.vfny.geoserver.wms.responses.map.svg.EncodeSVG;
 
 
