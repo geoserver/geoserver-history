@@ -3,7 +3,7 @@ Identification_Information:
     Citation_Information:
       Originator: The Open Planning Project
       Publication_Date: 20030103
-      Title: SAMPLE_METADATA_RAIL
+      Title: NYC Rail Centerlines
       Edition: 1
       Geospatial_Data_Presentation_Form: Web Feature Server
       Online_Linkage: The Open Planning Project:<URL:http://www.openplans.org>
@@ -11,8 +11,7 @@ Identification_Information:
       Online_Linkage: The Federal Geographic Data Committee:<URL:http://www.fgdc.gov/>
   Description:
     Abstract:
-      This is just some sample FGDC metadata, that the zserver module can use
-      to analyze and return to z39.50 clients.  
+      This is a simple rail coverage from the New York City basemap.
     Purpose:
       To show what FGDC metadata might look like.  For more information on metadata 
       check out the FGDC home page.  Just filling in this document with appropriate
@@ -29,10 +28,10 @@ Identification_Information:
     Maintenance_and_Update_Frequency: Present -002 days, Continually, new data every 30 minutes, Time_Increment=0000000000.5
   Spatial_Domain:
     Bounding_Coordinates:
-      West_Bounding_Coordinate: -180.0
-      East_Bounding_Coordinate: -100.0
-      North_Bounding_Coordinate: 50.0
-      South_Bounding_Coordinate: 0.0
+      West_Bounding_Coordinate: -74.27
+      East_Bounding_Coordinate: -40.50
+      North_Bounding_Coordinate: -73.80
+      South_Bounding_Coordinate: 40.94
   Keywords:
     Theme:
       Theme_Keyword_Thesaurus: None
