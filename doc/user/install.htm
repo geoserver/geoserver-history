@@ -381,26 +381,23 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&lt;Keywords&gt;OWS1, rail, railroad, 
                     World Trade Center, New York City&lt;/Keywords&gt; <br>
                     &nbsp;&nbsp;&nbsp;&nbsp;&lt;SRS&gt;32118&lt;/SRS&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Operations /&gt;<br>
                     &nbsp;&nbsp;&nbsp;&nbsp;&lt;LatLonBoundingBox minx=&quot;-74.27000&quot; 
                     miny=&quot;40.50000&quot; maxx=&quot;-73.80000&quot; maxy=&quot;40.94000&quot; 
                     /&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;MetadataURL&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;url&gt;none&lt;/url&gt; 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;DatasourceParams&gt;<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;host&gt;localhost&lt;/host&gt; 
                     <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;format&gt;XML&lt;/format&gt; 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;port&gt;5432&lt;/port&gt; <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;database&gt;test&lt;/database&gt; 
                     <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;TC211&lt;/type&gt; 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;user&gt;test&lt;/user&gt; <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;passwd&gt;test&lt;/passwd&gt; <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table&gt;road&lt;/table&gt; 
                     <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/MetadataURL&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Host&gt;localhost&lt;/Host&gt; 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dbtype&gt;postgis&lt;/dbtype&gt; 
                     <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Port&gt;5432&lt;/Port&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;DatabaseName&gt;test&lt;/DatabaseName&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;User&gt;test&lt;/User&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Password&gt;test&lt;/Password&gt; 
-                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/DatasourceParams&gt;<br>
+                   
                     &lt;/featureType&gt;</i></p>
                 </blockquote>
               </blockquote>
@@ -411,6 +408,15 @@
                 most important field and its value should correspond to an approved 
                 <a href="http://www.epsg.org">EPSG</a> code only (no GML namespace, 
                 which is added by the server intenally.</p>
+              <p> Those experienced with GeoServer may notice a few changes in this file.
+	          This is part of an effort to provide different datasources with minimal
+		  user configuration.  The DatasourceParams tag is now used, with the
+		  appropriate datasource fields.  The old tags will still work for postgis,
+		  but future additional datasources will only support the new style. The
+		  metadata tags have been removed since they were not used, though they
+		  may come back in a future version of geoserver.  The operations tag was
+		  never really used, and now will be determined by the datasource's 
+		  advertised capabilities.</p>
               <table width="91%" border="0" cellspacing="3" cellpadding="3" align="center">
                 <tr align="left" valign="top"> 
                   <td width="12%" height="20"><b>Option Name</b></td>
@@ -421,7 +427,8 @@
                     <p>Name</p>
                   </td>
                   <td width="74%" height="2">This must match the PostGIS table 
-                    name exactly.</td>
+                    name exactly.  Yes, this is repeated in tablename, but for
+		    now both are required.</td>
                 </tr>
                 <tr align="left" valign="top"> 
                   <td width="12%" height="6">Title</td>
@@ -443,44 +450,40 @@
                   <td width="74%">Must have attributes in geographic coordinates 
                     denoting feature type bounding box.</td>
                 </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="9">MetadataURL (url)</td>
-                  <td width="74%" height="9">URL for metadata (not required).</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="17"> 
-                    <p>MetadataURL (format)</p>
-                  </td>
-                  <td width="74%" height="17">Format for metadata (not required).</td>
-                </tr>
                 <tr align="left" valign="top">
-                  <td width="12%" height="17">MetadataURL (type)</td>
-                  <td width="74%" height="17">Type for metadata (not required).</td>
-                </tr>
-                <tr align="left" valign="top">
-                  <td width="12%" height="11">Host</td>
+                  <td width="12%" height="11">host</td>
                   <td width="74%" height="11">Must match the PostGIS postmaster 
                     daemon URI (serving feature type) exactly, port excluded.</td>
                 </tr>
                 <tr align="left" valign="top">
-                  <td width="12%" height="17">Port</td>
+                  <td width="12%" height="17">port</td>
                   <td width="74%" height="17">Must match the PostGIS postmaster 
                     daemon port (serving feature type) exactly.</td>
                 </tr>
                 <tr align="left" valign="top">
-                  <td width="12%" height="17">DatabaseName</td>
+                  <td width="12%" height="17">database</td>
                   <td width="74%" height="17">Must match the PostGIS database 
                     name (holding feature type) exactly.</td>
                 </tr>
                 <tr align="left" valign="top">
-                  <td width="12%" height="26">User</td>
+                  <td width="12%" height="26">user</td>
                   <td width="74%" height="26">Must match the PostGIS database 
                     user (with access to feature type) exactly.</td>
                 </tr>
                 <tr align="left" valign="top">
-                  <td width="12%" height="17">Password</td>
+                  <td width="12%" height="17">passwd</td>
                   <td width="74%" height="17">Must match the PostGIS database 
                     user password (with access to feature type) exactly.</td>
+                </tr>
+		<tr align="left" valign="top">
+                  <td width="12%" height="17">dbtype</td>
+                  <td width="74%" height="17">Must always be postgis, as it
+		   is the only currently supported db.</td>
+                </tr>
+		<tr align="left" valign="top">
+                  <td width="12%" height="17">table</td>
+                  <td width="74%" height="17">Must match the PostGIS table 
+                    name exactly.</td>
                 </tr>
               </table>
               <p>The <i>schema.xml</i> file <b>must</b> also be correctly specified 
@@ -488,9 +491,9 @@
                 file, you must be capable of creating valid XML schemas (in general) 
                 and valid GML schemas (in particular). &nbsp;This remains a pretty 
                 obscure skill, so we have written a small tutorial on it <a href="/user/schemaTutorial.htm">here</a>. 
-                &nbsp;The 'rail' directory is included as an example, but should 
+                &nbsp;The 'topp:road' directory is included as an example, but should 
                 be deleted before you do any serving (unless you also have a table 
-                called 'rail').</p>
+                called 'road' in the topp namespace).</p>
               <p>&nbsp;</p>
               <p></p>
               <p></p>
