@@ -15,10 +15,15 @@ import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.LiteralExpression;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.readers.wfs.*;
+import org.vfny.geoserver.requests.wfs.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -27,9 +32,9 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: LockSuite.java,v 1.4 2003/09/16 03:33:31 cholmesny Exp $
+ * @version $Id: LockSuite.java,v 1.5 2003/12/19 02:31:56 cholmesny Exp $
  */
-public class LockSuite extends TestCase {
+public class LockSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -40,13 +45,6 @@ public class LockSuite extends TestCase {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Unit test data directory */
-    private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/requests";
-
-    /** Holds mappings between HTTP and ASCII encodings */
-    private static FilterFactory factory = FilterFactory.createFilterFactory();
-
     /**
      * Constructor with super.
      *
@@ -56,70 +54,12 @@ public class LockSuite extends TestCase {
         super(testName);
     }
 
-    /**
-     * Handles actual XML test running details.
-     *
-     * @param baseRequest Base request, for comparison.
-     * @param fileName File name to parse.
-     * @param match Whether or not base request and parse request should match.
-     *
-     * @return <tt>true</tt> if the test passed.
-     *
-     * @throws Exception If there is any problem running the test.
-     */
-    private static boolean runXmlTest(LockRequest baseRequest, String fileName,
-        boolean match) throws Exception {
-        // Read the file and parse it
-        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
-        Reader inputStream = new FileReader(inputFile);
-        LockRequest request = XmlRequestReader.readLockRequest((Reader) new BufferedReader(
-                    inputStream));
-        LOGGER.finer("base request: " + baseRequest);
-        LOGGER.finer("read request: " + request);
-        LOGGER.fine("XML " + fileName + " test passed: "
-            + baseRequest.equals(request));
-
-        // Compare parsed request to base request
-        if (match) {
-            return request.equals(baseRequest); //baseRequest.toString().equals(request.toString());
-        } else {
-            return !baseRequest.equals(request);
-        }
+    protected XmlRequestReader getXmlReader() {
+        return new LockXmlReader();
     }
 
-    /**
-     * Handles actual XML test running details.
-     *
-     * @param baseRequest Base request, for comparison.
-     * @param requestString File name to parse.
-     * @param match Whether or not base request and parse request should match.
-     *
-     * @return <tt>true</tt> if the test passed.
-     *
-     * @throws Exception If there is any problem running the test.
-     */
-    private static boolean runKvpTest(LockRequest baseRequest,
-        String requestString, boolean match) throws Exception {
-        // Read the file and parse it
-        LockKvpReader reader = new LockKvpReader(requestString);
-        LockRequest request = reader.getRequest();
-
-        LOGGER.finer("base request: " + baseRequest);
-        LOGGER.finer("read request: " + request);
-        LOGGER.fine("KVP test passed: " + baseRequest.equals(request));
-
-        // Compare parsed request to base request
-        if (match) {
-            return baseRequest.equals(request);
-        } else {
-            return !baseRequest.equals(request);
-        }
-    }
-
-    /**
-     * Handles test set up details.
-     */
-    public void setUp() {
+    protected KvpRequestReader getKvpReader(Map kvps) {
+        return new LockKvpReader(kvps);
     }
 
     public void testXml1() throws Exception {
@@ -182,96 +122,93 @@ public class LockSuite extends TestCase {
      * itself. Tests are run via the static methods in this suite.  The tests
      * themselves are quite generic, so documentation is minimal.
      */
-    /**
+    /*
      * Example 1 from the WFS 1.0 specification.
      */
+    public void testKVP1() throws Exception {
+        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
+            + "SERVICE=WFS&" + "TYPENAME=rail";
 
-        public void testKVP1()
-       throws Exception {
-        String testRequest = "VERSION=1.0.0&" +
-            "REQUEST=lockFEATURE&" +
-            "SERVICE=WFS&" +
-            "TYPENAME=rail";
-       // make base comparison objects
-       LockRequest baseRequest = new LockRequest();
-       baseRequest.addLock("rail", null, null);
-       // run test
-       assertTrue( runKvpTest( baseRequest, testRequest, true));
-       } 
+        // make base comparison objects
+        LockRequest baseRequest = new LockRequest();
+        baseRequest.addLock("rail", null, null);
+
+        // run test
+        assertTrue(runKvpTest(baseRequest, testRequest, true));
+    }
+
     /*
      * Example 2 from the WFS 1.0 specification.
      */
-         public void testKVP2()
-             throws Exception {
-              String testRequest = "VERSION=1.0.0&" +
-                  "REQUEST=lockFEATURE&" +
-                  "SERVICE=WFS&" +
-                  "TYPENAME=rail&" +
-                  "featureID=123";
-             // make base comparison objects
-             LockRequest baseRequest = new LockRequest();
-             // baseRequest.addFeatureType("rail");
-             FidFilter filter = factory.
-                 createFidFilter("123");
-             //baseRequest.addFilter(filter);
-             baseRequest.addLock("rail", filter, null);
-             // run test
-             assertTrue(runKvpTest(baseRequest, testRequest, true));
-	 }
+    public void testKVP2() throws Exception {
+        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
+            + "SERVICE=WFS&" + "TYPENAME=rail&" + "featureID=123";
+
+        // make base comparison objects
+        LockRequest baseRequest = new LockRequest();
+
+        // baseRequest.addFeatureType("rail");
+        FidFilter filter = factory.createFidFilter("123");
+
+        //baseRequest.addFilter(filter);
+        baseRequest.addLock("rail", filter, null);
+
+        // run test
+        assertTrue(runKvpTest(baseRequest, testRequest, true));
+    }
+
     /*
      * Example 3 from the WFS 1.0 specification.
      */
-         public void testKVP3()
-             throws Exception {
-              String testRequest = "VERSION=1.0.0&" +
-                  "REQUEST=lockFEATURE&" +
-                  "SERVICE=WFS&" +
-                  "TYPENAME=rail,roads";
-             // make base comparison objects
-             LockRequest baseRequest = new LockRequest();
-             baseRequest.addLock("rail", null);
-             baseRequest.addLock("roads", null);
-             // run test
-             assertTrue(runKvpTest(baseRequest, testRequest, true));
-          }
+    public void testKVP3() throws Exception {
+        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
+            + "SERVICE=WFS&" + "TYPENAME=rail,roads";
+
+        // make base comparison objects
+        LockRequest baseRequest = new LockRequest();
+        baseRequest.addLock("rail", null);
+        baseRequest.addLock("roads", null);
+
+        // run test
+        assertTrue(runKvpTest(baseRequest, testRequest, true));
+    }
+
     /*
      * Example 13 from the WFS 1.0 specification.
      */
-         public void testKVP4()
-             throws Exception {
-             String testRequest = "VERSION=1.0.0&" +
-                 "SERVICE=WFS&" +
-                 "REQUEST=LockFEATURE&" +
-                 "LOCKACTION=all&" +
-                 "TYPENAME=rail,roads&" +
-                 "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
-             LockRequest baseRequest = new LockRequest();
-             baseRequest.setVersion("1.0.0");
-             baseRequest.setLockAll(true);
-             // make base comparison objects
-             GeometryFilter filter = factory.
-                 createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-             AttributeExpression leftExpression = factory.
-                 createAttributeExpression(null);
-             leftExpression.setAttributePath("location");
-             // Creates coordinates for the linear ring
-             Coordinate[] coords = new Coordinate[5];
-             coords[0] = new Coordinate(10,10);
-             coords[1] = new Coordinate(10,20);
-             coords[2] = new Coordinate(20,20);
-             coords[3] = new Coordinate(20,10);
-             coords[4] = new Coordinate(10,10);
-             LinearRing outerShell = new LinearRing(coords,new PrecisionModel(), 0);
-             Polygon polygon = new Polygon(outerShell, new PrecisionModel(), 0);
-             LiteralExpression rightExpression = factory.
-                 createLiteralExpression(polygon);
-             filter.addLeftGeometry(leftExpression);
-             filter.addRightGeometry(rightExpression);
-             baseRequest.addLock("rail", filter);
-             baseRequest.addLock("roads", filter);
-             //        baseRequest.addFilter(filter);
-             //baseRequest.addFilter(filter);
-             // run test
-             assertTrue(runKvpTest(baseRequest, testRequest, true));
-         }
+    public void testKVP4() throws Exception {
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+            + "REQUEST=LockFEATURE&" + "LOCKACTION=all&"
+            + "TYPENAME=rail,roads&"
+            + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
+        LockRequest baseRequest = new LockRequest();
+        baseRequest.setVersion("1.0.0");
+        baseRequest.setLockAll(true);
+
+        // make base comparison objects
+        GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+        AttributeExpression leftExpression = factory.createAttributeExpression(null);
+        leftExpression.setAttributePath("location");
+
+        // Creates coordinates for the linear ring
+        Coordinate[] coords = new Coordinate[5];
+        coords[0] = new Coordinate(10, 10);
+        coords[1] = new Coordinate(10, 20);
+        coords[2] = new Coordinate(20, 20);
+        coords[3] = new Coordinate(20, 10);
+        coords[4] = new Coordinate(10, 10);
+
+        LinearRing outerShell = new LinearRing(coords, new PrecisionModel(), 0);
+        Polygon polygon = new Polygon(outerShell, new PrecisionModel(), 0);
+        LiteralExpression rightExpression = factory.createLiteralExpression(polygon);
+        filter.addLeftGeometry(leftExpression);
+        filter.addRightGeometry(rightExpression);
+        baseRequest.addLock("rail", filter);
+        baseRequest.addLock("roads", filter);
+
+        //        baseRequest.addFilter(filter);
+        //baseRequest.addFilter(filter);
+        // run test
+        assertTrue(runKvpTest(baseRequest, testRequest, true));
+    }
 }
