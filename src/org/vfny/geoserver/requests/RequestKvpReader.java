@@ -144,7 +144,11 @@ abstract public class RequestKvpReader {
         Iterator i = keys.iterator();
         while(i.hasNext()) {
             String encoding = (String) i.next();
+	    if (raw != null) {
             raw = raw.replaceAll(encoding, (String) translator.get(encoding));
+	    } else {
+		return "";
+	    }
         }
         LOGGER.finest("cleaned request: " + raw);
         return raw;
