@@ -1,10 +1,8 @@
-<?config.xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <catalog>
-<datastores>
-<!--
-a datastore configuration element serves as a common data source connection
-parameters repository for all featuretypes it holds.
--->
+  <datastores>
+    <!-- a datastore configuration element serves as a common data source -->
+    <!-- connection parameters repository for all featuretypes it holds.  -->
     <datastore id="bc_shapefile"
                enabled="true"
                namespace="topp">
@@ -17,6 +15,12 @@ parameters repository for all featuretypes it holds.
                    value="file:data/featureTypes/bc_roads/bc_roads.shp"/>
       </connectionParams>
     </datastore>
+
+    <!-- Another sample shapefile datastore.  Unfortunately all shapefiles  -->
+    <!-- have their own datastore definitions.  With the other datastores it-->
+    <!-- is possible to define one datastore and then to have a number of   -->
+    <!-- featureTypes all reference the same datastore, each featureType is -->
+    <!-- then a table in the database referred to. -->
     <datastore id="dSkae"
                enabled="true"
                namespace="lake">
@@ -28,67 +32,81 @@ parameters repository for all featuretypes it holds.
       </connectionParams>
     </datastore>
     
-<datastore namespace = "gd" enabled = "true" id = "rivers" >
-<abstract>Rivers</abstract>
-<connectionParams>
-<parameter value = "gd" name = "namespace"  />
-<parameter value = "file:data/geoserverdemo/rivers.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "gd" enabled = "true" id = "roads" >
-<abstract>Roads</abstract>
-<connectionParams>
-<parameter value = "gd" name = "namespace"  />
-<parameter value = "file:data/geoserverdemo/roads.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "gd" enabled = "true" id = "swamps" >
-<abstract>Swamps</abstract>
-<connectionParams>
-<parameter value = "gd" name = "namespace"  />
-<parameter value = "file:data/geoserverdemo/swamps.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "gd" enabled = "true" id = "lakes" >
-<abstract>Lakes</abstract>
-<connectionParams>
-<parameter value = "gd" name = "namespace"  />
-<parameter value = "file:data/geoserverdemo/lakes.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "gd" enabled = "true" id = "streams" >
-<abstract>Streams</abstract>
-<connectionParams>
-<parameter value = "gd" name = "namespace"  />
-<parameter value = "file:data/geoserverdemo/streams.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "gd" enabled = "true" id = "buildings" >
-<abstract>Buildings!</abstract>
-<connectionParams>
-<parameter value = "gd" name = "namespace"  />
-<parameter value = "file:data/geoserverdemo/buildings.shp" name = "url"  />
-</connectionParams>
-</datastore>
-</datastores>
-<!--
-Defines namespaces to be used by the datastores.
--->
-<namespaces>
-	<namespace uri = "http://www.refractions.net" prefix = "gd"  />
+    <!-- A sample postgis datastore. -->
+    <datastore id="localPostgis" enabled="true" namespace="topp">
+    <!-- enabled is optional, defaults to true.  If a dcmms database on the -->
+    <!-- local machine (automatic installation available for windows users) -->
+    <!-- then set enabled to true and define a new featureTyp with localpg  -->
+    <!-- as the datastore id -->
+      <description>My local postgis testing database</description>
+      <connectionParams>
+        <!-- Must always be postgis -->
+        <parameter name="dbtype" value="postgis"/>
+        <!-- Where postgis is running (can be a remote name or ip) --> 
+        <parameter name="host" value="localhost"/>
+        <!-- The port to connect to (5432 is postgresql default) -->
+        <!-- Be sure postmaster is running with -i to accept connections -->
+        <parameter name="port" value="5432"/>
+        <!-- The name of the postgis database -->
+        <parameter name="database" value="dcmms"/>
+        <!-- The username and password to connect with -->
+        <parameter name="user" value="postgres"/>
+        <parameter name="passwd" value="postgres"/>
+      </connectionParams>
+    </datastore> 
+    
+    <!-- A sample oracle datastore, hosted on a remote computer -->  
+    <datastore id="remoteOracle" enabled="false" namespace="lake">
+      <description>A remote oracle database</description>
+      <connectionParams>
+        <parameter name="dbtype" value="oracle"/>
+        <parameter name="host" value="beta.openplans.org"/>
+        <parameter name="port" value="1521"/>
+        <parameter name="instance" value="test"/>
+        <parameter name="user" value="cholmes"/>
+        <parameter name="passwd" value="cite"/>
+        <!-- Optional param, if not working then try removing this -->
+        <parameter name="schema" value="chtest"/>
+      </connectionParams>
+    </datastore> 
+
+    <datastore id="bizkaiaSde" enabled="false" namespace="biz">
+      <description>A test SDE database</description>
+      <connectionParams>
+        <parameter name="dbtype" value="arcsde"/>
+        <parameter name="server" value="localhost"/>
+        <parameter name="port" value="5151"/>
+        <parameter name="instance" value="sde"/>
+        <parameter name="user" value="sde"/>
+        <parameter name="password" value="carto"/>
+      </connectionParams>
+    </datastore> 
+  </datastores>
+
+  <!-- Defines the namespaces to be used.  All dataStores must refer to a   -->
+  <!-- namespace.  If two namespaces are required for the same database then-->
+  <!-- it is possible to just define two datastores with different ids but  -->
+  <!-- the same connection parameters.                                      -->
+  <namespaces>
+    <namespace uri="http://www.refractions.net/lakes" 
+	           prefix="lake"/>
+	<!-- Setting a namespace as the default allows you to refer to the -->
+	<!-- featureTypes it contains without prefixing them -->           
     <namespace uri="http://www.openplans.org/topp" 
 	           prefix="topp"
 	           default="true"/>
-    <namespace uri="http://www.refractions.net/lakes" 
-	           prefix="lake"/>	           
-</namespaces>
-<!--
-Defines the style ids to be used by the wms.  The files must be
-contained in geoserver/misc/wms/styles.  We're working on finding
-a better place for them, but for now that's where you must put them
-if you want them on the server.
--->
-<styles>
-<style filename = "normal.sld" id = "normal"  />
-</styles>
+    <namespace uri="http://www.bizkaia.net/geoserver" 
+	           prefix="biz"/>
+  </namespaces>
+
+  <!-- Style definitions - maps a style name to a file.  The style files  -->
+  <!-- be contained in the styles folder                                  --> 
+  <styles>
+      <style id="dotty" filename="funkypolyshp.sld"/>
+      <style id="green" filename="green.sld"/>
+      <style id="blue" filename="blue.sld"/>
+      <style id="maleVsFemale" filename="usa_ratio.sld"/>
+      <style id="normal" filename="normal.sld" default="true"/>
+  </styles>
+
 </catalog>
