@@ -1,3 +1,19 @@
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2002, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -25,6 +41,7 @@
 package org.vfny.geoserver.config;
 
 import org.w3c.dom.*;
+import java.util.logging.Logger;
 
 
 /**
@@ -34,6 +51,10 @@ import org.w3c.dom.*;
  * @version 0.1
  */
 public abstract class AbstractConfig {
+    /** DOCUMENT ME! */
+    protected static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.config");
+
     /**
      * DOCUMENT ME!
      *
@@ -246,7 +267,17 @@ public abstract class AbstractConfig {
         boolean mandatory) throws ConfigurationException {
         Element elem = getChildElement(root, childName, mandatory);
 
-        return getElementText(elem, mandatory);
+        if (elem != null) {
+            return getElementText(elem, mandatory);
+        } else {
+            if (mandatory) {
+                String msg = "Mandatory child " + childName + "not found in "
+                    + " element: " + root;
+                throw new ConfigurationException(msg);
+            }
+
+            return null;
+        }
     }
 
     /**
@@ -277,6 +308,7 @@ public abstract class AbstractConfig {
     protected String getElementText(Element elem, boolean mandatory)
         throws ConfigurationException {
         String value = null;
+        LOGGER.finer("getting element text for " + elem);
 
         if (elem != null) {
             Node child;
