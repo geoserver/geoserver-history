@@ -57,7 +57,7 @@ public class GeoIndexerSuite extends TestCase {
     
     public static Test suite() {
         TestSuite suite = new TestSuite(GeoIndexerSuite.class);
-	LOGGER.info("Creating GeoIndexer suite.");
+	LOGGER.fine("Creating GeoIndexer suite.");
         return suite;
     }
     
@@ -91,8 +91,8 @@ public class GeoIndexerSuite extends TestCase {
 	test1.setLastModified(new Date().getTime()); //set last modified to now
 	numIndexed = indexer.update();
 	
-	LOGGER.info("added " + numIndexed + " docs after modify");
-	LOGGER.info("num stored: " + indexer.numDocs());
+	LOGGER.fine("added " + numIndexed + " docs after modify");
+	LOGGER.fine("num stored: " + indexer.numDocs());
 	assertEquals(numIndexed, 1);
 	assertEquals(indexer.numDocs(), 2); //should delete old doc.
     }
@@ -103,15 +103,15 @@ public class GeoIndexerSuite extends TestCase {
 	test.renameTo(newName);
 	GeoIndexer indexer = new GeoIndexer(testProps);
 	int numIndexed = indexer.update();
-	LOGGER.finer("indexed " + numIndexed + " docs after remove");
-	LOGGER.finer("num stored in index: " + indexer.numDocs());
+	LOGGER.fine("indexed " + numIndexed + " docs after remove");
+	LOGGER.fine("num stored in index: " + indexer.numDocs());
 	assertEquals(numIndexed, 0);
 	assertEquals(indexer.numDocs(), 1);
 	newName.renameTo(test);
 	indexer = new GeoIndexer(testProps);
 	numIndexed = indexer.update();
-	LOGGER.finer("indexed " + numIndexed + " docs after moving back");
-	LOGGER.finer("num stored in index: " + indexer.numDocs());
+	LOGGER.fine("indexed " + numIndexed + " docs after moving back");
+	LOGGER.fine("num stored in index: " + indexer.numDocs());
 	assertEquals(numIndexed, 1);
 	assertEquals(indexer.numDocs(), 2);
 	
