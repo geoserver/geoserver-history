@@ -116,6 +116,18 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     }
 
     /**
+     * Convenience method for handleSingleElem(name, "").  Just makes a single
+     * elem named 'name'
+     *
+     * @param name DOCUMENT ME!
+     *
+     * @throws SAXException DOCUMENT ME!
+     */
+    protected void handleSingleElem(String name) throws SAXException {
+        handleSingleElem(name, "");
+    }
+
+    /**
      * DOCUMENT ME!
      *
      * @param s DOCUMENT ME!
