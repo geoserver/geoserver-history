@@ -18,8 +18,8 @@ import java.util.Map;
  * A collecitno of utilties for dealing with GeotTools DataStore.
  * 
  * @author Richard Gould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.1.2.2 2004/01/12 02:10:10 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataStoreUtils.java,v 1.1.2.3 2004/01/12 06:31:00 jive Exp $
  */
 public abstract class DataStoreUtils {
     
@@ -115,10 +115,12 @@ public abstract class DataStoreUtils {
 
         return list;
     }
-    
     public static Map defaultParams( String description ){
-        Map defaults = new HashMap();
-        DataStoreFactorySpi factory = aquireFactory( description );
+        return defaultParams( aquireFactory( description ));
+    }    
+    
+    public static Map defaultParams( DataStoreFactorySpi factory  ){
+        Map defaults = new HashMap();        
         Param[] params = factory.getParametersInfo();
         for( int i = 0; i<params.length; i++){
             String key = params[i].key;
@@ -126,6 +128,7 @@ public abstract class DataStoreUtils {
             if( params[i].required ){
                 value = "";                               
             }
+            String description = factory.getDescription();
             if( "dbtype".equals( key ) ){
                 if( "PostGIS spatial database".equals( description ) ) value="postgis";
                 if( "Oracle Spatial Database".equals( description )) value="oracle";     
