@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.10 2004/06/29 11:32:01 sploreg Exp $
+ * @version $Id: ValidationTestDoIt.java,v 1.11 2004/06/29 18:36:11 sploreg Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
@@ -71,14 +71,12 @@ public class ValidationTestDoIt extends ConfigAction {
 		    Map plugins = new HashMap();
 		    Map testSuites = new HashMap();
 		    validationConfig.toDTO(plugins,testSuites); // return by ref.
+		    TestValidationResults results = new TestValidationResults();
 		    try {
-		    	ValidationRunnable testThread = new ValidationRunnable(	testSuites, 
-														    			plugins, 
-																		getDataConfig(), 
-																		context, 
-																		request);
-		    	//TODO grab the TestValidationResults from testThread
-		    	// ie. TestValidationResults results = testThread.results;
+		    	ValidationRunnable testThread = new ValidationRunnable(request);
+		    	testThread.setup(results, getDataConfig().toRepository(context), plugins, testSuites);
+		    	
+		    	
 		    	Thread thread = new Thread(testThread);
 		    	thread.start();
 		    	
