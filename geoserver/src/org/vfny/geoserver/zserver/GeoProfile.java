@@ -132,6 +132,8 @@ public class GeoProfile {
 	if (propertyList != null) {
 	    useAttributeMap = propertyList;
 	}
+	LOGGER.finer("our new property map from " + pathToPropFile + 
+		     " is: " + useAttributeMap);
     }
 
     /**
@@ -228,7 +230,7 @@ public class GeoProfile {
     public static boolean isFGDCdate(String name) {
 	if (name.matches(MATCH_PREFIX + "begdate") 
 	    || name.matches(MATCH_PREFIX + "enddate") 
-	    || name.matches(MATCH_PREFIX + "metad") 
+	    || name.matches(MATCH_PREFIX + "metd") 
 	    || name.matches(MATCH_PREFIX + "pubdate")
 	    || name.matches(MATCH_PREFIX + "procdate")
 	    || name.matches(MATCH_PREFIX + "begdatea") 
@@ -236,6 +238,7 @@ public class GeoProfile {
 	    || name.matches(MATCH_PREFIX + "formverd") 
 	    || name.matches(MATCH_PREFIX + "metrd") 
 	    || name.matches(MATCH_PREFIX + "caldate") 
+	    || name.matches(MATCH_PREFIX + "timeinfo")
 	    || name.matches(MATCH_PREFIX + "metfrd")) {
 	    return true;
 	} else {
@@ -253,12 +256,14 @@ public class GeoProfile {
     }
 
     public class Attribute {
+	public static final String ALWAYS = "103";
 	public static final String TITLE = "4";
 	public static final String PUBDATE = "31";
 	public static final String BEGDATE = "2072";
 	public static final String ENDDATE = "2073";
 	public static final String ABSTRACT = "62";
 	public static final String ORIGIN = "1005";
+	public static final String ANYWHERE = "1035";
 	public static final String ANY = "1016";
 	public static final String PUBLISH = "1018";
 	public static final String WESTBC = "2038";

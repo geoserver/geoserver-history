@@ -183,6 +183,7 @@ public class RPNConverter
 	String useVal = GeoProfile.Attribute.ANY; //default is any.
 	int  relation = GeoProfile.EQUALS; //default is equals.
 	boolean truncation = false; //default is no truncation.
+	boolean matchAll = false;
 	while (enum.hasMoreElements()) 
 	{ 
 	    AttrTriple triple = (AttrTriple)enum.nextElement();
@@ -192,7 +193,11 @@ public class RPNConverter
 		break;
 	    case GeoProfile.RELATION: relation = Integer.parseInt(attrVal);
 		break;
-	    case GeoProfile.STRUCTURE:  break;
+	    case GeoProfile.STRUCTURE:  
+		if (attrVal.equals(GeoProfile.Attribute.ALWAYS)) {
+		    matchAll = true;
+		}
+		    break;
 		//REVISIT: currently we treat everything as
 		//a string, decide what to do based on the use value.
 	    case GeoProfile.TRUNCATION: 
@@ -210,7 +215,17 @@ public class RPNConverter
 				      GeoProfile.Diag.UNSUPPORTED_ATTR);
 	} 
 	LOGGER.finest("search field is " + searchField);
-	Query indexQuery = getQuery(searchField, term, relation, truncation);
+	Query indexQuery;
+	//TODO: move this logic so it's cleaner, and implement matchAll for
+	//fields other than any and anywhere (see GeoProfile structure 103
+	if (matchAll && (useVal.equals(GeoProfile.Attribute.ANY) || 
+			 useVal.equals(GeoProfile.Attribute.ANYWHERE))) {
+	    Term trueTerm = new Term("true", "true"); //all documents have the
+	    //field true with the value true.
+	    indexQuery = new TermQuery(trueTerm);
+	} else {
+	    indexQuery = getQuery(searchField, term, relation, truncation);
+	}
 	LOGGER.finer("Searching for: " + indexQuery);
 	return indexQuery;
     }
@@ -246,6 +261,7 @@ public class RPNConverter
 	Query returnQuery;
 	Term highTerm;
 	Term lowTerm;
+	//TODO: also split on a / of form 199906/200207
 	String[] dates = searchValue.split("\\s+");
 	boolean twoDates = false;
 	
