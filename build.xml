@@ -844,7 +844,7 @@ failonerror="true"/>
 
     <!-- Validation support, include META-INF -->	
     <delete file="${dir.lib}/gt2-validation.jar" failonerror="true"/>        
-	<jar jarfile="${dir.lib}/gt2-validation"
+	<jar jarfile="${dir.lib}/gt2-validation.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/validation/target/classes/">
       		<include name="**/*.class"/>
