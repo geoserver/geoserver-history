@@ -3,7 +3,7 @@
 
 <span class="wfsMenu">
 
-<html:link forward="wfsConfigDescription"><bean:message key="label.wfsDescription"/></html:link><br>
-<html:link forward="wfsConfigContent"><bean:message key="label.wfsContent"/></html:link><br>
+<html:link forward="/config/wfs/description"><bean:message key="label.wfsDescription"/></html:link><br>
+<html:link forward="/config/wfs/content"><bean:message key="label.wfsContent"/></html:link><br>
 
 </span>

@@ -4,7 +4,7 @@
 
 <table border=0 width=100%>
 
-	<html:form action="DataConfigStylesSubmit">
+	<html:form action="/config/data/stylesSubmit">
 	
 	<tr><td>
 		<bean:message key="label.styles"/>:

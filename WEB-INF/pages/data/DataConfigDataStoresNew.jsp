@@ -6,7 +6,7 @@
 <tr><td>
 <table border=0 width=100%>
 
-	<html:form action="DataConfigDataStoresNew">
+	<html:form action="/config/data/dataStoresNew">
 
 	<tr><td valign="top" align="right">	
 		<bean:message key="label.dataStoreDescription"/>:

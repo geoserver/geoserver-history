@@ -9,7 +9,7 @@
 		<bean:message key="label.actions"/>
 	</span>
 
-	<html:form action="CalculateBoundingBox">
+	<html:form action="/config/data/calculateBoundingBox">
 		<html:submit>
 			<bean:message key="label.calculateBoundingBox"/>
 		</html:submit>
