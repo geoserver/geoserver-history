@@ -42,6 +42,7 @@ public class FeatureResponse {
      */ 
     public static String getXmlResponse(FeatureRequest request) 
         throws WfsException {
+	LOG.finest("get xml response called request is: " + request);
 
         TypeRepository repository = TypeRepository.getInstance();
         StringBuffer result = new StringBuffer();
@@ -58,6 +59,14 @@ public class FeatureResponse {
     }
 
 
+    private static String getLocator(Query query){
+	String locator = query.getHandle();
+	if (locator == null  || locator.equals("")) {
+	    locator = "Class FeatureResponse, in method getQuery";
+	}
+	return locator;
+    }
+
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
      * @return XML response to send to client
@@ -65,27 +74,40 @@ public class FeatureResponse {
     private static String getQuery(Query query, TypeRepository repository)
         throws WfsException {
         
+	LOG.finest("about to get query: " + query);
         TypeInfo meta = repository.getType(query.getTypeName());
-	
+	if (meta == null) {
+	    throw new WfsException("Could not find Feature Type named: " +
+				   query.getTypeName() + ", feature information"
+				   + " is not in the data folder.", 
+				   getLocator(query));
+	}
         PostgisConnection db = new PostgisConnection (meta.getHost(),
                                                       meta.getPort(),
                                                       meta.getDatabaseName()); 
+	LOG.finest("connecting to db " + meta.getHost() + " is host, port "
+		      + meta.getPort() + " name: " + meta.getDatabaseName());
         db.setLogin(meta.getUser(), meta.getPassword());
+	LOG.finest("setting user and pass " + meta.getUser() + meta.getPassword());
 	FeatureCollection collection = null;
 	try {
 	    DataSource data = new PostgisDataSource(db, meta.getName());
             collection = data.getFeatures(query.getFilter());
         } catch(DataSourceException e) {
-            throw new WfsException(e.getMessage());
+            throw new WfsException(e, "While getting features from datasource", getLocator(query));
         }
 
         LOG.finest("successfully retrieved collection");
+	GMLBuilder gml = new GMLBuilder(true);
         Feature[] features = collection.getFeatures();
+	LOG.finest("features lenght is: " + features.length);
+	gml.startFeatureType(meta.getName(), meta.getSrs());
+        LOG.finest("started feature type");
+	if (features.length > 0) {
         FeatureType schema = features[0].getSchema();
         AttributeType[] attributeTypes = schema.getAttributeTypes();
         Object[] attributes;
 	int geometryPosition = schema.getDefaultGeometry().getPosition();
-        GMLBuilder gml = new GMLBuilder(true);
 
         LOG.finest("about to create gml");
         LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
@@ -95,9 +117,7 @@ public class FeatureResponse {
                                meta.getSrs(), 
                                attributeTypes[geometryPosition].
                                getName());
-        gml.startFeatureType(meta.getName(), meta.getSrs());
 
-        LOG.finest("started feature type");
         for(int i = 0, m = features.length; i < m; i++) {
 
             LOG.finest("fid: " + features[i].getId());
@@ -123,8 +143,10 @@ public class FeatureResponse {
             gml.endFeature();
             LOG.finest("ended feature");
         }
-        gml.endFeatureType();        
+        }
+	gml.endFeatureType();        
         LOG.finest("ended feature type");
+	
         LOG.finest("GML is: " + gml.getGML());
 
         return gml.getGML();
