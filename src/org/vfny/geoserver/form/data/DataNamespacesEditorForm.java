@@ -5,11 +5,15 @@
 
 package org.vfny.geoserver.form.data;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -67,6 +71,27 @@ public class DataNamespacesEditorForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
+        if ((prefix == null) || prefix.equals("")) {
+            errors.add("prefix",
+            new ActionError("error.prefix.required", getPrefix()));
+        } else if (!Pattern.matches("^\\w*$", prefix)) {
+            errors.add("dataStoreID",
+            new ActionError("error.prefix.invalid", prefix));
+        }
+        
+        if ((URI == null) || URI.equals("")) {
+            errors.add("URI",
+            new ActionError("error.uri.required", prefix));
+        } else  {
+            try {
+                URL url = new URL( URI );
+            }
+            catch( MalformedURLException badURI ){
+                errors.add("dataStoreID",
+                        new ActionError("error.uri.malformed", badURI)
+                );
+            }
+        }
         return errors;
     }
 
