@@ -69,11 +69,4 @@
 	</td></tr>						
 	
 	</html:form>
-	
-	
-			<html:form action="CalculateBoundingBox">
-			<html:submit>
-				<bean:message key="label.apply"/>
-			</html:submit>
-		</html:form>
 </table>
