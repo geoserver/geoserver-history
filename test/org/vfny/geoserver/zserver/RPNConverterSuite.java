@@ -291,7 +291,10 @@ public class RPNConverterSuite extends TestCase {
 
     public void testBoundingQuery() throws Exception{
 	attrMap.setProperty("58", "bounding");
-	
+	attrMap.setProperty(GeoProfile.Attribute.WESTBC, "westbc");
+	attrMap.setProperty(GeoProfile.Attribute.NORTHBC, "northbc");
+	attrMap.setProperty(GeoProfile.Attribute.SOUTHBC, "southbc");
+	attrMap.setProperty(GeoProfile.Attribute.EASTBC, "eastbc");
 	String searchVal = "25, -25, -25, 25";
 	rpn2.setTerm(searchVal);
 	String numConvPos = NumericField.numberToString("25");
@@ -307,6 +310,8 @@ public class RPNConverterSuite extends TestCase {
 			       "] +eastbc:[" + numConvNeg + "-null]"));
     }
     
+    //TODO: test truncation
+
 
 	private void setAttribute(AttrPlusTermNode node, int attr, int value) {
 	    node.setAttr(null, new Integer(attr), new Integer(value));
