@@ -6,6 +6,7 @@ package org.vfny.geoserver.responses;
 
 import java.io.StringWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -137,9 +138,9 @@ public class WfsTransResponse {
      * adds an insert result for a successful insert operation.
      *
      * @param handle the handle of the insert request.
-     * @param featureIds the list of successfully added feature ids.
+     * @param featureIds the collection of successfully added feature ids.
      */
-    public void addInsertResult(String handle, List featureIds) {
+    public void addInsertResult(String handle, Collection featureIds) {
 	if (insertResults == null) {
 	    insertResults = new ArrayList();
 	}
@@ -252,10 +253,10 @@ public class WfsTransResponse {
 	private String handle;
 	
 	/** List of the ids of the features added by the insert statement.*/
-	private List featureIds;
+	private Collection featureIds;
 
 	/** Constructor. */
-	public InsertResult(String handle, List featureIds){
+	public InsertResult(String handle, Collection featureIds){
 	    this.handle = handle;
 	    this.featureIds = featureIds;
 	}
