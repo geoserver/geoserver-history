@@ -9,12 +9,13 @@ import java.util.*;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
 import org.geotools.data.DataSource;
-import org.geotools.data.QueryImpl;
+import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.data.DataSourceException;
 import org.geotools.feature.Feature;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.vfny.geoserver.requests.TransactionRequest;
 import org.vfny.geoserver.requests.SubTransactionRequest;
 import org.vfny.geoserver.requests.UpdateRequest;
@@ -316,18 +317,18 @@ public class TypeRepository {
 	}
 	DataSource data = 
 	    getType(typeName).getDataSource();
-	Feature[] features = null;
+	FeatureCollection features = null;
 	try {
-	    QueryImpl query = new QueryImpl(filter, new AttributeType[0]); 
-	    features = data.getFeatures(query).getFeatures();
+	    DefaultQuery query = new DefaultQuery(filter, new String[0]); 
+	    features = data.getFeatures(query);
 	} catch(DataSourceException e) {
 	    throw new WfsException(e, "DataSource problem checking lock: ",
 				   "at featureType: " + typeName);
 	} 	
-	List fids = new ArrayList(features.length);
-	for (int i = 0; i < features.length; i++) {
+	List fids = new ArrayList(features.size());
+	for (FeatureIterator i = features.features(); i.hasNext();){
 	    //LOG.finer("adding feature " + features[i]);
-	    fids.add(features[i].getId());
+	    fids.add(i.next().getID());
 	}
 
 	return fids;

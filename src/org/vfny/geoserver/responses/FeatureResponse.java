@@ -13,13 +13,11 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.FeatureTypeFlat;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
 //import org.geotools.data.Query;
-import org.geotools.data.QueryImpl;
 import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.FeatureWithLockRequest;
 import org.vfny.geoserver.requests.LockRequest;
@@ -33,7 +31,7 @@ import org.vfny.geoserver.config.ConfigInfo;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.22 2003/07/03 20:47:28 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.23 2003/08/06 23:56:39 cholmesny Exp $
  */
 public class FeatureResponse {
 
@@ -122,26 +120,22 @@ public class FeatureResponse {
      */
     private static void addFeatures(Feature[] features, GMLBuilder gml, TypeInfo meta){
 	if (features.length > 0) {
-	FeatureType schema = features[0].getSchema();
+	FeatureType schema = features[0].getFeatureType();
 	String typeName = meta.getName();
         AttributeType[] attributeTypes = schema.getAttributeTypes();
-        Object[] attributes;
-	AttributeType geometryAttr = schema.getDefaultGeometry();
-	int geometryPosition = -1;
-	if (geometryAttr != null) {
-	    geometryPosition = geometryAttr.getPosition();
-	}
+        Object[] attributes = new Object[attributeTypes.length];
+		
         LOG.finest("about to create gml");
-        LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
+        //LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
 	gml.initializeFeatureType(typeName);
         for(int i = 0, m = features.length; i < m; i++) {
-	    String fid = features[i].getId();
+	    String fid = features[i].getID();
             LOG.finest("fid: " + fid);
             gml.startFeature(fid);
-            attributes = features[i].getAttributes();
+            attributes = features[i].getAttributes(attributes);
             LOG.finer("feature: " + features[i].toString());
-            LOG.finest("att total: " + schema.attributeTotal());
-            for(int j = 0, n = schema.attributeTotal(); j < n; j++) {
+            LOG.finest("att total: " + schema.getAttributeCount());
+            for(int j = 0, n = schema.getAttributeCount(); j < n; j++) {
                 //LOG.finest("sent attribute: " + attributes[j].toString());
 		//TODO: use attributeType.isGeometry() - get working with
 		//multiple geometries (in GMLBuilder).
@@ -224,8 +218,8 @@ public class FeatureResponse {
 				 getLocator(query));
 	} 	
         LOG.finest("successfully retrieved collection");
-
-        Feature[] features = collection.getFeatures();
+	//TODO: no more Feature [], just use collections.
+        Feature[] features = (Feature [])collection.toArray(new Feature[0]);
 	return features;
     }
     

@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
 import org.geotools.feature.SchemaException;
-import org.geotools.data.QueryImpl;
+import org.geotools.data.DefaultQuery;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.responses.WfsException;
@@ -115,11 +115,11 @@ public class Query {
     public org.geotools.data.Query getDataSourceQuery(FeatureType schema, 
 						      int maxFeatures) 
 	throws WfsException{
-	AttributeType[] props = null;
+	String[] props = null;
 	List strippedNames = new ArrayList();
-	if (propertyNames != null) {
-	    
-	    /*for(int i = 0; i < propertyNames.size(); i++) {
+	if (propertyNames != null && propertyNames.size() > 0) {
+	    //test this, is this done in geotools?
+	    for(int i = 0; i < propertyNames.size(); i++) {
 		String curPropName = propertyNames.get(i).toString();
 		String[] splitName = curPropName.split("[.:/]");
 		String newPropName = curPropName;
@@ -136,14 +136,15 @@ public class Query {
 		    newPropName = splitName[splitName.length - 1];
 		}
 		strippedNames.add(newPropName);
-		}*/
-	    try {
-		props = QueryImpl.getValidProperties(schema, propertyNames);
-	    } catch (SchemaException e) {
-		throw new WfsException(e, "problem with properties", handle);
-	    }
+		}
+	    //try {
+	    //props = DefaultQuery.getValidProperties(schema, propertyNames);
+	    //} catch (SchemaException e) {
+	    //throw new WfsException(e, "problem with properties", handle);
+	    //}
+	    props = (String [])strippedNames.toArray(new String[0]);
 	}
-	QueryImpl query = new QueryImpl(null, this.filter, maxFeatures,
+	DefaultQuery query = new DefaultQuery(null, this.filter, maxFeatures,
 					props, this.handle);
 	
 	return query;

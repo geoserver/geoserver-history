@@ -15,12 +15,11 @@ import org.geotools.data.DataSourceException;
 import org.geotools.filter.Filter;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFlat;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.Feature;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureCollectionDefault;
+import org.geotools.feature.FeatureCollections;
 import org.vfny.geoserver.requests.TransactionRequest;
 import org.vfny.geoserver.requests.SubTransactionRequest;
 import org.vfny.geoserver.requests.DeleteRequest;
@@ -193,12 +192,12 @@ public class TransactionResponse {
 	throws WfsTransactionException {
 	String handle = insert.getHandle();
 	try {
-	    FeatureCollection newFeatures = new FeatureCollectionDefault();
+	    //FeatureCollection newFeatures = FeatureCollections.newCollection();
 	    //TODO: allow different features types (need to change in request),
 	    //maybe then divide up by type, get the right datasources.
-	    Feature[] featureArr = insert.getFeatures();
-	    newFeatures.addFeatures(featureArr);
-	    return data.addFeatures(newFeatures);
+	    //Feature[] featureArr = insert.getFeatures();
+	    //newFeatures.addFeatures(featureArr);
+	    return data.addFeatures(insert.getFeatures());
 	} catch (DataSourceException e) {
 	    LOGGER.info("Problem with datasource " + e + " cause: " 
 			+ e.getCause());

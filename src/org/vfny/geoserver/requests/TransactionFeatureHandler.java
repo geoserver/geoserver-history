@@ -16,9 +16,8 @@ import org.geotools.gml.GMLFilterFeature;
 import org.geotools.filter.FilterFilter;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.AttributeType;
-import org.geotools.feature.AttributeTypeDefault;
+import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.FeatureFactory;
-import org.geotools.feature.FlatFeatureFactory;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.Feature;
 import com.vividsolutions.jts.geom.Geometry;
@@ -210,17 +209,15 @@ public class TransactionFeatureHandler
 	}
 	String internalTypeName = typeRepo.getInternalTypeName(localName, namespaceURI);
         if (typeName.equals(internalTypeName) ) {
-            AttributeType attDef[] = new AttributeTypeDefault[attributes.size()];
+            AttributeType attDef[] = new AttributeType[attributes.size()];
             for (int i = 0; i < attributes.size(); i++){
-                attDef[i] = new AttributeTypeDefault
+                attDef[i] = AttributeTypeFactory.newAttributeType
 		   ((String)attributeNames.get(i),attributes.get(i).getClass());
             }
             try {
                 FeatureType schema = 
-		    FeatureTypeFactory.create(attDef).setTypeName(typeName);
-                schema.setNamespace(namespaceURI);
-                FeatureFactory fac = new FlatFeatureFactory(schema);
-                Feature feature = fac.create((Object []) attributes.toArray());
+		    FeatureTypeFactory.newFeatureType(attDef, typeName, namespaceURI);
+		Feature feature = schema.create(attributes.toArray());
                 //currentFeature.setAttributes((Object []) attributes.toArray());
                 parent.feature(feature);
                 LOGGER.finest("resetting attName at end of feature");
@@ -230,7 +227,7 @@ public class TransactionFeatureHandler
                 //TODO: work out what to do in this case!
                 //_log.error("Unable to create valid schema",sve);
             }
-            catch (org.geotools.feature.IllegalFeatureException ife){
+            catch (org.geotools.feature.IllegalAttributeException ife){
                 //TODO: work out what to do in this case!
                 //_log.error("Unable to build feature",ife);
             }
