@@ -164,10 +164,10 @@ public class WfsConfig implements java.io.Serializable {
 	
 	    String logLevel = findTextFromTag(configElem, LOG_TAG);
 	    wfsConfig.setLogLevel(logLevel);
-	    // Level level = wfsConfig.getLogLevel(); 
+	    Level level = wfsConfig.getLogLevel(); 
 	    //init this now so the rest of the config has correct log levels.
-	    //Log4JFormatter.init("org.geotools", level);
-	    // Log4JFormatter.init("org.vfny.geoserver", level);
+	    Log4JFormatter.init("org.geotools", level);
+	    Log4JFormatter.init("org.vfny.geoserver", level);
 
 	    Element verboseElem = 
 		(Element) configElem.getElementsByTagName(VERBOSE_TAG).item(0);

@@ -7,10 +7,13 @@ package org.vfny.geoserver.requests;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.List;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureCollections;
 import org.vfny.geoserver.responses.WfsException;
 
 /**
@@ -35,7 +38,7 @@ public class InsertRequest
     public static final short operationType = INSERT;
 
     /** The list of features to be inserted.*/
-    public List features;
+    public FeatureCollection features;
 
     /** flag to tell is all locked features should be released. */
     private boolean releaseAll;
@@ -44,7 +47,9 @@ public class InsertRequest
     protected String typeName = null;
 
     /** Empty constructor. */
-    public InsertRequest() { features = new ArrayList();}
+    public InsertRequest() { 
+	features = FeatureCollections.newCollection();
+    }
 
     
     /** Gets whether all locked features should be released after
@@ -68,9 +73,9 @@ public class InsertRequest
     public void addFeature(Feature feature) throws WfsException {
 	if (typeName == null) {
 	    features.add(feature);
-	    typeName = feature.getSchema().getTypeName();
+	    typeName = feature.getFeatureType().getTypeName();
 	} else {
-	    String addTypeName = feature.getSchema().getTypeName();
+	    String addTypeName = feature.getFeatureType().getTypeName();
 	    if(typeName.equals(addTypeName)){
 		features.add(feature);
 	    } else {
@@ -126,8 +131,8 @@ public class InsertRequest
      *
      * @return the array of features.
      */
-    public Feature[] getFeatures(){
-	return (Feature [])features.toArray(new Feature[0]);
+    public FeatureCollection getFeatures(){
+	return features;
     }
 
     /**
@@ -151,9 +156,13 @@ public class InsertRequest
 	StringBuffer iRequest = new StringBuffer("Handle: " + handle);
 	iRequest.append("\nReleaseAll: " + releaseAll);
 	iRequest.append("\nTypeName: " + typeName + "\n");
-	for (int i = 0; i < features.size(); i++) {
-	    iRequest.append(features.get(i).toString() + "\n");
+	Iterator featIter = features.iterator();
+	while (featIter.hasNext()){
+	    iRequest.append(featIter.next().toString() + "\n");
 	}
+	//for (int i = 0; i < features.size(); i++) {
+	//  iRequest.append(features.get(i).toString() + "\n");
+	//}
 	return iRequest.toString();
     } 
 
@@ -175,10 +184,12 @@ public class InsertRequest
 	    LOGGER.finest("releaseAll equal: " + isEqual);
 	    
 	    if(this.features.size() == testInsert.features.size()){
-		for(int i = 0; i < testInsert.features.size(); i++) {
-		    isEqual = isEqual && this.features.contains
-			(testInsert.features.get(i));
-		}
+		//TODO: iterator through each collection.  THis will be
+		//better when datasources return FeatureDocument.
+		//for(int i = 0; i < testInsert.features.size(); i++) {
+		//  isEqual = isEqual && this.features.contains
+		//(testInsert.features.get(i));
+		//}
 	    } else {
 		isEqual = false;
 	    }
