@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -132,7 +132,8 @@ public class ServiceConfig implements java.io.Serializable {
 	throws ConfigurationException{
 	ServiceConfig servConfig = null;
 	try {
-	    FileInputStream fis = new FileInputStream(configFile);
+	    //FileInputStream fis = new FileInputStream(configFile);
+	    FileReader fis = new FileReader(configFile);
 	    InputSource in = new InputSource(fis);
 	    DocumentBuilderFactory dfactory = 
 		DocumentBuilderFactory.newInstance();
