@@ -26,14 +26,12 @@ public class DataFeatureTypesSelectForm extends ActionForm {
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
-System.out.println("SKAG2");
         selectedFeatureTypeName = "";
     }
 
     public ActionErrors validate(ActionMapping mapping,
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-        System.out.println("SKAG3");
         return errors;
     }
 
