@@ -28,8 +28,8 @@ import org.vfny.geoserver.config.validation.TestConfig;
  * </p>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestEditorForm.java,v 1.2 2004/02/07 01:30:05 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationTestEditorForm.java,v 1.3 2004/02/25 19:17:26 dmzwiers Exp $
  */
 public class ValidationTestEditorForm extends ActionForm {
     
@@ -146,7 +146,7 @@ public class ValidationTestEditorForm extends ActionForm {
     	return attributeValues;        
     }
     /** Help text gernated from PropertyDescriptor.getShortDescription() */
-    public String[] getAttributeHelp() {
+    public String[] getAttributeHelps() {
     	return (String[]) attributeHelps.toArray(new String[attributeHelps.size()]);
     }
     public String getAttributeKey(int index) {
@@ -154,6 +154,12 @@ public class ValidationTestEditorForm extends ActionForm {
     }
     public void setAttributeValues(List list) {
     	attributeValues = list;
+    }
+    public void setAttributeKeys(List list) {
+    	attributeKeys = list;
+    }
+    public void setAttributeHelps(List list) {
+    	attributeHelps = list;
     }
     
 	/**
