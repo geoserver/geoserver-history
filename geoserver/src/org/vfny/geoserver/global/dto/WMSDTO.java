@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import java.util.Date;
 
 
 
@@ -22,7 +21,7 @@ import java.util.Date;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSDTO.java,v 1.1.2.2 2004/01/06 22:16:55 jive Exp $
+ * @version $Id: WMSDTO.java,v 1.1.2.3 2004/01/06 23:03:14 dmzwiers Exp $
  */
 public final class WMSDTO implements DataStructure {
     

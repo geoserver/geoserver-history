@@ -21,14 +21,13 @@
 package org.vfny.geoserver.servlets;
 
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geotools.data.jdbc.ConnectionPoolManager;
-import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.zserver.GeoZServer;
 
 
@@ -37,7 +36,7 @@ import org.vfny.geoserver.zserver.GeoZServer;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.15.2.6 2004/01/06 22:05:09 dmzwiers Exp $
+ * @version $Id: FreefsLog.java,v 1.15.2.7 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -63,7 +62,7 @@ public class FreefsLog extends HttpServlet {
 
         
            /*ServletContext sc = getServletContext();
-           GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.NAME);
+           GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.SESSION_KEY);
            ConfigInfo cfgInfo = ConfigInfo.getInstance(path, gs);
                    if (cfgInfo.runZServer()) {
               try {

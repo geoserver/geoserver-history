@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.responses.CapabilitiesResponse;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
@@ -16,7 +15,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WFSCapabilitiesResponse.java,v 1.2.2.5 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: WFSCapabilitiesResponse.java,v 1.2.2.6 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public class WFSCapabilitiesResponse extends CapabilitiesResponse {
     /**

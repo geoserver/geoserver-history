@@ -8,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.responses.ResponseUtils;
 
 
@@ -64,7 +63,7 @@ import org.vfny.geoserver.responses.ResponseUtils;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.3.2.7 2004/01/06 22:05:12 dmzwiers Exp $
+ * @version $Id: ServiceException.java,v 1.3.2.8 2004/01/06 23:03:16 dmzwiers Exp $
  *
  * @task TODO: print directly to an output stream for getXmlResponse.
  */

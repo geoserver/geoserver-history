@@ -2,7 +2,7 @@ package org.vfny.geoserver.requests.readers;
 
 import java.util.Map;
 
-import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.global.WMS;
 
 
 /**
@@ -14,7 +14,7 @@ import org.vfny.geoserver.global.*;
  * to recognize it
  *
  * @author Gabriel Roldán
- * @version $Id: WmsKvpRequestReader.java,v 1.2.2.7 2004/01/06 22:05:12 dmzwiers Exp $
+ * @version $Id: WmsKvpRequestReader.java,v 1.2.2.8 2004/01/06 23:03:15 dmzwiers Exp $
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader
 {

@@ -33,9 +33,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.geotools.filter.FilterDOMParser;
-import org.vfny.geoserver.global.*;
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Log4JFormatter;
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -57,7 +66,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.5 2004/01/06 17:52:43 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.6 2004/01/06 23:03:15 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -386,7 +395,6 @@ public class XMLConfigReader {
 	protected void loadWFS(Element wfsElement, GeoServerDTO g) throws ConfigurationException{
 		WFSDTO w = wfs;
 		w.setService(loadService(wfsElement));
-		w.setDescribeUrl(g.getBaseUrl().toString() + "wfs/");
 	}
 
 	/**
@@ -403,7 +411,6 @@ public class XMLConfigReader {
 	protected void loadWMS(Element wmsElement, GeoServerDTO g) throws ConfigurationException{
 		WMSDTO w = wms;
 		w.setService(loadService(wmsElement));
-		w.setDescribeUrl(g.getBaseUrl().toString() + "wms/");
 	}
 
 	/**
@@ -897,7 +904,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.5 2004/01/06 17:52:43 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.6 2004/01/06 23:03:15 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

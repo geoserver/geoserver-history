@@ -19,10 +19,10 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.CapabilitiesRequest;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.Requests;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -34,7 +34,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.21.2.6 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.21.2.7 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {

@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: Validation.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: Validation.java,v 1.1.2.2 2004/01/06 23:03:12 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
@@ -166,7 +166,7 @@ public class Validation extends Abstract {
         return processor;
     }
     
-    Object getDTO(){
+    Object toDTO(){
     	return null;
     }
 
@@ -296,7 +296,7 @@ class PlugIn extends Abstract {
         }
     }
     
-	Object getDTO(){
+	Object toDTO(){
 		return null;
 	}
 }

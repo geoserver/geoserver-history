@@ -41,8 +41,8 @@ import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DeleteRequest;
@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.2.2.8 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */

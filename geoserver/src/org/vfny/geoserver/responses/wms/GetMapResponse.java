@@ -12,13 +12,13 @@ import java.util.List;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.map.GetMapDelegate;
 import org.vfny.geoserver.responses.wms.map.JAIMapResponse;
 import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
-import org.vfny.geoserver.global.*;
 
 
 /**
@@ -27,7 +27,7 @@ import org.vfny.geoserver.global.*;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.3.2.2 2004/01/06 22:05:10 dmzwiers Exp $
+ * @version $Id: GetMapResponse.java,v 1.3.2.3 2004/01/06 23:03:14 dmzwiers Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */

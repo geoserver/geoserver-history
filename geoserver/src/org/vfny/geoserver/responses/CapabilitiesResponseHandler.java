@@ -5,12 +5,15 @@
 package org.vfny.geoserver.responses;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
-import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.Service;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import java.util.*;
+
 import com.vividsolutions.jts.geom.Envelope;
 
 
@@ -18,7 +21,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.7 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.8 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";

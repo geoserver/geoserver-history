@@ -26,10 +26,10 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.LockRequest;
@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.8 2004/01/06 23:03:13 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation

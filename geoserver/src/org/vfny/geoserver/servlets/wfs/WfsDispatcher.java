@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.servlets.Dispatcher;
-import org.vfny.geoserver.global.*;
 
 
 /**
@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.*;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.1.2.2 2004/01/06 22:05:10 dmzwiers Exp $
+ * @version $Id: WfsDispatcher.java,v 1.1.2.3 2004/01/06 23:03:14 dmzwiers Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */

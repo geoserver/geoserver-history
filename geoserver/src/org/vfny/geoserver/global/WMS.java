@@ -4,16 +4,13 @@
  */
 package org.vfny.geoserver.global;
 
-import java.util.*;
-import java.text.*;
-
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.WMSDTO;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.1.2.3 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.1.2.4 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -36,7 +33,7 @@ public class WMS extends Service {
     	//URL = GeoServer.getInstance().getBaseUrl() + "/wms";
     }
 
-	Object getDTO(){
+	Object toDTO(){
 		return config;
 	}
 	
@@ -59,19 +56,7 @@ public class WMS extends Service {
         return FIXED_SERVICE_NAME;
     }
 
-    /**
-     * returns a GMT time string that represents the last modification time of
-     * the capabilities aspects of the WMS service
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getUpdateTime() {
-    	DateFormat df = DateFormat.getInstance();
-    	df.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return df.format(config.getUpdateTime());
-    }
-
-    /**
+     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!

@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.requests;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.global.GeoServer;
@@ -21,7 +20,7 @@ import org.vfny.geoserver.global.GeoServer;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.5.2.6 2004/01/06 22:05:11 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.5.2.7 2004/01/06 23:03:15 dmzwiers Exp $
  */
 abstract public class Request {
 	/**

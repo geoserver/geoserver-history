@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.servlets.Dispatcher;
-import org.vfny.geoserver.global.*;
 
 
 /**
@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.*;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.1.2.5 2004/01/06 22:05:11 dmzwiers Exp $
+ * @version $Id: WmsDispatcher.java,v 1.1.2.6 2004/01/06 23:03:15 dmzwiers Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded

@@ -25,11 +25,13 @@ import org.geotools.filter.LogicFilter;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.global.*;
+
 import com.vividsolutions.jts.geom.Envelope;
 
 
@@ -39,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.4.2.6 2004/01/06 22:05:09 dmzwiers Exp $
+ * @version $Id: GetMapDelegate.java,v 1.4.2.7 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;

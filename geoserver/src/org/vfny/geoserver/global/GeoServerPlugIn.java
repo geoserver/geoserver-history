@@ -4,12 +4,15 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.File;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
+import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
-import org.apache.struts.action.*;
-import org.apache.struts.config.*;
-import javax.servlet.*;
+import org.apache.struts.config.ModuleConfig;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
-import java.io.*;
 
 /**
  * GeoServerPlugIn purpose.
@@ -18,7 +21,7 @@ import java.io.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.1.2.1 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.1.2.2 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public class GeoServerPlugIn implements PlugIn {
 	public GeoServerPlugIn(){}
@@ -32,13 +35,13 @@ public class GeoServerPlugIn implements PlugIn {
 			File f = new File(rootDir);
 			XMLConfigReader cr = new XMLConfigReader(f);
 			GeoServer gs = new GeoServer();
-			sc.setAttribute(GeoServer.NAME,gs);
+			sc.setAttribute(GeoServer.SESSION_KEY,gs);
 			if(cr.isInitialized()){
 				gs.load(cr.getWms(),cr.getWfs(),cr.getGeoServer(),cr.getData());
 			}else
 				throw new ConfigurationException("An error occured loading the initial configuration.");
 		}catch(ConfigurationException e){
-			sc.setAttribute(GeoServer.NAME,null);
+			sc.setAttribute(GeoServer.SESSION_KEY,null);
 			throw new ServletException(e);
 		}
 	}

@@ -15,8 +15,8 @@ import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.2.2.7 2004/01/06 22:05:10 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.2.2.8 2004/01/06 23:03:14 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(

@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.7 2004/01/06 22:05:10 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.8 2004/01/06 23:03:14 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();
@@ -55,8 +55,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         //atts.addAttribute("WMT_MS_Capabilities
         //atts = new AttributesImpl();
         atts.addAttribute("", "version", "version", "", CAP_VERSION);
-        atts.addAttribute("", "", "updateSequence", "updateSequence",
-            wmsConfig.getUpdateTime());
+        //atts.addAttribute("", "", "updateSequence", "updateSequence",
+        //    wmsConfig.getUpdateTime());
         startElement("WMT_MS_Capabilities", atts);
     }
 

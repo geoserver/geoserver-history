@@ -27,8 +27,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.global.*;
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -38,7 +47,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2004/01/06 22:05:10 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/06 23:03:15 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -226,13 +235,11 @@ public class XMLConfigWriter {
 		if(obj instanceof WFSDTO){
 			WFSDTO w = (WFSDTO)obj;
 			s = w.getService();
-			u = w.getDescribeUrl();
 			t = "WFS";
 		}else
 		if(obj instanceof WMSDTO){
 			WMSDTO w = (WMSDTO)obj;
 			s = w.getService();
-			u = w.getDescribeUrl();
 			t = "WMS";
 		}else
 		throw new ConfigurationException("Invalid object: not WMS of WFS");
@@ -524,7 +531,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2004/01/06 22:05:10 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/06 23:03:15 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -602,7 +609,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2004/01/06 22:05:10 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/06 23:03:15 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

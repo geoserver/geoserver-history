@@ -7,6 +7,8 @@ package org.vfny.geoserver.global;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,15 +21,15 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.vfny.geoserver.global.dto.*;
+
 import com.vividsolutions.jts.geom.Envelope;
-import java.util.*;
 
 
 /**
@@ -35,7 +37,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.3 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.4 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends Abstract {
     /** DOCUMENT ME! */
@@ -51,7 +53,7 @@ public class FeatureTypeInfo extends Abstract {
     	this.dataStores = dataStores;
     }
 
-	Object getDTO(){
+	Object toDTO(){
 		return ftc;
 	}
 

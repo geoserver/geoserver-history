@@ -5,19 +5,20 @@
 package org.vfny.geoserver.global;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreInfo.java,v 1.1.2.3 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.1.2.4 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public class DataStoreInfo extends Abstract {
     
@@ -38,7 +39,7 @@ public class DataStoreInfo extends Abstract {
     	this.nameSpaces = nameSpaces;
     }
     
-    Object getDTO(){
+    Object toDTO(){
     	return dsc;
     }
 

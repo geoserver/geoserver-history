@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.NameSpaceDTO;
 /**
  * NameSpace purpose.
  * <p>
@@ -12,7 +12,7 @@ import org.vfny.geoserver.global.dto.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpace.java,v 1.1.2.7 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: NameSpace.java,v 1.1.2.8 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public class NameSpace extends Abstract{
 	private NameSpaceDTO nsDTO;
@@ -71,7 +71,7 @@ public class NameSpace extends Abstract{
 		nsDTO.setDefault(ns.isDefault());
 	}
 	
-	Object getDTO(){
+	Object toDTO(){
 		return nsDTO;
 	}
 

@@ -4,16 +4,20 @@
  */
 package org.vfny.geoserver.global;
 
+import java.nio.charset.Charset;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.*;
-import org.vfny.geoserver.global.dto.*;
-import java.nio.charset.*;
+
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 
 /**
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.5 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.1.2.6 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public class GeoServer extends Abstract{// implements org.apache.struts.action.PlugIn{
 	
@@ -188,7 +192,7 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
             
-    public static final String NAME = "GeoServer";
+    public static final String SESSION_KEY = "GeoServer";
 
     /** server configuration singleton */
     //private static GeoServer serverConfig;
@@ -400,38 +404,38 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 	//	XMLConfigWriter.store((WMSDTO)wms.getDTO(),(WFSDTO)wfs.getDTO(),(GeoServerDTO)geoServer,(DataDTO)data.getDTO(),dest);    }
 
 	public static WMSDTO getDTO(WMS wms){
-		return (WMSDTO)((WMSDTO)wms.getDTO()).clone();
+		return (WMSDTO)((WMSDTO)wms.toDTO()).clone();
 	}
 
 	public static WFSDTO getDTO(WFS wfs){
-		return (WFSDTO)((WFSDTO)wfs.getDTO()).clone();
+		return (WFSDTO)((WFSDTO)wfs.toDTO()).clone();
 	}
 
 	public static GeoServerDTO getDTO(GeoServer gs){
-		return (GeoServerDTO)((GeoServerDTO)gs.getDTO()).clone();
+		return (GeoServerDTO)((GeoServerDTO)gs.toDTO()).clone();
 	}
 
 	public static DataDTO getDTO(Data dt){
-		return (DataDTO)((DataDTO)dt.getDTO()).clone();
+		return (DataDTO)((DataDTO)dt.toDTO()).clone();
 	}
 
-	public WMSDTO getWMSDTO(){
+	public WMSDTO toWMSDTO(){
 		return getDTO(wms);
 	}
 
-	public WFSDTO getWFSDTO(){
+	public WFSDTO toWFSDTO(){
 		return getDTO(wfs);
 	}
 
-	public GeoServerDTO getGeoServerDTO(){
+	public GeoServerDTO toGeoServerDTO(){
 		return (GeoServerDTO)geoServer.clone();
 	}
 
-	public DataDTO getDataDTO(){
+	public DataDTO toDataDTO(){
 		return getDTO(data);
 	}
 
-	Object getDTO(){
+	Object toDTO(){
 		return geoServer;
 	}
     /**

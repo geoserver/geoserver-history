@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Abstract.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: Abstract.java,v 1.1.2.2 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public abstract class Abstract {
     /** DOCUMENT ME! */
@@ -35,7 +35,7 @@ public abstract class Abstract {
 	 * </p>
 	 * @return A DTO object to be casted as appropriate. 
 	 */
-	abstract Object getDTO();
+	abstract Object toDTO();
 	
     /**
      * checks <code>s</code> for nullity and if so, returns an empty String,

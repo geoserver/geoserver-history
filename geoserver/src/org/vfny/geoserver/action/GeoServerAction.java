@@ -4,20 +4,12 @@
  */
 package org.vfny.geoserver.action;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.Action;
-import org.vfny.geoserver.config.GlobalConfig;
-import org.vfny.geoserver.config.data.CatalogConfig;
-import org.vfny.geoserver.config.wfs.WFSConfig;
-import org.vfny.geoserver.config.wms.WMSConfig;
-import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.requests.Requests;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 
 /**
@@ -57,8 +49,8 @@ import javax.servlet.http.HttpSession;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: GeoServerAction.java,v 1.1.2.1 2004/01/06 08:38:59 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: GeoServerAction.java,v 1.1.2.2 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public class GeoServerAction extends Action {
 

@@ -9,22 +9,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.NameSpace;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import org.vfny.geoserver.requests.*;
 
 /**
  * Handles a Wfs specific sections of the capabilities response.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.8 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";

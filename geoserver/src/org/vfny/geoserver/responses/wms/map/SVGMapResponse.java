@@ -15,15 +15,15 @@ import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-import org.vfny.geoserver.global.*;
 
 
 /**
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.3.2.5 2004/01/06 22:05:09 dmzwiers Exp $
+ * @version $Id: SVGMapResponse.java,v 1.3.2.6 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
     private static final Logger LOGGER = Logger.getLogger(

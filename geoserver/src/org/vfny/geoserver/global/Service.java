@@ -4,14 +4,15 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.global.dto.*;
-import java.util.*;
+import java.util.List;
+
+import org.vfny.geoserver.global.dto.ServiceDTO;
 /**
  * default configuration for services
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.1.2.2 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.1.2.3 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public abstract class Service extends Abstract{
 	

@@ -6,6 +6,9 @@ package org.vfny.geoserver.servlets.wfs;
 
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.LockKvpReader;
@@ -13,8 +16,6 @@ import org.vfny.geoserver.requests.readers.wfs.LockXmlReader;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wfs.LockResponse;
 import org.vfny.geoserver.servlets.WFService;
-import javax.servlet.*;
-import org.vfny.geoserver.global.*;
 
 
 /**
@@ -23,7 +24,7 @@ import org.vfny.geoserver.global.*;
  * LockResponse xml element.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: Lock.java,v 1.2.2.5 2004/01/06 22:05:10 dmzwiers Exp $
+ * @version $Id: Lock.java,v 1.2.2.6 2004/01/06 23:03:14 dmzwiers Exp $
  */
 public class Lock extends WFService {
     /**

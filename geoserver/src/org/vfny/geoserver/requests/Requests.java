@@ -47,7 +47,7 @@ public final class Requests {
 		ServletRequest req = request;
 		HttpSession session = request.getSession();
 		ServletContext context = session.getServletContext();
-		return (GeoServer) context.getAttribute( "GeoServer" );		
+		return (GeoServer) context.getAttribute( GeoServer.SESSION_KEY );		
 	}
 	
 	/**

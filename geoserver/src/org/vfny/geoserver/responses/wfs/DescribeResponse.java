@@ -23,12 +23,11 @@ import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DescribeRequest;
 import org.vfny.geoserver.responses.Response;
-import javax.servlet.http.*;
 
 
 /**
@@ -37,7 +36,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.3.2.7 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.3.2.8 2004/01/06 23:03:13 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation

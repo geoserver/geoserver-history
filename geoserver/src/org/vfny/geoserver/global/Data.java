@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,15 +23,18 @@ import org.geotools.data.Transaction;
 import org.geotools.styling.SLDStyle;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.vfny.geoserver.global.dto.*;
-import java.util.HashMap;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
 
 /**
  * Holds the featureTypes.  Replaced TypeRepository.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.4 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.5 2004/01/06 23:03:12 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -120,7 +124,7 @@ public class Data extends Abstract
         return dStores;
     }
     
-    Object getDTO(){
+    Object toDTO(){
     	return catalog;
     }
 

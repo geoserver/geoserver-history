@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.oldconfig.TypeInfo;
 import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.oldconfig.VersionBean;
@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.8 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */

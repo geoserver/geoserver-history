@@ -26,10 +26,10 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
-import org.vfny.geoserver.global.*;
 
 
 /**
@@ -38,7 +38,7 @@ import org.vfny.geoserver.global.*;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.4.2.5 2004/01/06 22:05:09 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.4.2.6 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
