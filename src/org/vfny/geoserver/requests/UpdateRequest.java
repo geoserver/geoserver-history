@@ -91,7 +91,7 @@ public class UpdateRequest extends SubTransactionRequest {
     /** Gets the list of property values. */
     public Object[] getValues(){
 	int arrSize = properties.size();
-	Object[] retArr = new String[arrSize];
+	Object[] retArr = new Object[arrSize];
 	for (int i = 0; i < arrSize; i++) {
 	    retArr[i] = ((Property)properties.get(i)).getValue();
 	}
