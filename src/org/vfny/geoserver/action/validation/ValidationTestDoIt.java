@@ -39,79 +39,46 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.8 2004/06/25 23:11:24 emperorkefka Exp $
+ * @version $Id: ValidationTestDoIt.java,v 1.9 2004/06/28 23:41:10 emperorkefka Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
             ActionForm incomingForm, UserContainer user, HttpServletRequest request,
             HttpServletResponse response) {
-
-        ServletContext context = this.getServlet().getServletContext();
-        ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
-		TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession().getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
-		Map plugins = new HashMap();Map ts = new HashMap();
-		validationConfig.toDTO(plugins,ts); // return by ref.
+	    
+	    boolean stopThread = false;
+	    String parameter = mapping.getParameter();
+	    if (parameter != null && parameter.equals("stop")) {
+	        stopThread = true;
+	    }
+	    
+	    //Checks to see if previous Validation has even finished executing yet.
+		Thread oldThread = (Thread) request.getSession().getAttribute(ValidationRunnable.KEY);
+		if (oldThread != null && oldThread.isAlive()) {
+		    //OldThread has not finished execution; Shouldn't start a new one.
+		    //Alternatively, we could wait.
+		    
+		    if (stopThread == true) {
+		        oldThread.stop(); //This is decprecated, but is there another way to stop a Runnable?
+		    }
+		} else {
+	    
+		    ServletContext context = this.getServlet().getServletContext();
+		    ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
+		    TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession().getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
+		    Map plugins = new HashMap();
+		    Map ts = new HashMap();
+		    validationConfig.toDTO(plugins,ts); // return by ref.
+		    
+		    ValidationRunnable testThread = new ValidationRunnable();
+		    testThread.setup(ts, plugins, getDataConfig(), context, request);
 		
-		GeoValidator gv = new GeoValidator(ts,plugins);
-        DataConfig dataConfig = (DataConfig) getDataConfig();
-		Map dataStores = dataConfig.getDataStores();
-		TestValidationResults vr = runTransactions(dataStores,gv,context);
+		    Thread thread = new Thread(testThread);
 		
-		request.getSession().setAttribute(TestValidationResults.CURRENTLY_SELECTED_KEY,vr);
+		    request.getSession().setAttribute(ValidationRunnable.KEY, thread);
+		    thread.start();
+		}
+		
 		return  mapping.findForward("config.validation.displayResults");
 	}
-
-    private TestValidationResults runTransactions(Map dsm, ValidationProcessor v, ServletContext sc) {
-        if ((dsm == null) || (dsm.size() == 0)) {
-            System.out.println("No Datastores were defined.");
-
-            return null;
-        }
-
-        if (v == null) {
-            System.err.println(
-                "An error occured: Cannot run without a ValidationProcessor.");
-
-            return null;
-        }
-
-        TestValidationResults vr = new TestValidationResults();
-        Iterator i = dsm.keySet().iterator();
-
-		//TODO: we only get one datastore here when we may need more than that
-		// do another pass through it and get those typesNames
-        while (i.hasNext()) {
-            Map sources = new HashMap();
-            String key = i.next().toString();
-            DataStoreConfig dsc = (DataStoreConfig) dsm.get(key);
-            try {
-            	DataStore ds = dsc.findDataStore(sc);
-            	String[] ss = ds.getTypeNames();
-            	for (int j = 0; j < ss.length; j++) {
-                    FeatureSource fs = ds.getFeatureSource(ss[j]);
-                    sources.put(dsc.getId() +":"+ss[j], fs);
-
-                    v.runFeatureTests(dsc.getId(),fs.getSchema(),
-                        fs.getFeatures().collection(), (ValidationResults) vr);
-                    System.out.println("Feature Test Results for " + key + ":"
-                        + ss[j]);
-                    System.out.println(vr.toString());
-                } 
-            }catch (Exception e) {
-               e.printStackTrace();
-            }
-
-            Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE,
-                        Integer.MAX_VALUE, Integer.MAX_VALUE);
-
-            try {
-                v.runIntegrityTests(sources.keySet(), sources, env, (ValidationResults) vr);
-                System.out.println("Feature Integrety Test Results");
-                System.out.println(vr.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return vr;
-    }
 }

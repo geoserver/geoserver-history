@@ -140,8 +140,7 @@
    		<put name="body" value="/WEB-INF/pages/validation/displayResults.jsp"/>
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config:config.validation"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
-        <put name="actionForwards" value="config.validation.suite.doit"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>     
    	
    	<!-- CONFIG WFS -->
