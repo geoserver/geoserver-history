@@ -23,7 +23,7 @@ import org.geotools.validation.ValidationResults;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestValidationResults.java,v 1.3 2004/04/20 23:16:16 dmzwiers Exp $
+ * @version $Id: TestValidationResults.java,v 1.4 2004/04/21 00:04:30 dmzwiers Exp $
  */
 public class TestValidationResults implements ValidationResults{
 	public static final String CURRENTLY_SELECTED_KEY = "TestValidationResults";
@@ -46,7 +46,13 @@ public class TestValidationResults implements ValidationResults{
 	
 	Map warning = new HashMap();
 	public Map getWarnings(){return warning;}
-	public void warning(Feature f,String s){error(f,s);}
+	public void warning(Feature f,String s){
+	Logger logger = Logger.getLogger("org.vfny.geoserver.validation");
+	if(logger.getLevel().equals(Level.FINEST)){
+		logger.warning(s);
+	}
+	warning.put(f,s);
+	}
 	
 	/**
 	 * Access run property.
