@@ -74,57 +74,6 @@ import com.vividsolutions.jts.geom.Envelope;
  * </ul>
  * </p>
  * 
- * <p>
- * Customized parameters:
- * 
- * <ul>
- * <li>
- * FILTER if present, must contain a list of filters, exactly one per feature
- * type requested, in the same format as for the <i>FILTER</i> parameter in
- * WFS's GetFeature request.
- * </li>
- * <li>
- * ATTRIBUTES wich attributes of each layer will be sent as XML attributes in a
- * SVG map response. The format of this parameter is:
- * <code>ATTRIBUTES=attName1,attName2,...,attNameN|attName1,
- * attName2,...,attNameN</code>. Wich means that if it is pressent, a list of
- * attributes for each layer requested must be specified, separated by "|"
- * (pipe), and each attribute separated by "," (comma). The following special
- * attributes are allowed to be queried:
- * 
- * <ul>
- * <li>
- * <b>#FID</b>: a map producer capable of handling attributes will write the
- * feature id of each feature. For example, SVGMapResponse will write a
- * polygon by this way: <code>&lt;path id="&lt;featureId&gt;"
- * d="..."/&gt;</code>
- * </li>
- * <li>
- * <b>#BOUNDS</b>: a map producer capable of handling attributes will write the
- * bounding box of each feature. For example, SVGMapResponse will write a
- * polygon by this way: <code>&lt;path bounds="minx miny maxx maxy"
- * d="..."/&gt;</code>
- * </li>
- * </ul>
- * 
- * </li>
- * <li>
- * SVGHEADER expected <code>"true"</code> or <code>"false"</code>, tells wether
- * the xml header and SVG element must be printed when generating a SVG map
- * </li>
- * </ul>
- * </p>
- * 
- * <p>
- * <strong>NOTE:</strong> if you want to request one of the special attributes
- * (#FID or #BOUNDS), and you're making the request through HTTP GET method
- * (such as writing the request in the address text box of your web browser),
- * be sure to no write the <code>'#'</code> character in it's URL encoded
- * format, wich is the <code>"<b>%23</b>"</code> literal. For example, instead
- * of writting <code>ATTRIBUTES=<b>#</b>FID,<b>#</b>BOUNDS</code> you should
- * write <code>ATTRIBUTES=<b>%23</b>FID,<b>%23</b>BOUNDS</code>
- * </p>
- *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetMapKvpReader.java,v 1.12 2004/09/16 22:20:54 cholmesny Exp $
  */
@@ -186,8 +135,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         FeatureTypeInfo[] layers = parseMandatoryParameters(request);
         parseOptionalParameters(request);
-        parseCustomParameters(request, layers);
-
         return request;
     }
 
@@ -293,76 +240,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         return layers;
     }
-
-    /**
-     * parses the following custom parameters for the GetMap request handling:
-     * 
-     * <ul>
-     * <li>
-     * FILTER if present, must contain a list of filters, exactly one per
-     * feature type requested, in the same format as for the <i>FILTER</i>
-     * parameter in WFS's GetFeature request.
-     * </li>
-     * <li>
-     * ATTRIBUTES wich attributes of each layer will be sent as XML attributes
-     * in a SVG map response. The format of this parameter is:
-     * <code>ATTRIBUTES=attName1,attName2,...,attNameN|attName1,
-     * attName2,...,attNameN</code>. Wich means that if it is pressent, a list
-     * of attributes for each layer requested must be specified, separated by
-     * "|" (pipe), and each attribute separated by "," (comma).
-     * </li>
-     * <li>
-     * SVGHEADER expected <code>"true"</code> or <code>"false"</code>, tells
-     * wether the xml header and SVG element must be printed when generating a
-     * SVG map
-     * </li>
-     * </ul>
-     * 
-     *
-     * @param request DOCUMENT ME!
-     * @param layers DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
-     */
-    private void parseCustomParameters(GetMapRequest request,
-        FeatureTypeInfo[] layers) throws ServiceException {
-        Filter[] filters = parseFilters(layers.length);
-        request.setFilters(filters);
-
-        List attributes = parseAttributes(layers);
-        request.setAttributes(attributes);
-
-        String svgHeader = super.getValue("SVGHEADER");
-        boolean writeSvgHeader = (svgHeader == null) ? true
-                                                     : Boolean.valueOf(svgHeader)
-                                                              .booleanValue();
-        request.setWriteSvgHeader(writeSvgHeader);
-
-        String collectParam = super.getValue("COLLECT");
-
-        if (collectParam != null) {
-            boolean collect = Boolean.valueOf(collectParam).booleanValue();
-            LOGGER.finer("Request sets collect geometries to: " + collect);
-            request.setCollectGeometries(collect);
-        }
-
-        String genFactorParam = super.getValue("GENERALIZATIONFACTOR");
-
-        if (genFactorParam != null) {
-            double gfactor = 0;
-            LOGGER.finest("Requested generalization factor: " + genFactorParam);
-
-            try {
-                gfactor = Double.parseDouble(genFactorParam);
-                request.setGeneralizationFactor(gfactor);
-            } catch (NumberFormatException ex) {
-                LOGGER.warning(
-                    "parameter GENERALIZATIONFACTOR mus be parseable "
-                    + "as double, got " + genFactorParam);
-            }
-        }
-    }
-
     /**
      * creates a list of requested attributes, wich must be a valid attribute
      * name or one of the following special attributes:

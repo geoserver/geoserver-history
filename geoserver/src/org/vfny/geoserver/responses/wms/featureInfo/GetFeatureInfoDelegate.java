@@ -4,9 +4,7 @@
  */
 package org.vfny.geoserver.responses.wms.featureInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
@@ -25,8 +23,8 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.responses.Response;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -52,12 +50,11 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * This abstract class takes care of executing the request in the sense of
  * taking the GetFeatureInfo request parameters such as query_layers, bbox, x,
- * y, etc., and the optional parameter FILTER, create the gt2 query objects
- * for each featuretype and executing it. This process leads to a set of
- * FeatureResults objects and its metadata, wich will be given to the
- * <code>execute(FeatureTypeInfo[] , FeatureResults[])</code> method, that a
- * subclass should implement as a matter of setting up any resource/state it
- * needs to later encoding.
+ * y, etc., create the gt2 query objects for each featuretype and executing
+ * it. This process leads to a set of FeatureResults objects and its metadata,
+ * wich will be given to the <code>execute(FeatureTypeInfo[] ,
+ * FeatureResults[])</code> method, that a subclass should implement as a
+ * matter of setting up any resource/state it needs to later encoding.
  * </p>
  * 
  * <p>
@@ -85,6 +82,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id: GetFeatureInfoDelegate.java,v 1.1 2004/07/15 21:13:14 jmacgill Exp $
  */
 public abstract class GetFeatureInfoDelegate implements Response {
+    /** DOCUMENT ME!  */
     private GetFeatureInfoRequest request;
 
     /**
@@ -120,10 +118,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         //use the layer of the QUERY_LAYERS parameter, not the LAYERS one
         FeatureTypeInfo[] layers = request.getQueryLayers();
 
-        //get the filters of the "GetMap" portion of the request
-        Filter[] filters = request.getGetMapRequest().getUserSuppliedFilters();
-
-        Query[] queries = buildQueries(layers, filters);
+        Query[] queries = buildQueries(layers);
         int x = request.getXPixel();
         int y = request.getYPixel();
 
@@ -167,16 +162,14 @@ public abstract class GetFeatureInfoDelegate implements Response {
      * </p>
      *
      * @param layers The layers to request against.
-     * @param filters The matching filters to process with.
      *
      * @return An array of queries, matching the arrays passed in.
      *
      * @throws WmsException If the custom filter can't be constructed.
      */
-    private Query[] buildQueries(FeatureTypeInfo[] layers, Filter[] filters)
+    private Query[] buildQueries(FeatureTypeInfo[] layers)
         throws WmsException {
         int nLayers = layers.length;
-        int numFilters = (filters == null) ? 0 : filters.length;
         Query[] queries = new Query[nLayers];
         GetFeatureInfoRequest infoRequest = getRequest();
         Envelope requestExtent = infoRequest.getGetMapRequest().getBbox();
@@ -184,23 +177,16 @@ public abstract class GetFeatureInfoDelegate implements Response {
 
         try {
             Filter finalLayerFilter;
-            Filter customFilter;
             Query layerQuery;
 
             for (int i = 0; i < nLayers; i++) {
                 FeatureType schema = layers[i].getFeatureType();
 
-                if (numFilters == nLayers) {
-                    customFilter = filters[i];
-                } else {
-                    customFilter = null;
-                }
-
-                finalLayerFilter = buildFilter(customFilter, requestExtent,
-                        ffactory, schema);
+                finalLayerFilter = buildFilter(requestExtent, ffactory, schema);
 
                 String[] props = guessProperties(layers[i], finalLayerFilter);
-                layerQuery = new DefaultQuery(schema.getTypeName(), finalLayerFilter, props);
+                layerQuery = new DefaultQuery(schema.getTypeName(),
+                        finalLayerFilter, props);
                 queries[i] = layerQuery;
             }
         } catch (IllegalFilterException ex) {
@@ -215,11 +201,9 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Builds the filter for a layer containing at leas the BBOX filter defined
-     * by the extent queries (BBOX param), and optionally AND'ed with the
-     * customized filter for that layer (from FILTERS param)
+     * Builds the filter for a layer containing the BBOX filter defined by the
+     * extent queries (BBOX param).
      *
-     * @param filter The additional filter to process with.
      * @param requestExtent The extent to filter out.
      * @param ffactory A filterFactory to create new filters.
      * @param schema The FeatureTypeInfo of the request of this filter.
@@ -228,9 +212,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws IllegalFilterException For problems making the filter.
      */
-    private Filter buildFilter(Filter filter, Envelope requestExtent,
-        FilterFactory ffactory, FeatureType schema)
-        throws IllegalFilterException {
+    private Filter buildFilter(Envelope requestExtent, FilterFactory ffactory,
+        FeatureType schema) throws IllegalFilterException {
         GeometryFilter bboxFilter;
         bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
 
@@ -240,15 +223,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         bboxFilter.addLeftGeometry(geomAttExpr);
         bboxFilter.addRightGeometry(bboxExpr);
 
-        Filter finalLayerFilter = bboxFilter;
-
-        if ((filter != null) && (filter != Filter.NONE)) {
-            finalLayerFilter = ffactory.createLogicFilter(AbstractFilter.LOGIC_AND);
-            ((LogicFilter) finalLayerFilter).addFilter(bboxFilter);
-            ((LogicFilter) finalLayerFilter).addFilter(filter);
-        }
-
-        return finalLayerFilter;
+        return bboxFilter;
     }
 
     /**
