@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map;
+package org.vfny.geoserver.responses.wms;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,7 +26,7 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.3.4.2 2004/02/03 21:32:41 cholmesny Exp $
+ * @version $Id: GetMapResponse.java,v 1.3.4.3 2004/02/07 03:26:44 cholmesny Exp $
  */
 public class GetMapResponse implements Response {
     /** The delegates to produce maps */
