@@ -4,7 +4,7 @@ xmlns:gml="http://www.opengis.net/gml"
 xmlns:ogc="http://www.opengis.net/ogc" 
 xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
 xs:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd">
-  <name>RoadTestSuite</name>
+  <name>LineTestSuite</name>
   <description>This test suite checks each road name to see 
        that they are of appropriate length and checks to 
        see if they are on the list of possible road names.
