@@ -110,7 +110,6 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
      *
      */
     public JAIMapResponseTest() {
-        super();
     }
 
     /**
@@ -136,12 +135,9 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
     /**
      * DOCUMENT ME!
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws IllegalFilterException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
-    public void testSimpleGetMapQuery()
-        throws IOException, IllegalFilterException, WmsException {
+    public void testSimpleGetMapQuery() throws Exception {
         final String mapFormat = "image/png";
 
         final DataStore ds = getCiteDataStore();
@@ -158,7 +154,7 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
         map.setBgColor(Color.red);
         map.setTransparent(false);
 
-        Style basicStyle = createDefaultStyle();
+        Style basicStyle = getStyle("default.sld");
         map.addLayer(basicPolygons, basicStyle);
 
         this.jaiMap.setOutputFormat(mapFormat);
@@ -186,7 +182,7 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
             System.out.println(r.next().getDefaultGeometry());
         }
 
-        Style style = createDefaultStyle();
+        Style style = getStyle("default.sld");
 
         Envelope env = getBlueLakeBounds();
         int w = 400;
@@ -211,42 +207,6 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
         BufferedImage image = this.jaiMap.getImage();
 
         showImage(fSource.getSchema().getTypeName(), SHOW_TIMEOUT, image);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws IllegalFilterException DOCUMENT ME!
-     * @throws Exception DOCUMENT ME!
-     */
-    public void testForests()
-        throws IOException, IllegalFilterException, Exception {
-        final DataStore ds = getCiteDataStore();
-        Envelope env = getBlueLakeBounds();
-        double shift = env.getWidth() / 6;
-
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift,
-                env.getMinY() - shift, env.getMaxY() + shift);
-
-        final WMSMapContext map = new WMSMapContext();
-        int w = 400;
-        int h = (int) Math.round((env.getHeight() * w) / env.getWidth());
-        map.setMapWidth(w);
-        map.setMapHeight(h);
-        map.setBgColor(Color.white);
-        map.setTransparent(true);
-
-        map.addLayer(ds.getFeatureSource(FORESTS_TYPE),
-            getDefaultStyle(FORESTS_TYPE));
-
-        map.setAreaOfInterest(env);
-
-        this.jaiMap.setOutputFormat("image/png");
-        this.jaiMap.produceMap(map);
-
-        BufferedImage image = this.jaiMap.getImage();
-        showImage("Blue Lake", 2000, image);
     }
 
     /**
@@ -328,376 +288,24 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
      */
     private Style getDefaultStyle(String citeTypeName)
         throws Exception {
-        SLDParser parser = new SLDParser(sFac);
-        URL styleRes = getClass().getResource("/test-data/styles/" + citeTypeName + ".sld");
-        parser.setInput(styleRes);
-        Style s = parser.readXML()[0];
-        return s;
+        return getStyle(citeTypeName + ".sld");
     }
 
     /**
      * DOCUMENT ME!
      *
-     * @param citeTypeName DOCUMENT ME!
+     * @param styleName DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
      * @throws Exception DOCUMENT ME!
      */
-    private Style getDefaultStyle2(String citeTypeName)
-        throws Exception {
-        Style s = null;
-        Method sBuilder = this.getClass().getMethod("get" + citeTypeName
-                + "Style", null);
-        s = (Style) sBuilder.invoke(this, null);
-        LOGGER.info("Got reflected style for " + citeTypeName);
-
-        SLDTransformer transformer = new SLDTransformer();
-        transformer.setIndentation(4);
-
-        try {
-            transformer.transform(s,
-                new FileOutputStream("/home/gabriel/cite/" + citeTypeName
-                    + ".sld"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getStreamsStyle() throws IllegalFilterException {
-        final Style s = sFac.createStyle();
-        final LineSymbolizer ls = sFac.createLineSymbolizer();
-        final Stroke defaulStroke = sFac.getDefaultStroke();
-        defaulStroke.setColor(filterFactory.createLiteralExpression("#4040C0"));
-        defaulStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(2)));
-        ls.setStroke(defaulStroke);
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { ls });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle();
-        fts.setRules(new Rule[] { rule });
-        fts.setFeatureTypeName(STREAMS_TYPE);
-
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getRoadSegmentsStyle() throws IllegalFilterException {
-        final Style s = sFac.createStyle();
-        final LineSymbolizer ls = sFac.createLineSymbolizer();
-        final Stroke defaulStroke = sFac.getDefaultStroke();
-        defaulStroke.setColor(filterFactory.createLiteralExpression("#FF0000"));
-        defaulStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(4)));
-        ls.setStroke(defaulStroke);
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { ls });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle();
-        fts.setRules(new Rule[] { rule });
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getPondsStyle() throws IllegalFilterException {
-        final Style s = sFac.createStyle();
-        final PolygonSymbolizer pondsPolySym = sFac.createPolygonSymbolizer();
-
-        final Fill pondsFill = sFac.getDefaultFill();
-        pondsFill.setColor(filterFactory.createLiteralExpression("#00FFFF"));
-        pondsPolySym.setFill(pondsFill);
-
-        final Stroke pondsStroke = sFac.getDefaultStroke();
-        pondsStroke.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_STROKE_COLOR));
-        pondsStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(1)));
-        pondsPolySym.setStroke(pondsStroke);
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { pondsPolySym });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getNamedPlacesStyle() throws IllegalFilterException {
-        final Style s = sFac.createStyle();
-        final PolygonSymbolizer placesPolySym = sFac.createPolygonSymbolizer();
-
-        final Fill placesFill = sFac.getDefaultFill();
-        placesFill.setColor(filterFactory.createLiteralExpression("#FFFFFF"));
-        placesPolySym.setFill(placesFill);
-
-        final Stroke placesStroke = sFac.getDefaultStroke();
-        placesStroke.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_STROKE_COLOR));
-        placesStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(1)));
-        placesPolySym.setStroke(placesStroke);
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { placesPolySym });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getMapNeatlineStyle() throws IllegalFilterException {
-        final Style s = sFac.createStyle();
-        final PolygonSymbolizer neatlinePolySym = sFac.createPolygonSymbolizer();
-
-        final Fill noFill = sFac.getDefaultFill();
-        noFill.setOpacity(filterFactory.createLiteralExpression(0.0f));
-        neatlinePolySym.setFill(noFill);
-
-        final Stroke neatlineStroke = sFac.getDefaultStroke();
-        neatlineStroke.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_STROKE_COLOR));
-        neatlineStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(DEFAULT_STROKE_WIDTH)));
-        neatlinePolySym.setStroke(neatlineStroke);
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { neatlinePolySym });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getLakesStyle() throws IllegalFilterException {
-        final Style s = sFac.createStyle();
-        final PolygonSymbolizer lakesPolySym = sFac.createPolygonSymbolizer();
-
-        final Fill lakesFill = sFac.getDefaultFill();
-        lakesFill.setColor(filterFactory.createLiteralExpression("#4040C0"));
-        lakesPolySym.setFill(lakesFill);
-
-        final Stroke lakesStroke = sFac.getDefaultStroke();
-        lakesStroke.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_STROKE_COLOR));
-        lakesStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(1)));
-        lakesPolySym.setStroke(lakesStroke);
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { lakesPolySym });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getForestsStyle() throws IllegalFilterException {
-        final Style s = sFac.createStyle();
-        final PolygonSymbolizer forestsPolySym = sFac.createPolygonSymbolizer();
-
-        final Fill forestsFill = sFac.getDefaultFill();
-
-        //forestsFill.setOpacity(filterFactory.createLiteralExpression(0.0f));
-        forestsFill.setBackgroundColor(filterFactory.createLiteralExpression(
-                "#FFFFFF"));
-
-        URL graphicUrl = JAIMapResponseTest.class.getResource("forest_fill.png");
-        ExternalGraphic[] tree = {
-                sFac.createExternalGraphic(graphicUrl, "image/png")
-            };
-        Mark[] marks = {  };
-        Symbol[] symbols = null;
-        Expression opacity = filterFactory.createLiteralExpression(1.0f);
-        Expression size = filterFactory.createLiteralExpression(30);
-        Expression rotation = filterFactory.createLiteralExpression(0.5d);
-        Graphic graphic = sFac.createGraphic(tree, marks, symbols, opacity,
-                size, rotation);
-        forestsFill.setGraphicFill(graphic);
-
-        forestsPolySym.setFill(forestsFill);
-
-        final Stroke forestsStroke = sFac.getDefaultStroke();
-        forestsStroke.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_STROKE_COLOR));
-        forestsStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(1)));
-        forestsPolySym.setStroke(forestsStroke);
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { forestsPolySym });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getDividedRoutesStyle() throws IllegalFilterException {
-        final LineSymbolizer defaultLineSym;
-
-        final Stroke defaulStroke = sFac.getDefaultStroke();
-        defaulStroke.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_STROKE_COLOR));
-        defaulStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(DEFAULT_STROKE_WIDTH)));
-
-        defaultLineSym = sFac.createLineSymbolizer();
-        defaultLineSym.setStroke(defaulStroke);
-
-        Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { defaultLineSym });
-
-        FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        /*
-           //fts.setFeatureTypeName("BasicPolygons");
-           Rule rule2 = sFac.createRule();
-           rule2.setSymbolizers(new Symbolizer[] { defaultLineSym });
-           FeatureTypeStyle fts2 = sFac.createFeatureTypeStyle();
-           fts2.setRules(new Rule[] { rule2 });
-           fts2.setFeatureTypeName("linefeature");
-           Rule rule3 = sFac.createRule();
-           rule3.setSymbolizers(new Symbolizer[] { defaultPointSym });
-           FeatureTypeStyle fts3 = sFac.createFeatureTypeStyle();
-           fts3.setRules(new Rule[] { rule3 });
-           fts3.setFeatureTypeName("pointfeature");
-           Rule rule4 = sFac.createRule();
-           rule4.setSymbolizers(new Symbolizer[] { defaultPolySym, defaultLineSym });
-           FeatureTypeStyle fts4 = sFac.createFeatureTypeStyle();
-           fts4.setRules(new Rule[] { rule4 });
-           fts4.setFeatureTypeName("collFeature");
-           Rule rule5 = sFac.createRule();
-           rule5.setSymbolizers(new Symbolizer[] { defaultLineSym });
-           FeatureTypeStyle fts5 = sFac.createFeatureTypeStyle();
-           fts5.setRules(new Rule[] { rule5 });
-           fts5.setFeatureTypeName("ringFeature");
-         */
-        Style style = sFac.createStyle();
-        style.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return style;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    public Style getBuildingsStyle() throws IllegalFilterException {
-        final Style s = sFac.createStyle();
-        final PolygonSymbolizer placesPolySym = sFac.createPolygonSymbolizer();
-
-        final Fill placesFill = sFac.getDefaultFill();
-        placesFill.setColor(filterFactory.createLiteralExpression("#FFFFFF"));
-        placesPolySym.setFill(placesFill);
-
-        final Stroke placesStroke = sFac.getDefaultStroke();
-        placesStroke.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_STROKE_COLOR));
-        placesStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(2)));
-        placesPolySym.setStroke(placesStroke);
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { placesPolySym });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Style getBridgesStyle() {
-        final Style s = sFac.createStyle();
-        final PointSymbolizer defaultPointSym = sFac.createPointSymbolizer();
-        defaultPointSym.setGraphic(sFac.getDefaultGraphic());
-
-        final Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { defaultPointSym });
-
-        final FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        s.setFeatureTypeStyles(new FeatureTypeStyle[] { fts });
+    private Style getStyle(String styleName) throws Exception {
+        SLDParser parser = new SLDParser(sFac);
+        URL styleRes = getClass().getResource("/test-data/styles/" + styleName);
+        parser.setInput(styleRes);
+
+        Style s = parser.readXML()[0];
 
         return s;
     }
@@ -852,145 +460,5 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
                     renderer.worldToScreenTransform(bounds, rect));
             }
         }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    private Style createDefaultStyle() throws IllegalFilterException {
-        final PointSymbolizer defaultPointSym;
-        final LineSymbolizer defaultLineSym;
-        final PolygonSymbolizer defaultPolySym;
-
-        final Stroke defaulStroke = sFac.getDefaultStroke();
-        defaulStroke.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_STROKE_COLOR));
-        defaulStroke.setWidth(filterFactory.createLiteralExpression(
-                new Integer(DEFAULT_STROKE_WIDTH)));
-
-        defaultPointSym = sFac.createPointSymbolizer();
-        defaultPointSym.setGraphic(sFac.getDefaultGraphic());
-
-        defaultLineSym = sFac.createLineSymbolizer();
-        defaultLineSym.setStroke(defaulStroke);
-
-        defaultPolySym = sFac.createPolygonSymbolizer();
-
-        Fill defaultFill = sFac.getDefaultFill();
-        defaultFill.setColor(filterFactory.createLiteralExpression(
-                DEFAULT_FILL_COLOR));
-        defaultPolySym.setFill(defaultFill);
-        defaultPolySym.setStroke(defaulStroke);
-
-        Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] {
-                defaultPolySym, defaultPointSym, defaultLineSym
-            });
-
-        FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        /*
-           //fts.setFeatureTypeName("BasicPolygons");
-           Rule rule2 = sFac.createRule();
-           rule2.setSymbolizers(new Symbolizer[] { defaultLineSym });
-           FeatureTypeStyle fts2 = sFac.createFeatureTypeStyle();
-           fts2.setRules(new Rule[] { rule2 });
-           fts2.setFeatureTypeName("linefeature");
-           Rule rule3 = sFac.createRule();
-           rule3.setSymbolizers(new Symbolizer[] { defaultPointSym });
-           FeatureTypeStyle fts3 = sFac.createFeatureTypeStyle();
-           fts3.setRules(new Rule[] { rule3 });
-           fts3.setFeatureTypeName("pointfeature");
-           Rule rule4 = sFac.createRule();
-           rule4.setSymbolizers(new Symbolizer[] { defaultPolySym, defaultLineSym });
-           FeatureTypeStyle fts4 = sFac.createFeatureTypeStyle();
-           fts4.setRules(new Rule[] { rule4 });
-           fts4.setFeatureTypeName("collFeature");
-           Rule rule5 = sFac.createRule();
-           rule5.setSymbolizers(new Symbolizer[] { defaultLineSym });
-           FeatureTypeStyle fts5 = sFac.createFeatureTypeStyle();
-           fts5.setRules(new Rule[] { rule5 });
-           fts5.setFeatureTypeName("ringFeature");
-         */
-        Style style = sFac.createStyle();
-        style.setFeatureTypeStyles(new FeatureTypeStyle[] {
-                fts //, fts2, fts3, fts4, fts5
-            });
-
-        return style;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalFilterException DOCUMENT ME!
-     */
-    private Style createTestStyle() throws IllegalFilterException {
-        StyleFactory sFac = StyleFactory.createStyleFactory();
-
-        // The following is complex, and should be built from
-        // an SLD document and not by hand
-        PointSymbolizer pointsym = sFac.createPointSymbolizer();
-        pointsym.setGraphic(sFac.getDefaultGraphic());
-
-        LineSymbolizer linesym = sFac.createLineSymbolizer();
-        Stroke myStroke = sFac.getDefaultStroke();
-        myStroke.setColor(filterFactory.createLiteralExpression("#0000ff"));
-        myStroke.setWidth(filterFactory.createLiteralExpression(new Integer(5)));
-        LOGGER.info("got new Stroke " + myStroke);
-        linesym.setStroke(myStroke);
-
-        PolygonSymbolizer polysym = sFac.createPolygonSymbolizer();
-        Fill myFill = sFac.getDefaultFill();
-        myFill.setColor(filterFactory.createLiteralExpression("#ff0000"));
-        polysym.setFill(myFill);
-        polysym.setStroke(sFac.getDefaultStroke());
-
-        Rule rule = sFac.createRule();
-        rule.setSymbolizers(new Symbolizer[] { polysym });
-
-        FeatureTypeStyle fts = sFac.createFeatureTypeStyle(new Rule[] { rule });
-
-        //fts.setFeatureTypeName("BasicPolygons");
-        Rule rule2 = sFac.createRule();
-        rule2.setSymbolizers(new Symbolizer[] { linesym });
-
-        FeatureTypeStyle fts2 = sFac.createFeatureTypeStyle();
-        fts2.setRules(new Rule[] { rule2 });
-        fts2.setFeatureTypeName("linefeature");
-
-        Rule rule3 = sFac.createRule();
-        rule3.setSymbolizers(new Symbolizer[] { pointsym });
-
-        FeatureTypeStyle fts3 = sFac.createFeatureTypeStyle();
-        fts3.setRules(new Rule[] { rule3 });
-        fts3.setFeatureTypeName("pointfeature");
-
-        Rule rule4 = sFac.createRule();
-        rule4.setSymbolizers(new Symbolizer[] { polysym, linesym });
-
-        FeatureTypeStyle fts4 = sFac.createFeatureTypeStyle();
-        fts4.setRules(new Rule[] { rule4 });
-        fts4.setFeatureTypeName("collFeature");
-
-        Rule rule5 = sFac.createRule();
-        rule5.setSymbolizers(new Symbolizer[] { linesym });
-
-        FeatureTypeStyle fts5 = sFac.createFeatureTypeStyle();
-        fts5.setRules(new Rule[] { rule5 });
-        fts5.setFeatureTypeName("ringFeature");
-
-        Style style = sFac.createStyle();
-        style.setFeatureTypeStyles(new FeatureTypeStyle[] {
-                fts, fts2, fts3, fts4, fts5
-            });
-
-        return style;
     }
 }
