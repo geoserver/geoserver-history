@@ -36,7 +36,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.5 2004/01/07 22:46:02 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.6 2004/01/08 20:34:14 jive Exp $
  */
 public class FeatureTypeInfo extends Abstract {
     /** DOCUMENT ME! */
@@ -57,8 +57,10 @@ public class FeatureTypeInfo extends Abstract {
 	}
 
     /**
+     * This returns the number of decimals used when writing GML.
+     * <p>
      * DOCUMENT ME!
-     *
+     * </p>
      * @return DOCUMENT ME!
      */
     public int getNumDecimals() {
@@ -66,9 +68,8 @@ public class FeatureTypeInfo extends Abstract {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * Access geotools2 FeatureType.
+     * @return FeatureType 
      */
     public FeatureType getSchema() {
     	try{
