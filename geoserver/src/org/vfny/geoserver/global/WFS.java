@@ -7,62 +7,65 @@ package org.vfny.geoserver.global;
 import org.vfny.geoserver.global.dto.*;
 
 /**
- * Represents a configuration of the WFS service.  Inherits most everything
- * from ServiceConfig.
+ * WFS
+ * 
+ * <p>
+ * Represents the GeoServer information required to configure an 
+ * instance of the WFS Server. This class holds the currently used 
+ * configuration and is instantiated initially by the GeoServerPlugIn 
+ * at start-up, but may be modified by the Configuration Interface 
+ * during runtime. Such modifications come from the GeoServer Object 
+ * in the SessionContext. 
+ * </p>
+ * 
+ * <p>
+ * WFS wfs = new WFS(dto);
+ * System.out.println(wfs.getName());
+ * System.out.println(wfs.getAbstract());
+ * </p>
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.1.2.5 2004/01/07 23:27:58 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.1.2.6 2004/01/08 19:39:12 dmzwiers Exp $
  */
 public class WFS extends Service {
-    public static final String WFS_FOLDER = "wfs/1.0.0/";
-    public static final String WFS_BASIC_LOC = WFS_FOLDER + "GlobalWFS-basic.xsd";
-    public static final String WFS_CAP_LOC = WFS_FOLDER
-        + "GlobalWFS-capabilities.xsd";
-    private WFSDTO config;
 
+	/**
+	 * WFS constructor.
+	 * <p>
+	 * Stores the data specified in the WFSDTO object in this WFS Object for GeoServer to use.
+	 * </p>
+	 * @param config The data intended for GeoServer to use. 
+	 */
     public WFS(WFSDTO config){
     	super(config.getService());
-		//URL = GeoServer.getInstance().getBaseUrl() + "wfs/";
-		this.config = config;
     }
-    
+
+	/**
+	 * WFS constructor.
+	 * <p>
+	 * Package constructor intended for default use by GeoServer
+	 * </p>
+	 * @see GeoServer#GeoServer()
+	 */
     WFS(){
     	super(new ServiceDTO());
-    	config = new WFSDTO();
     }
 
+	/**
+	 * Implement toDTO.
+	 * <p>
+	 * Package method used by GeoServer. This method may return references, 
+	 * and does not clone, so extreme caution sould be used when traversing 
+	 * the results.
+	 * </p>
+	 * @see org.vfny.geoserver.global.Abstract#toDTO()
+	 * 
+	 * @return WFSDTO An instance of the data this class represents. Please see Caution Above.
+	 */
     Object toDTO(){
-		return config;
+    	WFSDTO dto = new WFSDTO();
+    	dto.setService(config);
+		return dto;
 	}
-	
-    /**
-     * Gets the base url of a describe request.
-     *
-     * @return DOCUMENT ME!
-     *
-     * @task REVISIT: consider using the /wfs? base, as it makes things a bit
-     *       clearer.  Right now, however, I'm getting problems with the & in
-     *       returned xml, having to put a &amp; in, and not sure if clients
-     *       will process it correctly.
-     */
-    /*public String getDescribeBaseUrl() {
-        if (config.getDescribeUrl() == null) {
-			config.setDescribeUrl(URL + "DescribeFeatureType?typeName=");
-        }
-
-        return config.getDescribeUrl();
-    }
-
-    public String getDescribeUrl(String typeName) {
-        return getDescribeBaseUrl() + typeName;
-    }
-
-    public String getWfsBasicLocation() {
-        return GeoServer.getInstance().getSchemaBaseUrl() + WFS_BASIC_LOC;
-    }
-
-    public String getWfsCapLocation() {
-        return GeoServer.getInstance().getSchemaBaseUrl() + WFS_CAP_LOC;
-    }*/
 }
