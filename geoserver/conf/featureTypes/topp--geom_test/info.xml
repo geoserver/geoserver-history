@@ -1,4 +1,4 @@
-  <featureType datastore="topp">
+  <featureType datastore="local.postgis">
         <name>geom_test</name>
         <SRS>32118</SRS><!-- native wich EPGS code for the FeatureType -->
       <title>test postgis</title>

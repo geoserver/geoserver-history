@@ -10,35 +10,35 @@ Service level configuration
       -->
      <loggingLevel>FINE</loggingLevel>
 
+      <!-- The base URL where this servlet will run.  If running locally
+           then http://localhost:8080 (or whatever port you're running on)
+           should work.  If you are serving to the world then this must be
+           the location where the geoserver servlets appear-->
+      <URL>http://localhost:8080/geoserver/</URL>
+
      <!-- Sets the max number of Features returned by GetFeature -->
-     <maxFeatures value="20000"/>
+     <maxFeatures value="50000"/>
 
      <!-- Whether newlines and indents should be returned in -->
      <!-- XML responses.  Default is false -->
      <verbose value="true"/>
 
-     <!-- Sets the max number of decimal places past the zero returned 
-in
-         a GetFeature response.  Default is 4
-        should it be moved to FeatureType level?-->
+     <!-- Sets the max number of decimal places past the zero returned in
+          a GetFeature response.  Default is 4
+         should it be moved to FeatureType level?-->
      <numDecimals value="8"/>
 
-    <!-- Sets the global character set.  This could use some more 
-testing
-          from international users, but what it does is sets the 
-encoding
+    <!-- Sets the global character set.  This could use some more testing
+          from international users, but what it does is sets the encoding
           globally for all postgis database connections (the charset tag
-          in FeatureType), as well as specifying the encoding in the 
-return
-          xml header and mime type.  The default is UTF-8.  Also be 
-warned
+          in FeatureType), as well as specifying the encoding in the return
+          xml header and mime type.  The default is UTF-8.  Also be warned
           that GeoServer does not check if the CharSet is valid before
-          attempting to use it, so it will fail miserably if a bad 
-charset
+          attempting to use it, so it will fail miserably if a bad charset
           is used.
       -->
-
      <charSet value="ISO-8859-1"/>
+     
      <!-- Define a base url for the location of the wfs schemas.
           By default GeoServer loads and references its own at
           <URL>/data/capabilities. Uncomment to enable.  The
@@ -76,20 +76,11 @@ from New York City.</abstract>
       <fees>NONE</fees>
       <accessConstraints>NONE</accessConstraints>
       <maintainer>The Open Planning Project</maintainer>
-      <!-- The base URL where this servlet will run.  If running locally
-           then http://localhost:8080 (or whatever port you're running 
-on)
-           should work.  If you are serving to the world then this must 
-be
-           the location where the geoserver servlets appear-->
-      <URL>http://www.openplans.org:8081/geoserver/wfs</URL>
-
       <!-- Define mappings of namespaces to featureType directory
            prefixes.  If only one namespace is present in this file it
            becomes the default, if more than one namespace is present
            then one must have its 'default' attribute set to true.
-           The default namespace is that which is assigned to 
-featureTypes
+           The default namespace is that which is assigned to featureTypes
            that have no prefix (for example, "featureTypes/rail")
            * This field is highly recommended.  If not present
            then a namespace will be constructed for you.
