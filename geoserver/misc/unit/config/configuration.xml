@@ -8,6 +8,12 @@
 		<Fees>This is a free server.</Fees>
 		<AccessConstraints>There are no access constraints to this server.</AccessConstraints>
                 <Verbose/>
+                <ZServer>
+                  <Port>3210</Port>
+                </ZServer>
+                <PrefixDelimiter>:</PrefixDelimiter>
+                <MaxFeatures>455</MaxFeatures>
+                <LoggingLevel>FINE</LoggingLevel>
 		<URL>http://beta.openplans.org/geoserver</URL>
 		<Maintainer>Vision for New York</Maintainer>
                 <Namespace uri="http://www.openplans.org/rail" 
