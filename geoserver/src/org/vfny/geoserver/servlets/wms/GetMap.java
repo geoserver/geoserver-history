@@ -4,19 +4,17 @@
  */
 package org.vfny.geoserver.servlets.wms;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wms.GetMapKvpReader;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.GetMapResponse;
 import org.vfny.geoserver.servlets.WMService;
+import java.io.IOException;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -24,7 +22,7 @@ import org.vfny.geoserver.servlets.WMService;
  * request
  *
  * @author Gabriel Roldán
- * @version $Id: GetMap.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
+ * @version $Id: GetMap.java,v 1.7 2004/03/30 11:12:40 cholmesny Exp $
  */
 public class GetMap extends WMService {
     /**
@@ -33,8 +31,8 @@ public class GetMap extends WMService {
     public GetMap() {
     }
 
-    protected void doPost(HttpServletRequest request,
-        HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
         doGet(request, response);
     }
 
