@@ -172,58 +172,65 @@ public class FeatureResponse {
         
 	LOG.finest("about to get query: " + query);
       
-	Properties dbProps = new Properties();
-	dbProps.put("user", meta.getUser());
-	dbProps.put("password", meta.getPassword());
-	//dbProps.put("charSet", "iso-8859-1");
-        PostgisConnectionFactory db =
-	    new PostgisConnectionFactory (meta.getHost(), meta.getPort(),
-					  meta.getDatabaseName()); 
-	LOG.finest("connecting to db " + meta.getHost() + " is host, port "
-		      + meta.getPort() + " name: " + meta.getDatabaseName());
-        //db.setLogin(meta.getUser(), meta.getPassword());
-	LOG.finest("setting user and pass " + meta.getUser() + meta.getPassword());
-	FeatureCollection collection = null;
-	FeatureType schema = null;
-	String tableName = meta.getName();
-	try {
-	    Connection dbConnection = db.getConnection(dbProps);
-	schema = PostgisDataSource.makeSchema(tableName, dbConnection);
+	//this code is now in TypeInfo, to maximize code reuse, as other
+	//operations do the exact same thing.  Putting it there also
+	//allows us to pool the Connection objects, so each getFeatures
+	//does not have to make a new connection with the db.
+	/*Properties dbProps = new Properties();
+	  dbProps.put("user", meta.getUser());
+	  dbProps.put("password", meta.getPassword());
+	  //dbProps.put("charSet", "iso-8859-1");
+	  PostgisConnectionFactory db =
+	  new PostgisConnectionFactory (meta.getHost(), meta.getPort(),
+	  meta.getDatabaseName()); 
+	  LOG.finest("connecting to db " + meta.getHost() + " is host, port "
+	  + meta.getPort() + " name: " + meta.getDatabaseName());
+	  //db.setLogin(meta.getUser(), meta.getPassword());
+	  LOG.finest("setting user and pass " + meta.getUser() + meta.getPassword());
+	  FeatureCollection collection = null;
+	  FeatureType schema = null;
+	  String tableName = meta.getName();
+	  try {
+	  Connection dbConnection = db.getConnection(dbProps);
+	  schema = PostgisDataSource.makeSchema(tableName, dbConnection);
+	  if (!query.allRequested()) {
+	  List propertyNames = query.getPropertyNames();
+	  AttributeType[] properties = new AttributeType[propertyNames.size()];
+	  try {
+	  for(int i = 0; i < propertyNames.size(); i++) {
+	  properties[i] = 
+	  schema.getAttributeType(propertyNames.get(i).toString());
+	  
+	  }
+	  //HACK: we should not rely on schema being a featureTypeFlat.  And
+	  //get and set srid methods will go away soon (which should make it
+	  //so the datasource works without these hacks)
+	  int srid = ((FeatureTypeFlat)schema).getSRID();
+	  schema = FeatureTypeFactory.create(properties);	    
+	  ((FeatureTypeFlat)schema).setSRID(srid);
+	  } catch (SchemaException e) {
+	  throw new WfsException(e, "While trying to create schema for" +
+	  "return feature", getLocator(query));
+	  }
+	  }
+	*/
+	List propertyNames = null;
 	if (!query.allRequested()) {
-	    List propertyNames = query.getPropertyNames();
-	    AttributeType[] properties = new AttributeType[propertyNames.size()];
-	    try {
-	    for(int i = 0; i < propertyNames.size(); i++) {
-		properties[i] = 
-		    schema.getAttributeType(propertyNames.get(i).toString());
-		
-            }
-	    //HACK: we should not rely on schema being a featureTypeFlat.  And
-	    //get and set srid methods will go away soon (which should make it
-	    //so the datasource works without these hacks)
-	    int srid = ((FeatureTypeFlat)schema).getSRID();
-	    schema = FeatureTypeFactory.create(properties);	    
-	    ((FeatureTypeFlat)schema).setSRID(srid);
-	    } catch (SchemaException e) {
-		throw new WfsException(e, "While trying to create schema for" +
-				       "return feature", getLocator(query));
-	    }
+	    propertyNames = query.getPropertyNames();
 	}
-
-	    DataSource data = 
-		new PostgisDataSource(dbConnection, tableName, 
-				      schema, maxFeatures);
-	    LOG.finest("filter is " + query.getFilter());
-	    
-            collection = data.getFeatures(query.getFilter());
-        } catch(DataSourceException e) {
-            throw new WfsException(e, "While getting features from datasource",
-				   getLocator(query));
-        } catch(java.sql.SQLException e) {
-	    throw new WfsException(e, "While attempting to connect to" 
-				   + " datasource", getLocator(query));
-	}
-
+	FeatureCollection collection = null;
+	try {
+	DataSource data = meta.getDataSource(propertyNames, maxFeatures);
+	//		new PostgisDataSource(dbConnection, tableName, 
+	//schema, maxFeatures);
+	
+	LOG.finest("filter is " + query.getFilter());
+	
+	collection = data.getFeatures(query.getFilter());
+	} catch(DataSourceException e) {
+	    throw new WfsException(e, "While getting features from datasource",
+				 getLocator(query));
+	} 	
         LOG.finest("successfully retrieved collection");
 
         Feature[] features = collection.getFeatures();
