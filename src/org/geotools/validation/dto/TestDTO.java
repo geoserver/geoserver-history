@@ -33,7 +33,7 @@ import java.util.Map;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestDTO.java,v 1.2 2004/01/15 01:14:44 dmzwiers Exp $
+ * @version $Id: TestDTO.java,v 1.3 2004/01/15 18:57:45 dmzwiers Exp $
  */
 public class TestDTO {
 	
@@ -69,7 +69,7 @@ public class TestDTO {
 		description = t.getDescription();
 		plugIn = new PlugInDTO(t.getPlugIn());
 		args= new HashMap();
-		if(plugIn!=null){
+		if(t.getArgs()!=null){
 			Iterator i = t.getArgs().keySet().iterator();
 			while(i.hasNext()){
 				String key = (String)i.next();
