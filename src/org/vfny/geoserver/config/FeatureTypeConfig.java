@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.6 2004/01/05 23:12:06 cholmesny Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.7 2004/01/07 21:08:05 cholmesny Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -595,7 +595,7 @@ public class FeatureTypeConfig extends BasicConfig {
             double miny = getDoubleAttribute(bboxElem, "miny", true);
             double maxx = getDoubleAttribute(bboxElem, "maxx", true);
             double maxy = getDoubleAttribute(bboxElem, "maxy", true);
-            this.latLongBBox = new Envelope(minx, miny, maxx, maxy);
+            this.latLongBBox = new Envelope(minx, maxx, miny, maxy);
         }
     }
 
