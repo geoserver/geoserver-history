@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.2 2004/01/15 01:14:34 dmzwiers Exp $
+ * @version $Id: ReaderUtils.java,v 1.3 2004/01/15 23:39:52 jive Exp $
  */
 public class ReaderUtils{
 	/**
@@ -95,27 +95,27 @@ public class ReaderUtils{
 	}
 	
 	/**
-	 * initFile purpose.
-	 * <p>
-	 * Checks to ensure the file is valid. Returns the file passed in to allow this to wrap file creations. 
+	 * Checks to ensure the file is valid.
+     * <p>
+     * Returns the file passed in to allow this to wrap file creations. 
 	 * </p>
-	 * @param f A file Handle to test.
+	 * @param file A file Handle to test.
 	 * @param isDir true when the File passed in is expected to be a directory, false when the handle is expected to be a file.
 	 * @return the File handle passed in
 	 * @throws ConfigurationException When the file does not exist or is not the type specified.
 	 */
-	public static File initFile(File f, boolean isDir) throws ConfigurationException{
-		if(!f.exists()){
-			throw new ConfigurationException("Path specified does not have a valid file.\n"+f+"\n\n");
+	public static File checkFile(File file, boolean isDir) throws ConfigurationException{
+		if(!file.exists()){
+			throw new ConfigurationException("File does not exist: "+file );
 		}
-		if(isDir && !f.isDirectory()){
-			throw new ConfigurationException("Path specified does not have a valid file.\n"+f+"\n\n");
+		if(isDir && !file.isDirectory()){
+			throw new ConfigurationException("File is not a directory:"+file );
 		}
-		if(!isDir && !f.isFile()){
-			throw new ConfigurationException("Path specified does not have a valid file.\n"+f+"\n\n");
+		if(!isDir && !file.isFile()){
+			throw new ConfigurationException("File is not valid:"+file );
 		}
-		LOGGER.fine("File is valid: " + f);
-		return f;
+		LOGGER.fine("File is valid: " + file);
+		return file;
 	}
 	
 	/**
