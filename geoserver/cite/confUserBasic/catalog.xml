@@ -277,6 +277,7 @@
 		<style filename="DividedRoutes.sld" id="cite_divided_routes" />
 		<style filename="capitals.sld" id="capitals" />
 		<style filename="simpleRoads.sld" id="simple_roads" />
+		<style filename="raster.sld" id="raster" />
 	</styles>
 
 </catalog>
