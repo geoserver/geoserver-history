@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.10 2004/01/18 00:33:17 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.11 2004/01/18 01:08:13 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -568,7 +568,7 @@ public class XMLConfigWriter {
 				}else{
 					m.put("name",ati.getName());
 					cw.openTag("xs:element",m);
-					cw.write(ati.getType());
+					cw.writeln(ati.getType());
 					cw.closeTag("xs:element");
 				}
 			}
@@ -586,7 +586,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.10 2004/01/18 00:33:17 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.11 2004/01/18 01:08:13 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
