@@ -118,7 +118,7 @@ public class GeoProfile {
     public static void setUseAttrMap(String pathToPropFile){
 	File propFile = new File(pathToPropFile);
 	//add defaults for any field?
-	LOGGER.info("setting use map from " + pathToPropFile + " -");
+	LOGGER.finer("setting use map from " + pathToPropFile + " -");
 	Properties propertyList = null;
 	try {
 	    FileInputStream fis = new FileInputStream(propFile);
