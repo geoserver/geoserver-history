@@ -7,10 +7,10 @@ package org.vfny.geoserver.config;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.vfny.geoserver.config.featureType.FeatureType;
+//import org.exolab.castor.xml.Unmarshaller;
+//import org.exolab.castor.xml.MarshalException;
+//import org.exolab.castor.xml.ValidationException;
+import org.vfny.geoserver.config.FeatureType;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
@@ -53,7 +53,17 @@ public class TypeInfo {
     public String getSrs() { return internalType.getSRS(); }
     
     /** Fetches the user-defined feature type keywords  */
-    public String getKeywords() { return internalType.getKeywords(); }
+     public String getKeywords() { 
+	StringBuffer keywords = new StringBuffer();
+	Iterator keywordIter = internalType.getKeywords().iterator();
+	while (keywordIter.hasNext()) {
+	    keywords.append(keywordIter.next().toString());
+	    if (keywordIter.hasNext()){
+		keywords.append(", ");
+	    }
+	}
+	return keywords.toString(); 
+    }    
 
     /** Fetches the user-defined bounding box  */
     public String getBoundingBox() { 
@@ -62,7 +72,7 @@ public class TypeInfo {
     
     /** Fetches the user-defined metadata URL  */
     public String getMetadataUrl() { 
-        return internalType.getMetadataURL().toString();
+        return null; //not implemented in new FeatureType internal type yet.
     }
     
     /** Fetches the user-defined database name  */
@@ -109,8 +119,11 @@ public class TypeInfo {
      * @param typeName The query from the request object.
      */ 
     private void readTypeInfo(String typeName) {
-        try {
-            FileReader featureTypeDocument = 
+        
+	try {
+	    internalType = FeatureType.getInstance(typeName);
+
+	    /*           FileReader featureTypeDocument = 
                 new FileReader(typeName);
             internalType = 
                 (FeatureType) Unmarshaller.unmarshal(FeatureType.class, 
@@ -124,11 +137,10 @@ public class TypeInfo {
             LOG.info("Castor could not unmarshal feature type file: " + 
                       typeName);
             LOG.info("Castor says: " + e.toString() );
-        }
-        catch( ValidationException e ) {
-            LOG.info("Castor says: feature type XML not valid : "
-                     + typeName);
-            LOG.info("Castor says: " + e.toString() );
+	    */ }
+        catch( ConfigurationException e ) {
+            LOG.info("Trouble reading featureType info at " + typeName + 
+		     ": " + e.getMessage());
         }    
     }
     
@@ -141,10 +153,12 @@ public class TypeInfo {
 	// MAKE TERSE VERSION CAPABILITY
         StringBuffer tempResponse = new StringBuffer("    <FeatureType>\n");
         String name = internalType.getName();
+	String latLonName = "LatLonBoundingBox";
 	if (!version.startsWith("0.0.1")) {
 	    //REVISIT: get this elsewhere?  Make sure that myns is
 	    //declared in the capabilities document returned.
 	    //name = "myns:" + name;
+	    latLonName = "LatLongBoundingBox";
 	}
 	tempResponse.append("      <Name>" + name + "</Name>\n");
         tempResponse.append("      <Title>" + 
@@ -152,7 +166,7 @@ public class TypeInfo {
         tempResponse.append("      <Abstract>" + 
             internalType.getAbstract() + "</Abstract>\n");
         tempResponse.append("      <Keywords>" + 
-            internalType.getKeywords() + "</Keywords>\n");
+            getKeywords() + "</Keywords>\n");
         tempResponse.append(
             "      <SRS>http://www.opengis.net/gml/srs/epsg#" + 
             internalType.getSRS() + "</SRS>\n");
@@ -160,6 +174,7 @@ public class TypeInfo {
 	//not want to publicize to the world that it is transactional.
         //but if we just use the internalType marshalling way then the
 	//admin could easily mess up the xml, putting the wrong terms in.
+	//--query datasource on its capabilities.
         tempResponse.append("      <Operations>\n");
         tempResponse.append("        <Query/>\n");
 	tempResponse.append("        <Insert/>\n");
@@ -167,7 +182,7 @@ public class TypeInfo {
 	tempResponse.append("        <Delete/>\n");
         tempResponse.append("      </Operations>\n");
         tempResponse.append(
-            "      <LatLonBoundingBox minx=\"" + 
+            "      <" + latLonName + " minx=\"" + 
             internalType.getLatLonBoundingBox().getMinx() + 
             "\" ");
         tempResponse.append("miny=\"" + 
