@@ -21,11 +21,6 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="user/schemaTutorial.html">Schema
-        Tutorial</ulink></para>
-      </listitem>
-
-      <listitem>
         <para><ulink url="user/wms.html">WMS</ulink></para>
       </listitem>
     </itemizedlist>
@@ -49,8 +44,8 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="developer/testingUtility.html">Testing
-        Utility</ulink></para>
+        <para><ulink url="user/schemaTutorial.html">Schema
+        Tutorial</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
