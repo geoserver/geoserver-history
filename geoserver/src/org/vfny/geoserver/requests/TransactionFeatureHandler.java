@@ -100,7 +100,7 @@ public class TransactionFeatureHandler
 	if (localName.equals("Insert")) {
 	    insideInsert = true;
 	} 
-	LOGGER.finer("checking out " + namespaceURI + ", " + localName + ", " + qName);
+	LOGGER.finest("checking out " + namespaceURI + ", " + localName);
         // if it ends with Member we'll assume it's a feature for the time being
 	if (insideInsert && !(localName.equals("Insert"))) {
 	    String internalTypeName = typeRepo.getInternalTypeName(localName, namespaceURI);
@@ -114,12 +114,16 @@ public class TransactionFeatureHandler
 		    tempValue = null;
 		LOGGER.finer("Starting a feature " + typeName);
 	    } else {
-		throw new SAXException("Could not find featureType with name " + localName +
+		throw new SAXException("Could not find featureType with name "
+				       + localName +
 				       ", and uri: " + namespaceURI);
 	    }
 	}
-	if (insideFeature) {
-            LOGGER.finest("inside feature " + localName);
+	    //HACK: the local name stuff should be handled in geotools.
+	if (insideFeature && !((localName.equals("lineStringMember")) ||
+			       (localName.equals("polygonMember")) ||
+			       (localName.equals("pointMember")))) {
+            LOGGER.finest("inside feature " + internalTypeName);
             for (int i = 0; i < atts.getLength(); i++){
                 String name = atts.getLocalName(i);
                 attributes.add(atts.getValue(i));
@@ -198,18 +202,21 @@ public class TransactionFeatureHandler
      * @param qName Full name of the element, including namespace prefix.
      * @throws SAXException Parsing error occurred while reading coordinates.
      */
-    public void endElement(String namespaceURI, String localName, String qName) throws SAXException {        
+    public void endElement(String namespaceURI, String localName, String qName)
+        throws SAXException {        
 	if (localName.equals("Insert")) {
 	    insideInsert = false;
 	}
 	String internalTypeName = typeRepo.getInternalTypeName(localName, namespaceURI);
-        if (typeName.equals(internalTypeName)) {
+        if (typeName.equals(internalTypeName) ) {
             AttributeType attDef[] = new AttributeTypeDefault[attributes.size()];
             for (int i = 0; i < attributes.size(); i++){
-                attDef[i] = new AttributeTypeDefault((String) attributeNames.get(i),attributes.get(i).getClass());
+                attDef[i] = new AttributeTypeDefault
+		   ((String)attributeNames.get(i),attributes.get(i).getClass());
             }
             try {
-                FeatureType schema = FeatureTypeFactory.create(attDef).setTypeName(typeName);
+                FeatureType schema = 
+		    FeatureTypeFactory.create(attDef).setTypeName(typeName);
                 schema.setNamespace(namespaceURI);
                 FeatureFactory fac = new FeatureFactory(schema);
                 Feature feature = fac.create((Object []) attributes.toArray());
@@ -227,8 +234,10 @@ public class TransactionFeatureHandler
                 //_log.error("Unable to build feature",ife);
             }
             insideFeature = false;
-            
-        } else if (insideAttribute) {
+            //HACK: the local name stuff should be handled in geotools.
+        } else if (insideAttribute &&!(localName.equals("lineStringMember") ||
+			       localName.equals("polygonMember") ||
+			       localName.equals("pointMember"))) {
             LOGGER.finest("end - inside attribute [" + tempValue + "]");
             if (tempValue != null && !tempValue.toString().trim().equals("")) {
                 attributes.add(tempValue);
@@ -248,12 +257,11 @@ public class TransactionFeatureHandler
 	    parent.endElement(namespaceURI, localName, qName);
 	    LOGGER.finest("end - inside feature");
             //insideFeature = false;
-
-        }
+        } 
     }
 
 
-    /**
+    /** 
      * Manages the start of a new main or sub geometry.  This method looks at
      * the status of the current handler and either returns a new sub-handler
      * (if the last one was successfully returned already) or passes the
@@ -272,6 +280,15 @@ public class TransactionFeatureHandler
 		attributeNames.addElement(attName);
 	    }
 	    attributes.addElement(geometry);
+	    insideAttribute = false;
+	    int index =  attName.lastIndexOf('/');
+            if(index > -1 ){
+                LOGGER.finest("removing " + attName.substring(index+1));
+                attName = attName.substring(0,index);
+            } else {
+                attName = "";
+            }
+	    attName = "";
 	    LOGGER.finer("calling gmlFeatureFilter for geom " + geometry);
 	} else {
 	    
