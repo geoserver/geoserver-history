@@ -65,6 +65,7 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
+  <property name="test.type" value="PostGis"/>
 
   <!-- paths -->
   <path id="path.lib">
@@ -309,92 +310,14 @@
 
 <!-- TEST -->
 <!-- deploys application to test server -->
-  <target name="test" depends="init, all">
-    <mkdir dir="${dir.server}/webapps"/>
+  <target name="test-start" depends="init, all">
     <mkdir dir="${dir.server}/webapps/ROOT"/>
-    <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF"/>
-    <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
-    <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF/classes"/>
 
-    <copy todir="${dir.testApp}/" >
-      <fileset dir="${dir.misc}/documents">
-        <include name="web.xml"/>
-      </fileset>
-    </copy>
-
-    <mkdir dir="${dir.server}/webapps/ROOT/data"/>
-    <copy todir="${dir.server}/webapps/ROOT/data">
-      <fileset dir="${dir.misc}/documents">
-        <include name="license.txt"/>
-        <include name="geoserver.log"/>
-        <include name="z3950-geo.map"/>
-      </fileset>
-    </copy>
-
-     <copy todir="${dir.server}/webapps/ROOT/WEB-INF">
-      <fileset dir="${basedir}/WEB-INF">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-
-     <copy todir="${dir.server}/webapps/ROOT/WEB-INF">
-      <fileset dir="${dir.conf}">
-        <include name="services.xml"/>
-        <include name="catalog.xml"/>
-      </fileset>
-      <fileset dir="${dir.misc}/documents">
-        <include name="web.xml"/>
-      </fileset>
-    </copy>
-
-     <copy todir="${dir.server}/webapps">
-      <fileset dir="${dir.misc}/documents">
-        <include name="web.xml"/>
-      </fileset>
-    </copy>
-
-    <!-- populate base directory -->
-    <mkdir dir="${dir.server}/webapps/ROOT/data/capabilities"/>
-    <copy todir="${dir.server}/webapps/ROOT/data/capabilities">
-      <fileset dir="${dir.misc}/documents">
-        <include name="filter.xml"/>
-        <include name="operations.xml"/>
-        <include name="serviceMetadata.xml"/>
-        <include name="additionalCapabilities.xml"/>
-        <include name="operationsSignatures.xml"/>
-        <include name="vfnyWfsWsdl.xml"/>
-        <include name="OGC_Capabilities.xsd"/>
-        <include name="feature.xsd"/>
-        <include name="geometry.xsd"/>
-      </fileset>
-    </copy>
-
-    <!-- make feature types directory and populate -->
-    <mkdir dir="${dir.server}/webapps/ROOT/data/featureTypes"/>
-    <copy todir="${dir.server}/webapps/ROOT/data/featureTypes">
-    <fileset dir="${dir.data}/featureTypes"/>
-    </copy>
-     
-      <mkdir dir="${dir.server}/webapps/ROOT/data/styles"/>
-    <copy todir="${dir.server}/webapps/ROOT/data/styles">
-      <fileset dir="${dir.styles}">
-        <include name="**"/>
-      </fileset>
-    </copy>
-     
-      <mkdir dir="${dir.server}/webapps/ROOT/data/plugins"/>
-    <copy todir="${dir.server}/webapps/ROOT/data/plugins">
-      <fileset dir="${basedir}/conf/plugins">
-        <include name="**"/>
-      </fileset>
-    </copy>
-     
-      <mkdir dir="${dir.server}/webapps/ROOT/data/validation"/>
-    <copy todir="${dir.server}/webapps/ROOT/data/validation">
-      <fileset dir="${basedir}/conf/validation">
-        <include name="**"/>
-      </fileset>
-    </copy>
+    <antcall target="war">
+      <param name="conf.path" value="${basedir}/misc/cite/confCite${test.type}.zip"/>
+    </antcall>
+    
+    <unwar src="${basedir}/geoserver.war" dest="${dir.server}/webapps/ROOT/"/>
 
     <path id="path.test">
       <path refid="path.catalina"/>
@@ -450,7 +373,7 @@
 
 <!-- STOP SERVER -->
 <!-- deploys application to test server -->
-  <target name="stop" depends="init">
+  <target name="test-stop" depends="init">
     <!-- stops a running server -->
     <java classname="org.vfny.geoserver.EmbeddedTomcat" 
           classpathref="path.build" 
@@ -475,7 +398,11 @@
 
 <!-- EXTERNAL TEST -->
 <!-- deploys application to test server -->
-  <target name="test-ext" depends="init, war">
+  <target name="test-ext" depends="init">
+    <antcall target="war">
+      <param name="conf.path" value="${basedir}/misc/cite/confCite${test.type}.zip"/>
+    </antcall>
+  
     <!-- copy to test server -->
     <delete includeEmptyDirs="true" failonerror="false">
       <fileset dir="${dir.container}/geoserver"/>
@@ -496,7 +423,7 @@
 <!-- ====================================================================== -->
 
 <!-- WAR -->
-  <target name="war" depends="init, all">
+  <target name="war" depends="init, all" if="conf.path">
     <!-- preparation -->
     <delete file="${basedir}/geoserver.war" 
             failonerror="false"/>
@@ -565,28 +492,7 @@
       </fileset>
     </copy>
 
-     <mkdir dir="${basedir}/data/styles"/>
-    <copy todir="${basedir}/data/styles">
-      <fileset dir="${dir.styles}">
-        <include name="**"/>
-      </fileset>
-    </copy>
-
-    <!-- make feature types directory and populate -->
-    <mkdir dir="${basedir}/data/featureTypes"/>
-    <copy todir="${basedir}/data/featureTypes">
-      <fileset dir="${dir.data}/featureTypes"/>
-    </copy>
-    
-    <mkdir dir="${basedir}/data/validation"/>
-    <copy todir="${basedir}/data/validation">
-      <fileset dir="${dir.data}/validation"/>
-    </copy>
-    
-    <mkdir dir="${basedir}/data/plugins"/>
-    <copy todir="${basedir}/data/plugins">
-      <fileset dir="${dir.data}/plugins"/>
-    </copy>
+    <unzip src="${conf.path}" dest="${basedir}"/>
 
     <copy todir="${dir.build}">
       <fileset dir="${dir.misc}/documents">
@@ -612,7 +518,7 @@
 	  </classes>
             
       <!--webinf dir="${dir.conf}"/-->
-      <webinf dir="${dir.conf}">
+      <webinf dir="${basedir}/data">
         <include name="services.xml"/>
         <include name="catalog.xml"/>
       </webinf>
@@ -634,6 +540,8 @@
       <fileset dir="${basedir}">
         <include name="data/**"/>
         <include name="documentation/**"/>
+        <exclude name="catalog.xml"/>
+        <exclude name="services.xml"/>
       </fileset>
       
       <fileset dir="${dir.webinf}/pages">
@@ -734,43 +642,9 @@
     <delete file="${basedir}/license.txt" failonerror="true"/>
   </target>
 
-
-<!-- NIGHTLY -->
-<!-- archives the current version of the project -->
-  <target name="nightly" depends="init, war">
-    <delete file="${basedir}/changelog-${date.current}.txt" 
-            failonerror="false"/>
-    <copy file="${dir.changelog}/changelog-${date.current}.txt" 
-          todir="${basedir}"/>
-    <delete file="${basedir}/geoserver-${date.current}.tar" 
-            failonerror="false"/>
-    <delete file="${dir.nightly}/geoserver-${date.current}.tar.gz" 
-            failonerror="false"/>
-    <tar tarfile="${basedir}/geoserver-${date.current}.tar" 
-         basedir="${basedir}" 
-         longfile="gnu"/>
-    <gzip src="${basedir}/geoserver-${date.current}.tar" 
-          zipfile="${dir.nightly}/geoserver-${date.current}.tar.gz"/>
-
-    <delete file="${basedir}/geoserver.war"  failonerror="false"/>
-    <delete file="${basedir}/geoserver-${date.current}.tar" 
-            failonerror="false"/>
-    <delete file="${basedir}/changelog-${date.current}.txt" 
-            failonerror="false"/>
-  </target>
-
 <!-- ====================================================================== -->
 <!-- ADMIN TARGETS                                                          -->
 <!-- ====================================================================== -->
-<!-- TABS -->
-<!-- turns all tabs into 4 spaces -->
-  <target name="fix-tabs" depends="init">
-    <fixcrlf srcdir="${dir.src}" 
-             tab="remove" 
-             tablength="4"
-             javafiles="true"
-             includes="**/*.java"/>
-  </target>
 
 <!-- GEOTOOLS JAR -->
 <!-- builds geotools jar -->
