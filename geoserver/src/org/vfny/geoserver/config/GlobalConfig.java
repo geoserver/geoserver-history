@@ -19,7 +19,7 @@ import java.util.logging.*;
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.1.2.6 2003/11/17 22:25:36 cholmesny Exp $
+ * @version $Id: GlobalConfig.java,v 1.1.2.7 2003/11/19 22:39:58 cholmesny Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -186,7 +186,7 @@ public class GlobalConfig extends AbstractConfig {
         LOGGER.config("charSet is " + charSet);
 
         //TODO: better checking.
-        this.baseUrl = getChildText(globalConfigElem, "URL", false);
+        this.baseUrl = getChildText(globalConfigElem, "URL", true);
 
         if (!baseUrl.endsWith("/")) {
             this.baseUrl = baseUrl + "/";
