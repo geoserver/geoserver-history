@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Polygon;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: GMLUtils.java,v 1.8 2004/01/20 05:04:01 jive Exp $
+ * @version $Id: GMLUtils.java,v 1.9 2004/01/20 23:26:06 jive Exp $
  */
 public class GMLUtils {
     /** Mappings by schema */
@@ -63,6 +63,8 @@ public class GMLUtils {
             definitions.put( type, mapping );
         }
         if( schema.endsWith("PropertyType")){
+            // should we add this as pointProperty for PointPropertyType?
+            //
             properties.put( mapping.schema, mapping );
         }
         return mapping;
@@ -192,100 +194,191 @@ public class GMLUtils {
         return null;
     }    
     /**
-     * Mapping for ref or null if not found.
+     * Mapping for reference or null if not found.
      * <p>
      * ref is of the form prefix:typeName
      * </p>
      * @param ref prefix:typeName used to locate Mapping
      * @return Mapping for ref
      */
-    public static Mapping type( String ref ){
+    public static Mapping type( String reference ){
     	Mapping r = null;
-    	r = (Mapping) schemas.get( ref );
+    	r = (Mapping) schemas.get( reference );
     	if (r!=null) return r;
-    	int x = ref.indexOf(':')+1;
-    	char y = ref.charAt(x);
-    	r =  (Mapping) schemas.get( ref.substring(0,x)+Character.toUpperCase(y)+ref.substring(x+1) );
+    	int x = reference.indexOf(':')+1;
+    	char y = reference.charAt(x);
+    	r =  (Mapping) schemas.get( reference.substring(0,x)+Character.toUpperCase(y)+reference.substring(x+1) );
     	if (r!=null) return r;
-    	r =  (Mapping) schemas.get( ref.substring(0,x)+Character.toUpperCase(y)+ref.substring(x+1)+"Type" );
+    	r =  (Mapping) schemas.get( reference.substring(0,x)+Character.toUpperCase(y)+reference.substring(x+1)+"Type" );
     	if (r!=null) return r;
-    	r =  (Mapping) schemas.get( ref.substring(0,x)+Character.toLowerCase(y)+ref.substring(x+1) );
+    	r =  (Mapping) schemas.get( reference.substring(0,x)+Character.toLowerCase(y)+reference.substring(x+1) );
     	if (r!=null) return r;
-    	r =  (Mapping) schemas.get( ref.substring(0,x)+Character.toLowerCase(y)+ref.substring(x+1)+"Type" );
+    	r =  (Mapping) schemas.get( reference.substring(0,x)+Character.toLowerCase(y)+reference.substring(x+1)+"Type" );
     	if (r!=null) return r;
     	return null;
     }  
     
-    /** Locate property by complete "gml:*PropertyType" reference */
+    /**
+     * Locate property by complete "gml:*PropertyType" reference.
+     * <p>
+     * Used to only search the list of defined properties.
+     * </p>
+     * @param reference of the form gml:*PropertyType
+     */
     public static Mapping property( String reference ){
     	return (Mapping) properties.get( reference );
     }
+    
     /**
-     * Mapping for type or null
+     * First mapping found for name and type, or null if not found.
      * <p>
-     * May make use of property types if name and exact type match
-     * the one of the gml properties.
-     * </p>
+     * Search Order:
+     * <ul>
+     * <li>
+     *   Use of property types if name and exact type match
+     *   one of the gml properties references.<br>
+     *   For <code>name="pointProperty",
+     *         type=com.vividsolutions.jts.geom.Point</code>' maps to:<br>
+     *   <b>gml:PointPropertyType</b>
+     *   </li>
+     * <li>
+     *   Search the schema for defined types are checked for an
+     *   exact match based on type.<br>
+     *   For <code>type=java.lang.String</code> maps to:<br>
+     *   xs:string
+     *   </li>
+     * <li>A linear seach of the defined types is made
+     *     making use of isAssignable.<br>
+     *   For <code>type=com.vividsolutions.jts.geom.Geometry</code> maps to:
+     *   gml:PointType gml:LineStringType gml:LinearRingType gml:BoxType
+     *   gml:PolygonType gml:GeometryCollectionType gml:MultiPointType
+     *   gml:MultiLineStringType, gml:MultiPolygonType
+     *   </li>
+     * <li>
+     *   All mappings are consulted using using a linear search.
+     *   </li>
+     * <li>
+     *   As a wild assumption we assume xs:string can be used
+     *   For <code> 
+     *   </li>
+     * </ul>
      * <p>
-     * If not one of the schema for defined types are checked.
-     * </p>
+     * This list is returned in the order of most specific to least specific.
      * <p>
-     * If not a linear seach of the defined types is made
-     * making use of isAssignable.
-     * </p>
-     * <p>
-     * Finally all mappings are consulted using using a linear search
-     * </p>
-     * 
      * @param type Type to look up schema for
      * @return Mapping for type or null
      */
     public static Mapping schema( String name, Class type ){
+        return (Mapping) mappingList( name, type ).get(0);        
+    }
+    
+    /**
+     * Mappings for name and type, or null if not found.
+     * <p>
+     * List construction order:
+     * <ul>
+     * <li>
+     *   Use of property types if name and exact type match
+     *   one of the gml properties references.<br>
+     *   For <code>name="pointProperty",
+     *         type=com.vividsolutions.jts.geom.Point</code>' maps to:<br>
+     *   <b>gml:PointPropertyType</b>
+     *   </li>
+     * <li>
+     *   Search the schema for defined types are checked for an
+     *   exact match based on type.<br>
+     *   For <code>type=java.lang.String</code> maps to:<br>
+     *   xs:string
+     *   </li>
+     * <li>A linear seach of the defined types is made
+     *     making use of isAssignable.<br>
+     *   For <code>type=com.vividsolutions.jts.geom.Geometry</code> maps to:
+     *   gml:PointType gml:LineStringType gml:LinearRingType gml:BoxType
+     *   gml:PolygonType gml:GeometryCollectionType gml:MultiPointType
+     *   gml:MultiLineStringType, gml:MultiPolygonType
+     *   </li>
+     * <li>
+     *   All mappings are consulted using using a linear search.
+     *   </li>
+     * <li>
+     *   As a wild assumption we assume xs:string can be used.<br>
+     *   For <code>type=java.net.URL</code> maps to:
+     *   xs:string
+     *   </li>
+     * </ul>
+     * <p>
+     * This list is returned in the order of most specific to least specific.
+     * <p>
+     * <p>
+     * Complete Example:<br>
+     * <code>name="pointProperty",
+     * class=type=com.vividsolutions.jts.geom.Point</code>
+     * </p>
+     * <p>
+     * Expected Mapping:
+     * <ul>
+     * <li><code>gml:PointPropertyType</code> - pointProperty & Point.class match</li>
+     * <li><code>gml:PointType</code> - Point.class match</li>
+     * <li><code>gml:AbstractGeometry</code> - Point instance of Geometry match</li>
+     * <li><code>xs:string</code> - String assumption</li>
+     * </ul>
+     * @param type Type to look up schema for
+     * @return Mapping for type or null
+     */     
+    public static List mappingList( String name, Class type){
+        List list = new ArrayList();
+        
         Mapping mapping;
         if( type.isPrimitive() ){
             type = promotePrimativeType( type );
-        }        
+        }
+        
         if( properties.containsKey( name )){
             mapping = (Mapping) properties.get( name );
             if( type == mapping.type ){                
-                return mapping;
+                list.add( mapping );
             }                                    
         }
         
         mapping = (Mapping) definitions.get( type );
-        if( mapping != null ) {
-            return mapping;
+        if( mapping != null && !list.contains( mapping )) {
+            list.add(mapping);
         }        
         
         for( Iterator i=definitions.values().iterator(); i.hasNext();){
             mapping = (Mapping) i.next();
-            if( mapping.type.isAssignableFrom( type )){               
-                return mapping;
+            if( mapping.type.isAssignableFrom( type ) && !list.contains( mapping )) {
+                list.add(mapping);
             }
         }
         for( Iterator i=schemas.values().iterator(); i.hasNext();){
             mapping = (Mapping) i.next();
-            if( mapping.type == type ){               
-                return mapping;
+            if( mapping.type == type && !list.contains( mapping )) {
+                list.add(mapping);
             }
         }        
         for( Iterator i=schemas.values().iterator(); i.hasNext();){
             mapping = (Mapping) i.next();
-            if( mapping.type.isAssignableFrom( type )){              
-                return mapping;
+            if( mapping.type.isAssignableFrom( type )&& !list.contains( mapping )) {
+                list.add(mapping);
             }
         }
-        return null;
+        if( !list.contains( STRING )) {
+            list.add(STRING);
+        }        
+        return list;
     }
-    
     /**
-     * @return a list of good mappings
+     * List of references (prefix:schema) for name and type.
+     * @param name
+     * @param type
+     * @return List of references
      */
-    public static List schemaList( String name, Class type){
+    public static List schemaList( String name, Class type ){
         List list = new ArrayList();
-        Mapping find = schema( name, type );
-        if( find != null ){
-        	list.add( find.toString() ); // ie xs:string
+        for( Iterator i=mappingList( name, type ).iterator(); i.hasNext();){
+            Mapping mapping = (Mapping)i.next();
+            list.add( mapping.toString() );
         }
         return list;
     }
@@ -362,7 +455,7 @@ public class GMLUtils {
      * 
      * @author jgarnett, Refractions Research, Inc.
      * @author $Author: jive $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.8 2004/01/20 05:04:01 jive Exp $
+     * @version $Id: GMLUtils.java,v 1.9 2004/01/20 23:26:06 jive Exp $
      */
     public static class Mapping {
         public final String prefix; // gml or xs
