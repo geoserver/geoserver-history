@@ -435,6 +435,9 @@
       <fileset dir="${dir.container}/geoserver"/>
     </delete>
     <delete file="${dir.container}/geoserver.war"  failonerror="false"/>
+    <delete file="${dir.container}/../logs/stdout.log" failonerror="false"/>
+    <delete file="${dir.container}/../logs/stderr.log" failonerror="false"/>
+    <delete file="${dir.container}/../logs/*.log.*" failonerror="false"/>
     <copy todir="${dir.container}/" flatten="yes">
       <fileset dir="${basedir}">
         <include name="geoserver.war"/>
