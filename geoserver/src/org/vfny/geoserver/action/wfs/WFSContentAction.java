@@ -23,14 +23,13 @@ import org.apache.struts.action.ActionMapping;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class SaveXMLAction extends Action {
+public final class WFSContentAction extends Action {
 	public ActionForward execute(ActionMapping mapping,
 		ActionForm form,
 		HttpServletRequest request,
 		HttpServletResponse response)
 		throws IOException, ServletException {
-			
-			//Fill me with code!!!
-			return null; 
+			return mapping.findForward("welcome");
 	}
+
 }
