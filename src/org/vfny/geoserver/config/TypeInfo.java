@@ -241,46 +241,45 @@ public class TypeInfo {
 	DataSource data = null;
 	try {
 	    data = new PostgisDataSource(connection, getName(), maxFeatures);
-	    if (propertyNames != null) {
+	    if (propertyNames != null  && propertyNames.size() > 0 &&
+		!propertyNames.get(0).toString().equals("*")) {
 		org.geotools.feature.FeatureType schema = data.getSchema();
 		AttributeType[] properties = new AttributeType[propertyNames.size()];
 		try {
 		    for(int i = 0; i < propertyNames.size(); i++) {
 			String curPropName = propertyNames.get(i).toString();
 			//TODO: get rid of this code duplication.  
-			int prefixDelimPos = 
-			    curPropName.lastIndexOf(PREFIX_DELIMITER);
-			//this gets out the namespace prefix.
-			//REVISIT: check to make sure it's the right namespace
-			if (prefixDelimPos > 0) {
-			    curPropName = curPropName.substring
-				(prefixDelimPos + 1, curPropName.length());
-			   
-			} 
-			//this strips out the leading featureName of .14 style.
-			//REVISIT: this is fine for postgis, as you can't 
-			//declare attributes of the feature.property style,
-			//but when we add support for oracle and others this
-			//wont work.  In other words, put this in postgis
-			//datasource.
-			int propDelimPos = curPropName.lastIndexOf(".");
-			if (propDelimPos > 0) {
-			    //for backwards compatibility.  Only works if all 
-			    //featureTypes have the same prefix.
-			    curPropName = curPropName.substring
-				(propDelimPos + 1, curPropName.length());
-			   
-			} 
+			String[] splitName = curPropName.split("[.:/]");
+			String newPropName = curPropName;
+			if (splitName.length == 1) {
+			    newPropName = splitName[0];
+			} else {
+			    //REVISIT: not sure what to do if there are multiple
+			    //delimiters.  
+			    //REVISIT: should we examine the first value?  See
+			    //if the namespace or typename matches up right?
+			    //this is currently very permissive, just grabs
+			    //the value of the end.
+			    newPropName = splitName[splitName.length - 1];
+			}
+
 			properties[i] = 
-			    schema.getAttributeType(curPropName);
+			    schema.getAttributeType(newPropName);
 			if (properties[i] == null) {
-			    //TODO: iterate through schema to get the valid
-			    //names
+			    AttributeType[] available = schema.getAttributeTypes();
+			    StringBuffer props = new StringBuffer();
+			    for (int j = 0; j < available.length; j++){
+				props.append(available[j].getName());
+				if (j < available.length - 1) {
+				    props.append(", ");
+				}
+			    }
+			    
 			    throw new WfsException("property name: " + 
 						   curPropName + " is "
 						   +"not a part of featureType"
-						   + ", try a DescribeFeatureType"
-						   + " request for this typename");
+						   + ", the available properties"
+						   + " are: " + props);
 			}
 		    }
 		    schema = FeatureTypeFactory.create(properties);	 
