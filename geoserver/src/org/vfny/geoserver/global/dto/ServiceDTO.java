@@ -30,7 +30,7 @@ import java.util.Arrays;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceDTO.java,v 1.1.2.2 2004/01/06 23:35:33 jive Exp $
+ * @version $Id: ServiceDTO.java,v 1.1.2.3 2004/01/06 23:55:02 jive Exp $
  */
 public final class ServiceDTO implements DataStructure {
     /**
@@ -118,7 +118,7 @@ public final class ServiceDTO implements DataStructure {
      * Example: <code>"NONE"</code>
      * </p>
      */
-    private String accessConstraints = "NONE";
+    private String accessConstraints;
 
     /**
      * Name of the person who maintains the web service. Should ideally be

@@ -17,6 +17,7 @@
 package org.vfny.geoserver.global.dto;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: CloneLibrary.java,v 1.1.2.2 2004/01/06 23:55:02 jive Exp $
  */
 public final class CloneLibrary {
 	
@@ -135,7 +136,12 @@ public final class CloneLibrary {
 	private static Object clone(DataStructure ds){
 		return ds.clone();
 	}
-	
+	/** Clone a string array */
+    public static String[] clone( String[] array ){
+        String copy[] = new String[ array.length ];
+        System.arraycopy( array, 0, copy, 0, array.length );
+        return copy;
+    }
 	/**
 	 * clone purpose.
 	 * <p>
