@@ -8,6 +8,9 @@
 <bean:define id="key">
 	<tiles:getAsString name='key'/>
 </bean:define>
+<bean:define id="keyLabel">
+  <tiles:getAsString name='key'/>.label
+</bean:define>
 <bean:define id="keyTitle">
 	<tiles:getAsString name='key'/>.title
 </bean:define>
@@ -17,6 +20,7 @@
 <bean:define id="keyWords">
 	<tiles:getAsString name='key'/>.words
 </bean:define>
+
 <head>
   <title>
     <bean:message key="geoserver.logo"/>

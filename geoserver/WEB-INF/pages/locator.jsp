@@ -5,18 +5,20 @@
 <%@ page import="org.apache.struts.action.*" %>
 
 <span class="locator">
+  <logic:notEmpty name="locationForwards">
 	<%
 		String forwards = (String) request.getAttribute("locationForwards");
 		String[] array = forwards.split(":");
-		ActionServlet servlet = (ActionServlet) application.getAttribute(Action.ACTION_SERVLET_KEY);
-
-		for (int index = 0; index < array.length-1; index ++) {
+		
+		for (int index = 0; index < array.length; index ++) {
 			%>
 			<html:link forward="<%= array[index] %>">
-				<%= array[index] %>
+				<bean:message key="<%= array[ index ]+".label" %>"/>
 			</html:link> |
 			<%
 		}
 	%>
-	<%= array[array.length-1] %>
+  </logic:notEmpty>
+  <bean:message key="<%= request.getAttribute("key")+".label" %>"/>
 </span>
+	
