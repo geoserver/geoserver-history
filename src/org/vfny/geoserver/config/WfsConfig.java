@@ -65,6 +65,10 @@ public class WfsConfig implements java.io.Serializable {
 
     public static final String MAX_TAG = "MaxFeatures";
 
+    public static final String DECIMAL_TAG = "NumDecimals";
+
+    public static final String CHARSET_TAG = "CharSet";
+
     public static final String DEFAULT_PREFIX = "myns";
 
     public static final String LOG_TAG = "LoggingLevel";
@@ -88,6 +92,12 @@ public class WfsConfig implements java.io.Serializable {
     
     private String baseUrl;
     
+    private int numDecimals = 4;
+
+    private String charSet = "UTF-8";
+    
+    private boolean useCharSetPG = false;
+
     /** The holds the mappings between prefixes and uri's*/
     private Map nameSpaces = new HashMap();
 
@@ -130,7 +140,7 @@ public class WfsConfig implements java.io.Serializable {
 	WfsConfig wfsConfig = new WfsConfig();
 	try {
 	    FileReader fis = new FileReader(configFile);
-	    LOGGER.info("got input reader, about to make input source");
+	    LOGGER.finest("got input reader, about to make input source");
 	    InputSource in = new InputSource(fis);
 	    DocumentBuilderFactory dfactory = 
 		DocumentBuilderFactory.newInstance();
@@ -175,6 +185,9 @@ public class WfsConfig implements java.io.Serializable {
 	    wfsConfig.setBaseUrl(baseUrl);
 
 	    wfsConfig.setMaxFeatures(findTextFromTag(configElem, MAX_TAG));
+	    wfsConfig.setNumDecimals(findTextFromTag(configElem, DECIMAL_TAG));
+	    wfsConfig.setCharSet(findTextFromTag(configElem, CHARSET_TAG));
+
 	    String delimiter = findTextFromTag(configElem, DELIMIT_TAG);
 	    LOGGER.info("delimiter is " + delimiter);
 	    wfsConfig.setFilePrefixDelimiter(delimiter);
@@ -391,6 +404,92 @@ public class WfsConfig implements java.io.Serializable {
      */
     public String getDefaultPrefix(){
 	return this.defaultPrefix;
+    }
+
+    /**
+     * Sets the char set to the passed in string and sets the boolean
+     * for the featureType postgis datasources to use the character set.
+     * The logic behind this is that if the user does not have a 
+     * CharSet element in their configuration.xml file, they want to use
+     * UTF-8 for the xml and mime encoding, and they do not want any 
+     * special charSet to be set by the jdbc postgis driver.  If they do
+     * set the charSet to something, such as iso-8859-1, they want that
+     * declared in the return xml and set for all their postgis instances.
+     * Usually UTF-8 should suffice, but if users are wanting to change
+     * everything about the encoding then it will go across all aspects
+     * of geoserver.  If UTF-8 is desired for return, but a special charset
+     * for the database then charset can be set in the DatasourceParams of
+     * featureType.
+     * 
+     * @task TODO: do validation to make sure that the char set is 
+     * acceptable.  We currently take any string, whichi will definitely
+     * mess things up if the user enters a non valid charset.
+     */
+    void setCharSet(String charSet){
+	if (charSet != null && !charSet.equals("")){
+	    this.charSet = charSet;
+	    setCharSetPostgis(true);
+	}
+    }
+
+    /**
+     * gets the char set to be used for replies.
+     *
+     * @return the charSet to set for xml and mime returns.
+     *
+     */
+    public String getCharSet(){
+	return this.charSet;
+    }
+    
+    /**
+     * Sets whether the charSet returned by getCharSet should be used as
+     * the charset for the postgis instances.  The current logic is that
+     * this will only be set to tru if the char set is explicitly set in
+     * the configuration.xml file.  The reason for this is that using the
+     * default UTF-8 charset to set the charSet property of jdbc will
+     * mess things up, while not setting any charset will work better.
+     * So if the user is to explicitly say with the CharSet property that
+     * they want to use UTF-8, then this will also get set for postgis.
+     * 
+     * @task REVISIT: Rethink this logic, get user feedback.  Another good
+     *       thing might be to make sure the charSet is valid before 
+     *       attempting to set it with postgis, as it will cause everything
+     *       to mess up.
+     */
+    void setCharSetPostgis(boolean pgCharSet){
+	this.useCharSetPG = pgCharSet;
+    }
+
+    public boolean getCharSetPostgis(){
+	return this.useCharSetPG;
+    }
+    
+     /**
+     * Sets the number of decimal places to be returned in the coordinates in a 
+     * getFeature request.
+     * 
+     * @param numDecimals number of places past the decimal to report back.
+     */
+    void setNumDecimals(String numDecimals){
+	LOGGER.finest("setting num decimals with " + numDecimals);
+	    try {
+		this.numDecimals = Integer.parseInt(numDecimals);
+		LOGGER.config("setting num decimals to " + numDecimals);
+	    } catch (NumberFormatException e){
+		LOGGER.finer("could not parse numDecimals " + numDecimals + ", " +
+			       "using default: " + this.numDecimals);
+	    }
+
+    }
+
+    /**
+     * Gets the number of decimal places to use in returns
+     *
+     * @return the number of decimal places to return.
+     */
+    public int getNumDecimals(){
+	return this.numDecimals;
     }
 
     /**
