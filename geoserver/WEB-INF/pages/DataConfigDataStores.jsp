@@ -67,38 +67,22 @@
 		<html:text property="description" size="60"/>
 	</td></tr>
 	
-	<tr><td align="right">
-		<span class="help" title="<bean:message key="help.dataStore_server"/>">
-			<bean:message key="label.server"/>
-		</span>
-	</td><td colspan=2 align="left">
-		<html:text property="server" size="60"/>
-	</td></tr>
+	<!-- Connection Parameters here -->
 	
-	<tr><td align="right">
-		<span class="help" title="<bean:message key="help.dataStore_port"/>">
-			<bean:message key="label.port"/>
-		</span>
-	</td><td colspan=2 align="left">
-		<html:text property="port" size="60"/>
-	</td></tr>
-	
-	<tr><td align="right">
-		<span class="help" title="<bean:message key="help.dataStore_username"/>">
-			<bean:message key="label.username"/>
-		</span>
-	</td><td colspan=2 align="left">
-		<html:text property="username" size="60"/>
-	</td></tr>
-	
-	<tr><td align="right">
-		<span class="help" title="<bean:message key="help.dataStore_password"/>">
-			<bean:message key="label.password"/>
-		</span>
-	</td><td colspan=2 align="left">
-		<html:password property="password" size="60"/>
+	<tr><td colspan=2>
+		<b><bean:message key="label.connectionParameters"/>
 	</td></tr>
 
+<logic:iterate id="param" indexId="ctr" name="dataDataStoresForm" property="connectionParamKeys">
+	
+	<tr><td align="right">
+		<bean:write name="dataDataStoresForm" property='<%= "connectionParamKey[" + ctr + "]"%>'/>
+	</td><td colspan=2 align="left">
+		<html:text property='<%= "connectionParamValue[" + ctr + "]"%>' size="60"/>
+	</td></tr>
+	
+</logic:iterate>	
+	
 	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit property="action" value="submit"/><html:reset/></td></tr>						
 	
 	</html:form>

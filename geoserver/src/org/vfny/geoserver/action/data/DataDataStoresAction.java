@@ -7,8 +7,10 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -21,7 +23,7 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DataStoreFactorySpi.Param;
+
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -48,10 +50,6 @@ System.out.println("lalalala DataStoresAction.exexcute!");
 		String dataStoreID = dataStoresForm.getDataStoreID();
 		String namespace = dataStoresForm.getNamespace();
 		String description = dataStoresForm.getDescription();
-		String server = dataStoresForm.getServer();
-		String port = dataStoresForm.getPort();
-		String username = dataStoresForm.getUsername();
-		String password = dataStoresForm.getPassword();
 
 		// After extracting params into a map
 		Map aMap = new HashMap();
@@ -74,7 +72,7 @@ System.out.println("lalalala DataStoresAction.exexcute!");
 		if (action.equals("edit") || action.equals("submit")) {
 			config = (DataStoreConfig) dataConfig.getDataStore(dataStoresForm.getSelectedDataStore());
 		} else if (action.equals("new")) {
-			config = new DataStoreConfig();
+			config = new DataStoreConfig( dataStoresForm.getSelectedDataStoreType());
 		}
 		
 		//If they push edit, simply forward them back so the information is repopulated.
@@ -102,36 +100,5 @@ System.out.println("lalalala DataStoresAction.exexcute!");
 		dataStoresForm.reset(mapping, request);				
 		return mapping.findForward("dataConfigDataStores");
 	}
-	
-	DataStore aquireDataStore( Map params ) throws IOException{
-		return DataStoreFinder.getDataStore( params );
-	}
-	
-	DataStoreFactorySpi aquireFactory( String dbtype  ){
-		String description=null;
-		if( dbtype.equals("postgis")) description="PostGIS spatial database";
-		if( dbtype.equals("shapefile")) description="ESRI(tm) Shapefiles (*.shp)";
-		if( dbtype.equals("oracle")) description="Oracle Spatial Database";		
-		if( dbtype.equals("arcsde")) description="ESRI ArcSDE 8.x";								
 		
-		for( Iterator i= DataStoreFinder.getAvailableDataStores(); i.hasNext(); ){
-			DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
-			if( factory.getDescription().equals( description ) ){
-				return factory;			
-			}								
-		}
-		return null;
-	}
-	Param find( DataStoreFactorySpi factory, String key ){
-		return find( factory.getParametersInfo(), key );		
-	}	
-	
-	Param find( Param params[], String key ){
-		for( int i=0; i<params.length;i++){
-			if( key.equalsIgnoreCase( params[i].key ) ){
-				return params[i];
-			}
-		}
-		return null;		
-	}
 }

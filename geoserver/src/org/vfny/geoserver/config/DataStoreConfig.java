@@ -22,8 +22,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.factory.FactoryFinder;
+import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 /**
@@ -33,7 +35,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.2.2.6 2004/01/10 06:13:31 emperorkefka Exp $
+ * @version $Id: DataStoreConfig.java,v 1.2.2.7 2004/01/11 02:30:35 emperorkefka Exp $
  */
 public class DataStoreConfig{
 
@@ -55,21 +57,26 @@ public class DataStoreConfig{
 	  /** connection parameters to create the DataStoreInfo */
 	  private Map connectionParams;
 	  
+      /** Config ONLY! DataStoreFactory used to test params */
+      private DataStoreFactorySpi factory;
+      
 	/**
-	 * DataStoreInfo constructor.
+	 * Create a new DataStoreConfig
 	 * <p>
 	 * Creates a DataStoreInfo to represent an instance with default data.
 	 * </p>
+     * @param description Description of DataStore (see DataStoreUtils)
 	 * @see defaultSettings()
 	 */
-	  public DataStoreConfig(){
-		id = "";
-		nameSpaceId = "";
-		enabled = false;
-		title = "";
-		_abstract = "";
-		connectionParams = new HashMap();
-	  }
+    public DataStoreConfig( String description ){
+        factory = DataStoreUtils.aquireFactory( description );
+    	id = "";
+        nameSpaceId = "";
+        enabled = false;
+        title = "";
+        _abstract = "";
+    	connectionParams = DataStoreUtils.defaultParams( description );        
+    }
 	
 	/**
 	 * DataStoreInfo constructor.
@@ -78,21 +85,23 @@ public class DataStoreConfig{
 	 * </p>
 	 * @param ds The datastore to copy.
 	 */
-	  public DataStoreConfig(DataStoreInfoDTO ds){
-		if(ds == null){
-			throw new NullPointerException();
+	public DataStoreConfig(DataStoreInfoDTO dto){
+        reset( dto );
+	}
+    
+    /** Called to update Config class based on DTO information */
+	public void reset( DataStoreInfoDTO dto ){
+		if( dto == null){
+			throw new NullPointerException("Non null DataStoreInfoDTO required");
 		}
-		id = ds.getId();
-		nameSpaceId = ds.getNameSpaceId();
-		enabled = ds.isEnabled();
-		_abstract = ds.getAbstract();
-		try{
-			connectionParams =
-				new HashMap( ds.getConnectionParams() );
-		}catch(Exception e){
-			connectionParams = new HashMap();  	
-		}
-	  }
+        factory = DataStoreUtils.aquireFactory( dto.getConnectionParams() );
+        
+		id = dto.getId();
+		nameSpaceId = dto.getNameSpaceId();
+		enabled = dto.isEnabled();
+		_abstract = dto.getAbstract();
+		connectionParams = new HashMap( dto.getConnectionParams() );		
+	}
 
 	/**
 	 * Implement loadDTO.
@@ -140,8 +149,8 @@ public class DataStoreConfig{
 			// default already created  	
 		}
 		return ds;
-	  }
-	  
+	  }	  
+      
 	/**
 	 * getAbstract purpose.
 	 * <p>
@@ -228,7 +237,6 @@ public class DataStoreConfig{
 	 * @param map
 	 */
 	public void setConnectionParams(Map map) {
-		if(map != null)
 		connectionParams = map;
 	}
 

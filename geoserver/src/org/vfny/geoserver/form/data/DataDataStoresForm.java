@@ -6,7 +6,10 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 
@@ -30,10 +34,11 @@ public class DataDataStoresForm extends ActionForm {
 	private boolean enabled;
 	private String namespace;
 	private String description;
-	private String server;
-	private String port;
-	private String username;
-	private String password;
+	
+	//These are not stored in a single map so we can access them
+	//easily from JSP page
+	private List connectionParamKeys;
+	private List connectionParamValues;
 	
 	private String selectedDataStore;
 	private String selectedDataStoreType;
@@ -70,7 +75,7 @@ System.out.println("FormRESET");
 
 		dataStores = new TreeSet(config.getDataStores().keySet());
 		namespaces = new TreeSet(config.getNameSpaces().keySet());
-		dataStoreTypes = new TreeSet( config.listDataStoreFactoryNames());
+		dataStoreTypes = new TreeSet( DataStoreUtils.listDataStoresDescriptions());
 				
 		DataStoreConfig dsConfig;
 		
@@ -89,6 +94,12 @@ System.out.println("FormRESET");
 		namespace = dsConfig.getNameSpaceId();
 
 		//Retrieve connection params		
+		
+		connectionParamKeys   = new ArrayList (dsConfig.getConnectionParams().keySet());
+		connectionParamValues = new ArrayList (dsConfig.getConnectionParams().values());
+		
+		System.out.println("------------------------------DUMP------------------------------");
+		System.out.println(connectionParamKeys.toString() + " ========= "+connectionParamKeys.size());
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -125,34 +136,6 @@ System.out.println("FormRESET");
 	}
 
 	/**
-	 * @return
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getPort() {
-		return port;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getServer() {
-		return server;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getUsername() {
-		return username;
-	}
-
-	/**
 	 * @param string
 	 */
 	public void setDataStoreID(String string) {
@@ -179,34 +162,6 @@ System.out.println("FormRESET");
 	 */
 	public void setNamespace(String string) {
 		namespace = string;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setPassword(String string) {
-		password = string;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setPort(String string) {
-		port = string;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setServer(String string) {
-		server = string;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setUsername(String string) {
-		username = string;
 	}
 
 	/**
@@ -278,6 +233,33 @@ System.out.println("FormRESET");
 	 */
 	public void setAction(String string) {
 		action = string;
+	}
+
+
+	/**
+	 * @return
+	 */
+	public List getConnectionParamKeys() {
+		return connectionParamKeys;
+	}
+	/**
+	 * @return
+	 */
+	public String getConnectionParamKey(int index) {
+		return (String) connectionParamKeys.get(index);
+	}
+	/**
+	 * @return
+	 */
+	public String getConnectionParamValue(int index) {
+		return (String) connectionParamValues.get(index);
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setConnectionParamValues(int index, String value) {
+		connectionParamValues.set(index, value);
 	}
 
 }
