@@ -298,6 +298,35 @@ public abstract class AbstractService extends HttpServlet {
         try {
             XmlRequestReader requestReader = getXmlRequestReader();
             Reader xml = (requestXml != null) ? requestXml : request.getReader();
+            
+            //DJB: add support for POST loggin
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	if (xml.markSupported())
+            	{
+            			// a little protection for large POSTs (ie. updates)
+            		    // for FINE, I assume people just want to see the "normal" ones - not the big ones
+            		    // for FINER, I assume they would want to see a bit more
+            		    // for FINEST, I assume they would want to see even more
+            		int maxChars = 16000;   
+            		if (LOGGER.isLoggable(Level.FINER))
+            			maxChars = 64000;
+            		if (LOGGER.isLoggable(Level.FINEST))
+            			maxChars = 640000;  // Bill gates says 640k is good enough for anyone
+            		
+            		xml.mark(maxChars+1); // +1 so if you read the whole thing you can still reset()
+            		char buffer[] = new char[maxChars];
+            		int actualRead = xml.read(buffer);
+            		xml.reset();
+            		LOGGER.fine("------------XML POST START-----------\n"+new String(buffer,0,actualRead)+"\n------------XML POST END-----------");
+            		if (actualRead ==maxChars )
+            			LOGGER.fine("------------XML POST REPORT WAS TRUNCATED AT "+maxChars+" CHARACTERS.  RUN WITH HIGHER LOGGING LEVEL TO SEE MORE");
+            	}
+            	else
+            	{
+            		LOGGER.fine("ATTEMPTED TO LOG POST XML, BUT WAS PREVENTED BECAUSE markSupported() IS FALSE");
+            	}
+            }
+            
             serviceRequest = requestReader.read(xml, request);
             serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
