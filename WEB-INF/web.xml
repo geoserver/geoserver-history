@@ -162,6 +162,11 @@
     <url-pattern>*.do</url-pattern>
   </servlet-mapping>
   
+  <mime-mapping>
+   <extension>xsl</extension>
+   <mime-type>text/xml</mime-type>
+  </mime-mapping>
+		      
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
