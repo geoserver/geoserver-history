@@ -19,6 +19,12 @@
           <html:password size="60" property="password"/>        
         </td>      
       </tr>    
+      <!--tr>
+        <td class="label"><bean:message key="label.password.confirm"/>:</td>
+        <td class="datum">
+          <html:password size="60" property="confirm"/>        
+        </td>      
+      </tr-->    
       <tr>
         <td class="label"></td>
         <td class="datum">
