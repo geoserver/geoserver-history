@@ -40,8 +40,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.12 2004/04/07 21:52:42 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.13 2004/04/07 22:36:25 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -99,6 +99,9 @@ public class TypesEditorForm extends ActionForm {
      */
     private List attributes;
 
+    /** List of attributes available for addition */
+    private List addList;
+    
     /** Action requested by user */
     private String action;
 
@@ -107,8 +110,6 @@ public class TypesEditorForm extends ActionForm {
     
     /** Stores the name of the new attribute they wish to create */
     private String newAttribute;
-    
-    
     
     /**
      * Set up FeatureTypeEditor from from Web Container.
@@ -179,7 +180,8 @@ public class TypesEditorForm extends ActionForm {
             // Generate ReadOnly list of Attribtues
             //
             List generated = DataTransferObjectFactory.generateAttributes( featureType );
-            this.attributes = attribtuesDisplayList( generated );			
+            this.attributes = attribtuesDisplayList( generated );
+            addList = Collections.EMPTY_LIST;			
         }
         else {
         	this.schemaBase = type.getSchemaBase();
@@ -191,7 +193,15 @@ public class TypesEditorForm extends ActionForm {
             List schemaAttribtues = DataTransferObjectFactory.generateRequiredAttribtues(schemaBase);
             attributes.addAll( attribtuesDisplayList( schemaAttribtues ));
             attributes.addAll( attribtuesFormList( type.getSchemaAttributes(), featureType ));
+            addList = new ArrayList( featureType.getAttributeCount() );
+            for( int i=0; i<featureType.getAttributeCount(); i++){
+                String attributeName = featureType.getAttributeType(i).getName();
+                if( lookUpAttribute( attributeName ) == null ){
+                    addList.add( attributeName );
+                }                        
+            }
         }
+        
         StringBuffer buf = new StringBuffer();
         for (Iterator i = type.getKeywords().iterator(); i.hasNext();) {
             String keyword = (String) i.next();
@@ -220,7 +230,21 @@ public class TypesEditorForm extends ActionForm {
         }
         
     }
-    
+    private Object lookUpAttribute( String name ){
+        for( Iterator i=attributes.iterator(); i.hasNext(); ){
+            Object attribute = i.next();
+            if( attribute instanceof AttributeDisplay &&
+                name.equals( ((AttributeDisplay)attribute).getName() ) ){
+                return attribute;                
+            }
+            if( attribute instanceof AttributeForm &&
+                name.equals( ((AttributeForm)attribute).getName() ) ){
+                return attribute;                
+            }            
+        }
+        return null;
+        
+    }
     /**
      * Create a List of AttributeDisplay based on AttributeTypeInfoDTO.
      * 
@@ -577,9 +601,12 @@ public class TypesEditorForm extends ActionForm {
 	public void setNewAttribute(String newAttribute) {
 		this.newAttribute = newAttribute;
 	}
-    
+    /**
+     * 
+     * @return List of attributes available for addition
+     */
     public List getCreateableAttributes() {
-    	return null;
+    	return addList;
     }
 
 }
