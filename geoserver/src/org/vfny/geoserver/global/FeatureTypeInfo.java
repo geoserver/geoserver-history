@@ -18,6 +18,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureTypeMetaData;
+import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
@@ -40,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.25 2004/02/13 20:40:29 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.26 2004/02/13 22:22:50 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -704,8 +705,28 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
      */
     public FeatureType getFeatureType() throws IOException {
-    	if(ft == null)
+    	if(ft == null){
+    		int count = 0;
     		ft = getFeatureSource().getSchema();
+    		AttributeType[] attributes = new AttributeType[schema.size()];
+            for (Iterator i = schema.iterator(); i.hasNext();) {
+            	String attName = ((AttributeTypeInfo)i.next()).getAttributeName();
+            	attributes[count] = ft.getAttributeType(attName);
+
+            	if (attributes[count] == null) {
+                throw new IOException("the FeatureType " + getName()
+                    + " does not contains the configured attribute " + attName
+                    + ". Check your catalog configuration");
+            	}
+            }
+            try {
+            	ft = FeatureTypeFactory.newFeatureType(attributes,
+            		getName());
+        	} catch (SchemaException ex) {
+        	} catch (FactoryConfigurationError ex) {
+        	}
+    		
+    	}
     	return ft;
     }
 
