@@ -91,7 +91,7 @@ public class TypesEditorAction extends ConfigAction {
         	return executeBBox(mapping, typeForm, user, request);
         }
         
-        LinkedList attributes = (LinkedList) typeForm.getAttributes();
+        List attributes = typeForm.getAttributes();
         if( action.startsWith("up_")){
             int index = Integer.parseInt(action.substring(3));
             Object attribute = attributes.remove(index);
