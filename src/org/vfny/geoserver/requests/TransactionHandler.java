@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.Feature;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
@@ -56,7 +57,7 @@ public class TransactionHandler
     private String curPropertyName;
 
     /** holds the property value for an update request. */
-    private String curPropertyValue;
+    private Object curPropertyValue;
 
     /** holds the current lockId */
     private String curLockId = new String();
@@ -191,11 +192,14 @@ public class TransactionHandler
 	    }
             request.addSubRequest(subRequest);
         } else if(state == PROPERTY) {
+	    LOGGER.finer("ending property");
 	    if (subRequest.getClass().equals(UpdateRequest.class)) {
 		((UpdateRequest) subRequest).addProperty(curPropertyName,
 							 curPropertyValue);
+		LOGGER.finer("setting update property " + curPropertyName + 
+			     " to " + curPropertyValue);
 		curPropertyName = new String();
-		curPropertyValue = new String();
+		curPropertyValue = null;
 	    } else {
 		throw new SAXException("<property> element should only occur " 
 				       + "within a <update> element.");
@@ -228,7 +232,8 @@ public class TransactionHandler
             String s = new String(ch, start, length);
             LOGGER.finest("found property name: " + s);
 	    curPropertyName = s.trim();
-        } else if (state == VALUE) {
+	    //if curProperty is not null then there is a geometry there.
+        } else if (state == VALUE && curPropertyValue == null) {
             String s = new String(ch, start, length);
             curPropertyValue = s.trim();
         } else if (state == LOCKID) {
@@ -262,5 +267,13 @@ public class TransactionHandler
 
     }
     
+    /** If no children claim the geometry it comes here, and is used if
+     * we are looking for a value for a property element. */
+    public void geometry(Geometry geometry) {
+	LOGGER.finer("recieved geometry " + geometry);
+	if (state == VALUE) {            
+            curPropertyValue = geometry;
+	}
+    }
 	    
 }
