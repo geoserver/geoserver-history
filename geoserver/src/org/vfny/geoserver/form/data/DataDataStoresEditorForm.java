@@ -110,10 +110,10 @@ public class DataDataStoresEditorForm extends ActionForm {
             Param param = params[i];
             String key = param.key;
             Object value = dsConfig.getConnectionParams().get( key );
-            String text = param.getAsText( value );
+            String text = value != null ? param.getAsText( value ) : null;
             
             paramKeys.add( key );
-            paramValues.add( text );
+            paramValues.add( text != null ? text : "" );
             paramHelp.add( param.description + (param.required?"":"(optional)") );
         }		        
 	}
