@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.10 2004/01/15 23:45:42 jive Exp $
+ * @version $Id: XMLConfigReader.java,v 1.11 2004/01/15 23:54:35 jive Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -855,7 +855,12 @@ public class XMLConfigReader {
                 + infoFile, fileNotFound);
         }
 
-        featureElem = ReaderUtils.loadConfig(reader);
+        try {
+            featureElem = ReaderUtils.loadConfig(reader);
+        } catch (Exception erk) {
+            throw new ConfigurationException("Could not parse info file:"
+                + infoFile, erk);
+        }
 
         FeatureTypeInfoDTO dto = loadFeaturePt2(featureElem);
 
@@ -870,10 +875,17 @@ public class XMLConfigReader {
             // attempt to load optional schema information
             //
             LOGGER.finest("process schema file " + infoFile);
-            attributeList = loadSchema(schemaFile, dto);
+            try {
+                attributeList = loadSchema(schemaFile, dto);
+            } catch (ConfigurationException badDog ){
+                System.out.println("IGNORING PROBLEM WITH Schema File:"+schemaFile);
+                badDog.printStackTrace();
+                attributeList = Collections.EMPTY_LIST;
+            }
         } else {
             attributeList = Collections.EMPTY_LIST;
         }
+
         LOGGER.finer("added featureType " + dto.getName());
 
         return dto;
@@ -1051,7 +1063,6 @@ public class XMLConfigReader {
 
     /**
      * Process schema File for a list of AttributeTypeInfoDTO.
-     * 
      * <p>
      * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
      * </p>
@@ -1076,9 +1087,13 @@ public class XMLConfigReader {
             throw new ConfigurationException("Could not open schmea file:"
                 + schemaFile, e);
         }
-
-        Element elem = ReaderUtils.loadConfig(reader);
-
+        Element elem = null;
+        try {
+            elem = ReaderUtils.loadConfig(reader);
+        } catch (Exception erk) {
+            throw new ConfigurationException("Could not parse schema file:"
+                    + schemaFile, erk);
+        }
         return processSchema(elem, dto);
     }
 
