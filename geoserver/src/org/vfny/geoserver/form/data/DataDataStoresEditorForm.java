@@ -32,8 +32,10 @@ import org.vfny.geoserver.config.DataStoreConfig;
  * @author Richard Gould, Refractions Research
  */
 public class DataDataStoresEditorForm extends ActionForm {
-    
-	/**
+    /** Help text for Params if available */
+	private ArrayList paramHelp;
+
+    /**
      * Used to identify the DataStore being edited.
      * Maybe we should grab this from session?
      */
@@ -96,9 +98,24 @@ public class DataDataStoresEditorForm extends ActionForm {
 		enabled = dsConfig.isEnabled();
 		namespaceId = dsConfig.getNameSpaceId();
 
-		//Retrieve connection params		
-		paramKeys   = new ArrayList(dsConfig.getConnectionParams().keySet());
-		paramValues = new ArrayList(dsConfig.getConnectionParams().values());
+		//Retrieve connection params
+        DataStoreFactorySpi factory = dsConfig.getFactory();
+        Param params[] = factory.getParametersInfo();
+        
+        paramKeys = new ArrayList( params.length );
+        paramValues = new ArrayList( params.length );
+        paramHelp = new ArrayList( params.length );
+        
+        for( int i = 0; i<params.length; i++ ){
+            Param param = params[i];
+            String key = param.key;
+            Object value = dsConfig.getConnectionParams().get( key );
+            String text = param.getAsText( value );
+            
+            paramKeys.add( key );
+            paramValues.add( text );
+            paramHelp.add( param.description + (param.required?"":"(optional)") );
+        }		        
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -163,7 +180,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 	 * @return
 	 */
 	public String getParamKey(int index) {
-		return (String) paramKeys.get(index);
+        return (String) paramKeys.get(index);
 	}
 	/**
 	 * @return
@@ -300,26 +317,23 @@ public class DataDataStoresEditorForm extends ActionForm {
         namespaceId = string;
     }
 
-	/**
-	 * isEnabledChecked purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public boolean isEnabledChecked() {
+	/** enabledChecked property */
+    public boolean isEnabledChecked() {
 		return enabledChecked;
 	}
 
-	/**
-	 * setEnabledChecked purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param b
-	 */
+	/** enabledChecked property */
 	public void setEnabledChecked(boolean b) {
 		enabledChecked = b;
 	}
+
+    /** Index property paramHelp */
+    public String[] getParamHelp() {
+        return (String[]) paramHelp.toArray( new String[paramHelp.size()]);
+    }
+    /** Index property paramHelp */    
+    public String getParamHelp( int index ){
+        return (String) paramHelp.get( index );
+    }
 
 }
