@@ -54,7 +54,7 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
 	public GMLSchemaTranslator(String prefix) {
 		super(prefix);
 		elements = new HashSet();
-		elements.add(new PointElement(prefix));
+		/*elements.add(new PointElement(prefix));
 		elements.add(new LineStringElement(prefix));
 		elements.add(new LinearRingElement(prefix));
 		elements.add(new BoxElement(prefix));
@@ -64,7 +64,7 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
 		elements.add(new MultiLineStringElement(prefix));
 		elements.add(new MultiPolygonElement(prefix));
 		elements.add(new CoordElement(prefix));
-		elements.add(new CoordinatesElement(prefix));
+		elements.add(new CoordinatesElement(prefix));*/
 		elements.add(new PointPropertyElement(prefix));
 		elements.add(new PolygonPropertyElement(prefix));
 		elements.add(new LineStringPropertyElement(prefix));
@@ -76,7 +76,7 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
 		elements.add(new AbstractFeatureElement(prefix));
 		elements.add(new AbstractFeatureCollectionBaseElement(prefix));
 		elements.add(new AbstractFeatureCollectionElement(prefix));
-		elements.add(new GeometryPropertyElement(prefix));
+		/*elements.add(new GeometryPropertyElement(prefix));
 		elements.add(new FeatureAssociationElement(prefix));
 		elements.add(new BoundingShapeElement(prefix));
 		elements.add(new AbstractGeometryElement(prefix));
@@ -86,7 +86,7 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
 		elements.add(new PointMemberElement(prefix));
 		elements.add(new LineStringMemberElement(prefix));
 		elements.add(new PolygonMemberElement(prefix));
-		elements.add(new LinearRingMemberElement(prefix));
+		elements.add(new LinearRingMemberElement(prefix));*/
 	}
 
 	/**
@@ -165,8 +165,16 @@ class AbstractFeatureCollectionElement extends NameSpaceElement{
 	public Class getJavaClass(){return FeatureCollection.class;}
 	public boolean isAbstract(){return true;}
 }
+// I don't think this big chunk of junk is useful, as I don't think you're 
+// going to define a schema with it, unless you do something more complicated
+// then what we are doing.  We only want the GeometryPropertyType stuff, which
+// allows us to name the element as we will.  The rest is only useful if you
+// are doing more complex stuff than we allow.  But I will leave this in
+// and commented out, in case I am wrong and this junk does have a use.
 
-class GeometryPropertyElement extends NameSpaceElement{
+// I think perhaps it may just need better objects, that can actually use
+// these?  Since the geometry objects they are given can't use them.
+/*class GeometryPropertyElement extends NameSpaceElement{
 	public GeometryPropertyElement(String prefix){super(prefix);}
 	public String getTypeDefName(){return "GeometryPropertyType";}
 	public String getTypeRefName(){return null;}
@@ -626,7 +634,7 @@ class CoordinatesElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Coordinate.class;}
 	public boolean isAbstract(){return false;}
-}
+	}*/
 
 class PointPropertyElement extends NameSpaceElement{
 	public PointPropertyElement(String prefix){super(prefix);}
@@ -650,6 +658,7 @@ class PointPropertyElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Point.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class PolygonPropertyElement extends NameSpaceElement{
@@ -674,6 +683,7 @@ class PolygonPropertyElement extends NameSpaceElement{
 	}
 	public boolean isAbstract(){return false;}
 	public Class getJavaClass(){return Polygon.class;}
+        public boolean isDefault(){return true;}
 }
 
 class LineStringPropertyElement extends NameSpaceElement{
@@ -698,6 +708,7 @@ class LineStringPropertyElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return LineString.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class MultiPointPropertyElement extends NameSpaceElement{
@@ -722,6 +733,7 @@ class MultiPointPropertyElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return MultiPoint.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class MultiLineStringPropertyElement extends NameSpaceElement{
@@ -746,6 +758,7 @@ class MultiLineStringPropertyElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return MultiLineString.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class MultiPolygonPropertyElement extends NameSpaceElement{
@@ -770,6 +783,7 @@ class MultiPolygonPropertyElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return MultiPolygon.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class MultiGeometryPropertyElement extends NameSpaceElement{
@@ -794,6 +808,7 @@ class MultiGeometryPropertyElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return GeometryCollection.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class NullElement extends NameSpaceElement{
