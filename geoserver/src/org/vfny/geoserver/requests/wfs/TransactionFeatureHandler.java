@@ -30,7 +30,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.11 2004/02/13 01:07:08 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.12 2004/03/09 18:59:56 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -110,13 +110,15 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             }
 
             if (!insideFeature) {
-                if (internalTypeName == null) {
+                if (internalTypeName == null || fType==null) {
                     throw new SAXException(
                         "Could not find featureType with name " + localName
                         + ", and uri: " + namespaceURI);
                 }
 
+                //fix for insert ...
                 typeName = internalTypeName;
+System.out.println("typeName"+typeName);
                 attributes = new Vector();
                 attributeNames = new Vector();
 
@@ -237,7 +239,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                 //meaning is with the prefix for internal GeoServer types,
                 //which we don't want passed to our datasources.
                 FeatureType schema = FeatureTypeFactory.newFeatureType(attDef,
-                        localName, namespaceURI);
+                        //localName, namespaceURI);
+                		internalTypeName, namespaceURI);
                 Feature feature = schema.create(attributes.toArray());
 
                 //currentFeature.setAttributes((Object []) attributes.toArray());
