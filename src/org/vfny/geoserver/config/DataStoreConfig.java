@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.8 2004/03/09 01:37:40 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.9 2004/04/05 11:40:06 cholmesny Exp $
  */
 public class DataStoreConfig {
     /** unique datasore identifier */
@@ -38,7 +38,7 @@ public class DataStoreConfig {
     private String nameSpaceId;
 
     /** wether this data store is enabled */
-    private boolean enabled;
+    private boolean enabled = true;
 
     /** a short description about this data store */
     private String title;
@@ -72,7 +72,7 @@ public class DataStoreConfig {
         this.factory = factory;
         id = dataStoreId;
         nameSpaceId = "";
-        enabled = false;
+        enabled = true;
         title = "";
         _abstract = "";
         connectionParams = DataStoreUtils.defaultParams(factory);
