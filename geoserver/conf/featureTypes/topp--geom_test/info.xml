@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
   <featureType datastore="local.postgis">
         <!-- the name of the featureType in the dataStore, for postgis it 
              should be the tablename. -->
