@@ -247,4 +247,26 @@ public class DataDataStoresEditorForm extends ActionForm {
         namespaceId = string;
     }
 
+	/**
+	 * isEnabledChecked purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public boolean isEnabledChecked() {
+		return enabledChecked;
+	}
+
+	/**
+	 * setEnabledChecked purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param b
+	 */
+	public void setEnabledChecked(boolean b) {
+		enabledChecked = b;
+	}
+
 }

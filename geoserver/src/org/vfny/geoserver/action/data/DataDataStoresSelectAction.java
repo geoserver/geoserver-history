@@ -14,6 +14,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.form.data.DataDataStoresSelectForm;
 
 /**
  * DataDataStoreSelectAction purpose.
@@ -38,41 +41,41 @@ import org.vfny.geoserver.action.ConfigAction;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.1.2.2 2004/01/12 05:18:37 emperorkefka Exp $
+ * @version $Id: DataDataStoresSelectAction.java,v 1.1.2.3 2004/01/12 06:59:49 emperorkefka Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
 
     public ActionForward execute(ActionMapping mapping,
-        ActionForm form,
+        ActionForm incomingForm,
         HttpServletRequest request,
         HttpServletResponse response)
         throws IOException, ServletException {
-            
+
     //DETERMINE IF THEY REQUESTED AN EDIT OR A DELETE
     //IF DELETE, REMOVE DATA STORE AND FORWARD BACK TO SELECTOR
     //IF EDIT, FORWARD TO EDITOR WITH CURRENT DATASTORE
-                
-    //If they push edit, simply forward them back so the information is repopulated.
- /*   if (action.equals("edit")) {
-        System.out.println("edit selected for dataStore: " + dataStoresForm.getSelectedDataStore());
-        dataStoresForm.reset(mapping, request);
-        return mapping.findForward("dataConfigDataStores");
-    }
+    
+        DataDataStoresSelectForm form = (DataDataStoresSelectForm) incomingForm;
         
-    if (action.equals("delete")) {
-        dataConfig.removeDataStore(dataStoresForm.getSelectedDataStore());
-        System.out.println("Delete requested on " + dataStoresForm.getSelectedDataStore());
-    } else {
+        String buttonAction = form.getButtonAction();
+        
+        DataConfig dataConfig = (DataConfig) getDataConfig();
+        DataStoreConfig dsConfig = null;
+        
+        if ("edit".equals(buttonAction)) {
+            dsConfig = (DataStoreConfig) dataConfig.getDataStore(form.getSelectedDataStoreId());
             
-        config.setId(dataStoreID);
-        config.setEnabled(enabled);
-        config.setNameSpaceId(namespace);
-        config.setAbstract(description);
-        
-        //Do configuration parameters here.
-        
-        dataConfig.addDataStore(dataStoreID, config);
-    } */
-    return null;
+            //This would be ideal. Perhaps later. Session for now.
+            //getUserContainer(request).setDataStoreID(form.getSelectedDataStoreId());
+            request.getSession().setAttribute("selectedDataStoreId", form.getSelectedDataStoreId());
+            return mapping.findForward("dataConfigDataStores");
+            
+        } else if ("delete".equals(buttonAction)) {
+            dataConfig.removeDataStore(form.getSelectedDataStoreId());
+            request.getSession().removeAttribute("selectedDataStoreId");
+            return mapping.findForward("dataConfigDataStores");
+        }
+                
+        return null;
     }
 }

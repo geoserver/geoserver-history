@@ -18,8 +18,8 @@ import org.vfny.geoserver.config.ConfigRequests;
  * Select current DataStore for edit or delete Action.
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.6 2004/01/12 05:28:56 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.7 2004/01/12 06:57:55 emperorkefka Exp $
  */
 public class DataDataStoresSelectForm extends ActionForm {
     
@@ -46,7 +46,7 @@ public class DataDataStoresSelectForm extends ActionForm {
     /** Validate as required */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-                    
+                   /* 
         if( !getDataStoreIds().contains( getSelectedDataStoreId() ) ){
             errors.add( "selectedDataStoreId",            
                 new ActionError("errors.requiredFactory", getSelectedDataStoreId() )
@@ -57,7 +57,7 @@ public class DataDataStoresSelectForm extends ActionForm {
             errors.add( "buttonAction",            
                 new ActionError("errors.requireDataStoreID", getButtonAction() )
             );            
-        }
+        }*/
         return errors;
     }    
 
