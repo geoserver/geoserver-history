@@ -121,7 +121,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         FeatureTypeInfo[] layers = request.getQueryLayers();
 
         //get the filters of the "GetMap" portion of the request
-        Filter[] filters = request.getGetMapRequest().getFilters();
+        Filter[] filters = request.getGetMapRequest().getUserSuppliedFilters();
 
         Query[] queries = buildQueries(layers, filters);
         int x = request.getXPixel();

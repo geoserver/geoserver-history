@@ -186,12 +186,20 @@ public class DataDataStoresEditorForm extends ActionForm {
 
             try {
                 value = param.lookUp(getParams());
+                if(value instanceof String)
+                value = param.parse((String)value);
             } catch (IOException erp) {
                 errors.add("paramValue[" + i + "]",
                     new ActionError("error.dataStoreEditor.param.parse", key,
                         param.type, erp));
 
                 continue;
+            }catch(Throwable t){//thrown by param.parse()
+                errors.add("paramValue[" + i + "]",
+                        new ActionError("error.dataStoreEditor.param.parse", key,
+                            param.type, t));
+
+                    continue;
             }
 
             if ((value == null) && param.required) {
