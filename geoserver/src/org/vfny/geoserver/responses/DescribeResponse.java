@@ -145,7 +145,7 @@ public class DescribeResponse {
 	    tempResponse.append(generateSpecifiedTypes(requestedTypes));
 	} else {
 	    //the featureTypes do not have all the same prefixes.
-	    tempResponse.append(DEFAULT_NAMESPACE);
+	    tempResponse.append(DEFAULT_NAMESPACE + XS_NAMESPACE);
 	    tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
 	    Set prefixes = new HashSet();
 	    Iterator nameIter = requestedTypes.iterator();
@@ -183,7 +183,8 @@ public class DescribeResponse {
     private StringBuffer getNSImport(String prefix, List typeNames){
 	LOGGER.finer("prefix is " + prefix);
 	StringBuffer retBuffer = new StringBuffer("\n  <import namespace=\"");
-	retBuffer.append(config.getNSUri(prefix) + "\"");
+	String namespace = config.getNSUri(prefix);
+	retBuffer.append(namespace + "\"");
 	retBuffer.append("\n        schemaLocation=\"" + config.getUrl() + 
 			 "/DescribeFeatureType?" //HACK: bad hard code here.
 			 + "typeName=");
