@@ -10,13 +10,12 @@ import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureTypeMetaData;
-import org.geotools.data.InProcessLockingManager;
 import org.geotools.data.LockingManager;
 import org.geotools.data.NamespaceMetaData;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.styling.SLDStyle;
+import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -26,6 +25,8 @@ import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
+import org.w3c.dom.NodeList;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -49,7 +50,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.37 2004/03/30 11:13:31 cholmesny Exp $
+ * @version $Id: Data.java,v 1.38 2004/04/08 21:15:08 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -546,7 +547,7 @@ SCHEMA:
 
             try {
                 style = loadStyle(styleDTO.getFilename());
-            } catch (IOException ioException) {
+            } catch (Exception ioException) {// was IOException
                 LOGGER.log(Level.SEVERE, "Could not load style " + id,
                     ioException);
 
@@ -1044,16 +1045,7 @@ SCHEMA:
     //use that instead.
     public Style loadStyle(String fileName, String base)
         throws IOException {
-        URL url;
-
-        //HACK: but I'm not sure if we can get the GeoServer instance.  This is one thing
-        //that will benefit from splitting up of config loading from representation.
-        url = new File(base + fileName).toURL();
-
-        SLDStyle stylereader = new SLDStyle(styleFactory, url);
-        Style[] layerstyle = stylereader.readXML();
-
-        return layerstyle[0];
+        return loadStyle(new File(base + fileName));
     }
 
     /**
@@ -1066,17 +1058,8 @@ SCHEMA:
      * @throws IOException DOCUMENT ME!
      */
     public Style loadStyle(File fileName) throws IOException {
-        URL url;
-
-        //HACK: but I'm not sure if we can get the GeoServer instance.  This is one thing
-        //that will benefit from splitting up of config loading from representation.
-        //
-        url = (fileName).toURL();
-
-        SLDStyle stylereader = new SLDStyle(styleFactory, url);
-        Style[] layerstyle = stylereader.readXML();
-
-        return layerstyle[0];
+		SLDParser stylereader = new SLDParser(styleFactory, fileName);
+        return stylereader.readXML()[0];
     }
 
     /**
