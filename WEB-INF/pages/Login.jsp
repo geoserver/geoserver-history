@@ -19,7 +19,7 @@
       <tr>
         <td class="label"></td>
         <td class="datum">
-          <html:submit/><html:reset/>        
+          <html:submit><bean:message key="label.submit"/></html:submit><html:reset><bean:message key="label.reset"/></html:reset>
         </td>      
       </tr>    
     </tbody>
