@@ -10,7 +10,24 @@
  */
 package org.vfny.geoserver.action.wfs;
 
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import junit.framework.TestCase;
+
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.config.ActionConfig;
@@ -23,20 +40,6 @@ import org.apache.struts.config.MessageResourcesConfig;
 import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.config.PlugInConfig;
 import org.vfny.geoserver.form.wfs.WFSDescriptionForm;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**

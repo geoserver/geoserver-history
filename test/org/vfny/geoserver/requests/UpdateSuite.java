@@ -13,8 +13,8 @@ import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.CompareFilter;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.LiteralExpression;
-import org.vfny.geoserver.requests.wfs.TransactionRequest;
-import org.vfny.geoserver.requests.wfs.UpdateRequest;
+import org.vfny.geoserver.wfs.requests.TransactionRequest;
+import org.vfny.geoserver.wfs.requests.UpdateRequest;
 
 
 /**

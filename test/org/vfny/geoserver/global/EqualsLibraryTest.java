@@ -4,12 +4,14 @@
  */
 package org.vfny.geoserver.global;
 
-import junit.framework.TestCase;
-import org.vfny.geoserver.global.dto.EqualsLibrary;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import junit.framework.TestCase;
+
+import org.vfny.geoserver.global.dto.EqualsLibrary;
 
 
 /**

@@ -4,15 +4,17 @@
  */
 package org.vfny.geoserver.requests;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.geotools.feature.Feature;
+import org.vfny.geoserver.wfs.requests.InsertRequest;
+import org.vfny.geoserver.wfs.requests.TransactionRequest;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import org.geotools.feature.Feature;
-import org.vfny.geoserver.requests.wfs.InsertRequest;
-import org.vfny.geoserver.requests.wfs.TransactionRequest;
 
 
 /**

@@ -4,16 +4,19 @@
  */
 package org.vfny.geoserver.zserver;
 
+import java.util.Properties;
+import java.util.logging.Logger;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.apache.lucene.search.Query;
+
 import com.k_int.util.RPNQueryRep.AttrPlusTermNode;
 import com.k_int.util.RPNQueryRep.ComplexNode;
 import com.k_int.util.RPNQueryRep.QueryNode;
 import com.k_int.util.RPNQueryRep.RootNode;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.lucene.search.Query;
-import java.util.Properties;
-import java.util.logging.Logger;
 
 
 /**

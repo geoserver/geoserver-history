@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.config;
 
-import junit.framework.TestCase;
 import java.util.HashMap;
 import java.util.Map;
+
+import junit.framework.TestCase;
 
 
 /**

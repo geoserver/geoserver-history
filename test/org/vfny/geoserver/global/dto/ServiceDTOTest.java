@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import junit.framework.TestCase;
 import java.net.URL;
+
+import junit.framework.TestCase;
 
 
 /**

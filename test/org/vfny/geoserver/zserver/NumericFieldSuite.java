@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver.zserver;
 
+import java.util.logging.Logger;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import java.util.logging.Logger;
 
 
 /**
