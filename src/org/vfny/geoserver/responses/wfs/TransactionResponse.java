@@ -61,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.17 2004/03/10 23:39:06 groldan Exp $
+ * @version $Id: TransactionResponse.java,v 1.18 2004/03/31 05:15:07 cholmesny Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -95,11 +95,11 @@ public class TransactionResponse implements Response {
         //REVISIT: this should maybe integrate with the other exception 
         //handlers better - but things that go wrong here should cause 
         //transaction exceptions.
-        try {
+        //try {
             execute((TransactionRequest) request);
-        } catch (Throwable thrown) {
-            throw new WfsTransactionException(thrown);
-        }
+        //} catch (Throwable thrown) {
+        //    throw new WfsTransactionException(thrown);
+        //}
     }
 
     /**
@@ -375,7 +375,7 @@ public class TransactionResponse implements Response {
                     //envelope.expandToInclude(store.getBounds(
                     //      new DefaultQuery(update.getTypeName(), filter)));
                 } catch (IOException ioException) {
-                    throw new WfsTransactionException(ioException.getMessage(),
+                    throw new WfsTransactionException(ioException,
                         element.getHandle(), request.getHandle());
                 } catch (SchemaException typeException) {
                     throw new WfsTransactionException(typeName
