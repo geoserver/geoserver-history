@@ -7,7 +7,8 @@
   <para>When adding your lastest, greatest ideas into the GeoServer framework
   there is one stop over point that most developement shares: the User.</para>
 
-  <para>There are two places in which the User may interact with GeoServer:</para>
+  <para>There are two places in which the User may interact with
+  GeoServer:</para>
 
   <itemizedlist>
     <listitem>
@@ -52,7 +53,8 @@ xml fragment: example extention to an existing configuration file</programlistin
     </listitem>
 
     <listitem>
-      <para>Extend appropriate DTO class, along with XMLReader and XMLWriter</para>
+      <para>Extend appropriate DTO class, along with XMLReader and
+      XMLWriter</para>
     </listitem>
 
     <listitem>
@@ -90,7 +92,7 @@ xml fragment: example extention to an existing configuration file</programlistin
       </listitem>
 
       <listitem>
-        <para>info.xml (&#38; associated schema.xml): used to define which
+        <para>info.xml (&amp; associated schema.xml): used to define which
         FeatureTypes are available through the data subsystem</para>
       </listitem>
     </itemizedlist>
@@ -102,8 +104,8 @@ xml fragment: example extention to an existing configuration file</programlistin
 
     <programlisting><emphasis role="bold">Jira Task:</emphasis> GEOS-58: Ability to turn off Transactions
 <emphasis role="bold">Description:</emphasis>
-Users have requested the ability to turn &#39;off&#39; transaction capabilities, so that users of their
-WFS&#39;s can not modify their databases. I&#39;m not sure if this is in 1.2 yet or not, but we should
+Users have requested the ability to turn 'off' transaction capabilities, so that users of their
+WFS's can not modify their databases. I'm not sure if this is in 1.2 yet or not, but we should
 get the fix in there, and in a 1.1.1 bug fix release. It should be pretty easy to implement, just
 have a configuration setting to turn it off, and transactions check with that global value before
 letting a transaction go through. </programlisting>
@@ -118,8 +120,8 @@ letting a transaction go through. </programlisting>
       <para>Extentions should allways be addative, and optional. We do not
       wish to break existing installations of GeoServer.</para>
 
-      <para>For our example we will add a &#34;serviceLevel&#34; tag to the
-      wfs section of services.xml. The OGC allows considerable varience in the
+      <para>For our example we will add a "serviceLevel" tag to the wfs
+      section of services.xml. The OGC allows considerable varience in the
       capabilities of a Web Feature Server while still remaining complient
       with their specification.</para>
 
@@ -165,11 +167,11 @@ letting a transaction go through. </programlisting>
 
       <para>Extension to services.xml for WFS Level of Service:</para>
 
-      <programlisting>&#60;wfs&#62;
+      <programlisting>&lt;wfs&gt;
  ...
- &#60;serviceLevel&#62;Basic&#60;/serviceLevel
+ &lt;serviceLevel&gt;Basic&lt;/serviceLevel
  ...
-&#60;/wfs&#62;</programlisting>
+&lt;/wfs&gt;</programlisting>
 
       <para>There is almost a conflict here with the FeatureType configuration
       files, not all FeatureTypes are editable and as such will not allow the
@@ -192,14 +194,14 @@ letting a transaction go through. </programlisting>
 
 Request for a new configuration information:
 1) name: serviceLevel
-2) requirement: needed to control level of WFS service (see GEOS-58
+2) requirement: needed to control level of WFS service (see GEOS-58This
 3) configuration file: service.xml
 4) sample xml fragements:
-&#60;wfs&#62;
+&lt;wfs&gt;
  ...
- &#60;serviceLevel&#62;Basic&#60;/serviceLevel
+ &lt;serviceLevel&gt;Basic&lt;/serviceLevel
  ...
-&#60;/wfs&#62;
+&lt;/wfs&gt;
 
 Where serviceLevel can be one of:
 
@@ -231,13 +233,199 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
       configuration file with optional content, we may as well go onto the
       next section while we wait.</para>
 
-      <para>We just won&#39;t commit quite yet.</para>
+      <para>We just won't commit quite yet.</para>
     </section>
 
     <section>
-      <title>Extending XML Reader &#38; XML Writer</title>
+      <title>Extending GeoServer's XML Configuration IO</title>
 
-      <para>Over to you David !</para>
+      <para>This has four steps: create a spot to store the new data, load the
+      new data, use the new data and write the new data. Although in practice
+      many of these processes are completed concurently and closely depend
+      upon each other, we are going to pretend we live in a perfect linear
+      world. </para>
+
+      <section>
+        <title>DTO Extension</title>
+
+        <para>The DTO objects closely resemble the structure of the XML files.
+        The DTO objects should contain data in a logical grouping, independant
+        of the application and user interface. So if it belongs with other
+        like data, put it there. For example above we would store serviceLevel
+        as an enumerated type in the WFSDTO object. But if we also wanted to
+        store serviceLevels for the WMS service this information would be
+        stored in the ServiceDTO Object, with the enumeration of types
+        residing in the WFSDTO and WMSDTO Objects respectively.</para>
+
+        <para>When you have this all figured out, and have approval for the
+        changes (only needed if you want to commit), add the data to the DTO
+        object. Remember the DTO objects are intended to be Java Beans, so you
+        need to hide you data and provide both a getter and setter method.
+        These modifications should not break the code base, but just to be
+        safe make sure all of the following tasks have been completed:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Update default construtor</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Update parametarized constructor used to clone</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Update equals method</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Generate getter and setter methods</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Document the changes in the source code</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>XML Reader Extension</title>
+
+        <para>At this point you have a DTO object and an XML Schema defined.
+        This is relatively easy to complete, but equally easy to break the
+        application. All you need to do is add the code to read the Element at
+        the correct point in the file which you intend to read from. Often
+        this is easier said than done, but once completed place the data into
+        the DTO object. The best advice I have for you is to be VERY careful
+        of your element pointer withing the DOM tree. If you inadvertantly
+        affect this pointer, all other parsing one the remaining interior
+        branches of that tree will not be parsed correctly, mostlikely
+        breaking atleast part of the application. Solution, if unsure either
+        make a private method and pass the ref in or make a copy of the
+        reference before playing with it to avoid it's loss. Just like the
+        previous step, I have included a short list to help ensure you have
+        completed everything.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Ensure you have not affected the Element references around
+            you new addition</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Test the application to ensure it is not broken (ie. run
+            cite tests)</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Document the changes in the source code</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Ensure you have included informative error messages where
+            appropriate.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Global Extension</title>
+
+        <para>As far as guidance here, there are two parts: data
+        storage/retrieval and the rest or it. For part one, store the data and
+        provide an accessor method which is appropriate. You will also have to
+        update a few methods listed below to keep the class up-to-date. You
+        are now into the application. Carefully do whatever your plans for
+        this data included. Test, test and test again. When all looks good,
+        move on to the next stage. </para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Update default construtor</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Update parametarized constructor used to clone</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Update load method used to import DTO objects</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Update toDTO method used to export data as a DTO
+            object</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Test the application to ensure it is not broken (ie. run
+            cite tests)</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Document the changes in the source code</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>XML Writer Extension</title>
+
+        <para>This portion is the reverse of the XML Reader. You need to add
+        the write methods for your new data. Try to use the element write
+        methods provided. Also you should be careful to match tags ... .
+        Remember to test this code as well, because this code will break the
+        application as badly as the reader next time you run it. </para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Test the application to ensure it is not broken (ie. run
+            cite tests)</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Document the changes in the source code</para>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Ensure you have included informative error messages where
+            appropriate.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+    <section>
+      <title>Next</title>
+
+      <para>On to you jody</para>
     </section>
   </section>
 </article>
