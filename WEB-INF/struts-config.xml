@@ -203,7 +203,7 @@
             parameter="main.welcome"/>
 
         <action
-            path="/Contact"
+            path="/ContactInformation"
             type="org.apache.struts.actions.ForwardAction"
             parameter="main.contact"/>
                         
