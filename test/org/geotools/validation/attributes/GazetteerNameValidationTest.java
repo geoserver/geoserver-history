@@ -25,8 +25,8 @@ import com.vividsolutions.jts.geom.*;
  * </p>
  *  
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: GazetteerNameValidationTest.java,v 1.1 2004/01/31 00:17:52 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: GazetteerNameValidationTest.java,v 1.2 2004/02/05 18:56:20 dmzwiers Exp $
  */
 public class GazetteerNameValidationTest extends TestCase {
 
@@ -56,7 +56,7 @@ public class GazetteerNameValidationTest extends TestCase {
 		Feature f = new testFeature();
 		try{f.setAttribute("CityName","Vancouver");}catch(Exception e){}
 		GazetteerNameValidation gnv = new GazetteerNameValidation();
-		gnv.setAttrName("CityName");
+		gnv.setAttributeName("CityName");
 		try{gnv.setGazetteer(new URL("http://cgdi-dev.geoconnections.org/cgi-bin/prototypes/cgdigaz/cgdigaz.cgi?version=1.0&request=GetPlacenameGeometry&wildcards=false&geomtype=bbox"));}catch(Exception e){}
 //		ValidationResults results = new RoadValidationResults();
 //		if(!gnv.validate(f,null,results)){

@@ -20,7 +20,7 @@ import org.geotools.validation.DefaultFeatureValidationBeanInfo;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NullZeroValidationBeanInfo.java,v 1.1 2004/02/03 21:40:52 dmzwiers Exp $
+ * @version $Id: NullZeroValidationBeanInfo.java,v 1.2 2004/02/05 18:56:06 dmzwiers Exp $
  */
 public class NullZeroValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
 	
@@ -44,15 +44,15 @@ public class NullZeroValidationBeanInfo extends DefaultFeatureValidationBeanInfo
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors(){
 			PropertyDescriptor[] pd2 = super.getPropertyDescriptors();
-			ResourceBundle resourceBundle = getResourceBundle(GazetteerNameValidation.class);
+			ResourceBundle resourceBundle = getResourceBundle(NullZeroValidation.class);
 			if(pd2 == null)
 				pd2 = new PropertyDescriptor[0];
-			PropertyDescriptor[] pd = new PropertyDescriptor[pd2.length + 2];
+			PropertyDescriptor[] pd = new PropertyDescriptor[pd2.length + 1];
 			int i=0;
 			for(;i<pd2.length;i++)
 				pd[i] = pd2[i];
 			try{
-				pd[i] = createPropertyDescriptor("attributeName",GazetteerNameValidation.class,resourceBundle);
+				pd[i] = createPropertyDescriptor("attributeName",NullZeroValidation.class,resourceBundle);
 				pd[i].setExpert(false);
 			}catch(IntrospectionException e){
 				pd = pd2;
