@@ -37,7 +37,7 @@
   <!-- pc example -->
   <property name="dir.container" value="C:\java\tomcat4\webapps"/>
   <property name="dir.geotools" 
-            value="..\geotools2\geotools-src"/>
+            value="C:\cygwin\home\Chris\geotools2\geotools-src"/>
 
  <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
@@ -63,7 +63,8 @@
 
 
   <!-- If you don't have your own conf directory uncomment on of the following -->
-  <property name="test.type" value="UserBasic"/>
+  <!--<property name="test.type" value="UserBasic"/>-->
+  <!--<property name="test.type" value="Demo"/>-->
   <!--property name="test.type" value="Demo"/-->
   <!--<property name="test.type" value="DemoPostGIS"/>-->
   <!--<property name="test.type" value="CitePostGis"/>-->
@@ -88,7 +89,7 @@
   <path id="path.build">
     <path refid="path.lib"/>
     <fileset dir="${dir.build}">
-      <include name="**"/>
+      <include name="**/*"/>
     </fileset>
     <fileset dir="${dir.build}">
       <include name="org/vfny/geoserver/requests/GetCapabilitiesSuite.class"/>
@@ -326,7 +327,6 @@
           failonerror="yes"
           >
        <classpath>
-         <pathelement path="${env.CLASSPATH}" />
          <path refid="path.jetty" />
        </classpath>
        <jvmarg line="${jetty.jvmarg}" />
@@ -367,10 +367,11 @@
 
   <target name="build-conf-dir" depends="init" 
           unless="conf.folder.present">
-    <mkdir dir="${basedir}/conf"/>
+    <!-- taking this out until I figure out available tag -->
+    <!--mkdir dir="${basedir}/conf"/>
     <copy todir="${basedir}/conf">
 	  <fileset dir="${basedir}/cite/confUserBasic"/>
-    </copy>
+    </copy-->
    </target>
 
 <!-- ====================================================================== -->
@@ -815,8 +816,12 @@ failonerror="true"/>
                includes="**/*.class"/>          
       <fileset dir="${dir.geotools}/lite-rendering/target/classes/"
                includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/resources/target/classes/"
-               includes="**/*.class"/>   
+      <fileset dir="${dir.geotools}/resources/target/classes/">
+               <include name="**/*.class"/>   
+               <include name="**/*.utf"/>
+               <include name="**/*.properties"/>
+               <include name="**/*.serialized"/>
+      </fileset>   
       <fileset dir="${dir.geotools}/sldstyling/target/classes/"
                includes="**/*.class"/>               
       <fileset dir="${dir.geotools}/svgsupport/target/classes/"
