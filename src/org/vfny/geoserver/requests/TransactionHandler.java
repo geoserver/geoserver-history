@@ -36,6 +36,8 @@ public class TransactionHandler
     private static final short PROPERTY_NAME = 4;
     private static final short VALUE = 5;
     private static final short PROPERTY = 6;
+    private static final short LOCKID = 7;
+    
 
     /** Class logger */
     private static Logger LOGGER = 
@@ -56,6 +58,9 @@ public class TransactionHandler
     /** holds the property value for an update request. */
     private String curPropertyValue;
 
+    /** holds the current lockId */
+    private String curLockId = new String();
+    
     /** holds the list of features for an insert request. */
     private List curFeatures;
 
@@ -89,9 +94,11 @@ public class TransactionHandler
             return VALUE;
         } else if(stateName.equals("Property")) {
             return PROPERTY;
-        }else {
-            return UNKNOWN;
-        }           
+        }else if (stateName.equals("LockId")){
+            return LOCKID;
+        } else {
+	    return UNKNOWN;
+	}
     }
 
 
@@ -141,6 +148,13 @@ public class TransactionHandler
 		if( atts.getLocalName(i).equals("handle") ) {
 		    LOGGER.finest("found handle: " + atts.getValue(i));
 		    request.setHandle(atts.getValue(i));
+		} else if( atts.getLocalName(i).equals("releaseAction") ) {
+		    LOGGER.finest("found releaseAction: " + atts.getValue(i));
+		    try {
+			request.setReleaseAll(atts.getValue(i));
+		    } catch (WfsTransactionException e){
+			throw new SAXException(e);
+		    }
 		}
 	    }
 	}
@@ -186,7 +200,14 @@ public class TransactionHandler
 		throw new SAXException("<property> element should only occur " 
 				       + "within a <update> element.");
 	    }
+	} else if (state == LOCKID) {
+	    request.setLockId(curLockId);
+	    curLockId = new String();
 	}
+	//REVISIT: should we be able to handle to Transaction Requests with
+	//this?  Because right now we don't, all sub requests will get 
+	//stacked into one, and the handles, lockIds and releaseActions will
+	//get all confused.  Maybe have getRequest return an array of requests?
 
         state = UNKNOWN;
     }
@@ -206,11 +227,14 @@ public class TransactionHandler
         if(state == PROPERTY_NAME) {
             String s = new String(ch, start, length);
             LOGGER.finest("found property name: " + s);
-	    curPropertyName = s;
+	    curPropertyName = s.trim();
         } else if (state == VALUE) {
             String s = new String(ch, start, length);
-            curPropertyValue = s;
-        }        
+            curPropertyValue = s.trim();
+        } else if (state == LOCKID) {
+            String s = new String(ch, start, length);
+            curLockId = s.trim();
+        }      
     }
     
     /**
