@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wfs;
+package org.vfny.geoserver.wfs.responses;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
  * request
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: FeatureResponseDelegateFactory.java,v 1.2 2004/03/12 10:19:44 cholmesny Exp $
  */
 public class FeatureResponseDelegateFactory {

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wfs;
+package org.vfny.geoserver.wfs.responses;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -44,19 +44,19 @@ import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wfs.DeleteRequest;
-import org.vfny.geoserver.requests.wfs.InsertRequest;
-import org.vfny.geoserver.requests.wfs.SubTransactionRequest;
-import org.vfny.geoserver.requests.wfs.TransactionRequest;
-import org.vfny.geoserver.requests.wfs.UpdateRequest;
 import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wfs.requests.DeleteRequest;
+import org.vfny.geoserver.wfs.requests.InsertRequest;
+import org.vfny.geoserver.wfs.requests.SubTransactionRequest;
+import org.vfny.geoserver.wfs.requests.TransactionRequest;
+import org.vfny.geoserver.wfs.requests.UpdateRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 

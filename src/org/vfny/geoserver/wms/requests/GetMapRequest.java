@@ -4,14 +4,12 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.filter.Filter;
-import org.geotools.styling.Style;
+import java.awt.Color;
+import java.util.List;
+
 import org.vfny.geoserver.global.FeatureTypeInfo;
 
-import java.awt.Color;
-import java.util.Collections;
-import java.util.List;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

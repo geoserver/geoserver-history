@@ -4,7 +4,23 @@
  */
 package org.vfny.geoserver.wms.requests;
  
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.feature.FeatureType;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.NamedStyle;
@@ -21,21 +37,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.wms.WmsException;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringBufferInputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

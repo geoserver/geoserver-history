@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wfs;
+package org.vfny.geoserver.wfs.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,7 +26,6 @@ import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -34,8 +33,9 @@ import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wfs.LockRequest;
 import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wfs.requests.LockRequest;
 
 /**
  * Handles a Lock request and creates a LockResponse string.

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.servlets.wfs;
+package org.vfny.geoserver.wfs.servlets;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -2,13 +2,16 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver;
+package org.vfny.geoserver.wfs;
+
+import org.vfny.geoserver.ExceptionHandler;
+import org.vfny.geoserver.ServiceException;
 
 /**
  * ServiceConfig exception handler for WFS services GR: should we rename it?
  * ExceptionHandler don't seems appropiate.
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: WfsExceptionHandler.java,v 1.5 2004/01/31 00:27:27 jive Exp $
  */
 public class WfsExceptionHandler implements ExceptionHandler {

@@ -26,8 +26,8 @@ import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.LiteralExpression;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.wfs.WfsException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -53,7 +53,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: KvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
  */
 abstract public class KvpRequestReader {

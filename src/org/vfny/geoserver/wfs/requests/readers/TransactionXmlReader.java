@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers.wfs;
+package org.vfny.geoserver.wfs.requests.readers;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -16,10 +16,10 @@ import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.wfs.TransactionFeatureHandler;
-import org.vfny.geoserver.requests.wfs.TransactionFilterHandler;
-import org.vfny.geoserver.requests.wfs.TransactionHandler;
-import org.vfny.geoserver.responses.wfs.WfsTransactionException;
+import org.vfny.geoserver.wfs.requests.TransactionFeatureHandler;
+import org.vfny.geoserver.wfs.requests.TransactionFilterHandler;
+import org.vfny.geoserver.wfs.requests.TransactionHandler;
+import org.vfny.geoserver.wfs.responses.WfsTransactionException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;

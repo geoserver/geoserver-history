@@ -13,9 +13,9 @@ import java.util.List;
 import org.geotools.data.FeatureResults;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.requests.wfs.FeatureRequest;
-import org.vfny.geoserver.responses.wfs.GML2FeatureResponseDelegate;
-import org.vfny.geoserver.responses.wfs.GetFeatureResults;
+import org.vfny.geoserver.wfs.requests.FeatureRequest;
+import org.vfny.geoserver.wfs.responses.GML2FeatureResponseDelegate;
+import org.vfny.geoserver.wfs.responses.GetFeatureResults;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
 

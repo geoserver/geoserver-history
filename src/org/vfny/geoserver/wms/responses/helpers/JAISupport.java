@@ -4,9 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import org.geotools.renderer.lite.LiteRenderer2;
-import org.vfny.geoserver.wms.WmsException;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,9 +15,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+
+import org.geotools.renderer.lite.LiteRenderer2;
 
 
 /**

@@ -2,13 +2,14 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.servlets;
+package org.vfny.geoserver.wfs.servlets;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.ExceptionHandler;
-import org.vfny.geoserver.WfsExceptionHandler;
 import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.servlets.AbstractService;
+import org.vfny.geoserver.wfs.WfsExceptionHandler;
 
 
 /**
@@ -19,7 +20,7 @@ import org.vfny.geoserver.requests.Requests;
  * service they implement.
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: WFService.java,v 1.6 2004/02/17 22:42:32 dmzwiers Exp $
  */
 abstract public class WFService extends AbstractService {
