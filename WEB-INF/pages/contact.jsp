@@ -2,14 +2,14 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<%
-	org.vfny.geoserver.config.GlobalConfig global = (org.vfny.geoserver.config.GlobalConfig) application.getAttribute(org.vfny.geoserver.config.GlobalConfig.CONFIG_KEY);
-	org.vfny.geoserver.config.ContactConfig contact = global.getContact();
-%>
-
 <span class="contact">		
-	<bean:message key="label.contact"/>: 
-    <html:link forward="contact">
-    	<%= (contact.getContactPerson() != null && !contact.getContactPerson().equals("")) ? contact.getContactPerson() : "info" %>
+	<bean:message key="label.contact"/>: 	
+    <html:link forward="contact">      
+      <logic:notEmpty name="Config.Global" property="contact.contactParty">
+        <bean:write name="Config.Global" property="contact.contactParty"/>
+      </logic:notEmpty>      
+      <logic:empty name="Config.Global" property="contact.contactParty">
+        info
+      </logic:empty>      
 	</html:link>
 </span>
