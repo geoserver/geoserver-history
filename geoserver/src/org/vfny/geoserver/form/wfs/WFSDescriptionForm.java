@@ -193,8 +193,6 @@ public final class WFSDescriptionForm extends ActionForm {
 
         this.keywords = out;
 
-        System.out.println(
-            "WFS DESCRIPKTION FORM RESET--------------------------");
     }
 
     public ActionErrors validate(ActionMapping mapping,

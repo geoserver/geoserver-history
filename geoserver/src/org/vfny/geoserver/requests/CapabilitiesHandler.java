@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * incoming XML stream.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: CapabilitiesHandler.java,v 1.6 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: CapabilitiesHandler.java,v 1.7 2004/01/31 00:27:25 jive Exp $
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */

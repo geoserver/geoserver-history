@@ -10,7 +10,7 @@ package org.vfny.geoserver;
  * this before returning to clients.
  *
  * @author Gabriel Roldán
- * @version $Id: WmsException.java,v 1.4 2004/01/12 21:01:32 dmzwiers Exp $
+ * @version $Id: WmsException.java,v 1.5 2004/01/31 00:27:27 jive Exp $
  */
 public class WmsException extends ServiceException {
     /**

@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  *         Searchable class.  The ZServerAssociation talks with the abstract
  *         Searchable interface  and uses that service to resolve Z39.50
  *         services.
- * @version $Id: GeoZServer.java,v 1.7 2004/01/21 00:26:11 dmzwiers Exp $ Made by slightly modifying ZServer.java to start up with a properties file, so it can be invoked by another class.  Most code by:
+ * @version $Id: GeoZServer.java,v 1.8 2004/01/31 00:27:24 jive Exp $ Made by slightly modifying ZServer.java to start up with a properties file, so it can be invoked by another class.  Most code by:
  */
 public class GeoZServer extends Thread {
     /* Initializes the logger. */

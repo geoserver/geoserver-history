@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.6 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: SVGEncoder.java,v 1.7 2004/01/31 00:27:28 jive Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -786,7 +786,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(

@@ -33,7 +33,7 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.10 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.11 2004/01/31 00:27:27 jive Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo

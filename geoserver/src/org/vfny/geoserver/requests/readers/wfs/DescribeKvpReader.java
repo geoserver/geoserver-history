@@ -8,7 +8,7 @@ import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.wfs.DescribeRequest;
 import java.util.Map;
-
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This utility reads in a DescribeFeatureType KVP request and turns it into an
@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: DescribeKvpReader.java,v 1.4 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: DescribeKvpReader.java,v 1.5 2004/01/31 00:27:26 jive Exp $
  */
 public class DescribeKvpReader extends KvpRequestReader {
     /**
@@ -31,10 +31,13 @@ public class DescribeKvpReader extends KvpRequestReader {
     /**
      * Returns a list of requested feature types..
      *
+     * @param request the servlet request holding the server config
+     *
      * @return DescribeRequest request object.
      */
-    public Request getRequest() {
+    public Request getRequest(HttpServletRequest request) {
         DescribeRequest currentRequest = new DescribeRequest();
+        currentRequest.setHttpServletRequest(request);
         currentRequest.setVersion(getValue("VERSION"));
         currentRequest.setRequest(getValue("REQUEST"));
         currentRequest.setOutputFormat(getValue("OUTPUTFORMAT"));

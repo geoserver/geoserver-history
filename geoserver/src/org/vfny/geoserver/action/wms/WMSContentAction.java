@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 6, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package org.vfny.geoserver.action.wms;
 
 import org.apache.struts.action.ActionForm;
@@ -38,13 +33,9 @@ public final class WMSContentAction extends ConfigAction {
         WMSContentForm contentForm = (WMSContentForm) form;
 
         boolean enabled = contentForm.isEnabled();
-        System.out.println("Action.execute: setting internal enabled ="
-            + enabled);
 
         if (contentForm.isEnabledChecked() == false) {
             enabled = false;
-            System.out.println(
-                "Whoa, it was never actually checked. Setting to false.");
         }
 
         String onlineResource = contentForm.getOnlineResource();
@@ -53,8 +44,7 @@ public final class WMSContentAction extends ConfigAction {
         String[] features = contentForm.getFeatures();
 
         WMSConfig config = getWMSConfig();
-        System.out.println("Action.execute: setting config.setEnabled ="
-            + enabled);
+
         config.setEnabled(enabled);
         config.setOnlineResource(new URL(onlineResource));
         config.setUpdateTime(updateTime);

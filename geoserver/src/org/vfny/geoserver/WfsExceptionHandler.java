@@ -9,7 +9,7 @@ package org.vfny.geoserver;
  * ExceptionHandler don't seems appropiate.
  *
  * @author Gabriel Roldán
- * @version $Id: WfsExceptionHandler.java,v 1.4 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: WfsExceptionHandler.java,v 1.5 2004/01/31 00:27:27 jive Exp $
  */
 public class WfsExceptionHandler implements ExceptionHandler {
     /** DOCUMENT ME! */

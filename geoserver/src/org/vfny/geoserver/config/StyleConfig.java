@@ -21,7 +21,7 @@ import java.io.File;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleConfig.java,v 1.4 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: StyleConfig.java,v 1.5 2004/01/31 00:27:27 jive Exp $
  */
 public class StyleConfig {
     /** The syle id. */

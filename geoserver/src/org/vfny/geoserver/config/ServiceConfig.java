@@ -19,7 +19,7 @@ import java.net.URL;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceConfig.java,v 1.14 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: ServiceConfig.java,v 1.15 2004/01/31 00:27:27 jive Exp $
  */
 public class ServiceConfig {
     /**

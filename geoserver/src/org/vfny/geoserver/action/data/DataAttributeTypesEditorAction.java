@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 13, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
+
 package org.vfny.geoserver.action.data;
 
 import org.apache.struts.action.ActionForm;
@@ -36,7 +31,7 @@ public class DataAttributeTypesEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
         ActionForm incomingForm, HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
-        //PROCESS EDITING OF ATTRIBUTE TYPE
+
         DataAttributeTypesEditorForm form = (DataAttributeTypesEditorForm) incomingForm;
 
         String fragment = form.getFragment();

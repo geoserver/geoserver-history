@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 8, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package org.vfny.geoserver.action.data;
 
 import org.apache.struts.action.ActionError;
@@ -57,7 +52,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
         Map paramTexts = new HashMap();
 
         Map params = dataStoresForm.getParams();
-        System.out.println("form params:" + params);
 
         DataStoreFactorySpi factory = config.getFactory();
         Param[] info = factory.getParametersInfo();
@@ -70,7 +64,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
             Param param = DataStoreUtils.find(info, key);
 
             if (param == null) {
-                System.out.println("Could not find Param for:" + key);
 
                 ActionErrors errors = new ActionErrors();
                 errors.add(ActionErrors.GLOBAL_ERROR,
@@ -85,7 +78,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
             try {
                 value = param.lookUp(params);
             } catch (IOException erp) {
-                System.out.println("Could not handle:" + key);
 
                 ActionErrors errors = new ActionErrors();
                 errors.add(ActionErrors.GLOBAL_ERROR,
@@ -98,13 +90,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
             if (value != null) {
                 paramValues.put(key, value);
 
-                if (param.type != String.class) {
-                    System.out.println("form " + key + " converted from "
-                        + param.type.getName());
-                }
-
                 String text = param.text(value);
-                System.out.println("form  " + key + " added '" + text + "'");
                 paramTexts.put(key, text);
             }
         }
@@ -114,12 +100,9 @@ public class DataDataStoresEditorAction extends ConfigAction {
         paramValues.put("namespace", dataStoresForm.getNamespaceId());
         paramTexts.put("namespace", dataStoresForm.getNamespaceId());
 
-        System.out.println("form values:" + paramValues);
-
         if (!factory.canProcess(paramValues)) {
             // We could not use these params!
             //
-            System.out.println("Could not process params:" + paramValues);
 
             ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
@@ -136,8 +119,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
             if (victim == null) {
                 // We *really* could not use these params!
                 //
-                System.out.println("Could not make datastore:" + paramValues);
-
+    
                 ActionErrors errors = new ActionErrors();
                 errors.add(ActionErrors.GLOBAL_ERROR,
                     new ActionError("error.invalidConnectionParams"));
@@ -146,7 +128,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
                 return mapping.findForward("dataConfigDataStores");
             }
         } catch (Throwable throwable) {
-            System.out.println("Could not make datastore:" + paramValues);
             throwable.printStackTrace();
 
             ActionErrors errors = new ActionErrors();
@@ -167,7 +148,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
         config.setEnabled(enabled);
         config.setNameSpaceId(namespace);
         config.setAbstract(description);
-        System.out.println("config texts:" + paramTexts);
         config.setConnectionParams(paramTexts);
 
         dataConfig.addDataStore(config);

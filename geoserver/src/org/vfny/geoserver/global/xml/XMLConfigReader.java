@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.22 2004/01/21 01:59:20 jive Exp $
+ * @version $Id: XMLConfigReader.java,v 1.23 2004/01/31 00:27:23 jive Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */

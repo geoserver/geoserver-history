@@ -30,11 +30,11 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Base class for all KVP readers, with some generalized convenience methods.
- * 
+ *
  * <p>
  * If you pass this utility a KVP request (everything after the '?' in the  GET
  * request URI), it will translate this into a list of key-word value
@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: KvpRequestReader.java,v 1.4 2004/01/21 00:26:09 dmzwiers Exp $
+ * @version $Id: KvpRequestReader.java,v 1.5 2004/01/31 00:27:28 jive Exp $
  */
 abstract public class KvpRequestReader {
     /** Class logger */
@@ -114,7 +114,7 @@ abstract public class KvpRequestReader {
      *
      * @return DOCUMENT ME!
      */
-    public abstract Request getRequest() throws ServiceException;
+    public abstract Request getRequest(HttpServletRequest request) throws ServiceException;
 
     /**
      * Attempts to parse out the proper typeNames from the FeatureId filters.

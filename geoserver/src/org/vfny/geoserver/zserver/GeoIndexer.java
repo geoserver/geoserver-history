@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * files in the datafolder, and if so runs the indexer on them.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoIndexer.java,v 1.8 2004/01/21 00:26:11 dmzwiers Exp $
+ * @version $Id: GeoIndexer.java,v 1.9 2004/01/31 00:27:24 jive Exp $
  */
 public class GeoIndexer {
     /** Standard logging instance */

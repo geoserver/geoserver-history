@@ -20,7 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * the fields that it can.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoSummary.java,v 1.5 2004/01/21 00:26:11 dmzwiers Exp $
+ * @version $Id: GeoSummary.java,v 1.6 2004/01/31 00:27:24 jive Exp $
  */
 public class GeoSummary {
     /** Standard logging instance for class */

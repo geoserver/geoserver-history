@@ -22,7 +22,7 @@ import java.util.Map;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: Feature.java,v 1.4 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: Feature.java,v 1.5 2004/01/31 00:27:26 jive Exp $
  */
 public class Feature extends WFService {
     /**

@@ -21,7 +21,7 @@ import org.vfny.geoserver.global.GeoServer;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.9 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.10 2004/01/31 00:27:25 jive Exp $
  */
 abstract public class Request {
 	/**

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Chris Holmes, TOPP
- * @version $Id: LockHandler.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: LockHandler.java,v 1.5 2004/01/31 00:27:28 jive Exp $
  */
 public class LockHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler {

@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.15 2004/01/21 01:10:59 jive Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.16 2004/01/31 00:27:23 jive Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -539,7 +539,7 @@ public class XMLConfigWriter {
         }
 
         if (s.getFilename() != null) {
-            attr.put("filename", s.getFilename());
+            attr.put("filename", s.getFilename().getName());
         }
 
         if (s.isDefault()) {
@@ -714,8 +714,9 @@ public class XMLConfigWriter {
         WriterHelper cw = new WriterHelper(w);
         HashMap m = new HashMap();
         String t = fs.getSchemaName();
-
         if (t != null) {
+        	if(!"_Type".equals(t.substring(t.length()-5)))
+        		t = t + "_Type";
             m.put("name", t);
         }
 
@@ -744,9 +745,15 @@ public class XMLConfigWriter {
                     String r = "";
 
                     if (GMLUtils.isXMLSchemaElement(ati.getType())) {
-                        r = "xs:" + ati.getType();
+                    	if(!"xs:".equals(ati.getType().substring(0,3)))
+                    		r = "xs:" + ati.getType();
+                    	else
+                    		r = ati.getType();
                     } else {
-                        r = "gml:" + ati.getType();
+                    	if(!"gml:".equals(ati.getType().substring(0,4)))
+                    		r = "gml:" + ati.getType();
+                    	else
+                    		r = ati.getType();
                     }
 
                     m.put("ref", r);
@@ -756,9 +763,15 @@ public class XMLConfigWriter {
                     String r = "";
 
                     if (GMLUtils.isXMLSchemaElement(ati.getType())) {
-                        r = "xs:" + ati.getType();
+                    	if(!"xs:".equals(ati.getType().substring(0,3)))
+                    		r = "xs:" + ati.getType();
+                    	else
+                    		r = ati.getType();
                     } else {
-                        r = "gml:" + ati.getType();
+                    	if(!"gml:".equals(ati.getType().substring(0,4)))
+                    		r = "gml:" + ati.getType();
+                    	else
+                    		r = ati.getType();
                     }
 
                     m.put("type", r);
@@ -792,7 +805,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.15 2004/01/21 01:10:59 jive Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.16 2004/01/31 00:27:23 jive Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */

@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: GMLUtils.java,v 1.11 2004/01/21 01:58:20 jive Exp $
+ * @version $Id: GMLUtils.java,v 1.12 2004/01/31 00:27:23 jive Exp $
  */
 public class GMLUtils {
     /** Mappings by schema */
@@ -627,7 +627,7 @@ public class GMLUtils {
      *
      * @author jgarnett, Refractions Research, Inc.
      * @author $Author: jive $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.11 2004/01/21 01:58:20 jive Exp $
+     * @version $Id: GMLUtils.java,v 1.12 2004/01/31 00:27:23 jive Exp $
      */
     public static class Mapping {
         // XML Land

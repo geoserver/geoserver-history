@@ -35,7 +35,7 @@ import javax.servlet.http.HttpSession;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
+ * @version $Id: WmsDispatcher.java,v 1.4 2004/01/31 00:27:29 jive Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded

@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * and path variables are in place before it begins.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: EmbeddedTomcat.java,v 1.9 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: EmbeddedTomcat.java,v 1.10 2004/01/31 00:27:27 jive Exp $
  */
 public class EmbeddedTomcat {
     /** The logger for the filter module. */

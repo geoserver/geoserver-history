@@ -33,7 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.5 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: ReaderUtils.java,v 1.6 2004/01/31 00:27:23 jive Exp $
  *
  * @see XMLConfigReader
  */

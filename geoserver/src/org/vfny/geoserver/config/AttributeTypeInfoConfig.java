@@ -58,7 +58,7 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.15 2004/01/21 00:43:53 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.16 2004/01/31 00:27:27 jive Exp $
  */
 public class AttributeTypeInfoConfig {
     /** Value of getType() used to indicate that fragement is in use */
@@ -402,5 +402,21 @@ public class AttributeTypeInfoConfig {
      */
     public void setType(String type) {
         this.type = type;
+    }
+    
+    public AttributeTypeInfoDTO toDTO(){
+    	AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
+    	dto.setNillable(nillable);
+    	dto.setName(name);
+    	dto.setMaxOccurs(maxOccurs);
+    	dto.setMinOccurs(minOccurs);
+    	if(type!=TYPE_FRAGMENT){
+    		dto.setComplex(true);
+    		dto.setType(type);
+    	}else{
+    		dto.setComplex(false);
+    		dto.setType(fragment);
+    	}
+    	return dto;
     }
 }

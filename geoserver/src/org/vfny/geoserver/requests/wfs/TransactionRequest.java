@@ -17,7 +17,7 @@ import org.vfny.geoserver.responses.wfs.WfsTransactionException;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionRequest.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: TransactionRequest.java,v 1.4 2004/01/31 00:27:28 jive Exp $
  */
 public class TransactionRequest extends WFSRequest {
     public static final String TRANSACTION_REQUEST_TYPE = "Transaction";

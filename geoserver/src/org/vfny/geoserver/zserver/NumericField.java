@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author Chris Holmes, TOPP This code was mostly taken from the lucene users
  *         email list: From: James Ricci Subject: RE: Numeric Support Date:
  *         Fri, 26 Jul 2002 18:53:49 -0700
- * @version $Id: NumericField.java,v 1.3 2003/09/16 18:55:27 cholmesny Exp $
+ * @version $Id: NumericField.java,v 1.4 2004/01/31 00:27:24 jive Exp $
  */
 public class NumericField {
     /** The char to normalize against. */

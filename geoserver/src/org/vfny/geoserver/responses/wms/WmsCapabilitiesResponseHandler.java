@@ -28,7 +28,7 @@ import java.util.List;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.9 2004/01/21 00:26:11 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.10 2004/01/31 00:27:29 jive Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();

@@ -31,7 +31,7 @@ import java.util.Set;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureStore.java,v 1.3 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: GeoServerFeatureStore.java,v 1.4 2004/01/31 00:27:23 jive Exp $
  */
 public class GeoServerFeatureStore extends GeoServerFeatureSource
     implements FeatureSource {

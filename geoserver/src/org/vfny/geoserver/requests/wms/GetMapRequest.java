@@ -24,7 +24,7 @@ import java.util.List;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.5 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: GetMapRequest.java,v 1.6 2004/01/31 00:27:29 jive Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */

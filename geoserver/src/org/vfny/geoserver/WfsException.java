@@ -11,7 +11,7 @@ package org.vfny.geoserver;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: WfsException.java,v 1.3 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: WfsException.java,v 1.4 2004/01/31 00:27:27 jive Exp $
  *
  * @task REVISIT: refactor this to be named ServiceException?  To reflect the
  *       1.0 spec better?  Backwards compatible exceptions for .14 and .15

@@ -84,8 +84,6 @@ public class DataDataStoresEditorForm extends ActionForm {
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
 
-        System.out.println("SELECT RESET");
-
         enabledChecked = false;
 
         ServletContext context = getServlet().getServletContext();
@@ -94,7 +92,6 @@ public class DataDataStoresEditorForm extends ActionForm {
         namespaces = new TreeSet(config.getNameSpaces().keySet());
 
         dataStoreId = (String) request.getSession().getAttribute("selectedDataStoreId");
-        System.out.println("Session DSID: " + dataStoreId);
 
         if (dataStoreId == null) {
             // something is horribly wrong no DataStoreID selected!
@@ -106,9 +103,7 @@ public class DataDataStoresEditorForm extends ActionForm {
         }
 
         DataStoreConfig dsConfig = config.getDataStore(dataStoreId);
-        System.out.println("dsConfig:" + dsConfig);
-        System.out.println("dsConfig params:" + dsConfig.getConnectionParams());
-
+ 
         description = dsConfig.getAbstract();
         enabled = dsConfig.isEnabled();
         namespaceId = dsConfig.getNameSpaceId();
@@ -134,19 +129,14 @@ public class DataDataStoresEditorForm extends ActionForm {
 
             Object value = dsConfig.getConnectionParams().get(key);
             String text;
-            System.out.println("config param " + key + " value:" + value);
 
             if (value == null) {
                 text = null;
             } else if (value instanceof String) {
                 text = (String) value;
             } else {
-                System.out.println("config converted " + key + " from:"
-                    + value.getClass().getName());
                 text = param.text(value);
             }
-
-            System.out.println("config param " + key + " text:" + value);
 
             paramKeys.add(key);
             paramValues.add((text != null) ? text : "");
@@ -169,8 +159,6 @@ public class DataDataStoresEditorForm extends ActionForm {
         Param[] info = factory.getParametersInfo();
 
         Map params = new HashMap();
-
-        System.out.println("validate text:" + getParams());
 
         // Convert Params into the kind of Map we actually need
         //
@@ -214,7 +202,6 @@ public class DataDataStoresEditorForm extends ActionForm {
         // put magic namespace into the mix
         //
         params.put("namespace", getNamespaceId());
-        System.out.println("validate params:" + params);
 
         // Factory will provide even more stringent checking
         //

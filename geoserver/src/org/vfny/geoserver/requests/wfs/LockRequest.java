@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP <br>
  * @author Chris Holmes, TOPP
- * @version $Id: LockRequest.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: LockRequest.java,v 1.5 2004/01/31 00:27:28 jive Exp $
  */
 public class LockRequest extends WFSRequest {
     /** Standard logging instance for class */

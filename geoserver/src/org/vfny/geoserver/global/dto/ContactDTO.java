@@ -37,7 +37,7 @@ package org.vfny.geoserver.global.dto;
  * </code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactDTO.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
+ * @version $Id: ContactDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class ContactDTO implements DataTransferObject {
     /** The name of the contact person */

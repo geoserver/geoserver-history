@@ -18,7 +18,7 @@ import java.util.Map;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.4 2004/01/21 00:26:09 dmzwiers Exp $
+ * @version $Id: Capabilities.java,v 1.5 2004/01/31 00:27:29 jive Exp $
  */
 public class Capabilities extends WMService {
     /**

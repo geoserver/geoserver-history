@@ -10,6 +10,7 @@ import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.feature.Feature;
@@ -39,7 +40,7 @@ import java.util.logging.Logger;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.8 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.9 2004/01/31 00:27:25 jive Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -159,41 +160,51 @@ public class LockResponse implements Response {
 
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(curTypeName);
             NameSpaceInfo namespace = meta.getDataStoreInfo().getNameSpace();
-            FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
+            FeatureSource source = meta.getFeatureSource();
             FeatureResults features = source.getFeatures(curFilter);
-            source.setFeatureLock(featureLock);
-
+            
+            if( source instanceof FeatureLocking){            
+                ((FeatureLocking)source).setFeatureLock(featureLock);
+            }
             FeatureReader reader = null;
 
             try {
                 for (reader = features.reader(); reader.hasNext();) {
                     Feature feature = reader.next();
                     String fid = feature.getID();
-
-                    Filter fidFilter = filterFactory.createFidFilter(fid);
-
-                    //DEFQuery is just some indirection, should be in the locking interface.
-                    //int numberLocked = ((DEFQueryFeatureLocking)source).lockFeature(feature);
-                    //HACK: Query.NO_NAMES isn't working in postgis right now,
-                    //so we'll just use all.
-                    int numberLocked = source.lockFeatures(new DefaultQuery(
+                    if( !(source instanceof FeatureLocking)){
+                        LOGGER.fine("Lock " + fid +
+                                " not supported by data store (authID:"
+                                + featureLock.getAuthorization() + ")");
+                        lockFailedFids.add(fid);                        
+                    }
+                    else {
+                        Filter fidFilter = filterFactory.createFidFilter(fid);
+                    
+                        //DEFQuery is just some indirection, should be in the locking interface.
+                        //int numberLocked = ((DEFQueryFeatureLocking)source).lockFeature(feature);
+                        //HACK: Query.NO_NAMES isn't working in postgis right now,
+                        //so we'll just use all.
+                        Query query = new DefaultQuery(
                                 meta.getShortName(), fidFilter,
                                 Query.DEFAULT_MAX, Query.ALL_NAMES,
-                                curLock.getHandle()));
-
-                    if (numberLocked == 1) {
-                        LOGGER.fine("Lock " + fid + " (authID:"
-                            + featureLock.getAuthorization() + ")");
-                        lockedFids.add(fid);
-                    } else if (numberLocked == 0) {
-                        LOGGER.fine("Lock " + fid + " conflict (authID:"
-                            + featureLock.getAuthorization() + ")");
-                        lockFailedFids.add(fid);
-                    } else {
-                        LOGGER.warning("Lock " + numberLocked + " " + fid
-                            + " (authID:" + featureLock.getAuthorization()
-                            + ") duplicated FeatureID!");
-                        lockedFids.add(fid);
+                                curLock.getHandle());
+                        int numberLocked = ((FeatureLocking)source).lockFeatures( query );
+    
+                        if (numberLocked == 1) {
+                            LOGGER.fine("Lock " + fid + " (authID:"
+                                + featureLock.getAuthorization() + ")");
+                            lockedFids.add(fid);
+                        } else if (numberLocked == 0) {
+                            LOGGER.fine("Lock " + fid + " conflict (authID:"
+                                + featureLock.getAuthorization() + ")");
+                            lockFailedFids.add(fid);
+                        } else {
+                            LOGGER.warning("Lock " + numberLocked + " " + fid
+                                + " (authID:" + featureLock.getAuthorization()
+                                + ") duplicated FeatureID!");
+                            lockedFids.add(fid);
+                        }
                     }
                 }
             } catch (IllegalAttributeException e) {

@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * rewritten in geotools.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFilterHandler.java,v 1.4 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: TransactionFilterHandler.java,v 1.5 2004/01/31 00:27:28 jive Exp $
  */
 public class TransactionFilterHandler extends FilterFilter
     implements GMLHandlerFeature {

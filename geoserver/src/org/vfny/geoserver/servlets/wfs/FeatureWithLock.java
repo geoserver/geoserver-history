@@ -20,7 +20,7 @@ import java.util.Map;
  * getFeatureWithLock request and returns GML2.1 structured XML docs.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureWithLock.java,v 1.4 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: FeatureWithLock.java,v 1.5 2004/01/31 00:27:26 jive Exp $
  */
 public class FeatureWithLock extends WFService {
     /**

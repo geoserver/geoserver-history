@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.3 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.4 2004/01/31 00:27:23 jive Exp $
  *
  * @see WMS
  * @see WFS

@@ -34,7 +34,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.12 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.13 2004/01/31 00:27:25 jive Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation

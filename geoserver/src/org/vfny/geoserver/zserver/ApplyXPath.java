@@ -95,7 +95,7 @@ import javax.xml.transform.stream.StreamResult;
  * Modified:
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ApplyXPath.java,v 1.6 2004/01/21 00:26:11 dmzwiers Exp $ Added method to return an array of the results, instead of  just printing to the output.
+ * @version $Id: ApplyXPath.java,v 1.7 2004/01/31 00:27:24 jive Exp $ Added method to return an array of the results, instead of  just printing to the output.
  */
 public class ApplyXPath {
     /** Standard logging instance */

@@ -17,7 +17,7 @@ import org.vfny.geoserver.WfsExceptionHandler;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WFService.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: WFService.java,v 1.5 2004/01/31 00:27:29 jive Exp $
  */
 abstract public class WFService extends AbstractService {
     /**

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * Helper class for various parts of the GeoProfile.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoProfile.java,v 1.8 2003/09/16 18:46:03 cholmesny Exp $
+ * @version $Id: GeoProfile.java,v 1.9 2004/01/31 00:27:24 jive Exp $
  */
 public class GeoProfile {
     /** Standard logging instance for class */

@@ -10,7 +10,7 @@ import org.vfny.geoserver.requests.CapabilitiesRequest;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import java.util.Map;
-
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an
@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.5 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.6 2004/01/31 00:27:28 jive Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
@@ -37,8 +37,9 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      *
      * @throws ServiceException DOCUMENT ME!
      */
-    public Request getRequest() throws ServiceException {
+    public Request getRequest(HttpServletRequest request) throws ServiceException {
         CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMS");
+        currentRequest.setHttpServletRequest(request);
         String reqVersion = WMS.getVersion();
 
         if (keyExists("VERSION")) {

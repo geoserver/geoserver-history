@@ -46,7 +46,7 @@ import java.util.NoSuchElementException;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataDTO.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
+ * @version $Id: DataDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo

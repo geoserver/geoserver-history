@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  *         other z39.50 implementations, but for our purposes it really does
  *         not do much.  Probably would make the most sense to just have our
  *         ZServerAssociation create its own tasks.
- * @version $Id: GeoSearchable.java,v 1.5 2004/01/21 00:26:11 dmzwiers Exp $ modified (simplified) from DemoSearchable:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
+ * @version $Id: GeoSearchable.java,v 1.6 2004/01/31 00:27:24 jive Exp $ modified (simplified) from DemoSearchable:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
  */
 public class GeoSearchable implements com.k_int.IR.Searchable {
     /** Standard logging instance for class */

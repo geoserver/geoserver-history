@@ -91,7 +91,7 @@ import java.io.OutputStream;
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.5 2004/01/21 01:26:54 jive Exp $
+ * @version $Id: Response.java,v 1.6 2004/01/31 00:27:24 jive Exp $
  */
 public interface Response {
     /**

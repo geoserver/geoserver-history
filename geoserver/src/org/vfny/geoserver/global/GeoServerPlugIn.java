@@ -11,8 +11,10 @@ package org.vfny.geoserver.global;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
+import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
 import java.io.File;
+import java.util.*;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
@@ -28,7 +30,7 @@ import javax.servlet.ServletException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.3 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.4 2004/01/31 00:27:23 jive Exp $
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
  */
@@ -90,6 +92,18 @@ public class GeoServerPlugIn implements PlugIn {
             } else {
                 throw new ConfigurationException(
                     "An error occured loading the initial configuration.");
+            }
+
+            File plugInDir = new File(rootDir, "data/plugIns");
+            File validationDir = new File(rootDir, "data/validation");
+
+            try {
+            	Map plugIns = XMLReader.loadPlugIns(plugInDir);
+				Map testSuites = XMLReader.loadValidations(validationDir, plugIns);
+            	gs.load(testSuites,plugIns);
+            } catch (Exception e) {
+            	// LOG error
+            	e.printStackTrace();
             }
         } catch (ConfigurationException e) {
             sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, null);

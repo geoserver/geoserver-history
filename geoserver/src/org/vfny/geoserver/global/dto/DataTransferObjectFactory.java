@@ -31,8 +31,8 @@ import java.util.List;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.6 2004/01/21 00:26:09 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.7 2004/01/31 00:27:26 jive Exp $
  */
 public class DataTransferObjectFactory {
     /**

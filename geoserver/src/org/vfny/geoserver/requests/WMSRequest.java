@@ -8,7 +8,7 @@ package org.vfny.geoserver.requests;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSRequest.java,v 1.4 2004/01/14 22:54:26 dmzwiers Exp $
+ * @version $Id: WMSRequest.java,v 1.5 2004/01/31 00:27:25 jive Exp $
  */
 public class WMSRequest extends Request {
     public WMSRequest() {

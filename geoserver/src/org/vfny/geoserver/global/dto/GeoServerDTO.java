@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.5 2004/01/21 00:26:09 dmzwiers Exp $
+ * @version $Id: GeoServerDTO.java,v 1.6 2004/01/31 00:27:26 jive Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
     /** Sets the max number of Features returned by GetFeature */
@@ -155,6 +155,7 @@ public final class GeoServerDTO implements DataTransferObject {
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
+        loggingLevel = g.getLoggingLevel();
 
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());

@@ -19,7 +19,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.7 2004/01/31 00:27:27 jive Exp $
  */
 public class GlobalConfig {
     public static final String CONFIG_KEY = "Config.Global";
@@ -181,6 +181,7 @@ public class GlobalConfig {
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
+        loggingLevel = g.getLoggingLevel();
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());

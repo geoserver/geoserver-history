@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 13, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
+
 package org.vfny.geoserver.form.data;
 
 import org.apache.struts.action.ActionErrors;
@@ -51,8 +46,6 @@ public class DataAttributeTypesNewForm extends ActionForm {
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
 
-        System.out.println("@@@@@@@@@@@@@@@@@@@@atNewForm reset");
-
         this.request = request;
         selectedNewAttributeType = "";
     }
@@ -84,45 +77,51 @@ public class DataAttributeTypesNewForm extends ActionForm {
 
     public SortedSet getNewAttributeTypes() throws IOException {
         ServletContext context = getServlet().getServletContext();
+        System.out.println("Run Level -7");
         DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+        System.out.println("Run Level -6");
         FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession()
                                                                 .getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
 
         UserContainer user = Requests.getUserContainer(request);
-
-        user.getFeatureTypeConfig();
-
+        System.out.println("Run Level -5");
         String dataStoreID = ftConfig.getDataStoreId();
+        System.out.println("Run Level -4");
         DataStoreConfig dsConfig = config.getDataStore(dataStoreID);
+        System.out.println("Run Level -3");
         DataStoreFactorySpi dsFactory = dsConfig.getFactory();
+        System.out.println("Run Level -2");
         Map params = DataStoreUtils.toConnectionParams(dsFactory,
                 dsConfig.getConnectionParams());
 
         DataStore dataStore = null;
+        System.out.println("Run Level -1");
         dataStore = DataStoreUtils.aquireDataStore(params);
-
+        System.out.println("Run Level 0");
         FeatureType featureType = dataStore.getSchema(ftConfig.getName());
-        System.out.println("STRAFBAR");
-
+        System.out.println("Run Level 1");
         SortedSet set = new TreeSet();
         List list = Arrays.asList(featureType.getAttributeTypes());
-
+        System.out.println("Run Level 2");
         for (Iterator iter = list.iterator(); iter.hasNext();) {
+            System.out.println("Run Level 2.5");
             AttributeType element = (AttributeType) iter.next();
-            System.out.println("STRAFBAR ZWEI: " + element.getName());
             set.add(element.getName());
-        }
+        }System.out.println("Run Level 3");
 
         //Create list to diff against.
         List alternateList = ftConfig.getSchemaAttributes();
+        System.out.println("Run Level 4");
         SortedSet alternateSet = new TreeSet();
-
+        System.out.println("Run Level 5");
         for (Iterator iter = alternateList.iterator(); iter.hasNext();) {
+            System.out.println("Run Level 5.1");
             AttributeTypeInfoConfig element = (AttributeTypeInfoConfig) iter
                 .next();
+            System.out.println("Run Level 5.2");
             alternateSet.add(element.getName());
         }
-
+        System.out.println("Run Level 6");
         set.removeAll(alternateSet);
 
         return Collections.unmodifiableSortedSet(set);

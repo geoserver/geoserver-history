@@ -25,7 +25,7 @@ import java.util.Map;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.5 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.6 2004/01/31 00:27:27 jive Exp $
  */
 public class DataStoreConfig {
     /** unique datasore identifier */

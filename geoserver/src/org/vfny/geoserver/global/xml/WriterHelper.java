@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterHelper.java,v 1.7 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: WriterHelper.java,v 1.8 2004/01/31 00:27:23 jive Exp $
  */
 public class WriterHelper {
     /** Used internally to create log information to detect errors. */

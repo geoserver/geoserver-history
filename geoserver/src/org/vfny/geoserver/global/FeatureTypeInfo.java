@@ -44,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.17 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.18 2004/01/31 00:27:23 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {

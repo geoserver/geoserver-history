@@ -8,9 +8,12 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.LinkedList;
+
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
+import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoServerPlugIn;
 import javax.servlet.ServletContext;
@@ -28,7 +31,7 @@ import javax.servlet.ServletException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.3 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: ConfigPlugIn.java,v 1.4 2004/01/31 00:27:27 jive Exp $
  *
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  */
@@ -82,5 +85,7 @@ public class ConfigPlugIn implements PlugIn {
         sc.setAttribute(GlobalConfig.CONFIG_KEY,
             new GlobalConfig(gs.toGeoServerDTO()));
         sc.setAttribute(DataConfig.CONFIG_KEY, new DataConfig(gs.toDataDTO()));
+        ValidationConfig vc = new ValidationConfig(gs.toPlugInDTO(), gs.toTestSuiteDTO());
+        sc.setAttribute(ValidationConfig.CONFIG_KEY, vc);
     }
 }

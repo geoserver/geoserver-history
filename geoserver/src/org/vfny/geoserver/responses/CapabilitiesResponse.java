@@ -32,7 +32,7 @@ import javax.xml.transform.stream.StreamResult;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.27 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.28 2004/01/31 00:27:24 jive Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {

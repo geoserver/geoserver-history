@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  * Helper class that converts a jzkit QueryNode into a lucene search query.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RPNConverter.java,v 1.9 2004/01/21 00:26:11 dmzwiers Exp $
+ * @version $Id: RPNConverter.java,v 1.10 2004/01/31 00:27:24 jive Exp $
  */
 public class RPNConverter {
     /** The length of a full date string, CCYYMMDD. */
