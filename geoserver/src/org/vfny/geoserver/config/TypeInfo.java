@@ -5,10 +5,23 @@
 package org.vfny.geoserver.config;
 
 import java.io.File;
+import java.util.List;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.logging.Logger;
+import java.sql.Connection;
+import java.sql.SQLException;
 import org.vfny.geoserver.config.FeatureType;
-
+import org.geotools.feature.Feature;
+//import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.SchemaException;
+import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.postgis.PostgisConnectionFactory;
+import org.geotools.data.postgis.PostgisDataSource;
+import org.vfny.geoserver.responses.WfsException;
 /**
  * Reads all necessary feature type information to abstract away from servlets.
  * 
@@ -33,6 +46,12 @@ public class TypeInfo {
 
     /** the string of where the schema file should be located.*/
     private String pathToSchemaFile;
+
+    /** standard connection for getFeatures. */
+    Connection dbConnection;
+
+    //hold the default schema for this datasource?  Would save processing, and
+    //when schemas can go to xsd and back it would be good to have here.
 
     /** Initializes the database and request handler. */ 
     public TypeInfo() {}
@@ -145,6 +164,97 @@ public class TypeInfo {
     /** Fetches the user-defined password for the database */
     public String getPassword() { 
         return internalType.getPassword().toString();
+    }
+
+    /**
+     * returns a connection to the database containing the table for this
+     * type.  If this typeInfo has already made a connection to the database
+     * then this just returns that connection.  This method should _not_ be
+     * used if transactions are being performed, getNewConnection should be 
+     * used instead, or else the getFeature calls risk returning modified 
+     * features that have not yet been committed and could roll back.
+     */
+    public Connection getConnection() throws WfsException {
+	LOG.finer("getting connection for type: " + getName());
+	if (dbConnection == null) {
+	    try {
+		this.dbConnection = getNewConnection();
+	    } catch (SQLException e) {
+		String message = "Problem getting Connection to db: " 
+		    + e.getMessage();
+		LOG.warning(message);
+		throw new WfsException(message, "typeInfo");
+	    }
+	}
+	return dbConnection;
+    }
+
+    /**
+     * returns a new connection.  This is a relatively expensive operation,
+     * so getConnection should be used where possible.  But this method must
+     * be used if transactions are being performed, or else you risk 
+     * inconsistent features.
+     * @return a new connection created using the information read from the
+     * type represented by this typeInfo.
+     * @throws SQLException if there were problems connecting with the SQL 
+     * database.
+     * @tasks TODO: put the charset in the configuration, for internationalization.
+     * this method would then set the right charSet.
+     */
+    public Connection getNewConnection() throws SQLException {
+	LOG.finer("getting new connection for type : " + getName());
+	PostgisConnectionFactory db = 
+	    new PostgisConnectionFactory (getHost(), getPort(), 
+					  getDatabaseName()); 
+	Properties dbProps = new Properties();
+	dbProps.put("user", getUser());
+	dbProps.put("password", getPassword());
+	//dbProps.put("charSet", "iso-8859-1");
+	Connection connection;
+	connection = db.getConnection(dbProps);
+	return connection;
+    }
+
+
+    /**
+     * gets the datasource associated with this typeInfo.  This uses the current
+     * datasource connection, so it should not be used for transactions, those
+     * should generate their own datasources from their connections.  
+     *
+     * @param propertyNames the list of attributes that this datasource should
+     * return.  If null or empty then all attributes will be returned.
+     * @return a newly created datasource using the connection held by this 
+     * typeInfo.  
+     * @throws WfsException if there were problems creating the datasource
+     * or the schema.
+     */
+    public DataSource getDataSource(List propertyNames, int maxFeatures) 
+	throws WfsException {
+	LOG.finer("about to get datasource for " + getName());
+	Connection connection = getConnection();
+	DataSource data = null;
+	try {
+	    data = new PostgisDataSource(connection, getName(), maxFeatures);
+	    if (propertyNames != null && propertyNames.size() > 0) {
+		org.geotools.feature.FeatureType schema = data.getSchema();
+		AttributeType[] properties = new AttributeType[propertyNames.size()];
+		try {
+		    for(int i = 0; i < propertyNames.size(); i++) {
+			properties[i] = 
+			    schema.getAttributeType(propertyNames.get(i).toString());
+		    }
+		    schema = FeatureTypeFactory.create(properties);	 
+		}  catch (SchemaException e) {
+		    throw new WfsException(e, "While trying to create schema for " +
+					   "return feature", getName());
+		}
+		data.setSchema(schema);
+	    }
+	} catch (DataSourceException e) {
+            throw new WfsException(e, "While getting features from datasource",
+				   getName());
+	}
+	return data;
     }
 
     /**
