@@ -37,8 +37,8 @@ import com.vividsolutions.jts.geom.Polygon;
  * @see NameSpaceTranslatorFactory
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: GMLSchemaTranslator.java,v 1.5 2004/03/14 05:25:58 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: GMLSchemaTranslator.java,v 1.6 2004/04/06 18:45:02 dmzwiers Exp $
  */
 public class GMLSchemaTranslator extends NameSpaceTranslator {
 
@@ -127,6 +127,7 @@ class AbstractFeatureElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class AbstractFeatureCollectionBaseElement extends NameSpaceElement{
@@ -144,6 +145,7 @@ class AbstractFeatureCollectionBaseElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return FeatureCollection.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class AbstractFeatureCollectionElement extends NameSpaceElement{
@@ -161,6 +163,7 @@ class AbstractFeatureCollectionElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return FeatureCollection.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class GeometryPropertyElement extends NameSpaceElement{
@@ -178,6 +181,7 @@ class GeometryPropertyElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Geometry.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class FeatureAssociationElement extends NameSpaceElement{
@@ -195,6 +199,7 @@ class FeatureAssociationElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Feature.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class BoundingShapeElement extends NameSpaceElement{
@@ -212,6 +217,7 @@ class BoundingShapeElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Filter.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class AbstractGeometryElement extends NameSpaceElement{
@@ -229,6 +235,7 @@ class AbstractGeometryElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Geometry.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class AbstractGeometryCollectionBaseElement extends NameSpaceElement{
@@ -246,6 +253,7 @@ class AbstractGeometryCollectionBaseElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return GeometryCollection.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class AssociationAttributeGroupElement extends NameSpaceElement{
@@ -263,6 +271,7 @@ class AssociationAttributeGroupElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Collection.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class GeometryAssociationElement extends NameSpaceElement{
@@ -280,6 +289,7 @@ class GeometryAssociationElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class PointMemberElement extends NameSpaceElement{
@@ -297,6 +307,7 @@ class PointMemberElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class LineStringMemberElement extends NameSpaceElement{
@@ -314,6 +325,7 @@ class LineStringMemberElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class PolygonMemberElement extends NameSpaceElement{
@@ -331,6 +343,7 @@ class PolygonMemberElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class LinearRingMemberElement extends NameSpaceElement{
@@ -348,6 +361,7 @@ class LinearRingMemberElement extends NameSpaceElement{
 	}
 	public String getQualifiedTypeRefName(String prefix){return null;}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class PointElement extends NameSpaceElement{
@@ -371,6 +385,7 @@ class PointElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Point.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class LineStringElement extends NameSpaceElement{
@@ -394,6 +409,7 @@ class LineStringElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return LineString.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class LinearRingElement extends NameSpaceElement{
@@ -417,6 +433,7 @@ class LinearRingElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return LinearRing.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class BoxElement extends NameSpaceElement{
@@ -440,6 +457,7 @@ class BoxElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Envelope.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class PolygonElement extends NameSpaceElement{
@@ -463,6 +481,7 @@ class PolygonElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Polygon.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class GeometryCollectionElement extends NameSpaceElement{
@@ -486,6 +505,7 @@ class GeometryCollectionElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return GeometryCollection.class;}
+	public boolean isAbstract(){return true;}
 }
 
 class MultiPointElement extends NameSpaceElement{
@@ -509,6 +529,7 @@ class MultiPointElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return MultiPoint.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class MultiLineStringElement extends NameSpaceElement{
@@ -532,6 +553,7 @@ class MultiLineStringElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return MultiLineString.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class MultiPolygonElement extends NameSpaceElement{
@@ -555,6 +577,7 @@ class MultiPolygonElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return MultiPolygon.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class CoordElement extends NameSpaceElement{
@@ -578,6 +601,7 @@ class CoordElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Coordinate.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class CoordinatesElement extends NameSpaceElement{
@@ -601,6 +625,7 @@ class CoordinatesElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Coordinate.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class PointPropertyElement extends NameSpaceElement{
@@ -624,6 +649,7 @@ class PointPropertyElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Point.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class PolygonPropertyElement extends NameSpaceElement{
@@ -646,6 +672,7 @@ class PolygonPropertyElement extends NameSpaceElement{
 			return this.prefix+":polygonProperty";
 		return null;
 	}
+	public boolean isAbstract(){return false;}
 	public Class getJavaClass(){return Polygon.class;}
 }
 
@@ -670,6 +697,7 @@ class LineStringPropertyElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return LineString.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class MultiPointPropertyElement extends NameSpaceElement{
@@ -693,6 +721,7 @@ class MultiPointPropertyElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return MultiPoint.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class MultiLineStringPropertyElement extends NameSpaceElement{
@@ -716,6 +745,7 @@ class MultiLineStringPropertyElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return MultiLineString.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class MultiPolygonPropertyElement extends NameSpaceElement{
@@ -739,6 +769,7 @@ class MultiPolygonPropertyElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return MultiPolygon.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class MultiGeometryPropertyElement extends NameSpaceElement{
@@ -762,6 +793,7 @@ class MultiGeometryPropertyElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return GeometryCollection.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NullElement extends NameSpaceElement{
@@ -784,5 +816,6 @@ class NullElement extends NameSpaceElement{
 			return this.prefix+":null";
 		return null;
 	}
+	public boolean isAbstract(){return false;}
 	public Class getJavaClass(){return null;}
 }
