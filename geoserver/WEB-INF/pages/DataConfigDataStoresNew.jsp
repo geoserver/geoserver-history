@@ -2,24 +2,34 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
+<table border=1 width=100%>
+<tr><td>
 <table border=0 width=100%>
 
 	<html:form action="DataConfigDataStoresNew">
 
-	<tr><td valign="top">	
+	<tr><td valign="top" align="right">	
+		<bean:message key="label.dataStoreDescription"/>:
+	</td>
+	<td align="left">
 		<html:select property="selectedDescription">
 			<html:options property="dataStoreDescriptions"/>
 		</html:select>
 	</td></tr>
-	<tr><td>
-		<bean:message key="label.dataStoreID"/><html:text property="dataStoreID"/>
+	<tr><td align="right">
+		<bean:message key="label.dataStoreID"/>:
+	</td>
+	<td align="left">
+		<html:text property="dataStoreID"/>
 	</td></tr>
-	<tr><td>
-
+	<tr><td align="right" colspan=2>
 		<html:submit property="action" value="new">
 			<bean:message key="label.new"/>
 		</html:submit>
 	</td></tr>
 	
 	</html:form>
+	
+</table>
+</td></tr>
 </table>

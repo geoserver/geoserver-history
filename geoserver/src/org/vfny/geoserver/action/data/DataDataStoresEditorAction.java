@@ -14,9 +14,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStoreFinder;
 
 import org.vfny.geoserver.action.ConfigAction;
@@ -49,8 +53,18 @@ public class DataDataStoresEditorAction extends ConfigAction {
         
         aMap.putAll(dataStoresForm.getParams());
         		
-		// Test to see if they work
-		DataStoreFinder.getDataStore( aMap );
+		// Test to see if they work. if not, send em back!
+        try {
+            DataStoreFinder.getDataStore( aMap );
+        } catch (Throwable throwable) {
+            ActionErrors errors = new ActionErrors();
+            errors.add( ActionErrors.GLOBAL_ERROR,
+                new ActionError("error.exception", throwable.getMessage())) ;
+                
+            saveErrors(request, errors);
+            
+            return mapping.findForward("dataConfigDataStores");
+        }
 						
 		boolean enabled = dataStoresForm.isEnabled();
 		if (dataStoresForm.isEnabledChecked() == false) {
