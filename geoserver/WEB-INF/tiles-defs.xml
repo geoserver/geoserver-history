@@ -14,6 +14,7 @@
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
    		<put name="messages" value="/WEB-INF/pages/messages.jsp"/>
    		<put name="actionator"	value="/WEB-INF/pages/actionator.jsp"/>
+   		<put name="menuator"	value="/WEB-INF/pages/menuator.jsp"/>   		
    		<put name="configActions" value="/WEB-INF/pages/blank.jsp"/>
 		<!-- BODY -->
    		<put name="locator" value="/WEB-INF/pages/locator.jsp"/>
@@ -23,6 +24,7 @@
    		<put name="layer" value="application"/>
         <put name="locationForwards" value="welcome"/>
         <put name="actionForwards" value=""/>
+        <put name="menuForwards" value=""/>
    	</definition>
 
    	<!-- WELCOME -->
@@ -31,7 +33,7 @@
    		<put name="body" value="/WEB-INF/pages/Welcome.jsp"/>
    		<put name="layer" value="application"/>
         <put name="locationForwards" value=""/>
-        <put name="actionForwards" value="admin"/>
+        <put name="menuForwards" value="admin:config"/>
    	</definition>
 
    	<definition name="admin.login" extends=".mainLayout">
@@ -54,7 +56,8 @@
    		<put name="body" value="/WEB-INF/pages/MainMenu.jsp"/>
    		<put name="layer" value="administration"/>
         <put name="locationForwards" value="welcome"/>
-        <put name="actionForwards" value="config"/>
+        <put name="menuForwards" value="config"/>
+        <put name="actionForwards" value="admin.freeLocks"/>                
    	</definition>
    	
    	<!-- CONFIG -->
@@ -65,7 +68,7 @@
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
         <put name="locationForwards" value="welcome"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
-        <put name="actionForwards"
+        <put name="menuForwards"
              value="config.server:config.wfs:config.wms:config.data"/>   		
    	</definition>
 
@@ -85,7 +88,9 @@
    		<put name="body" value="/WEB-INF/pages/validation/Validation.jsp"/>
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="menuForwards"
+             value="config.validation.suite"/>
    	</definition> 
    		
    	<definition name="config.validation.suite" extends=".mainLayout">
@@ -121,7 +126,7 @@
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
-        <put name="actionForwards"
+        <put name="menuForwards"
              value="config.wfs.content:config.wfs.description:config.validation"/>
    	</definition>
 
@@ -154,7 +159,7 @@
    		<put name="layer" value="configuration"/>   				
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
-        <put name="actionForwards"
+        <put name="menuForwards"
              value="config.wms.content:config.wms.description"/>
    	</definition>
 
@@ -186,7 +191,7 @@
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
-        <put name="actionForwards"
+        <put name="menuForwards"
              value="config.data.store:config.data.namespace:config.data.style:config.data.type"/>
    	</definition>
 
@@ -282,7 +287,7 @@
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config:config.data:config.data.type"/>
-        <put name="actionForwards" value="admin:config.data.calculateBoundingBox"/>
+        <put name="actionForwards" value="config.data.calculateBoundingBox"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	   	

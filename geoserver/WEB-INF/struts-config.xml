@@ -116,16 +116,21 @@
         <!-- Demonstrates using index.jsp to forward -->
         <forward
             name="welcome"
-            path="/welcome.do"/>
-           
-        <forward 
-        	name="admin"
-        	path="/admin/index.do"/>
+            path="/welcome.do"/>           
         
         <forward 
         	name="contact"
         	path="/contactInformation.do"/>
-        		
+
+        <!-- ADMIN -->
+        <forward 
+        	name="admin"
+        	path="/admin/index.do"/>
+
+        <forward 
+        	name="admin.freeLocks"
+        	path="/admin/freeLocks.do"/>
+        	        	        		
         <forward 
         	name="login"
         	path="/admin/login.do"/>
@@ -154,6 +159,9 @@
         <forward
         	name="config.validation.suite"
         	path="/config/validation/suite.do"/>
+       	<forward
+       		name="config.validation.suite.doit"
+       		path="/config/validation/suiteRun.do"/>
         <forward
         	name="suite"
         	path="/config/validation/suite.do"/>
@@ -163,7 +171,9 @@
         <forward
         	name="config.validation.test"
         	path="/config/validation/testSelect.do"/>
-
+       	<forward
+       		name="config.validation.test.doit"
+       		path="/config/validation/testRun.do"/>
         <forward
         	name="validationTestEditor"
         	path="/config/validation/testEdit.do"/>
@@ -250,7 +260,7 @@
        		
        	<forward
        		name="config.data.calculateBoundingBox"
-       		path="/config/data/calculateBoundingBox.do"/>      	       		
+       		path="/config/data/calculateBoundingBox.do"/>
 
         <!-- Appearance -->       		
        	<forward
@@ -277,17 +287,7 @@
         <action
             path="/contactInformation"
             type="org.apache.struts.actions.ForwardAction"
-            parameter="welcome.contact"/>
-                              	       	
-		<action
-			path ="/admin/login"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="admin.login"/>
-
-		<action        	
-			path ="/admin/logout"
-        	type="org.vfny.geoserver.action.LogoutAction"
-        	parameter=""/>
+            parameter="welcome.contact"/>                             	       	
 
         <!-- ADMIN -->
         <action
@@ -300,6 +300,22 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin"
         	name="blankBean"/>       
+
+        <action
+        	path ="/admin/freeLocks"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="admin.freeLocks"
+        	name="blankBean"/>       
+        	
+		<action
+			path ="/admin/login"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="admin.login"/>
+
+		<action        	
+			path ="/admin/logout"
+        	type="org.vfny.geoserver.action.LogoutAction"
+        	parameter=""/>
         	
         <!-- CONFIG -->
         <action
@@ -374,6 +390,12 @@
         	parameter="config.validation.suite"/>
         	
         <action
+        	path ="/config/validation/suiteRun"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.validation.suite.doit"
+        	name="blankBean"/>
+        	
+        <action
         	path="/config/validation/testSelect"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.validation.test"/>
@@ -382,6 +404,12 @@
         	path="/config/validation/testEdit"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.validation.test.editor"/>
+
+        <action
+        	path ="/config/validation/testRun"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.validation.test.doit"
+        	name="blankBean"/>
         	        	
         <!-- DATA -->
         <action

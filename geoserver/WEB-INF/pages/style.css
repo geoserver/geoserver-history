@@ -197,47 +197,110 @@ td.loginStatus {
 span.loginStatus {
  font-size: 90%;
 }
-td h1.title {
+<!-- title -->
+table.tile {
+ white-space: nowrap;
+ width: 100%;
+ text-align: left;
+ border-width: 1px 1px 1px 1px;
+ border-style: solid;
+ border-color: black;
+ border-spacing: 0;
+ -moz-border-radius: 5px;
+ padding: 0px; 
+ margin: 4px; 
+}
+table.title td.title {
+ vertical-align: top; 
+ padding: 1ex;
+}
+table.title td.icon {
+ width: 64px;
+ valign: center;
+ align: center;
+ padding: 2px;
+}
+table.title td.menu {
+ font-size: 90%;
+ background: rgb(102,102,153);
+ width: 12ex;
+ vertical-align: top;
+ -moz-border-radius: 5 0 0 5; 
+ border-width: 1px 1px 1px 1px;
+ border-style: solid;
+}
+td.title h1 {
  font-family: tahoma, verdana, sans, arial, helvetica, sans-serif;
- font-size: 110%; 
+ font-size: 170%; 
  white-space: nowrap; 
- text-align: center;
- padding: 0;
- margin: 2px;  
+ margin: 2px;
+}
+<!-- menuator -->
+table.menu {
+ width: 12ex;
+ vertical-align: top;
+ white-space: nowrap; 
+}
+td.item {
+ text-align: left;
+}
+.menu a:visited,
+.menu a:link {
+ color: #fff;
+ text-decoration: none;
+}
+.menu a:hover {
+ color: #fff;
+ text-decoration: underline;
 }
 td.application {
  vertical-align: top;
  background-color: rgb(255,255,255);  
  -moz-border-radius: 0px 0px 5px 5px;  
 }
-td.application h1.title {
- background-color: rgb(245,245,245); 
+td.application table.title {
+ background-color: rgb(225,225,225);
+ width: 100%;
+ border-spacing: 0;
+ -moz-border-radius: 5px;
+ margin: 2px;  
 }
 td.administration {
- vertical-align: top;
  background-color: rgb(240,240,240);
  -moz-border-radius: 0px 0px 5px 5px;  
 }
-td.administration h1.title {
- background-color: rgb(225,225,225);  
+td.administration table.title {
+ background-color: rgb(205,205,205); 
+ width: 100%;
+ border-spacing: 0;
+ -moz-border-radius: 5px;
+ margin: 2px;  
 }
 td.configuration {
  vertical-align: top;
  background-color: rgb(192, 192, 192);
  -moz-border-radius: 0px 0px 5px 5px;  
 }
-td.configuration h1.title {
+td.configuration table.title {
  background-color: rgb(180,180,180);  
+ width: 100%;
+ border-spacing: 0;
+ -moz-border-radius: 5px;
+ margin: 2px;  
 }
 td.data {
  vertical-align: top;
  background-color: rgb(192, 192, 192);
  -moz-border-radius: 0px 0px 5px 5px;  
 }
-td.data h1.title {
+td.data table.title {
  background-color: rgb(180,180,180);  
+ width: 100%;
+ border-spacing: 0;
+ -moz-border-radius: 5px;
+ margin: 2px;  
 }
-
+<!-- Main Page -->
 table.info {
  text-align: left;
  vertical-align: top;
