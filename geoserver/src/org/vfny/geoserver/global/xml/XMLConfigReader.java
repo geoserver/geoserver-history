@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.37 2004/04/06 11:32:34 cholmesny Exp $
+ * @version $Id: XMLConfigReader.java,v 1.38 2004/04/06 18:11:47 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -1067,8 +1067,12 @@ public class XMLConfigReader {
      */
     protected Envelope loadLatLongBBox(Element bboxElem)
         throws ConfigurationException {
+        
+        if(bboxElem == null)
+        	return new Envelope();
+        
         boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem, "dynamic",
-                false, false);
+                false, true);
 
         if (!dynamic) {
             double minx = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
