@@ -201,23 +201,23 @@
 		    </td>
           <% } %>
           </tr>
+          <%
+            if (attributeForm != null && attributeForm.getType().equals(org.vfny.geoserver.config.AttributeTypeInfoConfig.TYPE_FRAGMENT)) {
+  		  %>
           <tr>
             <td align="left" valign="top" colspan="7">
-              <% boolean fragment = false;
-
-              if (attributeForm != null && attributeForm.getType().equals(org.vfny.geoserver.config.AttributeTypeInfoConfig.TYPE_FRAGMENT)) {
-              	fragment = true;
-              } %>
               		<html:textarea cols="80" rows="3" 
-              		               property='<%= "attributes[" + index + "].fragment" %>'
-              		               disabled='<%= !fragment %>'/>
+              		               property='<%= "attributes[" + index + "].fragment" %>'/>
             </td>
           </tr>
+          <% } %>
         </table>		
       </td>
     </tr>
 </logic:iterate>
     
+    
+    <% if (form.getCreateableAttributes().size() != 0) { %>
     <tr>
     	<td>
   			<html:select property="newAttribute">
@@ -230,6 +230,7 @@
 			</html:submit>    	
 		</td>
     </tr>
+    <% } %>
     
     <tr>
       <td class="label">
