@@ -488,6 +488,7 @@
         <exclude name="**/log4j-1.2.5.jar" />
         <exclude name="**/lucene.jar" />
         <exclude name="**/xml-apis.jar" />
+        <exclude name="**/xercesImpl.jar" />
         <exclude name="*jetty*/**/*" />
       </lib>
       
