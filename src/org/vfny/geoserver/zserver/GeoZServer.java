@@ -126,6 +126,10 @@ public class GeoZServer extends Thread
 	LOGGER.info("Creating ZServer on port: "+port_str);
 		    //+" (timeout="+socket_timeout+")");
 
+	String attrMapFile = props.getProperty("fieldmap");
+	if (attrMapFile != null) {
+	GeoProfile.setUseAttrMap(attrMapFile);
+	}
     server_socket = new ServerSocket(Integer.parseInt(port_str));
     GeoIndexer indexer = new GeoIndexer(server_properties);
     int numIndexed = indexer.update();
