@@ -1,9 +1,25 @@
 <html>
-<head><title>Loading</title></head>
-<body onload="javascript:window.location.replace('Welcome.do')"><center>
+<head><title>GeoServer - Loading</title>
+  <meta content="text/css" http-equiv="content-style-type">
+  <style type="text/css">
+    <!-- @import url("/geoserver/style.css"); -->
+  </style>
+  <link type="image/gif" href="gs.gif" rel="icon"><!-- mozilla --> 
+  <link href="gs.ico" rel="SHORTCUT ICON"><!-- ie -->
+</head>
+<body onload="javascript:window.location.replace('JSPCompiler')"><br><center>
 <table width="60%" height="60%"><tr><td>
-<center><h1>LOADING ...</h1><center><br>
-<center><h1>Please Wait</h1><center>
+<center>
+  <span class="project">
+    <a href="http://geoserver.sourceforge.net/">GeoServer</a>
+  </span>
+  <span class="license">
+    <a href="http://geoserver.sourceforge.net/documentation/developer/license.htm">&copy;</a>
+  </span>
+  <h1>LOADING ...</h1>
+<center><br>
+<center><h2>Please Wait</h2><center>
+<center><h2>0% Completed</h2><center>
 </table></td></tr>
 </center></body>
 </html>
