@@ -22,21 +22,42 @@ import javax.xml.transform.stream.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.20.4.2 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.20.4.3 2003/11/16 19:29:33 groldan Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
     /** handler to do the processing */
     private ContentHandler contentHandler;
 
+    private static OutputStream nullOutputStream = new OutputStream()
+    {
+      public void write(int b)throws IOException
+      {
+      }
+      public void write(byte b[]) throws IOException
+      {
+      }
+      public void write(byte b[], int off, int len) throws IOException
+      {
+      }
+      public void flush() throws IOException
+      {
+      }
+      public void close() throws IOException
+      {
+      }
+    };
+
     /**
-     * DOCUMENT ME!
+     * writes to a void output stream to throw any exception that can occur
+     * in writeTo too.
      *
      * @param request DOCUMENT ME!
      *
      * @throws ServiceException DOCUMENT ME!
      */
     public void execute(Request request) throws ServiceException {
+      writeTo(nullOutputStream);
     }
 
     /**

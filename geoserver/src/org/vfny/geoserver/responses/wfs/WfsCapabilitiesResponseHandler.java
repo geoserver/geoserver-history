@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.1.2.3 2003/11/14 03:13:10 cholmesny Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.1.2.4 2003/11/16 19:29:39 groldan Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -188,9 +188,9 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         for (Iterator it = featureTypes.iterator(); it.hasNext();) {
             ftype = (FeatureTypeConfig) it.next();
 
-            if (ftype.isEnabled()) { //can't handle ones that aren't enabled.
-
-                //and they shouldn't be handled, as they won't function.
+            //can't handle ones that aren't enabled.
+            //and they shouldn't be handled, as they won't function.
+            if (ftype.isEnabled()) {
                 startElement("FeatureType");
                 handleFeatureType(ftype);
                 unIndent();
@@ -229,7 +229,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         String ogc = "ogc:";
 
         //REVISIT: for now I"m just prepending ogc onto the name element.
-        //Is the proper way to only do that for the qname?  I guess it 
+        //Is the proper way to only do that for the qname?  I guess it
         //would only really matter if we're going to be producing capabilities
         //documents that aren't qualified, and I don't see any reason to
         //do that.

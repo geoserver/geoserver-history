@@ -20,10 +20,10 @@ import java.util.*;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.1.2.2 2003/11/15 00:06:12 jive Exp $
+ * @version $Id: GetMapResponse.java,v 1.1.2.3 2003/11/16 19:29:39 groldan Exp $
  */
 public class GetMapResponse implements Response {
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private static final Map delegates = new HashMap();
 
     static {
@@ -57,12 +57,28 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * DOCUMENT ME!
+     * asks the internal GetMapDelegate for the MIME type of the map that it
+     * will generate or is ready to, and returns it
      *
-     * @return DOCUMENT ME!
+     * @return the MIME type of the map generated or ready to generate
+     *
+     * @throws IllegalStateException if a GetMapDelegate is not setted yet
      */
-    public String getContentType() {
+    public String getContentType() throws IllegalStateException {
+        if (delegate == null) {
+            throw new IllegalStateException("No request has been proceced");
+        }
+
         return delegate.getContentType();
+    }
+
+    /**
+     * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
+     */
+    public void abort() {
+        if (delegate != null) {
+            delegate.abort();
+        }
     }
 
     /**
@@ -74,17 +90,25 @@ public class GetMapResponse implements Response {
      * @throws IOException DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
+        if(delegate == null)
+        {
+          throw new IllegalStateException(
+          "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
+        }
         delegate.writeTo(out);
     }
 
     /**
-     * Creates a GetMapDelegate specialized in generating the requested
-     * map format
+     * Creates a GetMapDelegate specialized in generating the requested map
+     * format
      *
      * @param request DOCUMENT ME!
      *
+     * @return DOCUMENT ME!
+     *
      * @throws WmsException if no specialization is configured for the output
-     * format specified in <code>request</code> or if it can't be instantiated
+     *         format specified in <code>request</code> or if it can't be
+     *         instantiated
      */
     private static GetMapDelegate getDelegate(GetMapRequest request)
         throws WmsException {
@@ -110,8 +134,4 @@ public class GetMapResponse implements Response {
 
         return delegate;
     }
-    public void abort() {
-        // nothing to undo
-    }
-
 }

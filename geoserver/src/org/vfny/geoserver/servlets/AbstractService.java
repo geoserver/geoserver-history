@@ -23,7 +23,7 @@ import javax.servlet.http.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: AbstractService.java,v 1.1.2.8 2003/11/14 23:56:43 jive Exp $
+ * @version $Id: AbstractService.java,v 1.1.2.9 2003/11/16 19:29:39 groldan Exp $
  *
  * @task TODO: I changed this so it automatically buffers responses, so  as to
  *       better handle errors, not serving up nasty servlet errors if
@@ -45,6 +45,8 @@ public abstract class AbstractService extends HttpServlet {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
+
+    /** DOCUMENT ME! */
     protected static final ServerConfig config = ServerConfig.getInstance();
 
     /** Specifies mime type */
@@ -52,14 +54,69 @@ public abstract class AbstractService extends HttpServlet {
                                                     .getMimeType();
     private static Map context;
 
-    public static final ServiceStratagy SPEED = new SpeedStratagy();
-    public static final ServiceStratagy FILE = new FileStratagy();
-    public static final ServiceStratagy BUFFER = new BufferStratagy();
+    /**
+     * GR: if SPEED, FILE and BUFFER are static instances, so their methods
+     * should be synchronized, ending in a not multiuser server, so I made
+     * saftyMode dynamically instantiated in init() and the stratagy choosed
+     * at server config level in web.xml. If I'm wrong, just tell me. If this
+     * is correct, may be it will be better to allow for user customized
+     * ServiceStratagy implementations to be parametrized by a servlet context
+     * param
+     */
+    public static final Map serviceStratagys = new HashMap();
+
+    static {
+        serviceStratagys.put("SPEED", SpeedStratagy.class);
+        serviceStratagys.put("FILE", FileStratagy.class);
+        serviceStratagys.put("BUFFER", BufferStratagy.class);
+    }
+
+    /** Controls the Safty Mode used when using execute/writeTo. */
+    private static Class saftyMode;
 
     /**
-     * Controls the Safty Mode used when using execute/writeTo.
+     * loads the "serviceStratagy" servlet context parameter and checks it if
+     * reffers to a valid ServiceStratagy (by now, one of SPEED, FILE or
+     * BUFFER); if no, just sets the stratagy to BUFFER as default
+     *
+     * @param config the servlet environment
+     *
+     * @throws ServletException if the configured stratagy class is not a
+     *         derivate of ServiceStratagy or it is thrown by the parent class
      */
-    private static ServiceStratagy saftyMode = BUFFER;
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        LOGGER.info("Looking for configured service responses' stratagy");
+
+        ServletContext context = config.getServletContext();
+        String stgyKey = context.getInitParameter("serviceStratagy");
+        Class stgyClass = BufferStratagy.class;
+
+        if (stgyKey == null) {
+            LOGGER.info("No service stratagy configured, defaulting to BUFFER");
+        } else {
+            LOGGER.info("Looking for configured service stratagy " + stgyKey);
+
+            Class configurefStgyClass = (Class) serviceStratagys.get(stgyKey);
+
+            if (configurefStgyClass == null) {
+                LOGGER.info("No service stratagy named " + stgyKey
+                    + "found, defaulting to BUFFER. Please check your config");
+            }else{
+              stgyClass = configurefStgyClass;
+            }
+        }
+
+        LOGGER.fine("verifying configured stratagy");
+
+        if (!(ServiceStratagy.class.isAssignableFrom(stgyClass))) {
+            throw new ServletException("the configured service stratagy "
+                + stgyClass + " is not a ServiceStratagy derivate");
+        }
+
+        LOGGER.info("Using service stratagy " + stgyClass);
+        this.saftyMode = stgyClass;
+    }
 
     /**
      * DOCUMENT ME!
@@ -120,12 +177,78 @@ public abstract class AbstractService extends HttpServlet {
      * @param response
      * @param serviceRequest
      *
+     * @throws ServletException if the stratagy can't be instantiated
+     *
      * @task TODO: move gzip response encoding to a filter servlet
      */
     protected void doService(HttpServletRequest request,
-                             HttpServletResponse response,
-                             Request serviceRequest) {
-        saftyMode.doService( this, request, response, serviceRequest );
+        HttpServletResponse response, Request serviceRequest)
+        throws ServletException {
+        ServiceStratagy stratagy = null;
+        LOGGER.finest("getting stratagy instance");
+
+        try {
+            stratagy = (ServiceStratagy) saftyMode.newInstance();
+        } catch (Exception ex) {
+            throw new ServletException(stratagy
+                + " is not a valid ServiceStratagy", ex);
+        }
+
+        LOGGER.finer("stratagy is: " + stratagy);
+
+        Response serviceResponse = getResponseHandler();
+        LOGGER.finer("response handler is: " + serviceResponse);
+
+        try {
+            // execute request
+            LOGGER.fine("executing request");
+            serviceResponse.execute(serviceRequest);
+        } catch (ServiceException serviceException) {
+            LOGGER.warning("service exception while executing request: "
+                + serviceException.getMessage());
+            serviceResponse.abort();
+            sendError(response, serviceException);
+            return;
+        }catch(Throwable t){
+          //we can safelly send errors here, since we have not touched response yet
+          sendError(response, t);
+        }
+
+        String mimeType = serviceResponse.getContentType();
+        response.setContentType(mimeType);
+        LOGGER.fine("execution succeed, mime type is: " + mimeType);
+
+        OutputStream stratagyOuput = null;
+
+        //obtain the stratagy output stream
+        try {
+            LOGGER.finest("getting stratagy output");
+            stratagyOuput = stratagy.getDestination(response);
+            LOGGER.finer("stratagy output is: "
+                + stratagyOuput.getClass().getName());
+        } catch (IOException ex) {
+            if (ex instanceof java.net.SocketException) {
+                LOGGER.fine(
+                    "it seems that the user has closed the request stream: "
+                    + ex.getMessage());
+            } else {
+                sendError(response, ex);
+            }
+        }
+
+        try {
+            // gather response
+            serviceResponse.writeTo(stratagyOuput);
+            stratagyOuput.flush();
+            stratagy.flush();
+        } catch(java.net.SocketException sockEx){
+          //it's ok, user bored waiting a response or socket error
+        }catch (Exception ex) {
+            //ups! this is the worst error case, since we have already setted
+            //the response's mime type and are not sure about the state of
+            //the response object. Anyway, try to send an error
+            sendError(response, ex);
+        }
     }
 
     /**
@@ -237,9 +360,9 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             result.writeTo(out);
-        }catch(IOException ioe){
-          //user just closed the socket stream, do nothing
-          LOGGER.fine("connection closed by user: " + ioe.getMessage());
+        } catch (IOException ioe) {
+            //user just closed the socket stream, do nothing
+            LOGGER.fine("connection closed by user: " + ioe.getMessage());
         } catch (ServiceException ex) {
             sendError(response, ex);
         }
@@ -264,198 +387,190 @@ public abstract class AbstractService extends HttpServlet {
 
         return supportsGzip;
     }
+
     /**
      * Interface used for ServiceMode stratagy objects.
+     *
      * <p>
-     * While this interface resembles the Enum idiom in that only
-     * three instances are available SPEED, BUFFER and FILE, we are
-     * using this class to plug-in the implementation for our
-     * doService request in the manner of the Stratagy pattern.
+     * While this interface resembles the Enum idiom in that only three
+     * instances are available SPEED, BUFFER and FILE, we are using this class
+     * to plug-in the implementation for our doService request in the manner
+     * of the Stratagy pattern.
      * </p>
+     *
      * @author Jody Garnett, Refractions Research
      */
     static public interface ServiceStratagy {
-        public void doService(AbstractService service,
-                              HttpServletRequest request,
-                              HttpServletResponse response,
-                              Request serviceRequest);
+        public OutputStream getDestination(HttpServletResponse response)
+            throws IOException;
+
+        public void flush() throws IOException;
     }
 }
+
+
 /**
  * Fast and Dangeroud service stratagy.
+ *
  * <p>
- * Will fail when a ServiceException is encountered on writeTo, and will
- * not tell the user about it! This is the worst case scenario, you are trading
+ * Will fail when a ServiceException is encountered on writeTo, and will not
+ * tell the user about it! This is the worst case scenario, you are trading
  * speed for danger by using this ServiceStratagy.
  * </p>
- * @throws IllegalStateException When encountering an error during writeTo
+ *
  * @author jgarnett
  */
 class SpeedStratagy implements AbstractService.ServiceStratagy {
-    public void doService(AbstractService service,
-                          HttpServletRequest request,
-                          HttpServletResponse response,
-                          Request serviceRequest) {
+    private OutputStream out = null;
 
-        Response serviceResponse = service.getResponseHandler();
-        OutputStream out = null;
-        try {
-            response.setContentType(serviceResponse.getContentType());            
-            
-            serviceResponse.execute(serviceRequest);
-            out = response.getOutputStream();
-            out = new BufferedOutputStream( out );
+    /**
+     * DOCUMENT ME!
+     *
+     * @param response DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    public OutputStream getDestination(HttpServletResponse response)
+        throws IOException {
+        out = response.getOutputStream();
+        out = new BufferedOutputStream(out);
 
-//            if (service.requestSupportsGzip(request))
-//            {
-//                response.setHeader("content-encoding", "gzip");
-//                out = new GZIPOutputStream(out, 2048);
-//            }
-        } catch ( ServiceException serviceException){
-            // we have not written anything, use sendError
-            serviceResponse.abort();
-            service.sendError(response, serviceException);
-            return;
+        return out;
+    }
 
-        } catch (IOException ioException){
-            // we have not written anything, use sendError
-            serviceResponse.abort();            
-            service.sendError(response, ioException);
-            return;
-        }
-        try {
-            serviceResponse.writeTo( out );
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    public void flush() throws IOException {
+        if (out != null) {
             out.flush();
         }
-        catch( ServiceException failed){
-            // we have written something out
-            // we cannot recover
-            // this is the worst case scenario we warned you about
-            // when using the SpeedStratagy
-            serviceResponse.abort();            
-            IllegalStateException stateException = new IllegalStateException("Speed Optimization Failed, cannot report error to user");
-            stateException.initCause( failed );
-            throw stateException;
-        }
-        catch( IOException ioException){
-            // we could not communicate with the user
-            serviceResponse.abort();            
-            IllegalStateException stateException = new IllegalStateException("Communication to user failed");
-            stateException.initCause( ioException );
-            throw stateException;
-        }
     }
-};
+}
+
+
 /**
  * A safe Service stratagy that buffers output until writeTo completes.
+ *
  * <p>
  * This stratagy wastes memory, for saftey. It represents a middle ground
  * between SpeedStratagy and FileStratagy
  * </p>
- * @author jgarnett
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * @author jgarnett To change the template for this generated type comment go
+ *         to Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and
+ *         Comments
  */
 class BufferStratagy implements AbstractService.ServiceStratagy {
-    public void doService(AbstractService service,
-                          HttpServletRequest request,
-                          HttpServletResponse response,
-                          Request serviceRequest) {
+    /** DOCUMENT ME! */
+    ByteArrayOutputStream buffer = null;
+    private HttpServletResponse response;
 
-        ByteArrayOutputStream buffer = null;
-        Response serviceResponse = service.getResponseHandler();        
-        try {
-            response.setContentType(serviceResponse.getContentType());
-                        
-            // execute request
-            serviceResponse.execute(serviceRequest);
+    /**
+     * DOCUMENT ME!
+     *
+     * @param response DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    public OutputStream getDestination(HttpServletResponse response)
+        throws IOException {
+        this.response = response;
+        buffer = new ByteArrayOutputStream(1024 * 1024);
 
-            // create buffer
-            buffer = new ByteArrayOutputStream();
-
-            // gather response
-            serviceResponse.writeTo(buffer);
-          }catch(IOException ioe){
-            serviceResponse.abort();              
-            //user just closed the socket stream, do nothing
-            return;
-          }catch( ServiceException serviceException ){
-            serviceResponse.abort();              
-            service.sendError( response, serviceException );
-            return;
-        }
-        // service succeeded in producing a response!
-        try {
-            // (copy the result to out
-            OutputStream out = response.getOutputStream();
-            out = new BufferedOutputStream(out, 2 * 1024 * 1024);
-            buffer.writeTo(out);
-            out.flush();
-        } catch (IOException ioException) {
-            // something went wrong reporting to the user
-            serviceResponse.abort();
-            IllegalStateException stateException = new IllegalStateException("Communication to user failed");
-            stateException.initCause( ioException );
-            throw stateException;
-        }
+        return buffer;
     }
-};
 
-class FileStratagy implements AbstractService.ServiceStratagy {
-    static int sequence = 0;
-    public void doService(AbstractService service,
-                          HttpServletRequest request,
-                          HttpServletResponse response,
-                          Request serviceRequest) {
-        File temp = null;
-        Response serviceResponse = service.getResponseHandler();        
-        try {
-            response.setContentType(serviceResponse.getContentType());            
-            // execute request
-            serviceResponse.execute(serviceRequest);
-
-            sequence++;
-            temp = File.createTempFile( "wfs"+sequence,"tmp" );
-
-            FileOutputStream safe = new FileOutputStream( temp );
-
-            // accept response to temporary file
-            serviceResponse.writeTo( safe );
-            safe.close();
-        } catch (IOException ioException) {
-            serviceResponse.abort();            
-            service.sendError(response, ioException);
-            return;
-        } catch( ServiceException serviceException ){
-            serviceResponse.abort();            
-            service.sendError( response, serviceException );
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    public void flush() throws IOException {
+        if ((buffer == null) || (response == null)) {
             return;
         }
-        // service succeeded in producing a response!
-        
-        // copy the result to out
-        try {
-            // copy result to the real output stream
-            InputStream copy = new BufferedInputStream( new FileInputStream( temp ) );
-            OutputStream out = response.getOutputStream();
 
-            // need to buffer this for performance
-            // not sure if it has been done already
-            int b;
-            b = copy.read();
-            while( b != -1 ){
-                out.write( b );
-                b = copy.read();
-            }
-            copy.close();
-        } catch (IOException ioException) {
-            serviceResponse.abort();            
-            // something went wrong reporting to the user
-            IllegalStateException stateException = new IllegalStateException("Communication to user failed");
-            stateException.initCause( ioException );
-            throw stateException;
-        }
+        OutputStream out = response.getOutputStream();
+        BufferedOutputStream buffOut = new BufferedOutputStream(out, 1024 * 1024);
+        buffer.writeTo(buffOut);
+        buffOut.flush();
+        buffOut.close();
     }
 }
 
+
+/**
+ * DOCUMENT ME!
+ *
+ * @author $author$
+ * @version $Revision: 1.1.2.9 $
+ */
+class FileStratagy implements AbstractService.ServiceStratagy {
+    private static int BUFF_SIZE = 4096;
+    static int sequence = 0;
+    private HttpServletResponse response;
+    private File temp = null;
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param response DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    public OutputStream getDestination(HttpServletResponse response)
+        throws IOException {
+        sequence++;
+        temp = File.createTempFile("wfs" + sequence, "tmp");
+
+        FileOutputStream safe = new FileOutputStream(temp);
+
+        return safe;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    public void flush() throws IOException {
+        if ((temp == null) || (response == null) || !temp.exists()) {
+            return;
+        }
+
+        // service succeeded in producing a response!
+        // copy the result to out
+        InputStream copy = null;
+
+        try {
+            // copy result to the real output stream
+            copy = new BufferedInputStream(new FileInputStream(temp));
+
+            OutputStream out = response.getOutputStream();
+            out = new BufferedOutputStream(out, 1024 * 1024);
+
+            byte[] buffer = new byte[BUFF_SIZE];
+            int b;
+
+            while ((b = copy.read(buffer, 0, BUFF_SIZE)) > 0) {
+                out.write(buffer, 0, b);
+            }
+        } catch (IOException ioe) {
+            throw ioe;
+        } finally {
+            try {
+                copy.close();
+            } catch (Exception ex) {
+            }
+        }
+    }
+}
