@@ -43,8 +43,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.4 2004/02/25 00:38:54 dmzwiers Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: GeoServerConfigurationSubmit.java,v 1.5 2004/04/16 15:52:15 cholmesny Exp $
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -66,7 +66,8 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         String schemaBaseURL = form.getSchemaBaseURL(); 
         String stringLevel = form.getLoggingLevel();
         Level loggingLevel = Level.parse(stringLevel);
-        
+        String adminUserName = form.getAdminUserName();
+        String adminPassword = form.getAdminPassword();
         
         GlobalConfig globalConfig = getGlobalConfig();
         globalConfig.setMaxFeatures(maxFeatures);
@@ -74,7 +75,9 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setNumDecimals(numDecimals);
         globalConfig.setBaseUrl(baseURL);
         globalConfig.setSchemaBaseUrl(schemaBaseURL);
-        
+        globalConfig.setAdminUserName(adminUserName);
+        globalConfig.setAdminPassword(adminPassword);
+        globalConfig.setLoggingLevel(loggingLevel);
         ContactConfig contactConfig = globalConfig.getContact();
         contactConfig.setContactPerson( form.getContactPerson() );
         contactConfig.setContactOrganization( form.getContactOrganization() );
