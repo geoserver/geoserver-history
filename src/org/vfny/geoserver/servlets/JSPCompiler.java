@@ -31,8 +31,8 @@ import org.vfny.geoserver.requests.Requests;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: JSPCompiler.java,v 1.3 2004/03/01 18:57:07 dmzwiers Exp $
+ * @author $Author: dgricci $ (last modification)
+ * @version $Id: JSPCompiler.java,v 1.4 2004/06/09 20:56:37 dgricci Exp $
  */
 public class JSPCompiler extends HttpServlet {
 
@@ -71,6 +71,7 @@ public class JSPCompiler extends HttpServlet {
     }
     
     private void doForward(HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html") ;
     	ServletOutputStream os = response.getOutputStream();
     	os.print("<html>\n");
     	os.print("<head><title>GeoServer - Loading</title>\n");
@@ -113,6 +114,7 @@ public class JSPCompiler extends HttpServlet {
     		System.err.println("ERROR compiling "+url);
     	}
 
+        response.setContentType("text/html") ;
     	ServletOutputStream os = response.getOutputStream();
     	os.print("<html>\n");
     	os.print("<head><title>GeoServer - Loading</title>\n");
