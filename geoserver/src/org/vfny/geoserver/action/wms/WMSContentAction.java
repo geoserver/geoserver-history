@@ -11,6 +11,8 @@ import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.form.wms.WMSContentForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
@@ -28,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class WMSContentAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         WMSContentForm contentForm = (WMSContentForm) form;
 

@@ -20,6 +20,7 @@ import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
@@ -49,7 +50,7 @@ public class UpdateGSAction extends ConfigAction {
 
 	public ActionForward execute(ActionMapping mapping,
 			ActionForm form,
-			// UserContainer user,
+			UserContainer user,
 			HttpServletRequest request,
 			HttpServletResponse response)
 	throws IOException, ServletException {

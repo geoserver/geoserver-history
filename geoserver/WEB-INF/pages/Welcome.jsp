@@ -45,5 +45,12 @@
 <HR>
 <u><%= wmsConfig.getName() %>: <%= wmsConfig.getTitle() %></u><BR>
 <%= wmsConfig.getAbstract() %><BR>
+<br>
+Login time:<br>
+<html:form action="LoginSubmit">
+Username: <html:text size="60" property="username"/><br>
+Password: <html:password size="60" property="password"/><br>
+<html:submit/><html:reset/>
+</html:form>
              
 </td></tr></table>

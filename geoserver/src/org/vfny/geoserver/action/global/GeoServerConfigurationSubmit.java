@@ -19,6 +19,7 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.ContactConfig;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.form.global.GeoServerConfigurationForm;
+import org.vfny.geoserver.global.UserContainer;
 
 /**
  * GeoServerConfigurationSubmit purpose.
@@ -42,12 +43,12 @@ import org.vfny.geoserver.form.global.GeoServerConfigurationForm;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.1 2004/01/31 00:27:30 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: GeoServerConfigurationSubmit.java,v 1.2 2004/02/05 00:01:52 emperorkefka Exp $
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
-            ActionForm incomingForm, HttpServletRequest request,
+            ActionForm incomingForm, UserContainer user, HttpServletRequest request,
             HttpServletResponse response) {
         
         GeoServerConfigurationForm form = (GeoServerConfigurationForm) incomingForm;

@@ -11,6 +11,8 @@ import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresNewForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,12 +27,12 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresNewAction.java,v 1.5 2004/01/31 00:27:24 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresNewAction.java,v 1.6 2004/02/05 00:01:50 emperorkefka Exp $
  */
 public class DataDataStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         /*
            if( isLoggedIn( request )){

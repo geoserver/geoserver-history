@@ -14,6 +14,8 @@ import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.form.data.DataNamespacesForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import java.util.Locale;
 
@@ -30,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class DataNamespacesAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         DataNamespacesForm namespacesForm = (DataNamespacesForm) form;
 

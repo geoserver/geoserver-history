@@ -11,6 +11,8 @@ import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.form.wfs.WFSDescriptionForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class WFSDescriptionAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         WFSDescriptionForm descriptionForm = (WFSDescriptionForm) form;
 

@@ -14,6 +14,8 @@ import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.DataStylesForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -31,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class DataStylesAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         DataStylesForm stylesForm = (DataStylesForm) form;
 

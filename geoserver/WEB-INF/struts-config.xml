@@ -13,6 +13,10 @@
     <form-beans>
     
     	<form-bean
+    		name="loginForm"
+    		type="org.vfny.geoserver.form.LoginForm"/>
+    
+    	<form-bean
     		name="geoServerConfigurationForm"
     		type="org.vfny.geoserver.form.global.GeoServerConfigurationForm"/>
     
@@ -110,10 +114,12 @@
         	name="mainmenu"
         	path="/MainMenu.do"/>
         	
-        <forward name="login"
+        <forward 
+        	name="login"
         	path="/Login.do"/>
         	
-        <forward name="logout"
+        <forward 
+       		name="logout"
         	path="/Logout.do"/>
         	
         <forward
@@ -180,8 +186,6 @@
 <!-- =================================== Action Mapping Definitions -->
 
     <action-mappings>
-            <!-- Default "Welcome" action -->
-            <!-- Forwards to Welcome.jsp -->
 
         <action
             path="/Welcome"
@@ -192,11 +196,11 @@
         	path ="/MainMenu"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="main.menu"/>
-        	
+       	
 		<action
 			path ="/Login"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="login"/>
+        	parameter="main.welcome"/>
 
 		<action        	
 			path ="/Logout"
@@ -274,6 +278,14 @@
 
 
 <!-- Submit Actions -->    
+
+		<action
+			path="/LoginSubmit"
+			type="org.vfny.geoserver.action.LoginAction"
+			name="loginForm"
+			scope="request"
+			validate="true"
+			input="main.welcome"/>
 
 		<action    	
         	path="/GeoServerConfigurationSubmit"
