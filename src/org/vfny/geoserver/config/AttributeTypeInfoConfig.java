@@ -51,7 +51,7 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.12 2004/01/15 00:58:32 jive Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.13 2004/01/16 20:05:34 dmzwiers Exp $
  */
 public class AttributeTypeInfoConfig {
     
@@ -154,7 +154,7 @@ public class AttributeTypeInfoConfig {
      */
     public AttributeTypeInfoConfig(AttributeTypeInfoDTO dto){
         name = dto.getName(); 
-        if( dto.isRef() ){
+        if( dto.isComplex() ){
             type = TYPE_FRAGMENT;
             fragment = dto.getType();
         }
