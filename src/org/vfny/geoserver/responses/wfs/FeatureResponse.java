@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.3 2004/01/05 17:41:17 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -248,11 +248,9 @@ public class FeatureResponse implements Response {
                         for( reader= features.reader(); reader.hasNext(); ){
                             feature = reader.next();
                             fid = feature.getID();
-                                            
-                            fidFilter = filterFactory.createFidFilter( fid );
+			    fidFilter = filterFactory.createFidFilter( fid );
                             numberLocked = source.lockFeatures( fidFilter );
-                        
-                            if( numberLocked == 1){
+			    if( numberLocked == 1){
                                 LOGGER.finest("Lock "+fid+" (authID:"+featureLock.getAuthorization()+")" );
                                 lockedFids.add( fid );
                             }
@@ -310,10 +308,8 @@ public class FeatureResponse implements Response {
             namespace = meta.getDataStore().getNameSpace();
             transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
             transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
-	    transformer.setGmlPrefixing(true); //TODO: make this a user config
+	    transformer.setGmlPrefixing(wfsConfig.isGmlPrefixing()); 
             if( featureLock != null){
-                // TODO: chris needs to add the lock authorization to
-                //       the transformer header info
 		transformer.setLockId( featureLock.getAuthorization() );
             }
 	    transformer.setSrsName("http://www.opengis.net/gml/srs/epsg.xml#" +
