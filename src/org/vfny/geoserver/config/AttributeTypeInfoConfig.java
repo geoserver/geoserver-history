@@ -51,7 +51,7 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.11 2004/01/14 23:06:20 emperorkefka Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.12 2004/01/15 00:58:32 jive Exp $
  */
 public class AttributeTypeInfoConfig {
     
@@ -139,7 +139,7 @@ public class AttributeTypeInfoConfig {
         GMLUtils.Mapping mapping = GMLUtils.schema( name, attributeType.getType() );
         if( mapping == null ){
             type = TYPE_FRAGMENT;
-            fragment = "<!-- define "+attributeType.getType()+"-->";            
+            fragment = "<!-- definition for "+attributeType.getType()+" -->";            
         }
         else {
             type = mapping.toString();
