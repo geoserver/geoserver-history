@@ -49,6 +49,10 @@ if(tvr!=null && tvr.getErrors().size()>0){
 %>
 <table border="0">
 <tr><td>ERRORS</td></tr>
+<%if(tvr.isRun()){%>
+<tr><td>RUN COMPLETED</td></tr>
+<%}else{%>
+<tr><td>RUN NOT COMPLETED</td></tr>
 <%
 java.util.Iterator i = tvr.getErrors().values().iterator();
 while(i.hasNext()){
