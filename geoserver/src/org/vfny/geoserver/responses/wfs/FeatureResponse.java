@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -32,6 +33,7 @@ import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -50,7 +52,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.19 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.20 2004/02/16 21:42:11 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -283,7 +285,21 @@ public class FeatureResponse implements Response {
                 meta = catalog.getFeatureTypeInfo(query.getTypeName());
                 namespace = meta.getDataStoreInfo().getNameSpace();
                 source = meta.getFeatureSource();
-
+                
+                List attrs = meta.getAttributes();
+                Iterator ii = attrs.iterator();
+                List propNames = query.getPropertyNames(); // REAL LIST: be careful here :)
+                List tmp = new LinkedList();
+                while(ii.hasNext()){
+                	AttributeTypeInfo ati = (AttributeTypeInfo)ii.next();
+                	if((ati.getMinOccurs()>0 && ati.getMaxOccurs()!=0)||propNames.contains(ati.getName())){
+                		tmp.add(ati.getName());
+                	}
+                }
+                //tmp is now full list in order :)
+                if(propNames.size()!=0)
+                	query.setPropertyNames(tmp);
+                
                 typeNames.append(query.getTypeName());
 
                 if (it.hasNext() && (maxFeatures > 0)) {

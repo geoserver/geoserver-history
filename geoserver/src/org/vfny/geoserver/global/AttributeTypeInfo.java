@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.9 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfo.java,v 1.10 2004/02/16 21:42:19 dmzwiers Exp $
  */
 public class AttributeTypeInfo implements AttributeTypeMetaData {
 	private String name;
@@ -53,6 +53,10 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
     public AttributeTypeInfo(AttributeType type) {
         this.type = type;
         meta = new HashMap();
+    }
+    
+    public String getName(){
+    	return name;
     }
 
     /**
@@ -187,4 +191,31 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
     	dto.setType(typeName);
 		return dto;
     }
+	/**
+	 * Access maxOccurs property.
+	 * 
+	 * @return Returns the maxOccurs.
+	 */
+	public int getMaxOccurs() {
+		return maxOccurs;
+	}
+
+	/**
+	 * Access minOccurs property.
+	 * 
+	 * @return Returns the minOccurs.
+	 */
+	public int getMinOccurs() {
+		return minOccurs;
+	}
+
+	/**
+	 * Access nillable property.
+	 * 
+	 * @return Returns the nillable.
+	 */
+	public boolean isNillable() {
+		return nillable;
+	}
+
 }
