@@ -3,7 +3,7 @@
   <datastores>
    
   	<datastore namespace = "gd" enabled = "true" id = "rivers" >
-		<abstract>Rivers</abstract>
+		<abstract>Rivers taken from the USGS Digital Line Graph for Auburn, Washington</abstract>
 		<connectionParams>
 			<parameter value = "gd" name = "namespace"  />
 			<parameter value = "file:data/featureTypes/rivers_rivers/rivers.shp" name = "url"  />
@@ -11,7 +11,7 @@
 	</datastore>
 	
 	<datastore namespace = "gd" enabled = "true" id = "roads" >
-		<abstract>Roads</abstract>
+		<abstract>Roads taken from the USGS Digital Line Graph for Auburn, Washington</abstract>
 		<connectionParams>
 			<parameter value = "gd" name = "namespace"  />
 			<parameter value = "file:data/featureTypes/roads_roads/roads.shp" name = "url"  />
@@ -19,7 +19,7 @@
 	</datastore>
 	
 	<datastore namespace = "gd" enabled = "true" id = "swamps" >
-		<abstract>Swamps</abstract>
+		<abstract>Swamps taken from the USGS Digital Line Graph for Auburn, Washington</abstract>
 		<connectionParams>
 			<parameter value = "gd" name = "namespace"  />
 			<parameter value = "file:data/featureTypes/swamps_swamps/swamps.shp" name = "url"  />
@@ -27,7 +27,7 @@
 	</datastore>
 
 	<datastore namespace = "gd" enabled = "true" id = "lakes" >
-		<abstract>Lakes</abstract>
+		<abstract>Lakes taken from the USGS Digital Line Graph for Auburn, Washington</abstract>
 		<connectionParams>
 			<parameter value = "gd" name = "namespace"  />
 			<parameter value = "file:data/featureTypes/lakes_lakes/lakes.shp" name = "url"  />
@@ -35,7 +35,7 @@
 	</datastore>
 	
 	<datastore namespace = "gd" enabled = "true" id = "streams" >
-		<abstract>Streams</abstract>
+		<abstract>Streams taken from the USGS Digital Line Graph for Auburn, Washington</abstract>
 		<connectionParams>
 			<parameter value = "gd" name = "namespace"  />
 			<parameter value = "file:data/featureTypes/streams_streams/streams.shp" name = "url"  />
@@ -43,7 +43,7 @@
 	</datastore>
 	
 	<datastore namespace = "gd" enabled = "true" id = "buildings" >
-		<abstract>Buildings!</abstract>
+		<abstract>Buildings taken from the USGS Digital Line Graph for Auburn, Washington</abstract>
 		<connectionParams>
 			<parameter value = "gd" name = "namespace"  />
 			<parameter value = "file:data/featureTypes/buildings_buildings/buildings.shp" name = "url"  />

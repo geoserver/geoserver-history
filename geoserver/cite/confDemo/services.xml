@@ -18,7 +18,7 @@ Service level configuration
           data returned, so naive clients don't ask for megabytes.
        -->
      <!--     
-     <maxFeatures value="10000"/>
+     	<maxFeatures value="10000"/>
      -->
 
      <!-- Sets if the xml returned should have line feeds and indents. 
