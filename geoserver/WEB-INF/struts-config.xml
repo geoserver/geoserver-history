@@ -4,57 +4,9 @@
           "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
           "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
 
-<!--
-     This is a blank Struts configuration file with an example
-     welcome action/page and other commented sample elements.
-
-     Tiles and the Struts Validator are configured using the factory defaults
-     and are ready-to-use.
-
-     NOTE: If you have a generator tool to create the corresponding Java classes
-     for you, you could include the details in the "form-bean" declarations.
-     Otherwise, you would only define the "form-bean" element itself, with the
-     corresponding "name" and "type" attributes, as shown here.
--->
-
-
 <struts-config>
 
 <!-- ==================================== Data Source Configuration -->
-
-<!--
- <data-sources>
-   <data-source>
-     <set-property
-        property="autoCommit"
-        value="false"/>
-     <set-property
-        property="description"
-        value="Example Data Source Configuration"/>
-     <set-property
-        property="driverClass"
-        value="org.postgresql.Driver"/>
-     <set-property
-        property="maxCount"
-        value="4"/>
-     <set-property
-        property="minCount"
-        value="2"/>
-     <set-property
-        property="password"
-        value="mypassword"/>
-     <set-property
-        property="url"
-        value="jdbc:postgresql://localhost/mydatabase"/>
-     <set-property
-        property="user"
-        value="myusername"/>
-   </data-source>
- </data-sources>
-
--->
-
-
 
 <!-- ======================================== Form Bean Definitions -->
 
@@ -67,33 +19,35 @@
     		name="wfsContentForm"
     		type="org.vfny.geoserver.form.wfs.WFSContentForm"/>
 
-    <!-- sample form bean descriptor for a DynaActionForm
-        <form-bean
-            name="logonForm"
-            type="org.apache.struts.action.DynaActionForm">
-            <form-property
-                name="username"
-                type="java.lang.String"/>
-            <form-property
-                name="password"
-                type="java.lang.String"/>
-    end sample -->
+    	<form-bean
+    		name="wmsDescriptionForm"
+    		type="org.vfny.geoserver.form.wms.WMSDescriptionForm"/>
+    		
+    	<form-bean
+    		name="wmsContentForm"
+    		type="org.vfny.geoserver.form.wms.WMSContentForm"/>
 
+    	<form-bean
+    		name="catalogDataStoresForm"
+    		type="org.vfny.geoserver.form.data.CatalogDataStoresForm"/>
+    		
+    	<form-bean
+    		name="catalogNamespacesForm"
+    		type="org.vfny.geoserver.form.data.CatalogNamespacesForm"/>
+
+    	<form-bean
+    		name="catalogStylesForm"
+    		type="org.vfny.geoserver.form.data.CatalogStylesForm"/>
+    		
+    	<form-bean
+    		name="catalogFeatureTypesForm"
+    		type="org.vfny.geoserver.form.data.CatalogFeatureTypesForm"/>
+    		
     </form-beans>
-
-
-
-
 
 <!-- ================================= Global Exception Definitions -->
 
     <global-exceptions>
-        <!-- sample exception handler
-        <exception
-            key="expired.password"
-            type="app.ExpiredPasswordException"
-            path="/changePassword.jsp"/>
-        end sample -->
     </global-exceptions>
 
 <!-- =================================== Global Forward Definitions -->
@@ -123,18 +77,30 @@
        		
        	<forward
        		name="wfsConfigDescription"
-       		path="/WFSConfigDescription"/>
+       		path="/WFSConfigDescription.do"/>
        	<forward
        		name="wfsConfigContent"
        		path="/WFSConfigContent.do"/>
        		
        	<forward
        		name="wmsConfigDescription"
-       		path="/WMSConfigDescription"/>
+       		path="/WMSConfigDescription.do"/>
        	<forward
        		name="wmsConfigContent"
        		path="/WMSConfigContent.do"/>
        		       		
+       	<forward
+       		name="catalogConfigDataStores"
+       		path="/catalogConfigDataStores.do"/>
+       	<forward
+       		name="catalogConfigNamespaces"
+       		path="/catalogConfigNamespaces.do"/>
+       	<forward
+       		name="catalogConfigStyles"
+       		path="/catalogConfigStyles.do"/>
+       	<forward
+       		name="catalogConfigFeatureTypes"
+       		path="/catalogConfigFeatureTypes.do"/>       	       		
        		
        	<forward
        		name="baseStyle"
@@ -182,6 +148,33 @@
         	path="/WFSConfigContent"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="wfs.content"/>
+
+        <action
+        	path="/WMSConfigDescription"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wms.description"/>
+        <action
+        	path="/WMSConfigContent"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wms.content"/>
+        <action
+        	path="/CatalogConfigDataStores"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="catalog.dataStores"/>
+        <action
+        	path="/CatalogConfigNamespaces"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="catalog.namespaces"/>
+        <action
+        	path="/CatalogConfigStyles"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="catalog.styles"/>
+        <action
+        	path="/CatalogConfigFeatureTypes"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="catalog.featureTypes"/>
+
+<!-- Submit Actions -->        	
         	
         <action
         	path="/WFSConfigDescriptionSubmit"
@@ -193,27 +186,57 @@
         	
         <action
         	path="/WFSConfigContentSubmit"
-        	type="org.vfny.geoserver.actions.wfs.WFSContentAction"
+        	type="org.vfny.geoserver.action.wfs.WFSContentAction"
         	name="wfsContentForm"
         	scope="request"
         	validate="true"
         	input="wfs.content"/>
 
-
-    <!-- sample input and input submit actions
         <action
-            path="/Input"
-            type="org.apache.struts.actions.ForwardAction"
-            parameter="/pages/Input.jsp"/>
+        	path="/WMSConfigDescriptionSubmit"
+        	type="org.vfny.geoserver.action.wms.WMSDescriptionAction"
+        	name="wmsDescriptionForm"
+        	scope="request"
+        	validate="true"
+        	input="wms.description"/>
+        <action
+        	path="/WMSConfigContentSubmit"
+        	type="org.vfny.geoserver.action.wms.WMSContentAction"
+        	name="wmsContentForm"
+        	scope="request"
+        	validate="true"
+        	input="wms.content"/>
 
         <action
-            path="/InputSubmit"
-            type="app.InputAction"
-            name="inputForm"
-            scope="request"
-            validate="true"
-            input="/pages/Input.jsp"/>
-    end samples -->
+        	path="/CatalogConfigDataStoresSubmit"
+        	type="org.vfny.geoserver.action.data.CatalogDataStoresAction"
+        	name="catalogDataStoresForm"
+        	scope="request"
+        	validate="true"
+        	input="catalog.dataStores"/>
+        <action
+        	path="/CatalogConfigNamespacesSubmit"
+        	type="org.vfny.geoserver.action.data.CatalogNamespacesAction"
+        	name="catalogNamespacesForm"
+        	scope="request"
+        	validate="true"
+        	input="catalog.namespaces"/>
+        <action
+        	path="/CatalogConfigStylesSubmit"
+        	type="org.vfny.geoserver.action.data.CatalogStylesAction"
+        	name="catalogStylesForm"
+        	scope="request"
+        	validate="true"
+        	input="catalog.styles"/>
+        <action
+        	path="/CatalogConfigFeatureTypesSubmit"
+        	type="org.vfny.geoserver.action.data.CatalogFeatureTypesAction"
+        	name="catalogFeatureTypesForm"
+        	scope="request"
+        	validate="true"
+        	input="catalog.featureTypes"/>        	        	
+
+<!-- End Submit Actions -->
 
     </action-mappings>
 
@@ -271,13 +294,14 @@
         value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
   </plug-in>
   
-  <plug-in className="org.vfny.geoserver.config.ConfigurationState">
-  </plug-in>  
+  <plug-in className="org.vfny.geoserver.global.ApplicationState">
+  </plug-in>
   
   <plug-in className="org.vfny.geoserver.global.GeoServerPlugIn">
   </plug-in>  
   
   <plug-in className="org.vfny.geoserver.config.ConfigPlugIn">
   </plug-in>  
+
 </struts-config>
 
