@@ -57,7 +57,6 @@
    		<put name="body" value="/WEB-INF/pages/Administration.jsp"/>
    		<put name="layer" value="administration"/>
         <put name="locationForwards" value="welcome"/>
-        <put name="menuForwards" value="config"/>
         <put name="actionForwards" value="admin.freeLocks:admin.freeMemory"/>
    	</definition>   	
    	   	

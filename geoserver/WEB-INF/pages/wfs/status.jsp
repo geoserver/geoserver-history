@@ -15,7 +15,7 @@
 		    	    <td class="good"
 		    	        width="<bean:write name="GeoServer.ApplicationState" property="wfsGood"/>%"
 		    	        title="<bean:write name="GeoServer.ApplicationState" property="wfsGood"/>%">
-		    	    <td/>
+		    	    </td>
 		    	</logic:notEqual>
 		        <logic:notEqual name="GeoServer.ApplicationState" property="wfsBad" value="0">		    	
 		    	    <td class="bad"

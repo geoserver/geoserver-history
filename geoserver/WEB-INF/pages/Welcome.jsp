@@ -12,7 +12,15 @@
 </span>
 
 <p>
-<bean:message key="text.welcome"/>
+<bean:message key="text.welcome1"/>
+</p>
+
+<p>
+<bean:message key="text.welcome2"/>
+</p>
+
+<p>
+<bean:message key="text.welcome3"/>
 </p>
 
 <h2>
@@ -46,3 +54,7 @@
     </a>
   </li>
 </ul>
+
+<p>
+<bean:message key="text.welcome4"/>
+</p>
