@@ -23,7 +23,7 @@ import javax.servlet.http.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: AbstractService.java,v 1.1.2.2 2003/11/07 23:02:51 cholmesny Exp $
+ * @version $Id: AbstractService.java,v 1.1.2.3 2003/11/12 00:59:11 cholmesny Exp $
  *
  * @task TODO: I changed this so it automatically buffers responses, so  as to
  *       better handle errors, not serving up nasty servlet errors if
@@ -118,6 +118,7 @@ public abstract class AbstractService extends HttpServlet {
         try {
             Response serviceResponse = getResponseHandler();
 
+	    
             serviceResponse.execute(serviceRequest);
 
             // set content type and return response, whatever it is
@@ -137,10 +138,10 @@ public abstract class AbstractService extends HttpServlet {
             //TODO: make this user configurable.  For now it's better 
             //to pick up errors correctly, as we've got quite a few of them.
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            serviceResponse.writeTo(buffer);
             OutputStream out = response.getOutputStream();
             out = new BufferedOutputStream(out, 2 * 1024 * 1024);
-            serviceResponse.writeTo(buffer);
-            buffer.writeTo(out);
+	    buffer.writeTo(out);
             out.flush();
         } catch (Throwable e) {
             sendError(response, e);
