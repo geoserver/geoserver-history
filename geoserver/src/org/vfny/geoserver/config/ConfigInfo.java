@@ -26,16 +26,16 @@ public class ConfigInfo {
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
 
     /** Default name for feature type schemas */
-    private static final String CONFIG_FILE = "configuration.xml";
+    private static final String CONFIG_FILE = "WEB-INF/configuration.xml";
 
     /** Default name for feature type schemas */
     private static final String CONFIG_DIR = "data/";
 
     /** Default name for feature type schemas */
-    private static final String TYPE_DIR = "featureTypes/";
+    private static final String TYPE_DIR = "WEB-INF/featureTypes/";
 
     /** Default name for feature type schemas */
-    private static final String CAP_DIR = "capabilities/";
+    private static final String CAP_DIR = "data/capabilities/";
 
     /** Default name of feature type information */
     public static final String INFO_FILE = "info.xml";
@@ -108,7 +108,7 @@ public class ConfigInfo {
             LOG.finer("getInstance with configDir argument should be passed"
                 + " in first!!");
 
-            String configFile = guessRootDir() + CONFIG_DIR + CONFIG_FILE;
+            String configFile = guessRootDir();
 
             config = new ConfigInfo(configFile);
         }
