@@ -7,8 +7,7 @@
   <para>When adding your lastest, greatest ideas into the GeoServer framework
   there is one stop over point that most developement shares: the User.</para>
 
-  <para>There are two places in which the User may interact with
-  GeoServer:</para>
+  <para>There are two places in which the User may interact with GeoServer:</para>
 
   <itemizedlist>
     <listitem>
@@ -53,8 +52,7 @@ xml fragment: example extention to an existing configuration file</programlistin
     </listitem>
 
     <listitem>
-      <para>Extend appropriate DTO class, along with XMLReader and
-      XMLWriter</para>
+      <para>Extend appropriate DTO class, along with XMLReader and XMLWriter</para>
     </listitem>
 
     <listitem>
@@ -92,7 +90,7 @@ xml fragment: example extention to an existing configuration file</programlistin
       </listitem>
 
       <listitem>
-        <para>info.xml (&amp; associated schema.xml): used to define which
+        <para>info.xml (&#38; associated schema.xml): used to define which
         FeatureTypes are available through the data subsystem</para>
       </listitem>
     </itemizedlist>
@@ -104,8 +102,8 @@ xml fragment: example extention to an existing configuration file</programlistin
 
     <programlisting><emphasis role="bold">Jira Task:</emphasis> GEOS-58: Ability to turn off Transactions
 <emphasis role="bold">Description:</emphasis>
-Users have requested the ability to turn 'off' transaction capabilities, so that users of their
-WFS's can not modify their databases. I'm not sure if this is in 1.2 yet or not, but we should
+Users have requested the ability to turn &#39;off&#39; transaction capabilities, so that users of their
+WFS&#39;s can not modify their databases. I&#39;m not sure if this is in 1.2 yet or not, but we should
 get the fix in there, and in a 1.1.1 bug fix release. It should be pretty easy to implement, just
 have a configuration setting to turn it off, and transactions check with that global value before
 letting a transaction go through. </programlisting>
@@ -120,8 +118,8 @@ letting a transaction go through. </programlisting>
       <para>Extentions should allways be addative, and optional. We do not
       wish to break existing installations of GeoServer.</para>
 
-      <para>For our example we will add a "serviceLevel" tag to the wfs
-      section of services.xml. The OGC allows considerable varience in the
+      <para>For our example we will add a &#34;serviceLevel&#34; tag to the
+      wfs section of services.xml. The OGC allows considerable varience in the
       capabilities of a Web Feature Server while still remaining complient
       with their specification.</para>
 
@@ -143,7 +141,7 @@ letting a transaction go through. </programlisting>
 
               <entry>GetCapabilities DescribeFeatureType GetFeature</entry>
 
-              <entry><literal>basic</literal></entry>
+              <entry><para>basic</para></entry>
             </row>
 
             <row>
@@ -167,11 +165,11 @@ letting a transaction go through. </programlisting>
 
       <para>Extension to services.xml for WFS Level of Service:</para>
 
-      <programlisting>&lt;wfs&gt;
+      <programlisting>&#60;wfs&#62;
  ...
- &lt;serviceLevel&gt;Basic&lt;/serviceLevel
+ &#60;serviceLevel&#62;Basic&#60;/serviceLevel
  ...
-&lt;/wfs&gt;</programlisting>
+&#60;/wfs&#62;</programlisting>
 
       <para>There is almost a conflict here with the FeatureType configuration
       files, not all FeatureTypes are editable and as such will not allow the
@@ -191,17 +189,17 @@ letting a transaction go through. </programlisting>
       <para>Sample email:</para>
 
       <programlisting><emphasis>subject:</emphasis> Configuration proposal for Transactions control
-
+<emphasis>content:</emphasis>
 Request for a new configuration information:
 1) name: serviceLevel
 2) requirement: needed to control level of WFS service (see GEOS-58This
 3) configuration file: service.xml
 4) sample xml fragements:
-&lt;wfs&gt;
+&#60;wfs&#62;
  ...
- &lt;serviceLevel&gt;Basic&lt;/serviceLevel
+ &#60;serviceLevel&#62;Basic&#60;/serviceLevel
  ...
-&lt;/wfs&gt;
+&#60;/wfs&#62;
 
 Where serviceLevel can be one of:
 
@@ -233,20 +231,44 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
       configuration file with optional content, we may as well go onto the
       next section while we wait.</para>
 
-      <para>We just won't commit quite yet.</para>
+      <para>We just won&#39;t commit quite yet.</para>
     </section>
 
     <section>
-      <title>Extending GeoServer's XML Configuration IO</title>
+      <title>Extending GeoServer&#39;s XML Configuration IO</title>
 
-      <para>This has four steps: create a spot to store the new data, load the
-      new data, use the new data and write the new data. Although in practice
-      many of these processes are completed concurently and closely depend
-      upon each other, we are going to pretend we live in a perfect linear
-      world.</para>
+      <para>Extending GeoServer&#39;s configuration IO has four steps:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Create a Bean or Attribute to store your new information</para>
+        </listitem>
+
+        <listitem>
+          <para>Load your information from XML</para>
+        </listitem>
+
+        <listitem>
+          <para>Use you information to set up GeoServer</para>
+        </listitem>
+
+        <listitem>
+          <para>Wrtie your information to XML</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Although in practice many of these processes are completed
+      concurently and closely depend upon each other, we are going to pretend
+      we live in a perfect linear world.</para>
 
       <section>
-        <title>DTO Extension</title>
+        <title>Data Transfer Object Extension</title>
+
+        <para>GeoServer makes use of Data Transfer Objects (DTO) to
+        communicate Configuration Information between the XMLReader, the
+        Configuration User Interface and the GeoServer application. Data
+        Transfer Objects opperate as a corse grained Param Objects for the
+        configuration process.</para>
 
         <para>The DTO objects closely resemble the structure of the XML files.
         The DTO objects should contain data in a logical grouping, independant
@@ -261,8 +283,10 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
         changes (only needed if you want to commit), add the data to the DTO
         object. Remember the DTO objects are intended to be Java Beans, so you
         need to hide you data and provide both a getter and setter method.
-        These modifications should not break the code base, but just to be
-        safe make sure all of the following tasks have been completed:</para>
+        These modifications should not break the code base.</para>
+
+        <para>Make sure all of the following tasks have been completed
+        (example from <filename>WFSDTO.java</filename>):</para>
 
         <itemizedlist>
           <listitem>
@@ -280,7 +304,7 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
 
             <programlisting>public WFSDTO(WFSDTO other) {
     if (other == null) {
-        throw new NullPointerException("Data Transfer Object required");
+        throw new NullPointerException(&#34;Data Transfer Object required&#34;);
     }
 
     service = (ServiceDTO) new ServiceDTO(other.getService());
@@ -301,7 +325,7 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
 
     WFSDTO dto = (WFSDTO) other;
 
-    return (<emphasis role="bold">serviceLevel == dto.getServiceLevel() &amp;&amp;</emphasis> (service == null) ? (dto.getService() == null) 
+    return (<emphasis role="bold">serviceLevel == dto.getServiceLevel() &#38;&#38;</emphasis> (service == null) ? (dto.getService() == null) 
         : service.equals(dto.getService()));
 }</programlisting>
           </listitem>
@@ -325,22 +349,31 @@ public void setServiceLevel(int serviceLevel){
           <listitem>
             <para>Document the changes in the source code</para>
 
-            <programlisting><emphasis role="bold">/**
- * represents a basic level of service
- *  see the OGC spec for more details
- */
-public static int BASIC = 1;
+            <programlisting><emphasis role="bold">/** ServiceLevel bit used to indicate Basic support */
+public static final int SERVICE_BASIC = 1;
 
-/** 
- * represents a transaction level of service
- * see the OGC spec for more details
- */
-public static int TRANSACTION = 2;
+/** ServiceLevel bit used to indicate Transaction Insert support */
+public static final int SERVICE_INSERT = 2;
 
-/**
- * the level of service for this WFS provider
- */
-private int serviceLevel = BASIC;</emphasis></programlisting>
+/** ServiceLevel bit used to indicate Transaction Update support */
+public static final int SERVICE_UPDATE = 4;
+
+/** ServiceLevel bit used to indicate Transaction Delete support */
+public static final int SERVICE_DELETE = 8;
+
+/** ServiceLevel bit used to indicate Locking support */
+public static final int SERVICE_LOCKING = 16;
+
+/** ServiceLevel mask equivilent to basic WFS conformance */
+public static final int BASIC = 1;
+
+/** ServiceLevel mask for transactional WFS conformance. */
+public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT
+        | SERVICE_UPDATE | SERVICE_DELETE;
+
+/** ServiceLevel mask equivilent to complete WFS conformance */
+public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
+</emphasis></programlisting>
           </listitem>
         </itemizedlist>
       </section>
@@ -348,38 +381,80 @@ private int serviceLevel = BASIC;</emphasis></programlisting>
       <section>
         <title>XML Reader Extension</title>
 
-        <para>At this point you have a DTO object and an XML Schema defined.
-        This is relatively easy to complete, but equally easy to break the
-        application. All you need to do is add the code to read the Element at
-        the correct point in the file which you intend to read from. Often
-        this is easier said than done, but once completed place the data into
-        the DTO object. The best advice I have for you is to be VERY careful
-        of your element pointer withing the DOM tree. If you inadvertantly
-        affect this pointer, all other parsing one the remaining interior
-        branches of that tree will not be parsed correctly, mostlikely
-        breaking atleast part of the application. Solution, if unsure either
-        make a private method and pass the ref in or make a copy of the
-        reference before playing with it to avoid it's loss. Just like the
-        previous step, I have included a short list to help ensure you have
-        completed everything.</para>
+        <para>Extending the XML Reader is relatively easy to complete, but
+        equally easy to break the application. As a general warning if you are
+        not happy playing with DOM trees you should brush up on your XML
+        skills before entering this stage of developement.</para>
+
+        <para>The file XMLConfigReader may extended at several locations:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>XMLConfigReader( File rootDir ) - calls load method on
+            creation</para>
+          </listitem>
+
+          <listitem>
+            <para>load() - extend to add support for additional configuration
+            files</para>
+          </listitem>
+
+          <listitem>
+            <para>loadService(Element) - extend for parsing common to both WMS
+            and WFS</para>
+          </listitem>
+
+          <listitem>
+            <para>loadWMS(Element) - extend for parsing Web Map Server</para>
+          </listitem>
+
+          <listitem>
+            <para>loadWFS(Element) - extend for parsing Web Feature Server</para>
+          </listitem>
+
+          <listitem>
+            <para>loadGlobal(Elemenet) - extend for parsing GeoServerDTO</para>
+          </listitem>
+
+          <listitem>
+            <para>load</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>For the DOM efficiados out there all you need to do is add the
+        code to read the Element at the correct point in the file which you
+        intend to read from. Often this is easier said than done, but once
+        completed place the data into the DTO object.</para>
+
+        <para>The best advice I have for you is to be VERY careful of your
+        element pointer withing the DOM tree. If you inadvertantly affect this
+        pointer, all other parsing one the remaining interior branches of that
+        tree will not be parsed correctly, mostlikely breaking atleast part of
+        the application.</para>
+
+        <para>It is recomended that you make a private method and pass the ref
+        in or make a copy of the reference before playing with it to avoid
+        it&#39;s loss.</para>
+
+        <para>Example:</para>
+
+        <programlisting></programlisting>
+
+        <para></para>
+
+        <para>Just like the previous step, I have included a short list to
+        help ensure you have completed everything (example
+        <filename>XMLConfigReader.java</filename>).</para>
 
         <itemizedlist>
           <listitem>
             <para>Ensure you have not affected the Element references around
-            you new addition</para>
+            you new addition (XMLConfigReader.processSchema() )</para>
 
-            <programlisting>// UNSAFE !!!
-<emphasis role="bold">elem</emphasis> = ReaderUtils.getChildElement(elem, "xs:sequence");
-NodeList nl = elem.getElementsByTagName("xs:element");
-for (int i = 0; i &lt; nl.getLength(); i++) {
-    // one element now
-    <emphasis role="bold">elem</emphasis> = (Element) nl.item(i);
-
-
-// SAFER
-<emphasis role="bold">elem</emphasis> = ReaderUtils.getChildElement(elem, "xs:sequence");
-NodeList nl = elem.getElementsByTagName("xs:element");
-for (int i = 0; i &lt; nl.getLength(); i++) {
+            <programlisting>// SAFER
+<emphasis role="bold">elem</emphasis> = ReaderUtils.getChildElement(elem, &#34;xs:sequence&#34;);
+NodeList nl = elem.getElementsByTagName(&#34;xs:element&#34;);
+for (int i = 0; i &#60; nl.getLength(); i++) {
     // one element now
     Element <emphasis role="bold">element</emphasis> = (Element) nl.item(i);</programlisting>
           </listitem>
@@ -396,9 +471,9 @@ for (int i = 0; i &lt; nl.getLength(); i++) {
           <listitem>
             <para>Document the changes in the source code</para>
 
-            <programlisting>elem = ReaderUtils.getChildElement(elem, "xs:sequence");
-NodeList nl = elem.getElementsByTagName("xs:element");
-for (int i = 0; i &lt; nl.getLength(); i++) {
+            <programlisting>elem = ReaderUtils.getChildElement(elem, &#34;xs:sequence&#34;);
+NodeList nl = elem.getElementsByTagName(&#34;xs:element&#34;);
+for (int i = 0; i &#60; nl.getLength(); i++) {
     <emphasis role="bold">// Create a new reference to walk through all the child nodes</emphasis>
     Element element = (Element) nl.item(i);</programlisting>
           </listitem>
@@ -411,16 +486,28 @@ for (int i = 0; i &lt; nl.getLength(); i++) {
 
             <programlisting>// Bad 
 catch(ConfigurationException e){
-   throw new ConfigurationException(<emphasis role="bold">"io error"</emphasis>);
+   throw new ConfigurationException(<emphasis role="bold">&#34;io error&#34;</emphasis>);
 }
 
 
 // Good
 catch(ConfigurationException e){
-   throw new ConfigurationException(<emphasis role="bold">"Error occured in "+schemaFile+"\n"+e.getMessage(),e</emphasis>);
+   throw new ConfigurationException(<emphasis role="bold">&#34;Error occured in &#34;+schemaFile+&#34;\n&#34;+e.getMessage(),e</emphasis>);
 }</programlisting>
           </listitem>
         </itemizedlist>
+
+        <para>You may optimize this process for speed (rather than saftey) by
+        :</para>
+
+        <programlisting>// UNSAFE - see the real code example above for comparison
+elem = ReaderUtils.getChildElement(elem, &#34;xs:sequence&#34;);
+NodeList nl = elem.getElementsByTagName(&#34;xs:element&#34;);
+for (int i = 0; i &#38;#60; nl.getLength(); i++) {
+    // one element now
+    elem = (Element) nl.item(i);</programlisting>
+
+        <para></para>
       </section>
 
       <section>
@@ -471,8 +558,7 @@ catch(ConfigurationException e){
 
         <itemizedlist>
           <listitem>
-            <para>Update toDTO method used to export data as a DTO
-            object</para>
+            <para>Update toDTO method used to export data as a DTO object</para>
 
             <programlisting>public Object toDTO() {
     WFSDTO dto = new WFSDTO();
@@ -527,8 +613,8 @@ private int serviceLevel = WFSDTO.BASIC;</emphasis></programlisting>
           <listitem>
             <para>Add calls to write the data</para>
 
-            <programlisting><emphasis role="bold">if ((wfs.getTitle() != null) &amp;&amp; (wfs.getTitle() != WFSDTO.BASIC)) {
-    cw.textTag("serviceLevel", wfs.getServiceLevel()+"");
+            <programlisting><emphasis role="bold">if ((wfs.getTitle() != null) &#38;&#38; (wfs.getTitle() != WFSDTO.BASIC)) {
+    cw.textTag(&#34;serviceLevel&#34;, wfs.getServiceLevel()+&#34;&#34;);
 }</emphasis></programlisting>
           </listitem>
         </itemizedlist>
@@ -545,8 +631,8 @@ private int serviceLevel = WFSDTO.BASIC;</emphasis></programlisting>
             <para>Document the changes in the source code</para>
 
             <programlisting><emphasis role="bold">// write the service level if not basic (our default)</emphasis> 
-if ((wfs.getTitle() != null) &amp;&amp; (wfs.getTitle() != WFSDTO.BASIC)) {
-    cw.textTag("serviceLevel", wfs.getServiceLevel()+"");
+if ((wfs.getTitle() != null) &#38;&#38; (wfs.getTitle() != WFSDTO.BASIC)) {
+    cw.textTag(&#34;serviceLevel&#34;, wfs.getServiceLevel()+&#34;&#34;);
 }</programlisting>
           </listitem>
         </itemizedlist>
@@ -558,13 +644,13 @@ if ((wfs.getTitle() != null) &amp;&amp; (wfs.getTitle() != WFSDTO.BASIC)) {
 
             <programlisting>// Bad 
 catch(ConfigurationException e){
-   throw new ConfigurationException(<emphasis role="bold">"io error"</emphasis>);
+   throw new ConfigurationException(<emphasis role="bold">&#34;io error&#34;</emphasis>);
 }
 
 
 // Good
 catch(ConfigurationException e){
-   throw new ConfigurationException(<emphasis role="bold">"Error occured in WFS service configuration output.\n"+e.getMessage(),e</emphasis>);
+   throw new ConfigurationException(<emphasis role="bold">&#34;Error occured in WFS service configuration output.\n&#34;+e.getMessage(),e</emphasis>);
 }</programlisting>
           </listitem>
         </itemizedlist>
@@ -577,7 +663,7 @@ catch(ConfigurationException e){
       <para>To add the ability to alter the serviceLevel in the configuration
       interface, one must alter the the JSP page where the it will be altered,
       as well as the ActionForm and Actions which communicate with the
-      GeoServer configuration. </para>
+      GeoServer configuration.</para>
 
       <para>Before you begin you must decide where in the interface you want
       the control to appear on, as the configuration files that pertain to
@@ -592,12 +678,11 @@ catch(ConfigurationException e){
 
         <para>Update WFSConfig so it can properly communicate with the DTO
         object. This is kept simple by adding the property, including getter
-        and setter, and initializing/saving it where appropriate. </para>
+        and setter, and initializing/saving it where appropriate.</para>
 
         <itemizedlist>
           <listitem>
-            <para>in WFSConfig add the property with the getter and
-            setter.</para>
+            <para>in WFSConfig add the property with the getter and setter.</para>
 
             <programlisting><emphasis role="bold">private int serviceLevel;
 
@@ -688,7 +773,7 @@ public void setServiceLevel(int serviceLevel) {
 
           <listitem>
             <para>In WFSConfigContentForm.reset add a call to retrieve the
-            current service level from GeoServer's configuration.</para>
+            current service level from GeoServer&#39;s configuration.</para>
 
             <programlisting>        WFSConfig config = (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
         
@@ -702,8 +787,8 @@ public void setServiceLevel(int serviceLevel) {
             constructor is a String containing the key to a message located in
             the ApplicationResources.</para>
 
-            <programlisting><emphasis role="bold">        if (serviceLevel != WFSDTO.BASIC &amp;&amp; serviceLevel != WFSDTO.TRANSACTION) {
-            errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
+            <programlisting><emphasis role="bold">        if (serviceLevel != WFSDTO.BASIC &#38;&#38; serviceLevel != WFSDTO.TRANSACTION) {
+            errors.add(&#34;serviceLevel&#34;, new ActionError(&#34;error.serviceLevel.invalid&#34;));
         }</emphasis></programlisting>
           </listitem>
         </itemizedlist>
@@ -732,30 +817,29 @@ public void setServiceLevel(int serviceLevel) {
         <title>Update the JSP page</title>
 
         <para>Here we simply add the control to the appropriate JSP page. Make
-        sure it is within the &lt;html:form&gt; tag that is associated with
+        sure it is within the &#60;html:form&#62; tag that is associated with
         the ActionForm you changed. In this example, we must make sure to
-        place it within the &lt;html:form action="WFSConfigContentSubmit"&gt;
-        tag. Familiarty with the STRUTS HTML and logic tag libraries really
-        helps here.</para>
+        place it within the &#60;html:form
+        action=&#34;WFSConfigContentSubmit&#34;&#62; tag. Familiarty with the
+        STRUTS HTML and logic tag libraries really helps here.</para>
 
         <itemizedlist>
           <listitem>
             <para>Add the following to WFSConfigContent.jsp where ever you
             want the textbox to appear. It creates a select box with two
             options in it. One for basic, one for transactional. This is just
-            an example. Feel free to do whatever you want with the
-            control.</para>
+            an example. Feel free to do whatever you want with the control.</para>
 
-            <programlisting><emphasis role="bold">&lt;tr&gt;&lt;td align="right"&gt;
-   &lt;span class="help" title="&lt;bean:message key="help.serviceLevel"/&gt;"&gt;
-      &lt;bean:message key="label.serviceLevel"/&gt;:
-   &lt;/span&gt;
-&lt;/td&gt;&lt;td colspan=2&gt;
-   &lt;html:select property="serviceLevel" size="2"&gt;
-      &lt;html:option key="label.serviceLevel.basic" value="&lt;%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.BASIC) %&gt;"/&gt;
-      &lt;html:option key="label.serviceLevel.transactional" value="&lt;%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.TRANSACTION) %&gt;"/&gt;
-   &lt;/html:select&gt;
-&lt;/td&gt;&lt;/tr&gt;</emphasis></programlisting>
+            <programlisting><emphasis role="bold">&#60;tr&#62;&#60;td align=&#34;right&#34;&#62;
+   &#60;span class=&#34;help&#34; title=&#34;&#60;bean:message key=&#34;help.serviceLevel&#34;/&#62;&#34;&#62;
+      &#60;bean:message key=&#34;label.serviceLevel&#34;/&#62;:
+   &#60;/span&#62;
+&#60;/td&#62;&#60;td colspan=2&#62;
+   &#60;html:select property=&#34;serviceLevel&#34; size=&#34;2&#34;&#62;
+      &#60;html:option key=&#34;label.serviceLevel.basic&#34; value=&#34;&#60;%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.BASIC) %&#62;&#34;/&#62;
+      &#60;html:option key=&#34;label.serviceLevel.transactional&#34; value=&#34;&#60;%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.TRANSACTION) %&#62;&#34;/&#62;
+   &#60;/html:select&#62;
+&#60;/td&#62;&#60;/tr&#62;</emphasis></programlisting>
           </listitem>
         </itemizedlist>
       </section>
@@ -770,7 +854,7 @@ public void setServiceLevel(int serviceLevel) {
         <itemizedlist>
           <listitem>
             <para>in ApplicationResources.properties, add the appropriate
-            keys. Order doesn't matter.</para>
+            keys. Order doesn&#39;t matter.</para>
 
             <programlisting><emphasis role="bold">error.serviceLevel.invalid=Invalid service level selected
 help.serviceLevel=Defines the level of service that the WFS provides
