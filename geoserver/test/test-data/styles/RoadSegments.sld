@@ -1,71 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sld:NamedLayer xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
-    <sld:UserStyle>
-        <sld:Name>Default Styler</sld:Name>
-        <sld:Title>Default Styler</sld:Title>
-        <sld:Abstract></sld:Abstract>
-        <sld:FeatureTypeStyle>
-            <sld:FeatureTypeName>Feature</sld:FeatureTypeName>
-			<sld:Rule>
-				<sld:Name>dirt_road</sld:Name>
-				<sld:Title>Dirt Road by Green Forest</sld:Title>
+<StyledLayerDescriptor version="1.0.0" 
+	xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+	xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <UserStyle>
+        <Name>Default Styler</Name>
+        <Title>Default Styler</Title>
+        <Abstract></Abstract>
+        <FeatureTypeStyle>
+            <FeatureTypeName>Feature</FeatureTypeName>
+			<Rule>
+				<Name>dirt_road</Name>
+				<Title>Dirt Road by Green Forest</Title>
 				<ogc:Filter>
 					<ogc:PropertyIsEqualTo>
 						<ogc:PropertyName>NAME</ogc:PropertyName>
 						<ogc:Literal>Dirt Road by Green Forest</ogc:Literal>
 					</ogc:PropertyIsEqualTo>
 				</ogc:Filter>
-				<sld:LineSymbolizer>
-					<sld:Stroke>
-						<sld:CssParameter name="stroke">
+				<LineSymbolizer>
+					<Stroke>
+						<CssParameter name="stroke">
 							<ogc:Literal>#C0A000</ogc:Literal>
-						</sld:CssParameter>
-						<sld:CssParameter name="stroke-width">
+						</CssParameter>
+						<CssParameter name="stroke-width">
 							<ogc:Literal>4</ogc:Literal>
-						</sld:CssParameter>
-					</sld:Stroke>
-				</sld:LineSymbolizer>
-			</sld:Rule>
-			<sld:Rule>
-				<sld:Name>route_5</sld:Name>
-				<sld:Title>Route 5</sld:Title>
+						</CssParameter>
+					</Stroke>
+				</LineSymbolizer>
+			</Rule>
+			<Rule>
+				<Name>route_5</Name>
+				<Title>Route 5</Title>
 				<ogc:Filter>
 					<ogc:PropertyIsEqualTo>
 						<ogc:PropertyName>NAME</ogc:PropertyName>
 						<ogc:Literal>Route 5</ogc:Literal>
 					</ogc:PropertyIsEqualTo>
 				</ogc:Filter>
-				<sld:LineSymbolizer>
-					<sld:Stroke>
-						<sld:CssParameter name="stroke">
+				<LineSymbolizer>
+					<Stroke>
+						<CssParameter name="stroke">
 							<ogc:Literal>#000000</ogc:Literal>
-						</sld:CssParameter>
-						<sld:CssParameter name="stroke-width">
+						</CssParameter>
+						<CssParameter name="stroke-width">
 							<ogc:Literal>4</ogc:Literal>
-						</sld:CssParameter>
-					</sld:Stroke>
-				</sld:LineSymbolizer>
-			</sld:Rule>
-			<sld:Rule>
-				<sld:Name>main_street</sld:Name>
-				<sld:Title>Main Street</sld:Title>
+						</CssParameter>
+					</Stroke>
+				</LineSymbolizer>
+			</Rule>
+			<Rule>
+				<Name>main_street</Name>
+				<Title>Main Street</Title>
 				<ogc:Filter>
 					<ogc:PropertyIsEqualTo>
 						<ogc:PropertyName>NAME</ogc:PropertyName>
 						<ogc:Literal>Main Street</ogc:Literal>
 					</ogc:PropertyIsEqualTo>
 				</ogc:Filter>
-				<sld:LineSymbolizer>
-					<sld:Stroke>
-						<sld:CssParameter name="stroke">
+				<LineSymbolizer>
+					<Stroke>
+						<CssParameter name="stroke">
 							<ogc:Literal>#E04000</ogc:Literal>
-						</sld:CssParameter>
-						<sld:CssParameter name="stroke-width">
+						</CssParameter>
+						<CssParameter name="stroke-width">
 							<ogc:Literal>4</ogc:Literal>
-						</sld:CssParameter>
-					</sld:Stroke>
-				</sld:LineSymbolizer>
-			</sld:Rule>
-        </sld:FeatureTypeStyle>
-    </sld:UserStyle>
-</sld:NamedLayer>
+						</CssParameter>
+					</Stroke>
+				</LineSymbolizer>
+			</Rule>
+        </FeatureTypeStyle>
+    </UserStyle>
+</StyledLayerDescriptor>

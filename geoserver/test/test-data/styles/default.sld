@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sld:NamedLayer xmlns:sld="http://www.opengis.net/sld">
-    <sld:UserStyle>
-        <sld:Name>Default Styler</sld:Name>
-        <sld:Title>Default Styler</sld:Title>
-        <sld:Abstract></sld:Abstract>
-        <sld:FeatureTypeStyle>
-            <sld:FeatureTypeName>Feature</sld:FeatureTypeName>
-            <sld:Rule>
-                <sld:Name>name</sld:Name>
-                <sld:Abstract>Abstract</sld:Abstract>
-                <sld:Title>title</sld:Title>
-                <sld:PolygonSymbolizer>
-                    <sld:Fill/>
-                    <sld:Stroke/>
-                </sld:PolygonSymbolizer>
-                <sld:PointSymbolizer>
-                    <sld:Graphic>
-                    </sld:Graphic>
-                </sld:PointSymbolizer>
-            </sld:Rule>
-        </sld:FeatureTypeStyle>
-    </sld:UserStyle>
-</sld:NamedLayer>
+<StyledLayerDescriptor version="1.0.0" 
+	xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+	xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <UserStyle>
+        <Name>Default Styler</Name>
+        <Title>Default Styler</Title>
+        <Abstract></Abstract>
+        <FeatureTypeStyle>
+            <FeatureTypeName>Feature</FeatureTypeName>
+            <Rule>
+                <Name>name</Name>
+                <Abstract>Abstract</Abstract>
+                <Title>title</Title>
+                <PolygonSymbolizer>
+                    <Fill/>
+                    <Stroke/>
+                </PolygonSymbolizer>
+                <PointSymbolizer>
+                    <Graphic>
+                    </Graphic>
+                </PointSymbolizer>
+            </Rule>
+        </FeatureTypeStyle>
+    </UserStyle>
+</StyledLayerDescriptor>
