@@ -6,7 +6,7 @@
 <tr><td>
 <table border=0 width=100%>
 
-	<html:form action="DataConfigDataStoresSelect">
+	<html:form action="/config/data/storesSelect">
 	<tr><td valign="top" align="left">
 		<bean:message key="label.dataStoreID"/>:
 	</td><td>

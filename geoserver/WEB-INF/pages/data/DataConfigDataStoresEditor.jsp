@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 <logic:present name="GEOSERVER.USER" property="dataStoreConfig" scope="session">
 <table border=0 width=100%>
-	<html:form action="DataConfigDataStoresSubmit">
+	<html:form action="/config/data/dataStoresSubmit">
 	
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.dataStore_id"/>">

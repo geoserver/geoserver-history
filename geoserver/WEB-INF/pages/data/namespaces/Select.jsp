@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <table border=0 width=100%>
-	<html:form action="DataConfigNamespacesSelect">
+	<html:form action="/config/data/namespacesSelect">
 		<tr><td>
 			<bean:message key="label.namespaces"/>:
 		</td><td>

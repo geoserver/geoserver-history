@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <table border=0 width=100%>
-	<html:form action="DataConfigAttributeTypesSubmit">
+	<html:form action="/config/data/attributeTypesSubmit">
 
 	<tr><td valign="top" align="right">
 			<bean:message key="label.attributeTypeName"/>

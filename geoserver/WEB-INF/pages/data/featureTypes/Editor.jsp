@@ -4,7 +4,7 @@
 
 <table border=0 width=100%>
 
-	<html:form action="DataConfigFeatureTypesSubmit">
+	<html:form action="/config/data/featureTypesSubmit">
 	
 	<tr><td align="right">
 		<bean:message key="label.name"/>:

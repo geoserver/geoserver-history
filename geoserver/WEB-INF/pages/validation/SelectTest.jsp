@@ -4,7 +4,7 @@
 
 <table border=0>
 
-	<html:form action="ValidationTestSelect">
+	<html:form action="/config/validation/testSelect">
 	
 	<tr><td valign="top" align="right">
 		<bean:message key="label.currentTestSuite"/>:
