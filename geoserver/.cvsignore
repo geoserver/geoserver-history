@@ -3,5 +3,5 @@ build
 conf
 release
 server
-documents/api
+documents/generated
 geoserver.jar
