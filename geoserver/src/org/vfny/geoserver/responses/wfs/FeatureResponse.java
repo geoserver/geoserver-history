@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.1.2.15 2003/11/16 07:38:48 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.16 2003/11/25 05:35:36 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -260,12 +260,14 @@ public class FeatureResponse implements Response {
                         if( reader != null ) reader.close();
                     }
                     if( !lockedFids.isEmpty() ){
+                        
                         Transaction t = new DefaultTransaction();
-                        source.setTransaction( t );
-                        t.addAuthorization( featureLock.getAuthorization() );
-                        source.releaseLock( featureLock.getAuthorization() );
-                        t.commit();
-                        source.setTransaction( Transaction.AUTO_COMMIT );
+                        try {
+                            t.addAuthorization( featureLock.getAuthorization() );                            
+                            source.getDataStore().getLockingManager().refresh( featureLock.getAuthorization(), t );
+                        } finally {
+                            t.commit();    
+                        }
                     }
                 }
             }
@@ -404,24 +406,7 @@ public class FeatureResponse implements Response {
         CatalogConfig catalog = ServerConfig.getInstance().getCatalog();            
         // I think we need to release and fail when lockAll fails
         //
-        try {
-            for (Iterator it = request.getQueries().iterator(); it.hasNext();) {
-                  
-                Query query = (Query) it.next();                                                                   
-                FeatureTypeConfig meta = catalog.getFeatureType( query.getTypeName() );
-                FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
-                
-                Transaction t = new DefaultTransaction();
-                source.setTransaction( t );
-                t.addAuthorization( featureLock.getAuthorization() );
-                source.releaseLock( featureLock.getAuthorization() );
-                t.commit();
-                source.setTransaction( Transaction.AUTO_COMMIT );
-            }            
-        }
-        catch( IOException ioException ){
-            LOGGER.warning("Abort not complete:"+ioException);            
-        }
+        catalog.lockRelease( featureLock.getAuthorization() );        
     }
 
 }

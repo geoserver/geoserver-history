@@ -11,6 +11,7 @@ import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.*;
@@ -21,6 +22,7 @@ import org.w3c.dom.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -29,9 +31,9 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.7 2003/11/25 01:51:07 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.8 2003/11/25 05:35:41 jive Exp $
  */
-public class CatalogConfig extends AbstractConfig {
+public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
@@ -513,77 +515,188 @@ public class CatalogConfig extends AbstractConfig {
         return testName.substring(start, end).equals(INFO_FILE);
     }
 
+    
     /**
      * Release lock by authorization
      *
-     * @param authorization
+     * @param lockID
      */
-    public void lockRelease(String authorization) {
+    public void lockRelease(String lockID) {
+        boolean refresh = false;
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-	    if (meta.isEnabled()) {
-		try {
-		    DataStore dataStore = meta.getDataStore();
-		    FeatureSource source = dataStore.getFeatureSource(dataStore
-								      .getTypeNames()[0]);
-		    
-		    // Any FeatureSourceWill do, we just need access to
-		    // the high-level api
-		    // TODO: consider moving refresh, release to DataStore
-		    //
-		    if (source instanceof FeatureLocking) {
-			FeatureLocking locking = (FeatureLocking) source;
-			Transaction t = new DefaultTransaction();
-			locking.setTransaction(t);
-			
-			try {
-			    t.addAuthorization(authorization);
-			    locking.releaseLock(authorization);
-			} finally {
-			    t.close();
-			}
-		    }
-		} catch (IOException huh) {
-                LOGGER.warning("Could not refresh lock for " + meta.toString());
-		}
-	    }
+            if (!meta.isEnabled()) continue; // disabled
+    
+            DataStore dataStore;                
+            try {
+                dataStore = meta.getDataStore();
+            }
+            catch(IOException notAvailable){
+                continue; // not available
+            }
+            LockingManager lockingManager = dataStore.getLockingManager();
+            if( lockingManager == null ) continue; // locks not supported
+    
+            Transaction t = new DefaultTransaction("Refresh "+meta.getNameSpace() );
+            try {
+                t.addAuthorization( lockID );
+                if( lockingManager.release( lockID, t ) ){
+                    refresh = true;
+                }
+            } catch (IOException e) {
+                LOGGER.log( Level.WARNING, e.getMessage(), e );
+            }
+            finally {
+                try {
+                    t.close();
+                } catch (IOException closeException) {
+                    LOGGER.log(Level.FINEST, closeException.getMessage(), closeException);
+                }
+            }
+        }
+        if( !refresh ){
+            // throw exception? or ignore...
         }
     }
 
     /**
      * Refresh lock by authorization
-     *
-     * @param authorization
+     * <p>
+     * Should use your own transaction?
+     * </p>
+     * @param lockID
      */
-    public void lockRefresh(String authorization) {
+    public void lockRefresh(String lockID){
+        boolean refresh = false;
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-	    if (meta.isEnabled()) {
+            if (!meta.isEnabled()) continue; // disabled
+            
+            DataStore dataStore;                
             try {
-                DataStore dataStore = meta.getDataStore();
-                FeatureSource source = dataStore.getFeatureSource(dataStore
-                        .getTypeNames()[0]);
-
-                // Any FeatureSourceWill do, we just need access to
-                // the high-level api
-                // TODO: consider moving refresh, release to DataStore?
-                //
-                if (source instanceof FeatureLocking) {
-                    FeatureLocking locking = (FeatureLocking) source;
-                    Transaction t = new DefaultTransaction();
-                    locking.setTransaction(t);
-
-                    try {
-                        t.addAuthorization(authorization);
-                        locking.refreshLock(authorization);
-                    } finally {
-                        t.close();
-                    }
-                }
-            } catch (IOException huh) {
-                LOGGER.warning("Could not refresh lock for " + meta.toString());
+                dataStore = meta.getDataStore();
             }
-	    }
+            catch(IOException notAvailable){
+                continue; // not available
+            }
+            LockingManager lockingManager = dataStore.getLockingManager();
+            if( lockingManager == null ) continue; // locks not supported
+            
+            Transaction t = new DefaultTransaction("Refresh "+meta.getNameSpace() );
+            try {
+                t.addAuthorization( lockID );
+                if( lockingManager.refresh( lockID, t ) ){
+                    refresh = true;
+                }
+            } catch (IOException e) {
+                LOGGER.log( Level.WARNING, e.getMessage(), e );
+            }
+            finally {
+                try {
+                    t.close();
+                } catch (IOException closeException) {
+                    LOGGER.log(Level.FINEST, closeException.getMessage(), closeException);
+                }
+            }
         }
+        if( !refresh ){
+            // throw exception? or ignore...
+        }
+    }
+
+    /**
+     * Implement lockRefresh.
+     * 
+     * @see org.geotools.data.Catalog#lockRefresh(java.lang.String, org.geotools.data.Transaction)
+     * 
+     * @param arg0
+     * @param arg1
+     * @return true if lock was found and refreshed
+     * @throws IOException
+     */
+    public boolean lockRefresh(String lockID, Transaction t) throws IOException {
+        boolean refresh = false;
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
+            DataStoreConfig meta = (DataStoreConfig) i.next();
+            if (!meta.isEnabled()) continue; // disabled
+            
+            DataStore dataStore;                
+            try {
+                dataStore = meta.getDataStore();
+            }
+            catch(IOException notAvailable){
+                continue; // not available
+            }
+            LockingManager lockingManager = dataStore.getLockingManager();
+            if( lockingManager == null ) continue; // locks not supported
+            
+            if( lockingManager.refresh( lockID, t ) ){
+                refresh = true;
+            }
+        }
+        return refresh;
+    }
+
+    /**
+     * Implement lockRelease.
+     * 
+     * @see org.geotools.data.Catalog#lockRelease(java.lang.String, org.geotools.data.Transaction)
+     * 
+     * @param lockID
+     * @param t
+     * @return true if the lock was found and released
+     * @throws IOException
+     */
+    public boolean lockRelease(String lockID, Transaction t) throws IOException {
+        boolean release = false;
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
+            DataStoreConfig meta = (DataStoreConfig) i.next();
+            if (!meta.isEnabled()) continue; // disabled
+            
+            DataStore dataStore;                
+            try {
+                dataStore = meta.getDataStore();
+            }
+            catch(IOException notAvailable){
+                continue; // not available
+            }
+            LockingManager lockingManager = dataStore.getLockingManager();
+            if( lockingManager == null ) continue; // locks not supported
+            
+            if( lockingManager.release( lockID, t ) ){
+                release = true;
+            }
+        }
+        return release;
+    }
+
+    /**
+     * Implement lockExists.
+     * 
+     * @see org.geotools.data.Catalog#lockExists(java.lang.String)
+     * 
+     * @param lockID
+     * @return true if lockID exists
+     */
+    public boolean lockExists(String lockID) {
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
+            DataStoreConfig meta = (DataStoreConfig) i.next();
+            if (!meta.isEnabled()) continue; // disabled
+            
+            DataStore dataStore;                
+            try {
+                dataStore = meta.getDataStore();
+            }
+            catch(IOException notAvailable){
+                continue; // not available
+            }
+            LockingManager lockingManager = dataStore.getLockingManager();
+            if( lockingManager == null ) continue; // locks not supported
+            
+            if( lockingManager.exists( lockID ) ){
+                return true;
+            }
+        }
+        return false;
     }
 }

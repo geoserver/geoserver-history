@@ -26,7 +26,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.1.2.4 2003/11/22 01:01:14 cholmesny Exp $
+ * @version $Id: LockResponse.java,v 1.1.2.5 2003/11/25 05:35:36 jive Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -334,11 +334,13 @@ public class LockResponse implements Response {
                 FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
 
                 Transaction t = new DefaultTransaction();
-                source.setTransaction(t);
-                t.addAuthorization(featureLock.getAuthorization());
-                source.releaseLock(featureLock.getAuthorization());
-                t.commit();
-                source.setTransaction(Transaction.AUTO_COMMIT);
+                try {
+                    t.addAuthorization(featureLock.getAuthorization());                    
+                    source.getDataStore().getLockingManager().release( featureLock.getAuthorization(), t );    
+                }
+                finally {
+                    t.close();
+                }
             }
         } catch (IOException ioException) {
             LOGGER.warning("Abort not complete:" + ioException);
