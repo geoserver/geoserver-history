@@ -48,6 +48,10 @@
     <servlet-name>WMSGetCapabilities</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.wms.Capabilities</servlet-class>
   </servlet>
+  <servlet>
+   <servlet-name>TestWfsPost</servlet-name>
+   <servlet-class>org.vfny.geoserver.servlets.wfs.TestWfsPost</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>Dispatcher</servlet-name>
     <url-pattern>/*</url-pattern>
@@ -91,6 +95,10 @@
   <servlet-mapping>
     <servlet-name>GetMap</servlet-name>
     <url-pattern>/wms/GetMap</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>TestWfsPost</servlet-name>
+   <url-pattern>/wfs/TestWfsPost/*</url-pattern>
   </servlet-mapping>
   <welcome-file-list>
     <welcome-file>default.jsp</welcome-file>
