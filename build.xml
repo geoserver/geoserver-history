@@ -445,7 +445,7 @@
     <antcall target="misc_conf"/>
   </target>  
  <!-- BUILD WAR -->
-  <target name="build-war" depends="init, all" if="conf.path">
+  <target name="build-war" if="conf.path">
     <!-- preparation -->
     <delete file="${basedir}/geoserver.war" 
             failonerror="false"/>
