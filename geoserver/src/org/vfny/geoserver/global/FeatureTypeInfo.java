@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.geotools.data.AttributeTypeMetaData;
+import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureTypeMetaData;
@@ -28,6 +29,7 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.w3c.dom.Attr;
@@ -45,7 +47,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.5 2004/01/15 01:14:34 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.6 2004/01/15 19:36:41 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -59,13 +61,20 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
 	
     private Map meta;
     
+    // generated data from here down
+    // FeatureType schema; // we need to aquire/generate this
+    
     /**
      * AttributeTypeInfo by attribute name.
      * <p>
      * This will be null unless populated by schema or DTO.
      * </p>
+     *
      */
-    private Map attributeInfo;
+    private Map attributeInfo; //kill me pls
+    
+    /** will be lazily generated*/
+    private String xmlSchemaFrag;
     
 	/**
 	 * FeatureTypeInfo constructor.
@@ -395,6 +404,7 @@ System.out.println("FeatureTypeInfo:getSchema"+(schema==null));
 		String attName;
 
 		for (int i = 0; i < attrElems.size(); i++) {
+		
 			AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO)attrElems.get(i);
 			String name = ati.getName();
 			if(name == "" && ati.isRef())
@@ -418,14 +428,49 @@ System.out.println("getSchema"+ftc.getName());
 		return filteredSchema;
 	}
     
-	public String getXMLSchema(){
-		StringWriter sw = new StringWriter();
-		try{
-			XMLConfigWriter.storeFeatureSchema(ftc,sw);
-		}catch(ConfigurationException e){}
-		return sw.toString();
+	/** Get XMLSchema for this FeatureType.
+	 * <p>
+	 * Note this may require connection to the real geotools2 DataStore and
+	 * as such is subject to IOExceptions.
+	 * </p>
+	 * <p>
+	 * You have been warned.
+	 * </p>
+	 * @return XMLFragment
+	 */
+	public synchronized String getXMLSchema() throws IOException {
+		if(xmlSchemaFrag == null){
+			StringWriter sw = new StringWriter();
+			try{
+				XMLConfigWriter.storeFeatureSchema(ftc,sw);
+			}catch(ConfigurationException e){}
+			xmlSchemaFrag = sw.toString();
+		}
+		return xmlSchemaFrag;
 	}
-	
+	/**
+	 * Will return our delegate with all information filled out
+	 * <p>
+	 * This is a hack because we cache our DTO delegate, this method combines
+	 * or ftc delegate with possibly generated schema information for use by
+	 * XMLConfigWriter among others.
+	 * </p>
+	 * <p>
+	 * Call this method to receive a complete featureTypeInfoDTO that incldues
+	 * all schema information.
+	 * </p>
+	 * @return
+	 */
+	private synchronized FeatureTypeInfoDTO getGeneratedDTO() throws IOException{
+		FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO(ftc);
+		if( dto.getSchema() == null || dto.getSchema().size() == 0){
+			// generate stuff
+			DataStore dataStore = data.getDataStoreInfo( dto.getDataStoreId() ).getDataStore();
+			FeatureType schema = dataStore.getSchema( dto.getName() );
+			dto.setSchema( DataTransferObjectFactory.generateAttributes( schema ) );
+		}
+		return dto;
+	}
 	/*public void readXMLSchema(String xml){
 		StringReader sr = new StringReader(xml);
 		try{

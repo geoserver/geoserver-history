@@ -29,8 +29,8 @@ import java.util.ArrayList;
  * </p>
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.1 2004/01/15 19:06:19 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.2 2004/01/15 19:36:41 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -85,7 +85,7 @@ public class DataTransferObjectFactory {
         dto.setLatLongBBox( new Envelope() );
         dto.setName( schema.getTypeName() );
         dto.setNumDecimals( 8 );
-        dto.setSchema( createDTOAttributes( schema.getAttributeTypes() ));
+        dto.setSchema( generateAttributes( schema ));
         dto.setSchemaBase( GMLUtils.ABSTRACTFEATURETYPE.toString() );
         dto.setSchemaName( dataStoreId.toUpperCase()+"_"+schema.getTypeName().toUpperCase()+"_TYPE" );
         dto.setSRS( schema.getDefaultGeometry().getGeometryFactory().getSRID() );
@@ -93,8 +93,9 @@ public class DataTransferObjectFactory {
         
         return dto;
     }
-    static List createDTOAttributes( AttributeType attributes[] ){
-        List list = new ArrayList( attributes.length );
+    public static List generateAttributes( FeatureType schema ){
+    	AttributeType attributes[] = schema.getAttributeTypes();
+    	List list = new ArrayList( attributes.length );
         for( int i=0; i<attributes.length;i++){
             list.add( create( attributes[0] ) );
         }
