@@ -42,8 +42,8 @@ import java.util.*;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: XMLReaderTest.java,v 1.3 2004/01/21 18:42:27 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: XMLReaderTest.java,v 1.4 2004/01/21 18:48:27 dmzwiers Exp $
  */
 public class XMLReaderTest extends TestCase {
     public XMLReaderTest() {
@@ -93,7 +93,7 @@ public class XMLReaderTest extends TestCase {
             fr = new FileReader(
                     "C:/Java/workspace/geoserver/conf/validation/RoadTestSuite.xml");
 
-            TestSuiteDTO testsuite = XMLReader.readTestSuiteDTO(fr, m);
+            TestSuiteDTO testsuite = XMLReader.readTestSuite(fr, m);
             assertTrue("TestSuite Name read",
                 "RoadTestSuite".equals(testsuite.getName()));
 
