@@ -739,15 +739,7 @@
                includes="**/*.class"/>   
       <fileset dir="${dir.geotools}/opengis/target/classes/"
                includes="**/*.class"/> 
-    </jar>
-    
-    <!-- Looks like initial GeoAPI work?! -->
-    <delete file="${dir.lib}/opengis-SNAPSHOT.jar" failonerror="true"/>    
-    <jar jarfile="${dir.lib}/opengis-SNAPSHOT.jar"
-         whenempty="fail">
-      <fileset dir="${dir.geotools}/opengis/target/classes/"
-               includes="**/*.class"/>
-	</jar>
+    </jar>    
     
     <!-- I am not sure why this is not part of the geotools jar -->
     <delete file="${dir.lib}/gmldatasource-SNAPSHOT.jar" failonerror="true"/>    
