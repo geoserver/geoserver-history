@@ -6,6 +6,8 @@ package org.vfny.geoserver.requests.wfs;
 
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -24,7 +26,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * </p>
  *
  * @author Rob Hranac, TOPP
- * @version $Id: DescribeHandler.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: DescribeHandler.java,v 1.7 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
@@ -42,7 +44,8 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
      *
      * @return GetCapabilities request.
      */
-    public DescribeRequest getRequest() {
+    public DescribeRequest getRequest(HttpServletRequest req) {
+    	request.setHttpServletRequest(req);
         return request;
     }
 

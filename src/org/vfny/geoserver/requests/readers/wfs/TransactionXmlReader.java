@@ -30,7 +30,7 @@ import org.xml.sax.helpers.ParserAdapter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionXmlReader.java,v 1.7 2004/02/13 01:07:08 dmzwiers Exp $
+ * @version $Id: TransactionXmlReader.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class TransactionXmlReader extends XmlRequestReader {
     /**
@@ -78,7 +78,7 @@ public class TransactionXmlReader extends XmlRequestReader {
             throw new WfsTransactionException(e,
                 "Some sort of issue creating parser", getClass().getName());
         }
-
-        return contentHandler.getRequest();
+        Request r = contentHandler.getRequest(req);
+        return r;
     }
 }
