@@ -4,12 +4,12 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FidFilter;
@@ -19,11 +19,8 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
 import org.vfny.geoserver.requests.wfs.DeleteRequest;
 import org.vfny.geoserver.requests.wfs.TransactionRequest;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -31,7 +28,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteSuite.java,v 1.11 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: DeleteSuite.java,v 1.12 2004/01/21 18:42:26 jive Exp $
  */
 public class DeleteSuite extends TransactionSuite {
     // Initializes the logger. Uncomment to see log messages.

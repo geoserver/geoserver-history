@@ -4,24 +4,23 @@
  */
 package org.vfny.geoserver.requests;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.geotools.feature.Feature;
-import org.vfny.geoserver.requests.wfs.InsertRequest;
-import org.vfny.geoserver.requests.wfs.TransactionRequest;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.geotools.feature.Feature;
+import org.vfny.geoserver.requests.wfs.InsertRequest;
+import org.vfny.geoserver.requests.wfs.TransactionRequest;
 
 
 /**
  * Tests the Insert request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: InsertSuite.java,v 1.9 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: InsertSuite.java,v 1.10 2004/01/21 18:42:26 jive Exp $
+ *
  * @task TODO: fix up for the new config stuff.
  */
 public class InsertSuite extends TransactionSuite {
@@ -94,7 +93,7 @@ public class InsertSuite extends TransactionSuite {
 
         // run test       
         //assertTrue(runXmlTest(baseRequest, "insert2", true));
-	}
+    }
 
     /*
        public void testDiffFeatures() throws Exception{

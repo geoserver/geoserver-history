@@ -4,22 +4,20 @@
  */
 package org.vfny.geoserver.zserver;
 
-import java.io.FileInputStream;
-import java.util.Properties;
-import java.util.logging.Logger;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.lucene.document.Field;
+import java.io.FileInputStream;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 
 /**
  * Tests the GeoSummary classes's setting of fields and creation of summaries.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoSummarySuite.java,v 1.4 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: GeoSummarySuite.java,v 1.5 2004/01/21 18:42:26 jive Exp $
  *
  * @task TODO: we need to test xml output.  Our old way of comparing strings.
  *       no longer works, as different xml implementations lead to different

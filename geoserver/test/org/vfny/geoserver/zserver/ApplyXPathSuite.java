@@ -4,19 +4,18 @@
  */
 package org.vfny.geoserver.zserver;
 
-import java.io.FileNotFoundException;
-import java.util.logging.Logger;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import java.io.FileNotFoundException;
+import java.util.logging.Logger;
 
 
 /**
  * Tests the NumericField number and string conversion.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ApplyXPathSuite.java,v 1.6 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: ApplyXPathSuite.java,v 1.7 2004/01/21 18:42:26 jive Exp $
  */
 public class ApplyXPathSuite extends TestCase {
     /** Standard logging instance */

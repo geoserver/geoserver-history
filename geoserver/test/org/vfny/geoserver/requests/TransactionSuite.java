@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
@@ -25,18 +24,16 @@ import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
 import org.vfny.geoserver.requests.readers.wfs.TransactionXmlReader;
 import org.vfny.geoserver.requests.wfs.TransactionRequest;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
  * Tests the get feature request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionSuite.java,v 1.7 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: TransactionSuite.java,v 1.8 2004/01/21 18:42:26 jive Exp $
  *
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.
@@ -82,8 +79,8 @@ public class TransactionSuite extends RequestTestCase {
 
     public void setUp() throws Exception {
         Map values = new HashMap();
-        //ServerConfig.load(values, new DefaultCatalog());
 
+        //ServerConfig.load(values, new DefaultCatalog());
         //config = ConfigInfo.getInstance(CONFIG_DIR);
         //config.setTypeDir(TYPE_DIR);
         //repo = TypeRepository.getInstance();
