@@ -47,7 +47,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.33 2004/02/17 22:01:55 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.34 2004/02/17 22:42:32 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
 	public static final String WEB_CONTAINER_KEY = "DATA";
@@ -101,9 +101,11 @@ public class Data extends GlobalLayerSupertype implements Catalog {
     public Data(DataDTO config, File dir, GeoServer g) throws ConfigurationException {
     	baseDir = dir;
         load(config);
+        gs = g;
     }
     public Data(File dir, GeoServer g) throws ConfigurationException {
     	baseDir = dir;
+    	gs = g;
     }
 
     /**

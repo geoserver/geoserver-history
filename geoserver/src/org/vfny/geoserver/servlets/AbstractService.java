@@ -94,7 +94,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.15 2004/02/13 19:32:55 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.16 2004/02/17 22:42:32 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -175,6 +175,7 @@ public abstract class AbstractService extends HttpServlet {
         AbstractService.saftyMode = stgyClass;
     }
 
+    protected abstract boolean isServiceEnabled(HttpServletRequest req);
     /**
      * DOCUMENT ME!
      *
@@ -188,6 +189,11 @@ public abstract class AbstractService extends HttpServlet {
         HttpServletResponse response) throws ServletException, IOException {
         // implements the main request/response logic
         Request serviceRequest = null;
+        
+        if(!isServiceEnabled(request)){
+        	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        	return;
+        }
 
         try {
             String qString = request.getQueryString();
@@ -236,6 +242,12 @@ public abstract class AbstractService extends HttpServlet {
         HttpServletResponse response) throws ServletException, IOException {
         Request serviceRequest = null;
 
+        
+        if(!isServiceEnabled(request)){
+        	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        	return;
+        }
+        
         // implements the main request/response logic
         try {
             XmlRequestReader requestReader = getXmlRequestReader();
@@ -282,6 +294,16 @@ public abstract class AbstractService extends HttpServlet {
         ServiceStratagy stratagy = null;
         LOGGER.finest("getting stratagy instance");
 
+        
+        if(!isServiceEnabled(request)){
+        	try{
+        		response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        	}catch(IOException e){
+        		// do nothing
+        	}
+        	return;
+        }
+        
         try {
             stratagy = (ServiceStratagy) saftyMode.newInstance();
         } catch (Exception ex) {
@@ -772,7 +794,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
