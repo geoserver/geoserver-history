@@ -45,6 +45,11 @@
   <property name="jar.jdbcPostgres" value="${dir.lib}/jdbcPostgres.jar"/>
   <property name="jar.castor" value="${dir.lib}/castor.jar"/>
   <property name="jar.jts" value="${dir.lib}/jts-1.0.0.jar"/>
+  <property name="jar.lucene" value="${dir.lib}/lucene.jar"/>
+  <property name="jar.xalan" value="${dir.lib}/xalan.jar"/>
+  <property name="jar.a2j" value="${dir.lib}/a2jruntime.jar"/>
+  <property name="jar.z3950" value="${dir.lib}/ki-jzkit-z3950.jar"/>
+  <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
 
   <!-- paths -->
   <path id="path.lib">
