@@ -23,32 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * DataDataStoreSelectAction purpose.
- * 
- * <p>
- * Description of DataDataStoreSelectAction ...
- * </p>
- * 
- * <p>
- * Capabilities:
- * </p>
- * 
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * 
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * DataDataStoreSelectAction x = new DataDataStoreSelectAction(...);
- * </code></pre>
+ * Select a DataStore for editing.
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.4 2004/01/31 00:27:24 jive Exp $
+ * @version $Id: DataDataStoresSelectAction.java,v 1.5 2004/02/02 15:06:18 jive Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -64,12 +43,13 @@ public class DataDataStoresSelectAction extends ConfigAction {
         
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
-        String edit = messages.getMessage(locale, "label.edit");
-        String delete = messages.getMessage(locale, "label.delete");
         
-        System.out.println(edit + delete + buttonAction);
-
-        if (edit.equals(buttonAction)) {
+        String editLabel = messages.getMessage(locale, "label.edit");
+        String deleteLabel = messages.getMessage(locale, "label.delete");
+        
+        if (editLabel.equals(buttonAction)
+        	|| editLabel.equalsIgnoreCase( buttonAction ) // HACK: temp hack!
+        	) {
             dsConfig = (DataStoreConfig) dataConfig.getDataStore(form
                     .getSelectedDataStoreId());
 
@@ -79,7 +59,9 @@ public class DataDataStoresSelectAction extends ConfigAction {
                 form.getSelectedDataStoreId());
 
             return mapping.findForward("dataConfigDataStores");
-        } else if (delete.equals(buttonAction)) {
+        } else if (deleteLabel.equals(buttonAction)
+        		|| deleteLabel.equalsIgnoreCase( buttonAction ) // HACK: temp hack!
+        	) {
             dataConfig.removeDataStore(form.getSelectedDataStoreId());
             request.getSession().removeAttribute("selectedDataStoreId");
 
@@ -87,8 +69,8 @@ public class DataDataStoresSelectAction extends ConfigAction {
 
             return mapping.findForward("dataConfigDataStores");
         }
-
+        
         throw new ServletException(
-            "Action must be a MessageResource key value of either 'label.edit' or 'label.delete'");
+            "Action '"+buttonAction+"'must be '"+editLabel+"' or '"+deleteLabel+"'");
     }
 }
