@@ -9,10 +9,10 @@
     <DatasourceParams>
        <host>localhost</host> 
        <port>5432</port> 
-       <database>testdb</database> 
+       <database>test</database> 
        <user>test</user> 
        <passwd>test</passwd> 
-       <table>road</table> 
+       <table>rail</table> 
        <dbtype>postgis</dbtype> 
     </DatasourceParams>
  </featureType>
