@@ -26,7 +26,6 @@ import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.w3c.dom.NodeList;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -50,7 +49,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.42 2004/04/22 03:50:10 emperorkefka Exp $
+ * @version $Id: Data.java,v 1.43 2004/06/18 06:59:28 cholmesny Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -281,7 +280,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      */
     private final Map loadFeatureTypes(DataDTO dto) {
         errors = new HashMap();
-		featureTypes = new HashMap(); // to fix lazy loading
+        featureTypes = new HashMap(); // to fix lazy loading
 
         if ((dto == null) || (dto.getFeaturesTypes() == null)) {
             errors = null;
@@ -548,16 +547,18 @@ SCHEMA:
 
             try {
                 style = loadStyle(styleDTO.getFilename());
-            } catch (Exception ioException) {// was IOException
+            } catch (Exception ioException) { // was IOException
                 LOGGER.log(Level.SEVERE, "Could not load style " + id,
                     ioException);
 
                 continue;
             }
 
-            stFiles.put(style.getName(), styleDTO.getFilename());
+            stFiles.put(id, styleDTO.getFilename());
             map.put(id, style);
         }
+
+        LOGGER.finer("returning styles " + map + "\n and set map " + stFiles);
 
         return map;
     }
@@ -577,7 +578,7 @@ SCHEMA:
             Object value = entry.getValue();
 
             if (value == Boolean.TRUE) {
-                LOGGER.info(key + ": ready");
+                LOGGER.fine(key + ": ready");
             } else if (value instanceof Throwable) {
                 Throwable t = (Throwable) value;
                 LOGGER.log(Level.SEVERE, key + " not ready", t);
@@ -849,11 +850,12 @@ SCHEMA:
             Style st = (Style) styles.get(id);
             StyleDTO sdto = new StyleDTO();
             sdto.setDefault(st.isDefault());
-            sdto.setFilename((File) stFiles.get(st.getName()));
+            sdto.setFilename((File) stFiles.get(id));
             sdto.setId(id);
             tmp.put(id, sdto);
         }
 
+        LOGGER.finer("setting styles to: " + tmp);
         dto.setStyles(tmp);
 
         tmp = new HashMap();
@@ -961,20 +963,29 @@ SCHEMA:
 
     /**
      * Locate FeatureTypeInfo by name
+     * 
      * <p>
      * The following searchness is used::
+     * 
      * <ul>
-     * <li>search prefix:typeName for direct match with name
-     * <li>search prefix:typeName for match with defaultnamespaceprefix:name
-     * <li>linear search of typeName for direct match 
+     * <li>
+     * search prefix:typeName for direct match with name
+     * </li>
+     * <li>
+     * search prefix:typeName for match with defaultnamespaceprefix:name
+     * </li>
+     * <li>
+     * linear search of typeName for direct match
+     * </li>
      * </ul>
      * </p>
      * 
      * <p>
-     * Yes this is the magic method used by TransasctionResponse. If
-     * you wondered what it was doing - this is it.
+     * Yes this is the magic method used by TransasctionResponse. If you
+     * wondered what it was doing - this is it.
      * </p>
-     * @param typeName String The FeatureTypeInfo Name
+     *
+     * @param name String The FeatureTypeInfo Name
      *
      * @return FeatureTypeInfo
      *
@@ -982,27 +993,37 @@ SCHEMA:
      */
     public FeatureTypeInfo getFeatureTypeInfo(String name)
         throws NoSuchElementException {
-        LOGGER.finest("getting type " + name);
+        LOGGER.fine("getting type " + name);
 
         FeatureTypeInfo found = null;
-        
-        found = (FeatureTypeInfo) featureTypes.get(name);
-        if( found != null ) return found;
-        
-        String defaultPrefix = defaultNameSpace.getPrefix();
-        found = (FeatureTypeInfo) featureTypes.get( defaultPrefix+ ":" + name);
-        if( found != null ) return found;
 
-        for( Iterator i=featureTypes.values().iterator(); i.hasNext();){
-        	FeatureTypeInfo fto = (FeatureTypeInfo) i.next();
-            if( name != null && name.equals( fto.getName() )){
-            	found = fto;
+        found = (FeatureTypeInfo) featureTypes.get(name);
+
+        if (found != null) {
+            return found;
+        }
+
+        String defaultPrefix = defaultNameSpace.getPrefix();
+        found = (FeatureTypeInfo) featureTypes.get(defaultPrefix + ":" + name);
+
+        if (found != null) {
+            return found;
+        }
+
+        for (Iterator i = featureTypes.values().iterator(); i.hasNext();) {
+            FeatureTypeInfo fto = (FeatureTypeInfo) i.next();
+
+            if ((name != null) && name.equals(fto.getName())) {
+                found = fto;
             }
         }
-        if( found != null ) return found;
-        
-        throw new NoSuchElementException(
-            "Could not locate FeatureTypeConfig '" + name+ "'");
+
+        if (found != null) {
+            return found;
+        }
+
+        throw new NoSuchElementException("Could not locate FeatureTypeConfig '"
+            + name + "'");
     }
 
     /**
@@ -1018,21 +1039,23 @@ SCHEMA:
      * TODO: Jody here - David is this still correct?
      * </p>
      *
-     * @param namespacePrefix Name NameSpaceInfo name
+     * @param typename Name NameSpaceInfo name
      * @param uri NameSpaceInfo uri
      *
      * @return FeatureTypeInfo
      */
     public FeatureTypeInfo getFeatureTypeInfo(String typename, String uri) {
-//System.out.println("Finding TypeName = "+typename+" URI = "+uri);
+        //System.out.println("Finding TypeName = "+typename+" URI = "+uri);
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
 
             if (fType.isEnabled()) {
-            	String typeId = fType.getNameSpace().getPrefix()+":"+typename;
-            	boolean t1 = fType.getName().equals(typeId);
-            	boolean t2 = fType.getNameSpace().getUri().equals(uri);
-//System.out.println("Type id = "+typeId+" real name = "+fType.getName()+" T1="+t1+" T2="+t2);
+                String typeId = fType.getNameSpace().getPrefix() + ":"
+                    + typename;
+                boolean t1 = fType.getName().equals(typeId);
+                boolean t2 = fType.getNameSpace().getUri().equals(uri);
+
+                //System.out.println("Type id = "+typeId+" real name = "+fType.getName()+" T1="+t1+" T2="+t2);
                 if (t1 && t2) {
                     return fType;
                 }
@@ -1072,7 +1095,8 @@ SCHEMA:
      * @throws IOException DOCUMENT ME!
      */
     public Style loadStyle(File fileName) throws IOException {
-		SLDParser stylereader = new SLDParser(styleFactory, fileName);
+        SLDParser stylereader = new SLDParser(styleFactory, fileName);
+
         return stylereader.readXML()[0];
     }
 
