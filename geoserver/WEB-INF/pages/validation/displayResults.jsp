@@ -24,11 +24,12 @@ if (thread != null && thread.isAlive()) { %>
 <script>
 function refresh() {
 	location.replace("<%= org.apache.struts.util.RequestUtils.computeURL(pageContext, "config.validation.displayResults", null, null, null, null, true) %>");
+	//location.replace("<!--%= org.apache.struts.taglib.TagUtils.computeURL(pageContext, "config.validation.displayResults", null, null, null, null, null, null, true) %-->");
 }
-window.setTimeout("refresh()", 3000);
+window.setTimeout("refresh()", 6000);
 </script>
 
-<% } %>
+<% }  %>
 
 <tr><td><bean:message key="config.validation.displayResults.errors"/></td></tr>
 <%if(tvr.isRun()){%>
@@ -47,7 +48,7 @@ while(i.hasNext()){
   %>
 <tr><td><%=fid%></td><td><code><%=org.vfny.geoserver.action.HTMLEncoder.encode(message)%></code></td></tr>
   <%
-} // while
+}  // while
 %>
 </table>
 <%
