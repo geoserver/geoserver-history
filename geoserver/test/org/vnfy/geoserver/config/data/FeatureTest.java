@@ -14,45 +14,43 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vnfy.geoserver.config.catalog;
-
-import java.io.File;
+package org.vnfy.geoserver.config.data;
 
 import junit.framework.TestCase;
+
 /**
- * StyleTest purpose.
+ * FeatureTest purpose.
  * <p>
- * Description of StyleTest ...
+ * Description of FeatureTest ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleTest.java,v 1.1.2.1 2003/12/30 23:39:23 dmzwiers Exp $
+ * @version $Id: FeatureTest.java,v 1.1.2.1 2003/12/31 00:35:53 dmzwiers Exp $
  */
-public class StyleTest extends TestCase {
+public class FeatureTest extends TestCase {
 
-	private Style a,b;
-	File f;
 	/**
-	 * Constructor for StyleTest.
+	 * Constructor for FeatureTest.
 	 * @param arg0
 	 */
-	public StyleTest(String arg0) {
+	public FeatureTest(String arg0) {
 		super(arg0);
-		a = new Style();
-		a.setId("test 1");
-		f = null;
-		try{
-			f = new File(".");
-		}catch(Exception e){}
-		a.setFilename(f);
+		a = new FeatureType(); b = null;
+		a.setAbstract("abstract");
+		a.setDataStoreId("dsId");
+		a.setSRS(0);
 	}
 
+
+
+	private FeatureType a,b;
+
 	/*
-	 * Test for void NameSpace(NameSpace)
+	 * Test for void Contact(Contact)
 	 */
-	public void testNameSpaceNameSpace() {
+	public void testDataStoreDataStore() {
 		//test requires equals.
-		b = new Style(a);
+		b = new FeatureType(a);
 		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
 	}
 
@@ -61,7 +59,7 @@ public class StyleTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(Style)a.clone();
+		b =(FeatureType)a.clone();
 		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
 	}
 
@@ -69,19 +67,17 @@ public class StyleTest extends TestCase {
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new Style();
-		b.setId("test 1");
-		b.setFilename(f);
+		b = new FeatureType();
+		b.setAbstract("abstract");
+		b.setDataStoreId("dsId");
+		b.setSRS(0);
+		
 		assertTrue(a.equals(b));
 		
-		b.setFilename(null);
+		b.setSRS(5);
 		assertTrue(!a.equals(b));
-
-		b.setFilename(f);
+		
+		a.setSRS(5);
 		assertTrue(a.equals(b));
-
-		b.setDefault(true);
-		assertTrue(!a.equals(b));
 	}
-
 }

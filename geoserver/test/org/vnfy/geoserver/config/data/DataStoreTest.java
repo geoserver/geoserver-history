@@ -14,7 +14,7 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vnfy.geoserver.config.catalog;
+package org.vnfy.geoserver.config.data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreTest.java,v 1.1.2.1 2003/12/30 23:39:23 dmzwiers Exp $
+ * @version $Id: DataStoreTest.java,v 1.1.2.1 2003/12/31 00:35:53 dmzwiers Exp $
  */
 public class DataStoreTest extends TestCase {
 
