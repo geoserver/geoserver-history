@@ -99,10 +99,12 @@ public class GMLBuilder {
 
     private static final String XMLNS_WFS = "xmlns:wfs=\"" + WFS_URI + "\"";
 
+    //TODO: keep copies of these files locally, just reference them for
+    //schema location instead of the opengis ones.
     private static final String WFS_LOC = 
-	"http://schemas.opengis.net/wfs/1.0/WFS-basic.xsd";
+	"http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd";
 
-      private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema\"";
+      private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
 
     private static final String XS_NAMESPACE = "xmlns:xs=" + SCHEMA_URI;
 
@@ -244,10 +246,13 @@ public class GMLBuilder {
 	    finalResult.append(indent + XMLNS_WFS);
 	    finalResult.append(indent + XS_NAMESPACE);
 	    finalResult.append(indent + "xs:schemaLocation=\"" + xmlns + " " );
-	    finalResult.append(schIndent  + configInfo.getUrl() + 
-			 "/DescribeFeatureType?" //HACK: bad hard code here.
-			 + "typeName=" + typeInfo.getFullName() + schIndent +  
-			       WFS_URI + schIndent + WFS_LOC + "\">");
+	    //REVISIT: describe request for all types in namespace?  That
+	    //would fix the extension problem, like when there is an abstract
+	    //type defined that all derive from.
+            finalResult.append(schIndent  + configInfo.getUrl() + 
+	    	 "/DescribeFeatureType?" //HACK: bad hard code here.
+	    	 + "typeName=" + typeInfo.getFullName());
+	    finalResult.append(schIndent + WFS_URI + schIndent + WFS_LOC + "\">");
 	    boxInsertPos = finalResult.length();
 	}
         
