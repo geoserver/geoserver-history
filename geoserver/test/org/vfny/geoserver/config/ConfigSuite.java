@@ -193,7 +193,7 @@ public class ConfigSuite extends TestCase {
 	LOGGER.fine("format output is " + config.formatOutput());
 	assertEquals(455, config.getMaxFeatures());
 	assertEquals(Level.FINE, config.getLogLevel());
-	assertEquals(":", config.getFilePrefixDelimiter());
+	assertEquals("--", config.getFilePrefixDelimiter());
 	assertTrue(config.formatOutput());
     }
 
