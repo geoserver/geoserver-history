@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.2 2004/01/19 23:54:56 dmzwiers Exp $
+ * @version $Id: ReaderUtils.java,v 1.3 2004/01/20 00:27:11 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**
@@ -59,7 +59,8 @@ class ReaderUtils{
 		DocumentBuilderFactory dfactory = DocumentBuilderFactory
 				.newInstance();
 		dfactory.setNamespaceAware(true);
-		dfactory.setValidating(true);
+		// TODO turn on validation
+		dfactory.setValidating(false);
 		dfactory.setIgnoringComments(true);
 		dfactory.setCoalescing(true);
 		dfactory.setIgnoringElementContentWhitespace(true);
