@@ -1,6 +1,7 @@
 package org.vfny.geoserver.form.data;
 
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 
 /**
  * Present Attribute information to user input.
@@ -21,7 +22,10 @@ class AttributeDisplay {
         maxOccurs = String.valueOf( config.getMaxOccurs() );
         selectedType = config.getType();
         fragment = config.getFragment();
-    } 
+    }
+    public AttributeDisplay( AttributeTypeInfoDTO dto ){
+        this( new AttributeTypeInfoConfig( dto ));        
+    }     
 	/**
 	 * @return Returns the fragment.
 	 */

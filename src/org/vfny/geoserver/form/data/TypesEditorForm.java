@@ -7,8 +7,10 @@ package org.vfny.geoserver.form.data;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.requests.Requests;
 
@@ -34,8 +37,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.5 2004/03/09 01:37:39 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.6 2004/03/09 05:38:18 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -110,6 +113,7 @@ public class TypesEditorForm extends ActionForm {
 
         FeatureTypeConfig type = user.getFeatureTypeConfig();        
         if( type == null ){
+            System.out.println("Type is not there");
             // Not sure what to do, user must of bookmarked?
             return; // Action should redirect to Select screen?
         }
@@ -134,8 +138,9 @@ public class TypesEditorForm extends ActionForm {
         SRS = Integer.toString(type.getSRS());
         title = type.getTitle();
         
-        if( type.getSchemaBase().equals("AbstractFeatureType") &&
-            type.getSchemaAttributes() == null ){ 
+        if( ( type.getSchemaBase() == null ||
+              type.getSchemaBase().equals("AbstractFeatureType") ) &&
+            type.getSchemaAttributes() == null ){
             this.schemaBase = "--";
             this.attributes = new ArrayList();
             
@@ -157,7 +162,6 @@ public class TypesEditorForm extends ActionForm {
             //
             // Need to add read only AttributeDisplay for each attribute
             // defined by schemaBase
-            //
             //
             List schemaAttribtues = DataTransferObjectFactory.generateRequiredAttribtues(schemaBase);
             attributes.addAll( attribtuesDisplayList( schemaAttribtues ));
@@ -182,8 +186,11 @@ public class TypesEditorForm extends ActionForm {
      */
     private List attribtuesDisplayList( List dtoList ){
         List list = new ArrayList();
-        for( Iterator i=dtoList.iterator(); i.hasNext();){
-            list.add( new AttributeDisplay( (AttributeTypeInfoConfig) i.next() ) );
+        int index=0;
+        for( Iterator i=dtoList.iterator(); i.hasNext(); index++){
+            Object next = i.next();
+            System.out.println( index+" attribute: "+next);
+            list.add( new AttributeDisplay( (AttributeTypeInfoDTO) next ) );
         }
         return list;
     }
@@ -230,4 +237,214 @@ public class TypesEditorForm extends ActionForm {
         return errors;
     }
 
+    /**
+     * Access attributes property.
+     * 
+     * @return Returns the attributes.
+     */
+    public List getAttributes() {
+        return attributes;
+    }
+    /**
+     * Set attributes to attributes.
+     *
+     * @param attributes The attributes to set.
+     */
+    public void setAttributes(List attributes) {
+        this.attributes = attributes;
+    }
+    /**
+     * Access dataStoreId property.
+     * 
+     * @return Returns the dataStoreId.
+     */
+    public String getDataStoreId() {
+        return dataStoreId;
+    }
+    /**
+     * Set dataStoreId to dataStoreId.
+     *
+     * @param dataStoreId The dataStoreId to set.
+     */
+    public void setDataStoreId(String dataStoreId) {
+        this.dataStoreId = dataStoreId;
+    }
+    /**
+     * Access abstact (or description) property.
+     * 
+     * @return Returns the description.
+     */
+    public String getAbstract() {
+        return description;
+    }
+    /**
+     * Set abstact (or description) to description.
+     *
+     * @param description The description to set.
+     */
+    public void setAbstract(String description) {
+        this.description = description;
+    }
+    /**
+     * Access keywords property.
+     * 
+     * @return Returns the keywords.
+     */
+    public String getKeywords() {
+        return keywords;
+    }
+    /**
+     * Set keywords to keywords.
+     *
+     * @param keywords The keywords to set.
+     */
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+    /**
+     * Access latLonBoundingBoxMaxX property.
+     * 
+     * @return Returns the latLonBoundingBoxMaxX.
+     */
+    public String getLatLonBoundingBoxMaxX() {
+        return latLonBoundingBoxMaxX;
+    }
+    /**
+     * Set latLonBoundingBoxMaxX to latLonBoundingBoxMaxX.
+     *
+     * @param latLonBoundingBoxMaxX The latLonBoundingBoxMaxX to set.
+     */
+    public void setLatLonBoundingBoxMaxX(String latLonBoundingBoxMaxX) {
+        this.latLonBoundingBoxMaxX = latLonBoundingBoxMaxX;
+    }
+    /**
+     * Access latLonBoundingBoxMaxY property.
+     * 
+     * @return Returns the latLonBoundingBoxMaxY.
+     */
+    public String getLatLonBoundingBoxMaxY() {
+        return latLonBoundingBoxMaxY;
+    }
+    /**
+     * Set latLonBoundingBoxMaxY to latLonBoundingBoxMaxY.
+     *
+     * @param latLonBoundingBoxMaxY The latLonBoundingBoxMaxY to set.
+     */
+    public void setLatLonBoundingBoxMaxY(String latLonBoundingBoxMaxY) {
+        this.latLonBoundingBoxMaxY = latLonBoundingBoxMaxY;
+    }
+    /**
+     * Access latLonBoundingBoxMinX property.
+     * 
+     * @return Returns the latLonBoundingBoxMinX.
+     */
+    public String getLatLonBoundingBoxMinX() {
+        return latLonBoundingBoxMinX;
+    }
+    /**
+     * Set latLonBoundingBoxMinX to latLonBoundingBoxMinX.
+     *
+     * @param latLonBoundingBoxMinX The latLonBoundingBoxMinX to set.
+     */
+    public void setLatLonBoundingBoxMinX(String latLonBoundingBoxMinX) {
+        this.latLonBoundingBoxMinX = latLonBoundingBoxMinX;
+    }
+    /**
+     * Access latLonBoundingBoxMinY property.
+     * 
+     * @return Returns the latLonBoundingBoxMinY.
+     */
+    public String getLatLonBoundingBoxMinY() {
+        return latLonBoundingBoxMinY;
+    }
+    /**
+     * Set latLonBoundingBoxMinY to latLonBoundingBoxMinY.
+     *
+     * @param latLonBoundingBoxMinY The latLonBoundingBoxMinY to set.
+     */
+    public void setLatLonBoundingBoxMinY(String latLonBoundingBoxMinY) {
+        this.latLonBoundingBoxMinY = latLonBoundingBoxMinY;
+    }
+    /**
+     * Access name property.
+     * 
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
+    /**
+     * Set name to name.
+     *
+     * @param name The name to set.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    /**
+     * Access schemaBase property.
+     * 
+     * @return Returns the schemaBase.
+     */
+    public String getSchemaBase() {
+        return schemaBase;
+    }
+    /**
+     * Set schemaBase to schemaBase.
+     *
+     * @param schemaBase The schemaBase to set.
+     */
+    public void setSchemaBase(String schemaBase) {
+        this.schemaBase = schemaBase;
+    }
+    /**
+     * Access sRS property.
+     * 
+     * @return Returns the sRS.
+     */
+    public String getSRS() {
+        return SRS;
+    }
+    /**
+     * Set sRS to srs.
+     *
+     * @param srs The sRS to set.
+     */
+    public void setSRS(String srs) {
+        SRS = srs;
+    }
+    /**
+     * Access title property.
+     * 
+     * @return Returns the title.
+     */
+    public String getTitle() {
+        return title;
+    }
+    /**
+     * Set title to title.
+     *
+     * @param title The title to set.
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    static final List schemaBases;
+    static {
+        List bases = new ArrayList();
+        bases.add( "--" );
+        bases.addAll( DataTransferObjectFactory.schemaBaseMap.keySet() );
+        schemaBases = Collections.unmodifiableList( bases );
+    }
+    /**
+     * Are belong to us.
+     * <p>
+     * What can I say it is near a deadline!
+     * Easy access for <code>Editor.jsp</code>.
+     * </p>
+     * @return Possible schemaBase options
+     */
+    public List getAllYourBase(){        
+        return schemaBases;                
+    }
 }

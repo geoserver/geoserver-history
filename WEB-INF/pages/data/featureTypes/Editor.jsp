@@ -2,6 +2,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
+<% try { %>
 <html:form action="/config/data/featureTypeSubmit">
   <table class="info">
 	<tr>
@@ -11,7 +12,7 @@
         </span>
       </td>
       <td class="datum">
-		<bean:write name="dataFeatureTypesEditorForm" property="name"/>
+		<bean:write name="typesEditorForm" property="name"/>
       </td>
     </tr>
 	<tr>
@@ -100,18 +101,33 @@
 		</span>
 	  </td>
 	  <td class="datum">
-		<html:textarea property="_abstract" cols="60" rows="3"/>
+		<html:textarea property="abstract" cols="60" rows="3"/>
       </td>
     </tr>
-	<tr>
+
+    <tr>
       <td class="label">
-		<bean:message key="label.default"/>:
+		<span class="help" title="<bean:message key="help.type.base"/>">
+			<bean:message key="label.base"/>:
+		</span>
 	  </td>
 	  <td class="datum">
-		<html:checkbox property="_default"/>
-	  </td>
+		<html:select property="schemaBase">
+			<html:options property="allYourBase"/>
+		</html:select>
+      </td>
     </tr>
 
+	<tr>
+      <td class="label">
+		attributes:
+	  </td>
+	  <td class="datum">
+		<bean:write name="typesEditorForm" property="attributes"/>
+      </td>
+    </tr>
+
+    
     <tr>
       <td class="label">
         &nbsp;
@@ -130,3 +146,9 @@
     </tr>
   </table>
 </html:form>
+
+<% } catch (Throwable hate ){
+   System.err.println( "FeatureType Editor problem:"+ hate );
+   hate.printStackTrace();
+   throw hate;
+} %>

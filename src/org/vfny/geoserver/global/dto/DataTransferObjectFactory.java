@@ -10,9 +10,11 @@ package org.vfny.geoserver.global.dto;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.geotools.feature.AttributeType;
@@ -38,8 +40,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.16 2004/03/08 21:49:20 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.17 2004/03/09 05:38:18 jive Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -209,6 +211,11 @@ public class DataTransferObjectFactory {
      * @return
      */
     public static String[] getRequiredBaseAttributes(String schemaBase){
+        if( schemaBaseMap.containsKey( schemaBase ) ){
+            return (String[]) schemaBaseMap.get( schemaBase );
+        }
+        return new String[] {};
+        /*
         if("AbstractFeatureType".equals(schemaBase)){
             return new String[] {"description","name","boundedBy"};
         }
@@ -249,7 +256,38 @@ public class DataTransferObjectFactory {
             return new String[] {};
         }
         return new String[] {};
+        */
     }
+    public static Map schemaBaseMap = new HashMap();
+    static {
+        schemaBaseMap.put("AbstractFeatureType",
+            new String[] {"description","name","boundedBy"} );
+        schemaBaseMap.put("AbstractFeatureCollectionBaseType",
+            new String[] {"description","name","boundedBy"} );
+        schemaBaseMap.put("GeometryPropertyType",
+            new String[] {"geometry"} );
+        schemaBaseMap.put("FeatureAssociationType",
+            new String[] {"feature"} );
+        schemaBaseMap.put("BoundingShapeType",
+            new String[] {"box"} );
+        schemaBaseMap.put("PointPropertyType",
+            new String[] {"point"} );
+        schemaBaseMap.put("PolygonPropertyType",
+            new String[] {"polygon"} );
+        schemaBaseMap.put("LineStringPropertyType",
+            new String[] {"lineString"} );
+        schemaBaseMap.put("MultiPointPropertyType",
+            new String[] {"multiPoint"} );
+        schemaBaseMap.put("MultiLineStringPropertyType",
+            new String[] {"multiLineString"} );
+        schemaBaseMap.put("MultiPolygonPropertyType",
+            new String[] {"multiPolygonString"} );
+        schemaBaseMap.put("MultiGeometryPropertyType",
+            new String[] {"multiGeometry"} );
+        schemaBaseMap.put("NullType", new String[] {} );
+    }
+
+    
     /**
      * Mappings for name and type, or null if not found.
      * <p>
