@@ -1,0 +1,16 @@
+<wfs:Transaction
+  service="WFS"
+  version="1.0.0"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:wfs="http://www.opengis.net/wfs"
+>
+  <wfs:Update typeName="buildings">
+    <wfs:Property>
+      <wfs:Name>LABEL</wfs:Name>
+      <wfs:Value></wfs:Value>
+    </wfs:Property>
+    <ogc:Filter>
+      <ogc:FeatureId fid="buildings.1063"/>
+    </ogc:Filter>
+  </wfs:Update>
+</wfs:Transaction>

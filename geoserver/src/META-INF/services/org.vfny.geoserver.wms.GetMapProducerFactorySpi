@@ -1,0 +1,3 @@
+org.vfny.geoserver.wms.responses.map.GifMapProducerFactory
+org.vfny.geoserver.wms.responses.map.JaiMapProducerFactory
+org.vfny.geoserver.wms.responses.map.SvgMapProducerFactory

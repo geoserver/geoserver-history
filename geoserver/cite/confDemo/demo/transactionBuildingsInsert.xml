@@ -1,0 +1,48 @@
+<wfs:Transaction
+  service="WFS"
+  version="1.0.0"
+  xmlns:gd="http://www.refractions.net"
+  xmlns:gml="http://www.opengis.net/gml"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.refractions.net http://localhost:8080/geoserver/wfs/DescribeFeatureType?typeName=buildings"
+>
+  <wfs:Insert>
+	<gd:buildings fid="buildings.7">
+		<gd:the_geom>
+			<gml:MultiPolygon srsName="http://www.opengis.net/gml/srs/epsg.xml#0">
+				<gml:polygonMember>
+<gml:Polygon>
+	<gml:outerBoundaryIs>
+		<gml:LinearRing>
+			<gml:coordinates decimal="." cs="," ts=" ">
+560119.11,5246772.66 560119.16,5246826.31 560161.84,5246826.14 560162.4,5246772.5 560119.11,5246772.66
+			</gml:coordinates>
+		</gml:LinearRing>
+		</gml:outerBoundaryIs>
+</gml:Polygon>
+				</gml:polygonMember>
+			</gml:MultiPolygon>
+		</gd:the_geom>
+		<gd:POLY>PC01_15</gd:POLY>
+		<gd:POLY_OBRP>PC</gd:POLY_OBRP>
+		<gd:LABEL>2000400</gd:LABEL>
+		<gd:TO_GROUND> </gd:TO_GROUND>
+		<gd:STATUS> </gd:STATUS>
+		<gd:PRODUCT> </gd:PRODUCT>
+		<gd:COVERED> </gd:COVERED>
+		<gd:TOWER_TYPE> </gd:TOWER_TYPE>
+		<gd:UNINCORPOR> </gd:UNINCORPOR>
+		<gd:POPULATION> </gd:POPULATION>
+		<gd:CAPITAL> </gd:CAPITAL>
+		<gd:CAPITAL0> </gd:CAPITAL0>
+		<gd:SEAT> </gd:SEAT>
+		<gd:CLASS>-9</gd:CLASS>
+		<gd:PHOTOREVIS> </gd:PHOTOREVIS>
+		<gd:WIDTH>-999</gd:WIDTH>
+		<gd:ANGLE>-99</gd:ANGLE>
+		<gd:ESTIMATE> </gd:ESTIMATE>
+	</gd:buildings>	
+  </wfs:Insert>
+</wfs:Transaction>

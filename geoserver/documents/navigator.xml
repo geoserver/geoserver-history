@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+  <title>GeoServer Documentation</title>
+
+  <section>
+    <title>User</title>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink url="user/quickstart.html">Quickstart</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="user/install.html">Install</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="user/advanced.html">Advanced</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="user/wms.html">WMS</ulink></para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Developer</title>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink
+        url="developer/dev_intro.html">Introduction</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/build_docs.html">Building</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/design.html">Design</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/dev_files.html">Configuration
+        Files</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/hacking.html">Hacking</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/howToConfig.html">How to
+        Config</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="release_guide.html">Release Guide</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/license.html">License</ulink></para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Resources</title>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink url="user/DataStoreUserGuide.pdf">DataSource User
+        Guide</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="user/FeatureTypeUserGuide.pdf">FeatureType User
+        Guide</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="user/ValidationUserGuide.pdf">Validation User
+        Guide</ulink></para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</article>

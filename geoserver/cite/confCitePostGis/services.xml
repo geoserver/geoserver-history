@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+Service level configuration
+-->
+<serverConfiguration>
+  <global>
+
+      <!-- Defines the logging level.  Common options are SEVERE,
+           WARNING, INFO, CONFIG, FINE, FINER, FINEST, in order of
+           Increasing statements logged.
+       -->
+     <loggingLevel>FINE</loggingLevel>
+
+
+     <!-- Sets the maximum features returned by GeoServer.  This used to
+          be necessary, due to out of memory errors.  The server is much
+          more scalable now, but admins may use it to limit the amount of
+          data returned, so naive clients don't ask for megabytes.
+       -->
+     <!--     
+     <maxFeatures value="1000000"/>
+     -->
+
+     <!-- Sets if the xml returned should have line feeds and indents. 
+          The default is true.  Setting it to false will cut down on
+          the amount of blank spaces returned to clients, and is recommended
+          if humans will not read the output -->
+     <verbose value="true"/>
+
+     <!-- Sets the max number of decimal places past the zero returned in
+          the gml coordinates of a GetFeature response.  Default is 4 -->
+     <numDecimals value="8"/>
+
+    <!-- Sets the global character set.  This could use some more testing
+          from international users, but what it does is sets the encoding
+          globally for all postgis database connections (the charset tag
+          in FeatureType), as well as specifying the encoding in the return
+          xml header and mime type.  The default is UTF-8.  Also be warned
+          that GeoServer does not check if the CharSet is valid before
+          attempting to use it, so it will fail miserably if a bad charset
+          is used.
+     -->     
+     <!--
+     <charSet value="ISO-8859-1"/>
+      -->
+
+     <!-- Define a base url for the location of the wfs schemas.
+          By default GeoServer loads and references its own at
+          <URL>/data/capabilities. Uncomment to enable.  The
+          standalone Tomcat server needs SchemaBaseUrl defined
+          for validation.
+      -->
+     <!--
+     <SchemaBaseUrl>http://schemas.opengis.net</SchemaBaseUrl>
+      -->
+
+     <!-- This element will rarely be used.  It's for users who -->
+     <!-- do not want the two dash style of delimiting.  So if -->
+     <!-- you're on linux you could use a :, so your directories -->
+     <!-- would be topp:rail, for example.  So unless you want -->
+     <!-- to customize that leave this field commented out. -->
+     <!--
+     <PrefixDelimiter>:</PrefixDelimiter>
+      -->
+  </global>
+  <services>
+
+      <service type="WCS" enabled="true">
+      <!-- Service elements, needed for the capabilities document -->
+      <!-- Title and OnlineResource are the two required -->
+      <name>My GeoServer WCS</name>
+      <title>My GeoServer WCS</title>
+      <abstract>
+This is a description of your Web Coverage Server.
+     </abstract>
+      <keywords>
+        <keyword>WCS</keyword>
+        <keyword>WMS</keyword>
+        <keyword>GEOSERVER</keyword>
+      </keywords>
+      <metadataLink about="http://geoserver.sourceforge.net/html/index.php" type="undef" metadataType="other">
+	NONE
+      </metadataLink>
+      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
+      <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
+    </service>
+    
+    <service type="WFS" enabled="true">
+      <!-- Service elements, needed for the capabilities document -->
+      <!-- Title and OnlineResource are the two required -->
+      <name>TOPP GeoServer</name>
+      <title>The Open Planning Project Basemap Server</title>
+      <abstract>This is a test server.  It contains some basemap data 
+from New York City.</abstract>
+      <keywords>
+        <keyword>WFS</keyword>
+        <keyword>TEST</keyword>
+        <keyword>NY</keyword>
+        <keyword>New York</keyword>
+      </keywords>
+      <onlineResource>http://www.openplans.org/</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
+      <maintainer>The Open Planning Project</maintainer>
+      <gmlPrefixing value="true"/>
+      <serviceLevel value="31"/>
+      <!-- Define mappings of namespaces to featureType directory
+           prefixes.  If only one namespace is present in this file it
+           becomes the default, if more than one namespace is present
+           then one must have its 'default' attribute set to true.
+           The default namespace is that which is assigned to featureTypes
+           that have no prefix (for example, "featureTypes/rail")
+           * This field is highly recommended.  If not present
+           then a namespace will be constructed for you.
+       -->
+      <namespace default="true"
+                 uri="http://www.openplans.org/topp"
+                 prefix="topp"/>
+      <namespace uri="http://www.opengis.net/cite/data"
+                 prefix="cdf"/>
+      <namespace uri="http://www.opengis.net/cite/geometry"
+                 prefix="cgf"/>
+    </service>
+
+    <service type="WMS" enabled="true">
+      <!-- Service elements, needed for the capabilities document -->
+      <!-- Title and OnlineResource are the two required -->
+      <name>FreeWMS</name>
+      <title>The Open Planning Project Basemap Server</title>
+      <abstract>This is a test server.  It contains some basemap data 
+from New York City.</abstract>
+      <keywords>
+        <keyword>WMS</keyword>
+        <keyword>TEST</keyword>
+        <keyword>NY</keyword>
+        <keyword>New York</keyword>
+      </keywords>
+      <onlineResource>http://www.openplans.org/</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
+      <maintainer>The Open Planning Project</maintainer>
+      <!-- The base URL where this servlet will run.  If running locally
+           then http://localhost:8080 (or whatever port you're running 
+on)
+           should work.  If you are serving to the world then this must 
+be
+           the location where the geoserver servlets appear-->
+      <URL>http://www.openplans.org:8081/geoserver/wms</URL>
+    </service>
+
+     <!-- This tag is to run the zserver module. -->
+     <!-- Set the run attribute to false or comment the tag -->
+     <!-- If you don't want the module to run. -->
+     <!-- The Port tag specifies which port to run on. -->
+     <service type="Z39.50" enabled="false">
+      <port>3210</port>
+     </service>
+  </services>
+</serverConfiguration>

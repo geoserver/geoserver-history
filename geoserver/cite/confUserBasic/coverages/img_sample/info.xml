@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage format="worldImageSample">
+	<name>Img_Sample</name>
+	<label>World Image</label>
+	<description>A sample Image World Grid Coverage.</description>
+	<metadataLink about="http://localhost:8080/geoserver" type="undef" metadataType="other">
+		NONE
+	</metadataLink>
+	<keywords>Image,WCS</keywords>
+	<envelope srsName="WGS84(DD)">
+		<pos>74.0 30.0</pos>
+		<pos>174.0 80.0</pos>
+	</envelope>
+	<supportedCRSs>
+		<requestCRSs codeSpace="0">WGS84</requestCRSs>
+		<responseCRSs codeSpace="0">WGS84</responseCRSs>
+	</supportedCRSs>
+	<supportedFormats nativeFormat="World Image">
+		<formats codeSpace="0">JPEG,PNG,TIFF,ArcGrid,ArcGrid-GZIP</formats>
+	</supportedFormats>
+	<supportedInterpolations default="nearest neighbor">
+		<interpolationMethods>nearest neighbor</interpolationMethods>
+	</supportedInterpolations>
+</coverage>

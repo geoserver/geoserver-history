@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+  <title>Quickstart</title>
+
+  <para>The GeoServer 1.2.* WFS and WMS server ships with a minimal
+  configuration of two shapefile and a couple of validation tests.</para>
+
+  <para>The steps are:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Install <ulink url="http://java.sun.com/j2se/1.4/">JDK1.4</ulink>.
+      On Unix, set the JAVA_HOME variable. On Windows, check to make sure the
+      JDK installation set JAVA_HOME correctly.</para>
+    </listitem>
+
+    <listitem>
+      <para>Download and install geoserver-1.2.*-bin.zip or
+      geoserver-1.2.*.exe. </para>
+    </listitem>
+
+    <listitem>
+      <para>Start GeoServer. With the windows installer you should have
+      specified a short cut location, for linux shell scripts will be
+      $GEOSERVER_HOME/bin</para>
+    </listitem>
+
+    <listitem>
+      <para>You may run a simple test by starting your container and entering
+      this address:</para>
+
+      <para><programlisting>http://localhost:8080/geoserver/wfs/GetCapabilities</programlisting></para>
+
+      <para>If GeoServer is running, you should see an XML capabilities
+      document. If you get nothing, then you should consult your server
+      documentation to see what has gone wrong.</para>
+    </listitem>
+
+    <listitem>
+      <para>To configure GeoServer enter the following address:</para>
+
+      <programlisting>http://locahost:8080/geoserver/</programlisting>
+
+      <para>GeoServer has to compile some data, this process should take a
+      minute or two. This is a one time only delay.</para>
+
+      <para>To interact with the configuration system you will need to login
+      with the user name <constant>admin</constant> and the password
+      <constant>geoserver</constant>. You can change the password at
+      Server-&gt;Config-&gt;Password.</para>
+    </listitem>
+  </orderedlist>
+
+  <para>Congratulations now have a working GeoServer installation!</para>
+
+  <para>The User Guides provide a series of walkthroughs using your new
+  GeoServer installation. If you want to make use of the WMS then you should
+  install <ulink
+  url="http://java.sun.com/products/java-media/jai/">JAI</ulink> and the
+  <ulink url="http://java.sun.com/developer/earlyAccess/jai_imageio/">Image
+  I/O extension</ulink>, see the WMS documentation page for more information.
+  For additional support an active user community is available by joining the
+  GeoServer <ulink url="https://sourceforge.net/mail/?group_id=25086">mailing
+  list</ulink>. We also strongly encourage you to submit bugs and improvements
+  you would like to see to our <ulink
+  url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">tracker</ulink>.
+  Should you require help, hover over the area of interest in the web
+  administration tool and a messge will appear.</para>
+</article>

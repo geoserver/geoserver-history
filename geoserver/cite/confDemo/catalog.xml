@@ -1,0 +1,109 @@
+<?config.xml version="1.0" encoding="UTF-8"?>
+<catalog>
+	<datastores>
+		<!--
+			a datastore configuration element serves as a common data source connection
+			parameters repository for all featuretypes it holds.
+		-->
+		<datastore namespace="gd" enabled="true" id="rivers">
+			<connectionParams>
+				<parameter value="gd" name="namespace" />
+				<parameter
+					value="file:data/featureTypes/rivers_rivers/rivers.shp" name="url" />
+			</connectionParams>
+		</datastore>
+		<datastore namespace="gd" enabled="true" id="roads">
+			<connectionParams>
+				<parameter value="gd" name="namespace" />
+				<parameter
+					value="file:data/featureTypes/roads_roads/roads.shp" name="url" />
+			</connectionParams>
+		</datastore>
+		<datastore namespace="gd" enabled="true" id="swamps">
+			<connectionParams>
+				<parameter value="gd" name="namespace" />
+				<parameter
+					value="file:data/featureTypes/swamps_swamps/swamps.shp" name="url" />
+			</connectionParams>
+		</datastore>
+		<datastore namespace="gd" enabled="true" id="lakes">
+			<connectionParams>
+				<parameter value="gd" name="namespace" />
+				<parameter
+					value="file:data/featureTypes/lakes_lakes/lakes.shp" name="url" />
+			</connectionParams>
+		</datastore>
+		<datastore namespace="gd" enabled="true" id="streams">
+			<connectionParams>
+				<parameter value="gd" name="namespace" />
+				<parameter
+					value="file:data/featureTypes/streams_streams/streams.shp"
+					name="url" />
+			</connectionParams>
+		</datastore>
+		<datastore namespace="cite" enabled="true" id="cite">
+			<connectionParams>
+				<parameter value="cite" name="namespace" />
+				<parameter
+					value="server/geoserver/data/featureTypes/citeProperties"
+					name="directory" />
+			</connectionParams>
+		</datastore>
+		<datastore namespace="gd" enabled="true" id="buildings">
+			<connectionParams>
+				<parameter value="gd" name="namespace" />
+				<parameter
+					value="data/featureTypes/buildings_buildings/buildings.shp"
+					name="url" />
+			</connectionParams>
+		</datastore>
+	</datastores>
+	<!--
+		Defines namespaces to be used by the datastores.
+	-->
+	<!-- Defines the Coverage Formats -->
+  <formats>
+    <!-- a format configuration element serves as a common source -->
+    <!-- repository for all coverages it holds.  -->
+    <format id="arcGridSample" enabled="true">
+    	<type>ArcGrid</type>
+		<description>A test ArcGrid Coverage</description>
+		<url>file:data/coverages/arc_sample/a.asc.gz</url>
+		<parameters>
+			<parameter name="Compressed" value="true"/>
+			<parameter name="GRASS" value="false"/>
+		</parameters>
+    </format>
+  </formats>
+	<namespaces>
+		<namespace uri="http://www.refractions.net" prefix="gd"
+			default="true" />
+		<namespace uri="http://www.opengeospatial.org/cite"
+			prefix="cite" />
+	</namespaces>
+	<!--
+		Defines the style ids to be used by the wms.  The files must be
+		contained in geoserver/misc/wms/styles.  We're working on finding
+		a better place for them, but for now that's where you must put them
+		if you want them on the server.
+	-->
+	<styles>
+		<style filename="red.sld" id="red" />
+		<style filename="blue-fill.sld" id="blueFill" />
+		<style filename="NamedPlaces.sld" id="cite_named_places" />
+		<style filename="MapNeatline.sld" id="cite_map_neatline" />
+		<style filename="Buildings.sld" id="cite_buildings" />
+		<style filename="Streams.sld" id="cite_streams" />
+		<style filename="gray.sld" id="gray" />
+		<style filename="green.sld" id="green" />
+		<style filename="Ponds.sld" id="cite_ponds" />
+		<style filename="normal.sld" id="normal" />
+		<style filename="RoadSegments.sld" id="cite_road_segments" />
+		<style filename="blue.sld" id="blue" />
+		<style filename="Forests.sld" id="cite_forests" />
+		<style filename="Bridges.sld" id="cite_bridges" />
+		<style filename="Lakes.sld" id="cite_lakes" />
+		<style filename="DividedRoutes.sld" id="cite_divided_routes" />
+	</styles>
+</catalog>
+
