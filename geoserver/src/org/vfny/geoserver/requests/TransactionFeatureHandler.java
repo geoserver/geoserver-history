@@ -47,6 +47,8 @@ public class TransactionFeatureHandler
     /** Stores current feature attributes. */
     private boolean insideFeature = false;
 
+    private boolean insideInsert = false;
+
    /** Stores current feature attributes. */
     private Object tempValue = null;
     private String attName = "";
@@ -66,7 +68,7 @@ public class TransactionFeatureHandler
 
     private TransactionFilterHandler parent;
 
-    private TypeRepository typeInfo = TypeRepository.getInstance();
+    private TypeRepository typeRepo = TypeRepository.getInstance();
 
       /**
      * Constructor with parent, which must implement GMLHandlerJTS.
@@ -94,32 +96,36 @@ public class TransactionFeatureHandler
     public void startElement(String namespaceURI, String localName, 
                              String qName, Attributes atts)
         throws SAXException {
-	  
-	
+
+	if (localName.equals("Insert")) {
+	    insideInsert = true;
+	} 
+	LOGGER.finer("checking out " + namespaceURI + ", " + localName + ", " + qName);
         // if it ends with Member we'll assume it's a feature for the time being
-        if (typeInfo.getType(localName) != null  ) {
-	    typeName = localName;
-            attributes = new Vector();
-            attributeNames = new Vector();
-            //currentFeature = new FeatureFlat();
-            insideFeature = true;
-            tempValue = null;
-            LOGGER.finest("Starting a feature " + localName);
-	    
-        } 
+	if (insideInsert && !(localName.equals("Insert"))) {
+	    String internalTypeName = typeRepo.getInternalTypeName(localName, namespaceURI);
+	    if (!insideFeature) {
+		if (internalTypeName != null ) {
+		    typeName = internalTypeName;
+		    attributes = new Vector();
+		    attributeNames = new Vector();
+		    //currentFeature = new FeatureFlat();
+		    insideFeature = true;
+		    tempValue = null;
+		LOGGER.finer("Starting a feature " + typeName);
+	    } else {
+		throw new SAXException("Could not find featureType with name " + localName +
+				       ", and uri: " + namespaceURI);
+	    }
+	}
 	if (insideFeature) {
             LOGGER.finest("inside feature " + localName);
             for (int i = 0; i < atts.getLength(); i++){
                 String name = atts.getLocalName(i);
-                if (name.equalsIgnoreCase("fid")){
-                    //currentFeature.setTypeName(localName);
-                    typeName = new String(localName);
-                    LOGGER.finest("set type name " + localName);
-                }
                 attributes.add(atts.getValue(i));
                 attributeNames.add(name);
             }
-            if(!typeName.equalsIgnoreCase(localName)){
+            if(!typeName.equalsIgnoreCase(internalTypeName)){
                 if (attName.equals("")){
                     LOGGER.finest("setting attName to " + localName);
                     attName = localName;
@@ -128,13 +134,14 @@ public class TransactionFeatureHandler
                     attName = attName+"/"+localName;
                 }
                 LOGGER.finest("attName now equals " + attName);
-            }
+	    }
             insideAttribute = true;
             return;
         } else if(insideAttribute){
             LOGGER.finest("inside attribute");
             
-        }else{
+        }
+	} else{
 	    parent.startElement(namespaceURI, localName, qName, atts);
             
         }
@@ -192,7 +199,11 @@ public class TransactionFeatureHandler
      * @throws SAXException Parsing error occurred while reading coordinates.
      */
     public void endElement(String namespaceURI, String localName, String qName) throws SAXException {        
-        if (typeName.equals(localName)) {
+	if (localName.equals("Insert")) {
+	    insideInsert = false;
+	}
+	String internalTypeName = typeRepo.getInternalTypeName(localName, namespaceURI);
+        if (typeName.equals(internalTypeName)) {
             AttributeType attDef[] = new AttributeTypeDefault[attributes.size()];
             for (int i = 0; i < attributes.size(); i++){
                 attDef[i] = new AttributeTypeDefault((String) attributeNames.get(i),attributes.get(i).getClass());
