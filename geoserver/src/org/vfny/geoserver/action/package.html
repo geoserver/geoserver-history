@@ -1,20 +1,22 @@
 <html>
   <head>
-    <title>package org.vfny.geoserver.action</title>
+    <title>GeoServer Action Package</title>
   </head>
   <body>
+    Control of the GeoServer application (Struts Actions).
     <p>
-    Contains Actions for the STRUTS framework.
-    </p>
-   
+    Struts Action subclasses, as contained in this package, opperate as the
+    controller in the Model-View-Controller design pattern.
+    </p>    
     <p>
-    All GeoServer STRUTS Actions should be branched off of GeoServerAction
-    which provides authentication for the configuration system.
+    Actions used by the GeoServer Configuration system should be branched
+    off of ConfigAction which provides common authentication.
     </p>
     
     <p>
     In the future we may wish to rethink this policy of other subsystems beside
     configuration start to make use of the STRUTS framework.
     </p>
+    
   </body>
 </html>

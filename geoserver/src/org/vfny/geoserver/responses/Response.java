@@ -17,24 +17,69 @@ import org.vfny.geoserver.requests.Request;
  *
  * <p>
  * The work flow for this kind of objects is divided in two parts: the first is
- * executing a request and the second writing the result to an OuputStream.<br>
- * Executing the request means taking a Request object and, based on it's set
- * of request parameters, do any heavy processing necessary to produce the
- * response. Once the execution has been made, the Response object should be
- * ready to send the response content to an output stream with minimal risk of
- * generating an exception. Anyway, it is not required, even recomended, that
- * the execution process generates the response content itself; just that it
- * performs any query or processing that should generate a trapable error.
+ * executing a request and the second writing the result to an OuputStream.
+ * </p>
+ * <ol>
+ * <li>Execute: execute(Request)
+ *    <ul>
+ *    <li>
+ *    Executing the request means taking a Request object and, based on it's set
+ *    of request parameters, do any heavy processing necessary to produce the
+ *    response.
+ *    </li>
+ *    <li>
+ *    Once the execution has been made, the Response object should be
+ *    ready to send the response content to an output stream with minimal risk
+ *    of generating an exception.
+ *    </li>
+ *    <li>
+ *    Anyway, it is not required, even recomended, that the execution process
+ *    generates the response content itself; just that it performs any query or
+ *    processing that should generate a trapable error.
+ *    </li>
+ *    <li>
+ *    Execute may throw a ServiceException if they wish to supply a specific
+ *    response in error. As an example the WFSTransaction process has a defined
+ *    Transaction Document with provisions for reporting error information. 
+ *    </li>
+ *    </ul>
+ * </li>
+ * <li>ContentType: getContentType()
+ *    <ul>
+ *    <li>
+ *    Called to set the response type. Depending on the stratagy used by
+ *    AbstractService the framework may be commited to returning this type.
+ *    </li>
+ *    </ul>
+ * </li>
+ * <li>Writing: writeTo(OutputStream)
+ *    <ul>
+ *    <li>
+ *    Write the response to the provided output stream.
+ *    </li>
+ *    <li>
+ *    Any exceptions thrown by this writeTo method may
+ *    never reach the end user in useable form. You should assume you are
+ *    writing directly to the client.
+ *    </li>
+ *    </ul>
+ * </ol>
+ * <p>
+ * <b>Note:</b> abort() will be called as part of error handling giving your
+ * response subclass a chance to clean up any temporary resources it may have
+ * required in execute() for use in writeTo(). 
+ * </p>
+ * <p>
  * This is specially usefull for streamed responses such as wfs GetFeature or
- * GlobalWMS GetMap, where the execution process can be used to parse parameters,
- * execute queries upon the corresponding data sources and leave things ready
- * to generate a streamed response when the consumer calls writeTo.
+ * GlobalWMS GetMap, where the execution process can be used to parse
+ * parameters, execute queries upon the corresponding data sources and leave
+ * things ready to generate a streamed response when the consumer calls writeTo.
  * </p>
  *
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.2.2.4 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: Response.java,v 1.2.2.5 2004/01/04 05:13:23 jive Exp $
  */
 public interface Response {
     /**
