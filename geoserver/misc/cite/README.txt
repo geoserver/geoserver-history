@@ -13,7 +13,11 @@ and give that user permissions on the database.  You can create a user
 with the createuser utility in pgsql/bin.  And be sure to run the 
 postgis scripts to initialize that db for postgis.  Then run 
 'psql -f cite_data.sql cite', and the script should do all the work.
-
+If you created the cite user on an already exisiting database, you may
+run into the permissions problem.  To get around this uncomment the 
+GRANT ALL lines in the middle of cite_data.sql and use those.  You
+also may uncomment the connect line and connect with the user who
+does have permissions to drop and add tables.
 
 If you want to just use your current database that's fine too, but 
 you'll have to edit a few of the files.  The cite_data.sql should 

@@ -9,9 +9,9 @@
 -- connecting with must have the appropriate permissions to do that.  
 
 
---change this to the user you created the database with if you have not
---created a cite user with no password or cite as the password.
-\connect - cite
+-- Uncomment and change this to the user who has permissions to drop and
+-- create tables in this db.
+-- \connect - cite
 
 
 
