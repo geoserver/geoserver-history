@@ -53,7 +53,7 @@ public class GeoZServer extends Thread
 
     /** sets the logging level. */
     static {
-	LOGGER.setLevel(Level.parse("FINER"));
+	//LOGGER.setLevel(Level.parse("FINER"));
     }
 
   private int socket_timeout = 300000;  // 300 second default timeout
@@ -123,8 +123,8 @@ public class GeoZServer extends Thread
 	if ( timeout_str != null ) {
 	    socket_timeout = Integer.parseInt(timeout_str);
 	}
-	LOGGER.finer("Creating ZServer on port: "+port_str+
-             " (timeout="+socket_timeout+")");
+	LOGGER.info("Creating ZServer on port: "+port_str);
+		    //+" (timeout="+socket_timeout+")");
 
     server_socket = new ServerSocket(Integer.parseInt(port_str));
     GeoIndexer indexer = new GeoIndexer(server_properties);
@@ -146,7 +146,7 @@ public class GeoZServer extends Thread
 	server_socket.close();
     }
     catch (java.io.IOException e) {
-	LOGGER.warning("problem with zserver " + e);
+	LOGGER.finer("problem with zserver " + e);
     } 
   }
     
