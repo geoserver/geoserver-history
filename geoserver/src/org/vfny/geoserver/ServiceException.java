@@ -13,10 +13,42 @@ import java.util.logging.*;
 /**
  * Represents a standard OGC service exception.  Able to turn itself into the
  * proper xml response.
- *
+ * <p>
+ * JG - here is my guess on what the parameters do:
+ * </p>
+ * <pre><code>
+ * [?xml version="1.0" ?]
+ * [ServiceExceptionReport
+ *    version="1.2.0"
+ *    xmlns="http://www.opengis.net/ogc"
+ *    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ *    xsi:schemaLocation="http://www.opengis.net/ogc <i>SchemaBaseUrl</i> wfs/1.0.0/OGC-exception.xsd"]
+ *   [ServiceException code="<i>code</i>"
+ *                     locator="<i>locator</i>"]
+ *     </i>preMessage<i>:<i>getMessage()</i>
+ *     <i>stack trace</i>
+ *   [/ServiceException]
+ * [/ServiceExceptionReport]     
+ * </code></pre>
+ * <p>
+ * Where:
+ * </p>
+ * <ul>
+ * <li>code: is a diagnostic code</li>
+ * <li>locator: is the java class that caused the problem</li>
+ * <li>preMessage: is your chance to place things in user terms</li>
+ * <li>message: is the exception message</li>
+ * <li>stack trace: is the exception strack trace</li>
+ * </ul>
+ * <p>
+ * Java Exception have recently developed the ability to contain other
+ * exceptions. By calling initCause on your Service Exception you can get
+ * the real exception included in the stacktrace above.
+ * </p>
+ * 
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.1.2.3 2003/11/14 20:39:04 groldan Exp $
+ * @version $Id: ServiceException.java,v 1.1.2.4 2003/11/16 07:39:37 jive Exp $
  */
 public class ServiceException extends Exception
 {
@@ -30,10 +62,13 @@ public class ServiceException extends Exception
     /** full classpath of originating GeoServer class */
     protected String locator = new String();
 
-    /** the standard exception that was thrown */
-    protected Exception standardException = new Exception();
+    /**
+     * the standard exception that was thrown
+     * JG - this does not appear to be used anywhere?
+     */
+    //protected Exception standardException = new Exception();
 
-    /** DOCUMENT ME!  */
+    /**  Diagnostic code  */
     protected String code = new String();
 
     /**
@@ -55,7 +90,15 @@ public class ServiceException extends Exception
 
         LOGGER.fine(this.getMessage());
     }
-
+    /**
+     * This should be the most used entry point.
+     * 
+     * @param message User message
+     * @param cause The origional exception that caused failure
+     */
+    public ServiceException(String message, Throwable cause){
+        super( message, cause );
+    }
     /**
      * Empty constructor.
      *

@@ -11,7 +11,7 @@ package org.vfny.geoserver;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: WfsException.java,v 1.1.2.2 2003/11/14 20:39:04 groldan Exp $
+ * @version $Id: WfsException.java,v 1.1.2.3 2003/11/16 07:39:37 jive Exp $
  *
  * @task REVISIT: refactor this to be named ServiceException?  To reflect the
  *       1.0 spec better?  Backwards compatible exceptions for .14 and .15
@@ -27,7 +27,7 @@ public class WfsException extends ServiceException
     }
 
     /**
-     * Empty constructor.
+     * Message constructor.
      *
      * @param message The message for the .
      */
@@ -37,33 +37,36 @@ public class WfsException extends ServiceException
     }
 
     /**
-     * Empty constructor.
+     * Throwable constructor.
      *
      * @param e The message for the .
      */
     public WfsException(Throwable e)
     {
-        super(e);
+        super(e);        
     }
 
     /**
-     * Empty constructor.
+     * Message Locator constructor.
      *
      * @param message The message for the .
-     * @param locator The message for the .
+     * @param locator The java class that caused the problem
      */
     public WfsException(String message, String locator)
     {
-        super(message);
-        this.locator = locator;
+        super(message, locator );        
     }
 
+
+    public WfsException( String message, Throwable cause ){
+        super( message, cause );
+    }
     /**
      * DOCUMENT ME!
      *
-     * @param e The message for the .
+     * @param e The cause of failure
      * @param preMessage The message to tack on the front.
-     * @param locator The message for the .
+     * @param locator The java class that caused the problem
      */
     public WfsException(Throwable e, String preMessage, String locator)
     {
