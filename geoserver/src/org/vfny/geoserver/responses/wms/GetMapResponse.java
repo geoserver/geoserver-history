@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package 	;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
@@ -20,7 +20,7 @@ import java.util.*;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.3 2003/12/26 21:59:01 cholmesny Exp $
+ * @version $Id: GetMapResponse.java,v 1.3.4.1 2004/02/02 22:47:22 cholmesny Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
@@ -34,10 +34,13 @@ public class GetMapResponse implements Response {
         producer = new SVGMapResponse();
         supportedMimeTypes.addAll(producer.getSupportedFormats());
         delegates.add(producer);
-
+        try {
         producer = new JAIMapResponse();
         supportedMimeTypes.addAll(producer.getSupportedFormats());
         delegates.add(producer);
+        } catch (NoClassDefFoundError ncdfe){
+        	//do nothing, no jai found, so the delegate just won't be added.
+        }
     }
 
     private GetMapDelegate delegate;
