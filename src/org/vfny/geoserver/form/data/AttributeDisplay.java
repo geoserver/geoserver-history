@@ -1,7 +1,6 @@
 package org.vfny.geoserver.form.data;
 
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 
 /**
  * Present Attribute information to user input.
@@ -23,9 +22,9 @@ public class AttributeDisplay {
         type = config.getType();
         fragment = config.getFragment();
     }
-    public AttributeDisplay( AttributeTypeInfoDTO dto ){
+    /*public AttributeDisplay( AttributeTypeInfoDTO dto ){
         this( new AttributeTypeInfoConfig( dto ));        
-    }     
+    }   */  
 	/**
 	 * @return Returns the fragment.
 	 */
