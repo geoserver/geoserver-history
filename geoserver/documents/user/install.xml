@@ -16,8 +16,9 @@
     to entry for geographic data providers.</para>
 
     <para>Before you can use GeoServer, you must successfully install <ulink
-    url="http://java.sun.com">Java</ulink>, and a Java Servlet container such
-    as <ulink url="http://jakarta.apache.org/tomcat/">Tomcat</ulink> or <ulink
+    url="http://java.sun.com">Java</ulink>, and optionally Java Servlet
+    container such as <ulink
+    url="http://jakarta.apache.org/tomcat/">Tomcat</ulink> or <ulink
     url="http://jetty.mortbay.com">Jetty</ulink>. A spatially enabled
     database, such as the freely available <ulink
     url="http://postgis.refractions.net">PostGIS</ulink>, is also recommended,
@@ -63,6 +64,12 @@
 
   <sect1 id="servlet">
     <title>Installing a Servlet Container</title>
+
+    <para>If you downloaded the binary (geoserver-1.2.*-bin.zip) or windows
+    (.exe) release of GeoServer you do not need to install a servlet
+    container, as GeoServer now includes an embedded Jetty servlet container.
+    But if you want to use your servlet container then the war install works
+    just fine.</para>
 
     <para>Several good open source, free servlet containers and a bevy of
     commercial ones exist on the market. We recommend <ulink
@@ -355,10 +362,10 @@ The document tree is shown below.</programlisting></para>
 
     <para>After creating the DataStore you may upload SLD files to serve as
     the Styles for GeoServer's WMS. For more on SLD see the <ulink
-    url="???">specification</ulink>. GeoServer is working to become a true
-    SLD-WMS, but for now the SLD files must be uploaded and defined using the
-    web administration interface. If the WMS is not needed then no additional
-    styles are needed.</para>
+    url="https://portal.opengeospatial.org/files/?artifact_id=1188">specification</ulink>.
+    GeoServer is working to become a true SLD-WMS, but for now the SLD files
+    must be uploaded and defined using the web administration interface. If
+    the WMS is not needed then no additional styles are needed.</para>
 
     <para>Finally you should create the appropriate FeatureTypes. Hitting the
     'New' button will generate a list of all the featureTypes in all the
@@ -680,8 +687,8 @@ The document tree is shown below.</programlisting></para>
     <title>Visualizing your Data</title>
 
     <para>GeoServer includes an integrated Web Map Service (WMS). For more
-    information about setting it up see <ulink url="???">WMS</ulink> section.
-    But using the web administration interface should be pretty self
+    information about setting it up see <ulink url="WMS.html">WMS</ulink>
+    section. But using the web administration interface should be pretty self
     explanatory, just make sure that you have Java Advanced Imaging (JAI)
     installed, it can be downloaded <ulink
     url="http://java.sun.com/products/java-media/jai/downloads/download-1_1_2.html">here</ulink>

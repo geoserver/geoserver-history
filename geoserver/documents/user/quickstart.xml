@@ -4,8 +4,8 @@
 <article>
   <title>Quickstart</title>
 
-  <para>The GeoServer 1.2.0-rc2 WFS server ships with a minimal configuration
-  of one shapefile and a couple of validation tests.</para>
+  <para>The GeoServer 1.2.* WFS and WMS server ships with a minimal
+  configuration of two shapefile and a couple of validation tests.</para>
 
   <para>The steps are:</para>
 
@@ -17,25 +17,19 @@
     </listitem>
 
     <listitem>
-      <para>Install a Servlet Container. We recommend <ulink
-      url="http://jetty.mortbay.org">Jetty</ulink> (open source, free to
-      non-commercial users) or <ulink
-      url="http://jakarta.apache.org/tomcat/index.html">Tomcat</ulink> (open
-      source, free).</para>
+      <para>Download and install geoserver-1.2.*-bin.zip or
+      geoserver-1.2.*.exe. </para>
     </listitem>
 
     <listitem>
-      <para>Install geoserver.war in your Servlet Container's webapps
-      directory.</para>
-
-      <para>If you are updating an existing installation remember to back up
-      your webapps/geoserver directory.</para>
+      <para>Start GeoServer. With the windows installer you should have
+      specified a short cut location, for linux shell scripts will be
+      $GEOSERVER_HOME/bin</para>
     </listitem>
 
     <listitem>
       <para>You may run a simple test by starting your container and entering
-      this address (localhost and the port refer to your Servlet
-      Container):</para>
+      this address:</para>
 
       <para><programlisting>http://localhost:8080/geoserver/wfs/GetCapabilities</programlisting></para>
 
@@ -49,9 +43,8 @@
 
       <programlisting>http://locahost:8080/geoserver/</programlisting>
 
-      <para>Your Servlet Container will compile all the JSP pages, this
-      process should take a minute or two. This is a one time only
-      delay.</para>
+      <para>GeoServer has to compile some data, this process should take a
+      minute or two. This is a one time only delay.</para>
 
       <para>To interact with the configuration system you will need to login
       with the user name <constant>admin</constant> and the password
@@ -65,9 +58,10 @@
   <para>The User Guides provide a series of walkthroughs using your new
   GeoServer installation. If you want to make use of the WMS then you should
   install <ulink
-  url="http://java.sun.com/products/java-media/jai/">JAI</ulink> and the Image
-  I/O extension, see the WMS documentation page for more information. For
-  additional support an active user community is available by joining the
+  url="http://java.sun.com/products/java-media/jai/">JAI</ulink> and the
+  <ulink url="http://java.sun.com/developer/earlyAccess/jai_imageio/">Image
+  I/O extension</ulink>, see the WMS documentation page for more information.
+  For additional support an active user community is available by joining the
   GeoServer <ulink url="https://sourceforge.net/mail/?group_id=25086">mailing
   list</ulink>. We also strongly encourage you to submit bugs and improvements
   you would like to see to our <ulink
