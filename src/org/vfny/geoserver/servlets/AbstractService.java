@@ -95,11 +95,11 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.20 2004/04/22 20:31:33 emperorkefka Exp $
+ * @version $Id: AbstractService.java,v 1.21 2004/05/22 04:35:35 cholmesny Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
+    protected static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
@@ -831,7 +831,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
@@ -848,6 +848,10 @@ class FileStratagy implements AbstractService.ServiceStratagy {
 
     /** Temporary file used by safe */
     private File temp;
+    
+	/** Class logger */
+	protected static Logger LOGGER = Logger.getLogger(
+			"org.vfny.geoserver.servlets");
 
     /**
      * Provides a outputs stream on a temporary file.
@@ -868,6 +872,7 @@ class FileStratagy implements AbstractService.ServiceStratagy {
         // (In case we are running two GeoServers at once)
         // - Could we use response.getHandle() in the filename?
         // - ProcessID is traditional, I don't know how to find that in Java
+        this.response = response;
         sequence++;
         temp = File.createTempFile("wfs" + sequence, "tmp");
 
@@ -885,6 +890,8 @@ class FileStratagy implements AbstractService.ServiceStratagy {
     public void flush() throws IOException {
         if ((temp == null) || (response == null) || (safe == null)
                 || !temp.exists()) {
+                	LOGGER.fine("temp is " + temp + ", response is " + 
+                	response + " safe is " + safe + ", temp exists " + temp.exists());
             throw new IllegalStateException(
                 "flush should only be called after getDestination");
         }
@@ -912,7 +919,7 @@ class FileStratagy implements AbstractService.ServiceStratagy {
 
             // Speed Writer closes output Stream
             // I would prefer to leave that up to doService...
-            // out.flush();
+            out.flush();
             // out.close();
         } catch (IOException ioe) {
             throw ioe;
