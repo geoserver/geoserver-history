@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.logging.Logger;
+import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.Servlet;
 import org.exolab.castor.xml.Unmarshaller;
@@ -52,7 +53,7 @@ public class ConfigInfo {
     private String rootDir;
 
     /** a Castor class to read internal configuration information */
-    private GlobalConfiguration global = new GlobalConfiguration();
+    private ServiceConfig global;
     /** Root directory for feature types */
     private String typeDir; //= ROOT_DIR + CONFIG_DIR + TYPE_DIR;
     /** Root directory of capabilities data */
@@ -122,27 +123,15 @@ public class ConfigInfo {
     }    
 
 
-    private static GlobalConfiguration readProperties(String configFile) {
-        GlobalConfiguration global = null;
-        try {
-            FileReader featureTypeDocument = new FileReader(configFile);
-            global = (GlobalConfiguration) Unmarshaller.
-                unmarshal(GlobalConfiguration.class, featureTypeDocument);
-        }
-        catch(FileNotFoundException e) {
-            LOG.finest("Configuration file does not exist: " + configFile);
-        }
-        catch(MarshalException e) {
-            LOG.finest("Castor could not unmarshal configuration file: " + 
-                        configFile);
-        }
-        catch(ValidationException e) {
-            LOG.finest("Castor says the config file isn't valid XML: "
-                        + configFile);
-        }        
-        return global;
-    } 
-
+    private static ServiceConfig readProperties(String configFile) {
+	ServiceConfig global = null;
+	try {
+	    global = ServiceConfig.getInstance(configFile);
+	} catch (ConfigurationException ce){
+	    LOG.warning("problem reading config file: " + ce.getMessage());
+	} 
+	return global;
+    }
 
     /** Returns root webserver application directory 
      * @return a string of the root directory, only works for drop
@@ -158,17 +147,26 @@ public class ConfigInfo {
     /** Returns user-specified abstract for this service */
     public String getAbstract() { return global.getAbstract(); }    
     /** Returns user-specified keywords for this service  */
-    public String getKeywords() { return global.getKeywords(); }    
+    public String getKeywords() { 
+	StringBuffer keywords = new StringBuffer();
+	Iterator keywordIter = global.getKeywords().iterator();
+	while (keywordIter.hasNext()) {
+	    keywords.append(keywordIter.next().toString());
+	    if (keywordIter.hasNext()){
+		keywords.append(", ");
+	    }
+	}
+	return keywords.toString(); 
+    }    
     /** Returns URL for this service */
     public String getOnlineResource(){ return global.getOnlineResource(); }
+    /** Returns URL for this service */
+    //REVIST: should this be different from onlineResource?  Re-add url field?
+    public String getUrl(){ return global.getOnlineResource(); }
     /** Returns user-specified fees for this service */
     public String getFees() { return global.getFees(); }
     /** Returns user-specified access constraints for this service */
     public String getAccessConstraints(){return global.getAccessConstraints();}
-    /** Returns user-specified maintainer for this service */
-    public String getMaintainer() { return global.getMaintainer(); }
-    /** Returns user-specified URL for this service */
-    public String getUrl() { return global.getURL(); }
 
     /** Returns fixed version number for this service */
     public String getFreeFsVersion() { return "0.9b"; }        
@@ -194,8 +192,9 @@ public class ConfigInfo {
      * @param wfsName Name of the WFS
      */
     public String getServiceXml(String wfsName) {
-            
-        StringBuffer tempResponse = new StringBuffer();
+           
+	return global.getWfsXml();
+	/* StringBuffer tempResponse = new StringBuffer();
         
         // Set service section of Response, based on Configuration input
         tempResponse.append("  <Service>\n");
@@ -215,5 +214,6 @@ public class ConfigInfo {
         
         // Concatenate into XML output stream
         return tempResponse.toString();
+	*/
     }
 }
