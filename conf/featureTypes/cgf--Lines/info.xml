@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<featureType datastore="cgf">
+<featureType datastore="cgf1">
 	<name>Lines</name>
 	<title>The cite:LineString layer</title>
 	<abstract>Test linestring features for the CITE project</abstract>
