@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.9 2003/11/14 03:00:31 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.10 2003/11/14 03:14:31 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -265,12 +265,8 @@ public class FeatureResponse implements Response {
 
             ServerConfig config = ServerConfig.getInstance();
             WFSConfig wfsConfig = config.getWFSConfig();
-            String wfsSchemaLoc = config.getGlobalConfig().getSchemaBaseUrl()
-                + "wfs/1.0.0/WFS-basic.xsd";
-            String fSchemaLoc = wfsConfig.getURL()
-                + "?request=DescribeFeatureType&" //HACK: bad hard code here.
-                + "typeName=" + typeNames;
-                
+            String wfsSchemaLoc = wfsConfig.getWfsBasicLocation();
+            String fSchemaLoc = wfsConfig.getDescribeUrl(typeNames.toString());
             namespace = meta.getDataStore().getNameSpace();
             transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
             transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
