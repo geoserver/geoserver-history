@@ -15,6 +15,7 @@ import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.NameSpaceConfig;
 
 
 /**
@@ -43,8 +44,8 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UserContainer.java,v 1.7 2004/02/09 23:29:41 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: UserContainer.java,v 1.8 2004/02/18 19:32:51 emperorkefka Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";
@@ -75,6 +76,8 @@ public class UserContainer implements HttpSessionBindingListener {
      * </p>
      */
     private DataStore dataStore;
+    
+    private NameSpaceConfig namespaceConfig;
 
     /**
      * Selected FeatureType Config held in session for editing/creation.
@@ -357,4 +360,22 @@ public class UserContainer implements HttpSessionBindingListener {
     public void setFeatureTypeConfig(FeatureTypeConfig featureTypeConfig) {
         this.featureTypeConfig = featureTypeConfig;
     }
+	/**
+	 * Access namespaceConfig property.
+	 * 
+	 * @return Returns the namespaceConfig.
+	 */
+	public NameSpaceConfig getNamespaceConfig() {
+		return namespaceConfig;
+	}
+
+	/**
+	 * Set namespaceConfig to namespaceConfig.
+	 *
+	 * @param namespaceConfig The namespaceConfig to set.
+	 */
+	public void setNamespaceConfig(NameSpaceConfig namespaceConfig) {
+		this.namespaceConfig = namespaceConfig;
+	}
+
 }

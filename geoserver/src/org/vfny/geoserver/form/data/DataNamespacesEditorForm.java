@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
+import org.vfny.geoserver.requests.Requests;
 
 
 /**
@@ -23,13 +24,13 @@ import org.vfny.geoserver.config.NameSpaceConfig;
  * @author rgould To change the template for this generated type comment go to
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataNamespacesForm extends ActionForm {
+public class DataNamespacesEditorForm extends ActionForm {
     private String URI;
     private boolean _default;
     private String prefix;
-    private String selectedNamespace;
-    private String action;
-    private TreeSet namespaces;
+
+
+
     private HttpServletRequest request;
 
     /*
@@ -49,22 +50,13 @@ public class DataNamespacesForm extends ActionForm {
         this.request = request;
 
         defaultChecked = false;
-        action = "";
 
         ServletContext context = getServlet().getServletContext();
         DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-        namespaces = new TreeSet(config.getNameSpaces().keySet());
-
         NameSpaceConfig nsConfig;
 
-        selectedNamespace = (String) request.getSession().getAttribute("selectedNamespace");
-
-        nsConfig = config.getNameSpace(selectedNamespace);
-
-        if (nsConfig == null) {
-            nsConfig = config.getNameSpace((String) namespaces.first());
-        }
+        nsConfig = Requests.getUserContainer(request).getNamespaceConfig();
 
         _default = nsConfig.isDefault();
         prefix = nsConfig.getPrefix();
@@ -151,50 +143,7 @@ public class DataNamespacesForm extends ActionForm {
         defaultChecked = b;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getSelectedNamespace() {
-        return selectedNamespace;
-    }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setSelectedNamespace(String string) {
-        
-        request.getSession().setAttribute("selectedNamespace", string);
-        selectedNamespace = string;
-    }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getAction() {
-        return action;
-    }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setAction(String string) {
-        action = string;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public TreeSet getNamespaces() {
-        return namespaces;
-    }
 }
