@@ -7,6 +7,7 @@ package org.vfny.geoserver.responses.wfs;
 import org.geotools.data.*;
 import org.geotools.feature.*;
 import org.geotools.gml.producer.*;
+import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.requests.*;
@@ -23,7 +24,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.2 2003/11/06 23:48:42 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.3 2003/11/11 02:49:37 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -113,6 +114,7 @@ public class FeatureResponse implements Response {
         }
 
         int maxFeatures = request.getMaxFeatures();
+        LOGGER.info("request is " + request);
 
         /**
          * @task TODO: request can have more than one query, so figure out how
@@ -134,9 +136,25 @@ public class FeatureResponse implements Response {
         FeatureType schema = meta.getSchema();
         NameSpace namespace = meta.getDataStore().getNameSpace();
         transformer.setIndentation(2);
-        transformer.getFeatureTypeNamespaces().declareDefaultNamespace(namespace
-            .getPrefix(), namespace.getUri());
+        transformer.setMaxFeatures(maxFeatures);
 
+        FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
+        ftNames.declareDefaultNamespace(namespace.getPrefix(),
+            namespace.getUri());
+
+        ServerConfig config = ServerConfig.getInstance();
+        WFSConfig wfsConfig = config.getWFSConfig();
+        String wfsSchemaLoc = config.getGlobalConfig().getSchemaBaseUrl()
+            + "wfs/1.0.0/WFS-basic.xsd";
+        String fSchemaLoc = wfsConfig.getURL()
+            + "?request=DescribeFeatureType&" //HACK: bad hard code here.
+            + "typeName=" + meta.getName();
+        transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
+        transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
+
+        //ftNames.declareNamespace(schema, namespace.getPrefix(), namespace.getUri());
+        //        transformer.getFeatureTypeNamespaces().declareDefaultNamespace(namespace
+        //.getPrefix(), namespace.getUri());
         //transformer.setPrettyPrint(config.getGlobalConfig().isVerbose());
         //transformer.setDefaultNamespace(config.getCatalog().getDefaultNameSpace()
         //                                  .getUri());
