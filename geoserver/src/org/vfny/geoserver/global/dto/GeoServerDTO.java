@@ -2,15 +2,14 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.vfny.geoserver.global.dto;
 
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
+//Yeah, I know this shouldn't go here, but we aren't setting our loggers
+//anywhere, and this is the easiest place to do it since it's central. ch
+import org.vfny.geoserver.global.Log4JFormatter;
 
 /**
  * Data Transfer Object for Global GeoServer Configuration information.
@@ -22,11 +21,11 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.7 2004/02/09 18:02:23 dmzwiers Exp $
+ * @version $Id: GeoServerDTO.java,v 1.8 2004/04/03 13:10:49 cholmesny Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
     /** Sets the max number of Features returned by GetFeature */
-    private int maxFeatures = Integer.MAX_VALUE;
+    private int maxFeatures = Defaults.MaxFeatures;
 
     /**
      * XML Verbosity.
@@ -42,7 +41,7 @@ public final class GeoServerDTO implements DataTransferObject {
      * </p>
      * Default is false
      */
-    private boolean verbose = true;
+    private boolean verbose = Defaults.Verbose;
 
     /**
      * Number of decimal places returned in a GetFeature response.
@@ -54,7 +53,7 @@ public final class GeoServerDTO implements DataTransferObject {
      * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has a
      * getFeature response
      */
-    private int numDecimals = 4;
+    private int numDecimals = Defaults.NumDecimals;
 
     /**
      * Sets the global character set.
@@ -78,7 +77,7 @@ public final class GeoServerDTO implements DataTransferObject {
      * is used.
      * </p>
      */
-    private Charset charSet = Charset.forName("UTF-8");
+    private Charset charSet = Defaults.Encoding;
 
     /**
      * Define a base url for the location of the wfs schemas.
@@ -109,10 +108,12 @@ public final class GeoServerDTO implements DataTransferObject {
      * seems to also use log4j.
      * </p>
      */
-    private Level loggingLevel = null;
+    private Level loggingLevel = Defaults.LoggingLevel;
 
     /** The Server contact person and their contact information. */
     private ContactDTO contact = null;
+    private String adminUserName = Defaults.AdminUserName;
+    private String adminPassword = Defaults.AdminPassword;
 
     /**
      * GlobalConfig constructor.
@@ -357,20 +358,6 @@ public final class GeoServerDTO implements DataTransferObject {
         this.contact = contact;
     }
 
-    /*
-     * setLoggingLevel purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param i
-     */
-
-    //public void setLoggingLevel(Level level) {
-    //	loggingLevel = level;
-    //}
-
     /**
      * setMaxFeatures purpose.
      * 
@@ -448,5 +435,72 @@ public final class GeoServerDTO implements DataTransferObject {
     public void setLoggingLevel(Level level) {
         //init this now so the rest of the config has correct log levels.
         loggingLevel = level;
+		Log4JFormatter.init("org.geotools", loggingLevel);
+		Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
+    }
+
+    /**
+     * Gets the user name of the administrator of GeoServer, for login
+     * purposes.
+     *
+     * @return The administrator's password.
+     */
+    public String getAdminUserName() {
+        return adminUserName;
+    }
+
+    /**
+     * Sets the user name of the administrator of GeoServer, for login
+     * purposes.
+     *
+     * @param username the String to set as the admin username.
+     */
+    public void setAdminUserName(String username) {
+        this.adminUserName = username;
+    }
+
+    /**
+     * Gets the password of the administrator of GeoServer, for login purposes.
+     *
+     * @return The password of the administrator.
+     */
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    /**
+     * Sets the password of the administrator of GeoServer, for login purposes.
+     *
+     * @param password The password to set as the login password.
+     */
+    public void setAdminPassword(String password) {
+        this.adminPassword = password;
+    }
+
+    public static class Defaults {
+        /**
+         * The default MaxFeatures is 10000
+         *
+         * @see #getMaxFeatures(int)
+         */
+        public static final int MaxFeatures = 10000;
+
+        /**
+         * The default encoding for GeoServer it UTF-8.
+         *
+         * @see #getCharSet()
+         */
+        public static final Charset Encoding = Charset.forName("UTF-8");
+
+        /** The default verbosity is true, human readable. */
+        public static final boolean Verbose = true;
+
+        /** Default is four decimal places. */
+        public static final int NumDecimals = 4;
+
+        /** The default logging level is info. */
+        public static final Level LoggingLevel = Level.INFO;
+        public static final String AdminUserName = "admin";
+        public static final String AdminPassword = "geoserver";
     }
 }

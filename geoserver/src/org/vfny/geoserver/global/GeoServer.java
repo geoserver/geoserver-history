@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.16 2004/03/30 04:49:11 cholmesny Exp $
+ * @version $Id: GeoServer.java,v 1.17 2004/04/03 13:10:48 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -37,6 +37,8 @@ public class GeoServer extends GlobalLayerSupertype {
     private boolean verbose = true;
     private int numDecimals = 4;
     private Charset charSet = Charset.forName("UTF-8");
+    private String adminUserName = "admin";
+    private String adminPassword;
     private String schemaBaseUrl;
     private String contactPerson;
     private String contactOrganization;
@@ -351,140 +353,6 @@ public class GeoServer extends GlobalLayerSupertype {
     }
 
     /**
-     * Gets the config for the WMS.
-     *
-     * @param dto DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-
-    /*public WMS getWMS() {
-       return wms;
-       }*/
-
-    /**
-     * Gets the config for the WFS.
-     *
-     * @param dto DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-
-    /*public WFS getWFS() {
-       return wfs;
-       }*/
-
-    /**
-     * Gets the config for the Data.
-     *
-     * @param dto DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-
-    /*public Data getData() {
-       return data;
-       }*/
-
-    /**
-     * load purpose.
-     * 
-     * <p>
-     * Loads the specified DTOs.
-     * </p>
-     *
-     * @param dto WMSDTO The wms data.
-     *
-     * @throws ConfigurationException If an error occurs.
-     */
-
-    /*public void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
-       DataDTO data, File baseDir ) throws ConfigurationException {
-       load(geoServer);
-       load(wms);
-       load(wfs);
-       load(data, baseDir );
-       }*/
-    /*private Map testSuites;
-       private Map plugIns;
-    
-       public void load(Map testSuites, Map plugIns){
-               this.testSuites = testSuites;this.plugIns = plugIns;
-               try{
-                       processor = new ValidationProcessor(testSuites,plugIns);
-               }catch(Exception e){
-                       e.printStackTrace();
-               }
-       }
-    
-       public Map toPlugInDTO(){
-               return plugIns;
-       }
-    
-       public Map toTestSuiteDTO(){
-               return testSuites;
-       }*/
-
-    /**
-     * load purpose.
-     * 
-     * <p>
-     * Loads the specified DTOs.
-     * </p>
-     *
-     * @param dto WMSDTO The wms data.
-     *
-     * @throws ConfigurationException If an error occurs.
-     */
-
-    /*public void load(WMSDTO wms, WFSDTO wfs) throws ConfigurationException {
-       load(wms);
-       load(wfs);
-       }*/
-
-    /**
-     * load purpose.
-     * 
-     * <p>
-     * Loads the WMSDTO into the current instance as a WMS object
-     * </p>
-     *
-     * @param dto WMSDTO
-     *
-     * @throws ConfigurationException If an error occurs
-     */
-
-    /*public void load(WMSDTO wms) throws ConfigurationException {
-       if (wms != null) {
-           this.wms = new WMS((WMSDTO) wms.clone());
-       } else {
-           throw new ConfigurationException(
-               "load(WMSDTO) expected a non-null value");
-       }
-       }*/
-
-    /**
-     * load purpose.
-     * 
-     * <p>
-     * Loads the WFSDTO into the current instance as a WFS object
-     * </p>
-     *
-     * @param dto WFSDTO
-     *
-     * @throws ConfigurationException If an error occurs
-     */
-
-    /*public void load(WFSDTO wfs) throws ConfigurationException {
-       if (wfs != null) {
-           this.wfs = new WFS((WFSDTO) wfs.clone());
-       } else {
-           throw new ConfigurationException(
-               "load(WFSDTO) expected a non-null value");
-       }
-       }*/
-
-    /**
      * load purpose.
      * 
      * <p>
@@ -515,154 +383,15 @@ public class GeoServer extends GlobalLayerSupertype {
             numDecimals = dto.getNumDecimals();
             schemaBaseUrl = dto.getSchemaBaseUrl();
             verbose = dto.isVerbose();
+            adminUserName = dto.getAdminUserName();
+            adminPassword = dto.getAdminPassword();
         } else {
             throw new ConfigurationException(
                 "load(GeoServerDTO) expected a non-null value");
         }
     }
 
-    /**
-     * Loads the DataDTO into the current instance as a Data object
-     *
-     * @return DOCUMENT ME!
-     */
-
-    /*public void load(DataDTO data) throws ConfigurationException {
-       if (data != null) {
-               this.data.load((DataDTO) data.clone());
-       } else {
-           throw new ConfigurationException(
-               "load(DataDTO) expected a non-null value");
-       }
-       }
     
-       public void load(DataDTO data, File baseDir) throws ConfigurationException {
-               if (data != null) {
-                       if (this.data == null) {
-                               this.data = new Data((DataDTO) data.clone(),baseDir);
-                       } else {
-                               this.data.load((DataDTO) data.clone());
-                       }
-               } else {
-                       throw new ConfigurationException(
-                       "load(DataDTO) expected a non-null value");
-               }
-       }*/
-
-    /**
-     * getDTO purpose.
-     * 
-     * <p>
-     * Generates a WMSDTO for the WMS provided.
-     * </p>
-     *
-     * @return WMSDTO the generated object
-     */
-
-    /*public static WMSDTO getDTO(WMS wms) {
-       return (WMSDTO) ((WMSDTO) wms.toDTO()).clone();
-       }*/
-
-    /**
-     * getDTO purpose.
-     * 
-     * <p>
-     * Generates a WFSDTO for the WFS provided.
-     * </p>
-     *
-     * @return WFSDTO the generated object
-     */
-
-    /*public static WFSDTO getDTO(WFS wfs) {
-       WFSDTO w = (WFSDTO) wfs.toDTO();
-       w = (WFSDTO) w.clone();
-       return (w);
-       }*/
-
-    /**
-     * getDTO purpose.
-     * 
-     * <p>
-     * Generates a GeoServerDTO for the GeoServer provided.
-     * </p>
-     *
-     * @return GeoServerDTO the generated object
-     */
-
-    /*public static GeoServerDTO getDTO(GeoServer gs) {
-       return (GeoServerDTO) ((GeoServerDTO) gs.toDTO()).clone();
-       }*/
-
-    /**
-     * getDTO purpose.
-     * 
-     * <p>
-     * Generates a DataDTO for the Data provided.
-     * </p>
-     *
-     * @return DataDTO the generated object
-     */
-
-    /*public static DataDTO getDTO(Data dt) {
-       return (DataDTO) ((DataDTO) dt.toDTO()).clone();
-       }*/
-
-    /**
-     * toWMSDTO purpose.
-     * 
-     * <p>
-     * Generates a WMSDTO object from the WMS object inside this instance.
-     * </p>
-     *
-     * @return WMSDTO the generated object
-     */
-
-    /*public WMSDTO toWMSDTO() {
-       return getDTO(wms);
-       }*/
-
-    /**
-     * toWFSDTO purpose.
-     * 
-     * <p>
-     * Generates a WFSDTO object from the WFS object inside this instance.
-     * </p>
-     *
-     * @return WFSDTO the generated object
-     */
-
-    /*public WFSDTO toWFSDTO() {
-       return getDTO(wfs);
-       }*/
-
-    /**
-     * toGeoServerDTO purpose.
-     * 
-     * <p>
-     * Generates a GeoServerDTO object from the GeoServer object inside this
-     * instance.
-     * </p>
-     *
-     * @return GeoServerDTO the generated object
-     */
-
-    /*public GeoServerDTO toGeoServerDTO() {
-       return (GeoServerDTO) toDTO();
-       }*/
-
-    /**
-     * toDataDTO purpose.
-     * 
-     * <p>
-     * Generates a DataDTO object from the Data object inside this instance.
-     * </p>
-     *
-     * @return DataDTO the generated object
-     */
-
-    /*public DataDTO toDataDTO() {
-       return getDTO(data);
-       }*/
 
     /**
      * toDTO purpose.
@@ -683,6 +412,8 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setNumDecimals(numDecimals);
         dto.setSchemaBaseUrl(schemaBaseUrl);
         dto.setVerbose(verbose);
+        dto.setAdminUserName(adminUserName);
+        dto.setAdminPassword(adminPassword);
 
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
@@ -702,16 +433,6 @@ public class GeoServer extends GlobalLayerSupertype {
 
         return dto;
     }
-
-    /**
-     * Access processor property.
-     *
-     * @return Returns the processor.
-     */
-
-    /*public ValidationProcessor getProcessor() {
-       return processor;
-       }*/
 
     /**
      * DOCUMENT ME!

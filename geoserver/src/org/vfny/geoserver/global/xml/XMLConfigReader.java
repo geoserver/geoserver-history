@@ -63,7 +63,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.34 2004/02/16 22:56:03 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.35 2004/04/03 13:10:49 cholmesny Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -399,6 +399,16 @@ public class XMLConfigReader {
             geoServer.setSchemaBaseUrl(schemaBaseUrl);
         } else {
             geoServer.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
+        }
+        
+        String adminUserName = ReaderUtils.getChildText(globalElem, "adminUserName");
+        if (adminUserName != null){
+        	geoServer.setAdminUserName(adminUserName);
+        }
+        
+        String adminPassword = ReaderUtils.getChildText(globalElem, "adminPassword");
+        if (adminPassword != null){
+        	geoServer.setAdminPassword(adminPassword);
         }
     }
 
