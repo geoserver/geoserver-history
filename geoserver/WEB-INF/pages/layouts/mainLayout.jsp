@@ -30,7 +30,7 @@
       <!-- @import url("<html:rewrite forward='style'/>"); -->
     </style>
   
-    <link type="/geoserver/image/gif" href="<html:rewrite forward='icon'/>" rel="icon"/>
+    <link type="image/gif" href="<html:rewrite forward='icon'/>" rel="icon"/>
     <link href="<html:rewrite forward='favicon'/>" rel="SHORTCUT ICON"/>
     <html:base/>
   </head>

@@ -6,9 +6,12 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.regex.Pattern;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -21,8 +24,8 @@ import org.vfny.geoserver.config.NameSpaceConfig;
  * </p>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataNamespacesNewForm.java,v 1.1 2004/02/18 19:32:51 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataNamespacesNewForm.java,v 1.2 2004/02/27 22:07:06 jive Exp $
  */
 public class DataNamespacesNewForm extends ActionForm {
     private String prefix;
@@ -37,6 +40,13 @@ public class DataNamespacesNewForm extends ActionForm {
             HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
+        if ((getPrefix() == null) || getPrefix().equals("")) {
+            errors.add("prefix",
+            new ActionError("error.prefix.required", getPrefix()));
+        } else if (!Pattern.matches("^\\w*$", getPrefix())) {
+            errors.add("dataStoreID",
+            new ActionError("error.prefix.invalid", getPrefix()));
+        }        
         return errors;
     }
 	/**

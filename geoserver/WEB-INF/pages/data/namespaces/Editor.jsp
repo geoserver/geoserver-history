@@ -6,7 +6,9 @@
   <table class="info">
 	<tr>
       <td class="label">
-		<bean:message key="label.default"/>:
+        <span class="help" title="<bean:message key="help.namespace.default"/>">
+		  <bean:message key="label.default"/>:
+        </span>
       </td>
       <td class="datum">
 		<html:checkbox property="_default"/>
@@ -14,7 +16,9 @@
     </tr>
     <tr>
       <td class="label">
-		<bean:message key="label.URI"/>
+        <span class="help" title="<bean:message key="help.namespace.uri"/>">
+          <bean:message key="label.URI"/>
+        </span>
       </td>
       <td class="datum">
 		<html:text property="URI" size="60"/>
@@ -22,7 +26,9 @@
     </tr>
     <tr>
       <td class="label">
-		<bean:message key="label.prefix"/>
+        <span class="help" title="<bean:message key="help.namespace.prefix"/>">
+		  <bean:message key="label.prefix"/>
+        </span>
       </td>
       <td class="datum">
 		<html:text property="prefix" size="60"/>

@@ -3,12 +3,13 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <html:form action="/config/data/storeSelect">
-
 <table class="info">
   <tbody>
     <tr>
       <td class="label">
-        <bean:message key="label.dataStoreID"/>:
+        <span class="help" title="<bean:message key="help.dataStore_id"/>">
+		  <bean:message key="label.dataStoreID"/>:
+        </span>
       </td>
       <td class="datum" colspan=2>
         <html:select property="selectedDataStoreId">

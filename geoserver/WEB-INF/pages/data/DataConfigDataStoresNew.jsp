@@ -2,34 +2,35 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table border=1 width=100%>
-<tr><td>
-<table border=0 width=100%>
-
-	<html:form action="/config/data/storeNewSubmit">
-
-	<tr><td valign="top" align="right">	
+<html:form action="/config/data/storeNewSubmit">
+<table class="info">
+  <tr>
+    <td class="label">	
 		<bean:message key="label.dataStoreDescription"/>:
 	</td>
-	<td align="left">
-		<html:select property="selectedDescription">
-			<html:options property="dataStoreDescriptions"/>
-		</html:select>
-	</td></tr>
-	<tr><td align="right">
-		<bean:message key="label.dataStoreID"/>:
+	<td class="datum">
+	  <html:select property="selectedDescription">
+	    <html:options property="dataStoreDescriptions"/>
+	  </html:select>
 	</td>
-	<td align="left">
-		<html:text property="dataStoreID"/>
-	</td></tr>
-	<tr><td>&nbsp;</td><td align="left">
-		<html:submit>
-			<bean:message key="label.new"/>
-		</html:submit>
-	</td></tr>
-	
-	</html:form>
-	
+  </tr>
+  <tr>
+    <td class="label">	
+      <span class="help" title="<bean:message key="help.dataStore_id"/>">
+		<bean:message key="label.dataStoreID"/>:
+      </span>
+	</td>
+	<td class="datum">      
+	  <html:text property="dataStoreID"/>
+	</td>
+  </tr>
+  <tr>
+    <td class="label">&nbsp;</td>
+    <td class="datum">
+	  <html:submit>
+	    <bean:message key="label.new"/>
+	  </html:submit>
+	</td>
+  </tr>
 </table>
-</td></tr>
-</table>
+</html:form>

@@ -5,8 +5,7 @@
 <logic:present name="GEOSERVER.USER" property="dataStoreConfig" scope="session">
 
 <html:form action="/config/data/storeSubmit">
-  <table class="info">
-	
+  <table class="info">	
 	<tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.dataStore_id"/>">
@@ -16,17 +15,17 @@
 	  <td class="datum">
 		<bean:write name="dataDataStoresEditorForm" property="dataStoreId"/>
 	  </td>
-	</tr>
-	
+	</tr>	
 	<tr>
 	  <td class="label">
-		<bean:message key="label.enabled"/>:
+		<span class="help" title="<bean:message key="help.dataStore_enabled"/>">
+          <bean:message key="label.enabled"/>:
+        </span>
       </td>
 	  <td class="datum">
 		<html:checkbox property="enabled"/>
 	  </td>
-	</tr>
-	
+	</tr>	
 	<tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.dataStore_nameSpace"/>">
@@ -38,8 +37,7 @@
 			<html:options property="namespaces"/>
 		</html:select>
 	  </td>
-	</tr>
-	
+	</tr>	
 	<tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.dataStore_description"/>">
