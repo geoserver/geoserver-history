@@ -19,7 +19,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.11 2004/04/20 18:56:47 cholmesny Exp $
+ * @version $Id: GlobalConfig.java,v 1.12 2004/09/09 17:05:10 cholmesny Exp $
  */
 public class GlobalConfig {
     public static final String CONFIG_KEY = "Config.Global";
@@ -130,6 +130,8 @@ public class GlobalConfig {
     private Level loggingLevel = null;
     private String adminUserName;
     private String adminPassword;
+	/** Whether the exceptions returned to the client should contain full stack traces */
+    private boolean verboseExceptions;
 
     /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
@@ -151,6 +153,7 @@ public class GlobalConfig {
         baseUrl = null;
         schemaBaseUrl = null;
         contact = null;
+        verboseExceptions = true;
     }
 
     /**
@@ -178,6 +181,7 @@ public class GlobalConfig {
         loggingLevel = g.getLoggingLevel();
         adminUserName = g.getAdminUserName();
         adminPassword = g.getAdminPassword();
+        verboseExceptions = g.isVerboseExceptions();
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -211,6 +215,8 @@ public class GlobalConfig {
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
+		verboseExceptions = g.isVerboseExceptions();
+        
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -240,7 +246,9 @@ public class GlobalConfig {
         g.setLoggingLevel(loggingLevel);
         g.setCharSet(charSet);
         g.setSchemaBaseUrl(schemaBaseUrl);
+		g.setVerboseExceptions(verboseExceptions);
         g.setContact((ContactDTO) contact.toDTO());
+
 
         return g;
     }
@@ -383,20 +391,6 @@ public class GlobalConfig {
         this.contact = contact;
     }
 
-    /*
-     * setLoggingLevel purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param i
-     */
-
-    //public void setLoggingLevel(Level level) {
-    //	loggingLevel = level;
-    //}
-
     /**
      * setMaxFeatures purpose.
      * 
@@ -511,4 +505,24 @@ public class GlobalConfig {
     public void setAdminPassword(String password) {
         this.adminPassword = password;
     }
+    
+	/**
+	 * Should we display stackTraces or not? (And give them a nice little
+	 * message instead?)
+	 *
+	 * @return Returns the showStackTraces.
+	 */
+	public boolean isVerboseExceptions() {
+		return verboseExceptions;
+	}
+
+	/**
+	 * If set to true, response exceptions will throw their stack trace back to
+	 * the end user.
+	 *
+	 * @param showStackTraces The showStackTraces to set.
+	 */
+	public void setVerboseExceptions(boolean showStackTraces) {
+		this.verboseExceptions = showStackTraces;
+	}
 }
