@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
  * This class represents a FeatureType element in a Capabilities document
  * along with additional information about the datasource backend.  
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.4 $ $Date: 2003/05/30 22:07:56 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/05 21:12:32 $
  * @tasks REVISIT: consider merging this into TypeInfo.  This class replaces
  * the castor generated FeatureType, but it is now unclear if we _really_ 
  * need this internal class, or if a TypeInfo can just hold it all.
@@ -92,6 +92,7 @@ class FeatureType {
     //put in different place? - to differentiate between service info and data.
     private Map dsParams;
 
+    private static ConfigInfo cfgInfo = ConfigInfo.getInstance();
 
     /** 
      * Constructor with the two mandatory featureType elements.
@@ -248,6 +249,12 @@ class FeatureType {
 		    
 		    params.put(name.toLowerCase(), value);
 		}
+	    }
+	    
+	    if (cfgInfo.useCharSetForDB() &&
+		findTextFromTag(root, "charset").equals("")){
+		
+		params.put("charset", cfgInfo.getCharSet());
 	    }
 	}
 	return params;
