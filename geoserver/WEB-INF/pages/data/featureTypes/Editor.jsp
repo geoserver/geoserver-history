@@ -2,6 +2,11 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
+<%
+//This file contains some ugly JSP code.
+//Be wary, ye who brave the dragon's lair.
+%>
+
 <% try { %>
 <html:form action="/config/data/typeEditorSubmit">
   <table class="info">
@@ -151,7 +156,8 @@
         <table border=0 width="100%">
           <tr style="white-space: nowrap;">
             
-		  <% if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) { 
+		  <%
+		     if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) { 
 		  	     attributeDisplay = (org.vfny.geoserver.form.data.AttributeDisplay) attribute; %>
             <td width="70%"><bean:write name="attribute" property="type"/></td>
             <td>nillable:<bean:write name="attribute" property="nillable"/></td>
@@ -176,7 +182,7 @@
           	  <% } 
           	     first = false; %>
           	</td>
-          	<td width=16> 
+          	<td width=16>
           	  <% if (attributesSize-1 != index.intValue()) { %>
           	  <html:image src="../../../images/down.png" 
           	              titleKey="type.title.down" 
@@ -193,8 +199,7 @@
           <% } %>
           </tr>
           <tr>
-            <td>
-              <pre><code>
+            <td align="left" valign="top" colspan="7">
               <% boolean fragment = false;
 
               if (attributeForm != null && attributeForm.getType().equals(org.vfny.geoserver.config.AttributeTypeInfoConfig.TYPE_FRAGMENT)) {
@@ -202,10 +207,7 @@
               } %>
               		<html:textarea cols="80" rows="3" 
               		               property='<%= "attributes[" + index + "].fragment" %>'
-              		               disabled='<%= fragment %>'/>
-              		               
-              		              
-              </code><%= fragment %></pre>
+              		               disabled='<%= !fragment %>'/>
             </td>
           </tr>
         </table>		
