@@ -41,6 +41,8 @@ public class Query {
     /** The filter for the query */
     protected Filter filter = null;
     
+     /** Flags whether or not all properties were requested */
+    protected boolean allRequested = true;
 
     /** Empty constructor. */ 
     public Query() {}
@@ -58,7 +60,11 @@ public class Query {
     /** Adds a requested property name to the query. */ 
     public void addPropertyName(String propertyName) { 
         propertyNames.add(propertyName);
+	 this.allRequested = false;
     }
+
+    /** Return boolean for all requested types. */
+    public boolean allRequested() { return this.allRequested; }  
 
     /** Sets the user-defined 'handle' for the query. */ 
     public void setHandle (String handle) { this.handle = handle; }
@@ -93,8 +99,10 @@ public class Query {
         if(filter != null) {
             returnString.append("\n   filter: " + filter.toString());
         }
-        returnString.append("\n   properties: ");
-        
+        returnString.append("\n   [properties: ");
+         if( this.allRequested()) {
+            return returnString + " ALL ]";
+        } else {
         Iterator iterator = propertyNames.listIterator();
         while( iterator.hasNext()) {
             returnString.append( iterator.next().toString());
@@ -102,7 +110,9 @@ public class Query {
                 returnString.append(", ");
             }
         }
+	returnString.append("]");
         return returnString.toString();
+	}    
     }
     
     public boolean equals(Query query) {
