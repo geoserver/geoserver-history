@@ -12,7 +12,7 @@
 		<plugin>Is Valid Geometry</plugin>
 		<argument >
 			<name>typeRef</name>
-			<string>lakes:lakes</string>
+			<string>geoserver-demo:lakes</string>
 		</argument>
 	</test>
 	<test>
@@ -21,7 +21,7 @@
 		<plugin>Line Not Self Intersection</plugin>
 		<argument>
 			<name>typeRef</name>
-			<string>streams:streams</string>
+			<string>geoserver-demo:streams</string>
 		</argument>
 	</test>
 </suite>

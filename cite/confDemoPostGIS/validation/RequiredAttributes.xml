@@ -16,7 +16,7 @@
 		</argument>
 		<argument >
 			<name>attributeName</name>
-			<string>UNSURVEYED</string>
+			<string>unsurveyed</string>
 		</argument>
 		<argument >
 			<name>attributeComparisonValue</name>
@@ -24,7 +24,7 @@
 		</argument>
 		<argument >
 			<name>typeRef</name>
-			<string>swamps:swamps</string>
+			<string>geoserver-demo:swamps</string>
 		</argument>
 	</test>
 	<test>
@@ -37,7 +37,7 @@
 		</argument>
 		<argument >
 			<name>typeRef</name>
-			<string>buildings:buildings</string>
+			<string>geoserver-demo:buildings</string>
 		</argument>
 	</test>	
 	<test>
