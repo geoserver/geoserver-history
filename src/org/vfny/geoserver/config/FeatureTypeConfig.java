@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.10 2004/01/15 00:54:34 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.11 2004/01/15 21:36:52 jive Exp $
  */
 public class FeatureTypeConfig{
 	
@@ -113,6 +113,9 @@ public class FeatureTypeConfig{
 	 */
 	private String defaultStyle;
 
+    /** Package visible constructor for test cases */
+    FeatureTypeConfig(){
+    }
 	/**
 	 * FeatureTypeInfo constructor.
 	 * <p>
