@@ -22,42 +22,43 @@ import javax.xml.transform.stream.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.21 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.22 2004/01/02 21:06:32 cholmesny Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
+    private static OutputStream nullOutputStream = new OutputStream() {
+            public void write(int b) throws IOException {
+            }
+
+            public void write(byte[] b) throws IOException {
+            }
+
+            public void write(byte[] b, int off, int len)
+                throws IOException {
+            }
+
+            public void flush() throws IOException {
+            }
+
+            public void close() throws IOException {
+            }
+        };
+
     /** handler to do the processing */
     private ContentHandler contentHandler;
-
-    private static OutputStream nullOutputStream = new OutputStream()
-    {
-      public void write(int b)throws IOException
-      {
-      }
-      public void write(byte b[]) throws IOException
-      {
-      }
-      public void write(byte b[], int off, int len) throws IOException
-      {
-      }
-      public void flush() throws IOException
-      {
-      }
-      public void close() throws IOException
-      {
-      }
-    };
+    protected String service;
 
     /**
-     * writes to a void output stream to throw any exception that can occur
-     * in writeTo too.
+     * writes to a void output stream to throw any exception that can occur in
+     * writeTo too.
      *
      * @param request DOCUMENT ME!
      *
      * @throws ServiceException DOCUMENT ME!
      */
     public void execute(Request request) throws ServiceException {
-      writeTo(nullOutputStream);
+        this.service = request.getService();
+        writeTo(nullOutputStream);
     }
 
     /**
@@ -76,6 +77,10 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
      *
      * @throws ServiceException DOCUMENT ME!
      * @throws WfsException DOCUMENT ME!
+     *
+     * @task REVISIT: should we do our own xml declaration?  Will UTF-8 always
+     *       be sufficient, or do we need to allow other encodings? can we do
+     *       that programatically?
      */
     public void writeTo(OutputStream out) throws ServiceException {
         try {
@@ -86,14 +91,36 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
             InputSource inputSource = new InputSource("XXX");
             SAXSource source = new SAXSource(this, inputSource);
             Charset charset = ServerConfig.getInstance().getGlobalConfig()
-                                         .getCharSet();
+                                          .getCharSet();
             Writer writer = new OutputStreamWriter(out, charset);
+
+            //HACK: This should be done programatically, but for the life of
+            //me I can't find it.  There seems to be no output key that 
+            //allows you to set _where_ to find the dtd.  And I found
+            //transformer stuff to read in dtd elements like this, but none
+            //to declare them and have them transformed.  If someone knows
+            //how to get rid of this horrible hack please let me know.
+            if ((this.service != null) && this.service.equals("WMS")) {
+                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
+                    "yes");
+
+                //TODO: Should reference a local capabilities_1_1_1.dtd
+                String declaration = "<?xml version='1.0' encoding=\"UTF-8\" "
+                    + "standalone=\"no\" ?>  "
+                    + "<!DOCTYPE WMT_MS_Capabilities SYSTEM "
+                    + +"\"http://www.digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\">";
+
+                writer.write(declaration, 0, declaration.length());
+            }
+
             StreamResult result = new StreamResult(writer);
 
             transformer.transform(source, result);
         } catch (TransformerException ex) {
             throw new WfsException(ex);
         } catch (TransformerFactoryConfigurationError ex) {
+            throw new WfsException(ex);
+        } catch (java.io.IOException ex) {
             throw new WfsException(ex);
         }
     }
