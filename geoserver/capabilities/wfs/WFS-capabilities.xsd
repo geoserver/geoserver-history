@@ -336,7 +336,7 @@
    <xsd:complexType name="ResultFormatType">
       <xsd:sequence maxOccurs="unbounded">
          <xsd:element ref="wfs:GML2"/>
-         <xsd:element ref="wfs:GML2-GZIP"/>
+         <xsd:element ref="wfs:GML2-GZIP" minOccurs="0"/>
       </xsd:sequence>
    </xsd:complexType>
 
