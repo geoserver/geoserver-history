@@ -21,37 +21,13 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.8 2004/02/12 22:07:59 emperorkefka Exp $
+ * @version $Id: WFSConfig.java,v 1.9 2004/04/02 18:59:49 emperorkefka Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
     private boolean gmlPrefixing;
     
     private int serviceLevel;
-
-    /**
-     * This is a set of <code>dataStoreID.typeName</code> that is  enabled for
-     * use with WMS.
-     * 
-     * <p>
-     * You can use this information to bother DataConfig for the details such
-     * as:
-     * </p>
-     * 
-     * <ul>
-     * <li>
-     * Title
-     * </li>
-     * <li>
-     * Abstract
-     * </li>
-     * </ul>
-     * 
-     * <p>
-     * Cool?
-     * </p>
-     */
-    private Set enabledFeatures = new TreeSet(); // keep sorted	
 
     /**
      * WFS constructor.
@@ -123,24 +99,6 @@ public class WFSConfig extends ServiceConfig {
         wfsDto.setServiceLevel(serviceLevel);
 
         return wfsDto;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public Set getEnabledFeatures() {
-        return enabledFeatures;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param set
-     */
-    public void setEnabledFeatures(Set set) {
-        enabledFeatures = set;
     }
 
     /**

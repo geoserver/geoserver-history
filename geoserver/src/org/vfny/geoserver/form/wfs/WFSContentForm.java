@@ -10,6 +10,7 @@
  */
 package org.vfny.geoserver.form.wfs;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
@@ -165,18 +166,6 @@ public class WFSContentForm extends ActionForm {
         } else {
             this.onlineResource = "";
         }
-
-        Set featureSet = config.getEnabledFeatures();
-        this.features = new String[featureSet.size()];
-
-        Iterator iter = featureSet.iterator();
-        int counter = 0;
-
-        while (iter.hasNext()) {
-            String featureTypeName = (String) iter.next();
-            features[counter] = featureTypeName;
-            counter++;
-        }
     }
 
     public ActionErrors validate(ActionMapping mapping,
@@ -187,6 +176,16 @@ public class WFSContentForm extends ActionForm {
             serviceLevel != WFSDTO.TRANSACTIONAL &&
             serviceLevel != WFSDTO.COMPLETE) {
             errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
+        }
+        
+        if (onlineResource == null || onlineResource.equals("")) {
+        	errors.add("onlineResource", new ActionError("error.wfs.onlineResource.required"));
+        } else {
+        	try {
+                URL url = new URL(onlineResource);
+            } catch (MalformedURLException badURL) {
+                errors.add("onlineResource", new ActionError("error.wfs.onlineResource.malformed", badURL));
+            }
         }
         
         return errors;
