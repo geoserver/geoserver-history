@@ -269,13 +269,13 @@
         <!-- CONFIG data type -->       		
        	<forward
        		name="config.data.type"
-       		path="/config/data/featureType.do"/>
+       		path="/config/data/typeSelect.do"/>
        	<forward
        		name="config.data.type.new"
-       		path="/config/data/featureTypeNew.do"/>
+       		path="/config/data/typeNew.do"/>
        	<forward
        		name="config.data.type.editor"
-       		path="/config/data/featureTypeEditor.do"/>
+       		path="/config/data/typeEditor.do"/>
        		
        	<forward
        		name="config.data.calculateBoundingBox"
@@ -467,15 +467,15 @@
         	
 		<!-- DATA featuretypes -->
         <action
-        	path="/config/data/featureType"
+        	path="/config/data/typeSelect"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.type"/>
         <action
-        	path="/config/data/featureTypeNew"
+        	path="/config/data/typeNew"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.type.new"/>
         <action
-        	path="/config/data/featureTypeEditor"
+        	path="/config/data/typeEditor"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.type.editor"/>        	        	
 
@@ -600,27 +600,26 @@
         	        	        	
 		<!-- DATA FeatureType Actions -->
         <action
-        	path="/config/data/featureTypeSubmit"
-        	type="org.vfny.geoserver.action.data.TypesEditorAction"
-        	name="typesEditorForm"
-        	scope="request"
-        	validate="true"
-        	input="config/data/featureType"/>
-        <action
-        	path="/config/data/featureTypeSelect"
+        	path="/config/data/typeSelectSubmit"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesSelectAction"
         	name="dataFeatureTypesSelectForm"
         	scope="request"
         	validate="true"
-        	input="config/data/featureType"/>   
+        	input="config/data/typeSelect.do"/>
          <action
-        	path="/config/data/featureTypeNewSubmit.do"
+        	path="/config/data/typeNewSubmit"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesNewAction"
         	name="dataFeatureTypesNewForm"
         	scope="request"
         	validate="true"
-        	input="config/data/featureType"/>   
-        	       	
+        	input="config/data/typeNew.do"/>        	
+        <action
+        	path="/config/data/typeEditorSubmit"
+        	type="org.vfny.geoserver.action.data.TypesEditorAction"
+        	name="typesEditorForm"
+        	scope="request"
+        	validate="true"
+        	input="config/data/typeEditor.do"/>
 		 <!-- DATA Validation -->
  
          <action
