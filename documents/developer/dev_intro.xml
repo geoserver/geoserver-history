@@ -82,7 +82,8 @@
     suggestions and spreading the word. You can even help out by just offering
     words of encouragement to those working on the project, as many developers
     do not do this for the money, but just to feel proud about something
-    they've worked on. Adding yourself to the <ulink url="???">user
+    they've worked on. Adding yourself to the <ulink
+    url="http://www.moximedia.com:8080/imf-ows/imf.jsp?site=gs_users">user
     map</ulink> is a great way to let us know that you appreciate the work
     done.</para>
 
@@ -91,10 +92,11 @@
     that those with different skills can help out on. The obvious one is
     documentation, a task most developers loathe. We have tried to lower the
     barrier to entry to write documentation, by starting the <ulink
-    url="???">GeoServer Wiki</ulink>. The site is editable by anyone, with an
-    incrediblly simple mark up language that takes about 2 minutes to learn.
-    Please add or modify any information there. It currently could use a nice
-    re-organization, which we hope to start relatively soon. </para>
+    url="http://docs.codehaus.org/display/GEOS/Home">GeoServer Wiki</ulink>.
+    The site is editable by anyone, with an incrediblly simple mark up
+    language that takes about 2 minutes to learn. Please add or modify any
+    information there. It currently could use a nice re-organization, which we
+    hope to start relatively soon. </para>
 
     <para>Another great way to help out is translation. We would like
     GeoServer available in as many languages as possible, as we want world
@@ -111,12 +113,13 @@
     rather than ask developers where you might help out. If you do want to
     just help out, it's best to have an idea of what kinds of tasks you are
     interested in. A good place to start to get a sense of what we are working
-    on is our JIRA <ulink url="???">task tracker</ulink>. Or just ask the
-    developers list. We also highly encourage companies who would like to
-    spend some of their developers resources on expanding GeoServer's
-    capabilities. In return for major work we are more than happy to put links
-    on the main GeoServer site pointing users to commercial support offered by
-    any company that contributes. </para>
+    on is our JIRA <ulink
+    url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">task
+    tracker</ulink>. Or just ask the developers list. We also highly encourage
+    companies who would like to spend some of their developers resources on
+    expanding GeoServer's capabilities. In return for major work we are more
+    than happy to put links on the main GeoServer site pointing users to
+    commercial support offered by any company that contributes. </para>
 
     <para>A final way to help out is if you are part of a large organization
     using GeoServer. You are more than welcome to use it, with no obligation
@@ -138,26 +141,27 @@
   <sect1>
     <title>A note on the license</title>
 
-    <para>GeoServer is curently released under the <ulink url="???">Gnu Public
-    License (GPL)</ulink>. None of our core contributors are fanatic about the
-    GPL, it just seemed to be the best choice at the time, and we have not
-    changed it since. We would like to say that the GPL is not anti-business,
-    as many opponents like to make it out to be. Selling GeoServer is
-    completely legal, as is offering commercial support on it. What it does is
-    protects the rights of developers, by ensuring that no one can take the
-    base of code and improve it without giving it back to those who laid the
-    ground work. The main reason we like it because it keeps the community
-    tighter, lets us know who else is working on GeoServer. If for some reason
-    you would like to develop GeoServer, but your company is scared of the
-    GPL, then please talk to the developers, as we can often come up with a
-    good solution, releasing it under a different license to your company, for
-    example. We don't care about all code being rolled back in, as the GPL
-    stipulates, but we would like to know who else is working on GeoServer. So
-    far we do not think the GPL license has held anyone up, perhaps due to the
-    fact that GeoServer is a seperate enough piece of software that it does
-    not affect others so much. But please let us know if the license does
-    concern you. We are considering Apache or LGPL for GeoServer 2.0, as we
-    are looking to make it more of a framework on top of which other web
-    applications could hang. </para>
+    <para>GeoServer is curently released under the <ulink
+    url="license.html">Gnu Public License (GPL)</ulink>. None of our core
+    contributors are fanatic about the GPL, it just seemed to be the best
+    choice at the time, and we have not changed it since. We would like to say
+    that the GPL is not anti-business, as many opponents like to make it out
+    to be. Selling GeoServer is completely legal, as is offering commercial
+    support on it. What it does is protects the rights of developers, by
+    ensuring that no one can take the base of code and improve it without
+    giving it back to those who laid the ground work. The main reason we like
+    it because it keeps the community tighter, lets us know who else is
+    working on GeoServer. If for some reason you would like to develop
+    GeoServer, but your company is scared of the GPL, then please talk to the
+    developers, as we can often come up with a good solution, releasing it
+    under a different license to your company, for example. We don't care
+    about all code being rolled back in, as the GPL stipulates, but we would
+    like to know who else is working on GeoServer. So far we do not think the
+    GPL license has held anyone up, perhaps due to the fact that GeoServer is
+    a seperate enough piece of software that it does not affect others so
+    much. But please let us know if the license does concern you. We are
+    considering Apache or LGPL for GeoServer 2.0, as we are looking to make it
+    more of a framework on top of which other web applications could hang.
+    </para>
   </sect1>
 </article>
