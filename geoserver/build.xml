@@ -33,16 +33,16 @@
   <property name="dir.catalina" value="${dir.lib}/catalina"/>
 
   <!-- external directories -->
-  <!-- pc example
+  <!-- pc example -->
   <property name="dir.container" value="C:\java\resin-2.1.9\webapps"/>
   <property name="dir.geotools" 
-            value="C:\java\workspace\geotools2\geotools-src"/>
-            -->
-  <!-- linux example -->
+            value="C:\java\workspace\geotools\geotools-src"/>
+            
+  <!-- linux example
   <property name="dir.container" value="/usr/local/resin-2.1.4/webapps"/>
   <property name="dir.geotools" 
             value="/home/rob/wfs/geotools/geotools2/geotools-src"/>
-
+   -->
   <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
   <property name="jar.geoserver" value="${dir.lib}/geoserver.jar"/>
@@ -701,37 +701,37 @@
     </jar>
     
     <!-- I am not sure why this is not part of the geotools jar -->
-    <delete file="${dir.lib}/gmldatasource.jar" failonerror="true"/>    
-    <jar jarfile="${dir.lib}/gmldatasource.jar"
+    <delete file="${dir.lib}/gmldatasource-SNAPSHOT.jar" failonerror="true"/>    
+    <jar jarfile="${dir.lib}/gmldatasource-SNAPSHOT.jar"
          whenempty="fail">
       <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
                includes="**/*.class"/>
 	</jar>
 
     <!-- Potgis support, include META-INF -->	
-    <delete file="${dir.lib}/postgis.jar" failonerror="true"/>        
-	<jar jarfile="${dir.lib}/postgis.jar"
+    <delete file="${dir.lib}/postgis-SNAPSHOT.jar" failonerror="true"/>        
+	<jar jarfile="${dir.lib}/postgis-SNAPSHOT.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/postgis/target/classes/"/>
 	</jar>
 	
     <!-- Esri Shapefile support, include META-INF -->	
-    <delete file="${dir.lib}/shapefile.jar" failonerror="true"/>            
-	<jar jarfile="${dir.lib}/shapefile.jar"
+    <delete file="${dir.lib}/shapefile-SNAPSHOT.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/shapefile-SNAPSHOT.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/shapefile/target/classes/"/>
 	</jar>
 	
     <!-- Oracle Spatial support, include META-INF -->		
-    <delete file="${dir.lib}/oraclespatial.jar" failonerror="true"/>            
-	<jar jarfile="${dir.lib}/oraclespatial.jar"
+    <delete file="${dir.lib}/oracle-spatial-SNAPSHOT.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/oracle-spatial-SNAPSHOT.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/oraclespatial/target/classes/"/>
 	</jar>	
 	
     <!-- Java Property support, include META-INF -->		
-    <delete file="${dir.lib}/property.jar" failonerror="true"/>            
-	<jar jarfile="${dir.lib}/property.jar"
+    <delete file="${dir.lib}/property-SNAPSHOT.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/property-SNAPSHOT.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/j2se-demos/target/classes/"
       	       includes="META-INF/**"/>
@@ -740,8 +740,8 @@
 	</jar>
 	
     <!-- Java Property support, include META-INF -->		
-    <delete file="${dir.lib}/arcsde.jar" failonerror="true"/>                
-	<jar jarfile="${dir.lib}/arcsde.jar"
+    <delete file="${dir.lib}/arcsde-SNAPSHOT.jar" failonerror="true"/>                
+	<jar jarfile="${dir.lib}/arcsde-SNAPSHOT.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/arcsde/target/classes/"/>
 	</jar>	
