@@ -19,7 +19,7 @@
 
   ;Name and file
   Name "GeoServer 1.2"
-  OutFile "geoserver-1.2.3.exe"
+  OutFile "geoserver-1.3.0-beta.exe"
 
 
   ;Default installation folder

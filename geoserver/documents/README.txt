@@ -1,5 +1,5 @@
-GeoServer 1.2.3 README file
----------------------------
+GeoServer 1.3.0-beta README file
+--------------------------------
 
 Welcome to GeoServer 1.3.0-Best!  This release contains a number of bug fixes 
 and improvements, including moving to the GeoTool 2.1.x branch.  
