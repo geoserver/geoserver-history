@@ -6,7 +6,6 @@ package org.vfny.geoserver.config;
 
 import java.io.*;
 import java.util.*;
-import org.vfny.geoserver.config.configuration.*;
 
 /**
  * Reads all necessary versioning data and abstracts it away from the response 
@@ -18,10 +17,10 @@ import org.vfny.geoserver.config.configuration.*;
 public class VersionBean {        
     
     /** Version of GeoServer */
-    private static final String FREEFS_VERSION = "0.90";
+    private static final String FREEFS_VERSION = "0.94";
     
     /** Web Feature Server version */
-    private static final String WFS_VERSION = "0.0.14";
+    private static final String WFS_VERSION = "1.0.0";
     
     /** Update sequence number */
     private static final String WFS_UPDATE_SEQUENCE = "0";
