@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresNewAction.java,v 1.11 2004/02/25 00:38:53 dmzwiers Exp $
+ * @version $Id: DataDataStoresNewAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
  */
 public class DataDataStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -43,6 +43,6 @@ public class DataDataStoresNewAction extends ConfigAction {
 
         getUserContainer(request).setDataStoreConfig(newDataStoreConfig);
 
-        return mapping.findForward("config.data.stores.editor");
+        return mapping.findForward("config.data.store.editor");
     }
 }

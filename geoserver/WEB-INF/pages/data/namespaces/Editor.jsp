@@ -4,7 +4,7 @@
 
 <table border=0 width=100%>
 
-	<html:form action="/config/data/namespacesSubmit">
+	<html:form action="/config/data/namespaceSubmit">
 	
 	<tr><td align="right">
 		<bean:message key="label.default"/>:
