@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.12 2004/01/15 23:04:16 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.13 2004/01/22 21:25:34 dmzwiers Exp $
  */
 public class FeatureTypeConfig{
 	
@@ -160,7 +160,7 @@ public class FeatureTypeConfig{
 		dataStoreId = f.getDataStoreId();
 		latLongBBox = new Envelope( f.getLatLongBBox() );
 		SRS = f.getSRS();
-		schema = f.getSchema();
+		schema = f.getSchemaAttributes();
 		name = f.getName();
 		title = f.getTitle();
 		_abstract = f.getAbstract();
@@ -194,8 +194,8 @@ public class FeatureTypeConfig{
 		latLongBBox = new Envelope(f.getLatLongBBox());
 		SRS = f.getSRS();
 		schema = new ArrayList();
-		for(int i=0;i<f.getSchema().size();i++)
-			schema.add(new AttributeTypeInfoConfig((AttributeTypeInfoDTO)f.getSchema().get(i)));
+		for(int i=0;i<f.getSchemaAttributes().size();i++)
+			schema.add(new AttributeTypeInfoConfig((AttributeTypeInfoDTO)f.getSchemaAttributes().get(i)));
 		name = f.getName();
 		title = f.getTitle();
 		_abstract = f.getAbstract();
@@ -229,7 +229,7 @@ public class FeatureTypeConfig{
 		List s = new ArrayList();
 		for(int i=0;i<schema.size();i++)
 			s.add(schema.get(i));
-		f.setSchema(s);
+		f.setSchemaAttributes(s);
 		f.setName(name);
 		f.setTitle(title);
 		f.setAbstract(_abstract);
