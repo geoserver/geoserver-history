@@ -63,6 +63,7 @@ public class UpdateGSAction extends ConfigAction {
         	File baseDir = gs.getData().getBaseDir();  
             gs.load( wmsDTO,wfsDTO,geoserverDTO,dataDTO, baseDir );
         } catch (ConfigurationException e) {
+        	e.printStackTrace();
             throw new ServletException(e);
         }
 

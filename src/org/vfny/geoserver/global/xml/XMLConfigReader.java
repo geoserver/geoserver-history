@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.24 2004/02/02 18:51:46 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.25 2004/02/02 19:22:18 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -1112,8 +1112,11 @@ public class XMLConfigReader {
             throw new ConfigurationException("Could not parse schema file:"
                 + schemaFile, erk);
         }
-
-        processSchema(elem, dto);
+        try{
+        	processSchema(elem, dto);
+        }catch(ConfigurationException e){
+        	throw new ConfigurationException("Error occured in "+schemaFile+"\n"+e.getMessage(),e);
+        }
     }
 
     /**
