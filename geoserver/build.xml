@@ -828,7 +828,7 @@
           todir="${dir.release}"/>
   </target>
   
-  <target name="release-binary" depends="release-common">
+  <target name="release-binary" depends="release-common, generate-docbook">
     <copy todir="${dir.build}">
 	  <fileset dir="${basedir}/documents">
             <include name="RUNNING.txt"/>
