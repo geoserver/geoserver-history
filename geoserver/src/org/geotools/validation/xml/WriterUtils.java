@@ -2,31 +2,14 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2003, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
- */
 package org.geotools.validation.xml;
 
+import org.vfny.geoserver.global.ConfigurationException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.global.ConfigurationException;
 
 
 /**
@@ -39,7 +22,7 @@ import org.vfny.geoserver.global.ConfigurationException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterUtils.java,v 1.4 2004/01/21 00:35:56 dmzwiers Exp $
+ * @version $Id: WriterUtils.java,v 1.5 2004/01/21 01:26:54 jive Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */

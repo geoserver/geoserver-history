@@ -2,31 +2,14 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 19, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package org.geotools.validation.xml;
 
 /**
- * ValidationException purpose.
- * 
- * <p>
  * An exception used to collect and generalize errors in the validation system.
- * </p>
  * 
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * ValidationException x = new ValidationException(...);
- * </code></pre>
- *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationException.java,v 1.2 2004/01/21 00:26:10 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: ValidationException.java,v 1.3 2004/01/21 01:26:54 jive Exp $
  */
 public class ValidationException extends Exception {
     public ValidationException() {

@@ -2,22 +2,6 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2003, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
- */
 package org.vfny.geoserver.config;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
@@ -36,7 +20,7 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.4 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.5 2004/01/21 01:26:55 jive Exp $
  */
 public class WMSConfig extends ServiceConfig {
     private static final String WMS_VERSION = "1.1.1";

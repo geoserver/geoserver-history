@@ -2,25 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 20, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package org.geotools.validation.xml;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
@@ -32,35 +14,28 @@ import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 
 /**
- * ValidationPlugIn purpose.
- * 
+ * Struts PlugIn responsible for loading the ValidationProcessor
+ * into the web container on startup.
  * <p>
- * Description of ValidationPlugIn ...
+ * Please note that this plug-in should be given priority such that it loads
+ * after the GeoServer application.
  * </p>
- * 
- * <p>
- * Capabilities:
- * </p>
- * 
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * 
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * ValidationPlugIn x = new ValidationPlugIn(...);
- * </code></pre>
- *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationPlugIn.java,v 1.4 2004/01/21 00:35:56 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: ValidationPlugIn.java,v 1.5 2004/01/21 01:26:54 jive Exp $
  */
 public class ValidationPlugIn implements PlugIn {
     public static final String WEB_CONTAINER_KEY = "Validation.PlugIn.Key";

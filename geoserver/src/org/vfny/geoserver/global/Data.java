@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.23 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.24 2004/01/21 01:26:54 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -249,8 +249,8 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * </p>
      * 
      * <p>
-     * Note loadDataStores() and loadNamespaces() must be called prior to
-     * using this function!
+     * Note loadDataStores() and loadNamespaces() must be called prior to using
+     * this function!
      * </p>
      *
      * @param dto configDTO
