@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-<featureType datastore="cite_postgis">
+ <featureType datastore="cdf">
         <name>Inserts</name>
         <SRS>32118</SRS><!-- native wich EPGS code for the FeatureType -->
       <title>cite inserts</title>

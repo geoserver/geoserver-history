@@ -12,6 +12,10 @@
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
+
+  <!-- release version -->
+  <property name="name.release" value="1.2 alpha"/>
+
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
   <property name="dir.build" value="${basedir}/build"/>
@@ -655,7 +659,7 @@
     <delete dir="${dir.release}" failonerror="false"/>
     <copy file="${dir.misc}/documents/license.txt" todir="${basedir}"/>
     <tar longfile="gnu"
-         basedir="${basedir}"
+         basedir="${basedir}/.."
          tarfile="geoserver-${name.release}.tar"/>
 
     <delete file="${basedir}/geoserver-${name.release}.tar.gz" 

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-<featureType datastore="cite_postgis">
+<featureType datastore="cdf">
 	<name>Seven</name>
 	<SRS>32615</SRS>
 	<title>The cite:Seven layer</title>

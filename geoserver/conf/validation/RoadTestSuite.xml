@@ -12,14 +12,14 @@ xsi:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.
        a specified box.
   </description>
   <test>
-    <name>NameInList</name>
+    <name>NameLookup</name>
     <description>Checks to see if the road name is in the list of
               possible names.</description>
-    <plugin>nameLookup</plugin>
+    <plugin>NameInList</plugin>
     <argument>
       <name>LUTLocation</name>
       <anyURI>
-        ../www/LUTs/roadnames/
+        /www/LUTs/roadnames/
       </anyURI>
     </argument>
     <argument>

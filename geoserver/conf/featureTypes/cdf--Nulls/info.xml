@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-<featureType datastore="cite_postgis">
+<?xml version="1.0" encoding="UTF-8"?>
+<featureType datastore="cdf">
 	<name>Nulls</name>
 	<title>The cite:Nulls layer</title>
 	<abstract>Test features for the CITE project</abstract>

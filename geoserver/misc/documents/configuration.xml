@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalConfiguration>
+	<!-- Service elements, needed for the capabilities document -->
+	<!-- Title and OnlineResource are the two required -->
+	<Name>FreeFS</Name>
+	<Title>The Open Planning Project Basemap Server</Title>
+	<Abstract>This is a test server.  It contains some basemap data from New York City.</Abstract>
+	<Keywords>WFS, CITE, New York</Keywords>
+	<OnlineResource>http://www.openplans.org/</OnlineResource>
+	<Fees>NONE</Fees>
+	<AccessConstraints>NONE</AccessConstraints>
+	<Maintainer>The Open Planning Project</Maintainer>
+
+	<!-- The base URL where this servlet will run.  If running locally
+	     then http://localhost:8080 (or whatever port you're running on)
+	     should work.  If you are serving to the world then this must be
+	     the location where the geoserver servlets appear-->
+	<URL>http://www.openplans.org:8081/geoserver</URL>
+
+	<!-- Define mappings of namespaces to featureType directory 
+	     prefixes.  If only one namespace is present in this file it 
+	     becomes the default, if more than one namespace is present 
+	     then one must have its 'default' attribute set to true.
+	     The default namespace is that which is assigned to featureTypes
+	     that have no prefix (for example, "featureTypes/rail")
+	     * This field is highly recommended.  If not present
+	     then a namespace will be constructed for you.
+	 -->
+	<Namespace default="true" 
+	           uri="http://www.openplans.org/topp" 
+	           prefix="topp"/>
+	<Namespace uri="http://www.opengis.net/cite/data"
+	           prefix="cdf"/>
+	<Namespace uri="http://www.opengis.net/cite/geometry"
+	           prefix="cgf"/>
+
+	<!-- Defines the logging level.  Common options are SEVERE, 
+	      WARNING, INFO, CONFIG, FINER, FINEST, in order of 
+	      Increasing statements logged.  
+	  -->
+	 <LoggingLevel>FINER</LoggingLevel>
+
+	 <!-- Sets the max number of Features returned by GetFeature -->
+	 <MaxFeatures>20000</MaxFeatures> 
+	
+	 <!-- Whether newlines and indents should be returned in -->
+	 <!-- XML responses.  Default is false -->
+	 <Verbose value="true"/>
+
+
+	 <!-- Sets the max number of decimal places past the zero returned in
+	     a GetFeature response.  Default is 4 -->
+	 <NumDecimals>8</NumDecimals>
+
+	 <!-- This tag is to run the zserver module. -->
+	 <!-- Set the run attribute to false or comment the tag -->
+	 <!-- If you don't want the module to run. -->
+	 <!-- The Port tag specifies which port to run on. -->
+	 <ZServer run="false">
+		<Port>3210</Port>
+	 </ZServer>
+          
+	<!-- Sets the global character set.  This could use some more testing
+	      from international users, but what it does is sets the encoding
+	      globally for all postgis database connections (the charset tag
+	      in FeatureType), as well as specifying the encoding in the return
+	      xml header and mime type.  The default is UTF-8.  Also be warned
+	      that GeoServer does not check if the CharSet is valid before
+	      attempting to use it, so it will fail miserably if a bad charset
+	      is used.
+	  -->
+	 <!--
+	 <CharSet>iso-8859-1</CharSet>
+	 -->
+
+	 <!-- Define a base url for the location of the wfs schemas. 
+	      By default GeoServer loads and references its own at
+	      <URL>/data/capabilities. Uncomment to enable.  The
+	      standalone Tomcat server needs SchemaBaseUrl defined
+	      for validation.
+	  -->
+	 <!--
+	 <SchemaBaseUrl>http://schemas.opengis.net</SchemaBaseUrl>
+	  -->
+ 
+	 <!-- This element will rarely be used.  It's for users who -->
+	 <!-- do not want the two dash style of delimiting.  So if -->
+	 <!-- you're on linux you could use a :, so your directories -->
+	 <!-- would be topp:rail, for example.  So unless you want -->
+	 <!-- to customize that leave this field commented out. -->
+	 <!--
+	 <PrefixDelimiter>:</PrefixDelimiter> 
+	  -->
+
+</GlobalConfiguration> 

@@ -5,44 +5,17 @@ The 1.2.0 release is an extension of all the hard work put into creating the rec
 
 Thanks to all of you listed below for version 1.1.0. The Refractions team (Jody - Lead, Richard - UI Creation, David - GeoServer Modifications) would also like to thank Chris and Steve for their design insights. The Refractions team would also like to thank all the other GeoServer developers who helped in our online IRC brainstorming sessions. The Refractions team would also like to thank our sponsor, GeoInnovations (www.geoconnections.org), and our partner, the Open Planning Project. 
 
-Because this is an Alpha release, we are expecting some minor bugs. Please report such items on the JIRA task tracker, following the instructions included in the last paragraph of this document. Known issues to date include wfs/wms services not detecting server ports correctly through firewalls unless the incoming and outgoing ports match. This is an effect of dynamically testing for the ports through the Java Servlets.  
-
-Supporting GeoServer
---------------------
-If you like GeoServer and are using it, we ask you to kindly add yourself to our user
-map at http://www.moximedia.com:8080/imf-ows/imf.jsp?site=gs_users  Doing so helps
-ensure our continued funding, as our primary funder wants to know that people are
-actually using the project.  The map also serves as a demonstration of GeoServer as 
-it is built using GeoServer for the queries and MapServer to display.
-
-New Features and Bug Fixes since 1.1.0
---------------------------------------
-
-* Web based configuration tool
-
-* Redesign of configuration internals, to a more flexible architecture.
-
-* SVG Encoder now handles polygons.
-
-* numDecimals fixed to limit the number of decimals in coordinates of gml.
-
-* verbose fixed (at least for GetFeature the one where it really matters, the others
-  need more work).
-
-* maxFeatures makes a comeback, by popular request.
-
-* No more baseUrl configuration parameter, the server now detects where requests
-  come from.
-
-
-Bugs
-----------
-
-There are quite a few known bugs right now, see 
-http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311 for complete listings.
-For the 1.2.0 release we will enumerate all the bugs here.
-
-If you have feature requests or find bugs, please make use of our JIRA task tracker, available thanks to codehaus at http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311.  More support is also available on the new geoserver-users@lists.sourceforge.net, for those who do not want all the developer updates of geoserver-devel@lists.sourceforge.net. List information is available at http://lists.sourceforge.net/lists/listinfo/geoserver-users.  You can also contact us directly at geoserver@openplans.org.
+Because this is an Alpha release, we are expecting some minor bugs. Please report such items on the JIRA task tracker, following the instructions included in the last paragraph of this document. Known issues to date include wfs/wms services not detecting server ports correctly through firewalls unless the incoming and outgoing ports match. This is an effect of dynamically testing for the ports through the Java Servlets. 
 
 
 
+GeoServer 1.1.0 README file
+---------------------------
+
+The 1.1.0 release is the culmination of much hard work by the GeoServer and GeoTools teams.  The documentation for installing and running GeoServer is contained in the doc/user directory - install.htm should be the starting point. Previous GeoServer users should also make sure to read the documentation
+closely, as a few things have changed since 1.0.*.  The configuration files are no longer contained in misc/, instead they are in the new conf/ directory. The files themselve have changed around a bit, details in install.htm.  The other major change is the addition of an integrated WMS, which in turn moves
+the location of the access urls. http://localhost:8080/geoserver/GetCapabilites no longer works instead use http://localhost:8080/geoserver/wfs/GetCapabilites and http://localhost:8080/geoserver/wms/GetCapabilites for wms and wfs capabilities documents (respectively).  Note that each can also be of the standard cgi form - geoserver/wms?request=GetCapabilities for example.
+
+Thanks to all who helped to make this release possible, GeoServer is truly becoming a community effort.  The GeoTools team did an excellent job rewriting the data loading model, leading to speed and efficiency improvements for all data types.  Sean Geoghegan played a huge roll in those changes, and has also been handling all the bugs for the Oracle datastore.  Gabriel Roldan did a great job re-architecting GeoServer for WMS support and beyond, and he also added SVG support to the WMS.  Jody Garnett rolled Locking into Geotools and made it much more scalable.  He's leading a team that will have an awesome web administration tool for GeoServer out in a few weeks, while also taking geoserver configuration to the next level.  Simon Raess also had a great contribution in his FeatureTypeTransformer, eliminating the need for all users to figure out the annoying schema.xml files.  Everyone who contributed to the gt2wms also deserves recognition, as the GeoServer wms support clearly stands on their shoulders.  Hopefully we will soon port everything from that over and start really improving.  
+
+If you have feature requests or find bugs, please make use of our new JIRA task tracker, available thanks to codehaus at http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311.  More support is also available on the new geoserver-users@lists.sourceforge.net, for those who do not want all the developer updates of geoserver-devel@lists.sourceforge.net. List information is available at http://lists.sourceforge.net/lists/listinfo/geoserver-users.  You can also contact us directly at geoserver@openplans.org.
