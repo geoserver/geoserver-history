@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.10 2004/04/20 05:00:15 jive Exp $
+ * @version $Id: DataStoreConfig.java,v 1.11 2004/04/30 02:49:24 sploreg Exp $
  */
 public class DataStoreConfig {
     /** unique datasore identifier */
@@ -212,10 +212,10 @@ public class DataStoreConfig {
     }
 
     /**
-     * getId purpose.
+     * This is the DataStore ID
      * 
      * <p>
-     * Description ...
+     * 
      * </p>
      *
      * @return
