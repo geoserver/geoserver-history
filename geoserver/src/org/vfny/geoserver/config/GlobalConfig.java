@@ -20,17 +20,17 @@ package org.vfny.geoserver.config;
 import java.nio.charset.*;
 import java.util.logging.*;
 /**
- * Global purpose.
+ * GlobalConfig purpose.
  * 
  * <p>
- * Represents the runtime Global attributes for a server configuration. 
+ * Represents the runtime GlobalConfig attributes for a server configuration. 
  * This class should be used as a singleton, to be implemented by the classes user.
  * <p>
  * 
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: Global.java,v 1.1.2.1 2003/12/31 20:05:33 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.3.2.2 2003/12/31 23:35:18 dmzwiers Exp $
  */
-public class Global implements DataStructure{
+public class GlobalConfig implements DataStructure{
 	
 	/*
 	 * The list of text data fields represented by this class. 
@@ -47,7 +47,7 @@ public class Global implements DataStructure{
 
 	 /**
 	  * Sets the max number of decimal places past the zero returned in a
-	  * GetFeature response.  Default is 4 should it be moved to FeatureType
+	  * GetFeature response.  Default is 4 should it be moved to FeatureTypeConfig
 	  * level?
 	  */
 	 private int numDecimals = 8;
@@ -55,7 +55,7 @@ public class Global implements DataStructure{
 	 /**
 	  * Sets the global character set.  This could use some more testing from
 	  * international users, but what it does is sets the encoding globally for
-	  * all postgis database connections (the charset tag in FeatureType), as
+	  * all postgis database connections (the charset tag in FeatureTypeConfig), as
 	  * well as specifying the encoding in the return 
 	  * org.vfny.geoserver.config.org.vfny.geoserver.config.xml header and mime type.
 	  * The default is UTF-8.  Also be warned that GeoServer does not check if
@@ -94,16 +94,16 @@ public class Global implements DataStructure{
 	/**
 	 * The Server contact person and their contact information.
 	 */
-	private Contact contact = null;
+	private ContactConfig contact = null;
 	
 	/**
-	 * Global constructor.
+	 * GlobalConfig constructor.
 	 * <p>
-	 * Creates an instance of Global and initializes to default settings.
+	 * Creates an instance of GlobalConfig and initializes to default settings.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public Global(){
+	public GlobalConfig(){
 		defaultSettings();
 	}
 	
@@ -127,15 +127,15 @@ public class Global implements DataStructure{
 	
 	/**
 	 * 
-	 * Global constructor.
+	 * GlobalConfig constructor.
 	 * <p>
-	 * Creates a copy of the Global object provided,
+	 * Creates a copy of the GlobalConfig object provided,
 	 * or sets the values to default if one is not provided. 
 	 * Charset is not cloned, everything else is.
 	 * </p>
 	 * @param g
 	 */
-	public Global(Global g){
+	public GlobalConfig(GlobalConfig g){
 		if(g==null){
 			defaultSettings();
 			return;
@@ -147,9 +147,9 @@ public class Global implements DataStructure{
 		baseUrl = g.getBaseUrl();
 		schemaBaseUrl = g.getSchemaBaseUrl();
 		if(g.getContact()!=null)
-			contact = (Contact)(g.getContact().clone());
+			contact = (ContactConfig)(g.getContact().clone());
 		else
-			contact = new Contact();
+			contact = new ContactConfig();
 	}
 	
 	/**
@@ -160,10 +160,10 @@ public class Global implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A new Global object which is a copy of this object.
+	 * @return A new GlobalConfig object which is a copy of this object.
 	 */
 	public Object clone(){
-		return new Global(this);
+		return new GlobalConfig(this);
 	}
 	
 	/**
@@ -177,9 +177,9 @@ public class Global implements DataStructure{
 	 * @return true when the objects are the same.
 	 */
 	public boolean equals(Object obj){
-		if(obj == null || !(obj instanceof Global))
+		if(obj == null || !(obj instanceof GlobalConfig))
 			return false;
-		Global g = (Global)obj;
+		GlobalConfig g = (GlobalConfig)obj;
 		boolean r = true;
 		r = r && maxFeatures == g.getMaxFeatures();
 		r = r && verbose == g.isVerbose();
@@ -225,7 +225,7 @@ public class Global implements DataStructure{
 	 * </p>
 	 * @return
 	 */
-	public Contact getContact() {
+	public ContactConfig getContact() {
 		return contact;
 	}
 
@@ -315,9 +315,9 @@ public class Global implements DataStructure{
 	 * </p>
 	 * @param contact
 	 */
-	public void setContact(Contact contact) {
+	public void setContact(ContactConfig contact) {
 		if(contact == null)
-			contact = new Contact();
+			contact = new ContactConfig();
 		this.contact = contact;
 	}
 

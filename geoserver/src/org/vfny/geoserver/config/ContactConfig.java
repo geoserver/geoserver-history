@@ -18,9 +18,9 @@ package org.vfny.geoserver.config;
 
 
 /**
- * Contact Purpose.
+ * ContactConfig Purpose.
  * 
- * <p>Represents a Contact Information element such as: <code> &lt;ContactInformation&gt;<br>
+ * <p>Represents a ContactConfig Information element such as: <code> &lt;ContactInformation&gt;<br>
  * &lt;ContactPersonPrimary&gt;<br>
  * &lt;ContactPerson&gt;Chris Holmes&lt;/ContactPerson&gt;<br>
  * &lt;ContactOrganization&gt;TOPP&lt;/ContactOrganization&gt;<br>
@@ -39,10 +39,10 @@ package org.vfny.geoserver.config;
  * &lt;/ContactInformation&gt;<br></code></p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: Contact.java,v 1.1.2.1 2003/12/31 20:05:33 dmzwiers Exp $
+ * @version $Id: ContactConfig.java,v 1.2.2.2 2003/12/31 23:35:17 dmzwiers Exp $
  *
  */
-public class Contact implements DataStructure{
+public class ContactConfig implements DataStructure{
 	
 	/**
 	 * The name of the contact person 
@@ -105,16 +105,16 @@ public class Contact implements DataStructure{
     private String contactEmail;
     
     /**
-     * Contact constructor.
+     * ContactConfig constructor.
      * <p>
-     * Creates an empty Contact object which is intended to represent 
+     * Creates an empty ContactConfig object which is intended to represent 
      * the data required for a human contact.
      * 
      * @see defaultSettings()
      * </p>
      *
      */
-    public Contact(){
+    public ContactConfig(){
     	defaultSettings();
     }
     
@@ -142,15 +142,15 @@ public class Contact implements DataStructure{
     }
     
     /**
-     * Contact constructor.
+     * ContactConfig constructor.
      * <p>
-     * Creates a copy of the Contact specified, or returns a default 
-     * Contact when null is provided. None of the data is cloned, as 
+     * Creates a copy of the ContactConfig specified, or returns a default 
+     * ContactConfig when null is provided. None of the data is cloned, as 
      * String are stored in a hashtable in memory.
      * </p>
-     * @param c The Contact to create a copy of. 
+     * @param c The ContactConfig to create a copy of. 
      */
-    public Contact(Contact c){
+    public ContactConfig(ContactConfig c){
     	if(c == null){
     		defaultSettings();
     		return;
@@ -172,30 +172,30 @@ public class Contact implements DataStructure{
     /**
      * Implement clone.
      * <p>
-     * Creates a clone of the object. For exact notes see @see Contact(Contact) . 
+     * Creates a clone of the object. For exact notes see @see ContactConfig(ContactConfig) . 
      * </p>
      * @see java.lang.Object#clone()
      * 
-     * @return A new Contact object. 
+     * @return A new ContactConfig object. 
      */
     public Object clone(){
-    	return new Contact(this);
+    	return new ContactConfig(this);
     }
     
     /**
      * Implement equals.
      * <p>
-     * Checks to see that the Contact passed in is the same as this Contact.
+     * Checks to see that the ContactConfig passed in is the same as this ContactConfig.
      * </p>
      * @see java.lang.Object#equals(java.lang.Object)
      * 
-     * @param obj A Contact object.
+     * @param obj A ContactConfig object.
      * @return true when they are the same.
      */
     public boolean equals(Object obj){
-		if(!(obj instanceof Contact) || obj == null)
+		if(!(obj instanceof ContactConfig) || obj == null)
 			return false;
-    	Contact c = (Contact)obj;
+    	ContactConfig c = (ContactConfig)obj;
 		return (contactPerson == c.getContactPerson() &&
 		(contactOrganization == c.getContactOrganization() &&
 		(contactPosition == c.getContactPosition() &&

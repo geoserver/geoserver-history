@@ -21,49 +21,49 @@ import org.vfny.geoserver.config.wfs.*;
 import org.vfny.geoserver.config.wms.*;
 
 /**
- * Config purpose.
+ * ModelConfig purpose.
  * <p>
  * This class is intended to be used as a set of references for 
  * the other major portions of the configuration to be represented in memory.
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: Config.java,v 1.1.2.1 2003/12/31 20:05:33 dmzwiers Exp $
+ * @version $Id: ModelConfig.java,v 1.1.2.1 2003/12/31 23:35:18 dmzwiers Exp $
  */
-public class Config implements DataStructure {
+public class ModelConfig implements DataStructure {
 	
 	/**
 	 * The catalog configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.data.Catalog
+	 * @see org.vfny.geoserver.config.data.CatalogConfig
 	 */
-	private Catalog catalog;
+	private CatalogConfig catalog;
 	
 	/**
 	 * The server configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.Global
+	 * @see org.vfny.geoserver.config.GlobalConfig
 	 */
-	private Global global;
+	private GlobalConfig global;
 	
 	/**
 	 * The wfs configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.wfs.WFS
+	 * @see org.vfny.geoserver.config.wfs.WFSConfig
 	 */
-	private WFS wfs;
+	private WFSConfig wfs;
 	
 	/**
 	 * The wms configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.wms.WMS
+	 * @see org.vfny.geoserver.config.wms.WMSConfig
 	 */
-	private WMS wms;
+	private WMSConfig wms;
 	
 	/**
-	 * Config constructor.
+	 * ModelConfig constructor.
 	 * <p>
-	 * Creates and returns a Config object which contains the default settings.
+	 * Creates and returns a ModelConfig object which contains the default settings.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public Config(){
+	public ModelConfig(){
 		defaultSettings();
 	}
 	
@@ -76,30 +76,30 @@ public class Config implements DataStructure {
 	 *
 	 */
 	private void defaultSettings(){
-		catalog = new Catalog();
-		global = new Global();
-		wfs = new WFS();
-		wms = new WMS();
+		catalog = new CatalogConfig();
+		global = new GlobalConfig();
+		wfs = new WFSConfig();
+		wms = new WMSConfig();
 	}
 	
 	/**
-	 * Config constructor.
+	 * ModelConfig constructor.
 	 * <p>
-	 * Creates a copy of the Config object provided. If the object provided is null, 
-	 * default values are used. The data contained in the old Config object is cloned 
+	 * Creates a copy of the ModelConfig object provided. If the object provided is null, 
+	 * default values are used. The data contained in the old ModelConfig object is cloned 
 	 * rather than reference copied.
 	 * </p>
-	 * @param m The Config object to copy.
+	 * @param m The ModelConfig object to copy.
 	 */
-	public Config(Config m){
+	public ModelConfig(ModelConfig m){
 		if(m == null){
 			defaultSettings();
 			return;
 		}
-		catalog = (Catalog)m.getCatalog().clone();
-		global = (Global)m.getGlobal().clone();
-		wfs = (WFS)m.getWfs().clone();
-		wms = (WMS)m.getWms().clone();
+		catalog = (CatalogConfig)m.getCatalog().clone();
+		global = (GlobalConfig)m.getGlobal().clone();
+		wfs = (WFSConfig)m.getWfs().clone();
+		wms = (WMSConfig)m.getWms().clone();
 	}
 
 	/**
@@ -109,13 +109,13 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * @return A clone of this object.
-	 * @see org.vfny.geoserver.config.Global#clone()
-	 * @see org.vfny.geoserver.config.data.Catalog#clone()
-	 * @see org.vfny.geoserver.config.wfs.WFS#clone()
-	 * @see org.vfny.geoserver.config.wms.WMS#clone()
+	 * @see org.vfny.geoserver.config.GlobalConfig#clone()
+	 * @see org.vfny.geoserver.config.data.CatalogConfig#clone()
+	 * @see org.vfny.geoserver.config.wfs.WFSConfig#clone()
+	 * @see org.vfny.geoserver.config.wms.WMSConfig#clone()
 	 */
 	public Object clone(){
-		return new Config(this);
+		return new ModelConfig(this);
 	}
 	
 	/**
@@ -125,17 +125,17 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj An instance of a Config Object to be tested for equality.
+	 * @param obj An instance of a ModelConfig Object to be tested for equality.
 	 * @return true when the two objects are recursively equal.
-	 * @see org.vfny.geoserver.config.Global#equals()
-	 * @see org.vfny.geoserver.config.data.Catalog#equals()
-	 * @see org.vfny.geoserver.config.wfs.WFS#equals()
-	 * @see org.vfny.geoserver.config.wms.WMS#equals()
+	 * @see org.vfny.geoserver.config.GlobalConfig#equals()
+	 * @see org.vfny.geoserver.config.data.CatalogConfig#equals()
+	 * @see org.vfny.geoserver.config.wfs.WFSConfig#equals()
+	 * @see org.vfny.geoserver.config.wms.WMSConfig#equals()
 	 */
 	public boolean equals(Object obj){
-		if(obj == null || !(obj instanceof Config))
+		if(obj == null || !(obj instanceof ModelConfig))
 			return false;
-		Config m = (Config)obj;
+		ModelConfig m = (ModelConfig)obj;
 		if(m == null) return false;
 		boolean r = true;
 		if(catalog != null)
@@ -160,7 +160,7 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @return
 	 */
-	public Catalog getCatalog() {
+	public CatalogConfig getCatalog() {
 		return catalog;
 	}
 
@@ -171,7 +171,7 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @return
 	 */
-	public Global getGlobal() {
+	public GlobalConfig getGlobal() {
 		return global;
 	}
 
@@ -182,7 +182,7 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @return
 	 */
-	public WFS getWfs() {
+	public WFSConfig getWfs() {
 		return wfs;
 	}
 
@@ -193,7 +193,7 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @return
 	 */
-	public WMS getWms() {
+	public WMSConfig getWms() {
 		return wms;
 	}
 
@@ -204,7 +204,7 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @param catalog
 	 */
-	public void setCatalog(Catalog catalog) {
+	public void setCatalog(CatalogConfig catalog) {
 		this.catalog = catalog;
 	}
 
@@ -215,7 +215,7 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @param global
 	 */
-	public void setGlobal(Global global) {
+	public void setGlobal(GlobalConfig global) {
 		this.global = global;
 	}
 
@@ -226,7 +226,7 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @param wfs
 	 */
-	public void setWfs(WFS wfs) {
+	public void setWfs(WFSConfig wfs) {
 		this.wfs = wfs;
 	}
 
@@ -237,7 +237,7 @@ public class Config implements DataStructure {
 	 * </p>
 	 * @param wms
 	 */
-	public void setWms(WMS wms) {
+	public void setWms(WMSConfig wms) {
 		this.wms = wms;
 	}
 

@@ -23,7 +23,7 @@ import org.vfny.geoserver.config.CloneLibrary;
 import org.vfny.geoserver.config.EqualsLibrary;
 import org.vfny.geoserver.config.DataStructure;
 /**
- * Catalog purpose.
+ * CatalogConfig purpose.
  * <p>
  * Represents an instance of the catalog.xml file in the configuration of the 
  * server, along with associated configuration files for the feature types.
@@ -31,50 +31,50 @@ import org.vfny.geoserver.config.DataStructure;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @see DataSource
- * @see FeatureType
- * @see Style 
- * @version $Id: Catalog.java,v 1.1.2.1 2003/12/31 20:05:31 dmzwiers Exp $
+ * @see FeatureTypeConfig
+ * @see StyleConfig 
+ * @version $Id: CatalogConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
  */
-public class Catalog implements DataStructure{
+public class CatalogConfig implements DataStructure{
 	
 	/**
 	 * A set of datastores and their names.
-	 * @see org.vfny.geoserver.config.data.DataStore
+	 * @see org.vfny.geoserver.config.data.DataStoreConfig
 	 */
 	private Map dataStores;
 	
 	/**
 	 * A set of namespaces and their names.
-	 * @see org.vfny.geoserver.config.data.NameSpace
+	 * @see org.vfny.geoserver.config.data.NameSpaceConfig
 	 */
 	private Map nameSpaces;
 	
 	/**
 	 * A set of featuretypes and their names.
-	 * @see org.vfny.geoserver.config.data.FeatureType
+	 * @see org.vfny.geoserver.config.data.FeatureTypeConfig
 	 */
 	private Map featuresTypes;
 	
 	/**
 	 * A set of styles and their names.
-	 * @see org.vfny.geoserver.config.data.Style
+	 * @see org.vfny.geoserver.config.data.StyleConfig
 	 */
 	private Map styles;
 	
 	/**
 	 * the default namespace for the server instance. 
-	 * @see org.vfny.geoserver.config.data.NameSpace
+	 * @see org.vfny.geoserver.config.data.NameSpaceConfig
 	 */
-	private NameSpace defaultNameSpace;
+	private NameSpaceConfig defaultNameSpace;
 	
 	/**
-	 * Catalog constructor.
+	 * CatalogConfig constructor.
 	 * <p>
-	 * Creates a Catalog to represent an instance with default data.
+	 * Creates a CatalogConfig to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public Catalog(){
+	public CatalogConfig(){
 		defaultSettings();
 	}
 	
@@ -90,18 +90,18 @@ public class Catalog implements DataStructure{
 		nameSpaces = new HashMap();
 		styles = new HashMap();
 		featuresTypes = new HashMap();
-		defaultNameSpace = new NameSpace();
+		defaultNameSpace = new NameSpaceConfig();
 	}
 	
 	/**
-	 * Catalog constructor.
+	 * CatalogConfig constructor.
 	 * <p>
-	 * Creates a copy of the Catalog provided. If the Catalog provided 
+	 * Creates a copy of the CatalogConfig provided. If the CatalogConfig provided 
 	 * is null then default values are used. All the datastructures are cloned. 
 	 * </p>
 	 * @param c The catalog to copy.
 	 */
-	public Catalog(Catalog c){
+	public CatalogConfig(CatalogConfig c){
 		try{
 			dataStores = CloneLibrary.clone(c.getDataStores());
 		}catch(Exception e){
@@ -122,7 +122,7 @@ public class Catalog implements DataStructure{
 		}catch(Exception e){
 			styles = new HashMap();
 		}
-		defaultNameSpace = (NameSpace)c.getDefaultNameSpace().clone();
+		defaultNameSpace = (NameSpaceConfig)c.getDefaultNameSpace().clone();
 	}
 	
 	/**
@@ -132,10 +132,10 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this Catalog
+	 * @return A copy of this CatalogConfig
 	 */
 	public Object clone(){
-		return new Catalog(this);
+		return new CatalogConfig(this);
 	}
 	
 	/**
@@ -145,13 +145,13 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The Catalog object to test.
+	 * @param obj The CatalogConfig object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){
-		if(obj == null || !(obj instanceof Catalog))
+		if(obj == null || !(obj instanceof CatalogConfig))
 			return false;
-		Catalog c = (Catalog)obj;
+		CatalogConfig c = (CatalogConfig)obj;
 		boolean r = true;
 		if(dataStores != null)
 			r = r && EqualsLibrary.equals(dataStores,c.getDataStores());
@@ -187,8 +187,8 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @return
 	 */
-	public DataStore getDataStore(String key) {
-		return (DataStore)dataStores.get(key);
+	public DataStoreConfig getDataStore(String key) {
+		return (DataStoreConfig)dataStores.get(key);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @return
 	 */
-	public NameSpace getDefaultNameSpace() {
+	public NameSpaceConfig getDefaultNameSpace() {
 		return defaultNameSpace;
 	}
 
@@ -220,8 +220,8 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @return
 	 */
-	public FeatureType getFeature(String key) {
-		return (FeatureType)featuresTypes.get(key);
+	public FeatureTypeConfig getFeature(String key) {
+		return (FeatureTypeConfig)featuresTypes.get(key);
 	}
 
 	/**
@@ -242,8 +242,8 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @return
 	 */
-	public NameSpace getNameSpace(String key) {
-		return (NameSpace)nameSpaces.get(key);
+	public NameSpaceConfig getNameSpace(String key) {
+		return (NameSpaceConfig)nameSpaces.get(key);
 	}
 
 	/**
@@ -264,8 +264,8 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @return
 	 */
-	public Style getStyle(String key) {
-		return (Style)styles.get(key);
+	public StyleConfig getStyle(String key) {
+		return (StyleConfig)styles.get(key);
 	}
 
 	/**
@@ -287,7 +287,7 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param map
 	 */
-	public void addDataStore(String key, DataStore ds) {
+	public void addDataStore(String key, DataStoreConfig ds) {
 		if(dataStores == null)
 			dataStores = new HashMap();
 		if(key != null && ds != null)
@@ -301,10 +301,10 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param map
 	 */
-	public DataStore removeDataStore(String key) {
+	public DataStoreConfig removeDataStore(String key) {
 		if(dataStores == null)
 			dataStores = new HashMap();
-		return (DataStore)dataStores.remove(key);
+		return (DataStoreConfig)dataStores.remove(key);
 	}
 
 	/**
@@ -314,7 +314,7 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param support
 	 */
-	public void setDefaultNameSpace(NameSpace support) {
+	public void setDefaultNameSpace(NameSpaceConfig support) {
 		if(support!= null)
 			defaultNameSpace = support;
 	}
@@ -338,7 +338,7 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param map
 	 */
-	public void addFeature(String key, FeatureType ft) {
+	public void addFeature(String key, FeatureTypeConfig ft) {
 		if(featuresTypes == null)
 			featuresTypes = new HashMap();
 		if(key != null && ft != null)
@@ -352,10 +352,10 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param map
 	 */
-	public FeatureType removeFeature(String key) {
+	public FeatureTypeConfig removeFeature(String key) {
 		if(featuresTypes == null)
 			featuresTypes = new HashMap();
-		return (FeatureType)featuresTypes.remove(key);
+		return (FeatureTypeConfig)featuresTypes.remove(key);
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param map
 	 */
-	public void addNameSpace(String key, NameSpace ns) {
+	public void addNameSpace(String key, NameSpaceConfig ns) {
 		if(nameSpaces == null)
 			nameSpaces = new HashMap();
 		if(key != null && ns != null)
@@ -391,10 +391,10 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param map
 	 */
-	public NameSpace removeNameSpace(String key) {
+	public NameSpaceConfig removeNameSpace(String key) {
 		if(nameSpaces == null)
 			nameSpaces = new HashMap();
-		return (NameSpace)nameSpaces.remove(key);
+		return (NameSpaceConfig)nameSpaces.remove(key);
 	}
 
 	/**
@@ -416,7 +416,7 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param map
 	 */
-	public void addStyle(String key, Style s) {
+	public void addStyle(String key, StyleConfig s) {
 		if(styles == null)
 			styles = new HashMap();
 		if(key != null && s != null)
@@ -430,10 +430,10 @@ public class Catalog implements DataStructure{
 	 * </p>
 	 * @param map
 	 */
-	public Style removeStyle(String key) {
+	public StyleConfig removeStyle(String key) {
 		if(styles == null)
 			styles = new HashMap();
-		return (Style)styles.remove(key);
+		return (StyleConfig)styles.remove(key);
 	}
 
 }

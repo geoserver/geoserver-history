@@ -19,7 +19,7 @@ import org.vfny.geoserver.config.DataStructure;
 
 import java.io.File;
 /**
- * Style purpose.
+ * StyleConfig purpose.
  * <p>
  * Defines the style ids to be used by the wms.  The files 
  * must be contained in geoserver/misc/wms/styles.  We're 
@@ -29,9 +29,9 @@ import java.io.File;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: Style.java,v 1.1.2.1 2003/12/31 20:05:31 dmzwiers Exp $
+ * @version $Id: StyleConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
  */
-public class Style implements DataStructure {
+public class StyleConfig implements DataStructure {
 	
 	/**
 	 * The syle id.
@@ -49,25 +49,25 @@ public class Style implements DataStructure {
 	private boolean _default = false;
 
 	/**
-	 * Style constructor.
+	 * StyleConfig constructor.
 	 * <p>
-	 * Creates a Style to represent an instance with default data.
+	 * Creates a StyleConfig to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public Style(){
+	public StyleConfig(){
 		defaultSettings();
 	}
 
 	/**
-	 * Style constructor.
+	 * StyleConfig constructor.
 	 * <p>
-	 * Creates a copy of the Style provided. If the Style provided 
+	 * Creates a copy of the StyleConfig provided. If the StyleConfig provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
 	 * @param f The style to copy.
 	 */
-	public Style(Style style){
+	public StyleConfig(StyleConfig style){
 		if(style == null){
 			defaultSettings();
 			return;
@@ -97,10 +97,10 @@ public class Style implements DataStructure {
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this Style
+	 * @return A copy of this StyleConfig
 	 */
 	public Object clone(){
-		return new Style(this);
+		return new StyleConfig(this);
 	}
 
 	/**
@@ -110,13 +110,13 @@ public class Style implements DataStructure {
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The Style object to test.
+	 * @param obj The StyleConfig object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){
 		if(obj == null)
 			return false;
-		Style style = (Style)obj;
+		StyleConfig style = (StyleConfig)obj;
 		boolean r = true;
 		r = r && id == style.getId();
 		if(filename !=null)

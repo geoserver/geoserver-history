@@ -24,15 +24,15 @@ import org.vfny.geoserver.config.CloneLibrary;
 import org.vfny.geoserver.config.EqualsLibrary;
 import org.vfny.geoserver.config.DataStructure;
 /**
- * FeatureType purpose.
+ * FeatureTypeConfig purpose.
  * <p>
- * Description of FeatureType ...
+ * Description of FeatureTypeConfig ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureType.java,v 1.1.2.1 2003/12/31 20:05:31 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
  */
-public class FeatureType implements DataStructure{
+public class FeatureTypeConfig implements DataStructure{
 	
 	/**
 	 * The Id of the datastore which should be used to get this featuretype.
@@ -45,7 +45,7 @@ public class FeatureType implements DataStructure{
 	private Envelope latLongBBox;
 	
 	/**
-	 * native wich EPGS code for the FeatureType
+	 * native wich EPGS code for the FeatureTypeConfig
 	 */
 	private int SRS;
 	
@@ -90,7 +90,7 @@ public class FeatureType implements DataStructure{
 	
 	/**
 	 * the list of exposed attributes. If the list is empty or not present
-	 * at all, all the FeatureType's attributes are exposed, if is present,
+	 * at all, all the FeatureTypeConfig's attributes are exposed, if is present,
 	 * only those oattributes in this list will be exposed by the services
 	 */
 	private Filter definitionQuery = null;
@@ -101,13 +101,13 @@ public class FeatureType implements DataStructure{
 	private String defaultStyle;
 
 	/**
-	 * FeatureType constructor.
+	 * FeatureTypeConfig constructor.
 	 * <p>
-	 * Creates a FeatureType to represent an instance with default data.
+	 * Creates a FeatureTypeConfig to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public FeatureType(){
+	public FeatureTypeConfig(){
 		defaultSettings();
 	}
 
@@ -134,14 +134,14 @@ public class FeatureType implements DataStructure{
 	}
 
 	/**
-	 * FeatureType constructor.
+	 * FeatureTypeConfig constructor.
 	 * <p>
-	 * Creates a copy of the FeatureType provided. If the FeatureType provided 
+	 * Creates a copy of the FeatureTypeConfig provided. If the FeatureTypeConfig provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
 	 * @param f The featuretype to copy.
 	 */
-	public FeatureType(FeatureType f){
+	public FeatureTypeConfig(FeatureTypeConfig f){
 		if(f==null){
 			defaultSettings();
 			return;
@@ -171,10 +171,10 @@ public class FeatureType implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this FeatureType
+	 * @return A copy of this FeatureTypeConfig
 	 */
 	public Object clone(){
-		return new FeatureType(this);
+		return new FeatureTypeConfig(this);
 	}
 
 	/**
@@ -184,13 +184,13 @@ public class FeatureType implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The FeatureType object to test.
+	 * @param obj The FeatureTypeConfig object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){
 		if(obj == null)
 			return false;
-		FeatureType f = (FeatureType)obj;
+		FeatureTypeConfig f = (FeatureTypeConfig)obj;
 		boolean r = true;
 		r = r && dataStoreId == f.getDataStoreId();
 		if(latLongBBox != null)

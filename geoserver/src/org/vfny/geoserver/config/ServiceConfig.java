@@ -20,16 +20,16 @@ import java.util.List;
 import java.util.LinkedList;
 
 /**
- * Service purpose.
+ * ServiceConfig purpose.
  * <p>
- * Service is intended to be extended to provide some basic data storage facilities. 
+ * ServiceConfig is intended to be extended to provide some basic data storage facilities. 
  * This class represents the basic properties of a web service. 
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: Service.java,v 1.1.2.1 2003/12/31 20:05:33 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.10.2.2 2003/12/31 23:35:16 dmzwiers Exp $
  */
-public class Service implements DataStructure{
+public class ServiceConfig implements DataStructure{
 	
 	/**
 	 * Represents when the web service is enabled/disabled. True when enabled.
@@ -81,13 +81,13 @@ public class Service implements DataStructure{
 	private String maintainer;
 	
 	/**
-	 * Service constructor.
+	 * ServiceConfig constructor.
 	 * <p>
-	 * Creates an empty Service representation with default values. 
+	 * Creates an empty ServiceConfig representation with default values. 
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public Service(){
+	public ServiceConfig(){
 		defaultSettings();
 	}
 	
@@ -111,17 +111,17 @@ public class Service implements DataStructure{
 	}
 	
 	/**
-	 * Service constructor.
+	 * ServiceConfig constructor.
 	 * <p>
 	 * This is equivalent to calling the clone method. When a null value is passed in, 
 	 * the default values are used. All non-primary datatypes are cloned with the 
 	 * exception of Strings (which have a singleton hash table in memory representation).   
 	 * </p>
-	 * @param s The Service object to copy into the new Service object. 
+	 * @param s The ServiceConfig object to copy into the new ServiceConfig object. 
 	 * @see defaultSettings()
 	 * @see clone()
 	 */
-	public Service(Service s){
+	public ServiceConfig(ServiceConfig s){
 	 if(s == null){
 	 	defaultSettings();
 	 	return;
@@ -146,23 +146,23 @@ public class Service implements DataStructure{
 	 * Implements clone.
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return An instance of a Service object which represents a copy of the existing Service Object. 
+	 * @return An instance of a ServiceConfig object which represents a copy of the existing ServiceConfig Object. 
 	 */
 	public Object clone(){
-		return new Service(this);
+		return new ServiceConfig(this);
 	}
 
 	/**
 	 * Implement equals.
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The Service object which will be tested.  
+	 * @param obj The ServiceConfig object which will be tested.  
 	 * @return true when the classes are equal. 
 	 */
 	public boolean equals(Object obj) {
-		if(!(obj instanceof Service) || obj == null)
+		if(!(obj instanceof ServiceConfig) || obj == null)
 			return false;
-		Service s = (Service)obj;
+		ServiceConfig s = (ServiceConfig)obj;
 		boolean r = true;
 		r = r && enabled == s.isEnabled();
 		r = r && name== s.getName();

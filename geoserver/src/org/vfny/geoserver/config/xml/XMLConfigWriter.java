@@ -33,7 +33,7 @@ import com.vividsolutions.jts.geom.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -45,7 +45,7 @@ public class XMLConfigWriter {
 	/**
 	 * The main data structure to contain the results. 
 	 */
-	private Config model;
+	private ModelConfig model;
 	
 	/**
 	 * XMLConfigWriter constructor.
@@ -64,9 +64,9 @@ public class XMLConfigWriter {
 	 * @param model The model to be written
 	 * @throws ConfigException is thrown when the parameter is null.
 	 */
-	public XMLConfigWriter(Config model) throws ConfigException{
+	public XMLConfigWriter(ModelConfig model) throws ConfigException{
 		if(model == null){
-			throw new ConfigException("Config was null");
+			throw new ConfigException("ModelConfig was null");
 		}
 		this.model = model;
 	}
@@ -86,7 +86,7 @@ public class XMLConfigWriter {
 	public void store (File root) throws ConfigException{
 		LOGGER.fine("In method store");
 		if(model == null)
-			throw new ConfigException("Config is null: cannot write.");
+			throw new ConfigException("ModelConfig is null: cannot write.");
 		
 		WriterUtils.initFile(root,true);
 		File configDir = WriterUtils.initFile(new File(root,"WEB-INF/"),true);
@@ -119,7 +119,7 @@ public class XMLConfigWriter {
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
 	 */
 	protected class WriterHelper{
 		/**
@@ -317,10 +317,10 @@ public class XMLConfigWriter {
 	protected void storeServices(WriterHelper cw) throws ConfigException{
 		LOGGER.fine("In method storeServices");
 		cw.writeln("<?org.vfny.geoserver.config.org.vfny.geoserver.config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		cw.comment("Service level configuration");
+		cw.comment("ServiceConfig level configuration");
 		cw.openTag("serverConfiguration");
 		
-		Global g = model.getGlobal();
+		GlobalConfig g = model.getGlobal();
 		if(g!=null){
 			cw.openTag("global");
 			
@@ -349,7 +349,7 @@ public class XMLConfigWriter {
 	        	cw.comment("Sets the global character set.  This could use some more testing\n"+
 					"from international users, but what it does is sets the encoding\n"+
 					"globally for all postgis database connections (the charset tag\n"+
-					"in FeatureType), as well as specifying the encoding in the return\n"+
+					"in FeatureTypeConfig), as well as specifying the encoding in the return\n"+
 					"org.vfny.geoserver.config.org.vfny.geoserver.config.xml header and mime type.  The default is UTF-8.  Also be warned\n"+
 					"that GeoServer does not check if the CharSet is valid before\n"+
 					"attempting to use it, so it will fail miserably if a bad charset\n"+
@@ -386,15 +386,15 @@ public class XMLConfigWriter {
 	 * 
 	 * storeContact purpose.
 	 * <p>
-	 * Writes a contact into the WriterHelper provided from the Contact provided.
+	 * Writes a contact into the WriterHelper provided from the ContactConfig provided.
 	 * </p>
 	 * @param cw The Configuration Writer
-	 * @param c The Contact to write.
+	 * @param c The ContactConfig to write.
 	 * @throws ConfigException When an IO exception occurs.
 	 */
-	protected void storeContact(Contact c, WriterHelper cw) throws ConfigException{
+	protected void storeContact(ContactConfig c, WriterHelper cw) throws ConfigException{
 		LOGGER.fine("In method storeContact");
-		if(c!=null && !c.equals(new Contact())){
+		if(c!=null && !c.equals(new ContactConfig())){
 			cw.openTag("ContactInformation");
 			cw.openTag("ContactPersonPrimary");
 			cw.textTag("ContactPerson",c.getContactPerson());
@@ -420,35 +420,35 @@ public class XMLConfigWriter {
 	 * 
 	 * storeService purpose.
 	 * <p>
-	 * Writes a service into the WriterHelper provided from the WFS or WMS object provided.
+	 * Writes a service into the WriterHelper provided from the WFSConfig or WMSConfig object provided.
 	 * </p>
-	 * @param obj either a WFS or WMS object.
+	 * @param obj either a WFSConfig or WMSConfig object.
 	 * @param cw The Configuration Writer
 	 * @throws ConfigException When an IO exception occurs or the object provided is not of the correct type.
 	 */
 	protected void storeService(Object obj, WriterHelper cw) throws ConfigException{
 		LOGGER.fine("In method storeService");
-		Service s = null;
+		ServiceConfig s = null;
 		String u = null;
 		String t = "";
-		if(obj instanceof WFS){
-			WFS w = (WFS)obj;
+		if(obj instanceof WFSConfig){
+			WFSConfig w = (WFSConfig)obj;
 			s = w.getService();
 			u = w.getDescribeUrl();
-			t = "WFS";
+			t = "WFSConfig";
 		}else
-		if(obj instanceof WMS){
-			WMS w = (WMS)obj;
+		if(obj instanceof WMSConfig){
+			WMSConfig w = (WMSConfig)obj;
 			s = w.getService();
 			u = w.getDescribeUrl();
-			t = "WMS";
+			t = "WMSConfig";
 		}else
-		throw new ConfigException("Invalid object: not WMS of WFS");
+		throw new ConfigException("Invalid object: not WMSConfig of WFSConfig");
 		Map atrs = new HashMap();
 		atrs.put("type",t);
 		atrs.put("enabled",s.isEnabled()+"");
 		cw.openTag("service",atrs);
-		cw.comment("Service elements, needed for the capabilities document\n"+
+		cw.comment("ServiceConfig elements, needed for the capabilities document\n"+
 				"Title and OnlineResource are the two required");
 		if(s.getName()!=null && s.getName()!="")
 			cw.textTag("name",s.getName());
@@ -479,7 +479,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeCatalog purpose.
 	 * <p>
-	 * Writes a catalog into the WriterHelper provided from Catalog provided in memory.
+	 * Writes a catalog into the WriterHelper provided from CatalogConfig provided in memory.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @throws ConfigException When an IO exception occurs.
@@ -495,7 +495,7 @@ public class XMLConfigWriter {
 			Iterator i = model.getCatalog().getDataStores().keySet().iterator();
 			while(i.hasNext()){
 				String s = (String)i.next();
-				DataStore ds = (DataStore)model.getCatalog().getDataStores().get(s);
+				DataStoreConfig ds = (DataStoreConfig)model.getCatalog().getDataStores().get(s);
 				if(ds != null)
 					storeDataStore(cw,ds);
 			}
@@ -507,7 +507,7 @@ public class XMLConfigWriter {
 			Iterator i = model.getCatalog().getNameSpaces().keySet().iterator();
 			while(i.hasNext()){
 				String s = (String)i.next();
-				NameSpace ns = (NameSpace)model.getCatalog().getNameSpaces().get(s);
+				NameSpaceConfig ns = (NameSpaceConfig)model.getCatalog().getNameSpaces().get(s);
 				if(ns != null)
 					storeNameSpace(cw,ns);
 			}
@@ -522,7 +522,7 @@ public class XMLConfigWriter {
 			Iterator i = model.getCatalog().getStyles().keySet().iterator();
 			while(i.hasNext()){
 				String s = (String)i.next();
-				Style st = (Style)model.getCatalog().getStyles().get(s);
+				StyleConfig st = (StyleConfig)model.getCatalog().getStyles().get(s);
 				if(st != null)
 					storeStyle(cw,st);
 			}
@@ -535,13 +535,13 @@ public class XMLConfigWriter {
 	 * 
 	 * storeDataStore purpose.
 	 * <p>
-	 * Writes a DataStore into the WriterHelper provided.
+	 * Writes a DataStoreConfig into the WriterHelper provided.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @param ds The Datastore. 
 	 * @throws ConfigException When an IO exception occurs.
 	 */
-	protected void storeDataStore(WriterHelper cw, DataStore ds) throws ConfigException{
+	protected void storeDataStore(WriterHelper cw, DataStoreConfig ds) throws ConfigException{
 		LOGGER.fine("In method storeDataStore");
 		Map temp = new HashMap();
 		if(ds.getId()!=null)
@@ -573,13 +573,13 @@ public class XMLConfigWriter {
 	 * 
 	 * storeNameSpace purpose.
 	 * <p>
-	 * Writes a NameSpace into the WriterHelper provided.
+	 * Writes a NameSpaceConfig into the WriterHelper provided.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @param ns The Namespace. 
 	 * @throws ConfigException When an IO exception occurs.
 	 */
-	protected void storeNameSpace(WriterHelper cw, NameSpace ns) throws ConfigException{
+	protected void storeNameSpace(WriterHelper cw, NameSpaceConfig ns) throws ConfigException{
 		LOGGER.fine("In method storeNameSpace");
 		Map attr = new HashMap();
 		if(ns.getUri()!=null && ns.getUri()!="")
@@ -596,13 +596,13 @@ public class XMLConfigWriter {
 	 * 
 	 * storeStyle purpose.
 	 * <p>
-	 * Writes a Style into the WriterHelper provided.
+	 * Writes a StyleConfig into the WriterHelper provided.
 	 * </p>
 	 * @param cw The Configuration Writer
-	 * @param ns The Style. 
+	 * @param ns The StyleConfig. 
 	 * @throws ConfigException When an IO exception occurs.
 	 */
-	protected void storeStyle(WriterHelper cw, Style s) throws ConfigException{
+	protected void storeStyle(WriterHelper cw, StyleConfig s) throws ConfigException{
 		LOGGER.fine("In method storeStyle");
 		Map attr = new HashMap();
 		if(s.getId()!=null && s.getId()!="")
@@ -622,14 +622,14 @@ public class XMLConfigWriter {
 	 * </p>
 	 * @param dir The FeatureTypes directory
 	 * @throws ConfigException When an IO exception occurs.
-	 * @see storeFeature(FeatureType,File)
+	 * @see storeFeature(FeatureTypeConfig,File)
 	 */
 	protected void storeFeatures(File dir) throws ConfigException{
 		LOGGER.fine("In method storeFeatures");
 		Iterator i = model.getCatalog().getFeaturesTypes().keySet().iterator();
 		while(i.hasNext()){
 			String s = (String)i.next();
-			FeatureType ft = (FeatureType)model.getCatalog().getFeaturesTypes().get(s);
+			FeatureTypeConfig ft = (FeatureTypeConfig)model.getCatalog().getFeaturesTypes().get(s);
 			if(ft!=null){
 				File dir2 = WriterUtils.initWriteFile(new File(dir,ft.getDirName()),true);
 				storeFeature(ft,dir2);
@@ -644,11 +644,11 @@ public class XMLConfigWriter {
 	 * <p>
 	 * Writes a FeatureTypes into it's Directory.
 	 * </p>
-	 * @param dir The particular FeatureType directory
+	 * @param dir The particular FeatureTypeConfig directory
 	 * @throws ConfigException When an IO exception occurs.
 	 * @see storeFeatures(File)
 	 */
-	protected void storeFeature(FeatureType ft, File dir) throws ConfigException{
+	protected void storeFeature(FeatureTypeConfig ft, File dir) throws ConfigException{
 		LOGGER.fine("In method storeFeature");
 		File f = WriterUtils.initWriteFile(new File(dir,"info.org.vfny.geoserver.config.org.vfny.geoserver.config.xml"),false);
 		try{
@@ -659,7 +659,7 @@ public class XMLConfigWriter {
 			cw.openTag("featureType",m);
 			if(ft.getName()!=null && ft.getName()!="")
 				cw.textTag("name",ft.getName());
-			cw.comment("native wich EPGS code for the FeatureType");
+			cw.comment("native wich EPGS code for the FeatureTypeConfig");
 			cw.textTag("SRS",ft.getSRS()+"");
 			if(ft.getTitle()!=null && ft.getTitle()!="")
 				cw.textTag("title",ft.getTitle());
@@ -691,7 +691,7 @@ public class XMLConfigWriter {
 				cw.attrTag("latLonBoundingBox",m);
 			}
 			if(ft.getDefaultStyle()!=null && ft.getDefaultStyle()!=""){
-				cw.comment("the default style this FeatureType can be represented by.\n"+
+				cw.comment("the default style this FeatureTypeConfig can be represented by.\n"+
 					"at least must contain the \"default\" attribute ");
 				m = new HashMap();
 				m.put("default",ft.getDefaultStyle());
@@ -732,7 +732,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
  */
 class WriterUtils{
 	/**

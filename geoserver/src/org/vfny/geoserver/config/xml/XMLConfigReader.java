@@ -30,7 +30,7 @@ import javax.xml.parsers.*;
 import java.nio.charset.*;
 import org.geotools.filter.*;
 import com.vividsolutions.jts.geom.*;
-import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.global.Log4JFormatter;
 /**
  * XMLConfigReader purpose.
  * <p>
@@ -39,11 +39,11 @@ import org.vfny.geoserver.global.*;
  * <p>
  * Example Use:
  * <pre><code>
- * Config m = XMLConfigReader.load(new File("/conf/"));
+ * ModelConfig m = XMLConfigReader.load(new File("/conf/"));
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -55,7 +55,7 @@ public class XMLConfigReader {
 	/**
 	 * The main data structure to contain the results. 
 	 */
-	private Config model = null;
+	private ModelConfig model = null;
 	
 	/**
 	 * The root directory from which the configuration is loaded.
@@ -75,14 +75,14 @@ public class XMLConfigReader {
 	 *
 	 */
 	protected XMLConfigReader(){
-		model = new Config();
+		model = new ModelConfig();
 		root = new File(".");
 	}
 	
 	/**
 	 * 
 	 * <p>This method loads the config files from the 
-	 * specified directory into a Config. If the path is incorrect, 
+	 * specified directory into a ModelConfig. If the path is incorrect, 
 	 * or the directory is formed correctly, a ConfigException 
 	 * will be thrown and/or null returned. <br><br>
 	 * The config directory is as follows:<br>
@@ -94,11 +94,11 @@ public class XMLConfigReader {
 	 * </p>
 	 * @param root A directory which contains the config files.  
 	 * @throws ConfigException When an error occurs. 
-	 * @return The resulting Config
+	 * @return The resulting ModelConfig
 	 */
 	public XMLConfigReader(File root) throws ConfigException{
 		this.root = root;
-		model = new Config();
+		model = new ModelConfig();
 		load();
 		initialized = true;
 	}
@@ -115,7 +115,7 @@ public class XMLConfigReader {
 	 * </p>
 	 * @return The results of a configuration parse residing in memory.
 	 */
-	public Config getModel(){
+	public ModelConfig getModel(){
 		return model;
 	}
 	
@@ -158,7 +158,7 @@ public class XMLConfigReader {
 
 		LOGGER.fine("parsing configuration documents");
 		Element elem = (Element) configElem.getElementsByTagName("global").item(0);
-		Global g = loadGlobal(elem);
+		GlobalConfig g = loadGlobal(elem);
 		model.setGlobal(g);
 
 		NodeList configuredServices = configElem.getElementsByTagName("service");
@@ -169,9 +169,9 @@ public class XMLConfigReader {
 
 			String serviceType = elem.getAttribute("type");
 
-			if ("WFS".equalsIgnoreCase(serviceType)) {
+			if ("WFSConfig".equalsIgnoreCase(serviceType)) {
 				model.setWfs(loadWFS(elem,model.getGlobal()));
-			} else if ("WMS".equalsIgnoreCase(serviceType)) {
+			} else if ("WMSConfig".equalsIgnoreCase(serviceType)) {
 				model.setWms(loadWMS(elem,model.getGlobal()));
 			} else if ("Z39.50".equalsIgnoreCase(serviceType)) {
 				//...
@@ -195,7 +195,7 @@ public class XMLConfigReader {
 		Element catalogElem = ReaderUtils.loadConfig(catalogFile);
 		
 		LOGGER.info("loading catalog configuration");
-		Catalog c = new Catalog();
+		CatalogConfig c = new CatalogConfig();
 		c.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(catalogElem, "namespaces", true)));
 		setDefaultNS(c);
 		c.setDataStores(loadDataStores(ReaderUtils.getChildElement(catalogElem, "datastores", true),c.getNameSpaces()));
@@ -212,10 +212,10 @@ public class XMLConfigReader {
 	 * </p>
 	 * @param c The catalog into which we will store the default namespace.
 	 */
-	protected void setDefaultNS(Catalog c){
+	protected void setDefaultNS(CatalogConfig c){
 		Iterator i = c.getNameSpaces().values().iterator();
 		while(i.hasNext()){
-			org.vfny.geoserver.config.data.NameSpace ns = (org.vfny.geoserver.config.data.NameSpace)i.next();
+			org.vfny.geoserver.config.data.NameSpaceConfig ns = (org.vfny.geoserver.config.data.NameSpaceConfig)i.next();
 			if(ns.isDefault()){
 				c.setDefaultNameSpace(ns);
 				return;
@@ -255,14 +255,14 @@ public class XMLConfigReader {
 	/**
 	 * loadGlobal purpose.
 	 * <p>
-	 * Converts a DOM tree into a Global configuration.
+	 * Converts a DOM tree into a GlobalConfig configuration.
 	 * </p>
 	 * @param globalElem A DOM tree representing a complete global configuration.
-	 * @return A complete Global object loaded from the DOM tree provided.
+	 * @return A complete GlobalConfig object loaded from the DOM tree provided.
 	 * @throws ConfigException When an error occurs.
 	 */
-	protected Global loadGlobal(Element globalElem) throws ConfigException{
-		Global g = new Global();
+	protected GlobalConfig loadGlobal(Element globalElem) throws ConfigException{
+		GlobalConfig g = new GlobalConfig();
 		LOGGER.fine("parsing global configuration parameters");
 		
 		Level loggingLevel = getLoggingLevel(globalElem);
@@ -328,14 +328,14 @@ public class XMLConfigReader {
 	/**
 	 * loadContact purpose.
 	 * <p>
-	 * Converts a DOM tree into a Contact
+	 * Converts a DOM tree into a ContactConfig
 	 * </p>
-	 * @param contactInfoElement a DOM tree to convert into a Contact.
-	 * @return The resulting Contact object from the DOM tree.
+	 * @param contactInfoElement a DOM tree to convert into a ContactConfig.
+	 * @return The resulting ContactConfig object from the DOM tree.
 	 * @throws ConfigException When an error occurs.
 	 */
-	protected Contact loadContact(Element contactInfoElement) throws ConfigException{
-		Contact c = new Contact();
+	protected ContactConfig loadContact(Element contactInfoElement) throws ConfigException{
+		ContactConfig c = new ContactConfig();
 		if (contactInfoElement == null) {
 			return c;
 		}
@@ -371,16 +371,16 @@ public class XMLConfigReader {
 	/**
 	 * loadWFS purpose.
 	 * <p>
-	 * Converts a DOM tree into a WFS object.
+	 * Converts a DOM tree into a WFSConfig object.
 	 * </p>
-	 * @param wfsElement a DOM tree to convert into a WFS object.
-	 * @param g A reference to the already loaded Global object. Used to get the baseUrl
-	 * @return A complete WFS object loaded from the DOM tree provided.
-	 * @see Global#getBaseUrl()
+	 * @param wfsElement a DOM tree to convert into a WFSConfig object.
+	 * @param g A reference to the already loaded GlobalConfig object. Used to get the baseUrl
+	 * @return A complete WFSConfig object loaded from the DOM tree provided.
+	 * @see GlobalConfig#getBaseUrl()
 	 * @throws ConfigException When an error occurs.
 	 */
-	protected WFS loadWFS(Element wfsElement, Global g) throws ConfigException{
-		WFS w = new WFS();
+	protected WFSConfig loadWFS(Element wfsElement, GlobalConfig g) throws ConfigException{
+		WFSConfig w = new WFSConfig();
 		w.setService(loadService(wfsElement));
 		w.setDescribeUrl(g.getBaseUrl().toString() + "wfs/");
 		return w;
@@ -389,16 +389,16 @@ public class XMLConfigReader {
 	/**
 	 * loadWMS purpose.
 	 * <p>
-	 * Converts a DOM tree into a WMS object.
+	 * Converts a DOM tree into a WMSConfig object.
 	 * </p>
-	 * @param wmsElement a DOM tree to convert into a WMS object.
-	 * @param g A reference to the already loaded Global object. Used to get the baseUrl
-	 * @return A complete WMS object loaded from the DOM tree provided.
-	 * @see Global#getBaseUrl()
+	 * @param wmsElement a DOM tree to convert into a WMSConfig object.
+	 * @param g A reference to the already loaded GlobalConfig object. Used to get the baseUrl
+	 * @return A complete WMSConfig object loaded from the DOM tree provided.
+	 * @see GlobalConfig#getBaseUrl()
 	 * @throws ConfigException When an error occurs.
 	 */
-	protected WMS loadWMS(Element wmsElement, Global g) throws ConfigException{
-		WMS w = new WMS();
+	protected WMSConfig loadWMS(Element wmsElement, GlobalConfig g) throws ConfigException{
+		WMSConfig w = new WMSConfig();
 		w.setService(loadService(wmsElement));
 		w.setDescribeUrl(g.getBaseUrl().toString() + "wms/");
 		return w;
@@ -407,14 +407,14 @@ public class XMLConfigReader {
 	/**
 	 * loadService purpose.
 	 * <p>
-	 * Converts a DOM tree into a Service object.
+	 * Converts a DOM tree into a ServiceConfig object.
 	 * </p>
-	 * @param serviceRoot a DOM tree to convert into a Service object.
-	 * @return A complete Service object loaded from the DOM tree provided.
+	 * @param serviceRoot a DOM tree to convert into a ServiceConfig object.
+	 * @return A complete ServiceConfig object loaded from the DOM tree provided.
 	 * @throws ConfigException When an error occurs.
 	 */
-	protected Service loadService(Element serviceRoot) throws ConfigException{
-		Service s = new Service();
+	protected ServiceConfig loadService(Element serviceRoot) throws ConfigException{
+		ServiceConfig s = new ServiceConfig();
 
 		s.setName(ReaderUtils.getChildText(serviceRoot, "name", true));
 		s.setTitle(ReaderUtils.getChildText(serviceRoot, "title", true));
@@ -447,7 +447,7 @@ public class XMLConfigReader {
 
 		for (int i = 0; i < nsCount; i++) {
 			elem = (Element) nsList.item(i);
-			org.vfny.geoserver.config.data.NameSpace ns = new org.vfny.geoserver.config.data.NameSpace();
+			org.vfny.geoserver.config.data.NameSpaceConfig ns = new org.vfny.geoserver.config.data.NameSpaceConfig();
 			ns.setUri(ReaderUtils.getAttribute(elem, "uri", true));
 			ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
 			ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default", false) || (nsCount == 1));
@@ -484,7 +484,7 @@ public class XMLConfigReader {
 		Element styleElem;
 		for (int i = 0; i < styleCount; i++) {
 			styleElem = (Element) stylesList.item(i);
-			Style s = new Style();
+			StyleConfig s = new StyleConfig();
 			s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
 			s.setFilename(new File(ReaderUtils.getAttribute(styleElem, "filename", true)));
 			s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default", false));
@@ -507,7 +507,7 @@ public class XMLConfigReader {
 
 		NodeList dsElements = dsRoot.getElementsByTagName("datastore");
 		int dsCnt = dsElements.getLength();
-		DataStore dsConfig;
+		DataStoreConfig dsConfig;
 		Element dsElem;
 
 		for (int i = 0; i < dsCnt; i++) {
@@ -527,17 +527,17 @@ public class XMLConfigReader {
 	/**
 	 * loadDataStore purpose.
 	 * <p>
-	 * Converts a DOM tree into a DataStore object.
+	 * Converts a DOM tree into a DataStoreConfig object.
 	 * </p>
-	 * @param dsElem a DOM tree to convert into a DataStore object.
+	 * @param dsElem a DOM tree to convert into a DataStoreConfig object.
 	 * @param nameSpaces the map of pre-loaded namespaces to check for inconsistencies.
-	 * @return A complete DataStore object loaded from the DOM tree provided.
+	 * @return A complete DataStoreConfig object loaded from the DOM tree provided.
 	 * @throws ConfigException When an error occurs.
 	 */
-	protected DataStore loadDataStore(Element dsElem, Map nameSpaces) throws ConfigException {
-		DataStore ds = new DataStore();
+	protected DataStoreConfig loadDataStore(Element dsElem, Map nameSpaces) throws ConfigException {
+		DataStoreConfig ds = new DataStoreConfig();
 		
-		LOGGER.finer("creating a new DataStore configuration");
+		LOGGER.finer("creating a new DataStoreConfig configuration");
 		ds.setId(ReaderUtils.getAttribute(dsElem, "id", true));
 
 		String namespacePrefix = ReaderUtils.getAttribute(dsElem, "namespace", true);
@@ -552,7 +552,7 @@ public class XMLConfigReader {
 		ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled", false));
 		ds.setTitle(ReaderUtils.getChildText(dsElem, "title", false));
 		ds.setAbstract(ReaderUtils.getChildText(dsElem, "abstract", false));
-		LOGGER.fine("loading connection parameters for DataStore " + ds.getNameSpaceId());
+		LOGGER.fine("loading connection parameters for DataStoreConfig " + ds.getNameSpaceId());
 		ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(dsElem, "connectionParams", true)));
 		LOGGER.info("created " + toString());
 		return ds;
@@ -604,7 +604,7 @@ public class XMLConfigReader {
 			File[] file = featureTypeDir.listFiles();
 			for (int i = 0, n = file.length; i < n; i++) {
 				LOGGER.fine("Info dir:"+file[i].toString());
-				FeatureType ft = loadFeature(new File(file[i],"info.org.vfny.geoserver.config.org.vfny.geoserver.config.xml"));
+				FeatureTypeConfig ft = loadFeature(new File(file[i],"info.org.vfny.geoserver.config.org.vfny.geoserver.config.xml"));
 				featureTypes.put(ft.getName(), ft);
 			}
 		}
@@ -614,17 +614,17 @@ public class XMLConfigReader {
 	/**
 	 * loadDataStore purpose.
 	 * <p>
-	 * Converts a intoFile tree into a FeatureType object. Uses loadFeaturePt2(Element) to interpret the XML.
+	 * Converts a intoFile tree into a FeatureTypeConfig object. Uses loadFeaturePt2(Element) to interpret the XML.
 	 * </p>
-	 * @param infoFile a File to convert into a FeatureType object. (info.xml)
-	 * @return A complete FeatureType object loaded from the File handle provided.
+	 * @param infoFile a File to convert into a FeatureTypeConfig object. (info.xml)
+	 * @return A complete FeatureTypeConfig object loaded from the File handle provided.
 	 * @throws ConfigException When an error occurs.
 	 * @see loadFeaturePt2(Element)
 	 */
-	protected FeatureType loadFeature(File infoFile) throws ConfigException{
+	protected FeatureTypeConfig loadFeature(File infoFile) throws ConfigException{
 		if (isInfoFile(infoFile)) {
 			Element featureElem = ReaderUtils.loadConfig(infoFile);
-			FeatureType ft = null;
+			FeatureTypeConfig ft = null;
 
 			File parentDir = infoFile.getParentFile();
 			ft = loadFeaturePt2(featureElem);
@@ -643,14 +643,14 @@ public class XMLConfigReader {
 	/**
 	 * loadFeaturePt2 purpose.
 	 * <p>
-	 * Converts a DOM tree into a FeatureType object.
+	 * Converts a DOM tree into a FeatureTypeConfig object.
 	 * </p>
-	 * @param fTypeRoot a DOM tree to convert into a FeatureType object.
-	 * @return A complete FeatureType object loaded from the DOM tree provided.
+	 * @param fTypeRoot a DOM tree to convert into a FeatureTypeConfig object.
+	 * @return A complete FeatureTypeConfig object loaded from the DOM tree provided.
 	 * @throws ConfigException When an error occurs.
 	 */
-	protected FeatureType loadFeaturePt2(Element fTypeRoot) throws ConfigException{
-		FeatureType ft = new FeatureType();
+	protected FeatureTypeConfig loadFeaturePt2(Element fTypeRoot) throws ConfigException{
+		FeatureTypeConfig ft = new FeatureTypeConfig();
 
 		ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
 		ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
@@ -800,7 +800,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

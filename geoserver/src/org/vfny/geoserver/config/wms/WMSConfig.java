@@ -18,24 +18,24 @@ package org.vfny.geoserver.config.wms;
 
 import java.util.Date;
 
-import org.vfny.geoserver.config.Service;
+import org.vfny.geoserver.config.ServiceConfig;
 import org.vfny.geoserver.config.DataStructure;
 /**
- * WMS purpose.
+ * WMSConfig purpose.
  * <p>
- * Description of WMS 
- * Used to store WMS data. 
+ * Description of WMSConfig 
+ * Used to store WMSConfig data. 
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMS.java,v 1.1.2.1 2003/12/31 20:05:37 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.1.2.1 2003/12/31 23:35:18 dmzwiers Exp $
  */
-public class WMS implements DataStructure{
+public class WMSConfig implements DataStructure{
 
 	private static final String WMS_VERSION = "1.1.1";
 
-	/** WMS spec specifies this fixed service name */
-	//private static final String FIXED_SERVICE_NAME = "OGC:WMS";
+	/** WMSConfig spec specifies this fixed service name */
+	//private static final String FIXED_SERVICE_NAME = "OGC:WMSConfig";
 	//private static final String[] EXCEPTION_FORMATS = {
 	//	"application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
 	//	"application/vnd.ogc.se_blank"
@@ -54,37 +54,37 @@ public class WMS implements DataStructure{
 	/**
 	 * The service parameters for this instance.
 	 */
-	private Service service;
+	private ServiceConfig service;
 
 	/**
-	 * WMS constructor.
+	 * WMSConfig constructor.
 	 * <p>
-	 * Creates a WMS to represent an instance with default data.
+	 * Creates a WMSConfig to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public WMS(){
-		service = new Service();
+	public WMSConfig(){
+		service = new ServiceConfig();
 		describeUrl = "";
 		updateTime = new Date();
 	}
 
 	/**
-	 * WMS constructor.
+	 * WMSConfig constructor.
 	 * <p>
-	 * Creates a copy of the WMS provided. If the WMS provided 
+	 * Creates a copy of the WMSConfig provided. If the WMSConfig provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
-	 * @param f The WMS to copy.
+	 * @param f The WMSConfig to copy.
 	 */
-	public WMS(WMS w){
+	public WMSConfig(WMSConfig w){
 		if(w == null){
-			service = new Service();
+			service = new ServiceConfig();
 			return;
 		}
 		updateTime = (Date)w.getUpdateTime().clone();
 		describeUrl = w.getDescribeUrl();
-		service = (Service)w.getService().clone();
+		service = (ServiceConfig)w.getService().clone();
 	}
 
 	/**
@@ -94,10 +94,10 @@ public class WMS implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this WMS
+	 * @return A copy of this WMSConfig
 	 */
 	public Object clone(){
-		return new WMS(this);
+		return new WMSConfig(this);
 	}
 
 	/**
@@ -107,11 +107,11 @@ public class WMS implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The WMS object to test.
+	 * @param obj The WMSConfig object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){
-		WMS w = (WMS)obj;
+		WMSConfig w = (WMSConfig)obj;
 		//time was left out as it was not relevant for most comparisons
 		return (describeUrl == w.getDescribeUrl() &&
 		service.equals(w.getService()));
@@ -123,7 +123,7 @@ public class WMS implements DataStructure{
 	 * </p>
 	 * @return
 	 */
-	public Service getService() {
+	public ServiceConfig getService() {
 		return service;
 	}
 
@@ -145,9 +145,9 @@ public class WMS implements DataStructure{
 	 * </p>
 	 * @param service
 	 */
-	public void setService(Service service) {
+	public void setService(ServiceConfig service) {
 		if(service == null)
-			service = new Service();
+			service = new ServiceConfig();
 		this.service = service;
 	}
 

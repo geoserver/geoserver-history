@@ -22,15 +22,15 @@ import java.util.HashMap;
 import org.vfny.geoserver.config.CloneLibrary;
 import org.vfny.geoserver.config.DataStructure;
 /**
- * DataStore purpose.
+ * DataStoreConfig purpose.
  * <p>
  * Used to describe a datastore, typically one specified in the catalog.xml config file. 
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStore.java,v 1.1.2.1 2003/12/31 20:05:31 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
  */
-public class DataStore implements DataStructure{
+public class DataStoreConfig implements DataStructure{
 
 	  /** unique datasore identifier */
 	  private String id;
@@ -47,17 +47,17 @@ public class DataStore implements DataStructure{
 	  /** a short description about this data store */
 	  private String _abstract;
 
-	  /** connection parameters to create the DataStore */
+	  /** connection parameters to create the DataStoreConfig */
 	  private Map connectionParams;
 	  
 	/**
-	 * DataStore constructor.
+	 * DataStoreConfig constructor.
 	 * <p>
-	 * Creates a DataStore to represent an instance with default data.
+	 * Creates a DataStoreConfig to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	  public DataStore(){
+	  public DataStoreConfig(){
 	  	defaultSettings();
 	  }
 	
@@ -78,14 +78,14 @@ public class DataStore implements DataStructure{
 	  }
 	
 	/**
-	 * DataStore constructor.
+	 * DataStoreConfig constructor.
 	 * <p>
-	 * Creates a copy of the DataStore provided. If the DataStore provided 
+	 * Creates a copy of the DataStoreConfig provided. If the DataStoreConfig provided 
 	 * is null then default values are used. All the datastructures are cloned. 
 	 * </p>
 	 * @param ds The datastore to copy.
 	 */
-	  public DataStore(DataStore ds){
+	  public DataStoreConfig(DataStoreConfig ds){
 	  	if(ds == null){
 	  		defaultSettings();
 	  		return;
@@ -108,10 +108,10 @@ public class DataStore implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this DataStore
+	 * @return A copy of this DataStoreConfig
 	 */
 	  public Object clone(){
-	  	return new DataStore(this);
+	  	return new DataStoreConfig(this);
 	  }
 	
 	/**
@@ -121,11 +121,11 @@ public class DataStore implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The DataStore object to test.
+	 * @param obj The DataStoreConfig object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	  public boolean equals(Object obj){
-	  	DataStore ds = (DataStore)obj;
+	  	DataStoreConfig ds = (DataStoreConfig)obj;
 	  	boolean r = true;
 		r = r && id == ds.getId();
 		r = r && nameSpaceId.equals(ds.getNameSpaceId());

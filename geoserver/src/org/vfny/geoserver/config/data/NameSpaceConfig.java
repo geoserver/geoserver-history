@@ -18,16 +18,16 @@ package org.vfny.geoserver.config.data;
 import org.vfny.geoserver.config.DataStructure;
 
 /**
- * NameSpace purpose.
+ * NameSpaceConfig purpose.
  * <p>
  * Represents the portion of a namespace required for the configuration of geoserver.
  * Defines namespaces to be used by the datastores.
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpace.java,v 1.1.2.1 2003/12/31 20:05:31 dmzwiers Exp $
+ * @version $Id: NameSpaceConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
  */
-public class NameSpace implements DataStructure {
+public class NameSpaceConfig implements DataStructure {
 	//public static final String PREFIX_DELIMITER = ":";
 	
 	/**
@@ -46,13 +46,13 @@ public class NameSpace implements DataStructure {
 	private boolean _default;
 
 	/**
-	 * NameSpace constructor.
+	 * NameSpaceConfig constructor.
 	 * <p>
-	 * Creates a NameSpace to represent an instance with default data.
+	 * Creates a NameSpaceConfig to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public NameSpace(){
+	public NameSpaceConfig(){
 		defaultSettings();
 	}
 
@@ -70,14 +70,14 @@ public class NameSpace implements DataStructure {
 	}
 
 	/**
-	 * NameSpace constructor.
+	 * NameSpaceConfig constructor.
 	 * <p>
-	 * Creates a copy of the NameSpace provided. If the NameSpace provided 
+	 * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
 	 * @param f The namespace to copy.
 	 */
-	public NameSpace(NameSpace ns){
+	public NameSpaceConfig(NameSpaceConfig ns){
 		if(ns == null){
 			defaultSettings();
 			return;
@@ -94,10 +94,10 @@ public class NameSpace implements DataStructure {
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this NameSpace
+	 * @return A copy of this NameSpaceConfig
 	 */
 	public Object clone(){
-		return new NameSpace(this);
+		return new NameSpaceConfig(this);
 	}
 
 	/**
@@ -107,11 +107,11 @@ public class NameSpace implements DataStructure {
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The NameSpace object to test.
+	 * @param obj The NameSpaceConfig object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){
-		NameSpace ns = (NameSpace)obj;
+		NameSpaceConfig ns = (NameSpaceConfig)obj;
 		return (prefix == ns.getPrefix() &&
 		(uri == ns.getUri() && 
 		_default == ns.isDefault()));

@@ -16,24 +16,24 @@
  */
 package org.vfny.geoserver.config.wfs;
 
-import org.vfny.geoserver.config.Service;
+import org.vfny.geoserver.config.ServiceConfig;
 import org.vfny.geoserver.config.DataStructure;
 
 /**
- * WFS purpose.
+ * WFSConfig purpose.
  * <p>
- * Description of WFS 
- * Used to store WFS data. 
+ * Description of WFSConfig 
+ * Used to store WFSConfig data. 
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFS.java,v 1.1.2.1 2003/12/31 20:05:33 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.1 2003/12/31 23:35:18 dmzwiers Exp $
  */
-public class WFS implements DataStructure{
+public class WFSConfig implements DataStructure{
 	//public static final String WFS_FOLDER = "wfs/1.0.0/";
-	//public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFS-basic.xsd";
+	//public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFSConfig-basic.xsd";
 	//public static final String WFS_CAP_LOC = WFS_FOLDER
-	//	+ "WFS-capabilities.xsd";
+	//	+ "WFSConfig-capabilities.xsd";
 
 	/**
 	 * Constant when loaded. Describes where to find the service on the server.
@@ -43,36 +43,36 @@ public class WFS implements DataStructure{
 	/**
 	 * The service parameters for this instance.
 	 */
-	private Service service;	
+	private ServiceConfig service;	
 
 	/**
-	 * WFS constructor.
+	 * WFSConfig constructor.
 	 * <p>
-	 * Creates a WFS to represent an instance with default data.
+	 * Creates a WFSConfig to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public WFS(){
+	public WFSConfig(){
 		describeUrl = "";
-		service = new Service();
+		service = new ServiceConfig();
 	}
 
 	/**
-	 * WFS constructor.
+	 * WFSConfig constructor.
 	 * <p>
-	 * Creates a copy of the WFS provided. If the WFS provided 
+	 * Creates a copy of the WFSConfig provided. If the WFSConfig provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
-	 * @param f The WFS to copy.
+	 * @param f The WFSConfig to copy.
 	 */
-	public WFS(WFS w){
+	public WFSConfig(WFSConfig w){
 		if(w == null){
 			describeUrl = "";
-			service = new Service();
+			service = new ServiceConfig();
 			return;
 		}
 		describeUrl = w.getDescribeUrl();
-		service = (Service)w.getService().clone();
+		service = (ServiceConfig)w.getService().clone();
 	}
 
 	/**
@@ -82,10 +82,10 @@ public class WFS implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this WFS
+	 * @return A copy of this WFSConfig
 	 */
 	public Object clone(){
-		return new WFS(this);
+		return new WFSConfig(this);
 	}
 
 	/**
@@ -95,11 +95,11 @@ public class WFS implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The WFS object to test.
+	 * @param obj The WFSConfig object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj) {
-		WFS w = (WFS)obj;
+		WFSConfig w = (WFSConfig)obj;
 		return (describeUrl.equals(w.getDescribeUrl()) &&
 		service.equals(w.getService()));
 	}
@@ -122,7 +122,7 @@ public class WFS implements DataStructure{
 	 * </p>
 	 * @return
 	 */
-	public Service getService() {
+	public ServiceConfig getService() {
 		return service;
 	}
 
@@ -144,9 +144,9 @@ public class WFS implements DataStructure{
 	 * </p>
 	 * @param service
 	 */
-	public void setService(Service service) {
+	public void setService(ServiceConfig service) {
 		if(service == null)
-			service = new Service();
+			service = new ServiceConfig();
 		this.service = service;
 	}
 }
