@@ -4,50 +4,20 @@
  */
 package org.vfny.geoserver.responses.wms.featureInfo;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Geometry;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
-import org.geotools.map.DefaultMapContext;
-import org.geotools.map.DefaultMapLayer;
-import org.geotools.map.MapContext;
-import org.geotools.map.MapLayer;
-import org.geotools.renderer.lite.LiteRenderer;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.wms.GetMapRequest;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
+
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
-import org.geotools.data.FeatureSource;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.GeometryFilter;
-import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -86,9 +56,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     
     public List getSupportedFormats(){        
         if (supportedFormats == null) {
-            //LiteRenderer renderer = null;
-            String[] mimeTypes = new String[]{"text/plain"};
-            supportedFormats = Arrays.asList(mimeTypes);
+            supportedFormats = Collections.singletonList("text/plain");
         }
         return supportedFormats;
     }
@@ -134,18 +102,6 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         
         writer.flush();
         
-    }
-    
-    
-    
-    /**
-     * returns the content encoding for the output data
-     *
-     * @return <code>null</code> since no special encoding is performed while
-     *         wrtting to the output stream
-     */
-    public String getContentEncoding() {
-        return format;
     }
     
 }
