@@ -775,6 +775,25 @@ failonerror="true"/>
 
 <!-- GEOTOOLS JAR -->
 <!-- builds geotools jar -->
+<!-- status   geotools2 release           Geoserver ant target
+     ======   =================           ====================
+     include  gt2-arcsde.jar              gt2-arcsde.jar
+     required gt2-graph.jar               gt2-main.jar
+     required gt2-main.jar                gt2-main.jar
+     exclude  gt2-oracle-spatial.jar      gt2-oracle-spatial.jar
+     include  gt2-postgis.jar             gt2-postgis.jar
+     include  gt2-shapefile.jar           gt2-shapefile.jar
+     required gt2-validation              gt2-validation.jar
+     required opengis-2.0-B3.jar          opengis-2.0.jar
+     included                             gt2-property.jar
+     
+     To make the geotools2 relase (from the geotools directory):
+        maven -Drelease.version=2.0 createRelease
+        
+     Please only use this ant task for testing changes to the geotools
+     library, building with maven is required before commit changed jar
+     files.
+-->
   <target name="geotools" depends="init">
     <delete file="${dir.lib}/gt2-main.jar" failonerror="true"/>
     <jar jarfile="${dir.lib}/gt2-main.jar"
@@ -798,23 +817,48 @@ failonerror="true"/>
       <fileset dir="${dir.geotools}/sldstyling/target/classes/"
                includes="**/*.class"/>               
       <fileset dir="${dir.geotools}/svgsupport/target/classes/"
-               includes="**/*.class"/>   
-      <fileset dir="${dir.geotools}/opengis/target/classes/"
                includes="**/*.class"/>
       <fileset dir="${dir.geotools}/renderer/target/classes/"
                includes="**/*.class"/>   
       <fileset dir="${dir.geotools}/map/target/classes/"
-               includes="**/*.class"/>    
+               includes="**/*.class"/>              
+      <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
+               includes="**/*.class"/>        
+    </jar>
+
+    <!-- Opengis support, include META-INF -->	
+    <delete file="${dir.lib}/opengis-2.0.jar" failonerror="true"/>        
+	<jar jarfile="${dir.lib}/opengis-2.0.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/opengis/target/classes/"
+               includes="**/*.class"/>
+	</jar>      
+                          
+    <!-- Graph support, include META-INF -->	
+    <delete file="${dir.lib}/gt2-graph.jar" failonerror="true"/>        
+	<jar jarfile="${dir.lib}/gt2-graph.jar"
+         whenempty="fail">	
       <fileset dir="${dir.geotools}/graph/target/classes/"
-               includes="**/*.class"/>     
+               includes="**/*.class"/> 
+	</jar>
+
+    <!-- Validation support, include META-INF -->	
+    <delete file="${dir.lib}/gt2-validation.jar" failonerror="true"/>        
+	<jar jarfile="${dir.lib}/gt2-validation"
+         whenempty="fail">	
       <fileset dir="${dir.geotools}/validation/target/classes/">
       		<include name="**/*.class"/>
       		<include name="**/*.properties"/>
-	  </fileset>              
-      <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
-               includes="**/*.class"/>        
-    </jar>        
+	  </fileset>
+	</jar>
 
+	<!-- Potgis support, include META-INF -->	
+    <delete file="${dir.lib}/gt2-arcsde.jar" failonerror="true"/>        
+	<jar jarfile="${dir.lib}/gt2-arcsde.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/arcsde/target/classes/"/>
+	</jar>          	          
+      
     <!-- Potgis support, include META-INF -->	
     <delete file="${dir.lib}/gt2-postgis.jar" failonerror="true"/>        
 	<jar jarfile="${dir.lib}/gt2-postgis.jar"
