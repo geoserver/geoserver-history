@@ -38,8 +38,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.5 2004/04/20 23:20:41 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: ValidationTestDoIt.java,v 1.6 2004/04/22 08:22:52 emperorkefka Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
@@ -104,7 +104,7 @@ public class ValidationTestDoIt extends ConfigAction {
                         Integer.MAX_VALUE, Integer.MAX_VALUE);
 
             try {
-                v.runIntegrityTests(sources, env, (ValidationResults) vr);
+                v.runIntegrityTests(sources.keySet(), sources, env, (ValidationResults) vr);
                 System.out.println("Feature Integrety Test Results");
                 System.out.println(vr.toString());
             } catch (Exception e) {
