@@ -74,7 +74,7 @@
     </datastore> 
     -->
 
-    <datastore id="bizkaiaSde" enabled="false" namespace="biz">
+    <datastore id="testSde" enabled="false" namespace="sde">
       <description>A test SDE database</description>
       <connectionParams>
         <parameter name="dbtype" value="arcsde"/>
@@ -82,7 +82,7 @@
         <parameter name="port" value="5151"/>
         <parameter name="instance" value="sde"/>
         <parameter name="user" value="sde"/>
-        <parameter name="password" value="carto"/>
+        <parameter name="password" value="sdepwd"/>
       </connectionParams>
     </datastore> 
   </datastores>
@@ -99,8 +99,8 @@
     <namespace uri="http://www.openplans.org/topp" 
 	           prefix="topp"
 	           default="true"/>
-    <namespace uri="http://www.bizkaia.net/geoserver" 
-	           prefix="biz"/>
+    <namespace uri="http://geoserver.sf.net" 
+	           prefix="sde"/>
   </namespaces>
 
   <!-- Style definitions - maps a style name to a file.  The style files  -->
