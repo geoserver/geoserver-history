@@ -58,7 +58,7 @@ public class TestWfsPost extends HttpServlet {
     /** Returns a short description of the servlet.
      */
     public String getServletInfo() {
-        return "Tests a GlobalWFS post request using a form entry.";
+        return "Tests a WFS post request using a form entry.";
     }
     
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

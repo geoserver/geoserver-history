@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.4 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.5 2004/01/14 22:54:27 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */
@@ -96,7 +96,7 @@ public class OldCapabilitiesResponse {
         if (version == null) {
             version = ""; //so we don\"t get a null pointer exception
         }
-        CAP_LOC = config.getSchemaBaseUrl()+ "wfs/1.0.0/GlobalWFS-capabilities.xsd";
+        CAP_LOC = config.getSchemaBaseUrl()+ "wfs/1.0.0/WFS-capabilities.xsd";
 		FILTER_FILE = request.getRootDir() + "capabilities/"	+ "filter.xml";
 		SERVICE_METADATA_FILE = request.getRootDir() + "capabilities/" + "serviceMetadata.xml";
 		OPERATIONS_SIGNATURES_FILE = request.getRootDir() + "capabilities/" + "operationsSignatures.xml";

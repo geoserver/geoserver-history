@@ -25,14 +25,14 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.3 2004/01/14 22:54:26 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
     private static final String WMS_VERSION = "1.1.1";
 
     /** WMS spec specifies this fixed service name */
-    private static final String FIXED_SERVICE_NAME = "OGC:GlobalWMS";
+    private static final String FIXED_SERVICE_NAME = "OGC:WMS";
 
     /** list of WMS Exception Formats */
     private static final String[] EXCEPTION_FORMATS = {

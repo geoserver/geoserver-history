@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.3 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: WfsTransResponse.java,v 1.4 2004/01/14 22:54:27 dmzwiers Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
@@ -187,7 +187,7 @@ public class WfsTransResponse {
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
         
         writer.write(gs.getSchemaBaseUrl());
-        writer.write("wfs/1.0.0/GlobalWFS-transaction.xsd\">");
+        writer.write("wfs/1.0.0/WFS-transaction.xsd\">");
 
         //  + " http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">");
         if (insertResults != null) {

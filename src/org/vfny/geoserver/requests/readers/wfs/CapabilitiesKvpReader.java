@@ -18,7 +18,7 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.4 2004/01/14 22:54:27 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
@@ -38,7 +38,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      * @throws ServiceException DOCUMENT ME!
      */
     public Request getRequest() throws ServiceException {
-        CapabilitiesRequest currentRequest = new CapabilitiesRequest("GlobalWFS");
+        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WFS");
         currentRequest.setVersion(getValue("VERSION"));
 
         //service is set in the constructor

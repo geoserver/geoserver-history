@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.4 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.5 2004/01/14 22:54:27 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -296,7 +296,7 @@ public class LockResponse implements Response {
         returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis");
         returnXml.append(".net/wfs ");
         returnXml.append(gs.getSchemaBaseUrl());
-        returnXml.append("wfs/1.0.0/GlobalWFS-transaction.xsd\">");
+        returnXml.append("wfs/1.0.0/WFS-transaction.xsd\">");
         returnXml.append(nl);
         returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);
 

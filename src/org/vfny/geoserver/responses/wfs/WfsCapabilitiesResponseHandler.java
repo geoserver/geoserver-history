@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.5 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.6 2004/01/14 22:54:27 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -71,7 +71,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         String locationAtt = XSI_PREFIX + ":schemaLocation";
         String locationDef = WFS_URI + " "
-            + request.getGeoServer().getSchemaBaseUrl() + "wfs/1.0.0/"+ "GlobalWFS-capabilities.xsd";
+            + request.getGeoServer().getSchemaBaseUrl() + "wfs/1.0.0/"+ "WFS-capabilities.xsd";
         attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
         startElement("WFS_Capabilities", attributes);
     }

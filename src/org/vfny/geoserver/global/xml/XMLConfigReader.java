@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,7 +73,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.3 2004/01/13 21:15:53 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.4 2004/01/14 22:54:26 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -218,12 +218,12 @@ public class XMLConfigReader {
 		Element catalogElem = ReaderUtils.loadConfig(catalogFile);
 		
 		LOGGER.info("loading catalog configuration");
-		DataDTO c = data;
-		c.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(catalogElem, "namespaces", true)));
-		setDefaultNS(c);
-		c.setDataStores(loadDataStores(ReaderUtils.getChildElement(catalogElem, "datastores", true),c.getNameSpaces()));
-		c.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem, "styles", false)));
-		c.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
+		data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(catalogElem, "namespaces", true)));
+		setDefaultNS();
+		data.setDataStores(loadDataStores(ReaderUtils.getChildElement(catalogElem, "datastores", true)));
+		data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem, "styles", false)));
+		// must be last
+		data.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
 	}
 	
 	/**
@@ -233,12 +233,12 @@ public class XMLConfigReader {
 	 * </p>
 	 * @param c The catalog into which we will store the default namespace.
 	 */
-	protected void setDefaultNS(DataDTO c){
-		Iterator i = c.getNameSpaces().values().iterator();
+	protected void setDefaultNS(){
+		Iterator i = data.getNameSpaces().values().iterator();
 		while(i.hasNext()){
 			NameSpaceInfoDTO ns = (NameSpaceInfoDTO)i.next();
 			if(ns.isDefault()){
-				c.setDefaultNameSpacePrefix(ns.getPrefix());
+				data.setDefaultNameSpacePrefix(ns.getPrefix());
 				return;
 			}
 		}
@@ -525,7 +525,7 @@ public class XMLConfigReader {
 	 * @return A complete Map of DataStores loaded from the DOM tree provided.
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	protected Map loadDataStores(Element dsRoot, Map nameSpaces) throws ConfigurationException {
+	protected Map loadDataStores(Element dsRoot) throws ConfigurationException {
 		Map dataStores = new HashMap();
 
 		NodeList dsElements = dsRoot.getElementsByTagName("datastore");
@@ -535,11 +535,11 @@ public class XMLConfigReader {
 
 		for (int i = 0; i < dsCnt; i++) {
 			dsElem = (Element) dsElements.item(i);
-			dsConfig = loadDataStore(dsElem,nameSpaces);
+			dsConfig = loadDataStore(dsElem);
 
 			if (dataStores.containsKey(dsConfig.getId())) {
 				throw new ConfigurationException("duplicated datastore id: "
-					+ nameSpaces.get(dsConfig.getNameSpaceId()));
+					+ data.getNameSpaces().get(dsConfig.getNameSpaceId()));
 			}
 
 			dataStores.put(dsConfig.getId(), dsConfig);
@@ -557,14 +557,14 @@ public class XMLConfigReader {
 	 * @return A complete DataStoreInfo object loaded from the DOM tree provided.
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	protected DataStoreInfoDTO loadDataStore(Element dsElem, Map nameSpaces) throws ConfigurationException {
+	protected DataStoreInfoDTO loadDataStore(Element dsElem) throws ConfigurationException {
 		DataStoreInfoDTO ds = new DataStoreInfoDTO();
 		
 		LOGGER.finer("creating a new DataStoreDTO configuration");
 		ds.setId(ReaderUtils.getAttribute(dsElem, "id", true));
 
 		String namespacePrefix = ReaderUtils.getAttribute(dsElem, "namespace", true);
-		if(nameSpaces.containsKey(namespacePrefix)){
+		if(data.getNameSpaces().containsKey(namespacePrefix)){
 			ds.setNameSpaceId(namespacePrefix);
 		}else{
 			String msg = "there is no namespace defined for datatasore '"
@@ -627,7 +627,8 @@ public class XMLConfigReader {
 			for (int i = 0, n = file.length; i < n; i++) {
 				LOGGER.fine("Info dir:"+file[i].toString());
 				FeatureTypeInfoDTO ft = loadFeature(new File(file[i],"info.xml"));
-				featureTypes.put(ft.getName(), ft);
+				DataStoreInfoDTO dsi = (DataStoreInfoDTO)data.getDataStores().get(ft.getDataStoreId());
+				featureTypes.put(dsi.getNameSpaceId()+":"+ft.getName(), ft);
 			}
 		}
 		return featureTypes;
@@ -909,7 +910,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.3 2004/01/13 21:15:53 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.4 2004/01/14 22:54:26 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

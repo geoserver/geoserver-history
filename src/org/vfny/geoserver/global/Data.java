@@ -46,7 +46,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.3 2004/01/14 22:54:26 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -126,60 +126,35 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             throw new NullPointerException("");
         }
 
-        if (dataStores == null) {
-            dataStores = new HashMap();
-        }
+
 
         if (config.getDataStores() == null) {
             throw new NullPointerException("");
         }
 
-        Set s = dataStores.keySet();
+        dataStores = new HashMap();
         Iterator i = config.getDataStores().keySet().iterator();
-
         while (i.hasNext()) {
             Object key = i.next();
-            s.remove(key);
-
-            //find missing ones
-            if (!dataStores.containsKey(key)) {
-                dataStores.put(key,
-                    new DataStoreInfo((DataStoreInfoDTO) config.getDataStores()
-                                                               .get(key), this));
-            } else { // check for small changes
-
-                DataStoreInfoDTO dsiDto = (DataStoreInfoDTO) ((DataStoreInfo) dataStores
-                    .get(key)).toDTO();
-
-                if ((dsiDto != null)
-                        && !(dsiDto.equals(config.getDataStores().get(key)))) {
-                    dataStores.put(key,
-                        new DataStoreInfo((DataStoreInfoDTO) config.getDataStores()
-                                                                   .get(key),
-                            this));
-                }
-            }
+            dataStores.put(key, new DataStoreInfo((DataStoreInfoDTO) config.getDataStores().get(key),this));
         }
 
-        // s contains all the unchecked values.
-        List tmp = new LinkedList();
-        i = s.iterator();
+        	nameSpaces = new HashMap();
+        if (config.getNameSpaces() == null) {
+        	throw new NullPointerException("");
+        }
+
+        i = config.getNameSpaces().keySet().iterator();
 
         while (i.hasNext()) {
-            tmp.add(i.next());
-        }
+        	Object key = i.next();
+        		nameSpaces.put(key,
+        				new NameSpaceInfo((NameSpaceInfoDTO) config.getNameSpaces().get(key)));
+       }
+        
 
-        for (int j = 0; j < tmp.size(); j++)
-            dataStores.remove(tmp.get(j));
-
-        List tmp2 = new LinkedList();
-
-        if (featureTypes == null) {
+  
             featureTypes = new HashMap();
-        }
-
-        s = featureTypes.keySet();
-
         if (config.getFeaturesTypes() == null) {
             throw new NullPointerException("");
         }
@@ -188,79 +163,15 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
         while (i.hasNext()) {
             Object key = i.next();
-            String nm = ((FeatureTypeInfoDTO) config.getFeaturesTypes().get(key))
-                .getName();
-
-            if (tmp2.contains(nm)) {
-                throw new ConfigurationException(
-                    "FeatureTypeInfo.getName() must be unique! ( " + nm + " )");
-            } else {
-                tmp2.add(nm);
-            }
-
-            s.remove(key);
-
-            if (!featureTypes.containsKey(key)) {
-                featureTypes.put(nm,
+            FeatureTypeInfoDTO fti = (FeatureTypeInfoDTO) config.getFeaturesTypes().get(key);
+            DataStoreInfo dsi = (DataStoreInfo)dataStores.get(fti.getDataStoreId());
+                featureTypes.put(dsi.getNameSpace().getPrefix() + ":" + fti.getName(),
                     new FeatureTypeInfo((FeatureTypeInfoDTO) config.getFeaturesTypes()
                                                                    .get(key),
                         this));
-            }
         }
-
-        // s contains all the unchecked values.
-        tmp = new LinkedList();
-        i = s.iterator();
-
-        while (i.hasNext()) {
-            tmp.add(i.next());
-        }
-
-        for (int j = 0; j < tmp.size(); j++)
-            featureTypes.remove(tmp.get(j));
-
-        if (nameSpaces == null) {
-            nameSpaces = new HashMap();
-        }
-
-        s = nameSpaces.keySet();
-
-        if (config.getNameSpaces() == null) {
-            throw new NullPointerException("");
-        }
-
-        i = config.getNameSpaces().keySet().iterator();
-
-        while (i.hasNext()) {
-            Object key = i.next();
-            s.remove(key);
-
-            if (!nameSpaces.containsKey(key)) {
-                nameSpaces.put(key,
-                    new NameSpaceInfo((NameSpaceInfoDTO) config.getNameSpaces().get(key)));
-
-                if (((NameSpaceInfoDTO) config.getNameSpaces().get(key)).isDefault()) {
-                    defaultNameSpace = (NameSpaceInfo) nameSpaces.get(key);
-                }
-            }
-        }
-
-        // s contains all the unchecked values.
-        tmp = new LinkedList();
-        i = s.iterator();
-
-        while (i.hasNext()) {
-            tmp.add(i.next());
-        }
-
-        for (int j = 0; j < tmp.size(); j++)
-            nameSpaces.remove(tmp.get(j));
-
-        if (styles == null) {
+        
             styles = new HashMap();
-        }
-
-        s = styles.keySet();
 
         if (config.getStyles() == null) {
             throw new NullPointerException("");
@@ -270,9 +181,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
         while (i.hasNext()) {
             Object key = i.next();
-            s.remove(key);
 
-            if (!styles.containsKey(key)) {
                 try {
                     styles.put(key,
                         loadStyle(
@@ -281,19 +190,8 @@ public class Data extends GlobalLayerSupertype implements Catalog {
                 } catch (IOException e) {
                     LOGGER.fine("Error loading style:" + key.toString());
                 }
-            }
+
         }
-
-        // s contains all the unchecked values.
-        tmp = new LinkedList();
-        i = s.iterator();
-
-        while (i.hasNext()) {
-            tmp.add(i.next());
-        }
-
-        for (int j = 0; j < tmp.size(); j++)
-            styles.remove(tmp.get(j));
     }
 
     /**
@@ -417,18 +315,10 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      */
     public FeatureTypeInfo getFeatureTypeInfo(String typeName)
         throws NoSuchElementException {
-        int prefixDelimPos = typeName.lastIndexOf(":");
-
-        if (prefixDelimPos < 0) {
-            //for backwards compatibility.  Only works if all
-            //featureTypes have the same prefix.
-            typeName = getDefaultNameSpace().getPrefix() + ":" + typeName;
-        }
 
         LOGGER.finest("getting type " + typeName);
 
         FeatureTypeInfo ftype = (FeatureTypeInfo) featureTypes.get(typeName);
-
         if (ftype == null) {
             throw new NoSuchElementException(
                 "there is no FeatureTypeConfig named " + typeName
