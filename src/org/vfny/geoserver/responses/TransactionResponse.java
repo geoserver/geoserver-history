@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceMetaData;
 import org.geotools.data.DataSourceException;
 //import org.geotools.data.postgis.PostgisConnectionFactory;
 //import org.geotools.data.postgis.PostgisDataSource;
@@ -65,7 +66,7 @@ public class TransactionResponse {
 	LOGGER.finer("doing transaction response");
 	//        TypeRepository repository = TypeRepository.getInstance();
 	transHandle = request.getHandle();            
-        // main handler and return string
+	// main handler and return string
         //  generate GML for heander for each table requested
 	WfsTransResponse response = new WfsTransResponse
 	    (WfsTransResponse.SUCCESS, request.getHandle());
@@ -126,7 +127,7 @@ public class TransactionResponse {
 		subRequest = request.getSubRequest(i);
 		String typeName = subRequest.getTypeName(); 
 		TypeInfo typeInfo = repository.getType(typeName);
-		typeInfo.getTransactionDataSource().endMultiTransaction();
+		typeInfo.getTransactionDataSource().commit();
 	    }
 	} catch (DataSourceException e) {
 	    String message = "Problem accessing datasource: " 
@@ -183,7 +184,15 @@ public class TransactionResponse {
 	String typeName = sub.getTypeName();
 	try {
 	    DataSource data = repository.getType(typeName).getTransactionDataSource();
-	    data.startMultiTransaction();
+	    DataSourceMetaData metad = data.getMetaData();
+	    LOGGER.finer("metad is " + metad);
+	    //LOGGER.finer(" supports trans: " + metad.supportsTransactions());
+	    
+	    if (!metad.supportsAdd()){
+		String message = typeName + " does not support transactions";
+		throw new WfsTransactionException(message, sub.getHandle());
+	    }
+	    data.setAutoCommit(false);
 	    switch (sub.getOpType()) {
 	    case SubTransactionRequest.UPDATE: 
 		UpdateRequest update = (UpdateRequest)sub;
