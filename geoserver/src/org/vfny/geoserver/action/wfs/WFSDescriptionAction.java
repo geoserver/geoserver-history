@@ -7,6 +7,8 @@
 package org.vfny.geoserver.action.wfs;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.wfs.WFSConfig;
 import org.vfny.geoserver.form.wfs.WFSDescriptionForm;
 
 /**
@@ -25,7 +29,7 @@ import org.vfny.geoserver.form.wfs.WFSDescriptionForm;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WFSDescriptionAction extends Action {
+public final class WFSDescriptionAction extends ConfigAction {
 
 	public ActionForward execute(ActionMapping mapping,
 		ActionForm form,
@@ -43,8 +47,26 @@ public final class WFSDescriptionAction extends Action {
 			String keywords = descriptionForm.getKeywords();
 			String _abstract = descriptionForm.get_abstract();
 
-			HttpSession session = request.getSession();
-			session.setAttribute("test", form);
+//			HttpSession session = request.getSession();
+//			session.setAttribute("wfsDescription", form);
+			
+			WFSConfig config = getWFSConfig();
+			config.getService().setName(name);
+			config.getService().setTitle(title);
+			config.getService().setAccessConstraints(accessConstraints);
+			config.getService().setFees(fees);
+			config.getService().setMaintainer(maintainer);
+			config.getService().setAbstract(_abstract);
+			
+			List list = new ArrayList();
+			String[] array = keywords != null ? keywords.split("\n") : new String[0];
+			
+			for (int i = 0; i < array.length;i++) {
+				list.add(i, array[i]);
+			}
+			
+			config.getService().setKeywords(list);
+
 
 			return mapping.findForward("welcome");
 		}
