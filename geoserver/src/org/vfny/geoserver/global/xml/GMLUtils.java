@@ -29,7 +29,7 @@ import com.vividsolutions.jts.geom.Polygon;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GMLUtils.java,v 1.5 2004/01/17 01:00:20 dmzwiers Exp $
+ * @version $Id: GMLUtils.java,v 1.6 2004/01/18 00:33:21 dmzwiers Exp $
  */
 public class GMLUtils {
     /** Mappings by schema */
@@ -277,7 +277,7 @@ public class GMLUtils {
     }
     
     public static boolean isXMLSchemaElement(String s) {
-        return search(xmlSchemaTypes, s);
+    	return search(xmlSchemaTypes, s);
     }
 
     public static boolean isGMLSchemaElement(String s) {
@@ -293,15 +293,17 @@ public class GMLUtils {
         int t = s.lastIndexOf(":");
 
         if (t != -1) {
-            s = s.substring(t);
+System.out.println("$$$$$"+s+"^"+s.substring(t+1)+"^");
+            s = s.substring(t+1);
         }
 
         //find s in list 
-        for (int i = 0; i < a.length; i++)
-            if (a[i] == s) {
+        for (int i = 0; i < a.length; i++){
+            if (a[i].equals(s)) {
                 return true;
             }
-
+System.out.println("FALSE"+a[i]+"$$"+s+"$$");
+        }
         return false;
     }
 
@@ -344,7 +346,7 @@ public class GMLUtils {
      * 
      * @author jgarnett, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.5 2004/01/17 01:00:20 dmzwiers Exp $
+     * @version $Id: GMLUtils.java,v 1.6 2004/01/18 00:33:21 dmzwiers Exp $
      */
     public static class Mapping {
         public final String prefix; // gml or xs

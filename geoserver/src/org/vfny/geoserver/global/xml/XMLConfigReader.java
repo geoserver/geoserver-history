@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.16 2004/01/17 01:00:20 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.17 2004/01/18 00:33:07 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -911,8 +911,12 @@ public class XMLConfigReader {
         ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
         ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
         ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
-        ft.setKeywords(getKeyWords(ReaderUtils.getChildElement(fTypeRoot,
-                    "keywords")));
+        String keywords = ReaderUtils.getChildText(fTypeRoot,"keywords");
+        List l = new LinkedList();
+        String[] ss = keywords.split(",");
+        for(int i=0;i<ss.length;i++)
+        	l.add(ss[i].trim());
+        ft.setKeywords(l);
         ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
         ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
                     true)));
@@ -1146,6 +1150,9 @@ public class XMLConfigReader {
                 ati.setName(name);
 
                 if ((type != null) && (type != "")) {
+                	int t = type.indexOf(":");
+                	if(t!=-1)
+                		type = type.substring(t+1);
                     ati.setType(type);
                     ati.setComplex(false);
                 } else {
