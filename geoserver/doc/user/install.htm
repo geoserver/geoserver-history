@@ -131,10 +131,11 @@
                 <a href="http://jakarta.apache.org">Tomcat</a>, and <a href="http://postgis.refractions.net">PostGIS</a>. 
                 This is by far the hardest part of the installation process, but 
                 the documentation to install these three components is quite good. 
-                Our testing has occurred on JDK 1.4.1, Tomcat 4.0.4, and PostGIS 
-                0.7.3 on top of Postgresql 7.2.2. To actually build geoserver you 
+                Our testing has occurred on JDK 1.4.1, Tomcat 4.1.27, and PostGIS 
+                0.7.4 on top of Postgresql 7.2.3. To actually build geoserver you 
 		must use <a href="http://ant.apache.org">Ant</a>, an excellent build
-		tool from apache.</p>
+		tool from apache.  The latest stable versions of these components should
+                work fine.</p>
               <p>GeoServer has an active user community that you can engage by 
                 joining the GeoServer mailing list and asking questions or making 
                 suggestions.&nbsp;&nbsp;If you create a user account at this site, 
@@ -150,9 +151,14 @@
         </tr>
         <tr> 
           <td height="56"> 
-            <blockquote>GeoServer is built against the <a href="http://java.sun.com/j2se/1.4.1/">JDK1.4.1</a>.&nbsp;&nbsp;If 
-              you do not have the JRE1.4.1 installed on your machine, you should 
-              download it from Sun and point to it in your JAVA_HOME path.</blockquote>
+            <blockquote>GeoServer is built against the <a href="http://java.sun.com/j2se/1.4/">JDK1.4</a>.&nbsp;&nbsp;If 
+              you do not have the JDK1.4 installed on your machine, you should 
+              download it from Sun and point to the root install directory with 
+              the JAVA_HOME environment variable (set JAVA_HOME = C:\j2sdk1.4.2).  Most of
+              our testing occured against JDK1.4.1.  If your not sure if you have 
+	      java, or not sure what version, type <i>java -version</i> from the
+              command line.  If the command doesn't work or if the version is less
+              than 4.1 then you'll have to download, install, and set JAVA_HOME</blockquote>
           </td>
         </tr>
       </table>
@@ -168,10 +174,16 @@
               <a href="http://www.caucho.com">Resin</a> (open source, free to 
               non-commercial users) or <a href="http://jakarta.apache.org/tomcat/index.html">Tomcat</a> 
               (open source, free). &nbsp;Most GeoServer testing has occured on 
-              Resin, which is remarkably simple to set up and administer. &nbsp;We 
-              reccomend using the stand-alone server installation over the integrated 
-              Apache install. &nbsp;Given the maturity of these projects, we will 
-              say nothing further about installation.</blockquote>
+              Tomcat, which is remarkably simple to set up and administer. If you can 
+              not get a working servlet container, then GeoServer also comes with a 
+              built in version of Tomcat.&nbsp; To use it type <i>ant test</i> from the
+              geoserver home directory.&nbsp;We 
+              recommend using a stand-alone server installation over the built in 
+              install, but it is useful for testing things out.&nbsp;It just is not
+              as configurable and flexible for a producation environment.&nbsp;The servlet
+              containers should have good documentation, so we shall say nothing
+              further here about the install.&nbsp; We do recommend sticking
+              with the latest stable versions.</blockquote>
           </td>
         </tr>
       </table>
@@ -246,15 +258,16 @@
                 before placing the new <i>.war</i> file. To create the <i>.war</i>
 		file you must have a working install of Ant, available for download
 		<a href="http://ant.apache.org/bindownload.cgi">here</a>.  For it 
-		to work properly the ANT_HOME path must point to the location it was 
-		installed.  The geoserver build file can perform a number of tasks with Ant - 
+		to work properly the ANT_HOME environment varialble must point to 
+                the location it was installed and ANT_HOME/bin/ant must be added to your path.
+             .  The geoserver build file can perform a number of tasks with Ant - 
 		to see the options just type <i>ant</i> from the geoserver root
 		directory.  To create geoserver.war run ant with the <i>war</i> build
 		target -  type <i>ant war</i> from the root geoserver directory. 
 		This creates the <i>geoserver.war</i> in the same directory.
               <p>Move 'geoserver.war' from the GeoServer root directory to the 
-                war file directory of your Java Servlet container (i.e. 'webapps' 
-                in Resin). You may run a simple test by by starting your container
+                war file directory of your Java Servlet container (generally named 
+                'webapps'). You may run a simple test by starting your container
 		and entering this address:</p>
               <blockquote>
                 <p><i>http://<b>SERVER_ADDRESS</b>:</i><i><b>SERVER_PORT</b>/geoserver/GetCapabilities</i></p>
@@ -285,7 +298,7 @@
               </blockquote>
               <p>This section assumes at least passing familiarity with XML files. 
                 &nbsp;However, if you simply follow the test file example exactly, 
-                you should be able to create a working configuration file. &nbsp;A sample
+                you should be able to create a working configuration file. &nbsp;The
 		configuration.xml file resides at <i>geoserver/misc/documents/</i> You
 		may edit this file, and changes will be picked up when you run <i>ant war</i>
 		Or you may go to your root web application (webapps in tomcat or resin) 
@@ -390,8 +403,10 @@
         <tr> 
           <td height="45"> 
             <blockquote> 
-              <p>Next, you should go to your root web application directory and 
-                navigate to the following directory: <i>data/featureTypes/</i>.&nbsp;&nbsp;For 
+              <p>Next, you should go to the <i>misc/data/featureTypes</i> directory under
+                geoserver home, or if working on the container directly, go to your root 
+                web application directory and 
+                navigate to: <i>geoserver/data/featureTypes/</i>.&nbsp;&nbsp;For 
                 every table in your PostGIS database, you should create a directory 
                 which matches the table name <b>exactly</b>.</p>
               <p>This directory <b>must</b> contain two files: <i>info.xml</i> 
@@ -399,7 +414,9 @@
                 the feature type schema and its structure is defined in the GML 
                 2.1 specification. &nbsp;The <i>info.xml</i> is specific to GeoServer 
                 and <b>must</b> be correctly specified in order for you to serve 
-                a given feature type. &nbsp;Here is an example <i>info.xml</i> 
+                a given feature type. &nbsp;The two directories currenlty there serve
+                as excellent examples, and you can copy and modify them as needed.
+                &nbsp;Here is an example <i>info.xml</i> 
                 file for a feature tupe named <i>rail</i>:</p>
               <blockquote> 
                 <blockquote> 
@@ -520,14 +537,20 @@
                     name exactly.</td>
                 </tr>
               </table>
+              <p>The DatasourceParams child elements (host, port, database, user,
+                 passwd, dbtype and table) are specific to Postgis.  If you are using 
+                 another datasource (like <a href="advanced.htm#shapefile">Shapefile</a> 
+                 or <a href="advanced.htm#oracle">Oracle</a>), then the DatasourceParams
+		 will be different, but the rest of the fields remain the same.</p>
               <p>The <i>schema.xml</i> file <b>must</b> also be correctly specified 
                 for GeoServer to work correctly. &nbsp;To create a schema.xml 
                 file, you must be capable of creating valid XML schemas (in general) 
                 and valid GML schemas (in particular). &nbsp;This remains a pretty 
                 obscure skill, so we have written a small tutorial on it <a href="/user/schemaTutorial.htm">here</a>. 
-                &nbsp;The 'topp:road' directory is included as an example, but should 
-                be deleted before you do any serving (unless you also have a table 
-                called 'road' in the topp namespace).</p>
+                &nbsp;The 'topp--road' directory is included as a shapefile example, 
+                and 'rail' as a postgis example.  These should 
+                be deleted before you do any serving (unless you also have a tables called
+                road and rail).</p>
               <p>&nbsp;</p>
               <p></p>
               <p></p>
@@ -545,14 +568,14 @@
           <td height="45"> 
             <blockquote>The easiest way to get some postgis data to work with
 	    is to acquire shapefiles and use the shp2pgsql utility provided
-	    by postgis.  It should be in your pgsql installation directory, 
+	    by Postgis.  It should be in your pgsql installation directory, 
 	    under the bin subdirectory.  As for acquiring shapefiles, the US
 	    census provides a lot of their data free of cost in the shape
 	    format, available <a href="http://www.esri.com/data/download/census2000_tigerline/index.html">here</a>.  The latest release of geoserver also
 	    includes support for using shapefiles directly, information is
 	    about this option is available in the <a href="advanced.htm">
 	    advanced</a> section.  Using the shapefiles directly sacrifices
-	    a lot of speed and flexibility, so converting them to postgis
+	    a lot of speed and flexibility, so converting them to Postgis
 	    is the recommended way, but the option is available for easier
 	    set up.
             </blockquote>

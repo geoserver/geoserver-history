@@ -261,7 +261,7 @@
             <blockquote> The 0.96 release includes a first attempt at shapefile
 	    support.  Postgis remains the recommended geoserver datasource, due
 	    to its speed and transactional capabilities.  But for those users 
-	    wishing to avoid the lengthy postgis install, who just want to get 
+	    wishing to avoid the lengthy Postgis install, who just want to get 
 	    geoserver up and running, shapefiles provide a good alternative.  
 	    Large shapefiles have not been tested too extensively, so we'd 
 	    appreciate reports on how it goes.  And much thanks goes out to 
@@ -269,7 +269,10 @@
 	    just plugging in their hard work.  Ian Schneider deserves special
 	    mention for his work to get the geotools shapefile module ready
 	    to go into geoserver.  <p>To use shapefiles instead of postgis, the
-	    info.xml file must be modified.  To use shapefiles include the
+	    info.xml file must be modified.  Everything is the same for the
+            service elements, the only difference is the DatasourceParams.  
+	    Check the user install page <a href="install.htm#data">here</a>, 
+            for more information. To use shapefiles include the
 	    url to the location of the .shp file as follows:
 	     <blockquote>
 	      <p><i>
