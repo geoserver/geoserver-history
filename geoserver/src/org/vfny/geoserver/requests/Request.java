@@ -10,7 +10,7 @@ package org.vfny.geoserver.requests;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Request.java,v 1.3 2003/09/12 18:24:07 cholmesny Exp $
+ * @version $Id: Request.java,v 1.4 2003/12/10 15:56:35 cholmesny Exp $
  */
 abstract public class Request {
     /** Request service */
@@ -60,7 +60,7 @@ abstract public class Request {
      *
      * @param reqeust The type of request.
      */
-    public void setRequest(String reqeust) {
+    public void setRequest(String request) {
         this.request = request;
     }
 
