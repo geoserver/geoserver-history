@@ -23,6 +23,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.CapabilitiesRequest;
+import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
 import org.vfny.geoserver.responses.wms.DescribeLayerResponse;
 import org.vfny.geoserver.responses.wms.GetFeatureInfoResponse;
 import org.vfny.geoserver.responses.wms.GetLegendGraphicResponse;
@@ -34,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
- * DOCUMENT ME!
+ * Geotools xml framework based encoder for a Capabilities WMS 1.1.1 document.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id
@@ -134,7 +135,7 @@ public class WMSCapsTransformer extends TransformerBase {
         /**
          * Creates a new CapabilitiesTranslator object.
          *
-         * @param handler DOCUMENT ME!
+         * @param handler content handler to send sax events to.
          */
         public CapabilitiesTranslator(ContentHandler handler) {
             super(handler, null, null);
@@ -174,6 +175,7 @@ public class WMSCapsTransformer extends TransformerBase {
             handleKeywordList(wms.getKeywords());
 
             AttributesImpl orAtts = new AttributesImpl();
+            orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
             orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "",
                 "simple");
             orAtts.addAttribute("", "xlink:href", "xlink:href", "",
@@ -277,22 +279,24 @@ public class WMSCapsTransformer extends TransformerBase {
          */
         private void handleDcpType(String getUrl, String postUrl) {
             AttributesImpl orAtts = new AttributesImpl();
+            orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
             orAtts.addAttribute("", "xlink:type", "xlink:type", "", "simple");
             orAtts.addAttribute("", "xlink:href", "xlink:href", "", getUrl);
             start("DCPType");
-        	start("HTTP");
+            start("HTTP");
 
-        	if(getUrl != null){
-            	start("Get");
-            	element("OnlineResource", null, orAtts);
-            	end("Get");
+            if (getUrl != null) {
+                start("Get");
+                element("OnlineResource", null, orAtts);
+                end("Get");
             }
-        	
-            if(postUrl != null){
-	            orAtts.setAttribute(1, "", "xlink:href", "xlink:href", "", postUrl);
-	            start("Post");
-	            element("OnlineResource", null, orAtts);
-	            end("Post");
+
+            if (postUrl != null) {
+                orAtts.setAttribute(2, "", "xlink:href", "xlink:href", "",
+                    postUrl);
+                start("Post");
+                element("OnlineResource", null, orAtts);
+                end("Post");
             }
 
             end("HTTP");
@@ -430,7 +434,7 @@ public class WMSCapsTransformer extends TransformerBase {
                     if ("".equals(commonSRS)) {
                         commonSRS = layerSRS;
                     } else if (!commonSRS.equals(layerSRS)) {
-                    	isCommonSRS = false;
+                        isCommonSRS = false;
                     }
                 }
             }
@@ -439,7 +443,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 commonSRS = EPSG + commonSRS;
                 LOGGER.fine("Common SRS is " + commonSRS);
             } else {
-            	commonSRS = "";
+                commonSRS = "";
                 LOGGER.fine(
                     "No common SRS, don't forget to incorporate reprojection support...");
             }
@@ -496,21 +500,35 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Name", ftStyle.getName());
             element("Title", ftStyle.getTitle());
             element("Abstract", ftStyle.getAbstract());
-            handleLegendURL(ftype.getLegendURL());
+            handleLegendURL(ftype);
             end("Style");
 
             end("Layer");
         }
 
         /**
-         * Writes layer legend icon URL.
+         * Writes layer LegendURL pointing to the user supplied icon URL, if
+         * any, or to the proper GetLegendGraphic operation if an URL was not
+         * supplied by configuration file.
+         * 
+         * <p>
+         * It is common practice to supply a URL to a WMS accesible legend
+         * graphic when it is difficult to create a dynamic legend for a
+         * layer.
+         * </p>
          *
-         * @param legend The legendURL to write out.
+         * @param ft The FeatureTypeInfo that holds the legendURL to write out,
+         *        or<code>null</code> if dynamically generated.
          *
-         * @task TODO: write wms specific elements.
+         * @task TODO: figure out how to unhack legend parameters such as
+         *       WIDTH, HEIGHT and FORMAT
          */
-        protected void handleLegendURL(LegendURL legend) {
+        protected void handleLegendURL(FeatureTypeInfo ft) {
+            LegendURL legend = ft.getLegendURL();
+
             if (legend != null) {
+                LOGGER.config("using user supplied legend URL");
+
                 AttributesImpl attrs = new AttributesImpl();
                 attrs.addAttribute("", "width", "width", "",
                     String.valueOf(legend.getWidth()));
@@ -522,11 +540,57 @@ public class WMSCapsTransformer extends TransformerBase {
                 element("Format", legend.getFormat());
                 attrs.clear();
                 attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
-                    "http://www.w3.org/1999/xlink");
-                attrs.addAttribute("http://www.w3.org/1999/xlink", "type",
+                    XLINK_NS);
+                attrs.addAttribute(XLINK_NS, "type",
                     "xlink:type", "", "simple");
-                attrs.addAttribute("http://www.w3.org/1999/xlink", "href",
+                attrs.addAttribute(XLINK_NS, "href",
                     "xlink:href", "", legend.getOnlineResource());
+
+                element("OnlineResource", null, attrs);
+
+                end("LegendURL");
+            } else {
+                String defaultFormat = GetLegendGraphicRequest.DEFAULT_FORMAT;
+
+                if (!GetLegendGraphicResponse.supportsFormat(defaultFormat)) {
+                    LOGGER.warning("Default legend format (" + defaultFormat
+                        + ")is not supported (jai not available?), can't add LegendURL element");
+
+                    return;
+                }
+
+                LOGGER.config("Adding GetLegendGraphic call as LegendURL");
+
+                AttributesImpl attrs = new AttributesImpl();
+                attrs.addAttribute("", "width", "width", "",
+                    String.valueOf(GetLegendGraphicRequest.DEFAULT_WIDTH));
+                attrs.addAttribute("", "height", "height", "",
+                    String.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT));
+
+                start("LegendURL", attrs);
+
+                element("Format", defaultFormat);
+                attrs.clear();
+
+                StringBuffer onlineResource = new StringBuffer(this.request
+                        .getBaseUrl());
+                onlineResource.append("wms/GetLegendGraphic?VERSION=");
+                onlineResource.append(GetLegendGraphicRequest.SLD_VERSION);
+                onlineResource.append("&FORMAT=");
+                onlineResource.append(defaultFormat);
+                onlineResource.append("&WIDTH=");
+                onlineResource.append(GetLegendGraphicRequest.DEFAULT_WIDTH);
+                onlineResource.append("&HEIGHT=");
+                onlineResource.append(GetLegendGraphicRequest.DEFAULT_HEIGHT);
+                onlineResource.append("&LAYER=");
+                onlineResource.append(ft.getName());
+
+                attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
+                    XLINK_NS);
+                attrs.addAttribute(XLINK_NS, "type",
+                    "xlink:type", "", "simple");
+                attrs.addAttribute(XLINK_NS, "href",
+                    "xlink:href", "", onlineResource.toString());
                 element("OnlineResource", null, attrs);
 
                 end("LegendURL");
