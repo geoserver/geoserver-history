@@ -123,6 +123,14 @@ table.state {
  width: 100%;
  font-size: 90%;  
 }
+table.state td.node {
+ white-space: nowrap;
+ text-align: left;
+}
+table.state td.timestamp {
+ white-space: nowrap;
+ text-align: right;
+}
 table.control {
  width: 100%;
  font-size: 90%; 
