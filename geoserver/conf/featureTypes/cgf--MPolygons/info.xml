@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<featureType datastore="cite_postgis">
+<featureType datastore="cgf">
 	<name>MPolygons</name>
 	<title>The cite:MultiPolygon layer</title>
 	<abstract>Test MultiPolygon features for the CITE project</abstract>

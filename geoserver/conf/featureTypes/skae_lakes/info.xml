@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <featureType datastore="dSkae">
+        <!-- the name of the featureType in the dataStore, for postgis it 
+             should be the tablename. -->
+        <name>skae_lakes</name>
+ 
+        <!-- service elements returned for the capabilities document. -->
+        <title>test lakes</title>
+        <abstract>This is some random lake and island features</abstract>
+        <keywords>road, New York City, skae</keywords>
+
+        <!-- The bounding box for this featureType, in lat long coords. -->
+        <latLonBoundingBox minx="0.5" miny="-2.5" maxx="1" maxy="-2"/>
+      <styles default="normal"/>
+       <attributes/>
+
+        <!-- EPSG code for the FeatureType -->
+		<SRS>5201</SRS>
+    </featureType>

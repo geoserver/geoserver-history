@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<featureType datastore="cite_postgis">
+<featureType datastore="cdf">
   <name>Fifteen</name>
   <SRS>32615</SRS><!-- native wich EPGS code for the FeatureType -->
   <title>test fifteen</title>
