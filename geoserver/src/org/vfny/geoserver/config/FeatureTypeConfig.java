@@ -62,7 +62,7 @@ public class FeatureTypeConfig extends BasicConfig {
         NameSpace dsNs = catalog.getNameSpace(dataStoreNS);
 
         if (dsNs == null) {
-            msg = "a feature type named " + fTypeRoot //getName()
+            msg = "a feature type named " + getName(true)
                 + " has been configured for datastore " + dataStoreNS
                 + " for wich there are no configured namespace";
             throw new ConfigurationException(msg);
@@ -71,7 +71,7 @@ public class FeatureTypeConfig extends BasicConfig {
         this.dataStore = catalog.getDataStore(dsNs);
 
         if (dataStore == null) {
-            msg = "FeatureType " + getName()
+            msg = "FeatureType " + getName(true)
                 + " is congfigured from a datastore named " + dsNs.getPrefix()
                 + " wich was not found. Check your config files.";
             throw new ConfigurationException(msg);
@@ -103,6 +103,21 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
+     * Indicates if this FeatureType is enabled.  For now just gets whether the
+     * backing datastore is enabled.
+     *
+     * @return <tt>true</tt> if this FeatureTypeConfig is enabled.
+     *
+     * @task REVISIT: Consider adding more fine grained control to config
+     *       files, so users can indicate specifically if they want the
+     *       featureTypes enabled, instead of just relying on if the datastore
+     *       is.
+     */
+    public boolean isEnabled() {
+        return (this.dataStore != null) && (this.dataStore.isEnabled());
+    }
+
+    /**
      * overrides getName to return full type name with namespace prefix
      *
      * @return DOCUMENT ME!
@@ -117,6 +132,25 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
+     * Convenience method for those who just want to report the name of the
+     * featureType instead of requiring the full name for look up.  If
+     * allowShort is true then just the localName, with no prefix, will be
+     * returned if the dataStore is not enabled.  If allow short is false then
+     * a full getName will be returned, with potentially bad results.
+     *
+     * @param allowShort DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getName(boolean allowShort) {
+        if (allowShort && (!isEnabled() || (getDataStore() == null))) {
+            return super.getName();
+        } else {
+            return getName();
+        }
+    }
+
+    /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
@@ -124,8 +158,8 @@ public class FeatureTypeConfig extends BasicConfig {
      * @throws IOException DOCUMENT ME!
      */
     public FeatureSource getFeatureSource() throws IOException {
-        if ((dataStore == null) || (dataStore.getDataStore() == null)) {
-            throw new IOException("featureType: " + super.getName()
+        if (!isEnabled() || (dataStore.getDataStore() == null)) {
+            throw new IOException("featureType: " + getName(true)
                 + " does not have a properly configured " + "datastore");
         }
 
@@ -200,8 +234,14 @@ public class FeatureTypeConfig extends BasicConfig {
      * DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
+     * @throws IllegalStateException DOCUMENT ME!
      */
     private void loadBoundingBoxes() throws IOException {
+        if (!isEnabled()) {
+            throw new IllegalStateException("This featureType is not "
+                + "enabled");
+        }
+
         FeatureSource source = getFeatureSource();
         this.bbox = source.getBounds();
 
@@ -266,7 +306,12 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
-     * here we must make the transformation. Crhis: do you know how to do it?
+     * here we must make the transformation. Crhis: do you know how to do it? I
+     * don't know.  Ask martin or geotools devel.  This will be better when
+     * our geometries actually have their srs objects.  And I think that we
+     * may need some MS Access database, not sure, but I saw some stuff about
+     * that on the list.  Hopefully they'll do it all in java soon.  I'm
+     * sorta tempted to just have users define for now.
      *
      * @param fromSrId DOCUMENT ME!
      * @param bbox DOCUMENT ME!
