@@ -14,10 +14,15 @@ import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.global.xml.GMLUtils;
+import org.vfny.geoserver.global.xml.NameSpaceElement;
+import org.vfny.geoserver.global.xml.NameSpaceTranslator;
+import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
+
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.servlet.ServletContext;
@@ -176,14 +181,24 @@ public class DataAttributeTypesEditorForm extends ActionForm {
         AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) request.getSession()
                                                                              .getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
 
+        NameSpaceTranslator nst = null; 
         for (int i = 0; i < types.length; i++) {
             if (atiConfig.getName().equals(types[i].getName())) {
-                List list = GMLUtils.schemaList(types[i].getName(),
-                        types[i].getType());
+            	Set s = new HashSet();
+            	nst = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
+            	Set s1 = nst.getAssociatedTypes(types[i].getType());
+            	Set s2 = nst.getAssociatedTypes(types[i].getName());
+            	s.addAll(s1);
+            	s.addAll(s2);
+            	nst = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+            	s1 = nst.getAssociatedTypes(types[i].getType());
+            	s2 = nst.getAssociatedTypes(types[i].getName());
+            	s.addAll(s1);
+            	s.addAll(s2);
 
-                for (Iterator iter = list.iterator(); iter.hasNext();) {
-                    String element = (String) iter.next();
-                    set.add(element);
+                for (Iterator iter = s.iterator(); iter.hasNext();) {
+                	NameSpaceElement element = (NameSpaceElement) iter.next();
+                    set.add(element.getQualifiedTypeRefName());
                 }
             }
         }
