@@ -128,6 +128,7 @@ public class LockResponse {
 			 ".net/wfs ../wfs/1.0.0/WFS-transaction.xsd\">" + nl);
 	returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);
 	if (!lockAll) {
+            if (lockedFeatures != null && lockedFeatures.size() > 0){
 	    returnXml.append(indent + "<FeaturesLocked>" + nl); 
 		for (Iterator i = lockedFeatures.iterator();
 		     i.hasNext();) {
@@ -136,6 +137,7 @@ public class LockResponse {
 				     "\"/>" + nl);
 		}
 	    returnXml.append(indent + "</FeaturesLocked>" + nl);
+	    }
 	    if (notLockedFeatures != null && notLockedFeatures.size() > 0){
 		returnXml.append("<FeaturesNotLocked>" + nl);
 		for (Iterator i = notLockedFeatures.iterator();
