@@ -35,8 +35,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.10 2004/03/02 10:18:43 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.11 2004/03/02 18:23:00 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -51,11 +51,11 @@ public class DataTransferObjectFactory {
      *
      * @return Data Transfer Object for provided attributeType
      */
-    public static AttributeTypeInfoDTO create(AttributeType attributeType) {
+    public static AttributeTypeInfoDTO create(String schemaBase, AttributeType attributeType) {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
 
         dto.setName(attributeType.getName());        
-        dto.setMinOccurs(0);
+        dto.setMinOccurs(0); // consider manditory check for attributeType
         dto.setMaxOccurs(1);
         dto.setNillable( attributeType.isNillable() );        
         NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
@@ -82,7 +82,7 @@ public class DataTransferObjectFactory {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
 
         dto.setName( attributeName );
-        dto.setMinOccurs(0);
+        dto.setMinOccurs(1);
         dto.setMaxOccurs(1);
         NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
         NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
@@ -146,7 +146,7 @@ public class DataTransferObjectFactory {
         List list = new ArrayList(attributes.length);
 
         for (int i = 0; i < attributes.length; i++) {
-            list.add(create(attributes[i]));
+            list.add(create("AbstractFeatureType",attributes[i]));
         }
         return list;
     }
