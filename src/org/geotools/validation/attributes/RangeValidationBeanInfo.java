@@ -20,7 +20,7 @@ import org.geotools.validation.DefaultFeatureValidationBeanInfo;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: RangeValidationBeanInfo.java,v 1.2 2004/02/10 19:01:55 dmzwiers Exp $
+ * @version $Id: RangeValidationBeanInfo.java,v 1.3 2004/02/10 20:33:31 dmzwiers Exp $
  */
 public class RangeValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
 	
@@ -44,7 +44,7 @@ public class RangeValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors(){
 			PropertyDescriptor[] pd2 = super.getPropertyDescriptors();
-			ResourceBundle resourceBundle = getResourceBundle(RangeValidationBeanInfo.class);
+			ResourceBundle resourceBundle = getResourceBundle(RangeValidation.class);
 			if(pd2 == null)
 				pd2 = new PropertyDescriptor[0];
 			PropertyDescriptor[] pd = new PropertyDescriptor[pd2.length + 3];
@@ -52,11 +52,11 @@ public class RangeValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
 			for(;i<pd2.length;i++)
 				pd[i] = pd2[i];
 			try{
-				pd[i] = createPropertyDescriptor("path",RangeValidationBeanInfo.class,resourceBundle);
+				pd[i] = createPropertyDescriptor("path",RangeValidation.class,resourceBundle);
 				pd[i].setExpert(false);
-                pd[i+1] = createPropertyDescriptor("max",RangeValidationBeanInfo.class,resourceBundle);
+                pd[i+1] = createPropertyDescriptor("max",RangeValidation.class,resourceBundle);
                 pd[i+1].setExpert(false);
-                pd[i+2] = createPropertyDescriptor("min",RangeValidationBeanInfo.class,resourceBundle);
+                pd[i+2] = createPropertyDescriptor("min",RangeValidation.class,resourceBundle);
                 pd[i+2].setExpert(false);
 
 			}catch(IntrospectionException e){
