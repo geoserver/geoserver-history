@@ -1,0 +1,9 @@
+- in feature request and all others, find a method of 'executing' the
+	request prior to any treatment of response.getOutputStream to gracefully
+	catch exceptions and still be able of sending exception reports
+	
+- throw friendly exception if a request was made when the server
+  did not finished starting up
+- initialize datasores at startup time
+- creo q no escribe los poligonos con anillos interiores
+- manejar multiples queries (queries sobre multiples datasources)
