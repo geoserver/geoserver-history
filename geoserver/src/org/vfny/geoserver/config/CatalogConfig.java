@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.3 2003/12/17 22:16:18 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.4 2004/01/02 23:01:59 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig
 /**
@@ -755,6 +755,9 @@ public class CatalogConfig extends AbstractConfig
      *
      * @see org.geotools.data.Catalog#lockRelease(java.lang.String,
      *      org.geotools.data.Transaction)
+     * @task REVISIT: consider having this method handle the release action - 
+     *       it doesn't seem like TransactionResponse should really be the one
+     *       figuring out how and when to release it.  
      */
     public boolean lockRelease(String lockID, Transaction t)
         throws IOException {
