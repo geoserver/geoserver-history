@@ -30,7 +30,7 @@ import java.util.logging.*;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.1.2.9 2003/11/26 08:06:24 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.1.2.10 2003/11/26 08:10:37 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -348,34 +348,47 @@ public class TransactionResponse implements Response {
     }
 
     protected void featureValidation(FeatureType type,
-        FeatureCollection collection) throws IOException {
-        // need to hook into featureValidation check here
-        // 
-        // For now we will check type and geometry validity
-        // (just for fun)
-        for (FeatureIterator i = collection.features(); i.hasNext();) {
-            Feature feature = i.next();
-            int compare = DataUtilities.compare(type, feature.getFeatureType());
+        FeatureCollection collection) throws IOException, WfsTransactionException {
+            
+        ValidationProcessor validation =
+            ServerConfig.getInstance().getValidationConfig().getProcessor();
 
-            if (compare != 0) {
-                throw new IOException(feature.getID() + " "
-                    + type.getTypeName() + " validation failed:"
-                    + feature.getFeatureType());
+        final Map failed = new TreeMap();
+        ValidationResults results = new ValidationResults(){
+            String name;
+            String description;
+            public void setValidation(Validation validation) {
+                name = validation.getName();
+                description = validation.getDescription();
             }
-
-            AttributeType gType = type.getDefaultGeometry(); 
-            if ( gType!= null) {
-                 
-                Geometry geom = feature.getDefaultGeometry();
-                if( geom == null && !gType.isNillable() ){
-                    throw new IOException( feature.getID() +" requires a geometry");
-                }
-                if (geom != null && !geom.isValid()) {
-                    throw new IOException(feature.getID()
-                        + " geometry validation failed:" + geom);
-                }
+            public void error(Feature feature, String message) {
+                LOGGER.warning( name+": "+message+" ("+description+")");                
+                failed.put( feature.getID(),
+                    name+": "+message+" "+
+                    "("+description+")"
+                );
             }
+            public void warning(Feature feature, String message) {
+                LOGGER.warning( name+": "+message+" ("+description+")");
+            }
+        };            
+        try {
+            validation.runFeatureTests( type, collection, results );            
         }
+        catch( Exception badIdea ){
+            // ValidationResults should of handled stuff will redesign :-)
+            throw new DataSourceException( "Validation Failed", badIdea );            
+        }
+        if( failed.isEmpty() ) return; // everything worked out
+        StringBuffer message = new StringBuffer();
+        for( Iterator i=failed.entrySet().iterator(); i.hasNext(); ){
+            Map.Entry entry = (Map.Entry) i.next();
+            message.append( entry.getKey() );
+            message.append( " failed test " );
+            message.append( entry.getValue() );
+            message.append( "\n" );
+        }
+        throw new WfsTransactionException( message.toString(), "validation" );
     }
 
     protected void integrityValidation(Map stores, Envelope check)
