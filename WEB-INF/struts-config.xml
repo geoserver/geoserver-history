@@ -145,7 +145,7 @@
         	path="/config/validation/suite.do"/>
         <forward
         	name="validationTest"
-        	path="/config/validation/test.do"/>
+        	path="/config/validation/testSelect.do"/>
 
         <forward
         	name="validationTestEditor"
@@ -341,7 +341,7 @@
         	parameter="config.validation.suite"/>
         	
         <action
-        	path="/config/validation/test"
+        	path="/config/validation/testSelect"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.validation.test"/>
         	
