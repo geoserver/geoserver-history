@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: AbstractConfig.java,v 1.1.2.6 2003/11/19 18:06:26 groldan Exp $
+ * @version $Id: AbstractConfig.java,v 1.1.2.7 2003/11/26 06:49:24 jive Exp $
  */
 public abstract class AbstractConfig {
     /** DOCUMENT ME! */
@@ -356,6 +356,12 @@ public abstract class AbstractConfig {
         }
         return defaultList;
     }
+    public static Map get( Map map, String key, Map defaultMap ){
+        if( map.containsKey( key )){
+            return (Map) map.get( key );
+        }
+        return defaultMap;
+    }    
     public static int get( Map map, String key, int defaultValue ){
         if( map.containsKey( key )){
             return Integer.parseInt( (String) map.get( key ));
@@ -389,5 +395,22 @@ public abstract class AbstractConfig {
             return (URL) map.get( key );
         }
         return defaultUrl;
+    }
+    public static Class get( Map map, String key, Class defaultType ){
+        if( !map.containsKey( key )){
+            return defaultType;
+        }
+        Object value = map.get( key );
+        if( value instanceof Class ){
+            return (Class) value;
+        }
+        if( value instanceof String ){
+            try {
+                return Class.forName( (String) value );
+            } catch (ClassNotFoundException e) {
+                LOGGER.log(Level.FINEST, e.getMessage(), e);                
+            }
+        }
+        return defaultType;            
     }
 }

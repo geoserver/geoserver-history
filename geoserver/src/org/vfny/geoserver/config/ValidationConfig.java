@@ -13,7 +13,10 @@ import java.util.logging.Level;
 
 import org.geotools.data.Catalog;
 import org.geotools.data.DataStore;
+import org.geotools.validation.FeatureValidation;
+import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.Validation;
+import org.geotools.validation.ValidationProcessor;
 
 /**
  * ValidationConfig sets up the Tests used for the VWFS.
@@ -44,11 +47,21 @@ import org.geotools.validation.Validation;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.1.2.1 2003/11/26 06:21:40 jive Exp $
+ * @version $Id: ValidationConfig.java,v 1.1.2.2 2003/11/26 06:49:24 jive Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
 public class ValidationConfig extends AbstractConfig {
+    /** This is the validation processor we are configuring.
+     * <p>
+     * I don't like having parts of the application, contained by the
+     * configuration classes. I would like a separation of configuration
+     * form results...
+     * </p>
+     * But not today.
+     */
+    ValidationProcessor processor = new ValidationProcessor();
+    
     /** Lookup of PlugInInfo */
     Map plugIns;
     
@@ -59,25 +72,53 @@ public class ValidationConfig extends AbstractConfig {
      * <ul>
      * <li>tests: List of tests</li>
      * <li>tests.test: plugIn (String required)</li>
-     * <li>tests.test.description: (String optional)</li>
-     * <li>tests.test.defaults: defaults (Map optional) </li>
+     * <li>tests.test.description: definition (Map optional) </li>
      * <li>validation.plugIn: Bean (Class required )</li>
      * <li>validation.plugIn.description: (String optional )</li>
-     * <li>validation.plugIn.definition: (Map optional )</li> 
+     * <li>validation.plugIn.defaults: (Map optional )</li> 
      * </ul>
      * </p>
      * @param config DOCUMENT ME!
      * @param catalog
      */
-    public ValidationConfig(Map config ) {
+    public ValidationConfig(Map config ) throws ConfigurationException {
         LOGGER.info("loading validation configuration");
 
         List tests = get( config, "validation", Collections.EMPTY_LIST );
         List plugInNames = new ArrayList();
         
         for( Iterator i=tests.iterator(); i.hasNext(); ){
-            
+            String test = (String) i.next();
+            String plugIn = get( config, "tests."+test );
+            if( plugIn == null ) continue; // ignore test then
+            plugInNames.add( plugIn );                                     
         }
+        if( plugInNames.isEmpty() ) return; //no validation required
+        
+        // configure plugIns
+        for( Iterator i=plugInNames.iterator(); i.hasNext(); ){
+            String plugIn = (String) i.next();
+            Class type = get( config, "validation."+plugIn, Validation.class );
+            String description = get( config, "validation."+plugIn+".description" );
+            Map definition = get( config, "validation."+plugIn+".defaults", Collections.EMPTY_MAP );
+            
+            plugIns.put( plugIn, new PlugIn(plugIn, type,description, definition ) );
+        }
+        // now we can set up the tests
+        for( Iterator i=tests.iterator(); i.hasNext(); ){
+            String test = (String) i.next();
+            String plugInName = get( config, "tests."+test );
+            Map definition = get( config, "validation."+test+".definition", Collections.EMPTY_MAP );
+                        
+            PlugIn plugIn = (PlugIn) plugIns.get( plugInName );
+            Validation validation = plugIn.createValidation( definition );
+            if( validation instanceof FeatureValidation ){
+                processor.addValidation( (FeatureValidation) validation );
+            }
+            if( validation instanceof IntegrityValidation){
+                processor.addValidation( (IntegrityValidation) validation );
+            }                                     
+        }                
     }
     /**
      * ValidationConfig constructor.
@@ -92,6 +133,17 @@ public class ValidationConfig extends AbstractConfig {
     }
     
     
+    /**
+     * getProcessor purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @return
+     */
+    public ValidationProcessor getProcessor() {
+        return processor;
+    }
+
 }
 /**
  * Contains the information required for Validation creation.
