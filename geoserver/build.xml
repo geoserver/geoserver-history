@@ -39,7 +39,7 @@
   <!-- pc example -->
   <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
   <property name="dir.geotools" 
-            value="e:\workspace\geotools2\geotools-src"/>
+            value="c:\java\workspace\geotools2\geotools-src"/>
             
   <!-- linux example
   <property name="dir.container" value="/usr/local/resin-2.1.4/webapps"/>
@@ -62,7 +62,8 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
-  <property name="test.type" value="UserBasic"/>
+  
+  <!--<property name="test.type" value="UserBasic"/>--> 
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
