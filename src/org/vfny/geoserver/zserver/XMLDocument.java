@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 //import org.vfny.zServer.search.GeoProfile;
 
 /**
-* A utility for making lucene document from an XML source and a mapping of attributes
-* consisting of a use number and the xpath of the name.
+* A utility for making lucene document from an XML source and a 
+* mapping of attributes consisting of a use number and the xpath of the name.
 * Based on Document example from Lucene.  Taken from the lucene mailing list: 
 * http://www.mail-archive.com/lucene-user@jakarta.apache.org/msg00346.html and 
 * modified to work with the Geo Profile.
@@ -47,10 +47,10 @@ public class XMLDocument
      /** Standard logging instance for class */
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.zserver");
-
+    
     /** To compute the extent with */
     private static String westbc;
-
+    
     /** To compute the extent with */
     private static String eastbc;
     
@@ -59,201 +59,147 @@ public class XMLDocument
     
     /** To compute the extent with */
     private static String southbc;
+    
+    private XMLDocument() { }
+    
+    /**
+     * Converts an xml file to a lucene document, using the values
+     * of the attribute map as the xpaths.  These xpaths also serve
+     * as the name of the fields for conversions later.
+     *
+     * @param file Document that to be converted to a lucene document
+     * @param attrMap mappings of attribute numbers to xpaths.  
+     * @throws FileNotFoundException
+     * @throws Exception
+     * @return lucene document
+     */
+    public static Document Document (File file, Properties attrMap)
+	throws java.io.FileNotFoundException, Exception
+    {
+	Document doc = new Document();
+	LOGGER.finer("processing file: " + file);
+	// add path
+	String xmlPath = file.getPath();
+	doc.add(Field.Keyword("path", xmlPath));
+	doc.add(Field.UnIndexed
+		("sutrs", changeExtension(xmlPath, "txt")));
+	doc.add(Field.UnIndexed
+		("html", changeExtension(xmlPath, "html")));
+	doc.add(Field.UnIndexed
+		("sgml", changeExtension(xmlPath, "sgml")));	
+	
+	//add date modified for reindexing.
+	doc.add(Field.Keyword
+		("modified", DateField.timeToString(file.lastModified())));
+	doc.add(Field.Text("true", "true"));  //used for searching not equals,
+	//since lucene does not support it, we have to do a boolean query with
+	//something always true, which will be this field.
+	//add field list in property list
+	Collection values = attrMap.values();
+	Set valueSet = new HashSet(values); 
+	//only one copy of each of the values.
+	Iterator e = valueSet.iterator();
+	while (e.hasNext()) {
+	    String key = (String) e.next();
+	    //LOGGER.info("reading " + key);
+	    //Object xpath = e.next();
+	    if (key.charAt(0) == '/') { //if it is in fact an xpath
+		//grab just the text inside the element.
+		String xpath = key + "/text()"; 
+		String[] valueArray = ApplyXPath.apply(file.getPath(),xpath);
+		StringBuffer value = new StringBuffer("");
+		for (int i=0; i < valueArray.length; i++) { 
+		    //TODO: Probably don't want to just append all
+		    //of the values together.  This works fine
+		    //for most fields, as there is usually only
+		    //one of each, but when there are multiples
+		    //we should be able to process them properly.
+		    value.append(valueArray[i]);
+		}
+		String textValue = formatValue(value.toString(), key);
+		doc.add(Field.Text(key,textValue));
+	    }
+	}
+	//LOGGER.info("doc is " + doc);
+	doc.add(Field.Text("extent", computeExtent()));
+	return doc;
+    }
+   
 
-        private XMLDocument() { }
+    
+    /**
+     * Convenience method, turns the string into a file.
+     * @param path path of document you want to convert to a lucene
+     * document
+     *
+     * @param attrMap properties where the key is the field
+     * name and the value is the
+     * XML xpath.
+     * @throws Exception
+     * @return lucene document
+     */
+    public static Document Document(String path, Properties attrMap)
+	throws Exception {
+	File file = new File(path);
+	Document doc = Document(file, attrMap);
+	return doc;
+    }
+    
+    /**
+     * Convenience method, turns the documentPath into a file, and
+     * the propertyPath into a Property object.
+     * @param documentPath path of the Document that to be converted
+     * to a lucene document
+     * @param propertyPath path of file containing mapping of attribute
+     * use numbers to xpaths.
+     * XML xpath.
+     * @throws Exception
+     * @return
+     */
+    public static Document Document(String documentPath, String propertyPath)
+	throws Exception {
+	
+	File file = new File(documentPath);
+	FileInputStream fis = new FileInputStream(propertyPath);
+	Properties attrMap = new Properties();
+	attrMap.load(fis);
+	Document doc = Document (file, attrMap);
+	return doc;
+    }
 
-         /**
-	  * Converts an xml file to a lucene document, using the values
-	  * of the attribute map as the xpaths.  These xpaths also serve
-	  * as the name of the fields for conversions later.
-	  *
-          * @param file Document that to be converted to a lucene document
-          * @param attrMap mappings of attribute numbers to xpaths.  
-          * @throws FileNotFoundException
-          * @throws Exception
-          * @return lucene document
-          */
-        public static Document Document (File file, Properties attrMap)
-	    throws java.io.FileNotFoundException, Exception
-        {
-                Document doc = new Document();
-		LOGGER.info("processing file: " + file);
-                // add path
-		String xmlPath = file.getPath();
-                doc.add(Field.Keyword("path", xmlPath));
-		//TODO: Checking to make sure these files exist!  The metadata folder
-		//should contain them.
-		doc.add(Field.UnIndexed("sutrs", changeExtension(xmlPath, "txt")));
-		doc.add(Field.UnIndexed("html", changeExtension(xmlPath, "html")));
-		doc.add(Field.UnIndexed("sgml", changeExtension(xmlPath, "sgml")));	
-		
-                //add date modified for reindexing.
-                doc.add(Field.Keyword("modified", DateField.timeToString(file.lastModified())));
-		//doc.add(Field.UnIndexed("url", file.getPath()));
-
-		doc.add(Field.Text("true", "true"));  //used for searching not equals, since
-		//lucene does not support it, we have to do a boolean query with
-		//something always true, which will be this field.
-		//Date today = new Date();
-		//doc.add(Field.Text("date added", DateField.dateToString(today)));
-                //add field list in property list
-		Collection values = attrMap.values();
-		Set valueSet = new HashSet(values); //only one copy of each of the values.
-		Iterator e = valueSet.iterator();
-		 while (e.hasNext())
-                 {
-
-		     String key = (String) e.next();
-		     //LOGGER.info("reading " + key);
-		     //Object xpath = e.next();
-		     if (key.charAt(0) == '/') { //if it is in fact an xpath
-			 String xpath = key + "/text()"; //grab just the text inside the element.
-			String[] valueArray = ApplyXPath.apply(file.getPath(),xpath);
-			StringBuffer value = new StringBuffer("");
-			for (int i=0; i < valueArray.length; i++)
-                        {
-			    value.append(valueArray[i]);
-                        }
-                        String textValue = formatValue(value.toString(), key);
-			doc.add(Field.Text(key,textValue));
-		     }
-		 }
-
-		 //LOGGER.info("doc is " + doc);
-		 doc.add(Field.Text("extent", computeExtent()));
-                 return doc;
-        }
-
-
-
-         /**
-	  * 
-          * @return lucene document
-          * @param fieldNames field names for the lucene document
-          * @param file Document that to be converted to a lucene document
-          * @param xpaths XML xpaths for the information you want to get
-          * @throws Exception
-          */
-    /* public static Document Document(File file, java.lang.String[]
-fieldNames, java.lang.String[] xpaths)  throws java.io.FileNotFoundException , Exception
-         {
-             if (fieldNames.length != xpaths.length)
-             {
-                 throw new IllegalArgumentException ("String arrays are not equal size");
-             }
-
-             Properties attrMap = new Properties();
-
-             // generate properties from the arrays
-             for (int i=0;i<fieldNames.length;i++) {
-                 attrMap.setProperty(fieldNames[i],xpaths[i]);
-             }
-
-             Document doc = Document (file, attrMap);
-             return doc;
-	     }*/
-
-         /**
-          * @param path path of the Document that to be converted to a
-lucene document
-          * @param keys
-          * @param xpaths
-          * @throws Exception
-          * @return
-          */
-    /*  public static Document Document(String path, String[]
-fieldNames, String[] xpaths)
-         throws Exception
-         {
-             File file = new File(path);
-             Document doc = Document (file, fieldNames, xpaths);
-             return doc;
-	     }*/
-
-         /**
-	  * Convenience method, turns the string into a file.
-          * @param path path of document you want to convert to a lucene
-document
-          * @param attrMap properties where the key is the field
-name and the value is the
-          * XML xpath.
-          * @throws Exception
-          * @return lucene document
-          */
-         public static Document Document(String path, Properties
-attrMap)
-         throws Exception
-         {
-             File file = new File(path);
-             Document doc = Document(file, attrMap);
-	     return doc;
-         }
-
-         /**
-	  * Convenience method, turns the documentPath into a file, and
-	  * the propertyPath into a Property object.
-          * @param documentPath path of the Document that to be converted
-to a lucene document
-          * @param propertyPath path of file containing mapping of attribute
-	  * use numbers to xpaths.
-          * XML xpath.
-          * @throws Exception
-          * @return
-          */
-         public static Document Document(String documentPath, String
-propertyPath)
-         throws Exception
-         {
-	     
-             File file = new File(documentPath);
-             FileInputStream fis = new FileInputStream(propertyPath);
-             Properties attrMap = new Properties();
-             attrMap.load(fis);
-             Document doc = Document (file, attrMap);
-             return doc;
-         }
-
-         /**
-          * @param documentFile Document that to be converted to a lucene document.
-          * @param attrMapFile file containing mappings with xpath values.
-          * XML xpath.
-          * @throws Exception
-          * @return
-          */
-         public static Document Document(File documentFile, File
-attrMapFile)
-         throws Exception
-         {
-             FileInputStream fis = new FileInputStream(attrMapFile);
-             Properties attrMap = new Properties();
-             attrMap.load(fis);
-             Document doc = Document (documentFile, attrMap);
-             return doc;
-         }
-
-    /*      private static String filter(String key, StringBuffer value) {
-             String newValue;
-             newValue = value.toString();
-             return newValue;
-	     }*/
-
+    /**
+     * @param documentFile Document that to be converted to a lucene document.
+     * @param attrMapFile file containing mappings with xpath values.
+     * XML xpath.
+     * @throws Exception
+     * @return
+     */
+    public static Document Document(File documentFile, File attrMapFile)
+	throws Exception {
+	FileInputStream fis = new FileInputStream(attrMapFile);
+	Properties attrMap = new Properties();
+	attrMap.load(fis);
+	Document doc = Document (documentFile, attrMap);
+	return doc;
+    }
+    
+    
     /**
      * main used to create an index from a directory full of xml files.
      */
     public static void main(String[] args) throws Exception
     {
 	
-	if(args.length == 0)
-	    {
-		System.out.println("args: indexPath xmlFile");
-		System.exit(0);
-	    }
+	if(args.length == 0) {
+	    System.out.println("args: indexPath xmlFile");
+	    System.exit(0);
+	}
 	
 	System.out.println("Index Path =--- "+args[0]);
 	System.out.println("XML Dir = "+args[1]);
 	System.out.println("props File = "+args[2]);
 	
-
+	
 	File xmlDir = new File(args[1]);
 	File propsFile = new File(args[2]);
 	if (xmlDir.isDirectory()) {
@@ -267,31 +213,15 @@ attrMapFile)
 	    }
 	    indexWriter.close();
 	    System.exit(0);
-
-
+	    
+	    
 	} else {
 	    System.out.println(args[1] + " is not a directory");
 	    System.exit(1);
 	}
-
-
-	/*	Document doc;		
-	try
-	    {
-		
-		doc = XMLDocument.Document(xmlFile, propsFile);
-		System.out.println(doc);
-		indexWriter.addDocument(doc);
-		indexWriter.close();
-	    }
-	catch (Exception ex)
-	    {
-		ex.printStackTrace(System.out);
-		System.err.println(ex);
-		System.exit(1);
-		}*/
+	
     }
-
+    
     /**
      * Saves the bounding coordinates to compute the extent.
      *
@@ -352,8 +282,8 @@ attrMapFile)
 	} else {
 	    if (!key.equals("/")) { //if key is not / (for any text field)
 		retString = stripAndTrim(value); 
-		//to get rid of new lines and trailing whitespace for presentation.
-
+		//to get rid of new lines and trailing whitespace 
+		//for presentation.
 	    } else {
 		retString = value;
 	    }
@@ -391,7 +321,7 @@ attrMapFile)
 
     /**
      * A filename filter that accepts all files that end with 'xml'
-     *
+     * REVISIT: Do we need this class now?
      */
     private static class XMLFilenameFilter implements FilenameFilter {
 	
