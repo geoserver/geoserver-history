@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.3.2.1 2004/02/04 18:43:55 cholmesny Exp $
+ * @version $Id: WFSConfig.java,v 1.3.2.2 2004/02/04 19:09:06 cholmesny Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -46,7 +46,7 @@ public class WFSConfig extends ServiceConfig {
         Element elem = getChildElement(root, "gmlPrefixing", false);
         LOGGER.info("gml element is " + elem + " root is " + root);
 
-		String transType = getChildText(root, "transactionType", false);
+		String transType = getChildText(root, "serviceLevel", false);
 		if (transType.equalsIgnoreCase("basic")){
 			this.transactionsEnabled = false;
 		}
