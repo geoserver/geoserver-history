@@ -36,6 +36,12 @@
    		<put name="title" value="title.welcome"/>
    		<put name="layer" value="application"/>
    	</definition>
+
+   	<definition name="main.contact" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/ContactInformation.jsp"/>
+   		<put name="title" value="title.contact"/>
+   		<put name="layer" value="application"/>
+   	</definition>
    	
    	<definition name="main.menu" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/MainMenu.jsp"/>

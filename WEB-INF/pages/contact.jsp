@@ -9,7 +9,7 @@
 
 <span class="contact">		
 	<bean:message key="label.contact"/>: 
-    <html:link forward="geoServerConfiguration">
-    	<%= (contact.getContactPerson() != null && !contact.getContactPerson().equals("")) ? contact.getContactPerson() : "None" %>
+    <html:link forward="contact">
+    	<%= (contact.getContactPerson() != null && !contact.getContactPerson().equals("")) ? contact.getContactPerson() : "info" %>
 	</html:link>
 </span>

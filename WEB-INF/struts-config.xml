@@ -113,7 +113,11 @@
         <forward 
         	name="mainmenu"
         	path="/MainMenu.do"/>
-        	
+        
+        <forward 
+        	name="contact"
+        	path="/ContactInformation.do"/>
+        		
         <forward 
         	name="login"
         	path="/Login.do"/>
@@ -197,7 +201,12 @@
             path="/Welcome"
             type="org.apache.struts.actions.ForwardAction"
             parameter="main.welcome"/>
-            
+
+        <action
+            path="/Contact"
+            type="org.apache.struts.actions.ForwardAction"
+            parameter="main.contact"/>
+                        
         <action
         	path ="/MainMenu"
         	type="org.apache.struts.actions.ForwardAction"
