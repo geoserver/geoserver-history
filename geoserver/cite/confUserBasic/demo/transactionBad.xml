@@ -1,0 +1,18 @@
+<wfs:Transaction
+  service="WFS"
+  version="1.0.0"
+  xmlns:cdf="http://www.opengis.net/cite/data"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:gml="http://www.opengis.net/gml"  
+>
+  <wfs:Update typeName="topp:bc_roads">
+    <wfs:Property>
+      <wfs:Name>LENGTH</wfs:Name>
+      <wfs:Value>0</wfs:Value>
+    </wfs:Property>
+    <ogc:Filter>
+      <ogc:FeatureId fid="bc_roads.1"/>
+    </ogc:Filter>
+  </wfs:Update>
+</wfs:Transaction>

@@ -15,22 +15,9 @@
                    value="file:data/featureTypes/bc_roads/bc_roads.shp"/>
       </connectionParams>
     </datastore>
-
-    <!-- Another sample shapefile datastore.  Unfortunately all shapefiles  -->
-    <!-- have their own datastore definitions.  With the other datastores it-->
-    <!-- is possible to define one datastore and then to have a number of   -->
-    <!-- featureTypes all reference the same datastore, each featureType is -->
-    <!-- then a table in the database referred to. -->
-    <datastore id="dSkae"
-               enabled="true"
-               namespace="lake">
-      <description>Sample source data for lakes. Should not pass all 
-                   validations.</description>
-      <connectionParams>
-        <parameter name="url" 
-                   value="file:data/featureTypes/skae_lakes/skae_lakes.shp"/>
-      </connectionParams>
-    </datastore>
+    <!-- Unfortunately all shapefiles have their own datastore definitions. -->
+    <!-- With the other datastores it is possible to define one datastore   -->
+    <!-- that is refered to by a number of featureTypes.                    -->
     
     <!-- A sample postgis datastore. -->
     <datastore id="localPostgis" enabled="true" namespace="topp">
