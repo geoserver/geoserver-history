@@ -73,7 +73,7 @@ import org.vfny.geoserver.global.UserContainer;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ConfigAction.java,v 1.8 2004/02/12 22:07:59 emperorkefka Exp $
+ * @version $Id: ConfigAction.java,v 1.9 2004/02/16 22:30:22 emperorkefka Exp $
  */
 public class ConfigAction extends GeoServerAction {
 	/**
@@ -109,7 +109,6 @@ public class ConfigAction extends GeoServerAction {
 						   UserContainer user,
 						   HttpServletRequest request,
 						   HttpServletResponse response ) throws Exception {
-        System.out.println("errrrrrrrrr.............");
 		return null;
 	}
     /**
