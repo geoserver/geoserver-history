@@ -15,6 +15,7 @@ import org.vfny.geoserver.responses.WfsException;
  *
  * @version $VERSION$
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP 
  */
 public abstract class SubTransactionRequest {
 
@@ -28,6 +29,7 @@ public abstract class SubTransactionRequest {
 
     protected String typeName = null; 
 
+    private static short operationType;
 
     public SubTransactionRequest() {}
 
@@ -37,5 +39,11 @@ public abstract class SubTransactionRequest {
     public void setTypeName(String typeName) { this.typeName = typeName; }
 
     public void setFilter(Filter filter) throws WfsException {}
+
+    public String getTypeName() { return typeName; }
+
+    public String getHandle() { return handle; }
    
+    public abstract short getOpType();
+    
 }
