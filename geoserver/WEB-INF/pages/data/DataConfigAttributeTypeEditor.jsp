@@ -12,7 +12,7 @@
 		<html:select property="selectedType">
 			<html:options property="attributeTypes"/>
 		</html:select>
-	</td>
+	</td></tr><tr>
 	<td valign="top" align="right">
 		<bean:message key="label.isRef"/>:
 	</td><td valign="top" align="left">
@@ -33,9 +33,12 @@
 	</td><td valign="top" align="left">
 		<html:text property="maxOccurs" size="3"/>
 	</td></tr>
-	<tr><td>&nbsp;</td><td valign="top" align="right">
+	<tr><td>&nbsp;</td><td valign="top" align="left">
 		<html:textarea property="fragment" rows="10" cols="60"/>
 	</td></tr>	
+	<tr><td>&nbsp;</td><td valign="top" align="left">
+		<html:submit/><html:reset/>
+	</td></tr>
 
 	</html:form>
 	
