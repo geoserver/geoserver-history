@@ -769,17 +769,28 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * Finds the style for <code>layer</code> in <code>styledLayers</code> or
      * the layer's default style if <code>styledLayers</code> has no a
      * UserLayer or a NamedLayer with the same name than <code>layer</code>
+     * <p>
+     * This method is used to parse the style of a layer for SLD and SLD_BODY parameters,
+     * both in library and literal mode. Thus, once the declared style for the given layer
+     * is found, it is checked for validity of appliance for that layer (i.e., whether the
+     * featuretype contains the attributes needed for executing the style filters).
+     * </p>
      *
-     * @param request DOCUMENT ME!
-     * @param layer
-     * @param styledLayers
+     * @param request used to find out an internally configured style when referenced by name by a NamedLayer
+     * 
+     * @param layer one of the internal FeatureType that was requested through the LAYERS parameter
+     * or through and SLD document when the request is in literal mode.
+     * @param styledLayers a set of StyledLayers from where to find the SLD layer with the same
+     * name as <code>layer</code> and extract the style to apply.
      *
-     * @return DOCUMENT ME!
+     * @return the Style applicable to <code>layer</code> extracted from <code>styledLayers</code>.
      *
-     * @throws RuntimeException DOCUMENT ME!
+     * @throws RuntimeException if one of the StyledLayers is neither a UserLayer nor a NamedLayer. This
+     * shuoldn't happen, since the only allowed subinterfaces of StyledLayer are NamedLayer and UserLayer.
+     * @throws WmsException 
      */
     private Style findStyleOf(GetMapRequest request, FeatureTypeInfo layer,
-        StyledLayer[] styledLayers) {
+        StyledLayer[] styledLayers)throws WmsException {
         Style style = null;
         String layerName = layer.getName();
         StyledLayer sl;
@@ -816,6 +827,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             style = layer.getDefaultStyle();
         }
 
+		FeatureType type;
+		try{
+			type = layer.getFeatureType();
+		}catch(IOException ioe){
+			throw new RuntimeException("Error getting FeatureType, this should never happen!");
+		}
+		checkStyle(style, type);
         return style;
     }
 
