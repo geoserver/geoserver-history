@@ -8,7 +8,12 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataStoreMetaData;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
@@ -20,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.7 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: DataStoreInfo.java,v 1.8 2004/02/02 08:56:45 jive Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype
     implements DataStoreMetaData {
@@ -39,6 +44,21 @@ public class DataStoreInfo extends GlobalLayerSupertype
 
     /** Storage for metadata */
     private Map meta;
+    
+    /**
+     * Directory associated with this DataStore.
+     * <p>
+     * This directory may be used for File based relative paths.
+     */
+    File baseDir;
+    
+    /**
+     * URL associated with this DataStore.
+     * <p>
+     * This directory may be used for URL based relative paths.
+     * </p>
+     */
+    URL baseURL;
 
     /**
      * DataStoreInfo constructor.
@@ -83,7 +103,40 @@ public class DataStoreInfo extends GlobalLayerSupertype
     public String getId() {
         return dsc.getId();
     }
-
+    /**
+     * Get Connect params.
+     * <p>
+     * This is used to smooth any relative path kind of issues for any
+     * file URLS. This code should be expanded to deal with any other context
+     * sensitve isses dataStores tend to have.
+     * </p>
+     */
+    protected Map getParams(){
+    	Map params = new HashMap( dsc.getConnectionParams() );
+    	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
+    		Map.Entry entry = (Map.Entry) i.next();
+    		String key = (String) entry.getKey();
+    		Object value = entry.getValue();
+    		try {
+	    		if( "url".equals( key ) && value instanceof String ){
+	    			String path = (String) value;
+	    			if( path.startsWith("file:") ){
+	    				path = path.substring( 5 ); // remove 'file:' prefix
+	    				File file = new File( data.getBaseDir(), path );
+	    				entry.setValue( file.toURL().toExternalForm() );
+	    			}	    			
+	    		}
+	    		// consider 
+	    		// if( value instance of URL ){
+	    		//    URL url = (URL) value;
+	    		//    ...	    		
+    		}
+    		catch( MalformedURLException ignore ){
+    			// ignore attempt to fix relative paths
+    		}
+    	}
+    	return params;
+    }
     /**
      * By now just uses DataStoreFinder to find a new instance of a
      * DataStoreInfo capable of process <code>connectionParams</code>. In the
@@ -107,13 +160,12 @@ public class DataStoreInfo extends GlobalLayerSupertype
         throws IllegalStateException, NoSuchElementException {
         if (!isEnabled()) {
             throw new IllegalStateException(
-                "this datastore is not enabled, check your configuration files");
+                "this datastore is not enabled, check your configuration");
         }
 
         if (dataStore == null) {
             try {
-                dataStore = DataStoreFinder.getDataStore(dsc
-                        .getConnectionParams());
+            	dataStore = DataStoreFinder.getDataStore( getParams() );
                 LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
                 throw new IllegalStateException("can't create the datastore "

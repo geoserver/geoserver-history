@@ -10,29 +10,35 @@
  */
 package org.vfny.geoserver.action;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
-import java.io.File;
-import java.io.IOException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * DOCUMENT ME!
- *
- * @author User To change the template for this generated type comment go to
- *         Window>Preferences>Java>Code Generation>Code and Comments
+ * Save GeoServer state to XML.
+ * <p>
+ * This is a propert ConfigAction - you need to be logged in for this to work.
+ * </p>
  */
-public class SaveXMLAction extends GeoServerAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+public class SaveXMLAction extends ConfigAction {
+	
+    public ActionForward execute(ActionMapping mapping,
+    		                     ActionForm form,
+								 //UserContainer user,
+								 HttpServletRequest request,
+								 HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs = getGeoServer(request);
         ServletContext sc = request.getSession().getServletContext();
@@ -44,8 +50,10 @@ public class SaveXMLAction extends GeoServerAction {
         } catch (ConfigurationException e) {
             throw new ServletException(e);
         }
-
-        //HACK
+        getApplicationState( request ).notifiySaveXML();	
+        // We need to stash the current page?
+        // or can we use null or something?
+        //
         return mapping.findForward("welcome");
     }
 }

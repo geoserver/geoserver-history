@@ -32,7 +32,7 @@ import javax.servlet.ServletException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.5 2004/02/01 19:16:06 jive Exp $
+ * @version $Id: ApplicationState.java,v 1.6 2004/02/02 08:56:45 jive Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
@@ -124,7 +124,7 @@ public class ApplicationState implements PlugIn {
      * Notification that Global has been updated from XML config files
      */
     public void notifyLoadXML() {
-    	setGeoServerChanged( true );  // is this right? JG expected false
+    	setGeoServerChanged( true );  // REVISIT: is this right? JG expected false
         setConfigChanged( false );
     }
 

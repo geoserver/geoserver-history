@@ -30,7 +30,7 @@ import javax.servlet.ServletException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.4 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.5 2004/02/02 08:56:45 jive Exp $
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
  */
@@ -88,7 +88,7 @@ public class GeoServerPlugIn implements PlugIn {
 
             if (cr.isInitialized()) {
                 gs.load(cr.getWms(), cr.getWfs(), cr.getGeoServer(),
-                    cr.getData());
+                    cr.getData(), f );
             } else {
                 throw new ConfigurationException(
                     "An error occured loading the initial configuration.");

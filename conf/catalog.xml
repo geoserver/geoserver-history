@@ -12,7 +12,7 @@
       <connectionParams>
         <!-- change the file to the location where geoserver puts the file.
              We're working on making this easier to configure, automatically detect it for you.  -->
-        <parameter name="url" value="file:///c:/java/resin-3.0.4/webapps/geoserver/data/featureTypes/bc_roads/bc_roads.shp"/>
+        <parameter name="url" value="file:featureTypes/bc_roads/bc_roads.shp"/>
       </connectionParams>
     </datastore>
 
@@ -21,7 +21,7 @@
                namespace="lakes">
       <description>Sample source data for lakes. Should not pass all validations.</description>
       <connectionParams>
-        <parameter name="url" value="file:///c:/java/resin-3.0.4/webapps/geoserver/data/featureTypes/skae_lakes/skae_lakes.shp"/>
+        <parameter name="url" value="file:data/featureTypes/skae_lakes/skae_lakes.shp"/>
       </connectionParams>
     </datastore>
     
