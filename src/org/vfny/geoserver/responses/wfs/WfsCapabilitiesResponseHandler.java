@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.10 2004/01/31 00:27:25 jive Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.11 2004/02/02 23:17:34 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -149,8 +149,14 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         startElement("DCPType");
         startElement("HTTP");
 
-        String baseUrl = request.getBaseUrl() + "wfs/";
-        String url = baseUrl + capabilityName + "?";
+        String url = "";
+        String baseUrl = "";
+        if(request.isCGIRequest()){
+        	url = request.getBaseUrl() + "?REQUEST="+ capabilityName+"&";
+        }else{
+        	baseUrl = request.getBaseUrl() + "wfs/";
+        	url = request.getBaseUrl() + "wfs/" + capabilityName + "?";
+        }
         attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
 
         startElement("Get", attributes);
@@ -160,15 +166,17 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         cReturn();
 
-        attributes = new AttributesImpl();
-        url = baseUrl + capabilityName;
-        attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
-        startElement("DCPType");
-        startElement("HTTP");
-        startElement("Post", attributes);
-        endElement("Post");
-        endElement("HTTP");
-        endElement("DCPType");
+        if(!request.isCGIRequest()){
+        	attributes = new AttributesImpl();
+        	url = baseUrl + capabilityName;
+        	attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
+        	startElement("DCPType");
+        	startElement("HTTP");
+        	startElement("Post", attributes);
+        	endElement("Post");
+        	endElement("HTTP");
+        	endElement("DCPType");
+        }
         unIndent();
         endElement(capabilityName);
         unIndent();
