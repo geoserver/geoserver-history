@@ -27,7 +27,14 @@
 	<tr><td align="right">
 		<bean:message key="label.latLonBoundingBox"/>:
 	</td><td colspan=2 align="left">
-		<html:text property="latlonBoundingBox" size="60"/>
+		<html:text property="latLonBoundingBoxMinX" size="30"/>
+		<html:text property="latLonBoundingBoxMinY" size="30"/>
+	</td></tr>
+	<tr><td align="right">
+
+	</td><td colspan=2 align="left">
+		<html:text property="latLonBoundingBoxMaxX" size="30"/>
+		<html:text property="latLonBoundingBoxMaxY" size="30"/>
 	</td></tr>
 
 	<tr><td align="right">
@@ -62,4 +69,11 @@
 	</td></tr>						
 	
 	</html:form>
+	
+	
+			<html:form action="CalculateBoundingBox">
+			<html:submit>
+				<bean:message key="label.apply"/>
+			</html:submit>
+		</html:form>
 </table>

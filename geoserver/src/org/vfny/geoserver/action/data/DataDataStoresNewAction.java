@@ -5,12 +5,6 @@
  */
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -18,6 +12,11 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresNewForm;
 import org.vfny.geoserver.global.UserContainer;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -28,30 +27,21 @@ import org.vfny.geoserver.global.UserContainer;
  * </p>
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresNewAction.java,v 1.8 2004/02/09 23:29:41 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresNewAction.java,v 1.9 2004/02/10 00:35:28 emperorkefka Exp $
  */
 public class DataDataStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        /*
-           if( isLoggedIn( request )){
-                   return forward to login page
-           }
-           UserContainer user = getUserContainer( request );
-         */
+
         DataDataStoresNewForm newForm = (DataDataStoresNewForm) form;
         DataStoreConfig newDataStoreConfig;
 
         newDataStoreConfig = new DataStoreConfig(newForm.getDataStoreID(),
                 newForm.getSelectedDescription());
 
-        getDataConfig().addDataStore(newDataStoreConfig);
-        getApplicationState().notifyConfigChanged();
-
-        request.getSession().setAttribute("selectedDataStoreId",
-            newForm.getDataStoreID());
+        getUserContainer(request).setDataStoreConfig(newDataStoreConfig);
 
         return mapping.findForward("dataConfigDataStores");
     }

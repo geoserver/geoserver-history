@@ -5,11 +5,6 @@
 
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -24,6 +19,10 @@ import org.vfny.geoserver.form.data.DataFeatureTypesNewForm;
 import org.vfny.geoserver.global.UserContainer;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -51,15 +50,15 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.8 2004/02/09 23:29:41 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.9 2004/02/10 00:35:28 emperorkefka Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
 
     public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, HttpServletRequest request,
-        UserContainer user, HttpServletResponse response) throws IOException {
+        ActionForm incomingForm, UserContainer user,  HttpServletRequest request,
+        HttpServletResponse response) throws IOException {
         DataFeatureTypesNewForm form = (DataFeatureTypesNewForm) incomingForm;
         String selectedNewFeatureType = form.getSelectedNewFeatureType();
 
@@ -90,18 +89,12 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         // SRID number is?
         //
         ftConfig.setSRS(0);
-        FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
-        Envelope ev = fs.getBounds();
-        if(ev == null || ev.isNull()){
-        	try{
-        		ev = fs.getFeatures().getBounds();
-        	}catch(Throwable t){
-        		ev = null;
-        	}
-        }
         
+        
+        FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+                
         // TODO translate to lat long, pending
-        ftConfig.setLatLongBBox(ev);
+        ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));
         
         //Extent ex = featureType.getDefaultGeometry().getCoordinateSystem().getValidArea();
         //ftConfig.setLatLongBBox(ex);

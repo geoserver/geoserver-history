@@ -5,15 +5,13 @@
 
 package org.vfny.geoserver.form.data;
 
-import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
+import java.util.Set;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -28,14 +26,14 @@ public class DataFeatureTypesSelectForm extends ActionForm {
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
-
+System.out.println("SKAG2");
         selectedFeatureTypeName = "";
     }
 
     public ActionErrors validate(ActionMapping mapping,
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-
+        System.out.println("SKAG3");
         return errors;
     }
 

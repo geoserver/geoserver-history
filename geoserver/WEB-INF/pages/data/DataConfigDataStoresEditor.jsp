@@ -1,7 +1,7 @@
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
-<logic:present name="selectedDataStoreId" scope="session">
+<logic:present name="GEOSERVER.USER" property="dataStoreConfig" scope="session">
 <table border=0 width=100%>
 	<html:form action="DataConfigDataStoresSubmit">
 	

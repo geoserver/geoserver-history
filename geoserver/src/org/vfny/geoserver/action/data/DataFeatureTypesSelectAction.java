@@ -5,13 +5,6 @@
 
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -23,6 +16,13 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
 
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * DOCUMENT ME!
@@ -32,8 +32,9 @@ import org.vfny.geoserver.global.UserContainer;
  */
 public class DataFeatureTypesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, HttpServletRequest request,
-        UserContainer user, HttpServletResponse response) throws IOException, ServletException {
+        ActionForm incomingForm, UserContainer user, HttpServletRequest request,
+         HttpServletResponse response) throws IOException, ServletException {
+
         DataFeatureTypesSelectForm form = (DataFeatureTypesSelectForm) incomingForm;
 
         String selectedFeatureType = form.getSelectedFeatureTypeName();

@@ -447,8 +447,11 @@
         	scope="request"
         	validate="true"
         	input="validation.testEditor"/>
-
-
+        	
+        <action
+        	path="/CalculateBoundingBox"
+        	type="org.vfny.geoserver.action.data.CalculateBoundingBoxAction"
+        	name="blankBean"/>
         	
         <action
         	path="/SaveToGeoServer"
