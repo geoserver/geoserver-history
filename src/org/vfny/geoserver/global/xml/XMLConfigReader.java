@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.19 2004/01/20 00:30:43 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.20 2004/01/20 18:22:03 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -249,7 +249,7 @@ public class XMLConfigReader {
         data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
                     catalogElem, "datastores", true)));
         data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem,
-                    "styles", false)));
+                    "styles", false), new File(featureTypeDir.getParentFile(),"styles")));
 
         // must be last
         data.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
@@ -578,7 +578,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      */
-    protected Map loadStyles(Element stylesElem) throws ConfigurationException {
+    protected Map loadStyles(Element stylesElem, File baseDir) throws ConfigurationException {
         Map styles = new HashMap();
 
         NodeList stylesList = null;
@@ -589,7 +589,11 @@ public class XMLConfigReader {
 
         if ((stylesList == null) || (stylesList.getLength() == 0)) {
             //no styles where defined, just add a default one
-            styles.put("normal", "styles/normal.sld");
+			StyleDTO s = new StyleDTO();
+			s.setId("normal");
+			s.setFilename( new File(baseDir,"normal.sld"));
+			s.setDefault(true);
+            styles.put("normal",s);
         }
 
         int styleCount = stylesList.getLength();
@@ -600,7 +604,7 @@ public class XMLConfigReader {
 
             StyleDTO s = new StyleDTO();
             s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
-            s.setFilename(new File(ReaderUtils.getAttribute(styleElem,
+            s.setFilename(new File(baseDir,ReaderUtils.getAttribute(styleElem,
                         "filename", true)));
             s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default",
                     false));

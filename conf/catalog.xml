@@ -30,6 +30,36 @@
         <parameter name="passwd" value="cite"/>
       </connectionParams>
     </datastore> 
+    
+    <datastore id="cdf"
+               enabled="true"
+               namespace="cdf">
+               <!-- enabled is optional, defaults to true -->
+      <description>A sample postgis testing database</description>
+      <connectionParams>
+        <parameter name="dbtype" value="postgis"/>
+        <parameter name="host" value="hydra"/>
+        <parameter name="port" value="5432"/>
+        <parameter name="database" value="dzwiers"/>
+        <parameter name="user" value="cite"/>
+        <parameter name="passwd" value="cite"/>
+      </connectionParams>
+    </datastore> 
+    
+    <datastore id="cgf"
+               enabled="true"
+               namespace="cgf">
+               <!-- enabled is optional, defaults to true -->
+      <description>A sample postgis testing database</description>
+      <connectionParams>
+        <parameter name="dbtype" value="postgis"/>
+        <parameter name="host" value="hydra"/>
+        <parameter name="port" value="5432"/>
+        <parameter name="database" value="dzwiers"/>
+        <parameter name="user" value="cite"/>
+        <parameter name="passwd" value="cite"/>
+      </connectionParams>
+    </datastore> 
   </datastores>
 
   <namespaces>
@@ -38,18 +68,22 @@
 	           prefix="topp"/>
 	<namespace uri="http://www.opengis.net/cite/data"
 	           prefix="cite"/>
+	<namespace uri="http://www.opengis.net/cite/data"
+	           prefix="cdf"/>
+	<namespace uri="http://www.opengis.net/cite/geometry"
+	           prefix="cgf"/>
   </namespaces>
 
   <styles>
-      <!--<style id="thick outline" filename="styles/polyshp.sld"/>-->
-      <style id="dotty" filename="styles/funkypolyshp.sld"/>
-      <style id="green" filename="styles/green.sld"/>
-      <!--<style id="population" filename="styles/popshade.sld"/>-->
-      <!--<style id="highlight" filename="styles/usa_penn.sld"/>-->
-      <!--<style id="bbox" filename="styles/usa_central.sld"/>-->
-      <style id="maleVsFemale" filename="styles/usa_ratio.sld"/>
-      <style id="normal" filename="styles/normal.sld" default="true"/>
-      <!--<style id="manualVsWorkers" filename="styles/usa_math.sld"/>-->
+      <!--<style id="thick outline" filename="polyshp.sld"/>-->
+      <style id="dotty" filename="funkypolyshp.sld"/>
+      <style id="green" filename="green.sld"/>
+      <!--<style id="population" filename="popshade.sld"/>-->
+      <!--<style id="highlight" filename="usa_penn.sld"/>-->
+      <!--<style id="bbox" filename="usa_central.sld"/>-->
+      <style id="maleVsFemale" filename="usa_ratio.sld"/>
+      <style id="normal" filename="normal.sld" default="true"/>
+      <!--<style id="manualVsWorkers" filename="usa_math.sld"/>-->
   </styles>
 
 </catalog>
