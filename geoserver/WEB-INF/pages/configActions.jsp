@@ -61,21 +61,27 @@
 <table class="control">
   <tbody>
     <tr>
-      <html:form action="/admin/saveToGeoServer">
-        <html:submit>
-          <bean:message key="label.apply"/>
-        </html:submit>
-      </html:form>
-      <html:form action="/admin/saveToXML">	
-        <html:submit>
-          <bean:message key="label.save"/>
-        </html:submit>
-      </html:form>
-      <html:form action="/admin/loadFromXML">			
-        <html:submit>
-          <bean:message key="label.load"/>
-        </html:submit>
-      </html:form>
+      <td>
+        <html:form action="/admin/saveToGeoServer">
+          <html:submit>
+            <bean:message key="label.apply"/>
+          </html:submit>
+        </html:form>
+      </td>
+      <td>
+        <html:form action="/admin/saveToXML">	
+          <html:submit>
+            <bean:message key="label.save"/>
+          </html:submit>
+        </html:form>
+      </td>
+      <td>
+        <html:form action="/admin/loadFromXML">			
+          <html:submit>
+            <bean:message key="label.load"/>
+          </html:submit>
+        </html:form>
+      </td>
     </tr>
   </tbody>
 </table>

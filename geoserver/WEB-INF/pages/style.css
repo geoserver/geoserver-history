@@ -119,9 +119,22 @@ table.progress td.disabled {
 /*
  * Sidebar Config Actions
  */
+table.state {
+ width: 100%;
+ font-size: 90%;  
+}
 table.control {
  width: 100%;
-} 
+ font-size: 90%; 
+ text-align: left;
+ border-width: 1px 1px 1px 1px;
+ border-style: solid;
+ border-color: black;
+ border-spacing: 0;
+ background: gray;
+ -moz-border-radius: 5px;
+ padding: .5ex;  
+}
 /*
  * Header Locator
  */

@@ -38,7 +38,7 @@ import org.geotools.validation.dto.TestSuiteDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.12 2004/02/25 21:24:45 jive Exp $
+ * @version $Id: ApplicationState.java,v 1.13 2004/02/25 21:37:20 jive Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
@@ -114,7 +114,7 @@ public class ApplicationState implements PlugIn {
             configTimestamp = new Date();
         }
         else {
-            configTimestamp = xmlTimestamp;
+            configTimestamp = getXmlTimestamp();
         }
     }
     /** Validation is part of the Configuration Process */
@@ -128,15 +128,14 @@ public class ApplicationState implements PlugIn {
      */
     public boolean isAppChanged() {
         return appTimestamp != null &&
-               ( xmlTimestamp == null ||
-                 appTimestamp.after( xmlTimestamp ) );
+               appTimestamp.after( getXmlTimestamp() );
     }    
     public void setAppChanged(boolean changed){
         if( changed ){
             appTimestamp = configTimestamp;
         }
         else {
-            appTimestamp = xmlTimestamp;
+            appTimestamp = getXmlTimestamp();
         };
     }
     /**
@@ -518,12 +517,12 @@ public class ApplicationState implements PlugIn {
      */
     public Date getXmlTimestamp() {
         if( xmlTimestamp == null){
-            resetXMLTimestamp();
+            File serviceFile = new File(sc.getRealPath("/WEB-INF/service.xml"));
+            xmlTimestamp = new Date( serviceFile.lastModified() );
         }
         return xmlTimestamp;    
     }
     private void resetXMLTimestamp(){
-        File serviceFile = new File(sc.getRealPath("/WEB-INF/service.xml"));
-        xmlTimestamp = new Date( serviceFile.lastModified() );        
+        xmlTimestamp = null;                
     }    
 }
