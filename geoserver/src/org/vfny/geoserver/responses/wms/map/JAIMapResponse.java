@@ -7,8 +7,9 @@ package org.vfny.geoserver.responses.wms.map;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.map.DefaultMap;
+import org.geotools.map.DefaultMapContext;
 import org.geotools.renderer.Renderer;
+import org.geotools.renderer.j2d.StyledMapRenderer;
 import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
@@ -16,6 +17,9 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
+
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,7 +41,7 @@ import javax.imageio.stream.ImageOutputStream;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.13 2004/04/07 20:06:16 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.14 2004/04/07 22:31:14 dmzwiers Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -54,15 +58,8 @@ public class JAIMapResponse extends GetMapDelegate {
     //can't test right now, must run.
     private String format;
 
-    //    Java2DRenderer renderer = new Java2DRenderer();
-    Renderer renderer;
 
     public JAIMapResponse() {
-        try {
-            renderer = new LiteRenderer();
-        } catch (NoClassDefFoundError ncdfe) {
-            //no jai installed - do nothing.
-        }
     }
 
     /**
@@ -90,6 +87,7 @@ public class JAIMapResponse extends GetMapDelegate {
      */
     public List getSupportedFormats() {
         if (supportedFormats == null) {
+			StyledMapRenderer renderer = new StyledMapRenderer(null);
             if (renderer == null) {
                 supportedFormats = Collections.EMPTY_LIST;
             } else {
@@ -217,14 +215,14 @@ public class JAIMapResponse extends GetMapDelegate {
         try {
             LOGGER.fine("setting up map");
 
-            org.geotools.map.Map map = new DefaultMap();
+			DefaultMapContext map = new DefaultMapContext();
             Style[] layerstyle = null;
             StyleBuilder sb = new StyleBuilder();
 
             for (int i = 0; i < requestedLayers.length; i++) {
                 Style style = styles[i];
                 FeatureCollection fc = resultLayers[i].collection();
-                map.addFeatureTable(fc, style);
+                map.addLayer(fc, style);
             }
 
             LOGGER.fine("map setup");
@@ -242,19 +240,13 @@ public class JAIMapResponse extends GetMapDelegate {
                 g.fillRect(0, 0, width, height);
             }
 
+			StyledMapRenderer renderer = new StyledMapRenderer(null);
             synchronized (renderer) {
-                renderer.setOutput(image.getGraphics(),
-                    new java.awt.Rectangle(width, height));
-                LOGGER.fine("calling renderer");
-
-                Date start = new Date();
-                map.render(renderer, env);
-
-                Date end = new Date();
-                LOGGER.fine("returning image after render time of "
-                    + (end.getTime() - start.getTime()));
-
-                //renderer = null;
+				renderer.setMapContext(map);
+				renderer.paint((Graphics2D)image.getGraphics(),
+				new java.awt.Rectangle(width, height),new AffineTransform(),false);
+            	
+                LOGGER.fine("called renderer");
             }
 
             map = null;
