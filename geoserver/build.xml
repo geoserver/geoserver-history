@@ -319,12 +319,11 @@
       <fileset dir="${dir.misc}/documents">
         <include name="license.txt"/>
         <include name="geoserver.log"/>
-        <include name="configuration.xml"/>
         <include name="z3950-geo.map"/>
       </fileset>
     </copy>
 
-     <copy todir="${dir.server}/webapps/ROOT/data">
+     <copy todir="${dir.server}/webapps/ROOT/WEB-INF">
       <fileset dir="${dir.conf}">
         <include name="services.xml"/>
         <include name="catalog.xml"/>
@@ -349,8 +348,8 @@
 
     <!-- make feature types directory and populate -->
     <mkdir dir="${dir.server}/webapps/ROOT/data/featureTypes"/>
-    <copy todir="${dir.server}/webapps/ROOT/data">
-    <fileset dir="${dir.data}"/>
+    <copy todir="${dir.server}/webapps/ROOT/data/featureTypes">
+    <fileset dir="${dir.data}/featureTypes"/>
     </copy>
 
     <!-- stops a running server -->
@@ -454,17 +453,10 @@
       <fileset dir="${dir.misc}/documents">
         <include name="license.txt"/>
         <include name="geoserver.log"/>
-        <include name="configuration.xml"/>
         <include name="z3950-geo.map"/>
       </fileset>
     </copy>
 
-     <copy todir="${basedir}/data" >
-      <fileset dir="${dir.conf}">
-        <include name="services.xml"/>
-        <include name="catalog.xml"/>
-      </fileset>
-    </copy>
 
     <!-- populate base directory -->
     <mkdir dir="${basedir}/data/capabilities"/>
@@ -522,8 +514,8 @@
 
     <!-- make feature types directory and populate -->
     <mkdir dir="${basedir}/data/featureTypes"/>
-    <copy todir="${basedir}/data">
-      <fileset dir="${dir.data}"/>
+    <copy todir="${basedir}/data/featureTypes">
+      <fileset dir="${dir.data}/featureTypes"/>
     </copy>
     <copy todir="${dir.build}">
       <fileset dir="${dir.misc}/documents">
@@ -543,6 +535,12 @@
         <exclude name="**/servlets/utilities/**" />
         <exclude name="**/EmbeddedTomcat.class" />
       </classes>
+
+      <!--webinf dir="${dir.conf}"/-->
+      <webinf dir="${dir.conf}">
+        <include name="services.xml"/>
+        <include name="catalog.xml"/>
+      </webinf>
       
       <!-- libraries -->
       <lib dir="${dir.lib}">
@@ -550,10 +548,6 @@
         <exclude name="**/servlet.jar" />
         <exclude name="**/catalina/**"/>
       </lib>
-
-      <fileset dir="${basedir}/misc/wms/">
-        <include name="capabilities.xml"/>
-      </fileset>
 
       <!-- directories -->
       <fileset dir="${basedir}">
