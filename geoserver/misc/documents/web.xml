@@ -77,7 +77,7 @@
 
   <servlet-mapping>
     <servlet-name>Dispatcher</servlet-name>
-    <url-pattern>/DispatcherDontUse</url-pattern>
+    <url-pattern>/Dispatcher/*</url-pattern>
   </servlet-mapping>
 
  <servlet-mapping>
