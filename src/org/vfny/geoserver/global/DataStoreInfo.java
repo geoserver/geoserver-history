@@ -4,6 +4,10 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.DataStoreMetaData;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,11 +17,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DataStoreMetaData;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-
 
 /**
  * This is the configuration iformation for one DataStore. This class can also
@@ -25,7 +24,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.12 2004/02/17 22:01:55 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.13 2004/04/05 11:53:19 cholmesny Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype
     implements DataStoreMetaData {
@@ -38,7 +37,6 @@ public class DataStoreInfo extends GlobalLayerSupertype
 
     /** ref to the parent class's collection */
     private Data data;
-
     private String id;
     private String nameSpaceId;
     private boolean enabled;
@@ -48,16 +46,19 @@ public class DataStoreInfo extends GlobalLayerSupertype
 
     /** Storage for metadata */
     private Map meta;
-    
+
     /**
      * Directory associated with this DataStore.
+     * 
      * <p>
      * This directory may be used for File based relative paths.
+     * </p>
      */
     File baseDir;
-    
+
     /**
      * URL associated with this DataStore.
+     * 
      * <p>
      * This directory may be used for URL based relative paths.
      * </p>
@@ -77,7 +78,7 @@ public class DataStoreInfo extends GlobalLayerSupertype
     public DataStoreInfo(DataStoreInfoDTO config, Data data) {
         this.data = data;
         meta = new HashMap();
-        
+
         connectionParams = config.getConnectionParams();
         enabled = config.isEnabled();
         id = config.getId();
@@ -98,13 +99,13 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * @return DataStoreInfoDTO the generated object
      */
     Object toDTO() {
-    	DataStoreInfoDTO dto = new DataStoreInfoDTO();
-    	dto.setAbstract(_abstract);
-    	dto.setConnectionParams(connectionParams);
-    	dto.setEnabled(enabled);
-    	dto.setId(id);
-    	dto.setNameSpaceId(nameSpaceId);
-    	dto.setTitle(title);
+        DataStoreInfoDTO dto = new DataStoreInfoDTO();
+        dto.setAbstract(_abstract);
+        dto.setConnectionParams(connectionParams);
+        dto.setEnabled(enabled);
+        dto.setId(id);
+        dto.setNameSpaceId(nameSpaceId);
+        dto.setTitle(title);
 
         return dto;
     }
@@ -121,42 +122,64 @@ public class DataStoreInfo extends GlobalLayerSupertype
     public String getId() {
         return id;
     }
+
     /**
      * Get Connect params.
+     * 
      * <p>
-     * This is used to smooth any relative path kind of issues for any
-     * file URLS. This code should be expanded to deal with any other context
+     * This is used to smooth any relative path kind of issues for any file
+     * URLS. This code should be expanded to deal with any other context
      * sensitve isses dataStores tend to have.
      * </p>
+     *
+     * @return DOCUMENT ME!
+     *
+     * @task REVISIT: cache these?
      */
-    protected Map getParams(){
-    	Map params = new HashMap( connectionParams );
-    	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
-    		Map.Entry entry = (Map.Entry) i.next();
-    		String key = (String) entry.getKey();
-    		Object value = entry.getValue();
-    		try {
-	    		if( "url".equals( key ) && value instanceof String ){
-	    			String path = (String) value;
-	    			if( path.startsWith("file:") ){
-	    				path = path.substring( 5 ); // remove 'file:' prefix
-	    				File file = new File( data.getBaseDir(), path );
-	    				entry.setValue( file.toURL().toExternalForm() );
-	    			}	    			
-	    		}
-	    		else if (value instanceof URL && ((URL)value).getProtocol().equals("file")){
-	    			URL url = (URL) value;
-	    			String path = url.getPath();
-	    			File file = new File( data.getBaseDir(), path );
-    				entry.setValue( file.toURL() );
-	    		}	    	
-    		}
-    		catch( MalformedURLException ignore ){
-    			// ignore attempt to fix relative paths
-    		}
-    	}
-    	return params;
+    protected Map getParams() {
+        Map params = new HashMap(connectionParams);
+
+        for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String key = (String) entry.getKey();
+            Object value = entry.getValue();
+
+            try {
+                if ("url".equals(key) && value instanceof String) {
+                    String path = (String) value;
+
+                    if (path.startsWith("file:")) {
+                        path = path.substring(5); // remove 'file:' prefix
+
+                        File file = new File(data.getBaseDir(), path);
+                        entry.setValue(file.toURL().toExternalForm());
+                    }
+                } else if (value instanceof URL
+                        && ((URL) value).getProtocol().equals("file")) {
+                    URL url = (URL) value;
+                    String path = url.getPath();
+                    File file = new File(data.getBaseDir(), path);
+                    entry.setValue(file.toURL());
+                } else if ("dbtype".equals(key) && value instanceof String) {
+                    String val = (String) value;
+
+                    if ((val != null) && val.equals("postgis")) {
+                        if (!params.containsKey("charset")) {
+                            params.put("charset",
+                                data.getGeoServer().getCharSet().toString());
+                        }
+                    }
+                }
+            } catch (MalformedURLException ignore) {
+                // ignore attempt to fix relative paths
+            }
+        }
+
+        params.put("namespace", getNameSpace().getURI());
+
+        return params;
     }
+
     /**
      * By now just uses DataStoreFinder to find a new instance of a
      * DataStoreInfo capable of process <code>connectionParams</code>. In the
@@ -182,17 +205,12 @@ public class DataStoreInfo extends GlobalLayerSupertype
             throw new IllegalStateException(
                 "this datastore is not enabled, check your configuration");
         }
+
         Map m = getParams();
-        if(m.containsKey("dbtype")){
-        	String val = (String)m.get("dbtype");
-        	if(val!=null && val.equals("postgis")){
-        		m = new HashMap(m);
-        		m.put("charset",data.getGeoServer().getCharSet().toString());
-        	}
-        }
+
         if (dataStore == null) {
             try {
-            	dataStore = DataStoreFinder.getDataStore( getParams() );
+                dataStore = DataStoreFinder.getDataStore(m);
                 LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
                 throw new IllegalStateException("can't create the datastore "
@@ -286,7 +304,9 @@ public class DataStoreInfo extends GlobalLayerSupertype
                                                              .append(", abstract=")
                                                              .append(getAbstract())
                                                              .append(", connection parameters=")
-                                                             .append(connectionParams).append("]").toString();
+                                                             .append(getParams())
+                                                             .append("]")
+                                                             .toString();
     }
 
     /**
