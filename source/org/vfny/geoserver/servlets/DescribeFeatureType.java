@@ -1,15 +1,18 @@
-/* Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
+/* Copyright (c) 2002 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root application directory.
  */
 
 package org.vfny.geoserver.servlets;
 
-import org.apache.log4j.Category;
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import org.vfny.geoserver.servlets.utilities.*;
+
+import org.apache.log4j.Category;
+
+import org.vfny.geoserver.requests.*;
+import org.vfny.geoserver.responses.*;
 
 /**
  * Implements the WFS DescribeFeatureTypes inteface, which tells clients the schema for each feature type.
@@ -33,9 +36,11 @@ import org.vfny.geoserver.servlets.utilities.*;
  */
 public class DescribeFeatureType extends HttpServlet {
 
-		// create standard logging instance for class
+		/** standard logging instance for class */
 		private static Category _log = Category.getInstance(DescribeFeatureType.class.getName());
 
+		// THIS WILL LIKELY CHANGE SOON: NOT EXPLICITLY STATED IN SPEC
+		/** set global MIME type */
 		private static final String MIME_TYPE = "text/xml";
 
 	 /**
@@ -44,14 +49,28 @@ public class DescribeFeatureType extends HttpServlet {
 		* @param request The servlet request object.
 		* @param response The servlet response object.
 		*/ 		
-		public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		public void doPost(HttpServletRequest request, HttpServletResponse response)
+				throws ServletException, IOException {
 
-				// Reads the XML request, generates an associated response, and returns the response to the client 
-				DescribeFeatureTypeRequest wfsRequest = readXmlRequest( request.getReader() );
-				DescribeFeatureTypeResponse wfsResponse = new DescribeFeatureTypeResponse( wfsRequest );
+				// THIS IS CLUNKY; MUST BE A BETTER WAY TO DO THIS?
+				/** create temporary response string */
+				String tempResponse;
 
+				// implements the main request/response logic
+				try {
+						DescribeFeatureTypeRequest wfsRequest = readXmlRequest( request.getReader() );
+						DescribeFeatureTypeResponse wfsResponse = new DescribeFeatureTypeResponse( wfsRequest );
+						tempResponse = wfsResponse.getXmlResponse();
+				}
+
+				// catches all errors; client should neve see a stack trace 
+				catch (WfsException wfs) {
+						tempResponse = wfs.getXmlResponse();
+				}
+
+				// set content type and return response, whatever it is 
 				response.setContentType(MIME_TYPE);
-				response.getWriter().write( wfsResponse.getXmlResponse() );
+				response.getWriter().write( tempResponse );
 
 		}
 
@@ -61,39 +80,59 @@ public class DescribeFeatureType extends HttpServlet {
 		* @param request The servlet request object.
 		* @param response The servlet response object.
 		*/ 
-		public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		public void doGet(HttpServletRequest request, HttpServletResponse response)
+				throws ServletException, IOException {
 
-				// Reads the KVP request, generates an associated response, and returns the response to the client 
-				DescribeFeatureTypeRequest wfsRequest = readKvpRequest( request.getQueryString() );
-				DescribeFeatureTypeResponse wfsResponse = new DescribeFeatureTypeResponse( wfsRequest );
+				// THIS IS CLUNKY; MUST BE A BETTER WAY TO DO THIS?
+				/** create temporary response string */
+				String tempResponse;
 
+				// implements the main request/response logic
+				try {
+						DescribeFeatureTypeRequest wfsRequest = readKvpRequest( request.getQueryString() );
+						DescribeFeatureTypeResponse wfsResponse = new DescribeFeatureTypeResponse( wfsRequest );
+						tempResponse = wfsResponse.getXmlResponse();
+				}
+
+				// catches all errors; client should neve see a stack trace 
+				catch (WfsException wfs) {
+						tempResponse = wfs.getXmlResponse();
+				}
+
+				// set content type and return response, whatever it is 
 				response.setContentType(MIME_TYPE);
-				response.getWriter().write( wfsResponse.getXmlResponse() );
+				response.getWriter().write( tempResponse );
 
 		}
 
 
 	 /**
-		* Internal method to pull the table names from the XML request query.
+		* Internal method to pull the feature type names from the XML request query.
 		*
-		* @param request The servlet request object.
+		* @param reader The raw servlet request reader.
+		* @return The processed describe feature object.
 		*/ 
-		private DescribeFeatureTypeRequest readXmlRequest(BufferedReader reader) throws IOException {
+		private DescribeFeatureTypeRequest readXmlRequest(BufferedReader reader)
+				throws WfsException {
 
-				// instantiates an XML request reader and returns appropriate request object
-				XmlDescribeFeatureTypeReader currentXmlRequest = new XmlDescribeFeatureTypeReader( reader );
+				/** instantiates an XML request reader and returns appropriate request object */
+				DescribeFeatureTypeReaderXml currentXmlRequest = new DescribeFeatureTypeReaderXml( reader );
+
 				return currentXmlRequest.getRequest();
 		}
 
 	 /**
-		* Internal method to pull the table names from the KVP request query.
+		* Internal method to pull the feature type names from the KVP request query.
 		*
-		* @param currentRequest The servlet request object.
+		* @param request The raw servlet request string.
+		* @return The processed describe feature object.
 		*/ 
-		private DescribeFeatureTypeRequest readKvpRequest(String request) {
+		private DescribeFeatureTypeRequest readKvpRequest(String request) 
+				throws WfsException {
 
-				// instantiates a KVP request reader and returns appropriate request object
-				KvpDescribeFeatureTypeReader currentKvpRequest = new KvpDescribeFeatureTypeReader(request);
+				/** instantiates an KVP request reader and returns appropriate request object */
+				DescribeFeatureTypeReaderKvp currentKvpRequest = new DescribeFeatureTypeReaderKvp(request);
+
 				return currentKvpRequest.getRequest();
 		}
 

@@ -10,7 +10,8 @@ import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import org.vfny.geoserver.servlets.utilities.*;
+import org.vfny.geoserver.requests.*;
+import org.vfny.geoserver.responses.*;
 
 /**
  * Implements the WFS GetCapabilities interface, which tells clients what the server can do.

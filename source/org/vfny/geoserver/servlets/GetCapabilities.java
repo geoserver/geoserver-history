@@ -4,34 +4,26 @@
 
 package org.vfny.geoserver.servlets;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Category;
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import org.vfny.geoserver.servlets.utilities.*;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Category;
+
+import org.vfny.geoserver.requests.*;
+import org.vfny.geoserver.responses.*;
 
 /**
  * Implements the WFS GetCapabilities interface, which tells clients what the server can do.
  *
- * Note that this behavior is implemented using
- * the early access release of JAX-B from Sun.  I found this release to be
- * brilliant in concept, but imperfect in implementation.  In particular,
- * the validator appears to throw invalid exceptions on nested, repeated
- * subelements of valid, well-formed internal XML document representations.
- *
- * Therefore, the get response is assembled not as a monolithic document,
- * which would be much neater, but as a series of subdocuments.  Also, I 
- * have implemented some horrible hacks in the auto-generated code to
- * get it to work in places.  My advice: don't regenerate this code.
  *
  * @author Vision for New York
  * @author Rob Hranac 
  * @version 0.9 alpha, 11/01/01
  *
  */
-
 public class GetCapabilities extends HttpServlet {
 
 		// specify mime type
@@ -39,37 +31,97 @@ public class GetCapabilities extends HttpServlet {
 
 		private Category _log = Category.getInstance(GetCapabilities.class.getName());
 		
+
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Handles all XML POST requests for GetCapabilities.
 		*
 		* @param request The servlet request object.
 		* @param response The servlet response object.
 		*/ 
-		public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		public void doPost(HttpServletRequest request, HttpServletResponse response)
+				throws ServletException, IOException {
 
-				GetCapabilitiesResponse wfsResponse = new GetCapabilitiesResponse();
+				// create temporary response string
+				// THIS IS CLUNKY; MUST BE A BETTER WAY TO DO THIS?
+				String tempResponse = new String();
 
+				// implements the main request/response logic
+				try {
+						GetCapabilitiesRequest wfsRequest = readXmlRequest( request.getReader() );
+						GetCapabilitiesResponse wfsResponse = new GetCapabilitiesResponse( wfsRequest );
+						tempResponse = wfsResponse.getXmlResponse();
+				}
+
+				// catches all errors; client should neve see a stack trace 
+				catch (WfsException wfs) {
+						tempResponse = wfs.getXmlResponse();
+				}
+
+				// set content type and return response, whatever it is 
 				response.setContentType(MIME_TYPE);
-				response.getWriter().write( wfsResponse.getXmlResponse() );
-
+				response.getWriter().write( tempResponse );
 		}
 
+
 	 /**
-		* Handles all Get requests.
-		*
-		* This method implements the main return XML logic for the class.
+		* Handles all KVP GET request for GetCapabilities.
 		*
 		* @param request The servlet request object.
 		* @param response The servlet response object.
 		*/
-		public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		public void doGet(HttpServletRequest request, HttpServletResponse response)
+				throws ServletException, IOException {
 
-				GetCapabilitiesResponse wfsResponse = new GetCapabilitiesResponse();
+				// create temporary response string
+				// THIS IS CLUNKY; MUST BE A BETTER WAY TO DO THIS?
+				String tempResponse = new String();
 
+				// implements the main request/response logic
+				try {
+						GetCapabilitiesRequest wfsRequest = readKvpRequest( request.getQueryString() );
+						GetCapabilitiesResponse wfsResponse = new GetCapabilitiesResponse( wfsRequest );
+						tempResponse = wfsResponse.getXmlResponse();
+				}
+
+				// catches all errors; client should neve see a stack trace 
+				catch (WfsException wfs) {
+						tempResponse = wfs.getXmlResponse();
+				}
+
+				// set content type and return response, whatever it is 
 				response.setContentType(MIME_TYPE);
-				response.getWriter().write( wfsResponse.getXmlResponse() );
+				response.getWriter().write( tempResponse );
 
 		}
+
+
+	 /**
+		* Internal method to pull the table names from the XML request query.
+		*
+		* @param request The servlet request object.
+		*/ 
+		private GetCapabilitiesRequest readXmlRequest(BufferedReader reader)
+				throws WfsException {
+
+				// instantiates an XML request reader and returns appropriate request object
+				GetCapabilitiesReaderXml currentXmlRequest = new GetCapabilitiesReaderXml( reader );
+				return currentXmlRequest.getRequest();
+		}
+
+
+	 /**
+		* Internal method to pull the table names from the KVP request query.
+		*
+		* @param currentRequest The servlet request object.
+		*/ 
+		private GetCapabilitiesRequest readKvpRequest(String request)
+				throws WfsException {
+
+				// instantiates a KVP request reader and returns appropriate request object
+				GetCapabilitiesReaderKvp currentKvpRequest = new GetCapabilitiesReaderKvp(request);
+				return currentKvpRequest.getRequest();
+		}
+
 
 }
 
