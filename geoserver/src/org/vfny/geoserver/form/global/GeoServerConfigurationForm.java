@@ -38,8 +38,8 @@ import org.vfny.geoserver.config.GlobalConfig;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: GeoServerConfigurationForm.java,v 1.1 2004/01/31 00:27:29 jive Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: GeoServerConfigurationForm.java,v 1.2 2004/04/16 17:23:28 cholmesny Exp $
  */
 public class GeoServerConfigurationForm extends ActionForm {
     
@@ -50,6 +50,8 @@ public class GeoServerConfigurationForm extends ActionForm {
     private String baseURL;
     private String schemaBaseURL;
     private String loggingLevel;
+    private String adminUserName;
+    private String adminPassword;
     
     /** The name of the contact person */
     private String contactPerson;
@@ -102,6 +104,8 @@ public class GeoServerConfigurationForm extends ActionForm {
         charset = globalConfig.getCharSet().name();
         baseURL = globalConfig.getBaseUrl();
         schemaBaseURL = globalConfig.getSchemaBaseUrl();
+        adminUserName = globalConfig.getAdminUserName();
+		adminPassword = globalConfig.getAdminPassword();
         if (globalConfig.getLoggingLevel() == null) {
             //@TODO - shouldn't have to do this.. should never return null
         	loggingLevel = Level.OFF.getName();   
@@ -492,6 +496,15 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 */
 	public void setContactVoice(String contactVoice) {
 		this.contactVoice = contactVoice;
+	}
+
+	//No sets yet, they will be needed for login config page though.
+	public String getAdminUserName() {
+		return adminUserName;
+	}
+
+	public String getAdminPassword() {
+		return adminPassword;
 	}
 
 }
