@@ -1,5 +1,3 @@
-$Id$
-
 GeoServer 1.2.4 README file
 ---------------------------
 
@@ -63,7 +61,7 @@ http://geoserver.sourceforge.net/documentation/index.html
 The documentation is also available for download from sourceforge, can
 be built from the source downloading using the 'ant document' command, and
 should be included in the binary releases in the documents folder, just 
-point your web browser at the index.html file in that folder..
+point your web browser at the index.html file in that folder.
 
 Bugs
 ----------
