@@ -16,17 +16,20 @@
     to entry for geographic data providers.</para>
 
     <para>Before you can use GeoServer, you must successfully install <ulink
-    url="http://java.sun.com">Java</ulink>, a Java Servlet container such as
-    <ulink url="http://www.caucho.com">Resin</ulink> or <ulink
-    url="http://jetty.mortbay.com">Jetty</ulink>, and <ulink
-    url="http://postgis.refractions.net">PostGIS</ulink>. This is by far the
-    hardest part of the installation process, but the documentation to install
-    these three components is quite good. Our testing has occurred on JDK
-    1.4.1 or 1.4.2, Tomcat 5.0.19, Resin 2.1.13 or Jetty 4.1.27, and PostGIS
-    0.8.1 with GEOS on top of Postgresql 7.4. To actually build GeoServer you
-    must use <ulink url="http://ant.apache.org">Ant</ulink>, an excellent
-    build tool from apache. The latest stable versions of these components
-    should work fine.</para>
+    url="http://java.sun.com">Java</ulink>, and a Java Servlet container such
+    as <ulink url="http://jakarta.apache.org/tomcat/">Tomcat</ulink> or <ulink
+    url="http://jetty.mortbay.com">Jetty</ulink>. A spatially enabled
+    database, such as the freely available <ulink
+    url="http://postgis.refractions.net">PostGIS</ulink>, is also recommended,
+    but GeoServer will work with Shapefiles. This is by far the hardest part
+    of the installation process, but the documentation to install these
+    components is quite good. Our testing has occurred on JDK 1.4.1 or 1.4.2,
+    Tomcat 5.0.19, Resin 2.1.13 or Jetty 4.1.27, and PostGIS 0.8.1 with GEOS
+    on top of Postgresql 7.4. <ulink url="http://ant.apache.org"></ulink>The
+    latest stable versions of these components should work fine. This document
+    assumes you are working with the downloaded
+    <emphasis>geoserver.war</emphasis> file. If you wish to work with the
+    source download please consult the developers build document</para>
 
     <para>GeoServer has an active user community that you can engage by
     joining the GeoServer <ulink
@@ -49,9 +52,9 @@
     JDK1.4 installed on your machine, you should download it from Sun and
     point to the root install directory with the JAVA_HOME environment
     variable (set JAVA_HOME = C:\j2sdk1.4.2). Most of our testing occurred
-    against JDK1.4.1. If your not sure if you have java, or not sure what
+    against JDK1.4.2. If your not sure if you have java, or not sure what
     version, type <emphasis>java -version</emphasis> from the command line. If
-    the command doesn't work or if the version is less than 4.1 then you'll
+    the command doesn't work or if the version is less than 1.4 then you'll
     have to download, install, and set JAVA_HOME</para>
   </sect1>
 
@@ -66,7 +69,10 @@
     source, free). Most GeoServer testing has occurred on Tomcat, which is
     remarkably simple to set up and administer. The servlet containers should
     have good documentation, so we shall say nothing further here about the
-    install. We do recommend sticking with the latest stable versions.</para>
+    install. We do recommend sticking with the latest stable versions. For
+    more information on GeoServer working with specific containers see our
+    <ulink url="???">Servlet Container Reports</ulink>, and please add
+    additional feedback to the page (it's a wiki). </para>
   </sect1>
 
   <sect1 id="database">
@@ -89,9 +95,9 @@
     recommend the Shapefile format, with installation information <ulink
     url="dvanced.htm#shapefile">here</ulink>. If you have an existing Oracle
     spatial installation, and would like to use GeoServer to serve that data
-    as gml, then check out the install information <ulink
+    as GML, then check out the install information <ulink
     url="advanced.htm#oracle">here</ulink>. Be sure to fully read this
-    installation document before trying out Oracle or Shapefile Datasources,
+    installation document before trying out Oracle or Shapefile DataStores,
     even if you are not going to use PostGIS.</para>
 
     <para>Installing Postgresql and PostGIS is the most complicated part of
@@ -106,8 +112,8 @@
     7.4. You should configure and install it, per the installation
     instructions. It should go something like this:<programlisting>./configure
 gmake
-gmake install</programlisting>Configuring with java is no longer required, as
-    we supply the jdbc jar with the installation. Be sure that it is up and
+gmake install</programlisting>Configuring with Java is no longer required, as
+    we supply the JDBC jar with the installation. Be sure that it is up and
     running, it's best to create a database and test it using psql from the
     command line. Then, download PostGIS. You should place PostGIS in your
     Postgresql 'contrib' directory, change to the postgresql root directory
@@ -115,40 +121,45 @@ gmake install</programlisting>Configuring with java is no longer required, as
     installing PostGIS 0.8 with <ulink
     url="http://geos.refractions.net/">GEOS</ulink>, as it will greatly speed
     up spatial queries. If installing GEOS be sure to read all the directions
-    for it and postgis, as you have to configure your postgresql installation
+    for it and PostGIS, as you have to configure your postgresql installation
     to make use of it.</para>
 
     <para>You should, of course, check to make sure that Postgresql and
     PostGIS are functioning correctly before you attempt to connect with then
-    using GeoServer. After installing postgis attempt to create tables with
+    using GeoServer. After installing PostGIS attempt to create tables with
     geometry columns, and insert a few features. If you are a windows user a
     good page on installing PostGIS is available <ulink
     url="http://www.gasai.com/gisapps/WindowsHowTo.html">here</ulink>. You can
-    also try out the postgis installer on the dcmms sourceforge project, which
-    we've had success with as well. When starting PostGIS be sure to run it
-    with the -i option to allow other applications (i.e. GeoServer) to connect
-    to it.</para>
+    also try out the PostGIS installer on the <ulink url="???">dcmms
+    sourceforge project</ulink>, which we've had success with as well. When
+    starting PostGIS be sure to run it with the -i option to allow other
+    applications (i.e. GeoServer) to connect to it.</para>
   </sect1>
 
   <sect1 id="geoserver">
     <title>Installing GeoServer</title>
 
-    <para>If you have an existing GeoServer installation on your machine, you
-    should backup your <emphasis>geoserver/conf</emphasis> directory before
-    placing the new <emphasis>.war</emphasis> file. Move the distributed
-    <emphasis>geoserver.war</emphasis> to the war file directory of your Java
-    Servlet container (generally named 'webapps'). You may run a simple test
-    by starting your container and entering this address:<programlisting>http://<emphasis
+    <para>Move the distributed <emphasis>geoserver.war</emphasis> to the war
+    file directory of your Java Servlet container (generally named 'webapps').
+    If you have an existing GeoServer installation on your machine, you should
+    backup your old <emphasis>geoserver/ </emphasis>directory before moving
+    the new <emphasis>.war</emphasis> file. You may run a simple test by
+    starting your container and entering this address:<programlisting>http://<emphasis
           role="bold">SERVER_ADDRESS</emphasis>:<emphasis role="bold">SERVER_PORT</emphasis>/geoserver/wfs/GetCapabilities</programlisting>Note
     that <emphasis role="bold">SERVER_ADDRESS</emphasis> and <emphasis
     role="bold">SERVER_PORT</emphasis> should be replaced by your server's
     address and port (localhost:8080 will suffice for the default of tomcat or
     resin running on your local machine). If GeoServer is running, you should
-    see an XML capabilities document. If you get nothing, then you should
-    consult your server documentation to see what has gone wrong. If a
-    <emphasis>geoserver</emphasis> directory has not been created
-    automatically by your server, then your server is probably not behaving as
-    it should.</para>
+    see an WFS capabilities document. If you get nothing, then you should
+    consult your server documentation to see what has gone wrong. Some modern
+    browser may give a warning like: <programlisting>This XML file does not appear to have any style information associated with it. 
+The document tree is shown below.</programlisting></para>
+
+    <para>This is not an error, it is just an indication that the document is
+    pure XML, without a style sheet associated, which is how a WFS should
+    respond. If a <emphasis>geoserver</emphasis> directory has not been
+    created automatically by your server, then your server is probably not
+    behaving as it should.</para>
   </sect1>
 
   <sect1 id="configuration">
@@ -156,22 +167,40 @@ gmake install</programlisting>Configuring with java is no longer required, as
 
     <para>GeoServer now includes a web based tool to configure and administer
     the application. It is available at the root web directory
-    (http://localhost:8080/geoserver). For now the login in can not be changed
-    (except by digging into the code), it is set at username: 'admin' and
-    password: 'geoserver'. More information on using the web admin tool can be
-    found in the pdf user guides. Also note that help text will pop up if you
-    place your mouse over the fields.</para>
+    (http://localhost:8080/geoserver). The initial log in is user name:
+    'admin' and password: 'geoserver'. After logging in you should change the
+    user name and password, at Config -&gt; Server -&gt; Password. More
+    information on using the web admin tool can be found in the pdf user
+    guides. Also note that help text will pop up if you place your mouse over
+    the fields.</para>
+
+    <para>After logging in and changing the password the next step is to click
+    on the configure link. This is the central place to configure GeoServer.
+    You should work through each of the four categories, first setting your
+    contact information and global values in Server, and then the WMS and WFS
+    specific descriptions and contents. Contents will allow you to enable or
+    disable each Service and WFS will also let you specify the transaction
+    level - that is if users should be able to access the transaction
+    operations. </para>
+
+    <para>Be sure to always hit the submit button, and to then test your
+    changes in GeoServer hit 'Apply' on the right. The changes you put in will
+    take effect immediately. If you like the changes then hit 'Save' and they
+    will be stored to disk permanently. If you do not like the changes you can
+    roll back to the last saved ones by hitting 'Load'. </para>
 
     <para>If you want to avoid the web admin tool then directly editing the
-    files shall work just as well. You're work flow will just be a bit
+    files shall work just as well. Your work flow will just be a bit
     different, you will work from the source tree and rebuild the war after
-    you have changed the options.</para>
+    you have changed the options. If you choose to use the web administration
+    interface you can skip the next section, but read up on the options that
+    follow, as they are in the administration tool as well.</para>
 
     <para>This section assumes at least passing familiarity with XML files.
     However, if you simply follow the test file example exactly, you should be
     able to create a working configuration file. The
     <emphasis>services.xml</emphasis> file resides at
-    <emphasis>geoserver/conf</emphasis>. You should edit this file, and
+    <emphasis>geoserver/WEB-INF</emphasis>. You should edit this file, and
     changes will be picked up when you run &lt;i&gt;ant war&lt;/i&gt;. This
     sets the global configuration options for your server as well as the
     service elements of the WMS and WFS services. An example
@@ -281,14 +310,14 @@ gmake install</programlisting>Configuring with java is no longer required, as
           <row>
             <entry>gmlPrefixing</entry>
 
-            <entry><emphasis>true</emphasis> when gml prefixing is
+            <entry><emphasis>true</emphasis> when GML prefixing is
             required.</entry>
           </row>
 
           <row>
             <entry>serviceLevel</entry>
 
-            <entry>The service level, 1 is basic, 2 is tranactional.</entry>
+            <entry>The service level, 1 is basic, 2 is transactional.</entry>
           </row>
         </tbody>
       </tgroup>
@@ -301,22 +330,64 @@ gmake install</programlisting>Configuring with java is no longer required, as
   <sect1 id="data">
     <title>Adding Data to GeoServer</title>
 
-    <para>Adding data to geoserver is now centralized in the
+    <para>To add new data to GeoServer go to Config -&gt; Data. You should
+    first define the GML namespace that your features should occur in. This
+    distinguishes your features from others on the Internet. This is not
+    necessary if you are only working with the WMS. Defining a namespace as
+    the 'default' allows you to request featureTypes without prepending the
+    namespace prefix, but is not used for much else. </para>
+
+    <para>Next you need to create a DataStore. This is the GeoServer
+    terminology for the source of data. It can be a database or a file, and
+    can contain one or more FeatureTypes (Layers in WMS terms). In a database
+    each table is a FeatureType. To define a new DataStore click on the
+    'Stores' button, select the type from the list and input the appropriate
+    parameters. Note that you must pick one namespace for each DataStore. If
+    you really want different featureTypes in the same DataStore to be in
+    different name spaces you can get around this by defining two DataStores
+    with the same parameters and different names and name spaces. </para>
+
+    <para>After creating the DataStore you may upload SLD files to serve as
+    the Styles for GeoServer's WMS. For more on SLD see the <ulink
+    url="???">specification</ulink>. GeoServer is working to become a true
+    SLD-WMS, but for now the SLD files must be uploaded and defined using the
+    web administration interface. If the WMS is not needed then no additional
+    styles are needed.</para>
+
+    <para>Finally you should create the appropriate FeatureTypes. Hitting the
+    'New' button will generate a list of all the featureTypes in all the
+    DataStores, in the format DataStoreID::FeatureTypeName. Pick the
+    featureType to create, and then edit the meta information. If deploying
+    GeoServer it is important to fill out this information accurately, as it
+    appears in the capabilities document, which gives clients about the data
+    available. The 'generate' button currently only works if the data itself
+    is stored in Lat Long (EPSG:4326 - which you should set for the SRS if
+    your data is in Lat Long). Soon we will support transformation from the
+    Spatial Reference System specified into Lat Long. </para>
+
+    <para>After hitting submit you should be able to hit 'Apply', and then the
+    GetCapabilities request given earlier should include your newly added
+    FeatureType. If you are just working with the web interface, you can skip
+    to the next section (the file information will soon be ported to the
+    developers documentation), though some of the tables may prove helpful.
+    </para>
+
+    <para>If working with files, data to geoserver is now centralized in the
     <emphasis>catalog.xml</emphasis> file, located in
-    <emphasis>geoserver/conf</emphasis>. This file can be thought of the
+    <emphasis>geoserver/WEB-INF</emphasis>. This file can be thought of as the
     central place for data in GeoServer. It contains the connection parameters
-    to various datastores, as well as style and namespace information. In
+    to various DataStores, as well as style and namespace information. In
     older versions of GeoServer each featureType's
     <emphasis>info.xml</emphasis> file contained connection parameters, but
     this lead to a lot of duplication as many featureTypes are often contained
-    in a single database. So now each featureType just references a datastore
+    in a single database. So now each featureType just references a DataStore
     defined in the <emphasis>catalog.xml</emphasis> file. The following sample
-    <emphasis>catalog.xml</emphasis> file is for a PostGIS datastore, as it is
+    <emphasis>catalog.xml</emphasis> file is for a PostGIS DataStore, as it is
     the most solid one that GeoServer supports. <ulink
     url="advanced.htm#shapefile">Shapefile</ulink>, <ulink
-    url="advanced.htm#oracle">Oracle</ulink> and ArcSDE datastores are also
-    available in various degrees of maturity; click on the hyperlinks for more
-    information.<programlisting> &lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+    url="advanced.htm#oracle">Oracle</ulink> and ArcSDE DataStores are also
+    available in various degrees of maturity; click on the hyper links for
+    more information.<programlisting> &lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 &lt;catalog&gt;
   &lt;!-- defines the datastores, more than one is possible --&gt;
   &lt;datastores&gt;
@@ -339,12 +410,12 @@ gmake install</programlisting>Configuring with java is no longer required, as
   &lt;/namespaces&gt;
  &lt;/catalog&gt;</programlisting></para>
 
-    <para>This file defines a datastore, that featureTypes will reference
+    <para>This file defines a DataStore, that featureTypes will reference
     using its <emphasis>local.postgis</emphasis> id. The namespace attribute
     references the prefix of the <emphasis>topp</emphasis> namespace defined
-    below. The enabled attribute is used to 'turn off' the datastore,
-    featureTypes referencing it will not be accesible to users. The
-    connectionParams for postgis should be as follows:<informaltable>
+    below. The enabled attribute is used to 'turn off' the DataStore,
+    featureTypes referencing it will not be accessible to users. The
+    connectionParams for PostGIS should be as follows:<informaltable>
         <tgroup cols="2">
           <colspec align="left" colwidth="100" />
 
@@ -360,7 +431,7 @@ gmake install</programlisting>Configuring with java is no longer required, as
             <row>
               <entry>dbtype</entry>
 
-              <entry>Must be 'postgis' for a postgis datastore.</entry>
+              <entry>Must be 'PostGIS' for a PostGIS DataStore.</entry>
             </row>
 
             <row>
@@ -407,13 +478,13 @@ gmake install</programlisting>Configuring with java is no longer required, as
     default value indicates which namespace will be used if a user asks for a
     typeName without specifying its namespace. It should generally be
     sufficient to just define one namespace, as the default, and to use it for
-    all datastores. If two featureTypes need to be in different namespaces but
-    share the same datastore then the easy solution is to just define two
-    datastores with the same connectionParams but different ids and
+    all DataStores. If two featureTypes need to be in different namespaces but
+    share the same DataStore then the easy solution is to just define two
+    DataStores with the same connectionParams but different ids and
     namespaces.</para>
 
     <para>Once <emphasis>catalog.xml</emphasis> is set up then individual
-    featureTypes contained in the datastores need to be configured. Each
+    featureTypes contained in the DataStores need to be configured. Each
     featureType gets its own directory in
     <emphasis>conf/featureTypes</emphasis>. The general convention is to name
     each directory has the same name as the featureType contained in it, but
@@ -423,12 +494,12 @@ gmake install</programlisting>Configuring with java is no longer required, as
     should have a directory
     <emphasis>geoserver/conf/featureTypes/rail</emphasis>. In this directory
     there is one required file, <emphasis>info.xml,</emphasis> which contains
-    a reference to the datastore and meta information about the featureType.
+    a reference to the DataStore and meta information about the featureType.
     The meta information is only used in the returned Capabilities document,
-    <emphasis>name</emphasis> and <emphasis>datastore</emphasis> are the only
+    <emphasis>name</emphasis> and <emphasis>DataStore</emphasis> are the only
     values that affect the running of GeoServer. It looks like
     this:<programlisting>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
-&lt;featureType datastore="local.postgis"&gt;
+&lt;featureType DataStore="local.postgis"&gt;
     &lt;name&gt;rail&lt;/name&gt;
     &lt;title&gt;NYC Rail Centerlines&lt;/title&gt;
     &lt;abstract&gt;This is a simple rail coverage from the New York City basemap.&lt;/abstract&gt;
@@ -452,9 +523,9 @@ gmake install</programlisting>Configuring with java is no longer required, as
 
         <tbody>
           <row>
-            <entry>datastore</entry>
+            <entry>DataStore</entry>
 
-            <entry>Must reference a datastore that contains the featureType of
+            <entry>Must reference a DataStore that contains the featureType of
             name.</entry>
           </row>
 
@@ -462,7 +533,7 @@ gmake install</programlisting>Configuring with java is no longer required, as
             <entry>name</entry>
 
             <entry>The name of the featureType. Must be in the referenced
-            datastore. For example in postgis it must refer to a table in the
+            DataStore. For example in PostGIS it must refer to a table in the
             database of local.postgis.</entry>
           </row>
 
@@ -516,8 +587,8 @@ gmake install</programlisting>Configuring with java is no longer required, as
   <sect1 id="testdata">
     <title>Obtaining Test Data</title>
 
-    <para>The easiest way to get some postgis data to work with is to acquire
-    shapefiles and use the shp2pgsql utility provided by Postgis. It should be
+    <para>The easiest way to get some PostGIS data to work with is to acquire
+    shapefiles and use the shp2pgsql utility provided by PostGIS. It should be
     in your pgsql installation directory, under the bin subdirectory. As for
     acquiring shapefiles, the US census provides a lot of their data free of
     cost in the shape format, available <ulink
@@ -525,7 +596,7 @@ gmake install</programlisting>Configuring with java is no longer required, as
     The GeoServer also includes support for using shapefiles directly,
     information about this option is available in the <ulink
     url="advanced.htm">advanced</ulink> section. Using the shapefiles directly
-    sacrifices a lot of speed and flexibility, so converting them to Postgis
+    sacrifices a lot of speed and flexibility, so converting them to PostGIS
     is the recommended way, but the option is available for easier set
     up.</para>
   </sect1>
@@ -552,9 +623,22 @@ gmake install</programlisting>Configuring with java is no longer required, as
     There are also a number of samples in the Demo section of the web
     administration tool. To use of the TestWfsPost servlet just make sure that
     the request is going to the right location (it defaults to GetFeature),
-    and write the XML request just as the WFS specification does it. Included
-    is a set of links for the default dataset distributed with
-    GeoServer.</para>
+    and write the XML request just as the WFS specification does it. </para>
+
+    <para>The web administration tool also now includes a 'Demo' section,
+    which has a number of sample requests. To use one of the sample request
+    use the pull down request box, select one and hit the 'Change' button.
+    Unfortunately we haven't yet figured out javascript within jsps and
+    struts, or we would have it change automatically. After hitting change
+    then his 'Submit', and GeoServer will return the request. You may modify
+    the requests to work with your server. And you may even put your own
+    requests in the geoserver/data/demo directory. These requests make a great
+    reference for how to make WFS and WMS requests. And please let us know if
+    you feel any important ones are missing, and we can easily add them for
+    the next release.</para>
+
+    <para>For those who do not wish to use the Demo web interface, included is
+    a set of links for the default dataset distributed with GeoServer.</para>
 
     <itemizedlist>
       <listitem>
@@ -584,5 +668,13 @@ gmake install</programlisting>Configuring with java is no longer required, as
         url="http://localhost:8080/geoserver/wms?request=GetMap&amp;amp;layers=topp:bc_roads&amp;amp;bbox=489153,5433000,529000,5460816&amp;amp;width=400&amp;amp;height=200&amp;amp;srs=EPSG:27354&amp;amp;styles=normal&amp;amp;Format=image/png">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=topp:bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/svg-xml</ulink></para>
       </listitem>
     </itemizedlist>
+  </sect1>
+
+  <sect1>
+    <title>Visualizing your Data</title>
+
+    <para>GeoServer includes an integrated Web Map Service (WMS). For more
+    information about using it to visualize your data please see the <ulink
+    url="???">WMS</ulink> section.</para>
   </sect1>
 </article>
