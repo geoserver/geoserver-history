@@ -65,7 +65,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.3 2004/01/13 17:34:32 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.4 2004/01/13 19:37:41 dmzwiers Exp $
  */
 public class AttributeTypeInfoConfig {
 	/** attribute name*/
@@ -120,7 +120,7 @@ public class AttributeTypeInfoConfig {
 	public AttributeTypeInfoConfig(org.geotools.feature.AttributeType dto){
 		name = dto.getName();
 		type = dto.getType().getName();
-		minOccurs = 0; //TODO extract this correctly
+		minOccurs = 1; //TODO extract this correctly
 		maxOccurs = 1; //TODO extract this correctly
 		nillable = dto.isNillable();
 		isRef = !dto.isNested();
