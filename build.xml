@@ -905,7 +905,6 @@ failonerror="true"/>
 
   <target name="gt2-validation" depends="init"
       description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
-    <delete file="${dir.lib}/gt2-main.jar" failonerror="true"/>
     <!-- Validation support, include META-INF -->   
     <delete file="${dir.lib}/gt2-validation.jar" failonerror="true"/>        
     <jar jarfile="${dir.lib}/gt2-validation.jar"
