@@ -127,7 +127,7 @@ public final class Requests {
      * @return http://server:port/path-defined-context/data/capabilities
      */
     public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest) {
-    	return getBaseUrl(httpServletRequest) + "data/capabilities";
+    	return getBaseUrl(httpServletRequest) + "data/capabilities/";
     }
     
     /**
