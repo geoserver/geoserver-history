@@ -80,7 +80,16 @@ public class WfsTransResponse {
 	an insert*/
     private List insertResults;
 
-    /** Only constructor, as status and handle are mandatory
+    /** Only constructor, as status is mandatory
+     *
+     * @param status The status of the transaction.
+     */ 
+    public WfsTransResponse(short status) {
+	this.status = status;
+    }
+
+    /** 
+     * Convenience constructor, for status and handle
      *
      * @param status The status of the transaction.
      * @param handle the handle of the response.  Should be the
@@ -88,6 +97,16 @@ public class WfsTransResponse {
      */ 
     public WfsTransResponse(short status, String handle) {
 	this.status = status;
+	this.handle = handle;
+    }
+
+    /**
+     * Sets the handle for this response.
+     *
+     * @param handle the handle of the response.  Should be the
+     * same as the handle of the transaction request.
+     */
+    public void setHandle(String handle) {
 	this.handle = handle;
     }
 
@@ -128,6 +147,7 @@ public class WfsTransResponse {
      * Generates the xml represented by this object.
      */
     public String getXmlResponse() {
+	
 	String retString;
 	Document doc = null;
 	try {
@@ -141,7 +161,10 @@ public class WfsTransResponse {
 	    root.setAttribute(VERSION, CUR_VERSION);
 	    //TODO: insert results
 	    Element transResult = doc.createElement(TRANS_RESULT);
-	    transResult.setAttribute(HANDLE, handle);
+	    LOG.finer("about to add handle: " + handle);
+	    if (!isEmpty(handle)){
+		transResult.setAttribute(HANDLE, handle);
+	    }
 	    root.appendChild(transResult);
 	    Element statusElem = doc.createElement(STATUS);
 	    transResult.appendChild(statusElem);
@@ -174,8 +197,19 @@ public class WfsTransResponse {
 			"the classpath" + e);
 	    retString = "couldn't find xml parser: " + e.getMessage();
 	}
+	LOG.finer("returning xml " + retString);
 	return retString;
     }
+
+    /**
+     * Helper to determine if a string is not null and not an empty string.
+     * @param s the string to test
+     * @return true if the string is not null and not an empty string.
+     */
+    private boolean isEmpty(String s) {
+	return (s == null || s.equals(""));
+    }
+	
 
     /**
      * Helper method to add an element with a child text node.
@@ -187,7 +221,7 @@ public class WfsTransResponse {
      */
      private void addTextElement(Document d, Element parent, 
 				String elem_name, String value) {
-	if ( value != null && !value.equals("")) {
+	if ( !isEmpty(value)) {
 	    Element new_element = d.createElement(elem_name);
 	    parent.appendChild(new_element);
 	    new_element.appendChild(d.createTextNode(value.toString()));
