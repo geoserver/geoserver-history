@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.data.Catalog;
+import org.geotools.data.Repository;
 import org.geotools.data.DataTestCase;
-import org.geotools.data.DefaultCatalog;
+import org.geotools.data.DefaultRepository;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class FeatureResponseTest extends DataTestCase {
         super.setUp();
         response = new FeatureResponse();
 
-        Catalog cat = new DefaultCatalog();
+        Repository cat = new DefaultRepository();
         Map config = new HashMap();
 
         //GeoServer.load( config, cat );      

@@ -4,14 +4,11 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.data.Catalog;
+import org.geotools.data.Repository;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureTypeMetaData;
 import org.geotools.data.LockingManager;
-import org.geotools.data.NamespaceMetaData;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -49,9 +46,9 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.43 2004/06/18 06:59:28 cholmesny Exp $
+ * @version $Id: Data.java,v 1.44 2004/06/26 22:25:22 jive Exp $
  */
-public class Data extends GlobalLayerSupertype implements Catalog {
+public class Data extends GlobalLayerSupertype /*implements Repository*/ {
     public static final String WEB_CONTAINER_KEY = "DATA";
 
     /** for debugging */
@@ -1526,8 +1523,8 @@ SCHEMA:
      *
      * @see org.geotools.data.Catalog#getNamespace(java.lang.String)
      */
-    public NamespaceMetaData getNamespaceMetaData(String prefix) {
-        return (NamespaceMetaData) getNameSpace(prefix);
+    public NameSpaceInfo getNamespaceMetaData(String prefix) {
+        return getNameSpace(prefix);
     }
 
     /**
@@ -1590,9 +1587,9 @@ SCHEMA:
             prefix = defaultNameSpace.getPrefix();
         }
 
-        NamespaceMetaData namespace = getNamespaceMetaData(prefix);
-        FeatureTypeMetaData featureType = namespace.getFeatureTypeMetaData(typeName);
-        DataStoreMetaData dataStore = featureType.getDataStoreMetaData();
+        NameSpaceInfo namespace = getNamespaceMetaData(prefix);
+        FeatureTypeInfo featureType = namespace.getFeatureTypeInfo(typeName);
+        DataStoreInfo dataStore = featureType.getDataStoreMetaData();
 
         return dataStore.getDataStore().getFeatureSource(typeName);
     }
