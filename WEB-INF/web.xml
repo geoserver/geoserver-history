@@ -139,7 +139,7 @@
   </servlet-mapping>
   <servlet-mapping>
    <servlet-name>JSPCompiler</servlet-name>
-   <url-pattern>JSPCompiler</url-pattern>
+   <url-pattern>/JSPCompiler</url-pattern>
   </servlet-mapping>
    <servlet-mapping>
     <servlet-name>action</servlet-name>
