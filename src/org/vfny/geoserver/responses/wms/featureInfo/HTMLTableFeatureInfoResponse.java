@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.geotools.data.FeatureReader;
@@ -38,32 +39,9 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      */
     public HTMLTableFeatureInfoResponse() {
         format = "text/html";
-        supportedFormats = new ArrayList();
-        supportedFormats.add(format);
+        supportedFormats = Collections.singletonList(format);
     }
-    
-    /**
-     * Evaluates if this Map producer can generate the map format specified by
-     * <code>mapFormat</code>
-     *
-     * @param mapFormat the mime type of the output map format requiered
-     *
-     * @return true if class can produce a map in the passed format
-     */
-    public boolean canProduce(String mapFormat) {
-        return getSupportedFormats().contains(mapFormat);
-    }
-    
-    public List getSupportedFormats(){
-        LOGGER.info("supported formats = " + supportedFormats);
-        if (supportedFormats == null) {
-            //LiteRenderer renderer = null;
-            String[] mimeTypes = new String[]{"text/html"};
-            supportedFormats = Arrays.asList(mimeTypes);
-        }
-        return supportedFormats;
-    }
-    
+        
     /**
      * Writes the image to the client.
      *

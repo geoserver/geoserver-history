@@ -38,31 +38,11 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
      */
     public TextFeatureInfoResponse() {
         format = "text/plain";
-        supportedFormats = new ArrayList();
-        supportedFormats.add(format);
+        supportedFormats = Collections.singletonList("text/plain");
     }
     
     /**
-     * Evaluates if this Map producer can generate the map format specified by
-     * <code>mapFormat</code>
-     *
-     * @param mapFormat the mime type of the output map format requiered
-     *
-     * @return true if class can produce a map in the passed format
-     */
-    public boolean canProduce(String mapFormat) {
-        return getSupportedFormats().contains(mapFormat);
-    }
-    
-    public List getSupportedFormats(){        
-        if (supportedFormats == null) {
-            supportedFormats = Collections.singletonList("text/plain");
-        }
-        return supportedFormats;
-    }
-    
-    /**
-     * Writes the image to the client.
+     * Writes the feature information to the client in text/plain format.
      *
      * @param out The output stream to write to.
      *
@@ -99,9 +79,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         } catch (IllegalAttributeException ife) {
             writer.println("Unable to generate information " + ife);
         }
-        
-        writer.flush();
-        
+        writer.flush();        
     }
     
 }
