@@ -22,7 +22,7 @@ import javax.xml.transform.stream.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.24 2004/01/02 23:02:39 cholmesny Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.25 2004/01/05 23:18:38 cholmesny Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -100,9 +100,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
             throw new WfsException(ex);
         } catch (TransformerFactoryConfigurationError ex) {
             throw new WfsException(ex);
-        } catch (java.io.IOException ex) {
-            throw new WfsException(ex);
-        }
+        } 
     }
 
     /**
