@@ -7,6 +7,8 @@ package org.vfny.geoserver.config;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
+import javax.servlet.ServletContext;
+import javax.servlet.Servlet;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -24,29 +26,33 @@ public class ConfigInfo {
     /** Class logger */
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
     /** Root directory of webserver */
-    private static final String ROOT_DIR = guessRootDir();
+    //private static final String ROOT_DIR = guessRootDir();
+
+
     /** Default name for feature type schemas */
-    private static final String CONFIG_FILE =  "/configuration.xml";
+    private static final String CONFIG_FILE =  "configuration.xml";
     /** Default name for feature type schemas */
-    private static final String CONFIG_DIR =  "/data";
+    private static final String CONFIG_DIR =  "data/";
     /** Default name for feature type schemas */
-    private static final String TYPE_DIR =  "/featureTypes";
+    private static final String TYPE_DIR =  "featureTypes/";
     /** Default name for feature type schemas */
-    private static final String CAP_DIR =  "/capabilities";
+    private static final String CAP_DIR =  "capabilities/";
     /** Default name of feature type information */
-    public static final String INFO_FILE = "/info.xml" ;
+    public static final String INFO_FILE = "info.xml" ;
     /** Default name for feature type schemas */
-    public static final String SCHEMA_FILE = "/schema.xml";
+    public static final String SCHEMA_FILE = "schema.xml";
 
     /** */
     private static ConfigInfo config = null;
 
+    private String rootDir;
+
     /** a Castor class to read internal configuration information */
     private GlobalConfiguration global = new GlobalConfiguration();
     /** Root directory for feature types */
-    private String typeDir = ROOT_DIR + CONFIG_DIR + TYPE_DIR;
+    private String typeDir; //= ROOT_DIR + CONFIG_DIR + TYPE_DIR;
     /** Root directory of capabilities data */
-    private String capabilitiesDir = ROOT_DIR + CONFIG_DIR + CAP_DIR;
+    private String capabilitiesDir;// = ROOT_DIR + CONFIG_DIR + CAP_DIR;
     
 
     /**
@@ -54,27 +60,59 @@ public class ConfigInfo {
      * configuration file.  This information is primarily used in the 
      * 'Service' section of the return document.
      */
-    private ConfigInfo() {
-        global = readProperties(ROOT_DIR);
-    }
+    //private ConfigInfo() {
+    //    global = readProperties(ROOT_DIR);
+    //LOG.finer("empty constructor called");
+    //}
 
+    /**
+     * Constructor that reads in configuration information from FreeFS 
+     * configuration file.  This information is primarily used in the 
+     * 'Service' section of the return document.
+     *
+     *@param rootDir the directory holding all the configuration information.
+     */
     private ConfigInfo(String rootDir) {
-        global = readProperties(rootDir);
+	LOG.finer("constructor called with " + rootDir);
+	this.rootDir = rootDir;
+            setTypeDir(rootDir + TYPE_DIR);
+	    setCapabilitiesDir(rootDir + CAP_DIR);        
+	global = readProperties(rootDir + CONFIG_FILE);
+	
     }
     
-    /** Returns root webserver application directory */
+    /** Returns root webserver application directory 
+     *
+     * @return the configuration information for the geoserver.
+     * @tasks TODO: make sure that getInstance(configDir) is called
+     * before this is.  FreefsLog does so now, but this should check
+     * to make sure that happens, throw an exception if it doesn't, as
+     * the guessRootDir is only a guess.
+     */
     public static ConfigInfo getInstance() { 
         if(config == null) {
-            String configFile = ROOT_DIR + CONFIG_DIR + CONFIG_FILE;
-            config = new ConfigInfo(configFile);
+	    LOG.finer("getInstance with configDir argument should be passed" + 
+		      " in first!!");
+            String configFile = guessRootDir() + CONFIG_DIR + CONFIG_FILE;
+	    
+	    config = new ConfigInfo(configFile);
         }
         return config;
     }    
 
-    /** Returns root webserver application directory */
-    public static ConfigInfo getInstance(String configFile) { 
-        if(config == null) {
-            config = new ConfigInfo(configFile);
+    /** Returns root webserver application directory.  This should
+     * always be called before the no argument getInstance, as that
+     * method just attempts to guess where the configuration root
+     * directory is.
+     *
+     * @param configDir the base directory of the configuration info.
+     * @return the configuration information for that directory.
+     */
+    public static ConfigInfo getInstance(String configDir) { 
+        LOG.finer("called get instance with file " + configDir);
+	if(config == null) {
+	    LOG.finest("creating new configInfo");
+	    config = new ConfigInfo(configDir);
         }
         return config;
     }    
@@ -102,9 +140,12 @@ public class ConfigInfo {
     } 
 
 
-    /** Returns root webserver application directory */
+    /** Returns root webserver application directory 
+     * @return a string of the root directory, only works for drop
+     * in war, not for embedded.
+     */
     private static String guessRootDir() { 
-        return System.getProperty("user.dir") + "/webapps/geoserver";
+        return System.getProperty("user.dir") + "/webapps/geoserver/";
     }    
     
 
@@ -132,9 +173,9 @@ public class ConfigInfo {
             
 
     /** Returns user-specified fees for this service */
-    public String getTypeDir() { return typeDir; }    
+    public String getTypeDir() { LOG.finer("returning typeDir " + typeDir); return typeDir; }    
     /** Returns user-specified fees for this service */
-    public void setTypeDir(String typeDir) { this.typeDir = typeDir; }
+    public void setTypeDir(String typeDir) { this.typeDir = typeDir; LOG.finer("setting typedir " + typeDir);}
 
     /** Returns root capabilities directory for this service */
     public String getCapabilitiesDir() { return capabilitiesDir; }
