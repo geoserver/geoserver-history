@@ -11,39 +11,71 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
 
+
+/**
+ * Provides the skeleton for producers of a legend image, as required by the
+ * GetLegendGraphic WMS request.
+ * 
+ * <p>
+ * To incorporate a new producer specialized in one or many output formats,
+ * there must be a {@linkPlain
+ * org.vfny.geoserver.responses.wms.GetLegendGraphicProducerSpi} registered
+ * that can provide instances of that concrete implementation.
+ * </p>
+ * 
+ * <p>
+ * The methods defined in this interface respects the general parse
+ * request/produce response/get mime type/write content workflow, so they
+ * should raise an exception if are called in the wrong order (which is
+ * produceLegendGraphic -> getContentType -> writeTo)
+ * </p>
+ *
+ * @author Gabriel Roldan, Axios Engineering
+ * @version $Id$
+ */
 public interface GetLegendGraphicProducer {
     /**
-     * Asks this map producer to render the passed map context to the specified
-     * format.
+     * Asks this legend graphic producer to create a graphic for the
+     * GetLegenGraphic request parameters held in <code>request</code>
      *
-     * @param map
+     * @param request the "parsed" request, where "parsed" means that it's
+     *        properties are already validated so this method must not take
+     *        care of verifying the requested layer exists and the like.
      *
-     * @throws WmsException
+     * @throws WmsException something goes wrong
      */
-    void produceLegendGraphic(GetLegendGraphicRequest request) throws WmsException;
+    void produceLegendGraphic(GetLegendGraphicRequest request)
+        throws WmsException;
 
     /**
-     * DOCUMENT ME!
+     * Writes the legend graphic created in produceLegendGraphic to the
+     * destination stream, though it could be used to encode the legend to the
+     * proper output format, provided that there are almost no risk that the
+     * encoding fails.
      *
-     * @param out DOCUMENT ME!
+     * @param out an open stream where to send the produced legend graphic to.
      *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
+     * @throws IOException if something goes wrong in the actual process of
+     *         writing content to <code>out</code>.
+     * @throws ServiceException if something else goes wrong.
      */
-    void writeTo(OutputStream out) throws ServiceException, IOException;
+    void writeTo(OutputStream out) throws IOException, ServiceException;
 
     /**
-     * DOCUMENT ME!
+     * Returns the MIME type of the content to be writen at
+     * <code>writeTo(OutputStream)</code>
      *
-     * @return DOCUMENT ME!
+     * @return the output format
      *
-     * @throws java.lang.IllegalStateException DOCUMENT ME!
+     * @throws java.lang.IllegalStateException if this method is called before
+     *         {@linkplain #produceLegendGraphic(GetLegendGraphicRequest)}.
      */
     String getContentType() throws java.lang.IllegalStateException;
 
     /**
-     * DOCUMENT ME!
+     * asks the legend graphic producer to stop processing since it will be no
+     * longer needed (for example, because the request was interrupted by the
+     * user)
      */
     void abort();
-
 }
