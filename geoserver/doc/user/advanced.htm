@@ -223,29 +223,25 @@ to two decimal places add the following to <span
           <tr>
             <td height="56">
             <blockquote>
-              <p>GeoServer 1.1.0 introduces greater control over
+              <p>GeoServer 1.2.0 introduces greater control over
 attributes contained in a featureType.&nbsp; In an <span
- style="font-style: italic;">info.xml</span> file you may now specify
+ style="font-style: italic;">schema.xml</span> file you may now specify
 an attributes element as follows:<br>
               </p>
               <blockquote>
-                <p><i> &nbsp;&nbsp;&lt;attributes&gt;<br>
-&nbsp; &nbsp;&nbsp; &lt;attribute name="gid"/&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; &lt;attribute name="geom" mandatory="true"/&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; &lt;attribute name="name/&gt;<br>
-&nbsp; &lt;attributes&gt;<br>
+                <p><i> 
+                
+      &nbsp;&nbsp;&lt;xs:element name="id" type="xs:string"/&gt;<br>
+      &nbsp;&nbsp;&lt;xs:element ref="gml:lineStringProperty" minOccurs="0"/&gt;<br>
                 </i></p>
                 <p> </p>
               </blockquote>
-This indicates that only the attributes gid, geom and name should be
-returned.&nbsp; If the back end table has columns of gid, length, geom,
-and name then this set up would make it so length is never seen by
-clients.&nbsp; The mandatory attribute allows additional control, if
-true then the attribute will always be returned, even if it is not
-specifically requested.&nbsp; This is done to match an XML Schema that
-would have minOccurs="1" for an element.&nbsp; Eventually this kind of
-configuration should be done directly in an XML Schema that GeoServer
-reads, but for now it must be limited here.
+This indicates that only the attributes id and lineStringProperty may be returned. This also spercifies that the id MUST be returned.
+If the back end table has columns of id, length, lineStringProperty,
+and name then this set up would make it so length and name are never seen by the
+clients.&nbsp; The types which are valid are any types defined using either the GML specifications, the primitive XML Schema elements or any user defined XML Schema complexTypes. All of the restrictions specified in these the <span
+ style="font-style: italic;">schema.xml</span> files restrictes the associated featuretype.
+For more information please refer to the XML Schema and GML specifications. 
               <p></p>
             </blockquote>
             </td>
