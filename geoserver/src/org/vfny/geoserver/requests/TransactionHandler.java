@@ -6,6 +6,8 @@ package org.vfny.geoserver.requests;
 
 import java.io.*;
 import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -14,6 +16,7 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
 import org.geotools.gml.GMLHandlerFeature;
 import org.vfny.geoserver.responses.WfsException;
+import org.vfny.geoserver.responses.WfsTransactionException;
 
 /**
  * Uses SAX to extact a Transactional request from and incoming XML stream.
@@ -53,18 +56,26 @@ public class TransactionHandler
     /** holds the property value for an update request. */
     private String curPropertyValue;
 
+    /** holds the list of features for an insert request. */
+    private List curFeatures;
+
     /** Empty constructor. */
     public TransactionHandler () { super(); }
     
     
     /**
-     * Returns the GetFeature request.
+     * Returns the Transaction request.
      */ 
     public TransactionRequest getRequest() {
         return request;
     }
     
-    
+    /**
+     * Gets the short representation of the element we're on.
+     *
+     * @param stateName the localName of an element.
+     * @return the short representation of the localName.
+     */    
     private static short setState(String stateName) {
         if(stateName.equals("Insert")) {
             return INSERT;
@@ -111,9 +122,8 @@ public class TransactionHandler
             } else if(state == UPDATE) {
                 subRequest = new UpdateRequest();                
             } else if(state == INSERT) {
-		LOGGER.finest("creating new insert request");
                 subRequest = new InsertRequest();   
-		LOGGER.finest("created new insert request");
+		curFeatures = new ArrayList();
             }
 	    
             for(int i = 0, n = atts.getLength(); i < n; i++) {
@@ -155,10 +165,17 @@ public class TransactionHandler
         // set insideQuery flag as we leave the query and add the query to the 
         //  return list
         if(state == DELETE || state == UPDATE || state == INSERT) {
-            request.addSubRequest(subRequest);
-	    if (state == UPDATE) {
-		LOGGER.finest("adding property to update");
+	    if (state == INSERT) {
+		try {
+		((InsertRequest) subRequest).addFeatures
+		    ((Feature [])curFeatures.toArray(new Feature[0])) ;
+		} catch (WfsException we) {
+		    throw new SAXException("Problem adding features: " + 
+					   we.getMessage(), we);
+		}
+		curFeatures = new ArrayList();
 	    }
+            request.addSubRequest(subRequest);
         } else if(state == PROPERTY) {
 	    if (subRequest.getClass().equals(UpdateRequest.class)) {
 		((UpdateRequest) subRequest).addProperty(curPropertyName,
@@ -207,12 +224,18 @@ public class TransactionHandler
         }
     }    
 
+    /**
+     * Gets a feature and adds it to the list of current features,
+     * to be added to the insert request when it finishes.  This
+     * class is called by children filters, needed to implement
+     * GMLHandlerFilter.
+     *
+     * @param feature to be added to the request.
+     */
     public void feature(Feature feature) {
-	if(subRequest != null && 
-	   (subRequest.getClass().equals(InsertRequest.class))) {
-	       ((InsertRequest) subRequest).addFeature(feature);
-	       LOGGER.finest("feature added: " + feature);
-	}
+	    curFeatures.add(feature); 
+	    LOGGER.finest("feature added: " + feature);
+
     }
     
 	    
