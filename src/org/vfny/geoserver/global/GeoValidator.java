@@ -31,7 +31,7 @@ import org.geotools.validation.xml.ValidationException;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: GeoValidator.java,v 1.3 2004/04/21 06:50:41 jive Exp $
+ * @version $Id: GeoValidator.java,v 1.4 2004/04/21 07:42:35 jive Exp $
  */
 public class GeoValidator extends ValidationProcessor {
 	public static final String WEB_CONTAINER_KEY = "GeoValidator";
@@ -109,8 +109,8 @@ public class GeoValidator extends ValidationProcessor {
         //
 		i = plugIns.values().iterator();
 		while(i.hasNext()) {
-            PlugIn plugIn = (PlugIn) i.next();
-            errors.put( plugIn,Boolean.FALSE );
+            PlugInDTO dto = (PlugInDTO) i.next();
+            errors.put( dto,Boolean.FALSE );
         }
 		
 		// step 2 configure plug-ins with defaults
