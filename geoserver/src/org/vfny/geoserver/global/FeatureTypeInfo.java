@@ -44,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.19 2004/02/02 18:51:46 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.20 2004/02/02 23:17:34 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -526,8 +526,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
                 FeatureTypeInfoDTO dto = getGeneratedDTO();
                 XMLConfigWriter.storeFeatureSchema(dto, sw);
             } catch (ConfigurationException e) {
+            	e.printStackTrace();
             }
-
             xmlSchemaFrag = sw.toString();
             sw.close();
         }

@@ -21,7 +21,7 @@ import org.vfny.geoserver.global.GeoServer;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.10 2004/01/31 00:27:25 jive Exp $
+ * @version $Id: Request.java,v 1.11 2004/02/02 23:17:34 dmzwiers Exp $
  */
 abstract public class Request {
 	/**
@@ -196,6 +196,20 @@ abstract public class Request {
 	
 	public String getBaseUrl(){
 		return Requests.getBaseUrl( getHttpServletRequest() );
+	}
+	
+	public boolean isCGIRequest(){
+		HttpServletRequest hsr = getHttpServletRequest();
+		if(!"GET".equals(hsr.getMethod()))
+			return false;
+		// will happen if the dispatcher was called, as opposed to using the /wfs url.
+		String uri = hsr.getRequestURI();
+		if(uri==null)
+		uri = uri.toLowerCase();;
+		// will happen if the dispatcher was called, as opposed to using the /wfs url.
+		if(uri.endsWith("/wfs") || uri.endsWith("/wms"))
+			return true;
+		return false;
 	}
 	/**
 	 * Tests if user is Logged into GeoServer.
