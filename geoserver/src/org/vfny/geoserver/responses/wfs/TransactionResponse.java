@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.2.2.6 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -144,9 +144,9 @@ public class TransactionResponse implements Response {
         transaction = new DefaultTransaction();
         LOGGER.fine("request is " + request);
 
-        Data catalog = GeoServer.getInstance().getData();
+        Data catalog = transactionRequest.getGeoServer().getData();
 
-        WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS);
+        WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS,transactionRequest.getGeoServer().isVerbose());
 
         // Map of required FeatureStores by typeName
         Map stores = new HashMap();
@@ -380,7 +380,7 @@ public class TransactionResponse implements Response {
         FeatureCollection collection) throws IOException, WfsTransactionException {
             
         ValidationProcessor validation =
-            GeoServer.getInstance().getValidationConfig().getProcessor();
+		request.getGeoServer().getValidationConfig().getProcessor();
 
         final Map failed = new TreeMap();
         ValidationResults results = new ValidationResults(){
@@ -422,9 +422,9 @@ public class TransactionResponse implements Response {
 
     protected void integrityValidation(Map stores, Envelope check)
         throws IOException, WfsTransactionException {
-        Data catalog = GeoServer.getInstance().getData();
+        Data catalog = request.getGeoServer().getData();
         ValidationProcessor validation =
-            GeoServer.getInstance().getValidationConfig().getProcessor();
+		request.getGeoServer().getValidationConfig().getProcessor();
         
         // go through each modified typeName
         // and ask what we need to check
@@ -496,8 +496,8 @@ public class TransactionResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    public String getContentType() {
-        return GeoServer.getInstance().getMimeType();
+    public String getContentType(GeoServer gs) {
+        return gs.getMimeType();
     }
 
     /**
@@ -532,7 +532,7 @@ public class TransactionResponse implements Response {
             writer = new OutputStreamWriter(out);
             writer = new BufferedWriter(writer);
 
-            response.writeXmlResponse(writer);
+            response.writeXmlResponse(writer,request.getGeoServer());
             writer.flush();
 
             switch (response.status) {
@@ -570,7 +570,7 @@ public class TransactionResponse implements Response {
         // We also need to do this if the opperation is not a success,
         // you can find this same code in the abort method
         // 
-        Data catalog = GeoServer.getInstance().getData();
+        Data catalog = request.getGeoServer().getData();
 
         if (request.getLockId() != null) {
             if (request.getReleaseAction() == TransactionRequest.ALL) {
@@ -584,7 +584,7 @@ public class TransactionResponse implements Response {
     /* (non-Javadoc)
      * @see org.vfny.geoserver.responses.Response#abort()
      */
-    public void abort() {
+    public void abort(GeoServer gs) {
         if (transaction == null) {
             return; // no transaction to rollback
         }
@@ -602,7 +602,7 @@ public class TransactionResponse implements Response {
             // 
             // TODO: Do we need release/refresh during an abort?               
             if (request.getLockId() != null) {
-                Data catalog = GeoServer.getInstance().getData();
+                Data catalog = gs.getData();
 
                 if (request.getReleaseAction() == TransactionRequest.ALL) {
                     catalog.lockRelease(request.getLockId());

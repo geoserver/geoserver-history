@@ -18,6 +18,7 @@ import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.map.GetMapDelegate;
 import org.vfny.geoserver.responses.wms.map.JAIMapResponse;
 import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
+import org.vfny.geoserver.global.*;
 
 
 /**
@@ -26,7 +27,7 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.3.2.1 2003/12/30 23:00:48 dmzwiers Exp $
+ * @version $Id: GetMapResponse.java,v 1.3.2.2 2004/01/06 22:05:10 dmzwiers Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
@@ -75,20 +76,20 @@ public class GetMapResponse implements Response {
      *
      * @throws IllegalStateException if a GetMapDelegate is not setted yet
      */
-    public String getContentType() throws IllegalStateException {
+    public String getContentType(GeoServer gs) throws IllegalStateException {
         if (delegate == null) {
             throw new IllegalStateException("No request has been proceced");
         }
 
-        return delegate.getContentType();
+        return delegate.getContentType(gs);
     }
 
     /**
      * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
      */
-    public void abort() {
+    public void abort(GeoServer gs) {
         if (delegate != null) {
-            delegate.abort();
+            delegate.abort(gs);
         }
     }
 

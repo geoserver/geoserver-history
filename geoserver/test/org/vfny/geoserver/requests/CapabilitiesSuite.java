@@ -12,8 +12,7 @@ import junit.framework.TestSuite;
 
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.readers.wfs.CapabilitiesKvpReader;
-import org.vfny.geoserver.requests.readers.wfs.CapabilitiesXmlReader;
+import org.vfny.geoserver.requests.readers.wfs.*;;
 
 
 /**
@@ -21,7 +20,7 @@ import org.vfny.geoserver.requests.readers.wfs.CapabilitiesXmlReader;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesSuite.java,v 1.4.2.3 2004/01/03 00:20:17 dmzwiers Exp $
+ * @version $Id: CapabilitiesSuite.java,v 1.4.2.4 2004/01/06 22:05:11 dmzwiers Exp $
  */
 public class CapabilitiesSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
@@ -55,7 +54,7 @@ public class CapabilitiesSuite extends RequestTestCase {
     public void setUp() {
         baseRequest[0] = new CapabilitiesRequest("GlobalWFS");
 
-        //baseRequest[0].setService("GlobalWFS");
+        //baseRequest[0].setService("WFS");
         baseRequest[0].setVersion("1.0.0");
 
         baseRequest[1] = new CapabilitiesRequest("GlobalWFS");

@@ -34,7 +34,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.21.2.5 2004/01/06 09:00:48 jive Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.21.2.6 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -81,7 +81,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
     /** 
      * Free up used resources used by execute method.
      */
-	public void abort() {
+	public void abort(GeoServer gs) {
 		if( request != null ){
 			request = null;
 		}
@@ -91,14 +91,14 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
      *
      * @return Mime type provided from GeoServer.getMimeType()
      */
-    public String getContentType() {
+    public String getContentType(GeoServer gs) {
     	if( request == null ){
     		throw new IllegalStateException(
     				"Call execute before get ContentType!"
             );
     	}
     	// was return GeoServer.getInstance().getMimeType();
-    	return request.getGeoServer().getMimeType();    	        
+    	return gs.getMimeType();    	        
     }
 
     /**

@@ -17,6 +17,7 @@ import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.servlets.Dispatcher;
+import org.vfny.geoserver.global.*;
 
 
 /**
@@ -34,7 +35,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.1.2.1 2003/12/30 23:00:47 dmzwiers Exp $
+ * @version $Id: WfsDispatcher.java,v 1.1.2.2 2004/01/06 22:05:10 dmzwiers Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */
@@ -174,7 +175,7 @@ public class WfsDispatcher extends Dispatcher {
 
             WfsException wfse = new WfsException(message);
             String tempResponse = wfse.getXmlResponse(false);
-            response.setContentType(MIME_TYPE);
+            response.setContentType(((GeoServer)servletConfig.getServletContext().getAttribute( "GeoServer" )).getCharSet().toString());
             response.getWriter().write(tempResponse);
         }
     }

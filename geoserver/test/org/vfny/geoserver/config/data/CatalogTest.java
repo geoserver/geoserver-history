@@ -27,7 +27,7 @@ import org.vfny.geoserver.config.EqualsLibrary;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogTest.java,v 1.1.2.3 2004/01/03 00:20:18 dmzwiers Exp $
+ * @version $Id: CatalogTest.java,v 1.1.2.4 2004/01/06 22:05:11 dmzwiers Exp $
  */
 public class CatalogTest extends TestCase {
 
@@ -62,7 +62,7 @@ public class CatalogTest extends TestCase {
 	}
 
 	/*
-	 * Test for void GlobalCatalog(GlobalCatalog)
+	 * Test for void Data(Data)
 	 */
 	public void testCatalogCatalog() {
 		b = new CatalogConfig(a);

@@ -16,13 +16,14 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
+import org.vfny.geoserver.global.*;
 
 
 /**
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.3.2.4 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: SVGMapResponse.java,v 1.3.2.5 2004/01/06 22:05:09 dmzwiers Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
     private static final Logger LOGGER = Logger.getLogger(
@@ -40,7 +41,7 @@ public class SVGMapResponse extends GetMapDelegate {
      *
      * @return DOCUMENT ME!
      */
-    public String getContentType() {
+    public String getContentType(GeoServer gs) {
         return MIME_TYPE;
     }
 
@@ -60,7 +61,7 @@ public class SVGMapResponse extends GetMapDelegate {
         return mapFormat.startsWith("image/svg");
     }
 
-    public void abort() {
+    public void abort(GeoServer gs) {
         LOGGER.fine("aborting SVG map response");
 
         if (svgEncoder != null) {

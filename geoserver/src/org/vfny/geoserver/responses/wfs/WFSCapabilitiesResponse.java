@@ -16,7 +16,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WFSCapabilitiesResponse.java,v 1.2.2.4 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: WFSCapabilitiesResponse.java,v 1.2.2.5 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class WFSCapabilitiesResponse extends CapabilitiesResponse {
     /**
@@ -25,7 +25,7 @@ public class WFSCapabilitiesResponse extends CapabilitiesResponse {
      * @return DOCUMENT ME!
      */
     protected Service getGlobalService() {
-        return GeoServer.getInstance().getWFS();
+        return request.getGeoServer().getWFS();
     }
 
     /**
@@ -36,9 +36,8 @@ public class WFSCapabilitiesResponse extends CapabilitiesResponse {
      * @return DOCUMENT ME!
      */
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
-        CapabilitiesResponseHandler cr = new WfsCapabilitiesResponseHandler(contentHandler);
-        cr.setPrettyPrint(true,
-            GeoServer.getInstance().isVerbose());
+        CapabilitiesResponseHandler cr = new WfsCapabilitiesResponseHandler(contentHandler,request);
+        cr.setPrettyPrint(true,request.getGeoServer().isVerbose());
 
         return cr;
     }

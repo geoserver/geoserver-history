@@ -64,7 +64,7 @@ import org.vfny.geoserver.responses.ResponseUtils;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.3.2.6 2004/01/05 22:14:44 dmzwiers Exp $
+ * @version $Id: ServiceException.java,v 1.3.2.7 2004/01/06 22:05:12 dmzwiers Exp $
  *
  * @task TODO: print directly to an output stream for getXmlResponse.
  */
@@ -248,9 +248,6 @@ public class ServiceException extends Exception {
         returnXml.append(indent);
 
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
-
-        returnXml.append(GeoServer.getInstance().getWFS()
-                                     .getSchemaBaseUrl());
 
         returnXml.append("wfs/1.0.0/OGC-exception.xsd\">\n");
 

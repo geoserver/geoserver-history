@@ -37,7 +37,7 @@ import org.vfny.geoserver.zserver.GeoZServer;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.15.2.5 2004/01/05 23:26:26 dmzwiers Exp $
+ * @version $Id: FreefsLog.java,v 1.15.2.6 2004/01/06 22:05:09 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -57,12 +57,14 @@ public class FreefsLog extends HttpServlet {
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
 
-		if(GeoServer.getInstance()==null){
-			(new GeoServer()).init(this);
-		}
+		//if(GeoServer.getInstance()==null){
+		//	(new GeoServer()).init(this);
+		//}
 
-        /*
-           ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
+        
+           /*ServletContext sc = getServletContext();
+           GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.NAME);
+           ConfigInfo cfgInfo = ConfigInfo.getInstance(path, gs);
                    if (cfgInfo.runZServer()) {
               try {
                   server = new GeoZServer(cfgInfo.getZServerProps());
@@ -70,8 +72,8 @@ public class FreefsLog extends HttpServlet {
               } catch (java.io.IOException e) {
                   LOGGER.info("zserver module could not start: " + e.getMessage());
               }
-                   }
-         */
+                   }*/
+         
     }
 
     /**

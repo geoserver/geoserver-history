@@ -14,7 +14,7 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.xml;
+package org.vfny.geoserver.global.xml;
 
 import java.io.File;
 import java.util.HashMap;
@@ -23,13 +23,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.config.GlobalConfig;
-import org.vfny.geoserver.config.ModelConfig;
-import org.vfny.geoserver.config.data.CatalogConfig;
-import org.vfny.geoserver.config.data.FeatureTypeConfig;
-import org.vfny.geoserver.config.wfs.WFSConfig;
-import org.vfny.geoserver.config.wms.WMSConfig;
-
+import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.*;
 /**
  * XMLConfigReaderTest purpose.
  * <p>
@@ -37,7 +32,7 @@ import org.vfny.geoserver.config.wms.WMSConfig;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReaderTest.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: XMLConfigReaderTest.java,v 1.1.2.1 2004/01/06 22:05:09 dmzwiers Exp $
  */
 public class XMLConfigReaderTest extends TestCase {
 
@@ -61,20 +56,18 @@ public class XMLConfigReaderTest extends TestCase {
 		XMLConfigReaderExpose cfe = new XMLConfigReaderExpose();
 		try{
 			cfe.loadServicesWrapper(configFile);
-		}catch(ConfigException e){
+		}catch(ConfigurationException e){
 			fail(e.toString());
 		}
 		
-		ModelConfig m = cfe.getModel();
 		boolean r = true;
-		r = r && m!=null;
 		if(r){
-			r = r && m.getGlobal() != null;
-			r = r && !m.getGlobal().equals(new GlobalConfig());
-			r = r && m.getWfs() != null;
-			r = r && !m.getWfs().equals(new WFSConfig());
-			r = r && m.getWms() != null;
-			r = r && !m.getWms().equals(new WMSConfig());
+			r = r && cfe.getData() != null;
+			r = r && !cfe.getData().equals(new DataDTO());
+			r = r && cfe.getWfs() != null;
+			r = r && !cfe.getWfs().equals(new WFSDTO());
+			r = r && cfe.getWms() != null;
+			r = r && !cfe.getWms().equals(new WMSDTO());
 		}
 		assertTrue(r);
 	}
@@ -84,11 +77,10 @@ public class XMLConfigReaderTest extends TestCase {
 		try{
 			// pass incorrect feature dir to avoid running this portion
 			cfe.loadCatalogWrapper(new File(root1,"catalog.xml"),new File(root1,"catalog.xml"));
-		}catch(ConfigException e){
+		}catch(ConfigurationException e){
 			fail(e.toString());
 		}
-		ModelConfig m = cfe.getModel();
-		CatalogConfig c = m.getCatalog();
+		DataDTO c = cfe.getData();
 		boolean r = true;
 		r = r && c!=null;
 		if(r){
@@ -107,20 +99,20 @@ public class XMLConfigReaderTest extends TestCase {
 		try{
 			// pass incorrect feature dir to avoid running this portion
 			cfe.loadFeatureTypesWrapper(new File(root1,"featureTypes/"));
-		}catch(ConfigException e){
+		}catch(ConfigurationException e){
 System.out.println("***************");
 System.out.println(e.getMessage());
 System.out.println("***************");
 			fail(e.toString());
 		}
-		Map m = cfe.getModel().getCatalog().getFeaturesTypes();
+		Map m = cfe.getData().getFeaturesTypes();
 		boolean r = true;
 		r = r && m!=null;
 		if(r){
 			Iterator i = m.keySet().iterator();
 			while(i.hasNext() && r){
 				String key = (String)i.next();
-				FeatureTypeConfig f = (FeatureTypeConfig)m.get(key);
+				FeatureTypeInfoDTO f = (FeatureTypeInfoDTO)m.get(key);
 				if(f == null)
 					r = false;
 				else{
@@ -133,26 +125,24 @@ System.out.println("***************");
 	}
 	
 	public void testLoad(){
-		XMLConfigReader rc = null;
+		XMLConfigReader m = null;
 		try{
-			rc = new XMLConfigReader(root2);
-		}catch(ConfigException e){
+			m = new XMLConfigReader(root2);
+		}catch(ConfigurationException e){
 			fail(e.toString());
 		}
 		boolean r = true;
 		
 
-		ModelConfig m = rc.getModel();
-		r = r && m!=null;
 		if(r){
-			r = r && m.getGlobal() != null;
-			r = r && !m.getGlobal().equals(new GlobalConfig());
+			r = r && m.getData() != null;
+			r = r && !m.getData().equals(new DataDTO());
 			r = r && m.getWfs() != null;
-			r = r && !m.getWfs().equals(new WFSConfig());
+			r = r && !m.getWfs().equals(new WFSDTO());
 			r = r && m.getWms() != null;
-			r = r && !m.getWms().equals(new WMSConfig());
+			r = r && !m.getWms().equals(new WMSDTO());
 
-			CatalogConfig c = m.getCatalog();
+			DataDTO c = m.getData();
 			r = r && c!=null;
 			if(r){
 				r = r && c.getDataStores()!= null;
@@ -170,7 +160,7 @@ System.out.println("***************");
 					Iterator i = mp.keySet().iterator();
 					while(i.hasNext() && r){
 						String key = (String)i.next();
-						FeatureTypeConfig f = (FeatureTypeConfig)mp.get(key);
+						FeatureTypeInfoDTO f = (FeatureTypeInfoDTO)mp.get(key);
 						if(f == null)
 							r = false;
 						else{
@@ -190,15 +180,15 @@ class XMLConfigReaderExpose extends XMLConfigReader{
 			super();
 	}
 	
-	public void loadServicesWrapper(File f) throws ConfigException{
+	public void loadServicesWrapper(File f) throws ConfigurationException{
 		loadServices(f);
 	}
 	
-	public void loadCatalogWrapper(File f1, File f2) throws ConfigException{
+	public void loadCatalogWrapper(File f1, File f2) throws ConfigurationException{
 		loadCatalog(f1,f2);
 	}
 	
-	public void loadFeatureTypesWrapper(File f) throws ConfigException{
+	public void loadFeatureTypesWrapper(File f) throws ConfigurationException{
 		loadFeatureTypes(f);
 	}
 }

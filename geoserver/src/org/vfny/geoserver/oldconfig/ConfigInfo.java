@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.geotools.data.DataSourceFinder;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.*;
 
 /**
  * Reads all necessary configuration data and abstracts it away from the
@@ -108,6 +109,7 @@ public class ConfigInfo
    */
   public static ConfigInfo getInstance()
   {
+	geoServer = null;
     if (config == null) {
       LOGGER.finer("getInstance with configDir argument should be passed"
                    + " in first!!");
@@ -119,7 +121,7 @@ public class ConfigInfo
 
     return config;
   }
-
+	private static GeoServer geoServer = null;
   /**
    * Returns root webserver application directory.  This should always be
    * called before the no argument getInstance, as that method just attempts
@@ -129,8 +131,9 @@ public class ConfigInfo
    *
    * @return the configuration information for that directory.
    */
-  public static ConfigInfo getInstance(String configDir)
+  public static ConfigInfo getInstance(String configDir, GeoServer gs)
   {
+  	geoServer = gs;
     LOGGER.finer("called get instance with file " + configDir);
 
     if (config == null) {
@@ -139,6 +142,10 @@ public class ConfigInfo
     }
 
     return config;
+  }
+  
+  public GeoServer getGeoServer(){
+  	return geoServer;
   }
 
   /**

@@ -15,7 +15,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.2.2.5 2004/01/06 09:00:48 jive Exp $
+ * @version $Id: Capabilities.java,v 1.2.2.6 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class Capabilities extends CapabilitiesResponse {
     protected Service getGlobalService() {
@@ -30,6 +30,8 @@ public class Capabilities extends CapabilitiesResponse {
     }
 
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
-        return new WfsCapabilitiesResponseHandler(contentHandler);
-    }    
+        return new WfsCapabilitiesResponseHandler(contentHandler,request);
+    }
+    
+    
 }

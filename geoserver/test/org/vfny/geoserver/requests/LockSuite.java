@@ -29,7 +29,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: LockSuite.java,v 1.5.2.3 2004/01/03 00:20:17 dmzwiers Exp $
+ * @version $Id: LockSuite.java,v 1.5.2.4 2004/01/06 22:05:11 dmzwiers Exp $
  */
 public class LockSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
@@ -120,7 +120,7 @@ public class LockSuite extends RequestTestCase {
      * themselves are quite generic, so documentation is minimal.
      */
     /*
-     * Example 1 from the GlobalWFS 1.0 specification.
+     * Example 1 from the WFS 1.0 specification.
      */
     public void testKVP1() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
@@ -135,7 +135,7 @@ public class LockSuite extends RequestTestCase {
     }
 
     /*
-     * Example 2 from the GlobalWFS 1.0 specification.
+     * Example 2 from the WFS 1.0 specification.
      */
     public void testKVP2() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
@@ -155,7 +155,7 @@ public class LockSuite extends RequestTestCase {
     }
 
     /*
-     * Example 3 from the GlobalWFS 1.0 specification.
+     * Example 3 from the WFS 1.0 specification.
      */
     public void testKVP3() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
@@ -171,7 +171,7 @@ public class LockSuite extends RequestTestCase {
     }
 
     /*
-     * Example 13 from the GlobalWFS 1.0 specification.
+     * Example 13 from the WFS 1.0 specification.
      */
     public void testKVP4() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "SERVICE=GlobalWFS&"

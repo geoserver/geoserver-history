@@ -11,6 +11,7 @@ package org.vfny.geoserver.responses.wfs;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.*;
 
 
 /**
@@ -105,15 +106,14 @@ public class WfsTransactionException extends WfsException {
      *
      * @return DOCUMENT ME!
      */
-    public String getXmlResponse() {
-        WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,
-                handle);
+    public String getXmlResponse(GeoServer gs) {
+        WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,handle,true);
         response.setLocator(locator);
 
         //right now defaults to full stack traces, should change before
         //production release.
         response.setMessage(this.getXmlMessage(true));
 
-        return response.getXmlResponse();
+        return response.getXmlResponse(gs);
     }
 }

@@ -15,12 +15,12 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: XmlResponseHandler.java,v 1.2.2.4 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: XmlResponseHandler.java,v 1.2.2.5 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public abstract class XmlResponseHandler implements ResponseHandler {
     /** blank attributes to be used when none are needed. */
     protected static final Attributes atts = new AttributesImpl();
-    protected static GeoServer server = GeoServer.getInstance();
+    //protected static GeoServer server = GeoServer.getInstance();
     private static final int TAB_SIZE = 2;
     private char[] cr = new char[0];
     private char[] tab = new char[0];

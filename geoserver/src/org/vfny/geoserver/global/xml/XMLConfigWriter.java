@@ -38,7 +38,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2004/01/06 22:05:10 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -227,15 +227,15 @@ public class XMLConfigWriter {
 			WFSDTO w = (WFSDTO)obj;
 			s = w.getService();
 			u = w.getDescribeUrl();
-			t = "GlobalWFS";
+			t = "WFS";
 		}else
 		if(obj instanceof WMSDTO){
 			WMSDTO w = (WMSDTO)obj;
 			s = w.getService();
 			u = w.getDescribeUrl();
-			t = "GlobalWMS";
+			t = "WMS";
 		}else
-		throw new ConfigurationException("Invalid object: not GlobalWMS of GlobalWFS");
+		throw new ConfigurationException("Invalid object: not WMS of WFS");
 		Map atrs = new HashMap();
 		atrs.put("type",t);
 		atrs.put("enabled",s.isEnabled()+"");
@@ -524,7 +524,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2004/01/06 22:05:10 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -602,7 +602,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2004/01/06 22:05:10 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

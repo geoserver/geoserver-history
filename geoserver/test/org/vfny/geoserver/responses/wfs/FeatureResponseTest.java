@@ -6,8 +6,8 @@ import java.util.Map;
 import org.geotools.data.Catalog;
 import org.geotools.data.DataTestCase;
 import org.geotools.data.DefaultCatalog;
-import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
 /**
  * This is my attempt at testing FeatureResponse using
@@ -21,7 +21,7 @@ import org.vfny.geoserver.requests.wfs.FeatureRequest;
  * @author jgarnett
  */
 public class FeatureResponseTest extends DataTestCase {
-    GlobalCatalog config;
+    Data config;
     FeatureResponse response;
     
     /**
@@ -40,7 +40,7 @@ public class FeatureResponseTest extends DataTestCase {
         response = new FeatureResponse();
         Catalog cat = new DefaultCatalog();
         Map config = new HashMap();
-        GlobalServer.load( config, cat );      
+        //GeoServer.load( config, cat );      
         
         
     }

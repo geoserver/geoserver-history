@@ -28,6 +28,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DescribeRequest;
 import org.vfny.geoserver.responses.Response;
+import javax.servlet.http.*;
 
 
 /**
@@ -36,7 +37,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.3.2.6 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.3.2.7 2004/01/06 22:05:08 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -54,16 +55,11 @@ public class DescribeResponse implements Response {
     private static final String XS_NAMESPACE = "\n  xmlns:xs=" + SCHEMA_URI;
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
     private static final String GML_NAMESPACE = "\n  xmlns:gml=" + GML_URL;
-    private static final String HEADER = "<?xml version=\"1.0\" encoding=\"" + GeoServer.getInstance().getCharSet().displayName()+ "\"?>" + "\n<xs:schema ";
-		
+    		
     private static final String ELEMENT_FORM_DEFAULT = "\n  elementFormDefault=\"qualified\"";
     private static final String ATTR_FORM_DEFAULT = "\n  attributeFormDefault=\"unqualified\" version=\"1.0\">";
     private static final String TARGETNS_PREFIX = "\n  targetNamespace=\"";
     private static final String TARGETNS_SUFFIX = "\" ";
-    private static final String GML_IMPORT = "\n\n<xs:import namespace="
-        + GML_URL + " schemaLocation=\""
-        + GeoServer.getInstance().getWFS().getSchemaBaseUrl()
-        + "gml/2.1.2/feature.xsd\"/>\n\n";
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</xs:schema>";
@@ -98,7 +94,7 @@ public class DescribeResponse implements Response {
         // generates response, using general function
         xmlResponse = generateTypes(wfsRequest);
 
-        if (!GeoServer.getInstance().isVerbose()) {
+        if (!request.getGeoServer().isVerbose()) {
             //strip out the formatting.  This is pretty much the only way we
             //can do this, as the user files are going to have newline
             //characters and whatnot, unless we can get rid of formatting
@@ -114,8 +110,8 @@ public class DescribeResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    public String getContentType() {
-        return GeoServer.getInstance().getMimeType();
+    public String getContentType(GeoServer gs) {
+        return gs.getMimeType();
     }
 
     /**
@@ -156,16 +152,16 @@ public class DescribeResponse implements Response {
         //ComplexType table = new ComplexType();
         if (requestedTypes.size() == 0) {
             //if there are no specific requested types then get all.
-            requestedTypes = new ArrayList(GeoServer.getInstance().getData().getFeatureTypes().keySet());
+            requestedTypes = new ArrayList(wfsRequest.getGeoServer().getData().getFeatureTypes().keySet());
         }
 
-        tempResponse.append(HEADER);
+        tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfsRequest.getGeoServer().getCharSet().displayName()+ "\"?>" + "\n<xs:schema ");
 
         //allSameType will throw WfsException if there are types that are not found.
-        if (allSameType(requestedTypes)) {
+        if (allSameType(requestedTypes, wfsRequest)) {
             //all the requested have the same namespace prefix, so return their
             //schemas.
-            FeatureTypeInfo nsInfoType = GeoServer.getInstance().getData().getFeatureType((String) requestedTypes
+            FeatureTypeInfo nsInfoType = wfsRequest.getGeoServer().getData().getFeatureType((String) requestedTypes
                     .get(0));
 
             //all types have same prefix, so just use the first.
@@ -182,8 +178,9 @@ public class DescribeResponse implements Response {
             tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
 
             //this is not always necessary, but it doesn't seem to hurt...
-            tempResponse.append(GML_IMPORT);
-            tempResponse.append(generateSpecifiedTypes(requestedTypes));
+            tempResponse.append("\n\n<xs:import namespace="
+			+ GML_URL + "gml/2.1.2/feature.xsd\"/>\n\n");
+            tempResponse.append(generateSpecifiedTypes(requestedTypes,wfsRequest.getGeoServer()));
         } else {
             //the featureTypes do not have all the same prefixes.
             tempResponse.append(XS_NAMESPACE);
@@ -195,7 +192,7 @@ public class DescribeResponse implements Response {
             //iterate through the types, and make a set of their prefixes.
             while (nameIter.hasNext()) {
                 String typeName = nameIter.next().toString();
-                String typePrefix = GeoServer.getInstance().getData().getFeatureType(typeName).getPrefix();
+                String typePrefix = wfsRequest.getGeoServer().getData().getFeatureType(typeName).getPrefix();
                 prefixes.add(typePrefix);
             }
 
@@ -204,7 +201,7 @@ public class DescribeResponse implements Response {
             while (prefixIter.hasNext()) {
                 //iterate through prefixes, and add the types that have that prefix.
                 String prefix = prefixIter.next().toString();
-                tempResponse.append(getNSImport(prefix, requestedTypes));
+                tempResponse.append(getNSImport(prefix, requestedTypes,wfsRequest.getGeoServer()));
             }
         }
 
@@ -226,14 +223,14 @@ public class DescribeResponse implements Response {
      *
      * @return The namespace element.
      */
-    private StringBuffer getNSImport(String prefix, List typeNames) {
+    private StringBuffer getNSImport(String prefix, List typeNames, GeoServer gs) {
         LOGGER.finer("prefix is " + prefix);
 
         StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
-        String namespace = GeoServer.getInstance().getData().getNameSpace(prefix).getUri();
+        String namespace = gs.getData().getNameSpace(prefix).getUri();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\""
-            + GeoServer.getInstance().getWFS().getDescribeBaseUrl());
+            + gs.getBaseUrl() + "wfs/DescribeFeatureType?typeName=");
 
         Iterator nameIter = typeNames.iterator();
 
@@ -243,7 +240,7 @@ public class DescribeResponse implements Response {
 
             if (typeName.startsWith(prefix)
                     || ((typeName.indexOf(':') == -1)
-                    && prefix.equals(GeoServer.getInstance().getData().getDefaultNameSpace()
+                    && prefix.equals(gs.getData().getDefaultNameSpace()
                                                .getPrefix()))) {
                 retBuffer.append(typeName + ",");
             }
@@ -278,7 +275,7 @@ public class DescribeResponse implements Response {
      *       file appropriately, and put the correct substitution group in
      *       this function.
      */
-    private String generateSpecifiedTypes(List requestedTypes)
+    private String generateSpecifiedTypes(List requestedTypes, GeoServer gs)
         throws WfsException {
         //TypeRepository repository = TypeRepository.getInstance();
         String tempResponse = new String();
@@ -294,7 +291,7 @@ public class DescribeResponse implements Response {
             curTypeName = requestedTypes.get(i).toString();
 
             //TypeInfo meta = repository.getFeatureType(curTypeName);
-            FeatureTypeInfo meta = GeoServer.getInstance().getData().getFeatureType(curTypeName);
+            FeatureTypeInfo meta = gs.getData().getFeatureType(curTypeName);
 
             curTypeName = meta.getName();
 
@@ -425,7 +422,7 @@ public class DescribeResponse implements Response {
      * @throws WfsException if any of the names do not exist in this
      *         repository.
      */
-    public boolean allSameType(Collection featureTypeNames)
+    public boolean allSameType(Collection featureTypeNames, Request request)
         throws WfsException {
         Iterator nameIter = featureTypeNames.iterator();
         boolean sameType = true;
@@ -434,10 +431,10 @@ public class DescribeResponse implements Response {
             return false;
         }
 
-        String firstPrefix = getPrefix(nameIter.next().toString());
+        String firstPrefix = getPrefix(nameIter.next().toString(),request.getGeoServer());
 
         while (nameIter.hasNext()) {
-            if (!firstPrefix.equals(getPrefix(nameIter.next().toString()))) {
+            if (!firstPrefix.equals(getPrefix(nameIter.next().toString(),request.getGeoServer()))) {
                 return false;
             }
         }
@@ -455,8 +452,8 @@ public class DescribeResponse implements Response {
      *
      * @throws WfsException if the featureTypeName is not in the repository.
      */
-    private String getPrefix(String featureTypeName) throws WfsException {
-        FeatureTypeInfo ftConf = GeoServer.getInstance().getData().getFeatureType(featureTypeName);
+    private String getPrefix(String featureTypeName, GeoServer gs) throws WfsException {
+        FeatureTypeInfo ftConf = gs.getData().getFeatureType(featureTypeName);
 
         if (ftConf == null) {
             throw new WfsException("Feature Type " + featureTypeName + " does "
@@ -469,7 +466,7 @@ public class DescribeResponse implements Response {
     /* (non-Javadoc)
      * @see org.vfny.geoserver.responses.Response#abort()
      */
-    public void abort() {
+    public void abort(GeoServer gs) {
         // nothing to undo
     }
 }

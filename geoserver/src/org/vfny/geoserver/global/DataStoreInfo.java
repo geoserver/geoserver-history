@@ -5,7 +5,7 @@
 package org.vfny.geoserver.global;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataSourceException;
@@ -17,7 +17,7 @@ import org.vfny.geoserver.global.dto.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreInfo.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.1.2.3 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class DataStoreInfo extends Abstract {
     
@@ -28,11 +28,14 @@ public class DataStoreInfo extends Abstract {
 
     /** DataStoreInfo we are representing */
     private DataStore dataStore = null;
+    // ref to the parent class's collection
+    private Map nameSpaces;
     
     private DataStoreInfoDTO dsc;
     
-    public DataStoreInfo(DataStoreInfoDTO config){
+    public DataStoreInfo(DataStoreInfoDTO config, Map nameSpaces){
     	dsc = config;
+    	this.nameSpaces = nameSpaces;
     }
     
     Object getDTO(){
@@ -127,7 +130,7 @@ public class DataStoreInfo extends Abstract {
      * @return DOCUMENT ME!
      */
     public NameSpace getNameSpace() {
-    	return GeoServer.getInstance().getData().getNameSpace(dsc.getNameSpaceId());
+    	return (NameSpace)nameSpaces.get(dsc.getNameSpaceId());
     }
 
     /**

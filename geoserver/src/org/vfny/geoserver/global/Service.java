@@ -11,18 +11,18 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.1.2.2 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public abstract class Service extends Abstract{
 	
 	private ServiceDTO config;
 
     /** DOCUMENT ME! */
-    protected String URL;
+    //protected String URL;
     
     public Service(ServiceDTO config){
     	this.config = config;
-    	URL = "";
+    	//URL = "";
     }
     /**
      * DOCUMENT ME!
@@ -54,9 +54,9 @@ public abstract class Service extends Abstract{
      *
      * @return DOCUMENT ME!
      */
-    public String getURL() {
+    /*public String getURL() {
         return URL;
-    }
+    }*/
 
     /**
      * Gets the base schema url.
@@ -65,9 +65,9 @@ public abstract class Service extends Abstract{
      *
      * @deprecated Use GlobalData.getSchemaBaseUrl()
      */
-    public String getSchemaBaseUrl() {
+    /*public String getSchemaBaseUrl() {
         return GeoServer.getInstance().getSchemaBaseUrl();
-    }
+    }*/
     
 	/**
 		 * DOCUMENT ME!

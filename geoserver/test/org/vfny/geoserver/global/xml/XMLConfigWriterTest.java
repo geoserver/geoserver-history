@@ -14,13 +14,14 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.xml;
+package org.vfny.geoserver.global.xml;
 
 import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.config.ModelConfig;
+import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.global.dto.*;
 /**
  * XMLConfigWriterTest purpose.
  * <p>
@@ -28,7 +29,7 @@ import org.vfny.geoserver.config.ModelConfig;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriterTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: XMLConfigWriterTest.java,v 1.1.2.1 2004/01/06 22:05:09 dmzwiers Exp $
  */
 public class XMLConfigWriterTest extends TestCase {
 	private static final String testPath1 = "C:/Java/workspace/Geoserver-ModelConfig/tests/test3/";
@@ -51,11 +52,9 @@ public class XMLConfigWriterTest extends TestCase {
 	}
 
 	public void testStoreBlank(){
-		ModelConfig m = new ModelConfig();
 		try{
-			XMLConfigWriter cw = new XMLConfigWriter(m);
-			cw.store(root1);
-		}catch(ConfigException e){
+			XMLConfigWriter.store(new WMSDTO(), new WFSDTO(), new GeoServerDTO(),root1);
+		}catch(ConfigurationException e){
 			fail(e.toString());
 		}
 	}
@@ -63,9 +62,8 @@ public class XMLConfigWriterTest extends TestCase {
 	public void testRoundTrip(){
 		try{
 			XMLConfigReader cr = new XMLConfigReader(root2);
-			XMLConfigWriter wr = new XMLConfigWriter(cr.getModel());
-			wr.store(root3);
-		}catch(ConfigException e){
+			XMLConfigWriter.store(cr.getWms(),cr.getWfs(),cr.getGeoServer(),cr.getData(),root3);
+		}catch(ConfigurationException e){
 			fail(e.toString());
 		}
 	}

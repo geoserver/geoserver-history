@@ -27,7 +27,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.vfny.geoserver.global.dto.*;
 import com.vividsolutions.jts.geom.Envelope;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -35,16 +35,20 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.3 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends Abstract {
     /** DOCUMENT ME! */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
 	private FeatureTypeInfoDTO ftc;
-
-    public FeatureTypeInfo(FeatureTypeInfoDTO config)throws ConfigurationException{
+	
+	// ref to parent set of datastores.
+	private Map dataStores;
+	
+    public FeatureTypeInfo(FeatureTypeInfoDTO config, Map dataStores)throws ConfigurationException{
     	ftc = config;
+    	this.dataStores = dataStores;
     }
 
 	Object getDTO(){
@@ -101,7 +105,7 @@ public class FeatureTypeInfo extends Abstract {
      * @return DOCUMENT ME!
      */
     public DataStoreInfo getDataStore() {
-        return GeoServer.getInstance().getData().getDataStore(ftc.getDataStoreId());
+        return (DataStoreInfo)dataStores.get(ftc.getDataStoreId());
     }
 
     /**

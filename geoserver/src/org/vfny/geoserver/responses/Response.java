@@ -9,6 +9,7 @@ import java.io.OutputStream;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.global.*;
 
 
 /**
@@ -79,7 +80,7 @@ import org.vfny.geoserver.requests.Request;
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.2.2.6 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: Response.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public interface Response {
     /**
@@ -151,7 +152,7 @@ public interface Response {
      * @throws IllegalStateException if this method is called and execute has
      *         not been called yet
      */
-    public String getContentType() throws IllegalStateException;
+    public String getContentType(GeoServer gs) throws IllegalStateException;
 
     /**
      * Writes this respone to the provided output stream.
@@ -197,5 +198,5 @@ public interface Response {
      * AbstractionAction is error handling.
      * </p>
      */
-    public void abort();
+    public void abort(GeoServer gs);
 }

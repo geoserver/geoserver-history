@@ -95,7 +95,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.3.2.7 2004/01/06 09:59:16 jive Exp $
+ * @version $Id: AbstractService.java,v 1.3.2.8 2004/01/06 22:05:09 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -103,10 +103,10 @@ public abstract class AbstractService extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
-    protected static final GeoServer config = GeoServer.getInstance();
+    //protected static final GeoServer config = GeoServer.getInstance();
 
     /** Specifies mime type */
-    protected static final String MIME_TYPE = config.getMimeType();
+    //protected static final String MIME_TYPE = config.getMimeType();
     private static Map context;
 
     /**
@@ -306,13 +306,13 @@ public abstract class AbstractService extends HttpServlet {
         } catch (ServiceException serviceException) {
             LOGGER.warning("service exception while executing request: "
                 + serviceException.getMessage());
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             sendError(response, serviceException);
 
             return;
         } catch (Throwable t) {
             //we can safelly send errors here, since we have not touched response yet
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             sendError(response, t);
 
             return;
@@ -320,7 +320,7 @@ public abstract class AbstractService extends HttpServlet {
 
         try { //catch block to wrap exceptions properly.
 
-            String mimeType = serviceResponse.getContentType();
+            String mimeType = serviceResponse.getContentType(serviceRequest.getGeoServer());
             response.setContentType(mimeType);
             LOGGER.fine("execution succeed, mime type is: " + mimeType);
         } catch (Throwable t) {
@@ -348,12 +348,12 @@ public abstract class AbstractService extends HttpServlet {
             // I will still give stratagy and serviceResponse
             // a chance to clean up
             //
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
 
             return;
         } catch (IOException ex) {
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
             sendError(response, ex);
 
@@ -366,24 +366,24 @@ public abstract class AbstractService extends HttpServlet {
             stratagyOuput.flush();
             stratagy.flush();
         } catch (java.net.SocketException sockEx) { // user cancel
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
 
             return;
         }catch (IOException ioException) { // stratagyOutput error
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
             sendError(response, ioException);
 
             return;
         }catch (ServiceException writeToFailure) { // writeTo Failure
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
             sendError(response, writeToFailure);
 
             return;
         }catch (Throwable help) { // This is an unexpected error(!)
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
             sendError(response, help);
 
@@ -456,7 +456,8 @@ public abstract class AbstractService extends HttpServlet {
      * @return DOCUMENT ME!
      */
     protected String getMimeType() {
-        return config.getMimeType();
+		ServletContext context = getServletContext();
+		return ((GeoServer)context.getAttribute( "GeoServer" )).getMimeType();
     }
 
     /**
@@ -539,7 +540,8 @@ public abstract class AbstractService extends HttpServlet {
         }
 
         OutputStream out = new BufferedOutputStream(responseOut);
-        response.setContentType(result.getContentType());
+		ServletContext context = getServletContext();
+        response.setContentType(result.getContentType((GeoServer)context.getAttribute( "GeoServer" )));
 
         try {
             result.writeTo(out);
@@ -751,7 +753,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.3.2.7 $
+ * @version $Revision: 1.3.2.8 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

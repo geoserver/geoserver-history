@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.6 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -55,10 +55,10 @@ public class LockResponse implements Response {
     private static TypeRepository repository = TypeRepository.getInstance();
 
     /** indicates whether the output should be formatted. */
-    private static boolean verbose = GeoServer.getInstance().isVerbose();
+    private static boolean verbose = false;
 
     /** the new line character to use in the response. */
-    private static String nl = verbose ? "\n" : "";
+    private static String nl = "";
 
     /** temporal, it will disappear when the response streaming be implemented */
     private String xmlResponse = null;
@@ -68,9 +68,11 @@ public class LockResponse implements Response {
     /**
      * Constructor
      */
-    public LockResponse() {
+    public LockResponse(GeoServer gs) {
         featureLock = null;
         request = null;
+		verbose = gs.isVerbose();
+        nl = verbose ? "\n" : "";
     }
 
     public void execute(Request req) throws WfsException {
@@ -83,8 +85,8 @@ public class LockResponse implements Response {
         xmlResponse = getXmlResponse(request);
     }
 
-    public String getContentType() {
-        return GeoServer.getInstance().getMimeType();
+    public String getContentType(GeoServer gs) {
+        return gs.getMimeType();
     }
 
     public void writeTo(OutputStream out) throws ServiceException {
@@ -130,7 +132,7 @@ public class LockResponse implements Response {
         FeatureLock featureLock = request.toFeatureLock();
         Set lockedFids = new HashSet();
         Set lockFailedFids = new HashSet();
-        GeoServer config = GeoServer.getInstance();
+        GeoServer config = request.getGeoServer();
         Data catalog = config.getData();
         FilterFactory filterFactory = FilterFactory.createFilterFactory();
         LOGGER.info("locks size is " + locks.size());
@@ -212,7 +214,7 @@ public class LockResponse implements Response {
 
         if (getXml) {
             return generateXml(featureLock.getAuthorization(), lockAll,
-                lockedFids, lockFailedFids);
+                lockedFids, lockFailedFids,request.getGeoServer());
 
             //            return generateXml(lockId, lockAll,
             //                repository.getLockedFeatures(lockId),
@@ -261,9 +263,9 @@ public class LockResponse implements Response {
      * @return The xml response of this lock.
      */
     private static String generateXml(String lockId, boolean lockAll,
-        Set lockedFeatures, Set notLockedFeatures) {
+        Set lockedFeatures, Set notLockedFeatures, GeoServer gs) {
         String indent = verbose ? "   " : "";
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + GeoServer.getInstance().getCharSet().displayName()+ "\"?>";
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + gs.getCharSet().displayName()+ "\"?>";
         StringBuffer returnXml = new StringBuffer(xmlHeader);
         returnXml.append(nl + "<WFS_LockFeatureResponse " + nl);
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
@@ -281,8 +283,7 @@ public class LockResponse implements Response {
             + "XMLSchema-instance\" " + nl);
         returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis");
         returnXml.append(".net/wfs ");
-        returnXml.append(GeoServer.getInstance().getWFS()
-                                     .getSchemaBaseUrl());
+        returnXml.append(gs.getSchemaBaseUrl());
         returnXml.append("wfs/1.0.0/GlobalWFS-transaction.xsd\">");
         returnXml.append(nl);
         returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);
@@ -323,7 +324,7 @@ public class LockResponse implements Response {
      *
      * @see org.vfny.geoserver.responses.Response#abort()
      */
-    public void abort() {
+    public void abort(GeoServer gs) {
         if (request == null) {
             return; // request was not attempted
         }
@@ -332,12 +333,12 @@ public class LockResponse implements Response {
             return; // we have no locks
         }
 
-        Data catalog = GeoServer.getInstance().getData();
+        Data catalog = gs.getData();
 
         // I think we need to release and fail when lockAll fails
         //
         try {
-            GeoServer config = GeoServer.getInstance();
+            GeoServer config = gs;
 
             for (Iterator i = request.getLocks().iterator(); i.hasNext();) {
                 LockRequest.Lock curLock = (LockRequest.Lock) i.next();

@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
  * used to configure the zserver module.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ZServerConfig.java,v 1.2.2.4 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: ZServerConfig.java,v 1.2.2.5 2004/01/06 22:05:10 dmzwiers Exp $
  */
 public class ZServerConfig
     implements java.io.Serializable
@@ -49,13 +49,13 @@ public class ZServerConfig
       "org.vfny.geoserver.config");
 
   /** The configuration singleton. */
-  private static GeoServer cfgInfo = GeoServer.getInstance();
+  private static GeoServer cfgInfo = ConfigInfo.getInstance().getGeoServer();
 
   /** The port to run zserver on.  Default is 5210 */
   private String port = "5210";
 
   /** The folder where the metadata files are. */
-  private String dataFolder = cfgInfo.getRootDir() + "featureTypes/";
+  private String dataFolder = ConfigInfo.getInstance().getRootDir() + "featureTypes/";
 
   /** The location of the mapping between field names and numbers. */
   private String fieldmap;
@@ -165,7 +165,7 @@ public class ZServerConfig
 
       if ( (runZserver == null) || !runZserver.equals("false")) {
         String port = findTextFromTag(configElem, PORT_TAG);
-        String rootDir = cfgInfo.getRootDir();
+        String rootDir = ConfigInfo.getInstance().getRootDir();
         String fieldMap = rootDir + GEO_MAP_FILE;
         String database = rootDir + "zserver-index";
 

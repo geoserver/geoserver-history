@@ -23,20 +23,19 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.6 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.7 2004/01/06 22:05:10 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
-    private static final String CAP_VERSION = GeoServer.getInstance()
-                                                          .getWMS()
-                                                          .getVersion();
-
+    private static final String CAP_VERSION = WMS.getVersion();
+	private GeoServer server = null;
     /**
      * Creates a new WmsCapabilitiesResponseHandler object.
      *
      * @param handler DOCUMENT ME!
      */
-    public WmsCapabilitiesResponseHandler(ContentHandler handler) {
+    public WmsCapabilitiesResponseHandler(ContentHandler handler, GeoServer gs) {
         super(handler);
+        server = gs;
     }
 
     /**
@@ -237,7 +236,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         indent();
         startElement("Get");
 
-        String baseUrl = config.getURL();
+        String baseUrl = server.getBaseUrl() + "wms/";
         String url = baseUrl + "?";
         handleOnlineResource(url);
         endElement("Get");

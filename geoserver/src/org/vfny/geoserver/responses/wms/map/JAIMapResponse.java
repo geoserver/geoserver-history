@@ -29,6 +29,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
+import org.vfny.geoserver.global.*;
 
 
 /**
@@ -37,7 +38,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.4.2.4 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.4.2.5 2004/01/06 22:05:09 dmzwiers Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -139,7 +140,7 @@ public class JAIMapResponse extends GetMapDelegate {
     /**
      * Halts the loading.  Right now unimplemented.
      */
-    public void abort() {
+    public void abort(GeoServer gs) {
     }
 
     /**
@@ -150,7 +151,7 @@ public class JAIMapResponse extends GetMapDelegate {
      *
      * @throws java.lang.IllegalStateException DOCUMENT ME!
      */
-    public String getContentType() throws java.lang.IllegalStateException {
+    public String getContentType(GeoServer gs) throws java.lang.IllegalStateException {
         //Return a default?  Format is not set until execute is called...
         return format;
     }

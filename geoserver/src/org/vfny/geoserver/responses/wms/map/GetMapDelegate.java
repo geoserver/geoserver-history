@@ -39,7 +39,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.4.2.5 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: GetMapDelegate.java,v 1.4.2.6 2004/01/06 22:05:09 dmzwiers Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -74,7 +74,7 @@ public abstract class GetMapDelegate implements Response {
         this.request = request;
 
         FeatureTypeInfo[] layers = request.getLayers();
-        Style[] styles = buildStyles(request.getStyles());
+        Style[] styles = buildStyles(request.getStyles(), request.getGeoServer());
         Filter[] filters = request.getFilters();
         List attributes = request.getAttributes();
 
@@ -208,11 +208,10 @@ public abstract class GetMapDelegate implements Response {
         return finalLayerFilter;
     }
 
-	protected Style[] buildStyles(List styleNames)
+	protected Style[] buildStyles(List styleNames,GeoServer gs)
         throws WmsException {
         Style[] styles = new Style[styleNames.size()];
         int i = 0;
-        GeoServer gs = GeoServer.getInstance();
         Data gc = gs.getData();
         
         for (Iterator it = styleNames.iterator(); it.hasNext(); i++) {

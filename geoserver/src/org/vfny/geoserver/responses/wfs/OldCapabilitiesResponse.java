@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.6 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */
@@ -39,7 +39,7 @@ public class OldCapabilitiesResponse {
             "org.vfny.geoserver.requests");
 
     /** Configuration information for the server. */
-    private static GeoServer config = GeoServer.getInstance();
+    private static GeoServer config = null;
 
     /** XML Tag Type: start */
     private static final int TAG_START = 1;
@@ -51,24 +51,19 @@ public class OldCapabilitiesResponse {
     private static final int TAG_ONLY = 3;
 
     /** Filter capabilities file */
-    private static final String FILTER_FILE = config.getRootDir() + "capabilities/"
-        + "filter.xml";
+    private static String FILTER_FILE = "";
 
     /** ServiceConfig metadata file */
-    private static final String SERVICE_METADATA_FILE = config.getRootDir() + "capabilities/" + "serviceMetadata.xml";
+    private static String SERVICE_METADATA_FILE = "";
 
     /** Operations signatures file */
-    private static final String OPERATIONS_SIGNATURES_FILE = config
-        .getRootDir() + "capabilities/" + "operationsSignatures.xml";
+    private static String OPERATIONS_SIGNATURES_FILE = "";
 
     /** Additional capabilities file */
-    private static final String ADDITIONAL_CAPABILITIES_FILE = config
-        .getRootDir() + "capabilities/" + "additionalCapabilities.xml";
+    private static String ADDITIONAL_CAPABILITIES_FILE = "";
     private static final String WFS_XMLNS_URL = "http://www.opengis.net/wfs";
     private static final String OGC_XMLNS_URL = "http://www.opengis.net/ogc";
-    private static final String CAP_LOC = config.getWFS()
-                                                .getSchemaBaseUrl()
-        + "wfs/1.0.0/GlobalWFS-capabilities.xsd";
+    private static  String CAP_LOC = "";
     private static final String SCHEMA_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
     /** Version of the response */
@@ -94,10 +89,15 @@ public class OldCapabilitiesResponse {
     public OldCapabilitiesResponse(CapabilitiesRequest request) {
         version = request.getVersion();
         service = request.getService();
-
+		config = request.getGeoServer();
         if (version == null) {
             version = ""; //so we don\"t get a null pointer exception
         }
+        CAP_LOC = config.getSchemaBaseUrl()+ "wfs/1.0.0/GlobalWFS-capabilities.xsd";
+		FILTER_FILE = request.getRootDir() + "capabilities/"	+ "filter.xml";
+		SERVICE_METADATA_FILE = request.getRootDir() + "capabilities/" + "serviceMetadata.xml";
+		OPERATIONS_SIGNATURES_FILE = request.getRootDir() + "capabilities/" + "operationsSignatures.xml";
+		ADDITIONAL_CAPABILITIES_FILE = request.getRootDir() + "capabilities/" + "additionalCapabilities.xml";
     }
 
     /**
@@ -300,7 +300,7 @@ public class OldCapabilitiesResponse {
      * @return The requested capability in the capability document format.
      */
     private String tempReturnCapability(String request) {
-        String url = config.getWFS().getURL();
+        String url = config.getBaseUrl() + "wfs/";
         String tempCapability = new String();
 
         tempCapability = "\n      <" + request + ">";

@@ -35,7 +35,7 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.7.2.6 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: Dispatcher.java,v 1.7.2.7 2004/01/06 22:05:09 dmzwiers Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
@@ -46,10 +46,10 @@ public class Dispatcher extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
-    private static final GeoServer config = GeoServer.getInstance();
+    //private static final GeoServer config = GeoServer.getInstance();
 
     /** Specifies MIME type */
-    protected static final String MIME_TYPE = config.getMimeType();
+    //protected static final String MIME_TYPE = config.getMimeType();
 
     /** Map metadata request type */
     public static String META_REQUEST = "GetMeta";

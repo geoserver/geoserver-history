@@ -17,6 +17,7 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.servlets.Dispatcher;
+import org.vfny.geoserver.global.*;
 
 
 /**
@@ -34,7 +35,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.1.2.4 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: WmsDispatcher.java,v 1.1.2.5 2004/01/06 22:05:11 dmzwiers Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
@@ -144,7 +145,7 @@ public class WmsDispatcher extends Dispatcher {
 
             WmsException wmse = new WmsException(message);
             String tempResponse = wmse.getXmlResponse(false);
-            response.setContentType(MIME_TYPE);
+			response.setContentType(((GeoServer)servletConfig.getServletContext().getAttribute( "GeoServer" )).getCharSet().toString());
             response.getWriter().write(tempResponse);
         }
     }

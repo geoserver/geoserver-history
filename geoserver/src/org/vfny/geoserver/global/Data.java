@@ -30,7 +30,7 @@ import java.util.HashMap;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.3 2004/01/06 00:51:11 emperorkefka Exp $
+ * @version $Id: Data.java,v 1.1.2.4 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -79,13 +79,13 @@ public class Data extends Abstract
     	Iterator i = config.getDataStores().keySet().iterator();
     	while(i.hasNext()){
     		Object key = i.next();
-    		dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key)));
+    		dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),nameSpaces));
     	}
 
 		i = config.getFeaturesTypes().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			featureTypes.put(key,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key)));
+			featureTypes.put(key,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), dataStores));
 		}
     	defaultNameSpace = new NameSpace(config.getDefaultNameSpace());
 

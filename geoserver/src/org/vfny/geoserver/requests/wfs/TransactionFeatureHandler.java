@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
+import org.vfny.geoserver.requests.*;
 import com.vividsolutions.jts.geom.Geometry;
 
 
@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.2.2.5 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.2.2.6 2004/01/06 22:05:11 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -72,16 +72,18 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private TransactionFilterHandler parent;
 
     //private TypeRepository typeRepo = TypeRepository.getInstance();
-    private Data catalog = GeoServer.getInstance().getData();
+
+	private Data catalog = null;
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.
      *
      * @param parent The parent of this filter.
      */
-    public TransactionFeatureHandler(TransactionFilterHandler parent) {
+    public TransactionFeatureHandler(TransactionFilterHandler parent, Request r) {
         super(parent);
         this.parent = parent;
+        catalog = r.getGeoServer().getData();
     }
 
     /**

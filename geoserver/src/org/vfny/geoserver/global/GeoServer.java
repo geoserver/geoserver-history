@@ -4,25 +4,18 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.File;
 import java.util.logging.Logger;
 import java.util.logging.*;
-import org.vfny.geoserver.global.xml.XMLConfigReader;
-import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.global.dto.*;
 import java.nio.charset.*;
-import org.apache.struts.action.*;
-import org.apache.struts.config.*;
-import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
 
 /**
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.4 2004/01/06 00:51:11 emperorkefka Exp $
+ * @version $Id: GeoServer.java,v 1.1.2.5 2004/01/06 22:05:08 dmzwiers Exp $
  */
-public class GeoServer extends Abstract implements org.apache.struts.action.PlugIn{
+public class GeoServer extends Abstract{// implements org.apache.struts.action.PlugIn{
 	
 	/** DOCUMENT ME! */
 	private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
@@ -211,7 +204,6 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
 
     /** Validation Configuration */
     private Validation validation;
-    private String rootDir;
 
 	/**
 	 * GeoServer constructor.
@@ -221,7 +213,6 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
 	 *
 	 */
 	public GeoServer(){
-		rootDir = null;
 		wms = null;
 		wfs = null;
 		data = null;
@@ -283,13 +274,6 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
 		this.data = new Data(data);
 		this.validation = new Validation();
 	}*/
-
-	private static ServletContext sc = null;
-	public static GeoServer getInstance(){
-		if(sc==null)
-			return null;
-		return (GeoServer)sc.getAttribute(NAME);
-	}
 
     /**
      * Gets the config for the WMS.
@@ -362,17 +346,46 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
 	 * @throws ConfigurationException DOCUMENT ME!
 	 */
 	public void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, DataDTO data) throws ConfigurationException {
-		//serverConfig = new GeoServer(wms,wfs,geoServer,data);
-		if(rootDir == null)
-			throw new ConfigurationException("RootDir not specified, server was not loaded initially from configuration files.");
-		this.geoServer = geoServer;
-		if(wfs!=null)
-			this.wfs = new WFS(wfs);
+		load(geoServer);
+		load(wms);
+		load(wfs);
+		load(data);
+		// HACK
+		if(validation==null)
+			this.validation = new Validation();
+	}
+	
+	public void load(WMSDTO wms, WFSDTO wfs) throws ConfigurationException {
+		load(wms);
+		load(wfs);
+	}
+	
+	public void load(WMSDTO wms) throws ConfigurationException {
 		if(wms!=null)
 			this.wms = new WMS(wms);
+		else
+			throw new ConfigurationException("load(WMSDTO) expected a non-null value");
+	}
+	
+	public void load(WFSDTO wfs) throws ConfigurationException {
+		if(wfs!=null)
+			this.wfs = new WFS(wfs);
+		else
+			throw new ConfigurationException("load(WFSDTO) expected a non-null value");
+	}
+	
+	public void load(GeoServerDTO geoServer) throws ConfigurationException {
+		if(geoServer!=null)
+			this.geoServer = geoServer;
+		else
+			throw new ConfigurationException("load(GeoServerDTO) expected a non-null value");
+	}
+	
+	public void load(DataDTO data) throws ConfigurationException {
 		if(data!=null)
 			this.data = new Data(data);
-		this.validation = new Validation();
+		else
+			throw new ConfigurationException("load(DataDTO) expected a non-null value");
 	}
 
     /**
@@ -382,9 +395,9 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
      *
      * @param destDir DOCUMENT ME!
      */
-    public void save(String destDir) throws ConfigurationException{
-    	File dest = new File(destDir);
-		XMLConfigWriter.store((WMSDTO)wms.getDTO(),(WFSDTO)wfs.getDTO(),(GeoServerDTO)geoServer,(DataDTO)data.getDTO(),dest);    }
+    //public void save(String destDir) throws ConfigurationException{
+    //	File dest = new File(destDir);
+	//	XMLConfigWriter.store((WMSDTO)wms.getDTO(),(WFSDTO)wfs.getDTO(),(GeoServerDTO)geoServer,(DataDTO)data.getDTO(),dest);    }
 
 	public static WMSDTO getDTO(WMS wms){
 		return (WMSDTO)((WMSDTO)wms.getDTO()).clone();
@@ -426,37 +439,7 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
      *
      * @return DOCUMENT ME!
      */
-    public String getRootDir() {
+    /*public String getRootDir() {
         return rootDir;
-    }
-    
-    public void destroy(){
-    	// do nothing
-    }
-    
-    public void init(ActionServlet as, ModuleConfig mc) throws javax.servlet.ServletException{
-    	init((HttpServlet)as);
-    }
-    public void init(HttpServlet hs) throws javax.servlet.ServletException{
-    	sc = hs.getServletContext();
-    	rootDir = sc.getRealPath("/");
-    	
-    	try{
-			File f = new File(rootDir);
-			XMLConfigReader cr = new XMLConfigReader(f);
-			sc.setAttribute(NAME,this);
-			if(cr.isInitialized()){	
-				geoServer = cr.getGeoServer();
-				wfs = new WFS(cr.getWfs());
-				wms = new WMS(cr.getWms());
-				data = new Data(cr.getData());
-				validation = new Validation();
-			}else
-				throw new ConfigurationException("An error occured loading the initial configuration.");
-    	}catch(ConfigurationException e){
-			sc.setAttribute(NAME,null);
-    		throw new ServletException(e);
-    	}
-		//sc.setAttribute(NAME,this);
-    }
+    }*/
 }

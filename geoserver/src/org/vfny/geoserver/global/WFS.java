@@ -12,7 +12,7 @@ import org.vfny.geoserver.global.dto.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.1.2.3 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class WFS extends Service {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -23,7 +23,7 @@ public class WFS extends Service {
 
     public WFS(WFSDTO config){
     	super(config.getService());
-		URL = GeoServer.getInstance().getBaseUrl() + "wfs/";
+		//URL = GeoServer.getInstance().getBaseUrl() + "wfs/";
 		this.config = config;
     }
 
@@ -41,7 +41,7 @@ public class WFS extends Service {
      *       returned xml, having to put a &amp; in, and not sure if clients
      *       will process it correctly.
      */
-    public String getDescribeBaseUrl() {
+    /*public String getDescribeBaseUrl() {
         if (config.getDescribeUrl() == null) {
 			config.setDescribeUrl(URL + "DescribeFeatureType?typeName=");
         }
@@ -59,5 +59,5 @@ public class WFS extends Service {
 
     public String getWfsCapLocation() {
         return GeoServer.getInstance().getSchemaBaseUrl() + WFS_CAP_LOC;
-    }
+    }*/
 }

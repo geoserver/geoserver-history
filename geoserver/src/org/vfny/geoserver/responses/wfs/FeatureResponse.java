@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2.2.5 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.6 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -116,8 +116,8 @@ public class FeatureResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    public String getContentType() {
-        return GeoServer.getInstance().getMimeType();
+    public String getContentType(GeoServer gs) {
+        return gs.getMimeType();
     }
 
     /**
@@ -216,7 +216,7 @@ public class FeatureResponse implements Response {
         // - if we fail to aquire all the locks we will need to fail and
         //   itterate through the the FeatureSources to release the locks 
         //
-        Data catalog = GeoServer.getInstance().getData();        
+        Data catalog = request.getGeoServer().getData();        
         FeatureTypeInfo meta = null;
         NameSpace namespace;       
         Query query;
@@ -324,10 +324,10 @@ public class FeatureResponse implements Response {
             FeatureType schema = meta.getSchema();
             transformer.setIndentation(2);
 
-            GeoServer config = GeoServer.getInstance();
+            GeoServer config = request.getGeoServer();
             WFS wfsConfig = config.getWFS();
-            String wfsSchemaLoc = wfsConfig.getWfsBasicLocation();
-            String fSchemaLoc = wfsConfig.getDescribeUrl(typeNames.toString());
+            String wfsSchemaLoc = config.getSchemaBaseUrl() + WFS.WFS_BASIC_LOC;
+            String fSchemaLoc = config.getBaseUrl() + "wfs/"+ "DescribeFeatureType?typeName="+typeNames.toString();
             namespace = meta.getDataStore().getNameSpace();
             transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
             transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
@@ -426,7 +426,7 @@ public class FeatureResponse implements Response {
      * 
      * @see org.vfny.geoserver.responses.Response#abort()
      */
-    public void abort() {
+    public void abort(GeoServer gs) {
         if( request == null ){
             return; // request was not attempted
         }
@@ -434,7 +434,7 @@ public class FeatureResponse implements Response {
             return; // we have no locks
         }
         
-        Data catalog = GeoServer.getInstance().getData();            
+        Data catalog = gs.getData();            
         // I think we need to release and fail when lockAll fails
         //
         catalog.lockRelease( featureLock.getAuthorization() );        

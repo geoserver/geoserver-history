@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteSuite.java,v 1.10.2.3 2004/01/03 00:20:17 dmzwiers Exp $
+ * @version $Id: DeleteSuite.java,v 1.10.2.4 2004/01/06 22:05:11 dmzwiers Exp $
  */
 public class DeleteSuite extends TransactionSuite {
     // Initializes the logger. Uncomment to see log messages.
@@ -96,7 +96,7 @@ public class DeleteSuite extends TransactionSuite {
      * *********************************************************************/
 
     /**
-     * Example 1 from the GlobalWFS 1.0 specification.
+     * Example 1 from the WFS 1.0 specification.
      *
      * @throws Exception DOCUMENT ME!
      */
@@ -119,7 +119,7 @@ public class DeleteSuite extends TransactionSuite {
     }
 
     /**
-     * Example 2 from the GlobalWFS 1.0 specification.
+     * Example 2 from the WFS 1.0 specification.
      *
      * @throws Exception DOCUMENT ME!
      */
@@ -169,7 +169,7 @@ public class DeleteSuite extends TransactionSuite {
     }
 
     /**
-     * Example 3 from the GlobalWFS 1.0 specification.
+     * Example 3 from the WFS 1.0 specification.
      *
      * @throws Exception DOCUMENT ME!
      */

@@ -16,7 +16,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSCapabilitiesResponse.java,v 1.2.2.5 2004/01/06 09:00:48 jive Exp $
+ * @version $Id: WMSCapabilitiesResponse.java,v 1.2.2.6 2004/01/06 22:05:10 dmzwiers Exp $
  */
 public class WMSCapabilitiesResponse extends CapabilitiesResponse {
     /**
@@ -37,7 +37,7 @@ public class WMSCapabilitiesResponse extends CapabilitiesResponse {
      * @return DOCUMENT ME!
      */
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
-        CapabilitiesResponseHandler cr = new WmsCapabilitiesResponseHandler(contentHandler);
+        CapabilitiesResponseHandler cr = new WmsCapabilitiesResponseHandler(contentHandler, request.getGeoServer());
         cr.setPrettyPrint(true, request.getGeoServer().isVerbose() );
 
         return cr;

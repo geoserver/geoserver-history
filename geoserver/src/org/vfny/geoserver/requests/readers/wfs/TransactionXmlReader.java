@@ -29,7 +29,7 @@ import org.xml.sax.helpers.ParserAdapter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionXmlReader.java,v 1.2.2.4 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: TransactionXmlReader.java,v 1.2.2.5 2004/01/06 22:05:09 dmzwiers Exp $
  */
 public class TransactionXmlReader extends XmlRequestReader {
     /**
@@ -47,9 +47,8 @@ public class TransactionXmlReader extends XmlRequestReader {
 
         // instantiante parsers and content handlers
         TransactionHandler contentHandler = new TransactionHandler();
-        TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler,
-                null);
-        TransactionFeatureHandler featureParser = new TransactionFeatureHandler(filterParser);
+        TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler,null);
+        TransactionFeatureHandler featureParser = new TransactionFeatureHandler(filterParser,contentHandler.getRequest());
         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(featureParser);
         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);
 

@@ -13,7 +13,7 @@ import org.vfny.geoserver.global.dto.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.1.2.2 2004/01/05 23:26:26 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.1.2.3 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -33,7 +33,7 @@ public class WMS extends Service {
     public WMS(WMSDTO config){
     	super(config.getService());
     	this.config = config;
-    	URL = GeoServer.getInstance().getBaseUrl() + "/wms";
+    	//URL = GeoServer.getInstance().getBaseUrl() + "/wms";
     }
 
 	Object getDTO(){
@@ -76,7 +76,7 @@ public class WMS extends Service {
      *
      * @return DOCUMENT ME!
      */
-    public String getVersion() {
+    public static String getVersion() {
         return WMS_VERSION;
     }
 

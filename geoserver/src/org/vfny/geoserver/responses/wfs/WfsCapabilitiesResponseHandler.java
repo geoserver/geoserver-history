@@ -17,14 +17,14 @@ import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
+import org.vfny.geoserver.requests.*;
 
 /**
  * Handles a Wfs specific sections of the capabilities response.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.6 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.7 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -32,13 +32,15 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     protected static final String XSI_PREFIX = "xsi";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
+	protected Request request;
     /**
      * Creates a new WfsCapabilitiesResponseHandler object.
      *
      * @param handler DOCUMENT ME!
      */
-    public WfsCapabilitiesResponseHandler(ContentHandler handler) {
+    public WfsCapabilitiesResponseHandler(ContentHandler handler,Request request) {
         super(handler);
+        this.request = request;
     }
 
     /**
@@ -54,7 +56,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         attributes.addAttribute("", "version", "version", "", CUR_VERSION);
         attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
 
-        NameSpace[] namespaces = catalog.getNameSpaces();
+        NameSpace[] namespaces = request.getGeoServer().getData().getNameSpaces();
 
         for (int i = 0; i < namespaces.length; i++) {
             String prefixDef = "xmlns:" + namespaces[i].getPrefix();
@@ -70,7 +72,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         String locationAtt = XSI_PREFIX + ":schemaLocation";
         String locationDef = WFS_URI + " "
-            + GeoServer.getInstance().getWFS().getWfsCapLocation();
+            + request.getGeoServer().getSchemaBaseUrl() + WFS.WFS_CAP_LOC;
         attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
         startElement("WFS_Capabilities", attributes);
     }
@@ -146,7 +148,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         startElement("DCPType");
         startElement("HTTP");
 
-        String baseUrl = config.getURL();
+        String baseUrl = request.getGeoServer().getBaseUrl() + "wfs/";
         String url = baseUrl + capabilityName + "?";
         attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
 
@@ -193,7 +195,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
         endElement("Operations");
 
-        Collection featureTypes = server.getData().getFeatureTypes().values();
+        Collection featureTypes = request.getGeoServer().getData().getFeatureTypes().values();
         FeatureTypeInfo ftype;
 
         for (Iterator it = featureTypes.iterator(); it.hasNext();) {

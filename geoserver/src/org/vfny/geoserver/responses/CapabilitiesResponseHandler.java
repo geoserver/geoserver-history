@@ -18,14 +18,14 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.6 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.7 2004/01/06 22:05:08 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
 
     /** DOCUMENT ME! */
-    protected static final GeoServer server = GeoServer.getInstance();
-    protected static final Data catalog = server.getData();
+    //protected static final GeoServer server = GeoServer.getInstance();
+    //protected static final Data catalog = server.getData();
 
     /**
      * Creates a new CapabilitiesResponseHandler object.
