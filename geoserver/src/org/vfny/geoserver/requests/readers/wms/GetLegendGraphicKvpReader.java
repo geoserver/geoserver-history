@@ -139,14 +139,14 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
         if ((width != null) && !"".equals(width)) {
             int legendW = Integer.valueOf(width).intValue();
-            req.setScale(legendW);
+            req.setWidth(legendW);
         }
 
         String height = getValue("HEIGHT");
 
         if ((height != null) && !"".equals(height)) {
             int legendH = Integer.valueOf(height).intValue();
-            req.setScale(legendH);
+            req.setHeight(legendH);
         }
 
         String exceptions = getValue("EXCEPTIONS");
