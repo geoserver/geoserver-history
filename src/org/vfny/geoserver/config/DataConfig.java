@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.6 2004/01/15 22:09:16 jive Exp $
+ * @version $Id: DataConfig.java,v 1.7 2004/01/17 22:33:12 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -226,6 +226,7 @@ public class DataConfig {
         Iterator i = null;
 
         tmp = new HashMap();
+        dt.setDataStores(tmp);
         i = dataStores.keySet().iterator();
 
         while (i.hasNext()) {
@@ -233,9 +234,9 @@ public class DataConfig {
             tmp.put(key, ((DataStoreConfig) dataStores.get(key)).toDTO());
         }
 
-        dt.setDataStores(tmp);
 
         tmp = new HashMap();
+        dt.setFeaturesTypes(tmp);
         i = featuresTypes.keySet().iterator();
 
         while (i.hasNext()) {
@@ -243,9 +244,9 @@ public class DataConfig {
             tmp.put(key, ((FeatureTypeConfig) featuresTypes.get(key)).toDTO());
         }
 
-        dt.setFeaturesTypes(tmp);
 
         tmp = new HashMap();
+        dt.setStyles(tmp);
         i = styles.keySet().iterator();
 
         while (i.hasNext()) {
@@ -253,9 +254,9 @@ public class DataConfig {
             tmp.put(key, ((StyleConfig) styles.get(key)).toDTO());
         }
 
-        dt.setStyles(tmp);
 
         tmp = new HashMap();
+        dt.setNameSpaces(tmp);
         i = nameSpaces.keySet().iterator();
 
         while (i.hasNext()) {
@@ -268,7 +269,6 @@ public class DataConfig {
             }
         }
 
-        dt.setNameSpaces(tmp);
 
         return dt;
     }
