@@ -6,7 +6,9 @@
  */
 package org.vfny.geoserver.action.data;
 import java.io.IOException;
+import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataAttributeTypesEditorForm;
 /**
  * @author User
@@ -39,10 +43,25 @@ public class DataAttributeTypesEditorAction extends ConfigAction {
 		int maxOccurs = Integer.parseInt(form.getMaxOccurs());
 		String selectedType = form.getSelectedType();
 		boolean nillible = form.isNillible();
+        
 		boolean ref = form.isRef();
 		String name = form.getName();
-		
-		AttributeTypeInfoConfig atiConfig = null; //Retrive ATIConfig info to update it.
+
+        ServletContext context = getServlet().getServletContext();
+        DataConfig dataConfig = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+        FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+        AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) request.getSession().getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
+        
+        atiConfig.setFragment(fragment);
+        atiConfig.setMinOccurs(minOccurs);
+        atiConfig.setMaxOccurs(maxOccurs);
+        atiConfig.setNillable(nillible);
+        atiConfig.setType(selectedType);
+        
+        List list = ftConfig.getSchemaAttributes();
+        list.remove(atiConfig);
+        list.add(atiConfig);
+        ftConfig.setSchemaAttributes(list);
 		
 		return mapping.findForward("dataConfigFeatureTypes");
 	}

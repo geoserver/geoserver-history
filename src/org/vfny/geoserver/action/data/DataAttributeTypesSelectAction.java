@@ -45,7 +45,7 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
         
 		//SAVE SELECTED ATTRIBUTE AND FORWARD TO EDITOR
 		if (action.equals("edit")) {
-			request.getSession().setAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE, form.getSelectedAttributeType());
+			request.getSession().setAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE, config);
 			form.reset(mapping, request);
 			return mapping.findForward("dataConfigFeatureTypes");
 		}

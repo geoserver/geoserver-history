@@ -45,7 +45,7 @@ import org.vfny.geoserver.form.data.DataFeatureTypesNewForm;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.1 2004/01/20 00:23:07 emperorkefka Exp $
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.2 2004/01/20 22:15:44 emperorkefka Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
 	public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
@@ -85,7 +85,8 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 		ftConfig.setSRS(0);
 		
 		request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);		
-		
+        request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
+        
 		return mapping.findForward("dataConfigFeatureTypes");
 	}
 }

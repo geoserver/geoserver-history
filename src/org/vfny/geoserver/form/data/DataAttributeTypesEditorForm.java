@@ -48,22 +48,26 @@ public class DataAttributeTypesEditorForm extends ActionForm {
 	public void reset(ActionMapping arg0, HttpServletRequest request) {
 		super.reset(arg0, request);
         this.request = request;
-		
+        System.out.println("Run Level 0");
         FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+        System.out.println("Run Level 1");
 		AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) request.getSession().getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
-		
+        System.out.println("Run Level 2");
 		nillible = config.isNillable();
+        System.out.println("Run Level 3");
 		minOccurs = Integer.toString(config.getMinOccurs());
 		maxOccurs = Integer.toString(config.getMaxOccurs());
 		name = config.getName();
+        System.out.println("Run Level 4");
 		selectedType = config.getType();
 		fragment = config.getFragment();
-		
+        System.out.println("Run Level 5");
 		if (selectedType.equals(AttributeTypeInfoConfig.TYPE_FRAGMENT)) {
 			ref = false;
 		} else {
 			ref = true;
 		}
+        System.out.println("Run Level 6");
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -172,22 +176,25 @@ public class DataAttributeTypesEditorForm extends ActionForm {
     public SortedSet getAttributeTypes() throws IOException {
 
         TreeSet set = new TreeSet();
-        
         ServletContext context = getServlet().getServletContext();
         DataConfig dataConfig = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
         FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
                 
         DataStore dataStore = dataConfig.getDataStore(ftConfig.getDataStoreId()).findDataStore();
-       
         FeatureType featureType = dataStore.getSchema(ftConfig.getName());
         AttributeType[] types = featureType.getAttributeTypes();
+        AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) request.getSession().getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
         
         for (int i = 0; i < types.length; i++) {
-            List list = GMLUtils.schemaList(types[i].getName(), types[i].getClass());
-            for (Iterator iter = list.iterator(); iter.hasNext();) {
-				String element = (String) iter.next();
-                set.add(element);
-			}
+            
+            if (atiConfig.getName().equals(types[i].getName())) {
+                List list = GMLUtils.schemaList(types[i].getName(), types[i].getType());
+                
+                for (Iterator iter = list.iterator(); iter.hasNext();) {
+    				String element = (String) iter.next();
+                    set.add(element);
+    			}
+            }
         }    
         return set;
     }
