@@ -201,6 +201,9 @@
        	<forward
        		name="config.validation.test.doit"
        		path="/config/validation/suiteRun.do"/>
+       	<forward
+       		name="config.validation.test.doitStop"
+       		path="/config/validation/suiteStop.do"/>       		
         <forward
         	name="validationTestEditor"
         	path="/config/validation/testEdit.do"/>
@@ -741,6 +744,15 @@
         <action
         	path ="/config/validation/suiteRun"
         	type="org.vfny.geoserver.action.validation.ValidationTestDoIt"
+        	name="validationTestDoIt"
+        	scope="request"
+        	validate="true"
+        	input="/config/validation/suite.do"/>
+
+        <action	
+        	path="/config/validation/suiteStop"
+        	type="org.vfny.geoserver.action.validation.ValidationTestDoIt"
+        	parameter="stop"
         	name="validationTestDoIt"
         	scope="request"
         	validate="true"
