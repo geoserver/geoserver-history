@@ -37,6 +37,8 @@ public class DataFeatureTypesEditorForm extends ActionForm {
     private String bBox;
 	private String keywords;
 	private String _abstract;
+    private boolean _default;
+	private boolean defaultChecked;
 	
     /**
      * Set up FeatureTypeEditor from from Web Container.
@@ -73,6 +75,8 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 		name = ftConfig.getName();
 		SRS = Integer.toString(ftConfig.getSRS());
 		title = ftConfig.getTitle();
+        _default = (ftConfig.getSchemaAttributes() == null) || (ftConfig.getSchemaAttributes().isEmpty());
+        defaultChecked = false;
 		
         StringBuffer buf = new StringBuffer();
         for( Iterator i=ftConfig.getKeywords().iterator(); i.hasNext();){
@@ -204,4 +208,31 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 		title = string;
 	}
 
+	/**
+	 * Access _default property.
+	 * 
+	 * @return Returns the _default.
+	 */
+	public boolean is_default() {
+		return _default;
+	}
+
+	/**
+	 * Set _default to _default.
+	 *
+	 * @param _default The _default to set.
+	 */
+	public void set_default(boolean _default) {
+        defaultChecked = true;
+		this._default = _default;
+	}
+
+	/**
+	 * Access defaultChecked property.
+	 * 
+	 * @return Returns the defaultChecked.
+	 */
+	public boolean isDefaultChecked() {
+		return defaultChecked;
+	}
 }

@@ -48,6 +48,10 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
 		String latLonBoundingBox = featureTypesForm.getLatlonBoundingBox();
 		String keywords = featureTypesForm.getKeywords();
 		String _abstract = featureTypesForm.get_abstract();
+        boolean _default = featureTypesForm.is_default();
+        if (featureTypesForm.isDefaultChecked() == false){
+        	_default = false;
+        }
 		
 		DataConfig dataConfig = (DataConfig) getDataConfig();			
 		FeatureTypeConfig config = dataConfig.getFeatureTypeConfig(name); //TODO - RETRIEVE featuretype config		
@@ -66,9 +70,12 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
 		}
 	
 		config.setKeywords(list);
-		
-		//config.setKeywords()			
-		//TODO save somehow - dataConfig.addFeatureType(name, config);
+
+        if (_default) {
+        	config.setSchemaAttributes(null);
+        }
+        
+        dataConfig.addFeatureType(name, config);
 			
 		featureTypesForm.reset(mapping, request);
 			

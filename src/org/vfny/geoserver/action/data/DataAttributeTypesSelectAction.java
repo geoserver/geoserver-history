@@ -57,7 +57,41 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
             ftConfig.setSchemaAttributes(list);
 			return mapping.findForward("dataConfigFeatureTypes");
 		}
+        
+        if (action.equals("moveUp") || action.equals("moveDown") ) {
+            
+            int direction = 0;
+            
+            if (action.equals("moveUp")) {
+                direction = -1;
+            } else if (action.equals("moveDown")) {
+            	direction = 1;
+            }
+            
+            List list = ftConfig.getSchemaAttributes();
+            
+            //the index of the object to be moved;
+            int targetIndex = list.indexOf(config);
+            System.out.println("TargetIndex:"+targetIndex);
+            
+            if (targetIndex == 0 && action.equals("moveUp")) {
+                return mapping.findForward("dataConfigFeatureTypes"); 
+            }
+            
+            if (targetIndex == list.size()-1 && action.equals("moveDown")) {
+                return mapping.findForward("dataConfigFeatureTypes");
+            }
+            
+            //retrieve the object currently where this one wants to go
+            Object temp = list.get(targetIndex+direction);
+            
+            list.set(targetIndex+direction, config);
+            list.set(targetIndex, temp);
+            
+            return mapping.findForward("dataConfigFeatureTypes");
+        }
+            
 		
-		throw new ServletException("Action must equal either 'edit' or 'delete'");        		
+		throw new ServletException("Action must equal either 'edit', 'delete', 'moveUp' or 'moveDown'");        		
 	}
 }

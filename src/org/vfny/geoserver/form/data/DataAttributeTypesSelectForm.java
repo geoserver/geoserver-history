@@ -52,7 +52,7 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 		return errors;
 	}
 	
-	public SortedSet getAttributeTypes() {
+	public List getAttributeTypes() {
 
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
@@ -61,14 +61,14 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);		
         
         List list = ftConfig.getSchemaAttributes();
-        SortedSet set = new TreeSet();
-        
+        List listOfNames = new ArrayList();
+       
         for (Iterator iter = list.iterator(); iter.hasNext();) {
 			AttributeTypeInfoConfig element = (AttributeTypeInfoConfig) iter.next();
-			set.add(element.getName());
+			listOfNames.add(element.getName());
 		}
 		
-		return Collections.unmodifiableSortedSet(set);
+		return Collections.unmodifiableList(listOfNames);
     }
         
 	/**

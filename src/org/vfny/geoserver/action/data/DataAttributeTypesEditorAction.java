@@ -44,7 +44,6 @@ public class DataAttributeTypesEditorAction extends ConfigAction {
 		String selectedType = form.getSelectedType();
 		boolean nillible = form.isNillible();
         
-		boolean ref = form.isRef();
 		String name = form.getName();
 
         ServletContext context = getServlet().getServletContext();
