@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sld:NamedLayer xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
-    <sld:UserStyle>
-        <sld:Name>Default Styler</sld:Name>
-        <sld:Title>Default Styler</sld:Title>
-        <sld:Abstract></sld:Abstract>
-        <sld:FeatureTypeStyle>
-            <sld:FeatureTypeName>Feature</sld:FeatureTypeName>
-            <sld:Rule>
-                <sld:Name>name</sld:Name>
-                <sld:Abstract>Abstract</sld:Abstract>
-                <sld:Title>title</sld:Title>
-                <sld:LineSymbolizer>
-                    <sld:Stroke>
-                        <sld:CssParameter name="stroke">
+<StyledLayerDescriptor version="1.0.0" 
+	xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+	xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <UserStyle>
+        <Name>Default Styler</Name>
+        <Title>Default Styler</Title>
+        <Abstract></Abstract>
+        <FeatureTypeStyle>
+            <FeatureTypeName>Feature</FeatureTypeName>
+            <Rule>
+                <Name>name</Name>
+                <Abstract>Abstract</Abstract>
+                <Title>title</Title>
+                <LineSymbolizer>
+                    <Stroke>
+                        <CssParameter name="stroke">
                             <ogc:Literal>#000000</ogc:Literal>
-                        </sld:CssParameter>
-                        <sld:CssParameter name="stroke-width">
+                        </CssParameter>
+                        <CssParameter name="stroke-width">
                             <ogc:Literal>5</ogc:Literal>
-                        </sld:CssParameter>
-                    </sld:Stroke>
-                </sld:LineSymbolizer>
-            </sld:Rule>
-        </sld:FeatureTypeStyle>
-    </sld:UserStyle>
-</sld:NamedLayer>
+                        </CssParameter>
+                    </Stroke>
+                </LineSymbolizer>
+            </Rule>
+        </FeatureTypeStyle>
+    </UserStyle>
+</StyledLayerDescriptor>
