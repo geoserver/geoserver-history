@@ -24,8 +24,8 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.10 2004/02/16 21:42:19 dmzwiers Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: AttributeTypeInfo.java,v 1.11 2004/03/14 05:20:24 cholmesny Exp $
  */
 public class AttributeTypeInfo implements AttributeTypeMetaData {
 	private String name;
@@ -216,6 +216,11 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
 	 */
 	public boolean isNillable() {
 		return nillable;
+	}
+	
+	public String toString() {
+		return "[AttributeTypeInfo backed by " + toDTO() + " with type " + type + 
+				" and meta " + meta;
 	}
 
 }
