@@ -13,6 +13,7 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
+import org.geotools.data.DataStoreFinder;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.*;
 import org.vfny.geoserver.WfsException;
@@ -31,7 +32,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.8 2003/11/25 05:35:41 jive Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.9 2003/12/03 19:15:07 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
     /** DOCUMENT ME! */
@@ -104,12 +105,16 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
                 defaultNameSpace = ns;
             }
 
-            LOGGER.config("added namespace " + ns);
+            LOGGER.config("Added NameSpace: " + ns);
             nameSpaces.put(name, ns);
         }
 
         LOGGER.info("loading DataStore configuration");
+	Iterator iter = DataStoreFinder.getAvailableDataSources();
 
+        while (iter.hasNext()) {
+            LOGGER.fine(iter.next() + " is an available DataSource");
+        }
         // gt2 currently assumes one datastore per namespace
         //
         // I know this is wrong, please feed our requirements into the gt2
