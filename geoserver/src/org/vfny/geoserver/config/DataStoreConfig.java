@@ -15,7 +15,7 @@ import java.util.logging.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreConfig.java,v 1.1.2.4 2003/11/17 09:00:24 jive Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.5 2003/12/03 20:50:30 cholmesny Exp $
  */
 public class DataStoreConfig extends AbstractConfig {
     
@@ -71,7 +71,7 @@ public class DataStoreConfig extends AbstractConfig {
         this.title = getChildText(dsElem, "title", false);
         this._abstract = getChildText(dsElem, "abstract", false);
         loadConnectionParams(getChildElement(dsElem, "connectionParams", true));
-        LOGGER.info("created DataStore " + toString());
+        LOGGER.info("created " + toString());
     }
     /**
      * Configuration based on gt2 Catalog information.
@@ -166,6 +166,7 @@ public class DataStoreConfig extends AbstractConfig {
         if( dataStore == null ){
             try {
                 dataStore = DataStoreFinder.getDataStore(connectionParams);
+		LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
                 throw new DataSourceException("can't create the datastore " +
                                             getId() + ": " +
@@ -173,8 +174,9 @@ public class DataStoreConfig extends AbstractConfig {
                                             ex.getMessage(), ex);
             }
             if (dataStore == null) {
+		LOGGER.fine("failed to establish connection with " + toString());
                 throw new NoSuchElementException(
-                    "No datastore found capable of manage " + toString());
+                    "No datastore found capable of managing " + toString());
             }
         }
         return dataStore;
