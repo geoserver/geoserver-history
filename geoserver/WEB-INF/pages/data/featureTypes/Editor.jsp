@@ -134,6 +134,8 @@
     </tr>
 
           <% boolean first = true;
+             org.vfny.geoserver.form.data.AttributeDisplay attributeDisplay = null;;
+             org.vfny.geoserver.form.data.AttributeForm attributeForm = null; 
              
              org.vfny.geoserver.form.data.TypesEditorForm form = 
                      (org.vfny.geoserver.form.data.TypesEditorForm) request.getAttribute("typesEditorForm");
@@ -149,20 +151,22 @@
         <table border=0 width="100%">
           <tr style="white-space: nowrap;">
             
-		  <% if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) { %>
+		  <% if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) { 
+		  	     attributeDisplay = (org.vfny.geoserver.form.data.AttributeDisplay) attribute; %>
             <td width="70%"><bean:write name="attribute" property="type"/></td>
             <td>nillable:<bean:write name="attribute" property="nillable"/></td>
             <td>min:<bean:write name="attribute" property="minOccurs"/></td>
             <td>max:<bean:write name="attribute" property="maxOccurs"/></td>
-          <% } else { %>
+          <% } else { 
+                 attributeForm = (org.vfny.geoserver.form.data.AttributeForm) attribute; %>
             <td width="70%">
             	<html:select property='<%= "attributes[" + index + "].type"%>'>
           			<html:options property='<%= "attributes[" + index + "].types"%>'/>
         		</html:select>
             </td>
-            <td><bean:message key="nillable"/>:<html:checkbox property='<%= "attributes[" + index + "].nillable" %>'/></td>
-            <td><bean:message key="min"/>:<html:text size="2" property='<%= "attributes[" + index + "].minOccurs"%>'/></td>
-            <td><bean:message key="max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
+            <td><bean:message key="label.nillable"/>:<html:checkbox property='<%= "attributes[" + index + "].nillable" %>'/></td>
+            <td><bean:message key="label.min"/>:<html:text size="2" property='<%= "attributes[" + index + "].minOccurs"%>'/></td>
+            <td><bean:message key="label.max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
             <td width=16>
               <% if (first == false) { %>
           	  <html:image src="../../../images/up.png" 
@@ -190,7 +194,18 @@
           </tr>
           <tr>
             <td>
-              <pre><code><bean:write name="attribute" property="fragment"/></code></pre>
+              <pre><code>
+              <% boolean fragment = false;
+
+              if (attributeForm != null && attributeForm.getType().equals(org.vfny.geoserver.config.AttributeTypeInfoConfig.TYPE_FRAGMENT)) {
+              	fragment = true;
+              } %>
+              		<html:textarea cols="80" rows="3" 
+              		               property='<%= "attributes[" + index + "].fragment" %>'
+              		               disabled='<%= fragment %>'/>
+              		               
+              		              
+              </code><%= fragment %></pre>
             </td>
           </tr>
         </table>		
