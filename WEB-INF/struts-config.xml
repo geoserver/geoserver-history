@@ -151,7 +151,7 @@
         	
        	<forward
        		name="config"
-       		path="/GeoServerConfiguration.do"/>
+       		path="/Configuration.do"/>
        		
        	<forward
        		name="wfs"
@@ -248,7 +248,7 @@
         	
         <!-- CONFIG -->
         <action
-        	path="/GeoServerConfiguration"
+        	path="/Configuration"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config"
         	name="blankBean"/>
@@ -264,6 +264,11 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="wfs.description"/>
 
+        <action
+        	path="/WFSConfigContent"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wfs.content"/>
+        	
         <!-- CONFIG WMS -->       	
         <action
         	path="/WMSConfigMenu"
@@ -362,7 +367,7 @@
 			name="loginForm"
 			scope="request"
 			validate="true"
-			input="main.login"/>
+			input="welcome.login"/>
 
 		<action    	
         	path="/GeoServerConfigurationSubmit"

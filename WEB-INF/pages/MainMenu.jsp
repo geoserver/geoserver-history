@@ -2,11 +2,14 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 
 <span class="mainMenu">
-<html:link forward="validation">
+<html:link forward="Validation">
   <bean:message key="label.validationConfig"/>
 </html:link><br>
 
-<html:link forward="geoServerConfiguration"><bean:message key="label.geoServerConfiguration"/></html:link><br>
+<html:link forward="Configuration">
+  <bean:message key="label.geoServerConfiguration"/>
+</html:link>
+<br>
 
 Number of Locks: --<BR>
 Number of Connections: --<BR>

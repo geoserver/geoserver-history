@@ -4,8 +4,12 @@
 
 <span class="buttons">
 	<span class="buttonLabel">
-		<html:link forward="administration"><bean:message key="label.server"/></html:link><br>
-		<html:link forward="validation"><bean:message key="label.validation"/></html:link>
+		<html:link forward="admin">
+		  <bean:message key="label.server"/>
+		</html:link><br>
+		<html:link forward="validation">
+		  <bean:message key="label.validation"/>
+		</html:link>
 	</span>
 	
 	<logic:equal name="GeoServer.ApplicationState" property="configChanged" value="true">
@@ -14,7 +18,14 @@
 	<logic:notEqual name="GeoServer.ApplicationState" property="configChanged" value="true">
 		<span class="configUnchanged">
 	</logic:notEqual>
-			<html:link forward="wfsConfigMenu"><bean:message key="label.wfs"/></html:link><logic:equal name="GeoServer.ApplicationState" property="geoServerChanged" value="true">*</logic:equal>
+	
+			<html:link forward="wfsConfigMenu">
+			  <bean:message key="label.wfs"/>
+			</html:link>
+			
+			<logic:equal name="GeoServer.ApplicationState" property="geoServerChanged" value="true">
+			  *
+			</logic:equal>
 	</span>
 	
 	<logic:equal name="GeoServer.ApplicationState" property="configChanged" value="true">		

@@ -5,21 +5,30 @@
 
 <html:html locale="true">
 
-<bean:define id="titleKey">
-	<tiles:getAsString name='title'/>
+<bean:define id="key">
+	<tiles:getAsString name='key'/>
 </bean:define>
-
+<bean:define id="keyTitle">
+	<tiles:getAsString name='key'/>.title
+</bean:define>
+<bean:define id="keyShort">
+	<tiles:getAsString name='key'/>.short
+</bean:define>
+<bean:define id="keyWords">
+	<tiles:getAsString name='key'/>.words
+</bean:define>
 <head>
   <title>
-    GeoServer - <bean:message key="<%= titleKey %>"/>
+    <bean:message key="geoserver.logo"/>
+    <bean:message key="<%= keyTitle %>"/>
   </title>
 
   <meta content="text/html; charset=iso-8859-1" http-equiv="content-type">
-  <meta content="text/css" http-equiv="content-style-type">
+  <meta content="text/css" http-equiv="content-style-type">  
   <meta name="description"
-        content="Template created on Feb 11, 2004">
+        content="    <bean:message key="<%= keyShort %>"/>">
   <meta name="keywords"
-        content="(GeoServer) (WFS) (Web Feature Server) (GIS) (Geographic Information Systems)">
+        content="(GeoServer) (GIS) (Geographic Information Systems)     <bean:message key="<%= keyWords %>"/>"/>
   <meta name="author" content="Jody Garnett, Richard Gould">
 
   <style type="text/css">
@@ -90,16 +99,19 @@
               </td>
               <td class="loginStatus">
                 <span class="loginStatus">
+                  
                   <logic:present name="GEOSERVER.USER">
                     <html:link forward="logout">
 				      <bean:message key="label.logout"/>
 			        </html:link>
                   </logic:present>
+                  
                   <logic:notPresent name="GEOSERVER.USER">
                     <html:link forward="login">
                       <bean:message key="label.login"/>
                     </html:link>
                   </logic:notPresent>
+                  
                 </span>
               </td>
             </tr>
@@ -107,7 +119,7 @@
               <td class="<tiles:getAsString name='layer'/>"
                   rowspan="1" colspan="2">
                 <h1 class="title">
-                  <bean:message key="<%= titleKey %>"/>
+                  <bean:message key="<%= keyTitle %>"/>
                 </h1>  
                 <tiles:insert attribute="body"/>                
               </td>
