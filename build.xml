@@ -596,6 +596,7 @@
         extension=".html"
         style="${dir.doc}/../docbook-xsl/html/docbook.xsl"
         includes="*.xml"
+        excludes="jetty.xml admin.xml jalopy.geoserver.xml"
         processor="trax">
         <param name="section.autolabel" expression="1"/>
         <param name="toc.section.depth" expression="4"/>
