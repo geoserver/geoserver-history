@@ -11,6 +11,8 @@ A styling layer used for the unit tests of sldstyler
 <UserStyle>
     <!-- again they have names, titles and abstracts -->
   <Name>normal</Name>
+  <Title>A boring default style</Title>
+  <Abstract>A sample style that just prints out a black line for everything</Abstract>
     <!-- FeatureTypeStyles describe how to render different features -->
     <!-- a feature type for polygons -->
     <FeatureTypeStyle>

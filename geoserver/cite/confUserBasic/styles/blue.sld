@@ -10,7 +10,11 @@ A styling layer used for the unit tests of sldstyler
 <!-- with in a layer you have Named Styles -->
 <UserStyle>
     <!-- again they have names, titles and abstracts -->
-  <Name>polyshp</Name>
+  <Name>Blue</Name>
+  <Title>A blue linestring style</Title>
+  <Abstract>A sample style that uses a filter, printing only the
+            lines with a LENGTH property of over 5000.  This will work
+            with the default bc_roads layer</Abstract>
     <!-- FeatureTypeStyles describe how to render different features -->
     <!-- a feature type for polygons -->
     <FeatureTypeStyle>
