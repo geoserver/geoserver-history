@@ -40,7 +40,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.9 2004/01/10 02:12:23 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.10 2004/01/10 02:13:22 emperorkefka Exp $
  */
 public class DataConfig{
 	public static final String CONFIG_KEY = "Config.Data";
@@ -291,7 +291,7 @@ public class DataConfig{
 	 * </p>
 	 * @return
 	 */
-	public FeatureTypeConfig getFeatureType(String key) {
+	public FeatureTypeConfig getFeatureTypeConfig(String key) {
 		return (FeatureTypeConfig)featuresTypes.get(key);
 	}
 
