@@ -52,16 +52,21 @@ public class WfsConfig implements java.io.Serializable {
     
     public static final String DEFAULT_ATTR = "default";
 
-    public static final String URL_TAG = "OnlineResource";
+    public static final String ONLINE_TAG = "OnlineResource";
+
+    public static final String URL_TAG = "URL";
 
     public static final String DEFAULT_PREFIX = "myns";
+
 
         /** Standard logging in stance for class */
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.config");
 
-    public String defaultPrefix;
+    private String defaultPrefix;
 
+    private String baseUrl;
+    
     /** The holds the mappings between prefixes and uri's*/
     private Map nameSpaces = new HashMap();
 
@@ -125,10 +130,18 @@ public class WfsConfig implements java.io.Serializable {
 		}
 	    }
 	
-	    if (configElem.getElementsByTagName(VERBOSE_TAG).item(0) != null){
-		LOGGER.finer("setting verbose to true");
-		wfsConfig.setVerbose(true);
+	    Element verboseElem = 
+		(Element) configElem.getElementsByTagName(VERBOSE_TAG).item(0);
+	    if (verboseElem != null){
+		if (verboseElem.getAttribute("value").equals("true")){
+		    wfsConfig.setVerbose(true);
+		}
 	    }
+
+	    String baseUrl = 
+		ServiceConfig.findTextFromTag(configElem, URL_TAG);
+	    wfsConfig.setBaseUrl(baseUrl);
+
 	    HashMap namespaces = new HashMap();
 	    NodeList namespaceElems = 
 		configElem.getElementsByTagName(NAMESPACE_TAG);
@@ -157,7 +170,7 @@ public class WfsConfig implements java.io.Serializable {
 	    }
 	    if (!newDefault) {
 		String defaultURI = ServiceConfig.findTextFromTag
-		    (configElem, ServiceConfig.URL_TAG);
+		    (configElem, ServiceConfig.ONLINE_TAG);
 		defaultURI += defaultURI.endsWith("/") ? "" : "/";
 		defaultURI += DEFAULT_PREFIX;
 		LOGGER.finest("adding uri " + defaultURI);
@@ -210,6 +223,21 @@ public class WfsConfig implements java.io.Serializable {
      */
     void setNamespaces(Map nameSpaces){
 	this.nameSpaces = nameSpaces;
+    }
+
+     /** 
+    * Gets the base url of this wfs.  
+    */
+    public String getBaseUrl()
+    {
+        return this.baseUrl;
+    }
+    
+    /** 
+     * Sets the base url of this wfs.
+     */
+    void setBaseUrl(String baseUrl){
+	this.baseUrl = baseUrl;
     }
 
     /**

@@ -42,7 +42,7 @@ public class ServiceConfig implements java.io.Serializable {
 
     public static final String KEYWORD_TAG = "Keyword";
 
-    public static final String URL_TAG = "OnlineResource";
+    public static final String ONLINE_TAG = "OnlineResource";
 
     public static final String FEES_TAG = "Fees";
 
@@ -156,7 +156,7 @@ public class ServiceConfig implements java.io.Serializable {
 		
 	    String name = findTextFromTag(configElem, NAME_TAG);
 	    String title = findTextFromTag(configElem, TITLE_TAG);
-	    String url = findTextFromTag(configElem, URL_TAG);
+	    String url = findTextFromTag(configElem, ONLINE_TAG);
 	    if (name == null || title == null || url == null) {
 		String message = "<Name>, <Title>, and <OnlineResource> are all " +
 		    "required for a proper a valid Service section.";
