@@ -73,7 +73,7 @@ public class DataAttributeTypesNewForm extends ActionForm {
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 		System.out.println("HATE LEVEL 1");
-		FeatureTypeConfig ftConfig = config.getFeatureTypeConfig((String) request.getSession().getAttribute("selectedFeatureType"));
+		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
 		String dataStoreID = ftConfig.getDataStoreId();
 		DataStoreConfig dsConfig = config.getDataStore(dataStoreID);
 		System.out.println("HATE LEVEL 2");
@@ -83,13 +83,13 @@ public class DataAttributeTypesNewForm extends ActionForm {
 		System.out.println("HATE LEVEL 4");	
 		DataStore dataStore = DataStoreUtils.aquireDataStore(params);
 System.out.println("BORKBORKNBOBRKHJROJFALDKJFLAKD");
-		String selectedFeatureType = (String) request.getSession().getAttribute("selectedFeatureType");
-		System.out.println("ATNew::getNewAttributeTypes -- sFeatureType = " +selectedFeatureType);
+		
+		
 		//int index = selectedFeatureType.indexOf(dataStoreID+".");
 		//String attributeTypeName = selectedFeatureType.substring(index);
 		//System.out.println("ATNew::getNewAttributeTypes -- index = " +index+", substr = " +selectedNewAttributeType);
-		FeatureType featureType = dataStore.getSchema(selectedFeatureType);
-		
+		FeatureType featureType = dataStore.getSchema(ftConfig.getName());
+        
 		return Collections.unmodifiableSortedSet(new TreeSet(
 				Arrays.asList(featureType.getAttributeTypes())
 		));
