@@ -40,8 +40,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.14 2004/04/07 23:31:25 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.15 2004/04/13 21:56:07 emperorkefka Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -151,8 +151,8 @@ public class TypesEditorForm extends ActionForm {
         } else {
             minX = Double.toString(bounds.getMinX());
             minY = Double.toString(bounds.getMinY());
-            maxY = Double.toString(bounds.getMaxX());
-            maxX = Double.toString(bounds.getMaxY());
+            maxX = Double.toString(bounds.getMaxX());
+            maxY = Double.toString(bounds.getMaxY());
         }
         name = type.getName();
         SRS = Integer.toString(type.getSRS());
@@ -322,16 +322,16 @@ public class TypesEditorForm extends ActionForm {
         // check name exists in current DataStore?
         if ("".equals(minX)
          || "".equals(minY)
-         || "".equals(maxY)
-         || "".equals(maxX)) {           
+         || "".equals(maxX)
+         || "".equals(maxY)) {           
             errors.add("latlongBoundingBox",
                 new ActionError("error.latLonBoundingBox.required"));
         } else {
             try {
                 Double.parseDouble(minX);
                 Double.parseDouble(minY);
-                Double.parseDouble(maxY);
                 Double.parseDouble(maxX);
+                Double.parseDouble(maxY);
             } catch (NumberFormatException badNumber) {
                 errors.add("latlongBoundingBox",
                     new ActionError("error.latLonBoundingBox.invalid",
