@@ -33,11 +33,13 @@ import org.geotools.data.LockingManager;
 import org.geotools.data.NamespaceMetaData;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.styling.SLDStyle;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -52,7 +54,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.16 2004/01/19 23:05:32 jive Exp $
+ * @version $Id: Data.java,v 1.17 2004/01/20 00:57:24 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -254,13 +256,13 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * @param dto configDTO
      * @return
      */
-    private final Map loadFeatureTypes( DataDTO dto ) throws ConfigurationException{
+    private final Map loadFeatureTypes( DataDTO dto ) {
         if (dto== null || dto.getFeaturesTypes() == null) {
             throw new NullPointerException("Non null list of FeatureTypes required");
         }
         Map map = new HashMap();
         
-        for( Iterator i=dto.getFeaturesTypes().values().iterator(); i.hasNext();){
+        SCHEMA: for( Iterator i=dto.getFeaturesTypes().values().iterator(); i.hasNext();){
             FeatureTypeInfoDTO featureTypeDTO = (FeatureTypeInfoDTO) i.next();
             
             if( featureTypeDTO == null ){
@@ -274,30 +276,71 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             String dataStoreId = featureTypeDTO.getDataStoreId();
             LOGGER.finest("FeatureType "+key+" looking up :"+dataStoreId );
             
-            DataStoreInfo dataStoreInfo = (DataStoreInfo) dataStores.get( dataStoreId);
+            DataStoreInfo dataStoreInfo = (DataStoreInfo) dataStores.get( dataStoreId );
             
             if( dataStoreInfo == null ){
-                LOGGER.severe("FeatureTypeInfo "+key+"could not be used as as DataStore "+dataStoreId+" was not defined!");
+                LOGGER.severe("FeatureTypeInfo "+key+" could not be used - DataStore "+dataStoreId+" is not defined!");
                 continue;
             }
             else {
                 LOGGER.finest( key+" datastore found :"+dataStoreInfo );
             }
-            String prefix = dataStoreInfo.getNamesSpacePrefix();
+            // Check attributes configured correctly against schema
             String typeName = featureTypeDTO.getName();
+            try {
+                DataStore dataStore = dataStoreInfo.getDataStore();
+                FeatureType featureType = dataStore.getSchema( typeName );
+                
+                Set attributeNames = new HashSet();
+                Set ATTRIBUTENames = new HashSet();
+                for( int index=0; index<featureType.getAttributeCount(); index++ ){
+                    AttributeType attrib = featureType.getAttributeType( index );
+                    attributeNames.add( attrib.getName() );
+                    ATTRIBUTENames.add( attrib.getName().toUpperCase() );                    
+                }
+                for( Iterator a = featureTypeDTO.getSchema().iterator(); a.hasNext();){
+                    AttributeTypeInfoDTO attribDTO = (AttributeTypeInfoDTO) a.next();
+                    String attributeName = attribDTO.getName();
+                    if( !attributeNames.contains( attributeName ){                        
+                        if( ATTRIBUTENames.contains( attributeName.toUpperCase())){
+                            LOGGER.severe("FeatureTypeInfo "+key+" ignored - attribute '"+attributeName+"' not found - please check captialization");                            
+                        }
+                        else {
+                            LOGGER.severe("FeatureTypeInfo "+key+" ignored - attribute '"+attributeName+"' not found!");
+                        }
+                        continue SCHEMA;
+                    }
+                }
+            }
+            catch (IllegalStateException e) {
+                LOGGER.severe("FeatureTypeInfo "+key+" ignored - as DataStore "+dataStoreId+" is disabled!");
+                continue;
+            }
+            catch (IOException ioException) {
+                LOGGER.log( Level.SEVERE, "FeatureTypeInfo "+key+" ignored - ad DataStore "+dataStoreId+" is broken",ioException );                
+                continue;
+            }                        
+            String prefix = dataStoreInfo.getNamesSpacePrefix();            
             
             LOGGER.finest("FeatureType "+key+" creating FeatureTypeInfo for "+prefix+":"+typeName );
             
-            FeatureTypeInfo featureTypeInfo = new FeatureTypeInfo( featureTypeDTO, this );
+            FeatureTypeInfo featureTypeInfo = null;
             
+            try {
+                featureTypeInfo = new FeatureTypeInfo( featureTypeDTO, this );
+            }
+            catch (ConfigurationException configException) {
+                LOGGER.log( Level.SEVERE, "FeatureTypeInfo "+key+" ignored - due to a configuration problem", configException );
+                continue;
+            }            
             String key2 = prefix + ":" + typeName;
-            if( featureTypes.containsKey( key2 )){
+            if( map.containsKey( key2 )){
                 LOGGER.severe("FeatureTypeInfo '"+key2+"' already defined - you must have duplicate defined?");
             }
             else {
                 LOGGER.finest( "FeatureTypeInfo "+ key2 + " has been created..." );
+                map.put( key2, featureTypeInfo);
                 
-                featureTypes.put( key2, featureTypeInfo);
                 LOGGER.finest( "FeatureTypeInfo '"+key2+"' is registered:"+dataStoreInfo );                                    
             }
         }                
@@ -328,8 +371,9 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             try {
                 style = loadStyle( styleDTO.getFilename() );
             }
-            catch (IOException e) {
-                throw new ConfigurationException("Could not load style "+id, e );
+            catch (IOException ioException) {
+                LOGGER.log(Level.SEVERE,"Could not load style "+id, ioException );
+                continue;
             }
             map.put( id, style );                
         }
