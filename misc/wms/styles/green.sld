@@ -18,14 +18,12 @@ A styling layer used for the unit tests of sldstyler
       <FeatureTypeName>feature</FeatureTypeName>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
-        <PolygonSymbolizer>
-         <Fill>
-            <!-- CssParameters allowed are fill (the color) and fill-opacity -->
-            <CssParameter name="fill">#66FF66</CssParameter>
-         </Fill>   
-            <Stroke/>
-                
-        </PolygonSymbolizer>
+        <LineSymbolizer> 
+           <Stroke> 
+             <CssParameter name="stroke">#0000ff</CssParameter> 
+             <CssParameter name="stroke-width">1</CssParameter> 
+           </Stroke> 
+        </LineSymbolizer>
       </Rule>
     </FeatureTypeStyle>
 </UserStyle>
