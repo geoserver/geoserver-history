@@ -204,7 +204,7 @@ class XMLConfigReaderExpose extends XMLConfigReader {
 
     public void loadCatalogWrapper(File f1, File f2, File f3)
         throws ConfigurationException {
-        loadCatalog(f1, f2, f3);
+        loadCatalog(f2, f3);
     }
 
     public void loadFeatureTypesWrapper(File f) throws ConfigurationException {
