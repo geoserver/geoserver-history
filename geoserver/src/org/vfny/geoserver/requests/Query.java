@@ -5,9 +5,7 @@
 package org.vfny.geoserver.requests;
 
 import org.geotools.data.DefaultQuery;
-import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.responses.WfsException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Query.java,v 1.9 2003/09/12 23:52:18 cholmesny Exp $
+ * @version $Id: Query.java,v 1.10 2003/09/15 16:34:54 cholmesny Exp $
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?
@@ -297,7 +295,7 @@ public class Query {
      * @return an int to hash this Query with.
      */
     public int hashCode() {
-        int result = super.hashCode();
+        int result = 17;
         result = (23 * result) + ((typeName == null) ? 0 : typeName.hashCode());
         result = (23 * result)
             + ((propertyNames == null) ? 0 : propertyNames.hashCode());

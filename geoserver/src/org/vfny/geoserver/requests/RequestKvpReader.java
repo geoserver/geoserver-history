@@ -10,10 +10,7 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FidFilter;
-import org.geotools.filter.FidFilterImpl;
-import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
@@ -49,7 +46,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: RequestKvpReader.java,v 1.7 2003/09/15 16:29:52 cholmesny Exp $
+ * @version $Id: RequestKvpReader.java,v 1.8 2003/09/15 16:34:54 cholmesny Exp $
  */
 abstract public class RequestKvpReader {
     /** Class logger */
@@ -69,22 +66,10 @@ abstract public class RequestKvpReader {
     protected static final String INNER_DELIMETER = ",";
 
     /** Holds mappings between HTTP and ASCII encodings */
-    private static Map translator = new HashMap();
-
-    /** Holds mappings between HTTP and ASCII encodings */
     private static FilterFactory factory = FilterFactory.createFilterFactory();
 
     /** KVP pair listing; stores all data from the KVP request */
     protected Map kvpPairs = new HashMap();
-
-    // sets up some of the HTML encoding translations
-    //static {
-    //  translator.put("%3C","<");
-    //  translator.put("%3E",">");
-    //  translator.put("%22","'");
-    //  translator.put("%20"," ");
-    //  translator.put("%27","'");
-    //}
 
     /**
      * Constructor with raw request string.  This constructor  parses the
@@ -113,7 +98,7 @@ abstract public class RequestKvpReader {
             //  mixing nasty KVP Get syntax and pure XML syntax!
             if (kvpPair.toUpperCase().startsWith("FILTER")) {
                 String filterVal = kvpPair.substring(7);
-                int index = filterVal.lastIndexOf("</Filter>");
+                //int index = filterVal.lastIndexOf("</Filter>");
 
                 //String filt2 = kvpPair.subString
                 LOGGER.finest("putting filter value " + filterVal);
@@ -150,27 +135,23 @@ abstract public class RequestKvpReader {
      */
     public static String clean(String raw) {
         LOGGER.finest("raw request: " + raw);
-
+	String clean = null;
         //Set keys = translator.keySet();
         //Iterator i = keys.iterator();
         //while(i.hasNext()) {
         //String encoding = (String) i.next();
         if (raw != null) {
             try {
-                raw = java.net.URLDecoder.decode(raw, "UTF-8");
-
-                //raw = raw.replaceAll(encoding, (String) translator.get(encoding));
+                clean = java.net.URLDecoder.decode(raw, "UTF-8");
             } catch (java.io.UnsupportedEncodingException e) {
                 LOGGER.finer("Bad encoding for decoder " + e);
             }
         } else {
             return "";
         }
-
-        //}
         LOGGER.finest("cleaned request: " + raw);
 
-        return raw;
+        return clean;
     }
 
     /**
