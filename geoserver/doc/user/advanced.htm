@@ -172,7 +172,7 @@ jre's logging.properties file. To set the logging just add a line like
 the following to the global section of the <span
  style="font-style: italic;">services.xml</span> file: <br>
                   <br>
-                  <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;LoggingLevel&gt;FINER&lt;/LoggingLevel&gt;</i>
+                  <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;loggingLevel&gt;FINER&lt;/loggingLevel&gt;</i>
                 </li>
                 <br>
                 <li>Verbose, if set to true, outputs the xml with
@@ -180,7 +180,7 @@ newlines and indents. If set to false, or not present in the global
 section of the <span style="font-style: italic;">services.xml</span>
 file, then no newlines or indents will be contained in the output. <br>
                   <br>
-                  <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Verbose
+                  <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;verbose
 value="true"&gt;</i> </li>
                 <br>
                 <li>The SchemaBaseUrl element can be used to set a
@@ -197,24 +197,37 @@ This goes in the global section of <span style="font-style: italic;">services.xm
                   <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;SchemaBaseUrl&gt;http://www.openplans.org&lt;/SchemaBaseUrl&gt;</i>
                 </li>
                 <br>
-	      <li>MaxFeatures allows the adminstrator to specify the maximum
+	      <li>maxFeatures allows the adminstrator to specify the maximum
 	      number of features to return on a getFeatures request.  
 	      GeoServer should no longer have OutOfMemory errors, but
 	      extremely large tables may take a long time, so this field can
 	      be used to limit the number returned. 
-	      To specify MaxFeatures of 3000 add the following line to the global
+	      To specify maxFeatures of 3000 add the following line to the global
 	      section of your services.xml file: 
-	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;MaxFeatures&gt;3000 &lt;/MaxFeatures&gt;</i>
+	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;maxFeatures&gt;3000 &lt;/maxFeatures&gt;</i>
 	      </li>
 	      <br>
                 <br>
-                <li>The NumDecimals element can be used to set how many
+                <li>The numDecimals element can be used to set how many
 places past the decimal are returned in a getFeature response. To set
 to two decimal places add the following to <span
  style="font-style: italic;">services.xml</span> in the global section:
                   <br>
                   <br>
                   <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;NumDecimals&gt;2&lt;/NumDecimals&gt;</i>
+                 <br>
+                  <br>
+                <li>The serviceLevel element can be used to limit GeoServer to
+just perform as a Basic WFS (that is no transactions or locking).  This is set
+in the WFS service section of the <span
+ style="font-style: italic;">services.xml</span> file, if the serviceLevel is 
+ <i>Basic</i> then no transactions are advertised or accepted.  If it is not present
+ or value other than <i>Basic</i> then transactions will be enabled.  Note that the
+ semantics for this may change in 1.2, as we are seeking to implement featureType 
+ level control over serviceLevels.
+                  <br>
+                  <br>
+                  <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceLevel&gt;Basic&lt;/serviceLevel&gt;</i>
                 </li>
                 <br>
               </ul>
