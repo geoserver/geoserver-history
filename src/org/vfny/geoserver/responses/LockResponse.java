@@ -29,10 +29,13 @@ public class LockResponse {
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.responses");
     
+    /** The store of types, which also holds their locking information. */
     private static TypeRepository repository = TypeRepository.getInstance();
 
+    /** indicates whether the output should be formatted. */
     private static boolean verbose = ConfigInfo.getInstance().formatOutput();
 
+    /** the new line character to use in the response. */
     private static String nl = verbose ? "\n" : "";
 
     /** Constructor, which is required to take a request object. */ 
@@ -47,29 +50,40 @@ public class LockResponse {
 	
 	LOGGER.finer("about to do Lock response on:" + request);
 	List locks = request.getLocks();
+	if (locks.size() == 0) {
+	     throw new WfsException("A LockFeature request must contain at " +
+				   "least one LOCK element");
+	}
 	LockRequest.Lock curLock = (LockRequest.Lock)locks.get(0);
 	boolean lockAll = request.getLockAll();
 	String lockId = null;
-	if (curLock == null) {
-	    throw new WfsException("A LockFeature request must contain at " +
-				   "least one LOCK element");
-	} else {
-	    String curTypeName = curLock.getFeatureType();
-	    Filter curFilter = curLock.getFilter();
-	    lockId = repository.lock(curTypeName, curFilter, 
-				     lockAll, request.getExpiry());
-	    for(int i = 1, n = locks.size(); i < n; i++) {  
-		curLock = (LockRequest.Lock)locks.get(i);
-		curTypeName = curLock.getFeatureType();
-		curFilter = curLock.getFilter();
-		repository.addToLock(curTypeName, curFilter, lockAll, lockId);
-	    }
+	String curTypeName = curLock.getFeatureType();
+	Filter curFilter = curLock.getFilter();
+	lockId = repository.lock(curTypeName, curFilter, 
+				 lockAll, request.getExpiry());
+	for(int i = 1, n = locks.size(); i < n; i++) {  
+	    curLock = (LockRequest.Lock)locks.get(i);
+	    curTypeName = curLock.getFeatureType();
+	    curFilter = curLock.getFilter();
+	    repository.addToLock(curTypeName, curFilter, lockAll, lockId);
+	
 	}
 	return generateXml(lockId, lockAll, 
 			   repository.getLockedFeatures(lockId),
 			   repository.getNotLockedFeatures(lockId));
     }
 
+    /**
+     * Creates the xml for a lock response.
+     * 
+     * @param lockId the lockId to print in the response.
+     * @param lockAll indicates if information about which features were locked
+     * should be printed.
+     * @param lockedFeatures a list of features locked by the request.  This is
+     * not used if lockAll is false.
+     * @param notLockedFeatures a list of features that matched the filter but
+     * were not locked by the request.  This is not used if lockAll is false.
+     */
     private static String generateXml(String lockId, boolean lockAll,
 				      Set lockedFeatures, Set notLockedFeatures){
 	String indent = verbose ? "   " : "";
@@ -78,11 +92,11 @@ public class LockResponse {
 	returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
 	//this not needed yet, only when FeaturesLocked element used.
 	if (!lockAll) {
-	  returnXml.append(indent +"xmlns:ogc=\"http://www.opengis.net/ogc\" " + nl);
+	  returnXml.append(indent + 
+			   "xmlns:ogc=\"http://www.opengis.net/ogc\" " + nl);
 	}
 	returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + 
 			 "XMLSchema-instance\" " + nl);
-	//REVISIT: this probably isn't right, need to learn about xml schemas
 	returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis" +
 			 ".net/wfs ../wfs/1.0.0/WFS-transaction.xsd\">" + nl);
 	returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);
@@ -91,7 +105,8 @@ public class LockResponse {
 		for (Iterator i = lockedFeatures.iterator();
 		     i.hasNext();) {
 		    returnXml.append(indent + indent);
-		    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + "\"/>" + nl);
+		    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + 
+				     "\"/>" + nl);
 		}
 	    returnXml.append(indent + "</FeaturesLocked>" + nl);
 	    if (notLockedFeatures != null && notLockedFeatures.size() > 0){
@@ -99,7 +114,8 @@ public class LockResponse {
 		for (Iterator i = notLockedFeatures.iterator();
 		     i.hasNext();) {
 		    returnXml.append(indent + indent);
-		    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + "\"/>" + nl);
+		    returnXml.append("<ogc:FeatureId fid=\"" + 
+				     i.next() + "\"/>" + nl);
 		}
 		returnXml.append("</FeaturesNotLocked>" + nl);
 	    }
@@ -108,42 +124,6 @@ public class LockResponse {
 
 	return returnXml.toString();
     }
-
-    /**
-     * Runs checks to see if the typename is already locked and to make
-     * sure the lock does not have a filter.  
-     * @param testLock the lock to check.
-     * @throws WfsException if the features are already locked, or if
-     * there is a filter (since we only support type locking now).
-     * @tasks REVISIT: this method will completely change when we are able
-     * to lock individual features.  Filters will be used, and the testing
-     * for locked features will depend on SOME or ALL, since if the user
-     * request SOME for the lockAction then it doesn't matter if a few features
-     * are locked.
-     */
-    /*    private static void checkLock(LockRequest.Lock testLock) 
-	throws WfsException{
-    /* This functions by throwing WfsExceptions instead of returning a boolean,
-     * because we want to  chain the exception all the way to the user.
-	String typeName = testLock.getFeatureType();
-	if(repository.getType(typeName) == null) {
-	    throw new WfsException("typeName " + typeName + " not found on " +
-				   "this server", testLock.getHandle());
-	}
-	//if (repository.isLocked(typeName)){
-	    //Only when lockALL?  Kind of moot point right now.
-	//   throw new WfsException("Could not lock " + typeName + " features" +
-	//			   ", they are already locked", 
-	//			   testLock.getHandle());
-	//}
-	//if (testLock.getFilter() != null) {
-	//   throw new WfsException("Only FeatureType locking is currently "
-	//			   + "supported, try your lock request " + 
-	//			   "again without a filter element", 
-	//			   testLock.getHandle());
-	//}
-
-     }*/
 
 
 }
