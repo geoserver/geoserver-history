@@ -54,6 +54,6 @@ public final class WFSDescriptionAction extends ConfigAction {
         config.setKeywords(array);
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("wfsConfigDescription");
+        return mapping.findForward("config");
     }
 }
