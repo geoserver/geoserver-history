@@ -1,0 +1,2 @@
+org.vfny.geoserver.responses.wms.GIFLegendGraphicProducerFactory
+org.vfny.geoserver.responses.wms.JaiLegendGraphicProducerFactory
