@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.12 2004/01/16 00:02:53 jive Exp $
+ * @version $Id: XMLConfigReader.java,v 1.13 2004/01/16 00:03:44 jive Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -881,7 +881,7 @@ public class XMLConfigReader {
                 System.out.println("IGNORING PROBLEM WITH Schema File:"+schemaFile);
                 badDog.printStackTrace();
                 attributeList = Collections.EMPTY_LIST;
-            } catch (RuntimeException unExpected ){
+            } catch (Throwable unExpected ){
                 System.out.println("IGNORING PROBLEM WITH Schema File:"+schemaFile);
                 unExpected.printStackTrace();
                 attributeList = Collections.EMPTY_LIST;                
