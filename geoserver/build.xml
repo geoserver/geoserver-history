@@ -75,10 +75,10 @@
   <property name="test.name" value="config.ConfigSuite"/>
   <property name="jetty.run"  value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml"/>
   <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}" />
-  <property name="GEOSERVER_HOME" value="${basedir}"/> 
+
   <!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
-  <!--available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
-  <available file="${basedir}/server/geoserver" type="dir" property="server.built"/-->
+  <available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
+  <available file="${basedir}/server/geoserver" type="dir" property="server.built"/>
 
   <!-- paths -->
   <path id="path.lib">
@@ -295,17 +295,17 @@
             name="org.vfny.geoserver.zserver.ApplyXPathSuite"/>
       <test fork="true" 
             name="org.vfny.geoserver.zserver.GeoIndexerSuite"/>
-  <test fork="true" 
+      <test fork="true" 
             name="org.vfny.geoserver.zserver.GeoProfileSuite"/>
-<test fork="true" 
+      <test fork="true" 
             name="org.vfny.geoserver.zserver.GeoSearchSuite"/>
-<test fork="true" 
+      <test fork="true" 
             name="org.vfny.geoserver.zserver.GeoSummarySuite"/>
-<test fork="true" 
+      <test fork="true" 
             name="org.vfny.geoserver.zserver.NumericFieldSuite"/>
-<test fork="true" 
+      <test fork="true" 
             name="org.vfny.geoserver.zserver.RPNConverterSuite"/>
-<test fork="true" 
+      <test fork="true" 
             name="org.vfny.geoserver.zserver.XMLDocumentSuite"/>
     </junit>
   </target>
@@ -328,7 +328,7 @@
 
   </target>
     
-  <!-- prepares embedded server, server.built isn't working, so users must
+  <!-- Prepares embedded server, server.built isn't working, so users must
       run this manually -->
   <target name="prepareEmbedded" depends="init" unless="server.built">
      <antcall target="war"/>
@@ -338,7 +338,7 @@
   </target> 
 
   <!-- runs the server -->
-  <target name="run" depends="init">
+  <target name="run" depends="prepareEmbedded, init">
     <echo message="Please be sure that either prepareEmbedded or"/>
     <echo message="test has been run before using this target"/>
     
