@@ -22,9 +22,9 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.1.2.4 2004/01/08 00:41:04 dmzwiers Exp $
+ * @version $Id: GeoServerDTO.java,v 1.1.2.5 2004/01/09 09:52:44 jive Exp $
  */
-public final class GeoServerDTO implements DataStructure {
+public final class GeoServerDTO implements DataTransferObject {
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = 20000;
 

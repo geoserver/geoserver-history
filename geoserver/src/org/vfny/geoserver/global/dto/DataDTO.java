@@ -41,13 +41,13 @@ import java.util.NoSuchElementException;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataDTO.java,v 1.1.2.3 2004/01/09 09:21:42 jive Exp $
+ * @version $Id: DataDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig
  */
-public final class DataDTO implements DataStructure {
+public final class DataDTO implements DataTransferObject {
     /**
      * DataStoreInfoDTO referenced by key "<code>dataStoreID</code>".
      *
@@ -123,41 +123,39 @@ public final class DataDTO implements DataStructure {
      *
      * @param c The catalog to copy.
      */
-    public DataDTO(DataDTO c) {
+    public DataDTO(DataDTO dto) {
+    	if( dto == null ){
+    		throw new NullPointerException("Non null DataDTO required");
+    	}    	
         try {
-            dataStores = CloneLibrary.clone(c.getDataStores());
+            dataStores = CloneLibrary.clone(dto.getDataStores());
         } catch (Exception e) {
             dataStores = new HashMap();
         }
 
         try {
-            nameSpaces = CloneLibrary.clone(c.getNameSpaces());
+            nameSpaces = CloneLibrary.clone(dto.getNameSpaces());
         } catch (Exception e) {
             nameSpaces = new HashMap();
         }
 
         try {
-            featuresTypes = CloneLibrary.clone(c.getFeaturesTypes());
+            featuresTypes = CloneLibrary.clone(dto.getFeaturesTypes());
         } catch (Exception e) {
             featuresTypes = new HashMap();
         }
 
         try {
-            styles = CloneLibrary.clone(c.getStyles());
+            styles = CloneLibrary.clone(dto.getStyles());
         } catch (Exception e) {
             styles = new HashMap();
         }
 
-        defaultNameSpace = (NameSpaceDTO) c.getDefaultNameSpace().clone();
+        defaultNameSpace = (NameSpaceDTO) dto.getDefaultNameSpace().clone();
     }
 
     /**
-     * Implement clone.
-     * 
-     * <p>
-     * creates a clone of this object
-     * </p>
-     *
+     * Implement clone as a Deep copy.
      * @return A copy of this Data
      *
      * @see java.lang.Object#clone()
@@ -351,9 +349,10 @@ public final class DataDTO implements DataStructure {
      * @param Map of FeatureTypeInfoDTO by "dataStoreID.typeName"
      */
     public void setFeaturesTypes(Map map) {
-        if (map != null) {
-            featuresTypes = map;
-        }
+		if( map == null ){
+			throw new NullPointerException("FeatureTypeInfoDTO map must not be null. Use Collections.EMPTY_MAP if you must");
+		}
+        featuresTypes = map;        
     }
 
     /**
@@ -364,9 +363,10 @@ public final class DataDTO implements DataStructure {
      * @param Map of NameSpaceDTO by "prefix"
      */
     public void setNameSpaces(Map map) {
-        if (map != null) {
-            nameSpaces = map;
-        }
+		if( map == null ){
+			throw new NullPointerException("NameSpaceDTO map must not be null. Use Collections.EMPTY_MAP if you must");
+		}    	
+        nameSpaces = map;        
     }
 
     /**
@@ -375,8 +375,9 @@ public final class DataDTO implements DataStructure {
      * @param map Map of StyleDTO by "someKey"?
      */
     public void setStyles(Map map) {
-        if (map != null) {
-            styles = map;
-        }
+		if( map == null ){
+			throw new NullPointerException("StyleInfoDTO map must not be null. Use Collections.EMPTY_MAP if you must");
+		}    	
+        styles = map;        
     }    
 }

@@ -30,9 +30,9 @@ import java.util.Arrays;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceDTO.java,v 1.1.2.5 2004/01/09 01:21:16 dmzwiers Exp $
+ * @version $Id: ServiceDTO.java,v 1.1.2.6 2004/01/09 09:52:44 jive Exp $
  */
-public final class ServiceDTO implements DataStructure {
+public final class ServiceDTO implements DataTransferObject {
     /**
      * Represents when the Web Service is enabled/disabled.
      * 

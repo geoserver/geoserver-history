@@ -32,9 +32,9 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceDTO.java,v 1.1.2.2 2004/01/06 23:54:39 dmzwiers Exp $
+ * @version $Id: NameSpaceDTO.java,v 1.1.2.3 2004/01/09 09:52:44 jive Exp $
  */
-public final class NameSpaceDTO implements DataStructure {
+public final class NameSpaceDTO implements DataTransferObject {
     //public static final String PREFIX_DELIMITER = ":";
 
     /** The namespace prefix. */

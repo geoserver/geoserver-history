@@ -33,9 +33,9 @@ import java.util.Map;
  * </code></prefix>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.1.2.4 2004/01/09 09:34:19 jive Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.1.2.5 2004/01/09 09:52:44 jive Exp $
  */
-public final class DataStoreInfoDTO implements DataStructure {
+public final class DataStoreInfoDTO implements DataTransferObject {
     /** unique datasore identifier */
     private String id;
 
@@ -278,39 +278,27 @@ public final class DataStoreInfoDTO implements DataStructure {
     }
 
     /**
-     * setId purpose.
+     * Sets the unique identifier for this DataStoreInfoDTO.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
+     * @param identifier non<code>null</code> identifier for DataStore
      */
     public void setId(String identifier) {
         id = identifier;        
     }
 
     /**
-     * setNameSpace purpose.
+     * Sets the Namespace prefix for the DataStore. 
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param support
+     * @param prefix Namespace prefix used by DataStore
      */
     public void setNameSpaceId(String prefix) {
         nameSpaceId = prefix;        
     }
 
     /**
-     * setTitle purpose.
+     * Set title used to identify this DataStore to the user.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
+     * @param dataStoreTitle Title used to identify DataStore to user
      */
     public void setTitle(String dataStoreTitle) {
         title = dataStoreTitle;        

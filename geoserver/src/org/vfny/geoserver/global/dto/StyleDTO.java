@@ -25,9 +25,9 @@ import java.io.File;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleDTO.java,v 1.1.2.2 2004/01/06 23:54:39 dmzwiers Exp $
+ * @version $Id: StyleDTO.java,v 1.1.2.3 2004/01/09 09:52:44 jive Exp $
  */
-public final class StyleDTO implements DataStructure {
+public final class StyleDTO implements DataTransferObject {
     /** The syle id. */
     private String id = "";
 

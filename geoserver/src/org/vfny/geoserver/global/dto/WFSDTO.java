@@ -14,9 +14,9 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.1.2.3 2004/01/09 01:21:16 dmzwiers Exp $
+ * @version $Id: WFSDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
  */
-public final class WFSDTO implements DataStructure {
+public final class WFSDTO implements DataTransferObject {
 
     /** The service parameters for this instance. */
     private ServiceDTO service;

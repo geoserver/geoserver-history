@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * in them.
  * </p>
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.1.2.4 2004/01/09 09:21:42 jive Exp $
+ * @version $Id: CloneLibrary.java,v 1.1.2.5 2004/01/09 09:52:44 jive Exp $
  */
 public final class CloneLibrary {
 	
@@ -127,7 +127,7 @@ public final class CloneLibrary {
 	 * @param ds the DataStructure to clone.
 	 * @return a clone of the parameter
 	 */
-	private static Object clone(DataStructure ds){
+	private static Object clone(DataTransferObject ds){
 		return ds.clone();
 	}
 	/** Clone a string array */

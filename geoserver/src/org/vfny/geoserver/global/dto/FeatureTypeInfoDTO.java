@@ -26,18 +26,18 @@ import com.vividsolutions.jts.geom.Envelope;
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
  * 
- * <p>
+ * <pre>Example:<code>
  * FeatureTypeInfoDTO ftiDto = new FeatureTypeInfoDTO();
  * ftiDto.setName("My Feature Type");
  * ftiDto.setTitle("The Best Feature Type");
  * ftiDto.setSRS(23769);
  * ftiDto.setDataStoreId("myDataStore");
- * </p>
+ * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.3 2004/01/06 23:54:39 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
  */
-public final class FeatureTypeInfoDTO implements DataStructure {
+public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;
 
@@ -100,7 +100,18 @@ public final class FeatureTypeInfoDTO implements DataStructure {
      * @see defaultSettings()
      */
     public FeatureTypeInfoDTO() {
-        defaultSettings();
+		dataStoreId = "";
+		latLongBBox = new Envelope();
+		SRS = 0;
+		schema = "";
+		defaultStyle = "";
+		name = "";
+		title = "";
+		_abstract = "";
+		keywords = new LinkedList();
+		numDecimals = 8;
+		definitionQuery = null;
+		dirName = "";
     }
 
     /**
@@ -114,63 +125,34 @@ public final class FeatureTypeInfoDTO implements DataStructure {
      *
      * @param f The featuretype to copy.
      */
-    public FeatureTypeInfoDTO(FeatureTypeInfoDTO f) {
-        if (f == null) {
-            defaultSettings();
+    public FeatureTypeInfoDTO(FeatureTypeInfoDTO dto) {
+		if( dto == null ){
+			throw new NullPointerException("Non null FeatureTypeInfoDTO required");
+		}    	
 
-            return;
-        }
-
-        dataStoreId = f.getDataStoreId();
-        latLongBBox = CloneLibrary.clone(f.getLatLongBBox());
-        SRS = f.getSRS();
-        schema = f.getSchema();
-        name = f.getName();
-        title = f.getTitle();
-        _abstract = f.getAbstract();
-        numDecimals = f.getNumDecimals();
-        definitionQuery = f.getDefinitionQuery();
+        dataStoreId = dto.getDataStoreId();
+        latLongBBox = CloneLibrary.clone(dto.getLatLongBBox());
+        SRS = dto.getSRS();
+        schema = dto.getSchema();
+        name = dto.getName();
+        title = dto.getTitle();
+        _abstract = dto.getAbstract();
+        numDecimals = dto.getNumDecimals();
+        definitionQuery = dto.getDefinitionQuery();
 
         try {
-            keywords = CloneLibrary.clone(f.getKeywords()); //clone?
+            keywords = CloneLibrary.clone(dto.getKeywords()); //clone?
         } catch (Exception e) {
             keywords = new LinkedList();
         }
 
-        defaultStyle = f.getDefaultStyle();
-        dirName = f.getDirName();
+        defaultStyle = dto.getDefaultStyle();
+        dirName = dto.getDirName();
     }
 
     /**
-     * defaultSettings purpose.
+     * Implement clone as a deep copy.
      * 
-     * <p>
-     * This method creates default values for the class. This method  should
-     * noly be called by class constructors.
-     * </p>
-     */
-    private void defaultSettings() {
-        dataStoreId = "";
-        latLongBBox = new Envelope();
-        SRS = 0;
-        schema = "";
-        defaultStyle = "";
-        name = "";
-        title = "";
-        _abstract = "";
-        keywords = new LinkedList();
-        numDecimals = 8;
-        definitionQuery = null;
-        dirName = "";
-    }
-
-    /**
-     * Implement clone.
-     * 
-     * <p>
-     * creates a clone of this object
-     * </p>
-     *
      * @return A copy of this FeatureTypeInfo
      *
      * @see java.lang.Object#clone()
@@ -268,91 +250,71 @@ public final class FeatureTypeInfoDTO implements DataStructure {
 	}
 
     /**
-     * getAbstract purpose.
+     * Short description of FeatureType.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return Description of FeatureType
      */
     public String getAbstract() {
         return _abstract;
     }
 
     /**
-     * getDataStore purpose.
+     * Identifier of DataStore used to create FeatureType.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return DataStore identifier
      */
     public String getDataStoreId() {
         return dataStoreId;
     }
 
     /**
-     * getKeywords purpose.
+     * List of keywords (limitied to text).
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return List of Keywords about this FeatureType
      */
     public List getKeywords() {
         return keywords;
     }
 
     /**
-     * getLatLongBBox purpose.
+     * The extent of this FeatureType.
      * 
      * <p>
-     * Description ...
+     * Extent is measured against the tranditional LatLong coordinate system.
      * </p>
      *
-     * @return
+     * @return Envelope of FeatureType
      */
     public Envelope getLatLongBBox() {
         return latLongBBox;
     }
 
     /**
-     * getName purpose.
+     * Name of featureType, must match typeName provided by DataStore.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return typeName of FeatureType
      */
     public String getName() {
         return name;
     }
 
     /**
-     * getSRS purpose.
+     * Spatial Reference System for FeatureType.
      * 
      * <p>
-     * Description ...
+     * Makes use of the standard EPSG codes?
      * </p>
      *
-     * @return
+     * @return WPSG Spatial Reference System for FeatureType
      */
     public int getSRS() {
         return SRS;
     }
 
     /**
-     * getTitle purpose.
+     * Title used to identify FeatureType to user.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return FeatureType title
      */
     public String getTitle() {
         return title;

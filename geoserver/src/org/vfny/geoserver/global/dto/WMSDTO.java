@@ -21,9 +21,9 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSDTO.java,v 1.1.2.3 2004/01/06 23:03:14 dmzwiers Exp $
+ * @version $Id: WMSDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
  */
-public final class WMSDTO implements DataStructure {
+public final class WMSDTO implements DataTransferObject {
     
     /**
      * For the writer!
