@@ -18,7 +18,7 @@ package org.vnfy.geoserver.config;
 
 
 import junit.framework.TestCase;
-import org.vnfy.geoserver.config.catalog.*;
+import org.vnfy.geoserver.config.data.*;
 
 /**
  * ModelTest purpose.
@@ -27,7 +27,7 @@ import org.vnfy.geoserver.config.catalog.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ModelTest.java,v 1.1.2.1 2003/12/30 23:39:32 dmzwiers Exp $
+ * @version $Id: ModelTest.java,v 1.1.2.2 2003/12/31 00:35:06 dmzwiers Exp $
  */
 public class ModelTest extends TestCase {
 

@@ -14,7 +14,7 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vnfy.geoserver.config.catalog;
+package org.vnfy.geoserver.config.data;
 
 import java.io.File;
 /**
@@ -33,7 +33,7 @@ import java.io.File;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: Style.java,v 1.1.2.1 2003/12/30 23:39:14 dmzwiers Exp $
+ * @version $Id: Style.java,v 1.1.2.1 2003/12/31 00:35:04 dmzwiers Exp $
  */
 public class Style implements Cloneable {
 	private String id = "";

@@ -14,7 +14,7 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vnfy.geoserver.config.catalog;
+package org.vnfy.geoserver.config.data;
 
 /**
  * NameSpace purpose.
@@ -23,7 +23,7 @@ package org.vnfy.geoserver.config.catalog;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpace.java,v 1.1.2.1 2003/12/30 23:39:14 dmzwiers Exp $
+ * @version $Id: NameSpace.java,v 1.1.2.1 2003/12/31 00:35:04 dmzwiers Exp $
  */
 public class NameSpace implements Cloneable {
 	//public static final String PREFIX_DELIMITER = ":";

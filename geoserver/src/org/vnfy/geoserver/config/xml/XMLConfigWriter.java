@@ -18,7 +18,7 @@ package org.vnfy.geoserver.config.xml;
 
 
 import org.vnfy.geoserver.config.*;
-import org.vnfy.geoserver.config.catalog.*;
+import org.vnfy.geoserver.config.data.*;
 import org.vnfy.geoserver.config.wfs.*;
 import org.vnfy.geoserver.config.wms.*;
 
@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.*;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.1 2003/12/30 23:39:19 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2003/12/31 00:35:04 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	private static final Logger LOGGER = Logger.getLogger(

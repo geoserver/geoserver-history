@@ -14,7 +14,7 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vnfy.geoserver.config.catalog;
+package org.vnfy.geoserver.config.data;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -29,7 +29,7 @@ import org.vnfy.geoserver.config.EqualsLibrary;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureType.java,v 1.1.2.1 2003/12/30 23:39:14 dmzwiers Exp $
+ * @version $Id: FeatureType.java,v 1.1.2.1 2003/12/31 00:35:04 dmzwiers Exp $
  */
 public class FeatureType implements Cloneable{
 	private String dataStoreId;

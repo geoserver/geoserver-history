@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import java.io.*;
 import java.util.*;
 import org.vnfy.geoserver.config.*;
-import org.vnfy.geoserver.config.catalog.*;
+import org.vnfy.geoserver.config.data.*;
 import org.vnfy.geoserver.config.wfs.*;
 import org.vnfy.geoserver.config.wms.*;
 
@@ -31,7 +31,7 @@ import org.vnfy.geoserver.config.wms.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReaderTest.java,v 1.1.2.1 2003/12/30 23:39:28 dmzwiers Exp $
+ * @version $Id: XMLConfigReaderTest.java,v 1.1.2.2 2003/12/31 00:35:05 dmzwiers Exp $
  */
 public class XMLConfigReaderTest extends TestCase {
 

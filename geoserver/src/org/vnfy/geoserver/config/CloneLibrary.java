@@ -30,10 +30,22 @@ import com.vividsolutions.jts.geom.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.1.2.1 2003/12/30 23:39:15 dmzwiers Exp $
+ * @version $Id: CloneLibrary.java,v 1.1.2.2 2003/12/31 00:35:05 dmzwiers Exp $
  */
 public final class CloneLibrary {
 	
+	/**
+	 * clone purpose.
+	 * <p>
+	 * Clones a List so that it matches the requirements that the returned object 
+	 * would be equal to the source.
+	 * </p>
+	 * @param source The list to be cloned.
+	 * @return An exact clone of the list.
+	 * @see java.lang.Object#clone()
+	 * @see java.util.List
+	 * @throws CloneNotSupportedException
+	 */
 	public static List clone(List source) throws CloneNotSupportedException{
 		if(source == null)
 			return null;
@@ -55,6 +67,18 @@ public final class CloneLibrary {
 		return result;
 	}
 	
+	/**
+	 * clone purpose.
+	 * <p>
+	 * Clones a Map so that it matches the requirements that the returned object 
+	 * would be equal to the source.
+	 * </p>
+	 * @param source The Map to be cloned.
+	 * @return An exact clone of the list.
+	 * @see java.lang.Object#clone()
+	 * @see java.util.Map
+	 * @throws CloneNotSupportedException
+	 */
 	public static Map clone(Map source) throws CloneNotSupportedException{
 		if(source == null)
 			return null;

@@ -17,7 +17,7 @@
 package org.vnfy.geoserver.config.xml;
 
 import org.vnfy.geoserver.config.*;
-import org.vnfy.geoserver.config.catalog.*;
+import org.vnfy.geoserver.config.data.*;
 import org.vnfy.geoserver.config.wfs.*;
 import org.vnfy.geoserver.config.wms.*;
 
@@ -43,7 +43,7 @@ import org.vfny.geoserver.global.*;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.1 2003/12/30 23:39:19 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.2 2003/12/31 00:35:04 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	private static final Logger LOGGER = Logger.getLogger(
@@ -172,7 +172,7 @@ public class XMLConfigReader {
 	protected void setDefaultNS(Catalog c){
 		Iterator i = c.getNameSpaces().values().iterator();
 		while(i.hasNext()){
-			org.vnfy.geoserver.config.catalog.NameSpace ns = (org.vnfy.geoserver.config.catalog.NameSpace)i.next();
+			org.vnfy.geoserver.config.data.NameSpace ns = (org.vnfy.geoserver.config.data.NameSpace)i.next();
 			if(ns.isDefault()){
 				c.setDefaultNameSpace(ns);
 				return;
@@ -337,7 +337,7 @@ public class XMLConfigReader {
 
 		for (int i = 0; i < nsCount; i++) {
 			elem = (Element) nsList.item(i);
-			org.vnfy.geoserver.config.catalog.NameSpace ns = new org.vnfy.geoserver.config.catalog.NameSpace();
+			org.vnfy.geoserver.config.data.NameSpace ns = new org.vnfy.geoserver.config.data.NameSpace();
 			ns.setUri(ReaderUtils.getAttribute(elem, "uri", true));
 			ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
 			ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default", false) || (nsCount == 1));

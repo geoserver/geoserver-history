@@ -16,7 +16,7 @@
  */
 package org.vnfy.geoserver.config;
 
-import org.vnfy.geoserver.config.catalog.*;
+import org.vnfy.geoserver.config.data.*;
 import org.vnfy.geoserver.config.wfs.*;
 import org.vnfy.geoserver.config.wms.*;
 
@@ -27,7 +27,7 @@ import org.vnfy.geoserver.config.wms.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: Model.java,v 1.1.2.1 2003/12/30 23:39:15 dmzwiers Exp $
+ * @version $Id: Model.java,v 1.1.2.2 2003/12/31 00:35:05 dmzwiers Exp $
  */
 public class Model implements Cloneable {
 	private Catalog catalog;

@@ -14,7 +14,7 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vnfy.geoserver.config.catalog;
+package org.vnfy.geoserver.config.data;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import org.vnfy.geoserver.config.EqualsLibrary;
  * @see DataSource
  * @see FeatureType
  * @see Style 
- * @version $Id: Catalog.java,v 1.1.2.1 2003/12/30 23:39:14 dmzwiers Exp $
+ * @version $Id: Catalog.java,v 1.1.2.1 2003/12/31 00:35:04 dmzwiers Exp $
  */
 public class Catalog implements Cloneable{
 	private Map dataStores;
