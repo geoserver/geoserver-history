@@ -415,8 +415,8 @@
           </td>
         </tr>
       </table>
-       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-      <a name="international"></a>       
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="international"></a>       
         <tr> 
           <td bgcolor="#333366" class="title">Internationalization</td>
         </tr>
@@ -452,6 +452,44 @@
 	     declaration and the postgis jdbc driver.  Please send email to the
 	     list at geoserver-devel@lists.sourceforge.net, or to the geoserver team:
 	     geoserver@openplans.org.  
+	   </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="dispatcher"></a>       
+        <tr> 
+          <td bgcolor="#333366" class="title">Dispatcher Servlet</td>
+        </tr>
+        <tr> 
+          <td height="45"> 
+            <blockquote>
+	     Due to the functioning of some wfs clients, the 0.98 release
+	     introduces the Dispatcher servlets, which can be used to make
+	     GeoServer respond just like a cgi script to get requests.  This
+	     is actually not officially part of the WFS specification, but 
+	     all the spec examples use the same base URL, complete cgi style,
+	     so it is understandable why some wfs clients would use this
+	     shortcut.  To make use of the Dispatcher servlet you can use
+	     either <i>http://<b>SERVER_ADDRESS</b>:</i><i><b>SERVER_PORT
+	     </b>/geoserver/Dispatcher?</i> or  
+	     <i>http://<b>SERVER_ADDRESS</b>:</i><i><b>SERVER_PORT</b>
+	     /geoserver/wfs?</i>, to look even more like a cgi script.
+	     If you'd like to change the base name from wfs you only need
+	     edit the web.xml file in geoserver/misc/documents.  
+	     Using the dispatcher is as simple as the following series of 
+	     requests:
+
+	     
+	      <blockquote>
+                <p><i>http://openplans.org:8080/geoserver/wfs?request=GetCapabilities</i></p>
+              </blockquote>
+	       <blockquote>
+                <p><i>http://openplans.org:8080/geoserver/wfs?request=DescribeFeatureType&amp;typename=topp:rail</i></p>
+              </blockquote>
+	       <blockquote>
+                <p><i>http://openplans.org:8080/geoserver/wfs?request=GetFeature&amp;typename=topp:rail</i></p>
+              </blockquote>
 	   </blockquote>
           </td>
         </tr>
