@@ -19,6 +19,7 @@ import org.geotools.resources.Geotools;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureFactory;
+import org.geotools.feature.FlatFeatureFactory;
 import org.geotools.feature.FeatureTypeFlat;
 import org.geotools.feature.AttributeTypeDefault;
 import org.geotools.feature.AttributeType;
@@ -90,7 +91,7 @@ public class InsertSuite extends TestCase {
 	    LOGGER.finer("problem with creating schema");
 	}
 
-	featureFactory = new FeatureFactory(schema);
+	featureFactory = new FlatFeatureFactory(schema);
 
 
 	Coordinate[] points = { new Coordinate(15, 15),
