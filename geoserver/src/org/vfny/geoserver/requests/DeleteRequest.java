@@ -96,32 +96,45 @@ public class DeleteRequest
         return returnString.toString();
     }
 
-    public boolean equals(DeleteRequest request) {
-        boolean isEqual = true;
-
-        if(this.typeName != null &&
-           this.typeName.equals(request.getTypeName())) {
-            isEqual = isEqual && true;
-        } else {
-            isEqual = false;
-        }
-        LOGGER.finest("checking feature type names for equality: " + isEqual);
-
-        if(this.releaseAll == request.getReleaseAll()) {
-            isEqual = isEqual && true;
-        } else {
-            isEqual = false;
-        }
-        LOGGER.finest("checking release action equality: " + isEqual);
-
-        if(this.filter != null &&
-           this.filter.equals(request.getFilter())) {
-            isEqual = isEqual && true;
-        } else {
-            isEqual = false;
-        }
-        LOGGER.finest("checking filter equality: " + isEqual);
-
-        return isEqual;
+    public boolean equals(Object obj) {
+        if (obj != null && obj.getClass() == this.getClass()){
+	    DeleteRequest request = (DeleteRequest)obj;
+	    boolean isEqual = true;
+	    
+	    if(this.typeName != null) {
+	       if (this.typeName.equals(request.getTypeName())) {
+		isEqual = isEqual && true;
+	       } else {
+		   isEqual = false;
+	       }
+	    } else {
+		isEqual = isEqual && (request.getTypeName() == null);
+	    }
+	    LOGGER.finest("checking feature type names for equality: " 
+			  + isEqual);
+	    
+	    if(this.releaseAll == request.getReleaseAll()) {
+		isEqual = isEqual && true;
+	    } else {
+		isEqual = false;
+	    }
+	    LOGGER.finest("checking release action equality: " + isEqual);
+		
+	    if(this.filter != null) {
+		if (this.filter.equals(request.getFilter())) {
+		    isEqual = isEqual && true;
+		} else {
+		    isEqual = false;
+		}
+	    } else {
+		isEqual = isEqual && (request.getFilter() == null);
+	    }
+	    LOGGER.finest("checking filter equality: " + isEqual);
+	    
+	    return isEqual;
+	} else {
+	    return false;
+	}
     }
-}
+} 
+
