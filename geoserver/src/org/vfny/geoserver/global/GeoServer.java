@@ -9,14 +9,14 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.vfny.geoserver.global.Log4JFormatter;
 
 /**
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.17 2004/04/03 13:10:48 cholmesny Exp $
+ * @version $Id: GeoServer.java,v 1.18 2004/04/05 11:52:37 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -379,6 +379,8 @@ public class GeoServer extends GlobalLayerSupertype {
             contactPosition = dto.getContact().getContactPosition();
             contactVoice = dto.getContact().getContactVoice();
             loggingLevel = dto.getLoggingLevel();
+			Log4JFormatter.init("org.geotools", loggingLevel);
+			Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
             maxFeatures = dto.getMaxFeatures();
             numDecimals = dto.getNumDecimals();
             schemaBaseUrl = dto.getSchemaBaseUrl();
