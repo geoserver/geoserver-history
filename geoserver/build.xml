@@ -111,12 +111,6 @@
       <include name="org/vfny/geoserver/requests/GetCapabilitiesSuite.class"/>
     </fileset>
   </path>
-  <path id="path.test">
-    <path refid="path.build"/>
-    <fileset dir="${dir.build}">
-      <include name="**/*.class"/>
-    </fileset>
-  </path>
 
 <!-- ====================================================================== -->
 <!-- HELP / INDEX OF TARGETS                                                -->
@@ -338,9 +332,24 @@
     </copy>
 
      <copy todir="${dir.server}/webapps/ROOT/WEB-INF">
+      <fileset dir="${basedir}/WEB-INF">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+
+     <copy todir="${dir.server}/webapps/ROOT/WEB-INF">
       <fileset dir="${dir.conf}">
         <include name="services.xml"/>
         <include name="catalog.xml"/>
+      </fileset>
+      <fileset dir="${dir.misc}/documents">
+        <include name="web.xml"/>
+      </fileset>
+    </copy>
+
+     <copy todir="${dir.server}/webapps">
+      <fileset dir="${dir.misc}/documents">
+        <include name="web.xml"/>
       </fileset>
     </copy>
 
@@ -372,14 +381,34 @@
         <include name="**"/>
       </fileset>
     </copy>
+     
+      <mkdir dir="${dir.server}/webapps/ROOT/data/plugins"/>
+    <copy todir="${dir.server}/webapps/ROOT/data/plugins">
+      <fileset dir="${basedir}/conf/plugins">
+        <include name="**"/>
+      </fileset>
+    </copy>
+     
+      <mkdir dir="${dir.server}/webapps/ROOT/data/validation"/>
+    <copy todir="${dir.server}/webapps/ROOT/data/validation">
+      <fileset dir="${basedir}/conf/validation">
+        <include name="**"/>
+      </fileset>
+    </copy>
 
+    <path id="path.test">
+      <path refid="path.catalina"/>
+      <fileset dir="${dir.server}/webapps/ROOT/WEB-INF/lib">
+        <include name="*.jar"/>
+      </fileset>
+	</path>
     <!-- stops a running server -->
     <java classname="org.vfny.geoserver.EmbeddedTomcat" 
-          classpathref="path.build" 
+          classpathref="path.test" 
           fork="true">
       <arg value="stop"/>
-      <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
-      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
+      <!--<jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
+      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>-->
     </java>
     <!-- remove the classes forcing the server to build new class,
          so changes to the code actually are reflected in test server. -->
@@ -389,13 +418,14 @@
        </fileset>
     </delete>
     <!-- builds servlets to test server -->
+    
     <javac srcdir="${dir.src}" 
            destdir="${dir.testApp}/classes/" 
            includes="**/servlets/*.java" 
            classpathref="path.build"
               debug="on"/>
     <!-- builds embedded jar -->
-    <jar jarfile="${dir.lib}/embedded.jar">
+    <jar jarfile="${dir.testApp}/lib/embedded.jar">
       <fileset dir="${dir.build}">
         <exclude name="**/org/*" />
         <include name="**/EmbeddedTomcat.class" />
@@ -410,11 +440,11 @@
     </jar>
     <!-- starts the test server -->
     <java classname="org.vfny.geoserver.EmbeddedTomcat" 
-          classpathref="path.build" 
+          classpathref="path.test" 
           fork="true">
       <arg value="start"/>
-      <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
-      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
+      <!--<jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
+      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>-->
     </java>
   </target>
 

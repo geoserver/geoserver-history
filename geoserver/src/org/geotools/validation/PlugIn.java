@@ -51,9 +51,9 @@ class PlugIn {
 
         try {
             beanInfo = Introspector.getBeanInfo(type);
-        } catch (IntrospectionException e) {
+        } catch (Exception e) {
             throw new ValidationException("Could not use the '" + name
-                + "' plugIn:" + type);
+                + "' plugIn:" + type.getName());
         }
         if(config != null){
         	defaults = transArgs(config);

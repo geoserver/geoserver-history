@@ -36,7 +36,7 @@ import javax.servlet.ServletException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.8 2004/02/03 18:39:38 dmzwiers Exp $
+ * @version $Id: ApplicationState.java,v 1.9 2004/02/05 18:56:06 dmzwiers Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
@@ -129,7 +129,6 @@ public class ApplicationState implements PlugIn {
      * Notification that Global has been updated from XML config files
      */
     public void notifyLoadXML() {
-    	setGeoServerChanged( true );  // REVISIT: is this right? JG expected false
     	// Correct, this represents a load into config from xml
         setConfigChanged( false );
     }
