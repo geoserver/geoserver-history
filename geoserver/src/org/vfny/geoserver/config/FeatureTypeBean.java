@@ -7,8 +7,10 @@ package org.vfny.geoserver.config;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
-import org.exolab.castor.xml.*;
-import org.vfny.geoserver.config.featureType.*;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.vfny.geoserver.config.featureType.FeatureType;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
@@ -19,11 +21,11 @@ import org.vfny.geoserver.config.featureType.*;
 public class FeatureTypeBean {
         
     /** Class logger */
-    private static Logger LOGGER = 
-        Logger.getLogger("org.vfny.geoserver.config");
+    private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
 
     /** Castor-specified type to hold all the  */
     private FeatureType responseFeatureType;
+
     
     /** Initializes the database and request handler. */ 
     public FeatureTypeBean() {}
@@ -93,8 +95,7 @@ public class FeatureTypeBean {
      * Returns a capabilities XML fragment for a specific feature type.
      * @param version The version of the request (0.0.14 or 0.0.15)
      */ 
-    public String getCapabilitiesXml(String version) {
-        
+    public String getCapabilitiesXml(String version) {        
         if(version.equals("0.0.14")) {
             return getCapabilitiesXmlv14();
         } else {
@@ -107,13 +108,6 @@ public class FeatureTypeBean {
      * @param featureTypeName The query from the request object.
      */ 
     private void readFeatureTypeInformation(String featureTypeName) {
-        
-        
-        ConfigurationBean configurationInfo = new ConfigurationBean();
-        String featureTypeFilePath = 
-            configurationInfo.getFeatureTypeDirectory() + 
-            featureTypeName + "/" + configurationInfo.getFeatureTypeInfoName() 
-            + ".xml";
         try {
             FileReader featureTypeDocument = 
                 new FileReader(featureTypeFilePath);
@@ -122,22 +116,20 @@ public class FeatureTypeBean {
                                                      featureTypeDocument);
         }
         catch( FileNotFoundException e ) {
-                        LOGGER.info("Feature type file does not exist: " + 
-                                  featureTypeFilePath);
+            LOG.info("Feature type file does not exist: "+featureTypeFilePath);
         }
         catch( MarshalException e ) {
-            LOGGER.info("Castor could not unmarshal feature type file: " + 
+            LOG.info("Castor could not unmarshal feature type file: " + 
                       featureTypeFilePath);
-            LOGGER.info("Castor says: " + e.toString() );
+            LOG.info("Castor says: " + e.toString() );
         }
-                catch( ValidationException e ) {
-                    LOGGER.info("Castor says: feature type XML not valid : "
-                              + featureTypeFilePath);
-                    LOGGER.info("Castor says: " + e.toString() );
-                }
-        
+        catch( ValidationException e ) {
+            LOG.info("Castor says: feature type XML not valid : "
+                     + featureTypeFilePath);
+            LOG.info("Castor says: " + e.toString() );
+        }    
     }
-
+    
 
     /**
      * Generates v0.0.14 capabilities document fragment for a feature type.

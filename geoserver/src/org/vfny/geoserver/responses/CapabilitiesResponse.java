@@ -41,7 +41,7 @@ public class CapabilitiesResponse {
     private VersionBean versionInfo = new VersionBean();
     
     /** Configuration information for the server. */
-    private ConfigurationBean configurationInfo = new ConfigurationBean();
+    private static ConfigurationBean config = ConfigurationBean.getInstance();
     
     /** XML Tag Type: start */
     private static final int TAG_START = 1;
@@ -58,19 +58,19 @@ public class CapabilitiesResponse {
      *******************************************/
 
     /** Operations capabilities file */
-    private final String OPERATIONS_FILE = configurationInfo.getCapabilitiesDirectory() + "operations.xml";
+    private final String OPERATIONS_FILE = config.getCapabilitiesDir() + "operations.xml";
     
     /** Filter capabilities file */
-    private final String FILTER_FILE = configurationInfo.getCapabilitiesDirectory() + "filter.xml";
+    private final String FILTER_FILE = config.getCapabilitiesDir() + "filter.xml";
     
     /** Service metadata file */
-    private final String SERVICE_METADATA_FILE = configurationInfo.getCapabilitiesDirectory() + "serviceMetadata.xml";
+    private final String SERVICE_METADATA_FILE = config.getCapabilitiesDir() + "serviceMetadata.xml";
     
     /** Operations signatures file */
-    private final String OPERATIONS_SIGNATURES_FILE = configurationInfo.getCapabilitiesDirectory() + "operationsSignatures.xml";
+    private final String OPERATIONS_SIGNATURES_FILE = config.getCapabilitiesDir() + "operationsSignatures.xml";
 
     /** Additional capabilities file */
-    private final String ADDITIONAL_CAPABILITIES_FILE = configurationInfo.getCapabilitiesDirectory() + "additionalCapabilities.xml";
+    private final String ADDITIONAL_CAPABILITIES_FILE = config.getCapabilitiesDir() + "additionalCapabilities.xml";
     
     /** Final XML output stream elements and configuration object */
     private static XmlOutputStream xmlOutFinal = new XmlOutputStream(60000);
@@ -110,7 +110,7 @@ public class CapabilitiesResponse {
             //xmlOutFinal.writeFile( OPERATIONS_FILE );
             
             addTag("FeatureTypeList", TAG_START, 2 );
-            addFeatureTypeInfo( configurationInfo.getFeatureTypeDirectory(), version );
+            addFeatureTypeInfo( config.getTypeDir(), version );
             addTag("FeatureTypeList", TAG_END, 2 );
             
             xmlOutFinal.writeFile( FILTER_FILE );
@@ -122,7 +122,7 @@ public class CapabilitiesResponse {
 
             addTag("ContentMetadata", TAG_START, 3 );
             addTag("wfsfl:wfsFeatureTypeList", TAG_START, 6 );
-            addFeatureTypeInfo( configurationInfo.getFeatureTypeDirectory(), version );
+            addFeatureTypeInfo( config.getTypeDir(), version );
             addTag("wfsfl:wfsFeatureTypeList", TAG_END, 6 );
             addTag("ContentMetadata", TAG_END, 3 );
             
@@ -180,7 +180,7 @@ public class CapabilitiesResponse {
         throws WfsException {
         
         try {
-            xmlOutFinal.write( configurationInfo.getServiceXml( versionInfo.getWfsName() ).getBytes() );
+            xmlOutFinal.write( config.getServiceXml( versionInfo.getWfsName() ).getBytes() );
         } catch (IOException e) {
             throw new WfsException( e, "Error appending to XML file", CapabilitiesResponse.class.getName() );
         }
@@ -217,7 +217,7 @@ public class CapabilitiesResponse {
      */
     private String tempReturnCapability(String request) {
         
-        String url = configurationInfo.getUrl();
+        String url = config.getUrl();
         String tempCapability = new String();
         
         tempCapability = "\n      <" + request + ">";
