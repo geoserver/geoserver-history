@@ -40,7 +40,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.24 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.25 2004/02/13 20:40:29 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -78,7 +78,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     private String xmlSchemaFrag;
 
     /** will be lazily created */
-    private FeatureSource fs;
+    private FeatureType ft;
 
     /**
      * FeatureTypeInfo constructor.
@@ -295,28 +295,24 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
                 + " does not have a properly configured " + "datastore");
         }
 
-        if (fs == null) {
-            DataStore dataStore = data.getDataStoreInfo(dataStoreId)
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId)
                                       .getDataStore();
-            String typeName = name;
-            FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        String typeName = name;
+        FeatureSource realSource = dataStore.getFeatureSource(typeName);
 
-            if (((schema == null)
-                    || schema.isEmpty())) { // && 
+        if (((schema == null)
+                || schema.isEmpty())) { // && 
 
-                //(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
-                fs = realSource;
-            } else {
-                try {
-                    fs = reTypeSource(realSource, (FeatureTypeInfoDTO)toDTO());
-                } catch (SchemaException e) {
-                    throw new DataSourceException("Could not make FeatureSource attributes don't match",
-                        e);
-                }
+            //(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
+            return realSource;
+        } else {
+            try {
+                return reTypeSource(realSource, (FeatureTypeInfoDTO)toDTO());
+            } catch (SchemaException e) {
+                throw new DataSourceException("Could not make FeatureSource attributes don't match",
+                    e);
             }
         }
-
-        return fs;
     }
 
     public static FeatureSource reTypeSource(FeatureSource source,
@@ -708,7 +704,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
      */
     public FeatureType getFeatureType() throws IOException {
-        return getFeatureSource().getSchema();
+    	if(ft == null)
+    		ft = getFeatureSource().getSchema();
+    	return ft;
     }
 
     /**
