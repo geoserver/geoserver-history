@@ -8,19 +8,13 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
-import junit.framework.TestCase;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FidFilter;
-import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.LiteralExpression;
-import org.vfny.geoserver.config.ConfigInfo;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -29,9 +23,9 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteSuite.java,v 1.7 2003/09/13 00:20:07 cholmesny Exp $
+ * @version $Id: DeleteSuite.java,v 1.8 2003/09/16 03:31:44 cholmesny Exp $
  */
-public class DeleteSuite extends TestCase {
+public class DeleteSuite extends TransactionSuite {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
@@ -40,22 +34,6 @@ public class DeleteSuite extends TestCase {
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
-
-    /** Unit test data directory */
-    private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/requests";
-
-    /** Holds mappings between HTTP and ASCII encodings */
-    private static FilterFactory factory = FilterFactory.createFilterFactory();
-
-    /** Unit test data directory */
-    private static final String CONFIG_DIR = System.getProperty("user.dir")
-        + "/misc/unit/config/";
-
-    //classes complain if we don't set up a valid config info.
-    static {
-        ConfigInfo.getInstance(CONFIG_DIR);
-    }
 
     /**
      * Constructor with super.
@@ -66,35 +44,10 @@ public class DeleteSuite extends TestCase {
         super(testName);
     }
 
-    /**
-     * Handles actual XML test running details.
-     *
-     * @param baseRequest Base request, for comparison.
-     * @param fileName File name to parse.
-     * @param match Whether or not base request and parse request should match.
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws Exception If there is any problem running the test.
-     */
-    private static boolean runXmlTest(TransactionRequest baseRequest,
-        String fileName, boolean match) throws Exception {
-        // Read the file and parse it
-        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
-        Reader inputStream = new FileReader(inputFile);
-        TransactionRequest request = XmlRequestReader.readTransaction(new BufferedReader(
-                    inputStream));
-        LOGGER.finer("base request: " + baseRequest);
-        LOGGER.finer("read request: " + request);
-        LOGGER.fine("XML " + fileName + " test passed: "
-            + baseRequest.equals(request));
-
-        // Compare parsed request to base request
-        if (match) {
-            return baseRequest.equals(request);
-        } else {
-            return !baseRequest.equals(request);
-        }
+    public static Test suite() {
+	TestSuite suite = new TestSuite("Delete tests");
+        suite.addTestSuite(DeleteSuite.class);
+	return suite;
     }
 
     /**
@@ -104,7 +57,7 @@ public class DeleteSuite extends TestCase {
      * @param requestString File name to parse.
      * @param match Whether or not base request and parse request should match.
      *
-     * @return DOCUMENT ME!
+     * @return <tt>true</tt> if the test passed.
      *
      * @throws Exception If there is any problem running the test.
      */
@@ -121,7 +74,7 @@ public class DeleteSuite extends TestCase {
         // Compare parsed request to base request
         if (match) {
             //return baseRequest.equals(request);
-            return baseRequest.toString().equals(request.toString());
+            return baseRequest.equals(request);
         } else {
             return !baseRequest.equals(request);
         }
