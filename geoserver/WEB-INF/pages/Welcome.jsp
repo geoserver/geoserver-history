@@ -34,7 +34,7 @@
     </a>
   </li>
   <li>
-    <a href="http://docs.codehause.org/display/GEOS/Home">
+    <a href="http://docs.codehaus.org/display/GEOS/Home">
       Wiki
     </a>
   </li>
