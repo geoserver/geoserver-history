@@ -219,15 +219,15 @@
         <action
         	path="/WFSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wfs.description"/>
+        	parameter="wfs.menu"/>
         <action
         	path="/WMSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wms.description"/>        
+        	parameter="wms.menu"/>        
         <action
         	path="/DataConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.dataStores"/>        
+        	parameter="data.menu"/>        
         	
         <action
         	path="/WFSConfigDescription"
