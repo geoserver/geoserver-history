@@ -64,13 +64,14 @@
 
   <para>The User Guides provide a series of walkthroughs using your new
   GeoServer installation. If you want to make use of the WMS then you should
-  install <ulink url="???">JAI</ulink> and the Image I/O extension, see the
-  WMS documentation page for more information. For additional support an
-  active user community is available by joining the GeoServer <ulink
-  url="https://sourceforge.net/mail/?group_id=25086">mailing list</ulink>. We
-  also strongly encourage you to submit bugs and improvements you would like
-  to see to our <ulink
+  install <ulink
+  url="http://java.sun.com/products/java-media/jai/">JAI</ulink> and the Image
+  I/O extension, see the WMS documentation page for more information. For
+  additional support an active user community is available by joining the
+  GeoServer <ulink url="https://sourceforge.net/mail/?group_id=25086">mailing
+  list</ulink>. We also strongly encourage you to submit bugs and improvements
+  you would like to see to our <ulink
   url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">tracker</ulink>.
-  Should you require help, hover over the area of interest and a messge will
-  appear.</para>
+  Should you require help, hover over the area of interest in the web
+  administration tool and a messge will appear.</para>
 </article>
