@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <table border=0 width=100%>
-	<html:form action="WFSConfigContentSubmit">
+	<html:form action="/config/wfs/contentSubmit">
 	
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.enabled"/>">
