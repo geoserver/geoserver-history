@@ -43,8 +43,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.17 2004/04/15 19:42:42 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.18 2004/04/16 06:28:55 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -53,13 +53,14 @@ public class TypesEditorForm extends ActionForm {
 
     /** Identify Style used to render this feature type */
     private String styleId;
+    
     /**
      * Name of featureType.
      * <p>
      * An exact match for typeName provided by a DataStore.
      * </p> 
      */
-    private String name;
+    private String typeName;
     
     /**
      * Representation of the Spatial Reference System.
@@ -97,6 +98,13 @@ public class TypesEditorForm extends ActionForm {
      */
     private String schemaBase;
     
+    /**
+     * The name of the complex element of type schemaBase.
+     * <p>
+     * We only need this for non generated schemaBase.
+     * </p>
+     */
+    private String schemaName;
     /**
      * List of AttributeDisplay and AttributeForm
      */
@@ -157,7 +165,7 @@ public class TypesEditorForm extends ActionForm {
             maxX = Double.toString(bounds.getMaxX());
             maxY = Double.toString(bounds.getMaxY());
         }
-        name = type.getName();
+        typeName = type.getName();
         SRS = Integer.toString(type.getSRS());
         title = type.getTitle();
         
@@ -169,7 +177,7 @@ public class TypesEditorForm extends ActionForm {
         FeatureType featureType = null;        
         try {
             DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
-            featureType = dataStore.getSchema( name );                            
+            featureType = dataStore.getSchema( typeName );                            
         } catch (IOException e) {
             // DataStore unavailable!
         }
@@ -441,16 +449,16 @@ public class TypesEditorForm extends ActionForm {
      * 
      * @return Returns the name.
      */
-    public String getName() {
-        return name;
+    public String typeName() {
+        return typeName;
     }
     /**
      * Set name to name.
      *
      * @param name The name to set.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setTypeName(String name) {
+        this.typeName = name;
     }
     /**
      * Access schemaBase property.

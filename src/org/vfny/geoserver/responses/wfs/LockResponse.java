@@ -42,7 +42,7 @@ import org.vfny.geoserver.global.dto.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.14 2004/04/05 12:07:36 cholmesny Exp $
+ * @version $Id: LockResponse.java,v 1.15 2004/04/16 06:28:56 jive Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -195,7 +195,7 @@ public class LockResponse implements Response {
                         //HACK: Query.NO_NAMES isn't working in postgis right now,
                         //so we'll just use all.
                         Query query = new DefaultQuery(
-                                meta.getShortName(), fidFilter,
+                                meta.getTypeName(), fidFilter,
                                 Query.DEFAULT_MAX, Query.ALL_NAMES,
                                 curLock.getHandle());
                         int numberLocked = ((FeatureLocking)source).lockFeatures( query );

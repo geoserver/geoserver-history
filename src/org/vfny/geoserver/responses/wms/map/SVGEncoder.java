@@ -36,7 +36,7 @@ import com.vividsolutions.jts.geom.Point;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.8 2004/02/09 23:29:44 dmzwiers Exp $
+ * @version $Id: SVGEncoder.java,v 1.9 2004/04/16 06:28:56 jive Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -319,7 +319,7 @@ public class SVGEncoder {
 
             try {
                 LOGGER.fine("obtaining FeatureReader for "
-                    + layerConfig.getName(true));
+                    + layerConfig.getName());
                 featureReader = results[i].reader();
                 LOGGER.fine("got FeatureReader, now writing");
 
@@ -328,7 +328,7 @@ public class SVGEncoder {
                 //modified ch = delegate now changes style names to style 
                 //objects, so execute takes a style array.
                 //if (styles == null) {
-                groupId = layerConfig.getName(true);
+                groupId = layerConfig.getTypeName();
 
                 //} else {
                 //groupId = (String) styles.get(i);
@@ -788,7 +788,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(
