@@ -17,11 +17,14 @@
 <p>
   <bean:write name="WFS" property="abstract"/>
 </p>
-<p>
-  <span class="url">
-  <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/getCapabilities">getCapabilities</a>
-  </span>
-</p>
+<ul>
+  <li>
+    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/getCapabilities">getCapabilities</a>
+  </li>
+  <li>
+    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/TestWfsPost">TestWfsPost</a>
+  </li>
+</ul>
 
 <h2>
   <bean:write name="WMS" property="title"/>
@@ -30,8 +33,8 @@
   <bean:write name="WMS" property="abstract"/>
 </p>
 
-<p>
-  <span class="url">
-  <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wms/getCapabilities">getCapabilities</a>
-  </span>
-</p>
+<ul>
+  <li>
+    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wms/getCapabilities">getCapabilities</a>
+  </li>
+</ul>
