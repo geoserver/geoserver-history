@@ -18,8 +18,10 @@ package org.geotools.validation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
@@ -28,6 +30,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
 import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
 
+import com.sun.tools.javac.v8.util.List;
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
@@ -46,7 +49,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.1.2.4 2003/11/26 06:51:08 sploreg Exp $
+ * @version $Id: ValidationProcessor.java,v 1.1.2.5 2003/11/26 07:52:47 sploreg Exp $
  */
 public class ValidationProcessor {
 
@@ -223,6 +226,32 @@ public class ValidationProcessor {
 	
 	
 	/**
+	 * getDependencies purpose.
+	 * <p>
+	 * Gets all the FeatureTypes that this FeatureType uses. 
+	 * </p>
+	 * @param typeName the FeatureTypeName
+	 * @return all the FeatureTypes that this FeatureType uses.
+	 */
+	public Set getDependencies(String typeName)
+	{
+		ArrayList validations = (ArrayList)integrityLookup.get(typeName);
+		HashSet s = new HashSet();
+		if (validations != null)
+		{
+			for (int i=0; i<validations.size(); i++)	// for each validation
+			{
+				String[] types = ((Validation)validations.get(i)).getTypeNames();
+				for (int j=0; j<types.length; j++)	// for each FeatureType
+					s.add(types[i]);				// add it to the list
+			}
+		}
+		
+		return s;
+	}
+	
+	
+	/**
 	 * runFeatureTests
 	 * <p>
 	 * Performs a lookup on the FeatureType name to determine what FeatureTests
@@ -302,12 +331,12 @@ public class ValidationProcessor {
 	 * then run on each Feature, with the ValidationResults coming along for the ride,
 	 * collecting error information.
 	 * </p>
-	 * @param stores the Map of modified features (HashMaps of key=featureTypeName, value="featureSource"
+	 * @param stores the Map of modified features (Map of key=featureTypeName, value="featureSource"
 	 * @param envelope The bounding box that contains all modified Features
 	 * @param results Storage for the results of the validation tests.
 	 * @throws Exception Throws an exception if the HashMap contains a value that is not a FeatureSource
 	 */
-	public void runIntegrityTests(HashMap stores, Envelope envelope, ValidationResults results) throws Exception
+	public void runIntegrityTests(Map stores, Envelope envelope, ValidationResults results) throws Exception
 	{
 		// convert each HashMap element into FeatureSources
 		FeatureSource[] sources = new FeatureSource[stores.size()];
