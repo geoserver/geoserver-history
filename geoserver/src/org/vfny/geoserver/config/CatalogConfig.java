@@ -4,12 +4,20 @@
  */
 package org.vfny.geoserver.config;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLockFactory;
+import org.geotools.data.FeatureLocking;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Transaction;
 import org.geotools.filter.*;
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.wfs.*;
 import org.vfny.geoserver.responses.wfs.*;
 import org.w3c.dom.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -19,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.3 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.4 2003/11/16 09:04:53 jive Exp $
  */
 public class CatalogConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -65,87 +73,6 @@ public class CatalogConfig extends AbstractConfig {
         File startDir = new File(featureTypeDir);
         this.featureTypes = new HashMap();
         loadFeatureTypes(startDir);
-    }
-
-    /**
-     * implement it!
-     *
-     * @param typeName DOCUMENT ME!
-     * @param filter DOCUMENT ME!
-     * @param lockId DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws WfsException DOCUMENT ME!
-     * @throws UnsupportedOperationException DOCUMENT ME!
-     */
-    public boolean isLocked(String typeName, Filter filter, String lockId)
-        throws WfsException {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param typeName DOCUMENT ME!
-     * @param filter DOCUMENT ME!
-     * @param lockAll DOCUMENT ME!
-     * @param expiry DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws WfsException DOCUMENT ME!
-     * @throws UnsupportedOperationException DOCUMENT ME!
-     */
-    public synchronized String lock(String typeName, Filter filter,
-        boolean lockAll, int expiry) throws WfsException {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    /**
-     * A convenience method to lock all the features in a given typeName for
-     * the default expiry length of time.
-     *
-     * @param typeName the name of the featureType to lock.
-     *
-     * @return the id string of the lock, if successful, null otherwise.
-     *
-     * @throws WfsException when locking isn't successful.
-     */
-    public synchronized String lock(String typeName) throws WfsException {
-        return lock(typeName, null, true, -1);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param lockId DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws UnsupportedOperationException DOCUMENT ME!
-     */
-    public boolean lockIdExists(String lockId) {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    /**
-     * Unlocks a completed transaction request.  This should only be called
-     * after the transaction is committed.  It performs the proper release
-     * action for each of the sub-requests.  This method should be called by
-     * transactions, as they are the only way to release a lock, which is why
-     * a WfsTransactionException is thrown here.
-     *
-     * @param completed a successfully completed transaction request.
-     *
-     * @return true if there were features released, false otherwise.
-     *
-     * @throws WfsTransactionException if there was trouble with the backend.
-     * @throws UnsupportedOperationException DOCUMENT ME!
-     */
-    public synchronized boolean unlock(TransactionRequest completed)
-        throws WfsTransactionException {
-        throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
@@ -484,5 +411,74 @@ public class CatalogConfig extends AbstractConfig {
         int end = testName.length();
 
         return testName.substring(start, end).equals(INFO_FILE);
+    }
+
+    /**
+     * Release lock by authorization
+     * @param string
+     */
+    public void lockRelease( String authorization ) {
+        for( Iterator i=dataStores.values().iterator();i.hasNext();){
+            DataStoreConfig meta = (DataStoreConfig) i.next();
+            try {
+                DataStore dataStore = meta.getDataStore();
+                FeatureSource source = dataStore.getFeatureSource( dataStore.getTypeNames()[0] );
+            
+                // Any FeatureSourceWill do, we just need access to
+                // the high-level api
+                // TODO: consider moving refresh, release to DataStore
+                //
+                if( source instanceof FeatureLocking ){
+                    FeatureLocking locking = (FeatureLocking) source;
+                    Transaction t = new DefaultTransaction();                    
+                    locking.setTransaction( t );
+                    try {
+                        t.addAuthorization( authorization );
+                        locking.releaseLock( authorization );
+                    }
+                    finally {
+                        t.close();
+                    }
+                } 
+            }
+            catch( IOException huh){
+                LOGGER.warning("Could not refresh lock for "+meta.toString() );                                   
+            }
+        }        
+    }
+
+    /**
+     * Refresh lock by authorization
+     * @param authorization
+     */
+    public void lockRefresh( String authorization ) {
+        
+        for( Iterator i=dataStores.values().iterator();i.hasNext();){
+            DataStoreConfig meta = (DataStoreConfig) i.next();
+            try {
+                DataStore dataStore = meta.getDataStore();
+                FeatureSource source = dataStore.getFeatureSource( dataStore.getTypeNames()[0] );
+                
+                // Any FeatureSourceWill do, we just need access to
+                // the high-level api
+                // TODO: consider moving refresh, release to DataStore?
+                //
+                if( source instanceof FeatureLocking ){
+                    FeatureLocking locking = (FeatureLocking) source;
+                    Transaction t = new DefaultTransaction();                    
+                    locking.setTransaction( t );
+                    try {
+                        t.addAuthorization( authorization );
+                        locking.refreshLock( authorization );
+                    }
+                    finally {
+                        t.close();
+                    }
+                } 
+            }
+            catch( IOException huh){
+                LOGGER.warning("Could not refresh lock for "+meta.toString() );                                   
+            }
+        }        
     }
 }

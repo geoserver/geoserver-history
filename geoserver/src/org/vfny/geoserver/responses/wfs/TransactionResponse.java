@@ -8,6 +8,7 @@ import org.geotools.data.*;
 import org.geotools.feature.*;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
+import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.oldconfig.*;
@@ -28,7 +29,7 @@ import java.util.logging.*;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.1.2.5 2003/11/16 07:38:48 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.1.2.6 2003/11/16 09:04:52 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -108,7 +109,7 @@ public class TransactionResponse implements Response {
             if( !stores.containsKey( typeName )){
                 FeatureTypeConfig meta = catalog.getFeatureType( typeName );
                 try {
-                    FeatureSource source = meta.getFeatureSource();
+                    FeatureSource source = meta.getFeatureSource();                    
                     if( source instanceof FeatureStore ){
                         FeatureStore store = (FeatureStore) source;
                         store.setTransaction( transaction );
@@ -143,7 +144,7 @@ public class TransactionResponse implements Response {
                 // This is a real failure - not associated with a element
                 //
                 throw new WfsException( "Authorization ID '"+authorizationID+"' not useable", ioException);
-            }
+            }                        
         }
         // execute elements in order,
         // recording results as we go
@@ -164,14 +165,66 @@ public class TransactionResponse implements Response {
                     DeleteRequest delete = (DeleteRequest) element;
                     Filter filter = delete.getFilter();
                     
-                
-                    Envelope damaged = store.getBounds( new DefaultQuery( filter ) );
+                    Envelope damaged = store.getBounds( new DefaultQuery( filter ) );                    
                     if( damaged == null ){
                         damaged = store.getFeatures( filter ).getBounds();
                     }
-                    
-                    store.removeFeatures( filter );
-                    
+                    if( request.getLockId() != null &&
+                        store instanceof FeatureLocking &&
+                        request.getReleaseAction() == TransactionRequest.SOME ){
+                        FeatureLocking locking = (FeatureLocking)store;
+                        // TODO: Revisit Lock/Delete interaction in gt2 
+                        if( false ){                            
+                            // REVISIT: This is bad - by releasing locks before
+                            // we remove features we open ourselves up to the danger
+                            // of someone else locking the features we are about to
+                            // remove.
+                            //
+                            // We cannot do it the other way round, as the Features will
+                            // not exist
+                            //
+                            // We cannot grab the fids offline using AUTO_COMMIT
+                            // because we may have removed some of them earlier in the
+                            // transaction
+                            //
+                            locking.unLockFeatures( filter );                                        
+                            store.removeFeatures( filter );
+                        }
+                        else {
+                            // This a bit better and what should be done, we will
+                            // need to rework the gt2 locking api to work with
+                            // fids or something
+                            //
+                            // The only other thing that would work would be
+                            // to specify that FeatureLocking is required to
+                            // remove locks when removing Features.
+                            // 
+                            // While that sounds like a good idea, it would be
+                            // extra work when doing release mode ALL.
+                            // 
+                            DataStore data = store.getDataStore();
+                            FilterFactory factory = FilterFactory.createFilterFactory();
+                            FeatureWriter writer;
+                            writer = data.getFeatureWriter( typeName, filter, transaction );
+                            try {
+                                while( writer.hasNext() ){
+                                    String fid = writer.next().getID();
+                                    locking.unLockFeatures( factory.createFidFilter( fid ) );
+                                    writer.remove();
+                                }
+                            }
+                            finally {
+                                writer.close();
+                            }
+                            store.removeFeatures( filter );
+                        }                        
+                    }
+                    else {
+                        // We don't have to worry about locking right now
+                        //
+                        store.removeFeatures( filter );
+                    }
+                           
                     envelope.expandToInclude( damaged );
                 }
                 catch (IOException ioException) {
@@ -222,6 +275,13 @@ public class TransactionResponse implements Response {
                     else {
                         store.modifyFeatures( types, values, filter );                        
                     }
+                    if( request.getLockId() != null &&
+                        store instanceof FeatureLocking &&
+                        request.getReleaseAction() == TransactionRequest.SOME ){
+                        FeatureLocking locking = (FeatureLocking)store;                    
+                        locking.unLockFeatures( filter );
+                    }
+                                        
                     // we only have to do this again if values contains a geometry type
                     //
                     envelope.expandToInclude( store.getBounds( new DefaultQuery(filter)));                       
@@ -252,8 +312,9 @@ public class TransactionResponse implements Response {
         catch( IOException invalid ){
             throw new WfsTransactionException( invalid );            
         }
-        // okay we are good to go, we will commit in the writeTo method
-        // after user has got the response 
+        
+        // we will commit in the writeTo method
+        // after user has got the response
         response = build;                
     }
 
@@ -345,12 +406,20 @@ public class TransactionResponse implements Response {
      * to the user, this gives us a chance to rollback if we are not able
      * to provide a response.
      * </p>     
+     * I could not quite figure out what to about releasing locks.
+     * It could be we are supposed to release locks even if the transaction
+     * fails, or only if it succeeds.
+     * 
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         if( transaction == null || response == null){
             throw new ServiceException("Transaction not executed");            
         }
+        if( response.status == WfsTransResponse.PARTIAL){
+            throw new ServiceException("Canceling PARTIAL response");        
+        }
         try {
+            
             Writer writer;
             
             writer = new OutputStreamWriter( out );
@@ -359,12 +428,15 @@ public class TransactionResponse implements Response {
             response.writeXmlResponse( writer );
             writer.flush();
             
-            if( response.status == WfsTransResponse.SUCCESS ){
-                transaction.commit();                
-            }
-            else {
+            switch( response.status ){
+            case  WfsTransResponse.SUCCESS:
+                transaction.commit();
+                break;
+                
+            case WfsTransResponse.FAILED:
                 transaction.rollback();
-            }
+                break;                               
+            }            
         }
         catch( IOException ioException ){
             transaction.rollback();
@@ -373,9 +445,34 @@ public class TransactionResponse implements Response {
         finally {
             transaction.close();
             transaction = null;            
-        }                            
-    }    
-
+        }
+        // 
+        // Lets deal with the locks
+        //
+        // Q: Why talk to Catalog you ask
+        // A: Only class that knows all the DataStores
+        //
+        // We really need to ask all DataStores to release/refresh
+        // because we may have locked Features with this Authorizations
+        // on them, even though we did not refer to them in this transaction.
+        //
+        // Q: Why here, why now?
+        // A: The opperation was a success, and we have completed the opperation
+        //
+        // We also need to do this if the opperation is not a success,
+        // you can find this same code in the abort method
+        // 
+        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();        
+        if( request.getLockId() != null ){
+            if( request.getReleaseAction() == TransactionRequest.ALL ){
+                catalog.lockRelease( request.getLockId() );
+            }
+            else if( request.getReleaseAction() == TransactionRequest.SOME ){
+                catalog.lockRefresh( request.getLockId() );
+            }
+        }        
+    }        
+    
     /* (non-Javadoc)
      * @see org.vfny.geoserver.responses.Response#abort()
      */
@@ -390,7 +487,22 @@ public class TransactionResponse implements Response {
         catch( IOException ioException ){
             // nothing we can do here
             LOGGER.log( Level.SEVERE, "Failed trying to rollback a transaction:"+ioException);   
-        }        
+        }
+        if( request != null){
+            // 
+            // TODO: Do we need release/refresh during an abort?               
+            if( request.getLockId() != null ){
+                CatalogConfig catalog = ServerConfig.getInstance().getCatalog();            
+                if( request.getReleaseAction() == TransactionRequest.ALL ){
+                    catalog.lockRelease( request.getLockId() );
+                }
+                else if( request.getReleaseAction() == TransactionRequest.SOME ){
+                    catalog.lockRefresh( request.getLockId() );
+                }
+            }
+        }
+        request = null;
+        response = null;                
     }
 
 }
