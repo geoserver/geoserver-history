@@ -41,8 +41,7 @@
       TransformerFactoryConfiguration error, or simply a 500 internal Server
       error) then we recommend downloading the latest xalan.jar from
       xerces.org. You can add this just to GeoServer, by placing it in the
-      GeoServer WEB-INF/lib/ directory (explain where this is? Link to a
-      section explaining this paradigm). Or you can permanently add it to your
+      GeoServer WEB-INF/lib/ directory. Or you can permanently add it to your
       Java installation, so that you won't have to copy it over during
       GeoServer upgrades, by putting it in JAVA_HOME/jre/lib/ext.</para>
     </section>
@@ -57,14 +56,18 @@
       <para>GeoServer is available for download on our sourceforge home, using
       their excellent file release system. Downloads are instantly available
       on mirrors around the world. The main GeoServer distribution is
-      available here (link). In addition there are other files that we
-      distribute, such as DataStore Extensions (link), which includes updated
-      DataStores for past GeoServer version (so you can get the latest
-      upgrades without having to completely reinstall and reconfigure
-      GeoServer), as well as more experimental ones, such as MySQL, Indexed
-      Shapefiles, and VPF support, that are still in testing, so we don't want
-      to distribute them yet with the full, stable GeoServer distribution. You
-      can view all files that GeoServer offers by clicking here (link).</para>
+      available <ulink
+      url="http://sourceforge.net/project/showfiles.php?group_id=25086&amp;package_id=38410">here</ulink>.
+      In addition there are other files that we distribute, such as <ulink
+      url="http://sourceforge.net/project/showfiles.php?group_id=25086&amp;package_id=129885">DataStore
+      Extras</ulink>, which includes updated DataStores for past GeoServer
+      version (so you can get the latest upgrades without having to completely
+      reinstall and reconfigure GeoServer), as well as more experimental ones,
+      such as MySQL, Indexed Shapefiles, and VPF support, that are still in
+      testing, so we don't want to distribute them yet with the full, stable
+      GeoServer distribution. You can view all files that GeoServer offers by
+      clicking <ulink
+      url="http://sourceforge.net/project/showfiles.php?group_id=25086">here</ulink>.</para>
     </section>
 
     <section>
