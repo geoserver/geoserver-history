@@ -105,7 +105,7 @@ public class Dispatcher extends HttpServlet {
 
                 request.getReader().reset();
 
-                forwardRequest( tempResponse, targetRequest, request, response );
+                //forwardRequest( tempResponse, targetRequest, request, response );
 
 
         }
@@ -128,95 +128,37 @@ public class Dispatcher extends HttpServlet {
                 // Examine the incoming request and create appropriate server objects
                 //  to deal with each request
                 //              try {
-
-                        if ( request.getQueryString() != null ) {
-                                
-                                DispatcherReaderKvp requestTypeAnalyzer = new DispatcherReaderKvp( request.getQueryString() );
-                                targetRequest = requestTypeAnalyzer.getRequestType();
-                        }                               
-                        else {
-                        
-                                targetRequest = UNKNOWN;    
-
-                                // Special case: request string contained text, but didn't match a request
-                                // For now, this passes to the general server meta-data, but this should be replaced with a FreeFS exception later
-                        }
-                        /*
-                }
-                
-                catch (WfsException wfs) {
-                        targetRequest = ERROR;
-                        tempResponse = wfs.getXmlResponse();
-                }
-                */
-
-                _log.info("request is type: " + targetRequest);
-
-                forwardRequest( tempResponse, targetRequest, request, response );
-
-        }
-
-
-     /**
-        * Handles all request forwarding.
-        *
-        * This method implements the main matching logic for this class.
-        *
-        * @param tempResponse Error response string.
-        * @param targetRequest Internally noted target response for forward.
-        * @param request Servlet request object.
-        * @param response Servlet request object.
-        */
-        private void forwardRequest(String tempResponse, int targetRequest, HttpServletRequest request, HttpServletResponse response)
-                throws ServletException, IOException {
-
-                // Examine the incoming request and create appropriate server objects
-                //  to deal with each request
-                //  then pass to appropriate servlet
-                if ( targetRequest == GET_CAPABILITIES_REQUEST ) {
-                        
-                        RequestDispatcher dispatcher = request.getRequestDispatcher( GET_CAPABILITIES_INTERFACE );  
-                        dispatcher.forward(request, response);
-
-                // Pass to appropriate servlet
+		
+		if ( request.getQueryString() != null ) {
+		    
+		    DispatcherReaderKvp requestTypeAnalyzer = new DispatcherReaderKvp( request.getQueryString() );
+		    targetRequest = requestTypeAnalyzer.getRequestType();
+		} else {
+		    
+		    targetRequest = UNKNOWN;    
+		    //throw exception
+		}
+		if ( targetRequest == GET_CAPABILITIES_REQUEST ) {
+		    	Capabilities capServlet = new Capabilities();
+			capServlet.doGet(request, response);
                 } else if ( targetRequest == DESCRIBE_FEATURE_TYPE_REQUEST ) {
+		    Describe descServlet = new Describe();
+		    descServlet.doGet(request, response);
                         
-                        RequestDispatcher dispatcher = request.getRequestDispatcher( DESCRIBE_FEATURE_TYPE_INTERFACE ); 
-                        dispatcher.forward(request, response);
-                        
-                } else if   ( targetRequest == GET_FEATURE_REQUEST ) {
+                } else if ( targetRequest == GET_FEATURE_REQUEST ) {
+		    Feature featServlet = new Feature();
+		    featServlet.doGet(request, response);
+		} else {
+		    String message = "No wfs kvp request recognized.  Make sure" 
+			+ " the REQUEST kvp is a valid wfs request (only basic now supported)";
 
-                        _log.info("sending to get feature");
-                        
-                        RequestDispatcher dispatcher = request.getRequestDispatcher( GET_FEATURE_INTERFACE );
-                        dispatcher.forward(request, response);
-
-                } else if   ( targetRequest == ERROR ) {
-                        
-                        _log.info("is error type");
-             
-                        // set content type and return response, whatever it is 
-                        response.setContentType(MIME_TYPE);
-                        response.getWriter().write( tempResponse );
-
-                }
-
-                // Special case: top-level URI requested, with no query GET data and no POST data
-                // Pass to meta-data HTML page
-                // Mostly for web-indexes (contains appropriate search engine, dynamic meta-data),
-                // those who are intersted in WFS but don't know how to talk to it, and lost web-surfers.
-                else {
-
-                        response.getWriter().write( "unknown request" );
-
-                        /*
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("metadata/default.jsp");
-                        getServletContext().getNamedDispatcher("jsp");
-                        dispatcher.forward(request, response);
-                        */
-                } 
+		    WfsException wfse = new WfsException(message);
+		    tempResponse = wfse.getXmlResponse(false);
+		    response.setContentType(MIME_TYPE);
+		    response.getWriter().write(tempResponse);
+		}
+			
 
         }
-
-
 }
+
