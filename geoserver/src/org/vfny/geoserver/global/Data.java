@@ -53,7 +53,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.9 2004/01/16 20:10:54 jive Exp $
+ * @version $Id: Data.java,v 1.10 2004/01/16 23:52:07 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -198,6 +198,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
         }
     }
+    
     /**
      * Dynamically tries to connect to every DataStore!
      * <p>
@@ -207,8 +208,9 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * </p>
      * @return Map of Exception by dataStoreId:typeName
      */
-    public SortedMap status(){
+    public SortedMap statusDataStores(){
         SortedMap status = new TreeMap();
+        
         DataStoreInfo info;        
         for( Iterator i=dataStores.values().iterator(); i.hasNext();){
             info = (DataStoreInfo) i.next();
@@ -218,6 +220,30 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             catch( Throwable t ){
                 status.put( info.getId(), t );
             }
+        }
+        return status;
+    }
+    /**
+     * Dynamically tries to connect to every Namespace!
+     * <p>
+     * Returns a map of Exception by prefix:typeName.
+     * If by some marvel the we could connect to a FeatureSource we will
+     * record Boolean.TRUE. 
+     * </p>
+     * @return Map of Exception by prefix:typeName
+     */    
+    public SortedMap statusNamespaces(){
+        SortedMap status = new TreeMap();
+        
+        NameSpaceInfo namespaceInfo;
+        for( Iterator n=nameSpaces.values().iterator(); n.hasNext();){
+            namespaceInfo = (NameSpaceInfo) n.next();
+            try {
+                status.putAll( status( namespaceInfo ) );
+            }
+            catch( Throwable badNamespace ){
+                status.put( namespaceInfo.getPrefix(), badNamespace );
+            }            
         }
         return status;
     }
@@ -260,20 +286,71 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             String typeName = typeNames[t];
             try {
                 assertWorking( store, typeName );
+                status.put( id+":"+typeName, Boolean.TRUE );
             }
             catch( Throwable didNotWork ){
                 System.out.println( id+":"+typeName+": geotools2 FeatureSource did not work!" );
                 didNotWork.printStackTrace();
                 status.put( id+":"+typeName, didNotWork );                
             }
-            FeatureTypeInfo featureTypeInfo = getFeatureTypeInfo(typeName);
         }
         return status;
     }
-    /** Assert that GeoTools2 typeName exists and works for typeName */
-    public void assertWorking( DataStore datastore, String typeName ) throws IOException{
+    public SortedMap status( NameSpaceInfo info ){
         SortedMap status = new TreeMap();
         
+        String id = info.getPrefix();
+        System.out.println( id+": checking status of Namespace!" );
+        System.out.println( id+": namespace prefix '"+info.getPrefix() +"'");
+        System.out.println( id+": uri '"+info.getURI()+"'");
+        System.out.println( id+": default "+info.isDefault() );
+        
+        for( Iterator i=info.getTypeNames().iterator(); i.hasNext();){
+            String typeName = (String) i.next();
+            
+            FeatureTypeInfo typeInfo = null;
+            try {
+                typeInfo = (FeatureTypeInfo) info.getFeatureTypeMetaData(typeName);
+                assertWorking( typeInfo );
+                status.put( id+":"+typeName, Boolean.TRUE );                
+            }
+            catch( Throwable badInfo ){
+                System.out.println( id+":"+typeName+": FeatureTypeInfo did not work!" );
+                badInfo.printStackTrace();
+                status.put( id+":"+typeName, badInfo );
+            }
+        }
+        return status;        
+    }   
+    public void assertWorking( FeatureTypeInfo info ) throws IOException {
+        String id = info.getPrefix() + ":"+info.getName();
+        
+        
+        System.out.println( id+": check status of GeoServer FeatureTypeInfo" );
+        System.out.println( id+": name:'"+info.getName()+"'" );
+        System.out.println( id+": prefix:'"+info.getPrefix()+"'" );        
+        System.out.println( id+": schema base:'"+info.getSchemaBase()+"'" );
+        System.out.println( id+": schema name:'"+info.getSchemaName()+"'" );
+        System.out.println( id+": schema title:'"+info.getTitle()+"'" );
+        System.out.println( id+": schema abstract:'"+info.getAbstract()+"'" );
+        System.out.println( id+": schema typeName:'"+info.getTypeName()+"'" );
+        System.out.println( id+": schema query:'"+info.getDefinitionQuery()+"'" );
+        System.out.println( id+": schema keywords:'"+info.getKeywords()+"'" );
+        System.out.println( id+": schema bounds:'"+info.getLatLongBoundingBox()+"'" );
+        
+        FeatureType featureType = info.getFeatureType();
+        System.out.println( id+": featureType '"+featureType+"'" );                
+        
+        FeatureSource source = info.getFeatureSource();
+        System.out.println( id+": source aquired '"+source+"'" );                
+        
+        assertWorking(source);
+        
+        System.out.println( id+": schema attributeNames:'"+info.getAttributeNames()+"'" );
+        System.out.println( id+": schema schema:'"+info.getXMLSchema()+"'" );                
+    }
+    /** Assert that GeoTools2 typeName exists and works for typeName */
+    public void assertWorking( DataStore datastore, String typeName ) throws IOException{
         System.out.println( typeName+": check status of GeoTools2 FeatureType" );
         
         FeatureType featureType = datastore.getSchema( typeName );
