@@ -29,7 +29,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.7 2004/01/15 23:45:21 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.8 2004/01/16 17:58:30 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
 	private static final String CAP_VERSION = WMS.getVersion();
@@ -83,7 +83,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException For any problems.
      */
     public void endDocument(Service config) throws SAXException {
-//        unIndent();
+        unIndent();
         endElement("WMT_MS_Capabilities");
     }
 
@@ -134,16 +134,16 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         throws SAXException {
         WMS config = (WMS) Service;
 
- //       cReturn();
+        cReturn();
 
         startElement("Capability");
- //       indent();
+        indent();
         handleRequest(config);
         handleExceptions(config);
         handleVendorSpecifics(config);
         handleSLD(config);
         handleLayers(config);
- //       unIndent();
+        unIndent();
         endElement("Capability");
     }
 
@@ -165,7 +165,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 		Data catalog = server.getData();
 		Collection ftypes = catalog.getFeatureTypeInfos().values();
 		FeatureTypeInfo layer;
-  //      cReturn();
+        cReturn();
         startElement("Layer");
 		handleService((Service)config);
 
@@ -173,11 +173,11 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             layer = (FeatureTypeInfo) it.next();
 
             if (layer.isEnabled()) {
-  //              cReturn();
+                cReturn();
                 startElement("Layer");
- //               indent();
+                indent();
                 handleFeatureType(layer);
- //               unIndent();
+                unIndent();
                 endElement("Layer");
             }
         }
@@ -219,7 +219,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         sldAtts.addAttribute("", "UserLayer", "UserLayer", "", supportsUserLayer);
         sldAtts.addAttribute("", "UserStyle", "UserStyle", "", supportsUserStyle);
         sldAtts.addAttribute("", "RemoteWFS", "RemoteWFS", "", supportsRemoteWFS);
- //       cReturn();
+        cReturn();
         startElement("UserDefinedSymbolization", sldAtts);
         endElement("UserDefinedSymbolization");
     }
@@ -246,11 +246,11 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      */
     protected void handleRequest(WMS config) throws SAXException {
         startElement("Request");
-  //      indent();
+        indent();
         handleCapability(config, "GetCapabilities");
-  //      cReturn();
+        cReturn();
         handleCapability(config, "GetMap");
-  //      unIndent();
+        unIndent();
         endElement("Request");
     }
 
@@ -267,12 +267,12 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         throws SAXException {
         boolean isPost = false;
         startElement(capabilityName);
-   //     indent();
+        indent();
 
         if (capabilityName.equals("GetCapabilities")) {
             //HACK - hardcode.  Also, do we actually return this mime-type?
             handleSingleElem("Format", "application/vnd.ogc.wms_xml");
-   //         cReturn();
+            cReturn();
             isPost = true;
         }
 
@@ -281,14 +281,14 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
             while (formats.hasNext()) {
                 handleSingleElem("Format", (String) formats.next());
-  //              cReturn();
+                cReturn();
             }
         }
 
         startElement("DCPType");
-  //      indent();
+        indent();
         startElement("HTTP");
-  //      indent();
+        indent();
         startElement("Get");
 
         String url = baseUrl + "?";
@@ -303,11 +303,11 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             endElement("Post");
         }
 
- //       unIndent();
+        unIndent();
         endElement("HTTP");
- //       unIndent();
+        unIndent();
         endElement("DCPType");
-  //      unIndent();
+        unIndent();
         endElement(capabilityName);
     }
 
@@ -320,9 +320,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException For any problems.
      */
     protected void handleExceptions(WMS config) throws SAXException {
- //       cReturn();
+        cReturn();
         startElement("Exception");
- //       indent();
+        indent();
 
         String[] formats = config.getExceptionFormats();
 
@@ -330,13 +330,13 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             handleSingleElem("Format", formats[i]);
 
             if (i < (formats.length - 1)) {
- //               cReturn();
+                cReturn();
             }
         }
 
- //       unIndent();
+        unIndent();
         endElement("Exception");
- //       cReturn();
+        cReturn();
     }
 
     /**
@@ -349,23 +349,23 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     protected void handleContactInformation(Service config)
         throws SAXException {
         startElement("ContactInformation");
- //       indent();
+        indent();
         startElement("ContactPersonPrimary");
- //       indent();
+        indent();
         handleSingleElem("ContactPerson", server.getContactPerson());
         handleSingleElem("ContactOrganization", server.getContactOrganization());
-  //      unIndent();
+        unIndent();
         endElement("ContactPersonPrimary");
 
         startElement("ContactAddress");
-  //      indent();
+        indent();
         handleSingleElem("AddressType", server.getAddressType());
         handleSingleElem("Address", server.getAddress());
         handleSingleElem("City", server.getAddressCity());
         handleSingleElem("StateOrProvince", server.getAddressState());
         handleSingleElem("PostCode", server.getAddressPostalCode());
         handleSingleElem("Country", server.getAddressCountry());
- //       unIndent();
+        unIndent();
         endElement("ContactAddress");
 
         handleSingleElem("ContactVoiceTelephone", server.getContactVoice());
@@ -374,7 +374,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleSingleElem("ContactElectronicMailAddress",
 		server.getContactEmail());
 
- //       unIndent();
+        unIndent();
         endElement("ContactInformation");
     }
 
@@ -391,7 +391,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     protected void handleKeywords(List kwords) throws SAXException {
         if ((kwords != null) && (kwords.size() > 0)) {
             startElement("KeywordList");
- //           indent();
+            indent();
 
             for (Iterator it = kwords.iterator(); it.hasNext();) {
                 startElement("Keyword");
@@ -399,11 +399,11 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
                 endElement("Keyword");
 
                 if (it.hasNext()) {
-  //                  cReturn();
+                    cReturn();
                 }
             }
 
-  //          unIndent();
+            unIndent();
 
             endElement("KeywordList");
         }
@@ -438,10 +438,10 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         attributes.addAttribute("", "xlink:type", "xlink:type", "", "simple");
         attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
 
- //       indent();
+        indent();
         startElement("OnlineResource", attributes);
         endElement("OnlineResource");
- //       unIndent();
+        unIndent();
     }
 
     /**

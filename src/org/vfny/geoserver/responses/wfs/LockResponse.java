@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.5 2004/01/14 22:54:27 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.6 2004/01/16 17:58:29 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -226,7 +226,7 @@ public class LockResponse implements Response {
 
         if (getXml) {
             return generateXml(featureLock.getAuthorization(), lockAll,
-                lockedFids, lockFailedFids,request.getGeoServer());
+                lockedFids, lockFailedFids,request);
 
             //            return generateXml(lockId, lockAll,
             //                repository.getLockedFeatures(lockId),
@@ -275,9 +275,9 @@ public class LockResponse implements Response {
      * @return The xml response of this lock.
      */
     private static String generateXml(String lockId, boolean lockAll,
-        Set lockedFeatures, Set notLockedFeatures, GeoServer gs) {
+        Set lockedFeatures, Set notLockedFeatures, Request request) {
         String indent = verbose ? "   " : "";
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + gs.getCharSet().displayName()+ "\"?>";
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + request.getGeoServer().getCharSet().displayName()+ "\"?>";
         StringBuffer returnXml = new StringBuffer(xmlHeader);
         returnXml.append(nl + "<WFS_LockFeatureResponse " + nl);
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
@@ -295,7 +295,7 @@ public class LockResponse implements Response {
             + "XMLSchema-instance\" " + nl);
         returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis");
         returnXml.append(".net/wfs ");
-        returnXml.append(gs.getSchemaBaseUrl());
+        returnXml.append(request.getBaseUrl());
         returnXml.append("wfs/1.0.0/WFS-transaction.xsd\">");
         returnXml.append(nl);
         returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);

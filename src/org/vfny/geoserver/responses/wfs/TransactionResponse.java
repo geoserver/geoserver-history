@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.4 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.5 2004/01/16 17:58:29 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -532,7 +532,7 @@ public class TransactionResponse implements Response {
             writer = new OutputStreamWriter(out);
             writer = new BufferedWriter(writer);
 
-            response.writeXmlResponse(writer,request.getGeoServer());
+            response.writeXmlResponse(writer,request);
             writer.flush();
 
             switch (response.status) {
