@@ -4,7 +4,21 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -15,7 +29,6 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
-import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
@@ -43,27 +56,15 @@ import org.vfny.geoserver.requests.wfs.SubTransactionRequest;
 import org.vfny.geoserver.requests.wfs.TransactionRequest;
 import org.vfny.geoserver.requests.wfs.UpdateRequest;
 import org.vfny.geoserver.responses.Response;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.24 2004/04/21 05:46:22 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.25 2004/04/21 12:13:54 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -226,7 +227,6 @@ public class TransactionResponse implements Response {
                 // could we catch this during the handler, rather than during execution?
                 throw new ServiceException("Lock support is not enabled");
             }
-
             LOGGER.finer("got lockId: " + authorizationID);
 
             if (!catalog.lockExists(authorizationID)) {
@@ -265,7 +265,7 @@ public class TransactionResponse implements Response {
                     throw new ServiceException(
                         "Transaction Delete support is not enabled");
                 }
-
+                LOGGER.finer( "Transaction Delete:"+element );
                 try {
                     DeleteRequest delete = (DeleteRequest) element;
                     Filter filter = delete.getFilter();
@@ -349,7 +349,7 @@ public class TransactionResponse implements Response {
                     throw new ServiceException(
                         "Transaction INSERT support is not enabled");
                 }
-
+                LOGGER.finer( "Transasction Insert:"+element );
                 try {
                     InsertRequest insert = (InsertRequest) element;
                     FeatureCollection collection = insert.getFeatures();
@@ -368,9 +368,9 @@ public class TransactionResponse implements Response {
                     FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element
                             .getTypeName());
 
-                    // this is possible with the insert hack above.  
-                    featureValidation(typeInfo.getDataStoreInfo().getId(),
-                        schema, collection);
+                    // this is possible with the insert hack above.
+                    LOGGER.finer("Use featureValidation to check contents of insert" );                    
+                    featureValidation(typeInfo.getDataStoreInfo().getId(), schema, collection);
 
                     Set fids = store.addFeatures(reader);
                     build.addInsertResult(element.getHandle(), fids);
@@ -390,7 +390,7 @@ public class TransactionResponse implements Response {
                     throw new ServiceException(
                         "Transaction Update support is not enabled");
                 }
-
+                LOGGER.finer( "Transaction Update:"+element);
                 try {
                     UpdateRequest update = (UpdateRequest) element;
                     Filter filter = update.getFilter();
@@ -405,7 +405,7 @@ public class TransactionResponse implements Response {
                     // for validation
                     //
                     Set fids = new HashSet();
-                    
+                    LOGGER.finer("Preprocess to remember modification as a set of fids" );                    
                     FeatureReader preprocess = store.getFeatures( filter ).reader();
                     try {
                         while( preprocess.hasNext() ){
@@ -437,15 +437,18 @@ public class TransactionResponse implements Response {
                     
                     // Post process - check features for changed boundary and
                     // pass them off to the ValidationProcessor
-                    FidFilter modified = FilterFactory.createFilterFactory().createFidFilter();
-                    modified.addAllFids( fids );
+                    //
+                    if( !fids.isEmpty() ) {
+                        LOGGER.finer("Post process update for boundary update and featureValidation");
+                        FidFilter modified = FilterFactory.createFilterFactory().createFidFilter();
+                        modified.addAllFids( fids );
                     
-                    FeatureCollection changed = store.getFeatures( modified ).collection();
-                    envelope.expandToInclude( changed.getBounds() );
+                        FeatureCollection changed = store.getFeatures( modified ).collection();
+                        envelope.expandToInclude( changed.getBounds() );
                     
-                    FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element.getTypeName());
-                    featureValidation(typeInfo.getDataStoreInfo().getId(),store.getSchema(), changed);                    
-                    
+                        FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element.getTypeName());
+                        featureValidation(typeInfo.getDataStoreInfo().getId(),store.getSchema(), changed);                    
+                    }
                 } catch (IOException ioException) {
                     throw new WfsTransactionException(ioException,
                         element.getHandle(), request.getHandle());
@@ -476,6 +479,9 @@ public class TransactionResponse implements Response {
     protected void featureValidation(String dsid, FeatureType type,
         FeatureCollection collection)
         throws IOException, WfsTransactionException {
+        
+        LOGGER.finer("FeatureValidation called on "+type.getTypeName() ); 
+        
         ValidationProcessor validation = request.getValidationProcessor();
 		if (validation == null){
 			//This is a bit hackish, as the validation processor should not
@@ -485,25 +491,23 @@ public class TransactionResponse implements Response {
 			//any validation.  Hopefully this doesn't mess people up?
 			//could mess up some validation stuff, but not everyone makes use
 			//of that, and I don't want normal transaction stuff messed up. ch
+            LOGGER.warning("ValidationProcessor unavailable");
 			return;
 		}
         final Map failed = new TreeMap();
         ValidationResults results = new ValidationResults() {
                 String name;
                 String description;
-
                 public void setValidation(Validation validation) {
                     name = validation.getName();
                     description = validation.getDescription();
-                }
-
+                }                
                 public void error(Feature feature, String message) {
                     LOGGER.warning(name + ": " + message + " (" + description
                         + ")");
                     failed.put(feature.getID(),
                         name + ": " + message + " " + "(" + description + ")");
                 }
-
                 public void warning(Feature feature, String message) {
                     LOGGER.warning(name + ": " + message + " (" + description
                         + ")");
@@ -539,16 +543,21 @@ public class TransactionResponse implements Response {
         throws IOException, WfsTransactionException {
         Data catalog = request.getWFS().getData();
         ValidationProcessor validation = request.getValidationProcessor();
-
+        if( validation == null ) {
+            LOGGER.warning( "Validation Processor unavaialble" );
+            return;
+        }
+        LOGGER.finer( "Required to validate "+stores.size()+" typeRefs" );
+        LOGGER.finer( "within "+check );
         // go through each modified typeName
         // and ask what we need to check
         //
-        Set typeNames = new HashSet();
-
+        Set typeNames = new HashSet();                
         for (Iterator i = stores.keySet().iterator(); i.hasNext();) {
-            String typeName = (String) i.next();
-
-            //typeNames.addAll( validation.getDependencies( typeName ) ); 
+            String typeRef = (String) i.next();
+            Set dependencies = validation.getDependencies( typeRef );
+            LOGGER.finer( "typeRef "+typeRef+" requires "+dependencies);
+            typeNames.addAll( dependencies ); 
         }
 
         // Grab a source for each typeName we need to check
@@ -568,9 +577,10 @@ public class TransactionResponse implements Response {
                 // Transaction...
                 FeatureTypeInfo meta = catalog.getFeatureTypeInfo(typeName);
                 sources.put(typeName, meta.getFeatureSource());
+                LOGGER.finer( typeName + " retrieved for testing" );                                
             }
         }
-
+        LOGGER.finer( "Total of "+sources.size()+" featureSource marshalled for testing" );
         final Map failed = new TreeMap();
         ValidationResults results = new ValidationResults() {
                 String name;
@@ -598,28 +608,25 @@ public class TransactionResponse implements Response {
         	//should never be null, but confDemo is giving grief, and I 
         	//don't want transactions to mess up just because validation 
         	//stuff is messed up. ch
-        	if (validation != null){
-                validation.runIntegrityTests(stores, check, results);
-        	}
+            LOGGER.finer("Runing integrity tests using validation processor ");
+        	validation.runIntegrityTests(stores, check, results);        	
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
         }
-
         if (failed.isEmpty()) {
+            LOGGER.finer( "All validation tests passed" );            
             return; // everything worked out
         }
-
+        LOGGER.finer( "Validation fail - marshal result for transaction document" );
         StringBuffer message = new StringBuffer();
-
         for (Iterator i = failed.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             message.append(entry.getKey());
             message.append(" failed test ");
             message.append(entry.getValue());
             message.append("\n");
-        }
-
+        }        
         throw new WfsTransactionException(message.toString(), "validation");
     }
 
