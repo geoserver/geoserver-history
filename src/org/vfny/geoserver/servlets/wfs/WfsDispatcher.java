@@ -41,7 +41,7 @@ import javax.servlet.http.HttpSession;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.6 2004/03/30 04:42:18 cholmesny Exp $
+ * @version $Id: WfsDispatcher.java,v 1.7 2004/04/22 20:31:34 emperorkefka Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */
@@ -109,11 +109,12 @@ public class WfsDispatcher extends Dispatcher {
 
             doResponse(requestReader, request, response, targetRequest);
         } catch (WfsException wfs) {
-            String tempResponse = wfs.getXmlResponse(false);
             HttpSession session = request.getSession();
             ServletContext context = session.getServletContext();
-            response.setContentType(((GeoServer) context.getAttribute(
-                    GeoServer.WEB_CONTAINER_KEY)).getCharSet().toString());
+            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+            String tempResponse = wfs.getXmlResponse(geoServer.isVerboseExceptions());
+
+            response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);
         }
     }
@@ -232,13 +233,14 @@ public class WfsDispatcher extends Dispatcher {
                     + "request must be one of GetFeature, GetFeatureWithLock, "
                     + "DescribeFeatureType, LockFeature, or Transaction";
             }
-
-            WfsException wfse = new WfsException(message);
-            String tempResponse = wfse.getXmlResponse(false);
             HttpSession session = request.getSession();
             ServletContext context = session.getServletContext();
-            response.setContentType(((GeoServer) context.getAttribute(
-                    GeoServer.WEB_CONTAINER_KEY)).getCharSet().toString());
+            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+            
+            WfsException wfse = new WfsException(message);
+            String tempResponse = wfse.getXmlResponse(geoServer.isVerboseExceptions());
+
+            response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);
         }
     }

@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.20 2004/04/20 18:55:26 cholmesny Exp $
+ * @version $Id: GeoServer.java,v 1.21 2004/04/22 20:31:36 emperorkefka Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -53,6 +53,9 @@ public class GeoServer extends GlobalLayerSupertype {
     private String contactVoice;
     private String contactFacsimile;
     private String contactEmail;
+    
+    /** Should we throw the stack traces back in responses? */
+    private boolean verboseExceptions = false;
 
     /** Default Logging level */
     private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
@@ -502,4 +505,22 @@ public class GeoServer extends GlobalLayerSupertype {
 
         return geoserver.toString();
     }
+	/**
+	 * Should we display stackTraces or not? (And give them a nice
+     * little message instead?)
+	 * 
+	 * @return Returns the showStackTraces.
+	 */
+	public boolean isVerboseExceptions() {
+		return verboseExceptions;
+	}
+	/**
+	 * If set to true, response exceptions will throw their stack trace
+     * back to the end user.
+	 *
+	 * @param showStackTraces The showStackTraces to set.
+	 */
+	public void setVerboseExceptions(boolean showStackTraces) {
+		this.verboseExceptions = showStackTraces;
+	}
 }
