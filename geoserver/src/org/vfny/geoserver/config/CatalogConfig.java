@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.6 2003/11/19 19:05:31 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.7 2003/11/25 01:51:07 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -521,31 +521,32 @@ public class CatalogConfig extends AbstractConfig {
     public void lockRelease(String authorization) {
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-
-            try {
-                DataStore dataStore = meta.getDataStore();
-                FeatureSource source = dataStore.getFeatureSource(dataStore
-                        .getTypeNames()[0]);
-
-                // Any FeatureSourceWill do, we just need access to
-                // the high-level api
-                // TODO: consider moving refresh, release to DataStore
-                //
-                if (source instanceof FeatureLocking) {
-                    FeatureLocking locking = (FeatureLocking) source;
-                    Transaction t = new DefaultTransaction();
-                    locking.setTransaction(t);
-
-                    try {
-                        t.addAuthorization(authorization);
-                        locking.releaseLock(authorization);
-                    } finally {
-                        t.close();
-                    }
-                }
-            } catch (IOException huh) {
+	    if (meta.isEnabled()) {
+		try {
+		    DataStore dataStore = meta.getDataStore();
+		    FeatureSource source = dataStore.getFeatureSource(dataStore
+								      .getTypeNames()[0]);
+		    
+		    // Any FeatureSourceWill do, we just need access to
+		    // the high-level api
+		    // TODO: consider moving refresh, release to DataStore
+		    //
+		    if (source instanceof FeatureLocking) {
+			FeatureLocking locking = (FeatureLocking) source;
+			Transaction t = new DefaultTransaction();
+			locking.setTransaction(t);
+			
+			try {
+			    t.addAuthorization(authorization);
+			    locking.releaseLock(authorization);
+			} finally {
+			    t.close();
+			}
+		    }
+		} catch (IOException huh) {
                 LOGGER.warning("Could not refresh lock for " + meta.toString());
-            }
+		}
+	    }
         }
     }
 
@@ -557,7 +558,7 @@ public class CatalogConfig extends AbstractConfig {
     public void lockRefresh(String authorization) {
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-
+	    if (meta.isEnabled()) {
             try {
                 DataStore dataStore = meta.getDataStore();
                 FeatureSource source = dataStore.getFeatureSource(dataStore
@@ -582,6 +583,7 @@ public class CatalogConfig extends AbstractConfig {
             } catch (IOException huh) {
                 LOGGER.warning("Could not refresh lock for " + meta.toString());
             }
+	    }
         }
     }
 }
