@@ -42,7 +42,7 @@
       </connectionParams>
     </datastore> 
     
-    <!-- A sample oracle datastore, hosted on a remote computer  
+    <!-- A sample oracle datastore, hosted on a remote computer  -->
     <!-- commented out, or it causes the web interface grief
     <datastore id="remoteOracle" enabled="false" namespace="lake">
       <description>A remote oracle database</description>
