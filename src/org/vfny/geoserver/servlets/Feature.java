@@ -59,7 +59,7 @@ public class Feature
         catch (WfsException wfs) {
             tempResponse = wfs.getXmlResponse();
             LOGGER.info("Threw a wfs exception: " + wfs.getMessage());
-            if(response != null) wfs.printStackTrace(response.getWriter());
+            //if(response != null) wfs.printStackTrace(response.getWriter());
             wfs.printStackTrace();
         }
         catch (Exception e) {
