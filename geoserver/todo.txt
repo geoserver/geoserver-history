@@ -19,3 +19,15 @@
 - test with resin 3
 - get zserver working with resin.
 - TEST, TEST, TEST! more unit tests in geoserver, full cite suite.
+
+- error reporting for configuration should try to have reference to the file
+  it is ready, for cases when user may be confused as to the location of the 
+  file.
+- roll geos in.  Auto-detect its presence.
+- get user configured logging working again. 
+- Not sure if each namespace should only be used for one datastore.  I would 
+  like default namespace to be used for datastores that don't have a namepace
+  defined.  But then we need some way to make sure that typeNames don't 
+  collide.
+- GetCapabilities should not choke if datastores are not enabled.
+- Use IanS's new gml producer.
