@@ -4,28 +4,28 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
+
 
 /**
  * WMS
  * 
  * <p>
- * Represents the GeoServer information required to configure an 
- * instance of the WMS Server. This class holds the currently used 
- * configuration and is instantiated initially by the GeoServerPlugIn 
- * at start-up, but may be modified by the Configuration Interface 
- * during runtime. Such modifications come from the GeoServer Object 
- * in the SessionContext. 
+ * Represents the GeoServer information required to configure an  instance of
+ * the WMS Server. This class holds the currently used  configuration and is
+ * instantiated initially by the GeoServerPlugIn  at start-up, but may be
+ * modified by the Configuration Interface  during runtime. Such modifications
+ * come from the GeoServer Object  in the SessionContext.
  * </p>
  * 
  * <p>
- * WMS wms = new WMS(dto);
- * System.out.println(wms.getName() + wms.WMS_VERSION);
+ * WMS wms = new WMS(dto); System.out.println(wms.getName() + wms.WMS_VERSION);
  * System.out.println(wms.getAbstract());
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.1.2.7 2004/01/08 23:44:48 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.1.2.8 2004/01/08 23:51:52 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -34,57 +34,68 @@ public class WMS extends Service {
     /** WMS spec specifies this fixed service name */
     private static final String FIXED_SERVICE_NAME = "OGC:GlobalWMS";
 
-    /** list of WMS Exception Formats  */
+    /** list of WMS Exception Formats */
     private static final String[] EXCEPTION_FORMATS = {
         "application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
         "application/vnd.ogc.se_blank"
     };
-	
-	/**
-	 * WMS constructor.
-	 * <p>
-	 * Stores the data specified in the WMSDTO object in this WMS Object for GeoServer to use.
-	 * </p>
-	 * @param config The data intended for GeoServer to use. 
-	 */
-    public WMS(WMSDTO config){
-    	super(config.getService());
-    }
-    
+
     /**
      * WMS constructor.
+     * 
+     * <p>
+     * Stores the data specified in the WMSDTO object in this WMS Object for
+     * GeoServer to use.
+     * </p>
+     *
+     * @param config The data intended for GeoServer to use.
+     */
+    public WMS(WMSDTO config) {
+        super(config.getService());
+    }
+
+    /**
+     * WMS constructor.
+     * 
      * <p>
      * Package constructor intended for default use by GeoServer
      * </p>
+     *
      * @see GeoServer#GeoServer()
      */
-	WMS(){
-		super(new ServiceDTO());
-	}
+    WMS() {
+        super(new ServiceDTO());
+    }
 
-	/**
-	 * Implement toDTO.
-	 * <p>
-	 * Package method used by GeoServer. This method may return references, 
-	 * and does not clone, so extreme caution sould be used when traversing 
-	 * the results.
-	 * </p>
-	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
-	 * @see WMSDTO
-	 * 
-	 * @return WMSDTO An instance of the data this class represents. Please see Caution Above.
-	 */
-	Object toDTO(){
-		WMSDTO w = new WMSDTO();
-		w.setService(config);
-		return w;
-	}
-	
+    /**
+     * Implement toDTO.
+     * 
+     * <p>
+     * Package method used by GeoServer. This method may return references, and
+     * does not clone, so extreme caution sould be used when traversing the
+     * results.
+     * </p>
+     *
+     * @return WMSDTO An instance of the data this class represents. Please see
+     *         Caution Above.
+     *
+     * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+     * @see WMSDTO
+     */
+    Object toDTO() {
+        WMSDTO w = new WMSDTO();
+        w.setService(config);
+
+        return w;
+    }
+
     /**
      * getExceptionFormats purpose.
+     * 
      * <p>
      * Returns a static list of Exception Formats in as Strings
      * </p>
+     *
      * @return String[] a static list of Exception Formats
      */
     public String[] getExceptionFormats() {
@@ -101,7 +112,7 @@ public class WMS extends Service {
         return FIXED_SERVICE_NAME;
     }
 
-     /**
+    /**
      * Returns the version of this WMS Instance.
      *
      * @return static version name

@@ -4,20 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.LockingManager;
@@ -30,25 +16,40 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
- * This class stores all the information that a catalog would (and CatalogConfig used to). 
+ * This class stores all the information that a catalog would (and
+ * CatalogConfig used to).
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.1.2.15 2004/01/08 23:44:48 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.16 2004/01/08 23:51:52 dmzwiers Exp $
  */
-public class Data extends GlobalLayerSupertype{
+public class Data extends GlobalLayerSupertype {
     /** for debugging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
 
     /** Default name of feature type information */
-	private static final String INFO_FILE = "info.xml";
-	
-	/** used to create styles */
-	private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
+    private static final String INFO_FILE = "info.xml";
+
+    /** used to create styles */
+    private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
 
     /** holds the mappings between prefixes and NameSpace objects */
     private Map nameSpaces;
@@ -70,163 +71,230 @@ public class Data extends GlobalLayerSupertype{
 
     /** The DTO for this object */
     private DataDTO catalog;
-    
+
     /**
      * Data constructor.
+     * 
      * <p>
      * Creates a Data object from the data provided.
      * </p>
+     *
      * @param config DataDTO initial data.
+     *
      * @throws ConfigurationException
      */
     public Data(DataDTO config) throws ConfigurationException {
-		load(config);
+        load(config);
     }
-    
+
     /**
      * Data constructor.
+     * 
      * <p>
      * package only constructor for GeoServer to call.
      * </p>
-     *
      */
-    Data(){
-    	nameSpaces = new HashMap();
-    	styles = new HashMap();
-    	featureTypes = new HashMap();
-    	dataStores = new HashMap();
+    Data() {
+        nameSpaces = new HashMap();
+        styles = new HashMap();
+        featureTypes = new HashMap();
+        dataStores = new HashMap();
     }
-	
-	/**
-	 * load purpose.
-	 * Places the data in this container and innitializes it. 
-	 * Complex tests are performed to detect existing datasources, 
-	 * while the remainder only include simplistic id checks.
-	 * </p>
-	 * @param config
-	 * @throws ConfigurationException
-	 */
-	void load(DataDTO config) throws ConfigurationException {
-		catalog = config;
-		if(config == null)
-			throw new NullPointerException("");
 
-		if(dataStores == null)
-			dataStores = new HashMap();
-		if(config.getDataStores() == null)
-			throw new NullPointerException("");
-		Set s = dataStores.keySet();
-		Iterator i = config.getDataStores().keySet().iterator();
-		while(i.hasNext()){
-			Object key = i.next();
-			s.remove(key);
-			//find missing ones
-			if(!dataStores.containsKey(key)){
-				dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),this));
-			}else{// check for small changes
-				DataStoreInfoDTO dsiDto = (DataStoreInfoDTO)((DataStoreInfo)dataStores.get(key)).toDTO();
-				if(dsiDto!=null && !(dsiDto.equals(config.getDataStores().get(key)))){
-					dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),this));
-				}
-			}
-		}
-		// s contains all the unchecked values.
-		List tmp = new LinkedList();
-		i = s.iterator();
-		while(i.hasNext()){
-			tmp.add(i.next());
-		}
-		for(int j=0;j<tmp.size();j++)
-			dataStores.remove(tmp.get(j));
-			
-			
-		List tmp2 = new LinkedList();
-		if(featureTypes == null)
-			featureTypes = new HashMap();
-		s = featureTypes.keySet();
-		if(config.getFeaturesTypes() == null)
-			throw new NullPointerException("");
-		i = config.getFeaturesTypes().keySet().iterator();
-		while(i.hasNext()){
-			Object key = i.next();
-			String nm = ((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key)).getName();
-			if(tmp2.contains(nm)){
-				throw new ConfigurationException("FeatureTypeInfo.getName() must be unique! ( "+nm+" )");
-			}else{
-				tmp2.add(nm);
-			}
-			s.remove(key);
-			if(!featureTypes.containsKey(key))
-				featureTypes.put(nm,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), this));
-		}
-		// s contains all the unchecked values.
-		tmp = new LinkedList();
-		i = s.iterator();
-		while(i.hasNext()){
-			tmp.add(i.next());
-		}
-		for(int j=0;j<tmp.size();j++)
-			featureTypes.remove(tmp.get(j));
+    /**
+     * load purpose. Places the data in this container and innitializes it.
+     * Complex tests are performed to detect existing datasources,  while the
+     * remainder only include simplistic id checks.
+     *
+     * @param config
+     *
+     * @throws ConfigurationException
+     * @throws NullPointerException 
+     */
+    void load(DataDTO config) throws ConfigurationException {
+        catalog = config;
 
+        if (config == null) {
+            throw new NullPointerException("");
+        }
 
+        if (dataStores == null) {
+            dataStores = new HashMap();
+        }
 
-		if(nameSpaces == null)
-			nameSpaces = new HashMap();
-		s = nameSpaces.keySet();
-		if(config.getNameSpaces() == null)
-			throw new NullPointerException("");
-		i = config.getNameSpaces().keySet().iterator();
-		while(i.hasNext()){
-			Object key = i.next();
-			s.remove(key);
-			if(!nameSpaces.containsKey(key)){
-				nameSpaces.put(key,new NameSpace((NameSpaceDTO)config.getNameSpaces().get(key)));
-				if(((NameSpaceDTO)config.getNameSpaces().get(key)).isDefault())
-					defaultNameSpace = (NameSpace)nameSpaces.get(key);
-			}
-		}
-		// s contains all the unchecked values.
-		tmp = new LinkedList();
-		i = s.iterator();
-		while(i.hasNext()){
-			tmp.add(i.next());
-		}
-		for(int j=0;j<tmp.size();j++)
-			nameSpaces.remove(tmp.get(j));
+        if (config.getDataStores() == null) {
+            throw new NullPointerException("");
+        }
 
+        Set s = dataStores.keySet();
+        Iterator i = config.getDataStores().keySet().iterator();
 
+        while (i.hasNext()) {
+            Object key = i.next();
+            s.remove(key);
 
-		if(styles == null)
-			styles = new HashMap();
-		s = styles.keySet();
-		if(config.getStyles() == null)
-			throw new NullPointerException("");
-		i = config.getStyles().keySet().iterator();
-		while(i.hasNext()){
-			Object key = i.next();
-			s.remove(key);
-			if(!styles.containsKey(key))
-				try{
-					styles.put(key,loadStyle(((StyleDTO)config.getStyles().get(key)).getFilename()));
-				}catch(IOException e){
-					LOGGER.fine("Error loading style:"+key.toString());
-				}
-		}
-		// s contains all the unchecked values.
-		tmp = new LinkedList();
-		i = s.iterator();
-		while(i.hasNext()){
-			tmp.add(i.next());
-		}
-		for(int j=0;j<tmp.size();j++)
-			styles.remove(tmp.get(j));
-	}
+            //find missing ones
+            if (!dataStores.containsKey(key)) {
+                dataStores.put(key,
+                    new DataStoreInfo((DataStoreInfoDTO) config.getDataStores()
+                                                               .get(key), this));
+            } else { // check for small changes
+
+                DataStoreInfoDTO dsiDto = (DataStoreInfoDTO) ((DataStoreInfo) dataStores
+                    .get(key)).toDTO();
+
+                if ((dsiDto != null)
+                        && !(dsiDto.equals(config.getDataStores().get(key)))) {
+                    dataStores.put(key,
+                        new DataStoreInfo((DataStoreInfoDTO) config.getDataStores()
+                                                                   .get(key),
+                            this));
+                }
+            }
+        }
+
+        // s contains all the unchecked values.
+        List tmp = new LinkedList();
+        i = s.iterator();
+
+        while (i.hasNext()) {
+            tmp.add(i.next());
+        }
+
+        for (int j = 0; j < tmp.size(); j++)
+            dataStores.remove(tmp.get(j));
+
+        List tmp2 = new LinkedList();
+
+        if (featureTypes == null) {
+            featureTypes = new HashMap();
+        }
+
+        s = featureTypes.keySet();
+
+        if (config.getFeaturesTypes() == null) {
+            throw new NullPointerException("");
+        }
+
+        i = config.getFeaturesTypes().keySet().iterator();
+
+        while (i.hasNext()) {
+            Object key = i.next();
+            String nm = ((FeatureTypeInfoDTO) config.getFeaturesTypes().get(key))
+                .getName();
+
+            if (tmp2.contains(nm)) {
+                throw new ConfigurationException(
+                    "FeatureTypeInfo.getName() must be unique! ( " + nm + " )");
+            } else {
+                tmp2.add(nm);
+            }
+
+            s.remove(key);
+
+            if (!featureTypes.containsKey(key)) {
+                featureTypes.put(nm,
+                    new FeatureTypeInfo((FeatureTypeInfoDTO) config.getFeaturesTypes()
+                                                                   .get(key),
+                        this));
+            }
+        }
+
+        // s contains all the unchecked values.
+        tmp = new LinkedList();
+        i = s.iterator();
+
+        while (i.hasNext()) {
+            tmp.add(i.next());
+        }
+
+        for (int j = 0; j < tmp.size(); j++)
+            featureTypes.remove(tmp.get(j));
+
+        if (nameSpaces == null) {
+            nameSpaces = new HashMap();
+        }
+
+        s = nameSpaces.keySet();
+
+        if (config.getNameSpaces() == null) {
+            throw new NullPointerException("");
+        }
+
+        i = config.getNameSpaces().keySet().iterator();
+
+        while (i.hasNext()) {
+            Object key = i.next();
+            s.remove(key);
+
+            if (!nameSpaces.containsKey(key)) {
+                nameSpaces.put(key,
+                    new NameSpace((NameSpaceDTO) config.getNameSpaces().get(key)));
+
+                if (((NameSpaceDTO) config.getNameSpaces().get(key)).isDefault()) {
+                    defaultNameSpace = (NameSpace) nameSpaces.get(key);
+                }
+            }
+        }
+
+        // s contains all the unchecked values.
+        tmp = new LinkedList();
+        i = s.iterator();
+
+        while (i.hasNext()) {
+            tmp.add(i.next());
+        }
+
+        for (int j = 0; j < tmp.size(); j++)
+            nameSpaces.remove(tmp.get(j));
+
+        if (styles == null) {
+            styles = new HashMap();
+        }
+
+        s = styles.keySet();
+
+        if (config.getStyles() == null) {
+            throw new NullPointerException("");
+        }
+
+        i = config.getStyles().keySet().iterator();
+
+        while (i.hasNext()) {
+            Object key = i.next();
+            s.remove(key);
+
+            if (!styles.containsKey(key)) {
+                try {
+                    styles.put(key,
+                        loadStyle(
+                            ((StyleDTO) config.getStyles().get(key))
+                            .getFilename()));
+                } catch (IOException e) {
+                    LOGGER.fine("Error loading style:" + key.toString());
+                }
+            }
+        }
+
+        // s contains all the unchecked values.
+        tmp = new LinkedList();
+        i = s.iterator();
+
+        while (i.hasNext()) {
+            tmp.add(i.next());
+        }
+
+        for (int j = 0; j < tmp.size(); j++)
+            styles.remove(tmp.get(j));
+    }
 
     /**
      * getDataStoreInfos purpose.
+     * 
      * <p>
      * A list of the posible DataStoreInfo
      * </p>
+     *
      * @return DataStoreInfo[] list of the posible DataStoreInfo
      */
     public DataStoreInfo[] getDataStoreInfos() {
@@ -237,16 +305,19 @@ public class Data extends GlobalLayerSupertype{
         return dStores;
     }
 
-
-	/**
-	 * toDTO purpose.
-	 * <p>
-	 * This method is package visible only, and returns a reference to the GeoServerDTO. This method is unsafe, and should only be used with extreme caution.
-	 * </p>
-	 * @return DataDTO the generated object
-	 */
-    Object toDTO(){
-    	return catalog;
+    /**
+     * toDTO purpose.
+     * 
+     * <p>
+     * This method is package visible only, and returns a reference to the
+     * GeoServerDTO. This method is unsafe, and should only be used with
+     * extreme caution.
+     * </p>
+     *
+     * @return DataDTO the generated object
+     */
+    Object toDTO() {
+        return catalog;
     }
 
     /**
@@ -254,8 +325,8 @@ public class Data extends GlobalLayerSupertype{
      *
      * @param id the DataStoreInfo id looked for
      *
-     * @return the DataStoreInfo with id attribute equals to <code>id</code>
-     *         or null if there no exists
+     * @return the DataStoreInfo with id attribute equals to <code>id</code> or
+     *         null if there no exists
      */
     public DataStoreInfo getDataStoreInfo(String id) {
         return (DataStoreInfo) dataStores.get(id);
@@ -263,9 +334,11 @@ public class Data extends GlobalLayerSupertype{
 
     /**
      * getNameSpaces purpose.
+     * 
      * <p>
      * List of all relevant namespaces
      * </p>
+     *
      * @return NameSpace[]
      */
     public NameSpace[] getNameSpaces() {
@@ -276,10 +349,13 @@ public class Data extends GlobalLayerSupertype{
 
     /**
      * getNameSpace purpose.
+     * 
      * <p>
      * The NameSpace from the specified prefix
      * </p>
+     *
      * @param prefix
+     *
      * @return NameSpace resulting from the specified prefix
      */
     public NameSpace getNameSpace(String prefix) {
@@ -290,9 +366,11 @@ public class Data extends GlobalLayerSupertype{
 
     /**
      * getDefaultNameSpace purpose.
+     * 
      * <p>
      * Returns the default NameSpace for this Data object.
      * </p>
+     *
      * @return NameSpace the default name space
      */
     public NameSpace getDefaultNameSpace() {
@@ -301,9 +379,11 @@ public class Data extends GlobalLayerSupertype{
 
     /**
      * getStyles purpose.
+     * 
      * <p>
      * A reference to the map of styles
      * </p>
+     *
      * @return Map A map containing the Styles.
      */
     public Map getStyles() {
@@ -316,14 +396,16 @@ public class Data extends GlobalLayerSupertype{
 
     /**
      * getFeatureTypeInfo purpose.
+     * 
      * <p>
      * returns the FeatureTypeInfo for the specified unique name
      * </p>
-     * @param typeName String The FeatureTypeInfo Name 
+     *
+     * @param typeName String The FeatureTypeInfo Name
      *
      * @return FeatureTypeInfo
      *
-     * @throws NoSuchElementException 
+     * @throws NoSuchElementException
      */
     public FeatureTypeInfo getFeatureTypeInfo(String typeName)
         throws NoSuchElementException {
@@ -332,8 +414,7 @@ public class Data extends GlobalLayerSupertype{
         if (prefixDelimPos < 0) {
             //for backwards compatibility.  Only works if all
             //featureTypes have the same prefix.
-            typeName = getDefaultNameSpace().getPrefix()
-                + ":" + typeName;
+            typeName = getDefaultNameSpace().getPrefix() + ":" + typeName;
         }
 
         LOGGER.finest("getting type " + typeName);
@@ -341,8 +422,9 @@ public class Data extends GlobalLayerSupertype{
         FeatureTypeInfo ftype = (FeatureTypeInfo) featureTypes.get(typeName);
 
         if (ftype == null) {
-            throw new NoSuchElementException("there is no FeatureTypeConfig named "
-                + typeName + " configured in this server");
+            throw new NoSuchElementException(
+                "there is no FeatureTypeConfig named " + typeName
+                + " configured in this server");
         }
 
         return ftype;
@@ -374,16 +456,18 @@ public class Data extends GlobalLayerSupertype{
     }
 
     /**
-     * 
      * getFeatureTypeInfos purpose.
+     * 
      * <p>
-     * Returns all the featuretype information objects 
+     * Returns all the featuretype information objects
      * </p>
+     *
      * @return Map the Feature Type's inofrmation
      */
     public Map getFeatureTypeInfos() {
         return this.featureTypes;
     }
+
     //TODO: detect if a user put a full url, instead of just one to be resolved, and
     //use that instead.
     public Style loadStyle(String fileName, String base)
@@ -399,19 +483,19 @@ public class Data extends GlobalLayerSupertype{
 
         return layerstyle[0];
     }
-	public Style loadStyle(File fileName)
-		throws IOException {
-		URL url;
 
-		//HACK: but I'm not sure if we can get the GeoServer instance.  This is one thing
-		//that will benefit from splitting up of config loading from representation.
-		url = fileName.toURL();
+    public Style loadStyle(File fileName) throws IOException {
+        URL url;
 
-		SLDStyle stylereader = new SLDStyle(styleFactory, url);
-		Style[] layerstyle = stylereader.readXML();
+        //HACK: but I'm not sure if we can get the GeoServer instance.  This is one thing
+        //that will benefit from splitting up of config loading from representation.
+        url = fileName.toURL();
 
-		return layerstyle[0];
-	}
+        SLDStyle stylereader = new SLDStyle(styleFactory, url);
+        Style[] layerstyle = stylereader.readXML();
+
+        return layerstyle[0];
+    }
 
     /**
      * tests whether a given file is a file containing type information.
