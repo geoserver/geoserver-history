@@ -1,60 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sld:NamedLayer xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
-    <sld:UserStyle>
-        <sld:Name>Default Styler</sld:Name>
-        <sld:Title>Default Styler</sld:Title>
-        <sld:Abstract></sld:Abstract>
-        <sld:FeatureTypeStyle>
-            <sld:FeatureTypeName>Feature</sld:FeatureTypeName>
-            <sld:Rule>
-                <sld:Name>name</sld:Name>
-                <sld:Abstract>Abstract</sld:Abstract>
-                <sld:Title>title</sld:Title>
-                <sld:PointSymbolizer>
-                    <sld:Graphic>
-                        <sld:Size>
+<StyledLayerDescriptor version="1.0.0" 
+	xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+	xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <UserStyle>
+        <Name>Default Styler</Name>
+        <Title>Default Styler</Title>
+        <Abstract></Abstract>
+        <FeatureTypeStyle>
+            <FeatureTypeName>Feature</FeatureTypeName>
+            <Rule>
+                <Name>name</Name>
+                <Abstract>Abstract</Abstract>
+                <Title>title</Title>
+                <PointSymbolizer>
+                    <Graphic>
+                        <Size>
                             <ogc:Literal>6</ogc:Literal>
-                        </sld:Size>
-                        <sld:Opacity>
+                        </Size>
+                        <Opacity>
                             <ogc:Literal>1.0</ogc:Literal>
-                        </sld:Opacity>
-                        <sld:Rotation>
+                        </Opacity>
+                        <Rotation>
                             <ogc:Literal>0.0</ogc:Literal>
-                        </sld:Rotation>
-                        <sld:Mark>
-                            <sld:WellKnownName>
+                        </Rotation>
+                        <Mark>
+                            <WellKnownName>
                                 <ogc:Literal>square</ogc:Literal>
-                            </sld:WellKnownName>
-                            <sld:Fill>
-                                <sld:CssParameter name="fill">
+                            </WellKnownName>
+                            <Fill>
+                                <CssParameter name="fill">
                                     <ogc:Literal>#808080</ogc:Literal>
-                                </sld:CssParameter>
-                                <sld:CssParameter name="fill-opacity">
+                                </CssParameter>
+                                <CssParameter name="fill-opacity">
                                     <ogc:Literal>1.0</ogc:Literal>
-                                </sld:CssParameter>
-                            </sld:Fill>
-                            <sld:Stroke>
-                                <sld:CssParameter name="stroke"><ogc:Literal>#000000</ogc:Literal></sld:CssParameter>
-                                <sld:CssParameter name="stroke-linecap">
+                                </CssParameter>
+                            </Fill>
+                            <Stroke>
+                                <CssParameter name="stroke"><ogc:Literal>#000000</ogc:Literal></CssParameter>
+                                <CssParameter name="stroke-linecap">
                                     <ogc:Literal>butt</ogc:Literal>
-                                </sld:CssParameter>
-                                <sld:CssParameter name="stroke-linejoin">
+                                </CssParameter>
+                                <CssParameter name="stroke-linejoin">
                                     <ogc:Literal>miter</ogc:Literal>
-                                </sld:CssParameter>
-                                <sld:CssParameter name="stroke-opacity">
+                                </CssParameter>
+                                <CssParameter name="stroke-opacity">
                                     <ogc:Literal>1</ogc:Literal>
-                                </sld:CssParameter>
-                                <sld:CssParameter name="stroke-width">
+                                </CssParameter>
+                                <CssParameter name="stroke-width">
                                     <ogc:Literal>1</ogc:Literal>
-                                </sld:CssParameter>
-                                <sld:CssParameter name="stroke-dashoffset">
+                                </CssParameter>
+                                <CssParameter name="stroke-dashoffset">
                                     <ogc:Literal>0</ogc:Literal>
-                                </sld:CssParameter>
-                            </sld:Stroke>
-                        </sld:Mark>
-                    </sld:Graphic>
-                </sld:PointSymbolizer>
-            </sld:Rule>
-        </sld:FeatureTypeStyle>
-    </sld:UserStyle>
-</sld:NamedLayer>
+                                </CssParameter>
+                            </Stroke>
+                        </Mark>
+                    </Graphic>
+                </PointSymbolizer>
+            </Rule>
+        </FeatureTypeStyle>
+    </UserStyle>
+</StyledLayerDescriptor>
