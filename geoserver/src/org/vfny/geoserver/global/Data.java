@@ -881,7 +881,13 @@ SCHEMA:
                 boolean t2 = fType.getNameSpace().getUri().equals(uri);
 
                 //System.out.println("Type id = "+typeId+" real name = "+fType.getName()+" T1="+t1+" T2="+t2);
-                if (t1 && t2) {
+                //if (t1 && t2) {
+                /**
+                 * GR:
+                 * @HACK it seems not to be working, so I'm just comparing
+                 * the prefixed name (don't should it be enough?)
+                 */
+                if (t1) {
                     return fType;
                 }
             }
