@@ -2,6 +2,10 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
+
+
+
+
 <table border=0>
 
 	<html:form action="/config/validation/test">
@@ -33,18 +37,28 @@
 	</html:form>
 	
 	<html:form action="/config/validation/testNew">
+	
+	
 	<tr><td valign="top" align="right">
 		<bean:message key="label.newName"/>:
 	</td><td>
 		<html:text property="newName" size="60"/>
 	</td></tr>
+
+<logic:iterate id="param" 
+               indexId="index"
+               name="validationTestNewForm"
+               property="plugInConfigs">
+
 	<tr><td valign="top" align="right">
-		<bean:message key="label.plugInType"/>:
+		<bean:write name="param" property="name"/>:
+		<html:radio idName="param" property="selectedPlugIn" value="name"/>
 	</td><td>
-		<html:select property="selectedPlugIn">
-			<html:options property="plugIns"/>
-		</html:select>
+		<bean:write name="param" property="description"/>
 	</td></tr>
+
+</logic:iterate>
+
 	<tr><td>&nbsp;</td><td valign="top" align="left">
 		<html:submit>
 			<bean:message key="label.new"/>
