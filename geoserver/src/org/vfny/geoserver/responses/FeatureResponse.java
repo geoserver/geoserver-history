@@ -27,8 +27,9 @@ import org.vfny.geoserver.config.TypeRepository;
 /**
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
- *@author Rob Hranac, TOPP
- *@version $VERSION$
+ * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
+ * @version $VERSION$
  */
 public class FeatureResponse {
 
@@ -50,93 +51,47 @@ public class FeatureResponse {
         TypeRepository repository = TypeRepository.getInstance();
         StringBuffer result = new StringBuffer();
 	int maxFeatures = request.getMaxFeatures();
-                    
-        // main handler and return string
-        //  generate GML for heander for each table requested
+
+	GMLBuilder gml = new GMLBuilder(true);
+	gml.startFeatureCollection(null);
+	//HACK: different srids can go in same collection.  Doesn't matter now
+	//since we don't use the bbox for our feature collections.
         for(int i = 0, n = request.getQueryCount(); i < n; i++) {            
-            result.append(getQuery(request.getQuery(i), repository, maxFeatures));
+	    Query curQuery = request.getQuery(i);
+	    TypeInfo meta = repository.getType(curQuery.getTypeName());
+	    if (meta == null) {
+		throw new WfsException("Could not find Feature Type named: " +
+				       curQuery.getTypeName() + ", feature information"
+				       + " is not in the data folder.", 
+				       getLocator(curQuery));
+	    }
+	    String srid = meta.getSrs();
+	    Feature[] curFeatures = getQuery(curQuery, meta, maxFeatures);
+	    addFeatures(curFeatures, gml, meta);
             LOG.finest("ended feature");
         }        
+	gml.endFeatureCollection();
 
+	LOG.finest("GML is: " + gml.getGML());
+	
         // return final string
-        return result.toString();
+        return gml.getGML();//result.toString();
     }
 
-
-    private static String getLocator(Query query){
-	String locator = query.getHandle();
-	if (locator == null  || locator.equals("")) {
-	    locator = "Class FeatureResponse, in method getQuery";
-	}
-	return locator;
-    }
 
     /**
-     * Parses the GetFeature reqeust and returns a contentHandler.
-     * @return XML response to send to client
-     */ 
-    private static String getQuery(Query query, TypeRepository repository, 
-				   int maxFeatures) throws WfsException {
-        
-	LOG.finest("about to get query: " + query);
-        TypeInfo meta = repository.getType(query.getTypeName());
-	if (meta == null) {
-	    throw new WfsException("Could not find Feature Type named: " +
-				   query.getTypeName() + ", feature information"
-				   + " is not in the data folder.", 
-				   getLocator(query));
-	}
-        PostgisConnection db = new PostgisConnection (meta.getHost(),
-                                                      meta.getPort(),
-                                                      meta.getDatabaseName()); 
-	LOG.finest("connecting to db " + meta.getHost() + " is host, port "
-		      + meta.getPort() + " name: " + meta.getDatabaseName());
-        db.setLogin(meta.getUser(), meta.getPassword());
-	LOG.finest("setting user and pass " + meta.getUser() + meta.getPassword());
-	FeatureCollection collection = null;
-	FeatureType schema = null;
-	String tableName = meta.getName();
-	try {
-	schema = PostgisDataSource.makeSchema(tableName, db);
-	if (!query.allRequested()) {
-	    List propertyNames = query.getPropertyNames();
-	    AttributeType[] properties = new AttributeType[propertyNames.size()];
-	    try {
-	    for(int i = 0; i < propertyNames.size(); i++) {
-		properties[i] = 
-		    schema.getAttributeType(propertyNames.get(i).toString());
-		//TODO: make sure geometry is included, or change featuretypeflat
-		//to not have required geometry.
-            }
-	    //HACK: we should not rely on schema being a featureTypeFlat.  And
-	    //get and set srid methods will go away soon (which should make it
-	    //so the datasource works without these hacks)
-	    int srid = ((FeatureTypeFlat)schema).getSRID();
-	    schema = FeatureTypeFactory.create(properties);	    
-	    ((FeatureTypeFlat)schema).setSRID(srid);
-	    } catch (SchemaException e) {
-		throw new WfsException(e, "While trying to create schema for" +
-				       "return feature", getLocator(query));
-	    }
-	}
-
-	    DataSource data = 
-		new PostgisDataSource(db, tableName, schema, maxFeatures);
-	    LOG.finest("++++++++++++++++++filter is " + query.getFilter());
-            collection = data.getFeatures(query.getFilter());
-        } catch(DataSourceException e) {
-            throw new WfsException(e, "While getting features from datasource",
-				   getLocator(query));
-        }
-
-        LOG.finest("successfully retrieved collection");
-	GMLBuilder gml = new GMLBuilder(true);
-        Feature[] features = collection.getFeatures();
-	LOG.finest("features lenght is: " + features.length);
-	gml.startFeatureType(meta.getName(), meta.getSrs());
-        LOG.finest("started feature type");
+     * Adds an array of features to the gml to be returned.  All should
+     * be of the same featureType (same schemas).
+     *
+     * @param features the features to add.
+     * @param gml the object building the GML to return.
+     * @param meta contains information about the features.
+     * @tasks TODO: check to make sure schemas of each feature match.
+     */
+    private static void addFeatures(Feature[] features, GMLBuilder gml, TypeInfo meta){
 	if (features.length > 0) {
-	    //FeatureType schema = features[0].getSchema();
+	FeatureType schema = features[0].getSchema();
+	String typeName = meta.getName();
         AttributeType[] attributeTypes = schema.getAttributeTypes();
         Object[] attributes;
 	AttributeType geometryAttr = schema.getDefaultGeometry();
@@ -146,11 +101,12 @@ public class FeatureResponse {
 	}
         LOG.finest("about to create gml");
         LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
+	gml.initializeFeatureType(typeName);
 	if (geometryAttr != null) {
 	    gml.initializeGeometry(attributeTypes[geometryPosition].
                                getType(), 
-                               meta.getName(), 
-                               meta.getSrs(), 
+                               typeName, 
+			       meta.getSrs(),  
                                attributeTypes[geometryPosition].
                                getName());
 	}
@@ -177,15 +133,78 @@ public class FeatureResponse {
             
             
             gml.endFeature();
-            LOG.finest("ended feature");
-        }
-        }
-	gml.endFeatureType();        
-        LOG.finest("ended feature type");
-	
-        LOG.finest("GML is: " + gml.getGML());
+	}
+	}
+    }
 
-        return gml.getGML();
+    /**
+     * Convenience method to get the handle information
+     * from a query, if it exists.
+     * @param query the query to get the handle from.
+     */
+    private static String getLocator(Query query){
+	String locator = query.getHandle();
+	if (locator == null  || locator.equals("")) {
+	    locator = "Class FeatureResponse, in method getQuery";
+	}
+	return locator;
+    }
+
+    /**
+     * Parses the GetFeature reqeust and returns a contentHandler.
+     * @return XML response to send to client
+     */ 
+    private static Feature[] getQuery(Query query, TypeInfo meta, 
+				   int maxFeatures) throws WfsException {
+        
+	LOG.finest("about to get query: " + query);
+      
+        PostgisConnection db = new PostgisConnection (meta.getHost(),
+                                                      meta.getPort(),
+                                                      meta.getDatabaseName()); 
+	LOG.finest("connecting to db " + meta.getHost() + " is host, port "
+		      + meta.getPort() + " name: " + meta.getDatabaseName());
+        db.setLogin(meta.getUser(), meta.getPassword());
+	LOG.finest("setting user and pass " + meta.getUser() + meta.getPassword());
+	FeatureCollection collection = null;
+	FeatureType schema = null;
+	String tableName = meta.getName();
+	try {
+	schema = PostgisDataSource.makeSchema(tableName, db);
+	if (!query.allRequested()) {
+	    List propertyNames = query.getPropertyNames();
+	    AttributeType[] properties = new AttributeType[propertyNames.size()];
+	    try {
+	    for(int i = 0; i < propertyNames.size(); i++) {
+		properties[i] = 
+		    schema.getAttributeType(propertyNames.get(i).toString());
+		
+            }
+	    //HACK: we should not rely on schema being a featureTypeFlat.  And
+	    //get and set srid methods will go away soon (which should make it
+	    //so the datasource works without these hacks)
+	    int srid = ((FeatureTypeFlat)schema).getSRID();
+	    schema = FeatureTypeFactory.create(properties);	    
+	    ((FeatureTypeFlat)schema).setSRID(srid);
+	    } catch (SchemaException e) {
+		throw new WfsException(e, "While trying to create schema for" +
+				       "return feature", getLocator(query));
+	    }
+	}
+
+	    DataSource data = 
+		new PostgisDataSource(db, tableName, schema, maxFeatures);
+	    LOG.finest("filter is " + query.getFilter());
+            collection = data.getFeatures(query.getFilter());
+        } catch(DataSourceException e) {
+            throw new WfsException(e, "While getting features from datasource",
+				   getLocator(query));
+        }
+
+        LOG.finest("successfully retrieved collection");
+
+        Feature[] features = collection.getFeatures();
+	return features;
     }
     
 }
