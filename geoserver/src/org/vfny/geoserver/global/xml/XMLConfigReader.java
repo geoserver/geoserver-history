@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.38 2004/04/06 18:11:47 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.39 2004/04/07 13:34:52 cholmesny Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -249,10 +249,9 @@ public class XMLConfigReader {
             throw new ConfigurationException(e);
         }
 
-        LOGGER.info("loading catalog configuration");
+        LOGGER.finer("loading catalog configuration");
         data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(
                     catalogElem, "namespaces", true)));
-        LOGGER.info("calling set default ns");
         setDefaultNS();
         data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
                     catalogElem, "datastores", true)));
@@ -274,15 +273,12 @@ public class XMLConfigReader {
      */
     protected void setDefaultNS() {
         Iterator i = data.getNameSpaces().values().iterator();
-        LOGGER.info("iterating through namespaces " + i.hasNext());
 
         while (i.hasNext()) {
             NameSpaceInfoDTO ns = (NameSpaceInfoDTO) i.next();
-            LOGGER.info("iterating to find default ns: " + ns);
-
             if (ns.isDefault()) {
                 data.setDefaultNameSpacePrefix(ns.getPrefix());
-                LOGGER.info("set default namespace pre to " + ns.getPrefix());
+                LOGGER.finer("set default namespace pre to " + ns.getPrefix());
 
                 return;
             }
@@ -622,7 +618,7 @@ public class XMLConfigReader {
             ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
             ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default",
                     false, false) || (nsCount == 1));
-            LOGGER.info("added namespace " + ns);
+            LOGGER.finer("added namespace " + ns);
             nameSpaces.put(ns.getPrefix(), ns);
         }
 
