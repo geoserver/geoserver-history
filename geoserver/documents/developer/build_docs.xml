@@ -71,7 +71,11 @@
     suggestions. If you create a user account at this site, you may
     participate in forums and vote in polls as well. However, first, you must
     download the GeoServer source; go to our download page. You may download
-    either our nightly build or our latest stable release.</para>
+    our latest stable release, or else download directly with cvs.</para>
+
+    <para>Note: This document is falling out of date, and we don't have time
+    to update for 1.2.0-rc2. We will get a revised version in time for 1.2.0.
+    Until then if there are questions just query the email list</para>
   </sect1>
 
   <sect1>
@@ -175,7 +179,7 @@ make install</programlisting>
           </row>
 
           <row>
-            <entry> build.xml</entry>
+            <entry>build.xml</entry>
 
             <entry>This is the Ant build file, referenced in the Building
             section.</entry>
@@ -192,7 +196,7 @@ make install</programlisting>
             <entry>capabilities</entry>
 
             <entry>This section contains all the non-proprietary schemas
-            required to run GeoServer. </entry>
+            required to run GeoServer.</entry>
           </row>
 
           <row>
@@ -273,7 +277,7 @@ make install</programlisting>
             url="http://geoserver.sourceforge.net/">GeoServer</ulink> (<ulink
             url="http://www.vfny.org/">VFNY</ulink>)</entry>
 
-            <entry> geoserver.jar</entry>
+            <entry>geoserver.jar</entry>
 
             <entry>This is the GeoServer .JAR file, which contains all classes
             except the servlets themselves.</entry>
@@ -329,7 +333,7 @@ make install</programlisting>
 
             <entry>xerces.jar</entry>
 
-            <entry> Xerces handles all of the SAX parsing for the request
+            <entry>Xerces handles all of the SAX parsing for the request
             interfaces.</entry>
           </row>
         </tbody>
@@ -396,7 +400,7 @@ make install</programlisting>
   <sect1>
     <title>Plug-in DataSources</title>
 
-    <para> Geoserver 0.96 introduces new support for plug-in datasources.
+    <para>Geoserver 0.96 introduces new support for plug-in datasources.
     Shapefiles are the first instance of the new plug-in style, but the work
     done for them will make new geotools datasource much easier to add to
     geoserver. If you find a datasource in geotools that you would like to try
