@@ -31,6 +31,6 @@ public interface FeatureValidation extends Validation
      * @param results Used to coallate results information 
      * @return True if all the features pass this test.
      */
-    public boolean validate( Feature feature, FeatureType type, ValidationResults results );
+    public boolean validate( Feature feature, FeatureType type, ValidationResults results ) throws Exception;
     
 }

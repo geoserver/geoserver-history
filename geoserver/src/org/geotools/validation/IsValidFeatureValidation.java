@@ -50,9 +50,8 @@ public class IsValidFeatureValidation implements FeatureValidation {
 	/* (non-Javadoc)
 	 * @see org.geotools.validation.Validation#setName(java.lang.String)
 	 */
-	public String setName(String name) {
+	public void setName(String name) {
 		this.name = name;
-		return this.name;
 	}
 
 	/* (non-Javadoc)

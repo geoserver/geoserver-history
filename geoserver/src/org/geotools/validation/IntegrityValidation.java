@@ -1,6 +1,8 @@
 package org.geotools.validation;
 
 import java.util.Map;
+
+import com.vividsolutions.jts.geom.Envelope;
 /**
  * IntegrityValidation PlugIns are used to check geospatial information
  * for integrity.
@@ -24,10 +26,11 @@ public interface IntegrityValidation extends Validation
     /**
      * Used to check features against this validation rule.
      * 
-     * @param layuers Allows access to FeatureType and Colleaction by "name"     
+     * @param layers Allows access to FeatureType and Colleaction by "name"     
      * @param results Used to coallate results information
+     * @param the bounding box that encloses the unvalidated data
      * @return True if all the features pass this test.
      */
-    public boolean validate( Map layers, ValidationResults results );
+    public boolean validate( Map layers, Envelope envelope, ValidationResults results ) throws Exception;
     
 }

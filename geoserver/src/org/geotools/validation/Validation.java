@@ -16,9 +16,9 @@ package org.geotools.validation;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: Validation.java,v 1.1.2.2 2003/11/23 05:15:46 jive Exp $
+ * @version $Id: Validation.java,v 1.1.2.3 2003/11/23 07:42:29 jive Exp $
  */
-public interface Validation 
+public interface Validation
 {
 	
 	static final String ALL[] = null;	// test all featureTypes
@@ -32,7 +32,7 @@ public interface Validation
 	 * @param name
 	 * @return
 	 */
-	String 	setName( String name );
+	void 	setName( String name );
 	
 	/**
 	 * getName purpose.
