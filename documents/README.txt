@@ -1,9 +1,9 @@
 GeoServer 1.2.3 README file
 ---------------------------
 
-Welcome to GeoServer 1.2.3!  This release contains a number of bug fixes 
-and improvements, along with a complete revamping of the developer's 
-documentation.  We hope it will make it much easier for new developers to 
+Welcome to GeoServer 1.3.0-Best!  This release contains a number of bug fixes 
+and improvements, including moving to the GeoTool 2.1.x branch.  
+We hope it will make it much easier for new developers to 
 get acquainted and involved with the GeoServer Project.  The full 
 changelog can be viewed at:
 http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311&report=changelog
@@ -25,6 +25,12 @@ http://geoserver.sourceforge.net/documentation/index.html
 The documentation is also available for download from sourceforge, and can
 be built from the source downloading using the 'ant document' command.
 
+Additional  wiki-based documentation is available at:
+http://docs.codehaus.org/display/GEOS/Home
+
+Additional Geotools documentation is available at:
+http://www.geotools.org/
+
 Commercial Support
 ------------------
 For users who need support faster than the email lists and forums can provide
@@ -33,7 +39,10 @@ installations, customizations, and day to day operations.  If GeoServer is
 lacking certain features compared to commercial WFS's we recommend contacting
 Refractions as the money required to implement the needed features may 
 be less than the license for proprietary software.  For more 
-information see http://refractions.net/geoserver/support.html 
+information see http://refractions.net/geoserver/support.html
+
+Support is also available by axios (http://axios.es/index_en.html) the 
+contact person is gabriel (groldan@axios.es). 
 
 Bugs
 ----------
