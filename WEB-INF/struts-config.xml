@@ -125,7 +125,8 @@
         <!-- Appearance -->       		
        	<forward name="style" path="/style.css"/>
        	<forward name="icon" path="/images/gs.gif"/>
-       	<forward name="favicon" path="/images/gs.ico"/>	
+       	<forward name="favicon" path="/images/gs.ico"/>
+       		
         <!-- ADMIN -->
         <forward 
         	name="admin"
