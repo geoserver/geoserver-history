@@ -63,6 +63,15 @@ public class FeatureKvpReader
         LOGGER.finest("setting query request parameters");
         List typeList = readFlat((String)kvpPairs.get("TYPENAME"), 
                                  INNER_DELIMETER);
+	if (typeList.size() == 0) {
+	    throw new WfsException("GeoServer does not support requests without"
+				   + " typenames, even for featureID requests ("
+				   + "yes, we know this is not spec compliant " 
+				   + "and we are working on it.  Until then " +
+				   " just add the typename and it should be "
+				   + "fine.)");
+	}
+	
         List propertyList = readNested((String) kvpPairs.get("PROPERTYNAME"));
         List filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
                                       (String) kvpPairs.get("FILTER"),
