@@ -4,95 +4,154 @@
  */
 package org.vfny.geoserver.config;
 
-import org.w3c.dom.Element;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
 
 
 /**
- * Represents a configuration of the WFS service.  Inherits most everything
- * from ServiceConfig.
+ * WFS purpose.
+ * 
+ * <p>
+ * Description of WFS  Used to store WFS data.
+ * </p>
+ * 
+ * <p></p>
  *
- * @author Gabriel Roldán
- * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.3 2004/01/05 17:36:45 cholmesny Exp $
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: WFSConfig.java,v 1.4 2004/01/12 23:55:27 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
-    public static final String WFS_FOLDER = "wfs/1.0.0/";
-    public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFS-basic.xsd";
-    public static final String WFS_CAP_LOC = WFS_FOLDER
-        + "WFS-capabilities.xsd";
-    private GlobalConfig global = GlobalConfig.getInstance();
-    private String describeUrl;
-    private boolean gmlPrefixing = false;
+    public static final String CONFIG_KEY = "Config.WFS";
+
+	private boolean gmlPrefixing;
+    /**
+     * This is a set of <code>dataStoreID.typeName</code> that is  enabled for
+     * use with WMS.
+     * 
+     * <p>
+     * You can use this information to bother DataConfig for the details such
+     * as:
+     * </p>
+     * 
+     * <ul>
+     * <li>
+     * Title
+     * </li>
+     * <li>
+     * Abstract
+     * </li>
+     * </ul>
+     * 
+     * <p>
+     * Cool?
+     * </p>
+     */
+    private Set enabledFeatures = new TreeSet(); // keep sorted	
 
     /**
-     * Creates a new WFSConfig object.
+     * WFS constructor.
+     * 
+     * <p>
+     * Creates a WFS to represent an instance with default data.
+     * </p>
      *
-     * @param root DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
+     * @see defaultSettings()
      */
-    public WFSConfig(Element root) throws ConfigurationException {
-        super(root);
-        URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
+    public WFSConfig() {
+        super();
+    }
 
-        //String value = notNull(getElementText(root, "gmlPrefixing"));
-        //getBooleanAttribute doesn't work right with non-mandatory atts.
-        Element elem = getChildElement(root, "gmlPrefixing", false);
-        LOGGER.info("gml element is " + elem + " root is " + root);
+    /**
+     * WFS constructor.
+     * 
+     * <p>
+     * Creates a copy of the WFS provided. If the WFS provided  is null then
+     * default values are used. All the data structures are cloned.
+     * </p>
+     *
+     * @param w The WFS to copy.
+     */
+    public WFSConfig(WFSDTO w) {
+        super(w.getService());
+		gmlPrefixing = w.isGmlPrefixing();
+    }
 
-        if (elem != null) {
-            this.gmlPrefixing = getBooleanAttribute(elem, "value", false);
+    /**
+     * Implement loadDTO.
+     * 
+     * <p>
+     * Takes a WMSDTO and loads it into this WMSConfig Object
+     * </p>
+     *
+     * @param dto an instance of WMSDTO
+     *
+     * @return false when obj null, or not correct class instance.
+     *
+     * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
+     */
+    public void update(WFSDTO dto) {
+        if (dto == null) {
+			throw new NullPointerException("WFS Data Transfer Object required");
         }
-    }
-
-    public WFSConfig(Map config) {
-        super(config);
-        URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
+        super.update(dto.getService());
+        gmlPrefixing = dto.isGmlPrefixing();
     }
 
     /**
-     * Gets the base url of a describe request.
+     * Implement toDTO.
+     * 
+     * <p>
+     * Returns a copy of the data in a ServiceDTO object
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return a copy of the data in a ServiceDTO object
      *
-     * @task REVISIT: consider using the /wfs? base, as it makes things a bit
-     *       clearer.  Right now, however, I'm getting problems with the & in
-     *       returned xml, having to put a &amp; in, and not sure if clients
-     *       will process it correctly.
+     * @see org.vfny.geoserver.config.DataStructure#toDTO()
      */
-    public String getDescribeBaseUrl() {
-        if (this.describeUrl == null) {
-            this.describeUrl = URL + "DescribeFeatureType?typeName=";
-        }
-
-        return describeUrl;
+    public WFSDTO toDTO() {
+        WFSDTO wfsDto = new WFSDTO();
+        wfsDto.setService((ServiceDTO) super.toServDTO());
+		wfsDto.setGmlPrefixing(gmlPrefixing);
+        return wfsDto;
     }
 
-    public String getDescribeUrl(String typeName) {
-        return getDescribeBaseUrl() + typeName;
-    }
+	/**
+	 * @return
+	 */
+	public Set getEnabledFeatures() {
+		return enabledFeatures;
+	}
 
-    public String getWfsBasicLocation() {
-        return global.getSchemaBaseUrl() + WFS_BASIC_LOC;
-    }
+	/**
+	 * @param set
+	 */
+	public void setEnabledFeatures(Set set) {
+		enabledFeatures = set;
+	}
 
-    public String getWfsCapLocation() {
-        return global.getSchemaBaseUrl() + WFS_CAP_LOC;
-    }
+	/**
+	 * isGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public boolean isGmlPrefixing() {
+		return gmlPrefixing;
+	}
 
-    /**
-     * Returns whether the gml prefix should be appended to name, description
-     * and boundedBy elements.
-     *
-     * @return <tt>true</tt> if gml elements should be prefixed appropriately.
-     *
-     * @task REVISIT: gml prefixing could be done more intelligently, right now
-     *       it's a blunt approach that just puts gml: onto all name elements.
-     *       But this logic should be done in geotools, in FeatureTransformer.
-     *       For more information see that class.
-     */
-    public boolean isGmlPrefixing() {
-        return gmlPrefixing;
-    }
+	/**
+	 * setGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param b
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
+
 }

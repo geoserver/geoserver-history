@@ -4,231 +4,484 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.Map;
-
-import org.w3c.dom.*;
-
+import org.vfny.geoserver.global.dto.ContactDTO;
 
 /**
- * represents a ContactInformation element such as: <code> &lt;ContactInformation&gt;<br>
- * &lt;ContactPersonPrimary&gt;<br>
- * &lt;ContactPerson&gt;Chris Holmes&lt;/ContactPerson&gt;<br>
- * &lt;ContactOrganization&gt;TOPP&lt;/ContactOrganization&gt;<br>
- * &lt;/ContactPersonPrimary&gt;<br>
- * &lt;ContactPosition&gt;Computer Scientist&lt;/ContactPosition&gt;<br>
- * &lt;ContactAddress&gt;<br>
- * &lt;AddressType&gt;postal&lt;/AddressType&gt;<br>
- * &lt;Address&gt;Street addresss here&lt;/Address&gt;<br>
- * &lt;City&gt;New York&lt;/City&gt;<br>
- * &lt;StateOrProvince&gt;New York&lt;/StateOrProvince&gt;<br>
- * &lt;PostCode&gt;0001&lt;/PostCode&gt;<br>
- * &lt;Country&gt;USA&lt;/Country&gt;<br>
- * &lt;/ContactAddress&gt;<br>
- * &lt;ContactVoiceTelephone&gt;+1 301 283-1569&lt;/ContactVoiceTelephone&gt;<br>
- * &lt;ContactFacsimileTelephone&gt;+1 301 283-1569&lt;/ContactFacsimileTelephone&gt;<br>
- * &lt;/ContactInformation&gt;<br></code>
- *
- * @author Gabriel Roldán
- * @version $Id: ContactConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
- *
- * @task REVISIT: may be it will be necessary to create a real contact
- *       hierarchy if we plan to add Catalog service.
+ * Represents a Contact (or Party).
+ * <p>
+ * This is used by GeoServer to represent a contact person or
+ * organization associated with the Service.
+ * </p>
+ * <p>
+ * The configuration file represents Contact information
+ * using the following XML fragment (at the time of writing):
+ * </p>
+ * <pre><code>
+ * {ContactInformation}
+ *   {ContactPersonPrimary}
+ *     {ContactPerson}Chris Holmes{/ContactPerson}
+ *     {ContactOrganization}TOPP{/ContactOrganization}
+ *   {/ContactPersonPrimary}
+ *   {ContactPosition}Computer Scientist{/ContactPosition}
+ *   {ContactAddress}
+ *     {AddressType}postal{/AddressType}
+ *     {Address}Street addresss here{/Address}
+ *     {City}New York{/City}
+ *     {StateOrProvince}New York{/StateOrProvince}
+ *     {PostCode}0001{/PostCode}
+ *     {Country}USA{/Country}
+ *   {/ContactAddress}
+ *   {ContactVoiceTelephone}+1 301 283-1569{/ContactVoiceTelephone}
+ *   {ContactFacsimileTelephone}+1 301 283-1569{/ContactFacsimileTelephone}
+ * {/ContactInformation}
+ * </code></pre>
+ * <p>
+ * To communicate with the running GeoServer application, represented
+ * by the classes in global, the Contact information will need to be
+ * placed into the ContactDTO.
+ * </p>
+ * 
+ * @author David Zwiers, Refractions Research, Inc.
+ * @version $Id: ContactConfig.java,v 1.3 2004/01/12 23:55:27 dmzwiers Exp $
  */
-public class ContactConfig extends AbstractConfig {
+public class ContactConfig {
+    
+    /** The name of the contact person */
     private String contactPerson;
+
+    /** The name of the organization with which the contact is affiliated. */
     private String contactOrganization;
+
+    /** The position of the contact within their organization. */
     private String contactPosition;
+
+    /** The type of address specified, such as postal. */
     private String addressType;
+
+    /** The actual street address. */
     private String address;
+
+    /** The city of the address. */
     private String addressCity;
+
+    /** The state/prov. of the address. */
     private String addressState;
+
+    /** The postal code for the address. */
     private String addressPostalCode;
+
+    /** The country of the address. */
     private String addressCountry;
+
+    /** The contact phone number. */
     private String contactVoice;
+
+    /** The contact Fax number. */
     private String contactFacsimile;
+
+    /** The contact email address. */
     private String contactEmail;
 
     /**
-     * Creates a new ContactConfig object.
-     *
-     * @param contactInfoElement DOCUMENT ME!
-     */
-    public ContactConfig(Element contactInfoElement) {
-        if (contactInfoElement == null) {
-            return;
-        }
-
-        Element elem;
-        NodeList nodeList;
-        elem = getChildElement(contactInfoElement, "ContactPersonPrimary");
-
-        if (elem != null) {
-            this.contactPerson = getChildText(elem, "ContactPerson");
-            this.contactOrganization = getChildText(elem, "ContactOrganization");
-        }
-
-        this.contactPosition = getChildText(contactInfoElement,
-                "ContactPosition");
-        elem = getChildElement(contactInfoElement, "ContactAddress");
-
-        if (elem != null) {
-            this.addressType = getChildText(elem, "AddressType");
-            this.address = getChildText(elem, "Address");
-            this.addressCity = getChildText(elem, "City");
-            this.addressState = getChildText(elem, "StateOrProvince");
-            this.addressPostalCode = getChildText(elem, "PostCode");
-            this.addressCountry = getChildText(elem, "Country");
-        }
-
-        this.contactVoice = getChildText(contactInfoElement,
-                "ContactVoiceTelephone");
-        this.contactFacsimile = getChildText(contactInfoElement,
-                "ContactFacsimileTelephone");
-        this.contactEmail = getChildText(contactInfoElement,
-                "ContactElectronicMailAddress");
-    }
-    /**
-     * Configure for JUnit testcases.
-     * <p>
-     * Provide Map is checked for the following:
-     * <ul>
-     * <li>contact.person: String (default user name )</li>
-     * <li>contact.organization: String</li>
-     * <li>contact.position: String</li>
-     * <li>contact.addressType: String</li>
-     * <li>contact.address: String</li>
-     * <li>contact.city: String</li>
-     * <li>contact.state: String</li>
-     * <li>contact.postalCode: String</li>
-     * <li>contact.country: String</li>
-     * <li>contact.voice: String</li>
-     * <li>contact.facsimile: String</li>
-     * <li>contact.email: String</li>
-     * </ul>
+     * Default ContactConfig constructor.
      * 
-     * @param map
+     * <p>
+     * Creates an empty ContactConfig object which must be setup prior to use.
+     * </p>
      */
-    public ContactConfig( Map map ){
-        String username = System.getProperty("user.name");
-        
-        contactPerson = get( map, "contact.person", username );
-        contactOrganization = get( map, "contact.organization" );
-        contactPosition = get( map, "contact.position" );
-        addressType = get( map, "contact.addressType" );
-        address = get( map, "contact.address" );
-        addressCity = get( map, "contact.city" );
-        addressState = get( map, "contact.state" );
-        addressPostalCode = get( map, "contact.postalCode" );
-        addressCountry = get( map, "contact.country" );
-        contactVoice = get( map, "contact.voice" );
-        contactFacsimile = get( map, "contact.facsimile" );
-        contactEmail = get( map, "contact.email" );        
+    public ContactConfig() {                
+    }
+
+    /**
+     * ContactConfig constructor.
+     * 
+     * <p>
+     * Creates a copy of the ContactConfig specified, or returns a default
+     * ContactConfig when null is provided. None of the data is cloned, as
+     * String are stored in a hashtable in memory.
+     * </p>
+     *
+     * @param c The ContactConfig to create a copy of.
+     */
+    public ContactConfig(ContactDTO dto) {
+        update( dto );
     }
     /**
-     * DOCUMENT ME!
+     * Update the configuration to reflect the provided Data Transfer Object.
+     * <p>
+     * This may be used as a course grained set method, this is the entry point
+     * for the live GeoServer application to update the configuration system
+     * when a new XML file is loaded.
+     * </p>
+     * @param dto Data Transfer Object representing Contact Information
+     */
+    public void update( ContactDTO dto ){
+        if (dto == null) {
+            throw new NullPointerException("Contact Data Transfer Object required");
+        }        
+        contactPerson = dto.getContactPerson();
+        contactOrganization = dto.getContactOrganization();
+        contactPosition = dto.getContactPosition();
+        addressType = dto.getAddressType();
+        address = dto.getAddress();
+        addressCity = dto.getAddressCity();
+        addressState = dto.getAddressState();
+        addressPostalCode = dto.getAddressPostalCode();
+        addressCountry = dto.getAddressCountry();
+        contactVoice = dto.getContactVoice();
+        contactFacsimile = dto.getContactFacsimile();
+        contactEmail = dto.getContactEmail();        
+    }
+    
+	public ContactDTO toDTO(){
+		ContactDTO dto  = new ContactDTO();
+		 dto.setContactPerson(contactPerson);
+		 dto.setContactOrganization(contactOrganization);
+		 dto.setContactPosition(contactPosition);
+		 dto.setAddressType(addressType);
+		 dto.setAddress(address);
+		 dto.setAddressCity(addressCity);
+		 dto.setAddressState(addressState);
+		 dto.setAddressPostalCode(addressPostalCode);
+		 dto.setAddressCountry(addressCountry);
+		 dto.setContactVoice(contactVoice);
+		 dto.setContactFacsimile(contactFacsimile);
+		 dto.setContactEmail(contactEmail);
+		 return dto;        
+	}
+    /**
+     * getAddress purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getAddress() {
-        return notNull(address);
+        return address;
     }
 
     /**
-     * DOCUMENT ME!
+     * getAddressCity purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getAddressCity() {
-        return notNull(addressCity);
+        return addressCity;
     }
 
     /**
-     * DOCUMENT ME!
+     * getAddressCountry purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getAddressCountry() {
-        return notNull(addressCountry);
+        return addressCountry;
     }
 
     /**
-     * DOCUMENT ME!
+     * getAddressPostalCode purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getAddressPostalCode() {
-        return notNull(addressPostalCode);
+        return addressPostalCode;
     }
 
     /**
-     * DOCUMENT ME!
+     * getAddressState purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getAddressState() {
-        return notNull(addressState);
+        return addressState;
     }
 
     /**
-     * DOCUMENT ME!
+     * getAddressType purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getAddressType() {
-        return notNull(addressType);
+        return addressType;
     }
 
     /**
-     * DOCUMENT ME!
+     * getContactEmail purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getContactEmail() {
-        return notNull(contactEmail);
+        return contactEmail;
     }
 
     /**
-     * DOCUMENT ME!
+     * getContactFacsimile purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getContactFacsimile() {
-        return notNull(contactFacsimile);
+        return contactFacsimile;
     }
 
     /**
-     * DOCUMENT ME!
+     * getContactOrganization purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getContactOrganization() {
-        return notNull(contactOrganization);
+        return contactOrganization;
     }
 
     /**
-     * DOCUMENT ME!
+     * getContactPerson purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getContactPerson() {
-        return notNull(contactPerson);
+        return contactPerson;
     }
 
     /**
-     * DOCUMENT ME!
+     * getContactPosition purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getContactPosition() {
-        return notNull(contactPosition);
+        return contactPosition;
     }
 
     /**
-     * DOCUMENT ME!
+     * getContactVoice purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
     public String getContactVoice() {
-        return notNull(contactVoice);
+        return contactVoice;
+    }
+
+    /**
+     * setAddress purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setAddress(String string) {
+        if (string != null) {
+            address = string;
+        }
+    }
+
+    /**
+     * setAddressCity purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setAddressCity(String string) {
+        if (string != null) {
+            addressCity = string;
+        }
+    }
+
+    /**
+     * setAddressCountry purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setAddressCountry(String string) {
+        if (string != null) {
+            addressCountry = string;
+        }
+    }
+
+    /**
+     * setAddressPostalCode purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setAddressPostalCode(String string) {
+        if (string != null) {
+            addressPostalCode = string;
+        }
+    }
+
+    /**
+     * setAddressState purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setAddressState(String string) {
+        if (string != null) {
+            addressState = string;
+        }
+    }
+
+    /**
+     * setAddressType purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setAddressType(String string) {
+        if (string != null) {
+            addressType = string;
+        }
+    }
+
+    /**
+     * setContactEmail purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setContactEmail(String string) {
+        if (string != null) {
+            contactEmail = string;
+        }
+    }
+
+    /**
+     * setContactFacsimile purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setContactFacsimile(String string) {
+        if (string != null) {
+            contactFacsimile = string;
+        }
+    }
+
+    /**
+     * setContactOrganization purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setContactOrganization(String string) {
+        if (string != null) {
+            contactOrganization = string;
+        }
+    }
+
+    /**
+     * setContactPerson purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setContactPerson(String string) {
+        if (string != null) {
+            contactPerson = string;
+        }
+    }
+
+    /**
+     * setContactPosition purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setContactPosition(String string) {
+        if (string != null) {
+            contactPosition = string;
+        }
+    }
+
+    /**
+     * setContactVoice purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setContactVoice(String string) {
+        if (string != null) {
+            contactVoice = string;
+        }
     }
 }

@@ -1,120 +1,142 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2003, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
  */
 package org.vfny.geoserver.config;
 
-import org.w3c.dom.*;
-import java.util.Date;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 
 /**
- * DOCUMENT ME!
- *
- * @author Gabriel Roldán
- * @version $Id: WMSConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * WMS purpose.
+ * <p>
+ * Description of WMS 
+ * Used to store WMS data. 
+ * <p>
+ * 
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: WMSConfig.java,v 1.3 2004/01/12 23:55:27 dmzwiers Exp $
  */
-public class WMSConfig extends ServiceConfig {
-    /** WMS version spec implemented */
-    private static final String WMS_VERSION = "1.1.1";
+public class WMSConfig extends ServiceConfig{
 
-    /** WMS spec specifies this fixed service name */
-    private static final String FIXED_SERVICE_NAME = "OGC:WMS";
+	private static final String WMS_VERSION = "1.1.1";
+	public static final String CONFIG_KEY = "Config.WMS";
+	
+	/**
+	 * This is a set of <code>dataStoreID.typeName</code> that is 
+	 * enabled for use with WMS.
+	 * <p>
+	 * You can use this information to bother DataConfig for the details such as:
+	 * </p>
+	 * <ul>
+	 * <li>Title</li>
+	 * <li>Abstract</li>
+	 * </ul>
+	 * <p>
+	 * Cool?
+	 * </p>
+	 */
+	private Set enabledFeatures = new TreeSet(); // keep sorted
+	
+	/**
+	 * A string representing the update time of the WMS
+	 *
+	 */
+	private String updateTime;
+	
+	/**
+	 * WMS constructor.
+	 * <p>
+	 * Creates a WMS to represent an instance with default data.
+	 * </p>
+	 * @see defaultSettings()
+	 */
+	public WMSConfig(){
+		super();
+	}
 
-    /** DOCUMENT ME!  */
-    private static final String[] EXCEPTION_FORMATS = {
-        "application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
-        "application/vnd.ogc.se_blank"
-    };
-    private Date updateTime = new Date();
+	/**
+	 * WMS constructor.
+	 * <p>
+	 * Creates a copy of the WMSDTO provided. All the data structures are cloned. 
+	 * </p>
+	 * @param f The WMSDTO to copy.
+	 */
+	public WMSConfig(WMSDTO w){
+		super(w.getService());
+	}
 
-    /**
-     * Creates a new WMSConfig object.
-     *
-     * @param wmsRoot DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-    public WMSConfig(Element wmsRoot) throws ConfigurationException {
-        super(wmsRoot);
-        URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
-    }
-    public WMSConfig( Map config ){
-        super( config );
-        URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
-    }
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String[] getExceptionFormats() {
-        return EXCEPTION_FORMATS;
-    }
+	/**
+	 * Implement loadDTO.
+	 * <p>
+	 * Takes a WMSDTO and loads it into this WMSConfig Object
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
+	 * 
+	 * @param dto an instance of WMSDTO
+	 * @return false when obj null, or not correct class instance.
+	 */
+	public void update(WMSDTO dto){
+	 if(dto==null)
+	 throw new NullPointerException("WMS Data Transfer Object required");
+	  super.update(dto.getService());
+	}
+	
+	/**
+	 * Implement toDTO.
+	 * <p>
+	 * Returns a copy of the data in a ServiceDTO object
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#toDTO()
+	 * 
+	 * @return a copy of the data in a ServiceDTO object
+	 */
+	public WMSDTO toDTO(){
+		WMSDTO wmsDto = new WMSDTO();
+		wmsDto.setService((ServiceDTO)super.toServDTO());
+		return wmsDto;
+	}
+	/**
+	 * @return
+	 */
+	public String getUpdateTime() {
+		return updateTime;
+	}
 
-    /**
-     * overrides getName() to return the fixed service name as specified by OGC
-     * WMS 1.1 spec
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getName() {
-        return FIXED_SERVICE_NAME;
-    }
+	/**
+	 * @param string
+	 */
+	public void setUpdateTime(String string) {
+		updateTime = string;
+	}
 
-    /**
-     * returns a GMT time string that represents the last modification time of
-     * the capabilities aspects of the WMS service
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getUpdateTime() {
-        return updateTime.toGMTString();
-    }
+	/**
+	 * @return
+	 */
+	public Set getEnabledFeatures() {
+		return enabledFeatures;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getVersion() {
-        return WMS_VERSION;
-    }
+	/**
+	 * @param set
+	 */
+	public void setEnabledFeatures(Set set) {
+		enabledFeatures = set;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean supportsSLD() {
-        return true;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean supportsUserLayer() {
-        return true;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean supportsUserStyle() {
-        return true;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean supportsRemoteWFS() {
-        return true;
-    }
 }
