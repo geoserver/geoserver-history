@@ -3,62 +3,57 @@
  */
 package org.vfny.geoserver.responses;
 
-import org.apache.log4j.Category;
 import java.io.*;
 import java.util.*;
 import java.sql.*;
-import javax.xml.bind.*;
-import javax.xml.marshal.*;
+
+import org.apache.log4j.Category;
+
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.responses.*;
 
+
 /**
- * Implements the WFS DescribeFeatureTypes inteface, which tells clients the schema for each feature type.
+ * Handles a DescribeFeatureType request and creates a DescribeFeatureType response GML string.
  *
- * This servlet returns descriptions of all feature types served by the FreeFS.
- * It does this by inspecting the table for the feature type every time it is
- * called.  This is not particularly efficient, but it does serve the purpose
- * of keeping in close sych with the database itself.  Future versions of this servlet
- * will likely store some of this data in the feature type directory.
- *
- * Note that this assumes that the possible schemas are only single tables,
- * with no foreign key relationships with other tables.
- *
- * IMPORTANT NOTE: This version assumes that all passwords, usernames, and database
- * for every table are the same.
- * 
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 alpha, 11/01/01
+ * @author Rob Hranac, Vision for New York
+ * @version 0.9 beta, 11/01/01
  *
  */
 public class DescribeFeatureTypeResponse {
 
-		// create standard logging instance for class
+
+		/** Standard logging instance for class */
 		private static Category _log = Category.getInstance( DescribeFeatureTypeResponse.class.getName() );
 
-		// Main XML class for interpretation and response.
+		/** Main XML class for interpretation and response. */
 		private String xmlResponse = new String();
 
-		// Instantiate configuration utility class.
+		/** Bean that holds global server configuration information. */
 		private static ConfigurationBean configuration = new ConfigurationBean();
 
 		// Initialize some generic GML information
 		// ABSTRACT OUTSIDE CLASS, IF POSSIBLE
-		private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"http://www.vfny.org/vfny\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:vfny=\"http://www.vfny.org/vfny\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://freefs.vfny.org:81/geoserver/data/capabilities/feature.xsd\"/>\n\n";
+
+		/** Fixed return header information */
+		private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"" + configuration.getUrl() + "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:vfny=\"" + configuration.getUrl() + "\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/>\n\n";
+
+		/** Fixed return footer information */
 		private static final String FOOTER = "</xs:schema>";
 
+
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Constructor with request.
 		*
-		* @param request The DescribeFeatureType reqeuset object.
+		* @param wfsRequest The DescribeFeatureType reqeuset object.
 		*/ 		
 		public DescribeFeatureTypeResponse(DescribeFeatureTypeRequest wfsRequest) {
 
 				// generates response, using general function 
 				xmlResponse  = generateTypes( wfsRequest );
 		}
+
 
 	 /**
 		* Passes the Post method to the Get method, with no modifications.
@@ -70,10 +65,11 @@ public class DescribeFeatureTypeResponse {
 				return xmlResponse;
 		}
 
+
 	 /**
 		* Internal method to generate the XML response object, using feature types.
 		*
-		* @param wfsRequest The servlet request object.
+		* @param wfsRequest The request object.
 		*/ 
 		private String generateTypes(DescribeFeatureTypeRequest wfsRequest) {
 
@@ -104,10 +100,11 @@ public class DescribeFeatureTypeResponse {
 				return tempResponse;
 		}
 
+
 	 /**
 		* Internal method to print just the requested types.
 		*
-		* @param table The table name.
+		* @param requestedTables The requested table names.
 		*/ 
 		private String generateSpecifiedTypes(Vector requestedTables) {
 

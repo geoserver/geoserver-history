@@ -1,13 +1,10 @@
 /* Copyright (c) 2002 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is released under the Apache license, availible at the root GML4j directory.
  */
-
 package org.vfny.geoserver.requests;
 
 import java.io.*;
 import java.util.*;
-import javax.xml.bind.*;
-import javax.xml.marshal.*;
 
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -27,16 +24,16 @@ import org.vfny.geoserver.config.*;
  * before passing the request.</p>
  * 
  * @author Rob Hranac, Vision for New York
- * @version 1
+ * @version 0.9 beta, 11/01/01
  *
  */
 public class DispatcherReaderXml {
 
 
-		/** create standard logging instance for class */
+		/** Standard logging instance for class */
 		private static Category _log = Category.getInstance(DispatcherReaderXml.class.getName());
 
-		/** create standard logging instance for class */
+		/** Handler for request interpretation duties. */
 		private DispatcherHandler currentRequest;
 
 
@@ -70,8 +67,9 @@ public class DispatcherReaderXml {
 		}
 
 	 /**
-		* Returns a list of requested feature types..
+		* Returns the guessed request type..
 		*
+		* @return Request type.
 		*/
 		public int getRequestType () {
 				return currentRequest.getRequestType();

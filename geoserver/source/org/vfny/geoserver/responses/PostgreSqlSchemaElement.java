@@ -1,13 +1,13 @@
-/*
- * Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
+/* Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
  * This servlet implements the OGC WFS getCapabilitiesResponse inteface.
- *
  */
+
 package org.vfny.geoserver.responses;
 
 import java.io.*;
 import java.util.*;
 import java.sql.*;
+
 
 /**
  * Encapsulates and abstracts a PostgreSQL-specific  'column' object for GML writing.
@@ -15,32 +15,49 @@ import java.sql.*;
  * Passed a column and table name, this looks at a constructor generated hash and
  * matches up appropriate datatype to column schema definition.
  * 
+ * CLASS NOT CURRENTLY USED.
+ * 
  * THIS CLASS MUST GET ENHANCED ERROR CHECKING (DOES TABLE AND COL EXIST?).
  * SHOULD ABSTRACT HASH OUT OF CLASS TO GENERALIZE.
  * SHOULD ABSTRACT GML FORMATING OUT OF CLASS.
  *
- *@author Vision for New York
- *@author Rob Hranac
- *@version 0.9 alpha, 11/01/01
+ *@author Rob Hranac, Vision for New York
+ *@version 0.9 beta, 11/01/01
  *
  */
 public class PostgreSqlSchemaElement {
 
-		// Two primary hash tables for XML and GML schemas
+
+		/** Hash table for GML schemas */
 		private static Hashtable GEOMETRY_SCHEMA = new Hashtable();
+
+		/** Hash table for XML schemas */
 		private static Hashtable TYPE_SCHEMA = new Hashtable();
 
-		// Basic class variables
+		/** Name of schema element */
 		private String name = new String();
+
+		/** Database type element */
 		private String databaseType = new String(); 
+
+		/** Whether or not the schema is nullable */
 		private String nullable = new String();
 
-		// Basic schema variables
+		/** Schema type */
 		private String typeSchema = new String();
+
+		/** Type of schema */
 		private String schemaType = new String();
+
+		/** Sample data for schema */
 		private String sampleData = new String();
+
+		/** Minimum number of times the element occurs */
 		private int minOccurs;
+
+		/** Maximum number of times the element occurs */
 		private int maxOccurs = 1;
+
 
 	 /**
 		* Constructor method generates XML schema hash and GML schema hash for appropriate database objects.
@@ -48,8 +65,6 @@ public class PostgreSqlSchemaElement {
     * SHOULD BE ABSTRACTED TO TWO CLASSES.  DIFFICULTY LIES IN INTERNAL GEOMETRIC REPRESENTATION FOR GML
 		* OBJECTS.
 		* 
-		* @param request The servlet request object.
-		* @param response The servlet response object.
 		*/ 
 		public PostgreSqlSchemaElement  () {
 
@@ -105,8 +120,9 @@ public class PostgreSqlSchemaElement {
 
 		}
 
+
 	 /**
-		* Setter method names the .
+		* Setter method names the schema element.
 		*
 		* @param columnName The column/XML tag name.
 		* @param tableName The table/XML tag prefix name.
@@ -114,6 +130,7 @@ public class PostgreSqlSchemaElement {
 		public void setName ( String tableName, String columnName ) throws Exception {
 				this.name = tableName + "." + columnName;
 		}
+
 
 	 /**
 		* Setter method names the database type, the sample data from a column, and nullable information.
@@ -134,6 +151,7 @@ public class PostgreSqlSchemaElement {
 						this.minOccurs = 0;
 				}
 		}
+
 
 	 /**
 		* Inspects internal database type information and returns hashed schema information.
@@ -159,6 +177,7 @@ public class PostgreSqlSchemaElement {
 					  this.typeSchema = ((String) TYPE_SCHEMA.get( this.databaseType ));
 				}
 		}
+
 
 	 /**
 		* Inspects internal type information and returns XML representation.

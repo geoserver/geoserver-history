@@ -9,48 +9,48 @@ import java.sql.*;
 
 import org.apache.log4j.Category;
 
+import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.responses.*;
 import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
 
 
 /**
- * Implements the WFS GetFeature interface, which responds to requests for GML.
+ * Shell for JDBC transactions of all types.
  *
- * This servlet accepts a getFeatures request and returns GML2.0 structured
- * XML docs.
+ * This provides a base class to the database transactional classes.  
  *
- *@author Vision for New York
- *@author Rob Hranac
- *@version 0.9 alpha, 11/01/01
+ *@author Rob Hranac, Vision for New York
+ *@version $0.9 alpha, 11/01/01$
  *
  */
 public class JdbcTransaction {
 
 
-		// initializes log file
+		/** Initializes standard logging file */
 		private Category _log = Category.getInstance(JdbcTransaction.class.getName());
 
-		// defines all database types
 		// TYPES ARE PROTECTED BECAUSE I WILL PROBABLY SPLIT OUT THE POSTGIS PACKAGE
+		/** Sets the PostGIS database type */
 		protected static final int POSTGIS_DATABASE_TYPE = 1;
+
+		/** Sets the Oracle database type */
 		protected static final int ORACLE9i_DATABASE_TYPE = 2;
 		
-		// all useful database connection information is stored here
+		/** Stores the database type */
 		private int databaseType = -1;
 
+		/** Stores a string for the jdbc database driver class */
 		private String driverClass = null;
 
+		/** Stores the jdbc database driver path*/
 		private String driverPath = null;
 
+		/** Encapsulates the connection database for child classes */
 		private Connection dbConnection = null;
 
 
-
 	 /**
-		* Handles all Get requests.
-		*
-		* This method implements the main matching logic for the class.
+		* Constructor with all internal database driver classes, driver paths, and database types.
 		*
 		* @param driverClass The driver class; should be passed from the database-specific subclass.
 		* @param driverPath The driver path; should be passed from the database-specific subclass..
@@ -65,16 +65,14 @@ public class JdbcTransaction {
 
 
 	 /**
-		* Handles all Get requests.
-		*
-		* This method implements the main matching logic for the class.
+		* Creates a database connection method to initialize a given database for feature extraction.
 		*
 		* @param featureType A complete description of the feature type metadata.
-		*
 		*/ 
 		protected void setDatabaseConnection( FeatureTypeBean featureType )
 				throws WfsException {
-
+				
+				// Creates a database connection
 				if( ( driverClass != null ) & ( driverClass != null ) & ( driverClass != null ) ) { 
 
 						// makes a new feature type bean to deal with incoming
@@ -100,18 +98,16 @@ public class JdbcTransaction {
 
 				}
 				else {
-
+						throw new WfsException();
 				}
 
 		}
 
 
 	 /**
-		* Handles all Get requests.
+		* Recieves SQL and returns a result set.
 		*
-		* This method implements the main matching logic for the class.
-		*
-		* @param SQL The servlet request object.
+		* @param SQL The raw SQL request object thing.
 		*/ 
 		protected ResultSet getResultSet(String SQL) throws Exception {
 
@@ -133,6 +129,11 @@ public class JdbcTransaction {
 		}
 
 
+	 /**
+		* Closes the result set.  Child class must remember to call
+		*
+		* @param result The servlet request object.
+		*/ 
 		protected void closeResultSet(ResultSet result) {
 
 				try {
@@ -146,6 +147,10 @@ public class JdbcTransaction {
 		}
 
 
+	 /**
+		* Returns database type upon request.
+		*
+		*/ 
 		protected int getDatabaseType() {
 				return this.databaseType;
 		}

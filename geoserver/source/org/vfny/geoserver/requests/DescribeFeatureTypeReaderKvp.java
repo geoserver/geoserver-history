@@ -1,11 +1,11 @@
 /* Copyright (c) 2002 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is released under the Apache license, availible at the root GML4j directory.
  */
-
 package org.vfny.geoserver.requests;
 
 import java.io.*;
 import java.util.*;
+
 
 /**
  * This utility reads in a DescribeFeatureType KVP request and turns it into a list of requested Feature Types.
@@ -15,7 +15,7 @@ import java.util.*;
  * before passing the request.</p>
  * 
  * @author Rob Hranac, Vision for New York
- * @version alpha, 12/01/01
+ * @version beta, 12/01/01
  *
  */
 public class DescribeFeatureTypeReaderKvp extends KvpRequestReader {

@@ -8,17 +8,22 @@ import java.util.*;
 
 import org.vfny.geoserver.config.FeatureTypeBean;
 
+import org.apache.log4j.Category;
+
 /**
- * Implements the WFS GetFeature interface, which responds to requests for GML.
- * This servlet accepts a getFeatures request and returns GML2.1 structured
- * XML docs.
+ * Provides an internal, generic representation of a query component to a GetFeature request.
+ * Note that GetFeature requests can contain multiple query components and that the 'version'
+ * inside the query component is different than the 'version' of the GetFeature request.
  *
  *@author Rob Hranac, Vision for New York
- *@version 0.9 alpha, 11/01/01
+ *@version 0.9 beta, 11/01/01
  *
  */
 public class Query {
 
+
+		/** Standard logging instance for the class */
+		private Category _log = Category.getInstance(Query.class.getName());
 
 		/** The user-specified name for the query. */
 		protected String handle = new String();
@@ -27,6 +32,7 @@ public class Query {
 		protected String featureTypeName = new String();
 
 		// UNIMPLEMENTED - YOU CAN SET THIS BUT IT DOES NOTHING
+		// NOTE THAT THIS IS FOR 'EVOLVING FEATURES' OR WHATEVER
 		/** The version of the feature to request - current implementation ignores entirely. */
 		protected String version = new String();
 
@@ -39,6 +45,9 @@ public class Query {
 		/** Stores datbase configuration meta data for the query  */
 		protected FeatureTypeBean featureType = null;
 
+		/** Creates an associated of bounding box */
+		protected BoundingBox boundingBox = new BoundingBox();
+
 
 	 /**
 		* Empty constructor.
@@ -49,9 +58,8 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Clears all the internal variables of the query.
 		*
-		* @param rawRequest The plain POST text from the client.
 		*/ 
 		public void empty() {
 				this.featureTypeName = "";
@@ -61,9 +69,9 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* This method sets the configuration data for the query, based on the
+		* feature type name.
 		*
-		* @param featureTypeName The plain POST text from the client.
 		*/ 
 		public void setDatastoreConfiguration() {
 				this.featureType = new FeatureTypeBean( featureTypeName );
@@ -71,7 +79,7 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Returns the configuration data for the query datastore.
 		*
 		*/ 
 		public FeatureTypeBean getDatastoreConfiguration() {
@@ -81,7 +89,7 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Gets the requested property names as a vector.
 		*
 		*/ 
 		public Vector getPropertyNames() {
@@ -91,9 +99,9 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Sets the feature type name requested by the query.
 		*
-		* @param featureTypeName The plain POST text from the client.
+		* @param featureTypeName The feature type name of the query - can be only one per query.
 		*/ 
 		public void setFeatureTypeName(String featureTypeName) {
 				this.featureTypeName = featureTypeName;
@@ -101,9 +109,8 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Gets the feature type name for this query.
 		*
-		* @param rawRequest The plain POST text from the client.
 		*/ 
 		public String getFeatureTypeName() {
 				return this.featureTypeName;
@@ -111,9 +118,9 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Adds a requested property name to the query.
 		*
-		* @param rawRequest The plain POST text from the client.
+		* @param propertyName The property name to add to the query.
 		*/ 
 		public void addPropertyName(String propertyName) {
 				this.propertyNames.add(propertyName);
@@ -121,9 +128,9 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Sets the user-defined 'handle' for the query.
 		*
-		* @param rawRequest The query handle, or client-specified name.
+		* @param handle The query handle, or client-specified name.
 		*/ 
 		public void setHandle (String handle) {
 				this.handle = handle;
@@ -131,7 +138,7 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Gets the user-defined 'handle' for the query.
 		*
 		*/ 
 		public String getHandle() {
@@ -140,9 +147,9 @@ public class Query {
 		
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Sets the 'version' of features to retrieve.
 		*
-		* @param version The specified version.
+		* @param version The specified feature version.
 		*/ 
 		public void setVersion (String version) {
 				this.version = version;
@@ -150,7 +157,7 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Gets the 'version' of features to retrieve.
 		*
 		*/ 
 		public String getVersion() {
@@ -159,7 +166,7 @@ public class Query {
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Sets the filter for the .
 		*
 		* @param filter The specified filter.
 		*/ 
@@ -185,5 +192,32 @@ public class Query {
 				return 1;
 		}
 		
+	 /**
+		* Returns the bounding box for this query.
+		*
+		*/ 
+		public BoundingBox getBoundingBox () {
+				return this.boundingBox;
+		}
+
+
+	 /**
+		* Sets the bounding box for this query.
+		*
+		* @param boundingBoxes Bounding box for this query.
+		*/ 
+		public void setBoundingBox (BoundingBox boundingBox) {
+				this.boundingBox = boundingBox;
+		}
+
+
+	 /**
+		* Returns the bounding box for this request.
+		*
+		*/ 
+		public FeatureTypeBean getMetadata () {
+				return this.featureType;
+		}
+
 
 }

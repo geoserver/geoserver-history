@@ -13,20 +13,20 @@ import org.vfny.geoserver.db.*;
 import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.config.*;
 
+
 /**
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  *@author Rob Hranac, Vision for New York
- *@version 0.9 alpha, 11/01/01
- *
+ *@version $0.9 beta, 22/03/02$
  */
 public class GetFeatureResponse {
 
 
-		/** standard logging class */
-		static Category _log = Category.getInstance(GetFeatureResponse.class.getName());
+		/** Standard logging class */
+		private static Category _log = Category.getInstance(GetFeatureResponse.class.getName());
 
-		/** main request information */
+		/** Encapsulates all request information */
 		private GetFeatureRequest request = new GetFeatureRequest();
 
 
@@ -43,29 +43,21 @@ public class GetFeatureResponse {
 
 
 	 /**
-		* Parses the GetFeature reqeust and returns a contentHandler..
+		* Parses the GetFeature reqeust and returns a contentHandler.
 		*
+		* @return XML response to send to client
 		*/ 
 		public String getXmlResponse () 
 				throws WfsException {
 
-
-				// a factory to generate appropriate response types, based on datastore
-				GetFeatureFactory responseFactory = new GetFeatureFactory();
-
-				// creates a generic type for datastores, waiting for factory-specific type
-				GetFeatureTransaction datastore = null;
-
 				// tracks current query, for looping through multiple queries
 				Query currentQuery = null;
 
-				// return string buffer, initialized with guess at average return content length
-				// SOMEDAY, LOOK INTO OPTIMIZING ON EXPECTED CONTENT LENGTH
-				StringBuffer getFeatureResponse = new StringBuffer(10000);
+				// a factory to generate appropriate response types, based on datastore
+				GetFeatureFactory responseFactory = new GetFeatureFactory( request.getMaxFeatures() );
 
-				// add GML preamble
-				getFeatureResponse.append("<?xml version='1.0' encoding='UTF-8'?>\n<featureCollection xmlns:gml=\"http://www.opengis.net/gml\" scope=\"http://freefs.vfny.org:81/geoserver\">");
-
+				// creates a generic type for datastores, waiting for factory-specific type
+				GetFeatureTransaction datastore = null;
 
 				// main handler and return string
 				//  generate GML for heander for each table requested
@@ -80,23 +72,13 @@ public class GetFeatureResponse {
 						// the basic return type for Postgis
 						datastore = responseFactory.createDatastore( currentQuery.getDatastoreType() );
 
-						// append bounding box preamble to response
-						getFeatureResponse.append("\n <boundedBy>");
-						getFeatureResponse.append("\n  <Box srsName=\"EPSG:32118\">");
-						getFeatureResponse.append("\n   <coordinates>" + request.getBoundingBox().getCoordinates() + "</coordinates>");
-						getFeatureResponse.append("\n  </Box>");
-						getFeatureResponse.append("\n </boundedBy>");
-
 						// extract features from database (as GML) and append to output string
-						getFeatureResponse.append( datastore.getFeature(currentQuery, request.getMaxFeatures()) );
+						datastore.getFeature(currentQuery);
 
 				}
 
-				// add final GML
-				getFeatureResponse.append( "\n</featureCollection>" );
-
 				// return final string
-				return getFeatureResponse.toString();
+				return datastore.getFinalResponse();
 		}
 
 }

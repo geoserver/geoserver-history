@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
+/* Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root application directory.
  */
 
@@ -7,24 +6,25 @@ package org.vfny.geoserver.db.jdbc;
 
 import java.io.*;
 import java.util.*;
-//import org.vfny.geoserver.xml.requests.*;
+
 
 /**
- * This class extends a stack to act as a repository for SQL predicate operators
+ * Extends a stack to act as a repository for SQL predicate operators
  * and literals.
  * 
- * @author Vision for New York
- * @author Rob Hranac 
+ * @author Rob Hranac, Vision for New York
  * @version 0.9 beta, 11/01/01
  *
  */
 public class SQLStack extends Stack {
+
 
 	 /**
 		* Empty constructor.
 		*/ 
 		public SQLStack () {
 		}
+
 
 	 /**
 		* Reduces/simplifies stack as much as possible before pushing new string on top.
@@ -83,8 +83,10 @@ public class SQLStack extends Stack {
 				}				
 		}
 		
+
 	 /**
 		* Convenience method to print the class names on the stack at any given point.
+		*
 		*/ 
 		public String printStack() {
 				SQLStack tempStack = new SQLStack();
@@ -100,8 +102,10 @@ public class SQLStack extends Stack {
 				return returnString;
 		}
 
+
 	 /**
 		* Method to print the top element of the stack or (if no elements) EMPTY keyword.
+		*
 		*/ 
 		public String finalSQL() {
 				if( !this.empty() )

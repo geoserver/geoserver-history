@@ -9,14 +9,10 @@ import java.util.*;
 
 
 /**
- * This utility reads in a general KVP request and turns it into a list KVPs, stored in a hashtable.
- * 
- * <p>If you pass this utility a KVP request (everything after the '?' in the URI),
- * it will translate this into a list of feature types.  Note that you must check for validity
- * before passing the request.</p>
+ * Reads in a generic request and attempts to determine its type.
  * 
  * @author Rob Hranac, Vision for New York
- * @version alpha, 12/01/01
+ * @version beta, 12/01/01
  *
  */
 public class DispatcherReaderKvp extends KvpRequestReader {
@@ -28,7 +24,7 @@ public class DispatcherReaderKvp extends KvpRequestReader {
 		/** Map describe feature type request type */
 		public static final int DESCRIBE_FEATURE_TYPE_REQUEST = 2;
 
-		/** Map get feature  request type */
+		/** Map get feature request type */
 		public static final int GET_FEATURE_REQUEST = 3;
 
 
@@ -43,11 +39,11 @@ public class DispatcherReaderKvp extends KvpRequestReader {
 				super(rawRequest);
 		}
 
+
 	 /**
-		* Constructor with raw request string.  This constructor
-		* parses the entire request string into a kvp hash table for
-		* quick access by sub-classes.
+		* Returns the request type for a given KVP string.
 		*
+		* @return Request type. 
 		*/
 		public int getRequestType () {
 

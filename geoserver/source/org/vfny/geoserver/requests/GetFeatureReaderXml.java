@@ -22,20 +22,21 @@ import org.vfny.geoserver.config.*;
  * This utility reads in XML GetFeature request files and converts them into a generic request object.
  *
  *@author Rob Hranac, Vision for New York
- *@version 0.9 alpha, 11/01/01
+ *@version 0.9 beta, 11/01/01
  *
  */
 public class GetFeatureReaderXml {
 
-		/** create standard logging instance for class */
+
+		/** Standard logging instance for class */
 		private static Category _log = Category.getInstance(GetFeatureReaderXml.class.getName());
 
-		/** create response/SAX handler object for return */
+		/** Response/SAX handler object for return */
 		private GetFeatureHandler contentHandler = new GetFeatureHandler();
 
 
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Reads the GetFeature XML POST request into a GetFeature object.
 		*
 		* @param rawRequest The plain POST text from the client.
 		*/ 

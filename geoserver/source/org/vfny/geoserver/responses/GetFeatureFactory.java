@@ -10,37 +10,45 @@ import java.util.*;
 import org.apache.log4j.Category;
 
 import org.vfny.geoserver.db.GetFeatureTransaction;
+import org.vfny.geoserver.db.GMLBuilder;
 import org.vfny.geoserver.db.jdbc.PostgisGetFeature;
 
+
 /**
- * Handles a Get Feature request and creates a Get Feature response GML string.
+ * Creates a GMLBuilder, specific to a given data store.
  *
  *@author Rob Hranac, Vision for New York
- *@version 0.9 alpha, 11/01/01
+ *@version 0.9 beta, 11/01/01
  *
  */
 public class GetFeatureFactory {
 
 
-		/** standard logging class */
+		/** Standard logging class */
 		static Category _log = Category.getInstance(GetFeatureFactory.class.getName());
+
+		/** Default maximum features allowed */
+		int maxFeatures = 500;
+
 
 	 /**
 		* Constructor, which is required to take a request object.
 		*
 		*/ 
-		public GetFeatureFactory() {
+		public GetFeatureFactory(int maxFeatures) {
+
+				this.maxFeatures = maxFeatures;
 		}
 
 
 	 /**
-		* Parses the GetFeature reqeust and returns a contentHandler..
+		* Returns a GMLBuilder, based on datastore.
 		*
 		*/ 
 		public GetFeatureTransaction createDatastore (int datastoreType) 
 				throws WfsException {
 
-				return new PostgisGetFeature();
+				return new PostgisGetFeature(new GMLBuilder(true), this.maxFeatures);
 
 		}
 

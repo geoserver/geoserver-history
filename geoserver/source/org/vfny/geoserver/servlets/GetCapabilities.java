@@ -15,23 +15,24 @@ import org.apache.log4j.Category;
 import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.responses.*;
 
+
 /**
  * Implements the WFS GetCapabilities interface, which tells clients what the server can do.
  *
- *
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 alpha, 11/01/01
+ * @author Rob Hranac, Vision for New York
+ * @version 0.9 beta, 11/01/01
  *
  */
 public class GetCapabilities extends HttpServlet {
 
-		// specify mime type
+
+		/** Standard logging instance for the class */
+		private Category _log = Category.getInstance(GetCapabilities.class.getName());
+
+		/** Specifies mime type */
 		private static final String MIME_TYPE = "text/xml";
 
-		private Category _log = Category.getInstance(GetCapabilities.class.getName());
 		
-
 	 /**
 		* Handles all XML POST requests for GetCapabilities.
 		*

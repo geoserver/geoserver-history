@@ -15,6 +15,7 @@ import org.apache.log4j.Category;
 
 import org.vfny.geoserver.db.jdbc.*;
 
+
 /**
  * Uses SAX to extact a GetFeature query from and incoming GetFeature request XML stream.
  *
@@ -23,18 +24,19 @@ import org.vfny.geoserver.db.jdbc.*;
  * chained, it will still generate valid queries, but with no filtering whatsoever.</p>
  * 
  * @author Rob Hranac, Vision for New York
- * @version 0.9 alpha, 11/01/01
+ * @version 0.9 beta, 11/01/01
  *
  */
 public class GetFeatureHandler extends GetFeatureRequest implements ContentHandler {
 
 
-		/** standard logging class */
+		/** Standard logging class */
 		static Category _log = Category.getInstance(GetFeatureHandler.class.getName());
 
 
-		// **********************************
-		// Local tracking methods to deal with incoming XML stream
+		/********************************************************
+		  Local tracking methods to deal with incoming XML stream
+		 ********************************************************/
 
 		/** Tracks tag we are currently inside */
 		private String insideTag = new String();
@@ -51,44 +53,59 @@ public class GetFeatureHandler extends GetFeatureRequest implements ContentHandl
 		private Query currentQuery = new Query();
 
 		/** Tracks current bounding box */
-		private BoundingBox currentBoundingBox = new BoundingBox();
+		//private BoundingBox currentBoundingBox = new BoundingBox();
 
 
-		// ********************************************
-		// Start of SAX Content Handler Methods
-		//  most of these are unused at the moment
-		//  no namespace awareness, yet
+		/********************************************
+		   Start of SAX Content Handler Methods
+		    most of these are unused at the moment
+		    no namespace awareness, yet
+		********************************************/
 
 
+		/** Notes the document locator.	*/ 
 		public void setDocumentLocator (Locator locator) {
 		}
 
 
+		/** Notes the start of the document.	*/ 
 		public void startDocument()
 				throws SAXException {
 				//_log.info("start of document");
 		}
 
 
+		/** Notes the start of the document.	*/ 
 		public void endDocument()
 				throws SAXException {
 				//_log.info( "at end of document");
 		}
 
 
+		/** Notes processing instructions.	*/ 
 		public void processingInstruction(String target, String data)
 				throws SAXException {
 		}
 
 
+		/** Notes start of prefix mappings. */ 
 		public void startPrefixMapping(String prefix, String uri) {
 		}
 
 
+		/** Notes end of prefix mappings. */ 
 		public void endPrefixMapping(String prefix) {
 		}
 
 
+	 /**
+		* Notes the start of the element and sets type names and query attributes.
+		*
+		* @param namespaceURI URI for namespace appended to element.
+		* @param localName Local name of element.
+		* @param rawName Raw name of element.
+		* @param atts Element attributes.
+		*/ 
 		public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
 				throws SAXException {
 
@@ -122,13 +139,19 @@ public class GetFeatureHandler extends GetFeatureRequest implements ContentHandl
 
 				// check to see if inside bounding box and set to nothing, if true
 				if( insideTag.equals("BoundingBox") ) {
-
-						currentBoundingBox.setCoordinates("");  // needs to be dereferenced?  causes problems for arraylist of queries
 						insideBoundingBox = true;
 				}
 
 		}
 
+
+	 /**
+		* Notes the end of the element exists query or bounding box.
+		*
+		* @param namespaceURI URI for namespace appended to element.
+		* @param localName Local name of element.
+		* @param rawName Raw name of element.
+		*/ 
 		public void endElement(String namespaceURI, String localName, String rawName)
 				throws SAXException {
 
@@ -153,6 +176,14 @@ public class GetFeatureHandler extends GetFeatureRequest implements ContentHandl
 
 		}
 
+
+	 /**
+		* Checks if inside parsed element and adds its contents to the appropriate variable.
+		*
+		* @param ch URI for namespace appended to element.
+		* @param start Local name of element.
+		* @param length Raw name of element.
+		*/ 
 		public void characters(char[] ch, int start, int length)
 				throws SAXException {
 
@@ -183,16 +214,31 @@ public class GetFeatureHandler extends GetFeatureRequest implements ContentHandl
 	
 				if( insideTag.equals("BoundingBox") ) {
 						if( insideBoundingBox ) {
-								//_log.info("found bbox: " + s);
-								currentBoundingBox.setCoordinates(s);
+								BoundingBox bbox = new BoundingBox(s);
+								currentQuery.setBoundingBox(bbox);
 						}
 				}
 		}
 
+
+	 /**
+		* Notes ignorable whitespace.
+		*
+		* @param ch URI for namespace appended to element.
+		* @param start Local name of element.
+		* @param length Raw name of element.
+		*/ 
 		public void ignorableWhitespace(char[] ch, int start, int length)
 				throws SAXException {
 		}
 
+
+	 /**
+		* Notes skipped entity.
+		*
+		* @param name Name of skipped entity.
+		*
+		*/ 
 		public void skippedEntity(String name)
 				throws SAXException {
 		}
