@@ -7,7 +7,6 @@ package org.geotools.validation.attributes;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.validation.DefaultFeatureValidation;
-import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.ValidationResults;
 
 
@@ -51,7 +50,7 @@ import org.geotools.validation.ValidationResults;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: RangeValidation.java,v 1.2 2004/02/10 18:29:03 dmzwiers Exp $
+ * @version $Id: RangeValidation.java,v 1.3 2004/02/10 18:30:08 dmzwiers Exp $
  */
 public class RangeValidation extends DefaultFeatureValidation {
     private int max = Integer.MAX_VALUE;

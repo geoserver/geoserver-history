@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.geotools.validation.DefaultIntegrityValidation;
-import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.ValidationResults;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -22,7 +21,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UniquityValidation.java,v 1.2 2004/02/10 18:29:03 dmzwiers Exp $
+ * @version $Id: UniquityValidation.java,v 1.3 2004/02/10 18:30:08 dmzwiers Exp $
  */
 public class UniquityValidation extends DefaultIntegrityValidation {
     
