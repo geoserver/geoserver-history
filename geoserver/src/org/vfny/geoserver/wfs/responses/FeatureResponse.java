@@ -26,6 +26,8 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
@@ -33,9 +35,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
@@ -447,7 +447,7 @@ public class FeatureResponse implements Response {
     /**
      * Release locks if we are into that sort of thing.
      *
-     * @see org.vfny.geoserver.responses.Response#abort()
+     * @see org.vfny.geoserver.Response#abort()
      */
     public void abort(Service gs) {
         if (request == null) {

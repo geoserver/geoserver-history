@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses;
+package org.vfny.geoserver.util;
 
 import java.io.IOException;
 import java.io.Writer;

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.wfs.Query;
 
 
 /**

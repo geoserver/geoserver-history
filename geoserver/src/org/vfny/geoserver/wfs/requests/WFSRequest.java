@@ -5,8 +5,8 @@
 package org.vfny.geoserver.wfs.requests;
 
 import org.geotools.validation.ValidationProcessor;
+import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.Request;
 
 /**
  * Defines a general WFS Request type

@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.requests.CapabilitiesRequest;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.CapabilitiesRequest;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an

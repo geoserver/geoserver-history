@@ -13,7 +13,7 @@ import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.util.Requests;
 
 /**
  * GeoServerAction is a common super class used by STRUTS Actions.

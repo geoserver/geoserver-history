@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.Request;
 
 /**
  * DOCUMENT ME!

@@ -36,7 +36,7 @@ import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
-import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.util.Requests;
 
 import com.vividsolutions.jts.geom.Envelope;
 

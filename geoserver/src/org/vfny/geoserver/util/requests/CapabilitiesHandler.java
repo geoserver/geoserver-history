@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests;
+package org.vfny.geoserver.util.requests;
 
 import java.util.logging.Logger;
 

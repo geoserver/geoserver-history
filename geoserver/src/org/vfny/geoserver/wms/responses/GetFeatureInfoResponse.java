@@ -11,11 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.responses.featureInfo.GetFeatureInfoDelegate;

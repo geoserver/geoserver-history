@@ -7,8 +7,8 @@ package org.vfny.geoserver.wfs.servlets;
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.ExceptionHandler;
-import org.vfny.geoserver.requests.Requests;
 import org.vfny.geoserver.servlets.AbstractService;
+import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wfs.WfsExceptionHandler;
 
 

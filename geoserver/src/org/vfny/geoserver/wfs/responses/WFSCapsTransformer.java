@@ -13,12 +13,12 @@ import java.util.logging.Logger;
 
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.WFSDTO;
-import org.vfny.geoserver.requests.CapabilitiesRequest;
-import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 

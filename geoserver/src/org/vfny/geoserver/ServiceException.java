@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.Requests;
-import org.vfny.geoserver.responses.ResponseUtils;
+import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.ResponseUtils;
 
 
 /**

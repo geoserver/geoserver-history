@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
-import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.wfs.Query;
 
 
 /**

@@ -18,7 +18,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
-import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.util.Requests;
 
 
 /**

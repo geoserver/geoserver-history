@@ -16,7 +16,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.gml.GMLFilterFeature;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.util.Requests;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.util.Requests;
 
 /**
  * JSPCompiler purpose.

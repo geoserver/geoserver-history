@@ -13,8 +13,9 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.geotools.filter.FilterFactory;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 
 
 /**
@@ -115,7 +116,7 @@ public abstract class RequestTestCase extends TestCase {
         // Read the file and parse it
         Map kvps = KvpRequestReader.parseKvpSet(requestString);
         KvpRequestReader reader = getKvpReader(kvps);
-        Request request = reader.getRequest( baseRequest.httpServletRequest );
+        Request request = reader.getRequest( baseRequest.getHttpServletRequest());
 
         LOGGER.finer("base request: " + baseRequest);
         LOGGER.finer("read request: " + request);
