@@ -571,6 +571,7 @@
       
       <fileset dir="${dir.webinf}/pages">
       	<include name="index.jsp"/>
+      	<include name="style.css"/>
       </fileset>
       <fileset dir="${dir.webinf}">
       	<include name="images/**"/>
