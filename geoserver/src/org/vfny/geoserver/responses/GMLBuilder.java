@@ -520,6 +520,8 @@ public class GMLBuilder {
         private static final int MULTIPOLYGON = 6;        
         /** Internal representation of OGC SF MultiGeometry **/
         private static final int MULTIGEOMETRY = 7;        
+	
+	private static final int BOX = 8;  
 
 	private static final String GEOM_OFFSET = "\n        ";
 
@@ -571,14 +573,19 @@ public class GMLBuilder {
         private void initializeGeometry(Class geometry, String featureType, 
                                         String srs, String tagName) { 
             String geometryName = "";
-            LOGGER.finest("checking type: " + geometry.toString());
+            LOGGER.finer("checking type: " + geometry.toString());
 	    String gmlName = (String)gmlMap.get(tagName);
 	    if (gmlName != null) {
 		tagName = gmlName;
 	    }
 
-            // set internal geometry representation
-            if( geometry.equals(Point.class) ) {
+	    // set internal geometry representation
+	    if (tagName.equals("gmlboundedby")) {
+		//REVISIT: This is a bit of a hack.
+		tagName = "gml:boundedBy";
+		geometryType = BOX;
+		geometryName = "Box";
+	    } else if( geometry.equals(Point.class) ) {
                 LOGGER.finest("found point");
                 geometryType = POINT;
                 geometryName = "Point";
@@ -687,9 +694,35 @@ public class GMLBuilder {
             case MULTIGEOMETRY:
                writeMultiGeometry((GeometryCollection) geometry, gid);
                 break;
+	    case BOX:
+		writeBox(geometry, gid);
+	        break;
             }
         }
-        
+	
+	/**
+	 * writes the a gml:box, using the coordinates of the passed
+	 * in geometry.
+	 *
+	 * @param geometry should be a polygon of the bounding box
+	 * to write.
+	 * @param gid the geometry identifier.
+	 * @task REVISIT: Should we get the envelope of the geometry?  Use
+	 * geometry.getEnvelope and get min and maxs, not write the
+	 * whole coordinates?  Probably not, as we are letting users
+	 * decide their own bounded by.  Other option is to determine
+	 * the bounded by on our own.  If the user chooses to set
+	 * it in postgis we can use that, but if they don't we can
+	 * leave option in info.xml to print boundedBy automatically,
+	 * where we make an envelope for each item.
+	 */
+	private void writeBox(Geometry geometry, String gid){
+	    finalResult.append(abstractGeometryStart1 + gid + 
+                               abstractGeometryStart2);
+	    writeCoordinates(geometry);
+	    finalResult.append(abstractGeometryEnd);
+	}
+
         /**
          * Writes a point geometry.
          * @param geometry OGC SF type
