@@ -504,6 +504,7 @@ public class WMSCapsTransformer extends TransformerBase {
             }
 
             handleLatLonBBox(bbox);
+            handleBBox(bbox, EPSG + ftype.getSRS());
 
             //add the layer style
             start("Style");
@@ -522,7 +523,8 @@ public class WMSCapsTransformer extends TransformerBase {
             //HACK: by now all our layers are queryable, since they reference
             //only featuretypes managed by this server
             AttributesImpl qatts = new AttributesImpl();
-            qatts.addAttribute("", "queryable", "queryable", "", "1");
+            qatts.addAttribute("", "queryable", "queryable", "", "0");
+//            qatts.addAttribute("", "cascaded", "cascaded", "", "1");
             start("Layer", qatts);
             element("Name", coverage.getName());
             element("Title", coverage.getLabel());
@@ -538,6 +540,7 @@ public class WMSCapsTransformer extends TransformerBase {
             Envelope bbox = coverage.getEnvelope();
 
             handleLatLonBBox(bbox);
+            handleBBox(bbox, EPSG + "4326");
 
             //add the layer style
             start("Style");
@@ -669,6 +672,27 @@ public class WMSCapsTransformer extends TransformerBase {
             bboxAtts.addAttribute("", "maxy", "maxy", "", maxy);
 
             element("LatLonBoundingBox", null, bboxAtts);
+        }
+
+        /**
+         * Encodes a BoundingBox for the given Envelope.
+         *
+         * @param bbox
+         */
+        private void handleBBox(Envelope bbox, String SRS) {
+            String minx = String.valueOf(bbox.getMinX());
+            String miny = String.valueOf(bbox.getMinY());
+            String maxx = String.valueOf(bbox.getMaxX());
+            String maxy = String.valueOf(bbox.getMaxY());
+
+            AttributesImpl bboxAtts = new AttributesImpl();
+            bboxAtts.addAttribute("", "SRS", "SRS", "", SRS);
+            bboxAtts.addAttribute("", "minx", "minx", "", minx);
+            bboxAtts.addAttribute("", "miny", "miny", "", miny);
+            bboxAtts.addAttribute("", "maxx", "maxx", "", maxx);
+            bboxAtts.addAttribute("", "maxy", "maxy", "", maxy);
+
+            element("BoundingBox", null, bboxAtts);
         }
     }
 }

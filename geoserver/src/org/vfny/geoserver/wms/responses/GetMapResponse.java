@@ -128,33 +128,12 @@ public class GetMapResponse implements Response {
     			FeatureCollection fcDem;
     			
 				try {
-					// A trick to Render the Coverages ...
-//					StyleBuilder sb = new StyleBuilder();
-//	    			RasterSymbolizer rsDem;
-//					ColorMap cm =
-//						sb.createColorMap(
-//								new double[] { -1000, 0.0, 100, 1000, 10000 },
-//								new Color[] {
-//										new Color(0, 255, 0),
-//										new Color(255, 255, 0),
-//										new Color(255, 127, 0),
-//										new Color(191, 127, 63),
-//										new Color(255, 255, 255)},
-//										ColorMap.TYPE_RAMP);
-//					rsDem = sb.createRasterSymbolizer();
-//					rsDem.setColorMap(cm);
-//					style = sb.createStyle(rsDem);
-					
 					fcDem = layers[i].getCoverageToFeatures(req.getHttpServletRequest());
 				} catch (DataSourceException e) {
 					throw new ServiceException(e.getMessage(), e);
 				} catch (ClassCastException e) {
 					throw new ServiceException(e.getMessage(), e);
 				}
-				
-				LOGGER.fine("[DEBUG] Features: " + fcDem.toString());
-				LOGGER.fine("[DEBUG] Style: " + style.toString());
-
 				layer = new DefaultMapLayer(fcDem, style);
 				map.addLayer(layer);    			
             }

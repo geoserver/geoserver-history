@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 
 
 /**
@@ -27,7 +28,7 @@ public class DescribeLayerRequest extends WMSRequest {
 	private List layers = new ArrayList(2);
 	
 	
-	public void addLayer(FeatureTypeInfo layer){
+	public void addLayer(MapLayerInfo layer){
 		if(layer == null)
 			throw new NullPointerException();
 		layers.add(layer);
@@ -40,7 +41,7 @@ public class DescribeLayerRequest extends WMSRequest {
 	public String toString(){
 		StringBuffer sb = new StringBuffer("DescribeLayerRequesr[layers=");
 		for(Iterator it = layers.iterator(); it.hasNext();){
-			sb.append(((FeatureTypeInfo)it.next()).getName());
+			sb.append(((MapLayerInfo)it.next()).getName());
 			if(it.hasNext())
 				sb.append(',');
 		}

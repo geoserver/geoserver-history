@@ -147,6 +147,7 @@ public final class JAISupport {
         writer.setOutput(ioutstream);
         writer.write(image);
         writer.dispose();
+        ioutstream.flush();
         ioutstream.close();
     }
 }
