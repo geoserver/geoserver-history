@@ -6,7 +6,7 @@
 ;ant.  Then unzip that file in a fresh directory and copy this nsi file
 ;to the geoserver/ directory created by that unzip.  Then compile the
 ;nsi script from there.  If you have any questions just email 
-;geoserver-devel@lists.sf.net, and we can write up a better guide and/or
+;geoserver-devel@lists.sourceforge.net, and we can write up a better guide and/or
 ;get things working right in ant.
 
 ;--------------------------------
@@ -37,8 +37,8 @@
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\win-install.ico"
-  !define MUI_UNICON "$(NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
+  !define MUI_ICON   "${NSISDIR}\Contrib\Graphics\Icons\win-install.ico"
+  !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
