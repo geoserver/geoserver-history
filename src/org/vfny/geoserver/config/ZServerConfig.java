@@ -58,7 +58,7 @@ public class ZServerConfig implements java.io.Serializable {
         Logger.getLogger("org.vfny.geoserver.config");
     
     private static ConfigInfo cfgInfo = ConfigInfo.getInstance();
-
+    
     private String port = "5210";
     
     private String dataFolder = cfgInfo.getTypeDir();
@@ -77,7 +77,9 @@ public class ZServerConfig implements java.io.Serializable {
     }
 
     private ZServerConfig(String port, String fields, String database){
-	this.port = port;
+	if (port != null && !port.equals("")) {
+	    this.port = port;
+	}
 	this.fieldmap = fields;
 	this.database = database;
     } 
@@ -134,13 +136,9 @@ public class ZServerConfig implements java.io.Serializable {
 	    String runZserver = configElem.getAttribute(RUN_ATTR);
 	    if (runZserver == null || !runZserver.equals("false")) {
 		String port = findTextFromTag(configElem, PORT_TAG);
-		
 		String rootDir = cfgInfo.getRootDir();
-
 		String fieldMap = rootDir + cfgInfo.GEO_MAP_FILE;
-
-		String database = rootDir + "zserver-index";
-		
+		String database = rootDir + "zserver-index";		
 		return new ZServerConfig(port, fieldMap, database);
 	    } 
 
