@@ -53,6 +53,10 @@
                 <td width="165" class="navigationSub"><font size="-1"><a href="schemaTutorial.htm">Schema 
                   Tutorial</a></font></td>
               </tr>
+	      <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="advanced.htm">Advanced</a></font></td>
+              </tr>
             </table>
             <table cellspacing="5" border="0">
               <tr> 
@@ -78,7 +82,7 @@
               </tr>
               <tr> 
                 <td width="11" align="center"></td>
-                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/rfc13info.htm">WFS 
+                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/specs/02-058.pdf">WFS 
                   Specification</a></font></td>
               </tr>
             </table>
@@ -126,9 +130,9 @@
                 <a href="http://jakarta.apache.org">Tomcat</a>, and <a href="http://postgis.refractions.net">PostGIS</a>. 
                 This is by far the hardest part of the installation process, but 
                 the documentation to install these three components is quite good. 
-                Our testing has occurred on JDK 1.3.1, Resin 2.0.4, and PostGIS 
-                0.7.0. While installing PostGIS make sure to include the JDBC 
-                drivers in the PostgreSQL compile.</p>
+                Our testing has occurred on JDK 1.4.1, Tomcat 4.0.4, and PostGIS 
+                0.7.3 on top of Postgresql 7.2.2. While installing PostGIS make 
+                sure to include the JDBC drivers in the PostgreSQL compile.</p>
               <p>GeoServer has an active user community that you can engage by 
                 joining the GeoServer mailing list and asking questions or making 
                 suggestions.&nbsp;&nbsp;If you create a user account at this site, 
@@ -143,8 +147,8 @@
         </tr>
         <tr> 
           <td height="56"> 
-            <blockquote>GeoServer is built against the <a href="http://java.sun.com/j2se/1.3/">JDK1.3.1</a>.&nbsp;&nbsp;If 
-              you do not have the JRE1.3.1 installed on your machine, you should 
+            <blockquote>GeoServer is built against the <a href="http://java.sun.com/j2se/1.4.1/">JDK1.4.1</a>.&nbsp;&nbsp;If 
+              you do not have the JRE1.4.1 installed on your machine, you should 
               download it from Sun and point to it in your JAVA_HOME path.</blockquote>
           </td>
         </tr>
@@ -191,20 +195,22 @@
                 you will need to compile the PostGIS extension and JDBC bindings 
                 into Postgresql in order for it to correctly speak with GeoServer.</p>
               <p>First, download Postgresql - we have had the best luck with version 
-                7.1.2. &nbsp;You should configure and install it, per the installation 
+                7.2.3. &nbsp;You should configure and install it, per the installation 
                 instructions. &nbsp;It should go something like this:</p>
               <blockquote> 
                 <p>./configure --with-java<br>
                   make<br>
                   make install</p>
               </blockquote>
-              <p>Make sure that you configure it with Java. &nbsp;Then, download 
+              <p>Make sure that you configure it with Java. &nbsp; Be sure that it 
+                 is up and running, it's best to create a database and test it using
+		 psql from the command line.  &nbsp;Then, download 
                 PostGIS. &nbsp;You should place PostGIS in your Postgresql 'contrib' 
                 directory and follow the directions for installation there.</p>
               <p>You should, of course, check to make sure that Postgresql and 
                 PostGIS are functioning correctly before you attempt to connect 
-                with then using GeoServer.&nbsp;&nbsp;You may use the command 
-                line psql tool to do this.</p>
+                with then using GeoServer.&nbsp;&nbsp;After installing postgis attempt
+		to create tables with geometry columns, and insert a few features.</p>
             </blockquote>
           </td>
         </tr>
@@ -337,6 +343,8 @@
                 must also modify the WSDL document in the <i>geoserver/data/capabilities</i> 
                 folder. &nbsp;It is beyond the scope of this document to explain 
                 these modifications, but they are not particularly complex.</p>
+		<p>For more configuration options, check the <a href="advanced.htm">Advanced</a>
+		section.</p>
             </blockquote>
           </td>
         </tr>
@@ -483,10 +491,6 @@
                 &nbsp;The 'rail' directory is included as an example, but should 
                 be deleted before you do any serving (unless you also have a table 
                 called 'rail').</p>
-              <p>One additional extremeley important note for adding data to GeoServer: 
-                all tables <b>must </b>contain a column called <i>objectid, </i>which 
-                should be an integer. &nbsp;If a table does not have an objectid 
-                column, it will be ignored and not served.</p>
               <p>&nbsp;</p>
               <p></p>
               <p></p>

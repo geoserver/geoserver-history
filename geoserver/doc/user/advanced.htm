@@ -1,0 +1,259 @@
+<html><!-- #BeginTemplate "/Templates/main.dwt" -->
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Rob Hranac" name="author">
+<!-- #BeginEditable "doctitle" --> 
+<title>the GeoServer Project :: Documentation</title>
+<!-- #EndEditable --> 
+<style type="text/css">
+<!--
+.title {  font-family: Arial, Helvetica, sans-serif; font-size: 14pt; color: #FFFFFF; font-weight: bold}
+.navigation {  font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #333366}
+.header { font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: bold; color: #333366 }
+.finePrint { font-family: Arial, Helvetica, sans-serif; font-size: 9px; font-weight: lighter; color: #999999}
+.navigationSub { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: normal; color: #333366 }
+.titleSection { font-family: Arial, Helvetica, sans-serif; font-size: 14pt; color: #333366; font-weight: bold }
+.modifyMe {  color: #FF0000}
+-->
+</style>
+</head>
+<body vlink="#333366" alink="#333366" link="#333366" text="#000000" bgcolor="#ffffff">
+<table cellspacing="5" width="100%" border="0">
+  <tr> 
+    <td colspan="2">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td><a href="http://geoserver.sourceforge.net"><img border="0" align="left" src="http://geoserver.sourceforge.net/html/images/logo.gif"></a></td>
+          <td align="right" valign="top"><font color="#333366"><strong class="header">Documentation</strong></font></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="2"> 
+      <hr size="1" noshade>
+    </td>
+  </tr>
+  <tr> 
+    <td valign="top" width="188" height="272"> 
+      <title></title>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" height="100%">
+        <tr>
+          <td valign="top"> 
+            <table cellspacing="5" border="0">
+              <tr> 
+                <th align="left" colspan="2" height="8"><font color="#333366"><strong class="navigation">User</strong></font></th>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="install.htm">Install</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="schemaTutorial.htm">Schema 
+                  Tutorial</a></font></td>
+              </tr>
+               <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="advanced.htm">Advanced</a></font></td>
+              </tr>
+            </table>
+            <table cellspacing="5" border="0">
+              <tr> 
+                <th align="left" colspan="2" height="8"><font color="#333366"><strong class="navigation">Developer 
+                  </strong></font></th>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="../developer/build.htm">Build</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><a href="../developer/testingUtility.htm">Testing 
+                  Utility</a></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><a href="../developer/license.htm">License</a></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><font size="-1"><a href="http://geoserver.sourceforge.net/documentation/javadocs/index.html">API</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/specs/02-058.pdf">WFS 
+                  Specification</a></font></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td valign="bottom"> 
+            <p><span class="finePrint">JaDva, Servlets, J2EE, EJB, JDBC, JNDI, 
+              JTA, Sun, Sun Microsystems are trademarks or registered trademarks 
+              of Sun Microsystems, Inc. in the United States and in other countries. 
+              XML, XML Schema, XSLT and related standards are trademarks or registered 
+              trademarks of MIT, INRIA, Keio or others, and a product of the World 
+              Wide Web Consortium. All other product names mentioned herein are 
+              trademarks of their respective owners.</span></p>
+            <p>&nbsp;</p>
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+    <td valign="top" width="961" height="272">
+<table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td class="titleSection"><!-- #BeginEditable "Title"  -->Advanced 
+      Configuration <!-- #EndEditable --></td>
+        </tr>
+      </table>
+      <!-- #BeginEditable "main" --> 
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Additional options</td>
+        </tr>
+        <tr> 
+          <td height="67"> 
+            <blockquote> 
+             <p>Several advanced configuration options have been added to GeoServer:</p>
+
+	     <ul>
+              <li>LoggingLevel allows easier configuration of GeoServer's logging. 
+	      Possible values include FINEST, FINER, CONFIG, INFO, WARNING, and SEVERE 
+	      (in order from most messages to least).  FINEST should not be used except
+	      for tracking difficult bugs, as it generates a lot of messages and will
+	      quickly fill up your log.  Logging still needs a bit of work, to have the
+	      correct meaningful messages for each level, but the current logging provides
+	      a good start.  If the LoggingLevel is not set then GeoServer will just use 
+	      the values in your jre's logging.properties file.  To set the logging just 
+	      add a line like the following to your configuration.xml file:
+	       <br>
+	       <br>
+	        <i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;LoggingLevel&gt;FINER&lt;/LoggingLevel&gt;</i> 
+              </li>
+               <br>
+	      <li>Verbose, if set to true, outputs the xml with newlines and
+	       indents.  If set to false, or not present in the configuration.xml 
+	       file, then no newlines or indents will be contained in the output.
+	       <br>
+	       <br>
+	       <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Verbose value="true"&gt;</i>
+	      </li>
+              <br>
+	      <li>MaxFeatures allows the user to specify the maximum
+	      number of features to return on a getFeatures request.  
+	      Geoserver is far from optimized for speed and memory, so 
+	      extremely large requests can certainly be quite slow or cause
+	      it to choke.  That limit depends on the machine it's running
+	      on, so users should figure out how many they want to return.
+	      To specify MaxFeatures of 3000 add the following line to your
+	      configuration.xml: 
+	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;MaxFeatures&gt;3000 &lt;/MaxFeatures&gt;</i>
+	      </li>
+	     </ul>
+	    </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0" height="90">
+        <tr> 
+          <td bgcolor="#333366" class="title">Multiple Namespaces</td>
+        </tr>
+        <tr> 
+          <td height="56"> 
+            <blockquote>
+	    <p>The wfs 1.0.0 specification requires the use of namespaces,
+	    so geoserver now supports multiple namespaces.  If you do not
+	    care about namespaces, then just install things the old way,
+	    and everything should work.  It will use a prefix of myns 
+	    and a uri consisting of the OnlineResource element of the
+	    configuration.xml file with myns appended.</p>
+
+	    <p>If you just want the default namespace to be different, 
+	    then you only need to add an element such as the following
+	    to the configuration.xml file:</p>
+	     <blockquote>
+	      <p><i>
+	      &nbsp;&nbsp;&lt;Namespace default=&quot;true&quot;/&gt;
+	      <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prefix=&quot;topp&quot;
+	      <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri=&quot;http://www.openplans.org/topp&quot;/&gt;
+	      </i><p>
+	     </blockquote>
+	     GeoServer will then use <i>topp</i> for the prefix, and the <i>http://www.openplans.org/topp</i> as the uri.</p>
+
+	     <p>If you need multiple namespaces, then you must change your
+	     featureTypes folders in misc/data.  Instead of naming the
+	     folders just by their feature names, you must also include
+	     the prefix you want them to use.  Each prefix that you use
+	     in your featureTypes folder must have a matching Namespace
+	     element in configuration.xml.  So if you had a rail and a
+	     road feature in different namespaces you would set it up as
+	     follows:</p>
+
+	     First add two tags to configuration.xml:
+ 	      <blockquote>
+	       <p><i>&nbsp;&nbsp;&lt;Namespace prefix=&quot;topp&quot;
+	        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri=&quot;http://www.openplans.org/topp&quot;/&gt;
+		<br>&nbsp;&nbsp;&lt;Namespace prefix=&quot;ns02&quot;
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri=&quot;http://www.otherserver.org/nmsp&quot;/&gt;</i>
+	       <p>
+	     </blockquote>
+	     Then insert folders in the featureTypes folder named
+	     <i>topp:road</i> and <i>ns02:rail</i>.  The info.xml and schema.xml files in these
+	     folders are the same as normal namespace files.  GeoServer uses the prefix
+	     to determine which Namespace element to map it to.
+	    </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">z39.50 Module</td>
+        </tr>
+        <tr> 
+          <td height="45"> 
+            <blockquote>The zserver module integrates
+	    a z39.50 geo profile metadata server into GeoServer.  It 
+	    allows z39.50 clients to search for specific FGDC meta 
+	    information about the data served by GeoServer.  For more
+	    information on metadata, click <a href="http://www.fgdc.gov/metadata">
+	    here.</a>
+	    In order to get your server on the FGDC clearinghouse, go
+	    <a href="http://www.fgdc.gov/clearinghouse/tutorials/howto.html">here</a>.
+	    The zserver module is designed to eventually be an integrated 
+	    alternative to the Isite implementation.
+	    <p>In order
+	    to run the zserver module, you must create the appropriate
+	    metadata.  Eventually we hope to come up with a 
+	    configuration tool to integrate metadata preperation, but
+	    for now you must use the mp tool.  Information on preparing
+	    metadata is available <a href=http://www.fgdc.gov/clearinghouse/tutorials/metadata.html>here</a>
+	    </p>
+
+	    <p>It is best to prepare your metadata in text, html, xml and
+	    sgml.  ZServer requires text and xml (it uses xml for the
+	    parser, and text for the default return).  Prepare the
+	    metadata, and then rename each of the files metadata, with
+	    their appropriate suffixes (metadata.xml, metadata.html, 
+	    etc.).  Then copy these files to the appropriate featureType
+	    directories in the data folder.  The zserver module will 
+	    automatically detect them, and start running on port 5210.
+	    For now the only way to change the port is in the source
+	    code (FreefsLog.java).  This will be configurable in the 
+	    future.  The best way to test to make sure it is working
+	    is to download Isite and use its client applications.  A 
+	    test query of 'rail' on either title or everything should 
+	    return the test document.  Only the US's FGDC metadata is 
+	    currently processed, but development in the future may include
+	    others.
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+ </td>
+  </tr>
+</table>
+</body><!-- #EndTemplate --></html>

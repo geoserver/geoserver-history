@@ -53,6 +53,10 @@
                 <td width="165" class="navigationSub"><font size="-1"><a href="schemaTutorial.htm">Schema 
                   Tutorial</a></font></td>
               </tr>
+	      <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="advanced.htm">Advanced</a></font></td>
+              </tr>
             </table>
             <table cellspacing="5" border="0">
               <tr> 
@@ -78,7 +82,7 @@
               </tr>
               <tr> 
                 <td width="11" align="center"></td>
-                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/rfc13info.htm">WFS 
+                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/specs/02-058.pdf">WFS 
                   Specification</a></font></td>
               </tr>
             </table>
@@ -117,7 +121,7 @@
               <p>Looking for a comprehensive and accurate tutorial on XML and 
                 GML schemas? &nbsp;Go somewhere else. &nbsp;This is a quick and 
                 dirty guide for those who are attempting to create valid GML FeatureTypes 
-                for thier GeoServer installation.</p>
+                for their GeoServer installation.</p>
               <p>GeoServer currently puts the burden on you to create a correct 
                 schema for each feature type. &nbsp;GeoServer will send clients 
                 whatever junk that you put in <i>schema.xml</i> to describe each 
@@ -129,8 +133,9 @@
               <p>Note that all elements of this schema must be fully qualified 
                 with either <i>xs</i> (for Schema Instance elements) or <i>gml</i> 
                 (for Geographic Markup Language elements). &nbsp;The sole exception 
-                to this is the feature type itself, which uses your server URI 
-                as its target namespace. </p>
+                to this is the feature type itself, which uses the namespace of the
+		prefix of the featureType folder as its target namespace.  If the 
+		folder does not have a prefix then it uses the default namespace.</p>
               </blockquote>
           </td>
         </tr>
