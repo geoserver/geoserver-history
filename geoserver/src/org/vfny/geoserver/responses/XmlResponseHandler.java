@@ -11,10 +11,15 @@ import org.xml.sax.helpers.AttributesImpl;
 
 
 /**
- * DOCUMENT ME!
+ * Abstract class that implements the ResponseHandler, generating the 
+ * appropriate capabilities document for the service passed in.  This
+ * class simply adds a number of convenience methods for the sub classes
+ * that actually implement the ResponseHandler interface to make use 
+ * of.  It translatest the conveinence requests into methods on the
+ * SAX ContentHandler that is passed in the constructor.
  *
  * @author Gabriel Roldán
- * @version $Id: XmlResponseHandler.java,v 1.8 2004/02/02 23:46:03 dmzwiers Exp $
+ * @version $Id: XmlResponseHandler.java,v 1.9 2004/09/05 17:17:58 cholmesny Exp $
  */
 public abstract class XmlResponseHandler implements ResponseHandler {
     /** blank attributes to be used when none are needed. */
@@ -23,37 +28,44 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     private char[] cr = new char[0];
     private char[] tab = new char[0];
     private int indentLevel = 0;
+    private boolean isPrettyPrinting = false;
 
-    /** DOCUMENT ME! */
+    /** The actual SAX handler that recieves the production calls. */
     private ContentHandler contentHandler;
 
     /**
-     * Creates a new XmlResponseHandler object.
+     * Creates a new XmlResponseHandler object.  Sets the contentHandler
+     * to pass calls to and initializes the indenting and character returns.
      *
      * @param contentHandler DOCUMENT ME!
      */
     public XmlResponseHandler(ContentHandler contentHandler) {
         this.contentHandler = contentHandler;
+        cr = new char[1];
+        cr[0] = '\n';
+        tab = new char[TAB_SIZE];
+        java.util.Arrays.fill(tab, 0, TAB_SIZE, ' ');
     }
 
     /**
-     * DOCUMENT ME!
+     * Convenience method to start an element with the given name and
+     * no attributes.
      *
-     * @param name DOCUMENT ME!
+     * @param name The name of the element to start.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     protected void startElement(String name) throws SAXException {
         startElement("", name, name, atts);
     }
 
     /**
-     * DOCUMENT ME!
+     * Covenience method to simply specify the name and attributes
      *
-     * @param name DOCUMENT ME!
-     * @param attributes DOCUMENT ME!
+     * @param name The name of the element to start.
+     * @param attributes The attributes of the element.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     protected void startElement(String name, Attributes attributes)
         throws SAXException {
@@ -61,14 +73,15 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     }
 
     /**
-     * DOCUMENT ME!
+     * Full startElement, simply passes each value to the content handler
+     * that is recieving production calls.  
      *
-     * @param ns DOCUMENT ME!
-     * @param name DOCUMENT ME!
-     * @param qName DOCUMENT ME!
-     * @param attributes DOCUMENT ME!
+     * @param ns The namespace of the element.
+     * @param name The name of the element to start.
+     * @param qName The qualified name of the element.
+     * @param attributes The attributes to include with the element.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException If anything goes wrong.
      */
     protected void startElement(String ns, String name, String qName,
         Attributes attributes) throws SAXException {
@@ -76,24 +89,25 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     }
 
     /**
-     * DOCUMENT ME!
+     * Convenience method to end an element, passes the name as the 
+     * name and qname, no namespace. 
      *
-     * @param name DOCUMENT ME!
+     * @param name The name of the element to end.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any error.
      */
     protected void endElement(String name) throws SAXException {
         endElement("", name, name);
     }
 
     /**
-     * DOCUMENT ME!
+     * Full end element.
      *
-     * @param ns DOCUMENT ME!
-     * @param name DOCUMENT ME!
-     * @param qName DOCUMENT ME!
+     * @param ns The namespace of the element to end.
+     * @param name The local name of the element to end.
+     * @param qName The qualified name of the element to end.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     protected void endElement(String ns, String name, String qName)
         throws SAXException {
@@ -101,12 +115,13 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     }
 
     /**
-     * DOCUMENT ME!
+     * Convenience method to handles a single element, using the name and 
+     * elementText passed in, with no qualified name or namespace.
      *
-     * @param name DOCUMENT ME!
-     * @param elementText DOCUMENT ME!
+     * @param name The name of the element.
+     * @param elementText The text this element should have.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     protected void handleSingleElem(String name, String elementText)
         throws SAXException {
@@ -119,16 +134,17 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      * Convenience method for handleSingleElem(name, "").  Just makes a single
      * elem named 'name'
      *
-     * @param name DOCUMENT ME!
+     * @param name The name of the element to make.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     protected void handleSingleElem(String name) throws SAXException {
         handleSingleElem(name, "");
     }
 
     /**
-     * DOCUMENT ME!
+     * Convenience method to turn the string into its constituent characters
+     * and passes them to the content handler as an array.
      *
      * @param s DOCUMENT ME!
      *
@@ -142,9 +158,9 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     }
 
     /**
-     * implies a carriege return and the increment of the indent level
+     * Implies a carriege return and the increment of the indent level.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any error.
      */
     protected void indent() throws SAXException {
             ++indentLevel;
@@ -152,9 +168,9 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     }
 
     /**
-     * DOCUMENT ME!
+     * Implies a carraige return and the decrement of the indent level.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any error.
      */
     protected void unIndent() throws SAXException {
            --indentLevel;
@@ -164,11 +180,12 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     }
 
     /**
-     * Handles a tab call - does nothing.
+     * Handles a tab call, passes the appropriate number of tabs
+     * as ignorable whitespace to the contentHandler.
      *
-     * @param level DOCUMENT ME!
+     * @param level Number of tabs to indent.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     protected void indent(int level) throws SAXException {
             while (level > 0) {
@@ -178,35 +195,29 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     }
 
     /**
-     * Handles a carraige return call - does nothing.
+     * Handles a carraige return call, passes the carriage return and indents
+     * if prettyPrinting is set to true.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any problems.
      */
     protected void cReturn() throws SAXException {
-        contentHandler.characters(cr, 0, cr.length);
-        indent(indentLevel);
+	contentHandler.characters(cr, 0, cr.length);
+        if (isPrettyPrinting) {
+            indent(indentLevel);
+	}
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets this handler to do pretty printing, with nice newlines and indents.
      *
-     * @param newLines DOCUMENT ME!
-     * @param indent DOCUMENT ME!
+     * @param isPrettyPrinting <tt>true</tt> if the output should look nice.
      */
-    public void setPrettyPrint(boolean newLines, boolean indent) {
-        if (newLines) {
-            cr = new char[1];
-            cr[0] = '\n';
-        } else {
-            cr = new char[0];
-        }
-
-        if (indent) {
-            tab = new char[TAB_SIZE];
-            java.util.Arrays.fill(tab, 0, TAB_SIZE, ' ');
-        } else {
-            tab = new char[1];
-            tab[0] = ' ';
-        }
+    public void setPrettyPrint(boolean isPrettyPrinting) {
+        if (isPrettyPrinting) {
+	    cr[0] = '\n';
+	} else {
+	    cr[0] = ' ';
+	}
+	this.isPrettyPrinting = isPrettyPrinting;
     }
 }
