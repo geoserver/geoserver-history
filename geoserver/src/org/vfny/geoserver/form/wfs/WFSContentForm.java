@@ -69,7 +69,7 @@ public class WFSContentForm extends ActionForm {
      * @return
      */
     public boolean isEnabled() {
-        System.out.println("isEnabled: returning " + enabled);
+        //System.out.println("isEnabled: returning " + enabled);
 
         return enabled;
     }
@@ -99,7 +99,7 @@ public class WFSContentForm extends ActionForm {
      */
     public void setEnabled(boolean b) {
         enabledChecked = true;
-        System.out.println("setEnabled: enabledCheck/Enabled now " + b);
+        //System.out.println("setEnabled: enabledCheck/Enabled now " + b);
         enabled = b;
     }
 
