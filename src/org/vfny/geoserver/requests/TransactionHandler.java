@@ -9,8 +9,10 @@ import java.util.*;
 import java.util.logging.Logger;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
+import org.geotools.feature.Feature;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
+import org.geotools.gml.GMLHandlerFeature;
 import org.vfny.geoserver.responses.WfsException;
 
 /**
@@ -22,7 +24,7 @@ import org.vfny.geoserver.responses.WfsException;
  */
 public class TransactionHandler 
     extends XMLFilterImpl  
-    implements ContentHandler, FilterHandler {
+    implements ContentHandler, FilterHandler, GMLHandlerFeature {
 
     private static final short UNKNOWN = 0;
     private static final short INSERT = 1;
@@ -51,7 +53,6 @@ public class TransactionHandler
     /** holds the property value for an update request. */
     private String curPropertyValue;
 
-	
     /** Empty constructor. */
     public TransactionHandler () { super(); }
     
@@ -110,8 +111,11 @@ public class TransactionHandler
             } else if(state == UPDATE) {
                 subRequest = new UpdateRequest();                
             } else if(state == INSERT) {
-                subRequest = new InsertRequest();                
+		LOGGER.finest("creating new insert request");
+                subRequest = new InsertRequest();   
+		LOGGER.finest("created new insert request");
             }
+	    
             for(int i = 0, n = atts.getLength(); i < n; i++) {
                 String name = atts.getLocalName(i);
                 String value = atts.getValue(i);
@@ -197,13 +201,19 @@ public class TransactionHandler
      * @param filter (OGC WFS) Filter from (SAX) filter.
      */ 
     public void filter(Filter filter) {
-        LOGGER.finest("found filter: " + filter);
         try {
             subRequest.setFilter(filter);
         } catch(WfsException e) {
         }
     }    
 
+    public void feature(Feature feature) {
+	if(subRequest != null && 
+	   (subRequest.getClass().equals(InsertRequest.class))) {
+	       ((InsertRequest) subRequest).addFeature(feature);
+	       LOGGER.finest("feature added: " + feature);
+	}
+    }
     
 	    
 }
