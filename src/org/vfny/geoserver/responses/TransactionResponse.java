@@ -140,37 +140,6 @@ public class TransactionResponse {
 	}
     }
 
-    //this is all done in TypeInfo now.
-    /*    private static Connection getConnection(SubTransactionRequest subRequest) 
-	throws WfsTransactionException{
-	String typeName = subRequest.getTypeName();
-	
-	TypeInfo meta = repository.getType(typeName);
-
-	//HACK: fails if types are in different databases
-        if (meta == null) {
-	    String errorMsg = "Could not find Feature Type: -" + typeName +
-		"-, feature information is not in the data folder.";
-	    LOGGER.info(errorMsg);
-	    throw new WfsTransactionException(errorMsg, subRequest.getHandle(),
-					      transHandle);
-	}
-	PostgisConnectionFactory db = 
-	    new PostgisConnectionFactory (meta.getHost(), meta.getPort(),
-					  meta.getDatabaseName()); 
-        db.setLogin(meta.getUser(), meta.getPassword());
-	Connection connection;
-	try {
-	        connection = db.getConnection();
-		connection.setAutoCommit(false);
-	} catch (SQLException e) {
-	      String message = "Problem with transactions " 
-			+ e.getMessage();
-	    LOGGER.info(message);
-	    throw new WfsTransactionException(message, subRequest.getHandle());
-	}
-	return connection;
-	}*/
 
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
@@ -182,8 +151,11 @@ public class TransactionResponse {
         String result = new String();
 	LOGGER.finer("sub request is " + sub);
 	String typeName = sub.getTypeName();
+
+
 	try {
-	    DataSource data = repository.getType(typeName).getTransactionDataSource();
+	    DataSource data = 
+		repository.getType(typeName).getTransactionDataSource();
 	    DataSourceMetaData metad = data.getMetaData();
 	    LOGGER.finer("metad is " + metad);
 	    //LOGGER.finer(" supports trans: " + metad.supportsTransactions());
@@ -228,45 +200,23 @@ public class TransactionResponse {
 	throws WfsTransactionException {
 	String handle = insert.getHandle();
 	try {
-	    /*This is now done in the datasource, as it should be.*/
-	    //ArrayList committed = new ArrayList();
-	    //Feature[] oldFeatures = data.getFeatures(null).getFeatures();
-	    //LOGGER.finer("insert old feature is " + oldFeatures[0]);
-	    //HashSet oldFids = new HashSet(oldFeatures.length);
-	    //int i;
-	    //for (i = 0; i < oldFeatures.length; i++) {
-	    //oldFids.add(oldFeatures[i].getId());
-	    //}
-	    //LOGGER.finer("added " + i + "features to oldFid set");
 	    FeatureCollection newFeatures = new FeatureCollectionDefault();
 	    //TODO: allow different features types (need to change in request),
 	    //maybe then divide up by type, get the right datasources.
 	    Feature[] featureArr = insert.getFeatures();
 	    newFeatures.addFeatures(featureArr);
 	    return data.addFeatures(newFeatures);
-	    /*LOGGER.finer("inserted features");
-	    //the fids should really be returned from the datasource.
-	    //String[] fids addFeatures(Feature features[]);
-	    Feature[] allFeatures = data.getFeatures(null).getFeatures();
-	    LOGGER.finer("all features # = " + allFeatures.length + ", before: "
-		      + oldFeatures.length + ", inserted " + (allFeatures.length 
-							      - oldFeatures.length));
-	    //REVISIT: maybe just store features in the HashSet, and then
-	    //call remove all.  Not sure about hashCodes in Feature.
-	    //return allFeatures.removeAll(oldFids);
-	    HashSet insertedIds = new HashSet();
-	
-	    for (int j = 0; j < allFeatures.length; j++) {
-	    	String curFid = allFeatures[j].getId();
-	    	if (!oldFids.contains(curFid)){
-	    	    LOGGER.finer("adding feature " + curFid);
-	    	    insertedIds.add(curFid);
-	    	}
-		}*/
-	    //return insertedIds;
 	} catch (DataSourceException e) {
 	    LOGGER.info("Problem with datasource " + e + " cause: " 
 			+ e.getCause());
+	    try {
+		data.rollback();
+	    } catch (DataSourceException de){
+		//should we null the datasource?  Close the connection?
+		//What we really need is a connection pool, seperate for
+		//transactions and requests.
+		LOGGER.info("could not roll back datasource");
+	    }
 	    throw new WfsTransactionException("Problem updating features: " 
 					      +e.toString() + " cause: " + 
 					      e.getCause(), handle);
@@ -291,6 +241,14 @@ public class TransactionResponse {
 	} catch (DataSourceException e) {
 	    LOGGER.info("Problem with datasource " + e + " cause: " 
 			+ e.getCause());
+	    try {
+		data.rollback();
+	    } catch (DataSourceException de){
+		//should we null the datasource?  Close the connection?
+		//What we really need is a connection pool, seperate for
+		//transactions and requests.
+		LOGGER.info("could not roll back datasource");
+	    }
 	    throw new WfsTransactionException("Problem updating features: " 
 					      +e.toString() + " cause: " + 
 					      e.getCause(), handle);
@@ -313,6 +271,14 @@ public class TransactionResponse {
 	} catch (DataSourceException e) {
 	    LOGGER.info("Problem with datasource " + e + " cause: " 
 			+ e.getCause());
+	    try {
+		data.rollback();
+	    } catch (DataSourceException de){
+		//should we null the datasource?  Close the connection?
+		//What we really need is a connection pool, seperate for
+		//transactions and requests.
+		LOGGER.info("could not roll back datasource");
+	    }
 	    throw new WfsTransactionException("Problem removing features: " 
 					      + e.getCause(),
 					      delete.getHandle());
