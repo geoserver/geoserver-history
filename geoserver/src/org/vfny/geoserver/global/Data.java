@@ -53,7 +53,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.11 2004/01/17 01:11:36 jive Exp $
+ * @version $Id: Data.java,v 1.12 2004/01/17 20:26:32 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -167,14 +167,13 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         }
 
         i = config.getFeaturesTypes().values().iterator();
-
         while (i.hasNext()) {
             FeatureTypeInfoDTO featureTypeDTO = (FeatureTypeInfoDTO) i.next();
             if( featureTypeDTO == null ){
                 System.out.println("Ignore null FeatureTypeInfo DTO!");
                 continue;
             }
-            String key = featureTypeDTO.getKey();
+            String key = featureTypeDTO.getKey(); // dataStoreId:typeName
             System.out.println( key+" loading feature type info dto:"+featureTypeDTO );
             
             String dataStoreId = featureTypeDTO.getDataStoreId();
@@ -183,15 +182,22 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             
             System.out.println( key+" datastore found :"+dataStoreInfo );
             if( dataStoreInfo == null ){
-                System.out.println( key + " Ignore FeatureTypeInfo as DataStore is missing!");
+                System.out.println( key + " IGNORE FeatureTypeInfo as DataStore is missing!");
                 continue;
             }
             String prefix = dataStoreInfo.getNamesSpacePrefix();
             String typeName = featureTypeDTO.getName();
             System.out.println( key + " creating FeatureTypeInfo for "+prefix+":"+typeName );            
             FeatureTypeInfo featureTypeInfo = new FeatureTypeInfo( featureTypeDTO, this );
+            String key2 = prefix + ":" + typeName;
             
-            featureTypes.put( prefix + ":" + typeName, featureTypeInfo);
+            if( featureTypes.containsKey( key2 )){
+                System.out.println( key + " IGNORE FeatureTypeInfo as "+key2+" is already registerd");
+            }
+            else {
+                featureTypes.put( key2, featureTypeInfo);
+                System.out.println( key+" datastore found :"+dataStoreInfo );                
+            }
         }
         
             styles = new HashMap();
