@@ -4,6 +4,10 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.responses.ResponseUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -13,11 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.responses.ResponseUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 
 /**
  * Java representation of a WFS_TransactionResponse xml element. The status and
@@ -26,7 +25,7 @@ import org.w3c.dom.Element;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.9 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id: WfsTransResponse.java,v 1.10 2004/03/31 05:08:36 cholmesny Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
@@ -163,7 +162,12 @@ public class WfsTransResponse {
      * Generates the xml represented by this object.
      *
      * @param writer DOCUMENT ME!
-     * @param request DOCUMENT ME!
+     * @param request The request that made the response for this to generate.
+     * It will be the source of the geoserver configuration values.  This gets
+     * hacky with our exceptions, since they do not now have knowledge of the
+     * requests made (though that should probably change).  So a null value
+     * is acceptable for request, it will just use schemas.opengis.net for the
+     * baseUrl.
      *
      * @throws IOException DOCUMENT ME!
      */
@@ -171,8 +175,11 @@ public class WfsTransResponse {
         throws IOException {
         //boolean verbose = ConfigInfo.getInstance().formatOutput();
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\""
-            + request.getWFS().getGeoServer().getCharSet().displayName() + "\"?>";
+        String encoding = (request == null) ? "UTF-8"
+                                            : request.getWFS().getGeoServer()
+                                                     .getCharSet().displayName();
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + encoding
+            + "\"?>";
 
         if (verbose) {
             writer.write("\n");
@@ -190,8 +197,13 @@ public class WfsTransResponse {
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         writer.write(indent);
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
-
-        writer.write(request.getBaseUrl());
+        String baseUrl;
+        if (request == null) {
+        	baseUrl = "http://schemas.opengis.net/";
+        } else {
+        	baseUrl = request.getSchemaBaseUrl();
+        }
+        writer.write(baseUrl);
         writer.write("wfs/1.0.0/WFS-transaction.xsd\">");
 
         //  + " http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">");
