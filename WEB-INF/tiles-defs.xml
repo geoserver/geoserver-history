@@ -210,7 +210,7 @@
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
         <put name="menuForwards"
-             value="config.data.store:config.data.namespace:config.data.style:config.data.type"/>
+             value="config.data.namespace:config.data.store:config.data.style:config.data.type"/>
    	</definition>
 
 	<!-- datastores -->
