@@ -59,6 +59,7 @@ public class TypeInfo {
 
     private DataSource transactionDS;
 
+    private DataSource featureDSource;
 
     //hold the default schema for this datasource?  Would save processing, and
     //when schemas can go to xsd and back it would be good to have here.
@@ -212,7 +213,7 @@ public class TypeInfo {
      * used instead, or else the getFeature calls risk returning modified 
      * features that have not yet been committed and could roll back.
      */
-    public Connection getConnection() throws WfsException {
+    /*public Connection getConnection() throws WfsException {
 	LOG.finer("getting connection for type: " + getName());
 	try {   
 	    if (dbConnection == null || dbConnection.isClosed()) {
@@ -227,7 +228,7 @@ public class TypeInfo {
 	}
     	
 	return dbConnection;
-    }
+	}*/
 
     /**
      * returns a new connection.  This is a relatively expensive operation,
@@ -241,7 +242,7 @@ public class TypeInfo {
      * @tasks TODO: put the charset in the configuration, for internationalization.
      * this method would then set the right charSet.
      */
-    public Connection getNewConnection() throws SQLException {
+    /*public Connection getNewConnection() throws SQLException {
 	LOG.finer("getting new connection for type : " + getName());
 	PostgisConnectionFactory db = 
 	    new PostgisConnectionFactory (getHost(), getPort(), 
@@ -253,7 +254,7 @@ public class TypeInfo {
 	Connection connection;
 	connection = db.getConnection(dbProps);
 	return connection;
-    }
+	}*/
 
     /**
      * gets the datasource associated with this typeInfo.  This uses the current
@@ -268,21 +269,24 @@ public class TypeInfo {
      * @throws WfsException if there were problems creating the datasource
      * or the schema.
      */
-    public DataSource getDataSource(List propertyNames, int maxFeatures) 
+    public DataSource getDataSource() 
 	throws WfsException {
-	DataSource data = null;
-	 try {
+	if (featureDSource == null) {
+	    try {
 		Map params = internalType.getDataParams();
 		LOG.finer("params is " + params);
-		data = DataSourceFinder.getDataSource(params);
-	 } catch (DataSourceException e) {
-	     throw new WfsException(e, "While getting connection to datasource",
-				    getName());
-	 }
+		featureDSource = DataSourceFinder.getDataSource(params);
+	    } catch (DataSourceException e) {
+		throw new WfsException(e, "While getting connection to datasource",
+				       getName());
+	    }
 	    LOG.finer("data source is " + transactionDS);
-    
+	}
+	return featureDSource;
+    }
     //return transactionDS;
 
+    //this is handled in geotools now.
     /**LOG.finer("about to get datasource for " + getName());
 	Connection connection = getConnection();
 	
@@ -340,8 +344,8 @@ public class TypeInfo {
             throw new WfsException(e, "While getting features from datasource",
 				   getName());
 				   }*/
-    return data;
-    }
+    //return data;
+    //}
 
     /**
      * Returns a capabilities XML fragment for a specific feature type.
@@ -399,10 +403,15 @@ public class TypeInfo {
         StringBuffer tempResponse = new StringBuffer("    <FeatureType>\n");
         String name = internalType.getName();
 	String latLonName = "LatLonBoundingBox";
-	boolean supportsTransactions = false;
+	boolean supportsAdd = false;
+	boolean supportsModify = false;
+	boolean supportsRemove = false;
 	try {
 	    DataSourceMetaData opInfo = getTransactionDataSource().getMetaData();
-	    supportsTransactions = opInfo.supportsTransactions();  
+	    
+	    supportsAdd = opInfo.supportsAdd();
+	    supportsModify = opInfo.supportsModify();
+	    supportsRemove = opInfo.supportsRemove();
 	} catch (WfsException e) {
 	    //don't make error on capabilities document just because we could
 	    //not connect to get the operations supported, just support less.
@@ -423,14 +432,18 @@ public class TypeInfo {
         tempResponse.append(
             "      <SRS>http://www.opengis.net/gml/srs/epsg#" + 
             internalType.getSRS() + "</SRS>\n");
-	//--query datasource on its capabilities.
-	//TODO: change metadata interface to tell about each operation.
-	if (supportsTransactions) {
+	if (supportsAdd || supportsModify || supportsRemove) {
         tempResponse.append("      <Operations>\n");
-	tempResponse.append("        <Insert/>\n");
-	tempResponse.append("        <Update/>\n");
-	tempResponse.append("        <Delete/>\n");
-        tempResponse.append("      </Operations>\n");
+	if (supportsAdd){
+	    tempResponse.append("        <Insert/>\n");
+	}
+	if (supportsModify){
+	    tempResponse.append("        <Update/>\n");
+	}
+	if (supportsRemove){
+	    tempResponse.append("        <Delete/>\n");
+	}
+	tempResponse.append("      </Operations>\n");
 	}
         tempResponse.append(
             "      <" + latLonName + " minx=\"" + 
@@ -491,6 +504,9 @@ public class TypeInfo {
      * closing the connection that postgis uses.  This should eventually be
      * handled completely in the datasource, but for now this is they way 
      * to let the connections go.
+     * REVISIT: this now does nothing.  A close method in geotools could
+     * be a good idea.  Or some sort of connection manager which can
+     * shut itself down.
      */
     public void close(){
 	if (dbConnection != null) {
@@ -502,6 +518,8 @@ public class TypeInfo {
 			  e.getMessage());
 	    }
 	}
+	featureDSource = null;
+	transactionDS = null;
     }
 
 }
