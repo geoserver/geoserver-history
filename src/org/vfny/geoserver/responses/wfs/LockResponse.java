@@ -147,7 +147,7 @@ public class LockResponse implements Response {
         LockRequest.Lock curLock = (LockRequest.Lock) locks.get(0);
         boolean lockAll = request.getLockAll();
 
-        FeatureLock featureLock = request.toFeatureLock();
+        FeatureLock fLock = request.toFeatureLock();
         Set lockedFids = new HashSet();
         Set lockFailedFids = new HashSet();
         GeoServer config = request.getGeoServer();
@@ -173,7 +173,7 @@ public class LockResponse implements Response {
             FeatureResults features = source.getFeatures(curFilter);
 
             if( source instanceof FeatureLocking){
-                ((FeatureLocking)source).setFeatureLock(featureLock);
+                ((FeatureLocking)source).setFeatureLock(fLock);
             }
             FeatureReader reader = null;
 
@@ -184,7 +184,7 @@ public class LockResponse implements Response {
                     if( !(source instanceof FeatureLocking)){
                         LOGGER.fine("Lock " + fid +
                                 " not supported by data store (authID:"
-                                + featureLock.getAuthorization() + ")");
+                                + fLock.getAuthorization() + ")");
                         lockFailedFids.add(fid);
                     }
                     else {
@@ -202,15 +202,15 @@ public class LockResponse implements Response {
 
                         if (numberLocked == 1) {
                             LOGGER.fine("Lock " + fid + " (authID:"
-                                + featureLock.getAuthorization() + ")");
+                                + fLock.getAuthorization() + ")");
                             lockedFids.add(fid);
                         } else if (numberLocked == 0) {
                             LOGGER.fine("Lock " + fid + " conflict (authID:"
-                                + featureLock.getAuthorization() + ")");
+                                + fLock.getAuthorization() + ")");
                             lockFailedFids.add(fid);
                         } else {
                             LOGGER.warning("Lock " + numberLocked + " " + fid
-                                + " (authID:" + featureLock.getAuthorization()
+                                + " (authID:" + fLock.getAuthorization()
                                 + ") duplicated FeatureID!");
                             lockedFids.add(fid);
                         }
@@ -242,10 +242,10 @@ public class LockResponse implements Response {
         }
 
         if (getXml) {
-            return generateXml(featureLock.getAuthorization(), lockAll,
+            return generateXml(fLock.getAuthorization(), lockAll,
                 lockedFids, lockFailedFids, request);
         } else {
-            return featureLock.getAuthorization();
+            return fLock.getAuthorization();
         }
     }
 

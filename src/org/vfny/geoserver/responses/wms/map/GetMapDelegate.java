@@ -197,8 +197,8 @@ public abstract class GetMapDelegate implements Response {
         int numFilters = (filters == null) ? 0 : filters.length;
         int numAttributes = attributes.size();
         Query[] queries = new Query[nLayers];
-        GetMapRequest request = getRequest();
-        Envelope requestExtent = request.getBbox();
+        GetMapRequest trequest = getRequest();
+        Envelope requestExtent = trequest.getBbox();
         FilterFactory ffactory = FilterFactory.createFilterFactory();
 
         try {

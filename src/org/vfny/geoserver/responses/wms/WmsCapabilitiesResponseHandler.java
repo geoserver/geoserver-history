@@ -76,14 +76,14 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      */
     protected void startDocument(Service config) throws SAXException {
         WMS WMS = (WMS) config;
-        AttributesImpl atts = new AttributesImpl();
+        AttributesImpl newAtts = new AttributesImpl();
         startElement("!DOCTYPE WMT_MS_Capabilities SYSTEM \"" + schemaBaseUrl +
         "wms/1.1.1/WMS_MS_Capabilities.dtd\"");
-        atts.addAttribute("", "version", "version", "", CAP_VERSION);
+        newAtts.addAttribute("", "version", "version", "", CAP_VERSION);
 
         // atts.addAttribute("", "", "updateSequence", "updateSequence",
         //     WMS.getUpdateTime());
-        startElement("WMT_MS_Capabilities", atts);
+        startElement("WMT_MS_Capabilities", newAtts);
     }
 
     /**
@@ -276,9 +276,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             if (layer.isEnabled()) {
                 cReturn();
                 //HACK: find a way to define queryable and non queryable layers
-                AttributesImpl atts = new AttributesImpl();
-                atts.addAttribute("", "queryable", "queryable", "", "1");
-                startElement("Layer", atts);
+                AttributesImpl qatts = new AttributesImpl();
+                qatts.addAttribute("", "queryable", "queryable", "", "1");
+                startElement("Layer", qatts);
                 indent();
                 handleFeatureType(layer);
                 unIndent();
