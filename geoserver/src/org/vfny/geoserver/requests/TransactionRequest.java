@@ -51,6 +51,7 @@ public class TransactionRequest
      *
      * @param i the position of the operation request to get.
      * @return the request at i.
+     */
     public SubTransactionRequest getSubRequest(int i) {
         return (SubTransactionRequest) subRequests.get(i);
     }
