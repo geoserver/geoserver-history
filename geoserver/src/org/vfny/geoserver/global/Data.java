@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -20,14 +22,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.data.Catalog;
+import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureTypeMetaData;
 import org.geotools.data.LockingManager;
 import org.geotools.data.NamespaceMetaData;
+import org.geotools.data.Query;
 import org.geotools.data.Transaction;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
 import org.geotools.styling.SLDStyle;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
@@ -45,7 +53,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.7 2004/01/16 00:31:37 jive Exp $
+ * @version $Id: Data.java,v 1.8 2004/01/16 03:04:11 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -190,7 +198,143 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
         }
     }
-
+    /**
+     * Dynamically tries to connect to every DataStore!
+     * <p>
+     * Returns a map of Exception by dataStoreId:typeName.
+     * If by some marvel the we could connect to a FeatureSource we will
+     * record Boolean.TRUE. 
+     * </p>
+     * @return Map of Exception by dataStoreId:typeName
+     */
+    public SortedMap getStatus(){
+        SortedMap status = new TreeMap();
+        DataStoreInfo info;        
+        for( Iterator i=dataStores.values().iterator(); i.hasNext();){
+            info = (DataStoreInfo) i.next();
+            try {
+                status.putAll( getStatus( info ) );
+            }
+            catch( Throwable t ){
+                status.put( info.getId(), t );
+            }
+        }
+        return status;
+    }
+    /**
+     * Dynamically tries to connect to this DataStore!
+     * <p>
+     * Returns a map of Exception by dataStoreId:typeName.
+     * If by some marvel the we could connect to a FeatureSource we will
+     * record Boolean.TRUE.
+     * </p>
+     * <p>
+     * We will make an initial attempt to connect to the real dataStore
+     * (with out any metadata based filtering or retyping. Only if this
+     * proceeds will we try for getStatus( FeatureTypeInfo ).
+     * </p>
+     * 
+     * @return Map of Exception by dataStoreId:typeName
+     */
+    public SortedMap getStatus(DataStoreInfo info ){
+        SortedMap status = new TreeMap();
+        
+        String id = info.getId();
+        System.out.println( id+": checking status of DataStore!" );
+        System.out.println( id+": namespace prefix '"+info.getNamesSpacePrefix() +"'");
+        System.out.println( id+": title '"+info.getTitle()+"'");
+        System.out.println( id+": enabled "+info.isEnabled() );
+        
+        DataStore store = null;
+        try {
+            store = info.getDataStore();
+        }
+        catch( Throwable t){
+            System.out.println(id+": Could not connect to DataStore!" );
+            t.printStackTrace();
+            status.put( id, t );
+            return status;
+        }
+        String typeNames[] = store.getTypeNames();
+        for( int t=0; t<typeNames.length; t++){
+            String typeName = typeNames[t];
+            String id2 = id+":"+typeName;
+            System.out.println( id2+": check status of GeoTools2 FeatureType" );
+            try {
+                FeatureType featureType = store.getSchema( typeName );
+                System.out.println( id2+": featureType '"+featureType+"'" );                
+            }
+            catch( Throwable badSchema ){
+                System.out.println(id2+": Could not getSchema(\""+typeName+"\")" );
+                badSchema.printStackTrace();
+                status.put( id2, badSchema );                
+                continue;
+            }
+            FeatureSource source = null;
+            try {
+                source = store.getFeatureSource( typeName );
+                System.out.println( id2+": source aquired '"+source+"'" );                
+            }
+            catch( Throwable badSource ){
+                System.out.println(id2+": Could not getFeatureSource(\""+typeName+"\")" );
+                badSource.printStackTrace();
+                status.put( id2, badSource );                
+                continue;
+            }
+            try {
+                assertWorking(source, id2 );
+            }
+            catch( Throwable notWorking ){
+                System.out.println(id2+": FeatureSource '"+typeName+"' did not work" );                
+                notWorking.printStackTrace();
+                status.put( id2, notWorking );                
+                continue;
+            }            
+        }
+        return status;
+    }
+    /**
+     * Test that the FeatureSource works.
+     * <p>
+     * A smattering of tests, used to check the status of a FeatureSource.
+     * </p>
+     * @param source
+     * @return
+     */
+    public void assertWorking( FeatureSource source, String id ) throws IOException{
+        // Test optimized getCount()
+        //
+        System.out.println( id+": source count optimized:'"+source.getCount( Query.ALL )+"'" );
+        FeatureResults all = source.getFeatures();
+        
+        // Test High Level FeatureResults API
+        System.out.println( id+": source count results:'"+all.getCount()+"'" );
+        
+        // Test Low Level FeatureReader API
+        //
+        FeatureReader reader = all.reader();
+        try {
+            boolean hasNext = reader.hasNext();
+            System.out.println( id+": reader hasNext()" + hasNext );
+            if( hasNext ){
+                System.out.println( id+": reader next()" + reader.next() );
+            }
+        }
+        catch (NoSuchElementException e) {
+            throw new DataSourceException( e.getMessage(), e );
+        }
+        catch (IllegalAttributeException e) {
+            throw new DataSourceException( e.getMessage(), e );
+        }
+        finally {
+            reader.close();
+        }
+        System.out.println( id+": source aquired '"+source+"'" );      
+    }
+    public SortedMap getStatus( FeatureTypeInfo info ){
+        SortedMap status = new TreeMap();
+        return status;
+    }
     /**
      * getDataStoreInfos purpose.
      * 
