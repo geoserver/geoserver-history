@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.13 2004/03/30 11:14:52 cholmesny Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.14 2004/04/06 17:51:44 jive Exp $
  */
 public class AttributeTypeInfoDTO implements DataTransferObject {
     /** For debugging */
@@ -91,7 +91,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
     private boolean isComplex = false;
 
     /**
-     * AttributeTypeInfoDTO constructor.
+     * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
      * 
      * <p>
      * Default constructor, does nothing
@@ -101,41 +101,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Constructs a AttributeTypeInfoDTO object from a geotools AttributeType.
-     * This is a hack so as to avoid rewriting all the attributeType stuff.
-     * What should happen is that these dto objects aren't used at all, we
-     * just use  attributeTypes directly, and they should be able to express
-     * all that needs to be said.  We've gone too long down this half assed
-     * path of cramming info into these weird objects, and it's got to stop.
-     * But for 1.2-beta we're just going to construct these dto objects from
-     * attributeTypes directly.
-     *
-     * @param attrType a Geotools attribute, for example directly from a schema
-     *        when no schema.xml file is defined.
-     */
-  /*  public AttributeTypeInfoDTO(AttributeType attrType) {
-        this.name = attrType.getName();
-        this.isComplex = false;
-
-        //not sure if this'll work, we might need some translation stuff.
-        NameSpaceTranslator typeConverter;
-
-        if (attrType instanceof Geometric) {
-            typeConverter = NameSpaceTranslatorFactory.getInstance()
-                                                      .getNameSpaceTranslator("gml");
-        } else {
-            typeConverter = NameSpaceTranslatorFactory.getInstance()
-                                                      .getNameSpaceTranslator("xs");
-        }
-
-        Set elements = typeConverter.getElements(attrType.getType());
-        NameSpaceElement firstElem = (NameSpaceElement) elements.iterator()
-                                                                .next();
-        this.type = firstElem.getTypeDefName();
-    }*/
-
-    /**
-     * AttributeTypeInfoDTO constructor.
+     * * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
      * 
      * <p>
      * Copies the data from the specified DTO to this one.
