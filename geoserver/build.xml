@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- ====================================================================== -->
+<!-- GeoServer BUILD FILE                                                   -->
+<!-- Copyright TOPP 2002                                                    -->
+<!-- This build file is licensed under the GPL v2.0                         -->
+<!-- You do not need to modify any values for this build file to work.      -->
+<!-- For convenience, you may modify the 'external directories' variables   -->
+<!-- under the LOCAL PROPERTIES section. You may also wish to change the    -->
+<!-- test.type directory to be something other than UserBasic.              -->
+<!-- ====================================================================== -->
+
+<project name="geoserver" default="help" basedir=".">
+
+	<!-- ====================================================================== -->
+	<!-- LOCAL PROPERTIES                                                       -->
+	<!-- These should be defined in the build.properties file, which will       -->
+	<!-- override these values                                                  -->
+	<!-- ====================================================================== -->
+
+	<!-- external directories -->
+	<!-- pc example -->
+	<property file="build.properties" />
+	<!--These should be defined in the build.properties file, which will -->
+	<!-- override these values -->
+
+	<property name="version.geotools" value="2.1.x" />
+
+
+	<!-- If you don't have your own conf directory then define one of -->
+	<!-- these test.type's in your build.properties file-->
+	<!--<property name="test.type" value="UserBasic"/>-->
+	<!--property name="test.type" value="DemoPostGIS"/-->
+	<!--<property name="test.type" value="CitePostGis"/>-->
+	<!--<property name="test.type" value="CiteShapeFiles"/>-->
+
+	<!-- ====================================================================== -->
+	<!-- PROPERTIES                                                             -->
+	<!-- ====================================================================== -->
+
+	<!-- release version -->
+	<property name="name.release" value="1.3.0-beta" />
+
+	<!-- primary directories -->
+	<property name="dir.bin" value="${basedir}/bin" />
+	<property name="dir.build" value="${basedir}/build" />
+	<property name="dir.doc" value="${basedir}/documents/generated" />
+	<property name="dir.lib" value="${basedir}/lib" />
+	<property name="dir.server" value="${basedir}/server" />
+	<property name="dir.src" value="${basedir}/src" />
+	<property name="dir.test" value="${basedir}/test" />
+	<property name="dir.conf" value="${basedir}/conf" />
+	<property name="dir.release" value="${basedir}/release" />
+	<property name="dir.webinf" value="${basedir}/WEB-INF" />
+
+	<!-- secondary directories -->
+	<property name="dir.data" value="${dir.conf}" />
+	<property name="dir.testApp" value="${dir.server}/geoserver" />
+	<property name="dir.jetty" value="${dir.lib}/jetty" />
+
+	<!-- jars -->
+	<!--
+  <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
+  -->
+	<property name="jar.geoserver" value="${dir.lib}/geoserver.jar" />
+	<property name="jar.servlet" value="${dir.lib}/servlet.jar" />
+	<property name="jar.xercesImpl" value="${dir.lib}/xercesImpl.jar" />
+	<property name="jar.xml" value="${dir.lib}/xml-apis.jar" />
+	<property name="jar.jdbcPostgres" value="${dir.lib}/jdbcPostgres.jar" />
+	<property name="jar.jts" value="${dir.lib}/jts-1.6-SNAPSHOT.jar" />
+	<property name="jar.lucene" value="${dir.lib}/lucene.jar" />
+	<property name="jar.xalan" value="${dir.lib}/xalan.jar" />
+	<property name="jar.a2j" value="${dir.lib}/a2jruntime.jar" />
+	<property name="jar.z3950" value="${dir.lib}/ki-jzkit-z3950.jar" />
+	<property name="jar.ki-util" value="${dir.lib}/ki-util.jar" />
+
+	<property name="test.name" value="config.ConfigSuite" />
+	<property name="jetty.run" value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml" />
+	<property name="jetty.jvmarg" value="-Djetty.home=${basedir}" />
+
+	<!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
+	<available file="${basedir}/conf" type="dir" property="conf.folder.present" />
+	<available file="${basedir}/server/geoserver" type="dir" property="server.built" />
+
+	<!-- paths -->
+	<path id="path.lib">
+		<fileset dir="${dir.lib}">
+			<include name="*.jar" />
+			<exclude name="geoserver.jar" />
+		</fileset>
+	</path>
+	<path id="path.jetty">
+		<fileset dir="${dir.lib}/jetty">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement location="${jar.servlet}" />
+		<pathelement location="${jar.xercesImpl}" />
+		<pathelement location="${jar.xml}" />
+	</path>
+
+	<path id="path.build">
+		<path refid="path.lib" />
+		<fileset dir="${dir.build}">
+			<include name="**/*" />
+		</fileset>
+		<fileset dir="${dir.build}">
+			<include name="org/vfny/geoserver/requests/GetCapabilitiesSuite.class" />
+		</fileset>
+	</path>
+
+	<!-- ====================================================================== -->
+	<!-- HELP / INDEX OF TARGETS                                                -->
+	<!-- ====================================================================== -->
+	<target name="help" description="descirbe targets defined by this build.xml file">
+		<echo message="GeoServer Build File..." />
+		<echo message="" />
+		<echo message=" COMPILATION TARGETS" />
+		<echo message="    init:         initializes build process" />
+		<echo message="    all:          compiles all packages" />
+		<echo message="    clean:        removes, re-compiles all packages" />
+		<echo message="" />
+		<echo message=" TEST TARGETS" />
+		<echo message="    unit:         compiles, runs unit 1 test" />
+		<echo message="                    -param: test.name=[package.class]" />
+		<echo message="    unit-all:     compiles and runs all unit tests" />
+		<echo message="    test:         builds and runs the built-in server" />
+		<echo message="    run:          runs the built-in server" />
+		<echo message=" prepareEmbedded  prepares built-in server, must be run" />
+		<echo message="                  before run is called" />
+		<echo message="    test-ext:     builds war to external server" />
+		<echo message="                    -param: dir.container=[server_path]" />
+		<echo message="                    -param: test.type=CitePostGis" />
+		<echo message="" />
+		<echo message=" BUILD TARGETS" />
+		<echo message="    war:          builds geoserver war file" />
+		<echo message="    document:     generates all javadocs for project" />
+		<echo message="    clean:        rebuilds all classes" />
+		<echo message="    release-all:      makes a full release build" />
+		<echo message="                    -param: name.release=[release]" />
+		<echo message="    release-binary:   makes a release of the binary files" />
+		<echo message="    release-src:      makes a release of the source code" />
+		<echo message="    release-docs:     makes a release of the documents" />
+		<echo message="" />
+		<echo message=" ADMIN TARGETS" />
+		<echo message="    help | ?:     displays this message" />
+		<echo message="    geotools:     copies the geotools jars" />
+		<echo message="                    -param: dir.gt=[geotools_path]" />
+		<echo message="    conf:         builds a default configuration to edit" />
+		<echo message="                    -param: test.type=CitePostGis" />
+		<echo message="" />
+		<echo message=" Examples..." />
+		<echo message="    ant test-ext -Ddir.container=/usr/local/resin-3.0.4/webapps" />
+		<echo message="    ant unit -Dtest.name=requests.DeleteSuite" />
+		<echo message="    ant all" />
+	</target>
+
+	<!-- ====================================================================== -->
+	<!-- COMPILATION TARGETS                                                    -->
+	<!-- ====================================================================== -->
+	<!-- INITIALIZE
+      checks to make sure that directory structure is in place, etc.  -->
+	<target name="init">
+		<mkdir dir="${dir.build}" />
+		<mkdir dir="${dir.server}" />
+		<tstamp>
+			<format property="date.current" pattern="MM.dd.yyyy" />
+		</tstamp>
+	</target>
+
+	<!-- ALL
+      builds all of the files in the project, no clean -->
+	<target name="all" depends="init">
+		<javac srcdir="${dir.src}" destdir="${dir.build}" includes="**" classpathref="path.build" deprecation="off" debug="on" />
+		<copy todir="${dir.build}">
+			<fileset dir="${dir.src}">
+				<include name="**/META-INF"/>
+				<include name="**/META-INF/services"/>
+				<include name="**/META-INF/services/**"/>
+				<include name="**/*.properties" />
+				<include name="**/*.config" />
+			</fileset>
+		</copy>
+		<jar jarfile="${dir.lib}/geoserver.jar">
+			<fileset dir="${dir.build}">
+				<include name="META-INF/services/**"/>
+				<include name="**/*.class"/>
+				<exclude name="geoserver.war" />
+				<exclude name="**/servlets/*" />
+				<exclude name="**/mortbay/**" />
+				<exclude name="**/zserver/**" />
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- CLEAN -->
+	<target name="clean" depends="init" description="removes all build results for a fresh start">
+		<delete includeEmptyDirs="false">
+			<fileset dir="${dir.build}" />
+		</delete>
+		<delete file="${dir.lib}/geoserver.jar" failonerror="true" />
+		<!--antcall target="all"/-->
+	</target>
+
+	<!-- ====================================================================== -->
+	<!-- TEST TARGETS                                                           -->
+	<!-- ====================================================================== -->
+
+	<!-- UNIT -->
+	<target name="unit" depends="init, all">
+		<javac srcdir="${dir.test}" destdir="${dir.build}" includes="**/*.java" classpathref="path.build" deprecation="off" debug="on" />
+		<antcall target="all" />
+		<junit fork="false" printsummary="on">
+			<formatter type="plain" usefile="false" />
+			<sysproperty key="dataFolder" value="${basedir}/tests/unit/testData" />
+
+			<classpath>
+				<fileset dir="${dir.lib}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+
+			<test fork="true" name="org.vfny.geoserver.${test.name}" />
+		</junit>
+	</target>
+
+	<target name="unit-all" depends="unit-requests">
+		<!-- no zserver for now, as we're not including it anywhere -->
+		<junit fork="false" printsummary="on">
+			<formatter type="plain" usefile="false" />
+			<sysproperty key="dataFolder" value="${basedir}/tests/unit/testData" />
+
+			<classpath>
+				<path refid="path.test" />
+				<fileset dir="${dir.lib}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</junit>
+	</target>
+
+	<target name="unit-requests" depends="init, all">
+		<javac srcdir="${dir.test}" destdir="${dir.build}" includes="**/*.java" classpathref="path.build" deprecation="off" debug="on" />
+		<antcall target="all" />
+		<junit fork="false" printsummary="on">
+			<formatter type="plain" usefile="false" />
+			<sysproperty key="dataFolder" value="${basedir}/tests/unit/testData" />
+
+			<classpath>
+				<fileset dir="${dir.lib}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			
+			<test fork="true" name="org.vfny.geoserver.requests.FeatureSuite" />
+				
+			<test fork="true" name="org.vfny.geoserver.requests.CapabilitiesSuite" />
+			<test fork="true" name="org.vfny.geoserver.requests.DescribeSuite" />
+			<test fork="true" name="org.vfny.geoserver.requests.TransactionSuite" />
+			<test fork="true" name="org.vfny.geoserver.requests.LockSuite" />
+			
+		</junit>
+	</target>
+
+	<target name="unit-zserver" depends="init, all">
+		<javac srcdir="${dir.test}" destdir="${dir.build}" includes="**/*.java" classpathref="path.build" deprecation="off" debug="on" />
+		<antcall target="all" />
+		<junit fork="false" printsummary="on">
+			<formatter type="plain" usefile="false" />
+			<sysproperty key="dataFolder" value="${basedir}/tests/unit/testData" />
+
+			<classpath>
+				<fileset dir="${dir.lib}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<test fork="true" name="org.vfny.geoserver.zserver.ApplyXPathSuite" />
+			<test fork="true" name="org.vfny.geoserver.zserver.GeoIndexerSuite" />
+			<test fork="true" name="org.vfny.geoserver.zserver.GeoProfileSuite" />
+			<test fork="true" name="org.vfny.geoserver.zserver.GeoSearchSuite" />
+			<test fork="true" name="org.vfny.geoserver.zserver.GeoSummarySuite" />
+			<test fork="true" name="org.vfny.geoserver.zserver.NumericFieldSuite" />
+			<test fork="true" name="org.vfny.geoserver.zserver.RPNConverterSuite" />
+			<test fork="true" name="org.vfny.geoserver.zserver.XMLDocumentSuite" />
+		</junit>
+	</target>
+
+	<!-- TEST -->
+	<target name="test" depends="init, all" description="Depolys application to the test server">
+		<!-- no longer needed, as work is in geoserver/WEB-INF -->
+		<!--mkdir dir="${dir.server}/work"/-->
+
+		<!-- This will now build with the users directory, which I think is
+         appropriate for testing of this sort, as you'll want to configure
+         in the conf directory, since whenever you start with this it blows
+         away changes the ui might have done. -->
+		<antcall target="war">
+			<!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
+		</antcall>
+		<delete dir="${dir.server}/geoserver" />
+		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
+		<antcall target="run" />
+	</target>
+
+	<!-- Eclipse instructions:  
+  To test from ide:
+  1) select "test from ide" from the outline view this build.xml
+  2) right click and choose "Ant Build"
+  You will need to ensure that your Ant Build target is set up to
+  use your j2sdk JRE, with the added tools.jar from the sdk libs.
+  
+  To stop please just hit terminate on your console view.
+  -->
+	<target name="test from ide" depends="init, all"
+	    description="Deploy and run with jetty without forking">
+		<!-- no longer needed, as work is in geoserver/WEB-INF -->
+		<!--mkdir dir="${dir.server}/work"/-->
+
+		<!-- This will now build with the users directory, which I think is
+         appropriate for testing of this sort, as you'll want to configure
+         in the conf directory, since whenever you start with this it blows
+         away changes the ui might have done. -->
+		<antcall target="war">
+			<!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
+		</antcall>
+		<delete dir="${dir.server}/geoserver" />
+		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
+		<antcall target="run from ide" />
+	</target>
+	<!--
+	  To debug you will need to:
+  1) Right click on "debug from ide" and choose "Ant Build ..."
+     - this will compile and set everything up for ...
+  2) Right click on "debug from ide" and choose "Debug..."
+  2) You will need to set up a new debug configuration:
+     - the above j2sdk tools.jar
+     - project:geoserver
+     - Main Class: org.mortbay.start.Main
+  
+  After the first time you can just reuse your debug configuration.   
+  To stop please hit "Terminate" on your eclipse Console view.
+	-->
+	<target name="debug from ide" depends="init, all"
+	    description="Deploy and run with jetty without forking">
+		<!-- no longer needed, as work is in geoserver/WEB-INF -->
+		<!--mkdir dir="${dir.server}/work"/-->
+
+		<!-- This will now build with the users directory, which I think is
+         appropriate for testing of this sort, as you'll want to configure
+         in the conf directory, since whenever you start with this it blows
+         away changes the ui might have done. -->
+		<antcall target="war">
+			<!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
+		</antcall>
+		<delete dir="${dir.server}/geoserver" />
+		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
+	</target>
+	<!-- Prepares embedded server, server.built isn't working, so users must
+      run this manually -->
+	<target name="prepareEmbedded" depends="init" unless="server.built">
+		<antcall target="war" />
+		<mkdir dir="${dir.server}/geoserver" />
+		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
+	</target>
+
+	<!-- runs the server -->
+	<target name="run" depends="prepareEmbedded, init"
+		description="Runs the jetty servlet container in the background, use ant stop to halt">
+		<echo message="Please be sure that either prepareEmbedded or" />
+		<echo message="test has been run before using this target" />
+
+		<java classname="org.mortbay.jetty.Server" dir="${basedir}" fork="yes" failonerror="yes">
+			<classpath>
+				<path refid="path.jetty" />
+			</classpath>
+			<jvmarg line="${jetty.jvmarg}" />
+			<arg line="${jetty.run}" />
+		</java>
+	</target>
+
+	<!-- run/debug from and IDE like eclise -->
+	<target name="run from ide" depends="prepareEmbedded, init" description="Run from eclipse, so process can be terminated">
+		<echo message="Please be sure that either prepareEmbedded or" />
+		<echo message="test has been run before using this target" />
+
+		<java classname="org.mortbay.jetty.Server" dir="${basedir}" fork="no" failonerror="yes">
+			<classpath>
+				<path refid="path.jetty" />
+			</classpath>
+			<jvmarg line="${jetty.jvmarg}" />
+			<arg line="${jetty.run}" />
+		</java>
+	</target>
+
+	<!-- FIXME: chris don't we need to call stop.jar first? -->
+	<target name="stop" depends="init" description="call this to stop the running geoserver">
+		<java classname="org.mortbay.stop.Main" fork="yes">
+			<classpath>
+				<pathelement location="${dir.bin}/stop.jar" />
+			</classpath>
+		</java>
+
+	</target>
+
+	<!-- EXTERNAL TEST -->
+	<target name="test-ext" depends="init, war" description="deploys application to the test server located at dir.container">
+		<!-- copy to test server -->
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${dir.container}/geoserver" />
+		</delete>
+		<delete file="${dir.container}/geoserver.war" failonerror="false" />
+		<delete file="${dir.container}/../logs/stdout.log" failonerror="false" />
+		<delete file="${dir.container}/../logs/stderr.log" failonerror="false" />
+		<delete file="${dir.container}/../logs/*.log.*" failonerror="false" />
+		<copy todir="${dir.container}/" flatten="yes">
+			<fileset dir="${dir.build}">
+				<include name="geoserver.war" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="misc_conf" depends="init" if="test.type">
+		<antcall target="build-war">
+			<param name="conf.path" value="${basedir}/cite/conf${test.type}" />
+		</antcall>
+	</target>
+
+	<target name="user_conf" depends="init" unless="test.type">
+		<antcall target="build-conf-dir" />
+		<antcall target="build-war">
+			<param name="conf.path" value="${basedir}/conf" />
+		</antcall>
+	</target>
+
+	<target name="build-conf-dir" depends="init" unless="conf.folder.present">
+		<!-- taking this out until I figure out available tag -->
+		<mkdir dir="${basedir}/conf" />
+		<copy todir="${basedir}/conf">
+			<fileset dir="${basedir}/cite/confUserBasic" />
+		</copy>
+	</target>
+
+	<!-- ====================================================================== -->
+	<!-- BUILD TARGETS                                                          -->
+	<!-- ====================================================================== -->
+
+	<target name="war" depends="init" description="generate geoserver.war (with your choice of conf directory)">
+		<!-- only one of the two will execute -->
+		<antcall target="user_conf" />
+		<antcall target="misc_conf" />
+	</target>
+	<!-- BUILD WAR -->
+	<target name="build-war" depends="all" if="conf.path">
+		<!-- preparation -->
+		<delete file="${dir.build}/geoserver.war" failonerror="false" />
+		<delete dir="${basedir}/data" failonerror="false" />
+		<mkdir dir="${basedir}/data" />
+		<copy todir="${basedir}/data">
+			<fileset dir="${basedir}/documents">
+				<include name="license.txt" />
+				<include name="geoserver.log" />
+				<include name="z3950-geo.map" />
+			</fileset>
+		</copy>
+
+
+		<!-- populate base directory -->
+
+		<mkdir dir="${basedir}/data" />
+		<copy todir="${basedir}/data">
+			<fileset dir="${conf.path}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${basedir}/data/capabilities" />
+		<copy todir="${basedir}/data/capabilities">
+			<fileset dir="${basedir}/capabilities">
+        <include name="*"/>
+      </fileset>
+    </copy>
+
+    <mkdir dir="${basedir}/data/capabilities/wcs"/>
+    <mkdir dir="${basedir}/data/capabilities/wcs/1.0.0"/>
+    <copy todir="${basedir}/data/capabilities/wcs/1.0.0">
+      <fileset dir="${basedir}/capabilities/wcs">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${basedir}/data/capabilities/wfs" />
+		<mkdir dir="${basedir}/data/capabilities/wfs/1.0.0" />
+		<copy todir="${basedir}/data/capabilities/wfs/1.0.0">
+			<fileset dir="${basedir}/capabilities/wfs">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${basedir}/data/capabilities/wms/1.1.1">
+			<fileset dir="${basedir}/capabilities/wms">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${basedir}/data/capabilities/filter/1.0.0" />
+		<copy todir="${basedir}/data/capabilities/filter/1.0.0">
+			<fileset dir="${basedir}/capabilities/filter">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${basedir}/data/capabilities/gml/2.1.2" />
+		<copy todir="${basedir}/data/capabilities/gml/2.1.2">
+			<fileset dir="${basedir}/capabilities/gml">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${basedir}/data/capabilities/validate" />
+		<copy todir="${basedir}/data/capabilities/validate">
+			<fileset dir="${basedir}/capabilities/validate">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${dir.build}">
+			<fileset dir="${basedir}/documents">
+				<include name="log4j.properties" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${dir.webinf}/work" />
+		<!-- war file -->
+		<war warfile="${dir.build}/geoserver.war" webxml="${dir.webinf}/web.xml" update="true">
+
+			<!-- classes -->
+			<classes dir="${dir.build}">
+				<include name="**/servlets/**" />
+				<include name="**/*.properties" />
+				<exclude name="**/servlets/utilities/**" />
+				<exclude name="**/mortbay/**" />
+				<exclude name="**/zserver/**" />
+			</classes>
+
+			<classes dir="${dir.webinf}">
+				<include name="ApplicationResources*.properties" />
+			</classes>
+
+			<webinf dir="${basedir}/data">
+				<include name="services.xml" />
+				<include name="catalog.xml" />
+				<include name="*.html" />
+				<include name="*.png" />
+			</webinf>
+
+			<webinf dir="${dir.webinf}">
+				<exclude name="web.xml" />
+			</webinf>
+
+			<!-- libraries -->
+			<lib dir="${dir.lib}">
+				<exclude name="**/junit.jar" />
+				<exclude name="**/servlet.jar" />
+				<!--exclude name="**/gt2-oracle-spatial.jar"/-->
+				<exclude name="**/xalan.jar" />
+				<exclude name="**/ki*.jar" />
+				<exclude name="**/a2jruntime.jar" />
+				<!--exclude name="**/log4j-1.2.5.jar" /-->
+				<exclude name="**/lucene.jar" />
+				<exclude name="**/xml-apis.jar" />
+				<exclude name="**/xercesImpl.jar" />
+				<exclude name="*jetty*/**/*" />
+			</lib>
+
+			<!-- directories -->
+			<fileset dir="${basedir}">
+				<include name="data/**" />
+				<include name="documents/api/**" />
+				<exclude name="**/catalog.xml" />
+				<exclude name="**/services.xml" />
+			</fileset>
+
+			<fileset dir="${dir.webinf}/pages">
+				<include name="index.jsp" />
+				<include name="style.css" />
+			</fileset>
+			<fileset dir="${dir.webinf}">
+				<include name="images/**" />
+			</fileset>
+
+		</war>
+
+		<!-- clean-up -->
+		<delete file="${dir.build}/log4j.properties" failonerror="true" />
+		<delete dir="${basedir}/data" failonerror="true" />
+	</target>
+
+	<!-- BUILD JARS FOR SCRIPTS -->
+	<target name="script-jars" depends="start.jar, stop.jar" />
+
+	<!-- START JAR -->
+	<target name="start.jar" depends="all" description="generates the start.jar to run the start-up scripts">
+		<jar jarfile="${dir.bin}/start.jar" basedir="${dir.build}">
+			<manifest>
+				<attribute name="Main-Class" value="org.mortbay.start.Main" />
+			</manifest>
+			<include name="org/mortbay/start/**" />
+		</jar>
+	</target>
+
+	<!-- STOP JAR generates the stop.jar to run the shutdown scripts -->
+	<target name="stop.jar" depends="all">
+		<jar jarfile="${dir.bin}/stop.jar" basedir="${dir.build}">
+			<manifest>
+				<attribute name="Main-Class" value="org.mortbay.stop.Main" />
+			</manifest>
+			<include name="org/mortbay/stop/**" />
+		</jar>
+	</target>
+
+
+
+	<!-- DOCUMENTATION -->
+	<target name="document" depends="init" description="generate all project documentation">
+		<mkdir dir="${dir.doc}" />
+		<javadoc sourcepath="${dir.src}" destdir="${dir.doc}/api" private="true" windowtitle="GeoServer Documentation" stylesheetfile="${basedir}/documents/stylesheet.css" overview="${dir.src}/overview.html">
+			<package name="org.vfny.geoserver.*" />
+			<package name="org.geotools.*" />
+			<classpath>
+				<fileset dir="${dir.lib}">
+					<include name="*.jar" />
+					<exclude name="*/jetty/*" />
+				</fileset>
+			</classpath>
+			<doctitle>
+				<![CDATA[<h1>GeoServer Documentation</h1>]]>
+      </doctitle>
+		<bottom>
+			<![CDATA[<i>Copyright &#169; 2002 The Open Planning Project.</i>]]>
+      </bottom>
+
+	<!-- link documents -->
+	<link offline="true" href="http://java.sun.com/xml/jaxb" packagelistLoc="${dir.doc}/package-lists/jax-b" />
+	<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api/" packagelistLoc="${dir.doc}/package-lists/jdk" />
+	<link offline="true" href="http://java.sun.com/j2ee/sdk_1.2.1/techdocs/api/" packagelistLoc="${dir.doc}/package-lists/servlet" />
+	<link offline="true" href="http://java.sun.com/xml/sax" packagelistLoc="${dir.doc}/package-lists/xerces" />
+	<link offline="true" href="http://jakarta.apache.org/log4j/docs/api/" packagelistLoc="${dir.doc}/package-lists/log4j" />
+</javadoc>
+<antcall target="generate-docbook" />
+</target>
+
+<target name="generate-docbook" depends="init">
+<copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css" />
+<copy todir="${dir.doc}/" file="${dir.doc}/../index.html" />
+
+<!-- Convert docbook to html -->
+<style basedir="${dir.doc}/../" destdir="${dir.doc}/" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" excludes="jetty.xml admin.xml jalopy.geoserver.xml" processor="trax">
+	<param name="section.autolabel" expression="1" />
+	<param name="toc.section.depth" expression="4" />
+</style>
+
+<copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css" />
+
+<!-- Convert docbook to html -->
+<style basedir="${dir.doc}/../developer" destdir="${dir.doc}/developer" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
+	<param name="section.autolabel" expression="1" />
+	<param name="toc.section.depth" expression="4" />
+</style>
+
+<copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css" />
+<copy todir="${dir.doc}/user" file="${dir.doc}/../user/DataStoreUserGuide.pdf" failonerror="false" />
+<copy todir="${dir.doc}/user" file="${dir.doc}/../user/ValidationUserGuide.pdf" failonerror="false" />
+<copy todir="${dir.doc}/user" file="${dir.doc}/../user/FeatureTypeUserGuide.pdf" failonerror="false" />
+
+<!-- Convert docbook to html -->
+<style basedir="${dir.doc}/../user" destdir="${dir.doc}/user" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
+	<param name="section.autolabel" expression="1" />
+	<param name="toc.section.depth" expression="4" />
+</style>
+</target>
+
+<!-- RELEASE -->
+<!-- builds a release version of the application -->
+<target name="release-all" depends="release-war, release-src, release-docs" />
+
+<target name="release-common" depends="clean, all" description="Performs the release operations common to binary and source">
+<delete dir="${basedir}/data" failonerror="false" />
+<copy todir="${dir.build}">
+	<fileset dir="${basedir}/documents">
+		<include name="license.txt" />
+		<include name="README.txt" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/lib">
+	<fileset dir="${dir.lib}">
+		<include name="**/jetty/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+		<include name="xml-apis.jar" />
+		<include name="xercesImpl.jar" />
+		<include name="servlet.jar" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/bin">
+	<fileset dir="${dir.bin}">
+		<include name="**/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+	</fileset>
+</copy>
+</target>
+
+
+
+<target name="release-src" depends="release-common">
+<delete file="${basedir}/geoserver-${name.release}-src.tar.gz" failonerror="false" />
+<delete file="${basedir}/geoserver-${name.release}-src.tar" failonerror="false" />
+
+<copy todir="${dir.build}">
+	<fileset dir="${basedir}">
+		<include name="build.xml" />
+		<include name=".classpath" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/conf">
+	<fileset dir="${basedir}/cite/confUserBasic">
+		<include name="**/*" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/src">
+	<fileset dir="${dir.src}">
+		<include name="**/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/test">
+	<fileset dir="${dir.test}">
+		<include name="**/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/lib">
+	<fileset dir="${dir.lib}">
+		<include name="**/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/documents">
+	<fileset dir="${basedir}/documents">
+		<include name="**/*" />
+		<exclude name="*generated*/*" />
+		<exclude name="*generated*/**/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/WEB-INF">
+	<fileset dir="${dir.webinf}">
+		<include name="**/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/capabilities/">
+	<fileset dir="${basedir}/capabilities">
+		<include name="**/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/cite/">
+	<fileset dir="${basedir}/cite">
+		<include name="**/*" />
+		<exclude name="*CVS*/*" />
+		<exclude name="**/*CVS*/*" />
+	</fileset>
+</copy>
+
+<tar destfile="${basedir}/geoserver-${name.release}-src.tar">
+	<tarfileset dir="${dir.build}" prefix="geoserver">
+		<include name="**/*" />
+		<exclude name="geoserver.war" />
+		<exclude name="org/**" />
+	</tarfileset>
+</tar>
+
+<zip destfile="${basedir}/geoserver-${name.release}-src.zip">
+	<zipfileset dir="${dir.build}" prefix="geoserver">
+		<include name="**/*" />
+		<exclude name="bin/*" />
+		<exclude name="geoserver.war" />
+		<exclude name="org/**" />
+	</zipfileset>
+	<zipfileset dir="${dir.build}" prefix="geoserver" filemode="755" includes="bin/*" />
+</zip>
+
+<delete dir="${dir.build}" failonerror="false" />
+
+<gzip src="geoserver-${name.release}-src.tar" zipfile="geoserver-${name.release}-src.tar.gz" />
+<copy file="${basedir}/geoserver-${name.release}-src.tar.gz" todir="${dir.release}" />
+<copy file="${basedir}/geoserver-${name.release}-src.zip" todir="${dir.release}" />
+
+<delete file="${basedir}/geoserver-${name.release}-src.tar.gz" failonerror="true" />
+<delete file="${basedir}/geoserver-${name.release}-src.zip" failonerror="true" />
+<delete file="${basedir}/geoserver-${name.release}-src.tar" failonerror="true" />
+<delete file="${basedir}/license.txt" failonerror="true" />
+</target>
+
+<target name="release-war" depends="clean, all" description="Genearte the Geoserver.war war release (includes UserBasic)">
+<antcall target="build-war">
+	<param name="conf.path" value="${basedir}/cite/confUserBasic" />
+</antcall>
+<copy file="${dir.build}/geoserver.war" todir="${dir.release}" />
+</target>
+
+<target name="release-binary" depends="release-common">
+<copy todir="${dir.build}">
+	<fileset dir="${basedir}/documents">
+		<include name="RUNNING.txt" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/documents/" failonerror="false">
+	<fileset dir="${dir.doc}">
+		<include name="**/*" />
+		<exclude name="api/**" />
+	</fileset>
+</copy>
+<copy todir="${dir.build}/documents">
+	<fileset dir="${basedir}/documents">
+		<include name="jetty.xml" />
+		<include name="admin.xml" />
+	</fileset>
+</copy>
+<antcall target="build-war">
+	<param name="conf.path" value="${basedir}/cite/confUserBasic" />
+</antcall>
+<!--copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/-->
+<unwar src="${dir.build}/geoserver.war" dest="${dir.build}/server/geoserver/" />
+
+<zip destfile="${basedir}/geoserver-${name.release}-bin.zip">
+	<zipfileset dir="${dir.build}" prefix="geoserver">
+		<include name="**/*" />
+		<exclude name="bin/*" />
+		<exclude name="geoserver.war" />
+		<exclude name="org/**" />
+	</zipfileset>
+	<zipfileset dir="${dir.build}" prefix="geoserver" filemode="755" includes="bin/*" />
+</zip>
+
+<copy file="${basedir}/geoserver-${name.release}-bin.zip" todir="${dir.release}" />
+<delete dir="${dir.build}" failonerror="false" />
+<delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
+
+</target>
+
+<target name="release-docs" depends="document">
+<mkdir dir="${basedir}/docs" />
+<copy todir="${basedir}/docs/">
+	<fileset dir="${dir.doc}">
+		<include name="**/*" />
+	</fileset>
+</copy>
+<zip destfile="${basedir}/geoserver-${name.release}-docs.zip">
+	<zipfileset dir="${basedir}/docs/" prefix="geoserver-docs">
+		<include name="**/*" />
+	</zipfileset>
+</zip>
+<tar destfile="${basedir}/geoserver-${name.release}-docs.tar" basedir="${basedir}/docs/" />
+<gzip src="${basedir}/geoserver-${name.release}-docs.tar" zipfile="${basedir}/geoserver-${name.release}-docs.tar.gz" />
+<copy file="${basedir}/geoserver-${name.release}-docs.zip" todir="${dir.release}" />
+<copy file="${basedir}/geoserver-${name.release}-docs.tar.gz" todir="${dir.release}" />
+
+<delete file="${basedir}/geoserver-${name.release}-docs.zip" failonerror="true" />
+<delete file="${basedir}/geoserver-${name.release}-docs.tar" failonerror="true" />
+<delete file="${basedir}/geoserver-${name.release}-docs.tar.gz" failonerror="true" />
+<delete dir="${basedir}/docs" failonerror="true" />
+</target>
+
+<!-- ====================================================================== -->
+<!-- ADMIN TARGETS                                                          -->
+<!-- ====================================================================== -->
+
+<target name="conf" if="test.type" description="create a conf firectory based test.type">
+<!-- empty old conf -->
+<delete dir="${basedir}/conf" />
+<mkdir dir="${basedir}/conf" />
+
+<!-- populate new conf -->
+<!--<unzip src="${basedir}/cite/conf${test.type}.zip" dest="${basedir}"/>-->
+<copy todir="${basedir}/cite/conf${test.type}">
+	<fileset dir="${basedir}/data">
+		<include name="**/*" />
+	</fileset>
+</copy>
+<delete dir="${basedir}/data" />
+</target>
+
+<!-- GEOTOOLS JAR -->
+<!-- builds geotools jar -->
+<!-- To grab the geotools2 jars (from the geotools directory):
+        maven -Drelease.version=2.0 createRelease
+        
+     Building with maven is required before commit changed jar files.
+-->
+<target name="geotools" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
+<copy failonerror="false" toFile="${dir.lib}/geoapi-20050213.jar" file="${dir.maven}/geoapi/jars/geoapi-20050213.jar" />
+<copy failonerror="false" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
+<copy failonerror="false" toFile="${dir.lib}/opengis-legacy-0.1.jar" file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar" />
+<copy failonerror="false" toFile="${dir.lib}/units-0.01.jar" file="${dir.maven}/units/jars/units-0.01.jar" />
+<copy failonerror="false" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
+<copy failonerror="false" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
+<copy failonerror="false" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
+
+	
+<!-- added by DJB to be more complete. -->
+	<copy failonerror="false" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
+	
+	<copy failonerror="false" toFile="${dir.lib}/gt2-arcgrid.jar" file="${dir.maven}/gt2/jars/arcgrid-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-image.jar" file="${dir.maven}/gt2/jars/image-${version.geotools}.jar" />
+	
+	<copy failonerror="false" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-${version.geotools}.jar" />
+
+<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" />	
+	<copy failonerror="false" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
+
+
+	
+<copy failonerror="false" file="${dir.geotools}/plugin/oraclespatial/target/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
+<copy failonerror="false" file="${dir.geotools}/plugin/postgis/target/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
+<copy failonerror="false" file="${dir.geotools}/plugin/shapefile/target/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
+<copy failonerror="false" file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
+<copy failonerror="false" file="${dir.geotools}/plugin/epsg/target/epsg-${version.geotools}.jar" toFile="${dir.lib}/gt2-epsg.jar" />
+<copy failonerror="false" file="${dir.geotools}/demo/property/target/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
+</target>
+
+<target name="gt2-validation" depends="init" description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
+<!-- Validation support, include META-INF -->
+<copy file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
+</target>
+
+</project>
