@@ -200,7 +200,9 @@
     sourceforge, so that the cvs exactly reflects the state of the code that
     was released. Our convention is to call a release rel followed by the
     version number, delimited by underscores, as decimals are not allowed in
-    cvs. To tag a release simply type:<programlisting>svn tag rel_1_2_0</programlisting></para>
+    cvs. To tag a release in eclipse (with the svn plugin), right click on geoserver
+    project and go to team->tag/branch.  You will probably want to go from trunk
+    to a version in tag/.
   </sect1>
 
   <sect1>
