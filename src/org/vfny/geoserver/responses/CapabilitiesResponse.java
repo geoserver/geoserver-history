@@ -34,7 +34,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.30 2004/02/09 23:29:44 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.31 2004/02/19 21:50:32 cholmesny Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -142,6 +142,11 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
         }
 
         try {
+			 //See note in FeatureTransformer - this ensures things function right.
+			 //I had an error in resin with wms if this was not set, their 
+			 //transformer could not handle the dtd I was trying to make with WMS.
+			  System.setProperty("javax.xml.transform.TransformerFactory",
+					 "org.apache.xalan.processor.TransformerFactoryImpl");
             TransformerFactory tFactory = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer();
 
