@@ -23,6 +23,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
@@ -637,10 +638,6 @@ public class WMSCapsTransformer extends TransformerBase {
                 onlineResource.append(GetLegendGraphicRequest.DEFAULT_HEIGHT);
                 onlineResource.append("&LAYER=");
                 onlineResource.append(layerName);
-                if( layer instanceof CoverageInfo ) {
-                    onlineResource.append("&STYLE=");
-                    onlineResource.append("normal");
-                }
 
                 attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
                     XLINK_NS);

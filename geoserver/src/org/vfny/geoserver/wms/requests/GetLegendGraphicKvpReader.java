@@ -212,11 +212,11 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         	// FIXME
         	// Actually Geotools cannot handle RasterSimbolizer correctly ...
         	
-        	if( layer.getType() == MapLayerInfo.TYPE_VECTOR ) {
+//        	if( layer.getType() == MapLayerInfo.TYPE_VECTOR ) {
                 sldStyle = layer.getDefaultStyle();
-        	} else if( layer.getType() == MapLayerInfo.TYPE_RASTER ) {
-        		sldStyle = req.getWMS().getData().getStyle("normal");
-        	}
+//        	} else if( layer.getType() == MapLayerInfo.TYPE_RASTER ) {
+//        		sldStyle = req.getWMS().getData().getStyle("normal");
+//        	}
         }
 
         req.setStyle(sldStyle);
