@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.5 2004/02/02 21:21:06 dmzwiers Exp $
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.6 2004/02/02 21:45:13 dmzwiers Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
@@ -101,7 +101,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         // TODO translate to lat long, pending
         ftConfig.setLatLongBBox(ev);
         
-        //Extent ex = featureType.getDefaultGeometry().getCoordinateSystem().etValidArea();
+        //Extent ex = featureType.getDefaultGeometry().getCoordinateSystem().getValidArea();
         //ftConfig.setLatLongBBox(ex);
 
         request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE,
