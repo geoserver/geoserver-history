@@ -572,9 +572,115 @@ catch(ConfigurationException e){
     </section>
 
     <section>
-      <title>Next</title>
+      <title>Configuration Interface</title>
 
-      <para>On to you jody</para>
+      <para>To add the ability to alter the serviceLevel in the configuration
+      interface..</para>
+
+      <para></para>
+
+      <para>First, add the field to appropriate WFS interface page. The WFS
+      Description page contains fields pertaining to information about the
+      WFS, whereas the Content page contains fields which actually affect the
+      way the WFS operates. Because we are adding a serviceLevel field which
+      defines the services that the WFS provides, this should fall under
+      Content.</para>
+
+      <para></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>You must add the property to the ActionForm. In this case,
+          org.vfny.geoserver.form.wfs.WFSContentForm.</para>
+
+          <programlisting><emphasis role="bold">private String serviceLevel;</emphasis></programlisting>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para>And then the getters and setters.</para>
+
+          <programlisting><emphasis role="bold">/**
+ * Access serviceLevel property.
+ * 
+ * @return Returns the serviceLevel.
+ */
+public String getServiceLevel() {
+   return serviceLevel;
+}
+
+/**
+ * Set serviceLevel
+ *
+ * @param serviceLevel The serviceLevel to set.
+ */
+public void setServiceLevel(String serviceLevel) {
+   this.serviceLevel = serviceLevel;
+}</emphasis></programlisting>
+        </listitem>
+
+        <listitem>
+          <para>Add the following to WFSConfigContent.jsp where ever you want
+          the textbox to appear.</para>
+
+          <programlisting><emphasis role="bold">&lt;tr&gt;&lt;td align="right"&gt;
+   &lt;span class="help" title="&lt;bean:message key="help.serviceLevel"/&gt;"&gt;
+      &lt;bean:message key="label.serviceLevel"/&gt;:
+   &lt;/span&gt;
+&lt;/td&gt;&lt;td colspan=2&gt;
+   &lt;html:text property="serviceLevel" size="60"/&gt;
+&lt;/td&gt;&lt;/tr&gt;</emphasis></programlisting>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para></para>
+        </listitem>
+      </itemizedlist>
     </section>
   </section>
 </article>
