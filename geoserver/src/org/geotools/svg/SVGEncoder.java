@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * needs, so I will try, in the near future, to create a kind of sax writer
  * for svg feature sets export, wich will be more elegant than this
  *
- * @version $Id: SVGEncoder.java,v 1.1.2.1 2003/11/16 11:27:37 groldan Exp $
+ * @version $Id: SVGEncoder.java,v 1.1.2.2 2003/11/19 18:26:00 groldan Exp $
  */
 public class SVGEncoder
 {
@@ -36,7 +36,7 @@ public class SVGEncoder
     private static final String SVG_HEADER =
         "<?xml version=\"1.0\" standalone=\"no\"?>\n\t"
         + "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n"
-        + "<svg \n\tstroke=\"green\" \n\tfill=\"none\" \n\tstroke-width=\"0.1%\" \n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
+        + "<svg \n\tstroke=\"green\" \n\tfill=\"cyan\" \n\tstroke-width=\"0.001%\" \n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
 
     /** DOCUMENT ME!  */
     private static final String SVG_FOOTER = "</svg>\n";
@@ -51,30 +51,22 @@ public class SVGEncoder
     private Geometry currentGeometry = null;
     private FeatureType featureType;
 
-    /** DOCUMENT ME!  */
-    DecimalFormat formatter;
-    private ProgressListener progressListener = voidProgressListener;
-    private Writer writer;
-
-    /** DOCUMENT ME!  */
-    int currentIndex = 0;
-
-    /** DOCUMENT ME!  */
-    int maxIndex = -1;
+    private SVGWriter writer;
 
     private String width = "100%";
 
     private String height = "100%";
+
+    /** a factor for wich the referenceSpace will be divided to
+     * to obtain the minimun distance beteen encoded points
+     **/
+    private double minCoordDistance = 0;
 
     /**
      * Creates a new SVGEncoder object.
      */
     public SVGEncoder()
     {
-        formatter = new DecimalFormat();
-        formatter.setGroupingSize(0);
-        formatter.setMaximumFractionDigits(8);
-        formatter.setMinimumFractionDigits(0);
     }
 
     public void setWidth(String width)
@@ -90,51 +82,23 @@ public class SVGEncoder
     /**
      * DOCUMENT ME!
      *
-     * @param numDigits DOCUMENT ME!
-     */
-    public void setMaximunFractionDigits(int numDigits)
-    {
-        formatter.setMaximumFractionDigits(numDigits);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public int getMaximunFractionDigits()
-    {
-        return formatter.getMaximumFractionDigits();
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param numDigits DOCUMENT ME!
-     */
-    public void setMinimunFractionDigits(int numDigits)
-    {
-        formatter.setMinimumFractionDigits(numDigits);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public int getMinimunFractionDigits()
-    {
-        return formatter.getMinimumFractionDigits();
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param env DOCUMENT ME!
      */
     public void setReferenceSpace(Envelope env)
     {
+        setReferenceSpace(env, 5000);
+    }
+
+    public void setReferenceSpace(Envelope env, float blurFactor)
+    {
         this.referenceSpace = env;
+        if(blurFactor > 0)
+        {
+          double maxDimension = Math.max(env.getWidth(), env.getHeight());
+          this.minCoordDistance = maxDimension / blurFactor;
+        }else{
+          this.minCoordDistance = env.getWidth() + env.getHeight();
+        }
     }
 
     /**
@@ -151,16 +115,6 @@ public class SVGEncoder
         setReferenceSpace(new Envelope(minx, maxx, miny, maxy));
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param listener DOCUMENT ME!
-     */
-    public void setProgressListener(ProgressListener listener)
-    {
-        this.progressListener = (listener == null) ? voidProgressListener
-                                                   : listener;
-    }
 
     /**
      * DOCUMENT ME!
@@ -171,19 +125,19 @@ public class SVGEncoder
      */
     private void writeClosedPath(Coordinate[] coords) throws IOException
     {
-        write("<path ");
-        write("d=\"");
+        writer.write("<path ");
+        writer.write("d=\"");
         writePathContent(coords);
-        write("Z");
-        write("\"/>\n");
+        writer.write("Z");
+        writer.write("\"/>\n");
     }
 
     //
-    public void encode(final FeatureResults features, final Writer writer)
+    public void encode(final FeatureResults features, final OutputStream out)
         throws IOException
     {
         FeatureResults[] results = { features };
-        encode(null, results, writer);
+        encode(null, results, out);
     }
 
     /**
@@ -196,16 +150,15 @@ public class SVGEncoder
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void encode(FeatureTypeConfig[] layers, FeatureResults[] results,
-        Writer writer) throws IOException
+    public void encode(final FeatureTypeConfig[] layers,
+                       final FeatureResults[] results,
+                       final OutputStream out) throws IOException
     {
-        this.writer = writer;
+        this.writer = new SVGWriter(out);
 
         long t = System.currentTimeMillis();
 
         ensureSVGSpace(results);
-
-        checkProgressListenerNeed(results);
 
         writeHeader();
 
@@ -213,7 +166,7 @@ public class SVGEncoder
 
         writeLayers(layers, results);
 
-        write(SVG_FOOTER);
+        writer.write(SVG_FOOTER);
         this.writer.flush();
         t = System.currentTimeMillis() - t;
         LOGGER.info("SVG generado en " + t + " ms");
@@ -226,6 +179,7 @@ public class SVGEncoder
       String header = SVG_HEADER.replaceAll("_viewBox_", viewBox);
       header = header.replaceAll("_width_", this.width);
       header = header.replaceAll("_height_", this.height);
+      writer.write(header);
     }
 
     private void writeLayers(FeatureTypeConfig[] layers,
@@ -236,24 +190,34 @@ public class SVGEncoder
       int nConfigs = layers != null && layers.length >= nLayers? nLayers : 0;
 
       FeatureTypeConfig layerConfig;
-      int defMaxDecimals = formatter.getMaximumFractionDigits();
+      int defMaxDecimals = writer.getMaximunFractionDigits();
 
       for (int i = 0; i < nLayers; i++)
       {
           if(nConfigs == nLayers)
           {
-            formatter.setMaximumFractionDigits(layers[i].getNumDecimals());
+            writer.setMaximunFractionDigits(layers[i].getNumDecimals());
           }else{
-            formatter.setMaximumFractionDigits(defMaxDecimals);
+            writer.setMaximunFractionDigits(defMaxDecimals);
           }
 
-          FeatureReader featureReader = results[i].reader();
-          FeatureType schema = featureReader.getFeatureType();
-          String groupId = schema.getTypeName();
+          FeatureReader featureReader = null;
+          try {
+            LOGGER.fine("obtaining FeatureReader for " + results[i].getSchema().getTypeName());
+            featureReader = results[i].reader();
+            LOGGER.fine("got FeatureReader, now writing");
+            FeatureType schema = featureReader.getFeatureType();
+            String groupId = schema.getTypeName();
 
-          write("<g id=\"" + groupId + "\" class=\"" + groupId + "\">\n");
-          writeFeatures(featureReader);
-          write("</g>\n");
+            writer.write("<g id=\"" + groupId + "\" class=\"" + groupId + "\">\n");
+            writeFeatures(featureReader);
+            writer.write("</g>\n");
+          }catch (IOException ex) {
+            throw ex;
+          }finally{
+            if(featureReader != null)
+              featureReader.close();
+          }
       }
     }
 
@@ -285,32 +249,6 @@ public class SVGEncoder
       return viewBox;
     }
 
-    private void checkProgressListenerNeed(FeatureResults[] results) {
-      //if there is a progress listener, count the total number of features
-      //so we can send progress events
-      if (progressListener != voidProgressListener)
-      {
-          maxIndex = 0;
-          int nLayers = results.length;
-
-          for (int i = 0; i < nLayers; i++)
-          {
-              try
-              {
-                  maxIndex += results[i].getCount();
-              }
-              catch (IOException ex)
-              {
-                  LOGGER.warning("Can't compute total number of features: "
-                      + ex.getMessage());
-                  maxIndex = -1;
-
-                  break;
-              }
-          }
-      }
-    }
-
     private void ensureSVGSpace(FeatureResults[] results)
         throws IOException {
       if (this.referenceSpace == null)
@@ -337,37 +275,6 @@ public class SVGEncoder
     /**
      * DOCUMENT ME!
      *
-     * @throws IOException DOCUMENT ME!
-     */
-    void openGroup() throws IOException
-    {
-        openGroup(null);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param id DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    void openGroup(String id) throws IOException
-    {
-        write("<g");
-
-        if (id != null)
-        {
-            write(" id=\"");
-            write(id);
-            write('\"');
-        }
-
-        write('>');
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param reader DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
@@ -383,9 +290,7 @@ public class SVGEncoder
 
             while (reader.hasNext())
             {
-                ++currentIndex;
                 ft = reader.next();
-                progressListener.progress(currentIndex, maxIndex);
                 writeGeometry(ft);
             }
         }
@@ -404,85 +309,9 @@ public class SVGEncoder
      *
      * @throws IOException DOCUMENT ME!
      */
-    void closeGroup() throws IOException
-    {
-        closeGroup(null);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param id DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    void closeGroup(String id) throws IOException
-    {
-        write("</g>");
-
-        if (id != null)
-        {
-            write("<!-- FIN DE ");
-            write(id);
-            write(" -->");
-            newline();
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    private void newline() throws IOException
-    {
-        writer.write('\n');
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param s DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    private void write(CharSequence s) throws IOException
-    {
-        writer.write(s.toString());
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param c DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    private void write(char c) throws IOException
-    {
-        writer.write(c);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param d DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    private void write(double d) throws IOException
-    {
-        writer.write(formatter.format(d));
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     private void writePointDefs() throws IOException
     {
-        write(
+        writer.write(
             "<defs>\n\t<circle id='point' cx='0' cy='0' r='0.2%' fill='blue'/>\n</defs>\n");
     }
 
@@ -496,30 +325,36 @@ public class SVGEncoder
     private void writePathContent(Coordinate[] coords)
         throws IOException
     {
-        write('M');
+        writer.write('M');
 
         Coordinate prev = coords[0];
         Coordinate curr = null;
-        write(getX(prev.x));
-        write(' ');
-        write(getY(prev.y));
+        writer.write(getX(prev.x));
+        writer.write(' ');
+        writer.write(getY(prev.y));
 
         int nCoords = coords.length;
 
-        write('l');
+        writer.write('l');
+        int skipCount = 0;
 
         for (int i = 1; i < nCoords; i++)
         {
             curr = coords[i];
-            write((getX(curr.x) - getX(prev.x)));
-            write(' ');
-            write(getY(curr.y) - getY(prev.y));
-            write(' ');
+            //let at least 3 points in case it is a polygon
+            if(i > 3 && prev.distance(curr) <= minCoordDistance)
+            {
+              ++skipCount;
+              continue;
+            }
+            writer.write((getX(curr.x) - getX(prev.x)));
+            writer.write(' ');
+            writer.write(getY(curr.y) - getY(prev.y));
+            writer.write(' ');
             prev = curr;
         }
+        System.out.println("skipped " + skipCount + " of " + nCoords);
     }
-
-    //
 
     /**
      * por ahora solo para pligonos...
@@ -564,21 +399,20 @@ public class SVGEncoder
         }
     }
 
-    //
     private void writeAttributes() throws IOException
     {
         if (currentGeometry != null)
         {
             Envelope env = currentGeometry.getEnvelopeInternal();
-            write("bounds=\"");
-            write(getX(env.getMinX()));
-            write(' ');
-            write(getY(env.getMinY()));
-            write(' ');
-            write(env.getWidth());
-            write(' ');
-            write(env.getHeight());
-            write("\" ");
+            writer.write("bounds=\"");
+            writer.write(getX(env.getMinX()));
+            writer.write(" ");
+            writer.write(getY(env.getMinY()));
+            writer.write(" ");
+            writer.write(env.getWidth());
+            writer.write(" ");
+            writer.write(env.getHeight());
+            writer.write("\" ");
         }
 
         int numAtts = currentFeature.getNumberOfAttributes();
@@ -590,30 +424,11 @@ public class SVGEncoder
 
             if (!(att instanceof Geometry))
             {
-                writeAttribute(featureType.getAttributeType(i).getName(), att);
+                writer.writeAttribute(featureType.getAttributeType(i).getName(), att);
             }
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param attName DOCUMENT ME!
-     * @param attValue DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    private void writeAttribute(String attName, Object attValue)
-        throws IOException
-    {
-        write(attName);
-        write("=\"");
-
-        if (attValue != null)
-            write(java.net.URLEncoder.encode(String.valueOf(attValue)));
-
-        write("\" ");
-    }
 
     /**
      * DOCUMENT ME!
@@ -624,20 +439,20 @@ public class SVGEncoder
      */
     private void writeMultiPoint(MultiPoint mp) throws IOException
     {
-        write("<g ");
+        writer.write("<g ");
         writeId();
         writeAttributes();
-        write('>');
+        writer.write(">\n");
 
         int npoints = mp.getNumGeometries();
 
         for (int i = 0; i < npoints; i++)
         {
-            write('\t');
+            writer.write("\t");
             writePoint((Point) mp.getGeometryN(i));
         }
 
-        write("</g>");
+        writer.write("</g>");
     }
 
     /**
@@ -650,14 +465,14 @@ public class SVGEncoder
     private void writePoint(com.vividsolutions.jts.geom.Point p)
         throws IOException
     {
-        write("<use xlink:href=\"#point\" x=\"");
-        write(getX(p.getX()));
-        write("\" y=\"");
-        write(getY(p.getY()));
-        write("\" ");
+        writer.write("<use xlink:href=\"#point\" x=\"");
+        writer.write(getX(p.getX()));
+        writer.write("\" y=\"");
+        writer.write(getY(p.getY()));
+        writer.write("\" ");
         writeAttributes();
-        write("/>");
-        newline();
+        writer.write("/>");
+        writer.newline();
     }
 
     /**
@@ -669,12 +484,12 @@ public class SVGEncoder
      */
     private void writePolyLine(Coordinate[] coords) throws IOException
     {
-        write("<path fill=\"none\" ");
+        writer.write("<path fill=\"none\" ");
         writeAttributes();
-        write(" d=\"");
+        writer.write(" d=\"");
         writePathContent(coords);
-        write("\"/>");
-        newline();
+        writer.write("\"/>");
+        writer.newline();
     }
 
     /**
@@ -687,9 +502,9 @@ public class SVGEncoder
     private void writeMultiLineString(MultiLineString mls)
         throws IOException
     {
-        write("<path fill=\"none\" ");
+        writer.write("<path fill=\"none\" ");
         writeAttributes();
-        write(" d=\"");
+        writer.write(" d=\"");
 
         int n = mls.getNumGeometries();
 
@@ -698,8 +513,8 @@ public class SVGEncoder
             writePathContent(mls.getGeometryN(i).getCoordinates());
         }
 
-        write("\"/>");
-        newline();
+        writer.write("\"/>");
+        writer.newline();
     }
 
     //
@@ -716,10 +531,10 @@ public class SVGEncoder
     {
         int n = mpoly.getNumGeometries();
         com.vividsolutions.jts.geom.Polygon poly;
-        write("<path ");
+        writer.write("<path ");
         writeId();
         writeAttributes();
-        write("d=\"");
+        writer.write("d=\"");
 
         for (int i = 0; i < n; i++)
         {
@@ -727,8 +542,8 @@ public class SVGEncoder
             writePolyContent(poly);
         }
 
-        write("\"/>");
-        newline();
+        writer.write("\"/>");
+        writer.newline();
 
         //writeData(out);
         //write("</path>\n");
@@ -737,9 +552,9 @@ public class SVGEncoder
     //
     private void writeId() throws IOException
     {
-        write("id=\"");
-        write(currentFeature.getID());
-        write("\" ");
+        writer.write("id=\"");
+        writer.write(currentFeature.getID());
+        writer.write("\" ");
     }
 
     /**
@@ -775,12 +590,12 @@ public class SVGEncoder
         int nHoles = poly.getNumInteriorRing();
 
         writePathContent(shell.getCoordinates());
-        write('Z');
+        writer.write("Z");
 
         for (int i = 0; i < nHoles; i++)
         {
             writePathContent(poly.getInteriorRingN(i).getCoordinates());
-            write('Z');
+            writer.write("Z");
         }
     }
 
@@ -810,90 +625,4 @@ public class SVGEncoder
         return x;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param argv DOCUMENT ME!
-     */
-    public static void main(String[] argv)
-    {
-        String group = "entidades";
-        String layer = "MG_ENTIDADES";
-        String[] fields = { "SHAPE", "COD_MUNI", "COD_ENTI", "NOM_ENTI" };
-        FilterFactory ff = FilterFactory.createFilterFactory();
-
-        SVGEncoder encoder = new SVGEncoder();
-        encoder.setMaximunFractionDigits(2);
-        encoder.setMinimunFractionDigits(0);
-
-        encoder.setProgressListener(new ProgressListener()
-            {
-                public void progress(int value, int max)
-                {
-                    System.out.print('.');
-                }
-            });
-
-        try
-        {
-            DataStore store = getDataStore();
-            FeatureSource fSource = store.getFeatureSource(layer);
-            FeatureType schema = fSource.getSchema();
-
-            CompareFilter anoEfecto = ff.createCompareFilter(AbstractFilter.COMPARE_EQUALS);
-            Expression field = ff.createAttributeExpression(schema, "ANO_EFECTO");
-            Expression literal = ff.createLiteralExpression(new Integer(1996));
-            anoEfecto.addLeftValue(field);
-            anoEfecto.addRightValue(literal);
-
-            CompareFilter codMuni = ff.createCompareFilter(AbstractFilter.COMPARE_EQUALS);
-            field = ff.createAttributeExpression(schema, "COD_MUNI");
-            literal = ff.createLiteralExpression(new Integer(20));
-            codMuni.addLeftValue(field);
-            codMuni.addRightValue(literal);
-
-            LogicFilter and = ff.createLogicFilter(AbstractFilter.LOGIC_AND);
-            and.addFilter(anoEfecto);
-            and.addFilter(codMuni);
-
-            Query query = new DefaultQuery(and, fields);
-
-            Envelope referenceBounds = store.getFeatureSource("BIZKAIA")
-                                            .getBounds();
-            FeatureResults features = fSource.getFeatures(query);
-
-            Writer out = new FileWriter("c:\\" + layer + ".svg");
-            out = new BufferedWriter(out, 1024 * 1024);
-            encoder.setReferenceSpace(referenceBounds);
-            encoder.encode(features, out);
-            out.flush();
-            out.close();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    private static DataStore getDataStore() throws IOException
-    {
-        DataStore ds = null;
-        Map params = new HashMap();
-        params.put("dbtype", "arcsde");
-        params.put("server", "localhost");
-        params.put("port", "5151");
-        params.put("instance", "sde");
-        params.put("user", "sde");
-        params.put("password", "carto");
-        ds = new org.geotools.data.sde.SdeDataStoreFactory().createDataStore(params);
-
-        return ds;
-    }
 }
