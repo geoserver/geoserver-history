@@ -11,10 +11,6 @@ import java.util.logging.Logger;
 import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.Servlet;
-//import org.exolab.castor.xml.Unmarshaller;
-//import org.exolab.castor.xml.MarshalException;
-//import org.exolab.castor.xml.ValidationException;
-//import org.vfny.geoserver.config.configuration.GlobalConfiguration;
 
 /**
  * Reads all necessary configuration data and abstracts it away from the 
@@ -28,10 +24,6 @@ public class ConfigInfo {
 
     /** Class logger */
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
-    /** Root directory of webserver */
-    //private static final String ROOT_DIR = guessRootDir();
-
-
     /** Default name for feature type schemas */
     private static final String CONFIG_FILE =  "configuration.xml";
     /** Default name for feature type schemas */
@@ -52,8 +44,10 @@ public class ConfigInfo {
 
     private String rootDir;
 
-    /** a Castor class to read internal configuration information */
-    private ServiceConfig global;
+    /** a DOM class to read service configuration information */
+    private ServiceConfig serviceGlobal;
+     /** a DOM class to read wfs global configuration information */
+    private WfsConfig wfsGlobal;
     /** Root directory for feature types */
     private String typeDir; //= ROOT_DIR + CONFIG_DIR + TYPE_DIR;
     /** Root directory of capabilities data */
@@ -66,7 +60,7 @@ public class ConfigInfo {
      * 'Service' section of the return document.
      */
     //private ConfigInfo() {
-    //    global = readProperties(ROOT_DIR);
+    //    service = readServiceTags(ROOT_DIR);
     //LOG.finer("empty constructor called");
     //}
 
@@ -82,8 +76,8 @@ public class ConfigInfo {
 	this.rootDir = rootDir;
             setTypeDir(rootDir + TYPE_DIR);
 	    setCapabilitiesDir(rootDir + CAP_DIR);        
-	global = readProperties(rootDir + CONFIG_FILE);
-	
+	serviceGlobal = readServiceTags(rootDir + CONFIG_FILE);
+	wfsGlobal = readWfsTags(rootDir + CONFIG_FILE);
     }
     
     /** Returns root webserver application directory 
@@ -123,14 +117,24 @@ public class ConfigInfo {
     }    
 
 
-    private static ServiceConfig readProperties(String configFile) {
-	ServiceConfig global = null;
+    private static ServiceConfig readServiceTags(String configFile) {
+	ServiceConfig service = null;
 	try {
-	    global = ServiceConfig.getInstance(configFile);
+	    service = ServiceConfig.getInstance(configFile);
 	} catch (ConfigurationException ce){
 	    LOG.warning("problem reading config file: " + ce.getMessage());
 	} 
-	return global;
+	return service;
+    }
+
+    private static WfsConfig readWfsTags(String configFile) {
+	WfsConfig wfs = null;
+	try {
+	    wfs = WfsConfig.getInstance(configFile);
+	} catch (ConfigurationException ce){
+	    LOG.warning("problem reading config file: " + ce.getMessage());
+	} 
+	return wfs;
     }
 
     /** Returns root webserver application directory 
@@ -143,13 +147,13 @@ public class ConfigInfo {
     
 
     /** Returns the user-specified title of this service */
-    public String getTitle() { return global.getTitle(); }        
+    public String getTitle() { return serviceGlobal.getTitle(); }        
     /** Returns user-specified abstract for this service */
-    public String getAbstract() { return global.getAbstract(); }    
+    public String getAbstract() { return serviceGlobal.getAbstract(); }    
     /** Returns user-specified keywords for this service  */
     public String getKeywords() { 
 	StringBuffer keywords = new StringBuffer();
-	Iterator keywordIter = global.getKeywords().iterator();
+	Iterator keywordIter = serviceGlobal.getKeywords().iterator();
 	while (keywordIter.hasNext()) {
 	    keywords.append(keywordIter.next().toString());
 	    if (keywordIter.hasNext()){
@@ -159,24 +163,26 @@ public class ConfigInfo {
 	return keywords.toString(); 
     }    
     /** Returns URL for this service */
-    public String getOnlineResource(){ return global.getOnlineResource(); }
+    public String getOnlineResource(){ 
+	return serviceGlobal.getOnlineResource(); 
+    }
     /** Returns URL for this service */
     //REVIST: should this be different from onlineResource?  Re-add url field?
-    public String getUrl(){ return global.getOnlineResource(); }
+    public String getUrl(){ return serviceGlobal.getOnlineResource(); }
     /** Returns user-specified fees for this service */
-    public String getFees() { return global.getFees(); }
+    public String getFees() { return serviceGlobal.getFees(); }
     /** Returns user-specified access constraints for this service */
-    public String getAccessConstraints(){return global.getAccessConstraints();}
-
+    public String getAccessConstraints(){
+	return serviceGlobal.getAccessConstraints();
+    }
     public boolean formatOutput(){
-	return global.isVerbose();
+	return wfsGlobal.isVerbose();
     }
     /** Returns fixed version number for this service */
     public String getFreeFsVersion() { return "0.9b"; }        
     /** Returns the current time as a string. */
     public String getCurrentTime() { return (new Date()).toString(); }
             
-
     /** Returns user-specified fees for this service */
     public String getTypeDir() { LOG.finer("returning typeDir " + typeDir); return typeDir; }    
     /** Returns user-specified fees for this service */
@@ -189,6 +195,29 @@ public class ConfigInfo {
         this.capabilitiesDir = capabilitiesDir;
     }
     
+    /**
+     * gets the default namespace prefix.  This is really more for backwards
+     * compatibility, as all feature type directories should now be named
+     * with their correct prefix namespace.  This is the prefix that will
+     * go on typenames that don't have a prefix.
+     *
+     * @return the prefix to use for those featureTypes that don't have
+     * a properly prepended prefix.
+     */
+    public String getDefaultNSPrefix(){
+	return wfsGlobal.getDefaultPrefix();
+    }
+
+    /**
+     * Gets the namespace uri corresponding to passed in prefix, as set
+     * in the configuration file.
+     * 
+     * @param prefix the prefix to retrieve the uri for.
+     * @return the uri corresponding to the prefix.
+     */
+    public String getNSUri(String prefix){
+	return wfsGlobal.getUriFromPrefix(prefix);
+    }
     
     /** 
      * Returns the current time as a string
@@ -196,27 +225,7 @@ public class ConfigInfo {
      */
     public String getServiceXml(String wfsName) {
            
-	return global.getWfsXml();
-	/* StringBuffer tempResponse = new StringBuffer();
-        
-        // Set service section of Response, based on Configuration input
-        tempResponse.append("  <Service>\n");
-        tempResponse.append("    <Name>" + wfsName + "</Name>\n");
-        tempResponse.append("    <Title>" + getTitle() +
-            "</Title>\n");
-        tempResponse.append("    <Abstract>" + getAbstract() + 
-            "</Abstract>\n");
-        tempResponse.append("    <Keywords>" + getKeywords() + 
-            "</Keywords>\n");
-        tempResponse.append("    <OnlineResource>" + 
-            getOnlineResource() + "</OnlineResource>\n");
-        tempResponse.append("    <Fees>" + getFees() + "</Fees>\n");
-        tempResponse.append("    <AccessConstraints>" + 
-            getAccessConstraints() + "</AccessConstraints>\n");
-        tempResponse.append("  </Service>\n");
-        
-        // Concatenate into XML output stream
-        return tempResponse.toString();
-	*/
+	return serviceGlobal.getWfsXml();
+	
     }
 }
