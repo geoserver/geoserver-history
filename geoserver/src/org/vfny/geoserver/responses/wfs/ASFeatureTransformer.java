@@ -313,8 +313,9 @@ public class ASFeatureTransformer extends TransformerBase {
          * @param schemaLoc DOCUMENT ME!
          */
         public FeatureTranslator(ContentHandler handler, String prefix,
-            String ns, FeatureTypeNamespaces types,
-            SchemaLocationSupport schemaLoc) {
+        		String ns, FeatureTypeNamespaces types,
+				SchemaLocationSupport schemaLoc) {
+        	
             super(handler, prefix, ns, schemaLoc);
             geometryTranslator = new GeometryTransformer.GeometryTranslator(handler);
             this.types = types;
@@ -323,6 +324,15 @@ public class ASFeatureTransformer extends TransformerBase {
                 .getDefaultPrefix(), geometryTranslator.getDefaultNamespace());
             memberString = geometryTranslator.getDefaultPrefix()
                 + ":featureMember";
+        	
+            // add all the global attribute prefixes from the map of XMLelementStructure
+            // first coalesce into a singe set
+            HashSet allAttPrefixes = new HashSet();
+            Iterator i = StructureMap.values().iterator();
+            while (i.hasNext()) {
+            	XMLelementStructure structure = (XMLelementStructure)i.next();
+            	structure.loadGlobalNamespaces(allAttPrefixes, nsSupport);
+            }
         }
 
         void setGmlPrefixing(boolean prefixGml) {
@@ -343,6 +353,7 @@ public class ASFeatureTransformer extends TransformerBase {
         }
 
         public void encode(Object o) throws IllegalArgumentException {
+       	
             try {
                 if (o instanceof FeatureCollection) {
                     FeatureCollection fc = (FeatureCollection) o;
@@ -371,7 +382,7 @@ public class ASFeatureTransformer extends TransformerBase {
                     for (int i = 0; i < results.length; i++) {
                         bounds.expandToInclude(results[i].getBounds());
                     }
-
+                    
                     startFeatureCollection();
                     writeBounds(bounds);
 
@@ -489,6 +500,7 @@ public class ASFeatureTransformer extends TransformerBase {
                     + ":" + fc);
                 AttributesImpl atts = new AttributesImpl();
 
+                // namespaces and schema loc atts are added elsewhere
                 if (lockId != null) {
                     atts.addAttribute("", "lockId", "lockId", "", lockId);
                 }
