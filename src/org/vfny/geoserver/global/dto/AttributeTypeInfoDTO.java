@@ -4,9 +4,8 @@
  */
 package org.vfny.geoserver.global.dto;
 
-//import org.geotools.feature.AttributeType;
-//import org.geotools.feature.DefaultAttributeType.Geometric;
 import java.util.logging.Logger;
+
 
 /**
  * Represents most of a xs:element for an XMLSchema.
@@ -96,7 +95,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
+     * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
      * 
      * <p>
      * Copies the data from the specified DTO to this one.
