@@ -12,6 +12,13 @@
 	</td><td colspan=2>
 		<html:checkbox property="enabled"/>
 	</td></tr>
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.srsXmlStyle"/>">
+			<bean:message key="label.srsXmlStyle"/>:
+		</span>
+	</td><td colspan=2>
+		<html:checkbox property="srsXmlStyle"/>
+	</td></tr>
 	
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.serviceLevel"/>">

@@ -29,6 +29,17 @@
 	
 	<tr>
 	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.verboseExceptions"/>">
+			<bean:message key="label.verboseExceptions"/>:
+		</span>
+      </td>
+      <td class="datum">
+		<html:checkbox property="verboseExceptions"/>
+	  </td>
+	</tr>
+	
+	<tr>
+	  <td class="label">
 		<span class="help" title="<bean:message key="help.global.numDecimals"/>">
 			<bean:message key="label.numDecimals"/>:
 		</span>
