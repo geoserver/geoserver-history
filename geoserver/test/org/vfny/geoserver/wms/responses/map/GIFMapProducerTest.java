@@ -66,6 +66,7 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
 		int w = image.getWidth();
         int h = image.getHeight();
         
+		assertNotNull(product);
         assertEquals(w, product.getWidth());
         assertEquals(h, product.getHeight());
         
