@@ -9,7 +9,7 @@
   xsi:schemaLocation="http://www.opengis.net/wfs../wfs/1.0.0/WFS-basic.xsd">
   <wfs:Query typeName="gd:buildings">
     <ogc:Filter>
-      <ogc:FeatureId fid="buildings.1063"/>
+      <ogc:FeatureId fid="buildings.1080"/>
     </ogc:Filter>
     </wfs:Query>
 </wfs:GetFeature>

@@ -7,12 +7,21 @@
 	<name>Lake Integrity Checks</name>
 	<description>Checks to ensure the lakes are valid</description>
 	<test>
-		<name>lake is valid geom</name>
+		<name>Lake Valid</name>
 		<description>Checks that Lakes are represented by valid geometries</description>
 		<plugin>Is Valid Geometry</plugin>
 		<argument >
 			<name>typeRef</name>
 			<string>lakes:lakes</string>
+		</argument>
+	</test>
+	<test>
+		<name>Stream</name>
+		<description>Stream must not crosss itself (expect on a node)</description>
+		<plugin>Line Not Self Intersection</plugin>
+		<argument>
+			<name>typeRef</name>
+			<string>streams:streams</string>
 		</argument>
 	</test>
 </suite>

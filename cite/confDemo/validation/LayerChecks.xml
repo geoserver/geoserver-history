@@ -20,15 +20,6 @@
 		</argument>
 	</test>
 	<test>
-		<name>Stream</name>
-		<description>Checks that Streams do not self intersect</description>
-		<plugin>Line Not Self Intersection</plugin>
-		<argument >
-			<name>typeRef</name>
-			<string>streams:streams</string>
-		</argument>
-	</test>
-	<test>
 		<name>River - Stream</name>
 		<description>Checks that Rivers intersect Streams at a node.</description>
 		<plugin>Lines Node Intersect</plugin>

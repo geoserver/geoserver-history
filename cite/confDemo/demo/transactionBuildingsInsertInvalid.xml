@@ -17,7 +17,7 @@
 	<gml:outerBoundaryIs>
 		<gml:LinearRing>
 			<gml:coordinates decimal="." cs="," ts=" ">
-560119.11,5246772.66 560119.16,5246826.31 560161.84,5246826.14 560162.4,5246772.5 560119.11,5246772.66
+560119.11,5246772.66 560119.16,5246826.31 560162.4,5246772.5 560161.84,5246826.14 560119.11,5246772.66
 			</gml:coordinates>
 		</gml:LinearRing>
 		</gml:outerBoundaryIs>
@@ -27,7 +27,7 @@
 		</gd:the_geom>
 		<gd:POLY>PC01_15</gd:POLY>
 		<gd:POLY_OBRP>PC</gd:POLY_OBRP>
-		<gd:LABEL>2000400</gd:LABEL>
+		<gd:LABEL></gd:LABEL>
 		<gd:TO_GROUND> </gd:TO_GROUND>
 		<gd:STATUS> </gd:STATUS>
 		<gd:PRODUCT> </gd:PRODUCT>
