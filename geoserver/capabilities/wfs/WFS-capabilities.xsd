@@ -332,9 +332,11 @@
         must always be available.  Individual servers can define
         additional elements representing other output formats. -->
    <xsd:element name="GML2" type="wfs:EmptyType"/>
+   <xsd:element name="GML2-GZIP" type="wfs:EmptyType"/>
    <xsd:complexType name="ResultFormatType">
       <xsd:sequence maxOccurs="unbounded">
          <xsd:element ref="wfs:GML2"/>
+         <xsd:element ref="wfs:GML2-GZIP"/>
       </xsd:sequence>
    </xsd:complexType>
 
