@@ -6,7 +6,6 @@ package org.vfny.geoserver;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
@@ -23,8 +22,6 @@ import org.vfny.geoserver.util.Requests;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: Request.java,v 1.16 2004/09/08 17:36:35 cholmesny Exp $
  */
 abstract public class Request {
@@ -187,11 +184,6 @@ abstract public class Request {
 	
 	public WFS getWFS(){
 		WFS vp = Requests.getWFS( getHttpServletRequest() );
-		return vp;
-	}
-
-	public WCS getWCS(){
-		WCS vp = Requests.getWCS( getHttpServletRequest() );
 		return vp;
 	}
 

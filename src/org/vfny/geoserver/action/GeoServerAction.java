@@ -4,16 +4,16 @@
  */
 package org.vfny.geoserver.action;
 
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.Action;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
-import java.util.logging.Logger;
 
 /**
  * GeoServerAction is a common super class used by STRUTS Actions.
@@ -54,9 +54,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author cholmesny
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: cholmesny $ (last modification)
  * @version $Id: GeoServerAction.java,v 1.7 2004/04/16 16:33:31 cholmesny Exp $
  */
 public class GeoServerAction extends Action {
@@ -132,23 +130,6 @@ public class GeoServerAction extends Action {
      */
     public WFS getWFS(HttpServletRequest request) {
     	return Requests.getWFS(request);
-    }
-
-    /**
-     * Aquire WCS from Web Container.
-     * 
-     * <p>
-     * The WCS instance is create by a STRUTS plug-in and is available
-     * through the Web container. (Test cases may seed the request object with
-     * a Mock WebContainer and a Mock WCS)
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire session reference
-     *
-     * @return WCS instance for this Web Application
-     */
-    public WCS getWCS(HttpServletRequest request) {
-    	return Requests.getWCS(request);
     }
 
     /**

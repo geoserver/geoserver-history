@@ -33,8 +33,6 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: Dispatcher.java,v 1.13 2004/07/15 21:13:12 jmacgill Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
@@ -51,9 +49,6 @@ public class Dispatcher extends HttpServlet {
 
     /** Map get capabilities request type */
     public static final int GET_CAPABILITIES_REQUEST = 1;
-
-    public static final int DESCRIBE_COVERAGE_REQUEST = 2;
-    public static final int GET_COVERAGE_REQUEST = 3;
 
     /** Map describe feature type request type */
     public static final int DESCRIBE_FEATURE_TYPE_REQUEST = 2;
@@ -84,7 +79,6 @@ public class Dispatcher extends HttpServlet {
 
     public static final short WMS_SERVICE = 101;
     public static final short WFS_SERVICE = 102;
-    public static final short WCS_SERVICE = 103;
 
     /** Map get feature  request type */
     public static final int UNKNOWN = -1;

@@ -43,7 +43,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        CapabilitiesHandler currentRequest = new CapabilitiesHandler("WMS");
+        CapabilitiesHandler currentRequest = new CapabilitiesHandler();
 
         // read in XML file and parse to content handler
         try {

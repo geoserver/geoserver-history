@@ -18,12 +18,10 @@ import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.GeoServerPlugIn;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
@@ -39,8 +37,6 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: ConfigPlugIn.java,v 1.8 2004/02/20 00:28:19 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.global.GeoServerPlugIn
@@ -79,16 +75,14 @@ public class ConfigPlugIn implements PlugIn {
         ServletContext sc = arg0.getServletContext();
         WMS wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
         WFS wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);
-        WCS wcs = (WCS) sc.getAttribute(WCS.WEB_CONTAINER_KEY);
 
-        if (wms == null || wfs == null || wcs == null) {
+        if (wms == null || wfs == null) {
             GeoServerPlugIn gspi = new GeoServerPlugIn();
             gspi.init(arg0, arg1);
             wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
             wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);
-            wcs = (WCS) sc.getAttribute(WCS.WEB_CONTAINER_KEY);
 
-            if (wms == null || wfs == null || wcs == null) {
+            if (wms == null || wfs == null) {
                 throw new ServletException(
                     "GeoServerPlugIn Failed. Thus ConfigPlugIn cannot run.");
             }
@@ -96,7 +90,6 @@ public class ConfigPlugIn implements PlugIn {
 
         sc.setAttribute(WMSConfig.CONFIG_KEY, new WMSConfig((WMSDTO)wms.toDTO()));
         sc.setAttribute(WFSConfig.CONFIG_KEY, new WFSConfig((WFSDTO)wfs.toDTO()));
-        sc.setAttribute(WCSConfig.CONFIG_KEY, new WCSConfig((WCSDTO)wcs.toDTO()));
         sc.setAttribute(GlobalConfig.CONFIG_KEY,
             new GlobalConfig((GeoServerDTO)wfs.getGeoServer().toDTO()));
         sc.setAttribute(DataConfig.CONFIG_KEY, new DataConfig((DataDTO)wfs.getData().toDTO()));

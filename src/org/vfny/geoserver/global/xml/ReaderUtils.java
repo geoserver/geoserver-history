@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import org.vfny.geoserver.global.MetaDataLink;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -36,8 +35,6 @@ import org.xml.sax.SAXException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: ReaderUtils.java,v 1.10 2004/09/13 16:04:26 cholmesny Exp $
  *
  * @see XMLConfigReader
@@ -516,46 +513,6 @@ public class ReaderUtils {
         return ss;
     }
 
-    /**
-     * getMetaDataLink purpose.
-     * 
-     * <p>
-     * Used to help with XML manipulations. Returns a metedataLink Attribute
-     * </p>
-     *
-     * @param metadataElem The root element to look for children in.
-     *
-     * @return The MetaDataLink that was found.
-     * @throws ConfigurationException 
-     */
-    public static MetaDataLink getMetaDataLink(Element metadataElem) throws ConfigurationException {
-    	MetaDataLink mdl = new MetaDataLink();
-    	String tmp;
-    	if( metadataElem != null ) {
-        	tmp = getElementText(metadataElem, false);
-        	if( (tmp != null) && (tmp != "") ) {
-        		mdl.setContent(tmp);
-        	}
-
-        	tmp = getAttribute(metadataElem, "about", false);
-        	if( (tmp != null) && (tmp != "") ) {
-        		mdl.setAbout(tmp);
-        	}
-
-        	tmp = getAttribute(metadataElem, "type", false);
-        	if( (tmp != null) && (tmp != "") ) {
-        		mdl.setType(tmp);
-        	}
-
-        	tmp = getAttribute(metadataElem, "metadataType", false);
-        	if( (tmp != null) && (tmp != "") ) {
-        		mdl.setMetadataType(tmp);
-        	}
-    	}
-
-    	return mdl;
-    }
-    
     /**
      * getFirstChildElement purpose.
      * 

@@ -15,7 +15,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.GlobalConfig;
-import org.vfny.geoserver.config.WCSConfig;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
@@ -73,9 +72,7 @@ import org.vfny.geoserver.global.UserContainer;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author jive
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: jive $ (last modification)
  * @version $Id: ConfigAction.java,v 1.11 2004/03/02 02:36:00 jive Exp $
  */
 public class ConfigAction extends GeoServerAction {
@@ -141,21 +138,6 @@ public class ConfigAction extends GeoServerAction {
     protected WFSConfig getWFSConfig() {
         return (WFSConfig) getServlet().getServletContext().getAttribute(WFSConfig.CONFIG_KEY);
     }
-
-    /**
-     * Access Web Coverage Server Configuration Model from the WebContainer.
-     * 
-     * <p>
-     * Note that this represents the Configuration and not the state of the Web
-     * Coverage Server.
-     * </p>
-     *
-     * @return Configuration information for Web Coverage Server
-     */
-    protected WCSConfig getWCSConfig() {
-        return (WCSConfig) getServlet().getServletContext().getAttribute(WCSConfig.CONFIG_KEY);
-    }
-
     /**
      * Access Web Map Server Configuration Model from the WebContainer.
      *

@@ -20,20 +20,12 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * System.out.println(serv.getName());
  * </p>
  *
- * <p>
- * WCS wcs = new WCS(dto); Service serv = (Service)WCS;
- * System.out.println(serv.getName());
- * </p>
-
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: Service.java,v 1.7 2004/02/09 23:29:42 dmzwiers Exp $
  *
  * @see WMS
  * @see WFS
- * @see WCS
  */
 public abstract class Service extends GlobalLayerSupertype {
 
@@ -46,9 +38,7 @@ public abstract class Service extends GlobalLayerSupertype {
 	private String fees;
 	private String accessConstraints;
 	private String maintainer;
-    
-    private MetaDataLink metadataLink;
-
+	
 	private GeoServer gs;
 	private Data dt;
 
@@ -77,7 +67,6 @@ public abstract class Service extends GlobalLayerSupertype {
         accessConstraints = dto.getAccessConstraints();
         maintainer = dto.getMaintainer();
         onlineResource = dto.getOnlineResource();
-        metadataLink = dto.getMetadataLink();
     }
     
     /**
@@ -101,7 +90,6 @@ public abstract class Service extends GlobalLayerSupertype {
     	accessConstraints = dto.getAccessConstraints();
     	maintainer = dto.getMaintainer();
     	onlineResource = dto.getOnlineResource();
-    	metadataLink = dto.getMetadataLink();
     }
 
     /**
@@ -238,7 +226,6 @@ public abstract class Service extends GlobalLayerSupertype {
     	dto.setOnlineResource(onlineResource);
     	dto.setAbstract(serverAbstract);
     	dto.setTitle(title);
-    	dto.setMetadataLink(metadataLink);
     	return dto;
     }
 	/**
@@ -277,10 +264,4 @@ public abstract class Service extends GlobalLayerSupertype {
 		this.gs = gs;
 	}
 
-	/**
-	 * @return Returns the metadataLink.
-	 */
-	public MetaDataLink getMetadataLink() {
-		return metadataLink;
-	}
 }

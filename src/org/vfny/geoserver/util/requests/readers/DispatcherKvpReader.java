@@ -15,8 +15,6 @@ import org.vfny.geoserver.servlets.Dispatcher;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Rold?n
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: DispatcherKvpReader.java,v 1.11 2004/08/02 17:38:04 cholmesny Exp $
  */
 public class DispatcherKvpReader {
@@ -41,10 +39,6 @@ public class DispatcherKvpReader {
             if (responseType.equals("GETCAPABILITIES") 
                 || responseType.equals("CAPABILITIES")) {
                 return Dispatcher.GET_CAPABILITIES_REQUEST;
-            } else if (responseType.equals("DESCRIBECOVERAGE")) {
-                return Dispatcher.DESCRIBE_COVERAGE_REQUEST;
-            } else if (responseType.equals("GETCOVERAGE")) {
-                return Dispatcher.GET_COVERAGE_REQUEST;
             } else if (responseType.equals("DESCRIBEFEATURETYPE")) {
                 return Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
             } else if (responseType.equals("GETFEATURE")) {
@@ -86,9 +80,7 @@ public class DispatcherKvpReader {
         if (serviceType != null) {
             serviceType = serviceType.toUpperCase();
 
-            if (serviceType.equals("WCS")) {
-                return Dispatcher.WCS_SERVICE;
-            } else if (serviceType.equals("WFS")) {
+            if (serviceType.equals("WFS")) {
                 return Dispatcher.WFS_SERVICE;
             } else if (serviceType.equals("WMS")) {
                 return Dispatcher.WMS_SERVICE;

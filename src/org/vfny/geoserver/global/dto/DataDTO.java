@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+
 /**
  * Data Transfer Object used to represent GeoServer Catalog information.
  * 
@@ -45,8 +46,6 @@ import java.util.NoSuchElementException;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: DataDTO.java,v 1.5 2004/02/09 18:02:23 dmzwiers Exp $
  *
  * @see DataSource
@@ -62,13 +61,6 @@ public final class DataDTO implements DataTransferObject {
     private Map dataStores;
 
     /**
-     * FormatInfoDTO referenced by key "<code>formatID</code>".
-     *
-     * @see org.vfny.geoserver.global.dto.FormatInfoDTO
-     */
-    private Map formats;
-    
-    /**
      * NamespaceDTO referenced by key "<code>prefix</code>".
      *
      * @see org.vfny.geoserver.global.dto.NameSpaceInfoDTO
@@ -82,8 +74,6 @@ public final class DataDTO implements DataTransferObject {
      * @see org.vfny.geoserver.global.dto.FeatureTypeInfoDTO
      */
     private Map featuresTypes;
-
-    private Map coverages;
 
     /**
      * StyleDTO referenced by key "<code>id</code>"
@@ -141,12 +131,6 @@ public final class DataDTO implements DataTransferObject {
         }
 
         try {
-            formats = CloneLibrary.clone(dto.getFormats());
-        } catch (Exception e) {
-        	formats = new HashMap();
-        }
-
-        try {
             nameSpaces = CloneLibrary.clone(dto.getNameSpaces());
         } catch (Exception e) {
             nameSpaces = new HashMap();
@@ -156,12 +140,6 @@ public final class DataDTO implements DataTransferObject {
             featuresTypes = CloneLibrary.clone(dto.getFeaturesTypes());
         } catch (Exception e) {
             featuresTypes = new HashMap();
-        }
-
-        try {
-            coverages = CloneLibrary.clone(dto.getCoverages());
-        } catch (Exception e) {
-            coverages = new HashMap();
         }
 
         try {
@@ -212,12 +190,6 @@ public final class DataDTO implements DataTransferObject {
             return false;
         }
 
-        if (formats != null) {
-            r = r && EqualsLibrary.equals(formats, c.getFormats());
-        } else if (c.getFormats() != null) {
-            return false;
-        }
-        
         if (nameSpaces != null) {
             r = r && EqualsLibrary.equals(nameSpaces, c.getNameSpaces());
         } else if (c.getNameSpaces() != null) {
@@ -227,12 +199,6 @@ public final class DataDTO implements DataTransferObject {
         if (featuresTypes != null) {
             r = r && EqualsLibrary.equals(featuresTypes, c.getFeaturesTypes());
         } else if (c.getFeaturesTypes() != null) {
-            return false;
-        }
-
-        if (coverages != null) {
-            r = r && EqualsLibrary.equals(coverages, c.getCoverages());
-        } else if (c.getCoverages() != null) {
             return false;
         }
 
@@ -266,10 +232,6 @@ public final class DataDTO implements DataTransferObject {
             r *= dataStores.hashCode();
         }
 
-        if (formats != null) {
-            r *= formats.hashCode();
-        }
-
         if (nameSpaces != null) {
             r *= nameSpaces.hashCode();
         }
@@ -282,10 +244,6 @@ public final class DataDTO implements DataTransferObject {
             r *= styles.hashCode();
         }
 
-        if (coverages != null) {
-            r *= coverages.hashCode();
-        }
-
         return r;
     }
 
@@ -296,15 +254,6 @@ public final class DataDTO implements DataTransferObject {
      */
     public Map getDataStores() {
         return dataStores;
-    }
-
-    /**
-     * Retrive a Map of FormatInfoDTO by "formatID".
-     *
-     * @return Map of FormatInfoDTO by "formatID"
-     */
-    public Map getFormats() {
-        return formats;
     }
 
     /**
@@ -366,26 +315,6 @@ public final class DataDTO implements DataTransferObject {
 
         if (map != null) {
             dataStores = map;
-        }
-    }
-
-    /**
-     * Replace FormatInfoDTO map.
-     *
-     * @param map Map of FormatInfoDTO by "formatID"
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public void setFormats(Map map) {
-        if (map == null) {
-            throw new NullPointerException(
-                "Formats map must not be null. Use Collections.EMPTY_MAP if you must");
-        }
-
-        formats = new HashMap(map);
-
-        if (map != null) {
-            formats = map;
         }
     }
 
@@ -464,21 +393,4 @@ public final class DataDTO implements DataTransferObject {
 
         styles = map;
     }
-	/**
-	 * @return Returns the coverages.
-	 */
-	public Map getCoverages() {
-		return coverages;
-	}
-	/**
-	 * @param coverages The coverages to set.
-	 */
-	public void setCoverages(Map coverages) {
-        if (coverages == null) {
-            throw new NullPointerException(
-                "CoverageInfoDTO map must not be null. Use Collections.EMPTY_MAP if you must");
-        }
-
-		this.coverages = coverages;
-	}
 }
