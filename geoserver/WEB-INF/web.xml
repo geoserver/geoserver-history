@@ -80,6 +80,10 @@
    <servlet-name>TestWfsPost</servlet-name>
    <servlet-class>org.vfny.geoserver.servlets.wfs.TestWfsPost</servlet-class>
   </servlet>
+  <servlet>
+   <servlet-name>JSPCompiler</servlet-name>
+   <servlet-class>org.vfny.geoserver.servlets.JSPCompiler</servlet-class>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>WfsDispatcher</servlet-name>
@@ -133,7 +137,10 @@
    <servlet-name>TestWfsPost</servlet-name>
    <url-pattern>/wfs/TestWfsPost/*</url-pattern>
   </servlet-mapping>
-  
+  <servlet-mapping>
+   <servlet-name>JSPCompiler</servlet-name>
+   <url-pattern>JSPCompiler</url-pattern>
+  </servlet-mapping>
    <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>

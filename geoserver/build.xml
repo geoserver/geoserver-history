@@ -62,7 +62,7 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
-  <!--<property name="test.type" value="UserBasic"/>-->
+  <property name="test.type" value="UserBasic"/>
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
@@ -551,6 +551,10 @@
       <lib dir="${dir.lib}">
         <exclude name="**/junit.jar" />
         <exclude name="**/servlet.jar" />
+        <exclude name="**/xercesImpl.jar" />
+        <exclude name="**/xml-apis.jar" />
+        <exclude name="**/xalan.jar" />
+        <exclude name="*catalina*/**/*" />
       </lib>
       
       <!-- directories -->
