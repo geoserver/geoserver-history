@@ -25,7 +25,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.16 2004/02/20 19:11:12 cholmesny Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.17 2004/02/20 19:17:49 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -155,11 +155,10 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         startElement("HTTP");
 
         String url = "";
-        String baseUrl = "";
+        String baseUrl = request.getBaseUrl() + "wfs/";
         if(request.isCGIRequest()){
         	url = request.getBaseUrl() + "wfs?";
         }else{
-        	baseUrl = request.getBaseUrl() + "wfs/";
         	url = request.getBaseUrl() + "wfs/" + capabilityName + "?";
         }
         attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
