@@ -22,34 +22,27 @@
         set then GeoServer will just use the values in your jre's
         logging.properties file. To set the logging just add a line like the
         following to the global section of the
-        <emphasis>services.xml</emphasis> file: <programlisting>&lt;LoggingLevel&gt;FINER&lt;/LoggingLevel&gt;</programlisting></para>
+        <emphasis>services.xml</emphasis> file: <programlisting>&lt;loggingLevel&gt;FINER&lt;/loggingLevel&gt;</programlisting></para>
       </listitem>
 
       <listitem>
         <para>Verbose, if set to true, outputs the xml with newlines and
         indents. If set to false, or not present in the global section of the
         <emphasis>services.xml</emphasis> file, then no newlines or indents
-        will be contained in the output.<programlisting>&lt;Verbose value="true"&gt;</programlisting></para>
-      </listitem>
-
-      <listitem>
-        <para>The SchemaBaseUrl element can be used to set a different
-        location from which GeoServer references the official OGC schemas
-        (WFS, filter and GML). GeoServer by default references them locally in
-        GeoServer/data/capabilities, but some servlet containers don't allow
-        access to this, or they may be heavily trafficked, so a real apache
-        web server would be better. Either way, the url must have its
-        directory structure like <ulink
-        url="http://schemas.opengis.net/">schemas.opengis.net</ulink>. This
-        goes in the global section of <emphasis>services.xml</emphasis>
-        .<programlisting>&lt;SchemaBaseUrl&gt;http://www.openplans.org&lt;/SchemaBaseUrl&gt;</programlisting></para>
+        will be contained in the output.<programlisting>&lt;verbose value="true"&gt;</programlisting></para>
       </listitem>
 
       <listitem>
         <para>The NumDecimals element can be used to set how many places past
         the decimal are returned in a getFeature response. To set to two
-        decimal places add the fschema.xmlollowing to services.xml in the
-        global section:<programlisting>&lt;NumDecimals&gt;2&lt;/NumDecimals&gt;</programlisting></para>
+        decimal places add the following to services.xml in the global
+        section:<programlisting>&lt;numDecimals&gt;2&lt;/numDecimals&gt;</programlisting></para>
+      </listitem>
+
+      <listitem>
+        <para>We have also brought back the maxFeatures parameter, to specify
+        the maximum number of features that will be returned to a client. It
+        is also in the <emphasis>services.xml</emphasis> file:<programlisting>&lt;maxFeatures&gt;20000&lt;/maxFeatures&gt;</programlisting></para>
       </listitem>
     </itemizedlist>
   </sect1>
@@ -97,14 +90,14 @@
 &lt;/connectionParams&gt;</programlisting></para>
 
     <para>The Shapefile can also be referenced locally - if put in the
-    conf/featureTypes directory than it will be copied over to the war file.
-    It is best to put them in the same directory as the corresponding
-    <emphasis>info.xml</emphasis> file, for example
+    conf/featureTypes directory than it will be copied over to the data
+    directory of the war file. It is best to put them in the same directory as
+    the corresponding <emphasis>info.xml</emphasis> file, for example
     <emphasis>conf/featureTypes/bc_roads/bc_roads.shp</emphasis>, and then
-    reference with the <emphasis>/bc_roads</emphasis> path. If the file was
-    stored there then the params should look like this (next version should
-    handle this more cleanly):<programlisting>&lt;connectionParams&gt;
-  &lt;parameter name="filename" value="bc_roads/bc_roads.shp"&gt;
+    reference with the <emphasis>data/featureTypes/bc_roads</emphasis> path.
+    If the file was stored there then the params should look like
+    this:<programlisting>&lt;connectionParams&gt;
+  &lt;parameter name="filename" value="file:data/featureTypes/bc_roads/bc_roads.shp"&gt;
 &lt;/connectionParams&gt;</programlisting></para>
 
     <para>One more thing to note, the name element of the
@@ -186,22 +179,37 @@
       </tgroup>
     </informaltable>
 
-    <para>Also note that the name element in the <emphasis>info.xml</emphasis>
-    file to specify the featureType must be all capitalized, for some reason
-    the JDBC driver does not recognize the table otherwise. If specifying
-    attributes in the info.xml file they must also be all capitalized. It does
-    not matter what case is used inside of oracle, this is only an issue with
-    the driver that connects GeoServer to the database. Additionally, two jars
-    are required in the GeoServer/lib directory. As Oracle is not open source
-    we can not distribute these, but you should be able to find them, either
-    somewhere within your oracle install, or on the <ulink
+    <para>Currently we are not including the geotools oracle jar in the
+    standard GeoServer distribution, since it will not work properly in the
+    web interface unless the additional proprietary jars are included. So to
+    use oracle you must download the oracle spatial jar from geotools <ulink
+    url="???">here</ulink>. Two additional jars must also be place in
+    geoserver/lib, along with the gt2 oracle spatial jar. As Oracle is not
+    open source we can not distribute these, but you should be able to find
+    them, either somewhere within your oracle install, or on the <ulink
     url="http://otn.oracle.com/">Oracle Technology Network</ulink>. The two
     jars you need are classes12.jar, which contains the jdbc classes, and
     sdoapi.jar, which contains the spatial api jars. If you recieve an
     uncaught exception - NoClassDefFoundError, then you probably have the jar
     in the wrong place or the wrong jars. Users have had the best luck with
     the jars distributed with their oracle installations, others seem to be
-    more prone to errors. The <emphasis>catalog.xml</emphasis> file for an
+    more prone to errors. </para>
+
+    <para>A few other little notes from users: The oracle spatial table you
+    are using must have a correct entry in USER_SDO_GEOM_METADATA view. And
+    whatever table you use MUST have a primary key declared, it will not work
+    otherwise. </para>
+
+    <para>Also note that the name element in the <emphasis>info.xml</emphasis>
+    file to specify the featureType must be all capitalized, for some reason
+    the JDBC driver does not recognize the table otherwise. This also means
+    that when you request the features from GeoServer you must use upper
+    cases. If specifying attributes in the schema.xml file they must also be
+    all capitalized (this has not been tested extensively, so we would
+    probably just recommend not using a schema.xml file, and GeoServer will
+    generate it automatically). It does not matter what case is used inside of
+    oracle, this is only an issue with the driver that connects GeoServer to
+    the database. Also, The <emphasis>catalog.xml</emphasis> file for an
     Oracle datastore should look as follows:</para>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
@@ -337,7 +345,7 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
     element to the configuration.xml file that contains the encoding you wish
     to use:</para>
 
-    <programlisting>&lt;CharSet&gt;iso-8859-1&lt;/CharSet&gt;</programlisting>
+    <programlisting>&lt;charSet&gt;iso-8859-1&lt;/charSet&gt;</programlisting>
 
     <para>This will set the mime encoding and the xml header encoding to that
     charset. The 1.1.0 does not yet support individual datastores inheiriting
@@ -363,8 +371,19 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
     more like a cgi script. If you'd like to change the base name from wfs you
     only need edit the <emphasis>web.xml</emphasis> file in
     <emphasis>geoserver/misc/documents</emphasis>. Using the dispatcher is as
-    simple as the following series of requests:<programlisting>http://openplans.org:8080/GeoServer/wfs?request=GetCapabilities
-http://openplans.org:8080/GeoServer/wfs?request=DescribeFeatureType&amp;typename=topp:rail
-http://openplans.org:8080/GeoServer/wfs?request=GetFeature&amp;typename=topp:rail</programlisting></para>
+    simple as the following series of requests:<programlisting>http://openplans.org:8080/geoserver/wfs?request=GetCapabilities
+http://openplans.org:8080/geoserver/wfs?request=DescribeFeatureType&amp;typename=topp:rail
+http://openplans.org:8080/geoserver/wfs?request=GetFeature&amp;typename=topp:rail</programlisting></para>
+
+    <para>The wms has similar capabilities. Version 1.2.0-rc1 also includes a
+    dispatcher for post requests. It can be accessed by sending all post
+    requests to the same location:<programlisting>http://openplans.org:8080/geoserver/wfs</programlisting></para>
+
+    <para>This should hopefully help GeoServer be accessible to more client
+    apps, as they often naively assume that all requests should go to the same
+    url location. While this is technically a misunderstanding of the spec we
+    want actually interoperability, not just theoretical. If the capabilities
+    document is requested with the wfs?request=GetCapabilities cgi style then
+    it will return cgi style locations.</para>
   </sect1>
 </article>
