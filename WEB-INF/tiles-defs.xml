@@ -96,7 +96,7 @@
    		<put name="key" value="config.validation.test.editor"/>
    		<put name="body" value="/WEB-INF/pages/validation/TestEditor.jsp"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:validation:config.validation.suite:config.validation.test"/>
+        <put name="locationForwards" value="welcome:config:config.validation:config.validation.suite:config.validation.test"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
     </definition>
    	

@@ -25,10 +25,10 @@
 <logic:iterate id="attribute" indexId="ctr" name="validationTestEditorForm" property="attributeKeys">
 	<tr><td align="right">
 		<span class="help" title="<bean:write name="validationTestEditorForm" property='<%= "attributeHelp[" + ctr + "]" %>'/>">
-			<bean:write name="validationTestEditorForm" property='<%= "attributeKey[" + ctr + "]"%>'/>
+			<bean:write name="validationTestEditorForm" property='<%= "attributeKey(" + ctr + ")"%>'/>
 		</span>
 	</td><td colspan=2 align="left">
-		<html:text property='<%= "attributeValues[" + ctr + "]"%>' size="60"/>
+		<html:text property='<%= "attributeValues.get(" + ctr + ")"%>' size="60"/>
 	</td></tr>
 </logic:iterate>			
 	
