@@ -123,8 +123,9 @@ public class FeatureResponse {
         for(int i = 0, m = features.length; i < m; i++) {
 	    //if (geometryAttr != null) {
 	    //}
-            LOG.finest("fid: " + features[i].getId());
-            gml.startFeature(features[i].getId());
+	    String fid = features[i].getId();
+            LOG.finest("fid: " + fid);
+            gml.startFeature(fid);
             attributes = features[i].getAttributes();
             LOG.finest("feature: " + features[i].toString());
             LOG.finest("att total: " + schema.attributeTotal());
@@ -149,7 +150,7 @@ public class FeatureResponse {
 		    
 		    
 			gml.addGeometry((Geometry) attributes[j], 
-					attributeTypes[j].getName());
+					fid + "." + attributeTypes[j].getName());
 		    }
 	    //LOG.finest("added geometry: " + ((Geometry) attributes[j]).toString());
 		} else {
