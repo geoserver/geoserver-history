@@ -168,10 +168,27 @@
 	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;PrefixDelimiter&gt;:&lt;/PrefixDelimiter&gt;</i>
 	      </li>
 	       <br>
+	      <li>The SchemaBaseUrl element can be used to set a different location from which GeoServer
+              references the official ogc schemas (wfs, filter and gml).  GeoServer by default references
+              them locally in geoserver/data/capabilities, but some webservers don't allow access to this, 
+              or they may be heavily trafficked, so a real apache web server would be better.  
+              Either way, the url must have its directory structure like 
+              <a href="http://schemas.opengis.net">schemas.opengis.net</a>.  This goes in your configuration.xml
+     	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;SchemaBaseUrl&gt;http://www.openplans.org&lt;/SchemaBaseUrl&gt;</i>
+	      </li>
+              <br>
+	      <li>Once GeoTools2 has better schema/FeatureType capabilities then the schema.xml files will
+              be sufficient for specifying required features.  But for now if you have required fields in
+              your schema you must also add a MandatoryAtts element to the info.xml file of that featureType.
+              In that element list the attributes that are required to return, seperated by a space or comma.
+	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;MandatoryAtts&gt;string1 dates&lt;/MandatoryAtts&gt;</i>
+	      </li>
+	      <br>
+              <br>
 	      <li>The NumDecimals element can be used to set how many places
 	      past the decimal are returned in a getFeature response.  
 	      To set to two decimal places add the following to your configuration.xml:
-	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;NumDecimals&gt;2 &lt;/NumDecimals&gt;</i>
+	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;NumDecimals&gt;2&lt;/NumDecimals&gt;</i>
 	      </li>
 	      <br>
 	     </ul>
