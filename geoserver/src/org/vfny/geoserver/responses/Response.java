@@ -46,7 +46,12 @@ public interface Response {
 
     /**
      * Write this respone to the provided output stream.
-     * 
+     * <p>
+     * To implememt streaming, execution is sometimes delayed until the
+     * write opperation (for example of this see FeatureResponse). Hopefully
+     * this is okay?
+     * </p>
+     * JG: Consider using a Writer here?
      * @param out
      * @throws ServiceException
      */
