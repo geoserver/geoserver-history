@@ -38,10 +38,6 @@
    		<put name="body" value="wfs.description.tabLayout"/>
    	</definition>
    	
-   	<definition name="wfs.description.tab">
-   		<put name="body" value="wfs.description.tabLayout"/>
-   	</definition>   	
-   	
    	<definition name="wfs.description.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
    		<put name="selectedIndex" value="0"/>
    		<put name="parameterName" value="selected"/>
@@ -68,6 +64,41 @@
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    			<item value="Content"
    				link="/WEB-INF/pages/WFSConfigContent.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   		</putList>
+   	</definition>
+
+
+   	<definition name="wms.description" extends=".mainLayout">
+   		<put name="body" value="wms.description.tabLayout"/>
+   	</definition>
+   	
+   	<definition name="wms.description.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
+   		<put name="selectedIndex" value="0"/>
+   		<put name="parameterName" value="selected"/>
+   		<putList name="tabList">
+   			<item value="Description"
+   				link="/WEB-INF/pages/WMSConfigDescription.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Content"
+   				link="/geoserver/WMSConfigContent.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   		</putList>
+   	</definition>
+   	
+   	<definition name="wms.content" extends=".mainLayout">
+   		<put name="body" value="wms.content.tabLayout"/>
+   	</definition>
+
+   	<definition name="wms.content.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
+   		<put name="selectedIndex" value="1"/>
+   		<put name="parameterName" value="selected"/>
+   		<putList name="tabList">
+   			<item value="Description"
+   				link="/geoserver/WMSConfigDescription.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Content"
+   				link="/WEB-INF/pages/WMSConfigContent.jsp"
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    		</putList>
    	</definition>
