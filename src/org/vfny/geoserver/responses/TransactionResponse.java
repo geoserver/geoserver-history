@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.responses;
 
-//import java.util.List;
-//import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Logger;
@@ -14,8 +12,6 @@ import java.sql.SQLException;
 import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceMetaData;
 import org.geotools.data.DataSourceException;
-//import org.geotools.data.postgis.PostgisConnectionFactory;
-//import org.geotools.data.postgis.PostgisDataSource;
 import org.geotools.filter.Filter;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -62,7 +58,7 @@ public class TransactionResponse {
      * @return XML response to send to client
      */ 
     public static String getXmlResponse(TransactionRequest request) 
-	throws WfsTransactionException {
+	throws WfsTransactionException, WfsException {
 	LOGGER.finer("doing transaction response");
 	//        TypeRepository repository = TypeRepository.getInstance();
 	transHandle = request.getHandle();            
@@ -73,7 +69,7 @@ public class TransactionResponse {
 	SubTransactionRequest subRequest = request.getSubRequest(0);
 	String lockId = request.getLockId();
 	LOGGER.finer("got lockId: " + lockId);
-	try {
+	//try {
 	for(int i = 0, n = request.getSubRequestSize(); i < n; i++) {  
 	    subRequest = request.getSubRequest(i);
 	    String typeName = subRequest.getTypeName(); 
@@ -85,14 +81,15 @@ public class TransactionResponse {
 	    } //REVISIT: should inserts detect if the whole featureType is 
 	    //locked?  Hard to check right now.
 	    if (repository.isLocked(typeName, filter, lockId)) {
+		if (lockId == null) {
+		    throw new WfsTransactionException("attempting to modify " +
+						      "locked features");
+		}
 		LOGGER.finer("it's locked, should throw exception");
 		String message = ("Feature Type: " + typeName + " is locked," +
 				  " and the lockId of the request - " + lockId +
 				  " - is not the proper lock");
-		//should this be transaction exception?  Spec says this, but
-		//seems like transaction exception would give user more info.
 		throw new WfsException(message, subRequest.getHandle()); 
-		//moot now, we're catching all and turning into transactionExcs
 	    } 
 	     
 	    Collection addedFids = getSub(subRequest);
@@ -100,10 +97,6 @@ public class TransactionResponse {
 		response.addInsertResult(subRequest.getHandle(), addedFids);
 	    }
 	    
-	}
-	} catch (WfsException e){
-	    throw new WfsTransactionException(e, subRequest.getHandle(), 
-					      request.getHandle());
 	}
 	commitAll(request);
 	repository.unlock(request);
