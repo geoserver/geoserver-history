@@ -137,6 +137,10 @@ public class CapabilitiesResponse {
             //xmlOutFinal.writeFile( OPERATIONS_FILE );
             
             addTag("FeatureTypeList", TAG_START, 2 );
+	    addTag("Operations", TAG_START, 3);
+	    addTag("Query", TAG_ONLY, 4);
+	    addTag("Lock", TAG_ONLY, 4);
+	    addTag("Operations", TAG_END, 3);
             addFeatureTypeInfo( config.getTypeDir(), version );
             addTag("FeatureTypeList", TAG_END, 2 );
             xmlOutFinal.writeFile( FILTER_FILE );
