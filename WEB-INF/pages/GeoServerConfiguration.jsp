@@ -49,7 +49,7 @@
 	  </td>
 	</tr>
 	
-	<tr>
+	<!--tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.global.baseURL"/>">
 			<bean:message key="label.baseURL"/>:
@@ -69,7 +69,7 @@
 	  <td class="datum">
 		<html:text property="schemaBaseURL" size="60"/>
 	  </td>
-	</tr>
+	</tr-->
 
 	<tr>
 	  <td class="label">
