@@ -2,3 +2,4 @@ geoserver.war
 build
 conf
 release
+server
