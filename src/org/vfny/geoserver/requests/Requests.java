@@ -158,6 +158,11 @@ public final class Requests {
      */
     public static ApplicationState getApplicationState(
         HttpServletRequest request) {
-        return Requests.getApplicationState(request);
+
+        ServletRequest req = request;
+        HttpSession session = request.getSession();
+        ServletContext context = session.getServletContext();
+
+        return (ApplicationState) context.getAttribute(ApplicationState.WEB_CONTAINER_KEY);
     }
 }

@@ -105,6 +105,7 @@ public class LoadXMLAction extends ConfigAction {
 			return mapping.findForward("welcome");			
 //			throw new ServletException( configException );			
 		}
+
 		getApplicationState( request ).notifyLoadXML();		
         // We need to stash the current page?
         // or can we use null or something?
