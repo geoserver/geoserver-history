@@ -7,6 +7,26 @@
     <param-name>serviceStratagy</param-name>
     <param-value>SPEED</param-value>
   </context-param>
+  
+   <!-- Struts config needs to load before all the other servlets. -->
+   <servlet>
+    <servlet-name>action</servlet-name>
+    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>/WEB-INF/struts-config.xml</param-value>
+    </init-param>
+    <init-param>
+      <param-name>debug</param-name>
+      <param-value>2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>detail</param-name>
+      <param-value>2</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  
   <servlet>
     <servlet-name>DescribeFeatureType</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.wfs.Describe</servlet-class>
@@ -113,7 +133,40 @@
    <servlet-name>TestWfsPost</servlet-name>
    <url-pattern>/wfs/TestWfsPost/*</url-pattern>
   </servlet-mapping>
+  
+   <servlet-mapping>
+    <servlet-name>action</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  
   <welcome-file-list>
-    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
+ 
+
+  <taglib>
+    <taglib-uri>/tags/struts-bean</taglib-uri>
+    <taglib-location>/WEB-INF/struts-bean.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>/tags/struts-html</taglib-uri>
+    <taglib-location>/WEB-INF/struts-html.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>/tags/struts-logic</taglib-uri>
+    <taglib-location>/WEB-INF/struts-logic.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>/tags/struts-nested</taglib-uri>
+    <taglib-location>/WEB-INF/struts-nested.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>/tags/struts-tiles</taglib-uri>
+    <taglib-location>/WEB-INF/struts-tiles.tld</taglib-location>
+  </taglib>  
+
 </web-app>

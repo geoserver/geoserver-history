@@ -4,15 +4,6 @@
  */
 package org.vfny.geoserver.zserver;
 
-import org.apache.lucene.document.DateField;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -22,6 +13,16 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import org.apache.lucene.document.DateField;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 
 
 /**
@@ -33,7 +34,7 @@ import java.util.logging.Logger;
  * or modified files in the datafolder, and if so runs the indexer on them.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoIndexer.java,v 1.6 2003/09/16 18:55:27 cholmesny Exp $
+ * @version $Id: GeoIndexer.java,v 1.7 2004/01/12 21:01:26 dmzwiers Exp $
  */
 public class GeoIndexer {
     /** Standard logging instance */

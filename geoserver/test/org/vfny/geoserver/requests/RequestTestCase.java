@@ -4,17 +4,18 @@
  */
 package org.vfny.geoserver.requests;
 
-import junit.framework.TestCase;
-import org.geotools.filter.FilterFactory;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.wfs.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import junit.framework.TestCase;
+
+import org.geotools.filter.FilterFactory;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
 
 
 /**
@@ -25,7 +26,7 @@ import java.util.logging.Logger;
  * all.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RequestTestCase.java,v 1.3 2003/12/23 20:43:19 cholmesny Exp $
+ * @version $Id: RequestTestCase.java,v 1.4 2004/01/12 21:01:28 dmzwiers Exp $
  */
 public abstract class RequestTestCase extends TestCase {
     //Initializes the logger. Uncomment to see log messages.

@@ -4,29 +4,27 @@
  */
 package org.vfny.geoserver.responses;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.Service;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
+
 import com.vividsolutions.jts.geom.Envelope;
-import org.vfny.geoserver.config.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.io.*;
-import java.util.*;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.4 2004/01/02 23:03:10 cholmesny Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.5 2004/01/12 21:01:27 dmzwiers Exp $
  */
-public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
+public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
-
-    /** DOCUMENT ME! */
-    protected static final ServerConfig server = ServerConfig.getInstance();
-    protected static final CatalogConfig catalog = server.getCatalog();
-
-    //Using WFS one for default, should check other ogc specs.
-    protected String BBOX_ELEM_NAME = "LatLongBoundingBox";
 
     /**
      * Creates a new CapabilitiesResponseHandler object.
@@ -44,7 +42,7 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void handleDocument(ServiceConfig config) throws SAXException {
+    public void handleDocument(Service config) throws SAXException {
         startDocument(config);
         indent();
         handleService(config);
@@ -59,14 +57,20 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleService(ServiceConfig config)
+    protected void handleService(Service config)
         throws SAXException {
         startElement("Service");
-        handleConfig((BasicConfig) config);
-        handleOnlineResource(config);
-        indent();
-        handleContactInformation(config);
-        unIndent();
+		indent();
+		handleSingleElem("Name", config.getName());
+		cReturn();
+		handleSingleElem("Title", config.getTitle());
+		cReturn();
+		handleSingleElem("Abstract", config.getAbstract());
+		cReturn();
+		handleKeywords(config.getKeywords());
+		cReturn();
+		unIndent();
+        handleOnlineResouce(config);
 
         String fees = config.getFees();
 
@@ -89,9 +93,18 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         unIndent();
     }
 
-    protected void handleContactInformation(ServiceConfig config)
+    /**
+     * DOCUMENT ME!
+     *
+     * @param config DOCUMENT ME!
+     *
+     * @throws SAXException DOCUMENT ME!
+     */
+    protected void handleOnlineResouce(Service config)
         throws SAXException {
-        //wfs does nothing (at least not 1.0 spec), wms should override this.
+        Object o = config.getOnlineResource();
+        if(o!=null)
+        	handleSingleElem("OnlineResource", o.toString());
     }
 
     /**
@@ -101,19 +114,7 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleOnlineResource(ServiceConfig config)
-        throws SAXException {
-        handleSingleElem("OnlineResource", config.getOnlineResource());
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param config DOCUMENT ME!
-     *
-     * @throws SAXException DOCUMENT ME!
-     */
-    protected abstract void startDocument(ServiceConfig config)
+    protected abstract void startDocument(Service config)
         throws SAXException;
 
     /**
@@ -123,7 +124,7 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void endService(ServiceConfig config) throws SAXException {
+    protected void endService(Service config) throws SAXException {
         endElement("Service");
     }
 
@@ -134,22 +135,22 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected abstract void handleCapabilities(ServiceConfig config)
+    protected abstract void handleCapabilities(Service config)
         throws SAXException;
 
     /**
-     * Default handle of a FeatureType content that writes the latLongBBox as
-     * well as the BasicConfig's parameters
+     * Default handle of a FeatureTypeInfo content that writes the latLongBBox as
+     * well as the GlobalBasic's parameters
      *
      * @param ftype DOCUMENT ME!
      *
      * @throws SAXException DOCUMENT ME!
      * @throws IllegalArgumentException if a non-enabled ftype is passed in.
      */
-    protected void handleFeatureType(FeatureTypeConfig ftype)
+    protected void handleFeatureType(FeatureTypeInfo ftype)
         throws SAXException {
         if (!ftype.isEnabled()) {
-            throw new IllegalArgumentException("FeatureType " + ftype
+            throw new IllegalArgumentException("FeatureTypeConfig " + ftype
                 + " is not " + "enabled, check config.");
         }
 
@@ -162,9 +163,19 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
                 + ftype.getName() + ": " + ex.getMessage(), ex);
         }
 
-        handleConfig((BasicConfig) ftype);
+		indent();
+		handleSingleElem("Name", ftype.getName());
+		cReturn();
+		handleSingleElem("Title", ftype.getTitle());
+		cReturn();
+		handleSingleElem("Abstract", ftype.getAbstract());
+		cReturn();
+		handleKeywords(ftype.getKeywords());
+		cReturn();
+		unIndent();
 
         //indent();
+
         /**
          * @task REVISIT: should getSRS() return the full URL?
          */
@@ -182,17 +193,38 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         bboxAtts.addAttribute("", "maxx", "maxx", "", maxx);
         bboxAtts.addAttribute("", "maxy", "maxy", "", maxy);
 
-        startElement(getBboxElementName(), bboxAtts);
-        endElement(getBboxElementName());
+        startElement("LatLongBoundingBox", bboxAtts);
+        endElement("LatLongBoundingBox");
     }
+    
+	/**
+	 * Handles a keyword list.
+	 *
+	 * @param kwords The list of key words.
+	 *
+	 * @throws SAXException DOCUMENT ME!
+	 *
+	 * @task REVISIT: I don't think this is currently right for wms or wfs
+	 *       service elements.  I'm just subclassing for WfsCapabilities
+	 *       response. It should be Keywords instead of Keyword.  For WMS I
+	 *       think it should be KeywordList or something to that effect, with
+	 *       individual keywords delimited by keyword elements.  So I'm not
+	 *       sure what should go here by default, perhaps should just remain
+	 *       abstract.
+	 */
+	protected void handleKeywords(List kwords) throws SAXException {
+		startElement("Keywords");
 
-    /**
-     * Returns the name of the name of the bounding box element.  This is
-     * needed because for some silly reason in the WMS spec they call it
-     * LatLonBoundingBox and in the WFS spec they call it  LatLongBoundingBox.
-     * Go fiture.
-     *
-     * @return DOCUMENT ME!
-     */
-    protected abstract String getBboxElementName();
+		if (kwords != null) {
+			for (Iterator it = kwords.iterator(); it.hasNext();) {
+				characters(it.next().toString());
+
+				if (it.hasNext()) {
+					characters(", ");
+				}
+			}
+		}
+
+		endElement("Keywords");
+	}
 }

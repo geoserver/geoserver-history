@@ -4,29 +4,46 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Logger;
 
-import org.geotools.data.*;
-import org.geotools.data.jdbc.*;
-import org.geotools.feature.*;
+import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.wfs.*;
-import org.vfny.geoserver.responses.wfs.*;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.requests.wfs.DeleteRequest;
+import org.vfny.geoserver.requests.wfs.SubTransactionRequest;
+import org.vfny.geoserver.requests.wfs.TransactionRequest;
+import org.vfny.geoserver.requests.wfs.UpdateRequest;
+import org.vfny.geoserver.responses.wfs.WfsTransactionException;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeRepository.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: TypeRepository.java,v 1.3 2004/01/12 21:01:30 dmzwiers Exp $
  *
  * @task TODO: Rethink synchronization.  Just wanted to get things with locks
  *       working for this version, but obviously we need to examine
  *       synchronization completely if this class is to be useful at all.
- * @task TODO: convert over to the locking provided by DataStore, this class
+ * @task TODO: convert over to the locking provided by DataStoreInfo, this class
  *       is the last hold out for DataSource use that I could see, it
  *       uses TypeInfo.getDataSource to get a list of FeatureIDs.
  */

@@ -4,12 +4,15 @@
  */
 package org.vfny.geoserver.requests.wms;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.requests.WMSRequest;
 import java.awt.Color;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.requests.WMSRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -23,7 +26,7 @@ import java.util.*;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.3 2003/12/17 22:08:47 cholmesny Exp $
+ * @version $Id: GetMapRequest.java,v 1.4 2004/01/12 21:01:32 dmzwiers Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
@@ -121,7 +124,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public FeatureTypeConfig[] getLayers() {
+    public FeatureTypeInfo[] getLayers() {
         return mandatorys.layers;
     }
 
@@ -246,7 +249,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param layers DOCUMENT ME!
      */
-    public void setLayers(FeatureTypeConfig[] layers) {
+    public void setLayers(FeatureTypeInfo[] layers) {
         mandatorys.layers = layers;
     }
 
@@ -291,7 +294,7 @@ public class GetMapRequest extends WMSRequest {
 
     private class MandatoryParameters {
         /** ordered list of requested layers */
-        FeatureTypeConfig[] layers;
+        FeatureTypeInfo[] layers;
 
         /**
          * ordered list of requested layers' styles, in a one to one

@@ -4,30 +4,26 @@
  */
 package org.vfny.geoserver.requests;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import junit.framework.TestCase;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.CompareFilter;
 import org.geotools.filter.DefaultExpression;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
 import org.geotools.filter.LiteralExpression;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.GetFeatureKvpReader;
 import org.vfny.geoserver.requests.readers.wfs.GetFeatureXmlReader;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.Map;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 
 /**
@@ -35,7 +31,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureSuite.java,v 1.7 2003/12/19 02:58:48 cholmesny Exp $
+ * @version $Id: FeatureSuite.java,v 1.8 2004/01/12 21:01:28 dmzwiers Exp $
  */
 public class FeatureSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.

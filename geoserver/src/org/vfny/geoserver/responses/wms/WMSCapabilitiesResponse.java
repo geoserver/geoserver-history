@@ -4,8 +4,10 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.responses.*;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.responses.CapabilitiesResponse;
+import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
+import org.vfny.geoserver.responses.ResponseHandler;
 import org.xml.sax.ContentHandler;
 
 
@@ -13,16 +15,17 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSCapabilitiesResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WMSCapabilitiesResponse.java,v 1.3 2004/01/12 21:01:29 dmzwiers Exp $
  */
 public class WMSCapabilitiesResponse extends CapabilitiesResponse {
     /**
-     * DOCUMENT ME!
+     * Retrieves the GeoServer's Global Web Map Service.
      *
-     * @return DOCUMENT ME!
+     * @return Web Map Service
      */
-    protected ServiceConfig getServiceConfig() {
-        return ServerConfig.getInstance().getWMSConfig();
+    protected Service getGlobalService() {
+        //return GeoServer.getInstance().getWMS();
+    	return request.getGeoServer().getWMS();
     }
 
     /**
@@ -33,17 +36,9 @@ public class WMSCapabilitiesResponse extends CapabilitiesResponse {
      * @return DOCUMENT ME!
      */
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
-        CapabilitiesResponseHandler cr = new WmsCapabilitiesResponseHandler(contentHandler);
-        cr.setPrettyPrint(true,
-            ServerConfig.getInstance().getGlobalConfig().isVerbose());
+        CapabilitiesResponseHandler cr = new WmsCapabilitiesResponseHandler(contentHandler, request.getGeoServer());
+        cr.setPrettyPrint(true, request.getGeoServer().isVerbose() );
 
         return cr;
     }
-    /* (non-Javadoc)
-     * @see org.vfny.geoserver.responses.Response#abort()
-     */
-    public void abort() {
-        // nothing to undo    
-    }
-
 }

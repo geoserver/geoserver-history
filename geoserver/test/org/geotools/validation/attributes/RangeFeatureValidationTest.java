@@ -16,16 +16,15 @@
  */
 package org.geotools.validation.attributes;
 
+import junit.framework.TestCase;
+
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.validation.RoadValidationResults;
-import org.geotools.validation.ValidationResults;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-
-import junit.framework.TestCase;
 
 /**
  * RangeFeatureValidationTest purpose.
@@ -42,8 +41,8 @@ import junit.framework.TestCase;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: sploreg $ (last modification)
- * @version $Id: RangeFeatureValidationTest.java,v 1.1 2003/12/16 22:28:25 sploreg Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: RangeFeatureValidationTest.java,v 1.2 2004/01/12 21:01:28 dmzwiers Exp $
  */
 public class RangeFeatureValidationTest extends TestCase {
 	private RoadValidationResults results;

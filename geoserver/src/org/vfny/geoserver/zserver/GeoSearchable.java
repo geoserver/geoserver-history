@@ -5,11 +5,12 @@
 package org.vfny.geoserver.zserver;
 
 // Information Retrieval Interfaces
-import com.k_int.IR.IRQuery;
-import com.k_int.IR.SearchTask;
 import java.util.Observer;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import com.k_int.IR.IRQuery;
+import com.k_int.IR.SearchTask;
 
 
 /**
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
  *         other z39.50 implementations, but for our purposes it really does
  *         not do much.  Probably would make the most sense to just have our
  *         ZServerAssociation create its own tasks.
- * @version $Id: GeoSearchable.java,v 1.3 2003/09/16 18:55:27 cholmesny Exp $ modified (simplified) from DemoSearchable:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
+ * @version $Id: GeoSearchable.java,v 1.4 2004/01/12 21:01:26 dmzwiers Exp $ modified (simplified) from DemoSearchable:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
  */
 public class GeoSearchable implements com.k_int.IR.Searchable {
     /** Standard logging instance for class */

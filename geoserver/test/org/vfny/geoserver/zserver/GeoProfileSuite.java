@@ -4,19 +4,19 @@
  */
 package org.vfny.geoserver.zserver;
 
+import java.util.Properties;
+import java.util.logging.Logger;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
  * Tests the GeoProfile helper methods.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoProfileSuite.java,v 1.3 2003/09/09 21:27:47 cholmesny Exp $
+ * @version $Id: GeoProfileSuite.java,v 1.4 2004/01/12 21:01:29 dmzwiers Exp $
  */
 public class GeoProfileSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/

@@ -4,17 +4,37 @@
  */
 package org.vfny.geoserver.requests;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.vfny.geoserver.global.GeoServer;
+
 /**
  * Defines a general Request type and provides accessor methods for universal
  * request information.
+ * <p>
+ * Also provides access to the HttpRequest that spawned this GeoServer Request.
+ * This HttpRequest is most often used to lookup information stored in the
+ * Web Container (such as the GeoServer Global information).
+ * </p>
  * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.5 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: Request.java,v 1.6 2004/01/12 21:01:31 dmzwiers Exp $
  */
 abstract public class Request {
-    /** Request service */
+	/**
+	 * HttpServletRequest responsible for generating this GeoServer Request.
+	 */
+	protected HttpServletRequest httpServletRequest;
+	
+    /**
+     * Request service
+     * <p>
+     * @todo Explain! What does this mean? Is it the Name of the Service being requested?
+     * Is it look 
+     * </p>
+     */
     protected String service;
 
     /** Request type */
@@ -24,16 +44,16 @@ abstract public class Request {
     protected String version = new String();
 
     /**
-     * Service indentifying constructor.
+     * ServiceConfig indentifying constructor.
      *
      * @param serviceType Name of services (like wms)
      */
     protected Request(String serviceType) {
         this.service = serviceType;
     }
-
+    
     /**
-     * Service & Request indentifying constructor.
+     * ServiceConfig & Request indentifying constructor.
      *
      * @param serviceType Name of services (like wfs)
      * @param requestType Name of request (like Transaction)
@@ -43,6 +63,7 @@ abstract public class Request {
         this.request = requestType;
     }
 
+     
     /**
      * Gets requested service.
      *
@@ -119,7 +140,9 @@ abstract public class Request {
 
         return equals;
     }
-
+    /**
+     * Generate a hashCode based on this Request Object.
+     */
     public int hashCode() {
         int result = 17;
         result = (23 * result) + ((request == null) ? 0 : request.hashCode());
@@ -128,4 +151,68 @@ abstract public class Request {
 
         return result;
     }
+
+    /**
+     * Retrive the ServletRequest that generated this GeoServer request.
+     * <p>
+     * The ServletRequest is often used to:
+     * </p>
+	 * <ul>
+	 * <li>Access the Sesssion and WebContainer by execute opperations
+	 *     </li>
+	 * <li>Of special importance is the use of the ServletRequest to locate the GeoServer Application
+	 *     </li> 
+	 * </p>
+	 * <p>
+	 * This method is called by AbstractServlet during the processing of a Request.
+	 * </p>
+	 * @return The HttpServletRequest responsible for generating this SerivceRequest
+	 */
+	public HttpServletRequest getHttpServletRequest() throws ClassCastException {
+		return httpServletRequest;
+	}
+	/**
+	 * Convience method for accessing GeoServer from the Web Container.
+	 * <p>
+	 * This method is used to replace calls to GeoServer.getInstnace().
+	 * </p>
+	 * @param servletRequest
+	 */
+	public GeoServer getGeoServer(){
+		GeoServer gs = Requests.getGeoServer( getHttpServletRequest() );
+		// was a work around for wrong loading order
+		//if(gs == null)
+		//	return new GeoServer();
+		return gs;
+	}
+	
+	public String getRootDir(){
+		return httpServletRequest.getSession().getServletContext().getRealPath("/");
+	}
+	/**
+	 * Tests if user is Logged into GeoServer.
+	 * 
+	 * @return <code>true</code> if user is logged in
+	 */
+	public boolean isLoggedIn(){
+		return Requests.isLoggedIn( getHttpServletRequest() );
+	}
+	
+	/**
+	 * Sets the servletRequest that generated this GeoServer request.
+	 * <p>
+	 * The ServletRequest is often used to:
+	 * </p>
+	 * <ul>
+	 * <li>Access the Sesssion and WebContainer by execute opperations
+	 *     </li>
+	 * <li>Of special importance is the use of the ServletRequest to locate the GeoServer Application
+	 *     </li> 
+	 * </p>
+	 * @param servletRequest The servletRequest to set.
+	 */
+	public void setHttpServletRequest(HttpServletRequest servletRequest) {
+		httpServletRequest = servletRequest;
+	}
+
 }

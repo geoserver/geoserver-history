@@ -9,14 +9,19 @@ import org.vfny.geoserver.WmsExceptionHandler;
 
 
 /**
- * base servlet class for all WFS requests
+ * Base servlet for all Web Map Server requests.
+ *
+ * <p>
+ * Subclasses should supply the handler, request and response mapping for
+ * the service they implement.
+ * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMService.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WMService.java,v 1.3 2004/01/12 21:01:26 dmzwiers Exp $
  */
 abstract public class WMService extends AbstractService {
     /**
-     * returns a Web Map Service exception handler
+     * returns a Web Map ServiceConfig exception handler
      *
      * @return WmsExceptionHandler
      */

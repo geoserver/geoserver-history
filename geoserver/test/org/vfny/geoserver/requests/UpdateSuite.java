@@ -6,20 +6,21 @@ package org.vfny.geoserver.requests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.CompareFilter;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.LiteralExpression;
-import org.vfny.geoserver.requests.readers.wfs.*;
-import org.vfny.geoserver.requests.wfs.*;
+import org.vfny.geoserver.requests.wfs.TransactionRequest;
+import org.vfny.geoserver.requests.wfs.UpdateRequest;
 
 
 /**
  * Tests the Update request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: UpdateSuite.java,v 1.4 2003/12/23 20:24:23 cholmesny Exp $
+ * @version $Id: UpdateSuite.java,v 1.5 2004/01/12 21:01:28 dmzwiers Exp $
  *
  * @task TODO: Bring back tests 4 and 6, they are broken due to reading of the
  *       same literals in different ways - string/double/int.

@@ -4,14 +4,34 @@
  */
 package org.vfny.geoserver.requests.readers;
 
-import com.vividsolutions.jts.geom.*;
-import org.geotools.filter.*;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.geotools.filter.AbstractFilter;
+import org.geotools.filter.FidFilter;
+import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.LiteralExpression;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.requests.Request;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 
 /**
@@ -33,7 +53,7 @@ import java.util.logging.*;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: KvpRequestReader.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: KvpRequestReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
  */
 abstract public class KvpRequestReader {
     /** Class logger */

@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import java.util.*;
+import java.util.Map;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.requests.CapabilitiesRequest;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an
@@ -17,7 +18,7 @@ import org.vfny.geoserver.requests.readers.*;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.3 2004/01/12 21:01:28 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader
     extends KvpRequestReader
@@ -40,8 +41,8 @@ public class CapabilitiesKvpReader
   public Request getRequest()
       throws ServiceException
   {
-    CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMS");
-    String reqVersion = ServerConfig.getInstance().getWMSConfig().getVersion();
+    CapabilitiesRequest currentRequest = new CapabilitiesRequest("GlobalWMS");
+    String reqVersion = WMS.getVersion();
 
     if(keyExists("VERSION"))
       reqVersion = getValue("VERSION");
