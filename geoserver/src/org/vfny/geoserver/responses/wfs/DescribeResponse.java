@@ -22,7 +22,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.1.2.2 2003/11/11 02:49:52 cholmesny Exp $
+ * @version $Id: DescribeResponse.java,v 1.1.2.3 2003/11/12 02:17:58 cholmesny Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -152,7 +152,7 @@ public class DescribeResponse implements Response {
         tempResponse.append(HEADER);
 
         //allSameType will throw WfsException if there are types that are not found.
-        if (catalog.allSameType(requestedTypes)) {
+        if (allSameType(requestedTypes)) {
             //all the requested have the same namespace prefix, so return their
             //schemas.
             FeatureTypeConfig nsInfoType = catalog.getFeatureType((String) requestedTypes
@@ -223,9 +223,7 @@ public class DescribeResponse implements Response {
         String namespace = config.getCatalog().getNameSpace(prefix).getUri();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\""
-            + config.getWFSConfig().getURL()
-            + "/DescribeFeatureType?" //HACK: bad hard code here.
-            + "typeName=");
+            + config.getWFSConfig().getDescribeBaseUrl());
 
         Iterator nameIter = typeNames.iterator();
 
@@ -365,5 +363,60 @@ public class DescribeResponse implements Response {
         }
 
         return finalOutput;
+    }
+
+    /**
+     * Checks that the collection of featureTypeNames all have the same prefix.
+     * Used to determine if their schemas are all in the same namespace or if
+     * imports need to be done.
+     *
+     * @param featureTypeNames list of featureTypes, generally from a
+     *        DescribeFeatureType request.
+     *
+     * @return true if all the typenames in the collection have the same
+     *         prefix.
+     *
+     * @throws WfsException if any of the names do not exist in this
+     *         repository.
+     */
+    public boolean allSameType(Collection featureTypeNames)
+        throws WfsException {
+        Iterator nameIter = featureTypeNames.iterator();
+        boolean sameType = true;
+
+        if (!nameIter.hasNext()) {
+            return false;
+        }
+
+        String firstPrefix = getPrefix(nameIter.next().toString());
+
+        while (nameIter.hasNext()) {
+            if (!firstPrefix.equals(getPrefix(nameIter.next().toString()))) {
+                return false;
+            }
+        }
+
+        return sameType;
+    }
+
+    /**
+     * gets the prefix for the featureType
+     *
+     * @param featureTypeName The name of the featureType to retrieve the
+     *        prefix for.
+     *
+     * @return the xml prefix used internally for the passed in featureType.
+     *
+     * @throws WfsException if the featureTypeName is not in the repository.
+     */
+    private String getPrefix(String featureTypeName) throws WfsException {
+        FeatureTypeConfig ftConf = catalog.getFeatureType(featureTypeName);
+
+        if (ftConf == null) {
+            throw new WfsException("Feature Type " + featureTypeName + " does "
+                + "not exist or is not enabled on this server");
+        }
+
+        return ftConf.getPrefix();
     }
 }
