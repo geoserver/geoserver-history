@@ -6,11 +6,12 @@ package org.vfny.geoserver;
 
 /**
  * ServiceConfig exception handler for WMS services
+ *
  * @author Gabriel Roldán
- * @version $Id: WmsExceptionHandler.java,v 1.3 2004/01/12 21:01:32 dmzwiers Exp $
+ * @version $Id: WmsExceptionHandler.java,v 1.4 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public class WmsExceptionHandler implements ExceptionHandler {
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private static final WmsExceptionHandler instance = new WmsExceptionHandler();
     private WmsException lnkWmsException;
 

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -18,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.4 2004/01/19 23:48:48 cholmesny Exp $
+ * @version $Id: GeoServerDTO.java,v 1.5 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
     /** Sets the max number of Features returned by GetFeature */

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -12,7 +16,7 @@ import java.util.Map;
 //import com.vividsolutions.jts.geom.*;
 
 /**
- * Utility methods with custom equals implementation against Maps and Lists. 
+ * Utility methods with custom equals implementation against Maps and Lists.
  * 
  * <p>
  * Static Library class for testing equality of complex structures independant
@@ -22,7 +26,7 @@ import java.util.Map;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: EqualsLibrary.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: EqualsLibrary.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public final class EqualsLibrary {
     /**

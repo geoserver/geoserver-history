@@ -4,19 +4,7 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.DefaultMap;
@@ -28,8 +16,17 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 
 /**
@@ -38,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.5 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.6 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -139,6 +136,8 @@ public class JAIMapResponse extends GetMapDelegate {
 
     /**
      * Halts the loading.  Right now unimplemented.
+     *
+     * @param gs DOCUMENT ME!
      */
     public void abort(GeoServer gs) {
     }
@@ -147,11 +146,14 @@ public class JAIMapResponse extends GetMapDelegate {
      * Gets the content type.  This is set by the request, should only be
      * called after execute.  GetMapResponse should handle this though.
      *
+     * @param gs DOCUMENT ME!
+     *
      * @return The mime type that this response will generate.
      *
      * @throws java.lang.IllegalStateException DOCUMENT ME!
      */
-    public String getContentType(GeoServer gs) throws java.lang.IllegalStateException {
+    public String getContentType(GeoServer gs)
+        throws java.lang.IllegalStateException {
         //Return a default?  Format is not set until execute is called...
         return format;
     }

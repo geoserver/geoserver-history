@@ -4,14 +4,12 @@
  */
 package org.vfny.geoserver.zserver;
 
-import java.util.Properties;
-import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import java.util.Properties;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 
 /**
@@ -22,7 +20,7 @@ import org.w3c.dom.Element;
  * the fields that it can.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoSummary.java,v 1.4 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: GeoSummary.java,v 1.5 2004/01/21 00:26:11 dmzwiers Exp $
  */
 public class GeoSummary {
     /** Standard logging instance for class */

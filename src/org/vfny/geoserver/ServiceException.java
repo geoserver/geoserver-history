@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver;
 
+import org.vfny.geoserver.responses.ResponseUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.responses.ResponseUtils;
 
 
 /**
@@ -57,8 +56,8 @@ import org.vfny.geoserver.responses.ResponseUtils;
  * 
  * <p>
  * Java Exception have recently developed the ability to contain other
- * exceptions. By calling initCause on your ServiceConfig Exception you can get the
- * real exception included in the stacktrace above.
+ * exceptions. By calling initCause on your ServiceConfig Exception you can
+ * get the real exception included in the stacktrace above.
  * </p>
  *
  * @author Gabriel Roldán

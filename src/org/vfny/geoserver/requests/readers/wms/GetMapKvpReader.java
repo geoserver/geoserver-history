@@ -4,13 +4,7 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.ServiceException;
@@ -20,15 +14,19 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.4 2004/01/15 21:53:06 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.5 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -66,7 +64,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Parses the optional parameters:
-     *
+     * 
      * <ul>
      * <li>
      * SRS
@@ -81,7 +79,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * BGCOLOR
      * </li>
      * </ul>
-     *
+     * 
      *
      * @param request DOCUMENT ME!
      *
@@ -97,10 +95,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Parses the mandatory GetMap request parameters:
-     *
+     * 
      * <p>
      * Mandatory parameters:
-     *
+     * 
      * <ul>
      * <li>
      * LAYERS
@@ -162,7 +160,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * parses the following custom parameters for the GetMap request handling:
-     *
+     * 
      * <ul>
      * <li>
      * FILTERS if present, must contain a list of filters, exactly one per
@@ -183,7 +181,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * SVG map
      * </li>
      * </ul>
-     *
+     * 
      *
      * @param request DOCUMENT ME!
      * @param layers DOCUMENT ME!
@@ -230,31 +228,33 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             byFeatureTypes.set(i, atts);
 
             //FeatureType schema = layers[i].getSchema();
-            try{
-            FeatureType schema = layers[i].getFeatureType();
+            try {
+                FeatureType schema = layers[i].getFeatureType();
 
-            //verify that propper attributes has been requested
-            for (Iterator attIt = atts.iterator(); attIt.hasNext();) {
-                String attName = (String) attIt.next();
-                if(attName.length() > 0)
-                {
-                  LOGGER.finer("checking that " + attName + " exists");
+                //verify that propper attributes has been requested
+                for (Iterator attIt = atts.iterator(); attIt.hasNext();) {
+                    String attName = (String) attIt.next();
 
-                  if (schema.getAttributeType(attName) == null) {
-                    throw new WmsException("Attribute '" + attName
-                                           + "' requested for layer " +
-                                           schema.getTypeName()
-                                           + " does not exists");
-                  }
-                }else{
-                  LOGGER.finest("removing empty attribute name from request");
-                  attIt.remove();
+                    if (attName.length() > 0) {
+                        LOGGER.finer("checking that " + attName + " exists");
+
+                        if (schema.getAttributeType(attName) == null) {
+                            throw new WmsException("Attribute '" + attName
+                                + "' requested for layer "
+                                + schema.getTypeName() + " does not exists");
+                        }
+                    } else {
+                        LOGGER.finest(
+                            "removing empty attribute name from request");
+                        attIt.remove();
+                    }
                 }
-            }
 
-            LOGGER.finest("attributes requested for " + schema.getTypeName()
-                + " checked: " + rawAtts);
-            }catch(java.io.IOException e){throw new WmsException(e);}
+                LOGGER.finest("attributes requested for "
+                    + schema.getTypeName() + " checked: " + rawAtts);
+            } catch (java.io.IOException e) {
+                throw new WmsException(e);
+            }
         }
 
         return byFeatureTypes;
@@ -317,11 +317,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         Map configuredStyles = null;
-		try{
-			configuredStyles = getRequest().getGeoServer().getData().getStyles();
-		}catch(ServiceException e){
-			throw new WmsException(e);
-		}
+
+        try {
+            configuredStyles = getRequest().getGeoServer().getData().getStyles();
+        } catch (ServiceException e) {
+            throw new WmsException(e);
+        }
+
         String st;
 
         for (Iterator it = styles.iterator(); it.hasNext();) {
@@ -379,11 +381,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
         Data catalog = null;
-        try{
-        	catalog = getRequest().getGeoServer().getData();
-        }catch(ServiceException e){
-        	throw new WmsException(e);
+
+        try {
+            catalog = getRequest().getGeoServer().getData();
+        } catch (ServiceException e) {
+            throw new WmsException(e);
         }
+
         String layerName = null;
         FeatureTypeInfo ftype = null;
 

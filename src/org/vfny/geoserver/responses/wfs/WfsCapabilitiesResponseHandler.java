@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
@@ -17,27 +13,33 @@ import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 
 /**
  * Handles a Wfs specific sections of the capabilities response.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.8 2004/01/16 17:58:29 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.9 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
     protected static final String CUR_VERSION = "1.0.0";
     protected static final String XSI_PREFIX = "xsi";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
+    protected Request request;
 
-	protected Request request;
     /**
      * Creates a new WfsCapabilitiesResponseHandler object.
      *
      * @param handler DOCUMENT ME!
+     * @param request DOCUMENT ME!
      */
-    public WfsCapabilitiesResponseHandler(ContentHandler handler,Request request) {
+    public WfsCapabilitiesResponseHandler(ContentHandler handler,
+        Request request) {
         super(handler);
         this.request = request;
     }
@@ -49,13 +51,13 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void startDocument(Service config)
-        throws SAXException {
+    protected void startDocument(Service config) throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "version", "version", "", CUR_VERSION);
         attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
 
-        NameSpaceInfo[] namespaces = request.getGeoServer().getData().getNameSpaces();
+        NameSpaceInfo[] namespaces = request.getGeoServer().getData()
+                                            .getNameSpaces();
 
         for (int i = 0; i < namespaces.length; i++) {
             String prefixDef = "xmlns:" + namespaces[i].getPrefix();
@@ -70,8 +72,8 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         attributes.addAttribute("", prefixDef, prefixDef, "", XSI_URI);
 
         String locationAtt = XSI_PREFIX + ":schemaLocation";
-        String locationDef = WFS_URI + " "
-            + request.getBaseUrl() + "wfs/1.0.0/"+ "WFS-capabilities.xsd";
+        String locationDef = WFS_URI + " " + request.getBaseUrl()
+            + "wfs/1.0.0/" + "WFS-capabilities.xsd";
         attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
         startElement("WFS_Capabilities", attributes);
     }
@@ -194,7 +196,8 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
         endElement("Operations");
 
-        Collection featureTypes = request.getGeoServer().getData().getFeatureTypeInfos().values();
+        Collection featureTypes = request.getGeoServer().getData()
+                                         .getFeatureTypeInfos().values();
         FeatureTypeInfo ftype;
 
         for (Iterator it = featureTypes.iterator(); it.hasNext();) {

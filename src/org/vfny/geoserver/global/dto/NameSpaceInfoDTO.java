@@ -1,10 +1,12 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.global.dto;
-
-
 
 /**
  * Data Transfer Object for GeoServer NameSpaceInfo information.
@@ -25,14 +27,12 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * <p>
- * NameSpaceInfoDTO nsDto = new NameSpaceInfoDTO();
- * nsDto.setDefault(false);
- * nsDto.setPrefix("me");
- * nsDto.setUri("dzwiers.refraction.net");
+ * NameSpaceInfoDTO nsDto = new NameSpaceInfoDTO(); nsDto.setDefault(false);
+ * nsDto.setPrefix("me"); nsDto.setUri("dzwiers.refraction.net");
  * </p>
- * 
+ *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfoDTO.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: NameSpaceInfoDTO.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public final class NameSpaceInfoDTO implements DataTransferObject {
     //public static final String PREFIX_DELIMITER = ":";
@@ -66,10 +66,12 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
      * </p>
      *
      * @param ns The namespace to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public NameSpaceInfoDTO(NameSpaceInfoDTO ns) {
         if (ns == null) {
-			throw new NullPointerException();
+            throw new NullPointerException();
         }
 
         prefix = ns.getPrefix();
@@ -107,36 +109,37 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-    	if(obj == null ||!(obj instanceof NameSpaceInfoDTO))
-    		return false;
-    		
+        if ((obj == null) || !(obj instanceof NameSpaceInfoDTO)) {
+            return false;
+        }
+
         NameSpaceInfoDTO ns = (NameSpaceInfoDTO) obj;
 
         return ((prefix == ns.getPrefix())
         && ((uri == ns.getUri()) && (_default == ns.isDefault())));
     }
 
-	/**
-	 * Implement hashCode.
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 * 
-	 * @return Service hashcode or 0
-	 */
-	public int hashCode() {
-		int r = 1;
-		
-		if (prefix != null) {
-			r *= prefix.hashCode();
-		}
+    /**
+     * Implement hashCode.
+     *
+     * @return Service hashcode or 0
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int r = 1;
 
-		if (uri != null) {
-			r *= uri.hashCode();
-		}
-		
-		return r;
-	}
-	
+        if (prefix != null) {
+            r *= prefix.hashCode();
+        }
+
+        if (uri != null) {
+            r *= uri.hashCode();
+        }
+
+        return r;
+    }
+
     /**
      * isDefault purpose.
      * 

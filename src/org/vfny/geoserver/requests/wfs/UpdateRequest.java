@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -21,10 +20,9 @@ import org.geotools.filter.Filter;
  * added to the property list by calling add Property.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: UpdateRequest.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: UpdateRequest.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class UpdateRequest extends SubTransactionRequest {
-
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");

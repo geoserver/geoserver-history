@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  * Created on Jan 8, 2004
  *
@@ -6,172 +10,192 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
+import java.util.TreeSet;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
- * @author rgould
+ * DOCUMENT ME!
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @author rgould To change the template for this generated type comment go to
+ *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class DataStylesForm extends ActionForm {
-	
-	private String styleID;
-	private boolean _default;
-	private String filename;
-	
-	private String selectedStyle;
-	private String action;	
-	
-	private TreeSet styles;
-	
-	/*
-	 * Because of the way that STRUTS works, if the user does not check the default box,
-	 * or unchecks it, set_default() is never called, thus we must monitor set_default()
-	 * to see if it doesn't get called. This must be accessible, as ActionForms need to
-	 * know about it -- there is no way we can tell whether we are about to be passed to
-	 * an ActionForm or not.
-	 * 
-	 * Probably a better way to do this, but I can't think of one.
-	 * -rgould
-	 */
-	private boolean defaultChecked = false; 	
-	
-		
-	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
-		super.reset(arg0, arg1);
-		
-		defaultChecked = false;
-		action = "";
-		
-		ServletContext context = getServlet().getServletContext();
-		DataConfig config =
-			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+    private String styleID;
+    private boolean _default;
+    private String filename;
+    private String selectedStyle;
+    private String action;
+    private TreeSet styles;
 
-		styles = new TreeSet(config.getStyles().keySet());
+    /*
+     * Because of the way that STRUTS works, if the user does not check the default box,
+     * or unchecks it, set_default() is never called, thus we must monitor set_default()
+     * to see if it doesn't get called. This must be accessible, as ActionForms need to
+     * know about it -- there is no way we can tell whether we are about to be passed to
+     * an ActionForm or not.
+     *
+     * Probably a better way to do this, but I can't think of one.
+     * -rgould
+     */
+    private boolean defaultChecked = false;
 
-				
-		StyleConfig sConfig;
-		
-		selectedStyle = (String) context.getAttribute("selectedStyle");
+    public void reset(ActionMapping arg0, HttpServletRequest arg1) {
+        super.reset(arg0, arg1);
 
-		sConfig = config.getStyle(selectedStyle);		
-		if (sConfig == null) {
-			sConfig = config.getStyle( (String) styles.first());
-		}
-		
-		styleID = sConfig.getId();
-		_default = sConfig.isDefault();
-		filename = sConfig.getFilename().getPath();
-				
-	}
-	
-	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
-		ActionErrors errors = new ActionErrors();
-		
-		return errors;
-	}
-	/**
-	 * @return
-	 */
-	public boolean is_default() {
-		return _default;
-	}
+        defaultChecked = false;
+        action = "";
 
-	/**
-	 * @return
-	 */
-	public String getFilename() {
-		return filename;
-	}
+        ServletContext context = getServlet().getServletContext();
+        DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-	/**
-	 * @return
-	 */
-	public String getStyleID() {
-		return styleID;
-	}
+        styles = new TreeSet(config.getStyles().keySet());
 
-	/**
-	 * @param b
-	 */
-	public void set_default(boolean b) {
-		defaultChecked = true;
-		_default = b;
-	}
+        StyleConfig sConfig;
 
-	/**
-	 * @param string
-	 */
-	public void setFilename(String string) {
-		filename = string;
-	}
+        selectedStyle = (String) context.getAttribute("selectedStyle");
 
-	/**
-	 * @param string
-	 */
-	public void setStyleID(String string) {
-		styleID = string;
-	}
+        sConfig = config.getStyle(selectedStyle);
 
-	/**
-	 * @return
-	 */
-	public String getAction() {
-		return action;
-	}
+        if (sConfig == null) {
+            sConfig = config.getStyle((String) styles.first());
+        }
 
-	/**
-	 * @return
-	 */
-	public boolean isDefaultChecked() {
-		return defaultChecked;
-	}
+        styleID = sConfig.getId();
+        _default = sConfig.isDefault();
+        filename = sConfig.getFilename().getPath();
+    }
 
-	/**
-	 * @return
-	 */
-	public String getSelectedStyle() {
-		return selectedStyle;
-	}
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
+        ActionErrors errors = new ActionErrors();
 
-	/**
-	 * @param string
-	 */
-	public void setAction(String string) {
-		action = string;
-	}
+        return errors;
+    }
 
-	/**
-	 * @param b
-	 */
-	public void setDefaultChecked(boolean b) {
-		defaultChecked = b;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public boolean is_default() {
+        return _default;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setSelectedStyle(String string) {
-		ServletContext context = getServlet().getServletContext();
-		context.setAttribute("selectedStyle", string);		
-		selectedStyle = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getFilename() {
+        return filename;
+    }
 
-	/**
-	 * @return
-	 */
-	public TreeSet getStyles() {
-		return styles;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getStyleID() {
+        return styleID;
+    }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param b
+     */
+    public void set_default(boolean b) {
+        defaultChecked = true;
+        _default = b;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setFilename(String string) {
+        filename = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setStyleID(String string) {
+        styleID = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getAction() {
+        return action;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public boolean isDefaultChecked() {
+        return defaultChecked;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getSelectedStyle() {
+        return selectedStyle;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setAction(String string) {
+        action = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param b
+     */
+    public void setDefaultChecked(boolean b) {
+        defaultChecked = b;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setSelectedStyle(String string) {
+        ServletContext context = getServlet().getServletContext();
+        context.setAttribute("selectedStyle", string);
+        selectedStyle = string;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public TreeSet getStyles() {
+        return styles;
+    }
 }

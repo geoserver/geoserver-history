@@ -30,7 +30,7 @@ import java.util.Arrays;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceDTO.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: ServiceDTO.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public final class ServiceDTO implements DataTransferObject {
     /**
@@ -100,6 +100,7 @@ public final class ServiceDTO implements DataTransferObject {
 
     /**
      * The fees associated with the service.
+     * 
      * <p>
      * When there are not any fees, the value  "NONE" is used.
      * </p>
@@ -139,7 +140,8 @@ public final class ServiceDTO implements DataTransferObject {
      *
      * @see defaultSettings()
      */
-    public ServiceDTO() {}
+    public ServiceDTO() {
+    }
 
     /**
      * ServiceConfig constructor.
@@ -251,8 +253,7 @@ public final class ServiceDTO implements DataTransferObject {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return (enabled ? 1 : 0)
-        | ((name != null) ? name.hashCode() : 0)
+        return (enabled ? 1 : 0) | ((name != null) ? name.hashCode() : 0)
         | ((title != null) ? title.hashCode() : 0)
         | ((serverAbstract != null) ? serverAbstract.hashCode() : 0)
         | ((keywords != null) ? keywords.hashCode() : 0)
@@ -280,6 +281,8 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>new URL("http://www.openplans.org/")</code>
      * </p>
+     *
+     * @return DOCUMENT ME!
      */
     public URL getOnlineResource() {
         return onlineResource;
@@ -291,6 +294,8 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>The Open Planning Project Basemap Server</code>
      * </p>
+     *
+     * @return DOCUMENT ME!
      */
     public String getTitle() {
         return title;
@@ -320,6 +325,7 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>The Open Planning Project Basemap Server</code>
      * </p>
+     *
      * @param string Title of the Service
      */
     public void setTitle(String string) {
@@ -337,12 +343,16 @@ public final class ServiceDTO implements DataTransferObject {
 
     /**
      * The access constraints associated with the service.
+     * 
      * <p>
      * When there are not any, the value "NONE" is used.
      * </p>
+     * 
      * <p>
      * Example: <code>"NONE"</code>
      * </p>
+     *
+     * @return DOCUMENT ME!
      */
     public String getAccessConstraints() {
         return accessConstraints;
@@ -350,7 +360,7 @@ public final class ServiceDTO implements DataTransferObject {
 
     /**
      * Represents when the Web Service is enabled/disabled.
-     * 
+     *
      * @return <code>true</code> is service is enabled
      */
     public boolean isEnabled() {
@@ -359,6 +369,7 @@ public final class ServiceDTO implements DataTransferObject {
 
     /**
      * The fees associated with the service.
+     * 
      * <p>
      * When there are not any fees, the value  "NONE" is used.
      * </p>
@@ -366,6 +377,8 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>NONE</code>
      * </p>
+     *
+     * @return DOCUMENT ME!
      */
     public String getFees() {
         return fees;
@@ -377,6 +390,8 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>new String[]{"WFS","New York"}</code>
      * </p>
+     *
+     * @return DOCUMENT ME!
      */
     public String[] getKeywords() {
         return keywords;
@@ -392,6 +407,7 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>"The Open Planning Project"</code>
      * </p>
+     *
      * @return The maintainer of this Service
      */
     public String getMaintainer() {
@@ -407,6 +423,7 @@ public final class ServiceDTO implements DataTransferObject {
      * This is a test server.  It contains some basemap data from New York City.
      * </code></pre>
      * </p>
+     *
      * @param serviceAbstract Abstract describing service
      */
     public void setAbstract(String serviceAbstract) {
@@ -419,9 +436,12 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * When there are not any, use the value "NONE".
      * </p>
+     * 
      * <p>
      * Example: <code>"NONE"</code>
      * </p>
+     *
+     * @param constraints DOCUMENT ME!
      */
     public void setAccessConstraints(String constraints) {
         accessConstraints = constraints;
@@ -438,6 +458,7 @@ public final class ServiceDTO implements DataTransferObject {
 
     /**
      * Provide the fees associated with the service.
+     * 
      * <p>
      * When there are not any fees, use the value "NONE".
      * </p>
@@ -445,6 +466,8 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>NONE</code>
      * </p>
+     *
+     * @param string DOCUMENT ME!
      */
     public void setFees(String string) {
         fees = string;
@@ -456,6 +479,8 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>new String[]{"WFS","New York"}</code>
      * </p>
+     *
+     * @param array DOCUMENT ME!
      */
     public void setKeywords(String[] array) {
         keywords = array;
@@ -471,6 +496,8 @@ public final class ServiceDTO implements DataTransferObject {
      * <p>
      * Example: <code>"The Open Planning Project"</code>
      * </p>
+     *
+     * @param string DOCUMENT ME!
      */
     public void setMaintainer(String string) {
         maintainer = string;

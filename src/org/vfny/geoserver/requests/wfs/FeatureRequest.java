@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
+import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.requests.WFSRequest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**
@@ -23,7 +22,7 @@ import org.vfny.geoserver.requests.WFSRequest;
  * support those.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureRequest.java,v 1.4 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: FeatureRequest.java,v 1.5 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class FeatureRequest extends WFSRequest {
     /** Standard logging instance for class */
@@ -34,6 +33,7 @@ public class FeatureRequest extends WFSRequest {
      * The maximum returned if the user requests no limit of features at all,
      * but the other request parameters don't restrict to below 500.
      */
+
     //protected static final int SOFT_MAX_FEATURES = GeoServer.getInstance()
     //                                                           .getGlobalConfig()
     //                                                           .getMaxFeatures();
@@ -42,10 +42,11 @@ public class FeatureRequest extends WFSRequest {
      * This is the maximum that is returned if the user specifically requests
      * more than the soft max.
      */
+
     //protected static final int HARD_MAX_FEATURES = SOFT_MAX_FEATURES + 1000;
 
     /** Creates a max features constraint for the entire request */
-    protected int maxFeatures = Integer.MAX_VALUE;//SOFT_MAX_FEATURES;
+    protected int maxFeatures = Integer.MAX_VALUE; //SOFT_MAX_FEATURES;
 
     /** Specifies the output format */
     protected String outputFormat = "GML2";
@@ -181,7 +182,7 @@ public class FeatureRequest extends WFSRequest {
         }
 
         //if (maxFeatures > HARD_MAX_FEATURES) {
-	//  this.maxFeatures = HARD_MAX_FEATURES;
+        //  this.maxFeatures = HARD_MAX_FEATURES;
         //}
     }
 

@@ -4,11 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -23,8 +19,10 @@ import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.LogicFilter;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -43,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureSource.java,v 1.3 2004/01/18 02:15:37 cholmesny Exp $
+ * @version $Id: GeoServerFeatureSource.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */
@@ -67,26 +65,6 @@ public class GeoServerFeatureSource implements FeatureSource {
     private Filter definitionQuery = Filter.NONE;
 
     /**
-     * Factory that make the correct decorator for the provided featureSource.
-     * <p>
-     * This factory method is public and will be used to create all required
-     * subclasses. By comparison the constructors for this class have package
-     * visibiliy.
-     * </p>
-     * @param featureSource
-     * @return
-     */
-    public static GeoServerFeatureSource create( FeatureSource featureSource, FeatureType schema, Filter definitionQuery  ){
-        if( featureSource instanceof FeatureLocking ){
-            return new GeoServerFeatureLocking( (FeatureLocking) featureSource, schema, definitionQuery );            
-        }
-        else if ( featureSource instanceof FeatureStore ){
-            return new GeoServerFeatureStore( (FeatureStore) featureSource, schema, definitionQuery );
-        }
-        return new GeoServerFeatureSource( featureSource, schema, definitionQuery );
-    }
-    
-    /**
      * Creates a new GeoServerFeatureSource object.
      *
      * @param source GeoTools2 FeatureSource
@@ -98,9 +76,38 @@ public class GeoServerFeatureSource implements FeatureSource {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
-	if (this.definitionQuery == null) {
-	    this.definitionQuery = Filter.NONE;
-	}
+
+        if (this.definitionQuery == null) {
+            this.definitionQuery = Filter.NONE;
+        }
+    }
+
+    /**
+     * Factory that make the correct decorator for the provided featureSource.
+     * 
+     * <p>
+     * This factory method is public and will be used to create all required
+     * subclasses. By comparison the constructors for this class have package
+     * visibiliy.
+     * </p>
+     *
+     * @param featureSource
+     * @param schema DOCUMENT ME!
+     * @param definitionQuery DOCUMENT ME!
+     *
+     * @return
+     */
+    public static GeoServerFeatureSource create(FeatureSource featureSource,
+        FeatureType schema, Filter definitionQuery) {
+        if (featureSource instanceof FeatureLocking) {
+            return new GeoServerFeatureLocking((FeatureLocking) featureSource,
+                schema, definitionQuery);
+        } else if (featureSource instanceof FeatureStore) {
+            return new GeoServerFeatureStore((FeatureStore) featureSource,
+                schema, definitionQuery);
+        }
+
+        return new GeoServerFeatureSource(featureSource, schema, definitionQuery);
     }
 
     /**
@@ -112,7 +119,8 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @return Query restricted to the limits of definitionQuery
      *
      * @throws IOException See DataSourceException
-     * @throws DataSourceException If query could not meet the restrictions of definitionQuery
+     * @throws DataSourceException If query could not meet the restrictions of
+     *         definitionQuery
      */
     protected Query makeDefinitionQuery(Query query) throws IOException {
         if ((query == Query.ALL) || query.equals(Query.ALL)) {
@@ -193,7 +201,8 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @return Filter adjusted to the limitations of definitionQuery
      *
-     * @throws DataSourceException If the filter could not meet the limitations of definitionQuery
+     * @throws DataSourceException If the filter could not meet the limitations
+     *         of definitionQuery
      */
     protected Filter makeDefinitionFilter(Filter filter)
         throws DataSourceException {
@@ -216,12 +225,14 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getDataStore.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.FeatureSource#getDataStore()
-     * 
+     *
      * @return
+     *
+     * @see org.geotools.data.FeatureSource#getDataStore()
      */
     public DataStore getDataStore() {
         return source.getDataStore();
@@ -229,26 +240,29 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement addFeatureListener.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.FeatureSource#addFeatureListener(org.geotools.data.FeatureListener)
-     * 
+     *
      * @param listener
+     *
+     * @see org.geotools.data.FeatureSource#addFeatureListener(org.geotools.data.FeatureListener)
      */
     public void addFeatureListener(FeatureListener listener) {
         source.addFeatureListener(listener);
     }
 
     /**
-     * 
      * Implement removeFeatureListener.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.FeatureSource#removeFeatureListener(org.geotools.data.FeatureListener)
-     * 
+     *
      * @param listener
+     *
+     * @see org.geotools.data.FeatureSource#removeFeatureListener(org.geotools.data.FeatureListener)
      */
     public void removeFeatureListener(FeatureListener listener) {
         source.removeFeatureListener(listener);
@@ -256,31 +270,39 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getFeatures.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
-     * 
+     *
      * @param query
+     *
      * @return
+     *
      * @throws IOException
+     *
+     * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
     public FeatureResults getFeatures(Query query) throws IOException {
         query = makeDefinitionQuery(query);
 
         return source.getFeatures(query);
     }
-    
+
     /**
      * Implement getFeatures.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.filter.Filter)
-     * 
+     *
      * @param filter
+     *
      * @return
+     *
      * @throws IOException
+     *
+     * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.filter.Filter)
      */
     public FeatureResults getFeatures(Filter filter) throws IOException {
         filter = makeDefinitionFilter(filter);
@@ -290,13 +312,16 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getFeatures.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.FeatureSource#getFeatures()
-     * 
+     *
      * @return
+     *
      * @throws IOException
+     *
+     * @see org.geotools.data.FeatureSource#getFeatures()
      */
     public FeatureResults getFeatures() throws IOException {
         if (definitionQuery == Filter.NONE) {
@@ -308,12 +333,14 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getSchema.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.FeatureSource#getSchema()
-     * 
+     *
      * @return
+     *
+     * @see org.geotools.data.FeatureSource#getSchema()
      */
     public FeatureType getSchema() {
         return schema;
@@ -321,10 +348,13 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Retrieves the total extent of this FeatureSource.
+     * 
      * <p>
      * Please note this extent will reflect the provided definitionQuery.
      * </p>
-     * @return Extent of this FeatureSource, or <code>null</code> if no optimizations exist.
+     *
+     * @return Extent of this FeatureSource, or <code>null</code> if no
+     *         optimizations exist.
      *
      * @throws IOException If bounds of definitionQuery
      */
@@ -333,7 +363,8 @@ public class GeoServerFeatureSource implements FeatureSource {
             return source.getBounds();
         } else {
             Query query = new DefaultQuery(definitionQuery);
-            return source.getBounds( query );
+
+            return source.getBounds(query);
         }
     }
 

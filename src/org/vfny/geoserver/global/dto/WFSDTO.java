@@ -14,20 +14,18 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: WFSDTO.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public final class WFSDTO implements DataTransferObject {
-
     /** The service parameters for this instance. */
     private ServiceDTO service;
     private boolean gmlPrefixing;
 
     /**
-     * WFS Data Transfer Object constructor.
-     * 
-     * does nothing
+     * WFS Data Transfer Object constructor.  does nothing
      */
-    public WFSDTO() {}
+    public WFSDTO() {
+    }
 
     /**
      * WFS constructor.
@@ -37,13 +35,16 @@ public final class WFSDTO implements DataTransferObject {
      * default values are used. All the data structures are cloned.
      * </p>
      *
-     * @param w The WFS to copy.
+     * @param other The WFS to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public WFSDTO(WFSDTO other) {
         if (other == null) {
-            throw new NullPointerException("Data Transfer Object required");            
+            throw new NullPointerException("Data Transfer Object required");
         }
-        service = (ServiceDTO) new ServiceDTO( other.getService() );
+
+        service = (ServiceDTO) new ServiceDTO(other.getService());
         gmlPrefixing = other.isGmlPrefixing();
     }
 
@@ -60,39 +61,44 @@ public final class WFSDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * @param other Other object to test for equality
+     *
      * @return true when the object passed is equal to this object.
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object other) {
-        if( other == null || !(other instanceof WFSDTO) ){
+        if ((other == null) || !(other instanceof WFSDTO)) {
             return false;
         }
+
         WFSDTO dto = (WFSDTO) other;
-        return service == null ? dto.getService() == null
-                               : service.equals( dto.getService() );
+
+        return (service == null) ? (dto.getService() == null)
+                                 : service.equals(dto.getService());
     }
 
     /**
      * Implement hashCode.
-     * 
-     * @see java.lang.Object#hashCode()
-     * 
+     *
      * @return Service hashcode or 0
+     *
+     * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return service == null ? 0 : service.hashCode();
+        return (service == null) ? 0 : service.hashCode();
     }
 
     /**
      * Provides access to the Service DTO object.
+     * 
      * <p>
-     * Note well that this is the internal ServiceDTO object used
-     * by the WFSDTO - any changes made to the result of this method will
-     * change the state of this WFSDTO object.
+     * Note well that this is the internal ServiceDTO object used by the WFSDTO
+     * - any changes made to the result of this method will change the state
+     * of this WFSDTO object.
      * </p>
+     *
      * @return ServericeDTO used by this WFSDTO
      */
     public ServiceDTO getService() {
@@ -101,38 +107,46 @@ public final class WFSDTO implements DataTransferObject {
 
     /**
      * Set this WFS Data Tranfer Object to use the provided Service DTO.
+     * 
      * <p>
      * A copy of the provided dto is made.
      * </p>
      *
      * @param dto ServiceDTO used to configure this WFSDTO
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public void setService(ServiceDTO dto) {
         if (dto == null) {
-            throw new NullPointerException("ServiceDTO requrired");            
+            throw new NullPointerException("ServiceDTO requrired");
         }
-        service = dto;    
+
+        service = dto;
     }
-	/**
-	 * isGmlPrefixing purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public boolean isGmlPrefixing() {
-		return gmlPrefixing;
-	}
 
-	/**
-	 * setGmlPrefixing purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param b
-	 */
-	public void setGmlPrefixing(boolean b) {
-		gmlPrefixing = b;
-	}
+    /**
+     * isGmlPrefixing purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public boolean isGmlPrefixing() {
+        return gmlPrefixing;
+    }
 
+    /**
+     * setGmlPrefixing purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param b
+     */
+    public void setGmlPrefixing(boolean b) {
+        gmlPrefixing = b;
+    }
 }

@@ -4,11 +4,10 @@
  */
 package org.geotools.feature;
 
-import java.io.IOException;
-
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
+import java.io.IOException;
 
 
 /**
@@ -18,7 +17,7 @@ import org.geotools.data.FeatureResults;
  * collection of Features) as attributes, the handler is repsonsible for
  * maintaining its own state as to where in the traversal it is recieving
  * events from. Many handlers will not need to worry about state.
- *
+ * 
  * <p>
  * <b>Implementation Notes:</b> The depth first visitation is implemented
  * through recursion. The limits to recursion depending on the settings in the
@@ -40,7 +39,7 @@ public class FeatureResultsIteration {
     /** The collection being iterated */
     private final FeatureResults results;
 
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private final FeatureReader reader;
 
     /**
@@ -151,6 +150,7 @@ public class FeatureResultsIteration {
             if (FeatureCollection.class.isAssignableFrom(type.getType())) {
                 throw new UnsupportedOperationException(
                     "inner FeatureCollections not supported yet");
+
                 //walker((FeatureCollection) feature.getAttribute(i));
             } else if (type.isNested()) {
                 // recurse if attribute type is another feature

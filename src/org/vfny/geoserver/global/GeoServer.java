@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.global;
 
-import java.nio.charset.Charset;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -19,7 +18,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.5 2004/01/20 23:37:02 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.6 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class GeoServer extends GlobalLayerSupertype { // implements org.apache.struts.action.PlugIn{
 
@@ -62,14 +61,17 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * <p>
      * To be called by the Struts ActionServlet
      * </p>
+     *
+     * @return DOCUMENT ME!
      */
+
     /*public GeoServer() {
-        wms = new WMS();
-        wfs = new WFS();
-        data = new Data();
-        validation = new Validation();
-        geoServer = new GeoServerDTO();
-    }*/
+       wms = new WMS();
+       wfs = new WFS();
+       data = new Data();
+       validation = new Validation();
+       geoServer = new GeoServerDTO();
+       }*/
 
     /**
      * getAddress purpose.
@@ -491,8 +493,9 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return WFSDTO the generated object
      */
     public static WFSDTO getDTO(WFS wfs) {
-		WFSDTO w = (WFSDTO) wfs.toDTO();
-		w = (WFSDTO)w.clone();
+        WFSDTO w = (WFSDTO) wfs.toDTO();
+        w = (WFSDTO) w.clone();
+
         return (w);
     }
 

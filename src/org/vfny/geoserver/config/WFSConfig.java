@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -21,12 +20,12 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.4 2004/01/12 23:55:27 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.5 2004/01/21 00:26:10 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
+    private boolean gmlPrefixing;
 
-	private boolean gmlPrefixing;
     /**
      * This is a set of <code>dataStoreID.typeName</code> that is  enabled for
      * use with WMS.
@@ -76,7 +75,7 @@ public class WFSConfig extends ServiceConfig {
      */
     public WFSConfig(WFSDTO w) {
         super(w.getService());
-		gmlPrefixing = w.isGmlPrefixing();
+        gmlPrefixing = w.isGmlPrefixing();
     }
 
     /**
@@ -88,14 +87,15 @@ public class WFSConfig extends ServiceConfig {
      *
      * @param dto an instance of WMSDTO
      *
-     * @return false when obj null, or not correct class instance.
+     * @throws NullPointerException DOCUMENT ME!
      *
      * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
      */
     public void update(WFSDTO dto) {
         if (dto == null) {
-			throw new NullPointerException("WFS Data Transfer Object required");
+            throw new NullPointerException("WFS Data Transfer Object required");
         }
+
         super.update(dto.getService());
         gmlPrefixing = dto.isGmlPrefixing();
     }
@@ -114,44 +114,52 @@ public class WFSConfig extends ServiceConfig {
     public WFSDTO toDTO() {
         WFSDTO wfsDto = new WFSDTO();
         wfsDto.setService((ServiceDTO) super.toServDTO());
-		wfsDto.setGmlPrefixing(gmlPrefixing);
+        wfsDto.setGmlPrefixing(gmlPrefixing);
+
         return wfsDto;
     }
 
-	/**
-	 * @return
-	 */
-	public Set getEnabledFeatures() {
-		return enabledFeatures;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public Set getEnabledFeatures() {
+        return enabledFeatures;
+    }
 
-	/**
-	 * @param set
-	 */
-	public void setEnabledFeatures(Set set) {
-		enabledFeatures = set;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param set
+     */
+    public void setEnabledFeatures(Set set) {
+        enabledFeatures = set;
+    }
 
-	/**
-	 * isGmlPrefixing purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public boolean isGmlPrefixing() {
-		return gmlPrefixing;
-	}
+    /**
+     * isGmlPrefixing purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public boolean isGmlPrefixing() {
+        return gmlPrefixing;
+    }
 
-	/**
-	 * setGmlPrefixing purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param b
-	 */
-	public void setGmlPrefixing(boolean b) {
-		gmlPrefixing = b;
-	}
-
+    /**
+     * setGmlPrefixing purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param b
+     */
+    public void setGmlPrefixing(boolean b) {
+        gmlPrefixing = b;
+    }
 }

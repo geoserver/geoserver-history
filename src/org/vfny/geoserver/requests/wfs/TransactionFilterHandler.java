@@ -4,15 +4,13 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.FilterFilter;
 import org.geotools.filter.FilterHandler;
 import org.geotools.gml.GMLHandlerFeature;
-
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.logging.Logger;
 
 
 /**
@@ -23,7 +21,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * rewritten in geotools.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFilterHandler.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: TransactionFilterHandler.java,v 1.4 2004/01/21 00:26:06 dmzwiers Exp $
  */
 public class TransactionFilterHandler extends FilterFilter
     implements GMLHandlerFeature {

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -6,284 +10,331 @@ package org.vfny.geoserver.global.dto;
 
 /**
  * Represents most of a xs:element for an XMLSchema.
+ * 
  * <p>
- * we have three types of information to store, Schema defined types, 
- * references and extentions on types. If the type represented is either 
- * a reference or a Schema defined type  then isRef should be true.
- * </p> 
+ * we have three types of information to store, Schema defined types,
+ * references and extentions on types. If the type represented is either  a
+ * reference or a Schema defined type  then isRef should be true.
+ * </p>
+ * 
  * <p>
  * Non-complex types are of the form:
  * </p>
+ * 
  * <ul>
- * <li><code>{element name='test' type='xs:string'/}</code></li>
- * <li><code>{element name='test' type='gml:PointType'/}</code></li>
+ * <li>
+ * <code>{element name='test' type='xs:string'/}</code>
+ * </li>
+ * <li>
+ * <code>{element name='test' type='gml:PointType'/}</code>
+ * </li>
  * </ul>
+ * 
  * <p>
- * For complex types such as 
- * <code>
- * {element name='test'}
- *  {xs:complexContent}
- *    {xs:extension base="gml:AbstractFeatureType"}
- *      {xs:sequence}
- *         {xs:element name="id" type="xs:string" minOccurs="0"/}
- *         {xs:element ref="gml:pointProperty" minOccurs="0"/}
- *      {/xs:sequence}
- *    {/xs:extension}
- *  {/xs:complexContent}
- * {/element}
- * </code>
+ * For complex types such as  <code>{element
+ * name='test'}{xs:complexContent}{xs:extension
+ * base="gml:AbstractFeatureType"}{xs:sequence}{xs:element name="id"
+ * type="xs:string" minOccurs="0"/}{xs:element ref="gml:pointProperty"
+ * minOccurs="0"/}{/xs:sequence}{/xs:extension}{/xs:complexContent}{/element}</code>
  * The type contains a similar XML fragment.
  * </p>
+ * 
  * <p>
  * minOccurs, maxOccurs and nillable are all attributes for all cases. There is
  * more stuff in the XMLSchema spec but we don't care.
  * </p>
- * 
+ *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.7 2004/01/16 20:05:34 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.8 2004/01/21 00:26:09 dmzwiers Exp $
  */
-public class AttributeTypeInfoDTO  implements DataTransferObject {
-		
-	/** attribute name*/
-	private String name;
-	
-    /** attribute min occurs*/
-	private int minOccurs;
-	
-    /** attribute max occurs*/
-	private int maxOccurs;
-	
+public class AttributeTypeInfoDTO implements DataTransferObject {
+    /** attribute name */
+    private String name;
+
+    /** attribute min occurs */
+    private int minOccurs;
+
+    /** attribute max occurs */
+    private int maxOccurs;
+
     /** true when nillable */
-	private boolean nillable;
-	
-    /** if is ref and a name is specified, then treat like a simple type (same thing ...) otherwise this is a complex type. */
-	private String type;
-    
-	/**
+    private boolean nillable;
+
+    /**
+     * if is ref and a name is specified, then treat like a simple type (same
+     * thing ...) otherwise this is a complex type.
+     */
+    private String type;
+
+    /**
      * This is true when type is complex.
+     * 
      * <p>
-     * This is used to denote that type proerty is an XML fragment, rather
-     * than type a type declaration. type declaration must be from
-     * GMLUtils.xmlSchemaType or gmlTypes but not baseGMLTypes. 
+     * This is used to denote that type proerty is an XML fragment, rather than
+     * type a type declaration. type declaration must be from
+     * GMLUtils.xmlSchemaType or gmlTypes but not baseGMLTypes.
      * </p>
+     * 
      * <p>
      * baseGMLTypes can only be used in your XML fragment.
      * </p>
      */
-	private boolean isComplex;
+    private boolean isComplex;
 
-	/**
-	 * AttributeTypeInfoDTO constructor.
-	 * <p>
-	 * Default constructor, does nothing
-	 * </p>
-	 *
-	 */
-	public AttributeTypeInfoDTO(){}
-	
-	/**
-	 * AttributeTypeInfoDTO constructor.
-	 * <p>
-	 * Copies the data from the specified DTO to this one.
-	 * </p>
-	 * @param dto AttributeTypeInfoDTO The data source to copy from.
-	 */
-	public AttributeTypeInfoDTO(AttributeTypeInfoDTO dto){
-		name = dto.getName(); 
-		type = dto.getType();
-		minOccurs = dto.getMinOccurs();
-		maxOccurs = dto.getMaxOccurs();
-		nillable = dto.isNillable();
-		isComplex = dto.isComplex();
-	}
+    /**
+     * AttributeTypeInfoDTO constructor.
+     * 
+     * <p>
+     * Default constructor, does nothing
+     * </p>
+     */
+    public AttributeTypeInfoDTO() {
+    }
 
-	/**
-	 * Implement equals.
-	 * <p>
-	 * true when the data contained inside the objects is the same.
-	 * </p>
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
-	 * @param obj an instance of AttributeTypeInfoDTO to compare
-	 * @return true when they are the same, false otherwise
-	 */
-	public boolean equals(Object obj){
-		boolean r = true;
-		if(obj == null || !(obj instanceof AttributeTypeInfoDTO))
-			return false;
-		AttributeTypeInfoDTO dto = (AttributeTypeInfoDTO)obj;
-		r = r && name == dto.getName(); 
-		r = r && type == dto.getType();
-		r = r && minOccurs == dto.getMinOccurs();
-		r = r && maxOccurs == dto.getMaxOccurs();
-		r = r && nillable == dto.isNillable();
-		r = r && isComplex == dto.isComplex();
-		return r;
-	}
-	
-	/**
-	 * Implement hashCode.
-	 * <p>
-	 * The hashcode for this object.
-	 * </p>
-	 * @see java.lang.Object#hashCode()
-	 * 
-	 * @return a hashcode value.
-	 */
-	public int hashCode(){
-		return name.hashCode()*type.hashCode();
-	}
+    /**
+     * AttributeTypeInfoDTO constructor.
+     * 
+     * <p>
+     * Copies the data from the specified DTO to this one.
+     * </p>
+     *
+     * @param dto AttributeTypeInfoDTO The data source to copy from.
+     */
+    public AttributeTypeInfoDTO(AttributeTypeInfoDTO dto) {
+        name = dto.getName();
+        type = dto.getType();
+        minOccurs = dto.getMinOccurs();
+        maxOccurs = dto.getMaxOccurs();
+        nillable = dto.isNillable();
+        isComplex = dto.isComplex();
+    }
 
-	/**
-	 * Implement clone.
-	 * <p>
-	 * An instance of AttributeTypeInfoDTO which is the same as this one.
-	 * </p>
-	 * @see java.lang.Object#clone()
-	 * 
-	 * @return Object a copy of this object.
-	 */
-	public Object clone(){
-		AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
-		dto.setMaxOccurs(maxOccurs);
-		dto.setMinOccurs(minOccurs);
-		dto.setName(name);
-		dto.setNillable(nillable);
-		dto.setComplex(isComplex);
-		dto.setType(type);
-		return dto;
-	}
-	
-	/**
-	 * isRef purpose.
-	 * <p>
-	 * Returns is this is a reference element type or a document defined type.
-	 * </p>
-	 * @return true when either a ref or XMLSchema type.
-	 */
-	public boolean isComplex() {
-		return isComplex;
-	}
+    /**
+     * Implement equals.
+     * 
+     * <p>
+     * true when the data contained inside the objects is the same.
+     * </p>
+     *
+     * @param obj an instance of AttributeTypeInfoDTO to compare
+     *
+     * @return true when they are the same, false otherwise
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+        boolean r = true;
 
-	/**
-	 * getMaxOccurs purpose.
-	 * <p>
-	 * The max number of occurences for this element.
-	 * </p>
-	 * @return max number of occurences
-	 */
-	public int getMaxOccurs() {
-		return maxOccurs;
-	}
+        if ((obj == null) || !(obj instanceof AttributeTypeInfoDTO)) {
+            return false;
+        }
 
-	/**
-	 * getMinOccurs purpose.
-	 * <p>
-	 * the min number of occurences for this element
-	 * </p>
-	 * @return min number of occurences
-	 */
-	public int getMinOccurs() {
-		return minOccurs;
-	}
+        AttributeTypeInfoDTO dto = (AttributeTypeInfoDTO) obj;
+        r = r && (name == dto.getName());
+        r = r && (type == dto.getType());
+        r = r && (minOccurs == dto.getMinOccurs());
+        r = r && (maxOccurs == dto.getMaxOccurs());
+        r = r && (nillable == dto.isNillable());
+        r = r && (isComplex == dto.isComplex());
 
-	/**
-	 * getName purpose.
-	 * <p>
-	 * returns the element name
-	 * </p>
-	 * @return the element name
-	 */
-	public String getName() {
-		return name;
-	}
+        return r;
+    }
 
-	/**
-	 * isNillable purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public boolean isNillable() {
-		return nillable;
-	}
+    /**
+     * Implement hashCode.
+     * 
+     * <p>
+     * The hashcode for this object.
+     * </p>
+     *
+     * @return a hashcode value.
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return name.hashCode() * type.hashCode();
+    }
 
-	/**
-	 * getType purpose.
-	 * <p>
-	 * returns the element type. This is an XML fragment if isRef() returns false.
-	 * </p>
-	 * @return the element type. This is an XML fragment if isRef() returns false.
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Implement clone.
+     * 
+     * <p>
+     * An instance of AttributeTypeInfoDTO which is the same as this one.
+     * </p>
+     *
+     * @return Object a copy of this object.
+     *
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+        AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
+        dto.setMaxOccurs(maxOccurs);
+        dto.setMinOccurs(minOccurs);
+        dto.setName(name);
+        dto.setNillable(nillable);
+        dto.setComplex(isComplex);
+        dto.setType(type);
 
-	/**
-	 * setRef purpose.
-	 * <p>
-	 * Sets whether this is a reference type element or not
-	 * </p>
-	 * @param b true when this is a reference type element.
-	 */
-	public void setComplex(boolean b) {
-		isComplex = b;
-	}
+        return dto;
+    }
 
-	/**
-	 * setMaxOccurs purpose.
-	 * <p>
-	 * Stores the max occurs for the element
-	 * </p>
-	 * @param i the max occurs for the element
-	 */
-	public void setMaxOccurs(int i) {
-		maxOccurs = i;
-	}
+    /**
+     * isRef purpose.
+     * 
+     * <p>
+     * Returns is this is a reference element type or a document defined type.
+     * </p>
+     *
+     * @return true when either a ref or XMLSchema type.
+     */
+    public boolean isComplex() {
+        return isComplex;
+    }
 
-	/**
-	 * setMinOccurs purpose.
-	 * <p>
-	 * Stores the min occurs for the element
-	 * </p>
-	 * @param i the min occurs for the element
-	 */
-	public void setMinOccurs(int i) {
-		minOccurs = i;
-	}
+    /**
+     * getMaxOccurs purpose.
+     * 
+     * <p>
+     * The max number of occurences for this element.
+     * </p>
+     *
+     * @return max number of occurences
+     */
+    public int getMaxOccurs() {
+        return maxOccurs;
+    }
 
-	/**
-	 * setName purpose.
-	 * <p>
-	 * Stores the name for the element
-	 * </p>
-	 * @param string the name for the element
-	 */
-	public void setName(String string) {
-		name = string;
-	}
+    /**
+     * getMinOccurs purpose.
+     * 
+     * <p>
+     * the min number of occurences for this element
+     * </p>
+     *
+     * @return min number of occurences
+     */
+    public int getMinOccurs() {
+        return minOccurs;
+    }
 
-	/**
-	 * setNillable purpose.
-	 * <p>
-	 * Stores if this element is nillable
-	 * </p>
-	 * @param b true when this element is nillable
-	 */
-	public void setNillable(boolean b) {
-		nillable = b;
-	}
+    /**
+     * getName purpose.
+     * 
+     * <p>
+     * returns the element name
+     * </p>
+     *
+     * @return the element name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * setType purpose.
-	 * <p>
-	 * Stores the type for this element. This is an XML fragment when isRef() returns false.
-	 * </p>
-	 * @param stringthe type for this element. This is an XML fragment when isRef() returns false.
-	 */
-	public void setType(String string) {
-		type = string;
-	}
+    /**
+     * isNillable purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public boolean isNillable() {
+        return nillable;
+    }
 
+    /**
+     * getType purpose.
+     * 
+     * <p>
+     * returns the element type. This is an XML fragment if isRef() returns
+     * false.
+     * </p>
+     *
+     * @return the element type. This is an XML fragment if isRef() returns
+     *         false.
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * setRef purpose.
+     * 
+     * <p>
+     * Sets whether this is a reference type element or not
+     * </p>
+     *
+     * @param b true when this is a reference type element.
+     */
+    public void setComplex(boolean b) {
+        isComplex = b;
+    }
+
+    /**
+     * setMaxOccurs purpose.
+     * 
+     * <p>
+     * Stores the max occurs for the element
+     * </p>
+     *
+     * @param i the max occurs for the element
+     */
+    public void setMaxOccurs(int i) {
+        maxOccurs = i;
+    }
+
+    /**
+     * setMinOccurs purpose.
+     * 
+     * <p>
+     * Stores the min occurs for the element
+     * </p>
+     *
+     * @param i the min occurs for the element
+     */
+    public void setMinOccurs(int i) {
+        minOccurs = i;
+    }
+
+    /**
+     * setName purpose.
+     * 
+     * <p>
+     * Stores the name for the element
+     * </p>
+     *
+     * @param string the name for the element
+     */
+    public void setName(String string) {
+        name = string;
+    }
+
+    /**
+     * setNillable purpose.
+     * 
+     * <p>
+     * Stores if this element is nillable
+     * </p>
+     *
+     * @param b true when this element is nillable
+     */
+    public void setNillable(boolean b) {
+        nillable = b;
+    }
+
+    /**
+     * setType purpose.
+     * 
+     * <p>
+     * Stores the type for this element. This is an XML fragment when isRef()
+     * returns false.
+     * </p>
+     *
+     * @param string type for this element. This is an XML fragment when
+     *        isRef() returns false.
+     */
+    public void setType(String string) {
+        type = string;
+    }
 }

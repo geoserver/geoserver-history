@@ -4,6 +4,10 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.responses.ResponseUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -13,12 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.responses.ResponseUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.vfny.geoserver.requests.*;
-
 
 /**
  * Java representation of a WFS_TransactionResponse xml element. The status and
@@ -27,7 +25,7 @@ import org.vfny.geoserver.requests.*;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.5 2004/01/16 17:58:29 dmzwiers Exp $
+ * @version $Id: WfsTransResponse.java,v 1.6 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
@@ -92,12 +90,13 @@ public class WfsTransResponse {
      * Only constructor, as status is mandatory
      *
      * @param status The status of the transaction.
+     * @param verbose DOCUMENT ME!
      */
     public WfsTransResponse(short status, boolean verbose) {
         this.status = status;
-		this.verbose = verbose;
-		indent = (verbose) ? ("\n" + V_OFFSET) : " ";
-		offset = (verbose) ? V_OFFSET : "";
+        this.verbose = verbose;
+        indent = (verbose) ? ("\n" + V_OFFSET) : " ";
+        offset = (verbose) ? V_OFFSET : "";
     }
 
     /**
@@ -106,13 +105,14 @@ public class WfsTransResponse {
      * @param status The status of the transaction.
      * @param handle the handle of the response.  Should be the same as the
      *        handle of the transaction request.
+     * @param verbose DOCUMENT ME!
      */
     public WfsTransResponse(short status, String handle, boolean verbose) {
         this.status = status;
         this.handle = handle;
-		this.verbose = verbose;
-		indent = (verbose) ? ("\n" + V_OFFSET) : " ";
-		offset = (verbose) ? V_OFFSET : "";
+        this.verbose = verbose;
+        indent = (verbose) ? ("\n" + V_OFFSET) : " ";
+        offset = (verbose) ? V_OFFSET : "";
     }
 
     /**
@@ -162,13 +162,16 @@ public class WfsTransResponse {
      * Generates the xml represented by this object.
      *
      * @param writer DOCUMENT ME!
+     * @param request DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void writeXmlResponse(Writer writer, Request request) throws IOException {
+    public void writeXmlResponse(Writer writer, Request request)
+        throws IOException {
         //boolean verbose = ConfigInfo.getInstance().formatOutput();
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + request.getGeoServer().getCharSet().displayName()+ "\"?>";
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\""
+            + request.getGeoServer().getCharSet().displayName() + "\"?>";
 
         if (verbose) {
             writer.write("\n");
@@ -186,7 +189,7 @@ public class WfsTransResponse {
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         writer.write(indent);
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
-        
+
         writer.write(request.getBaseUrl());
         writer.write("wfs/1.0.0/WFS-transaction.xsd\">");
 
@@ -253,7 +256,7 @@ public class WfsTransResponse {
         StringWriter writer = new StringWriter();
 
         try {
-            writeXmlResponse(writer,gs);
+            writeXmlResponse(writer, gs);
         } catch (IOException e) {
             return null;
         }

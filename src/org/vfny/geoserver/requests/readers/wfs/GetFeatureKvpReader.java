@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
@@ -16,6 +12,9 @@ import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -31,7 +30,7 @@ import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: GetFeatureKvpReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: GetFeatureKvpReader.java,v 1.4 2004/01/21 00:26:06 dmzwiers Exp $
  */
 public class GetFeatureKvpReader extends KvpRequestReader {
     /** Class logger */

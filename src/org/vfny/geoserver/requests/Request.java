@@ -6,8 +6,8 @@ package org.vfny.geoserver.requests;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.vfny.geoserver.global.GeoServer;
 import org.geotools.validation.ValidationProcessor;
+import org.vfny.geoserver.global.GeoServer;
 
 /**
  * Defines a general Request type and provides accessor methods for universal
@@ -21,7 +21,7 @@ import org.geotools.validation.ValidationProcessor;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.8 2004/01/20 23:37:02 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.9 2004/01/21 00:26:06 dmzwiers Exp $
  */
 abstract public class Request {
 	/**

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  *    Geotools2 - OpenSource mapping toolkit
  *    http://geotools.org
@@ -20,10 +24,7 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.Feature;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
@@ -34,8 +35,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
-
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -43,7 +45,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: TransactionHandler.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {
@@ -97,8 +99,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     private List curFeatures;
 
     /**
-     * Flag to alert signal we are within a Property element.  The state
-     * thing was not giving enough information.
+     * Flag to alert signal we are within a Property element.  The state thing
+     * was not giving enough information.
      */
     private boolean inProperty = false;
 

@@ -4,6 +4,20 @@
  */
 package org.vfny.geoserver.requests.readers;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import org.geotools.filter.AbstractFilter;
+import org.geotools.filter.FidFilter;
+import org.geotools.filter.FilterFactory;
+import org.geotools.filter.GeometryFilter;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.LiteralExpression;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.requests.Request;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -17,26 +31,10 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.FidFilter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.IllegalFilterException;
-import org.geotools.filter.LiteralExpression;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.requests.Request;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
-
 
 /**
  * Base class for all KVP readers, with some generalized convenience methods.
- *
+ * 
  * <p>
  * If you pass this utility a KVP request (everything after the '?' in the  GET
  * request URI), it will translate this into a list of key-word value
@@ -53,7 +51,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: KvpRequestReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: KvpRequestReader.java,v 1.4 2004/01/21 00:26:09 dmzwiers Exp $
  */
 abstract public class KvpRequestReader {
     /** Class logger */
@@ -161,7 +159,7 @@ abstract public class KvpRequestReader {
      * empty list.
      *
      * @param rawList The tokenized string.
-     * @param delimeter The delimeter for the string tokens.
+     * @param delimiter The delimeter for the string tokens.
      *
      * @return A list of the tokenized string.
      */
@@ -173,44 +171,49 @@ abstract public class KvpRequestReader {
             // handles explicit unconstrained case
         } else if (rawList.equals("*")) {
             return Collections.EMPTY_LIST;
+
             // handles explicit, constrained element lists
         } else {
             List kvpList = null;
+
             /**
-             *GR: avoid using StringTokenizer because it does not returns
-             *empty trailing strings (i.e. if the string after the last
-             *match of the pattern is empty)
+             * GR: avoid using StringTokenizer because it does not returns
+             * empty trailing strings (i.e. if the string after the last match
+             * of the pattern is empty)
              */
+
             //HACK: if there are more than one character in delimiter, I assume
             //they are the parenthesis, for wich I don't know how to create
             //a regular expression, so I keep using the StringTokenizer since
             //it works for that case.
-            if(delimiter.length() == 1)
-            {
-              int index = -1;
-              kvpList = new ArrayList();
-              String token;
-              //if(rawList.endsWith(delimiter))
-              rawList += delimiter;
-              while( (index = rawList.indexOf(delimiter)) > -1)
-              {
-                token = rawList.substring(0, index);
-                if(LOGGER.isLoggable(Level.FINEST))
-                  LOGGER.finest("adding simple element " + token);
-                kvpList.add(token);
-                rawList = rawList.substring(++index);
-              }
-            }else{
+            if (delimiter.length() == 1) {
+                int index = -1;
+                kvpList = new ArrayList();
 
-              StringTokenizer kvps = new StringTokenizer(rawList, delimiter);
-              kvpList = new ArrayList(kvps.countTokens());
+                String token;
 
-              while (kvps.hasMoreTokens()) {
-                LOGGER.finest("adding simple element");
-                kvpList.add(kvps.nextToken());
-              }
+                //if(rawList.endsWith(delimiter))
+                rawList += delimiter;
+
+                while ((index = rawList.indexOf(delimiter)) > -1) {
+                    token = rawList.substring(0, index);
+
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.finest("adding simple element " + token);
+                    }
+
+                    kvpList.add(token);
+                    rawList = rawList.substring(++index);
+                }
+            } else {
+                StringTokenizer kvps = new StringTokenizer(rawList, delimiter);
+                kvpList = new ArrayList(kvps.countTokens());
+
+                while (kvps.hasMoreTokens()) {
+                    LOGGER.finest("adding simple element");
+                    kvpList.add(kvps.nextToken());
+                }
             }
-
 
             return kvpList;
         }

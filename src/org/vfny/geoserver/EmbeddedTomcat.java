@@ -4,11 +4,6 @@
  */
 package org.vfny.geoserver;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Logger;
-
 import org.apache.catalina.Connector;
 import org.apache.catalina.Context;
 import org.apache.catalina.Deployer;
@@ -16,6 +11,10 @@ import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
 import org.apache.catalina.logger.SystemOutLogger;
 import org.apache.catalina.startup.Embedded;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Logger;
 
 
 /**
@@ -24,10 +23,9 @@ import org.apache.catalina.startup.Embedded;
  * and path variables are in place before it begins.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: EmbeddedTomcat.java,v 1.8 2004/01/12 21:01:32 dmzwiers Exp $
+ * @version $Id: EmbeddedTomcat.java,v 1.9 2004/01/21 00:26:08 dmzwiers Exp $
  */
-public class EmbeddedTomcat
-{
+public class EmbeddedTomcat {
     /** The logger for the filter module. */
     private static final Logger LOG = Logger.getLogger(
             "org.vfny.geoserver.EmbeddedTomcat");
@@ -58,8 +56,7 @@ public class EmbeddedTomcat
     /**
      * Default Constructor
      */
-    public EmbeddedTomcat()
-    {
+    public EmbeddedTomcat() {
     }
 
     /**
@@ -67,8 +64,7 @@ public class EmbeddedTomcat
      *
      * @param path The catalina server path.
      */
-    public void setPath(String path)
-    {
+    public void setPath(String path) {
         this.path = path + SERVER_DIR;
     }
 
@@ -77,8 +73,7 @@ public class EmbeddedTomcat
      *
      * @return path The catalina server path.
      */
-    public String getPath()
-    {
+    public String getPath() {
         return path;
     }
 
@@ -87,8 +82,7 @@ public class EmbeddedTomcat
      *
      * @throws Exception for any problems
      */
-    public void startTomcat() throws Exception
-    {
+    public void startTomcat() throws Exception {
         Engine engine = null;
 
         // Set the home directory
@@ -138,8 +132,7 @@ public class EmbeddedTomcat
      *
      * @throws Exception if anything goes wrong.
      */
-    public void stopTomcat() throws Exception
-    {
+    public void stopTomcat() throws Exception {
         // Stop the embedded server
         embedded.stop();
     }
@@ -153,22 +146,18 @@ public class EmbeddedTomcat
      * @throws Exception if anything goes wrong.
      */
     public void registerWAR(String contextPath, URL warFile)
-        throws Exception
-    {
+        throws Exception {
         LOG.info("registered war: " + contextPath);
 
-        if (contextPath == null)
-        {
+        if (contextPath == null) {
             throw new Exception("Invalid Path : " + contextPath);
         }
 
-        if (contextPath.equals("/"))
-        {
+        if (contextPath.equals("/")) {
             contextPath = "";
         }
 
-        if (warFile == null)
-        {
+        if (warFile == null) {
             throw new Exception("Invalid WAR : " + warFile);
         }
 
@@ -176,8 +165,7 @@ public class EmbeddedTomcat
 
         Context context = deployer.findDeployedApp(contextPath);
 
-        if (context != null)
-        {
+        if (context != null) {
             throw new Exception("Context " + contextPath + " Already Exists!");
         }
 
@@ -193,16 +181,12 @@ public class EmbeddedTomcat
      *
      * @throws Exception if anything goes wrong.
      */
-    public void unregisterWAR(String contextPath) throws Exception
-    {
+    public void unregisterWAR(String contextPath) throws Exception {
         Context context = host.map(contextPath);
 
-        if (context != null)
-        {
+        if (context != null) {
             embedded.removeContext(context);
-        }
-        else
-        {
+        } else {
             throw new Exception("Context does not exist for named path : "
                 + contextPath);
         }
@@ -213,25 +197,20 @@ public class EmbeddedTomcat
      *
      * @param args Arguments from the user (must be 'stop' or 'start').
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         EmbeddedTomcat tomcat = new EmbeddedTomcat();
 
         // if geoserver home is not defined, make a guess that it is the current
         //  user directory.  check to make sure this is the case.  if this is not
         //  the case, then bail out with appropriate error message.
         // also, set path to the shut down file.
-        if (System.getProperty("GEOSERVER_HOME") != null)
-        {
+        if (System.getProperty("GEOSERVER_HOME") != null) {
             File testHome = new File(System.getProperty("GEOSERVER_HOME")
                     + TEST_FILE);
 
-            if (testHome.exists())
-            {
+            if (testHome.exists()) {
                 tomcat.setPath(System.getProperty("GEOSERVER_HOME"));
-            }
-            else
-            {
+            } else {
                 System.out.println("Startup/Shutdown command unsucessful...");
 
                 System.out.println("You appear to have specified the ");
@@ -242,17 +221,12 @@ public class EmbeddedTomcat
 
                 System.exit(1);
             }
-        }
-        else
-        {
+        } else {
             File testHome = new File(System.getProperty("user.dir") + TEST_FILE);
 
-            if (testHome.exists())
-            {
+            if (testHome.exists()) {
                 tomcat.setPath(System.getProperty("user.dir"));
-            }
-            else
-            {
+            } else {
                 System.out.println("Startup/Shutdown command unsucessful...");
 
                 System.out.println("You have not specified the GEOSERVER_HOME ");
@@ -270,10 +244,8 @@ public class EmbeddedTomcat
         // handle start conditions
         File shutDown = new File(tomcat.getPath() + STOP_FILE);
 
-        if (args[0].equals("start"))
-        {
-            try
-            {
+        if (args[0].equals("start")) {
+            try {
                 // make sure to delete shut down signal file
                 shutDown.delete();
 
@@ -285,8 +257,7 @@ public class EmbeddedTomcat
                 tomcat.startTomcat();
 
                 // check for shutdown file at specified frequency
-                while (!shutDown.exists())
-                {
+                while (!shutDown.exists()) {
                     Thread.sleep(STOP_CHECK_FREQUENCEY);
                 }
 
@@ -296,29 +267,20 @@ public class EmbeddedTomcat
                 tomcat.stopTomcat();
 
                 System.exit(0);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
         // handle stop conditions
-        else if (args[0].equals("stop"))
-        {
+        else if (args[0].equals("stop")) {
             System.out.println("stopping server...");
 
-            try
-            {
+            try {
                 shutDown.createNewFile();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else
-        {
+        } else {
             System.out.println("Usage: ");
 
             System.out.println(

@@ -8,15 +8,13 @@
  */
 package org.vfny.geoserver.global;
 
-import java.util.HashMap;
+import org.geotools.data.FeatureTypeMetaData;
+import org.geotools.data.NamespaceMetaData;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import org.geotools.data.FeatureTypeMetaData;
-import org.geotools.data.NamespaceMetaData;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 
 
 /**
@@ -29,14 +27,15 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * <p></p>
  * 
  * <p>
- * NameSpaceInfo ns = new NameSpaceInfo(dto); System.out.println(ns.getPrefix() +
- * ns.getUri());
+ * NameSpaceInfo ns = new NameSpaceInfo(dto); System.out.println(ns.getPrefix()
+ * + ns.getUri());
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.5 2004/01/20 06:30:01 jive Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.6 2004/01/21 00:26:07 dmzwiers Exp $
  */
-public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMetaData{
+public class NameSpaceInfo extends GlobalLayerSupertype
+    implements NamespaceMetaData {
     /**
      * A copy of the NameSpaceInfoDTO which contains the data for this class.
      * Editing the DTO should be completed with extreme caution.
@@ -45,9 +44,9 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
 
     /** ref to parent set of datastores. */
     private Data data;
-    
+
     /** metadata */
-    private Map meta; 
+    private Map meta;
 
     /**
      * NameSpaceConfig constructor.
@@ -57,6 +56,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
      * structures are cloned.
      * </p>
      *
+     * @param data DOCUMENT ME!
      * @param ns The namespace to copy.
      *
      * @throws NullPointerException when the param is null
@@ -65,9 +65,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
         if (ns == null) {
             throw new NullPointerException("Non null NameSpaceInfoDTO required");
         }
-        if( data == null ){
+
+        if (data == null) {
             throw new NullPointerException("Non null Data required");
         }
+
         this.data = data;
         nsDTO = (NameSpaceInfoDTO) ns.clone();
     }
@@ -229,51 +231,55 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
         nsDTO.setUri(string);
     }
 
-
     /**
      * Implement containsMetaData.
-     * 
-     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
-     * 
+     *
      * @param key
+     *
      * @return
+     *
+     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
      */
     public boolean containsMetaData(String key) {
-        return meta.containsKey( key );
+        return meta.containsKey(key);
     }
 
     /**
      * Implement putMetaData.
-     * 
-     * @see org.geotools.data.MetaData#putMetaData(java.lang.String, java.lang.Object)
-     * 
+     *
      * @param key
      * @param value
+     *
+     * @see org.geotools.data.MetaData#putMetaData(java.lang.String,
+     *      java.lang.Object)
      */
     public void putMetaData(String key, Object value) {
-        meta.put( key, value );
+        meta.put(key, value);
     }
 
     /**
      * Implement getMetaData.
-     * 
-     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
-     * 
+     *
      * @param key
+     *
      * @return
+     *
+     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
      */
     public Object getMetaData(String key) {
-        return meta.get( key );
+        return meta.get(key);
     }
 
     /**
      * Implement getURI.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.NamespaceMetaData#getURI()
-     * 
+     *
      * @return
+     *
+     * @see org.geotools.data.NamespaceMetaData#getURI()
      */
     public String getURI() {
         return nsDTO.getUri();
@@ -281,42 +287,50 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
 
     /**
      * This should be a list of available typeNames for the namespace.
-     * <p>
-     * Makes use of data to get the list of all FeatureTypes, returns the
-     * names that match this prefix. This is just the typeName and not the
-     * full prefix:typeName.
-     * </p>
-     * @see org.geotools.data.NamespaceMetaData#getTypeNames()
      * 
+     * <p>
+     * Makes use of data to get the list of all FeatureTypes, returns the names
+     * that match this prefix. This is just the typeName and not the full
+     * prefix:typeName.
+     * </p>
+     *
      * @return
+     *
+     * @see org.geotools.data.NamespaceMetaData#getTypeNames()
      */
     public Set getTypeNames() {
         Set set = new HashSet();
-        
-        for( Iterator i=data.getFeatureTypeInfos().values().iterator(); i.hasNext(); ){
+
+        for (Iterator i = data.getFeatureTypeInfos().values().iterator();
+                i.hasNext();) {
             FeatureTypeInfo type = (FeatureTypeInfo) i.next();
-            if( type.getNameSpace() == this ) {
-                set.add( type.getName() ); 
-            }            
+
+            if (type.getNameSpace() == this) {
+                set.add(type.getName());
+            }
         }
+
         return set;
     }
 
     /**
      * Implement getFeatureTypeMetaData.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.NamespaceMetaData#getFeatureTypeMetaData(java.lang.String)
-     * 
+     *
      * @param typeName
+     *
      * @return
+     *
+     * @see org.geotools.data.NamespaceMetaData#getFeatureTypeMetaData(java.lang.String)
      */
     public FeatureTypeMetaData getFeatureTypeMetaData(String typeName) {
-        return data.getFeatureTypeInfo( typeName );
-    }    
-    
-    public String toString(){
-    	return getPrefix()+":"+getUri();
+        return data.getFeatureTypeInfo(typeName);
+    }
+
+    public String toString() {
+        return getPrefix() + ":" + getUri();
     }
 }

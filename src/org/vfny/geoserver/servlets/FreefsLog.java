@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  *    Geotools2 - OpenSource mapping toolkit
  *    http://geotools.org
@@ -20,15 +24,13 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.vfny.geoserver.zserver.GeoZServer;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.geotools.data.jdbc.ConnectionPoolManager;
-import org.vfny.geoserver.zserver.GeoZServer;
 
 
 /**
@@ -36,7 +38,7 @@ import org.vfny.geoserver.zserver.GeoZServer;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.16 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: FreefsLog.java,v 1.17 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -49,19 +51,20 @@ public class FreefsLog extends HttpServlet {
 
     /**
      * Initializes logging and config.
+     *
+     * @throws ServletException DOCUMENT ME!
      */
-    public void init() throws ServletException{
+    public void init() throws ServletException {
         //HACK: java.util.prefs are awful.  See
         //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
 
-		//if(GeoServer.getInstance()==null){
-		//	(new GeoServer()).init(this);
-		//}
+        //if(GeoServer.getInstance()==null){
+        //	(new GeoServer()).init(this);
+        //}
 
-        
-           /*ServletContext sc = getServletContext();
+        /*ServletContext sc = getServletContext();
            GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
            ConfigInfo cfgInfo = ConfigInfo.getInstance(path, gs);
                    if (cfgInfo.runZServer()) {
@@ -72,7 +75,6 @@ public class FreefsLog extends HttpServlet {
                   LOGGER.info("zserver module could not start: " + e.getMessage());
               }
                    }*/
-         
     }
 
     /**

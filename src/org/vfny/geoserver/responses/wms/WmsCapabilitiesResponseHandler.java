@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -18,6 +14,9 @@ import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -29,18 +28,19 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.8 2004/01/16 17:58:30 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.9 2004/01/21 00:26:11 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
-	private static final String CAP_VERSION = WMS.getVersion();
-	private GeoServer server = null;
-	private String baseUrl = "";
+    private static final String CAP_VERSION = WMS.getVersion();
+    private GeoServer server = null;
+    private String baseUrl = "";
     protected String BBOX_ELEM_NAME = "LatLonBoundingBox";
 
     /**
      * Creates a new WmsCapabilitiesResponseHandler object.
      *
      * @param handler DOCUMENT ME!
+     * @param r DOCUMENT ME!
      */
     public WmsCapabilitiesResponseHandler(ContentHandler handler, Request r) {
         super(handler);
@@ -51,8 +51,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     /**
      * Prints the dtd declaration and root WMT_MS_Capabilities declaration.
      *
-     * @param config Must be an instance of WMS.  If not a class cast
-     *        exception will be thrown.
+     * @param config Must be an instance of WMS.  If not a class cast exception
+     *        will be thrown.
      *
      * @throws SAXException For any problems creating the SAX.
      *
@@ -60,8 +60,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *       referenced one.  To do this we will need to modify the build.xml
      *       file to copy it to the war.
      */
-    protected void startDocument(Service config)
-        throws SAXException {
+    protected void startDocument(Service config) throws SAXException {
         WMS WMS = (WMS) config;
 
         AttributesImpl atts = new AttributesImpl();
@@ -70,8 +69,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             + ".digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\"");
 
         atts.addAttribute("", "version", "version", "", CAP_VERSION);
-       // atts.addAttribute("", "", "updateSequence", "updateSequence",
-       //     WMS.getUpdateTime());
+
+        // atts.addAttribute("", "", "updateSequence", "updateSequence",
+        //     WMS.getUpdateTime());
         startElement("WMT_MS_Capabilities", atts);
     }
 
@@ -125,8 +125,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * Handles the capabilities section - request, exceptions, vendor, sld and
      * layers - of the caps document.
      *
-     * @param Service The Wms config to turn into a capabilities
-     *        document.
+     * @param Service The Wms config to turn into a capabilities document.
      *
      * @throws SAXException If anything goes wrong.
      */
@@ -162,12 +161,12 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *       child layers override or inherit.
      */
     protected void handleLayers(WMS config) throws SAXException {
-		Data catalog = server.getData();
-		Collection ftypes = catalog.getFeatureTypeInfos().values();
-		FeatureTypeInfo layer;
+        Data catalog = server.getData();
+        Collection ftypes = catalog.getFeatureTypeInfos().values();
+        FeatureTypeInfo layer;
         cReturn();
         startElement("Layer");
-		handleService((Service)config);
+        handleService((Service) config);
 
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             layer = (FeatureTypeInfo) it.next();
@@ -232,8 +231,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException For any problems.
      */
-    protected void handleVendorSpecifics(WMS config)
-        throws SAXException {
+    protected void handleVendorSpecifics(WMS config) throws SAXException {
     }
 
     /**
@@ -370,9 +368,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         handleSingleElem("ContactVoiceTelephone", server.getContactVoice());
         handleSingleElem("ContactFacsimileTelephone",
-		server.getContactFacsimile());
+            server.getContactFacsimile());
         handleSingleElem("ContactElectronicMailAddress",
-		server.getContactEmail());
+            server.getContactEmail());
 
         unIndent();
         endElement("ContactInformation");

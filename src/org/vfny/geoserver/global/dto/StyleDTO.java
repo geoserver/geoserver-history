@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -18,14 +22,12 @@ import java.io.File;
  * </p>
  * 
  * <p>
- * StyleDTO styleDto = new StyleDTO();
- * styleDto.setDefault(false);
- * styleDto.setId("My Style");
- * styleDto.setFilename(new File(myStyle.sld));
+ * StyleDTO styleDto = new StyleDTO(); styleDto.setDefault(false);
+ * styleDto.setId("My Style"); styleDto.setFilename(new File(myStyle.sld));
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleDTO.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: StyleDTO.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public final class StyleDTO implements DataTransferObject {
     /** The syle id. */
@@ -43,9 +45,9 @@ public final class StyleDTO implements DataTransferObject {
      * <p>
      * does nothing
      * </p>
-     *
      */
-    public StyleDTO() {}
+    public StyleDTO() {
+    }
 
     /**
      * StyleConfig constructor.
@@ -57,10 +59,12 @@ public final class StyleDTO implements DataTransferObject {
      * </p>
      *
      * @param style The style to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public StyleDTO(StyleDTO style) {
         if (style == null) {
-			throw new NullPointerException();
+            throw new NullPointerException();
         }
 
         id = style.getId();
@@ -98,7 +102,7 @@ public final class StyleDTO implements DataTransferObject {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof StyleDTO)) {
+        if ((obj == null) || !(obj instanceof StyleDTO)) {
             return false;
         }
 
@@ -114,27 +118,27 @@ public final class StyleDTO implements DataTransferObject {
 
         return r;
     }
-    
-	/**
-	 * Implement hashCode.
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 * 
-	 * @return Service hashcode or 0
-	 */
-	public int hashCode() {
-		int r = 1;
-		
-		if (id != null) {
-			r *= id.hashCode();
-		}
 
-		if (filename != null) {
-			r *= filename.hashCode();
-		}
-		
-		return r;
-	}
+    /**
+     * Implement hashCode.
+     *
+     * @return Service hashcode or 0
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int r = 1;
+
+        if (id != null) {
+            r *= id.hashCode();
+        }
+
+        if (filename != null) {
+            r *= filename.hashCode();
+        }
+
+        return r;
+    }
 
     /**
      * isDefault purpose.

@@ -4,19 +4,6 @@
  */
 package org.vfny.geoserver.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.GeoServer;
@@ -28,106 +15,130 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLFilterImpl;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.26 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.27 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
-	
-	/** Request provided passed to execute method */ 
-	protected CapabilitiesRequest request;
-	
+    private static OutputStream nullOutputStream = new OutputStream() {
+            public void write(int b) throws IOException {
+            }
+
+            public void write(byte[] b) throws IOException {
+            }
+
+            public void write(byte[] b, int off, int len)
+                throws IOException {
+            }
+
+            public void flush() throws IOException {
+            }
+
+            public void close() throws IOException {
+            }
+        };
+
+    /** Request provided passed to execute method */
+    protected CapabilitiesRequest request;
+
     /** handler to do the processing */
     protected ContentHandler contentHandler;
 
-    private static OutputStream nullOutputStream = new OutputStream()
-    {
-      public void write(int b)throws IOException
-      {
-      }
-      public void write(byte b[]) throws IOException
-      {
-      }
-      public void write(byte b[], int off, int len) throws IOException
-      {
-      }
-      public void flush() throws IOException
-      {
-      }
-      public void close() throws IOException
-      {
-      }
-    };
-
     /**
-     * Writes to a void output stream to throw any exception that can occur
-     * in writeTo too.
+     * Writes to a void output stream to throw any exception that can occur in
+     * writeTo too.
      *
      * @param request Request to be processed
      *
      * @throws ServiceException If anything goes wrong
      */
     public void execute(Request request) throws ServiceException {
-		this.request = (CapabilitiesRequest) request;    	
-    	// JG - what is this doing? A trial run?
-    	writeTo(nullOutputStream);
-    	
+        this.request = (CapabilitiesRequest) request;
+
+        // JG - what is this doing? A trial run?
+        writeTo(nullOutputStream);
     }
-    /** 
+
+    /**
      * Free up used resources used by execute method.
+     *
+     * @param gs DOCUMENT ME!
      */
-	public void abort(GeoServer gs) {
-		if( request != null ){
-			request = null;
-		}
-	}	
+    public void abort(GeoServer gs) {
+        if (request != null) {
+            request = null;
+        }
+    }
+
     /**
      * Mime type for the Capabilities document.
      *
+     * @param gs DOCUMENT ME!
+     *
      * @return Mime type provided from GeoServer.getMimeType()
+     *
+     * @throws IllegalStateException DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) {
-    	if( request == null ){
-    		throw new IllegalStateException(
-    				"Call execute before get ContentType!"
-            );
-    	}
-    	// was return GeoServer.getInstance().getMimeType();
-    	return gs.getMimeType();    	        
+        if (request == null) {
+            throw new IllegalStateException(
+                "Call execute before get ContentType!");
+        }
+
+        // was return GeoServer.getInstance().getMimeType();
+        return gs.getMimeType();
     }
 
     /**
      * Writes the GetCapabilities document to out.
+     * 
      * <p>
      * By the time this has been called the Framework has:
      * </p>
+     * 
      * <ol>
-     * <li>Called execute( Request )
-     *   </li>
-     * <li>Called getContentType()
-     *   </li>
+     * <li>
+     * Called execute( Request )
+     * </li>
+     * <li>
+     * Called getContentType()
+     * </li>
      * </ol>
-     * <p>
+     * 
+     * <p></p>
+     * 
      * <p>
      * If anything goes wrong the Framework will call abort() to allow for
      * clean up of held resources.
      * </p>
+     *
      * @param out OutputStream being returned to the user.
      *
      * @throws ServiceException DOCUMENT ME!
+     * @throws IllegalStateException DOCUMENT ME!
      * @throws WfsException DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException {
-		if( request == null ){
-			throw new IllegalStateException(
-					"Call execute before get writeTo!"
-			);
-		}    	
+        if (request == null) {
+            throw new IllegalStateException("Call execute before get writeTo!");
+        }
+
         try {
             TransformerFactory tFactory = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer();
@@ -210,5 +221,4 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
      */
     protected abstract ResponseHandler getResponseHandler(
         ContentHandler contentHandler);
-    
 }

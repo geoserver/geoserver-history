@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  *    Geotools2 - OpenSource mapping toolkit
  *    http://geotools.org
@@ -20,10 +24,7 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
@@ -35,15 +36,16 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
 
 
 /**
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.5 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.6 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -72,13 +74,13 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private TransactionFilterHandler parent;
 
     //private TypeRepository typeRepo = TypeRepository.getInstance();
-
-	private Data catalog = null;
+    private Data catalog = null;
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.
      *
      * @param parent The parent of this filter.
+     * @param r DOCUMENT ME!
      */
     public TransactionFeatureHandler(TransactionFilterHandler parent, Request r) {
         super(parent);
@@ -229,7 +231,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             insideInsert = false;
         }
 
-        FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName, namespaceURI);
+        FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName,
+                namespaceURI);
         String internalTypeName = null;
 
         if (fType != null) {
@@ -274,7 +277,6 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             if ((tempValue != null) && !tempValue.toString().trim().equals("")) {
                 attributes.add(tempValue);
                 attributeNames.add(attName);
-
             }
 
             int index = attName.lastIndexOf('/');

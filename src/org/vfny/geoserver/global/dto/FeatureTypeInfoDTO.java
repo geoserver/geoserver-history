@@ -1,16 +1,18 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.global.dto;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.config.DataConfig;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -26,7 +28,6 @@ import com.vividsolutions.jts.geom.Envelope;
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
- * 
  * <pre>Example:<code>
  * FeatureTypeInfoDTO ftiDto = new FeatureTypeInfoDTO();
  * ftiDto.setName("My Feature Type");
@@ -36,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.6 2004/01/20 00:30:44 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.7 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -48,16 +49,14 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
 
-    /**
-     * Copy of the featuretype schema as a string.
-     */
+    /** Copy of the featuretype schema as a string. */
     private List schema;
 
-	/** The schema name. */
-	private String schemaName;
+    /** The schema name. */
+    private String schemaName;
 
-	/** The schemaBase name. */
-	private String schemaBase;
+    /** The schemaBase name. */
+    private String schemaBase;
 
     /** The featuretype name. */
     private String name;
@@ -102,23 +101,27 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * does nothing
      * </p>
      */
-    public FeatureTypeInfoDTO() {}
+    public FeatureTypeInfoDTO() {
+    }
 
     /**
      * FeatureTypeInfo constructor.
      * 
      * <p>
-     * Creates a copy of the FeatureTypeInfo provided. If the
-     * FeatureTypeInfo provided  is null then default values are used. All
-     * the data structures are cloned.
+     * Creates a copy of the FeatureTypeInfo provided. If the FeatureTypeInfo
+     * provided  is null then default values are used. All the data structures
+     * are cloned.
      * </p>
      *
-     * @param f The featuretype to copy.
+     * @param dto The featuretype to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public FeatureTypeInfoDTO(FeatureTypeInfoDTO dto) {
-		if( dto == null ){
-			throw new NullPointerException("Non null FeatureTypeInfoDTO required");
-		}    	
+        if (dto == null) {
+            throw new NullPointerException(
+                "Non null FeatureTypeInfoDTO required");
+        }
 
         dataStoreId = dto.getDataStoreId();
         latLongBBox = CloneLibrary.clone(dto.getLatLongBBox());
@@ -138,13 +141,13 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
         defaultStyle = dto.getDefaultStyle();
         dirName = dto.getDirName();
-		schemaName = dto.getSchemaName();
-		schemaBase = dto.getSchemaBase();
+        schemaName = dto.getSchemaName();
+        schemaBase = dto.getSchemaBase();
     }
 
     /**
      * Implement clone as a deep copy.
-     * 
+     *
      * @return A copy of this FeatureTypeInfo
      *
      * @see java.lang.Object#clone()
@@ -168,7 +171,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof FeatureTypeInfoDTO)) {
+        if ((obj == null) || !(obj instanceof FeatureTypeInfoDTO)) {
             return false;
         }
 
@@ -210,41 +213,43 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
         r = r && (dirName == f.getDirName());
         r = r && (schemaName == f.getSchemaName());
-		r = r && (schemaBase == f.getSchemaBase());
+        r = r && (schemaBase == f.getSchemaBase());
+
         return r;
     }
 
-	/**
-	 * Implement hashCode.
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 * 
-	 * @return Service hashcode or 0
-	 */
-	public int hashCode() {
-		int r = 1;
-		
-		if (name != null) {
-			r *= name.hashCode();
-		}
+    /**
+     * Implement hashCode.
+     *
+     * @return Service hashcode or 0
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int r = 1;
 
-		if (dataStoreId != null) {
-			r *= dataStoreId.hashCode();
-		}
+        if (name != null) {
+            r *= name.hashCode();
+        }
 
-		if (title != null) {
-			r *= title.hashCode();
-		}
-		
-		if(SRS!=0)
-			r = SRS%r;
-		
-		return r;
-	}
+        if (dataStoreId != null) {
+            r *= dataStoreId.hashCode();
+        }
+
+        if (title != null) {
+            r *= title.hashCode();
+        }
+
+        if (SRS != 0) {
+            r = SRS % r;
+        }
+
+        return r;
+    }
 
     /**
      * Short description of FeatureType.
-     * 
+     *
      * @return Description of FeatureType
      */
     public String getAbstract() {
@@ -253,7 +258,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * Identifier of DataStore used to create FeatureType.
-     * 
+     *
      * @return DataStore identifier
      */
     public String getDataStoreId() {
@@ -262,7 +267,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * List of keywords (limitied to text).
-     * 
+     *
      * @return List of Keywords about this FeatureType
      */
     public List getKeywords() {
@@ -271,14 +276,17 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * Convience method for dataStoreId.typeName.
+     * 
      * <p>
      * This key may be used to store this FeatureType in a Map for later.
      * </p>
+     *
      * @return dataStoreId.typeName
      */
-    public String getKey(){
-        return getDataStoreId()+DataConfig.SEPARATOR+getName();
+    public String getKey() {
+        return getDataStoreId() + DataConfig.SEPARATOR + getName();
     }
+
     /**
      * The extent of this FeatureType.
      * 
@@ -294,7 +302,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * Name of featureType, must match typeName provided by DataStore.
-     * 
+     *
      * @return typeName of FeatureType
      */
     public String getName() {
@@ -316,7 +324,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * Title used to identify FeatureType to user.
-     * 
+     *
      * @return FeatureType title
      */
     public String getTitle() {
@@ -577,48 +585,56 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     public void setDirName(String string) {
         dirName = string;
     }
-    
-	/**
-	 * getSchemaName purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public String getSchemaName() {
-		return schemaName;
-	}
 
-	/**
-	 * setSchemaName purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param string
-	 */
-	public void setSchemaName(String string) {
-		schemaName = string;
-	}
+    /**
+     * getSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getSchemaName() {
+        return schemaName;
+    }
 
-	/**
-	 * getSchemaBase purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public String getSchemaBase() {
-		return schemaBase;
-	}
+    /**
+     * setSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setSchemaName(String string) {
+        schemaName = string;
+    }
 
-	/**
-	 * setSchemaBase purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param string
-	 */
-	public void setSchemaBase(String string) {
-		schemaBase = string;
-	}
+    /**
+     * getSchemaBase purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getSchemaBase() {
+        return schemaBase;
+    }
+
+    /**
+     * setSchemaBase purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setSchemaBase(String string) {
+        schemaBase = string;
+    }
 }

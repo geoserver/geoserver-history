@@ -4,27 +4,15 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import org.geotools.data.*;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.geotools.data.DataUtilities;
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.AttributeTypeMetaData;
+import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureTypeMetaData;
-import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
-import org.geotools.feature.*;
+import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
@@ -38,8 +26,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 
 /**
@@ -48,102 +44,119 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.16 2004/01/20 00:30:44 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.17 2004/01/21 00:26:07 dmzwiers Exp $
  */
-public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
+public class FeatureTypeInfo extends GlobalLayerSupertype
+    implements FeatureTypeMetaData {
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
-	/** The DTO instane which hold this instance's data */
-	private FeatureTypeInfoDTO ftc;
-	
-	/** ref to parent set of datastores. */
-	private Data data;
-	
+    /** The DTO instane which hold this instance's data */
+    private FeatureTypeInfoDTO ftc;
+
+    /** ref to parent set of datastores. */
+    private Data data;
     private Map meta;
-    
+
     // generated data from here down
     // FeatureType schema; // we need to aquire/generate this
-    
+
     /**
      * AttributeTypeInfo by attribute name.
+     * 
      * <p>
      * This will be null unless populated by schema or DTO.
      * </p>
-     *
      */
     private Map attributeInfo; //kill me pls
-    
-    /** will be lazily generated*/
+
+    /** will be lazily generated */
     private String xmlSchemaFrag;
-    
-    /** will be lazily created*/
+
+    /** will be lazily created */
     private FeatureSource fs;
-    
-	/**
-	 * FeatureTypeInfo constructor.
-	 * <p>
-	 * Generates a new object from the data provided.
-	 * </p>
-	 * @param config FeatureTypeInfoDTO The data to populate this class with.
-	 * @param data Data a reference for future use to get at DataStoreInfo instances
-	 * @throws ConfigurationException
-	 */
-    public FeatureTypeInfo(FeatureTypeInfoDTO dto, Data data)throws ConfigurationException{
-    	ftc = dto;
-    	this.data = data;
+
+    /**
+     * FeatureTypeInfo constructor.
+     * 
+     * <p>
+     * Generates a new object from the data provided.
+     * </p>
+     *
+     * @param dto FeatureTypeInfoDTO The data to populate this class with.
+     * @param data Data a reference for future use to get at DataStoreInfo
+     *        instances
+     *
+     * @throws ConfigurationException
+     */
+    public FeatureTypeInfo(FeatureTypeInfoDTO dto, Data data)
+        throws ConfigurationException {
+        ftc = dto;
+        this.data = data;
         attributeInfo = null; // will need to generate later               
     }
-    
-	/**
-	 * toDTO purpose.
-	 * <p>
-	 * This method is package visible only, and returns a reference to the GeoServerDTO. This method is unsafe, and should only be used with extreme caution.
-	 * </p>
-	 * @return FeatureTypeInfoDTO the generated object
-	 */
-	Object toDTO(){
-		return ftc;
-	}
-	
-	/**
-	 * getNumDecimals purpose.
-	 * <p>
-	 * The default number of decimals allowed in the data.
-	 * </p>
-	 * @return int the default number of decimals allowed in the data.
-	 */
+
+    /**
+     * toDTO purpose.
+     * 
+     * <p>
+     * This method is package visible only, and returns a reference to the
+     * GeoServerDTO. This method is unsafe, and should only be used with
+     * extreme caution.
+     * </p>
+     *
+     * @return FeatureTypeInfoDTO the generated object
+     */
+    Object toDTO() {
+        return ftc;
+    }
+
+    /**
+     * getNumDecimals purpose.
+     * 
+     * <p>
+     * The default number of decimals allowed in the data.
+     * </p>
+     *
+     * @return int the default number of decimals allowed in the data.
+     */
     public int getNumDecimals() {
         return ftc.getNumDecimals();
     }
 
     /**
      * getSchema purpose.
+     * 
      * <p>
-     * Generates a real FeatureType and returns it!
-     * Access geotools2 FeatureType
+     * Generates a real FeatureType and returns it! Access geotools2
+     * FeatureType
      * </p>
+     *
      * @return FeatureType
      */
+
     /*public FeatureType getSchema() {
-    	try{
-        	return getSchema(ftc.getSchema());
-    	}catch(Exception e){
-e.printStackTrace();
-    		return null;
-    	}
-    }*/
+       try{
+           return getSchema(ftc.getSchema());
+       }catch(Exception e){
+       e.printStackTrace();
+                           return null;
+                   }
+           }*/
 
     /**
      * getDataStore purpose.
+     * 
      * <p>
-	 * gets the string of the path to the schema file.  This is set during
+     * gets the string of the path to the schema file.  This is set during
      * feature reading, the schema file should be in the same folder as the
      * feature type info, with the name schema.xml.  This function does not
      * guarantee that the schema file actually exists, it just gives the
      * location where it _should_ be located.
      * </p>
+     *
      * @return DataStoreInfo the requested DataStoreInfo if it was found.
+     *
      * @see Data#getDataStoreInfo(String)
      */
     public DataStoreInfo getDataStoreInfo() {
@@ -151,8 +164,8 @@ e.printStackTrace();
     }
 
     /**
-     * Indicates if this FeatureTypeInfo is enabled.  For now just gets whether the
-     * backing datastore is enabled.
+     * Indicates if this FeatureTypeInfo is enabled.  For now just gets whether
+     * the backing datastore is enabled.
      *
      * @return <tt>true</tt> if this FeatureTypeInfo is enabled.
      *
@@ -168,15 +181,16 @@ e.printStackTrace();
 
     /**
      * Returns the XML prefix used for GML output of this FeatureType.
+     * 
      * <p>
-     * Returns the namespace prefix for this FeatureTypeInfo.
-     * This prefix also seems to be used as a "ID" for looking up GeoServer
-     * Namespace.
+     * Returns the namespace prefix for this FeatureTypeInfo. This prefix also
+     * seems to be used as a "ID" for looking up GeoServer Namespace.
      * </p>
+     *
      * @return String the namespace prefix.
      */
     public String getPrefix() {
-		return getDataStoreInfo().getNameSpace().getPrefix();
+        return getDataStoreInfo().getNameSpace().getPrefix();
     }
 
     /**
@@ -186,7 +200,8 @@ e.printStackTrace();
      * datasources.  This method will allow us to make that change more easily
      * in the future.
      *
-     * @return NameSpaceInfo the namespace specified for the specified DataStoreInfo (by ID)
+     * @return NameSpaceInfo the namespace specified for the specified
+     *         DataStoreInfo (by ID)
      *
      * @throws IllegalStateException THrown when disabled.
      */
@@ -202,10 +217,12 @@ e.printStackTrace();
     /**
      * overrides getName to return full type name with namespace prefix
      *
-     * @return String the FeatureTypeInfo name - should be unique for the parent Data instance.
+     * @return String the FeatureTypeInfo name - should be unique for the
+     *         parent Data instance.
      */
     public String getName() {
-        return ((DataStoreInfo)data.getDataStoreInfo(ftc.getDataStoreId())).getNameSpace().getPrefix()+":"+ftc.getName();
+        return ((DataStoreInfo) data.getDataStoreInfo(ftc.getDataStoreId())).getNameSpace()
+                .getPrefix() + ":" + ftc.getName();
     }
 
     /**
@@ -218,6 +235,7 @@ e.printStackTrace();
      * @param allowShort does nothing
      *
      * @return String getName()
+     *
      * @see getName()
      */
     public String getName(boolean allowShort) {
@@ -230,8 +248,9 @@ e.printStackTrace();
 
     /**
      * Same as getName()
-     * 
+     *
      * @return String getName()
+     *
      * @see getName()
      */
     public String getShortName() {
@@ -240,92 +259,123 @@ e.printStackTrace();
 
     /**
      * getFeatureSource purpose.
+     * 
      * <p>
      * Returns a real FeatureSource.
      * </p>
+     *
      * @return FeatureSource the feature source represented by this info class
+     *
      * @throws IOException when an error occurs.
+     * @throws DataSourceException DOCUMENT ME!
      */
     public FeatureSource getFeatureSource() throws IOException {
         if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
             throw new IOException("featureType: " + getName(true)
                 + " does not have a properly configured " + "datastore");
         }
-        if(fs == null){
-        	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-        	String typeName = ftc.getName();
-        	FeatureSource realSource = dataStore.getFeatureSource(typeName);
-        	
-        	if( (ftc.getSchemaAttributes() == null || ftc.getSchemaAttributes().isEmpty())){// && 
-        			//(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
-        		fs = realSource;
-        	}
-        	else {
-        		try{
-        		fs = reTypeSource( realSource, ftc );
-        		}catch(SchemaException e){
-        			throw new DataSourceException("Could not make FeatureSource attributes don't match",e);
-        		}
-        	}
+
+        if (fs == null) {
+            DataStore dataStore = data.getDataStoreInfo(ftc.getDataStoreId())
+                                      .getDataStore();
+            String typeName = ftc.getName();
+            FeatureSource realSource = dataStore.getFeatureSource(typeName);
+
+            if (((ftc.getSchemaAttributes() == null)
+                    || ftc.getSchemaAttributes().isEmpty())) { // && 
+
+                //(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
+                fs = realSource;
+            } else {
+                try {
+                    fs = reTypeSource(realSource, ftc);
+                } catch (SchemaException e) {
+                    throw new DataSourceException("Could not make FeatureSource attributes don't match",
+                        e);
+                }
+            }
         }
+
         return fs;
     }
-    
-    public static FeatureSource reTypeSource( FeatureSource source, FeatureTypeInfoDTO ftc ) throws SchemaException {
-    	AttributeType attributes[] = new AttributeType[ ftc.getSchemaAttributes().size() ];
-    	
-    	List attributeDefinitions = ftc.getSchemaAttributes();
-    	int index=0;
-    	FeatureType ft = source.getSchema();
-    	
-    	for(int i = 0;i<attributes.length;i++){
-    		AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO)ftc.getSchemaAttributes().get( i ); 
-    		String xpath = attributeDTO.getName();
-    		attributes[i] = ft.getAttributeType(xpath);   	
-    		if(attributes[i]==null)
-    			throw new NullPointerException("Error finding "+xpath+" specified in you schema.xml file for "+ftc.getName()+"FeatureType.");
-    	}
-    	FeatureType myType = FeatureTypeFactory.newFeatureType(attributes,ftc.getName());
-    	
-    	return GeoServerFeatureLocking.create( source, myType, ftc.getDefinitionQuery());
-    }
-    
-	/**
-	 * getRealFeatureSource purpose.
-	 * <p>
-	 * Returns a real FeatureSource. Used by getFeatureSource()
-	 * </p>
-	 * @return FeatureSource the feature source represented by this info class
-	 * @see getFeatureSource()
-	 */
-    /*private FeatureSource getRealFeatureSource()
-        throws NoSuchElementException, IllegalStateException, IOException {
-    	DataStoreInfo dsi = getDataStoreInfo();
-    	//dsi.getNameSpace().getPrefix()+":"+
-        FeatureSource realSource = dsi.getDataStore().getFeatureSource(ftc.getName());
 
-        return realSource;
-    }*/
+    public static FeatureSource reTypeSource(FeatureSource source,
+        FeatureTypeInfoDTO ftc) throws SchemaException {
+        AttributeType[] attributes = new AttributeType[ftc.getSchemaAttributes()
+                                                          .size()];
+
+        List attributeDefinitions = ftc.getSchemaAttributes();
+        int index = 0;
+        FeatureType ft = source.getSchema();
+
+        for (int i = 0; i < attributes.length; i++) {
+            AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO) ftc.getSchemaAttributes()
+                                                                          .get(i);
+            String xpath = attributeDTO.getName();
+            attributes[i] = ft.getAttributeType(xpath);
+
+            if (attributes[i] == null) {
+                throw new NullPointerException("Error finding " + xpath
+                    + " specified in you schema.xml file for " + ftc.getName()
+                    + "FeatureType.");
+            }
+        }
+
+        FeatureType myType = FeatureTypeFactory.newFeatureType(attributes,
+                ftc.getName());
+
+        return GeoServerFeatureLocking.create(source, myType,
+            ftc.getDefinitionQuery());
+    }
+
+    /**
+     * getRealFeatureSource purpose.
+     * 
+     * <p>
+     * Returns a real FeatureSource. Used by getFeatureSource()
+     * </p>
+     *
+     * @return FeatureSource the feature source represented by this info class
+     *
+     * @throws IOException DOCUMENT ME!
+     *
+     * @see getFeatureSource()
+     */
+
+    /*private FeatureSource getRealFeatureSource()
+       throws NoSuchElementException, IllegalStateException, IOException {
+           DataStoreInfo dsi = getDataStoreInfo();
+           //dsi.getNameSpace().getPrefix()+":"+
+       FeatureSource realSource = dsi.getDataStore().getFeatureSource(ftc.getName());
+       return realSource;
+       }*/
 
     /**
      * getBoundingBox purpose.
+     * 
      * <p>
      * The feature source bounds.
      * </p>
+     *
      * @return Envelope the feature source bounds.
+     *
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
-    	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-    	FeatureSource realSource = dataStore.getFeatureSource(ftc.getName());
-		return realSource.getBounds();
+        DataStore dataStore = data.getDataStoreInfo(ftc.getDataStoreId())
+                                  .getDataStore();
+        FeatureSource realSource = dataStore.getFeatureSource(ftc.getName());
+
+        return realSource.getBounds();
     }
 
     /**
      * getDefinitionQuery purpose.
+     * 
      * <p>
      * Returns the definition query for this feature source
      * </p>
+     *
      * @return Filter the definition query
      */
     public Filter getDefinitionQuery() {
@@ -334,269 +384,289 @@ e.printStackTrace();
 
     /**
      * getLatLongBoundingBox purpose.
+     * 
      * <p>
      * The feature source lat/long bounds.
      * </p>
+     *
      * @return Envelope the feature source lat/long bounds.
+     *
      * @throws IOException when an error occurs
      */
     public Envelope getLatLongBoundingBox() throws IOException {
-		if(ftc.getLatLongBBox() == null)
-			return getBoundingBox();
+        if (ftc.getLatLongBBox() == null) {
+            return getBoundingBox();
+        }
+
         return ftc.getLatLongBBox();
     }
 
     /**
      * getSRS purpose.
+     * 
      * <p>
      * Proprietary identifier number
      * </p>
+     *
      * @return int the SRS number.
      */
     public String getSRS() {
-        return ftc.getSRS()+"";
+        return ftc.getSRS() + "";
     }
 
     /**
      * creates a FeatureTypeInfo schema from the list of defined exposed
      * attributes, or the full schema if no exposed attributes were defined
      *
-     * @param attsElem a parsed DOM
-     *
      * @return A complete FeatureType
      *
-     * @throws ConfigurationException For an invalid DOM tree
      * @throws IOException When IO fails
      *
      * @task TODO: if the default geometry attribute was not declared as
      *       exposed should we expose it anyway? I think yes.
      */
+
     /*private FeatureType getSchema(Element attsElem)
-        throws ConfigurationException, IOException {
-        NodeList exposedAttributes = null;
-        FeatureType schema = getRealFeatureSource().getSchema();
-        FeatureType filteredSchema = null;
+       throws ConfigurationException, IOException {
+       NodeList exposedAttributes = null;
+       FeatureType schema = getRealFeatureSource().getSchema();
+       FeatureType filteredSchema = null;
+       if (attsElem != null) {
+           exposedAttributes = attsElem.getElementsByTagName("attribute");
+       }
+       if ((exposedAttributes == null) || (exposedAttributes.getLength() == 0)) {
+           return schema;
+       }
+       int attCount = exposedAttributes.getLength();
+       AttributeType[] attributes = new AttributeType[attCount];
+       Element attElem;
+       String attName;
+       for (int i = 0; i < attCount; i++) {
+           attElem = (Element) exposedAttributes.item(i);
+           attName = getAttribute(attElem, "name", true);
+           attributes[i] = schema.getAttributeType(attName);
+           if (attributes[i] == null) {
+               throw new ConfigurationException("the FeatureTypeConfig " + getName()
+                   + " does not contains the configured attribute " + attName
+                   + ". Check your catalog configuration");
+           }
+       }
+       try {
+           filteredSchema = FeatureTypeFactory.newFeatureType(attributes,
+                   getName());
+       } catch (SchemaException ex) {
+       } catch (FactoryConfigurationError ex) {
+       }
+       return filteredSchema;
+       }*/
 
-        if (attsElem != null) {
-            exposedAttributes = attsElem.getElementsByTagName("attribute");
-        }
+    /**
+     * creates a FeatureTypeInfo schema from the list of defined exposed
+     * attributes, or the full schema if no exposed attributes were defined
+     *
+     * @return A complete FeatureType
+     *
+     * @throws IOException When IO fails
+     *
+     * @task TODO: if the default geometry attribute was not declared as
+     *       exposed should we expose it anyway? I think yes.
+     */
 
-        if ((exposedAttributes == null) || (exposedAttributes.getLength() == 0)) {
-            return schema;
-        }
-
-        int attCount = exposedAttributes.getLength();
-        AttributeType[] attributes = new AttributeType[attCount];
-        Element attElem;
-        String attName;
-
-        for (int i = 0; i < attCount; i++) {
-            attElem = (Element) exposedAttributes.item(i);
-            attName = getAttribute(attElem, "name", true);
-            attributes[i] = schema.getAttributeType(attName);
-
-            if (attributes[i] == null) {
-                throw new ConfigurationException("the FeatureTypeConfig " + getName()
-                    + " does not contains the configured attribute " + attName
-                    + ". Check your catalog configuration");
-            }
-        }
-
-        try {
-            filteredSchema = FeatureTypeFactory.newFeatureType(attributes,
-                    getName());
-        } catch (SchemaException ex) {
-        } catch (FactoryConfigurationError ex) {
-        }
-
-        return filteredSchema;
-    }*/
-
-	/**
-	 * creates a FeatureTypeInfo schema from the list of defined exposed
-	 * attributes, or the full schema if no exposed attributes were defined
-	 *
-	 * @param attsElem a parsed DOM
-	 *
-	 * @return A complete FeatureType
-	 *
-	 * @throws ConfigurationException For an invalid DOM tree
-	 * @throws IOException When IO fails
-	 *
-	 * @task TODO: if the default geometry attribute was not declared as
-	 *       exposed should we expose it anyway? I think yes.
-	 */
-	/*private FeatureType getSchema(List attrElems)
-		throws ConfigurationException, IOException {
-		FeatureType schema = getRealFeatureSource().getSchema();
-		FeatureType filteredSchema = null;
-
-		if (attrElems.size() == 0) {
-			return schema;
-		}
-
-		AttributeType[] attributes = new AttributeType[attrElems.size()];
-		String attName;
-
-		for (int i = 0; i < attrElems.size(); i++) {
-		
-			AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO)attrElems.get(i);
-			String name = ati.getName();
-			if(name == "" && ati.isRef())
-				name = ati.getType();
-			attributes[i] = schema.getAttributeType(name);
-
-			if (attributes[i] == null) {
-				throw new ConfigurationException("the FeatureTypeConfig " + ftc.getName()
-					+ " does not contains the configured attribute " + name
-					+ ". Check your catalog configuration");
-			}
-		}
-
-		try {
-			filteredSchema = FeatureTypeFactory.newFeatureType(attributes,ftc.getName());
-		} catch (SchemaException ex) {
-		} catch (FactoryConfigurationError ex) {
-		}
-
-		return filteredSchema;
-	}*/
+    /*private FeatureType getSchema(List attrElems)
+       throws ConfigurationException, IOException {
+       FeatureType schema = getRealFeatureSource().getSchema();
+       FeatureType filteredSchema = null;
+       if (attrElems.size() == 0) {
+               return schema;
+       }
+       AttributeType[] attributes = new AttributeType[attrElems.size()];
+       String attName;
+       for (int i = 0; i < attrElems.size(); i++) {
     
-	/** Get XMLSchema for this FeatureType.
-	 * <p>
-	 * Note this may require connection to the real geotools2 DataStore and
-	 * as such is subject to IOExceptions.
-	 * </p>
-	 * <p>
-	 * You have been warned.
-	 * </p>
-	 * @return XMLFragment
-	 */
-	public synchronized String getXMLSchema() throws IOException {
-		if(xmlSchemaFrag == null){
-			StringWriter sw = new StringWriter();
-			try{
-				FeatureTypeInfoDTO dto = getGeneratedDTO();
-				XMLConfigWriter.storeFeatureSchema(dto,sw);
-			}catch(ConfigurationException e){}
-			xmlSchemaFrag = sw.toString();
-		}
-		return xmlSchemaFrag;
-	}
-	/**
-	 * Will return our delegate with all information filled out
-	 * <p>
-	 * This is a hack because we cache our DTO delegate, this method combines
-	 * or ftc delegate with possibly generated schema information for use by
-	 * XMLConfigWriter among others.
-	 * </p>
-	 * <p>
-	 * Call this method to receive a complete featureTypeInfoDTO that incldues
-	 * all schema information.
-	 * </p>
-	 * @return
-	 */
-	private synchronized FeatureTypeInfoDTO getGeneratedDTO() throws IOException{
-		FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO(ftc);
-		if( dto.getSchemaAttributes() == null || dto.getSchemaAttributes().size() == 0){
-			// generate stuff
-			FeatureType schema = getFeatureType();
-			dto.setSchemaBase( GMLUtils.ABSTRACTFEATURETYPE.toString() );
-			dto.setSchemaName(schema.getTypeName());//.toUpperCase()+"_TYPE" );
-			dto.setSchemaAttributes( DataTransferObjectFactory.generateAttributes( schema ) );
-		}
-		return dto;
-	}
-	
+               AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO)attrElems.get(i);
+               String name = ati.getName();
+               if(name == "" && ati.isRef())
+                       name = ati.getType();
+               attributes[i] = schema.getAttributeType(name);
+               if (attributes[i] == null) {
+                       throw new ConfigurationException("the FeatureTypeConfig " + ftc.getName()
+                               + " does not contains the configured attribute " + name
+                               + ". Check your catalog configuration");
+               }
+       }
+       try {
+               filteredSchema = FeatureTypeFactory.newFeatureType(attributes,ftc.getName());
+       } catch (SchemaException ex) {
+       } catch (FactoryConfigurationError ex) {
+       }
+       return filteredSchema;
+       }*/
+
+    /**
+     * Get XMLSchema for this FeatureType.
+     * 
+     * <p>
+     * Note this may require connection to the real geotools2 DataStore and as
+     * such is subject to IOExceptions.
+     * </p>
+     * 
+     * <p>
+     * You have been warned.
+     * </p>
+     *
+     * @return XMLFragment
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    public synchronized String getXMLSchema() throws IOException {
+        if (xmlSchemaFrag == null) {
+            StringWriter sw = new StringWriter();
+
+            try {
+                FeatureTypeInfoDTO dto = getGeneratedDTO();
+                XMLConfigWriter.storeFeatureSchema(dto, sw);
+            } catch (ConfigurationException e) {
+            }
+
+            xmlSchemaFrag = sw.toString();
+        }
+
+        return xmlSchemaFrag;
+    }
+
+    /**
+     * Will return our delegate with all information filled out
+     * 
+     * <p>
+     * This is a hack because we cache our DTO delegate, this method combines
+     * or ftc delegate with possibly generated schema information for use by
+     * XMLConfigWriter among others.
+     * </p>
+     * 
+     * <p>
+     * Call this method to receive a complete featureTypeInfoDTO that incldues
+     * all schema information.
+     * </p>
+     *
+     * @return
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    private synchronized FeatureTypeInfoDTO getGeneratedDTO()
+        throws IOException {
+        FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO(ftc);
+
+        if ((dto.getSchemaAttributes() == null)
+                || (dto.getSchemaAttributes().size() == 0)) {
+            // generate stuff
+            FeatureType schema = getFeatureType();
+            dto.setSchemaBase(GMLUtils.ABSTRACTFEATURETYPE.toString());
+            dto.setSchemaName(schema.getTypeName()); //.toUpperCase()+"_TYPE" );
+            dto.setSchemaAttributes(DataTransferObjectFactory
+                .generateAttributes(schema));
+        }
+
+        return dto;
+    }
+
     /**
      * getAttribute purpose.
+     * 
      * <p>
      * XLM helper method.
      * </p>
-     * @param elem The element to work on. 
+     *
+     * @param elem The element to work on.
      * @param attName The attribute name to find
-     * @param mandatory true is an exception is be thrown when the attr is not found.
+     * @param mandatory true is an exception is be thrown when the attr is not
+     *        found.
+     *
      * @return String the Attr value
+     *
      * @throws ConfigurationException thrown when an error occurs.
      */
-	protected String getAttribute(Element elem, String attName,
-		boolean mandatory) throws ConfigurationException {
-		Attr att = elem.getAttributeNode(attName);
+    protected String getAttribute(Element elem, String attName,
+        boolean mandatory) throws ConfigurationException {
+        Attr att = elem.getAttributeNode(attName);
 
-		String value = null;
+        String value = null;
 
-		if (att != null) {
-			value = att.getValue();
-		}
+        if (att != null) {
+            value = att.getValue();
+        }
 
-		if (mandatory) {
-			if (att == null) {
-				throw new ConfigurationException("element "
-					+ elem.getNodeName()
-					+ " does not contains an attribute named " + attName);
-			} else if ("".equals(value)) {
-				throw new ConfigurationException("attribute " + attName
-					+ "in element " + elem.getNodeName() + " is empty");
-			}
-		}
+        if (mandatory) {
+            if (att == null) {
+                throw new ConfigurationException("element "
+                    + elem.getNodeName()
+                    + " does not contains an attribute named " + attName);
+            } else if ("".equals(value)) {
+                throw new ConfigurationException("attribute " + attName
+                    + "in element " + elem.getNodeName() + " is empty");
+            }
+        }
 
-		return value;
-	}
-    
+        return value;
+    }
+
     /*private FeatureType getSchema(String schema) throws ConfigurationException{
-    	try{
-    		return getSchema(loadConfig(new StringReader(schema)));
-    	}catch(IOException e){
-    		throw new ConfigurationException("",e);
-    	}
-    }*/
+       try{
+               return getSchema(loadConfig(new StringReader(schema)));
+       }catch(IOException e){
+               throw new ConfigurationException("",e);
+       }
+       }*/
 
-	/**
-	 * loadConfig purpose.
-	 * <p>
-	 * Parses the specified file into a DOM tree.
-	 * </p>
-	 * @param configFile The file to parse int a DOM tree.
-	 * @return the resulting DOM tree
-	 * @throws ConfigException
-	 */
-	public static Element loadConfig(Reader fis)
-		throws ConfigurationException {
-		try {
-			InputSource in = new InputSource(fis);
-			DocumentBuilderFactory dfactory = DocumentBuilderFactory
-				.newInstance();
-			/*set as optimizations and hacks for geoserver schema config files
-			 * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
-			 * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.
-			 */
-			dfactory.setNamespaceAware(false);
-			dfactory.setValidating(false);
-			dfactory.setIgnoringComments(true);
-			dfactory.setCoalescing(true);
-			dfactory.setIgnoringElementContentWhitespace(true);
+    /**
+     * loadConfig purpose.
+     * 
+     * <p>
+     * Parses the specified file into a DOM tree.
+     * </p>
+     *
+     * @param fis The file to parse int a DOM tree.
+     *
+     * @return the resulting DOM tree
+     *
+     * @throws ConfigurationException
+     */
+    public static Element loadConfig(Reader fis) throws ConfigurationException {
+        try {
+            InputSource in = new InputSource(fis);
+            DocumentBuilderFactory dfactory = DocumentBuilderFactory
+                .newInstance();
 
-			Document serviceDoc = dfactory.newDocumentBuilder().parse(in);
-			Element configElem = serviceDoc.getDocumentElement();
+            /*set as optimizations and hacks for geoserver schema config files
+             * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
+             * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.
+             */
+            dfactory.setNamespaceAware(false);
+            dfactory.setValidating(false);
+            dfactory.setIgnoringComments(true);
+            dfactory.setCoalescing(true);
+            dfactory.setIgnoringElementContentWhitespace(true);
 
-			return configElem;
-		} catch (IOException ioe) {
-			String message = "problem reading file " + "due to: "
-				+ ioe.getMessage();
-			LOGGER.warning(message);
-			throw new ConfigurationException(message, ioe);
-		} catch (ParserConfigurationException pce) {
-			String message = "trouble with parser to read org.vfny.geoserver.config.org.vfny.geoserver.config.xml, make sure class"
-				+ "path is correct, reading file " ;
-			LOGGER.warning(message);
-			throw new ConfigurationException(message, pce);
-		} catch (SAXException saxe) {
-			String message = "trouble parsing XML "  + ": "
-				+ saxe.getMessage();
-			LOGGER.warning(message);
-			throw new ConfigurationException(message, saxe);
-		}
-	}
+            Document serviceDoc = dfactory.newDocumentBuilder().parse(in);
+            Element configElem = serviceDoc.getDocumentElement();
+
+            return configElem;
+        } catch (IOException ioe) {
+            String message = "problem reading file " + "due to: "
+                + ioe.getMessage();
+            LOGGER.warning(message);
+            throw new ConfigurationException(message, ioe);
+        } catch (ParserConfigurationException pce) {
+            String message =
+                "trouble with parser to read org.vfny.geoserver.config.org.vfny.geoserver.config.xml, make sure class"
+                + "path is correct, reading file ";
+            LOGGER.warning(message);
+            throw new ConfigurationException(message, pce);
+        } catch (SAXException saxe) {
+            String message = "trouble parsing XML " + ": " + saxe.getMessage();
+            LOGGER.warning(message);
+            throw new ConfigurationException(message, saxe);
+        }
+    }
 
     /**
      * here we must make the transformation. Crhis: do you know how to do it? I
@@ -606,7 +676,7 @@ e.printStackTrace();
      * that on the list.  Hopefully they'll do it all in java soon.  I'm sorta
      * tempted to just have users define for now.
      *
-     * @param fromSrId 
+     * @param fromSrId
      * @param bbox Envelope
      *
      * @return Envelope
@@ -615,88 +685,103 @@ e.printStackTrace();
         return bbox;
     }
 
-	/**
-	 * Get abstract (description) of FeatureType.
-	 * @return Short description of FeatureType
-	 */
-	public String getAbstract() {
-		return ftc.getAbstract();
-	}
+    /**
+     * Get abstract (description) of FeatureType.
+     *
+     * @return Short description of FeatureType
+     */
+    public String getAbstract() {
+        return ftc.getAbstract();
+    }
 
-	/**
-	 * Keywords describing content of FeatureType.
-	 * <p>
-	 * Keywords are often used by Search engines or Catalog services.
-	 * </p>
-	 * @return List the FeatureTypeInfo keywords
-	 */
-	public List getKeywords() {
-		return ftc.getKeywords();
-	}
+    /**
+     * Keywords describing content of FeatureType.
+     * 
+     * <p>
+     * Keywords are often used by Search engines or Catalog services.
+     * </p>
+     *
+     * @return List the FeatureTypeInfo keywords
+     */
+    public List getKeywords() {
+        return ftc.getKeywords();
+    }
 
-	/**
-	 * getTitle purpose.
-	 * <p>
-	 * returns the FeatureTypeInfo title
-	 * </p>
-	 * @return String the FeatureTypeInfo title
-	 */
-	public String getTitle() {
-		return ftc.getTitle();
-	}
-    
-	/**
-	 * getSchemaName purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public String getSchemaName() {
-		return ftc.getSchemaName();
-	}
+    /**
+     * getTitle purpose.
+     * 
+     * <p>
+     * returns the FeatureTypeInfo title
+     * </p>
+     *
+     * @return String the FeatureTypeInfo title
+     */
+    public String getTitle() {
+        return ftc.getTitle();
+    }
 
-	/**
-	 * setSchemaName purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param string
-	 */
-	public void setSchemaName(String string) {
-		ftc.setSchemaName(string);
-	}
-    
-	/**
-	 * getSchemaName purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public String getSchemaBase() {
-		return ftc.getSchemaBase();
-	}
+    /**
+     * getSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getSchemaName() {
+        return ftc.getSchemaName();
+    }
 
-	/**
-	 * setSchemaName purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param string
-	 */
-	public void setSchemaBase(String string) {
-		ftc.setSchemaBase(string);
-	}
+    /**
+     * setSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setSchemaName(String string) {
+        ftc.setSchemaName(string);
+    }
+
+    /**
+     * getSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getSchemaBase() {
+        return ftc.getSchemaBase();
+    }
+
+    /**
+     * setSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setSchemaBase(String string) {
+        ftc.setSchemaBase(string);
+    }
 
     //
     // FeatureTypeMetaData Interface
     //
+
     /**
      * Access typeName.
-     * 
-     * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
+     *
      * @return typeName for FeatureType
+     *
+     * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
      */
     public String getTypeName() {
         return ftc.getDataStoreId();
@@ -704,136 +789,165 @@ e.printStackTrace();
 
     /**
      * Access real geotools2 FeatureType.
-     * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
-     * 
+     *
      * @return Schema information.
+     *
      * @throws IOException
+     *
+     * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
      */
     public FeatureType getFeatureType() throws IOException {
-    	return getFeatureSource().getSchema();
+        return getFeatureSource().getSchema();
     }
 
     /**
      * Implement getDataStoreMetaData.
-     * 
-     * @see org.geotools.data.FeatureTypeMetaData#getDataStoreMetaData()
-     * 
+     *
      * @return
+     *
+     * @see org.geotools.data.FeatureTypeMetaData#getDataStoreMetaData()
      */
     public DataStoreMetaData getDataStoreMetaData() {
-        return (DataStoreMetaData) data.getDataStoreInfo( ftc.getDataStoreId() );
+        return (DataStoreMetaData) data.getDataStoreInfo(ftc.getDataStoreId());
     }
 
     /**
      * FeatureType attributes names as a List.
-     * <p>
-     * Convience method for accessing attribute names as a Collection.
-     * You may use the names for AttributeTypeMetaData lookup or with the schema
-     * for XPATH queries.
-     * </p>
-     * @see org.geotools.data.FeatureTypeMetaData#getAttributeNames()
      * 
+     * <p>
+     * Convience method for accessing attribute names as a Collection. You may
+     * use the names for AttributeTypeMetaData lookup or with the schema for
+     * XPATH queries.
+     * </p>
+     *
      * @return List of attribute names
+     *
+     * @see org.geotools.data.FeatureTypeMetaData#getAttributeNames()
      */
     public List getAttributeNames() {
         List attribs = ftc.getSchemaAttributes();
-        
-        if( attribs.size() != 0 ){
-            List list = new ArrayList( attribs.size() );
-                
-            for( Iterator i=attribs.iterator(); i.hasNext(); ){
+
+        if (attribs.size() != 0) {
+            List list = new ArrayList(attribs.size());
+
+            for (Iterator i = attribs.iterator(); i.hasNext();) {
                 AttributeTypeInfoDTO at = (AttributeTypeInfoDTO) i.next();
-                list.add( at.getName() );               
+                list.add(at.getName());
             }
+
             return list;
         }
-        List list = new ArrayList(  );
-        try{
-        FeatureType schema = getFeatureType();
-        AttributeType[] types = schema.getAttributeTypes();
-         list = new ArrayList( types.length );
-        for( int i=0; i<types.length; i++){
-            list.add( types[i].getName() );
+
+        List list = new ArrayList();
+
+        try {
+            FeatureType schema = getFeatureType();
+            AttributeType[] types = schema.getAttributeTypes();
+            list = new ArrayList(types.length);
+
+            for (int i = 0; i < types.length; i++) {
+                list.add(types[i].getName());
+            }
+        } catch (IOException e) {
         }
-        }catch(IOException e){}
-        return list;        
+
+        return list;
     }
-    
+
     /**
      * Implement AttributeTypeMetaData.
+     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
-     * 
+     *
      * @param attributeName
+     *
      * @return
-     * @throws IOException from the DataStore.
+     *
+     * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
      */
-    public synchronized AttributeTypeMetaData AttributeTypeMetaData(String attributeName){
-        if( attributeInfo == null ){
+    public synchronized AttributeTypeMetaData AttributeTypeMetaData(
+        String attributeName) {
+        if (attributeInfo == null) {
             attributeInfo = new HashMap();
         }
-        if( attributeInfo.containsKey( attributeName ) ){
-            return (AttributeTypeMetaData) attributeInfo.get( attributeName );
+
+        if (attributeInfo.containsKey(attributeName)) {
+            return (AttributeTypeMetaData) attributeInfo.get(attributeName);
         }
+
         AttributeTypeInfo info = null;
-        if( ftc.getSchemaAttributes() != null ){
-            for( Iterator i=ftc.getSchemaAttributes().iterator(); i.hasNext(); ){
+
+        if (ftc.getSchemaAttributes() != null) {
+            for (Iterator i = ftc.getSchemaAttributes().iterator();
+                    i.hasNext();) {
                 AttributeTypeInfoDTO dto = (AttributeTypeInfoDTO) i.next();
-                info = new AttributeTypeInfo( dto ); 
+                info = new AttributeTypeInfo(dto);
             }
-            DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-            try{
-            FeatureType schema = dataStore.getSchema( ftc.getName() );
-            info.sync( schema.getAttributeType( attributeName ));
-            }catch(IOException e){}
-        }
-        else {
+
+            DataStore dataStore = data.getDataStoreInfo(ftc.getDataStoreId())
+                                      .getDataStore();
+
+            try {
+                FeatureType schema = dataStore.getSchema(ftc.getName());
+                info.sync(schema.getAttributeType(attributeName));
+            } catch (IOException e) {
+            }
+        } else {
             // will need to generate from Schema 
-        	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-        	try{
-        	FeatureType schema = dataStore.getSchema( ftc.getName() );
-            info = new AttributeTypeInfo( schema.getAttributeType( attributeName ));       }catch(IOException e){}
+            DataStore dataStore = data.getDataStoreInfo(ftc.getDataStoreId())
+                                      .getDataStore();
+
+            try {
+                FeatureType schema = dataStore.getSchema(ftc.getName());
+                info = new AttributeTypeInfo(schema.getAttributeType(
+                            attributeName));
+            } catch (IOException e) {
+            }
         }
-        attributeInfo.put( attributeName, info );
-        
+
+        attributeInfo.put(attributeName, info);
+
         return info;
     }
 
     /**
      * Implement containsMetaData.
-     * 
-     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
-     * 
+     *
      * @param key
+     *
      * @return
+     *
+     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
      */
     public boolean containsMetaData(String key) {
-        return meta.containsKey( key );
+        return meta.containsKey(key);
     }
 
     /**
      * Implement putMetaData.
-     * 
-     * @see org.geotools.data.MetaData#putMetaData(java.lang.String, java.lang.Object)
-     * 
+     *
      * @param key
      * @param value
+     *
+     * @see org.geotools.data.MetaData#putMetaData(java.lang.String,
+     *      java.lang.Object)
      */
     public void putMetaData(String key, Object value) {
-        meta.put( key, value );
+        meta.put(key, value);
     }
 
     /**
      * Implement getMetaData.
-     * 
-     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
-     * 
+     *
      * @param key
+     *
      * @return
+     *
+     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
      */
     public Object getMetaData(String key) {
-        return meta.get( key );
+        return meta.get(key);
     }
 }

@@ -8,11 +8,9 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import java.util.logging.Logger;
-
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.*;
+import org.vfny.geoserver.requests.Request;
+import java.util.logging.Logger;
 
 
 /**
@@ -105,10 +103,13 @@ public class WfsTransactionException extends WfsException {
     /**
      * Returns a WFS_TransactionResponse xml string indicating the failure.
      *
+     * @param gs DOCUMENT ME!
+     *
      * @return DOCUMENT ME!
      */
     public String getXmlResponse(Request gs) {
-        WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,handle,true);
+        WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,
+                handle, true);
         response.setLocator(locator);
 
         //right now defaults to full stack traces, should change before

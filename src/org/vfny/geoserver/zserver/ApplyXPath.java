@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  * The Apache Software License, Version 1.1
  *
@@ -58,13 +62,18 @@
 // This file uses 4 space indents, no tabs.
 package org.vfny.geoserver.zserver;
 
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -74,13 +83,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -93,7 +95,7 @@ import org.xml.sax.SAXException;
  * Modified:
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ApplyXPath.java,v 1.5 2004/01/12 21:01:26 dmzwiers Exp $ Added method to return an array of the results, instead of  just printing to the output.
+ * @version $Id: ApplyXPath.java,v 1.6 2004/01/21 00:26:11 dmzwiers Exp $ Added method to return an array of the results, instead of  just printing to the output.
  */
 public class ApplyXPath {
     /** Standard logging instance */
@@ -110,6 +112,8 @@ public class ApplyXPath {
      * @param xpath the string of the xpath to query the xml with.
      *
      * @return an array of the values of the xpath.
+     *
+     * @throws FileNotFoundException DOCUMENT ME!
      */
     public static String[] apply(String filename, String xpath)
         throws FileNotFoundException {
@@ -189,6 +193,8 @@ public class ApplyXPath {
      * Process input args and execute the XPath.  Prints to System output.
      *
      * @param args a String array containing the filename and xpath
+     *
+     * @throws Exception DOCUMENT ME!
      */
     public void doMain(String[] args) throws Exception {
         filename = args[0];
@@ -276,6 +282,10 @@ public class ApplyXPath {
     /**
      * Main method to run from the command line.     Used as utility to make
      * sure xpaths are functioning correctly.
+     *
+     * @param args DOCUMENT ME!
+     *
+     * @throws Exception DOCUMENT ME!
      */
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {

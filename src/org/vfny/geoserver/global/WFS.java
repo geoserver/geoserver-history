@@ -26,12 +26,11 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.3 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class WFS extends Service {
-	
-	private boolean gmlPrefixing;
-	
+    private boolean gmlPrefixing;
+
     /**
      * WFS constructor.
      * 
@@ -78,29 +77,34 @@ public class WFS extends Service {
     Object toDTO() {
         WFSDTO dto = new WFSDTO();
         dto.setService(config);
-		dto.setGmlPrefixing(gmlPrefixing);
+        dto.setGmlPrefixing(gmlPrefixing);
+
         return dto;
     }
-	/**
-	 * isGmlPrefixing purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public boolean isGmlPrefixing() {
-		return gmlPrefixing;
-	}
 
-	/**
-	 * setGmlPrefixing purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param b
-	 */
-	public void setGmlPrefixing(boolean b) {
-		gmlPrefixing = b;
-	}
+    /**
+     * isGmlPrefixing purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public boolean isGmlPrefixing() {
+        return gmlPrefixing;
+    }
 
+    /**
+     * setGmlPrefixing purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param b
+     */
+    public void setGmlPrefixing(boolean b) {
+        gmlPrefixing = b;
+    }
 }

@@ -4,6 +4,13 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.vfny.geoserver.ExceptionHandler;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.responses.Response;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +26,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,24 +33,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.vfny.geoserver.ExceptionHandler;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.responses.Response;
-
 
 /**
  * Represents a service that all others extend from.  Subclasses should provide
  * response and exception handlers as appropriate.
  * 
  * <p>
- * It is really important to ensure the following workflow:
- * 
-=======
- * It is <b>really</b> important to ensure the following workflow:
+ * It is really important to ensure the following workflow:  ======= It is
+ * <b>really</b> important to ensure the following workflow:
  * 
  * <ol>
  * <li>
@@ -53,11 +49,11 @@ import org.vfny.geoserver.responses.Response;
  * <li>
  * ask the Request Reader for the Request object - t this time, request
  * parameters should be fully checked<br>
- * i.e. the Request objects contains the list of FeatureTypeInfo's rather
- * than just the type names.
+ * i.e. the Request objects contains the list of FeatureTypeInfo's rather than
+ * just the type names.
  * </li>
  * <li>
- * Provide the resulting Request with the ServletRequest that generated it 
+ * Provide the resulting Request with the ServletRequest that generated it
  * </li>
  * <li>
  * get the appropiate ResponseHandler
@@ -98,9 +94,8 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @author Jody Garnett
-=======
- * @version $Id: AbstractService.java,v 1.9 2004/01/20 06:31:36 jive Exp $
+ * @author Jody Garnett =======
+ * @version $Id: AbstractService.java,v 1.10 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -108,9 +103,11 @@ public abstract class AbstractService extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
+
     //protected static final GeoServer config = GeoServer.getInstance();
 
     /** Specifies mime type */
+
     //protected static final String MIME_TYPE = config.getMimeType();
     private static Map context;
 
@@ -192,6 +189,7 @@ public abstract class AbstractService extends HttpServlet {
         HttpServletResponse response) throws ServletException, IOException {
         // implements the main request/response logic
         Request serviceRequest = null;
+
         try {
             String qString = request.getQueryString();
 
@@ -295,11 +293,14 @@ public abstract class AbstractService extends HttpServlet {
             serviceResponse = getResponseHandler();
         } catch (Throwable t) {
             sendError(response, t);
+
             return;
         }
-		LOGGER.finer("serviceRequest provided with HttpServletRequest: " + request);
-		serviceRequest.setHttpServletRequest( request );
-		
+
+        LOGGER.finer("serviceRequest provided with HttpServletRequest: "
+            + request);
+        serviceRequest.setHttpServletRequest(request);
+
         try {
             // execute request
             LOGGER.fine("executing request");
@@ -321,7 +322,8 @@ public abstract class AbstractService extends HttpServlet {
 
         try { //catch block to wrap exceptions properly.
 
-            String mimeType = serviceResponse.getContentType(serviceRequest.getGeoServer());
+            String mimeType = serviceResponse.getContentType(serviceRequest
+                    .getGeoServer());
             response.setContentType(mimeType);
             LOGGER.fine("execution succeed, mime type is: " + mimeType);
         } catch (Throwable t) {
@@ -457,12 +459,14 @@ public abstract class AbstractService extends HttpServlet {
      * @return DOCUMENT ME!
      */
     protected String getMimeType() {
-		ServletContext context = getServletContext();
-		try{
-			return ((GeoServer)context.getAttribute( "GeoServer" )).getMimeType();
-		}catch(NullPointerException e){
-			return "text/xml; charset=" + Charset.forName("ISO-8859-1").displayName();
-		}
+        ServletContext context = getServletContext();
+
+        try {
+            return ((GeoServer) context.getAttribute("GeoServer")).getMimeType();
+        } catch (NullPointerException e) {
+            return "text/xml; charset="
+            + Charset.forName("ISO-8859-1").displayName();
+        }
     }
 
     /**
@@ -545,8 +549,9 @@ public abstract class AbstractService extends HttpServlet {
         }
 
         OutputStream out = new BufferedOutputStream(responseOut);
-		ServletContext context = getServletContext();
-        response.setContentType(result.getContentType((GeoServer)context.getAttribute( "GeoServer" )));
+        ServletContext context = getServletContext();
+        response.setContentType(result.getContentType(
+                (GeoServer) context.getAttribute("GeoServer")));
 
         try {
             result.writeTo(out);
@@ -740,6 +745,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
         BufferedOutputStream buffOut = new BufferedOutputStream(out, 1024 * 1024);
         buffer.writeTo(buffOut);
         buffOut.flush();
+
         //buffOut.close(); // I think this cloes response.getOutputStream()
     }
 
@@ -757,10 +763,11 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
 
 
 /**
- * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
+ * A safe ServiceConfig stratagy that uses a temporary file until writeTo
+ * completes.
  *
  * @author $author$
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

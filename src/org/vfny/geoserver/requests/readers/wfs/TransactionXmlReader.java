@@ -4,13 +4,6 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
-import java.io.IOException;
-import java.io.Reader;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.vfny.geoserver.requests.Request;
@@ -22,6 +15,11 @@ import org.vfny.geoserver.responses.wfs.WfsTransactionException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
+import java.io.IOException;
+import java.io.Reader;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -29,7 +27,7 @@ import org.xml.sax.helpers.ParserAdapter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionXmlReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: TransactionXmlReader.java,v 1.4 2004/01/21 00:26:06 dmzwiers Exp $
  */
 public class TransactionXmlReader extends XmlRequestReader {
     /**
@@ -47,8 +45,10 @@ public class TransactionXmlReader extends XmlRequestReader {
 
         // instantiante parsers and content handlers
         TransactionHandler contentHandler = new TransactionHandler();
-        TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler,null);
-        TransactionFeatureHandler featureParser = new TransactionFeatureHandler(filterParser,contentHandler.getRequest());
+        TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler,
+                null);
+        TransactionFeatureHandler featureParser = new TransactionFeatureHandler(filterParser,
+                contentHandler.getRequest());
         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(featureParser);
         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);
 
