@@ -575,112 +575,211 @@ catch(ConfigurationException e){
       <title>Configuration Interface</title>
 
       <para>To add the ability to alter the serviceLevel in the configuration
-      interface..</para>
+      interface, one must alter the the JSP page where the it will be altered,
+      as well as the ActionForm and Actions which communicate with the
+      GeoServer configuration. </para>
 
-      <para></para>
+      <para>Before you begin you must decide where in the interface you want
+      the control to appear on, as the configuration files that pertain to
+      STRUTS are split up to mirror the pages. The WFS Description page
+      contains fields pertaining to information about the WFS, whereas the
+      Content page contains fields which actually affect the way the WFS
+      operates. Because we are adding a serviceLevel field which defines the
+      services that the WFS provides, this should fall under Content.</para>
 
-      <para>First, add the field to appropriate WFS interface page. The WFS
-      Description page contains fields pertaining to information about the
-      WFS, whereas the Content page contains fields which actually affect the
-      way the WFS operates. Because we are adding a serviceLevel field which
-      defines the services that the WFS provides, this should fall under
-      Content.</para>
+      <section>
+        <title>Update the Config Class for WFS</title>
 
-      <para></para>
+        <para>Update WFSConfig so it can properly communicate with the DTO
+        object. This is kept simple by adding the property, including getter
+        and setter, and initializing/saving it where appropriate. </para>
 
-      <itemizedlist>
-        <listitem>
-          <para>You must add the property to the ActionForm. In this case,
-          org.vfny.geoserver.form.wfs.WFSContentForm.</para>
+        <itemizedlist>
+          <listitem>
+            <para>in WFSConfig add the property with the getter and
+            setter.</para>
 
-          <programlisting><emphasis role="bold">private String serviceLevel;</emphasis></programlisting>
-        </listitem>
-      </itemizedlist>
+            <programlisting><emphasis role="bold">private int serviceLevel;
 
-      <itemizedlist>
-        <listitem>
-          <para>And then the getters and setters.</para>
-
-          <programlisting><emphasis role="bold">/**
+/**
  * Access serviceLevel property.
  * 
  * @return Returns the serviceLevel.
  */
-public String getServiceLevel() {
+public int getServiceLevel() {
    return serviceLevel;
 }
 
 /**
- * Set serviceLevel
+ * Set serviceLevel to serviceLevel.
  *
  * @param serviceLevel The serviceLevel to set.
  */
-public void setServiceLevel(String serviceLevel) {
+public void setServiceLevel(int serviceLevel) {
    this.serviceLevel = serviceLevel;
 }</emphasis></programlisting>
-        </listitem>
+          </listitem>
 
-        <listitem>
-          <para>Add the following to WFSConfigContent.jsp where ever you want
-          the textbox to appear.</para>
+          <listitem>
+            <para>In WFSConfig.toDTO()</para>
 
-          <programlisting><emphasis role="bold">&lt;tr&gt;&lt;td align="right"&gt;
+            <programlisting>        wfsDto.setGmlPrefixing(gmlPrefixing);
+<emphasis role="bold">        wfsDto.setServiceLevel(serviceLevel);</emphasis>
+
+        return wfsDto;</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>In WFSConfig.update(WFSDTO)</para>
+
+            <programlisting>        super.update(dto.getService());
+        gmlPrefixing = dto.isGmlPrefixing();
+        <emphasis role="bold">serviceLevel = dto.getServiceLevel();</emphasis></programlisting>
+          </listitem>
+
+          <listitem>
+            <para>In WFSConfig constructor (WFSDTO)</para>
+
+            <programlisting>    public WFSConfig(WFSDTO w) {
+        super(w.getService());
+        gmlPrefixing = w.isGmlPrefixing();
+        <emphasis role="bold">serviceLevel = w.getServiceLevel();</emphasis>
+    }</programlisting>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Update the WFS Content ActionForm</title>
+
+        <para>Here we need to update WFSConfigContentForm to allow the JSP to
+        access and set the serviceLevel property, as well as validate the
+        input before passing it to the Action.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>You must add the property to the ActionForm. In this case,
+            org.vfny.geoserver.form.wfs.WFSContentForm.</para>
+
+            <programlisting><emphasis role="bold">private int serviceLevel;</emphasis></programlisting>
+          </listitem>
+
+          <listitem>
+            <para>And then the getters and setters.</para>
+
+            <programlisting><emphasis role="bold">/**
+ * Access serviceLevel property.
+ * 
+ * @return Returns the serviceLevel.
+ */
+public int getServiceLevel() {
+   return serviceLevel;
+}
+
+/**
+ * Set serviceLevel to serviceLevel.
+ *
+ * @param serviceLevel The serviceLevel to set.
+ */
+public void setServiceLevel(int serviceLevel) {
+   this.serviceLevel = serviceLevel;
+}</emphasis></programlisting>
+          </listitem>
+
+          <listitem>
+            <para>In WFSConfigContentForm.reset add a call to retrieve the
+            current service level from GeoServer's configuration.</para>
+
+            <programlisting>        WFSConfig config = (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
+        
+        <emphasis role="bold">serviceLevel = config.getServiceLevel();</emphasis>
+        this.enabled = config.isEnabled();</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>In WFSConfigContentForm.validate(), add code to make sure a
+            valid service level was selected. The argument to the ActionError
+            constructor is a String containing the key to a message located in
+            the ApplicationResources.</para>
+
+            <programlisting><emphasis role="bold">        if (serviceLevel != WFSDTO.BASIC &amp;&amp; serviceLevel != WFSDTO.TRANSACTION) {
+            errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
+        }</emphasis></programlisting>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Update the WFS Content Action</title>
+
+        <para>All that is need to be changed here is a simple call to that
+        saves the selected service level into the configuration.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>in WFSConfigContentAction.execute(), add this to save the
+            service level when it is changed in the interface.</para>
+
+            <programlisting>        WFSConfig config = getWFSConfig();
+        config.setEnabled(enabled);
+        config.setOnlineResource(new URL(onlineResource));
+        <emphasis role="bold">config.setServiceLevel(contentForm.getServiceLevel());</emphasis></programlisting>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Update the JSP page</title>
+
+        <para>Here we simply add the control to the appropriate JSP page. Make
+        sure it is within the &lt;html:form&gt; tag that is associated with
+        the ActionForm you changed. In this example, we must make sure to
+        place it within the &lt;html:form action="WFSConfigContentSubmit"&gt;
+        tag. Familiarty with the STRUTS HTML and logic tag libraries really
+        helps here.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Add the following to WFSConfigContent.jsp where ever you
+            want the textbox to appear. It creates a select box with two
+            options in it. One for basic, one for transactional. This is just
+            an example. Feel free to do whatever you want with the
+            control.</para>
+
+            <programlisting><emphasis role="bold">&lt;tr&gt;&lt;td align="right"&gt;
    &lt;span class="help" title="&lt;bean:message key="help.serviceLevel"/&gt;"&gt;
       &lt;bean:message key="label.serviceLevel"/&gt;:
    &lt;/span&gt;
 &lt;/td&gt;&lt;td colspan=2&gt;
-   &lt;html:text property="serviceLevel" size="60"/&gt;
+   &lt;html:select property="serviceLevel" size="2"&gt;
+      &lt;html:option key="label.serviceLevel.basic" value="&lt;%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.BASIC) %&gt;"/&gt;
+      &lt;html:option key="label.serviceLevel.transactional" value="&lt;%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.TRANSACTION) %&gt;"/&gt;
+   &lt;/html:select&gt;
 &lt;/td&gt;&lt;/tr&gt;</emphasis></programlisting>
-        </listitem>
+          </listitem>
+        </itemizedlist>
+      </section>
 
-        <listitem>
-          <para></para>
-        </listitem>
+      <section>
+        <title>Update the Application Resources</title>
 
-        <listitem>
-          <para></para>
-        </listitem>
+        <para>Here we must add each of the messages we have created to the
+        ApplicationResource file. This file allows for centralized String
+        messages and for easy internationalization.</para>
 
-        <listitem>
-          <para></para>
-        </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>in ApplicationResources.properties, add the appropriate
+            keys. Order doesn't matter.</para>
 
-        <listitem>
-          <para></para>
-        </listitem>
-
-        <listitem>
-          <para></para>
-        </listitem>
-
-        <listitem>
-          <para></para>
-        </listitem>
-
-        <listitem>
-          <para></para>
-        </listitem>
-
-        <listitem>
-          <para></para>
-        </listitem>
-
-        <listitem>
-          <para></para>
-        </listitem>
-
-        <listitem>
-          <para></para>
-        </listitem>
-
-        <listitem>
-          <para></para>
-        </listitem>
-
-        <listitem>
-          <para></para>
-        </listitem>
-      </itemizedlist>
+            <programlisting><emphasis role="bold">error.serviceLevel.invalid=Invalid service level selected
+help.serviceLevel=Defines the level of service that the WFS provides
+label.serviceLevel=Service Level
+label.serviceLevel.basic=Basic
+label.serviceLevel.transactional=Transactional</emphasis></programlisting>
+          </listitem>
+        </itemizedlist>
+      </section>
     </section>
   </section>
 </article>
