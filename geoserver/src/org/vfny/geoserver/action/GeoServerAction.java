@@ -12,7 +12,7 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Requests;
-
+import java.util.logging.Logger;
 
 /**
  * GeoServerAction is a common super class used by STRUTS Actions.
@@ -53,10 +53,15 @@ import org.vfny.geoserver.requests.Requests;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GeoServerAction.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: GeoServerAction.java,v 1.7 2004/04/16 16:33:31 cholmesny Exp $
  */
 public class GeoServerAction extends Action {
+    
+	/** Class logger */
+	protected static Logger LOGGER = Logger.getLogger(
+			"org.vfny.geoserver.action");
+    
     /**
      * Logs the user out from the current Session.
      *
