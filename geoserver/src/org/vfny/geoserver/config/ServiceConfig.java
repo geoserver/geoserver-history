@@ -204,7 +204,7 @@ public class ServiceConfig implements java.io.Serializable {
 	List keywords = new ArrayList();
 	//try to get text in Keywords element.
 	String keywordsText = findTextFromTag(root, KEYWORDS_TAG);
-	if (keywordsText != null) { //keywords are comma delimited in one field,
+	if (!keywordsText.equals("")) { //keywords are comma delimited in one field,
 	    //wfs style.
 	    String[] keywordArr = keywordsText.split(WHITE_SPACE_OR_COMMA); 
 	    for (int i = 0; i < keywordArr.length; i++){
