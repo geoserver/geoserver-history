@@ -19,12 +19,11 @@
   <!-- pc example -->
   <property name="dir.container" value="C:\java\tomcat5\webapps"/>
   <property name="dir.geotools" 
-            value="..\geotools-src"/>
+            value="..\geotools2\geotools-src"/>
 
   <!-- If you don't have your own conf directory uncomment on of the following -->
-  <property name="test.type" value="UserBasic"/>
-  <!--<property name="test.type" value="Demo"/>-->
-  <!--property name="test.type" value="Demo"/-->
+  <!--property name="test.type" value="UserBasic"/-->
+  <property name="test.type" value="Demo"/>
   <!--<property name="test.type" value="DemoPostGIS"/>-->
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>--> 
@@ -802,7 +801,7 @@ failonerror="true"/>
      library, building with maven is required before commit changed jar
      files.
 -->
-  <target name="geotools" depends="init"
+  <target name="geotools" depends="init,gt2-validation"
       description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
     <delete file="${dir.lib}/gt2-main.jar" failonerror="true"/>
     <jar jarfile="${dir.lib}/gt2-main.jar"
@@ -855,7 +854,7 @@ failonerror="true"/>
                includes="**/*.class"/> 
 	</jar>
 
-    <!-- Validation support, include META-INF -->	
+    <!-- Validation support, include META-INF
     <delete file="${dir.lib}/gt2-validation.jar" failonerror="true"/>        
 	<jar jarfile="${dir.lib}/gt2-validation.jar"
          whenempty="fail">	
@@ -864,7 +863,7 @@ failonerror="true"/>
       		<include name="**/*.properties"/>
 	  </fileset>
 	</jar>
-
+    -->
 	<!-- Potgis support, include META-INF -->	
     <!--<delete file="${dir.lib}/gt2-arcsde.jar" failonerror="true"/>        
 	<jar jarfile="${dir.lib}/gt2-arcsde.jar"
@@ -903,4 +902,19 @@ failonerror="true"/>
       	       includes="geotools/data/**"/>
 	</jar>
   </target>
+
+  <target name="gt2-validation" depends="init"
+      description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
+    <delete file="${dir.lib}/gt2-main.jar" failonerror="true"/>
+    <!-- Validation support, include META-INF -->   
+    <delete file="${dir.lib}/gt2-validation.jar" failonerror="true"/>        
+    <jar jarfile="${dir.lib}/gt2-validation.jar"
+         whenempty="fail">  
+      <fileset dir="${dir.geotools}/validation/target/classes/">
+            <include name="**/*.class"/>
+            <include name="**/*.properties"/>
+      </fileset>
+    </jar>      
+  </target>
+        
 </project>
