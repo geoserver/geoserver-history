@@ -20,7 +20,7 @@ import java.util.logging.*;
  * should be trivial, as it's already a part of lockRequest.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureWithLockRequest.java,v 1.3 2003/12/30 00:44:54 cholmesny Exp $
+ * @version $Id: FeatureWithLockRequest.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
  */
 public class FeatureWithLockRequest extends FeatureRequest {
     /** Standard logging instance for class */
@@ -28,7 +28,7 @@ public class FeatureWithLockRequest extends FeatureRequest {
             "org.vfny.geoserver.requests");
 
     /** The time to hold the lock for */
-    protected int expiry = 0;
+    protected int expiry = -1;
 
     public FeatureWithLockRequest() {
         super();
@@ -36,54 +36,38 @@ public class FeatureWithLockRequest extends FeatureRequest {
 
     /**
      * Turn this request into a FeatureLock.
-     * 
      * <p>
-     * You will return FeatureLock.getAuthorization() to your user so they can
-     * refer to this lock again.
+     * You will return FeatureLock.getAuthorization()
+     * to your user so they can refer to this lock again.
      * </p>
-     * 
      * <p>
-     * The getAuthorization() value is based on getHandle(), with a default of
-     * "GeoServer" if the user has not provided a handle.
+     * The getAuthorization() value is based on getHandle(), with a default
+     * of "GeoServer" if the user has not provided a handle.
      * </p>
      * The FeatureLock produced is based on expiry:
-     * 
      * <ul>
-     * <li>
-     * negative expiry: reports if lock is available
-     * </li>
-     * <li>
-     * zero expiry: perma lock that never expires!
-     * </li>
-     * <li>
-     * postive expiry: lock expires in a number of minuets
-     * </li>
+     * <li>negative expiry: reports if lock is available</li>
+     * <li>zero expiry: perma lock that never expires!</li>
+     * <li>postive expiry: lock expires in a number of minuets</li>
      * </ul>
-     * 
-     *
      * @return
      */
-    public FeatureLock toFeatureLock() {
+    public FeatureLock toFeatureLock(){
         String handle = getHandle();
-
-        if ((handle == null) || (handle.length() == 0)) {
+        if( handle == null || handle.length()==0){
             handle = "GeoServer";
         }
-
-        if (expiry < 0) {
+        if( expiry < 0 ){
             // negative time used to query if lock is available!
-            return FeatureLockFactory.generate(handle, expiry);
+            return FeatureLockFactory.generate( handle, expiry );           
         }
-
-        if (expiry == 0) {
+        if( expiry == 0 ){
             // perma lock with no expiry!
-            return FeatureLockFactory.generate(handle, 0);
+            return FeatureLockFactory.generate( handle, 0 );            
         }
-
         // FeatureLock is specified in seconds
-        return FeatureLockFactory.generate(handle, expiry * 60 * 1000);
+        return FeatureLockFactory.generate( handle, expiry*60 );
     }
-
     /**
      * Turns this request into a lock request.
      *
