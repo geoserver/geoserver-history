@@ -45,6 +45,11 @@
     <servlet-class>org.vfny.geoserver.servlets.Lock</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>GetFeatureWithLock</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.FeatureWithLock</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>FreefsLog</servlet-name>
     <url-pattern>/FreefsLog</url-pattern>
@@ -83,6 +88,11 @@
  <servlet-mapping>
     <servlet-name>LockFeature</servlet-name>
     <url-pattern>/LockFeature/*</url-pattern>
+  </servlet-mapping>
+
+   <servlet-mapping>
+    <servlet-name>GetFeatureWithLock</servlet-name>
+    <url-pattern>/GetFeatureWithLock/*</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list><welcome-file>default.jsp</welcome-file></welcome-file-list>
