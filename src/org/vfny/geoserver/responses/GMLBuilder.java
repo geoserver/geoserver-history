@@ -160,11 +160,20 @@ public class GMLBuilder {
 
     /**
      * Adds the xml namespaces and FeatureCollection tag.
+     *
+     * @param srs the spatial reference system for this featureCollection
+     * @param typeInfo the information of the featureType
+     * @param lockId the lockId if one exists.  If null then the lockId
+     * element is not used.
+     * @task HACK: more than one type should be allowed in a single
+     * feature collection - we have some other hacks, but all are 
+     * less than ideal.
      */
-    public void startFeatureCollection(String srs, TypeInfo typeInfo) {
+    public void startFeatureCollection(String srs, TypeInfo typeInfo, 
+				       String lockId) {
 	//hashmap of srs's, each holds its own string buffer, so we can
 	//have multiple fcs, then they all combine at the end?
-	featureTypeWriter.start(srs, typeInfo);        
+	featureTypeWriter.start(srs, typeInfo, lockId);        
 	//for now we'll just hack - put all in the first srs.
     }
 
@@ -345,12 +354,15 @@ public class GMLBuilder {
          * verbosity.
          * @param srs Spactial reference system for the bounding box
          */ 
-        public void start(String srs, TypeInfo typeInfo) {
+        public void start(String srs, TypeInfo typeInfo, String lockId) {
 	    String xmlns = typeInfo.getXmlns();
             this.srs = srs;
 	    String indent = ((verbose) ? "\n   " : " ");
 	    String schIndent = indent + (verbose ? "                " : "");
 	    finalResult.append(FEATURE_COLL_HEAD);
+	    if (lockId != null) {
+		finalResult.append(indent + "lockId=\"" + lockId + "\"");
+	    } 
             finalResult.append(indent + "xmlns=\"" + xmlns + "\"");
 	    finalResult.append(indent + XMLNS_GML);
 	    finalResult.append(indent + XMLNS_WFS);

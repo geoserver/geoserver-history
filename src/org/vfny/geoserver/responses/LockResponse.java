@@ -42,10 +42,18 @@ public class LockResponse {
     private LockResponse () {}
 
     /**
-     * Parses the GetFeature reqeust and returns a contentHandler.
-     * @return XML response to send to client
+     * Parses the LockFeature reqeust and returns either the full xml lock 
+     * result or just the lockId.
+     *
+     * @param request the locks to attempt
+     * @param getXml if <tt>true</tt> then the full xml response is returned,
+     * if <tt>false</tt> then only the lockId is returned.
+     * @return XML response or lockId, depending on getXml
+     * @task REVISIT: this will have to be reworked for the next version
+     * of the spec, when getFeatureWithLock can specify lockAction, but
+     * we'll cross that bridge when we come to it.
      */ 
-    public static String getXmlResponse(LockRequest request) 
+    public static String performLock(LockRequest request, boolean getXml) 
 	throws WfsException {
 	
 	LOGGER.finer("about to do Lock response on:" + request);
@@ -68,9 +76,24 @@ public class LockResponse {
 	    repository.addToLock(curTypeName, curFilter, lockAll, lockId);
 	
 	}
-	return generateXml(lockId, lockAll, 
-			   repository.getLockedFeatures(lockId),
-			   repository.getNotLockedFeatures(lockId));
+	if (getXml) {
+	    return generateXml(lockId, lockAll, 
+			       repository.getLockedFeatures(lockId),
+			       repository.getNotLockedFeatures(lockId));
+	} else {
+	    return lockId;
+	}
+    }
+
+    /**
+     * Convenience function for backwards compatability, gets the
+     * full xml response.
+     *
+     * @param request the locks to attempt.
+     */
+    public static String getXmlResponse(LockRequest request) 
+	throws WfsException {
+	return performLock(request, true);
     }
 
     /**
