@@ -12,11 +12,11 @@
 		<plugin>Line Not Entering Polygon</plugin>
 		<argument >
 			<name>lineTypeRef</name>
-			<string>roads</string>
+			<string>roads:roads</string>
 		</argument>
 		<argument >
 			<name>restrictedPolygonTypeRef</name>
-			<string>lakes</string>
+			<string>lakes:lakes</string>
 		</argument>
 	</test>
 	<test>
@@ -25,7 +25,7 @@
 		<plugin>Line Not Self Intersection</plugin>
 		<argument >
 			<name>lineTypeRef</name>
-			<string>streams</string>
+			<string>streams:streams</string>
 		</argument>
 	</test>
 	<test>
@@ -34,11 +34,11 @@
 		<plugin>Lines Node Intersect</plugin>
 		<argument >
 			<name>lineTypeRef</name>
-			<string>rivers</string>
+			<string>rivers:rivers</string>
 		</argument>
 		<argument >
 			<name>restrictedLineTypeRef</name>
-			<string>streams</string>
+			<string>streams:streams</string>
 		</argument>
 	</test>
 </suite>
