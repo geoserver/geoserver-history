@@ -224,6 +224,79 @@
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
         <tr> 
+          <td bgcolor="#333366" class="title">Shapefile support</td>
+        </tr>
+        <tr> 
+          <td height="45"> 
+            <blockquote>The 0.96 release includes a first attempt at shapefile
+	    support.  Postgis remains the recommended geoserver datasource, due
+	    to its speed and transactional capabilities.  But for those users 
+	    wishing to avoid the lengthy postgis install, who just want to get 
+	    geoserver up and running, shapefiles provide a good alternative.  
+	    Large shapefiles have not been tested too extensively, so we'd 
+	    appreciate reports on how it goes.  And much thanks goes out to 
+	    the <a href="http://geotools.org">Geotools</a> team, as we are
+	    just plugging in their hard work.  Ian Schneider deserves special
+	    mention for his work to get the geotools shapefile module ready
+	    to go into geoserver.  <p>To use shapefiles instead of postgis, the
+	    info.xml file must be modified.  To use shapefiles include the
+	    url to the location of the .shp file as follows:
+	     <blockquote>
+	      <p><i>
+	       &nbsp;&nbsp;&nbsp;&nbsp;&lt;DatasourceParams&gt;<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;url&gt;file:/home/chris/road.shp&lt;/url&gt; 
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/DatasourceParams&gt;<br>
+	      </i><p>
+	     </blockquote>
+
+	     If you can store the
+	    .shp, .dbx and .shx files in the same directory as info.xml then
+	    the filename tag can be used as a shortcut, the url will be 
+	    constructed automatically using that directory.:
+	     <blockquote>
+	      <p><i>
+	       &nbsp;&nbsp;&nbsp;&nbsp;&lt;DatasourceParams&gt;<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;filename&gt;road.shp&lt;/filename&gt; 
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/DatasourceParams&gt;<br>
+	      </i><p>
+	     </blockquote>
+           </blockquote>
+         </td>
+        </tr>
+      </table>
+       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Plug-in Datasources</td>
+        </tr>
+        <tr> 
+          <td height="45"> 
+            <blockquote>
+	    Geoserver 0.96 also introduces new support for plug-in datasources.
+	    Shapefiles are the first instance of the new plug-in style, but 
+	    the work done for them will make new geotools datasource much 
+	    easier to add to geoserver.  If you find a datasource in geotools
+	    that you would like to try out with geoserver then it can be
+	    used with hopefully a fairly minimal amount of tweaking.  If 
+	    implemented exactly right then the jar should be able to be
+	    added directly to the lib directory of geoserver.  The geotools
+	    datasource must implement the DataSourceFactorySpi interface for
+	    the plugin jar to work, and the jar must include a META-INF 
+	    entry for the factory implementing class.  If everything is 
+	    correct on the datasource side then the only thing to be done
+	    is to edit the info.xml file for the correct DatasourceParams, 
+	    which are the params that the DataSourceFactorySpi will look for.
+	    If there are developers interested in new datasources for geoserver,
+	    please don't hesitate to contact us, we've been working to make 
+	    the process relatively painless, with plug-in mechanisms and a new
+	    AbstractDataSource in geotools to handle much of the messy work.
+	     </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
           <td bgcolor="#333366" class="title">z39.50 Module</td>
         </tr>
         <tr> 
