@@ -4,37 +4,19 @@
  */
 package org.vfny.geoserver.servlets;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.SocketException;
-import java.nio.charset.Charset;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.*;
+import java.util.*;
+import java.util.logging.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.vfny.geoserver.ExceptionHandler;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.*;
+import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.requests.*;
+import org.vfny.geoserver.requests.readers.*;
+import org.vfny.geoserver.responses.*;
 
 
 /**
@@ -43,7 +25,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * <p>
  * It is <b>really</b> important to adhere to the following workflow:
- * 
+ *
  * <ol>
  * <li>
  * get a Request reader
@@ -94,7 +76,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.16 2004/02/17 22:42:32 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.17 2004/03/10 23:39:07 groldan Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -189,7 +171,7 @@ public abstract class AbstractService extends HttpServlet {
         HttpServletResponse response) throws ServletException, IOException {
         // implements the main request/response logic
         Request serviceRequest = null;
-        
+
         if(!isServiceEnabled(request)){
         	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         	return;
@@ -242,12 +224,12 @@ public abstract class AbstractService extends HttpServlet {
         HttpServletResponse response) throws ServletException, IOException {
         Request serviceRequest = null;
 
-        
+
         if(!isServiceEnabled(request)){
         	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         	return;
         }
-        
+
         // implements the main request/response logic
         try {
             XmlRequestReader requestReader = getXmlRequestReader();
@@ -285,8 +267,6 @@ public abstract class AbstractService extends HttpServlet {
      * @param serviceRequest
      *
      * @throws ServletException if the stratagy can't be instantiated
-     *
-     * @task TODO: move gzip response encoding to a filter servlet
      */
     protected void doService(HttpServletRequest request,
         HttpServletResponse response, Request serviceRequest)
@@ -294,7 +274,7 @@ public abstract class AbstractService extends HttpServlet {
         ServiceStratagy stratagy = null;
         LOGGER.finest("getting stratagy instance");
 
-        
+
         if(!isServiceEnabled(request)){
         	try{
         		response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
@@ -303,7 +283,7 @@ public abstract class AbstractService extends HttpServlet {
         	}
         	return;
         }
-        
+
         try {
             stratagy = (ServiceStratagy) saftyMode.newInstance();
         } catch (Exception ex) {
@@ -332,6 +312,7 @@ public abstract class AbstractService extends HttpServlet {
             // execute request
             LOGGER.fine("executing request");
             serviceResponse.execute(serviceRequest);
+            LOGGER.fine("execution succeed");
         } catch (ServiceException serviceException) {
             LOGGER.warning("service exception while executing request: "
                 + serviceException.getMessage());
@@ -347,18 +328,6 @@ public abstract class AbstractService extends HttpServlet {
             return;
         }
 
-        try { //catch block to wrap exceptions properly.
-
-            String mimeType = serviceResponse.getContentType(s
-                    .getGeoServer());
-            response.setContentType(mimeType);
-            LOGGER.fine("execution succeed, mime type is: " + mimeType);
-        } catch (Throwable t) {
-            sendError(response, t);
-
-            return;
-        }
-
         OutputStream stratagyOuput = null;
 
         //obtain the stratagy output stream
@@ -366,7 +335,17 @@ public abstract class AbstractService extends HttpServlet {
             LOGGER.finest("getting stratagy output");
             stratagyOuput = stratagy.getDestination(response);
             LOGGER.finer("stratagy output is: "
-                + stratagyOuput.getClass().getName());
+                         + stratagyOuput.getClass().getName());
+
+            String mimeType = serviceResponse.getContentType(s.getGeoServer());
+            LOGGER.fine("mime type is: " + mimeType);
+            response.setContentType(mimeType);
+
+            String encoding = serviceResponse.getContentEncoding();
+            if(encoding != null){
+              LOGGER.fine("content encoding is: " + encoding);
+              response.setHeader("content-encoding", encoding);
+            }
         } catch (SocketException socketException) {
             LOGGER.fine(
                 "it seems that the user has closed the request stream: "
@@ -608,7 +587,12 @@ public abstract class AbstractService extends HttpServlet {
         if ((header != null) && (header.indexOf("gzip") > -1)) {
             supportsGzip = true;
         }
-
+        if(LOGGER.isLoggable(Level.CONFIG))
+        {
+          LOGGER.config("user-agent=" + request.getHeader("user-agent"));
+          LOGGER.config("accept=" + request.getHeader("accept"));
+          LOGGER.config("accept-encoding=" + request.getHeader("accept-encoding"));
+        }
         return supportsGzip;
     }
 
@@ -711,9 +695,6 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
         if (out != null) {
             out.flush();
         }
-
-        // should we close? BufferStratagy uses close?
-        // out.close();
     }
 
     /* (non-Javadoc)
@@ -772,8 +753,6 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
         BufferedOutputStream buffOut = new BufferedOutputStream(out, 1024 * 1024);
         buffer.writeTo(buffOut);
         buffOut.flush();
-
-        //buffOut.close(); // I think this cloes response.getOutputStream()
     }
 
     /**
@@ -794,7 +773,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

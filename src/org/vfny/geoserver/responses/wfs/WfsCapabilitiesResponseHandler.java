@@ -25,7 +25,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.18 2004/02/20 22:23:45 jive Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.19 2004/03/10 23:39:06 groldan Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -114,9 +114,9 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleCapability(config, "DescribeFeatureType");
         handleCapability(config, "GetFeature");
         if((config.getServiceLevel() | WFSDTO.TRANSACTIONAL) != 0){
-            handleCapability(config, "Transaction");    
+            handleCapability(config, "Transaction");
         }
-        if((config.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0){        
+        if((config.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0){
             handleCapability(config, "LockFeature");
             handleCapability(config, "GetFeatureWithLock");
         }
@@ -142,10 +142,12 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             cReturn();
         }
 
+        //for GetFeature and GetFeatureWithLock
         if (capabilityName.startsWith("GetFeature")) {
             String resultFormat = "ResultFormat";
             startElement(resultFormat);
             handleSingleElem("GML2", "");
+            handleSingleElem("GML2.gz", "");
             endElement(resultFormat);
             cReturn();
         }
@@ -169,7 +171,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         cReturn();
 
-        //if(!request.isCGIRequest()){ Even if it's a cgi request we can 
+        //if(!request.isCGIRequest()){ Even if it's a cgi request we can
         //still say that we can do post, just not in the way they like...
         	attributes = new AttributesImpl();
         	url = baseUrl + capabilityName;
@@ -189,7 +191,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     private void handleFeatureTypes(Service serviceConfig)
         throws SAXException {
         WFS config = (WFS) serviceConfig;
-         
+
         if( !config.isEnabled() ){
             // should we return anything if we are disabled?
         }
@@ -198,7 +200,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         indent();
         startElement("Operations");
         indent();
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_BASIC ) != 0 ){        
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_BASIC ) != 0 ){
           startElement("Query");
           endElement("Query");
         }
@@ -206,15 +208,15 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
           startElement("Insert");
           endElement("Insert");
         }
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_UPDATE ) != 0 ){        
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_UPDATE ) != 0 ){
           startElement("Update");
           endElement("Update");
         }
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_DELETE ) != 0 ){        
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_DELETE ) != 0 ){
           startElement("Delete");
           endElement("Delete");
         }
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_LOCKING ) != 0 ){        
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_LOCKING ) != 0 ){
           startElement("Lock");
           endElement("Lock");
         }

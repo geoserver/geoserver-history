@@ -28,7 +28,7 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.8 2004/02/09 23:29:49 dmzwiers Exp $
+ * @version $Id: GetMapResponse.java,v 1.9 2004/03/10 23:39:06 groldan Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
@@ -86,6 +86,9 @@ public class GetMapResponse implements Response {
         return delegate.getContentType(gs);
     }
 
+    public String getContentEncoding(){
+        return null;
+    }
     /**
      * if a GetMapDelegate is set, calls it's abort method. Elsewere do
      * nothing.

@@ -34,7 +34,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.31 2004/02/19 21:50:32 cholmesny Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.32 2004/03/10 23:39:05 groldan Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -107,13 +107,17 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
         return gs.getMimeType();
     }
 
+    public String getContentEncoding(){
+        return null;
+    }
+
     /**
      * Writes the GetCapabilities document to out.
-     * 
+     *
      * <p>
      * By the time this has been called the Framework has:
      * </p>
-     * 
+     *
      * <ol>
      * <li>
      * Called execute( Request )
@@ -122,9 +126,9 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
      * Called getContentType()
      * </li>
      * </ol>
-     * 
+     *
      * <p></p>
-     * 
+     *
      * <p>
      * If anything goes wrong the Framework will call abort() to allow for
      * clean up of held resources.
@@ -143,7 +147,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
 
         try {
 			 //See note in FeatureTransformer - this ensures things function right.
-			 //I had an error in resin with wms if this was not set, their 
+			 //I had an error in resin with wms if this was not set, their
 			 //transformer could not handle the dtd I was trying to make with WMS.
 			  System.setProperty("javax.xml.transform.TransformerFactory",
 					 "org.apache.xalan.processor.TransformerFactoryImpl");
