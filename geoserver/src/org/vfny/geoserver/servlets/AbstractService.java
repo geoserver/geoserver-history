@@ -71,7 +71,7 @@ import javax.servlet.http.*;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.3 2003/12/17 00:21:00 cholmesny Exp $
+ * @version $Id: AbstractService.java,v 1.4 2004/01/02 21:16:04 cholmesny Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -706,7 +706,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
         BufferedOutputStream buffOut = new BufferedOutputStream(out, 1024 * 1024);
         buffer.writeTo(buffOut);
         buffOut.flush();
-        buffOut.close(); // I think this cloes response.getOutputStream()
+        //buffOut.close(); // I think this cloes response.getOutputStream()
     }
 
     /**
@@ -726,7 +726,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe Service stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
