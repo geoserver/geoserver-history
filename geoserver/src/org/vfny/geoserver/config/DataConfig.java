@@ -36,7 +36,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.14 2004/04/15 20:59:29 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.15 2004/04/15 21:03:05 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -112,51 +112,52 @@ public class DataConfig {
      * @param data The catalog to copy.
      */
     public DataConfig(DataDTO data) {
-        Iterator i = null;
-
-        i = data.getDataStores().keySet().iterator();
-        dataStores = new HashMap();
-
-        while (i.hasNext()) {
-            Object key = i.next();
-            dataStores.put(key,
-                new DataStoreConfig(
-                    (DataStoreInfoDTO) data.getDataStores().get(key)));
-        }
-
-        i = data.getNameSpaces().keySet().iterator();
-        nameSpaces = new HashMap();
-
-        while (i.hasNext()) {
-            Object key = i.next();
-            nameSpaces.put(key,
-                new NameSpaceConfig(
-                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
-
-            if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
-                defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
-            }
-        }
-
-        i = data.getFeaturesTypes().keySet().iterator();
-        featuresTypes = new HashMap();
-
-        while (i.hasNext()) {
-            Object key = i.next();
-
-            featuresTypes.put(key,
-                new FeatureTypeConfig(
-                    (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
-        }
-
-        i = data.getStyles().keySet().iterator();
-        styles = new HashMap();
-
-        while (i.hasNext()) {
-            Object key = i.next();
-            styles.put(key,
-                new StyleConfig((StyleDTO) data.getStyles().get(key)));
-        }
+//        Iterator i = null;
+//
+//        i = data.getDataStores().keySet().iterator();
+//        dataStores = new HashMap();
+//
+//        while (i.hasNext()) {
+//            Object key = i.next();
+//            dataStores.put(key,
+//                new DataStoreConfig(
+//                    (DataStoreInfoDTO) data.getDataStores().get(key)));
+//        }
+//
+//        i = data.getNameSpaces().keySet().iterator();
+//        nameSpaces = new HashMap();
+//
+//        while (i.hasNext()) {
+//            Object key = i.next();
+//            nameSpaces.put(key,
+//                new NameSpaceConfig(
+//                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
+//
+//            if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
+//                defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
+//            }
+//        }
+//
+//        i = data.getFeaturesTypes().keySet().iterator();
+//        featuresTypes = new HashMap();
+//
+//        while (i.hasNext()) {
+//            Object key = i.next();
+//
+//            featuresTypes.put(key,
+//                new FeatureTypeConfig(
+//                    (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
+//        }
+//
+//        i = data.getStyles().keySet().iterator();
+//        styles = new HashMap();
+//
+//        while (i.hasNext()) {
+//            Object key = i.next();
+//            styles.put(key,
+//                new StyleConfig((StyleDTO) data.getStyles().get(key)));
+//        }
+		update(data);
     }
 
     /**
