@@ -1,19 +1,3 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2002, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
- */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -86,23 +70,9 @@ import javax.servlet.http.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: AbstractService.java,v 1.1.2.10 2003/11/17 03:12:00 jive Exp $
+ * @author Jody Garnett
+ * @version $Id: AbstractService.java,v 1.1.2.11 2003/11/17 22:27:36 cholmesny Exp $
  *
- * @task TODO: I changed this so it automatically buffers responses, so  as to
- *       better handle errors, not serving up nasty servlet errors if
- *       something goes wrong during the transforms.  This obviously slows
- *       things down and is not scalable.  First we should make it user
- *       configurable.   This will allow users to say if they want things
- *       absolutely complaint (returning errors other than the proper xml
- *       ServiceExceptions is required by the spec, but if we hit an error
- *       while writing to out we've already started writing.  Though perhaps
- *       there's some way to access what is actually written?  I mean the
- *       servlet container does it...), or if they want more performance at
- *       the expense of being absolutely compliant.  This ideally should
- *       happen very rarely, as the execute method should take care of most of
- *       the errors that may arise, but it's still going to happen, since for
- *       GetFeature we definitely do a good amount of working during the
- *       transform.
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -696,7 +666,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe Service stratagy that uses a temporary file until writeTo completes.
  * 
  * @author $author$
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
