@@ -68,6 +68,7 @@ public class UpdateGSAction extends ConfigAction {
         }
 
         // We need to stay on the same page!
+        getApplicationState( request ).notifyToGeoServer();
         
         return mapping.findForward("welcome");
     }
