@@ -4,19 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFactorySpi.Param;
-import org.vfny.geoserver.action.data.DataStoreUtils;
-import org.vfny.geoserver.config.ConfigRequests;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.requests.Requests;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,8 +11,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFactorySpi.Param;
+import org.vfny.geoserver.action.data.DataStoreUtils;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.requests.Requests;
 
 
 /**

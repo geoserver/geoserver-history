@@ -8,15 +8,12 @@ package org.vfny.geoserver.form.data;
 
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.NameSpaceConfig;
 /**
  * DataNamespacesNewForm purpose.
  * <p>
@@ -25,7 +22,7 @@ import org.vfny.geoserver.config.NameSpaceConfig;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataNamespacesNewForm.java,v 1.3 2004/02/28 07:45:00 jive Exp $
+ * @version $Id: DataNamespacesNewForm.java,v 1.4 2004/03/02 10:06:42 jive Exp $
  */
 public class DataNamespacesNewForm extends ActionForm {
     private String prefix;

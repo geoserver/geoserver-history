@@ -5,51 +5,93 @@
 
 package org.vfny.geoserver.form.data;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.config.ConfigRequests;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.requests.Requests;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.geotools.data.DataStore;
+import org.geotools.feature.FeatureType;
+import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.config.ConfigRequests;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
+import org.vfny.geoserver.requests.Requests;
+
+import com.vividsolutions.jts.geom.Envelope;
+
 /**
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.1 2004/03/02 02:36:00 jive Exp $
+ * @version $Id: TypesEditorForm.java,v 1.2 2004/03/02 10:06:42 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
+
+    /** Identiy DataStore responsible for this FeatureType */
+    private String dataStoreId;
+    
+    /**
+     * Name of featureType.
+     * <p>
+     * Usually an exact match for typeName provided by a DataStore.
+     * </p> 
+     */
     private String name;
+    /**
+     * Representation of the Spatial Reference System.
+     * <p>
+     * Empty represents unknown, usually assumed to be Cartisian Coordinates.
+     * </p>
+     */
     private String SRS;
+    /** Title of this FeatureType */
     private String title;
+    /** Representation of bounds info as parseable by Double */
     private String latLonBoundingBoxMinX;
+    /** Representation of bounds info as parseable by Double */
     private String latLonBoundingBoxMinY;
+    /** Representation of bounds info as parseable by Double */
     private String latLonBoundingBoxMaxX;
-    private String latLonBoundingBoxMaxY;    
+    /** Representation of bounds info as parseable by Double */
+    private String latLonBoundingBoxMaxY;
+    /** List of keywords, often grouped with brackets */
     private String keywords;
+    
     /** FeatureType abstract */
     private String description;
+    
+    /**
+     * One of a select list - simplest is AbstractBaseClass.
+     * <p>
+     * The value "--" will be used to indicate default schema completly
+     * generated from FeatureType information at runtime.
+     * </p>
+     * <p>
+     * When generated the schema will make use a schemaBase of
+     * "AbstractFeatureType".
+     * </p> 
+     */
+    private String schemaBase;
+    
     /**
      * List of AttributesEditorForm.
-     * <p>
-     * Empty denotes use of defaults.
-     * </p>
      */
     private List attributes;
 
     /**
      * Set up FeatureTypeEditor from from Web Container.
-     * 
      * <p>
      * The key DataConfig.SELECTED_FEATURE_TYPE is used to look up the selected
      * from the web container.
@@ -62,15 +104,18 @@ public class TypesEditorForm extends ActionForm {
         super.reset(mapping, request);
 
         ServletContext context = getServlet().getServletContext();
+        
         DataConfig config = ConfigRequests.getDataConfig(request);
-
         UserContainer user = Requests.getUserContainer(request);
 
-        FeatureTypeConfig type = user.getFeatureTypeConfig();
+        FeatureTypeConfig type = user.getFeatureTypeConfig();        
         if( type == null ){
             // Not sure what to do, user must of bookmarked?
             return; // Action should redirect to Select screen?
         }
+        this.dataStoreId = type.getDataStoreId()      ;  
+        
+        
         description = type.getAbstract();
         
         Envelope bounds = type.getLatLongBBox();
@@ -89,14 +134,40 @@ public class TypesEditorForm extends ActionForm {
         SRS = Integer.toString(type.getSRS());
         title = type.getTitle();
         
-        type.getSchemaAttributes(); 
-        _default = (ftConfig.getSchemaAttributes() == null)
-            || (ftConfig.getSchemaAttributes().isEmpty());
-        defaultChecked = false;
-
+        if( type.getSchemaBase().equals("AbstractFeatureType") &&
+            type.getSchemaAttributes() == null ){ 
+            this.schemaBase = "--";
+            this.attributes = new ArrayList();
+            
+            // Generate ReadOnly list of Attribtues
+            //
+            DataStoreConfig dataStoreConfig = config.getDataStore( dataStoreId );
+            try {
+				DataStore dataStore = dataStoreConfig.findDataStore();
+                FeatureType featureType = dataStore.getSchema( name );
+                List generated = DataTransferObjectFactory.generateAttributes( featureType );                        
+                for( Iterator i=type.getSchemaAttributes().iterator(); i.hasNext();){
+                    AttributeTypeInfoConfig attribute = (AttributeTypeInfoConfig) i.next();
+                    this.attributes.add( new AttributeDisplay( attribute ) );
+                }
+			} catch (IOException e) {
+				// DataStore unavailable!
+			}
+        }
+        else {
+        	this.schemaBase = type.getSchemaBase();
+            this.attributes = new ArrayList();
+            //
+            // Need to add read only AttributeDisplay for each attribute
+            // defined by schemaBase
+            //
+            for( Iterator i=type.getSchemaAttributes().iterator(); i.hasNext();){
+                AttributeTypeInfoConfig attribute = (AttributeTypeInfoConfig) i.next();
+                this.attributes.add( new AttributeForm( attribute ) );
+            }
+        }
         StringBuffer buf = new StringBuffer();
-
-        for (Iterator i = ftConfig.getKeywords().iterator(); i.hasNext();) {
+        for (Iterator i = type.getKeywords().iterator(); i.hasNext();) {
             String keyword = (String) i.next();
             buf.append(keyword);
 
@@ -104,7 +175,6 @@ public class TypesEditorForm extends ActionForm {
                 buf.append(" ");
             }
         }
-
         this.keywords = buf.toString();
     }
 
@@ -137,194 +207,5 @@ public class TypesEditorForm extends ActionForm {
 
         return errors;
     }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String get_abstract() {
-        return _abstract;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getKeywords() {
-        return keywords;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getLatLonBoundingBoxMinX() {
-        return latLonBoundingBoxMinX;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getSRS() {
-        return SRS;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void set_abstract(String string) {
-        _abstract = string;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setKeywords(String string) {
-        keywords = string;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param text
-     */
-    public void setLatLonBoundingBoxMinX(String text) {
-        latLonBoundingBoxMinX = text;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setName(String string) {
-        name = string;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setSRS(String string) {
-        SRS = string;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setTitle(String string) {
-        title = string;
-    }
-
-    /**
-     * Access _default property.
-     *
-     * @return Returns the _default.
-     */
-    public boolean is_default() {
-        return _default;
-    }
-
-    /**
-     * Set _default to _default.
-     *
-     * @param _default The _default to set.
-     */
-    public void set_default(boolean _default) {
-        defaultChecked = true;
-        this._default = _default;
-    }
-
-    /**
-     * Access defaultChecked property.
-     *
-     * @return Returns the defaultChecked.
-     */
-    public boolean isDefaultChecked() {
-        return defaultChecked;
-    }
-	/**
-	 * Access latLonBoundingBox2 property.
-	 * 
-	 * @return Returns the latLonBoundingBox2.
-	 */
-	public String getLatLonBoundingBoxMinY() {
-		return latLonBoundingBoxMinY;
-	}
-
-	/**
-	 * Set latLonBoundingBox2 to latLonBoundingBox2.
-	 *
-	 * @param latLonBoundingBox2 The latLonBoundingBox2 to set.
-	 */
-	public void setLatLonBoundingBoxMinY(String latLonBoundingBox2) {
-		this.latLonBoundingBoxMinY = latLonBoundingBox2;
-	}
-
-	/**
-	 * Access latLonBoundingBox3 property.
-	 * 
-	 * @return Returns the latLonBoundingBox3.
-	 */
-	public String getLatLonBoundingBoxMaxX() {
-		return latLonBoundingBoxMaxX;
-	}
-
-	/**
-	 * Set latLonBoundingBox3 to latLonBoundingBox3.
-	 *
-	 * @param latLonBoundingBox3 The latLonBoundingBox3 to set.
-	 */
-	public void setLatLonBoundingBoxMaxX(String latLonBoundingBox3) {
-		this.latLonBoundingBoxMaxX = latLonBoundingBox3;
-	}
-
-	/**
-	 * Access latLonBoundingBox4 property.
-	 * 
-	 * @return Returns the latLonBoundingBox4.
-	 */
-	public String getLatLonBoundingBoxMaxY() {
-		return latLonBoundingBoxMaxY;
-	}
-
-	/**
-	 * Set latLonBoundingBox4 to latLonBoundingBox4.
-	 *
-	 * @param latLonBoundingBox4 The latLonBoundingBox4 to set.
-	 */
-	public void setLatLonBoundingBoxMaxY(String latLonBoundingBox4) {
-		this.latLonBoundingBoxMaxY = latLonBoundingBox4;
-	}
 
 }
