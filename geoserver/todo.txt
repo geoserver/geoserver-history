@@ -5,17 +5,17 @@
 - throw friendly exception if a request was made when the server
   did not finished starting up
 - initialize datasores at startup time
-- make FeatureTransformer write inner rings in polygons
+- xxxmake FeatureTransformer write inner rings in polygons DONE with IanS's stuff
 - manejar multiples queries (queries sobre multiples datasources)
 
 - get transactions working again.
 - revisit configuration files.
 - getBounds working with postgis.
-- roll the geotools files in the geoserver source tree back into geotools.
+- xxxroll the geotools files in the geoserver source tree back into geotools.
   (FeatureTransformer and FeatureResultsIteration
 - roll web-inf hiding of configuration here (on 1.0.1 branch)
 - locking.
-- MaxFeatures working.
+- xxxMaxFeatures working. (needs a bit more work)
 - test with resin 3
 - get zserver working with resin.
 - TEST, TEST, TEST! more unit tests in geoserver, full cite suite.
@@ -24,14 +24,14 @@
   it is ready, for cases when user may be confused as to the location of the 
   file.
 - roll geos in.  Auto-detect its presence.
-- get user configured logging working again. 
+- xxxget user configured logging working again. 
 - Not sure if each namespace should only be used for one datastore.  I would 
   like default namespace to be used for datastores that don't have a namepace
   defined.  But then we need some way to make sure that typeNames don't 
   collide.
-- GetCapabilities should not choke if datastores are not enabled.
+- xxxGetCapabilities should not choke if datastores are not enabled.
   (probably need an enabled thing in featureTypes).
-- Use IanS's new gml producer.
+- xxxUse IanS's new gml producer.
 
 - Evaluate using cactus (http://jakarta.apache.org/cactus) to make server-side unit tests
 - update all that empty javadoc comments, at least in the services hierarchy, wich seems
