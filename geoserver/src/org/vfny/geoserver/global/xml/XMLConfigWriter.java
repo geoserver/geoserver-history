@@ -395,8 +395,10 @@ public class XMLConfigWriter {
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
         cw.openTag("catalog");
 
-        if (data.getDataStores().size() != 0) {
-            cw.openTag("datastores");
+        	//DJB: this used to not put in a datastores tag if there were none defined.
+            //     this caused the loader to blow up.  I changed it so it puts an empty <datastore> here!
+   
+        cw.openTag("datastores");
             cw.comment(
                 "a datastore configuration element serves as a common data source connection\n"
                 + "parameters repository for all featuretypes it holds.");
@@ -413,14 +415,13 @@ public class XMLConfigWriter {
                 }
             }
 
-            cw.closeTag("datastores");
-        }
-
-        if (data.getNameSpaces().size() != 0) {
-            cw.comment("Defines namespaces to be used by the datastores.");
+        cw.closeTag("datastores");
+        
+     	//DJB: since datastore screws up if the tag is missing, I'm fixing it here too
+         cw.comment("Defines namespaces to be used by the datastores.");
             cw.openTag("namespaces");
 
-            Iterator i = data.getNameSpaces().keySet().iterator();
+            i = data.getNameSpaces().keySet().iterator();
 
             while (i.hasNext()) {
                 String s = (String) i.next();
@@ -432,18 +433,19 @@ public class XMLConfigWriter {
                 }
             }
 
-            cw.closeTag("namespaces");
-        }
-
-        if (data.getStyles().size() != 0) {
+        cw.closeTag("namespaces");
+   
+    	//DJB: since datastore screws up if the tag is missing, I'm fixing it here too
+   
+        cw.openTag("styles");
             cw.comment(
                 "Defines the style ids to be used by the wms.  The files must be\n"
                 + "contained in geoserver/misc/wms/styles.  We're working on finding\n"
                 + "a better place for them, but for now that's where you must put them\n"
                 + "if you want them on the server.");
-            cw.openTag("styles");
+ 
 
-            Iterator i = data.getStyles().keySet().iterator();
+            i = data.getStyles().keySet().iterator();
 
             while (i.hasNext()) {
                 String s = (String) i.next();
@@ -454,10 +456,10 @@ public class XMLConfigWriter {
                 }
             }
 
-            cw.closeTag("styles");
-        }
+      cw.closeTag("styles");
+        
 
-        cw.closeTag("catalog");
+      cw.closeTag("catalog");
     }
 
     /**
