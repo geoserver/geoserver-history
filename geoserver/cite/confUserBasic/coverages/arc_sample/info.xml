@@ -7,7 +7,13 @@
 		NONE
 	</metadataLink>
 	<keywords>ArcGrid,WCS</keywords>
-	<envelope srsName="WGS84(DD)">
+	<envelope crs = "GEOGCS['WGS84', 
+  DATUM['WGS84', 
+    SPHEROID['WGS84', 6378137.0, 298.257223563]], 
+  PRIMEM['Greenwich', 0.0], 
+  UNIT['degree', 0.017453292519943295], 
+  AXIS['Geodetic longitude', EAST], 
+  AXIS['Geodetic latitude', NORTH]]" srsName = "WGS84" >
 		<pos>9.420000076293944 42.20000076293945</pos>
 		<pos>11.819999694824217 43.90000049273173</pos>
 	</envelope>

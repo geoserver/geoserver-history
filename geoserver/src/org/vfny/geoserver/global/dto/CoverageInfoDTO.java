@@ -1,13 +1,13 @@
 package org.vfny.geoserver.global.dto;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.filter.Filter;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.MetaDataLink;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.io.File;
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * DOCUMENT ME!
@@ -31,8 +31,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     private List keywords;
     
-    private String srsName; 
-
     private Envelope envelope;
     
     private List requestCRSs;
@@ -46,6 +44,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private String defaultInterpolationMethod;
     
     private List interpolationMethods;
+
+    private String srsName; 
+
+    private CoordinateReferenceSystem crs;
     
     /**
      * Default style used to render this Coverage with WMS
@@ -73,6 +75,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         } catch (Exception e) {
             keywords = new LinkedList();
         }
+        crs = dto.getCrs();
         srsName = dto.getSrsName(); 
         envelope = CloneLibrary.clone(dto.getEnvelope());
         try {
@@ -120,6 +123,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
             return false;
         }
         r = r && (srsName == f.getSrsName());
+        r = r && (crs == f.getCrs());
         r = r && (name == f.getName());
         r = r && (description == f.getDescription());
         r = r && (label == f.getLabel());
@@ -157,6 +161,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
         if (srsName != null) {
             r *= srsName.hashCode();
+        }
+
+        if (crs != null) {
+            r *= crs.hashCode();
         }
 
         return r;
@@ -466,4 +474,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
     public void setDefaultStyle(String string) {
         defaultStyle = string;
     }
+	public CoordinateReferenceSystem getCrs() {
+		return crs;
+	}
+	public void setCrs(CoordinateReferenceSystem crs) {
+		this.crs = crs;
+	}
 }

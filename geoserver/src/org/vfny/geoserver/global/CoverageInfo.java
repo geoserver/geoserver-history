@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geotools.styling.Style;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -29,8 +30,6 @@ public class CoverageInfo extends GlobalLayerSupertype {
 
     private List keywords;
     
-    private String srsName; 
-
     private Envelope envelope;
     
     private List requestCRSs;
@@ -49,6 +48,10 @@ public class CoverageInfo extends GlobalLayerSupertype {
 
     private Map meta;
 
+    private String srsName; 
+
+    private CoordinateReferenceSystem crs;
+    
     /**
      * Default style used to render this Coverage with WMS
      */
@@ -65,6 +68,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
         metadataLink = dto.getMetadataLink();
         dirName = dto.getDirName();
         keywords = dto.getKeywords();
+        crs = dto.getCrs();
         srsName = dto.getSrsName(); 
         envelope = dto.getEnvelope();
         requestCRSs = dto.getRequestCRSs();
@@ -86,6 +90,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
         dto.setMetadataLink(metadataLink);
         dto.setDirName(dirName);
         dto.setKeywords(keywords);
+        dto.setCrs(crs);
         dto.setSrsName(srsName); 
         dto.setEnvelope(envelope);
         dto.setRequestCRSs(requestCRSs);
@@ -307,4 +312,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
     public Style getDefaultStyle(){
     	return data.getStyle(defaultStyle);
     }
+	public CoordinateReferenceSystem getCrs() {
+		return crs;
+	}
 }

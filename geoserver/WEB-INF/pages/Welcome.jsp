@@ -62,7 +62,7 @@
     </a>
   </li>
   <li>
-	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/DescribeCoverage?coverage=Arc_Sample">
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/DescribeCoverage?coveragename=Arc_Sample">
 	  describeCoverage
 	</a>
   </li>

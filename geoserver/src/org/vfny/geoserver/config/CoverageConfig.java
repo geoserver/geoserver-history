@@ -11,6 +11,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.GridFormatFinder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
@@ -33,7 +34,6 @@ public class CoverageConfig {
     private MetaDataLink metadataLink;
     private String dirName;
     private List keywords;
-    private String srsName; 
     private Envelope envelope;
     private List requestCRSs;
     private List responseCRSs;
@@ -41,6 +41,8 @@ public class CoverageConfig {
     private List supportedFormats;
     private String defaultInterpolationMethod;
     private List interpolationMethods;
+    private String srsName; 
+    private CoordinateReferenceSystem crs;
 
     /**
      * Package visible constructor for test cases
@@ -63,10 +65,15 @@ public class CoverageConfig {
         			gEnvelope.getLowerCorner().getOrdinate(1),
         			gEnvelope.getUpperCorner().getOrdinate(1)) ;
         }
-    	Format format = null;
-    	for( int i = 0; i < GridFormatFinder.getFormatArray().length; i++ ) {
-    		if( GridFormatFinder.getFormatArray()[i].getName().equals(formatType) ) {
-    			format = GridFormatFinder.getFormatArray()[i];
+        
+        crs = gc.getCoordinateReferenceSystem2D();
+        srsName = (crs != null ? crs.getName().toString() : "WGS84");
+
+        Format[] formats = GridFormatFinder.getFormatArray();
+		Format format = null;
+    	for( int i = 0; i < formats.length; i++ ) {
+    		if( formats[i].getName().equals(formatType) ) {
+    			format = formats[i];
     			break;
     		}
     	}
@@ -85,7 +92,6 @@ public class CoverageConfig {
         keywords.add("WCS");
         keywords.add(formatId);
         keywords.add(name);
-        srsName = (generate && gEnvelope.getCoordinateReferenceSystem() != null ? gEnvelope.getCoordinateReferenceSystem().getName().toString() : "WGS84(DD)");
         nativeFormat = format.getName(); // ?
         dirName = formatId + "_" + name;
         requestCRSs = new LinkedList(); // ?
@@ -107,6 +113,7 @@ public class CoverageConfig {
         description = dto.getDescription();
         metadataLink = dto.getMetadataLink();
         keywords = dto.getKeywords();
+        crs = dto.getCrs();
         srsName = dto.getSrsName();
         envelope = dto.getEnvelope();
         nativeFormat = dto.getNativeFormat();
@@ -126,6 +133,7 @@ public class CoverageConfig {
         c.setDescription(description);
         c.setMetadataLink(metadataLink);
         c.setKeywords(keywords);
+        c.setCrs(crs);
         c.setSrsName(srsName);
         c.setEnvelope(envelope);
         c.setNativeFormat(nativeFormat);
@@ -328,5 +336,11 @@ public class CoverageConfig {
 	 */
 	public void setSupportedFormats(List supportedFormats) {
 		this.supportedFormats = supportedFormats;
+	}
+	public CoordinateReferenceSystem getCrs() {
+		return crs;
+	}
+	public void setCrs(CoordinateReferenceSystem crs) {
+		this.crs = crs;
 	}
 }

@@ -1126,6 +1126,10 @@ public class XMLConfigWriter {
 					m.put("srsName",cv.getSrsName());
 				}
 				
+				if ((cv.getCrs() != null)) {
+					m.put("crs", cv.getCrs().toWKT().replaceAll("\"","'"));
+				}
+				
 				if (!e.isNull()) {
 					cw.openTag("envelope", m);
 						cw.textTag("pos", e.getMinX() + " " + e.getMinY());

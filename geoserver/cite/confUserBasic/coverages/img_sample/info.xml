@@ -7,7 +7,13 @@
 		NONE
 	</metadataLink>
 	<keywords>Image,WCS</keywords>
-	<envelope srsName="WGS84(DD)">
+	<envelope crs = "GEOGCS['WGS84', 
+  DATUM['WGS84', 
+    SPHEROID['WGS84', 6378137.0, 298.257223563]], 
+  PRIMEM['Greenwich', 0.0], 
+  UNIT['degree', 0.017453292519943295], 
+  AXIS['Geodetic longitude', EAST], 
+  AXIS['Geodetic latitude', NORTH]]" srsName = "WGS84" >
 		<pos>-130.85168 20.7052</pos>
 		<pos>-62.0054 54.1141</pos>
 	</envelope>
@@ -15,7 +21,7 @@
 		<requestCRSs codeSpace="0">WGS84</requestCRSs>
 		<responseCRSs codeSpace="0">WGS84</responseCRSs>
 	</supportedCRSs>
-	<supportedFormats nativeFormat="World Image">
+	<supportedFormats nativeFormat="WorldImage">
 		<formats codeSpace="0">JPEG,PNG,TIFF,ArcGrid,ArcGrid-GZIP</formats>
 	</supportedFormats>
 	<supportedInterpolations default="nearest neighbor">

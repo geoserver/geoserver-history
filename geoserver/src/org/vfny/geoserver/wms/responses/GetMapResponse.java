@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
  
-import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
@@ -22,10 +21,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.geotools.styling.ColorMap;
-import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleBuilder;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;

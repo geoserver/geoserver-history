@@ -42,6 +42,8 @@ public class DataFormatsNewForm extends ActionForm {
     /** User provided dataStoreID */
     private String dataFormatID;
 
+    private List formatDescriptions;
+    
     /**
      * Default state of New form
      *
@@ -52,26 +54,9 @@ public class DataFormatsNewForm extends ActionForm {
         super.reset(mapping, request);
         selectedDescription = "";
         dataFormatID = "";
+        formatDescriptions = DataFormatUtils.listDataFormatsDescriptions();
     }
 
-    /**
-     * List of available DataStoreDescriptions.
-     * 
-     * <p>
-     * Convience method for DataStureUtils.listDataStoresDescriptions().
-     * </p>
-     *
-     * @return Sorted set of DataStore Descriptions.
-     */
-    public List getDescriptions() {
-        List descriptions = DataFormatUtils.listDataFormatsDescriptions();
-
-        if ((descriptions == null) || descriptions.isEmpty()) {
-            return Collections.EMPTY_LIST;
-        }
-
-        return descriptions;
-    }
 
     /**
      * Check NewForm for correct use
@@ -85,7 +70,7 @@ public class DataFormatsNewForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if (!getDescriptions().contains(getSelectedDescription())) {
+        if (!getDataFormatDescriptions().contains(getSelectedDescription())) {
             errors.add("selectedDescription",
                 new ActionError("error.dataFormatFactory.invalid",
                     getSelectedDescription()));
@@ -123,6 +108,6 @@ public class DataFormatsNewForm extends ActionForm {
      * Allows the JSP page to easily access the list of dataFormat Descriptions
      */
     public SortedSet getDataFormatDescriptions() {
-        return new TreeSet(DataFormatUtils.listDataFormatsDescriptions());
+        return new TreeSet(formatDescriptions);
     }
 }

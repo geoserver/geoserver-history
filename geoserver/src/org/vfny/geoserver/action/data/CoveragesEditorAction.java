@@ -7,7 +7,6 @@ package org.vfny.geoserver.action.data;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -261,6 +260,7 @@ public class CoveragesEditorAction extends ConfigAction {
 		config.setNativeFormat(form.getNativeFormat());
 		config.setRequestCRSs(requestCRSs(form));
 		config.setResponseCRSs(responseCRSs(form));
+		//*A* config.setCrs(form.get);
 		config.setSrsName(form.getSrsName());
 		config.setSupportedFormats(supportedFormats(form));
 

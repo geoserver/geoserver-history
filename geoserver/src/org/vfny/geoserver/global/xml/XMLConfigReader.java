@@ -10,6 +10,10 @@ import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geotools.filter.FilterDOMParser;
+import org.geotools.referencing.FactoryFinder;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Log4JFormatter;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -1286,6 +1290,18 @@ public class XMLConfigReader {
 
 		Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
 		cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
+		
+		CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+		try {
+			cv.setCrs(
+					crsFactory.createFromWKT(
+							ReaderUtils.getAttribute(envelope, "crs", true).replaceAll("'","\"")
+					)
+			);
+		} catch (FactoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		cv.setEnvelope(loadEnvelope(envelope));
 		
 		Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot, "supportedCRSs");

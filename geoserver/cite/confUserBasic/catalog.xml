@@ -234,7 +234,8 @@
     </format>
     
     <format enabled="true" id="worldImageSample" >
-			<type>World Image</type>
+    	<description />
+			<type>WorldImage</type>
 			<url>file:data/coverages/img_sample/usa.png</url>
 		</format>
   </formats>

@@ -23,7 +23,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
@@ -541,6 +540,9 @@ public class WMSCapsTransformer extends TransformerBase {
             Envelope bbox = coverage.getEnvelope();
 
             handleLatLonBBox(bbox);
+
+            LOGGER.fine(coverage.getCrs().toString());
+            
             handleBBox(bbox, EPSG + "4326");
 
             //add the layer style
