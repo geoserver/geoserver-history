@@ -48,7 +48,7 @@ import javax.imageio.stream.ImageOutputStream;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.27 2004/09/13 16:13:08 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.28 2004/09/13 16:14:34 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -315,7 +315,7 @@ public class JAIMapResponse extends GetMapDelegate {
 
             //we already do everything that the optimized data loading does...
             //if we set it to true then it does it all twice...
-            renderer.setOptimizedDataLoadingEnabled(false);
+            renderer.setOptimizedDataLoadingEnabled(true);
 
             //Envelope dataArea = map.getLayerBounds();
             Envelope dataArea = request.getBbox();
