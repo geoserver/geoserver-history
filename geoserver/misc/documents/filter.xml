@@ -3,6 +3,8 @@
       <ogc:Spatial_Operators>
         <ogc:Disjoint/>
         <ogc:Equals/>
+        <ogc:DWithin/>
+        <ogc:Beyond/>
 	<ogc:Intersect/>
         <ogc:Touches/>
 	<ogc:Crosses/>
