@@ -25,9 +25,10 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.3 2004/01/13 01:04:01 dmzwiers Exp $
  */
 public class AttributeTypeInfoDTO  implements DataTransferObject {
+		
 	/** attribute name*/
 	private String name;
 	/** attribute min occurs*/
