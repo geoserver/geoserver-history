@@ -1,6 +1,7 @@
 <%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <html:html locale="true">
 
@@ -36,22 +37,40 @@
   <tbody>
 	<tr class="header">
         <td class="gutter">
-			<tiles:insert attribute="logo"/>
+          <span class="project">
+            <a href="<bean:message key="link.geoserver"/>">
+              <bean:message key="geoserver.logo"/>
+            </a>
+          </span>
+          <span class="license">
+            <a href="<bean:message key="link.license"/>">&copy;</a>
+          </span>
 		</td>
 		<td style="vertical-align: bottom; white-space: nowrap;">
-			<tiles:insert attribute="serviceName"/>
+          <span class="site">
+<logic:notEmpty name="GeoServer" property="title">
+              <bean:write name="GeoServer" property="title"/>
+</logic:notEmpty>
+<logic:empty name="GeoServer" property="title">
+              <bean:message key="message.noTitle"/>
+</logic:empty>            
+          </span>			
 		</td>	
 		<td style="vertical-align: bottom; white-space: nowrap; text-align: right;">
-			<tiles:insert attribute="contact"/>
+<logic:notEmpty name="GeoServer" property="contactParty">
+            <span class="contact">		
+              <bean:message key="label.contact"/>: 	
+              <html:link forward="contact">
+                <bean:write name="GeoServer" property="contactParty"/>
+              </html:link>
+            </span>            
+</logic:notEmpty>                
         </td>
 	</tr>
 	
     <tr>
       <td class="sidebar">
-        <tiles:insert attribute="status"/>		
-        <tiles:insert attribute="buttons"/>          
-		<tiles:insert attribute="actions"/>
-		<tiles:insert attribute="messages"/>
+        <tiles:insert attribute="sidebar"/>
       </td>
       <td style="vertical-align: top;"
           rowspan="1" colspan="2">
@@ -63,7 +82,18 @@
                 <tiles:insert attribute="locator"/>
               </td>
               <td class="loginStatus">
-                <tiles:insert attribute="loginStatus"/>
+                <span class="loginStatus">
+                  <logic:present name="GEOSERVER.USER">
+                    <html:link forward="logout">
+				      <bean:message key="label.logout"/>
+			        </html:link>
+                  </logic:present>
+                  <logic:notPresent name="GEOSERVER.USER">
+                    <html:link forward="login">
+                      <bean:message key="label.login"/>
+                    </html:link>
+                  </logic:notPresent>
+                </span>
               </td>
             </tr>
           	<tr>
@@ -72,8 +102,7 @@
                 <h1 class="title">
                   <bean:message key="<%= titleKey %>"/>
                 </h1>  
-                <tiles:insert attribute="body"/>
-                
+                <tiles:insert attribute="body"/>                
               </td>
 	        </tr>
           </tbody>

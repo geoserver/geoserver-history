@@ -115,21 +115,21 @@ td.application {
 td.application h1.title {
  background-color: rgb(245,245,245); 
 }
-td.maintenance {
+td.administration {
  vertical-align: top;
  background-color: rgb(240,240,240);
  -moz-border-radius: 0px 0px 5px 5px;  
 }
-td.maintenance h1.title {
+td.administration h1.title {
  background-color: rgb(225,225,225);  
 }
-td.service {
+td.configuration {
  vertical-align: top;
- background-color: rgb(220, 220, 220);
+ background-color: rgb(192, 192, 192);
  -moz-border-radius: 0px 0px 5px 5px;  
 }
-td.service h1.title {
- background-color: rgb(205,205,205);  
+td.configuration h1.title {
+ background-color: rgb(180,180,180);  
 }
 td.data {
  vertical-align: top;

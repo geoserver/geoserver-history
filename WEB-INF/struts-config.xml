@@ -236,7 +236,7 @@
 		<action
 			path ="/Login"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="main.welcome"/>
+        	parameter="main.login"/>
 
 		<action        	
 			path ="/Logout"
@@ -344,7 +344,7 @@
 			name="loginForm"
 			scope="request"
 			validate="true"
-			input="main.welcome"/>
+			input="main.login"/>
 
 		<action    	
         	path="/GeoServerConfigurationSubmit"
