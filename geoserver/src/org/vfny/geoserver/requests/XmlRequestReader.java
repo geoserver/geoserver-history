@@ -57,15 +57,20 @@ public class XmlRequestReader {
 
         // read in XML file and parse to content handler
         try {
+	    LOGGER.finest("about to create parser");
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();            
             ParserAdapter adapter = new ParserAdapter(parser.getParser());
-            
+            LOGGER.finest("setting the content handler");
+	    LOGGER.finest("content handler = " + documentFilter);
             adapter.setContentHandler(documentFilter);
+	    LOGGER.finest("about to parse");
+	    LOGGER.finest("calling parse on " + requestSource);
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new WfsException( e, 
+	    e.printStackTrace(System.out);
+	    throw new WfsException( e, 
                                     "XML getFeature request SAX parsing error",
                                     XmlRequestReader.class.getName() );
         } catch (IOException e) {
@@ -181,7 +186,7 @@ public class XmlRequestReader {
 
             adapter.setContentHandler(contentHandler);
             adapter.parse(requestSource);
-            LOGGER.fine("just parsed: " + requestSource);
+            LOGGER.finer("just parsed: " + requestSource);
         } catch (SAXException e) {
             throw new WfsException( e, 
                                     "XML describe request parsing error",
@@ -193,6 +198,8 @@ public class XmlRequestReader {
             throw new WfsException( e, "Some sort of issue creating parser",
                                     XmlRequestReader.class.getName() );
         }
+	LOGGER.finer("about to return ");
+	LOGGER.finer("returning " + contentHandler.getRequest());
         return contentHandler.getRequest();
     }    
 
@@ -227,11 +234,10 @@ public class XmlRequestReader {
 	    adapter.parse(requestSource);
             LOGGER.finer("just parsed: " + requestSource);
         } catch (SAXException e) {
-	    e.getCause().printStackTrace(System.out);
-	    e.printStackTrace(System.out);
-	    
+	    //e.getCause().printStackTrace(System.out);
+	    //e.printStackTrace(System.out);
             throw new WfsTransactionException( e, 
-                                    "XML transaction request SAX parsing error",
+                                   "XML transaction request SAX parsing error",
                                     XmlRequestReader.class.getName() );
         } catch (IOException e) {
             throw new WfsTransactionException( e, "XML transaction request input error",
