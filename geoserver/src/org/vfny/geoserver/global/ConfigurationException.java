@@ -5,13 +5,12 @@
 package org.vfny.geoserver.global;
 
 /**
- * Thrown when there is an error in configuration.
- * 
- * Added a third constructor for ease of exception type changing.
+ * Thrown when there is an error in configuration.  Added a third constructor
+ * for ease of exception type changing.
  *
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: ConfigurationException.java,v 1.1.2.3 2004/01/08 23:44:48 dmzwiers Exp $
+ * @version $Id: ConfigurationException.java,v 1.1.2.4 2004/01/09 17:15:30 dmzwiers Exp $
  */
 public class ConfigurationException extends Exception {
     /**
@@ -33,12 +32,12 @@ public class ConfigurationException extends Exception {
         super(msg, exp);
     }
 
-	/**
-	 * Constructs a new instance of ConfigurationException
-	 *
-	 * @param exp the throwable object which caused this exception
-	 */
-	public ConfigurationException(Throwable exp) {
-		super(exp);
-	}
+    /**
+     * Constructs a new instance of ConfigurationException
+     *
+     * @param exp the throwable object which caused this exception
+     */
+    public ConfigurationException(Throwable exp) {
+        super(exp);
+    }
 }

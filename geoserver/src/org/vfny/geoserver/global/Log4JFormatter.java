@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.io.LineWriter;
+import org.geotools.resources.Utilities;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -17,15 +19,14 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import java.util.prefs.Preferences;
 
-import org.geotools.io.LineWriter;
-import org.geotools.resources.Utilities;
-
 
 /**
  * <code>Log4JFormatter</code> looks like:
- * <blockquote><pre>
+ * <blockquote>
+ * <pre>
  * [core FINE] A log message logged with level FINE from the "org.geotools.core"
- * logger.</pre></blockquote>
+ * logger.</pre>
+ * </blockquote>
  * A formatter writting log message on a single line. This formatter is used by
  * GeoServer instead of {@link SimpleFormatter}. The main difference is that
  * this formatter use only one line per message instead of two. For example, a
@@ -111,7 +112,7 @@ public class Log4JFormatter extends Formatter {
     public Log4JFormatter(final String base) {
         this.base = base.trim();
         this.margin = getHeaderWidth();
-		Log4JFormatter.startMillis = System.currentTimeMillis();
+        Log4JFormatter.startMillis = System.currentTimeMillis();
 
         final StringWriter str = new StringWriter();
         writer = new LineWriter(str);
@@ -168,8 +169,8 @@ public class Log4JFormatter extends Formatter {
      * children.  This method search for all instances of {@link
      * ConsoleHandler}  using the {@link SimpleFormatter}. If such instances
      * are found, they are  replaced by a single instance of
-     * <code>Log4JFormatter</code> writting  to the {@linkplain System#out
-     * standard output stream} (instead of the  {@linkplain System#err
+     * <code>Log4JFormatter</code> writting  to the {@linkPlain System#out
+     * standard output stream} (instead of the  {@linkPlain System#err
      * standard error stream}).  This action has no effect  on any loggers
      * outside the <code>base</code> namespace.
      *
@@ -190,7 +191,8 @@ public class Log4JFormatter extends Formatter {
             }
 
             final Handler[] handlers = parent.getHandlers();
-            if( handlers != null ){
+
+            if (handlers != null) {
                 for (int i = 0; i < handlers.length; i++) {
                     /*
                      * Search for a ConsoleHandler. Search is performed in the target
@@ -199,15 +201,15 @@ public class Log4JFormatter extends Formatter {
                      * only.
                      */
                     Handler handler = handlers[i];
-    
+
                     if (handler.getClass().equals(ConsoleHandler.class)) {
                         final Formatter formatter = handler.getFormatter();
-    
+
                         if (formatter.getClass().equals(SimpleFormatter.class)) {
                             if (log4j == null) {
                                 log4j = new Log4JFormatter(base);
                             }
-    
+
                             try {
                                 handler = new Stdout(handler, log4j);
                                 handler.setLevel(filterLevel);
@@ -218,7 +220,7 @@ public class Log4JFormatter extends Formatter {
                             }
                         }
                     }
-    
+
                     logger.addHandler(handler);
                     logger.setLevel(filterLevel);
                 }
