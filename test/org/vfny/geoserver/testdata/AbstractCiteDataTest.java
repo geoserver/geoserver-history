@@ -350,7 +350,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
         // pathname be deleted when the virtual machine terminates.
         outFile.deleteOnExit();
 
-        String resourceName = "/org/vfny/geoserver/testdata/" + fileName;
+        String resourceName = "/test-data/featureTypes/" + fileName;
 
         InputStream in = getClass().getResourceAsStream(resourceName);
 
