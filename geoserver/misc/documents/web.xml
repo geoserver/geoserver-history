@@ -54,7 +54,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Dispatcher</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/wfs/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>FreefsLog</servlet-name>
