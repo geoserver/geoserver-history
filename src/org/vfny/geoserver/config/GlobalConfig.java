@@ -20,7 +20,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.9 2004/04/03 13:16:18 cholmesny Exp $
+ * @version $Id: GlobalConfig.java,v 1.10 2004/04/16 16:07:20 cholmesny Exp $
  */
 public class GlobalConfig {
     public static final String CONFIG_KEY = "Config.Global";
@@ -40,7 +40,7 @@ public class GlobalConfig {
      * control things like printing out "magic" comments that tell people how
      * to edit the xml files by hand.
      * </p>
-     * Default is false
+     * Default is true
      */
     private boolean verbose = true;
 
@@ -213,6 +213,7 @@ public class GlobalConfig {
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
+		loggingLevel = g.getLoggingLevel();
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -237,6 +238,7 @@ public class GlobalConfig {
         g.setMaxFeatures(maxFeatures);
         g.setVerbose(verbose);
         g.setNumDecimals(numDecimals);
+        g.setLoggingLevel(loggingLevel);
         g.setCharSet(charSet);
         g.setSchemaBaseUrl(schemaBaseUrl);
         g.setContact((ContactDTO) contact.toDTO());
@@ -282,20 +284,6 @@ public class GlobalConfig {
     public ContactConfig getContact() {
         return contact;
     }
-
-    /**
-     * getLoggingLevel purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-
-    //public Level getLoggingLevel() {
-    //	return loggingLevel;
-    //}
 
     /**
      * getMaxFeatures purpose.
@@ -488,11 +476,6 @@ public class GlobalConfig {
         loggingLevel = level;
     }
     
-    //Login variables.  No setting of these yet, since I'm not advanced enough
-    //to make a new form to set the username and password.  I leave that as an
-    //exercise to the reader :)  For now users can just set it by hand in the
-    //WEB-INF/services.xml file. ch
-    
     /**
      * Gets the user name of the administrator. 
      * @return The user name to be checked for on login. 
@@ -508,4 +491,24 @@ public class GlobalConfig {
     public String getAdminPassword(){
     	return adminPassword;
     }
+    
+	/**
+	 * Sets the user name of the administrator of GeoServer, for login
+	 * purposes.
+	 *
+	 * @param username the String to set as the admin username.
+	 */
+	public void setAdminUserName(String username) {
+		this.adminUserName = username;
+	}
+
+    
+	/**
+	 * Sets the password of the administrator of GeoServer, for login purposes.
+	 *
+	 * @param password The password to set as the login password.
+	 */
+	public void setAdminPassword(String password) {
+		this.adminPassword = password;
+	}
 }
