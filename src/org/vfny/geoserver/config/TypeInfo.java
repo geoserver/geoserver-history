@@ -20,6 +20,7 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceMetaData;
 import org.geotools.data.DataSourceFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.postgis.PostgisConnectionFactory;
@@ -57,6 +58,7 @@ public class TypeInfo {
     Connection dbConnection;
 
     private DataSource transactionDS;
+
 
     //hold the default schema for this datasource?  Would save processing, and
     //when schemas can go to xsd and back it would be good to have here.
@@ -177,6 +179,17 @@ public class TypeInfo {
         return internalType.getPassword().toString();
     }
 
+    //This is sort of bad.  It's fine if users always use locking, 
+    //but if they don't then concurrent transactions are on the same 
+    //connection.  The problem is that we _do_ want subtransactions
+    //to be on the same connection, or else we risk deadlock (wanting
+    //to operate on same feature, but waiting for the commit of the
+    //previous, which does not happen till everything is done.)  Perhaps
+    //a connection pool with a key, so that one transaction operation
+    //can have each datasource get the same connection.  Of course, this
+    //will not be a common problem, and perhaps it should just be the
+    //bad behaviour that happens when locking is not used.  In any case,
+    //low priority.
     public DataSource getTransactionDataSource() throws WfsException {
 	if (transactionDS == null) {
 	    try {
@@ -257,7 +270,20 @@ public class TypeInfo {
      */
     public DataSource getDataSource(List propertyNames, int maxFeatures) 
 	throws WfsException {
-	LOG.finer("about to get datasource for " + getName());
+	DataSource data = null;
+	 try {
+		Map params = internalType.getDataParams();
+		LOG.finer("params is " + params);
+		data = DataSourceFinder.getDataSource(params);
+	 } catch (DataSourceException e) {
+	     throw new WfsException(e, "While getting connection to datasource",
+				    getName());
+	 }
+	    LOG.finer("data source is " + transactionDS);
+    
+    //return transactionDS;
+
+    /**LOG.finer("about to get datasource for " + getName());
 	Connection connection = getConnection();
 	
 	DataSource data = null;
@@ -313,15 +339,15 @@ public class TypeInfo {
 	} catch (DataSourceException e) {
             throw new WfsException(e, "While getting features from datasource",
 				   getName());
-	}
-	return data;
+				   }*/
+    return data;
     }
 
     /**
      * Returns a capabilities XML fragment for a specific feature type.
      * @param version The version of the request (0.0.14 or 0.0.15)
      */ 
-    public String getCapabilitiesXml(String version) {        
+    public String getCapabilitiesXml(String version)  {     
 	LOG.finest("getting capabilities " + version);
         if(version.equals("0.0.14") || version.equals("1.0.0" )) {
 	    //1.0.0 is almost exactly like 0.0.14
@@ -373,7 +399,15 @@ public class TypeInfo {
         StringBuffer tempResponse = new StringBuffer("    <FeatureType>\n");
         String name = internalType.getName();
 	String latLonName = "LatLonBoundingBox";
-	if (!version.startsWith("0.0.1")) {
+	boolean supportsTransactions = false;
+	try {
+	    DataSourceMetaData opInfo = getTransactionDataSource().getMetaData();
+	    supportsTransactions = opInfo.supportsTransactions();  
+	} catch (WfsException e) {
+	    //don't make error on capabilities document just because we could
+	    //not connect to get the operations supported, just support less.
+	}
+	    if (!version.startsWith("0.0.1")) {
 	    //REVISIT: get this elsewhere?  Make sure that myns is
 	    //declared in the capabilities document returned.
 	    name = prefix + ":" + name;
@@ -389,17 +423,15 @@ public class TypeInfo {
         tempResponse.append(
             "      <SRS>http://www.opengis.net/gml/srs/epsg#" + 
             internalType.getSRS() + "</SRS>\n");
-	//TODO: Should we allow the admin to customize these?  He may
-	//not want to publicize to the world that it is transactional.
-        //but if we just use the internalType marshalling way then the
-	//admin could easily mess up the xml, putting the wrong terms in.
 	//--query datasource on its capabilities.
+	//TODO: change metadata interface to tell about each operation.
+	if (supportsTransactions) {
         tempResponse.append("      <Operations>\n");
-        tempResponse.append("        <Query/>\n");
 	tempResponse.append("        <Insert/>\n");
 	tempResponse.append("        <Update/>\n");
 	tempResponse.append("        <Delete/>\n");
         tempResponse.append("      </Operations>\n");
+	}
         tempResponse.append(
             "      <" + latLonName + " minx=\"" + 
             internalType.getLatLonBoundingBox().getMinx() + 
