@@ -415,10 +415,8 @@ public class WMSCapsTransformer extends TransformerBase {
 
                     if ("".equals(commonSRS)) {
                         commonSRS = layerSRS;
-                    } else {
-                        if (layerSRS != commonSRS) {
-                            isCommonSRS = false;
-                        }
+                    } else if (!commonSRS.equals(layerSRS)) {
+                    	isCommonSRS = false;
                     }
                 }
             }
@@ -427,8 +425,9 @@ public class WMSCapsTransformer extends TransformerBase {
                 commonSRS = EPSG + commonSRS;
                 LOGGER.fine("Common SRS is " + commonSRS);
             } else {
+            	commonSRS = "";
                 LOGGER.fine(
-                    "No common SRS, don't forget to incorpore reprojection support...");
+                    "No common SRS, don't forget to incorporate reprojection support...");
             }
 
             element("SRS", commonSRS);
