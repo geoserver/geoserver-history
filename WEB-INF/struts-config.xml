@@ -21,6 +21,10 @@
     		type="org.vfny.geoserver.form.LoginForm"/>
     		
     	<form-bean
+    		name="loginEditForm"
+    		type="org.vfny.geoserver.form.LoginForm"/>
+    		  		
+    	<form-bean
     		name="demoForm"
     		type="org.vfny.geoserver.form.DemoForm"/>    		
     
@@ -153,6 +157,10 @@
         <forward 
         	name="login"
         	path="/admin/login.do"/>
+        
+        <forward 
+        	name="loginEdit"
+        	path="/admin/loginEdit.do"/>
         	        	
         <forward 
        		name="logout"
@@ -348,6 +356,11 @@
 			path ="/admin/login"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin.login"/>
+        
+        <action
+        	path="/admin/loginEdit"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="admin.loginEdit"/>
         	
 		<action        	
 			path ="/admin/logout"
@@ -511,6 +524,14 @@
 			scope="request"
 			validate="true"
 			input="/admin/login.do"/>
+			
+		<action
+			path="/admin/loginEditSubmit"
+			type="org.vfny.geoserver.action.LoginEditAction"
+			name="loginEditForm"
+			scope="request"
+			validate="true"
+			input="/admin/loginEdit.do"/>
 
 		<action
 			path="/demoSubmit"
