@@ -55,7 +55,10 @@
     <tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.type.bbox"/>">
-          <bean:message key="label.bbox"/>:
+          <bean:message key="label.bbox"/>:<BR>
+          <html:submit property="action">
+	          <bean:message key="config.data.calculateBoundingBox.label"/>
+	      </html:submit>
         </span>
 	  </td>
 	  <td class="datum">
@@ -93,7 +96,7 @@
               </span>
             </td>
             <td>
-              <html:text property="maxX" size="15"/>
+              <html:text property="maxY" size="15"/>
             </td>
           </tr>
         </table>
