@@ -122,8 +122,12 @@ gmake install</programlisting>Configuring with java is no longer required, as
     PostGIS are functioning correctly before you attempt to connect with then
     using GeoServer. After installing postgis attempt to create tables with
     geometry columns, and insert a few features. If you are a windows user a
-    good page on installing Postgis is available <ulink
-    url="http://www.gasai.com/gisapps/WindowsHowTo.html">here</ulink>.</para>
+    good page on installing PostGIS is available <ulink
+    url="http://www.gasai.com/gisapps/WindowsHowTo.html">here</ulink>. You can
+    also try out the postgis installer on the dcmms sourceforge project, which
+    we've had success with as well. When starting PostGIS be sure to run it
+    with the -i option to allow other applications (i.e. GeoServer) to connect
+    to it.</para>
   </sect1>
 
   <sect1 id="geoserver">
@@ -144,11 +148,24 @@ gmake install</programlisting>Configuring with java is no longer required, as
     consult your server documentation to see what has gone wrong. If a
     <emphasis>geoserver</emphasis> directory has not been created
     automatically by your server, then your server is probably not behaving as
-    it should. </para>
+    it should.</para>
   </sect1>
 
   <sect1 id="configuration">
     <title>Configuring GeoServer</title>
+
+    <para>GeoServer now includes a web based tool to configure and administer
+    the application. It is available at the root web directory
+    (http://localhost:8080/geoserver). For now the login in can not be changed
+    (except by digging into the code), it is set at username: 'admin' and
+    password: 'geoserver'. More information on using the web admin tool can be
+    found in the pdf user guides. Also note that help text will pop up if you
+    place your mouse over the fields.</para>
+
+    <para>If you want to avoid the web admin tool then directly editing the
+    files shall work just as well. You're work flow will just be a bit
+    different, you will work from the source tree and rebuild the war after
+    you have changed the options.</para>
 
     <para>This section assumes at least passing familiarity with XML files.
     However, if you simply follow the test file example exactly, you should be
@@ -162,7 +179,6 @@ gmake install</programlisting>Configuring with java is no longer required, as
 &lt;serverConfiguration&gt;
   &lt;global&gt;
     &lt;loggingLevel&gt;FINE&lt;/loggingLevel&gt;
-    &lt;URL&gt;http://localhost:8080/geoserver/&lt;/URL&gt;
     &lt;verbose value="true"&gt;
   &lt;/global&gt;
   &lt;services&gt;
@@ -360,7 +376,7 @@ gmake install</programlisting>Configuring with java is no longer required, as
               <entry>port</entry>
 
               <entry>Must match the PostGIS postmaster daemon port exactly
-              (generally 5432). </entry>
+              (generally 5432).</entry>
             </row>
 
             <row>
@@ -460,8 +476,8 @@ gmake install</programlisting>Configuring with java is no longer required, as
           <row>
             <entry>keywords</entry>
 
-            <entry>Words to search that represent the featureType, reported in
-            </entry>
+            <entry>Words to search that represent the featureType, reported
+            in</entry>
           </row>
 
           <row>
@@ -481,7 +497,7 @@ gmake install</programlisting>Configuring with java is no longer required, as
           <row>
             <entry>latLonBoundingBox</entry>
 
-            <entry>The bounding box in LatLon coordinates. </entry>
+            <entry>The bounding box in LatLon coordinates.</entry>
           </row>
         </tbody>
       </tgroup>
@@ -536,34 +552,34 @@ gmake install</programlisting>Configuring with java is no longer required, as
     To use it just make sure that the request is going to the right location
     (it defaults to GetFeature), and write the XML request just as the WFS
     specification does it. Included is a set of links for the default dataset
-    distributed with GeoServer. </para>
+    distributed with GeoServer.</para>
 
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="http://localhost:8081/GeoServer/wfs/getCapabilities">http://localhost:8081/GeoServer/wfs/getCapabilities</ulink></para>
+        url="http://localhost:8081/GeoServer/wfs/getCapabilities">http://localhost:8080/geoserver/wfs/GetCapabilities</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="http://localhost:8081/geoserver/wfs/DescribeFeatureType?">http://localhost:8081/geoserver/wfs/DescribeFeatureType?</ulink></para>
+        url="http://localhost:8081/geoserver/wfs/DescribeFeatureType?">http://localhost:8080/geoserver/wfs/DescribeFeatureType?</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="http://localhost:8081/geoserver/wfs/GetFeature?typeName=topp:bc_roads">http://localhost:8081/geoserver/wfs/GetFeature?typeName=topp:bc_roads</ulink></para>
+        url="http://localhost:8081/geoserver/wfs/GetFeature?typeName=topp:bc_roads">http://localhost:8080/geoserver/wfs/GetFeature?typeName=topp:bc_roads</ulink></para>
       </listitem>
     </itemizedlist>
 
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="http://localhost:8081/GeoServer/wms/getCapabilities">http://localhost:8081/GeoServer/wms/getCapabilities</ulink></para>
+        url="http://localhost:8080/geoserver/wms/GetCapabilities">http://localhost:8080/geoserver/wms/g\GetCapabilities</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="http://office.refractions.net:8081/geoserver/?LaYeRs=topp:bc_roads&amp;VeRsIoN=1.1.1&amp;ReQuEsT=GetMap&amp;FoRmAt=image/svg+xml">http://office.refractions.net:8081/geoserver/?LaYeRs=topp:bc_roads&amp;VeRsIoN=1.1.1&amp;ReQuEsT=GetMap&amp;FoRmAt=image/svg+xml</ulink></para>
+        url="http://localhost:8080/geoserver/wms?request=GetMap&amp;amp;layers=cdf:bc_roads&amp;amp;bbox=489153,5433000,529000,5460816&amp;amp;width=400&amp;amp;height=200&amp;amp;srs=EPSG:27354&amp;amp;styles=normal&amp;amp;Format=image/svg-xml">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=cdf:bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/svg-xml</ulink></para>
       </listitem>
     </itemizedlist>
   </sect1>
