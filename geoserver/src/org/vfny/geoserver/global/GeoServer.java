@@ -19,7 +19,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.4 2004/01/17 21:20:32 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.5 2004/01/20 23:37:02 dmzwiers Exp $
  */
 public class GeoServer extends GlobalLayerSupertype { // implements org.apache.struts.action.PlugIn{
 
@@ -55,9 +55,6 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * CatalogConfig)
      */
     private Data data;
-
-    /** Validation Configuration  - not used yet */
-    private Validation validation;
 
     /**
      * GeoServer constructor.
@@ -345,15 +342,6 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
     }
 
     /**
-     * Gets the config for the Validation.
-     *
-     * @return Validation the validation object
-     */
-    public Validation getValidationConfig() {
-        return validation;
-    }
-
-    /**
      * load purpose.
      * 
      * <p>
@@ -373,11 +361,6 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
         load(wms);
         load(wfs);
         load(data);
-
-        // HACK In the next phase this should be replaced with an actual validation configuration.
-        if (validation == null) {
-            this.validation = new Validation();
-        }
     }
 
     /**
