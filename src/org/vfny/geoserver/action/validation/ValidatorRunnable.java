@@ -30,11 +30,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.geotools.data.DataRepository;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.Validator;
+import org.vfny.geoserver.config.DataConfig;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -52,27 +55,44 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class ValidatorRunnable implements Runnable
 {
+	private Map ts;
+	private Map plugins;
+	private DataConfig dataConfig;
+	private ServletContext context;
+	private HttpServletRequest request;
+	
 	Validator validator;
 	Map dataStores;
-	DataRepository dataRepository;
+	//DataRepository dataRepository;
 	
-	public ValidatorRunnable(ValidationProcessor vp, DataRepository dataRepo)
-	{
-		validator = new Validator(dataRepo, vp);
-		dataRepository = dataRepo;
-		Set dataStoreSet = dataRepo.getDataStores();
-		Map stores = new HashMap();
-		//stores.put()
-		try
-		{	
-			dataRepo.getDataStores();
-			dataStores = dataRepo.types();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		
+	public final static String KEY = "validationTestDoItThread.key";
+
+	public void setup(Map ts, Map plugins, DataConfig dataConfig, ServletContext context, HttpServletRequest request) {
+		this.ts = ts;
+		this.plugins = plugins;
+		this.dataConfig = dataConfig;
+		this.context = context;
+		this.request = request;
 	}
+	
+//	
+//	public ValidatorRunnable(ValidationProcessor vp, DataRepository dataRepo)
+//	{
+//		validator = new Validator(dataRepo, vp);
+//		//dataRepository = dataRepo;
+//		Set dataStoreSet = dataRepo.getDataStores();
+//		Map stores = new HashMap();
+//		//stores.put()
+//		try
+//		{	
+//			dataRepo.getDataStores();
+//			dataStores = dataRepo.types();
+//		} catch (IOException e)
+//		{
+//			e.printStackTrace();
+//		}
+//		
+//	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
@@ -97,7 +117,7 @@ public class ValidatorRunnable implements Runnable
 					FeatureReader fReader = ds.getFeatureSource(ss[j]).getFeatures().reader();
 					//sources.put(dsc.getId() +":"+ss[j], fReader);
 		
-					validator.featureValidation(key, fReader);
+					//validator.featureValidation(key, fReader);
 					//vProcessor.runFeatureTests(dsc.getId(),fs.getSchema(),
 					//	fs.getFeatures().reader(), (ValidationResults) vResults);
 //					System.out.println("Feature Test Results for " + dsKey + ":"
@@ -115,16 +135,16 @@ public class ValidatorRunnable implements Runnable
 		/** run INTEGRITY validations */
 		Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE,
 									Integer.MAX_VALUE, Integer.MAX_VALUE);
-		try
-		{
-			validator.integrityValidation(dataStores, env);
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+//		try
+//		{
+//			//validator.integrityValidation(dataStores, env);
+//		} catch (IOException e)
+//		{
+//			e.printStackTrace();
+//		} catch (Exception e)
+//		{
+//			e.printStackTrace();
+//		}
 	}
 
 	public static void main(String[] args)
