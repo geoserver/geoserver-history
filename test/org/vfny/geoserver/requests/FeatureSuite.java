@@ -8,6 +8,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
+
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.CompareFilter;
@@ -156,8 +159,9 @@ public class FeatureSuite extends RequestTestCase {
         LinearRing[] innerRing = new LinearRing[0];
         Polygon tempPoly = new Polygon(outerRing, innerRing,
                 new PrecisionModel(), 0);
-        AttributeExpression tempLeftExp = factory.createAttributeExpression(null);
-        tempLeftExp.setAttributePath("location");
+        //djb -- trying to get this to work with new FeatureType
+        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType)null,"location");
+        //tempLeftExp.setAttributePath("location");
 
         LiteralExpression tempRightExp = factory.createLiteralExpression(DefaultExpression.LITERAL_GEOMETRY);
         tempRightExp.setLiteral(tempPoly);
@@ -194,8 +198,8 @@ public class FeatureSuite extends RequestTestCase {
         LinearRing[] innerRing = new LinearRing[0];
         Polygon tempPoly = new Polygon(outerRing, innerRing,
                 new PrecisionModel(), 0);
-        AttributeExpression tempLeftExp = factory.createAttributeExpression(null);
-        tempLeftExp.setAttributePath("location");
+        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType)null,"location");
+        //tempLeftExp.setAttributePath("location");
 
         LiteralExpression tempRightExp = factory.createLiteralExpression(DefaultExpression.LITERAL_GEOMETRY);
         tempRightExp.setLiteral(tempPoly);
@@ -237,8 +241,8 @@ public class FeatureSuite extends RequestTestCase {
         LinearRing[] innerRing = new LinearRing[0];
         Polygon tempPoly = new Polygon(outerRing, innerRing,
                 new PrecisionModel(), 0);
-        AttributeExpression tempLeftExp = factory.createAttributeExpression(null);
-        tempLeftExp.setAttributePath("location");
+        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType)null,"location");
+       // tempLeftExp.setAttributePath("location");
 
         LiteralExpression tempRightExp = factory.createLiteralExpression(DefaultExpression.LITERAL_GEOMETRY);
         tempRightExp.setLiteral(tempPoly);
@@ -279,8 +283,8 @@ public class FeatureSuite extends RequestTestCase {
         LiteralExpression tempExp1 = factory.createLiteralExpression(DefaultExpression.LITERAL_STRING);
         tempExp1.setLiteral("Main St.");
 
-        AttributeExpression tempExp2 = factory.createAttributeExpression(null);
-        tempExp2.setAttributePath("Person/Address/StreetName");
+        AttributeExpression tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Address/StreetName");
+        //tempExp2.setAttributePath("Person/Address/StreetName");
 
         CompareFilter tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_EQUALS);
         tempFilter.addRightValue(tempExp1);
@@ -291,28 +295,28 @@ public class FeatureSuite extends RequestTestCase {
         LOGGER.fine("filter: " + logicFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_EQUALS);
         tempExp1 = factory.createLiteralExpression(DefaultExpression.LITERAL_STRING);
-        tempExp2 = factory.createAttributeExpression(null);
+        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Address/City");
         tempExp1.setLiteral("Main St.");
         tempExp1.setLiteral("SomeTown");
-        tempExp2.setAttributePath("Person/Address/City");
+        //tempExp2.setAttributePath("Person/Address/City");   // done at creations time
         tempFilter.addRightValue(tempExp1);
         tempFilter.addLeftValue(tempExp2);
         logicFilter = logicFilter.and(tempFilter);
         LOGGER.fine("filter: " + logicFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_EQUALS);
         tempExp1 = factory.createLiteralExpression(DefaultExpression.LITERAL_STRING);
-        tempExp2 = factory.createAttributeExpression(null);
+        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Sex");
         tempExp1.setLiteral("Female");
-        tempExp2.setAttributePath("Person/Sex");
+       // tempExp2.setAttributePath("Person/Sex");
         tempFilter.addRightValue(tempExp1);
         tempFilter.addLeftValue(tempExp2);
         logicFilter = logicFilter.and(tempFilter);
         LOGGER.fine("filter: " + logicFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_GREATER_THAN);
         tempExp1 = factory.createLiteralExpression(DefaultExpression.LITERAL_INTEGER);
-        tempExp2 = factory.createAttributeExpression(null);
+        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Salary");
         tempExp1.setLiteral("35000");
-        tempExp2.setAttributePath("Person/Salary");
+       // tempExp2.setAttributePath("Person/Salary");
         tempFilter.addLeftValue(tempExp2);
         tempFilter.addRightValue(tempExp1);
         logicFilter = logicFilter.and(tempFilter);
@@ -322,18 +326,18 @@ public class FeatureSuite extends RequestTestCase {
         LOGGER.fine("filter: " + finalFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_GREATER_THAN_EQUAL);
         tempExp1 = factory.createLiteralExpression(DefaultExpression.LITERAL_INTEGER);
-        tempExp2 = factory.createAttributeExpression(null);
+        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Address/StreetNumber");
         tempExp1.setLiteral("10000");
-        tempExp2.setAttributePath("Person/Address/StreetNumber");
+        //tempExp2.setAttributePath("Person/Address/StreetNumber");
         tempFilter.addLeftValue(tempExp2);
         tempFilter.addRightValue(tempExp1);
         finalFilter = finalFilter.and(tempFilter);
         LOGGER.fine("filter: " + finalFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_LESS_THAN_EQUAL);
         tempExp1 = factory.createLiteralExpression(DefaultExpression.LITERAL_INTEGER);
-        tempExp2 = factory.createAttributeExpression(null);
+        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Address/StreetNumber");
         tempExp1.setLiteral("10999");
-        tempExp2.setAttributePath("Person/Address/StreetNumber");
+        //tempExp2.setAttributePath("Person/Address/StreetNumber");
         tempFilter.addLeftValue(tempExp2);
         tempFilter.addRightValue(tempExp1);
         finalFilter = finalFilter.and(tempFilter);
@@ -486,8 +490,8 @@ public class FeatureSuite extends RequestTestCase {
         // make base comparison objects
         org.geotools.filter.GeometryFilter filter = factory
             .createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = factory.createAttributeExpression(null);
-        leftExpression.setAttributePath("location");
+        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType)null,"location");
+        //leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linestring
         Coordinate[] coords = new Coordinate[5];
@@ -624,8 +628,8 @@ public class FeatureSuite extends RequestTestCase {
         // make base comparison objects
         org.geotools.filter.GeometryFilter filter = factory
             .createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = factory.createAttributeExpression(null);
-        leftExpression.setAttributePath("location");
+        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType)null,"location");
+        //leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linear ring
         Coordinate[] coords = new Coordinate[5];
@@ -667,8 +671,8 @@ public class FeatureSuite extends RequestTestCase {
         // make base comparison objects
         org.geotools.filter.GeometryFilter filter = factory
             .createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = factory.createAttributeExpression(null);
-        leftExpression.setAttributePath("location");
+        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType)null,"location");
+       // leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linear ring
         Coordinate[] coords = new Coordinate[5];
