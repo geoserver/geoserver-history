@@ -12,8 +12,6 @@ package org.vfny.geoserver.form.wfs;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +22,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.global.dto.WFSDTO;
+
 
 
 /**
@@ -39,6 +38,8 @@ public class WFSContentForm extends ActionForm {
     private int serviceLevel;
     private String[] selectedFeatures;
     private String[] features;
+    private boolean srsXmlStyle;
+    private boolean srsXmlStyleChecked = false;
 
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
@@ -69,7 +70,6 @@ public class WFSContentForm extends ActionForm {
      * @return
      */
     public boolean isEnabled() {
-        //System.out.println("isEnabled: returning " + enabled);
 
         return enabled;
     }
@@ -152,12 +152,14 @@ public class WFSContentForm extends ActionForm {
         super.reset(arg0, arg1);
 
         enabledChecked = false;
+        srsXmlStyleChecked = false;
 
         ServletContext context = getServlet().getServletContext();
         WFSConfig config = (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
         
         serviceLevel = config.getServiceLevel();
         this.enabled = config.isEnabled();
+        this.srsXmlStyle = config.isSrsXmlStyle();
 
         URL url = config.getOnlineResource();
 
@@ -210,6 +212,24 @@ public class WFSContentForm extends ActionForm {
     }
     
 	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return
+	 */
+	public boolean isSrsXmlStyleChecked() {
+		return srsXmlStyleChecked;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param b
+	 */
+	public void setSrsXmlStyleChecked(boolean b) {
+		srsXmlStyleChecked = b;
+	}
+    
+	/**
 	 * Access serviceLevel property.
 	 * 
 	 * @return Returns the serviceLevel.
@@ -226,5 +246,29 @@ public class WFSContentForm extends ActionForm {
 	public void setServiceLevel(int serviceLevel) {
 		this.serviceLevel = serviceLevel;
 	}
+	
+	/**
+	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+	 * style.  
+	 *
+	 * @return <tt>true</tt> if the srs is reported with the xml style
+	 */
+	public boolean isSrsXmlStyle() {
+		return srsXmlStyle;
+	}
+
+	/**
+	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+	 * style.  
+	 *
+	 * @param doXmlStyle whether the srs style should be xml or not.
+	 */
+	public void setSrsXmlStyle(boolean doXmlStyle) {
+		this.srsXmlStyleChecked = true;
+		this.srsXmlStyle = doXmlStyle;
+	}
+
 
 }
