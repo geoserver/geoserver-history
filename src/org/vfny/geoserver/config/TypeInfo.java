@@ -1,3 +1,19 @@
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2002, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ */
 /* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -8,23 +24,12 @@ import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataSourceFinder;
 import org.geotools.data.DataSourceMetaData;
-import org.geotools.data.postgis.PostgisConnectionFactory;
-import org.geotools.data.postgis.PostgisDataSource;
-import org.geotools.data.postgis.PostgisDataSourceFactory;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.SchemaException;
-import org.vfny.geoserver.config.FeatureType;
 import org.vfny.geoserver.responses.WfsException;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 
@@ -33,14 +38,14 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $VERSION$
+ * @version $Id: TypeInfo.java,v 1.20 2003/09/05 22:04:52 cholmesny Exp $
  */
 public class TypeInfo {
     /** Class logger */
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
     public static final String PREFIX_DELIMITER = ":";
 
-    /** Castor-specified type to hold all the */
+     /** Internal representation of user defined type information. */
     private FeatureType internalType;
     private ConfigInfo config = ConfigInfo.getInstance();
 
