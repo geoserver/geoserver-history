@@ -15,6 +15,7 @@
          <xs:element name="class" type="xs:string"/>
          <xs:element name="argument" minOccurs="0" maxOccurs="unbounded">
            <xs:complexType>
+             <xs:attribute name="final" type="xs:boolean" use="optional" default="false"/>
              <xs:sequence>
                <xs:element name="name" type="xs:string"/>
                <xs:choice>
