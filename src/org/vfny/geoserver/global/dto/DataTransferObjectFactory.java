@@ -40,8 +40,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.17 2004/03/09 05:38:18 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.18 2004/04/05 23:12:21 emperorkefka Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -329,7 +329,7 @@ public class DataTransferObjectFactory {
      * </ul>
      * @param name attribute name
      * @param type attribtue type
-     * @return List is returned in the order of most specific to least specific.
+     * @return List of NameSpaceElements is returned in the order of most specific to least specific.
      */
     public static List getElements(String name, Class type){
     	NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
