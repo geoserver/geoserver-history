@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.featureInfo;
+package org.vfny.geoserver.wms.responses.featureInfo;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;

@@ -1,7 +1,7 @@
-package org.vfny.geoserver.responses.wms.map.svg;
+package org.vfny.geoserver.wms.responses.map.svg;
 
 /**
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: AbortedException.java,v 1.1 2004/03/14 16:15:22 groldan Exp $
  */
 

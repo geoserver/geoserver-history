@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.featureInfo;
+package org.vfny.geoserver.wms.responses.featureInfo;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DefaultQuery;
@@ -17,12 +17,13 @@ import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.LogicFilter;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 

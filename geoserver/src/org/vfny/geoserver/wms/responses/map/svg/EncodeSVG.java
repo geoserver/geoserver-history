@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map.svg;
+package org.vfny.geoserver.wms.responses.map.svg;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.MultiPoint;
@@ -21,7 +21,8 @@ import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.responses.wms.WMSMapContext;
+import org.vfny.geoserver.wms.responses.WMSMapContext;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;

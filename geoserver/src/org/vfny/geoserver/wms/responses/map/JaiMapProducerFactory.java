@@ -2,14 +2,14 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map;
+package org.vfny.geoserver.wms.responses.map;
 
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.responses.wms.GetMapProducer;
-import org.vfny.geoserver.responses.wms.GetMapProducerFactorySpi;
-import org.vfny.geoserver.responses.wms.helpers.JAISupport;
+import org.vfny.geoserver.wms.responses.GetMapProducer;
+import org.vfny.geoserver.wms.responses.GetMapProducerFactorySpi;
+import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 
 /**

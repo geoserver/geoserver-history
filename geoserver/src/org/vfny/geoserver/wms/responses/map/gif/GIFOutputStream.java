@@ -34,7 +34,7 @@
 
 
 
-package org.vfny.geoserver.responses.wms.map.gif;
+package org.vfny.geoserver.wms.responses.map.gif;
 
 import java.io.*;
 import java.awt.*;

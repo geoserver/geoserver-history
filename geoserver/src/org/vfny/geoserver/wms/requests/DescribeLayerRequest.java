@@ -1,11 +1,10 @@
-package org.vfny.geoserver.requests.wms;
+package org.vfny.geoserver.wms.requests;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.requests.WMSRequest;
 
 
 /**

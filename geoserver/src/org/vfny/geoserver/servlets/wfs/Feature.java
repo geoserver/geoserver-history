@@ -22,7 +22,7 @@ import org.vfny.geoserver.servlets.WFService;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: Feature.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Feature extends WFService {

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package org.vfny.geoserver.wms.responses;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,13 +12,13 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wms.DescribeLayerRequest;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wms.helpers.DescribeLayerTransformer;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
+import org.vfny.geoserver.wms.responses.helpers.DescribeLayerTransformer;
 
 
 /**

@@ -2,11 +2,12 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers;
+package org.vfny.geoserver.wms.requests;
 
 import java.util.Map;
 
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
 
 
 /**
@@ -16,7 +17,7 @@ import org.vfny.geoserver.global.WMS;
  * version has been requested, either by the "VERSION" parameter or by the
  * "WMTVER" parameter, wich is deprecated but it is recomended to recognize it
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: WmsKvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader {

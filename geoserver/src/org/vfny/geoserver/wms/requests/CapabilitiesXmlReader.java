@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers.wms;
+package org.vfny.geoserver.wms.requests;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -12,10 +12,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.requests.CapabilitiesHandler;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
@@ -24,7 +24,7 @@ import org.xml.sax.helpers.ParserAdapter;
 /**
  * reads a WMS GetCapabilities request from an XML stream
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: CapabilitiesXmlReader.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
  *
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too

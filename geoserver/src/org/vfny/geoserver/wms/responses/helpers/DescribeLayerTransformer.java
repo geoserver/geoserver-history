@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.helpers;
+package org.vfny.geoserver.wms.responses.helpers;
 
 import java.util.Iterator;
 
@@ -13,7 +13,7 @@ import javax.xml.transform.TransformerException;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.requests.wms.DescribeLayerRequest;
+import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 

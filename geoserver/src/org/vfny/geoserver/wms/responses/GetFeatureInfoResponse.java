@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,16 +12,16 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wms.featureInfo.GetFeatureInfoDelegate;
-import org.vfny.geoserver.responses.wms.featureInfo.GmlFeatureInfoResponse;
-import org.vfny.geoserver.responses.wms.featureInfo.HTMLTableFeatureInfoResponse;
-import org.vfny.geoserver.responses.wms.featureInfo.TextFeatureInfoResponse;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
+import org.vfny.geoserver.wms.responses.featureInfo.GetFeatureInfoDelegate;
+import org.vfny.geoserver.wms.responses.featureInfo.GmlFeatureInfoResponse;
+import org.vfny.geoserver.wms.responses.featureInfo.HTMLTableFeatureInfoResponse;
+import org.vfny.geoserver.wms.responses.featureInfo.TextFeatureInfoResponse;
 
 
 /**

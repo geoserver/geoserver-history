@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package org.vfny.geoserver.wms.responses;
 
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapLayer;

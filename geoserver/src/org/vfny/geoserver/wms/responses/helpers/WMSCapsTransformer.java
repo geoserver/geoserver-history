@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.helpers;
+package org.vfny.geoserver.wms.responses.helpers;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,11 +23,11 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.CapabilitiesRequest;
-import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
-import org.vfny.geoserver.responses.wms.DescribeLayerResponse;
-import org.vfny.geoserver.responses.wms.GetFeatureInfoResponse;
-import org.vfny.geoserver.responses.wms.GetLegendGraphicResponse;
-import org.vfny.geoserver.responses.wms.GetMapResponse;
+import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
+import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
+import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
+import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 

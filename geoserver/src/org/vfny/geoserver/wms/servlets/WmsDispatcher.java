@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.servlets.wms;
+package org.vfny.geoserver.wms.servlets;
 
 import java.io.IOException;
 import java.util.Map;
@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.servlets.Dispatcher;
+import org.vfny.geoserver.wms.WmsException;
 
 
 /**

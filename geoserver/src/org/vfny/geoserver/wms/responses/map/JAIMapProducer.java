@@ -2,11 +2,12 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map;
+package org.vfny.geoserver.wms.responses.map;
 
-import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.responses.wms.DefaultRasterMapProducer;
-import org.vfny.geoserver.responses.wms.helpers.JAISupport;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import org.vfny.geoserver.wms.responses.helpers.JAISupport;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;

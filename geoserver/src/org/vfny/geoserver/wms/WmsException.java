@@ -2,10 +2,11 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver;
+package org.vfny.geoserver.wms;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Requests;
 
