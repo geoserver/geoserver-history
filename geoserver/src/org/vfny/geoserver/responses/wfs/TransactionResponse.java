@@ -4,20 +4,7 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -51,15 +38,26 @@ import org.vfny.geoserver.requests.wfs.SubTransactionRequest;
 import org.vfny.geoserver.requests.wfs.TransactionRequest;
 import org.vfny.geoserver.requests.wfs.UpdateRequest;
 import org.vfny.geoserver.responses.Response;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.6 2004/01/20 23:37:02 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.7 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -146,7 +144,8 @@ public class TransactionResponse implements Response {
 
         Data catalog = transactionRequest.getGeoServer().getData();
 
-        WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS,transactionRequest.getGeoServer().isVerbose());
+        WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS,
+                transactionRequest.getGeoServer().isVerbose());
 
         // Map of required FeatureStores by typeName
         Map stores = new HashMap();
@@ -377,122 +376,144 @@ public class TransactionResponse implements Response {
     }
 
     protected void featureValidation(FeatureType type,
-        FeatureCollection collection) throws IOException, WfsTransactionException {
-            
-        ValidationProcessor validation =
-		request.getValidationProcessor();
+        FeatureCollection collection)
+        throws IOException, WfsTransactionException {
+        ValidationProcessor validation = request.getValidationProcessor();
 
         final Map failed = new TreeMap();
-        ValidationResults results = new ValidationResults(){
-            String name;
-            String description;
-            public void setValidation(Validation validation) {
-                name = validation.getName();
-                description = validation.getDescription();
-            }
-            public void error(Feature feature, String message) {
-                LOGGER.warning( name+": "+message+" ("+description+")");                
-                failed.put( feature.getID(),
-                    name+": "+message+" "+
-                    "("+description+")"
-                );
-            }
-            public void warning(Feature feature, String message) {
-                LOGGER.warning( name+": "+message+" ("+description+")");
-            }
-        };            
+        ValidationResults results = new ValidationResults() {
+                String name;
+                String description;
+
+                public void setValidation(Validation validation) {
+                    name = validation.getName();
+                    description = validation.getDescription();
+                }
+
+                public void error(Feature feature, String message) {
+                    LOGGER.warning(name + ": " + message + " (" + description
+                        + ")");
+                    failed.put(feature.getID(),
+                        name + ": " + message + " " + "(" + description + ")");
+                }
+
+                public void warning(Feature feature, String message) {
+                    LOGGER.warning(name + ": " + message + " (" + description
+                        + ")");
+                }
+            };
+
         try {
-            validation.runFeatureTests( type, collection, results );            
-        }
-        catch( Exception badIdea ){
+            validation.runFeatureTests(type, collection, results);
+        } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
-            throw new DataSourceException( "Validation Failed", badIdea );            
+            throw new DataSourceException("Validation Failed", badIdea);
         }
-        if( failed.isEmpty() ) return; // everything worked out
+
+        if (failed.isEmpty()) {
+            return; // everything worked out
+        }
+
         StringBuffer message = new StringBuffer();
-        for( Iterator i=failed.entrySet().iterator(); i.hasNext(); ){
+
+        for (Iterator i = failed.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
-            message.append( entry.getKey() );
-            message.append( " failed test " );
-            message.append( entry.getValue() );
-            message.append( "\n" );
+            message.append(entry.getKey());
+            message.append(" failed test ");
+            message.append(entry.getValue());
+            message.append("\n");
         }
-        throw new WfsTransactionException( message.toString(), "validation" );
+
+        throw new WfsTransactionException(message.toString(), "validation");
     }
 
     protected void integrityValidation(Map stores, Envelope check)
         throws IOException, WfsTransactionException {
         Data catalog = request.getGeoServer().getData();
-        ValidationProcessor validation =
-		request.getValidationProcessor();
-        
+        ValidationProcessor validation = request.getValidationProcessor();
+
         // go through each modified typeName
         // and ask what we need to check
         //
         Set typeNames = new HashSet();
-        for( Iterator i=stores.keySet().iterator(); i.hasNext(); ){
+
+        for (Iterator i = stores.keySet().iterator(); i.hasNext();) {
             String typeName = (String) i.next();
+
             //typeNames.addAll( validation.getDependencies( typeName ) ); 
         }
-        
+
         // Grab a source for each typeName we need to check
         // Grab from the provided stores - so we check against
         // the transaction 
         //
         Map sources = new HashMap();
-        for( Iterator i=typeNames.iterator(); i.hasNext(); ){
+
+        for (Iterator i = typeNames.iterator(); i.hasNext();) {
             String typeName = (String) i.next();
-            if( stores.containsKey( typeName )){
-                sources.put( typeName, stores.get( typeName )); 
-            }
-            else {
+
+            if (stores.containsKey(typeName)) {
+                sources.put(typeName, stores.get(typeName));
+            } else {
                 // These will be using Transaction.AUTO_COMMIT
                 // this is okay as they were not involved in our
                 // Transaction...
-                FeatureTypeInfo meta = catalog.getFeatureTypeInfo( typeName );
-                sources.put( typeName, meta.getFeatureSource() );                
+                FeatureTypeInfo meta = catalog.getFeatureTypeInfo(typeName);
+                sources.put(typeName, meta.getFeatureSource());
             }
         }
+
         final Map failed = new TreeMap();
-        ValidationResults results = new ValidationResults(){
-            String name;
-            String description;
-            public void setValidation(Validation validation) {
-                name = validation.getName();
-                description = validation.getDescription();
-            }
-            public void error(Feature feature, String message) {
-                LOGGER.warning( name+": "+message+" ("+description+")");                
-                failed.put( feature.getID(),
-                    name+": "+message+" "+
-                    "("+description+")"
-                );
-            }
-            public void warning(Feature feature, String message) {
-                LOGGER.warning( name+": "+message+" ("+description+")");
-            }
-        };
+        ValidationResults results = new ValidationResults() {
+                String name;
+                String description;
+
+                public void setValidation(Validation validation) {
+                    name = validation.getName();
+                    description = validation.getDescription();
+                }
+
+                public void error(Feature feature, String message) {
+                    LOGGER.warning(name + ": " + message + " (" + description
+                        + ")");
+                    failed.put(feature.getID(),
+                        name + ": " + message + " " + "(" + description + ")");
+                }
+
+                public void warning(Feature feature, String message) {
+                    LOGGER.warning(name + ": " + message + " (" + description
+                        + ")");
+                }
+            };
+
         try {
-            validation.runIntegrityTests( stores, check, results );            
-        }
-        catch( Exception badIdea ){
+            validation.runIntegrityTests(stores, check, results);
+        } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
-            throw new DataSourceException( "Validation Failed", badIdea );            
+            throw new DataSourceException("Validation Failed", badIdea);
         }
-        if( failed.isEmpty() ) return; // everything worked out
+
+        if (failed.isEmpty()) {
+            return; // everything worked out
+        }
+
         StringBuffer message = new StringBuffer();
-        for( Iterator i=failed.entrySet().iterator(); i.hasNext(); ){
+
+        for (Iterator i = failed.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
-            message.append( entry.getKey() );
-            message.append( " failed test " );
-            message.append( entry.getValue() );
-            message.append( "\n" );
+            message.append(entry.getKey());
+            message.append(" failed test ");
+            message.append(entry.getValue());
+            message.append("\n");
         }
-        throw new WfsTransactionException( message.toString(), "validation" );                    
+
+        throw new WfsTransactionException(message.toString(), "validation");
     }
 
     /**
      * Responce MIME type as define by ServerConig.
+     *
+     * @param gs DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
@@ -532,7 +553,7 @@ public class TransactionResponse implements Response {
             writer = new OutputStreamWriter(out);
             writer = new BufferedWriter(writer);
 
-            response.writeXmlResponse(writer,request);
+            response.writeXmlResponse(writer, request);
             writer.flush();
 
             switch (response.status) {

@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.servlets.wfs;
 
-import java.util.Map;
-
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.DescribeKvpReader;
@@ -13,6 +11,7 @@ import org.vfny.geoserver.requests.readers.wfs.DescribeXmlReader;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wfs.DescribeResponse;
 import org.vfny.geoserver.servlets.WFService;
+import java.util.Map;
 
 
 /**
@@ -23,7 +22,7 @@ import org.vfny.geoserver.servlets.WFService;
  * with other tables.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: Describe.java,v 1.3 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: Describe.java,v 1.4 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public class Describe extends WFService {
     /**

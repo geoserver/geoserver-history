@@ -4,13 +4,13 @@
  */
 package org.vfny.geoserver.zserver;
 
+import com.k_int.IR.IRQuery;
+import com.k_int.IR.SearchTask;
+
 // Information Retrieval Interfaces
 import java.util.Observer;
 import java.util.Properties;
 import java.util.logging.Logger;
-
-import com.k_int.IR.IRQuery;
-import com.k_int.IR.SearchTask;
 
 
 /**
@@ -24,7 +24,7 @@ import com.k_int.IR.SearchTask;
  *         other z39.50 implementations, but for our purposes it really does
  *         not do much.  Probably would make the most sense to just have our
  *         ZServerAssociation create its own tasks.
- * @version $Id: GeoSearchable.java,v 1.4 2004/01/12 21:01:26 dmzwiers Exp $ modified (simplified) from DemoSearchable:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
+ * @version $Id: GeoSearchable.java,v 1.5 2004/01/21 00:26:11 dmzwiers Exp $ modified (simplified) from DemoSearchable:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
  */
 public class GeoSearchable implements com.k_int.IR.Searchable {
     /** Standard logging instance for class */
@@ -49,9 +49,9 @@ public class GeoSearchable implements com.k_int.IR.Searchable {
     }
 
     /**
-     * destroy the searchable object. Shut down the searchable object
-     * entirely. Release all held resources, make the object ready for  GC.
-     * Try to release in here instead of on finalize.
+     * destroy the searchable object. Shut down the searchable object entirely.
+     * Release all held resources, make the object ready for  GC. Try to
+     * release in here instead of on finalize.
      */
     public void destroy() {
     }

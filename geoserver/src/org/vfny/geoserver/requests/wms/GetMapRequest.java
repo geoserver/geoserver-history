@@ -4,15 +4,13 @@
  */
 package org.vfny.geoserver.requests.wms;
 
-import java.awt.Color;
-import java.util.Collections;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.WMSRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -26,7 +24,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.4 2004/01/12 21:01:32 dmzwiers Exp $
+ * @version $Id: GetMapRequest.java,v 1.5 2004/01/21 00:26:10 dmzwiers Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  *    Geotools2 - OpenSource mapping toolkit
  *    http://geotools.org
@@ -67,7 +71,7 @@ import org.geotools.feature.FeatureType;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @version $Id: FeatureValidation.java,v 1.4 2004/01/12 21:01:32 dmzwiers Exp $
+ * @version $Id: FeatureValidation.java,v 1.5 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public interface FeatureValidation extends Validation {
     /**

@@ -4,11 +4,11 @@
  */
 package org.vfny.geoserver.config;
 
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 /**
  * Global GeoServer Configuration model.
@@ -19,10 +19,11 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.5 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
  */
-public class GlobalConfig{
-	public static final String CONFIG_KEY = "Config.Global";
+public class GlobalConfig {
+    public static final String CONFIG_KEY = "Config.Global";
+
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = 20000;
 
@@ -49,8 +50,8 @@ public class GlobalConfig{
      * Sets the max number of decimal places past the zero returned in a
      * GetFeature response.  Default is 4.
      * </p>
-     * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has
-     * a getFeature response
+     * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has a
+     * getFeature response
      */
     private int numDecimals = 8;
 
@@ -60,8 +61,8 @@ public class GlobalConfig{
      * <p>
      * This could use some more testing from international users. What it does
      * is sets the encoding globally for all postgis database connections (the
-     * charset tag in FeatureTypeInfo), as well as specifying the encoding
-     * in the return
+     * charset tag in FeatureTypeInfo), as well as specifying the encoding in
+     * the return
      * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
      * header and mime type.
      * </p>
@@ -80,14 +81,17 @@ public class GlobalConfig{
 
     /**
      * The base URL where this servlet will run.
+     * 
      * <p>
-     * If running locally then <code>http://localhost:8080</code>
-     * (or whatever port you're running on) should work.
+     * If running locally then <code>http://localhost:8080</code> (or whatever
+     * port you're running on) should work.
      * </p>
+     * 
      * <p>
-     * If you are serving to the world then this must be the location where
-     * the geoserver servlets appear
+     * If you are serving to the world then this must be the location where the
+     * geoserver servlets appear
      * </p>
+     * 
      * <p>
      * JG - can we figure this out at runtime?
      * </p>
@@ -96,10 +100,12 @@ public class GlobalConfig{
 
     /**
      * Define a base url for the location of the wfs schemas.
+     * 
      * <p>
      * By default GeoServer  loads and references its own at
      * <code>/data/capabilities</code>.
      * </p>
+     * 
      * <p>
      * The standalone Tomcat server needs SchemaBaseUrl defined for validation.
      * </p>
@@ -108,10 +114,12 @@ public class GlobalConfig{
 
     /**
      * Defines the Application logging level.
+     * 
      * <p>
      * Common options are SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in
      * order of Increasing statements logged.
      * </p>
+     * 
      * <p>
      * There may be more then one point of control - the web containers often
      * controls logging, the jakarta commons logging system is used by struts,
@@ -122,14 +130,14 @@ public class GlobalConfig{
     private Level loggingLevel = null;
 
     /* Default name for configuration directory */
+
     //private static final String CONFIG_DIR = "WEB-INF/";
 
     /* Default name for configuration directory */
+
     //private static final String DATA_DIR = "data/";
 
-    /**
-     * The Server contact person and their contact information.
-     */
+    /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
 
     /**
@@ -142,89 +150,98 @@ public class GlobalConfig{
      * @see defaultSettings()
      */
     public GlobalConfig() {
-		maxFeatures = 20000;
-		verbose = true;
-		numDecimals = 8;
-		charSet = Charset.forName("ISO-8859-1");
-		baseUrl = null;
-		schemaBaseUrl = null;
-		contact = null;
+        maxFeatures = 20000;
+        verbose = true;
+        numDecimals = 8;
+        charSet = Charset.forName("ISO-8859-1");
+        baseUrl = null;
+        schemaBaseUrl = null;
+        contact = null;
     }
 
-	/**
-	 * GlobalConfig constructor.
-	 * 
-	 * <p>
-	 * Creates a copy of the GeoServerDTO object provided.  Charset is not cloned, everything
-	 * else is.
-	 * </p>
-	 *
-	 * @param g
-	 */
-	public GlobalConfig(GeoServerDTO g) {
-		if (g == null) {
-			throw new NullPointerException();
-		}
+    /**
+     * GlobalConfig constructor.
+     * 
+     * <p>
+     * Creates a copy of the GeoServerDTO object provided.  Charset is not
+     * cloned, everything else is.
+     * </p>
+     *
+     * @param g
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
+    public GlobalConfig(GeoServerDTO g) {
+        if (g == null) {
+            throw new NullPointerException();
+        }
 
-		maxFeatures = g.getMaxFeatures();
-		verbose = g.isVerbose();
-		numDecimals = g.getNumDecimals();
-		charSet = g.getCharSet();
-		schemaBaseUrl = g.getSchemaBaseUrl();
+        maxFeatures = g.getMaxFeatures();
+        verbose = g.isVerbose();
+        numDecimals = g.getNumDecimals();
+        charSet = g.getCharSet();
+        schemaBaseUrl = g.getSchemaBaseUrl();
 
-		if (g.getContact() != null) {
-			contact = new ContactConfig(g.getContact());
-		} else {
-			contact = new ContactConfig();
-		}
-	}
+        if (g.getContact() != null) {
+            contact = new ContactConfig(g.getContact());
+        } else {
+            contact = new ContactConfig();
+        }
+    }
 
-	/**
-	 * Implement updateDTO.
-	 * <p>
-	 * Populates this instance with the GeoServerDTO object provided.
-	 * </p>
-	 * @see org.vfny.geoserver.config.DataStructure#updateDTO(java.lang.Object)
-	 * 
-	 * @param obj A valid GeoServerDTO object to populate this object from
-	 * @return true when the parameter is valid and stored.
-	 */
-	public void update(GeoServerDTO g) {
-		if (g == null) {
-			throw new NullPointerException("GeoServer Data Transfer Object required");
-		}
+    /**
+     * Implement updateDTO.
+     * 
+     * <p>
+     * Populates this instance with the GeoServerDTO object provided.
+     * </p>
+     *
+     * @param g A valid GeoServerDTO object to populate this object from
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     *
+     * @see org.vfny.geoserver.config.DataStructure#updateDTO(java.lang.Object)
+     */
+    public void update(GeoServerDTO g) {
+        if (g == null) {
+            throw new NullPointerException(
+                "GeoServer Data Transfer Object required");
+        }
 
-		maxFeatures = g.getMaxFeatures();
-		verbose = g.isVerbose();
-		numDecimals = g.getNumDecimals();
-		charSet = g.getCharSet();
-		schemaBaseUrl = g.getSchemaBaseUrl();
+        maxFeatures = g.getMaxFeatures();
+        verbose = g.isVerbose();
+        numDecimals = g.getNumDecimals();
+        charSet = g.getCharSet();
+        schemaBaseUrl = g.getSchemaBaseUrl();
 
-		if (g.getContact() != null) {
-			contact = new ContactConfig(g.getContact());
-		} else {
-			contact = new ContactConfig();
-		}
-	}
+        if (g.getContact() != null) {
+            contact = new ContactConfig(g.getContact());
+        } else {
+            contact = new ContactConfig();
+        }
+    }
 
     /**
      * Implement toDTO.
+     * 
      * <p>
      * Creates a copy of the data in a GeoServerDTO representation
      * </p>
-     * @see org.vfny.geoserver.config.DataStructure#toDTO()
-     * 
+     *
      * @return a copy of the data in a GeoServerDTO representation
+     *
+     * @see org.vfny.geoserver.config.DataStructure#toDTO()
      */
-    public GeoServerDTO toDTO(){
-    	GeoServerDTO g = new GeoServerDTO();
-		 g.setMaxFeatures(maxFeatures);
-		 g.setVerbose(verbose);
-		 g.setNumDecimals(numDecimals);
-		 g.setCharSet(charSet);
-		 g.setSchemaBaseUrl(schemaBaseUrl);
-		 g.setContact((ContactDTO)contact.toDTO());
-    	return g;
+    public GeoServerDTO toDTO() {
+        GeoServerDTO g = new GeoServerDTO();
+        g.setMaxFeatures(maxFeatures);
+        g.setVerbose(verbose);
+        g.setNumDecimals(numDecimals);
+        g.setCharSet(charSet);
+        g.setSchemaBaseUrl(schemaBaseUrl);
+        g.setContact((ContactDTO) contact.toDTO());
+
+        return g;
     }
 
     /**

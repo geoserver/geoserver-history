@@ -15,7 +15,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WFSCapabilitiesResponse.java,v 1.3 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: WFSCapabilitiesResponse.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class WFSCapabilitiesResponse extends CapabilitiesResponse {
     /**
@@ -35,16 +35,17 @@ public class WFSCapabilitiesResponse extends CapabilitiesResponse {
      * @return DOCUMENT ME!
      */
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
-        CapabilitiesResponseHandler cr = new WfsCapabilitiesResponseHandler(contentHandler,request);
-        cr.setPrettyPrint(true,request.getGeoServer().isVerbose());
+        CapabilitiesResponseHandler cr = new WfsCapabilitiesResponseHandler(contentHandler,
+                request);
+        cr.setPrettyPrint(true, request.getGeoServer().isVerbose());
 
         return cr;
     }
+
     /* (non-Javadoc)
      * @see org.vfny.geoserver.responses.Response#abort()
      */
     public void abort() {
         // nothing to undo
     }
-
 }

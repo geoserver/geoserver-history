@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.logging.Logger;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
+import java.util.logging.Logger;
 
 
 /**
@@ -17,7 +16,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * incoming XML stream.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: CapabilitiesHandler.java,v 1.5 2004/01/14 22:54:26 dmzwiers Exp $
+ * @version $Id: CapabilitiesHandler.java,v 1.6 2004/01/21 00:26:06 dmzwiers Exp $
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */

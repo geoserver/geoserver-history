@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import java.util.Iterator;
-import java.util.logging.Logger;
-
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.WfsException;
+import java.util.Iterator;
+import java.util.logging.Logger;
 
 
 /**
@@ -22,7 +21,7 @@ import org.vfny.geoserver.WfsException;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: InsertRequest.java,v 1.4 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: InsertRequest.java,v 1.5 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class InsertRequest extends SubTransactionRequest {
     /** Class logger */

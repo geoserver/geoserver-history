@@ -12,6 +12,7 @@ package org.vfny.geoserver.global.dto;
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
+ * 
  * <p>
  * Represents a ContactDTO Information element such as:
  * </p>
@@ -36,7 +37,7 @@ package org.vfny.geoserver.global.dto;
  * </code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactDTO.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: ContactDTO.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public final class ContactDTO implements DataTransferObject {
     /** The name of the contact person */
@@ -82,7 +83,8 @@ public final class ContactDTO implements DataTransferObject {
      * does nothing
      * </p>
      */
-    public ContactDTO() {}
+    public ContactDTO() {
+    }
 
     /**
      * Contact Data Transfer Object constructor.
@@ -92,11 +94,14 @@ public final class ContactDTO implements DataTransferObject {
      * </p>
      *
      * @param c The ContactDTO to create a copy of.
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public ContactDTO(ContactDTO c) {
         if (c == null) {
-			throw new NullPointerException("Requires a non null ContactDTO");
+            throw new NullPointerException("Requires a non null ContactDTO");
         }
+
         contactPerson = c.getContactPerson();
         contactOrganization = c.getContactOrganization();
         contactPosition = c.getContactPosition();
@@ -161,18 +166,27 @@ public final class ContactDTO implements DataTransferObject {
         && ((contactFacsimile == c.getContactFacsimile())
         && (contactEmail == c.getContactEmail()))))))))))));
     }
-    
-    public int hashCode(){
-    	int i = 1;
-    	if(contactPerson!=null)
-    		i *= contactPerson.hashCode();
-		if(address!=null)
-			i *= address.hashCode();
-		if(contactVoice!=null)
-			i *= contactVoice.hashCode();
-		if(contactEmail!=null)
-			i *= contactEmail.hashCode();
-    	return i;
+
+    public int hashCode() {
+        int i = 1;
+
+        if (contactPerson != null) {
+            i *= contactPerson.hashCode();
+        }
+
+        if (address != null) {
+            i *= address.hashCode();
+        }
+
+        if (contactVoice != null) {
+            i *= contactVoice.hashCode();
+        }
+
+        if (contactEmail != null) {
+            i *= contactEmail.hashCode();
+        }
+
+        return i;
     }
 
     /**

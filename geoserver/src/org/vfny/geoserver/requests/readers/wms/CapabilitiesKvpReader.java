@@ -4,13 +4,13 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import java.util.Map;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.CapabilitiesRequest;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import java.util.Map;
+
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an
@@ -18,39 +18,37 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.4 2004/01/14 22:54:27 dmzwiers Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.5 2004/01/21 00:26:08 dmzwiers Exp $
  */
-public class CapabilitiesKvpReader
-    extends KvpRequestReader
-{
-  /**
-   * Constructor with raw request string.  Calls parent.
-   *
-   * @param request The raw string of a capabilities kvp request.
-   */
-  public CapabilitiesKvpReader(Map kvPairs)
-  {
-    super(kvPairs);
-  }
+public class CapabilitiesKvpReader extends KvpRequestReader {
+    /**
+     * Constructor with raw request string.  Calls parent.
+     *
+     * @param kvPairs The raw string of a capabilities kvp request.
+     */
+    public CapabilitiesKvpReader(Map kvPairs) {
+        super(kvPairs);
+    }
 
-  /**
-   * Get Capabilities request.
-   *
-   * @return Capabilities request.
-   */
-  public Request getRequest()
-      throws ServiceException
-  {
-    CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMS");
-    String reqVersion = WMS.getVersion();
+    /**
+     * Get Capabilities request.
+     *
+     * @return Capabilities request.
+     *
+     * @throws ServiceException DOCUMENT ME!
+     */
+    public Request getRequest() throws ServiceException {
+        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMS");
+        String reqVersion = WMS.getVersion();
 
-    if(keyExists("VERSION"))
-      reqVersion = getValue("VERSION");
-    else if(keyExists("WMTVER"))
-      reqVersion = getValue("WMTVER");
+        if (keyExists("VERSION")) {
+            reqVersion = getValue("VERSION");
+        } else if (keyExists("WMTVER")) {
+            reqVersion = getValue("WMTVER");
+        }
 
-    currentRequest.setVersion(reqVersion);
+        currentRequest.setVersion(reqVersion);
 
-    return currentRequest;
-  }
+        return currentRequest;
+    }
 }

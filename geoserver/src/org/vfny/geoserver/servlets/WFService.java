@@ -10,14 +10,14 @@ import org.vfny.geoserver.WfsExceptionHandler;
 
 /**
  * Base servlet for all Web Feature Server requests.
- *
- * <p>
- * Subclasses should supply the handler, request and response mapping for
- * the service they implement.
- * </p>
  * 
+ * <p>
+ * Subclasses should supply the handler, request and response mapping for the
+ * service they implement.
+ * </p>
+ *
  * @author Gabriel Roldán
- * @version $Id: WFService.java,v 1.3 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: WFService.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
  */
 abstract public class WFService extends AbstractService {
     /**

@@ -6,15 +6,18 @@ package org.vfny.geoserver.config;
 
 import org.vfny.geoserver.global.dto.ContactDTO;
 
+
 /**
  * Represents a Contact (or Party).
+ * 
  * <p>
- * This is used by GeoServer to represent a contact person or
- * organization associated with the Service.
+ * This is used by GeoServer to represent a contact person or organization
+ * associated with the Service.
  * </p>
+ * 
  * <p>
- * The configuration file represents Contact information
- * using the following XML fragment (at the time of writing):
+ * The configuration file represents Contact information using the following
+ * XML fragment (at the time of writing):
  * </p>
  * <pre><code>
  * {ContactInformation}
@@ -35,17 +38,17 @@ import org.vfny.geoserver.global.dto.ContactDTO;
  *   {ContactFacsimileTelephone}+1 301 283-1569{/ContactFacsimileTelephone}
  * {/ContactInformation}
  * </code></pre>
- * <p>
- * To communicate with the running GeoServer application, represented
- * by the classes in global, the Contact information will need to be
- * placed into the ContactDTO.
- * </p>
  * 
+ * <p>
+ * To communicate with the running GeoServer application, represented by the
+ * classes in global, the Contact information will need to be placed into the
+ * ContactDTO.
+ * </p>
+ *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactConfig.java,v 1.3 2004/01/12 23:55:27 dmzwiers Exp $
+ * @version $Id: ContactConfig.java,v 1.4 2004/01/21 00:26:10 dmzwiers Exp $
  */
 public class ContactConfig {
-    
     /** The name of the contact person */
     private String contactPerson;
 
@@ -89,7 +92,7 @@ public class ContactConfig {
      * Creates an empty ContactConfig object which must be setup prior to use.
      * </p>
      */
-    public ContactConfig() {                
+    public ContactConfig() {
     }
 
     /**
@@ -101,24 +104,31 @@ public class ContactConfig {
      * String are stored in a hashtable in memory.
      * </p>
      *
-     * @param c The ContactConfig to create a copy of.
+     * @param dto The ContactConfig to create a copy of.
      */
     public ContactConfig(ContactDTO dto) {
-        update( dto );
+        update(dto);
     }
+
     /**
      * Update the configuration to reflect the provided Data Transfer Object.
+     * 
      * <p>
      * This may be used as a course grained set method, this is the entry point
      * for the live GeoServer application to update the configuration system
      * when a new XML file is loaded.
      * </p>
+     *
      * @param dto Data Transfer Object representing Contact Information
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
-    public void update( ContactDTO dto ){
+    public void update(ContactDTO dto) {
         if (dto == null) {
-            throw new NullPointerException("Contact Data Transfer Object required");
-        }        
+            throw new NullPointerException(
+                "Contact Data Transfer Object required");
+        }
+
         contactPerson = dto.getContactPerson();
         contactOrganization = dto.getContactOrganization();
         contactPosition = dto.getContactPosition();
@@ -130,25 +140,27 @@ public class ContactConfig {
         addressCountry = dto.getAddressCountry();
         contactVoice = dto.getContactVoice();
         contactFacsimile = dto.getContactFacsimile();
-        contactEmail = dto.getContactEmail();        
+        contactEmail = dto.getContactEmail();
     }
-    
-	public ContactDTO toDTO(){
-		ContactDTO dto  = new ContactDTO();
-		 dto.setContactPerson(contactPerson);
-		 dto.setContactOrganization(contactOrganization);
-		 dto.setContactPosition(contactPosition);
-		 dto.setAddressType(addressType);
-		 dto.setAddress(address);
-		 dto.setAddressCity(addressCity);
-		 dto.setAddressState(addressState);
-		 dto.setAddressPostalCode(addressPostalCode);
-		 dto.setAddressCountry(addressCountry);
-		 dto.setContactVoice(contactVoice);
-		 dto.setContactFacsimile(contactFacsimile);
-		 dto.setContactEmail(contactEmail);
-		 return dto;        
-	}
+
+    public ContactDTO toDTO() {
+        ContactDTO dto = new ContactDTO();
+        dto.setContactPerson(contactPerson);
+        dto.setContactOrganization(contactOrganization);
+        dto.setContactPosition(contactPosition);
+        dto.setAddressType(addressType);
+        dto.setAddress(address);
+        dto.setAddressCity(addressCity);
+        dto.setAddressState(addressState);
+        dto.setAddressPostalCode(addressPostalCode);
+        dto.setAddressCountry(addressCountry);
+        dto.setContactVoice(contactVoice);
+        dto.setContactFacsimile(contactFacsimile);
+        dto.setContactEmail(contactEmail);
+
+        return dto;
+    }
+
     /**
      * getAddress purpose.
      * 

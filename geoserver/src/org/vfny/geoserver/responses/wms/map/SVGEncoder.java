@@ -4,6 +4,22 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -13,30 +29,12 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import org.geotools.data.DataSourceException;
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.5 2004/01/15 21:53:06 dmzwiers Exp $
+ * @version $Id: SVGEncoder.java,v 1.6 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -152,8 +150,8 @@ public class SVGEncoder {
 
     /**
      * If <code>collect == true</code>, then all the geometries will be grouped
-     * in a single SVG element by FeatureTypeInfo requested. The effect is like a
-     * union operation upon the geometries of the whole FeatureResults
+     * in a single SVG element by FeatureTypeInfo requested. The effect is
+     * like a union operation upon the geometries of the whole FeatureResults
      * resulting in a single geometry collection.
      * 
      * <p>
@@ -357,8 +355,7 @@ public class SVGEncoder {
         }
     }
 
-    private void writeDefs(FeatureTypeInfo[] layers)
-        throws IOException {
+    private void writeDefs(FeatureTypeInfo[] layers) throws IOException {
         if (layers == null) {
             LOGGER.warning(
                 "Can't write symbol definitions, no FeatureTypes passed");
@@ -789,7 +786,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(

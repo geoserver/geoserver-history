@@ -4,12 +4,6 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.geotools.data.FeatureResults;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
@@ -17,13 +11,18 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.4 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: SVGMapResponse.java,v 1.5 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
     private static final Logger LOGGER = Logger.getLogger(
@@ -38,6 +37,8 @@ public class SVGMapResponse extends GetMapDelegate {
 
     /**
      * DOCUMENT ME!
+     *
+     * @param gs DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */

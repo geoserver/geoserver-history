@@ -4,7 +4,14 @@
  */
 package org.vfny.geoserver.config;
 
+import org.geotools.data.DataStore;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,14 +20,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Arrays;
-
-import org.geotools.data.DataStore;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
-import org.vfny.geoserver.global.dto.StyleDTO;
 
 
 /**
@@ -34,7 +33,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.9 2004/01/20 00:23:07 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.10 2004/01/21 00:26:10 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -42,7 +41,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  */
 public class DataConfig {
     public static final String CONFIG_KEY = "Config.Data";
-    public static final String SEPARATOR  = ":::";
+    public static final String SEPARATOR = ":::";
     public static final String SELECTED_FEATURE_TYPE = "selectedFeatureType";
     public static final String SELECTED_ATTRIBUTE_TYPE = "selectedAttributeType";
 
@@ -61,8 +60,9 @@ public class DataConfig {
     private Map nameSpaces;
 
     /**
-     * FeatureTypesInfoConfig referenced by key "<code>dataStoreID + SEPARATOR + typeName</code>"
-     * 
+     * FeatureTypesInfoConfig referenced by key "<code>dataStoreID + SEPARATOR
+     * + typeName</code>"
+     *
      * @see org.vfny.geoserver.global.dto.FeatureTypeInfoConfig
      */
     private Map featuresTypes;
@@ -140,7 +140,7 @@ public class DataConfig {
 
         while (i.hasNext()) {
             Object key = i.next();
-            
+
             featuresTypes.put(key,
                 new FeatureTypeConfig(
                     (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
@@ -205,7 +205,7 @@ public class DataConfig {
 
         while (i.hasNext()) {
             Object key = i.next();
-            
+
             FeatureTypeInfoDTO f = (FeatureTypeInfoDTO) data.getFeaturesTypes()
                                                             .get(key);
             featuresTypes.put(f.getDataStoreId() + f.getName(),
@@ -236,7 +236,6 @@ public class DataConfig {
             tmp.put(key, ((DataStoreConfig) dataStores.get(key)).toDTO());
         }
 
-
         tmp = new HashMap();
         dt.setFeaturesTypes(tmp);
         i = featuresTypes.keySet().iterator();
@@ -246,7 +245,6 @@ public class DataConfig {
             tmp.put(key, ((FeatureTypeConfig) featuresTypes.get(key)).toDTO());
         }
 
-
         tmp = new HashMap();
         dt.setStyles(tmp);
         i = styles.keySet().iterator();
@@ -255,7 +253,6 @@ public class DataConfig {
             Object key = i.next();
             tmp.put(key, ((StyleConfig) styles.get(key)).toDTO());
         }
-
 
         tmp = new HashMap();
         dt.setNameSpaces(tmp);
@@ -270,7 +267,6 @@ public class DataConfig {
                     .getPrefix());
             }
         }
-
 
         return dt;
     }
@@ -318,7 +314,8 @@ public class DataConfig {
     public List listDataStoreIds() {
         return new ArrayList(dataStores.keySet());
     }
-    public List getDataStoreIds(){
+
+    public List getDataStoreIds() {
         return listDataStoreIds();
     }
 
@@ -451,15 +448,18 @@ public class DataConfig {
 
     /**
      * Add a new DataStoreConfig for the user to edit
+     * 
      * <p>
      * The DataStoreCondig will be added under its id name
      * </p>
+     *
      * @param dataStoreConfig
      */
     public void addDataStore(DataStoreConfig dataStoreConfig) {
         if (dataStores == null) {
             dataStores = new HashMap();
         }
+
         dataStores.put(dataStoreConfig.getId(), dataStoreConfig);
     }
 
@@ -658,36 +658,36 @@ public class DataConfig {
 
         return (StyleConfig) styles.remove(key);
     }
-    
+
     /**
-     * 
+     * DOCUMENT ME!
+     *
      * @return a set of all "DataStoreId.TypeName"
      */
-    public SortedSet getFeatureTypeIdentifiers(){
-    	
-    	TreeSet set = new TreeSet();
+    public SortedSet getFeatureTypeIdentifiers() {
+        TreeSet set = new TreeSet();
 
-    	for (Iterator iter = dataStores.values().iterator(); iter.hasNext();) {
-			DataStoreConfig dataStoreConfig = (DataStoreConfig) iter.next();
-			try {
-				DataStore dataStore = dataStoreConfig.findDataStore();
-				
-				String[] typeNames = dataStore.getTypeNames();
-				
-				for (int i = 0; i < typeNames.length; i++) {
-					typeNames[i] = dataStoreConfig.getId()+SEPARATOR+typeNames[i];
-				}
-				
-				List typeNamesList = Arrays.asList(typeNames);
-				
-				set.addAll(typeNamesList);
-				
-			} catch (Throwable ignore) {
-				continue;
-			}
-			
-		}
-		
-    	return Collections.unmodifiableSortedSet(set);
+        for (Iterator iter = dataStores.values().iterator(); iter.hasNext();) {
+            DataStoreConfig dataStoreConfig = (DataStoreConfig) iter.next();
+
+            try {
+                DataStore dataStore = dataStoreConfig.findDataStore();
+
+                String[] typeNames = dataStore.getTypeNames();
+
+                for (int i = 0; i < typeNames.length; i++) {
+                    typeNames[i] = dataStoreConfig.getId() + SEPARATOR
+                        + typeNames[i];
+                }
+
+                List typeNamesList = Arrays.asList(typeNames);
+
+                set.addAll(typeNamesList);
+            } catch (Throwable ignore) {
+                continue;
+            }
+        }
+
+        return Collections.unmodifiableSortedSet(set);
     }
 }

@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -14,6 +12,7 @@ import org.geotools.data.postgis.PostgisFeatureLocking;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
+import java.io.IOException;
 
 
 /**
@@ -32,32 +31,36 @@ import org.geotools.filter.Filter;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureLocking.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: GeoServerFeatureLocking.java,v 1.3 2004/01/21 00:26:07 dmzwiers Exp $
  */
-public class GeoServerFeatureLocking extends GeoServerFeatureStore implements FeatureLocking {
-
+public class GeoServerFeatureLocking extends GeoServerFeatureStore
+    implements FeatureLocking {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
-     * @param source GeoTools2 FeatureSource
+     * @param locking GeoTools2 FeatureSource
      * @param schema DOCUMENT ME!
      * @param definitionQuery DOCUMENT ME!
      */
     GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema,
         Filter definitionQuery) {
-            super( locking, schema, definitionQuery );
+        super(locking, schema, definitionQuery);
     }
-    FeatureLocking locking(){
+
+    FeatureLocking locking() {
         return (FeatureLocking) source;
     }
+
     /**
-     * 
      * <p>
      * Description ...
      * </p>
-     * @see org.vfny.geoserver.global.GeoServerFeatureStore#setFeatureLock(org.geotools.data.FeatureLock)
-     * 
+     *
      * @param lock
+     *
+     * @throws UnsupportedOperationException DOCUMENT ME!
+     *
+     * @see org.vfny.geoserver.global.GeoServerFeatureStore#setFeatureLock(org.geotools.data.FeatureLock)
      */
     public void setFeatureLock(FeatureLock lock) {
         if (source instanceof FeatureLocking) {
@@ -87,12 +90,22 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
         }
     }
 
-    /** A custom hack for PostgisFeatureLocking? */
+    /**
+     * A custom hack for PostgisFeatureLocking?
+     *
+     * @param feature DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
     public int lockFeature(Feature feature) throws IOException {
         if (source instanceof PostgisFeatureLocking) {
             return ((PostgisFeatureLocking) source).lockFeature(feature);
         }
-        throw new IOException( "FeatureTypeConfig does not support single FeatureLock");
+
+        throw new IOException(
+            "FeatureTypeConfig does not support single FeatureLock");
     }
 
     /**
@@ -103,13 +116,11 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws DataSourceException DOCUMENT ME!
      */
     public int lockFeatures(Filter filter) throws IOException {
         filter = makeDefinitionFilter(filter);
 
         return locking().lockFeatures(filter);
-        
     }
 
     /**
@@ -118,7 +129,6 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws DataSourceException DOCUMENT ME!
      */
     public int lockFeatures() throws IOException {
         return locking().lockFeatures();
@@ -128,7 +138,6 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      * DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws DataSourceException DOCUMENT ME!
      */
     public void unLockFeatures() throws IOException {
         locking().lockFeatures();
@@ -140,7 +149,6 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      * @param filter DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws DataSourceException DOCUMENT ME!
      */
     public void unLockFeatures(Filter filter) throws IOException {
         filter = makeDefinitionFilter(filter);
@@ -153,5 +161,4 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
 
         locking().lockFeatures(query);
     }
-
 }

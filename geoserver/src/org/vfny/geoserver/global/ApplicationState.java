@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver.global;
 
-import javax.servlet.ServletException;
-
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
+import javax.servlet.ServletException;
 
 
 /**
@@ -26,7 +25,7 @@ import org.apache.struts.config.ModuleConfig;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: ApplicationState.java,v 1.3 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */

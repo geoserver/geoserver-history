@@ -4,10 +4,12 @@
  */
 package org.vfny.geoserver.zserver;
 
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.logging.Logger;
-
+import com.k_int.IR.SearchException;
+import com.k_int.util.RPNQueryRep.AttrPlusTermNode;
+import com.k_int.util.RPNQueryRep.AttrTriple;
+import com.k_int.util.RPNQueryRep.ComplexNode;
+import com.k_int.util.RPNQueryRep.QueryNode;
+import com.k_int.util.RPNQueryRep.RootNode;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PhraseQuery;
@@ -15,20 +17,16 @@ import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.TermQuery;
-
-import com.k_int.IR.SearchException;
-import com.k_int.util.RPNQueryRep.AttrPlusTermNode;
-import com.k_int.util.RPNQueryRep.AttrTriple;
-import com.k_int.util.RPNQueryRep.ComplexNode;
-import com.k_int.util.RPNQueryRep.QueryNode;
-import com.k_int.util.RPNQueryRep.RootNode;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 
 /**
  * Helper class that converts a jzkit QueryNode into a lucene search query.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RPNConverter.java,v 1.8 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: RPNConverter.java,v 1.9 2004/01/21 00:26:11 dmzwiers Exp $
  */
 public class RPNConverter {
     /** The length of a full date string, CCYYMMDD. */

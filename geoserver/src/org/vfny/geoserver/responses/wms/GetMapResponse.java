@@ -4,12 +4,6 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.GeoServer;
@@ -19,6 +13,11 @@ import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.map.GetMapDelegate;
 import org.vfny.geoserver.responses.wms.map.JAIMapResponse;
 import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -27,12 +26,11 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.4 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: GetMapResponse.java,v 1.5 2004/01/21 00:26:11 dmzwiers Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
     private static final List delegates = new LinkedList();
-
     private static final List supportedMimeTypes = new LinkedList();
 
     static {
@@ -72,6 +70,8 @@ public class GetMapResponse implements Response {
      * asks the internal GetMapDelegate for the MIME type of the map that it
      * will generate or is ready to, and returns it
      *
+     * @param gs DOCUMENT ME!
+     *
      * @return the MIME type of the map generated or ready to generate
      *
      * @throws IllegalStateException if a GetMapDelegate is not setted yet
@@ -85,7 +85,10 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
+     * if a GetMapDelegate is set, calls it's abort method. Elsewere do
+     * nothing.
+     *
+     * @param gs DOCUMENT ME!
      */
     public void abort(GeoServer gs) {
         if (delegate != null) {
@@ -100,13 +103,14 @@ public class GetMapResponse implements Response {
      *
      * @throws ServiceException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
+     * @throws IllegalStateException DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        if(delegate == null)
-        {
-          throw new IllegalStateException(
-          "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
+        if (delegate == null) {
+            throw new IllegalStateException(
+                "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
         }
+
         delegate.writeTo(out);
     }
 
@@ -128,14 +132,14 @@ public class GetMapResponse implements Response {
         GetMapDelegate delegate = null;
         Class delegateClass = null;
 
-        for(Iterator it = delegates.iterator(); it.hasNext();)
-        {
-          delegate = (GetMapDelegate)it.next();
-          if(delegate.canProduce(requestFormat))
-          {
-            delegateClass = delegate.getClass();
-            break;
-          }
+        for (Iterator it = delegates.iterator(); it.hasNext();) {
+            delegate = (GetMapDelegate) it.next();
+
+            if (delegate.canProduce(requestFormat)) {
+                delegateClass = delegate.getClass();
+
+                break;
+            }
         }
 
         if (delegateClass == null) {
@@ -157,11 +161,12 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * iterates over the registered Map producers and fills a list with
-     * all the map formats' MIME types that the producers can handle
+     * iterates over the registered Map producers and fills a list with all the
+     * map formats' MIME types that the producers can handle
+     *
+     * @return DOCUMENT ME!
      */
-    static List getMapFormats()
-    {
-      return supportedMimeTypes;
+    static List getMapFormats() {
+        return supportedMimeTypes;
     }
 }

@@ -4,22 +4,20 @@
  */
 package org.vfny.geoserver.servlets.wfs;
 
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.servlets.Dispatcher;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.servlets.Dispatcher;
 
 
 /**
@@ -37,7 +35,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.2 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: WfsDispatcher.java,v 1.3 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */
@@ -73,19 +71,17 @@ public class WfsDispatcher extends Dispatcher {
         LOGGER.finer("got to post request");
 
         //request.getReader().mark(10000);
-
         /*    try {
-                      if ( request.getReader() != null ) {
-                      DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
-                      targetRequest = requestTypeAnalyzer.getRequestType();
-                       } else {
-                        targetRequest = UNKNOWN;
-                        }
-                       } catch (WfsException wfs) {
-                                   targetRequest = ERROR;
-                                   tempResponse = wfs.getXmlResponse();
-                       }*/
-
+           if ( request.getReader() != null ) {
+           DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
+           targetRequest = requestTypeAnalyzer.getRequestType();
+            } else {
+             targetRequest = UNKNOWN;
+             }
+            } catch (WfsException wfs) {
+                        targetRequest = ERROR;
+                        tempResponse = wfs.getXmlResponse();
+            }*/
         //request.getReader().reset();
         doResponse(false, request, response, targetRequest);
     }
@@ -103,6 +99,7 @@ public class WfsDispatcher extends Dispatcher {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         int targetRequest = 0;
+
         // Examine the incoming request and create appropriate server objects
         //  to deal with each request
         //              try {
@@ -111,6 +108,7 @@ public class WfsDispatcher extends Dispatcher {
             targetRequest = DispatcherKvpReader.getRequestType(kvPairs);
         } else {
             targetRequest = UNKNOWN;
+
             //throw exception
         }
 
@@ -125,7 +123,8 @@ public class WfsDispatcher extends Dispatcher {
 
         switch (req_type) {
         case GET_CAPABILITIES_REQUEST:
-	    dispatched = new Capabilities();
+            dispatched = new Capabilities();
+
             break;
 
         case DESCRIBE_FEATURE_TYPE_REQUEST:
@@ -159,8 +158,9 @@ public class WfsDispatcher extends Dispatcher {
 
         //TODO: catch the servlet exceptions from the other servlets.
         if ((dispatched != null) && !isPost) {
-	    dispatched.init(servletConfig); //only really needed for init 
-	    //hack, see Dispatcher.init()
+            dispatched.init(servletConfig); //only really needed for init 
+
+            //hack, see Dispatcher.init()
             dispatched.service(request, response);
         } else {
             String message;
@@ -177,9 +177,10 @@ public class WfsDispatcher extends Dispatcher {
 
             WfsException wfse = new WfsException(message);
             String tempResponse = wfse.getXmlResponse(false);
-			HttpSession session = request.getSession();
-			ServletContext context = session.getServletContext();
-            response.setContentType(((GeoServer) context.getAttribute( GeoServer.WEB_CONTAINER_KEY )).getCharSet().toString());
+            HttpSession session = request.getSession();
+            ServletContext context = session.getServletContext();
+            response.setContentType(((GeoServer) context.getAttribute(
+                    GeoServer.WEB_CONTAINER_KEY)).getCharSet().toString());
             response.getWriter().write(tempResponse);
         }
     }

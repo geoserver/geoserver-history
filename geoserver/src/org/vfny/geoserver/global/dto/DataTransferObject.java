@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -8,13 +12,13 @@ package org.vfny.geoserver.global.dto;
  * Marker used to indicate a public "Deep Copy" clone implementation.
  * 
  * <p>
- * This is intended to be used to provide a known interface for data
- * structures to recursively clone or test equality through data structures
- * such as Maps or Lists.
+ * This is intended to be used to provide a known interface for data structures
+ * to recursively clone or test equality through data structures such as Maps
+ * or Lists.
  * </p>
- * 
+ *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataTransferObject.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: DataTransferObject.java,v 1.3 2004/01/21 00:26:09 dmzwiers Exp $
  *
  * @see java.util.Map
  * @see java.util.List
@@ -35,7 +39,7 @@ public interface DataTransferObject extends Cloneable {
 
     /**
      * Compares the equality of the two objects.
-     * 
+     *
      * @param obj The object to checked for equivalence.
      *
      * @return <code>true</code> when the objects are the same.
@@ -43,11 +47,12 @@ public interface DataTransferObject extends Cloneable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     boolean equals(Object other);
-    
+
     /**
-     * 
+     * DOCUMENT ME!
+     *
      * @return hasCode for this Object
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     int hashCode();

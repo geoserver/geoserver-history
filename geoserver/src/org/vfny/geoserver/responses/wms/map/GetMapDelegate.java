@@ -4,12 +4,7 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
@@ -31,8 +26,11 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -41,7 +39,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.6 2004/01/15 21:53:06 dmzwiers Exp $
+ * @version $Id: GetMapDelegate.java,v 1.7 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -53,8 +51,8 @@ public abstract class GetMapDelegate implements Response {
     }
 
     /**
-     * Executes a Request, which must be a GetMapRequest.  Any other will
-     * cause a class cast exception.
+     * Executes a Request, which must be a GetMapRequest.  Any other will cause
+     * a class cast exception.
      *
      * @param request A valid GetMapRequest.
      *
@@ -168,7 +166,9 @@ public abstract class GetMapDelegate implements Response {
             throw new WmsException(ex,
                 "Can't build layer queries: " + ex.getMessage(),
                 getClass().getName() + "::parseFilters");
-        }catch(java.io.IOException e){throw new WmsException(e);}
+        } catch (java.io.IOException e) {
+            throw new WmsException(e);
+        }
 
         return queries;
     }
@@ -210,14 +210,14 @@ public abstract class GetMapDelegate implements Response {
         return finalLayerFilter;
     }
 
-	protected Style[] buildStyles(List styleNames,GeoServer gs)
+    protected Style[] buildStyles(List styleNames, GeoServer gs)
         throws WmsException {
         Style[] styles = new Style[styleNames.size()];
         int i = 0;
         Data gc = gs.getData();
-        
+
         for (Iterator it = styleNames.iterator(); it.hasNext(); i++) {
-        	styles[i] = gc.getStyle((String) it.next());
+            styles[i] = gc.getStyle((String) it.next());
         }
 
         return styles;
@@ -225,15 +225,15 @@ public abstract class GetMapDelegate implements Response {
 
     /**
      * Tries to guesss exactly wich property names are needed to query for a
-     * given FeatureTypeInfo and the Filter that will be applied to it. By this
-     * way, only the needed propertied will be queried to the underlying
+     * given FeatureTypeInfo and the Filter that will be applied to it. By
+     * this way, only the needed propertied will be queried to the underlying
      * FeatureSource in the hope that it will speed up the query
      * 
      * <p>
      * Note that just the attributes exposed by the FeatureTypeInfo will be
-     * taken in count. a FeatureTypeInfo exposes all it's attributes except
-     * if the subset of desiref exposed attributes are specified in the
-     * catalog configuration.
+     * taken in count. a FeatureTypeInfo exposes all it's attributes except if
+     * the subset of desiref exposed attributes are specified in the catalog
+     * configuration.
      * </p>
      * 
      * <p>
@@ -247,6 +247,8 @@ public abstract class GetMapDelegate implements Response {
      *
      * @return An array of the propertyNames needed.
      *
+     * @throws java.io.IOException DOCUMENT ME!
+     *
      * @task TODO: by now just returns the geometry att. Implement the rest of
      *       the method to find the rest of attributes needed by inspecting
      *       the filter (would be enough to get all the
@@ -254,7 +256,7 @@ public abstract class GetMapDelegate implements Response {
      *       in count too.
      */
     private String[] guessProperties(FeatureTypeInfo layer, Filter filter,
-        List attributes) throws java.io.IOException{
+        List attributes) throws java.io.IOException {
         FeatureType type = layer.getFeatureType();
         List atts = new ArrayList(attributes);
         String geom_name = type.getDefaultGeometry().getName();

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  *    Geotools2 - OpenSource mapping toolkit
  *    http://geotools.org
@@ -45,8 +49,8 @@ import org.geotools.validation.ValidationResults;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: NullZeroFeatureValidation.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: NullZeroFeatureValidation.java,v 1.3 2004/01/21 00:26:10 dmzwiers Exp $
  */
 public class NullZeroFeatureValidation implements FeatureValidation {
     private String path;
@@ -98,7 +102,6 @@ public class NullZeroFeatureValidation implements FeatureValidation {
 
     /**
      * Implement setName.
-     * 
      *
      * @see org.geotools.validation.Validation#setName(java.lang.String)
      */
@@ -108,7 +111,6 @@ public class NullZeroFeatureValidation implements FeatureValidation {
 
     /**
      * Implement getName.
-     * 
      *
      * @see org.geotools.validation.Validation#getName()
      */
@@ -118,8 +120,7 @@ public class NullZeroFeatureValidation implements FeatureValidation {
 
     /**
      * Implement setDescription.
-     * 
-     * 
+     *
      * @see org.geotools.validation.Validation#setDescription(java.lang.String)
      */
     public void setDescription(String description) {
@@ -143,7 +144,6 @@ public class NullZeroFeatureValidation implements FeatureValidation {
 
     /**
      * Implement getPriority.
-     * 
      *
      * @see org.geotools.validation.Validation#getPriority()
      */
@@ -153,7 +153,6 @@ public class NullZeroFeatureValidation implements FeatureValidation {
 
     /**
      * Implement setTypeNames.
-     * 
      *
      * @see org.geotools.validation.Validation#setTypeNames(java.lang.String[])
      */
@@ -163,7 +162,6 @@ public class NullZeroFeatureValidation implements FeatureValidation {
 
     /**
      * Implement getTypeNames.
-     * 
      *
      * @see org.geotools.validation.Validation#getTypeNames()
      */
@@ -173,7 +171,6 @@ public class NullZeroFeatureValidation implements FeatureValidation {
 
     /**
      * getPath purpose.
-     * 
      *
      * @return the path being stored for validation
      */
@@ -183,10 +180,10 @@ public class NullZeroFeatureValidation implements FeatureValidation {
 
     /**
      * setPath purpose.
-     * 
      *
-     * @param string the path which would be used if the validation method was executed.
-     * 
+     * @param string the path which would be used if the validation method was
+     *        executed.
+     *
      * @see org.geotools.validation.NullZeroFeatureValidation#validate(org.geotools.feature.Feature,
      *      org.geotools.feature.FeatureType,
      *      org.geotools.validation.ValidationResults)

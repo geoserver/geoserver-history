@@ -4,26 +4,25 @@
  */
 package org.vfny.geoserver.servlets.wms;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wms.GetMapKvpReader;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.GetMapResponse;
 import org.vfny.geoserver.servlets.WMService;
+import java.io.IOException;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * WMS service wich returns request and response handlers to manage a GetMap
  * request
  *
  * @author Gabriel Roldán
- * @version $Id: GetMap.java,v 1.3 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: GetMap.java,v 1.4 2004/01/21 00:26:09 dmzwiers Exp $
  */
 public class GetMap extends WMService {
     /**
@@ -33,10 +32,10 @@ public class GetMap extends WMService {
     }
 
     protected void doPost(HttpServletRequest request,
-        HttpServletResponse response) throws ServletException, IOException
-    {
-      doGet(request, response);
+        HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
+
     /**
      * DOCUMENT ME!
      *
@@ -50,6 +49,8 @@ public class GetMap extends WMService {
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     *
+     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
         /**

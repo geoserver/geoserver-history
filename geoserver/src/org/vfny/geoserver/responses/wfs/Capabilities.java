@@ -14,23 +14,21 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.3 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: Capabilities.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class Capabilities extends CapabilitiesResponse {
     protected Service getGlobalService() {
         //return GeoServer.getInstance().getWMS();
-    	// JG - that was a mistake right?
-		if( request == null ){
-			throw new IllegalStateException(
-					"Call execute before get getGlobalService!"
-			);
-		}    	
-    	return request.getGeoServer().getWFS();
+        // JG - that was a mistake right?
+        if (request == null) {
+            throw new IllegalStateException(
+                "Call execute before get getGlobalService!");
+        }
+
+        return request.getGeoServer().getWFS();
     }
 
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
-        return new WfsCapabilitiesResponseHandler(contentHandler,request);
+        return new WfsCapabilitiesResponseHandler(contentHandler, request);
     }
-    
-    
 }

@@ -14,7 +14,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: XmlResponseHandler.java,v 1.5 2004/01/16 17:58:29 dmzwiers Exp $
+ * @version $Id: XmlResponseHandler.java,v 1.6 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public abstract class XmlResponseHandler implements ResponseHandler {
     /** blank attributes to be used when none are needed. */
@@ -147,8 +147,8 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      * @throws SAXException DOCUMENT ME!
      */
     protected void indent() throws SAXException {
-    //    ++indentLevel;
-    //    cReturn();
+        //    ++indentLevel;
+        //    cReturn();
     }
 
     /**
@@ -157,8 +157,8 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      * @throws SAXException DOCUMENT ME!
      */
     protected void unIndent() throws SAXException {
-     //   --indentLevel;
-     //   cReturn();
+        //   --indentLevel;
+        //   cReturn();
     }
 
     /**
@@ -169,10 +169,10 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      * @throws SAXException DOCUMENT ME!
      */
     protected void indent(int level) throws SAXException {
-    //    while (level > 0) {
-    //        contentHandler.ignorableWhitespace(tab, 0, TAB_SIZE);
-    //        --level;
-    //    }
+        //    while (level > 0) {
+        //        contentHandler.ignorableWhitespace(tab, 0, TAB_SIZE);
+        //        --level;
+        //    }
     }
 
     /**
@@ -181,8 +181,8 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      * @throws SAXException DOCUMENT ME!
      */
     protected void cReturn() throws SAXException {
-      //  contentHandler.characters(cr, 0, cr.length);
-      //  indent(indentLevel);
+        //  contentHandler.characters(cr, 0, cr.length);
+        //  indent(indentLevel);
     }
 
     /**

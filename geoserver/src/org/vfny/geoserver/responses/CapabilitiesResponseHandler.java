@@ -4,24 +4,22 @@
  */
 package org.vfny.geoserver.responses;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.8 2004/01/16 17:58:29 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.9 2004/01/21 00:26:08 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -46,6 +44,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         startDocument(config);
         indent();
         handleService(config);
+
         //endService(config);
         handleCapabilities(config);
     }
@@ -57,19 +56,18 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleService(Service config)
-        throws SAXException {
+    protected void handleService(Service config) throws SAXException {
         startElement("Service");
-		indent();
-		handleSingleElem("Name", config.getName());
-		cReturn();
-		handleSingleElem("Title", config.getTitle());
-		cReturn();
-		handleSingleElem("Abstract", config.getAbstract());
-		cReturn();
-		handleKeywords(config.getKeywords());
-		cReturn();
-		unIndent();
+        indent();
+        handleSingleElem("Name", config.getName());
+        cReturn();
+        handleSingleElem("Title", config.getTitle());
+        cReturn();
+        handleSingleElem("Abstract", config.getAbstract());
+        cReturn();
+        handleKeywords(config.getKeywords());
+        cReturn();
+        unIndent();
         handleOnlineResouce(config);
 
         String fees = config.getFees();
@@ -102,8 +100,10 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     protected void handleOnlineResouce(Service config)
         throws SAXException {
         Object o = config.getOnlineResource();
-        if(o!=null)
-        	handleSingleElem("OnlineResource", o.toString());
+
+        if (o != null) {
+            handleSingleElem("OnlineResource", o.toString());
+        }
     }
 
     /**
@@ -138,8 +138,8 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         throws SAXException;
 
     /**
-     * Default handle of a FeatureTypeInfo content that writes the latLongBBox as
-     * well as the GlobalBasic's parameters
+     * Default handle of a FeatureTypeInfo content that writes the latLongBBox
+     * as well as the GlobalBasic's parameters
      *
      * @param ftype DOCUMENT ME!
      *
@@ -162,19 +162,18 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
                 + ftype.getName() + ": " + ex.getMessage(), ex);
         }
 
-		indent();
-		handleSingleElem("Name", ftype.getName());
-		cReturn();
-		handleSingleElem("Title", ftype.getTitle());
-		cReturn();
-		handleSingleElem("Abstract", ftype.getAbstract());
-		cReturn();
-		handleKeywords(ftype.getKeywords());
-		cReturn();
-		unIndent();
+        indent();
+        handleSingleElem("Name", ftype.getName());
+        cReturn();
+        handleSingleElem("Title", ftype.getTitle());
+        cReturn();
+        handleSingleElem("Abstract", ftype.getAbstract());
+        cReturn();
+        handleKeywords(ftype.getKeywords());
+        cReturn();
+        unIndent();
 
         //indent();
-
         /**
          * @task REVISIT: should getSRS() return the full URL?
          */
@@ -195,35 +194,35 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         startElement("LatLongBoundingBox", bboxAtts);
         endElement("LatLongBoundingBox");
     }
-    
-	/**
-	 * Handles a keyword list.
-	 *
-	 * @param kwords The list of key words.
-	 *
-	 * @throws SAXException DOCUMENT ME!
-	 *
-	 * @task REVISIT: I don't think this is currently right for wms or wfs
-	 *       service elements.  I'm just subclassing for WfsCapabilities
-	 *       response. It should be Keywords instead of Keyword.  For WMS I
-	 *       think it should be KeywordList or something to that effect, with
-	 *       individual keywords delimited by keyword elements.  So I'm not
-	 *       sure what should go here by default, perhaps should just remain
-	 *       abstract.
-	 */
-	protected void handleKeywords(List kwords) throws SAXException {
-		startElement("Keywords");
 
-		if (kwords != null) {
-			for (Iterator it = kwords.iterator(); it.hasNext();) {
-				characters(it.next().toString());
+    /**
+     * Handles a keyword list.
+     *
+     * @param kwords The list of key words.
+     *
+     * @throws SAXException DOCUMENT ME!
+     *
+     * @task REVISIT: I don't think this is currently right for wms or wfs
+     *       service elements.  I'm just subclassing for WfsCapabilities
+     *       response. It should be Keywords instead of Keyword.  For WMS I
+     *       think it should be KeywordList or something to that effect, with
+     *       individual keywords delimited by keyword elements.  So I'm not
+     *       sure what should go here by default, perhaps should just remain
+     *       abstract.
+     */
+    protected void handleKeywords(List kwords) throws SAXException {
+        startElement("Keywords");
 
-				if (it.hasNext()) {
-					characters(", ");
-				}
-			}
-		}
+        if (kwords != null) {
+            for (Iterator it = kwords.iterator(); it.hasNext();) {
+                characters(it.next().toString());
 
-		endElement("Keywords");
-	}
+                if (it.hasNext()) {
+                    characters(", ");
+                }
+            }
+        }
+
+        endElement("Keywords");
+    }
 }

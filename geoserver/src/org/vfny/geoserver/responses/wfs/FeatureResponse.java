@@ -4,18 +4,6 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerException;
-
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -42,6 +30,16 @@ import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
 import org.vfny.geoserver.responses.Response;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -49,7 +47,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.15 2004/01/20 00:30:44 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.16 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -373,8 +371,8 @@ public class FeatureResponse implements Response {
             //FeatureType schema = meta.getSchema();
             //bad hardcode - 2 is to indent 2 spaces, -1 is to do no indenting.
             transformer.setIndentation(config.isVerbose() ? 2 : (-1));
-            //transformer.setNumDecimals(config.getNumDecimals());
 
+            //transformer.setNumDecimals(config.getNumDecimals());
             WFS wfsConfig = config.getWFS();
             String wfsSchemaLoc = request.getBaseUrl() + "wfs/1.0.0/"
                 + "WFS-basic.xsd";

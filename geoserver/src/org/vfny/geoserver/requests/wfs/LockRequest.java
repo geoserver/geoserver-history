@@ -4,16 +4,15 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLockFactory;
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.requests.WFSRequest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
-
-import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureLockFactory;
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**
@@ -21,14 +20,13 @@ import org.vfny.geoserver.requests.WFSRequest;
  *
  * @author Rob Hranac, TOPP <br>
  * @author Chris Holmes, TOPP
- * @version $Id: LockRequest.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: LockRequest.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class LockRequest extends WFSRequest {
-    private String handle;
-
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
+    private String handle;
 
     /** Specifies a lock expiration. */
     protected int expiry = -1;
@@ -47,47 +45,62 @@ public class LockRequest extends WFSRequest {
 
     /**
      * Turn this request into a FeatureLock.
+     * 
      * <p>
-     * You will return FeatureLock.getAuthorization()
-     * to your user so they can refer to this lock again.
+     * You will return FeatureLock.getAuthorization() to your user so they can
+     * refer to this lock again.
      * </p>
+     * 
      * <p>
-     * The getAuthorization() value is based on getHandle(), with a default
-     * of "GeoServer" if the user has not provided a handle.
+     * The getAuthorization() value is based on getHandle(), with a default of
+     * "GeoServer" if the user has not provided a handle.
      * </p>
      * The FeatureLock produced is based on expiry:
+     * 
      * <ul>
-     * <li>negative expiry: reports if lock is available</li>
-     * <li>zero expiry: perma lock that never expires!</li>
-     * <li>postive expiry: lock expires in a number of minuets</li>
+     * <li>
+     * negative expiry: reports if lock is available
+     * </li>
+     * <li>
+     * zero expiry: perma lock that never expires!
+     * </li>
+     * <li>
+     * postive expiry: lock expires in a number of minuets
+     * </li>
      * </ul>
+     * 
+     *
      * @return
      */
-    public FeatureLock toFeatureLock(){
+    public FeatureLock toFeatureLock() {
         String handle = getHandle();
-        if( handle == null || handle.length()==0){
+
+        if ((handle == null) || (handle.length() == 0)) {
             handle = "GeoServer";
         }
-        if( expiry < 0 ){
+
+        if (expiry < 0) {
             // negative time used to query if lock is available!
-            return FeatureLockFactory.generate( handle, expiry );           
+            return FeatureLockFactory.generate(handle, expiry);
         }
-        if( expiry == 0 ){
+
+        if (expiry == 0) {
             // perma lock with no expiry!
-            return FeatureLockFactory.generate( handle, 0 );            
+            return FeatureLockFactory.generate(handle, 0);
         }
+
         // FeatureLock is specified in milli seconds
-        return FeatureLockFactory.generate( handle, expiry*60*1000 );
+        return FeatureLockFactory.generate(handle, expiry * 60 * 1000);
     }
-    
-    public void setHandle( String handle){
+
+    public void setHandle(String handle) {
         this.handle = handle;
     }
-    
-    public String getHandle(){
+
+    public String getHandle() {
         return handle;
     }
-    
+
     /**
      * Gets whether lock request should fail if not all can be locked
      *
@@ -126,7 +139,7 @@ public class LockRequest extends WFSRequest {
     }
 
     public int getExpirySeconds() {
-	return expiry * 60;
+        return expiry * 60;
     }
 
     /**

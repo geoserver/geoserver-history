@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.global;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataStoreMetaData;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 
 /**
@@ -21,9 +20,10 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.5 2004/01/20 06:30:52 jive Exp $
+ * @version $Id: DataStoreInfo.java,v 1.6 2004/01/21 00:26:07 dmzwiers Exp $
  */
-public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMetaData {
+public class DataStoreInfo extends GlobalLayerSupertype
+    implements DataStoreMetaData {
     /** for logging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
@@ -39,6 +39,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
 
     /** Storage for metadata */
     private Map meta;
+
     /**
      * DataStoreInfo constructor.
      * 
@@ -98,12 +99,9 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
      *
      * @return DataStore
      *
-     * @throws IOException if a datastore is found but can not be created for
-     *         the passed parameters
      * @throws IllegalStateException if this DataStoreInfo is disabled by
      *         configuration
      * @throws NoSuchElementException if no DataStoreInfo is found
-     * @throws DataSourceException
      */
     public synchronized DataStore getDataStore()
         throws IllegalStateException, NoSuchElementException {
@@ -120,7 +118,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
             } catch (Throwable ex) {
                 throw new IllegalStateException("can't create the datastore "
                     + getId() + ": " + ex.getClass().getName() + ": "
-                    + ex.getMessage()+"\n"+ ex.toString());
+                    + ex.getMessage() + "\n" + ex.toString());
             }
 
             if (dataStore == null) {
@@ -129,6 +127,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
                     "No datastore found capable of managing " + toString());
             }
         }
+
         return dataStore;
     }
 
@@ -181,12 +180,18 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
      * @return NameSpaceInfo the namespace for this datastore.
      */
     public NameSpaceInfo getNameSpace() {
-        return (NameSpaceInfo) data.getNameSpace( getNamesSpacePrefix() );
+        return (NameSpaceInfo) data.getNameSpace(getNamesSpacePrefix());
     }
-    /** Access namespace id */
-    public String getNamesSpacePrefix(){
+
+    /**
+     * Access namespace id
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getNamesSpacePrefix() {
         return dsc.getNameSpaceId();
     }
+
     /**
      * Implement toString.
      *
@@ -208,37 +213,40 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
 
     /**
      * Implement containsMetaData.
-     * 
-     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
-     * 
+     *
      * @param key
+     *
      * @return
+     *
+     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
      */
     public boolean containsMetaData(String key) {
-        return meta.containsKey( key );
+        return meta.containsKey(key);
     }
 
     /**
      * Implement putMetaData.
-     * 
-     * @see org.geotools.data.MetaData#putMetaData(java.lang.String, java.lang.Object)
-     * 
+     *
      * @param key
      * @param value
+     *
+     * @see org.geotools.data.MetaData#putMetaData(java.lang.String,
+     *      java.lang.Object)
      */
     public void putMetaData(String key, Object value) {
-        meta.put( key, value );
+        meta.put(key, value);
     }
 
     /**
      * Implement getMetaData.
-     * 
-     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
-     * 
+     *
      * @param key
+     *
      * @return
+     *
+     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
      */
     public Object getMetaData(String key) {
-        return meta.get( key );
-    }    
+        return meta.get(key);
+    }
 }

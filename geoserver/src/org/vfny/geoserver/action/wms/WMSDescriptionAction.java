@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  * Created on Dec 29, 2003
  *
@@ -6,57 +10,51 @@
  */
 package org.vfny.geoserver.action.wms;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.form.wms.WMSDescriptionForm;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
- * @author rgould
+ * DOCUMENT ME!
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @author rgould To change the template for this generated type comment go to
+ *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public final class WMSDescriptionAction extends ConfigAction {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
+        WMSDescriptionForm descriptionForm = (WMSDescriptionForm) form;
 
-	public ActionForward execute(ActionMapping mapping,
-		ActionForm form,
-		HttpServletRequest request,
-		HttpServletResponse response)
-		throws IOException, ServletException {
+        String name = descriptionForm.getName();
+        String title = descriptionForm.getTitle();
+        String accessConstraints = descriptionForm.getAccessConstraints();
+        String fees = descriptionForm.getFees();
+        String maintainer = descriptionForm.getMaintainer();
+        String keywords = descriptionForm.getKeywords();
+        String _abstract = descriptionForm.get_abstract();
 
-			WMSDescriptionForm descriptionForm = (WMSDescriptionForm) form;
+        WMSConfig config = getWMSConfig();
+        config.setName(name);
+        config.setTitle(title);
+        config.setAccessConstraints(accessConstraints);
+        config.setFees(fees);
+        config.setMaintainer(maintainer);
+        config.setAbstract(_abstract);
 
-			String name = descriptionForm.getName();
-			String title = descriptionForm.getTitle();
-			String accessConstraints = descriptionForm.getAccessConstraints();
-			String fees = descriptionForm.getFees();
-			String maintainer = descriptionForm.getMaintainer();
-			String keywords = descriptionForm.getKeywords();
-			String _abstract = descriptionForm.get_abstract();
+        String[] array = (keywords != null)
+            ? keywords.split(System.getProperty("line.separator")) : new String[0];
 
-			WMSConfig config = getWMSConfig();
-			config.setName(name);
-			config.setTitle(title);
-			config.setAccessConstraints(accessConstraints);
-			config.setFees(fees);
-			config.setMaintainer(maintainer);
-			config.setAbstract(_abstract);
-			
-			String[] array = keywords != null ? keywords.split(System.getProperty("line.separator")) : new String[0];
-			
-			config.setKeywords(array);
+        config.setKeywords(array);
 
-
-			return mapping.findForward("wmsConfigDescription");
-		}
-
+        return mapping.findForward("wmsConfigDescription");
+    }
 }

@@ -22,7 +22,6 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import java.io.File;
@@ -62,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.20 2004/01/20 18:22:03 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.21 2004/01/21 00:26:10 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -249,7 +248,8 @@ public class XMLConfigReader {
         data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
                     catalogElem, "datastores", true)));
         data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem,
-                    "styles", false), new File(featureTypeDir.getParentFile(),"styles")));
+                    "styles", false),
+                new File(featureTypeDir.getParentFile(), "styles")));
 
         // must be last
         data.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
@@ -573,12 +573,14 @@ public class XMLConfigReader {
      * </p>
      *
      * @param stylesElem a DOM tree to convert into a Map of Styles.
+     * @param baseDir DOCUMENT ME!
      *
      * @return A complete Map of Styles loaded from the DOM tree provided.
      *
      * @throws ConfigurationException When an error occurs.
      */
-    protected Map loadStyles(Element stylesElem, File baseDir) throws ConfigurationException {
+    protected Map loadStyles(Element stylesElem, File baseDir)
+        throws ConfigurationException {
         Map styles = new HashMap();
 
         NodeList stylesList = null;
@@ -589,11 +591,11 @@ public class XMLConfigReader {
 
         if ((stylesList == null) || (stylesList.getLength() == 0)) {
             //no styles where defined, just add a default one
-			StyleDTO s = new StyleDTO();
-			s.setId("normal");
-			s.setFilename( new File(baseDir,"normal.sld"));
-			s.setDefault(true);
-            styles.put("normal",s);
+            StyleDTO s = new StyleDTO();
+            s.setId("normal");
+            s.setFilename(new File(baseDir, "normal.sld"));
+            s.setDefault(true);
+            styles.put("normal", s);
         }
 
         int styleCount = stylesList.getLength();
@@ -604,8 +606,8 @@ public class XMLConfigReader {
 
             StyleDTO s = new StyleDTO();
             s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
-            s.setFilename(new File(baseDir,ReaderUtils.getAttribute(styleElem,
-                        "filename", true)));
+            s.setFilename(new File(baseDir,
+                    ReaderUtils.getAttribute(styleElem, "filename", true)));
             s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default",
                     false));
             styles.put(s.getId(), s);
@@ -879,9 +881,10 @@ public class XMLConfigReader {
             // attempt to load optional schema information
             //
             LOGGER.finest("process schema file " + infoFile);
+
             try {
                 loadSchema(schemaFile, dto);
-            } catch (Exception badDog ){
+            } catch (Exception badDog) {
                 badDog.printStackTrace();
                 attributeList = Collections.EMPTY_LIST;
             }
@@ -915,11 +918,14 @@ public class XMLConfigReader {
         ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
         ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
         ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
-        String keywords = ReaderUtils.getChildText(fTypeRoot,"keywords");
+
+        String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
         List l = new LinkedList();
         String[] ss = keywords.split(",");
-        for(int i=0;i<ss.length;i++)
-        	l.add(ss[i].trim());
+
+        for (int i = 0; i < ss.length; i++)
+            l.add(ss[i].trim());
+
         ft.setKeywords(l);
         ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
         ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
@@ -1070,14 +1076,13 @@ public class XMLConfigReader {
 
     /**
      * Process schema File for a list of AttributeTypeInfoDTO.
+     * 
      * <p>
      * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
      * </p>
      *
      * @param schemaFile File containing schema definition
      * @param dto Schema DOM element
-     *
-     * @return List of AttributeTypeInfoDTO
      *
      * @throws ConfigurationException
      */
@@ -1094,13 +1099,16 @@ public class XMLConfigReader {
             throw new ConfigurationException("Could not open schmea file:"
                 + schemaFile, e);
         }
+
         Element elem = null;
+
         try {
             elem = ReaderUtils.loadConfig(reader);
         } catch (Exception erk) {
             throw new ConfigurationException("Could not parse schema file:"
-                    + schemaFile, erk);
+                + schemaFile, erk);
         }
+
         processSchema(elem, dto);
     }
 
@@ -1113,8 +1121,6 @@ public class XMLConfigReader {
      *
      * @param elem Schema DOM element
      * @param featureTypeInfoDTO
-     *
-     * @return List of AttributeTypeInfoDTO
      *
      * @throws ConfigurationException
      */
@@ -1144,19 +1150,23 @@ public class XMLConfigReader {
 
             if ((ref != null) && (ref != "")) {
                 ati.setComplex(false);
+
                 String tmp = GMLUtils.type(ref).schema;
-                tmp = Character.toLowerCase(tmp.charAt(0))+tmp.substring(1);
+                tmp = Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
                 ati.setType(tmp);
                 tmp = GMLUtils.type(ref).name;
-                tmp = Character.toLowerCase(tmp.charAt(0))+tmp.substring(1);
+                tmp = Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
                 ati.setName(tmp);
             } else {
                 ati.setName(name);
 
                 if ((type != null) && (type != "")) {
-                	int t = type.indexOf(":");
-                	if(t!=-1)
-                		type = type.substring(t+1);
+                    int t = type.indexOf(":");
+
+                    if (t != -1) {
+                        type = type.substring(t + 1);
+                    }
+
                     ati.setType(type);
                     ati.setComplex(false);
                 } else {
@@ -1190,6 +1200,7 @@ public class XMLConfigReader {
                     false, 0));
             list.add(ati);
         }
+
         featureTypeInfoDTO.setSchemaAttributes(list);
     }
 

@@ -1,16 +1,27 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  * Created on Jan 20, 2004
  *
  * To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-
 package org.geotools.validation.xml;
 
-import java.beans.*;
-import java.lang.reflect.*;
-import java.util.*;
-import org.geotools.validation.*;
+import org.geotools.validation.Validation;
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 
 /**
  * Contains the information required for Validation creation.
@@ -80,13 +91,16 @@ class PlugIn {
      * test definition, using this plugIn's defaults.
      * </p>
      *
-     * @param test Map defining User's test.
+     * @param name Map defining User's test.
+     * @param description DOCUMENT ME!
+     * @param args DOCUMENT ME!
      *
      * @return Validation ready for use by the ValidationProcessor
      *
      * @throws ValidationException when an error occurs
      */
-    public Validation createValidation(String name, String description, Map args) throws ValidationException {
+    public Validation createValidation(String name, String description, Map args)
+        throws ValidationException {
         BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
         Class type = beanDescriptor.getBeanClass();
 
@@ -119,6 +133,7 @@ class PlugIn {
             throw new ValidationException("Could not create '" + name
                 + "' as plugIn " + plugInName, e);
         }
+
         validate.setName(name);
         validate.setDescription(description);
         configure(validate, defaults);
@@ -129,7 +144,7 @@ class PlugIn {
 
     protected void configure(Object bean, Map config)
         throws ValidationException {
-        if (config == null || config.size()==0) {
+        if ((config == null) || (config.size() == 0)) {
             return;
         }
 
@@ -140,7 +155,7 @@ class PlugIn {
             property = propertyInfo((String) entry.getKey());
 
             if (property == null) {
-            	// error here
+                // error here
                 continue;
             }
 
@@ -148,14 +163,14 @@ class PlugIn {
                 property.getWriteMethod().invoke(bean,
                     new Object[] { entry.getValue() });
             } catch (IllegalArgumentException e) {
-                throw new ValidationException("test failed to configure " + plugInName + " "
-                    + entry.getKey(), e);
+                throw new ValidationException("test failed to configure "
+                    + plugInName + " " + entry.getKey(), e);
             } catch (IllegalAccessException e) {
-                throw new ValidationException("test failed to configure " + plugInName + " "
-                    + entry.getKey(), e);
+                throw new ValidationException("test failed to configure "
+                    + plugInName + " " + entry.getKey(), e);
             } catch (InvocationTargetException e) {
-                throw new ValidationException("test failed to configure " + plugInName + " "
-                    + entry.getKey(), e);
+                throw new ValidationException("test failed to configure "
+                    + plugInName + " " + entry.getKey(), e);
             }
         }
     }
@@ -175,11 +190,11 @@ class PlugIn {
      * @see Map
      */
     private static String get(Map map, String key) {
-    	if (map.containsKey(key)) {
-    		return (String) map.get(key);
-    	}
+        if (map.containsKey(key)) {
+            return (String) map.get(key);
+        }
 
-    	return null;
+        return null;
     }
 
     /**
@@ -197,24 +212,24 @@ class PlugIn {
      * @return Class an boolean as described above.
      */
     private static Class get(Map map, String key, Class defaultType) {
-    	if (!map.containsKey(key)) {
-    		return defaultType;
-    	}
+        if (!map.containsKey(key)) {
+            return defaultType;
+        }
 
-    	Object value = map.get(key);
+        Object value = map.get(key);
 
-    	if (value instanceof Class) {
-    		return (Class) value;
-    	}
+        if (value instanceof Class) {
+            return (Class) value;
+        }
 
-    	if (value instanceof String) {
-    		try {
-    			return Class.forName((String) value);
-    		} catch (ClassNotFoundException e) {
-    			// error
-    		}
-    	}
+        if (value instanceof String) {
+            try {
+                return Class.forName((String) value);
+            } catch (ClassNotFoundException e) {
+                // error
+            }
+        }
 
-    	return defaultType;
+        return defaultType;
     }
 }

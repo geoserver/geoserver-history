@@ -4,13 +4,13 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import java.util.logging.Logger;
-
 import org.geotools.filter.Filter;
+import java.util.logging.Logger;
 
 
 /**
  * Defines a WFS Delete request, an element of TransactionRequest.
+ * 
  * <p>
  * Defines a WFS delete request, which is a type transaction request.  Full
  * transaction requests may contain one or more delete requests.  Note that
@@ -33,19 +33,18 @@ import org.geotools.filter.Filter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteRequest.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
+ * @version $Id: DeleteRequest.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");    
+            "org.vfny.geoserver.requests.wfs");
 
     /** Specifies the output format */
     protected String typeName = null;
 
     /** Specifies the features to lock. */
     protected Filter filter = null;
-
     protected boolean releaseAll = true;
 
     /**
