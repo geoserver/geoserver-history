@@ -50,7 +50,8 @@ We've tested the release extensively, but we can not possibly test all possible
 servlet container, operating system, and data store combinations.  So please 
 make use of our JIRA task tracker at: 
 http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311 or email 
-geoserver-devel@lists.sf.net.  It's the only way we can know to fix them.  And
+geoserver-devel@lists.sourceforge.net or geoserver-user@lists.sourceforge.net.  
+It's the only way we can know to fix them.  And
 if you can fix the bugs yourself even better, as the source is open and we're
 always more than happy to take patches.  
 
