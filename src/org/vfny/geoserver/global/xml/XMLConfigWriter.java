@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.16 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.17 2004/02/02 18:51:46 dmzwiers Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -72,7 +72,9 @@ public class XMLConfigWriter {
                     "catalog.xml"), false);
 
         try {
-            storeCatalog(new WriterHelper(new FileWriter(catalogFile)), data);
+        	FileWriter fw = new FileWriter(catalogFile);
+            storeCatalog(new WriterHelper(fw), data);
+            fw.close();
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
         }
@@ -99,8 +101,10 @@ public class XMLConfigWriter {
                     "services.xml"), false);
 
         try {
-            storeServices(new WriterHelper(new FileWriter(configFile)), wms,
+        	FileWriter fw = new FileWriter(configFile);
+            storeServices(new WriterHelper(fw), wms,
                 wfs, geoServer);
+            fw.close();
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
         }
@@ -609,7 +613,9 @@ public class XMLConfigWriter {
         File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
 
         try {
-            WriterHelper cw = new WriterHelper(new FileWriter(f));
+        	FileWriter fw = new FileWriter(f);
+            WriterHelper cw = new WriterHelper(fw);
+            fw.close();
             Map m = new HashMap();
 
             if ((ft.getDataStoreId() != null) && (ft.getDataStoreId() != "")) {
@@ -703,7 +709,9 @@ public class XMLConfigWriter {
         File f = WriterUtils.initWriteFile(new File(dir, "schema.xml"), false);
 
         try {
-            storeFeatureSchema(fs, new FileWriter(f));
+        	FileWriter fw = new FileWriter(f);
+            storeFeatureSchema(fs, fw);
+            fw.close();
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
@@ -805,7 +813,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.16 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.17 2004/02/02 18:51:46 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
