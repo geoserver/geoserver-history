@@ -29,7 +29,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.13 2004/02/19 18:38:34 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.14 2004/02/19 21:51:11 cholmesny Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();
@@ -335,14 +335,14 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         indent();
         startElement("Get");
 
-        String url = baseUrl + "?";
+        String url = baseUrl + "wms?";
         handleOnlineResource(url);
         endElement("Get");
 
         if (isPost) {
             startElement("Post");
 
-            String postUrl = baseUrl;
+            String postUrl = baseUrl + "wms";
             handleOnlineResource(postUrl);
             endElement("Post");
         }
