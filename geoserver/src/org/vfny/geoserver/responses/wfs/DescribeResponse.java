@@ -1,23 +1,8 @@
- /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.responses.wfs;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerException;
 
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
@@ -30,6 +15,19 @@ import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DescribeRequest;
 import org.vfny.geoserver.responses.Response;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -38,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.19 2004/03/31 05:08:02 cholmesny Exp $
+ * @version $Id: DescribeResponse.java,v 1.20 2004/04/05 12:04:14 cholmesny Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -47,8 +45,6 @@ public class DescribeResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
-	private DescribeRequest request;
-
 
     /** Bean that holds global featureType information */
 
@@ -65,6 +61,7 @@ public class DescribeResponse implements Response {
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</xs:schema>";
+    private DescribeRequest request;
 
     /** Main XML class for interpretation and response. */
     private String xmlResponse = new String();
@@ -82,6 +79,7 @@ public class DescribeResponse implements Response {
                 "illegal request type, expected DescribeRequest, got "
                 + request);
         }
+
         DescribeRequest wfsRequest = (DescribeRequest) request;
         this.request = wfsRequest;
         LOGGER.finer("processing describe request" + wfsRequest);
@@ -118,9 +116,10 @@ public class DescribeResponse implements Response {
         return gs.getMimeType();
     }
 
-    public String getContentEncoding(){
+    public String getContentEncoding() {
         return null;
     }
+
     /**
      * Writes the describe response to the output stream.
      *
@@ -197,8 +196,8 @@ public class DescribeResponse implements Response {
             //request.getBaseUrl should actually be GeoServer.getSchemaBaseUrl()
             //but that method is broken right now.  See the note there.
             tempResponse.append("\n\n<xs:import namespace=" + GML_URL
-                + " schemaLocation=\"" + request.getSchemaBaseUrl() + 
-                "gml/2.1.2/feature.xsd\"/>\n\n");
+                + " schemaLocation=\"" + request.getSchemaBaseUrl()
+                + "gml/2.1.2/feature.xsd\"/>\n\n");
             tempResponse.append(generateSpecifiedTypes(requestedTypes,
                     wfsRequest.getWFS()));
         } else {
@@ -251,8 +250,7 @@ public class DescribeResponse implements Response {
         LOGGER.finer("prefix is " + prefix);
 
         StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
-        String namespace = r.getWFS().getData().getNameSpace(prefix)
-                            .getUri();
+        String namespace = r.getWFS().getData().getNameSpace(prefix).getUri();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\"" + r.getBaseUrl()
             + "wfs/DescribeFeatureType?typeName=");
@@ -265,8 +263,8 @@ public class DescribeResponse implements Response {
 
             if (typeName.startsWith(prefix)
                     || ((typeName.indexOf(':') == -1)
-                    && prefix.equals(r.getWFS().getData()
-                                          .getDefaultNameSpace().getPrefix()))) {
+                    && prefix.equals(r.getWFS().getData().getDefaultNameSpace()
+                                          .getPrefix()))) {
                 retBuffer.append(typeName + ",");
             }
         }
@@ -328,12 +326,14 @@ public class DescribeResponse implements Response {
             if (!validTypes.contains(meta)) {
                 //FeatureType ft = meta.getSchema();
                 //File inputFile = new File(currentFile);
-            	//generatedType = meta.getXMLSchema();
+                //generatedType = meta.getXMLSchema();
                 try {
-                	FeatureType ft2 = meta.getFeatureType();
-                	String gType2 = generateFromSchema(ft2);
-                	if(gType2 != null && gType2!="")
-                		generatedType = gType2;
+                    FeatureType ft2 = meta.getFeatureType();
+                    String gType2 = generateFromSchema(ft2);
+
+                    if ((gType2 != null) && (gType2 != "")) {
+                        generatedType = gType2;
+                    }
                 } catch (IOException e) {
                     generatedType = "";
                 }
@@ -401,7 +401,7 @@ public class DescribeResponse implements Response {
         //String tableName = typeName.substring(prefixDelimPos + 1);
         //  }
         return "\n  <xs:element name='" + type.getShortName() + "' type='"
-        + type.getShortName() + "_Type' substitutionGroup='gml:_Feature'/>";
+        + type.getName() + "_Type' substitutionGroup='gml:_Feature'/>";
     }
 
     /**
