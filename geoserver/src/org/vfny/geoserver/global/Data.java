@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.1.2.18 2004/01/12 04:55:14 jive Exp $
+ * @version $Id: Data.java,v 1.1.2.19 2004/01/12 17:07:28 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -538,7 +538,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
             try {
                 dataStore = meta.getDataStore();
-            } catch (IOException notAvailable) {
+            } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
 
@@ -597,7 +597,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
             try {
                 dataStore = meta.getDataStore();
-            } catch (IOException notAvailable) {
+            } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
 
@@ -661,7 +661,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
             try {
                 dataStore = meta.getDataStore();
-            } catch (IOException notAvailable) {
+            } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
 
@@ -707,7 +707,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
             try {
                 dataStore = meta.getDataStore();
-            } catch (IOException notAvailable) {
+            } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
 
@@ -746,7 +746,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
             try {
                 dataStore = meta.getDataStore();
-            } catch (IOException notAvailable) {
+            } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
 

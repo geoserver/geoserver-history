@@ -4,12 +4,10 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataStoreMetaData;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -22,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.1.2.8 2004/01/12 13:27:05 jive Exp $
+ * @version $Id: DataStoreInfo.java,v 1.1.2.9 2004/01/12 17:07:28 dmzwiers Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMetaData {
     /** for logging */
@@ -107,7 +105,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
      * @throws DataSourceException
      */
     public synchronized DataStore getDataStore()
-        throws IOException, IllegalStateException, NoSuchElementException {
+        throws IllegalStateException, NoSuchElementException {
         if (!isEnabled()) {
             throw new IllegalStateException(
                 "this datastore is not enabled, check your configuration files");
@@ -119,9 +117,9 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
                         .getConnectionParams());
                 LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
-                throw new DataSourceException("can't create the datastore "
+                throw new IllegalStateException("can't create the datastore "
                     + getId() + ": " + ex.getClass().getName() + ": "
-                    + ex.getMessage(), ex);
+                    + ex.getMessage()+"\n"+ ex.toString());
             }
 
             if (dataStore == null) {
