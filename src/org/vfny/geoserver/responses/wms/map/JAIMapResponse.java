@@ -43,7 +43,7 @@ import javax.imageio.stream.ImageOutputStream;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.21 2004/04/18 15:43:22 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.22 2004/04/19 03:03:02 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -194,9 +194,12 @@ public class JAIMapResponse extends GetMapDelegate {
     public void abort(GeoServer gs) {
         renderer.stopRendering();
 
-        if (graphic != null) {
-            graphic.dispose();
-        }
+		//taking out for now, Andrea says it might have problems.
+		//though this is in the abort, so do we really care if it throws
+		//an exception?  Can it mess things up more than that?
+       // if (graphic != null) {
+         //   graphic.dispose();
+        //}
     }
 
     /**
