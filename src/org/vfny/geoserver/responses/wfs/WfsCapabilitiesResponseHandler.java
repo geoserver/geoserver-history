@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.3 2004/01/02 23:04:52 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -176,7 +176,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         indent();
         startElement("Query");
         endElement("Query");
-	startElement("Insert");
+        startElement("Insert");
         endElement("Insert");
         startElement("Update");
         endElement("Update");
@@ -297,5 +297,9 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
         endElement(ogc + "Filter_Capabilities");
         unIndent();
+    }
+
+    protected String getBboxElementName() {
+        return "LatLongBoundingBox";
     }
 }
