@@ -35,7 +35,7 @@ import java.util.Map;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.37 2004/04/16 05:55:03 jive Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.38 2004/04/16 06:28:56 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -279,8 +279,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * Returns the XML prefix used for GML output of this FeatureType.
      * 
      * <p>
-     * Returns the namespace prefix for this FeatureTypeInfo. This prefix also
-     * seems to be used as a "ID" for looking up GeoServer Namespace.
+     * Returns the namespace prefix for this FeatureTypeInfo.
      * </p>
      *
      * @return String the namespace prefix.
@@ -290,7 +289,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     }
 
     /**
-     * Gets the namespace for this featureType.  This isn't _really_ necessary,
+     * Gets the namespace for this featureType.
+     * <p>
+     * This isn't _really_ necessary,
      * but I'm putting it in in case we change namespaces,  letting
      * FeatureTypes set their own namespaces instead of being dependant on
      * datasources.  This method will allow us to make that change more easily
@@ -306,7 +307,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
             throw new IllegalStateException("This featureType is not "
                 + "enabled");
         }
-
         return getDataStoreInfo().getNameSpace();
     }
     
@@ -320,42 +320,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      */
     public String getName() {        
         return getPrefix() + ":" + typeName;
-    }
-
-    /**
-     * Convenience method for those who just want to report the name of the
-     * featureType instead of requiring the full name for look up.  If
-     * allowShort is true then just the localName, with no prefix, will be
-     * returned if the dataStore is not enabled.  If allow short is false then
-     * a full getName will be returned, with potentially bad results.
-     *
-     * @param allowShort does nothing
-     *
-     * @return String getName()
-     *
-     * @see getName()
-     */
-    public String getName(boolean allowShort) {
-        if (allowShort && (!isEnabled() || (getDataStoreInfo() == null))) {
-            return getShortName();
-        } else {
-            return getName();
-        }
-    }
-
-    /**
-     * Access the name of this FeatureType.
-     * <p>
-     * This is the typeName as provided by the real gt2 DataStore.
-     * </p>
-     *
-     * @return String getName()
-     *
-     * @see getName()
-     */
-    public String getShortName() {
-        return typeName;
-    }
+    }    
 
     /**
      * getFeatureSource purpose.
@@ -370,7 +335,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      */
     public FeatureSource getFeatureSource() throws IOException {
         if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
-            throw new IOException("featureType: " + getName(true)
+            throw new IOException("featureType: " + getName()
                 + " does not have a properly configured " + "datastore");
         }
 
@@ -683,15 +648,14 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     }
 
     /**
-     * getSchemaName purpose.
+     * A valid schema name for this FeatureType.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return schemaName if provided or typeName+"_Type"
      */
     public String getSchemaName() {
+        if( schemaName == null ){
+            return typeName + "_Type";
+        }
         return schemaName;
     }
 
@@ -737,16 +701,17 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     //
     // FeatureTypeMetaData Interface
     //
-
     /**
-     * Access typeName.
+     * Access the name of this FeatureType.
+     * <p>
+     * This is the typeName as provided by the real gt2 DataStore.
+     * </p>
      *
-     * @return typeName for FeatureType
-     *
+     * @return String getName()
      * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
      */
     public String getTypeName() {
-        return dataStoreId;
+        return typeName;
     }
 
     /**

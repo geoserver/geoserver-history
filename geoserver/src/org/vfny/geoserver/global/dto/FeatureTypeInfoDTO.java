@@ -33,7 +33,7 @@ import java.util.List;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.12 2004/04/07 18:50:44 jive Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.13 2004/04/16 06:28:57 jive Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -51,10 +51,19 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The schema name. */
     private String schemaName;
 
-    /** The schemaBase name. */
+    /** The schemaBase name.
+     * <p>
+     * Example NullType, or PointPropertyType.
+     * </p>
+     */
     private String schemaBase;
 
-    /** The featuretype name. */
+    /**
+     * The featuretype name.
+     * <p>
+     * Often related to the title - like bc_roads_Type
+     * </p>
+     */
     private String name;
 
     /**
@@ -623,7 +632,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * getSchemaBase purpose.
      * 
      * <p>
-     * Description ...
+     * Usually generated as: getName + "_Type"
      * </p>
      *
      * @return

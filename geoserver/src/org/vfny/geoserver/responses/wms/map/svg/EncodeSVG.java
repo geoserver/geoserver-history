@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: EncodeSVG.java,v 1.3 2004/04/06 12:12:18 cholmesny Exp $
+ * @version $Id: EncodeSVG.java,v 1.4 2004/04/16 06:28:56 jive Exp $
  */
 public class EncodeSVG {
     /** DOCUMENT ME! */
@@ -136,15 +136,14 @@ public class EncodeSVG {
             FeatureReader featureReader = null;
 
             try {
-                LOGGER.fine("obtaining FeatureReader for "
-                    + layerInfo.getName(true));
+                LOGGER.fine("obtaining FeatureReader for "+ layerInfo.getTypeName());
                 featureReader = results[i].reader();
                 LOGGER.fine("got FeatureReader, now writing");
 
                 String groupId = null;
                 String styleName = null;
 
-                groupId = layerInfo.getName(true);
+                groupId = layerInfo.getName();
 
                 if (styles != null) {
                     styleName = styles[i].getName();

@@ -36,7 +36,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.20 2004/04/05 12:04:14 cholmesny Exp $
+ * @version $Id: DescribeResponse.java,v 1.21 2004/04/16 06:28:56 jive Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -400,8 +400,8 @@ public class DescribeResponse implements Response {
         //if (prefixDelimPos > 0) {
         //String tableName = typeName.substring(prefixDelimPos + 1);
         //  }
-        return "\n  <xs:element name='" + type.getShortName() + "' type='"
-        + type.getName() + "_Type' substitutionGroup='gml:_Feature'/>";
+        return "\n  <xs:element name='" + type.getTypeName() + "' type='"
+        + type.getSchemaName() + "' substitutionGroup='gml:_Feature'/>";
     }
 
     /**

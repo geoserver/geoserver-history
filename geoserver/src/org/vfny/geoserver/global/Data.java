@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.39 2004/04/15 20:59:29 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.40 2004/04/16 06:28:56 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -1019,7 +1019,7 @@ SCHEMA:
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
 
             if (fType.isEnabled()) {
-                if (fType.getShortName().equals(namespacePrefix)
+                if (fType.getPrefix().equals(namespacePrefix)
                         && fType.getNameSpace().getUri().equals(uri)) {
                     return fType;
                 }
