@@ -25,6 +25,31 @@
       </connectionParams>
     </datastore>
     
+    <datastore id="cdf1"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Deletes/Deletes.shp"/>
+      </connectionParams>
+    </datastore> 
+    
+    <datastore id="cgf1"
+               enabled="true"
+               namespace="cgf">
+               <!-- enabled is optional, defaults to true -->
+      <description>A sample postgis testing database</description>
+      <connectionParams>
+        <parameter name="dbtype" value="postgis"/>
+        <parameter name="host" value="hydra"/>
+        <parameter name="port" value="5432"/>
+        <parameter name="database" value="dzwiers"/>
+        <parameter name="user" value="cite"/>
+        <parameter name="passwd" value="cite"/>
+      </connectionParams>
+    </datastore> 
+    
     <datastore id="cdf"
                enabled="true"
                namespace="cdf">
@@ -57,28 +82,21 @@
   </datastores>
 
   <namespaces>
-    <namespace uri="http://www.openplans.org/topp" 
-	           prefix="topp"/>
-	<namespace uri="http://www.opengis.net/cite/data"
-	           prefix="cite"/>
 	<namespace default="true" uri="http://www.opengis.net/cite/data"
 	           prefix="cdf"/>
 	<namespace uri="http://www.opengis.net/cite/geometry"
 	           prefix="cgf"/>
     <namespace uri="http://www.refractions.net/lakes" 
 	           prefix="lakes"/>
+    <namespace uri="http://www.openplans.org/topp" 
+	           prefix="topp"/>
   </namespaces>
 
   <styles>
-      <!--<style id="thick outline" filename="polyshp.sld"/>-->
       <style id="dotty" filename="funkypolyshp.sld"/>
       <style id="green" filename="green.sld"/>
-      <!--<style id="population" filename="popshade.sld"/>-->
-      <!--<style id="highlight" filename="usa_penn.sld"/>-->
-      <!--<style id="bbox" filename="usa_central.sld"/>-->
       <style id="maleVsFemale" filename="usa_ratio.sld"/>
       <style id="normal" filename="normal.sld" default="true"/>
-      <!--<style id="manualVsWorkers" filename="usa_math.sld"/>-->
   </styles>
 
 </catalog>

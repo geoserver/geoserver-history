@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<featureType datastore="cdf">
+<featureType datastore="cdf1">
   <name>Deletes</name>
   <SRS>32118</SRS><!-- native wich EPGS code for the FeatureType -->
-  <title>test delets</title>
+  <title>test deletes</title>
   <abstract>This is some cite features we can delete</abstract>
   <keywords>delete, New York City, TOPP</keywords>
   <latLonBoundingBox dynamic="false"  minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
