@@ -63,9 +63,9 @@ public class WfsTransactionException extends WfsException {
      * @param handle the string of the transaction that failed.
      */
     public WfsTransactionException (String message, 
-				    String locator, String handle) {
+                    String locator, String handle) {
         super(message, locator);
-	this.handle = handle;
+    this.handle = handle;
     }
 
     /**
@@ -75,7 +75,7 @@ public class WfsTransactionException extends WfsException {
      * @param message indicates to the user what went wrong.
      */
     public WfsTransactionException (Exception e, String preMessage, 
-				    String locator) {
+                    String locator) {
         super(e, preMessage, locator);
     }
 
@@ -83,7 +83,7 @@ public class WfsTransactionException extends WfsException {
      * sets the handle, can be used when the initial handle is wrong.
      */    
     public void setHandle(String handle){
-	this.handle = handle;
+    this.handle = handle;
     }
     
     
@@ -92,10 +92,10 @@ public class WfsTransactionException extends WfsException {
      */
     public String getXmlResponse () {
         String returnXml;
-	WfsTransResponse response = 
-	    new WfsTransResponse(WfsTransResponse.FAILED, handle);
-	response.setLocator(locator);
-	response.setMessage(this.preMessage + ": " + this.getMessage());
-	return response.getXmlResponse();
+    WfsTransResponse response = 
+        new WfsTransResponse(WfsTransResponse.FAILED, handle);
+    response.setLocator(locator);
+    response.setMessage(this.preMessage + ": " + this.getMessage());
+    return response.getXmlResponse();
     }    
 }

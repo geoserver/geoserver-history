@@ -560,9 +560,9 @@ public class GMLBuilder {
 
                 finalResult.append(attribute2).append(value).append(attribute3)
                            .append(name).append(attribute4);
-            } else {
-                //if null don't write anything.
             }
+
+            //if null don't write anything.
         }
     }
 
@@ -735,6 +735,8 @@ public class GMLBuilder {
          *
          * @param geometry OGC SF type
          * @param gid Feature collection type
+         *
+         * @throws RuntimeException DOCUMENT ME!
          */
         private void writeGeometry(Geometry geometry, String gid) {
             //user option to just use user defined bbox for whole dataset?
@@ -780,6 +782,10 @@ public class GMLBuilder {
                 writeBox(geometry, gid);
 
                 break;
+
+            default:
+                throw new RuntimeException("could not write geometry "
+                    + geometry + ", did not " + "recognize type");
             }
         }
 
