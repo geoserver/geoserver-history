@@ -26,7 +26,7 @@ package org.vfny.geoserver.config;
  * @see java.util.Map
  * @see java.util.List
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStructure.java,v 1.1.2.2 2004/01/02 17:13:27 dmzwiers Exp $
+ * @version $Id: DataStructure.java,v 1.1.2.3 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public interface DataStructure extends Cloneable {
 	
@@ -42,14 +42,22 @@ public interface DataStructure extends Cloneable {
 	Object clone();
 
 	/**
-	 * Implement equals.
+	 * toDTO purpose.
 	 * <p>
-	 * Compares the equality of the two objects. 
+	 * Creates a DTO representation of the Object.
+	 * Modifying the DTO should not affect the data structure of the Config class who's data it represents.
 	 * </p>
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
-	 * @param obj The object to checked for equivalence.
-	 * @return true when the objects are the same.
+	 * @return A DTO Object appropriate to the class, which only has ONE reference to the Object. 
 	 */
-	boolean equals(Object obj);
+	public Object toDTO();
+	
+	/**
+	 * loadDTO purpose.
+	 * <p>
+	 * Intended to populate the portions of the Config object appropriate for the DTO Object. 
+	 * </p>
+	 * @param obj The DTO to populate this class. 
+	 * @return true when the load was completed, false otherwise.
+	 */
+	public boolean updateDTO(Object obj);
 }

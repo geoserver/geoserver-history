@@ -35,6 +35,7 @@ public class UpdateGSAction extends Action {
 		ServletContext sc = request.getSession().getServletContext();
 		gs = (GeoServer)sc.getAttribute(GeoServer.SESSION_KEY);
 		//TODO Finish this
+		//TODO remember to store wms.gmlprefixing on serverside
 		return null; 
 	}
 }

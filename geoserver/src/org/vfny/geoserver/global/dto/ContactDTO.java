@@ -40,7 +40,7 @@ package org.vfny.geoserver.global.dto;
  * </code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: ContactDTO.java,v 1.1.2.2 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public final class ContactDTO implements DataStructure {
     /** The name of the contact person */
@@ -90,7 +90,18 @@ public final class ContactDTO implements DataStructure {
      * @see defaultSettings()
      */
     public ContactDTO() {
-        defaultSettings();
+		contactPerson = "";
+		contactOrganization = "";
+		contactPosition = "";
+		addressType = "";
+		address = "";
+		addressCity = "";
+		addressState = "";
+		addressPostalCode = "";
+		addressCountry = "";
+		contactVoice = "";
+		contactFacsimile = "";
+		contactEmail = "";
     }
 
     /**
@@ -104,9 +115,7 @@ public final class ContactDTO implements DataStructure {
      */
     public ContactDTO(ContactDTO c) {
         if (c == null) {
-            defaultSettings();
-
-            return;
+			throw new NullPointerException();
         }
 
         contactPerson = c.getContactPerson();
@@ -121,29 +130,6 @@ public final class ContactDTO implements DataStructure {
         contactVoice = c.getContactVoice();
         contactFacsimile = c.getContactFacsimile();
         contactEmail = c.getContactEmail();
-    }
-
-    /**
-     * defaultSettings purpose.
-     * 
-     * <p>
-     * Sets all the data fields in the object to ther default values.  This
-     * method should only be called by a constructor.
-     * </p>
-     */
-    private void defaultSettings() {
-        contactPerson = "";
-        contactOrganization = "";
-        contactPosition = "";
-        addressType = "";
-        address = "";
-        addressCity = "";
-        addressState = "";
-        addressPostalCode = "";
-        addressCountry = "";
-        contactVoice = "";
-        contactFacsimile = "";
-        contactEmail = "";
     }
 
     /**
@@ -195,6 +181,19 @@ public final class ContactDTO implements DataStructure {
         && ((contactVoice == c.getContactVoice())
         && ((contactFacsimile == c.getContactFacsimile())
         && (contactEmail == c.getContactEmail()))))))))))));
+    }
+    
+    public int hashCode(){
+    	int i = 1;
+    	if(contactPerson!=null)
+    		i *= contactPerson.hashCode();
+		if(address!=null)
+			i *= address.hashCode();
+		if(contactVoice!=null)
+			i *= contactVoice.hashCode();
+		if(contactEmail!=null)
+			i *= contactEmail.hashCode();
+    	return i;
     }
 
     /**

@@ -6,7 +6,7 @@ package org.vfny.geoserver.config;
 
 import java.nio.charset.Charset;
 import java.util.logging.Level;
-
+import org.vfny.geoserver.global.dto.*;
 
 /**
  * Global GeoServer Configuration model.
@@ -17,7 +17,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.3.2.5 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.3.2.6 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public class GlobalConfig implements DataStructure {
     /** Sets the max number of Features returned by GetFeature */
@@ -139,15 +139,20 @@ public class GlobalConfig implements DataStructure {
      * @see defaultSettings()
      */
     public GlobalConfig() {
-        defaultSettings();
+		maxFeatures = 20000;
+		verbose = true;
+		numDecimals = 8;
+		charSet = Charset.forName("ISO-8859-1");
+		baseUrl = null;
+		schemaBaseUrl = null;
+		contact = null;
     }
 
     /**
      * GlobalConfig constructor.
      * 
      * <p>
-     * Creates a copy of the GlobalConfig object provided, or sets the values
-     * to default if one is not provided.  Charset is not cloned, everything
+     * Creates a copy of the GlobalConfig object provided.  Charset is not cloned, everything
      * else is.
      * </p>
      *
@@ -155,9 +160,7 @@ public class GlobalConfig implements DataStructure {
      */
     public GlobalConfig(GlobalConfig g) {
         if (g == null) {
-            defaultSettings();
-
-            return;
+			throw new NullPointerException();
         }
 
         maxFeatures = g.getMaxFeatures();
@@ -174,23 +177,65 @@ public class GlobalConfig implements DataStructure {
         }
     }
 
-    /**
-     * defaultSettings purpose.
-     * 
-     * <p>
-     * Sets all the default values for the class. This method should only be
-     * called by constructors.
-     * </p>
-     */
-    private void defaultSettings() {
-        maxFeatures = 20000;
-        verbose = true;
-        numDecimals = 8;
-        charSet = Charset.forName("ISO-8859-1");
-        baseUrl = null;
-        schemaBaseUrl = null;
-        contact = null;
-    }
+	/**
+	 * GlobalConfig constructor.
+	 * 
+	 * <p>
+	 * Creates a copy of the GeoServerDTO object provided.  Charset is not cloned, everything
+	 * else is.
+	 * </p>
+	 *
+	 * @param g
+	 */
+	public GlobalConfig(GeoServerDTO g) {
+		if (g == null) {
+			throw new NullPointerException();
+		}
+
+		maxFeatures = g.getMaxFeatures();
+		verbose = g.isVerbose();
+		numDecimals = g.getNumDecimals();
+		charSet = g.getCharSet();
+		baseUrl = g.getBaseUrl();
+		schemaBaseUrl = g.getSchemaBaseUrl();
+
+		if (g.getContact() != null) {
+			contact = new ContactConfig(g.getContact());
+		} else {
+			contact = new ContactConfig();
+		}
+	}
+
+	/**
+	 * Implement updateDTO.
+	 * <p>
+	 * Populates this instance with the GeoServerDTO object provided.
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#updateDTO(java.lang.Object)
+	 * 
+	 * @param obj A valid GeoServerDTO object to populate this object from
+	 * @return true when the parameter is valid and stored.
+	 */
+	public boolean updateDTO(Object obj) {
+		if (obj == null || !(obj instanceof GeoServerDTO)) {
+			return false;
+		}
+		GeoServerDTO g = (GeoServerDTO)obj;
+
+		maxFeatures = g.getMaxFeatures();
+		verbose = g.isVerbose();
+		numDecimals = g.getNumDecimals();
+		charSet = g.getCharSet();
+		baseUrl = g.getBaseUrl();
+		schemaBaseUrl = g.getSchemaBaseUrl();
+
+		if (g.getContact() != null) {
+			contact = new ContactConfig(g.getContact());
+		} else {
+			contact = new ContactConfig();
+		}
+		return true;
+	}
 
     /**
      * Implement clone.
@@ -207,47 +252,26 @@ public class GlobalConfig implements DataStructure {
     public Object clone() {
         return new GlobalConfig(this);
     }
-
+    
     /**
-     * Implement equals.
-     * 
+     * Implement toDTO.
      * <p>
-     * Compares the equality of the two objects.
+     * Creates a copy of the data in a GeoServerDTO representation
      * </p>
-     *
-     * @param obj The object to checked for equivalence.
-     *
-     * @return true when the objects are the same.
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
+     * @see org.vfny.geoserver.config.DataStructure#toDTO()
+     * 
+     * @return a copy of the data in a GeoServerDTO representation
      */
-    public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof GlobalConfig)) {
-            return false;
-        }
-
-        GlobalConfig g = (GlobalConfig) obj;
-        boolean r = true;
-        r = r && (maxFeatures == g.getMaxFeatures());
-        r = r && (verbose == g.isVerbose());
-        r = r && (numDecimals == g.getNumDecimals());
-
-        if (charSet != null) {
-            r = r && charSet.equals(g.getCharSet());
-        } else if (g.getCharSet() != null) {
-            return false;
-        }
-
-        r = r && (baseUrl == g.getBaseUrl());
-        r = r && (schemaBaseUrl == g.getSchemaBaseUrl());
-
-        if (contact != null) {
-            r = r && contact.equals(g.getContact());
-        } else if (g.getContact() != null) {
-            return false;
-        }
-
-        return r;
+    public Object toDTO(){
+    	GeoServerDTO g = new GeoServerDTO();
+		 g.setMaxFeatures(maxFeatures);
+		 g.setVerbose(verbose);
+		 g.setNumDecimals(numDecimals);
+		 g.setCharSet(charSet);
+		 g.setBaseUrl(baseUrl);
+		 g.setSchemaBaseUrl(schemaBaseUrl);
+		 g.setContact((ContactDTO)contact.toDTO());
+    	return g;
     }
 
     /**

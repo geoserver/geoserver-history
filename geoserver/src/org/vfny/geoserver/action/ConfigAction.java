@@ -9,10 +9,10 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.vfny.geoserver.config.CatalogConfig;
 import org.vfny.geoserver.config.GlobalConfig;
-import org.vfny.geoserver.config.data.CatalogConfig;
-import org.vfny.geoserver.config.wfs.WFSConfig;
-import org.vfny.geoserver.config.wms.WMSConfig;
+import org.vfny.geoserver.config.WFSConfig;
+import org.vfny.geoserver.config.WMSConfig;
 
 
 /**
@@ -44,7 +44,7 @@ import org.vfny.geoserver.config.wms.WMSConfig;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ConfigAction.java,v 1.1.2.4 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: ConfigAction.java,v 1.1.2.5 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public class ConfigAction extends GeoServerAction {
     

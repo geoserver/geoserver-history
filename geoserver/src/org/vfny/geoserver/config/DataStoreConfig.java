@@ -14,13 +14,12 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
+package org.vfny.geoserver.config;
 
+import org.vfny.geoserver.global.dto.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.vfny.geoserver.config.CloneLibrary;
-import org.vfny.geoserver.config.DataStructure;
 /**
  * DataStoreInfo purpose.
  * <p>
@@ -28,7 +27,7 @@ import org.vfny.geoserver.config.DataStructure;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.1.2.3 2004/01/05 22:14:44 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.2.2.2 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public class DataStoreConfig implements DataStructure{
 
@@ -58,17 +57,6 @@ public class DataStoreConfig implements DataStructure{
 	 * @see defaultSettings()
 	 */
 	  public DataStoreConfig(){
-	  	defaultSettings();
-	  }
-	
-	/**
-	 * defaultSettings purpose.
-	 * <p>
-	 * This method creates default values for the class. This method 
-	 * should noly be called by class constructors.
-	 * </p>
-	 */
-	  private void defaultSettings(){
 		id = "";
 		nameSpaceId = "";
 		enabled = false;
@@ -80,15 +68,13 @@ public class DataStoreConfig implements DataStructure{
 	/**
 	 * DataStoreInfo constructor.
 	 * <p>
-	 * Creates a copy of the DataStoreInfo provided. If the DataStoreInfo provided 
-	 * is null then default values are used. All the datastructures are cloned. 
+	 * Creates a copy of the DataStoreInfo provided. All the datastructures are cloned. 
 	 * </p>
 	 * @param ds The datastore to copy.
 	 */
 	  public DataStoreConfig(DataStoreConfig ds){
 	  	if(ds == null){
-	  		defaultSettings();
-	  		return;
+			throw new NullPointerException();
 	  	}
 	  	id = ds.getId();
 		nameSpaceId = ds.getNameSpaceId();
@@ -99,6 +85,28 @@ public class DataStoreConfig implements DataStructure{
 	  	}catch(Exception e){
 	  		connectionParams = new HashMap();  	
 	  	}
+	  }
+	
+	/**
+	 * DataStoreInfo constructor.
+	 * <p>
+	 * Creates a copy of the DataStoreInfoDTO provided. All the datastructures are cloned. 
+	 * </p>
+	 * @param ds The datastore to copy.
+	 */
+	  public DataStoreConfig(DataStoreInfoDTO ds){
+		if(ds == null){
+			throw new NullPointerException();
+		}
+		id = ds.getId();
+		nameSpaceId = ds.getNameSpaceId();
+		enabled = ds.isEnabled();
+		_abstract = ds.getAbstract();
+		try{
+			connectionParams = CloneLibrary.clone(ds.getConnectionParams()); //clone?
+		}catch(Exception e){
+			connectionParams = new HashMap();  	
+		}
 	  }
 
 	/**
@@ -115,27 +123,55 @@ public class DataStoreConfig implements DataStructure{
 	  }
 	
 	/**
-	 * Implement equals.
+	 * Implement loadDTO.
 	 * <p>
-	 * recursively tests to determine if the object passed in is a copy of this object.
+	 * Populates the data fields with the DataStoreInfoDTO provided.
 	 * </p>
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
 	 * 
-	 * @param obj The DataStoreInfo object to test.
-	 * @return true when the object passed is the same as this object.
+	 * @param obj the DataStoreInfoDTO to use.
+	 * @return true when the param is valid and stored.
 	 */
-	  public boolean equals(Object obj){
-	  	DataStoreConfig ds = (DataStoreConfig)obj;
-	  	boolean r = true;
-		r = r && id == ds.getId();
-		r = r && nameSpaceId.equals(ds.getNameSpaceId());
-		r = r && enabled == ds.isEnabled();
-		r = r && _abstract == ds.getAbstract();
-		if(connectionParams != null)
-			r = r && connectionParams.equals(ds.getConnectionParams());
-		else if(ds.getConnectionParams()!=null) return false;
-		return r; 
+	  public boolean updateDTO(Object obj){
+		if(obj == null || !(obj instanceof DataStoreInfoDTO)){
+			return false;
+		}
+		DataStoreInfoDTO ds = (DataStoreInfoDTO)obj;
+		id = ds.getId();
+		nameSpaceId = ds.getNameSpaceId();
+		enabled = ds.isEnabled();
+		_abstract = ds.getAbstract();
+		try{
+			connectionParams = CloneLibrary.clone(ds.getConnectionParams()); //clone?
+		}catch(Exception e){
+			connectionParams = new HashMap();  	
+		}
+		return true;
 	  }
+	  
+	  /**
+	   * Implement toDTO.
+	   * <p>
+	   * Create a DataStoreInfoDTO from the current config object.
+	   * </p>
+	   * @see org.vfny.geoserver.config.DataStructure#toDTO()
+	   * 
+	   * @return The data represented as a DataStoreInfoDTO
+	   */
+	  public Object toDTO(){
+		DataStoreInfoDTO ds = new DataStoreInfoDTO();
+		ds.setId(id);
+		ds.setNameSpaceId(nameSpaceId);
+		ds.setEnabled(enabled);
+		ds.setAbstract(_abstract);
+		try{
+			ds.setConnectionParams(CloneLibrary.clone(connectionParams));
+		}catch(Exception e){
+			// default already created  	
+		}
+		return ds;
+	  }
+	  
 	/**
 	 * getAbstract purpose.
 	 * <p>

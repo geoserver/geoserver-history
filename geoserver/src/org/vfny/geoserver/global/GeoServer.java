@@ -17,7 +17,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.7 2004/01/06 23:54:39 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.1.2.8 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public class GeoServer extends Abstract{// implements org.apache.struts.action.PlugIn{
 	
@@ -366,21 +366,21 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 	
 	public void load(WMSDTO wms) throws ConfigurationException {
 		if(wms!=null)
-			this.wms = new WMS(wms);
+			this.wms = new WMS((WMSDTO)wms.clone());
 		else
 			throw new ConfigurationException("load(WMSDTO) expected a non-null value");
 	}
 	
 	public void load(WFSDTO wfs) throws ConfigurationException {
 		if(wfs!=null)
-			this.wfs = new WFS(wfs);
+			this.wfs = new WFS((WFSDTO)wfs.clone());
 		else
 			throw new ConfigurationException("load(WFSDTO) expected a non-null value");
 	}
 	
 	public void load(GeoServerDTO geoServer) throws ConfigurationException {
 		if(geoServer!=null)
-			this.geoServer = geoServer;
+			this.geoServer = (GeoServerDTO)geoServer.clone();
 		else
 			throw new ConfigurationException("load(GeoServerDTO) expected a non-null value");
 	}
@@ -388,24 +388,13 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 	public void load(DataDTO data) throws ConfigurationException {
 		if(data!=null)
 			if(this.data == null)
-				this.data = new Data(data);
+				this.data = new Data((DataDTO)data.clone());
 			else
-				this.data.load(data);
+				this.data.load((DataDTO)data.clone());
 		else
 			throw new ConfigurationException("load(DataDTO) expected a non-null value");
 	}
-
-    /**
-     * saves the server configuration to <code>dest</code> as an XML stream
-     *
-     * @TODO method body
-     *
-     * @param destDir DOCUMENT ME!
-     */
-    //public void save(String destDir) throws ConfigurationException{
-    //	File dest = new File(destDir);
-	//	XMLConfigWriter.store((WMSDTO)wms.getDTO(),(WFSDTO)wfs.getDTO(),(GeoServerDTO)geoServer,(DataDTO)data.getDTO(),dest);    }
-
+	
 	public static WMSDTO getDTO(WMS wms){
 		return (WMSDTO)((WMSDTO)wms.toDTO()).clone();
 	}

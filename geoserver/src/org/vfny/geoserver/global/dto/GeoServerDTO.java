@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.1.2.1 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: GeoServerDTO.java,v 1.1.2.2 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public final class GeoServerDTO implements DataStructure {
     /** Sets the max number of Features returned by GetFeature */
@@ -151,7 +151,13 @@ public final class GeoServerDTO implements DataStructure {
      * @see defaultSettings()
      */
     public GeoServerDTO() {
-        defaultSettings();
+		maxFeatures = 20000;
+		verbose = true;
+		numDecimals = 8;
+		charSet = Charset.forName("ISO-8859-1");
+		baseUrl = null;
+		schemaBaseUrl = null;
+		contact = null;
     }
 
     /**
@@ -167,9 +173,7 @@ public final class GeoServerDTO implements DataStructure {
      */
     public GeoServerDTO(GeoServerDTO g) {
         if (g == null) {
-            defaultSettings();
-
-            return;
+			throw new NullPointerException();
         }
 
         maxFeatures = g.getMaxFeatures();
@@ -184,24 +188,6 @@ public final class GeoServerDTO implements DataStructure {
         } else {
             contact = new ContactDTO();
         }
-    }
-
-    /**
-     * defaultSettings purpose.
-     * 
-     * <p>
-     * Sets all the default values for the class. This method should only be
-     * called by constructors.
-     * </p>
-     */
-    private void defaultSettings() {
-        maxFeatures = 20000;
-        verbose = true;
-        numDecimals = 8;
-        charSet = Charset.forName("ISO-8859-1");
-        baseUrl = null;
-        schemaBaseUrl = null;
-        contact = null;
     }
 
     /**
@@ -260,6 +246,19 @@ public final class GeoServerDTO implements DataStructure {
         }
 
         return r;
+    }
+    
+    public int hashCode(){
+    	int i = 1;
+    	if(maxFeatures!=0)
+    		i *= maxFeatures;
+		if(numDecimals!=0)
+			i *= numDecimals;
+		if(baseUrl!=null)
+			i *= baseUrl.hashCode();
+		if(schemaBaseUrl!=null)
+			i *= schemaBaseUrl.hashCode();
+    	return i;
     }
 
     /**

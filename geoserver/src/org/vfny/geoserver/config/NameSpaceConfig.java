@@ -14,9 +14,9 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
-import org.vfny.geoserver.config.DataStructure;
+package org.vfny.geoserver.config;
 
+import org.vfny.geoserver.global.dto.*;
 /**
  * NameSpaceConfig purpose.
  * <p>
@@ -25,7 +25,7 @@ import org.vfny.geoserver.config.DataStructure;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
+ * @version $Id: NameSpaceConfig.java,v 1.1.2.1 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public class NameSpaceConfig implements DataStructure {
 	//public static final String PREFIX_DELIMITER = ":";
@@ -53,17 +53,6 @@ public class NameSpaceConfig implements DataStructure {
 	 * @see defaultSettings()
 	 */
 	public NameSpaceConfig(){
-		defaultSettings();
-	}
-
-	/**
-	 * defaultSettings purpose.
-	 * <p>
-	 * This method creates default values for the class. This method 
-	 * should noly be called by class constructors.
-	 * </p>
-	 */
-	private void defaultSettings(){
 		prefix = "";
 		uri = "";
 		_default = false;
@@ -79,8 +68,24 @@ public class NameSpaceConfig implements DataStructure {
 	 */
 	public NameSpaceConfig(NameSpaceConfig ns){
 		if(ns == null){
-			defaultSettings();
-			return;
+			throw new NullPointerException("");
+		}
+		prefix = ns.getPrefix();
+		uri = ns.getUri();
+		_default = ns.isDefault();
+	}
+
+	/**
+	 * NameSpaceConfig constructor.
+	 * <p>
+	 * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig provided 
+	 * is null then default values are used. All the data structures are cloned. 
+	 * </p>
+	 * @param f The namespace to copy.
+	 */
+	public NameSpaceConfig(NameSpaceDTO ns){
+		if(ns == null){
+			throw new NullPointerException("");
 		}
 		prefix = ns.getPrefix();
 		uri = ns.getUri();
@@ -101,20 +106,40 @@ public class NameSpaceConfig implements DataStructure {
 	}
 
 	/**
-	 * Implement equals.
+	 * Implement loadDTO.
 	 * <p>
-	 * recursively tests to determine if the object passed in is a copy of this object.
+	 * Imports the data contained in the NameSpaceDTO object provided.
 	 * </p>
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
 	 * 
-	 * @param obj The NameSpaceConfig object to test.
-	 * @return true when the object passed is the same as this object.
+	 * @param dto An NameSpaceDTO object
+	 * @return true when the instance provided is valid and stored.
 	 */
-	public boolean equals(Object obj){
-		NameSpaceConfig ns = (NameSpaceConfig)obj;
-		return (prefix == ns.getPrefix() &&
-		(uri == ns.getUri() && 
-		_default == ns.isDefault()));
+	public boolean updateDTO(Object dto){
+		if(dto == null || !(dto instanceof NameSpaceDTO))
+			return false;
+		NameSpaceDTO ns = (NameSpaceDTO)dto;
+		prefix = ns.getPrefix();
+		uri = ns.getUri();
+		_default = ns.isDefault();
+		return true;
+	}
+	
+	/**
+	 * Implement toDTO.
+	 * <p>
+	 * Creates a DTO representation of this Object as a NameSpaceDTO
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#toDTO()
+	 * 
+	 * @return a NameSpaceDTO which representts the data in this class.
+	 */
+	public Object toDTO(){
+		NameSpaceDTO nsDto = new NameSpaceDTO();
+		nsDto.setDefault(_default);
+		nsDto.setPrefix(prefix);
+		nsDto.setUri(uri);
+		return nsDto;
 	}
 	
 	/**

@@ -14,14 +14,11 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
+package org.vfny.geoserver.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.vfny.geoserver.global.dto.*;
+import java.util.*;
 
-import org.vfny.geoserver.config.CloneLibrary;
-import org.vfny.geoserver.config.DataStructure;
-import org.vfny.geoserver.config.EqualsLibrary;
 /**
  * Data purpose.
  * <p>
@@ -33,7 +30,7 @@ import org.vfny.geoserver.config.EqualsLibrary;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: CatalogConfig.java,v 1.1.2.4 2004/01/05 22:14:44 dmzwiers Exp $
+ * @version $Id: CatalogConfig.java,v 1.3.2.2 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public class CatalogConfig implements DataStructure{
 	
@@ -75,17 +72,6 @@ public class CatalogConfig implements DataStructure{
 	 * @see defaultSettings()
 	 */
 	public CatalogConfig(){
-		defaultSettings();
-	}
-	
-	/**
-	 * defaultSettings purpose.
-	 * <p>
-	 * This method creates default values for the class. This method 
-	 * should noly be called by class constructors.
-	 * </p>
-	 */
-	private void defaultSettings(){
 		dataStores = new HashMap();
 		nameSpaces = new HashMap();
 		styles = new HashMap();
@@ -126,6 +112,140 @@ public class CatalogConfig implements DataStructure{
 	}
 	
 	/**
+	 * Data constructor.
+	 * <p>
+	 * Creates a copy of the DataDTO provided. If the Data provided 
+	 * is null then default values are used. All the datastructures are cloned. 
+	 * </p>
+	 * @param data The catalog to copy.
+	 */
+	public CatalogConfig(DataDTO data){
+		Iterator i = null;
+		
+		i = data.getDataStores().keySet().iterator();
+		dataStores = new HashMap();
+		while(i.hasNext()){
+			Object key = i.next();
+			dataStores.put(key,new DataStoreConfig((DataStoreInfoDTO)data.getDataStores().get(key)));
+		}
+
+		i = data.getNameSpaces().keySet().iterator();
+		nameSpaces = new HashMap();
+		while(i.hasNext()){
+			Object key = i.next();
+			nameSpaces.put(key,new NameSpaceConfig((NameSpaceDTO)data.getNameSpaces().get(key)));
+			if(((NameSpaceConfig)nameSpaces.get(key)).isDefault())
+				defaultNameSpace = (NameSpaceConfig)nameSpaces.get(key);
+		}
+
+		i = data.getFeaturesTypes().keySet().iterator();
+		featuresTypes = new HashMap();
+		while(i.hasNext()){
+			Object key = i.next();
+			featuresTypes.put(key,new FeatureTypeConfig((FeatureTypeInfoDTO)data.getFeaturesTypes().get(key)));
+		}
+
+		i = data.getStyles().keySet().iterator();
+		styles = new HashMap();
+		while(i.hasNext()){
+			Object key = i.next();
+			styles.put(key,new StyleConfig((StyleDTO)data.getStyles().get(key)));
+		}
+	}
+	
+
+	
+	/**
+	 * Implement loadDTO.
+	 * <p>
+	 * Populates the object with the param passed. 
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
+	 * 
+	 * @param obj An instance of DataDTO to populate this object
+	 * @return true when a valid parameter is passed and stored.
+	 */
+	public boolean updateDTO(Object obj){
+		if(obj == null || !(obj instanceof DataDTO))
+			return false;
+		DataDTO data = (DataDTO)obj;
+		Iterator i = null;
+		
+		i = data.getDataStores().keySet().iterator();
+		dataStores = new HashMap();
+		while(i.hasNext()){
+			Object key = i.next();
+			dataStores.put(key,new DataStoreConfig((DataStoreInfoDTO)data.getDataStores().get(key)));
+		}
+
+		i = data.getNameSpaces().keySet().iterator();
+		nameSpaces = new HashMap();
+		while(i.hasNext()){
+			Object key = i.next();
+			nameSpaces.put(key,new NameSpaceConfig((NameSpaceDTO)data.getNameSpaces().get(key)));
+			if(((NameSpaceConfig)nameSpaces.get(key)).isDefault())
+				defaultNameSpace = (NameSpaceConfig)nameSpaces.get(key);
+		}
+
+		i = data.getFeaturesTypes().keySet().iterator();
+		featuresTypes = new HashMap();
+		while(i.hasNext()){
+			Object key = i.next();
+			featuresTypes.put(key,new FeatureTypeConfig((FeatureTypeInfoDTO)data.getFeaturesTypes().get(key)));
+		}
+
+		i = data.getStyles().keySet().iterator();
+		styles = new HashMap();
+		while(i.hasNext()){
+			Object key = i.next();
+			styles.put(key,new StyleConfig((StyleDTO)data.getStyles().get(key)));
+		}
+		return true;
+	}
+	
+	public Object toDTO(){
+		DataDTO dt = new DataDTO();
+		HashMap tmp = null;
+		Iterator i = null;
+		
+		tmp = new HashMap();
+		i = dataStores.keySet().iterator();
+		while(i.hasNext()){
+			Object key = i.next();
+			tmp.put(key,((DataStoreConfig)dataStores.get(key)).toDTO());
+		}
+		dt.setDataStores(tmp);
+		
+		tmp = new HashMap();
+		i = featuresTypes.keySet().iterator();
+		while(i.hasNext()){
+			Object key = i.next();
+			tmp.put(key,((FeatureTypeConfig)featuresTypes.get(key)).toDTO());
+		}
+		dt.setFeaturesTypes(tmp);
+		
+		tmp = new HashMap();
+		i = styles.keySet().iterator();
+		while(i.hasNext()){
+			Object key = i.next();
+			tmp.put(key,((StyleConfig)styles.get(key)).toDTO());
+		}
+		dt.setStyles(tmp);
+		
+		tmp = new HashMap();
+		i = nameSpaces.keySet().iterator();
+		while(i.hasNext()){
+			Object key = i.next();
+			tmp.put(key,((NameSpaceConfig)nameSpaces.get(key)).toDTO());
+			if(((NameSpaceDTO)tmp.get(key)).isDefault())
+				dt.setDefaultNameSpace((NameSpaceDTO)tmp.get(key));
+		}
+		dt.setNameSpaces(tmp);
+		
+		return dt;
+	}
+	
+	/**
 	 * Implement clone.
 	 * <p>
 	 * creates a clone of this object
@@ -136,37 +256,6 @@ public class CatalogConfig implements DataStructure{
 	 */
 	public Object clone(){
 		return new CatalogConfig(this);
-	}
-	
-	/**
-	 * Implement equals.
-	 * <p>
-	 * recursively tests to determine if the object passed in is a copy of this object.
-	 * </p>
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
-	 * @param obj The Data object to test.
-	 * @return true when the object passed is the same as this object.
-	 */
-	public boolean equals(Object obj){
-		if(obj == null || !(obj instanceof CatalogConfig))
-			return false;
-		CatalogConfig c = (CatalogConfig)obj;
-		boolean r = true;
-		if(dataStores != null)
-			r = r && EqualsLibrary.equals(dataStores,c.getDataStores());
-		else if(c.getDataStores()!=null) return false;
-		if(nameSpaces != null)
-			r = r && EqualsLibrary.equals(nameSpaces,c.getNameSpaces());
-		else if(c.getNameSpaces()!=null) return false;
-		if(featuresTypes != null)
-			r = r && EqualsLibrary.equals(featuresTypes,c.getFeaturesTypes());
-		else if(c.getFeaturesTypes()!=null) return false;
-		if(defaultNameSpace != null)
-			r = r && defaultNameSpace.equals(c.getDefaultNameSpace());
-		else if(c.getDefaultNameSpace()!=null) return false;
-		
-		return r;
 	}
 	
 	/**

@@ -14,15 +14,13 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
+package org.vfny.geoserver.config;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import org.vfny.geoserver.global.dto.*;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.config.CloneLibrary;
-import org.vfny.geoserver.config.DataStructure;
-import org.vfny.geoserver.config.EqualsLibrary;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -32,7 +30,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.3 2004/01/05 22:14:44 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.4.2.2 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public class FeatureTypeConfig implements DataStructure{
 	
@@ -110,17 +108,6 @@ public class FeatureTypeConfig implements DataStructure{
 	 * @see defaultSettings()
 	 */
 	public FeatureTypeConfig(){
-		defaultSettings();
-	}
-
-	/**
-	 * defaultSettings purpose.
-	 * <p>
-	 * This method creates default values for the class. This method 
-	 * should noly be called by class constructors.
-	 * </p>
-	 */
-	private void defaultSettings(){
 		dataStoreId = "";
 		latLongBBox = new Envelope();
 		SRS = 0;
@@ -138,15 +125,42 @@ public class FeatureTypeConfig implements DataStructure{
 	/**
 	 * FeatureTypeInfo constructor.
 	 * <p>
-	 * Creates a copy of the FeatureTypeInfo provided. If the FeatureTypeInfo provided 
-	 * is null then default values are used. All the data structures are cloned. 
+	 * Creates a copy of the FeatureTypeInfo provided. All the data structures are cloned. 
 	 * </p>
 	 * @param f The featuretype to copy.
 	 */
 	public FeatureTypeConfig(FeatureTypeConfig f){
 		if(f==null){
-			defaultSettings();
-			return;
+			throw new NullPointerException();
+		}
+		dataStoreId = f.getDataStoreId();
+		latLongBBox = CloneLibrary.clone(f.getLatLongBBox());
+		SRS = f.getSRS();
+		schema = f.getSchema();
+		name = f.getName();
+		title = f.getTitle();
+		_abstract = f.getAbstract();
+		numDecimals = f.getNumDecimals();
+		definitionQuery = f.getDefinitionQuery();
+		try{
+			keywords = CloneLibrary.clone(f.getKeywords()); //clone?
+		}catch(Exception e){
+			keywords = new LinkedList();
+		}
+		defaultStyle = f.getDefaultStyle();
+		dirName = f.getDirName();
+	}
+
+	/**
+	 * FeatureTypeInfo constructor.
+	 * <p>
+	 * Creates a copy of the FeatureTypeInfoDTO provided. All the data structures are cloned. 
+	 * </p>
+	 * @param f The FeatureTypeInfoDTO to copy.
+	 */
+	public FeatureTypeConfig(FeatureTypeInfoDTO f){
+		if(f==null){
+			throw new NullPointerException();
 		}
 		dataStoreId = f.getDataStoreId();
 		latLongBBox = CloneLibrary.clone(f.getLatLongBBox());
@@ -180,41 +194,65 @@ public class FeatureTypeConfig implements DataStructure{
 	}
 
 	/**
-	 * Implement equals.
+	 * load purpose.
 	 * <p>
-	 * recursively tests to determine if the object passed in is a copy of this object.
+	 * Loads the new data into this instance object from an FeatureTypeInfoDTO.
 	 * </p>
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
-	 * @param obj The FeatureTypeInfo object to test.
-	 * @return true when the object passed is the same as this object.
+	 * @param obj an instance of FeatureTypeInfoDTO to load.
+	 * @return true when the parameter is valid and stored.
 	 */
-	public boolean equals(Object obj){
-		if(obj == null)
+	public boolean updateDTO(Object obj){
+		if(obj==null || !(obj instanceof FeatureTypeInfoDTO)){
 			return false;
-		FeatureTypeConfig f = (FeatureTypeConfig)obj;
-		boolean r = true;
-		r = r && dataStoreId == f.getDataStoreId();
-		if(latLongBBox != null)
-			r = r && latLongBBox.equals(f.getLatLongBBox());
-		else if(f.getLatLongBBox()!=null) return false;
-		r = r && SRS == f.getSRS();
-		if(schema != null)
-			r = r && schema.equals(f.getSchema());
-		else if(f.getSchema() != null) return false;
-		r = r && defaultStyle == f.getDefaultStyle();
-		r = r && name == f.getName();
-		r = r && title == f.getTitle();
-		r = r && _abstract == f.getAbstract();
-		r = r && numDecimals == f.getNumDecimals();
-		if(definitionQuery != null)
-			r = r && definitionQuery.equals(f.getDefinitionQuery());
-		else if(f.getDefinitionQuery()!=null) return false;
-		if(keywords != null)
-			r = r && EqualsLibrary.equals(keywords,f.getKeywords());
-		else if(f.getKeywords()!=null) return false;
-		r = r && dirName==f.getDirName();
-		return r;
+		}
+		FeatureTypeInfoDTO f = (FeatureTypeInfoDTO)obj;
+		dataStoreId = f.getDataStoreId();
+		latLongBBox = CloneLibrary.clone(f.getLatLongBBox());
+		SRS = f.getSRS();
+		schema = f.getSchema();
+		name = f.getName();
+		title = f.getTitle();
+		_abstract = f.getAbstract();
+		numDecimals = f.getNumDecimals();
+		definitionQuery = f.getDefinitionQuery();
+		try{
+			keywords = CloneLibrary.clone(f.getKeywords()); //clone?
+		}catch(Exception e){
+			keywords = new LinkedList();
+		}
+		defaultStyle = f.getDefaultStyle();
+		dirName = f.getDirName();
+		return true;
+	}
+	
+	/**
+	 * Implement toDTO.
+	 * <p>
+	 * Creates a represetation of this object as a FeatureTypeInfoDTO
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#toDTO()
+	 * 
+	 * @return a representation of this object as a FeatureTypeInfoDTO
+	 */
+	public Object toDTO(){
+		FeatureTypeInfoDTO f = new FeatureTypeInfoDTO();
+		f.setDataStoreId(dataStoreId);
+		f.setLatLongBBox(CloneLibrary.clone(latLongBBox));
+		f.setSRS(SRS);
+		f.setSchema(schema);
+		f.setName(name);
+		f.setTitle(title);
+		f.setAbstract(_abstract);
+		f.setNumDecimals(numDecimals);
+		f.setDefinitionQuery(definitionQuery);
+		try{
+			f.setKeywords(CloneLibrary.clone(keywords));
+		}catch(Exception e){
+			// do nothing, defaults already exist.
+		}
+		f.setDefaultStyle(defaultStyle);
+		f.setDirName(dirName);
+		return f;
 	}
 	
 	/**

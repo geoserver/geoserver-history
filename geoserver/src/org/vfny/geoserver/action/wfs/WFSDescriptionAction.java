@@ -18,7 +18,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.config.wfs.WFSConfig;
+import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.form.wfs.WFSDescriptionForm;
 
 /**

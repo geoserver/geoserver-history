@@ -16,8 +16,8 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.LinkedList;
-import java.util.List;
+import org.vfny.geoserver.global.dto.*;
+import java.net.URL;
 
 /**
  * ServiceConfig purpose.
@@ -27,7 +27,7 @@ import java.util.List;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceConfig.java,v 1.10.2.3 2004/01/03 00:19:20 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.10.2.4 2004/01/07 21:23:08 dmzwiers Exp $
  */
 public class ServiceConfig implements DataStructure{
 	
@@ -40,7 +40,7 @@ public class ServiceConfig implements DataStructure{
 	 * Online Reference URL for the web service. A location to look for when 
 	 * additional assistance is required.
 	 */
-	private String onlineResource;
+	private URL onlineResource;
 	
 	/**
 	 * The name of the service.
@@ -60,7 +60,7 @@ public class ServiceConfig implements DataStructure{
 	/**
 	 * A list of keywords associated with the service.
 	 */
-	private List keywords;
+	private String[] keywords;
 	
 	/**
 	 * The fees associated with the service. When there are not any fees, the value 
@@ -88,23 +88,11 @@ public class ServiceConfig implements DataStructure{
 	 * @see defaultSettings()
 	 */
 	public ServiceConfig(){
-		defaultSettings();
-	}
-	
-	/**
-	 * defaultSettings purpose.
-	 * <p>
-	 * Sets the class variables to default settings. This method should only be used 
-	 * by the constructors. 
-	 * </p>
-	 *
-	 */
-	private void defaultSettings(){
 		enabled = true;
 		name = "";
 		title = "";
 		_abstract = "";
-		keywords = new LinkedList();
+		keywords = new String[0];
 		fees = "";
 		accessConstraints = "NONE";
 		maintainer = "";
@@ -113,18 +101,15 @@ public class ServiceConfig implements DataStructure{
 	/**
 	 * ServiceConfig constructor.
 	 * <p>
-	 * This is equivalent to calling the clone method. When a null value is passed in, 
-	 * the default values are used. All non-primary datatypes are cloned with the 
+	 * This is equivalent to calling the clone method. All non-primary datatypes are cloned with the 
 	 * exception of Strings (which have a singleton hash table in memory representation).   
 	 * </p>
 	 * @param s The ServiceConfig object to copy into the new ServiceConfig object. 
-	 * @see defaultSettings()
 	 * @see clone()
 	 */
 	public ServiceConfig(ServiceConfig s){
 	 if(s == null){
-	 	defaultSettings();
-	 	return;
+		throw new NullPointerException("");
 	 }
 	 
 	 enabled = s.isEnabled();
@@ -132,14 +117,91 @@ public class ServiceConfig implements DataStructure{
 	 title = s.getTitle();
 	 _abstract = s.getAbstract();
 	 try{
-	 	keywords = CloneLibrary.clone(s.getKeywords());
+	 	keywords = new String[s.getKeywords().length];
+	 	for(int i=0;i<keywords.length;i++)
+	 		keywords[i] = s.getKeywords()[i];
 	 }catch(Exception e){
 	 	// should only happen for null
-	 	keywords = new LinkedList();
+	 	keywords = new String[0];
 	 }
 	 fees = s.getFees();
 	 accessConstraints = s.getAccessConstraints();
 	 maintainer = s.getMaintainer();
+	}
+	
+	/**
+	 * ServiceConfig constructor.
+	 * <p>
+	 * This is equivalent to calling the load method. When a null value is passed in, 
+	 * the default values are used. All non-primary datatypes are cloned with the 
+	 * exception of Strings (which have a singleton hash table in memory representation).   
+	 * </p>
+	 * @param s The ServiceDTO object to copy into the new ServiceConfig object. 
+	 */
+	public ServiceConfig(ServiceDTO s){
+	 if(s == null){
+	 	throw new NullPointerException("");
+	 }
+	 if(!updateDTO(s))
+	 	throw new NullPointerException("Service(ServiceDTO) load error");
+	}
+	
+	/**
+	 * Implement loadDTO.
+	 * <p>
+	 * Takes a ServiceDTO and loads it into this ServiceConfig Object
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
+	 * 
+	 * @param dto an instance of ServiceDTO
+	 * @return false when obj null, or not correct class instance.
+	 */
+	public boolean updateDTO(Object dto){
+	 if(dto==null || !(dto instanceof ServiceDTO))
+	 	return false;
+	 ServiceDTO s = (ServiceDTO)dto;
+	 enabled = s.isEnabled();
+	 name = s.getName();
+	 title = s.getTitle();
+	 _abstract = s.getAbstract();
+	 try{
+		keywords = new String[s.getKeywords().length];
+		for(int i=0;i<keywords.length;i++)
+			keywords[i] = s.getKeywords()[i];
+	 }catch(Exception e){
+		// should only happen for null
+		keywords = new String[0];
+	 }
+	 fees = s.getFees();
+	 accessConstraints = s.getAccessConstraints();
+	 maintainer = s.getMaintainer();
+	 return true;
+	}
+	
+	/**
+	 * Implement toDTO.
+	 * <p>
+	 * Returns a copy of the data in a ServiceDTO object
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#toDTO()
+	 * 
+	 * @return a copy of the data in a ServiceDTO object
+	 */
+	public Object toDTO(){
+		ServiceDTO sDto = new ServiceDTO();
+		sDto.setAbstract(_abstract);
+		sDto.setAccessConstraints(accessConstraints);
+		sDto.setEnabled(enabled);
+		sDto.setFees(fees);
+		String[] s = new String[keywords.length];
+		for(int i=0;i<keywords.length;i++)
+			s[i] = keywords[i];
+		sDto.setKeywords(s);
+		sDto.setMaintainer(maintainer);
+		sDto.setName(name);
+		sDto.setOnlineResource(onlineResource);
+		sDto.setTitle(title);
+		return sDto;
 	}
 	
 	/**
@@ -150,31 +212,6 @@ public class ServiceConfig implements DataStructure{
 	 */
 	public Object clone(){
 		return new ServiceConfig(this);
-	}
-
-	/**
-	 * Implement equals.
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
-	 * @param obj The ServiceConfig object which will be tested.  
-	 * @return true when the classes are equal. 
-	 */
-	public boolean equals(Object obj) {
-		if(!(obj instanceof ServiceConfig) || obj == null)
-			return false;
-		ServiceConfig s = (ServiceConfig)obj;
-		boolean r = true;
-		r = r && enabled == s.isEnabled();
-		r = r && name== s.getName();
-		r = r && title == s.getTitle();
-		r = r && _abstract == s.getAbstract();
-		if(keywords != null)
-			r = r && keywords.equals(s.getKeywords());
-		else if(s.getKeywords()!=null) return false;
-		r = r && fees == s.getFees();
-		r = r && accessConstraints == s.getAccessConstraints();
-		r = r && maintainer == s.getMaintainer();
-		return r;
 	}
 
 	/**
@@ -191,7 +228,7 @@ public class ServiceConfig implements DataStructure{
 
 	 * @return
 	 */
-	public String getOnlineResource() {
+	public URL getOnlineResource() {
 		return onlineResource;
 	}
 
@@ -216,10 +253,10 @@ public class ServiceConfig implements DataStructure{
 	/**
 	 * setOnlineResource purpose.
 	 * 
-	 * @param string
+	 * @param url
 	 */
-	public void setOnlineResource(String string) {
-		onlineResource = string;
+	public void setOnlineResource(URL url) {
+		onlineResource = url;
 	}
 
 	/**
@@ -272,7 +309,7 @@ public class ServiceConfig implements DataStructure{
 	 * 
 	 * @return
 	 */
-	public List getKeywords() {
+	public String[] getKeywords() {
 		return keywords;
 	}
 
@@ -326,7 +363,7 @@ public class ServiceConfig implements DataStructure{
 	 * 
 	 * @param list
 	 */
-	public void setKeywords(List list) {
+	public void setKeywords(String[] list) {
 		keywords = list;
 	}
 
@@ -336,9 +373,9 @@ public class ServiceConfig implements DataStructure{
 	 * @param item The keyword to add to the list.
 	 * @see java.util.List#add
 	 */
-	public void addKeyword(String item) {
+	/*public void addKeyword(String item) {
 		keywords.add(item);
-	}
+	}*/
 
 	/**
 	 * removeKeyword purpose.
@@ -347,9 +384,9 @@ public class ServiceConfig implements DataStructure{
 	 * @return true if the item was removed.
 	 * @see java.util.List#remove
 	 */
-	public boolean removeKeyword(String item) {
+	/*public boolean removeKeyword(String item) {
 		return keywords.remove(item);
-	}
+	}*/
 
 	/**
 	 * setMaintainer purpose.

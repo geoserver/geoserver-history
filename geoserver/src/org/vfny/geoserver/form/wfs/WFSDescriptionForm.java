@@ -24,7 +24,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
-import org.vfny.geoserver.config.wfs.WFSConfig;
+import org.vfny.geoserver.config.WFSConfig;
 
 
 /**
