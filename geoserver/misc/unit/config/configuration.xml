@@ -13,7 +13,7 @@
                 </ZServer>
                 <PrefixDelimiter>--</PrefixDelimiter>
                 <MaxFeatures>455</MaxFeatures>
-                <LoggingLevel>FINE</LoggingLevel>
+                <!--LoggingLevel>FINE</LoggingLevel-->
 		<URL>http://beta.openplans.org/geoserver</URL>
 		<Maintainer>Vision for New York</Maintainer>
                 <Namespace uri="http://www.openplans.org/rail" 
