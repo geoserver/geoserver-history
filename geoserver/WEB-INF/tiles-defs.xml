@@ -186,7 +186,7 @@
 	<!-- datastores -->
    	<definition name="config.data.store" extends=".mainLayout">
    		<put name="key" value="config.data.store"/>
-		<put name="body" value="data.dataStores.main"/>
+		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresSelect.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				
         <put name="locationForwards" value="welcome:config:config.data"/>
