@@ -18,8 +18,8 @@
     see the document on <ulink url="dev_files.html">files in
     GeoServer,</ulink> as it completely explains the structure of files
     GeoServer uses for configuration. If there are further questions please do
-    not hesitate to ask the development list:
-    <email>geoserver-devel@lists.sourceforge.net</email>.</para>
+    not hesitate to ask the development list: geoserver-devel at lists dot
+    sourceforge dot net.</para>
 
     <section>
       <title>A note on GeoTools2</title>
@@ -298,17 +298,19 @@
       corresponds to a row in a table or a line in a file. In GeoTools it is
       made up of one or more Attributes, which can be any Java objects.
       GeoTools does not provide its own Geometry implementation, it makes use
-      of the excellent JTS Topology Suite (link). Each Feature also has a
-      FeatureType, which contains the meta information about the Feature. In
-      database terms a FeatureType is the table, it contains information of
-      what types of Features are contained in a set of data. Each FeatureType
-      is made up of one or more AttributeTypes, which roughly correspond to
-      columns in a database. An AttributeType has a name and a type (java
-      class), and can perform parsing (such as if it is a double type and is
-      given a string), and validation. One thing to note about GeoTools is
-      that the various kinds of AttributeTypes are buried as inner classes in
-      DefaultAttributeType. We are hoping to change this sometime soon. The
-      last piece of the feature puzzle is the FeatureCollection. This extends
+      of the excellent <ulink
+      url="http://www.vividsolutions.com/jts/jtshome.htm">JTS Topology
+      Suite</ulink>. Each Feature also has a FeatureType, which contains the
+      meta information about the Feature. In database terms a FeatureType is
+      the table, it contains information of what types of Features are
+      contained in a set of data. Each FeatureType is made up of one or more
+      AttributeTypes, which roughly correspond to columns in a database. An
+      AttributeType has a name and a type (java class), and can perform
+      parsing (such as if it is a double type and is given a string), and
+      validation. One thing to note about GeoTools is that the various kinds
+      of AttributeTypes are buried as inner classes in DefaultAttributeType.
+      We are hoping to change this sometime soon. The last piece of the
+      feature puzzle is the FeatureCollection. This extends
       java.util.collection, so most java developers should instantly recognize
       its methods. We are looking into making collections more strongly typed,
       so that it could say limit Features added to a single FeatureType. But
@@ -333,9 +335,9 @@
     <section>
       <title>Data</title>
 
-      <para>The Data package is probably the most interest package, and the
-      one which GeoServer has put the most work into, as GeoServer relies
-      quite heavily on access to and from data. The latest incarnation of the
+      <para>The Data package is the package of most interest, and the one
+      which GeoServer has put the most work into, as GeoServer relies quite
+      heavily on access to and from data. The latest incarnation of the
       package is focused on making it as easy as possible for new users to
       write implementations of DataStore, the basic data access class. Jody
       Garnett has written up a complete tutorial on writing a new DataStore,
@@ -434,22 +436,22 @@
       capabilities. The GML code should also hopefully scale and speed up
       large WFS insert operations, streaming directly to the datastores if
       possible, instead of turning all the features into memory. The other big
-      goal with the WFS is the support of complex objects. Social Change
-      Online (link) has made a good start on this goal, writing a version of
-      GeoServer where a FeatureType can take a bypass sql statement and the
-      schema.xml file (link to file section) will specify the complex types.
-      We hope to incorporate their work and better integrate it with GeoTools,
-      as well as provide a better user interface for creating complex types.
-      There are also a few improvements to made in user configuration. The
-      first is to change configuration files to be in a GEOSERVER_HOME
-      directory, instead of buried deep within the web server. This will make
-      upgrades much easier, as new GeoServer versions will be able to use the
-      same configuration directory. The second we are hoping for is more fine
-      grain control of transactions, at a featureType level, instead of
-      on/off. It would be quite nice if we could figure out a way to specify
-      roles and various permission levels for different users. And finally we
-      want to have full one click installers for a variety of operating
-      systems.</para>
+      goal with the WFS is the support of complex objects. <ulink
+      url="http://socialchange.net.au">Social Change Online</ulink> has made a
+      good start on this goal, writing a version of GeoServer where a
+      FeatureType can take a bypass sql statement and the schema.xml file will
+      specify the complex types. We hope to incorporate their work and better
+      integrate it with GeoTools, as well as provide a better user interface
+      for creating complex types. There are also a few improvements to made in
+      user configuration. The first is to change configuration files to be in
+      a GEOSERVER_HOME directory, instead of buried deep within the web
+      server. This will make upgrades much easier, as new GeoServer versions
+      will be able to use the same configuration directory. The second we are
+      hoping for is more fine grain control of transactions, at a featureType
+      level, instead of on/off. It would be quite nice if we could figure out
+      a way to specify roles and various permission levels for different
+      users. And finally we want to have full one click installers for a
+      variety of operating systems.</para>
     </section>
 
     <section>
