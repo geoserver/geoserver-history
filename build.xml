@@ -37,7 +37,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\resin-3.0.6\webapps"/>
+  <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
   <property name="dir.geotools" 
             value="e:\workspace\geotools2\geotools-src"/>
             
@@ -62,7 +62,7 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
-  <property name="test.type" value="UserBasic"/>
+  <!--<property name="test.type" value="UserBasic"/>-->
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
@@ -425,29 +425,12 @@
   
   <target name="misc_conf" depends="init" if="test.type">
     <antcall target="build-war">
-      <param name="conf.path" value="${basedir}/cite/conf${test.type}.zip"/>
+      <param name="conf.path" value="${basedir}/cite/conf${test.type}"/>
     </antcall>
   </target>
   
   <target name="user_conf" depends="init" if="dir.conf" unless="test.type">
-    <mkdir dir="${basedir}/data"/>
-    <copy todir="${basedir}/data" >
-      <fileset dir="${dir.conf}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    <zip destfile="${basedir}/cite/confUser.zip">
-      <fileset dir="${basedir}">
-	    <include name="data/**/*"/>
-	  </fileset>
-    </zip>
-    <delete dir="${basedir}/data" failonerror="false"/>
-    
-    <antcall target="build-war">
-      <param name="conf.path" value="${basedir}/cite/confUser.zip"/>
-    </antcall>
-    
-    <delete file="${basedir}/cite/confUser.zip" failonerror="false"/>
+      <param name="conf.path" value="${basedir}/conf"/>
   </target>
 
 <!-- ====================================================================== -->
@@ -477,6 +460,14 @@
 
 
     <!-- populate base directory -->
+    
+    <mkdir dir="${basedir}/data"/>
+    <copy todir="${basedir}/data">
+      <fileset dir="${conf.path}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
     <mkdir dir="${basedir}/data/capabilities"/>
     <copy todir="${basedir}/data/capabilities">
       <fileset dir="${basedir}/capabilities">
@@ -512,8 +503,6 @@
         <include name="*"/>
       </fileset>
     </copy>
-
-    <unzip src="${conf.path}" dest="${basedir}"/>
 
     <copy todir="${dir.build}">
       <fileset dir="${basedir}/documents">
