@@ -34,7 +34,7 @@ public class Feature
         Logger.getLogger("org.vfny.geoserver.servlets");
     
     /** Specifies MIME type */
-    private static final String MIME_TYPE = "text/xml";
+    private static final String MIME_TYPE = "text/xml; charset=UTF-8";
 
     /**
      * Reads the XML request from the client, turns it into a generic request 
