@@ -17,28 +17,9 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.13 2004/02/17 22:42:33 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.14 2004/02/20 17:02:18 jive Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
-
-	private int maxFeatures = Integer.MAX_VALUE;
-	private boolean verbose = true;
-	private int numDecimals = 4;
-	private Charset charSet = Charset.forName("UTF-8");
-	private String schemaBaseUrl;
-	private String contactPerson;
-	private String contactOrganization;
-	private String contactPosition;
-	private String addressType;
-	private String address;
-	private String addressCity;
-	private String addressState;
-	private String addressPostalCode;
-	private String addressCountry;
-	private String contactVoice;
-	private String contactFacsimile;
-	private String contactEmail;
-
     /** For debugging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
@@ -52,6 +33,25 @@ public class GeoServer extends GlobalLayerSupertype {
      * </p>
      */
     public static final String WEB_CONTAINER_KEY = "GeoServer";
+    
+    private String title;
+	private int maxFeatures = Integer.MAX_VALUE;
+	private boolean verbose = true;
+	private int numDecimals = 4;
+	private Charset charSet = Charset.forName("UTF-8");    
+	private String schemaBaseUrl;
+	private String contactPerson;
+	private String contactOrganization;
+	private String contactPosition;
+	private String addressType;
+	private String address;
+	private String addressCity;
+	private String addressState;
+	private String addressPostalCode;
+	private String addressCountry;
+	private String contactVoice;
+	private String contactFacsimile;
+	private String contactEmail;
 
     /** Default Logging level */
     private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
@@ -672,4 +672,36 @@ public class GeoServer extends GlobalLayerSupertype {
 		return processor;
 	}*/
 
+	/**
+	 * @return Returns the title.
+	 */
+	public String getTitle() {
+		return title;
+	}
+	/**
+	 * @param title The title to set.
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+    
+    /**
+     * Property representing the contact party (person, position or organization).
+     * <p>
+     * This is a derived property.
+     * </p>
+     * @return Contact party (person, position or organization), null if unknown
+     */
+    public String getContactParty(){
+        if( getContactPerson() != null && getContactPerson().length() != 0){
+            return getContactPerson(); // ie Chris Holmes 
+        }
+        if( getContactPosition() != null && getContactPosition().length() != 0 ){
+            return getContactPosition(); // ie Lead Developer 
+        }        
+        if( getContactOrganization() != null && getContactOrganization().length() != 0 ){
+            return getContactOrganization(); // ie TOPP 
+        }        
+        return null;
+    }    
 }
