@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.logging.Logger;
 
 /**
  * Base class for delegates who creates a map based on a GetMap request.
@@ -72,10 +72,23 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.12 2004/04/13 03:16:39 groldan Exp $
+ * @version $Id: GetMapDelegate.java,v 1.13 2004/09/09 15:29:28 cholmesny Exp $
+ * @task TODO: This whole thing needs to be redone a bit.  The problem right now is that
+ * the literenderer is smart enough to handle a lot of the junk that this tries to do,
+ * and handles it better.  The best answer would be for the SVG renderer to become a lot
+ * more smart.  For example the guessProperties does not take the style into account
+ * at all (but the lite renderer handles this).  GuessProperties should also be walking
+ * the filter.  The buildFilter is also handled by the LiteRenderer, so that subclass
+ * just overrides that method and returns nothing.  If we wanted we could turn the
+ * optimizations off of LiteRenderer and do everything here, that decision just needs 
+ * to be made at some point.  But for now we want to keep these things (especially 
+ * bbox creation) from happening twice).
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
+
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.responses.wms.map");
 
     /**
      * Creates a new GetMapDelegate object.
@@ -191,7 +204,7 @@ public abstract class GetMapDelegate implements Response {
         try {
             Filter finalLayerFilter;
             Filter customFilter;
-            Query layerQuery;
+            DefaultQuery layerQuery;
 
             for (int i = 0; i < nLayers; i++) {
                 FeatureType schema = layers[i].getFeatureType();
@@ -207,10 +220,13 @@ public abstract class GetMapDelegate implements Response {
 
                 List layerProperties = (numAttributes == nLayers)
                     ? (List) attributes.get(i) : Collections.EMPTY_LIST;
-                String[] props = guessProperties(layers[i], finalLayerFilter,
-                        layerProperties);
-                layerQuery = new DefaultQuery(finalLayerFilter, props);
+                //String[] props = (String[]) layerProperties.toArray();
+                String layerName = layers[i].getTypeName();
+                String props[]=guessProperties(layers[i], finalLayerFilter, layerProperties);
+                layerQuery = new DefaultQuery(layerName, finalLayerFilter);
+                layerQuery.setPropertyNames(props);
                 queries[i] = layerQuery;
+		LOGGER.fine("query for map is " + layerQuery);
             }
         } catch (IllegalFilterException ex) {
             throw new WmsException(ex,
@@ -222,11 +238,15 @@ public abstract class GetMapDelegate implements Response {
 
         return queries;
     }
+		
 
     /**
      * Builds the filter for a layer containing at leas the BBOX filter defined
      * by the extent queries (BBOX param), and optionally AND'ed with the
-     * customized filter for that layer (from FILTERS param)
+     * customized filter for that layer (from FILTERS param).  Subclasses can choose
+     * to over-ride and provide an alternate implementation, such as JAIMapResponse,
+     * which will do nothing to the filter, as its renderer automatically handles
+     * the bbox of the request.
      *
      * @param filter The additional filter to process with.
      * @param requestExtent The extent to filter out.
@@ -237,7 +257,7 @@ public abstract class GetMapDelegate implements Response {
      *
      * @throws IllegalFilterException For problems making the filter.
      */
-    private Filter buildFilter(Filter filter, Envelope requestExtent,
+    protected Filter buildFilter(Filter filter, Envelope requestExtent,
         FilterFactory ffactory, FeatureType schema)
         throws IllegalFilterException {
         GeometryFilter bboxFilter;

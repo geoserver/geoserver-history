@@ -13,6 +13,10 @@ import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.styling.Style;
+import org.geotools.filter.Filter;
+import org.geotools.filter.FilterFactory;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -43,7 +47,7 @@ import javax.imageio.stream.ImageOutputStream;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.24 2004/06/19 00:08:37 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.25 2004/09/09 15:29:29 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -233,6 +237,26 @@ public class JAIMapResponse extends GetMapDelegate {
         return format;
     }
 
+	/**
+	 * Over ride to return the same filter passed in, as this subclass automatically
+	 * handles the bboxing of the filter.  There is probably a more elegant way to
+	 * handle this, or rather the SVG renderer should be improved to be able to select
+	 * its own bboxes given the filter area passed in.
+	 *
+	 * @param filter The additional filter to process with.
+	 * @param requestExtent The extent to filter out.
+	 * @param ffactory A filterFactory to create new filters.
+	 * @param schema The FeatureTypeInfo of the request of this filter.
+	 *
+	 * @return A custom filter of the bbox and any optional custom filters.
+	 *
+	 * @throws IllegalFilterException For problems making the filter.
+	 */
+	protected Filter buildFilter(Filter filter, Envelope requestExtent,
+		FilterFactory ffactory, FeatureType schema)
+		throws IllegalFilterException {
+			return filter;
+		}
     /**
      * Performs the execute request using geotools rendering.
      *
@@ -284,6 +308,9 @@ public class JAIMapResponse extends GetMapDelegate {
             }
 
             renderer = new LiteRenderer(map);
+            
+            //we already do everything that the optimized data loading does...
+            //if we set it to true then it does it all twice...
             renderer.setOptimizedDataLoadingEnabled(true);
 
             //Envelope dataArea = map.getLayerBounds();
