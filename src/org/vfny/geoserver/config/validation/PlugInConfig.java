@@ -212,7 +212,7 @@ public class PlugInConfig{
     	dto.setName(name);
     	dto.setDescription(description);
     	dto.setClassName(className);
-    	Map args = new HashMap();
+    	Map myArgs = new HashMap();
 
     	if (this.args != null) {
     		Iterator i = this.args.keySet().iterator();
@@ -220,10 +220,10 @@ public class PlugInConfig{
     		while (i.hasNext()) {
     			String key = (String) i.next();
 
-    			args.put(key, ((ArgumentConfig)this.args.get(key)).toDTO());
+    			myArgs.put(key, ((ArgumentConfig)this.args.get(key)).toDTO());
     		}
     	}
-    	dto.setArgs(args);
+    	dto.setArgs(myArgs);
     	return dto;
     }
     
