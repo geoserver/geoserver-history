@@ -45,8 +45,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.1.2.1 2003/11/25 06:10:32 jive Exp $
+ * @author $Author: sploreg $ (last modification)
+ * @version $Id: ValidationProcessor.java,v 1.1.2.2 2003/11/25 22:36:32 sploreg Exp $
  */
 public class ValidationProcessor {
 
@@ -54,43 +54,53 @@ public class ValidationProcessor {
 								//    of feature validation tests
 	HashMap integrityLookup;	// a hashMap with featureTypes as keys that map to array lists 
 								//	of integrity validation tests
-	HashMap plugIns;
 	
 	ArrayList modifiedFeatureTypes;	// a list of feature types that have been modified
 									// These are no longer used for Integrity Validation tests
 	
+	
+	// used to hold a place in the lookup tables for ALL feature types
 	public final static Object ANYTYPENAME = new Object();
 	
 	
 	/**
 	 * ValidationProcessor constructor.
 	 * <p>
-	 * Description
+	 * Initializes the data structure to hold the validations.
 	 * </p>
 	 * 
 	 */
 	public ValidationProcessor() {
 		featureLookup = new HashMap();
 		integrityLookup = new HashMap();
-		plugIns = new HashMap();
 	}
 	
 	
 	/**
 	 * ValidationProcessor constructor.
 	 * <p>
-	 * Description
+	 * This constructor initializes several tests if true is passed into it.
+	 * These tests are used right now for debugging until we hook up the plugIn loader.
 	 * </p>
-	 * @param testRun
+	 * @param testRun Set to TRUE if you want pre-defined tests set up.
 	 */
 	public ValidationProcessor(boolean testRun) {
 		featureLookup = new HashMap();
 		integrityLookup = new HashMap();
-		plugIns = new HashMap();
 		if (testRun)
 			testInit();
 	}
 
+
+	/**
+	 * testInit
+	 * <p>
+	 * Sets up several Feature and Integrity tests. This method is called
+	 * if the user passes TRUE into the ValidationProcessor constructor.
+	 * The purpose of this method is to set up test examples.
+	 * </p>
+	 * 
+	 */
 	private void testInit()
 	{
 		// create a feature validation tests
@@ -113,71 +123,83 @@ public class ValidationProcessor {
 		
 	}
 	
+	
 	/**
-	 * addToLookup purpose.
+	 * addToLookup
 	 * <p>
 	 * Description:
-	 * Add the validation test to the map for every featureType that it validates
+	 * Add the validation test to the map for every featureType that it validates.
+	 * If the FeatureTypes array is ALL, then the validation is added to the 
+	 * ANYTYPENAME entry.
 	 * </p>
-	 * @param isValidFV
+	 * @param validation
 	 */
 	private void addToFVLookup(FeatureValidation validation) 
 	{
 		String[] featureTypeList = validation.getTypeNames();
 
-		if (featureTypeList == Validation.ALL)	// if null
+		if (featureTypeList == Validation.ALL)	// if null (ALL)
 		{
 			ArrayList tests = (ArrayList)featureLookup.get(ANYTYPENAME);
-			if (tests == null)
-				tests = new ArrayList();
+			if (tests == null)	// if an ALL test doesn't exist yet
+				tests = new ArrayList();	// create it
 			tests.add(validation);
-			featureLookup.put(ANYTYPENAME, tests);
+			featureLookup.put(ANYTYPENAME, tests);	// add the ALL test to it
 		}
-		else
+		else	// a non ALL FeatureType validation
 		{
 			for (int i=0; i<featureTypeList.length; i++)
 			{
 				ArrayList tests = (ArrayList)featureLookup.get(featureTypeList[i]);
-				if (tests == null)
-					tests = new ArrayList();
+				if (tests == null)	// if this FeatureType doesn't have a validation test yet
+					tests = new ArrayList();	// put it in the list
 				tests.add(validation);
-				featureLookup.put(featureTypeList[i], tests);
+				featureLookup.put(featureTypeList[i], tests);	// add a validation to it
 			}
 		}
 		
 	}
 	
 	
+	/**
+	 * addToIVLookup
+	 * <p>
+	 * Add the validation test to the map for every featureType that it validates.
+	 * If the FeatureTypes array is ALL, then the validation is added to the 
+	 * ANYTYPENAME entry.
+	 * </p>
+	 * @param validation
+	 */
 	private void addToIVLookup(IntegrityValidation validation)
 	{
 		String[] integrityTypeList = validation.getTypeNames();
 
-		if (integrityTypeList == Validation.ALL)	// if null
+		if (integrityTypeList == Validation.ALL)	// if null (ALL)
 		{
 			ArrayList tests = (ArrayList)integrityLookup.get(ANYTYPENAME);
-			if (tests == null)
-				tests = new ArrayList();
+			if (tests == null)		// if an ALL test doesn't exist yet
+				tests = new ArrayList();	// create it
 			tests.add(validation);
-			integrityLookup.put(ANYTYPENAME, tests);
+			integrityLookup.put(ANYTYPENAME, tests);	// add the ALL test to it
 		}
 		else
 		{
 			for (int i=0; i<integrityTypeList.length; i++)
 			{
 				ArrayList tests = (ArrayList)integrityLookup.get(integrityTypeList[i]);
-				if (tests == null)
-					tests = new ArrayList();
+				if (tests == null)	// if this FeatureType doesn't have a validation test yet
+					tests = new ArrayList();	// put it in the list
 				tests.add(validation);
-				integrityLookup.put(integrityTypeList[i], tests);
+				integrityLookup.put(integrityTypeList[i], tests);	// add a validation to it
 			}
 		}
 	}
 
 
 	/**
-	 * addPlugin adds 
+	 * addPlugin NOT IMPLEMENTED!
 	 * <p>
-	 * Description ...
+	 * NOT IMPLEMENTED!
 	 * </p>
 	 * @param bean
 	 * @param config configuration for the plugIn. Defined in plugin.xml
@@ -187,11 +209,19 @@ public class ValidationProcessor {
 		//PlugIn plugin = new PlugIn( name, bean, text, config);
 		//plugIns.put(name, plugin)
 		
-		Iterator it = config.values().iterator();
-		
 	}
 
 
+	/**
+	 * addPlugIn NOT IMPLEMENTED!
+	 * <p>
+	 * NOT IMPLEMENTED!
+	 * </p>
+	 * @param name
+	 * @param bean
+	 * @param text
+	 * @param config
+	 */
 	public void addPlugIn( String name, String bean, String text, Map config)
 	{
 		//PlugIn plugin = new PlugIn( name, bean, text, config);
@@ -199,6 +229,59 @@ public class ValidationProcessor {
 	}
 	
 	
+	/**
+	 * addPlugIn purpose.
+	 * <p>
+	 * Checks the type of Validation: ether a FeatureValidation or an IntegrityValidation.
+	 * Once the Validation type is determined, it is passed onto addTo*VLookup() to be inserted.
+	 * 
+	 * This method might not be in the final cut, or could be made private and called by the other addPlugIn()s
+	 * </p>
+	 * @param validation Either a FeatureValidation or an IntegrityValidation to be added to the processor.
+	 * @throws Exception Invalid Validation type
+	 */
+	public void addPlugIn(Validation validation) throws Exception
+	{
+		if (validation instanceof FeatureValidation)
+		{
+			addToFVLookup((FeatureValidation)validation);
+		}
+		else if (validation instanceof IntegrityValidation)
+		{
+			addToIVLookup((IntegrityValidation)validation);
+		}
+		else
+		{
+			throw new Exception("Validation type not recognized. Expected FeatureValidation or IntegrityValidation.");
+		}
+		
+	}
+	
+	
+	/**
+	 * runFeatureTests
+	 * <p>
+	 * Performs a lookup on the FeatureType name to determine what FeatureTests
+	 * need to be performed. Once these tests are gathered, they are run on each 
+	 * feature in the FeatureCollection.
+	 * The first validation test lookup checks to see if there are any validations that are
+	 * to be performed on every FeatureType. An example of this could be an isValid() test
+	 * on all geometries in all FeatureTypes. Once those tests have been gathered,
+	 * a lookup is performed on the TypeName of the FeatureType to check for
+	 * specific FeatureType validation tests.
+	 * A list of validation tests is returned from each lookup, if any exist.
+	 * When all the validation tests have been gathered, each test is iterated through
+	 * then run on each Feature, with the ValidationResults coming along for the ride,
+	 * collecting error information.
+	 * 
+	 * Parameter "FeatureCollection collection" should be changed later to take
+	 * in a FeatureSource so not everything is loaded into memory.
+	 * </p>
+	 * @param type The FeatureType of the features being tested.
+	 * @param collection The collection of features, of a particulare FeatureType "type", that are to be validated.
+	 * @param results Storage for the results of the validation tests.
+	 * @throws Exception FeatureValidations throw Exceptions
+	 */
 	public void runFeatureTests(FeatureType type, FeatureCollection collection, ValidationResults results) throws Exception
 	{
 		// check for any tests that are to be performed on ALL features
@@ -240,28 +323,41 @@ public class ValidationProcessor {
 	
 	
 	/**
-	 * runIntegrityTests purpose.
+	 * runIntegrityTests
 	 * <p>
-	 * Description ...
+	 * Performs a lookup on the FeatureType name to determine what IntegrityTests
+	 * need to be performed. Once these tests are gathered, they are run on the collection 
+	 * features in the Envelope, defined by a FeatureSource (not a FeatureCollection!).
+	 * The first validation test lookup checks to see if there are any validations that are
+	 * to be performed on every FeatureType. An example of this could be a uniqueID() test
+	 * on a unique column value in all FeatureTypes. Once those tests have been gathered,
+	 * a lookup is performed on the TypeName of the FeatureType to check for
+	 * specific Integrity validation tests.
+	 * A list of validation tests is returned from each lookup, if any exist.
+	 * When all the validation tests have been gathered, each test is iterated through
+	 * then run on each Feature, with the ValidationResults coming along for the ride,
+	 * collecting error information.
 	 * </p>
-	 * @param stores the Map of modified features (HashMaps of key=featureTypeName, value="featureStore"
-	 * @param envelope
-	 * @param results
-	 * @throws Exception
+	 * @param stores the Map of modified features (HashMaps of key=featureTypeName, value="featureSource"
+	 * @param envelope The bounding box that contains all modified Features
+	 * @param results Storage for the results of the validation tests.
+	 * @throws Exception Throws an exception if the HashMap contains a value that is not a FeatureSource
 	 */
 	public void runIntegrityTests(HashMap stores, Envelope envelope, ValidationResults results) throws Exception
 	{
-		// stores is a HashMap of FeatureSources
+		// convert each HashMap element into FeatureSources
 		FeatureSource[] sources = new FeatureSource[stores.size()];
 		Object[] array = stores.values().toArray();
 		for (int i=0; i<stores.size(); i++)
 		{
 			if (array[i] instanceof FeatureSource)
 				sources[i] = (FeatureSource) array[i];
-			//else
-			//	crap out and die
+			else			//TODO clean me up (just put this in here temporarily)
+				throw new Exception("Not a FeatureSource");
 		} 
-		// for each modified featureType
+		
+		
+		// for each modified FeatureType
 		for (int i=0; i<sources.length; i++)
 		{
 			// check for any tests that are to be performed on ALL features
