@@ -234,7 +234,7 @@ public class BypassSQLFeatureResults implements FeatureResults {
 	    SQLBuilder sqlBuilder = dataStore.getSqlBuilder(typeName);
 	    LOGGER.fine("sqlBuilder = " + sqlBuilder);
 	    Filter preFilter = sqlBuilder.getPreQueryFilter(prunedFilter);
-//	    LOGGER.fine("prefilter is " + preFilter.toString());
+	    // LOGGER.fine("prefilter is " + preFilter.toString());
 	    Filter postFilter = sqlBuilder.getPostQueryFilter(prunedFilter);
 	    if (postFilter == null) {
 	    	postFilter = Filter.NONE;
@@ -254,33 +254,11 @@ public class BypassSQLFeatureResults implements FeatureResults {
 	    	LOGGER.fine("appending additional filter constraint " + where);
 	    	bypassSQL = bypassSQL + where + ")";
 	    }
-	    /*
-	    // FIDMapper mapper = getFIDMapper(typeName);
-	
-	    String sqlQuery;
-	    FeatureTypeInfo info = typeHandler.getFeatureTypeInfo(typeName);
-	    boolean useMax = (postFilter == null); // not used yet
-	
-	    try {
-	        LOGGER.fine("calling sql builder with filter " + preFilter);
-	
-	        if (query.getFilter() == Filter.ALL) {
-	            StringBuffer buf = new StringBuffer("SELECT ");
-	            sqlBuilder.sqlColumns(buf, mapper, attrTypes);
-	            sqlBuilder.sqlFrom(buf, typeName);
-	            buf.append(" WHERE '1' = '0'"); // NO-OP it
-	            sqlQuery = buf.toString();
-	        } else {
-	            sqlQuery = sqlBuilder.buildSQLQuery(typeName, mapper, attrTypes, preFilter);
-	        }
-	
-	        LOGGER.fine("sql is " + sqlQuery);
-	    } catch (SQLEncoderException e) {
-	        throw new DataSourceException("Error building SQL Query", e);
-	    }
-	
-	    return sqlQuery;
-	    */
+
+	    /* bolt on any stuff that is to explicitly appear after a user supplied 
+	     * filter / where clause
+	     */ 
+	    
 	}
 
     

@@ -653,8 +653,12 @@ public class XMLelementStructure {
 			Iterator i = breakElements.iterator();
 			while (i.hasNext()) {
 				Element e = (Element) i.next();
+				if (e.getXpath().equals(xpath)) {
+					return e;
+/*				
 				if (e.name.get(0).equals(breakName)) {
 					return e;
+*/					
 				}
 			}
 			//not found - create it
@@ -801,6 +805,10 @@ public class XMLelementStructure {
 			while (i.hasNext()) {
 				AttributeTypeInfo att = (AttributeTypeInfo)i.next();
 				member = att.getXpath();
+				
+				// undo -> hack
+				member = member.replaceAll("->","/");
+				
 				int maxOccurs = att.getMaxOccurs();
 				if ( maxOccurs ==  0 ) continue;
 					
