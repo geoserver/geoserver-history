@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.3.2.1 2004/02/04 18:44:44 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.3.2.2 2004/02/09 22:53:07 cholmesny Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -294,8 +294,9 @@ public class TransactionResponse implements Response {
                         //
                         store.removeFeatures(filter);
                     }
-
-                    envelope.expandToInclude(damaged);
+		    if (damaged != null) {
+			envelope.expandToInclude(damaged);
+		    }
                 } catch (IOException ioException) {
                     throw new WfsTransactionException(ioException.getMessage(),
                         element.getHandle(), request.getHandle());
@@ -341,8 +342,10 @@ public class TransactionResponse implements Response {
                     //datasources don't implement, use the FeatureSource 
                     //bounds, or FeatureResults?  Whichever one will compute
                     //it for you if datastore can't.
-                    envelope.expandToInclude(store.getBounds(query));
-
+                    Envelope bounds = store.getBounds(query);
+		    if (bounds != null) {
+			envelope.expandToInclude(store.getBounds(query));
+		    }
                     if (types.length == 1) {
                         store.modifyFeatures(types[0], values[0], filter);
                     } else {
