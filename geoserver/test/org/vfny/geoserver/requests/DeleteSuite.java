@@ -10,6 +10,8 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.geotools.feature.AttributeType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FidFilter;
@@ -135,7 +137,7 @@ public class DeleteSuite extends TransactionSuite {
         //baseRequest.setReleaseAction(true);
         // make base comparison objects
         GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = factory.createAttributeExpression(null);
+        AttributeExpression leftExpression = factory.createAttributeExpression((AttributeType)null);
         leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linear ring
