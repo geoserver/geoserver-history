@@ -79,20 +79,19 @@ public class Describe
         String tempResponse;
 
         // implements the main request/response logic
-        //        try {
-        DescribeKvpReader currentKvpRequest = 
-            new DescribeKvpReader(request.getQueryString());
-        DescribeRequest wfsRequest = 
-            currentKvpRequest.getRequest();
-        DescribeResponse wfsResponse = 
-            new DescribeResponse(wfsRequest);
-        tempResponse = wfsResponse.getXmlResponse();
-        //        }
-        /*
-          catch (WfsException wfs) {
-          tempResponse = wfs.getXmlResponse();
-          }
-        */
+	try {
+	    DescribeKvpReader currentKvpRequest = 
+		new DescribeKvpReader(request.getQueryString());
+	    DescribeRequest wfsRequest = 
+		currentKvpRequest.getRequest();
+	    DescribeResponse wfsResponse = 
+		new DescribeResponse(wfsRequest);
+	    tempResponse = wfsResponse.getXmlResponse();
+	}
+	catch (WfsException wfs) {
+	    tempResponse = wfs.getXmlResponse();
+	}
+        
         // set content type and return response, whatever it is 
         response.setContentType(MIME_TYPE);
         response.getWriter().write( tempResponse );
