@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.1.2.14 2004/01/12 06:30:42 jive Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.15 2004/01/12 08:51:37 emperorkefka Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -306,6 +306,9 @@ public class DataConfig {
      */
     public List listDataStoreIds() {
         return new ArrayList(dataStores.keySet());
+    }
+    public List getDataStoreIds(){
+        return listDataStoreIds();
     }
 
     /**

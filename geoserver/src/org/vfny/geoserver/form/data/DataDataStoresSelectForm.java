@@ -19,7 +19,7 @@ import org.vfny.geoserver.config.ConfigRequests;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.7 2004/01/12 06:57:55 emperorkefka Exp $
+ * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.8 2004/01/12 08:51:37 emperorkefka Exp $
  */
 public class DataDataStoresSelectForm extends ActionForm {
     
@@ -33,10 +33,12 @@ public class DataDataStoresSelectForm extends ActionForm {
     /** Reset form */
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset( mapping, request );
+        System.out.println("SELECT RESET");
         
         // Pass data from congif layer to screen
         // REVIST: Bad Design JSP should lookup data itself!
         dataStoreIds = ConfigRequests.getDataConfig(request).listDataStoreIds();
+        System.out.println("####### " + dataStoreIds);
         
         // Usual reset stuff
         selectedDataStoreId = null; // nothing selected yet        

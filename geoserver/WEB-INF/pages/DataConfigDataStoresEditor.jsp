@@ -1,7 +1,7 @@
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
-
+<logic:present name="selectedDataStoreId" scope="session">
 <table border=0 width=100%>
 	<html:form action="DataConfigDataStoresSubmit">
 	
@@ -24,7 +24,7 @@
 			<bean:message key="label.namespace"/>
 		</span>
 	</td><td colspan=2 align="left">
-		<html:select property="namespace">
+		<html:select property="namespaceId">
 			<html:options property="namespaces"/>
 		</html:select>
 	</td></tr>
@@ -43,12 +43,12 @@
 		<b><bean:message key="label.connectionParameters"/>
 	</td></tr>
 
-<logic:iterate id="param" indexId="ctr" name="dataDataStoresEditorForm" property="connectionParamKeys">
-	<logic:notEqual name="dataDataStoresEditorForm" property='<%= "connectionParamKey[" + ctr + "]"%>' value="dbtype">
+<logic:iterate id="param" indexId="ctr" name="dataDataStoresEditorForm" property="paramKeys">
+	<logic:notEqual name="dataDataStoresEditorForm" property='<%= "paramKey[" + ctr + "]"%>' value="dbtype">
 	<tr><td align="right">
-		<bean:write name="dataDataStoresEditorForm" property='<%= "connectionParamKey[" + ctr + "]"%>'/>
+		<bean:write name="dataDataStoresEditorForm" property='<%= "paramKey[" + ctr + "]"%>'/>
 	</td><td colspan=2 align="left">
-		<html:text property='<%= "connectionParamValue[" + ctr + "]"%>' size="60"/>
+		<html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
 	</td></tr>
 	</logic:notEqual>	
 </logic:iterate>	
@@ -57,3 +57,4 @@
 	
 	</html:form>
 </table>
+</logic:present>

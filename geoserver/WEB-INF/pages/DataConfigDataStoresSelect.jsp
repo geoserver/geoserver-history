@@ -2,16 +2,17 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<% System.out.println(session.getClass()); %>
 <table border=0 width=100%>
 	<html:errors/><BR>
 	
 	<html:form action="DataConfigDataStoresSelect">
 	<tr><td valign="top">
+
+
 		<html:select property="selectedDataStoreId">
-			<html:options property="dataStoreIds"/>
+			<html:options name="Config.Data" property="dataStoreIds"/>
 		</html:select>
-		
+				
 		</td><td valign="top">
 
 		<BR>

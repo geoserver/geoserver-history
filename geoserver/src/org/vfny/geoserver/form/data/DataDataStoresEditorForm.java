@@ -74,6 +74,8 @@ public class DataDataStoresEditorForm extends ActionForm {
 	
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
 		super.reset(mapping, request );
+        
+        System.out.println("SELECT RESET");
 
 		enabledChecked = false;		
 				
@@ -84,7 +86,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 				
 		
 		dataStoreId = (String) request.getSession().getAttribute("selectedDataStoreId");
-        
+        System.out.println("Session DSID: " + dataStoreId);        
 		DataStoreConfig dsConfig = config.getDataStore( dataStoreId );
         
         description = dsConfig.getAbstract();

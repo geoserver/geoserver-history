@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresSelectForm;
@@ -41,7 +42,7 @@ import org.vfny.geoserver.form.data.DataDataStoresSelectForm;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.1.2.3 2004/01/12 06:59:49 emperorkefka Exp $
+ * @version $Id: DataDataStoresSelectAction.java,v 1.1.2.4 2004/01/12 08:51:37 emperorkefka Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
 
@@ -71,11 +72,16 @@ public class DataDataStoresSelectAction extends ConfigAction {
             return mapping.findForward("dataConfigDataStores");
             
         } else if ("delete".equals(buttonAction)) {
+            System.out.println("@@@@@ BEFORE @@@@ " +  ConfigRequests.getDataConfig(request).listDataStoreIds());
             dataConfig.removeDataStore(form.getSelectedDataStoreId());
             request.getSession().removeAttribute("selectedDataStoreId");
+            form.setSelectedDataStoreId("fred");
+            request.removeAttribute("selectedDataStoreId");
+            System.out.println("@@@@@ AFTER @@@@ " +  ConfigRequests.getDataConfig(request).listDataStoreIds());
+            form.reset(mapping, request);
             return mapping.findForward("dataConfigDataStores");
         }
-                
-        return null;
+        
+        throw new ServletException("Action must equal either 'edit' or 'delete'");        
     }
 }
