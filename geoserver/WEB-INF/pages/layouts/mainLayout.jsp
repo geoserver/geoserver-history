@@ -70,7 +70,10 @@
 	
     <tr>
       <td class="sidebar">
-        <tiles:insert attribute="sidebar"/>
+        <tiles:insert attribute="status"/>	
+        <tiles:insert attribute="configActions"/>
+        <tiles:insert attribute="actionator"/>
+        <tiles:insert attribute="messages"/>
       </td>
       <td style="vertical-align: top;"
           rowspan="1" colspan="2">

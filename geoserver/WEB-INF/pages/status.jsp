@@ -2,10 +2,10 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<span class="statusLabel">
-	<small><bean:message key="label.wfs"/>:<br></small>
+<div class="status">
+	<small><bean:message key="label.wfs"/>:</small>
 </span>
-<span class="statusbar">
+<div class="statusbar">
     <logic:notEqual name="GeoServer.ApplicationState" property="wfsGood" value="0">
 	    <span width="<bean:write name="GeoServer.ApplicationState" property="wfsGood"/>%" class="statusBarGood">
 	    </span>
@@ -18,7 +18,7 @@
         <span class="statusBarDisabled" width="<bean:write name="GeoServer.ApplicationState" property="wfsDisabled"/>%">
         </span>     
 	</logic:notEqual>		                 
-</span>
+</div>
 
 <span class="statusLabel">
 	<small><bean:message key="label.wms"/>:<br></small>

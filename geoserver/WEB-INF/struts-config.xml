@@ -119,8 +119,8 @@
             path="/Welcome.do"/>
            
         <forward 
-        	name="mainmenu"
-        	path="/MainMenu.do"/>
+        	name="admin"
+        	path="/Administration.do"/>
         
         <forward 
         	name="contact"
@@ -229,9 +229,10 @@
             parameter="main.contact"/>
                         
         <action
-        	path ="/MainMenu"
+        	path ="/Administration"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="main.menu"/>
+        	parameter="main.menu"
+        	name="blankBean"/>       	
        	
 		<action
 			path ="/Login"
