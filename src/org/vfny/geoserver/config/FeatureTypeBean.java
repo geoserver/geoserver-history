@@ -110,22 +110,22 @@ public class FeatureTypeBean {
     private void readFeatureTypeInformation(String featureTypeName) {
         try {
             FileReader featureTypeDocument = 
-                new FileReader(featureTypeFilePath);
+                new FileReader(featureTypeName);
             responseFeatureType = 
                 (FeatureType) Unmarshaller.unmarshal(FeatureType.class, 
                                                      featureTypeDocument);
         }
         catch( FileNotFoundException e ) {
-            LOG.info("Feature type file does not exist: "+featureTypeFilePath);
+            LOG.info("Feature type file does not exist: "+featureTypeName);
         }
         catch( MarshalException e ) {
             LOG.info("Castor could not unmarshal feature type file: " + 
-                      featureTypeFilePath);
+                      featureTypeName);
             LOG.info("Castor says: " + e.toString() );
         }
         catch( ValidationException e ) {
             LOG.info("Castor says: feature type XML not valid : "
-                     + featureTypeFilePath);
+                     + featureTypeName);
             LOG.info("Castor says: " + e.toString() );
         }    
     }
