@@ -817,7 +817,16 @@ failonerror="true"/>
   	<copy
   	  toFile="${dir.lib}/geoapi-SNAPSHOT.jar"
   	  file="${dir.maven}/geoapi/jars/geoapi-SNAPSHOT.jar"/>
-  	
+  	<copy
+  	  toFile="${dir.lib}/opengis-css-0.1.jar"
+  	  file="${dir.maven}/opengis/jars/opengis-css-0.1.jar"/>
+  	<copy
+  	  toFile="${dir.lib}/opengis-legacy-0.1.jar"
+  	  file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar"/>
+  	<copy
+  	  toFile="${dir.lib}/units-0.01.jar"
+  	  file="${dir.maven}/units/jars/units-0.01.jar"/>
+  	  	
   	<copy
 	  toFile="${dir.lib}/gt2-arcsde.jar"
   	  file="${dir.geotools}/plugin/arcsde/target/arcsde-${version.geotools}.jar"/>
