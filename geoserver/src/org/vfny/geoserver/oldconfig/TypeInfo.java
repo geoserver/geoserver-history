@@ -10,16 +10,18 @@ import java.util.logging.*;
 
 import org.geotools.data.*;
 import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.responses.wfs.*;
 import org.vfny.geoserver.*;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
- *
+ * <p>
+ * TODO: Currently holds featureDSource and transactionDS, We switching over to
+ * DataStore api so this will need to be removed.
+ * </p>
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán, Dominion t.i.
- * @version $Id: TypeInfo.java,v 1.1.2.1 2003/11/04 23:38:17 cholmesny Exp $
+ * @version $Id: TypeInfo.java,v 1.1.2.2 2003/11/12 04:19:06 jive Exp $
  */
 public class TypeInfo
 {
@@ -357,7 +359,7 @@ public class TypeInfo
       }
 
       setPrefix(typePrefix);
-      pathToSchemaFile = new File(parentDir, config.SCHEMA_FILE).toString();
+      pathToSchemaFile = new File(parentDir, ConfigInfo.SCHEMA_FILE).toString();
       LOG.finer("pathToSchema is " + pathToSchemaFile);
 
       //LOG.finer("prefix is " + prefix);

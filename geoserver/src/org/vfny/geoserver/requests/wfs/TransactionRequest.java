@@ -15,7 +15,7 @@ import java.util.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionRequest.java,v 1.1.2.2 2003/11/12 03:42:26 jive Exp $
+ * @version $Id: TransactionRequest.java,v 1.1.2.3 2003/11/12 04:19:06 jive Exp $
  */
 public class TransactionRequest extends WFSRequest {
     protected List subRequests = new ArrayList();
@@ -174,8 +174,8 @@ public class TransactionRequest extends WFSRequest {
      * @return <tt>true</tt> if all features held by the lock should be
      *         released after this operation.
      */
-    public boolean getReleaseAll() {
-        return releaseAction == ALL;
+    public ReleaseAction getReleaseAction() {
+        return releaseAction;
     }
 
     /**

@@ -13,21 +13,22 @@ import org.geotools.data.jdbc.*;
 import org.geotools.feature.*;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.requests.wfs.*;
 import org.vfny.geoserver.responses.wfs.*;
-import org.vfny.geoserver.*;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeRepository.java,v 1.1.2.1 2003/11/04 23:38:17 cholmesny Exp $
+ * @version $Id: TypeRepository.java,v 1.1.2.2 2003/11/12 04:19:06 jive Exp $
  *
  * @task TODO: Rethink synchronization.  Just wanted to get things with locks
  *       working for this version, but obviously we need to examine
  *       synchronization completely if this class is to be useful at all.
+ * @task TODO: convert over to the locking provided by DataStore, this class
+ *       is the last hold out for DataSource use that I could see, it
+ *       uses TypeInfo.getDataSource to get a list of FeatureIDs.
  */
 public class TypeRepository
 {
@@ -288,10 +289,10 @@ public class TypeRepository
   private static boolean isInfoFile(File testFile, ConfigInfo config)
   {
     String testName = testFile.getAbsolutePath();
-    int start = testName.length() - config.INFO_FILE.length();
+    int start = testName.length() - ConfigInfo.INFO_FILE.length();
     int end = testName.length();
 
-    return testName.substring(start, end).equals(config.INFO_FILE);
+    return testName.substring(start, end).equals(ConfigInfo.INFO_FILE);
   }
 
   /**
@@ -561,9 +562,10 @@ public class TypeRepository
       return false;
     }
     else {
-      boolean releaseAll = completed.getReleaseAll();
+      boolean releaseAll =
+        completed.getReleaseAction() == TransactionRequest.ALL;
 
-      if (releaseAll) {
+      if (completed.getReleaseAction() == TransactionRequest.ALL) {
         return lock.unlock(null, true);
       }
       else {

@@ -24,7 +24,7 @@ import java.util.logging.*;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.1.2.2 2003/11/12 03:42:30 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.1.2.3 2003/11/12 04:19:00 jive Exp $
  */
 public class TransactionResponse implements Response {
     
@@ -60,10 +60,24 @@ public class TransactionResponse implements Response {
         xmlResponse = getXmlResponse(transReques);
     }
 
-    public String getContentType() {
+    /** 
+     * Responce MIME type as define by ServerConig.
+     */
+    public String getContentType() {       
         return ServerConfig.getInstance().getGlobalConfig().getMimeType();
     }
 
+    /**
+     * Writes generated xmlResponse.
+     * <p>
+     * TODO: Write out as characters not bytes?
+     * </p>
+     * I am a little bit confused here, xmlResponse is a String and
+     * we are directly shunting the bytes out.  We should use a Writer
+     * or something that knows how to encode characters according to our
+     * specified MIME type.
+     * </p>
+     */
     public void writeTo(OutputStream out) throws ServiceException {
         try {
             byte[] content = xmlResponse.getBytes();
@@ -75,7 +89,9 @@ public class TransactionResponse implements Response {
 
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
-     *
+     * <p>
+     * This actually seems to do the work of performing the request.
+     * </p>
      * @param request The request to transact.
      *
      * @return XML response to send to client
