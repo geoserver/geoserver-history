@@ -24,12 +24,12 @@ import org.vfny.geoserver.config.ConfigRequests;
  *
 <<<<<<< DataDataStoresSelectForm.java
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.8 2004/03/02 10:06:42 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.9 2004/03/16 19:57:40 emperorkefka Exp $
 =======
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.8 2004/03/02 10:06:42 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.9 2004/03/16 19:57:40 emperorkefka Exp $
 >>>>>>> 1.4
  */
 public class DataDataStoresSelectForm extends ActionForm {
@@ -71,7 +71,6 @@ public class DataDataStoresSelectForm extends ActionForm {
         ActionErrors errors = new ActionErrors();
 
         Locale locale = (Locale) request.getLocale();
-        System.out.println(locale.getDisplayLanguage());
         MessageResources messages = servlet.getResources();
         String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
         String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
