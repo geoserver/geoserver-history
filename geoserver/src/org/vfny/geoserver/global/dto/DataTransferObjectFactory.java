@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.3 2004/01/16 19:33:38 dmzwiers Exp $
+ * @version $Id: DataTransferObjectFactory.java,v 1.4 2004/01/18 00:37:23 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -47,7 +47,7 @@ public class DataTransferObjectFactory {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
 
         dto.setName( attributeType.getName() );
-        dto.setMinOccurs( 1 );
+        dto.setMinOccurs( 0 );
         dto.setMaxOccurs( 1 );
         
         
