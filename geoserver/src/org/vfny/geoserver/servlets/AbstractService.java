@@ -71,7 +71,7 @@ import javax.servlet.http.*;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.1.2.13 2003/11/19 18:19:36 groldan Exp $
+ * @version $Id: AbstractService.java,v 1.1.2.14 2003/11/25 20:08:00 groldan Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -167,7 +167,16 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             String qString = request.getQueryString();
-            Map requestParams = KvpRequestReader.parseKvpSet(qString);
+            //Map requestParams = KvpRequestReader.parseKvpSet(qString);
+            Map requestParams = new HashMap();
+            String paramName, paramValue;
+            for(Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();)
+            {
+              paramName = (String)pnames.nextElement();
+              paramValue = request.getParameter(paramName);
+              requestParams.put(paramName.toUpperCase(), paramValue);
+            }
+
             KvpRequestReader requestReader = getKvpReader(requestParams);
             serviceRequest = requestReader.getRequest();
         }catch(ServiceException se){
@@ -252,7 +261,6 @@ public abstract class AbstractService extends HttpServlet {
                 + serviceException.getMessage());
             serviceResponse.abort();
             sendError(response, serviceException);
-
             return;
         } catch (Throwable t) {
             //we can safelly send errors here, since we have not touched response yet
@@ -286,7 +294,6 @@ public abstract class AbstractService extends HttpServlet {
             //
             serviceResponse.abort();
             stratagy.abort();
-
             return;
         } catch (IOException ex) {
             serviceResponse.abort();
@@ -344,7 +351,7 @@ public abstract class AbstractService extends HttpServlet {
 
             return;
         }
-        LOGGER.warning("Service handled");
+        LOGGER.info("Service handled");
     }
 
     /**
@@ -682,7 +689,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe Service stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.1.2.13 $
+ * @version $Revision: 1.1.2.14 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

@@ -17,7 +17,7 @@ import javax.xml.parsers.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.5 2003/11/17 09:00:24 jive Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.6 2003/11/25 20:08:00 groldan Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -40,7 +40,7 @@ public class ServerConfig extends AbstractConfig {
 
     /** DOCUMENT ME! */
     private GlobalConfig globalConfig;
-    
+
     private String rootDir;
 
     /**
@@ -76,12 +76,12 @@ public class ServerConfig extends AbstractConfig {
     private ServerConfig(Map config, Catalog gt2catalog)  {
         this.rootDir = get( config, "dir", new File(".") ).toString();
         globalConfig = new GlobalConfig( config );
-        
+
         featureServerConfig = new WFSConfig( config );
         mapServerConfig = new WMSConfig( config );
         catalog = new CatalogConfig( config, gt2catalog );
-        
-    }        
+
+    }
     /**
      * DOCUMENT ME!
      *
@@ -145,7 +145,7 @@ public class ServerConfig extends AbstractConfig {
         serverConfig = new ServerConfig(rootDir);
     }
 
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -203,7 +203,7 @@ public class ServerConfig extends AbstractConfig {
      * @author jgarnett
      */
     public static void load( Map config, Catalog catalog ){
-        serverConfig = new ServerConfig( config, catalog );        
+        serverConfig = new ServerConfig( config, catalog );
     }
 
     /**

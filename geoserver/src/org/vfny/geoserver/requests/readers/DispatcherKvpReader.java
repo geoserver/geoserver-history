@@ -14,7 +14,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DispatcherKvpReader.java,v 1.1.2.1 2003/11/04 22:44:41 cholmesny Exp $
+ * @version $Id: DispatcherKvpReader.java,v 1.1.2.2 2003/11/25 20:08:00 groldan Exp $
  */
 public class DispatcherKvpReader {
     /** Class logger */
@@ -36,7 +36,7 @@ public class DispatcherKvpReader {
             responseType = responseType.toUpperCase();
 
             if (responseType.equals("GETCAPABILITIES")) {
-                return Dispatcher.GET_CAPABILITIES_REQUEST;
+                return Dispatcher.WFS_GET_CAPABILITIES_REQUEST;
             } else if (responseType.equals("DESCRIBEFEATURETYPE")) {
                 return Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
             } else if (responseType.equals("GETFEATURE")) {

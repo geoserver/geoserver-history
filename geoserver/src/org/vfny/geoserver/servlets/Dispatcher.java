@@ -30,9 +30,11 @@ import javax.servlet.http.*;
  * GetCapabablities response.  Currently does not support post requests, but
  * most requests for this will likely come with get.
  *
+ * @task TODO: rework to work too for WMS servlets, and to get the servlets
+ * from ServletContext instead of having them hardcoded
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.5.4.2 2003/11/14 20:39:15 groldan Exp $
+ * @version $Id: Dispatcher.java,v 1.5.4.3 2003/11/25 20:08:00 groldan Exp $
  */
 public class Dispatcher extends HttpServlet {
     /** Class logger */
@@ -50,7 +52,7 @@ public class Dispatcher extends HttpServlet {
     public static String META_REQUEST = "GetMeta";
 
     /** Map get capabilities request type */
-    public static final int GET_CAPABILITIES_REQUEST = 1;
+    public static final int WFS_GET_CAPABILITIES_REQUEST = 1;
 
     /** Map describe feature type request type */
     public static final int DESCRIBE_FEATURE_TYPE_REQUEST = 2;
@@ -104,25 +106,15 @@ public class Dispatcher extends HttpServlet {
         //request.getReader().mark(10000);
 
         /*    try {
-
                       if ( request.getReader() != null ) {
-
                       DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
-
                       targetRequest = requestTypeAnalyzer.getRequestType();
-
                        } else {
-
                         targetRequest = UNKNOWN;
-
                         }
-
                        } catch (WfsException wfs) {
-
                                    targetRequest = ERROR;
-
                                    tempResponse = wfs.getXmlResponse();
-
                        }*/
 
         //request.getReader().reset();
@@ -142,7 +134,6 @@ public class Dispatcher extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         int targetRequest = 0;
-
         // Examine the incoming request and create appropriate server objects
         //  to deal with each request
         //              try {
@@ -164,7 +155,7 @@ public class Dispatcher extends HttpServlet {
         LOGGER.finer("req_type is " + req_type);
 
         switch (req_type) {
-        case GET_CAPABILITIES_REQUEST:
+        case WFS_GET_CAPABILITIES_REQUEST:
             dispatched = new Capabilities();
 
             break;

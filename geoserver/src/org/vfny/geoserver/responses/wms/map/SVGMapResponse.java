@@ -5,7 +5,7 @@
 package org.vfny.geoserver.responses.wms.map;
 
 import org.geotools.data.*;
-import org.geotools.svg.SVGEncoder;
+
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.requests.Request;
@@ -13,15 +13,17 @@ import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
 import java.io.*;
 import java.util.*;
-
+import java.util.logging.Logger;
 
 /**
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.1.2.3 2003/11/19 18:23:00 groldan Exp $
+ * @version $Id: SVGMapResponse.java,v 1.1.2.4 2003/11/25 20:08:00 groldan Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
+
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
     /** DOCUMENT ME!  */
     private static final String MIME_TYPE = "image/svg+xml";
     private SVGEncoder svgEncoder;
@@ -59,7 +61,12 @@ public class SVGMapResponse extends GetMapDelegate {
 
     public void abort()
     {
-
+      LOGGER.fine("aborting SVG map response");
+      if(svgEncoder != null)
+      {
+        LOGGER.info("aborting SVG encoder");
+        svgEncoder.abort();
+      }
     }
 
     /**
@@ -84,6 +91,7 @@ public class SVGMapResponse extends GetMapDelegate {
         svgEncoder.setReferenceSpace(getRequest().getBbox());
         svgEncoder.setWidth(String.valueOf(request.getWidth()));
         svgEncoder.setHeight(String.valueOf(request.getHeight()));
+        svgEncoder.setWriteHeader(request.getWriteSvgHeader());
     }
 
     /**
@@ -94,14 +102,7 @@ public class SVGMapResponse extends GetMapDelegate {
      * @throws ServiceException DOCUMENT ME!
      * @throws WmsException DOCUMENT ME!
      */
-    public void writeTo(OutputStream out) throws ServiceException {
-        FeatureResults layer;
-
-        try {
-            svgEncoder.encode(requestedLayers, resultLayers, out);
-        } catch (IOException ex) {
-            throw new WmsException(ex, "Error writing SVG: " + ex.getMessage(),
-                getClass().getName() + "::writeTo()");
-        }
+    public void writeTo(OutputStream out) throws ServiceException, IOException {
+        svgEncoder.encode(requestedLayers, resultLayers, styles, out);
     }
 }

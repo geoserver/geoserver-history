@@ -16,7 +16,7 @@ import java.util.logging.*;
 
 /**
  * Base class for all KVP readers, with some generalized convenience methods.
- * 
+ *
  * <p>
  * If you pass this utility a KVP request (everything after the '?' in the  GET
  * request URI), it will translate this into a list of key-word value
@@ -33,7 +33,7 @@ import java.util.logging.*;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: KvpRequestReader.java,v 1.1.2.2 2003/11/11 02:47:36 cholmesny Exp $
+ * @version $Id: KvpRequestReader.java,v 1.1.2.3 2003/11/25 20:08:00 groldan Exp $
  */
 abstract public class KvpRequestReader {
     /** Class logger */
@@ -145,24 +145,52 @@ abstract public class KvpRequestReader {
      *
      * @return A list of the tokenized string.
      */
-    protected static List readFlat(String rawList, String delimeter) {
+    protected static List readFlat(String rawList, String delimiter) {
         // handles implicit unconstrained case
         if (rawList == null) {
-            return new ArrayList(0);
+            return Collections.EMPTY_LIST;
 
             // handles explicit unconstrained case
         } else if (rawList.equals("*")) {
-            return new ArrayList(0);
-
+            return Collections.EMPTY_LIST;
             // handles explicit, constrained element lists
         } else {
-            StringTokenizer kvps = new StringTokenizer(rawList, delimeter);
-            List kvpList = new ArrayList(kvps.countTokens());
+            List kvpList = null;
+            /**
+             *GR: avoid using StringTokenizer because it does not returns
+             *empty trailing strings (i.e. if the string after the last
+             *match of the pattern is empty)
+             */
+            //HACK: if there are more than one character in delimiter, I assume
+            //they are the parenthesis, for wich I don't know how to create
+            //a regular expression, so I keep using the StringTokenizer since
+            //it works for that case.
+            if(delimiter.length() == 1)
+            {
+              int index = -1;
+              kvpList = new ArrayList();
+              String token;
+              //if(rawList.endsWith(delimiter))
+              rawList += delimiter;
+              while( (index = rawList.indexOf(delimiter)) > -1)
+              {
+                token = rawList.substring(0, index);
+                if(LOGGER.isLoggable(Level.FINEST))
+                  LOGGER.finest("adding simple element " + token);
+                kvpList.add(token);
+                rawList = rawList.substring(++index);
+              }
+            }else{
 
-            while (kvps.hasMoreTokens()) {
+              StringTokenizer kvps = new StringTokenizer(rawList, delimiter);
+              kvpList = new ArrayList(kvps.countTokens());
+
+              while (kvps.hasMoreTokens()) {
                 LOGGER.finest("adding simple element");
                 kvpList.add(kvps.nextToken());
+              }
             }
+
 
             return kvpList;
         }

@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.8 2003/11/19 19:11:55 cholmesny Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.9 2003/11/25 20:08:00 groldan Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
 
@@ -136,7 +136,7 @@ public class FeatureTypeConfig extends BasicConfig {
         if (dataStore.isEnabled()) {
             try {
                 this.schema = getSchema(getChildElement(fTypeRoot, "attributes"));
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 throw new ConfigurationException("Error obtaining schema for "
                     + getName() + ": " + ex.getMessage(), ex);
             }

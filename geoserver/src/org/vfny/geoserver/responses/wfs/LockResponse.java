@@ -5,7 +5,6 @@
 package org.vfny.geoserver.responses.wfs;
 
 import org.geotools.data.*;
-import org.geotools.data.postgis.PostgisFeatureLocking;
 import org.geotools.feature.*;
 import org.geotools.filter.*;
 import org.geotools.filter.Filter;
@@ -26,7 +25,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.1.2.5 2003/11/25 05:35:36 jive Exp $
+ * @version $Id: LockResponse.java,v 1.1.2.6 2003/11/25 20:08:00 groldan Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -335,8 +334,8 @@ public class LockResponse implements Response {
 
                 Transaction t = new DefaultTransaction();
                 try {
-                    t.addAuthorization(featureLock.getAuthorization());                    
-                    source.getDataStore().getLockingManager().release( featureLock.getAuthorization(), t );    
+                    t.addAuthorization(featureLock.getAuthorization());
+                    source.getDataStore().getLockingManager().release( featureLock.getAuthorization(), t );
                 }
                 finally {
                     t.close();

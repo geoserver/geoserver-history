@@ -57,7 +57,10 @@ public abstract class GetMapDelegate implements Response {
 
         FeatureTypeConfig[] layers = request.getLayers();
         List styles = request.getStyles();
-        Query[] queries = buildQueries(layers, request.getFilters());
+        Filter[] filters = request.getFilters();
+        List attributes = request.getAttributes();
+
+        Query[] queries = buildQueries(layers, filters, attributes);
         int nLayers = layers.length;
         FeatureResults[] resultLayers = new FeatureResults[nLayers];
         FeatureTypeConfig ftype = null;
@@ -99,42 +102,38 @@ public abstract class GetMapDelegate implements Response {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private Query[] buildQueries(FeatureTypeConfig[] layers, Filter[] filters)
+    private Query[] buildQueries(FeatureTypeConfig[] layers, Filter[] filters,
+                                 List attributes)
         throws WmsException {
         int nLayers = layers.length;
+        int numFilters = (filters == null) ? 0 : filters.length;
+        int numAttributes = attributes.size();
+
         Query[] queries = new Query[nLayers];
         GetMapRequest request = getRequest();
         Envelope requestExtent = request.getBbox();
         FilterFactory ffactory = FilterFactory.createFilterFactory();
 
         try {
-            GeometryFilter bboxFilter;
-            Filter requestLayerFilter;
-            Filter finalLayerFilter;
-            int numFilters = (filters == null) ? 0 : filters.length;
+            Filter finalLayerFilter, customFilter;
             Query layerQuery;
 
             for (int i = 0; i < nLayers; i++) {
                 FeatureType schema = layers[i].getSchema();
-                bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
+                if(numFilters == nLayers)
+                  customFilter = filters[i];
+                else
+                  customFilter = null;
 
-                BBoxExpression bboxExpr = ffactory.createBBoxExpression(requestExtent);
-                Expression geomAttExpr = ffactory.createAttributeExpression(schema,
-                        schema.getDefaultGeometry().getName());
-                bboxFilter.addLeftGeometry(geomAttExpr);
-                bboxFilter.addRightGeometry(bboxExpr);
-                requestLayerFilter = (numFilters == nLayers) ? filters[i] : null;
+                finalLayerFilter = buildFilter(customFilter, requestExtent,
+                        ffactory, schema);
 
-                if ((requestLayerFilter == null)
-                        || (requestLayerFilter == Filter.NONE)) {
-                    finalLayerFilter = bboxFilter;
-                } else {
-                    finalLayerFilter = ffactory.createLogicFilter(AbstractFilter.LOGIC_AND);
-                    ((LogicFilter) finalLayerFilter).addFilter(bboxFilter);
-                    ((LogicFilter) finalLayerFilter).addFilter(requestLayerFilter);
-                }
+                List layerProperties = numAttributes == nLayers?
+                        (List)attributes.get(i) : Collections.EMPTY_LIST;
 
-                String[] props = guessProperties(layers[i], finalLayerFilter);
+                String[] props = guessProperties(layers[i],
+                                                 finalLayerFilter,
+                                                 layerProperties);
                 layerQuery = new DefaultQuery(finalLayerFilter, props);
                 queries[i] = layerQuery;
             }
@@ -145,6 +144,34 @@ public abstract class GetMapDelegate implements Response {
         }
 
         return queries;
+    }
+
+    /**
+     * builds the filter for a layer containing at leas the BBOX filter
+     * defined by the extent queries (BBOX param), and optionally AND'ed
+     * with the customized filter for that layer (from FILTERS param)
+     */
+    private Filter buildFilter(Filter filter, Envelope requestExtent,
+        FilterFactory ffactory, FeatureType schema)
+        throws IllegalFilterException {
+        GeometryFilter bboxFilter;
+        bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
+
+        BBoxExpression bboxExpr = ffactory.createBBoxExpression(requestExtent);
+        Expression geomAttExpr = ffactory.createAttributeExpression(schema,
+                schema.getDefaultGeometry().getName());
+        bboxFilter.addLeftGeometry(geomAttExpr);
+        bboxFilter.addRightGeometry(bboxExpr);
+
+        Filter finalLayerFilter = bboxFilter;
+
+        if ((filter != null) && (filter != Filter.NONE)) {
+            finalLayerFilter = ffactory.createLogicFilter(AbstractFilter.LOGIC_AND);
+            ((LogicFilter) finalLayerFilter).addFilter(bboxFilter);
+            ((LogicFilter) finalLayerFilter).addFilter(filter);
+        }
+
+        return finalLayerFilter;
     }
 
     /**
@@ -176,10 +203,14 @@ public abstract class GetMapDelegate implements Response {
      *       AttributeExpression's?). I think that the style should be taken
      *       in count too.
      */
-    private String[] guessProperties(FeatureTypeConfig layer, Filter filter) {
+    private String[] guessProperties(FeatureTypeConfig layer, Filter filter, List attributes) {
         FeatureType type = layer.getSchema();
-        String[] properties = new String[1];
-        properties[0] = type.getDefaultGeometry().getName();
+        List atts = new ArrayList(attributes);
+        String geom_name = type.getDefaultGeometry().getName();
+        if(!atts.contains(geom_name))
+            atts.add(geom_name);
+
+        String[] properties = (String[])atts.toArray(new String[atts.size()]);
 
         return properties;
     }
@@ -194,8 +225,8 @@ public abstract class GetMapDelegate implements Response {
     }
 
     /**
-     * evaluates if this Map producer can generate the map format specified
-     * by <code>mapFormat</code>
+     * evaluates if this Map producer can generate the map format specified by
+     * <code>mapFormat</code>
      *
      * @param mapFormat the mime type of the output map format requiered
      *
@@ -203,5 +234,10 @@ public abstract class GetMapDelegate implements Response {
      */
     public abstract boolean canProduce(String mapFormat);
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public abstract List getSupportedFormats();
 }

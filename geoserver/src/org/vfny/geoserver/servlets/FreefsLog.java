@@ -7,7 +7,6 @@ package org.vfny.geoserver.servlets;
 import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.oldconfig.*;
-
 //Logging system
 import org.vfny.geoserver.zserver.*;
 import java.util.logging.*;
@@ -19,7 +18,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.13.4.2 2003/11/06 00:07:46 cholmesny Exp $
+ * @version $Id: FreefsLog.java,v 1.13.4.3 2003/11/25 20:08:00 groldan Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -49,17 +48,26 @@ public class FreefsLog extends HttpServlet {
             LOGGER.severe("Can't initialize server: " + ex.getMessage());
             ex.printStackTrace();
         }
-
         /*
-           ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
-                   if (cfgInfo.runZServer()) {
-              try {
-                  server = new GeoZServer(cfgInfo.getZServerProps());
-                  server.start();
-              } catch (java.io.IOException e) {
-                  LOGGER.info("zserver module could not start: " + e.getMessage());
-              }
-                   }
+
+                      ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
+
+                              if (cfgInfo.runZServer()) {
+
+                         try {
+
+                             server = new GeoZServer(cfgInfo.getZServerProps());
+
+                             server.start();
+
+                         } catch (java.io.IOException e) {
+
+                             LOGGER.info("zserver module could not start: " + e.getMessage());
+
+                         }
+
+                              }
+
          */
     }
 
@@ -78,8 +86,34 @@ public class FreefsLog extends HttpServlet {
      */
     public void destroy() {
         super.destroy();
-
         ConnectionPoolManager.getInstance().closeAll();
+        /*
+         HACK: we must get a standard API way for releasing resources...
+        */
+          try {
+            Class sdepfClass = Class.forName(
+              "org.geotools.data.sde.SdeConnectionPoolFactory");
+
+            LOGGER.info("SDE datasource found, releasing resources");
+            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance", new Class[0]);
+            Object pfInstance = m.invoke(sdepfClass, new Object[0]);
+
+            LOGGER.info("got sde connection pool factory instance: " + pfInstance);
+
+            java.lang.reflect.Method closeMethod = pfInstance.getClass()
+                .getMethod("closeAll", new Class[0]);
+
+            closeMethod.invoke(pfInstance, new Object[0]);
+            LOGGER.info("just asked SDE datasource to release connections");
+          }
+          catch(ClassNotFoundException cnfe){
+            LOGGER.fine("No SDE datasource found");
+          }
+          catch (Exception ex) {
+            ex.printStackTrace();
+          }
+
+
         LOGGER.finer("shutting down zserver");
 
         if (server != null) {

@@ -19,7 +19,7 @@ import java.util.logging.*;
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.1.2.7 2003/11/19 22:39:58 cholmesny Exp $
+ * @version $Id: GlobalConfig.java,v 1.1.2.8 2003/11/25 20:08:00 groldan Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -62,11 +62,11 @@ public class GlobalConfig extends AbstractConfig {
     private ContactConfig contactConfig;
 
     /**
-     * Used to aquire a GlobalCongif for testing against
-     * 
+     * Used to aquire a GlobalConfig for testing against
+     *
      * <p>
      * The provided config Map recognizes:
-     * 
+     *
      * <ul>
      * <li>
      * global.maxFeatures: int (default 2000 )
@@ -91,7 +91,7 @@ public class GlobalConfig extends AbstractConfig {
      * </li>
      * </ul>
      * </p>
-     * 
+     *
      * <p>
      * In general this is expected to be used by testcases, in which case the
      * actual java objects can be supplied. And then only if you really need
@@ -188,7 +188,7 @@ public class GlobalConfig extends AbstractConfig {
         //TODO: better checking.
         this.baseUrl = getChildText(globalConfigElem, "URL", true);
 
-        if (!baseUrl.endsWith("/")) {
+        if (baseUrl != null && !baseUrl.endsWith("/")) {
             this.baseUrl = baseUrl + "/";
         }
 

@@ -1,9 +1,14 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geotools.feature;
 
-import java.io.IOException;
-import java.util.Iterator;
 import org.geotools.data.*;
+import java.io.IOException;
 import java.util.*;
+import java.util.Iterator;
+
 
 /**
  * The FeatureCollectionIteration provides a depth first traversal of a
@@ -33,6 +38,8 @@ public class FeatureResultsIteration {
 
     /** The collection being iterated */
     private final FeatureResults results;
+
+    /** DOCUMENT ME!  */
     private final FeatureReader reader;
 
     /**
@@ -40,12 +47,13 @@ public class FeatureResultsIteration {
      * collection.
      *
      * @param handler The handler to perform operations on this iteration.
-     * @param collection The collection to iterate over.
+     * @param features The collection to iterate over.
      *
      * @throws NullPointerException If handler or collection are null.
+     * @throws IOException DOCUMENT ME!
      */
-    public FeatureResultsIteration(Handler handler,
-        FeatureResults features) throws NullPointerException, IOException {
+    public FeatureResultsIteration(Handler handler, FeatureResults features)
+        throws NullPointerException, IOException {
         if (handler == null) {
             throw new NullPointerException("handler");
         }
@@ -63,11 +71,12 @@ public class FeatureResultsIteration {
      * A convienience method for obtaining a new iteration and calling iterate.
      *
      * @param handler The handler to perform operations on this iteration.
-     * @param collection The collection to iterate over.
+     * @param features The collection to iterate over.
+     *
+     * @throws IOException DOCUMENT ME!
      */
     public static void iteration(Handler handler, FeatureResults features)
-    throws IOException
-    {
+        throws IOException {
         FeatureResultsIteration iteration = new FeatureResultsIteration(handler,
                 features);
         iteration.iterate();
@@ -75,10 +84,10 @@ public class FeatureResultsIteration {
 
     /**
      * Start the iteration.
+     *
+     * @throws IOException DOCUMENT ME!
      */
-    public void iterate()
-    throws IOException
-    {
+    public void iterate() throws IOException {
         walker(results, reader);
     }
 
@@ -88,28 +97,35 @@ public class FeatureResultsIteration {
      * by an <code> iterate()</code>, followed by a
      * <code>handler.endFeatureCollection()</code> call.
      *
-     * @param collection The collection to iterate upon.
+     * @param results The collection to iterate upon.
+     * @param reader DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     protected void walker(FeatureResults results, FeatureReader reader)
-    throws IOException
-    {
+        throws IOException {
         handler.handleFeatureResults(results, reader);
+
         try {
-          iterate(reader);
-        }catch (IllegalAttributeException ex) {
-          throw new DataSourceException(ex.getMessage(), ex);
+            iterate(reader);
+        } catch (IllegalAttributeException ex) {
+            throw new DataSourceException(ex.getMessage(), ex);
         }
+
         handler.endFeatureResults(results);
     }
 
     /**
      * Perform the actual iteration on the Iterator which is provided.
      *
-     * @param iterator The Iterator to iterate upon.
+     * @param reader The Iterator to iterate upon.
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws IllegalAttributeException DOCUMENT ME!
      */
     protected void iterate(FeatureReader reader)
-    throws IOException, IllegalAttributeException
-    {
+        throws IOException, IllegalAttributeException {
         while (reader.hasNext()) {
             walker((Feature) reader.next());
         }
@@ -119,11 +135,12 @@ public class FeatureResultsIteration {
      * Perform the visitation of an individual Feature.
      *
      * @param feature The Feature to explore.
+     *
+     * @throws UnsupportedOperationException DOCUMENT ME!
      */
     protected void walker(Feature feature) {
         final FeatureType schema = feature.getFeatureType();
         final int cnt = schema.getAttributeCount();
-
         handler.handleFeature(feature);
 
         for (int i = 0; i < cnt; i++) {
@@ -131,7 +148,8 @@ public class FeatureResultsIteration {
 
             // recurse if attribute type is another collection
             if (FeatureCollection.class.isAssignableFrom(type.getType())) {
-                throw new UnsupportedOperationException("inner FeatureCollections not supported yet");
+                throw new UnsupportedOperationException(
+                    "inner FeatureCollections not supported yet");
                 //walker((FeatureCollection) feature.getAttribute(i));
             } else if (type.isNested()) {
                 // recurse if attribute type is another feature
