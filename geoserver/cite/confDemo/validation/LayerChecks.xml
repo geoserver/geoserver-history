@@ -6,7 +6,7 @@
 	xs:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd">
 	<name>Layer Checks</name>
 	<description>Various multi layer sanity checks for stacial data</description>
-	<!--<test>
+	<test>
 		<name>Road - Lake</name>
 		<description>Checks that Roads do not cross Lakes</description>
 		<plugin>Line Not Entering Polygon</plugin>
@@ -40,5 +40,5 @@
 			<name>restrictedLineTypeRef</name>
 			<string>streams:streams</string>
 		</argument>
-	</test>-->
+	</test>
 </suite>
