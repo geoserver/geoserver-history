@@ -1,8 +1,6 @@
-/*
- * Created on Feb 20, 2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
  */
 package org.vfny.geoserver.responses.wms;
 
