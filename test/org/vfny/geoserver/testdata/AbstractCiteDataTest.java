@@ -1,33 +1,9 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2002, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
  */
 package org.vfny.geoserver.testdata;
 
-import junit.framework.TestCase;
-import org.geotools.data.DataSourceException;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.property.PropertyDataStore;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.SchemaException;
-import org.geotools.referencing.crs.GeographicCRS;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -43,6 +19,20 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
+import junit.framework.TestCase;
+
+import org.geotools.data.DataSourceException;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.property.PropertyDataStore;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.SchemaException;
+import org.geotools.referencing.crs.GeographicCRS;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
 /**

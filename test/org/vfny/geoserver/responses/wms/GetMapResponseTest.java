@@ -1,29 +1,12 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2002, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
  */
 package org.vfny.geoserver.responses.wms;
 
 import junit.framework.TestCase;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WmsException;
+
 import org.vfny.geoserver.responses.wms.map.GetMapProducer;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Set;
 
 
 /**
