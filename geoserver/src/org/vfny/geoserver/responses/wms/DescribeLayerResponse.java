@@ -38,6 +38,8 @@ public class DescribeLayerResponse implements Response {
     private static final Logger LOGGER = Logger.getLogger(DescribeLayerResponse.class.getPackage()
                                                                                      .getName());
 
+    public static final String DESCLAYER_MIME_TYPE = "application/vnd.ogc.wms_xml";
+    
     /** the request holding the required FeatureTypeInfo's */
     private DescribeLayerRequest request;
 
@@ -121,7 +123,7 @@ public class DescribeLayerResponse implements Response {
      * @throws IllegalStateException DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
-        return "application/vnd.ogc.wms_xml";
+        return DESCLAYER_MIME_TYPE;
     }
 
     /**

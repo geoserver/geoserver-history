@@ -28,7 +28,7 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * GetMap request. The way the map is generated is independent of this class,
  * wich will use a delegate object based on the output format requested
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: GetMapResponse.java,v 1.11 2004/03/14 23:29:30 groldan Exp $
  */
 public class GetMapResponse implements Response {
@@ -189,7 +189,7 @@ public class GetMapResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    static List getMapFormats() {
+    public static List getMapFormats() {
         return supportedMimeTypes;
     }
 }

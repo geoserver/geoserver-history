@@ -219,7 +219,7 @@ public class GetFeatureInfoResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    static List getMapFormats() {
+    public static List getFormats() {
         return supportedMimeTypes;
     }
 }
