@@ -45,7 +45,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  * <p>
  * This abstract class takes care of executing the request in the sense of
- * taking the GetFeatureInfo request parameters such as layers, bbox, x, y, etc., and the
+ * taking the GetFeatureInfo request parameters such as query_layers, bbox, x, y, etc., and the
  * optional parameter FILTER, create the gt2 query objects for each
  * featuretype and executing it. This process leads to a set of FeatureResults
  * objects and its metadata, wich will be given to the

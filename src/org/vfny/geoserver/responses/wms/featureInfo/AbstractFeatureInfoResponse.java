@@ -1,6 +1,5 @@
 package org.vfny.geoserver.responses.wms.featureInfo;
 
-import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -16,9 +15,6 @@ import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
-import org.geotools.renderer.lite.LiteRenderer;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -85,13 +81,9 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      * @throws java.io.IOException DOCUMENT ME!
      */
     public abstract void writeTo(OutputStream out) throws ServiceException, IOException;
+    
     /**
-     * The formats this delegate supports. Includes those formats supported by
-     * the Java ImageIO extension, mostly: <i>png, x-portable-graymap, jpeg,
-     * jpeg2000, x-png, tiff, vnd.wap.wbmp, x-portable-pixmap,
-     * x-portable-bitmap, bmp and x-portable-anymap</i>, but the specific ones
-     * will depend on the platform and JAI version. At leas JPEG and PNG will
-     * generally work.
+     * The formats this delegate supports.
      *
      * @return The list of the supported formats
      */
@@ -100,21 +92,11 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
     }
 
     /**
-     * Halts the loading.  Right now just calls renderer.stopRendering.
      *
-     * @param gs DOCUMENT ME!
-     *
-     * @task TODO: What would be nice is if we could also put the image being
-     *       worked on in the GarbageCollector
+     * @param gs app context
+     * @task TODO: implement
      */
     public void abort(GeoServer gs) {
-
-        //taking out for now, Andrea says it might have problems.
-        //though this is in the abort, so do we really care if it throws
-        //an exception?  Can it mess things up more than that?
-        // if (graphic != null) {
-        //   graphic.dispose();
-        //}
     }
 
     /**
@@ -132,6 +114,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
     	if(format == null){
     		throw new IllegalStateException("Content type unknown since execute() has not been called yet");
     	}
+    	System.err.println("returning content type " + format);
         return format;
     }
 
@@ -142,9 +125,6 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      * @param queries The results of the queries to generate maps with.
      *
      * @throws WmsException For any problems.
-     *
-     * @task TODO: Update to feature streaming and latest api, Map is
-     *       deprecated.
      */
     protected void execute(FeatureTypeInfo[] requestedLayers, Query[] queries,
         int x, int y) throws WmsException {
