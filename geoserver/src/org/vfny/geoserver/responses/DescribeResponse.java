@@ -62,10 +62,8 @@ public class DescribeResponse {
 
     private static final String GML_IMPORT =  
 	"\n\n<xs:import namespace=\"http://www.opengis.net/gml\""
-       + " schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/\n\n";
+       + " schemaLocation=\"http://schemas.opengis.net/gml/2.0/feature.xsd\"/>\n\n";
 
-    /** Fixed return header information */
-    //private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"" + config.getUrl() + "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:myns=\"" + config.getUrl() + "\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/>\n\n";
     
     /** Fixed return footer information */
     private static final String FOOTER = "\n</xs:schema>";
@@ -140,8 +138,11 @@ public class DescribeResponse {
 	    tempResponse.append(TARGETNS_PREFIX + targetNs + TARGETNS_SUFFIX);
 	    tempResponse.append("\n  xmlns:" + nsPrefix + 
 				"=\"" + targetNs +"\"");
+	    tempResponse.append(GML_NAMESPACE);
 	    tempResponse.append(XS_NAMESPACE + DEFAULT_NAMESPACE);
 	    tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
+	    //this is not always necessary, but it doesn't seem to hurt...
+	    tempResponse.append(GML_IMPORT);
 	    tempResponse.append(generateSpecifiedTypes(requestedTypes));
 	} else {
 	    //the featureTypes do not have all the same prefixes.
@@ -236,24 +237,22 @@ public class DescribeResponse {
 		throw new WfsException("Feature Type " + curTypeName + " does "
 				       + "not exist on this server");
 	    }
-	    if (!validTypes.contains(curTypeName)) {
+	    if (!validTypes.contains(meta)) {
 		currentFile = meta.getSchemaFile();
 		generatedType = writeFile(currentFile);
 		if (!generatedType.equals("")) {
 		    tempResponse = tempResponse + writeFile( currentFile );
-		    validTypes.add(curTypeName);
+		    validTypes.add(meta);
 		}
 	    }
 	} 
-
-        
         // Loop through requested tables again to add elements
         // NOT VERY EFFICIENT - PERHAPS THE MYSQL ABSTRACTION CAN FIX THIS; 
         //  STORE IN HASH?
 	for (Iterator i = validTypes.iterator(); i.hasNext();) {
 	    // Print element representation of table
             tempResponse = tempResponse + 
-                printElement(i.next().toString());
+                printElement((TypeInfo)i.next());
         }
         
         tempResponse = tempResponse + "\n\n";
@@ -265,9 +264,14 @@ public class DescribeResponse {
      * Internal method to print XML element information for table.
      * @param table The table name.
      */ 
-    private static String printElement(String table) {
-        return "\n  <xs:element name='" + table + "' type='" + table + 
-	    "_Type' substitutionGroup='gml:_Feature'/>";
+    private static String printElement(TypeInfo type) {
+	//int prefixDelimPos = typeName.indexOf(":");
+	//String tablename = typeName;
+	//if (prefixDelimPos > 0) {
+	//String tableName = typeName.substring(prefixDelimPos + 1);
+		//  } 
+        return "\n  <xs:element name='" + type.getName() + "' type='" + 
+	    type.getFullName() + "_Type' substitutionGroup='gml:_Feature'/>";
     }
     
     
