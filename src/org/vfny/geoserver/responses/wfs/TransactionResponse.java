@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.25 2004/04/21 12:13:54 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.26 2004/04/21 18:16:46 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -187,8 +187,8 @@ public class TransactionResponse implements Response {
                 if (feature != null) {
                     String name = feature.getFeatureType().getTypeName();
                     String uri = feature.getFeatureType().getNamespace();
-                    String typeName = catalog.getFeatureTypeInfo(name, uri)
-                                             .getName();
+                    FeatureTypeInfo fti = catalog.getFeatureTypeInfo(name, uri);
+                    String typeName = fti.getDataStoreInfo().getId()+":"+fti.getTypeName();
                     element.setTypeName(typeName);
                 }
             }
