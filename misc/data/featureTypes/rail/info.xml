@@ -8,9 +8,9 @@
 	<Operations/>
 	<LatLonBoundingBox minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
 	<MetadataURL>
-    <url>none</url>
-    <format>XML</format>
-    <type>TC211</type>
+    <url>http://www.openplans.org/geoserver/data/rail/metadata.html</url>
+    <format>HTML</format>
+    <type>FGDC</type>
   </MetadataURL>
 	<Host>localhost</Host>
 	<Port>5432</Port>
