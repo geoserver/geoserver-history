@@ -35,14 +35,9 @@ public class DeleteKvpReader
     /**
      * Returns Delete request object.
      * @return Delete request objects
-     * @tasks REVISIT: What to do if typename is not specified?  filter
-     * and bbox should fail, but the spec says that typename is optional
-     * for featureid.  But it also has all examples with feature id's
-     * having the typename appended, which is the case for oracle, but
-     * not for all dbs.  So we need clarification on the spec. (ch)
      */
     public TransactionRequest getRequest()
-        throws WfsTransactionException {
+        throws WfsException {
 
         TransactionRequest parentRequest = new TransactionRequest();
         boolean releaseAll = true;
@@ -55,25 +50,28 @@ public class DeleteKvpReader
         if( kvpPairs.containsKey("REQUEST")) {
             parentRequest.setRequest((String) kvpPairs.get("REQUEST"));
         }
+	//REVISIT: This is not in spec, but really should be.  Waiting to hear
+	//about features like this, that were just accidentally left out.
+	if( kvpPairs.containsKey("LOCKID")) {
+            parentRequest.setLockId((String) kvpPairs.get("LOCKID"));
+        }
 
         // declare tokenizers for repeating elements
         LOGGER.finest("setting query request parameters");
-	//TODO: error checking here, make sure filter and bbox have a typename.
         List typeList = readFlat((String) kvpPairs.get("TYPENAME"), 
                                  INNER_DELIMETER);
         LOGGER.finest("type list size: " + typeList.size());
-        if(typeList.size() == 0) {
-	    throw new WfsTransactionException("need a typename");
-	}
-	//LOGGER.finest("type list element: " + typeList.get(0));
 	List filterList = null;
-        try {
-	    filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
-					  (String) kvpPairs.get("FILTER"),
-					  (String) kvpPairs.get("BBOX"));
-        } catch (WfsException e) {
-	    throw new WfsTransactionException(e, "Problem reading Filters: ", 
-					      null);
+	filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
+				     (String) kvpPairs.get("FILTER"),
+				     (String) kvpPairs.get("BBOX"));
+        
+	if (typeList.size() == 0) {
+	    typeList = getTypesFromFids((String) kvpPairs.get("FEATUREID"));
+	    if (typeList.size() == 0) {
+		throw new WfsException("The typename element is mandatory if "
+				       + "no FEATUREID is present");
+	    }
 	}
 	int featureSize = typeList.size();
         int filterSize = (filterList == null) ? 0 : filterList.size();
@@ -82,22 +80,12 @@ public class DeleteKvpReader
         if( kvpPairs.containsKey("RELEASEACTION")) {
             String lockAction = (String) kvpPairs.get("RELEASEACTION");
 	    parentRequest.setReleaseAll(lockAction);
-            
-	    //moved this to TransactionRequest, to avoid duplicate code.
-	    /*if(lockAction == null) {
-            } else if(lockAction.toUpperCase().equals("ALL")) {
-                releaseAll = true;                
-            } else if(lockAction.toUpperCase().equals("SOME")) {
-                releaseAll = false;                
-            } else {
-                throw new WfsException("Illegal lock action: " + lockAction);
-		}*/
-        }
+	}
         
         // check for errors in the request
         if((filterSize != featureSize) && (filterSize > 0) || 
            ((filterSize > 0) && (featureSize == 0))) {
-            throw new WfsTransactionException("Filter size does not match" +  
+            throw new WfsException("Filter size does not match" +  
                                    " feature types.  Filter size: " + 
                                    filterSize + " Feature size: "+featureSize);
         } else if(filterSize == featureSize) {
@@ -109,12 +97,11 @@ public class DeleteKvpReader
                 parentRequest.addSubRequest(childRequest);
             }
         } else if (filterSize == 0) {
-	    String message = "geoserver is currently unclear on 1.0 spec, as "
-		+ "delete post requests require a filter, while the kvp delete"
-		+ " seems to imply that it is not required allowed.  This is "
-		+ "not consistent and also fairly dangerous, as someone could "
-		+ "quite easily wipe out the whole database accidentally.";
-	    throw new WfsTransactionException(message);
+	    String message = "No filter found.  If you are sure you want to " +
+		"wipe out your database, then use a filter that is always true"
+		+ ".  We just don't want you to inadvertantly wipe everything "
+		+ "out without intending to";
+	    throw new WfsException(message);
 	}
         return parentRequest;
     }
