@@ -4,9 +4,8 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.Map;
-
 import org.w3c.dom.Element;
+import java.util.Map;
 
 
 /**
@@ -15,7 +14,7 @@ import org.w3c.dom.Element;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: WFSConfig.java,v 1.3 2004/01/05 17:36:45 cholmesny Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -24,6 +23,7 @@ public class WFSConfig extends ServiceConfig {
         + "WFS-capabilities.xsd";
     private GlobalConfig global = GlobalConfig.getInstance();
     private String describeUrl;
+    private boolean gmlPrefixing = false;
 
     /**
      * Creates a new WFSConfig object.
@@ -35,12 +35,22 @@ public class WFSConfig extends ServiceConfig {
     public WFSConfig(Element root) throws ConfigurationException {
         super(root);
         URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
+
+        //String value = notNull(getElementText(root, "gmlPrefixing"));
+        //getBooleanAttribute doesn't work right with non-mandatory atts.
+        Element elem = getChildElement(root, "gmlPrefixing", false);
+        LOGGER.info("gml element is " + elem + " root is " + root);
+
+        if (elem != null) {
+            this.gmlPrefixing = getBooleanAttribute(elem, "value", false);
+        }
     }
-    
-    public WFSConfig(Map config ) {
-        super( config );
+
+    public WFSConfig(Map config) {
+        super(config);
         URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
     }
+
     /**
      * Gets the base url of a describe request.
      *
@@ -53,8 +63,7 @@ public class WFSConfig extends ServiceConfig {
      */
     public String getDescribeBaseUrl() {
         if (this.describeUrl == null) {
-            this.describeUrl = URL
-                + "DescribeFeatureType?typeName=";
+            this.describeUrl = URL + "DescribeFeatureType?typeName=";
         }
 
         return describeUrl;
@@ -70,5 +79,20 @@ public class WFSConfig extends ServiceConfig {
 
     public String getWfsCapLocation() {
         return global.getSchemaBaseUrl() + WFS_CAP_LOC;
+    }
+
+    /**
+     * Returns whether the gml prefix should be appended to name, description
+     * and boundedBy elements.
+     *
+     * @return <tt>true</tt> if gml elements should be prefixed appropriately.
+     *
+     * @task REVISIT: gml prefixing could be done more intelligently, right now
+     *       it's a blunt approach that just puts gml: onto all name elements.
+     *       But this logic should be done in geotools, in FeatureTransformer.
+     *       For more information see that class.
+     */
+    public boolean isGmlPrefixing() {
+        return gmlPrefixing;
     }
 }
