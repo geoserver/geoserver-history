@@ -310,7 +310,6 @@
       <fileset dir="${dir.misc}/documents">
         <include name="license.txt"/>
         <include name="geoserver.log"/>
-        <include name="configuration.xml"/>
         <include name="z3950-geo.map"/>
       </fileset>
     </copy>
@@ -332,9 +331,10 @@
     </copy>
 
     <!-- make feature types directory and populate -->
-    <mkdir dir="${dir.server}/webapps/ROOT/data/featureTypes"/>
-    <copy todir="${dir.server}/webapps/ROOT/data">
+    <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF/featureTypes"/>
+    <copy todir="${dir.server}/webapps/ROOT/WEB-INF">
     <fileset dir="${dir.data}"/>
+    <fileset file="${dir.misc}/documents/configuration.xml"/>
     </copy>
 
     <!-- stops a running server -->
@@ -437,7 +437,6 @@
       <fileset dir="${dir.misc}/documents">
         <include name="license.txt"/>
         <include name="geoserver.log"/>
-        <include name="configuration.xml"/>
         <include name="z3950-geo.map"/>
       </fileset>
     </copy>
@@ -479,7 +478,6 @@
     </copy>
  
     
-    
     <mkdir dir="${basedir}/data/capabilities/gml/2.1.2"/>
     <copy todir="${basedir}/data/capabilities/gml/2.1.2">
       <fileset dir="${dir.misc}/documents/schemas">
@@ -489,18 +487,6 @@
       </fileset>
     </copy>
 
-     <mkdir dir="${basedir}/data/styles"/>
-    <copy todir="${basedir}/data/styles">
-      <fileset dir="${dir.misc}/wms/styles">
-        <include name="**"/>
-      </fileset>
-    </copy>
-
-    <!-- make feature types directory and populate -->
-    <mkdir dir="${basedir}/data/featureTypes"/>
-    <copy todir="${basedir}/data">
-      <fileset dir="${dir.data}"/>
-    </copy>
     <copy todir="${dir.build}">
       <fileset dir="${dir.misc}/documents">
         <include name="log4j.properties"/>
@@ -520,17 +506,18 @@
         <exclude name="**/EmbeddedTomcat.class" />
       </classes>
       
+      <webinf dir="${dir.data}"/>
+      <webinf dir="${dir.misc}/documents">
+        <include name="configuration.xml"/>
+      </webinf>
+
       <!-- libraries -->
       <lib dir="${dir.lib}">
         <exclude name="**/junit.jar" />
         <exclude name="**/servlet.jar" />
-        <exclude name="**/catalina/**"/>
       </lib>
-
-      <fileset dir="${basedir}/misc/wms/">
-        <include name="capabilities.xml"/>
-      </fileset>
-
+      
+ 
       <!-- directories -->
       <fileset dir="${basedir}">
         <include name="data/**"/>
