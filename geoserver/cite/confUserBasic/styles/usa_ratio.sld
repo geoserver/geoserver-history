@@ -1,6 +1,7 @@
 
 
-<StyledLayerDescriptor version="0.7.2">
+<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/sld
+\data\capabilities\sld\1.0.0\StyledLayerDescriptor.xsd" version="1.0.0">
 <!-- a named layer is the basic building block of an sld document -->
 <NamedLayer>
 <Name>A Test Layer</Name>
