@@ -241,7 +241,8 @@ public class BypassSQLFeatureResults implements FeatureResults {
 	    }
 	    // LOGGER.fine("postfilter is " + postFilter.toString());
 	    
-	    /* bolt on any user supplied where clause - is always ANDED */
+	    /* bolt on any user supplied where clause - is always ANDED - before any "order by" clause or at end of complete statement..
+	    */
 	    StringBuffer where = new StringBuffer();
 	    try {
 	    	sqlBuilder.sqlWhere(where, preFilter);
@@ -251,8 +252,16 @@ public class BypassSQLFeatureResults implements FeatureResults {
 	    LOGGER.fine("preFilter where clause is " + where);
 	    if ( where != null && ! where.toString().trim().equals("") ) {
 	    	where.replace(1, 6, "AND (");
-	    	LOGGER.fine("appending additional filter constraint " + where);
-	    	bypassSQL = bypassSQL + where + ")";
+	    	int insertPoint = bypassSQL.toLowerCase().indexOf("order by");
+	    	if (insertPoint > 0 )
+	    	{
+	    		bypassSQL = bypassSQL.substring(0,insertPoint) + where + ") " + bypassSQL.substring(insertPoint );
+		}
+		else
+		{
+	    		LOGGER.fine("appending additional filter constraint " + where);
+	    		bypassSQL = bypassSQL + where+ ")";
+	    	}
 	    }
 
 	    /* bolt on any stuff that is to explicitly appear after a user supplied 
