@@ -74,7 +74,7 @@
 
 	<tr>
 		<td class="module">
-			<bean:message key="data.label"/>:
+			<bean:message key="config.data.label"/>:
 		</td>
 		<td class="health">
             <table class="progress">
