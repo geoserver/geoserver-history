@@ -37,8 +37,8 @@ import com.vividsolutions.jts.geom.Polygon;
  * @see NameSpaceTranslatorFactory
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GMLSchemaTranslator.java,v 1.4 2004/03/08 21:49:19 dmzwiers Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: GMLSchemaTranslator.java,v 1.5 2004/03/14 05:25:58 cholmesny Exp $
  */
 public class GMLSchemaTranslator extends NameSpaceTranslator {
 
@@ -554,7 +554,7 @@ class MultiPolygonElement extends NameSpaceElement{
 			return this.prefix+":multiPolygonType";
 		return null;
 	}
-	public Class getJavaClass(){return MultiLineString.class;}
+	public Class getJavaClass(){return MultiPolygon.class;}
 }
 
 class CoordElement extends NameSpaceElement{
