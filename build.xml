@@ -446,6 +446,7 @@
         <include name="WFS-capabilities.xsd"/>
         <include name="WFS-transaction.xsd"/>
         <include name="WFS-basic.xsd"/>
+        <include name="OGC-exception.xsd"/>
       </fileset>
     </copy>
 
