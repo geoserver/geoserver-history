@@ -16,8 +16,15 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
 
 /**
  * Data purpose.
@@ -30,7 +37,7 @@ import java.util.*;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: CatalogConfig.java,v 1.3.2.2 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: CatalogConfig.java,v 1.3.2.3 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class CatalogConfig implements DataStructure{
 	

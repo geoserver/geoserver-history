@@ -7,8 +7,6 @@
 package org.vfny.geoserver.action.wfs;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -49,21 +47,16 @@ public final class WFSDescriptionAction extends ConfigAction {
 //			session.setAttribute("wfsDescription", form);
 			
 			WFSConfig config = getWFSConfig();
-			config.getService().setName(name);
-			config.getService().setTitle(title);
-			config.getService().setAccessConstraints(accessConstraints);
-			config.getService().setFees(fees);
-			config.getService().setMaintainer(maintainer);
-			config.getService().setAbstract(_abstract);
+			config.setName(name);
+			config.setTitle(title);
+			config.setAccessConstraints(accessConstraints);
+			config.setFees(fees);
+			config.setMaintainer(maintainer);
+			config.setAbstract(_abstract);
 			
-			List list = new ArrayList();
 			String[] array = keywords != null ? keywords.split("\n") : new String[0];
 			
-			for (int i = 0; i < array.length;i++) {
-				list.add(i, array[i]);
-			}
-			
-			config.getService().setKeywords(list);
+			config.setKeywords(array);
 
 
 			return mapping.findForward("welcome");

@@ -16,9 +16,10 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.*;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 /**
  * DataStoreInfo purpose.
@@ -27,7 +28,7 @@ import java.util.Map;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.2.2.2 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.2.2.3 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class DataStoreConfig implements DataStructure{
 

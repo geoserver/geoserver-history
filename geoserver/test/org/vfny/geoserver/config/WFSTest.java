@@ -14,11 +14,9 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.wms;
+package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
-
-import org.vfny.geoserver.config.ServiceConfig;
 /**
  * WFSTest purpose.
  * <p>
@@ -26,19 +24,18 @@ import org.vfny.geoserver.config.ServiceConfig;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: WFSTest.java,v 1.1.2.1 2004/01/07 21:36:13 dmzwiers Exp $
  */
-public class WMSTest extends TestCase {
+public class WFSTest extends TestCase {
 
-	private WMSConfig a,b;
+	private WFSConfig a,b;
 	/**
 	 * Constructor for WFSTest.
 	 * @param arg0
 	 */
-	public WMSTest(String arg0) {
+	public WFSTest(String arg0) {
 		super(arg0);
-		a = new WMSConfig();
-		a.setDescribeUrl("http://www.cs.uvic.ca/~dzwiers/");
+		a = new WFSConfig();
 	}
 
 	/*
@@ -46,7 +43,7 @@ public class WMSTest extends TestCase {
 	 */
 	public void testNameSpaceNameSpace() {
 		//test requires equals.
-		b = new WMSConfig(a);
+		b = new WFSConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -55,26 +52,8 @@ public class WMSTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(WMSConfig)a.clone();
+		b =(WFSConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
-	}
-
-	/*
-	 * Test for boolean equals(Object)
-	 */
-	public void testEqualsObject() {
-		b = new WMSConfig();
-		b.setDescribeUrl("http://www.cs.uvic.ca/~dzwiers/");
-		assertTrue(a.equals(b));
-
-		b.setDescribeUrl("http://www.google.ca/");
-		assertTrue(!a.equals(b));
-
-		b.setDescribeUrl("http://www.cs.uvic.ca/~dzwiers/");
-		ServiceConfig s = new ServiceConfig();
-		s.setName("test");
-		b.setService(s);
-		assertTrue(!a.equals(b));
 	}
 
 }

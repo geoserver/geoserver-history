@@ -14,37 +14,28 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
-
-import java.io.File;
+package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 /**
- * StyleTest purpose.
+ * WFSTest purpose.
  * <p>
- * Description of StyleTest ...
+ * Description of WFSTest ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: WMSTest.java,v 1.1.2.1 2004/01/07 21:36:13 dmzwiers Exp $
  */
-public class StyleTest extends TestCase {
+public class WMSTest extends TestCase {
 
-	private StyleConfig a,b;
-	File f;
+	private WMSConfig a,b;
 	/**
-	 * Constructor for StyleTest.
+	 * Constructor for WFSTest.
 	 * @param arg0
 	 */
-	public StyleTest(String arg0) {
+	public WMSTest(String arg0) {
 		super(arg0);
-		a = new StyleConfig();
-		a.setId("test 1");
-		f = null;
-		try{
-			f = new File(".");
-		}catch(Exception e){}
-		a.setFilename(f);
+		a = new WMSConfig();
 	}
 
 	/*
@@ -52,7 +43,7 @@ public class StyleTest extends TestCase {
 	 */
 	public void testNameSpaceNameSpace() {
 		//test requires equals.
-		b = new StyleConfig(a);
+		b = new WMSConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -61,27 +52,8 @@ public class StyleTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(StyleConfig)a.clone();
+		b =(WMSConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
-	}
-
-	/*
-	 * Test for boolean equals(Object)
-	 */
-	public void testEqualsObject() {
-		b = new StyleConfig();
-		b.setId("test 1");
-		b.setFilename(f);
-		assertTrue(a.equals(b));
-		
-		b.setFilename(null);
-		assertTrue(!a.equals(b));
-
-		b.setFilename(f);
-		assertTrue(a.equals(b));
-
-		b.setDefault(true);
-		assertTrue(!a.equals(b));
 	}
 
 }

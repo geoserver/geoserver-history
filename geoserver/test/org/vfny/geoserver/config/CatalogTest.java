@@ -14,11 +14,10 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
+package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.config.EqualsLibrary;
 
 /**
  * CatalogTest purpose.
@@ -27,7 +26,7 @@ import org.vfny.geoserver.config.EqualsLibrary;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogTest.java,v 1.1.2.4 2004/01/06 22:05:11 dmzwiers Exp $
+ * @version $Id: CatalogTest.java,v 1.1.2.1 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class CatalogTest extends TestCase {
 
@@ -75,43 +74,6 @@ public class CatalogTest extends TestCase {
 	public void testClone() {
 		b = (CatalogConfig)a.clone();
 		assertTrue("Testing clone()\nRelies on GlobalCatalog.equals.",a.equals(b));
-	}
-
-	/*
-	 * Test for boolean equals(Object)
-	 */
-	public void testEqualsObject() {
-		b = new CatalogConfig();
-		b.addDataStore("a",new DataStoreConfig());
-		b.addDataStore("b",new DataStoreConfig());
-		b.addDataStore("c",new DataStoreConfig());
-		
-		b.addFeature("a",new FeatureTypeConfig());
-		b.addFeature("b",new FeatureTypeConfig());
-		b.addFeature("c",new FeatureTypeConfig());
-		
-		b.addNameSpace("a",new NameSpaceConfig());
-		b.addNameSpace("b",new NameSpaceConfig());
-		b.addNameSpace("c",new NameSpaceConfig());
-		
-		b.getNameSpace("a").setDefault(true);
-		b.setDefaultNameSpace(a.getNameSpace("a"));
-
-		b.addStyle("a",new StyleConfig());
-		b.addStyle("b",new StyleConfig());
-		b.addStyle("c",new StyleConfig());
-
-		assertTrue(EqualsLibrary.equals(a.getDataStores(),b.getDataStores()));
-		assertTrue(a.getDefaultNameSpace().equals(b.getDefaultNameSpace()));
-		assertTrue(EqualsLibrary.equals(a.getNameSpaces(),b.getNameSpaces()));
-		assertTrue(EqualsLibrary.equals(a.getStyles(),b.getStyles()));
-		assertTrue(EqualsLibrary.equals(a.getFeaturesTypes(),b.getFeaturesTypes()));
-		assertTrue(a.equals(b));
-
-		b.getNameSpace("a").setDefault(false);
-		b.getNameSpace("b").setDefault(true);
-		b.setDefaultNameSpace(a.getNameSpace("b"));
-		assertTrue(!a.equals(b));
 	}
 
 }

@@ -16,7 +16,7 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.NameSpaceDTO;
 /**
  * NameSpaceConfig purpose.
  * <p>
@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceConfig.java,v 1.1.2.1 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: NameSpaceConfig.java,v 1.1.2.2 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class NameSpaceConfig implements DataStructure {
 	//public static final String PREFIX_DELIMITER = ":";

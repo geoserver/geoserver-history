@@ -17,7 +17,6 @@
 package org.vfny.geoserver.global.dto;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.1.2.2 2004/01/06 23:55:02 jive Exp $
+ * @version $Id: CloneLibrary.java,v 1.1.2.3 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public final class CloneLibrary {
 	

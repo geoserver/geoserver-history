@@ -19,8 +19,8 @@ package org.vfny.geoserver.config;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.vfny.geoserver.global.dto.*;
 import org.geotools.filter.Filter;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -30,7 +30,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.4.2.2 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.4.2.3 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class FeatureTypeConfig implements DataStructure{
 	

@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,8 +54,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import java.net.URL;
-import java.net.MalformedURLException;
+
 import com.vividsolutions.jts.geom.Envelope;
 /**
  * XMLConfigReader purpose.
@@ -67,7 +68,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.7 2004/01/07 00:51:42 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.8 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -909,7 +910,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.7 2004/01/07 00:51:42 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.8 2004/01/07 21:36:13 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

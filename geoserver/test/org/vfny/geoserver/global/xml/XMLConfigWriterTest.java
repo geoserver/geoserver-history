@@ -20,8 +20,10 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.global.*;
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 /**
  * XMLConfigWriterTest purpose.
  * <p>
@@ -29,7 +31,7 @@ import org.vfny.geoserver.global.dto.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriterTest.java,v 1.1.2.1 2004/01/06 22:05:09 dmzwiers Exp $
+ * @version $Id: XMLConfigWriterTest.java,v 1.1.2.2 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class XMLConfigWriterTest extends TestCase {
 	private static final String testPath1 = "C:/Java/workspace/Geoserver-ModelConfig/tests/test3/";

@@ -12,7 +12,9 @@ import junit.framework.TestSuite;
 
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.readers.wfs.*;;
+import org.vfny.geoserver.requests.readers.wfs.CapabilitiesKvpReader;
+import org.vfny.geoserver.requests.readers.wfs.CapabilitiesXmlReader;
+;
 
 
 /**
@@ -20,7 +22,7 @@ import org.vfny.geoserver.requests.readers.wfs.*;;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesSuite.java,v 1.4.2.4 2004/01/06 22:05:11 dmzwiers Exp $
+ * @version $Id: CapabilitiesSuite.java,v 1.4.2.5 2004/01/07 21:36:14 dmzwiers Exp $
  */
 public class CapabilitiesSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.

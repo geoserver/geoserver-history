@@ -7,7 +7,6 @@ import org.geotools.data.Catalog;
 import org.geotools.data.DataTestCase;
 import org.geotools.data.DefaultCatalog;
 import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
 /**
  * This is my attempt at testing FeatureResponse using

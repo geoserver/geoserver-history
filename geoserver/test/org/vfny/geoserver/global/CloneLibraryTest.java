@@ -14,14 +14,16 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config;
-
+package org.vfny.geoserver.global;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
+
+import org.vfny.geoserver.global.dto.CloneLibrary;
+import org.vfny.geoserver.global.dto.EqualsLibrary;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -32,7 +34,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibraryTest.java,v 1.1.2.1 2003/12/31 20:05:32 dmzwiers Exp $
+ * @version $Id: CloneLibraryTest.java,v 1.1.2.1 2004/01/07 21:36:14 dmzwiers Exp $
  */
 public class CloneLibraryTest extends TestCase {
 

@@ -16,7 +16,7 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.ContactDTO;
 /**
  * ContactConfig Purpose.
  * 
@@ -39,7 +39,7 @@ import org.vfny.geoserver.global.dto.*;
  * &lt;/ContactInformation&gt;<br></code></p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactConfig.java,v 1.2.2.4 2004/01/07 21:22:53 dmzwiers Exp $
+ * @version $Id: ContactConfig.java,v 1.2.2.5 2004/01/07 21:36:13 dmzwiers Exp $
  *
  */
 public class ContactConfig implements DataStructure{

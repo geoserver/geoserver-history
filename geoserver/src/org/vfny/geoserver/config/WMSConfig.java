@@ -16,7 +16,8 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 
 /**
  * WMS purpose.
@@ -26,7 +27,7 @@ import org.vfny.geoserver.global.dto.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.2.2.2 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.2.2.3 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class WMSConfig extends ServiceConfig{
 

@@ -14,30 +14,37 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
+package org.vfny.geoserver.config;
+
+import java.io.File;
 
 import junit.framework.TestCase;
 /**
- * NameSpaceTest purpose.
+ * StyleTest purpose.
  * <p>
- * Description of NameSpaceTest ...
+ * Description of StyleTest ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: StyleTest.java,v 1.1.2.1 2004/01/07 21:36:13 dmzwiers Exp $
  */
-public class NameSpaceTest extends TestCase {
+public class StyleTest extends TestCase {
 
-	private NameSpaceConfig a,b;
+	private StyleConfig a,b;
+	File f;
 	/**
-	 * Constructor for NameSpaceTest.
+	 * Constructor for StyleTest.
 	 * @param arg0
 	 */
-	public NameSpaceTest(String arg0) {
+	public StyleTest(String arg0) {
 		super(arg0);
-		a = new NameSpaceConfig();
-		a.setPrefix(":");
-		a.setUri("http://www.google.ca");
+		a = new StyleConfig();
+		a.setId("test 1");
+		f = null;
+		try{
+			f = new File(".");
+		}catch(Exception e){}
+		a.setFilename(f);
 	}
 
 	/*
@@ -45,7 +52,7 @@ public class NameSpaceTest extends TestCase {
 	 */
 	public void testNameSpaceNameSpace() {
 		//test requires equals.
-		b = new NameSpaceConfig(a);
+		b = new StyleConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -54,7 +61,7 @@ public class NameSpaceTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(NameSpaceConfig)a.clone();
+		b =(StyleConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -62,16 +69,19 @@ public class NameSpaceTest extends TestCase {
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new NameSpaceConfig();
-		b.setPrefix(":");
-		b.setUri("http://www.google.ca");
+		b = new StyleConfig();
+		b.setId("test 1");
+		b.setFilename(f);
 		assertTrue(a.equals(b));
 		
+		b.setFilename(null);
+		assertTrue(!a.equals(b));
+
+		b.setFilename(f);
+		assertTrue(a.equals(b));
+
 		b.setDefault(true);
 		assertTrue(!a.equals(b));
-		
-		b.setDefault(false);
-		b.setPrefix(".");
-		assertTrue(!a.equals(b));
 	}
+
 }

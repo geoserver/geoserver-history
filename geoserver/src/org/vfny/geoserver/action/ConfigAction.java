@@ -4,8 +4,7 @@
  */
 package org.vfny.geoserver.action;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
 
 import javax.servlet.ServletContext;
 
@@ -44,7 +43,7 @@ import org.vfny.geoserver.config.WMSConfig;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ConfigAction.java,v 1.1.2.5 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: ConfigAction.java,v 1.1.2.6 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class ConfigAction extends GeoServerAction {
     
@@ -82,21 +81,19 @@ public class ConfigAction extends GeoServerAction {
         	// need to grab from global as soon as we have the api
         	// to do so!
             config = new WFSConfig();
-            config.setDescribeUrl("http://localhost:8080/wfs");
-            config.getService().setAbstract("Hello Richard? Testing? 1 2 3 Testing?");
-            config.getService().setAccessConstraints("none");
-            config.getService().setEnabled( true );
-            config.getService().setFees("A small fish");
-            List keywords = new ArrayList();
-            keywords.add("GeoServer");
-            keywords.add("Configuration");
-            keywords.add("STRUTS");
-            keywords.add("test");
-            config.getService().setKeywords( keywords );
-            config.getService().setMaintainer("Refractions Research");
-            config.getService().setName("WFS");
-            config.getService().setOnlineResource("http://vwfs.refractions.net/");
-            config.getService().setTitle("Sample WFS Configuration");                        
+            //config.setDescribeUrl("http://localhost:8080/wfs");
+            config.setAbstract("Hello Richard? Testing? 1 2 3 Testing?");
+            config.setAccessConstraints("none");
+            config.setEnabled( true );
+            config.setFees("A small fish");
+            String [] keywords = {"GeoServer","Configuration","STRUTS","test"};
+            config.setKeywords( keywords );
+            config.setMaintainer("Refractions Research");
+            config.setName("WFS");
+            try{
+	            config.setOnlineResource(new URL("http://vwfs.refractions.net/"));
+            }catch(Exception e){}
+            config.setTitle("Sample WFS Configuration");                        
         }
         return config; 
     }

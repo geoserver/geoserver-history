@@ -10,8 +10,7 @@
  */
 package org.vfny.geoserver.form.wfs;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -169,9 +168,9 @@ public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 	WFSConfig config =
 		(WFSConfig) context.getAttribute("GeoServer.WFSConfig");
 		
-	name = config.getService().getName();
-	this._abstract = config.getService().getAbstract();
-	this.fees = config.getService().getFees();
+	name = config.getName();
+	this._abstract = config.getAbstract();
+	this.fees = config.getFees();
 			
 }
 /* (non-Javadoc)
@@ -187,21 +186,19 @@ public void destroy() {
 public void init(ActionServlet actionServlet, ModuleConfig moduleConfig ) throws ServletException {
 	// TODO Auto-generated method stub
 	WFSConfig config = new WFSConfig();
-	config.setDescribeUrl("http://localhost:8080/wfs");
-	config.getService().setAbstract("Hello Richard? Testing? 1 2 3 Testing?");
-	config.getService().setAccessConstraints("none");
-	config.getService().setEnabled( true );
-	config.getService().setFees("A small fish");
-	List keywords = new ArrayList();
-	keywords.add("GeoServer");
-	keywords.add("Configuration");
-	keywords.add("STRUTS");
-	keywords.add("test");
-	config.getService().setKeywords( keywords );
-	config.getService().setMaintainer("Refractions Research");
-	config.getService().setName("WFS");
-	config.getService().setOnlineResource("http://vwfs.refractions.net/");
-	config.getService().setTitle("Sample WFS Configuration");
+	//config.setDescribeUrl("http://localhost:8080/wfs");
+	config.setAbstract("Hello Richard? Testing? 1 2 3 Testing?");
+	config.setAccessConstraints("none");
+	config.setEnabled( true );
+	config.setFees("A small fish");
+	String [] keywords = {"GeoServer","Configuration","STRUTS","test"};
+	config.setKeywords( keywords );
+	config.setMaintainer("Refractions Research");
+	config.setName("WFS");
+	try{
+		config.setOnlineResource(new URL("http://vwfs.refractions.net/"));
+	}catch(Exception e){}
+	config.setTitle("Sample WFS Configuration");
 	
 	actionServlet.getServletContext().setAttribute( "GeoServer.WFSConfig", config ); 	
 }

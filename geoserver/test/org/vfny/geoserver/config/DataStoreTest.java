@@ -16,43 +16,50 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.config.data.CatalogConfig;
-import org.vfny.geoserver.config.data.NameSpaceConfig;
-
 /**
- * ConfigTest purpose.
+ * DataStoreTest purpose.
  * <p>
- * Description of ConfigTest ...
+ * Description of DataStoreTest ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: DataStoreTest.java,v 1.1.2.1 2004/01/07 21:36:13 dmzwiers Exp $
  */
-public class ConfigTest extends TestCase {
+public class DataStoreTest extends TestCase {
 
-	private ModelConfig a,b;
 	/**
-	 * Constructor for ConfigTest.
+	 * Constructor for DataStoreTest.
 	 * @param arg0
 	 */
-	public ConfigTest(String arg0) {
+	public DataStoreTest(String arg0) {
 		super(arg0);
-		a = new ModelConfig(); b = null;
-		GlobalConfig g = new GlobalConfig();
-			g.setSchemaBaseUrl("http://www.google.ca");
-		g.setMaxFeatures(0);
-		a.setGlobal(g);
+		a = new DataStoreConfig(); b = null;
+		a.setAbstract("abstract");
+		a.setEnabled(true);
+		a.setId("id");
+		a.setNameSpaceId("prefix:");
+		a.setTitle("title");
+		Map params = new HashMap();
+		params.put("1",new Integer(1));
+		params.put("2",new Integer(2));
+		params.put("3",new Integer(3));
+		a.setConnectionParams(params);
 	}
+
+
+	private DataStoreConfig a,b;
 
 	/*
 	 * Test for void ContactConfig(ContactConfig)
 	 */
 	public void testDataStoreDataStore() {
 		//test requires equals.
-		b = new ModelConfig(a);
+		b = new DataStoreConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -61,7 +68,7 @@ public class ConfigTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(ModelConfig)a.clone();
+		b =(DataStoreConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -69,19 +76,30 @@ public class ConfigTest extends TestCase {
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new ModelConfig();
-		GlobalConfig g = new GlobalConfig();
-			g.setSchemaBaseUrl("http://www.google.ca");
-		g.setMaxFeatures(0);
-		b.setGlobal(g);
+		b = new DataStoreConfig();
+		b.setAbstract("abstract");
+		b.setEnabled(true);
+		b.setId("id");
+		b.setNameSpaceId("prefix:");
+		b.setTitle("title");
+		Map params = new HashMap();
+		params.put("1",new Integer(1));
+		params.put("2",new Integer(2));
+		params.put("3",new Integer(3));
+		b.setConnectionParams(params);
 		
-		assertTrue(a.getGlobal().equals(b.getGlobal()));
 		assertTrue(a.equals(b));
 		
-		CatalogConfig c = new CatalogConfig();
-		c.addNameSpace("c",new NameSpaceConfig());
-		b.setCatalog(c);
+		params.put("4",new Integer(4)); //should only store ref.
 		assertTrue(!a.equals(b));
+		
+		params.remove("4");
+		b.setConnectionParams(params);
+		assertTrue(a.equals(b));
+		
+		b.setEnabled(false);
+		assertTrue(!a.equals(b));
+		b.setEnabled(true);
+		assertTrue(a.equals(b));
 	}
-
 }

@@ -5,8 +5,8 @@
 package org.vfny.geoserver.global;
 
 import java.net.URL;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
 /**
@@ -14,7 +14,7 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.1.2.4 2004/01/07 00:51:42 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.1.2.5 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public abstract class Service extends Abstract{
 	

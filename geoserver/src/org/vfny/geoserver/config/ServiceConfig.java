@@ -16,8 +16,9 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.*;
 import java.net.URL;
+
+import org.vfny.geoserver.global.dto.ServiceDTO;
 
 /**
  * ServiceConfig purpose.
@@ -27,7 +28,7 @@ import java.net.URL;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceConfig.java,v 1.10.2.4 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.10.2.5 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class ServiceConfig implements DataStructure{
 	

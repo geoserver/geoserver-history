@@ -23,8 +23,11 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.global.dto.*;
-import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 /**
  * XMLConfigReaderTest purpose.
  * <p>
@@ -32,7 +35,7 @@ import org.vfny.geoserver.global.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReaderTest.java,v 1.1.2.1 2004/01/06 22:05:09 dmzwiers Exp $
+ * @version $Id: XMLConfigReaderTest.java,v 1.1.2.2 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class XMLConfigReaderTest extends TestCase {
 

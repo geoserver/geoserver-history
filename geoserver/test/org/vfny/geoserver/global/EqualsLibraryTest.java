@@ -14,14 +14,15 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config;
-
+package org.vfny.geoserver.global;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
+
+import org.vfny.geoserver.global.dto.EqualsLibrary;
 
 /**
  * EqualsLibraryTest purpose.
@@ -30,7 +31,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: EqualsLibraryTest.java,v 1.1.2.1 2003/12/31 20:05:32 dmzwiers Exp $
+ * @version $Id: EqualsLibraryTest.java,v 1.1.2.1 2004/01/07 21:36:14 dmzwiers Exp $
  */
 public class EqualsLibraryTest extends TestCase {
 

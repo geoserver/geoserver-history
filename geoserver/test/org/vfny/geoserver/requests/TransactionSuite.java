@@ -11,14 +11,8 @@ import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.geotools.data.DefaultCatalog;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.IllegalAttributeException;
-import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
@@ -27,17 +21,12 @@ import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
 import org.vfny.geoserver.requests.readers.wfs.TransactionXmlReader;
 import org.vfny.geoserver.requests.wfs.TransactionRequest;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
-
 
 /**
  * Tests the get feature request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionSuite.java,v 1.6.2.4 2004/01/06 22:05:11 dmzwiers Exp $
+ * @version $Id: TransactionSuite.java,v 1.6.2.5 2004/01/07 21:36:14 dmzwiers Exp $
  *
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.

@@ -6,7 +6,9 @@ package org.vfny.geoserver.config;
 
 import java.nio.charset.Charset;
 import java.util.logging.Level;
-import org.vfny.geoserver.global.dto.*;
+
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 /**
  * Global GeoServer Configuration model.
@@ -17,7 +19,7 @@ import org.vfny.geoserver.global.dto.*;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.3.2.6 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.3.2.7 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class GlobalConfig implements DataStructure {
     /** Sets the max number of Features returned by GetFeature */

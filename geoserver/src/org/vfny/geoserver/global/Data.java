@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.7 2004/01/07 00:38:29 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.8 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**

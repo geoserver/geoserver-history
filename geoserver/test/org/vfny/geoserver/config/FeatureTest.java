@@ -14,52 +14,43 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
 /**
- * DataStoreTest purpose.
+ * FeatureTest purpose.
  * <p>
- * Description of DataStoreTest ...
+ * Description of FeatureTest ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: FeatureTest.java,v 1.1.2.1 2004/01/07 21:36:13 dmzwiers Exp $
  */
-public class DataStoreTest extends TestCase {
+public class FeatureTest extends TestCase {
 
 	/**
-	 * Constructor for DataStoreTest.
+	 * Constructor for FeatureTest.
 	 * @param arg0
 	 */
-	public DataStoreTest(String arg0) {
+	public FeatureTest(String arg0) {
 		super(arg0);
-		a = new DataStoreConfig(); b = null;
+		a = new FeatureTypeConfig(); b = null;
 		a.setAbstract("abstract");
-		a.setEnabled(true);
-		a.setId("id");
-		a.setNameSpaceId("prefix:");
-		a.setTitle("title");
-		Map params = new HashMap();
-		params.put("1",new Integer(1));
-		params.put("2",new Integer(2));
-		params.put("3",new Integer(3));
-		a.setConnectionParams(params);
+		a.setDataStoreId("dsId");
+		a.setSRS(0);
 	}
 
 
-	private DataStoreConfig a,b;
+
+	private FeatureTypeConfig a,b;
 
 	/*
 	 * Test for void ContactConfig(ContactConfig)
 	 */
 	public void testDataStoreDataStore() {
 		//test requires equals.
-		b = new DataStoreConfig(a);
+		b = new FeatureTypeConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -68,7 +59,7 @@ public class DataStoreTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(DataStoreConfig)a.clone();
+		b =(FeatureTypeConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -76,30 +67,17 @@ public class DataStoreTest extends TestCase {
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new DataStoreConfig();
+		b = new FeatureTypeConfig();
 		b.setAbstract("abstract");
-		b.setEnabled(true);
-		b.setId("id");
-		b.setNameSpaceId("prefix:");
-		b.setTitle("title");
-		Map params = new HashMap();
-		params.put("1",new Integer(1));
-		params.put("2",new Integer(2));
-		params.put("3",new Integer(3));
-		b.setConnectionParams(params);
+		b.setDataStoreId("dsId");
+		b.setSRS(0);
 		
 		assertTrue(a.equals(b));
 		
-		params.put("4",new Integer(4)); //should only store ref.
+		b.setSRS(5);
 		assertTrue(!a.equals(b));
 		
-		params.remove("4");
-		b.setConnectionParams(params);
-		assertTrue(a.equals(b));
-		
-		b.setEnabled(false);
-		assertTrue(!a.equals(b));
-		b.setEnabled(true);
+		a.setSRS(5);
 		assertTrue(a.equals(b));
 	}
 }

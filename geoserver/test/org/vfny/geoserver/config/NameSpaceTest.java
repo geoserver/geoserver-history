@@ -14,43 +14,38 @@
  *    Lesser General Public License for more details.
  *
  */
-package org.vfny.geoserver.config.data;
+package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
-
 /**
- * FeatureTest purpose.
+ * NameSpaceTest purpose.
  * <p>
- * Description of FeatureTest ...
+ * Description of NameSpaceTest ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: NameSpaceTest.java,v 1.1.2.1 2004/01/07 21:36:13 dmzwiers Exp $
  */
-public class FeatureTest extends TestCase {
+public class NameSpaceTest extends TestCase {
 
+	private NameSpaceConfig a,b;
 	/**
-	 * Constructor for FeatureTest.
+	 * Constructor for NameSpaceTest.
 	 * @param arg0
 	 */
-	public FeatureTest(String arg0) {
+	public NameSpaceTest(String arg0) {
 		super(arg0);
-		a = new FeatureTypeConfig(); b = null;
-		a.setAbstract("abstract");
-		a.setDataStoreId("dsId");
-		a.setSRS(0);
+		a = new NameSpaceConfig();
+		a.setPrefix(":");
+		a.setUri("http://www.google.ca");
 	}
 
-
-
-	private FeatureTypeConfig a,b;
-
 	/*
-	 * Test for void ContactConfig(ContactConfig)
+	 * Test for void NameSpaceConfig(NameSpaceConfig)
 	 */
-	public void testDataStoreDataStore() {
+	public void testNameSpaceNameSpace() {
 		//test requires equals.
-		b = new FeatureTypeConfig(a);
+		b = new NameSpaceConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -59,7 +54,7 @@ public class FeatureTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(FeatureTypeConfig)a.clone();
+		b =(NameSpaceConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
@@ -67,17 +62,16 @@ public class FeatureTest extends TestCase {
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new FeatureTypeConfig();
-		b.setAbstract("abstract");
-		b.setDataStoreId("dsId");
-		b.setSRS(0);
-		
+		b = new NameSpaceConfig();
+		b.setPrefix(":");
+		b.setUri("http://www.google.ca");
 		assertTrue(a.equals(b));
 		
-		b.setSRS(5);
+		b.setDefault(true);
 		assertTrue(!a.equals(b));
 		
-		a.setSRS(5);
-		assertTrue(a.equals(b));
+		b.setDefault(false);
+		b.setPrefix(".");
+		assertTrue(!a.equals(b));
 	}
 }

@@ -16,7 +16,8 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
 /**
  * WFS purpose.
  * <p>
@@ -25,7 +26,7 @@ import org.vfny.geoserver.global.dto.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.2.2.2 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.2.2.3 2004/01/07 21:36:13 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig{
 
