@@ -38,7 +38,7 @@
   <!-- pc example -->
   <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
   <property name="dir.geotools" 
-            value="C:\java\workspace\geotools\geotools-src"/>
+            value="C:\java\workspace\geotools2\geotools-src"/>
             
   <!-- linux example
   <property name="dir.container" value="/usr/local/resin-2.1.4/webapps"/>
@@ -507,6 +507,14 @@
         <include name="xlinks.xsd"/>
       </fileset>
     </copy>
+    
+    <mkdir dir="${basedir}/data/capabilities/validate"/>
+    <copy todir="${basedir}/data/capabilities/validate">
+      <fileset dir="${dir.misc}/schema">
+        <include name="pluginSchema.xsd"/>
+        <include name="testSuiteSchema.xsd"/>
+      </fileset>
+    </copy>
 
      <mkdir dir="${basedir}/data/styles"/>
     <copy todir="${basedir}/data/styles">
@@ -519,6 +527,16 @@
     <mkdir dir="${basedir}/data/featureTypes"/>
     <copy todir="${basedir}/data/featureTypes">
       <fileset dir="${dir.data}/featureTypes"/>
+    </copy>
+    
+    <mkdir dir="${basedir}/data/validation"/>
+    <copy todir="${basedir}/data/validation">
+      <fileset dir="${dir.data}/validation"/>
+    </copy>
+    
+    <mkdir dir="${basedir}/data/plugins"/>
+    <copy todir="${basedir}/data/plugins">
+      <fileset dir="${dir.data}/plugins"/>
     </copy>
 
     <copy todir="${dir.build}">
@@ -717,6 +735,14 @@
       <fileset dir="${dir.geotools}/svgsupport/target/classes/"
                includes="**/*.class"/>   
     </jar>
+    
+    <!-- Looks like initial GeoAPI work?! -->
+    <delete file="${dir.lib}/opengis-SNAPSHOT.jar" failonerror="true"/>    
+    <jar jarfile="${dir.lib}/opengis-SNAPSHOT.jar"
+         whenempty="fail">
+      <fileset dir="${dir.geotools}/opengis/target/classes/"
+               includes="**/*.class"/>
+	</jar>
     
     <!-- I am not sure why this is not part of the geotools jar -->
     <delete file="${dir.lib}/gmldatasource-SNAPSHOT.jar" failonerror="true"/>    
