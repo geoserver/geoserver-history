@@ -15,12 +15,15 @@
       </ogc:Spatial_Operators>
     </ogc:Spatial_Capabilities>
     <ogc:Scalar_Capabilities>
-      <ogc:Logical_Operators/>
-    </ogc:Scalar_Capabilities>
-    <ogc:Comparison_Operators>
-     <ogc:Simple_Comparisons/>
-     <ogc:Between/>
-     <ogc:Like/>
-     <ogc:NullCheck/>   
-    </ogc:Comparison_Operators>
+      <ogc:Logical_Operators/>  
+      <ogc:Comparison_Operators>
+        <ogc:Simple_Comparisons/>
+        <ogc:Between/> 
+        <ogc:Like/>
+        <ogc:NullCheck/>   
+      </ogc:Comparison_Operators>
+      <ogc:Arithmetic_Operators>
+        <ogc:Simple_Arithmetic/>
+      </ogc:Arithmetic_Operators>
+    </ogc:Scalar_Capabilities>  
   </ogc:Filter_Capabilities>
