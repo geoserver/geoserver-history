@@ -20,10 +20,6 @@
     <servlet-name>GetFeature</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.Feature</servlet-class>
   </servlet>
-  <servlet>
-    <servlet-name>TestAuthentication</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.TestAuthentication</servlet-class>
-  </servlet>
 
   <servlet>
     <servlet-name>Dispatcher</servlet-name>
@@ -68,11 +64,6 @@
   <servlet-mapping>
     <servlet-name>GetFeature</servlet-name>
     <url-pattern>/GetFeature/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>TestAuthentication</servlet-name>
-    <url-pattern>/TestAuthenticationDontUse</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
