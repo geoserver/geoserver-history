@@ -526,22 +526,18 @@
       <webinf dir="${dir.webinf}">
       </webinf>
       
-      <!--webinf dir="${dir.data}"/>
-      <webinf dir="${dir.misc}/documents">
-        <include name="configuration.xml"/>
-      </webinf-->
-
       <!-- libraries -->
       <lib dir="${dir.lib}">
         <exclude name="**/junit.jar" />
         <exclude name="**/servlet.jar" />
       </lib>
+      
       <!-- directories -->
       <fileset dir="${basedir}">
         <include name="data/**"/>
         <include name="documentation/**"/>
-        <exclude name="catalog.xml"/>
-        <exclude name="services.xml"/>
+        <exclude name="**/catalog.xml"/>
+        <exclude name="**/services.xml"/>
       </fileset>
       
       <fileset dir="${dir.webinf}/pages">
