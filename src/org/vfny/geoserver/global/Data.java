@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.27 2004/02/02 08:56:45 jive Exp $
+ * @version $Id: Data.java,v 1.28 2004/02/02 23:33:13 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -145,6 +145,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         // Step 1: load dataStores and Namespaces
         dataStores = loadDataStores(config);
         nameSpaces = loadNamespaces(config);
+        defaultNameSpace = (NameSpaceInfo)nameSpaces.get(config.getDefaultNameSpacePrefix());
 
         // Step 2: set up styles
         styles = loadStyles(config);
@@ -865,9 +866,12 @@ SCHEMA:
         FeatureTypeInfo ftype = (FeatureTypeInfo) featureTypes.get(typeName);
 
         if (ftype == null) {
-            throw new NoSuchElementException(
-                "there is no FeatureTypeConfig named " + typeName
-                + " configured in this server");
+        	ftype = (FeatureTypeInfo) featureTypes.get(defaultNameSpace.getPrefix()+":"+typeName);
+        	if (ftype == null) {
+        		throw new NoSuchElementException(
+        			"there is no FeatureTypeConfig named " + typeName
+					+ " configured in this server");
+        	}
         }
 
         return ftype;
@@ -892,6 +896,8 @@ SCHEMA:
      * @return FeatureTypeInfo
      */
     public FeatureTypeInfo getFeatureTypeInfo(String namespacePrefix, String uri) {
+    	if(namespacePrefix == null || namespacePrefix =="")
+    		namespacePrefix = defaultNameSpace.getPrefix();
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
 
@@ -1332,6 +1338,8 @@ SCHEMA:
      */
     public FeatureSource getFeatureSource(String prefix, String typeName)
         throws IOException {
+    	if(prefix == null || prefix == "")
+    		prefix = defaultNameSpace.getPrefix();
         NamespaceMetaData namespace = getNamespaceMetaData(prefix);
         FeatureTypeMetaData featureType = namespace.getFeatureTypeMetaData(typeName);
         DataStoreMetaData dataStore = featureType.getDataStoreMetaData();
