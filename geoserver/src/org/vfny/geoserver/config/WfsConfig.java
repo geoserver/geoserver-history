@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
@@ -58,10 +59,15 @@ public class WfsConfig implements java.io.Serializable {
 
     public static final String DEFAULT_PREFIX = "myns";
 
+    public static final String LOG_TAG = "LoggingLevel";
 
         /** Standard logging in stance for class */
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.config");
+
+    private Level logLevel = Logger.getLogger("org.vfny.geoserver").getLevel();
+    
+    
 
     private String defaultPrefix;
 
@@ -138,8 +144,7 @@ public class WfsConfig implements java.io.Serializable {
 		}
 	    }
 
-	    String baseUrl = 
-		ServiceConfig.findTextFromTag(configElem, URL_TAG);
+	    String baseUrl = findTextFromTag(configElem, URL_TAG);
 	    wfsConfig.setBaseUrl(baseUrl);
 
 	    HashMap namespaces = new HashMap();
@@ -180,6 +185,9 @@ public class WfsConfig implements java.io.Serializable {
 	    wfsConfig.setNamespaces(namespaces);
 	    fis.close();
 
+	    String logLevel = findTextFromTag(configElem, LOG_TAG);
+	    wfsConfig.setLogLevel(logLevel);
+
 	} catch (IOException ioe) {
 	    String message = "problem reading file " + configFile  + "due to: "
 		+ ioe.getMessage();
@@ -197,6 +205,25 @@ public class WfsConfig implements java.io.Serializable {
 	    throw new ConfigurationException(message, saxe);
 	}
 	return wfsConfig;
+    }
+
+        private static String findTextFromTag(Element root, String tag){
+	return ServiceConfig.findTextFromTag(root, tag);
+    }
+
+
+    void setLogLevel(String level){
+	try {
+	    logLevel = Level.parse(level);
+	} catch (IllegalArgumentException e){
+	    LOGGER.warning("could not parse LogLevel: " + level + ", using " +
+			   "level: " + this.logLevel + ", found in " +
+			   "logging.properties file in java home");
+	}
+    }
+
+    public Level getLogLevel(){
+	return this.logLevel;
     }
 
     /** returns true if the Verbose tag is present in the config file. */
