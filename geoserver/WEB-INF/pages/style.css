@@ -107,6 +107,15 @@ table.progress {
  width: 100%;
  height: 1em;
 }
+table.progress td.good {
+ background-color: green;
+}
+table.progress td.bad {
+ background-color: red;
+}
+table.progress td.disabled {
+ background-color: gray;
+}
 /*
  * Locator
  */
