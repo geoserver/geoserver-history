@@ -133,7 +133,7 @@ public class WfsConfig implements java.io.Serializable {
 	    Element verboseElem = 
 		(Element) configElem.getElementsByTagName(VERBOSE_TAG).item(0);
 	    if (verboseElem != null){
-		if (verboseElem.getAttribute("value").equals("true")){
+		if (!verboseElem.getAttribute("value").equals("false")){
 		    wfsConfig.setVerbose(true);
 		}
 	    }
