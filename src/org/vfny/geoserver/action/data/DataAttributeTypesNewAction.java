@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.form.data.DataAttributeTypesNewForm;
 /**
  * @author User
  *
@@ -24,13 +26,21 @@ import org.vfny.geoserver.action.ConfigAction;
  */
 public class DataAttributeTypesNewAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
-			ActionForm form,
+			ActionForm incomingForm,
 			HttpServletRequest request,
 			HttpServletResponse response)
 	throws IOException, ServletException {
 		
 		//CREATE A BLANK ATTRIBUTE TYPE, SAVE IT IN SESSION
 		//AND FORWARD TO EDITOR
+		
+		DataAttributeTypesNewForm form = (DataAttributeTypesNewForm) incomingForm;
+		String selectedAttributeType = form.getSelectedNewAttributeType();
+		
+		//Retrieve Selected one and populate and save it
+		AttributeTypeInfoConfig atiConfig = null;
+		
+		request.getSession().setAttribute("selectedAttributeType", selectedAttributeType);
 		
 		return mapping.findForward("dataConfigFeatureTypes");
 	}

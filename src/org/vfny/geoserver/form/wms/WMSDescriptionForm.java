@@ -43,20 +43,10 @@ public final class WMSDescriptionForm extends ActionForm {
 		this.maintainer = config.getMaintainer();
 		this.title = config.getTitle();
 		this.accessConstraints = config.getAccessConstraints();
-	
-		/*
-		 *  -- ServiceConfig.keywords now represented as String[] -rgould
-		 * 
-			List list = config.getKeywords();
-			String out = "";
-			
-			for (int i = 0; i < list.size();i++) {
-				out = out + list.get(i) + System.getProperty("line.separator");
-			}	
-		*/	
 
 		String out = "";
 		for (int i = 0; i < config.getKeywords().length; i++) {
+			System.out.println("WMSDesc.reset: " + config.getKeywords()[i]);
 			out = out + config.getKeywords()[i] + System.getProperty("line.separator");
 		}
 		

@@ -51,7 +51,7 @@ public final class WMSDescriptionAction extends ConfigAction {
 			config.setMaintainer(maintainer);
 			config.setAbstract(_abstract);
 			
-			String[] array = keywords != null ? keywords.split("\n") : new String[0];
+			String[] array = keywords != null ? keywords.split(System.getProperty("line.separator")) : new String[0];
 			
 			config.setKeywords(array);
 
