@@ -8,7 +8,7 @@
 <!-- under the PROPERTIES section.                                          -->
 <!-- ====================================================================== -->
 
-<project name="geoserver" default="unit" basedir=".">
+<project name="geoserver" default="help" basedir=".">
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
@@ -21,6 +21,7 @@
   <property name="dir.server" value="${basedir}/server"/>
   <property name="dir.src" value="${basedir}/src"/>
   <property name="dir.test" value="${basedir}/test"/>
+  <property name="dir.release" value="${basedir}/release"/>
 
   <!-- secondary directories -->
   <property name="dir.jsp" value="${dir.misc}/jsp"/>
@@ -110,8 +111,6 @@
     <echo message=""/>
     <echo message=" TEST TARGETS"/>
     <echo message="    unit:         compiles, runs unit tests"/>
-    <echo message="    unit-req:     compiles, runs request unit tests"/>
-    <echo message="    unit-res:     compiles, runs response unit tests"/>
     <echo message="    test:         builds all classes to server, runs"/>
     <echo message="    test-clean:   builds clean to server, runs server"/>
     <echo message="    test-ext:     builds war to external server"/>
@@ -170,7 +169,6 @@
       <fileset dir="${dir.build}" />
     </delete>
     <delete file="${dir.lib}/geoserver.jar" failonerror="true"/>
-    <delete file="${dir.lib}/test.jar" failonerror="true"/>
     <antcall target="all"/>
   </target>
 
@@ -319,7 +317,7 @@
 
 <!-- EXTERNAL TEST -->
 <!-- deploys application to test server -->
-  <target name="test-ext" depends="init, all">
+  <target name="test-ext" depends="init, war">
     <!-- copy to test server -->
     <delete includeEmptyDirs="true" failonerror="false">
       <fileset dir="${dir.container}/geoserver"/>
@@ -451,12 +449,14 @@
 
 <!-- RELEASE -->
 <!-- builds a release version of the application -->
-  <target name="release" depends="init, war">
+  <target name="release" depends="init, all">
+    
     <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
             failonerror="false"/>
     <delete file="${basedir}/geoserver-${name.release}.tar" 
             failonerror="false"/>
-
+    <delete dir="${dir.build}" failonerror="false"/>
+    <delete dir="${dir.release}" failonerror="false"/>
     <copy file="${dir.misc}/documents/license.txt" todir="${basedir}"/>
     <tar longfile="gnu"
          basedir="${basedir}"
