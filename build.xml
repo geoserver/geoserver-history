@@ -313,7 +313,8 @@
 <!-- TEST -->
   <target name="test" depends="init, all"
     description="Depolys application to the test server">
-    <mkdir dir="${dir.server}/work"/>
+    <!-- no longer needed, as work is in geoserver/WEB-INF -->
+    <!--mkdir dir="${dir.server}/work"/-->
 
     <!-- This will now build with the users directory, which I think is
          appropriate for testing of this sort, as you'll want to configure
@@ -823,11 +824,16 @@
   </target>
   
   <target name="release-binary" depends="release-common">
-      <!-- copy todir="${dir.build}/documents/">
+    <copy todir="${dir.build}">
+	  <fileset dir="${basedir}/documents">
+            <include name="RUNNING.txt"/>
+	  </fileset>
+    </copy>
+      <copy todir="${dir.build}/documents/">
 	  <fileset dir="${dir.doc}">
 	    <include name="**/*"/>
 	  </fileset>
-      </copy -->    
+      </copy>    
     <copy todir="${dir.build}/documents">
 	  <fileset dir="${basedir}/documents">
 	    <include name="jetty.xml"/>
@@ -837,9 +843,9 @@
     <antcall target="build-war">
        <param name="conf.path" value="${basedir}/cite/confUserBasic"/>
     </antcall>
-    <copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/>
-    <!--unwar src="${dir.build}/geoserver.war" 
-          dest="${dir.build}/server/geoserver/"/-->
+    <!--copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/-->
+    <unwar src="${dir.build}/geoserver.war" 
+          dest="${dir.build}/server/geoserver/"/>
 
   	<zip destfile="${basedir}/geoserver-${name.release}-bin.zip">
 	  <zipfileset dir="${dir.build}" prefix="geoserver">
