@@ -119,16 +119,24 @@ public class FeatureResponse {
             LOG.finest("feature: " + features[i].toString());
             LOG.finest("att total: " + schema.attributeTotal());
             for(int j = 0, n = schema.attributeTotal(); j < n; j++) {
-                LOG.finest("sent attribute: " + attributes[j].toString());
+                //LOG.finest("sent attribute: " + attributes[j].toString());
 		if (j == geometryPosition) {
-		    LOG.finest("geometry att: " + attributes[j].getClass());
-		    LOG.finest("att name: " + attributeTypes[j].getName());
+		    //LOG.finest("geometry att: " + attributes[j].getClass());
+		    //LOG.finest("att name: " + attributeTypes[j].getName());
             gml.addGeometry((Geometry) attributes[j], 
 			    attributeTypes[j].getName());
 		LOG.finest("added geometry: " + ((Geometry) attributes[j]).toString());
 		} else {
-                gml.addAttribute(attributeTypes[j].getName(), 
-                                 attributes[j].toString());
+		    String attrString;
+		    if (attributes[j] == null) {
+			LOG.finest ("null feature");
+			attrString = "";
+		    } else {
+			attrString = attributes[j].toString();
+		    }
+		    LOG.finest("attribute is " + attrString);
+		    gml.addAttribute(attributeTypes[j].getName(), 
+				 attrString);
 		}
 	    }
             
@@ -160,19 +168,22 @@ public class FeatureResponse {
         
 	LOG.finest("about to get query: " + query);
       
+	Properties dbProps = new Properties();
+	dbProps.put("user", meta.getUser());
+	dbProps.put("password", meta.getPassword());
+	//dbProps.put("charSet", "iso-8859-1");
         PostgisConnectionFactory db =
 	    new PostgisConnectionFactory (meta.getHost(), meta.getPort(),
 					  meta.getDatabaseName()); 
 	LOG.finest("connecting to db " + meta.getHost() + " is host, port "
 		      + meta.getPort() + " name: " + meta.getDatabaseName());
-        db.setLogin(meta.getUser(), meta.getPassword());
+        //db.setLogin(meta.getUser(), meta.getPassword());
 	LOG.finest("setting user and pass " + meta.getUser() + meta.getPassword());
-
 	FeatureCollection collection = null;
 	FeatureType schema = null;
 	String tableName = meta.getName();
 	try {
-	    Connection dbConnection = db.getConnection();
+	    Connection dbConnection = db.getConnection(dbProps);
 	schema = PostgisDataSource.makeSchema(tableName, dbConnection);
 	if (!query.allRequested()) {
 	    List propertyNames = query.getPropertyNames();
