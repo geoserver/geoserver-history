@@ -46,7 +46,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.6 2004/07/23 20:05:56 cholmesny Exp $
+ * @version $Id: GeoServerConfigurationSubmit.java,v 1.7 2004/07/29 15:35:49 cholmesny Exp $
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -66,7 +66,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 	Charset charset;
 	try {
 	    charset = Charset.forName(stringCharset);
-	} catch (java.nio.charset.UnsupportedCharsetException uce) {
+	} catch (IllegalArgumentException uce) {
 	    ActionErrors errors = new ActionErrors();
 	    errors.add(ActionErrors.GLOBAL_ERROR, 
 		       new ActionError("error.badCharSet"));
