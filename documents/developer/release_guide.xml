@@ -2,7 +2,7 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 <article>
-  <title>Release Guide (draft)</title>
+  <title>Release Guide</title>
 
   <sect1>
     <title>Introduction</title>
@@ -111,19 +111,18 @@
 
     <para>While the cite tests are running we recommend taking the time to
     write a solid readme. It is located in the documents directory, and will
-    be copied to the top level directory when building the release (does our
-    release target do this now? It should). A readme should be present, so
-    just follow the format. It should generally be a few introductory
-    paragraphs, highlighting the main points of the release. A few shout-outs
-    and thank yous can follow, giving credit where it is due (which is always
-    good to do in an open source project, as we have few ways to reward
-    contributors other than giving credit and props). The paragraph on the
-    GeoServer user map should be included, so that users will add themselves
-    to it - this is important for continued support of GeoServer, so that
-    potential funders can see that it is in fact being widely used. Next
-    generally comes a list of the bug fixes and new features in this release,
-    followed by known bugs and information as to where to submit bugs and
-    feature requests.</para>
+    be copied to the top level directory when building the release. A readme
+    should be present, so just follow the format. It should generally be a few
+    introductory paragraphs, highlighting the main points of the release. A
+    few shout-outs and thank yous can follow, giving credit where it is due
+    (which is always good to do in an open source project, as we have few ways
+    to reward contributors other than giving credit and props). The paragraph
+    on the GeoServer user map should be included, so that users will add
+    themselves to it - this is important for continued support of GeoServer,
+    so that potential funders can see that it is in fact being widely used.
+    Next generally comes a list of the bug fixes and new features in this
+    release, followed by known bugs and information as to where to submit bugs
+    and feature requests.</para>
   </sect1>
 
   <sect1>
@@ -198,7 +197,7 @@
     sourceforge, so that the cvs exactly reflects the state of the code that
     was released. Our convention is to call a release rel followed by the
     version number, delimited by underscores, as decimals are not allowed in
-    cvs. To tag a release simply type:<programlisting>cvs tag rel_1_2_0</programlisting></para>
+    cvs. To tag a release simply type:<programlisting>svn tag rel_1_2_0</programlisting></para>
   </sect1>
 
   <sect1>
@@ -212,15 +211,16 @@
     accomplish this. Once there they can be unzipped and then transfered to
     the appropriate directories under
     /home/groups/g/ge/geoserver/htdocs/documentation/. Note that the api
-    directory is renamed javadocs in the web space. (Do we want to change this
-    to versioning on the website? Put them in the 1.2.0 directory, ect.?). The
-    other website that needs updating is JIRA. Check the roadmap for the
-    release. It should already have all bugs for the release closed, but if
-    they are not then close the ones that were done at the last moment or that
-    should be closed, and move the rest to a future release. Click on the
-    administration tab (will only appear if you have admin privelages on
-    jira), and then click on release under versions. Then release the version
-    that you just put out. </para>
+    directory is renamed javadocs in the web space. Each new documentation
+    should have its own version number, and then the root documentation
+    directory should have symbolic links to the latest docs The other website
+    that needs updating is JIRA. Check the roadmap for the release. It should
+    already have all bugs for the release closed, but if they are not then
+    close the ones that were done at the last moment or that should be closed,
+    and move the rest to a future release. Click on the administration tab
+    (will only appear if you have admin privelages on jira), and then click on
+    release under versions. Then release the version that you just put
+    out.</para>
   </sect1>
 
   <sect1>
@@ -247,7 +247,5 @@
     directly. For 1.1.0 the story appeared on osdir.com and dev.java.net, but
     we did not do any direct announcing there, so I am not sure what the
     policy is on submitting stuff to them.</para>
-
-    <para></para>
   </sect1>
 </article>
