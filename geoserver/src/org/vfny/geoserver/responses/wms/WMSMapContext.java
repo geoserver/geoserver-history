@@ -4,10 +4,9 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import java.awt.Color;
-
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapLayer;
+import java.awt.Color;
 
 
 /**
@@ -37,16 +36,16 @@ import org.geotools.map.MapLayer;
  * @version $Id$
  */
 public class WMSMapContext extends DefaultMapContext {
-    /** DOCUMENT ME!  */
+    /** requested map image width in output units (pixels) */
     private int mapWidth;
 
-    /** DOCUMENT ME!  */
+    /** requested map image height in output units (pixels) */
     private int mapHeight;
 
-    /** DOCUMENT ME!  */
-    private Color bgColor;
+    /** Requested BGCOLOR, defaults to white according to WMS spec */
+    private Color bgColor = Color.white;
 
-    /** DOCUMENT ME!  */
+    /** true if background transparency is requested */
     private boolean transparent;
 
     /**

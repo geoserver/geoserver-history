@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import org.vfny.geoserver.responses.wms.GetMapProducerFactorySpi;
 import java.util.Collections;
 import java.util.Set;
+
+import org.vfny.geoserver.responses.wms.GetMapProducerFactorySpi;
 
 
 /**
@@ -16,9 +17,14 @@ import java.util.Set;
  * @version $Id$
  */
 public class GifMapProducerFactory implements GetMapProducerFactorySpi {
-    /** DOCUMENT ME!  */
-    private static final Set SUPPORTED_FORMATS = Collections.singleton(
-            "image/gif");
+    /** the only MIME type this map producer supports */
+    static final String MIME_TYPE = "image/gif";
+
+    /**
+     * convenient singleton Set to expose the output format this producer
+     * supports
+     */
+    private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
      * Creates a new GifMapProducerFactory object.
@@ -37,9 +43,10 @@ public class GifMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns the Set of output format this producer supports
      *
-     * @return DOCUMENT ME!
+     * @return Set of output format this producer supports (actually
+     *         "image/gif")
      */
     public Set getSupportedFormats() {
         return SUPPORTED_FORMATS;
@@ -55,14 +62,17 @@ public class GifMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns wether this map producer can create maps in the passed output
+     * format.
      *
-     * @param mapFormat DOCUMENT ME!
+     * @param mapFormat a MIME type string to check if this producer is able to
+     *        handle.
      *
-     * @return DOCUMENT ME!
+     * @return <code>true</code> if <code>mapFormat == "image/gif"</code>,
+     *         <code>false</code> otherwise.
      */
     public boolean canProduce(String mapFormat) {
-        return SUPPORTED_FORMATS.contains(mapFormat);
+        return MIME_TYPE.equals(mapFormat);
     }
 
     /**
@@ -76,6 +86,11 @@ public class GifMapProducerFactory implements GetMapProducerFactorySpi {
      */
     public GetMapProducer createMapProducer(String mapFormat)
         throws IllegalArgumentException {
+        if (!canProduce(mapFormat)) {
+            throw new IllegalArgumentException(mapFormat
+                + " not supported by this map producer");
+        }
+
         return new GIFMapProducer();
     }
 }
