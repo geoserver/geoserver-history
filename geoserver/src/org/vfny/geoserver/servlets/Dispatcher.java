@@ -30,29 +30,30 @@ import javax.servlet.http.*;
  * GetCapabablities response.  Currently does not support post requests, but
  * most requests for this will likely come with get.
  *
- * @task TODO: rework to work too for WMS servlets, and to get the servlets
- * from ServletContext instead of having them hardcoded
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.6 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: Dispatcher.java,v 1.7 2003/12/17 01:12:58 cholmesny Exp $
+ *
+ * @task TODO: rework to work too for WMS servlets, and to get the servlets
+ *       from ServletContext instead of having them hardcoded
  */
 public class Dispatcher extends HttpServlet {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private static final ServerConfig config = ServerConfig.getInstance();
 
     /** Specifies MIME type */
-    private static final String MIME_TYPE = config.getGlobalConfig()
-                                                  .getMimeType();
+    protected static final String MIME_TYPE = config.getGlobalConfig()
+                                                    .getMimeType();
 
     /** Map metadata request type */
     public static String META_REQUEST = "GetMeta";
 
     /** Map get capabilities request type */
-    public static final int WFS_GET_CAPABILITIES_REQUEST = 1;
+    public static final int GET_CAPABILITIES_REQUEST = 1;
 
     /** Map describe feature type request type */
     public static final int DESCRIBE_FEATURE_TYPE_REQUEST = 2;
@@ -69,56 +70,27 @@ public class Dispatcher extends HttpServlet {
     /** int representation of a lock request type */
     public static final int LOCK_REQUEST = 6;
 
+    /** Map get capabilities request type */
+    public static final int GET_MAP_REQUEST = 7;
+    public static final short WMS_SERVICE = 101;
+    public static final short WFS_SERVICE = 102;
+
     /** Map get feature  request type */
     public static final int UNKNOWN = -1;
 
     /** Map get feature  request type */
     public static final int ERROR = -2;
+    protected ServletConfig servletConfig;
 
-    /**
-     * Passes the Post method to the Get method, with no modifications.
-     *
-     * @param request The servlet request object.
-     * @param response The servlet response object.
-     *
-     * @throws ServletException For any servlet problems.
-     * @throws IOException For any io problems.
-     *
-     * @task REVISIT: This is not working yet, as we can't seem to figure out
-     *       how to read the reader twice.  It must be read once to see what
-     *       the request type is,  and again to actually analyze it.  But we
-     *       haven't yet found the way  to read it twice.  There should be
-     *       some way to do this, but it doesn't seem that important, as users
-     *       who use post should be able to figure out which servlet to send
-     *       it to. I'm removing DispatcherReaderXml and DispatcherHandler
-     *       from cvs, so that they don't get in the 1.0 release.  If anyone
-     *       attempts to implement this there are deleted versions in cvs.
-     *       Check the attic on the webcvs, or just do a checkout with the
-     *       rel_0_98 tag.
-     */
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        //BufferedReader tempReader = request.getReader();
-        //String tempResponse = new String();
-        int targetRequest = 0;
-        LOGGER.finer("got to post request");
-
-        //request.getReader().mark(10000);
-
-        /*    try {
-                      if ( request.getReader() != null ) {
-                      DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
-                      targetRequest = requestTypeAnalyzer.getRequestType();
-                       } else {
-                        targetRequest = UNKNOWN;
-                        }
-                       } catch (WfsException wfs) {
-                                   targetRequest = ERROR;
-                                   tempResponse = wfs.getXmlResponse();
-                       }*/
-
-        //request.getReader().reset();
-        doResponse(false, request, response, targetRequest);
+    //HACK! This is just to fix instances where the first request is a 
+    //dispatcher, and the strategy hasn't been inited yet.  This can be
+    //fixed in two ways, one by having Dispatcher extend Abstract Service,
+    //which it should do, and two by having the configuration of the strategy
+    //done in user configuration instead of in the web.xml file.  Both should
+    //be done.
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        this.servletConfig = config;
     }
 
     /**
@@ -134,6 +106,7 @@ public class Dispatcher extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         int targetRequest = 0;
+
         // Examine the incoming request and create appropriate server objects
         //  to deal with each request
         //              try {
@@ -142,73 +115,10 @@ public class Dispatcher extends HttpServlet {
             targetRequest = DispatcherKvpReader.getRequestType(kvPairs);
         } else {
             targetRequest = UNKNOWN;
+
             //throw exception
         }
 
-        doResponse(false, request, response, targetRequest);
-    }
-
-    private void doResponse(boolean isPost, HttpServletRequest request,
-        HttpServletResponse response, int req_type)
-        throws ServletException, IOException {
-        HttpServlet dispatched;
-        LOGGER.finer("req_type is " + req_type);
-
-        switch (req_type) {
-        case WFS_GET_CAPABILITIES_REQUEST:
-            dispatched = new Capabilities();
-
-            break;
-
-        case DESCRIBE_FEATURE_TYPE_REQUEST:
-            dispatched = new Describe();
-
-            break;
-
-        case GET_FEATURE_REQUEST:
-            dispatched = new Feature();
-
-            break;
-
-        case TRANSACTION_REQUEST:
-            dispatched = new Transaction();
-
-            break;
-
-        case GET_FEATURE_LOCK_REQUEST:
-            dispatched = new FeatureWithLock();
-
-            break;
-
-        case LOCK_REQUEST:
-            dispatched = new Lock();
-
-            break;
-
-        default:
-            dispatched = null;
-        }
-
-        //TODO: catch the servlet exceptions from the other servlets.
-        if ((dispatched != null) && !isPost) {
-            dispatched.service(request, response);
-        } else {
-            String message;
-
-            if (isPost) {
-                message = "Post requests are not supported with the dispatcher "
-                    + "servlet.  Please try the request using the appropriate "
-                    + "request servlet, such as GetCapabilities or GetFeature";
-            } else {
-                message = "No wfs kvp request recognized.  The REQUEST parameter"
-                    + " must be one of GetFeature, GetFeatureWIthLock, "
-                    + "DescribeFeatureType, LockFeature, or Transaction.";
-            }
-
-            WfsException wfse = new WfsException(message);
-            String tempResponse = wfse.getXmlResponse(false);
-            response.setContentType(MIME_TYPE);
-            response.getWriter().write(tempResponse);
-        }
+        //doResponse(false, request, response, targetRequest);
     }
 }
