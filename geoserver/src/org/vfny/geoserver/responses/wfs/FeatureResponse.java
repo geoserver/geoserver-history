@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.22 2004/03/12 10:34:11 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.23 2004/03/14 05:17:59 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -235,28 +235,48 @@ public class FeatureResponse implements Response {
                 source = meta.getFeatureSource();
 
                 List attrs = meta.getAttributes();
-                Iterator ii = attrs.iterator();
+
                 List propNames = query.getPropertyNames(); // REAL LIST: be careful here :)
-                List tmp = new LinkedList();
+                List attributeNames = meta.getAttributeNames();
 
-                while (ii.hasNext()) {
-                    AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
+                for (Iterator iter = propNames.iterator(); iter.hasNext();) {
+                    String propName = (String) iter.next();
 
-                    if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0))
-                            || propNames.contains(ati.getName())) {
-                        tmp.add(ati.getName());
+                    if (!attributeNames.contains(propName)) {
+                        String mesg = "Requested property: " + propName
+                            + " is " + "not available for "
+                            + query.getTypeName() + ".  "
+                            + "The possible propertyName values are: "
+                            + attributeNames;
+                        throw new WfsException(mesg);
                     }
                 }
 
-                //tmp is now full list in order :)
                 if (propNames.size() != 0) {
-                    query.setPropertyNames(tmp);
+                    Iterator ii = attrs.iterator();
+                    List tmp = new LinkedList();
 
-                    // This doesn't seem to be working?
-                    // Run through features and record FeatureIDs
-                    // Lock FeatureIDs as required
+                    while (ii.hasNext()) {
+                        AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
+
+                        //String attName = (String) ii.next();
+                        LOGGER.finer("checking to see if " + propNames
+                            + " contains" + ati);
+
+                        if (((ati.getMinOccurs() > 0)
+                                && (ati.getMaxOccurs() != 0))
+                                || propNames.contains(ati.getName())) {
+                            tmp.add(ati.getName());
+                        }
+                    }
+
+                    query.setPropertyNames(tmp);
                 }
 
+                // This doesn't seem to be working?
+                // Run through features and record FeatureIDs
+                // Lock FeatureIDs as required
+                //}
                 LOGGER.fine("Query is " + query + "\n To gt2: "
                     + query.toDataQuery(maxFeatures));
 
@@ -331,8 +351,8 @@ public class FeatureResponse implements Response {
                     }
                 }
             }
-             //end for
 
+            //end for
             //prepare to encode in the desired output format
             delegate.prepare(outputFormat, results);
 
