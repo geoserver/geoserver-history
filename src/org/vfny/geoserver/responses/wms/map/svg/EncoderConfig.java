@@ -4,21 +4,21 @@
  */
 package org.vfny.geoserver.responses.wms.map.svg;
 
-import org.vfny.geoserver.global.*;
-import org.geotools.styling.*;
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.data.FeatureResults;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-import org.geotools.data.*;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import java.util.List;
-import java.util.Collections;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: EncoderConfig.java,v 1.2 2004/03/14 23:27:03 groldan Exp $
+ * @version $Id: EncoderConfig.java,v 1.3 2004/04/06 12:12:18 cholmesny Exp $
  */
 public class EncoderConfig {
     /** the XML and SVG header */
@@ -29,12 +29,10 @@ public class EncoderConfig {
 
     /** the SVG closing element */
     public static final String SVG_FOOTER = "</svg>\n";
-
     private GetMapRequest request;
     private FeatureTypeInfo[] requestedLayers;
     private FeatureResults[] resultLayers;
     private Style[] styles;
-
 
     /**
      * tells whether all the geometries in FeatureResults will be written as a
@@ -58,55 +56,56 @@ public class EncoderConfig {
 
     /**
      * Creates a new EncoderConfig object.
+     *
+     * @param request DOCUMENT ME!
+     * @param requestedLayers DOCUMENT ME!
+     * @param resultLayers DOCUMENT ME!
+     * @param styles DOCUMENT ME!
      */
     public EncoderConfig(GetMapRequest request,
-                         FeatureTypeInfo[] requestedLayers,
-                         FeatureResults[] resultLayers,
-                         Style[] styles)
-    {
-      this.request = request;
-      this.requestedLayers = requestedLayers;
-      this.resultLayers = resultLayers;
-      this.styles = styles;
+        FeatureTypeInfo[] requestedLayers, FeatureResults[] resultLayers,
+        Style[] styles) {
+        this.request = request;
+        this.requestedLayers = requestedLayers;
+        this.resultLayers = resultLayers;
+        this.styles = styles;
     }
 
-    public List getAttributes(String typeName) throws IOException
-    {
-      List atts = Collections.EMPTY_LIST;
-      if(!request.getAttributes().isEmpty())
-      {
-        int layerIndex = -1;
-        int lCount = requestedLayers.length;
-        for(int i = 0; i < lCount; i++)
-        {
-          if(requestedLayers[i].getFeatureType().getTypeName().equals(typeName))
-          {
-            layerIndex = i;
-            break;
-          }
+    public List getAttributes(String typeName) throws IOException {
+        List atts = Collections.EMPTY_LIST;
+
+        if (!request.getAttributes().isEmpty()) {
+            int layerIndex = -1;
+            int lCount = requestedLayers.length;
+
+            for (int i = 0; i < lCount; i++) {
+                if (requestedLayers[i].getFeatureType().getTypeName().equals(typeName)) {
+                    layerIndex = i;
+
+                    break;
+                }
+            }
+
+            atts = (List) request.getAttributes().get(layerIndex);
         }
-        atts = (List)request.getAttributes().get(layerIndex);
-      }
-      return atts;
-    }
-    public FeatureTypeInfo[] getLayers()
-    {
-      return requestedLayers;
+
+        return atts;
     }
 
-    public FeatureResults[] getResults()
-    {
+    public FeatureTypeInfo[] getLayers() {
+        return requestedLayers;
+    }
+
+    public FeatureResults[] getResults() {
         return resultLayers;
     }
 
-    public Style[] getStyles()
-    {
-      return styles;
+    public Style[] getStyles() {
+        return styles;
     }
 
-    public GetMapRequest getRequest()
-    {
-      return request;
+    public GetMapRequest getRequest() {
+        return request;
     }
 
     /**
@@ -117,7 +116,7 @@ public class EncoderConfig {
      * @return DOCUMENT ME!
      */
     public Envelope getReferenceSpace() {
-      return request.getBbox();
+        return request.getBbox();
     }
 
     /**
@@ -126,17 +125,18 @@ public class EncoderConfig {
      * @return DOCUMENT ME!
      */
     public double getMinCoordDistance() {
-        if(minCoordDistance == -1)
-        {
-          double blurFactor = request.getGeneralizationFactor();
-          if (blurFactor > 0) {
-              Envelope env = getReferenceSpace();
-              double maxDimension = Math.max(env.getWidth(), env.getHeight());
-              this.minCoordDistance = maxDimension / blurFactor;
-          } else {
-              this.minCoordDistance = 0;
-          }
+        if (minCoordDistance == -1) {
+            double blurFactor = request.getGeneralizationFactor();
+
+            if (blurFactor > 0) {
+                Envelope env = getReferenceSpace();
+                double maxDimension = Math.max(env.getWidth(), env.getHeight());
+                this.minCoordDistance = maxDimension / blurFactor;
+            } else {
+                this.minCoordDistance = 0;
+            }
         }
+
         return minCoordDistance;
     }
 
@@ -175,5 +175,4 @@ public class EncoderConfig {
     public boolean isWriteHeader() {
         return request.getWriteSvgHeader();
     }
-
 }

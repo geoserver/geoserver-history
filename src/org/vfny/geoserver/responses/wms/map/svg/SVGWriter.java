@@ -4,18 +4,28 @@
  */
 package org.vfny.geoserver.responses.wms.map.svg;
 
-import com.vividsolutions.jts.geom.*;
-
-import org.geotools.feature.*;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureReader;
-
-import java.io.*;
-
-import java.text.*;
-
-import java.util.*;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 
@@ -23,12 +33,11 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGWriter.java,v 1.3 2004/03/14 23:27:03 groldan Exp $
+ * @version $Id: SVGWriter.java,v 1.4 2004/04/06 12:12:18 cholmesny Exp $
  */
 public class SVGWriter extends OutputStreamWriter {
-
-    private static final Logger LOGGER = Logger.getLogger(
-      SVGWriter.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(SVGWriter.class.getPackage()
+                                                                         .getName());
 
     /**
      * a number formatter setted up to write SVG legible numbers ('.' as
@@ -72,7 +81,7 @@ public class SVGWriter extends OutputStreamWriter {
     /** DOCUMENT ME! */
     private SVGFeatureWriterHandler writerHandler = new SVGFeatureWriterHandler();
 
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private SVGFeatureWriter featureWriter = null;
 
     /** DOCUMENT ME! */
@@ -84,7 +93,7 @@ public class SVGWriter extends OutputStreamWriter {
     /** DOCUMENT ME! */
     private boolean pointsAsCircles;
 
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private EncoderConfig config;
 
     /**
@@ -144,21 +153,21 @@ public class SVGWriter extends OutputStreamWriter {
             throw new IllegalArgumentException(
                 "No SVG Feature writer defined for " + gtype);
         }
-/*
-        if (config.isCollectGeometries()) {
-            this.writerHandler = new CollectSVGHandler(featureWriter);
-        } else {
-            this.writerHandler = new SVGFeatureWriterHandler();
-            this.writerHandler = new FIDSVGHandler(this.writerHandler);
-            this.writerHandler = new BoundsSVGHandler(this.writerHandler);
-            this.writerHandler = new AttributesSVGHandler(this.writerHandler);
-        }
- */
+
+        /*
+           if (config.isCollectGeometries()) {
+               this.writerHandler = new CollectSVGHandler(featureWriter);
+           } else {
+               this.writerHandler = new SVGFeatureWriterHandler();
+               this.writerHandler = new FIDSVGHandler(this.writerHandler);
+               this.writerHandler = new BoundsSVGHandler(this.writerHandler);
+               this.writerHandler = new AttributesSVGHandler(this.writerHandler);
+           }
+         */
     }
 
-    public void setWriterHandler(SVGFeatureWriterHandler handler)
-    {
-      this.writerHandler = handler;
+    public void setWriterHandler(SVGFeatureWriterHandler handler) {
+        this.writerHandler = handler;
     }
 
     /**
@@ -269,26 +278,27 @@ public class SVGWriter extends OutputStreamWriter {
             FeatureType featureType = reader.getFeatureType();
             Class gtype = featureType.getDefaultGeometry().getType();
 
-            boolean doCollect = config.isCollectGeometries() &&
-                  gtype != Point.class && gtype != MultiPoint.class;
+            boolean doCollect = config.isCollectGeometries()
+                && (gtype != Point.class) && (gtype != MultiPoint.class);
 
             setGeometryType(gtype);
 
             setPointsAsCircles("#circle".equals(style));
 
-            if(style != null && !"#circle".equals(style) && style.startsWith("#"))
-              style = style.substring(1);
-            else
-              style = null;
+            if ((style != null) && !"#circle".equals(style)
+                    && style.startsWith("#")) {
+                style = style.substring(1);
+            } else {
+                style = null;
+            }
 
             setAttributeStyle(style);
 
             setUpWriterHandler(featureType, doCollect);
 
-            if(doCollect)
-            {
-              write("<path ");
-              write("d=\"");
+            if (doCollect) {
+                write("<path ");
+                write("d=\"");
             }
 
             while (reader.hasNext()) {
@@ -297,9 +307,8 @@ public class SVGWriter extends OutputStreamWriter {
                 ft = null;
             }
 
-            if(doCollect)
-            {
-              write("\"/>\n");
+            if (doCollect) {
+                write("\"/>\n");
             }
 
             LOGGER.fine("encoded " + featureType.getTypeName());
@@ -311,33 +320,33 @@ public class SVGWriter extends OutputStreamWriter {
     }
 
     private void setUpWriterHandler(FeatureType featureType, boolean doCollect)
-    throws IOException
-    {
-      if (doCollect) {
-          this.writerHandler = new CollectSVGHandler(featureWriter);
-          LOGGER.finer("Established a collecting features writer handler");
-      } else {
-          this.writerHandler = new SVGFeatureWriterHandler();
-          String typeName = featureType.getTypeName();
-          List atts = config.getAttributes(typeName);
-          if(atts.contains("#FID"))
-          {
-            this.writerHandler = new FIDSVGHandler(this.writerHandler);
-            atts.remove("#FID");
-            LOGGER.finer("Added FID handler decorator");
-          }
-          if(atts.contains("#BOUNDS"))
-          {
-            this.writerHandler = new BoundsSVGHandler(this.writerHandler);
-            atts.remove("#BOUNDS");
-            LOGGER.finer("Added BOUNDS handler decorator");
-          }
-          if(atts.size() > 0)
-          {
-            this.writerHandler = new AttributesSVGHandler(this.writerHandler);
-            LOGGER.finer("Added ATTRIBUTES handler decorator");
-          }
-      }
+        throws IOException {
+        if (doCollect) {
+            this.writerHandler = new CollectSVGHandler(featureWriter);
+            LOGGER.finer("Established a collecting features writer handler");
+        } else {
+            this.writerHandler = new SVGFeatureWriterHandler();
+
+            String typeName = featureType.getTypeName();
+            List atts = config.getAttributes(typeName);
+
+            if (atts.contains("#FID")) {
+                this.writerHandler = new FIDSVGHandler(this.writerHandler);
+                atts.remove("#FID");
+                LOGGER.finer("Added FID handler decorator");
+            }
+
+            if (atts.contains("#BOUNDS")) {
+                this.writerHandler = new BoundsSVGHandler(this.writerHandler);
+                atts.remove("#BOUNDS");
+                LOGGER.finer("Added BOUNDS handler decorator");
+            }
+
+            if (atts.size() > 0) {
+                this.writerHandler = new AttributesSVGHandler(this.writerHandler);
+                LOGGER.finer("Added ATTRIBUTES handler decorator");
+            }
+        }
     }
 
     /**
@@ -359,7 +368,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      */
     public class SVGFeatureWriterHandler {
         /**
@@ -432,7 +441,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      */
     public class CollectSVGHandler extends SVGFeatureWriterHandler {
         /** DOCUMENT ME! */
@@ -464,7 +473,7 @@ public class SVGWriter extends OutputStreamWriter {
      * decorator handler that adds the feature id as the "id" attribute
      */
     public class FIDSVGHandler extends SVGFeatureWriterHandler {
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         private SVGFeatureWriterHandler handler;
 
         /**
@@ -488,13 +497,14 @@ public class SVGWriter extends OutputStreamWriter {
             throws IOException {
             handler.startFeature(featureWriter, ft);
             write(" id=\"");
+
             try {
-              write(ft.getID());
+                write(ft.getID());
+            } catch (IOException ex) {
+                System.err.println("error getting fid from " + ft);
+                throw ex;
             }
-            catch (IOException ex) {
-              System.err.println("error getting fid from " + ft);
-              throw ex;
-            }
+
             write("\"");
         }
     }
@@ -503,7 +513,7 @@ public class SVGWriter extends OutputStreamWriter {
      * decorator handler that adds the feature id as the "id" attribute
      */
     public class BoundsSVGHandler extends SVGFeatureWriterHandler {
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         private SVGFeatureWriterHandler handler;
 
         /**
@@ -545,7 +555,7 @@ public class SVGWriter extends OutputStreamWriter {
      * decorator handler that adds the feature id as the "id" attribute
      */
     public class AttributesSVGHandler extends SVGFeatureWriterHandler {
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         private SVGFeatureWriterHandler handler;
 
         /**
@@ -588,20 +598,20 @@ public class SVGWriter extends OutputStreamWriter {
         }
 
         /**
-         * Parses the passed string, and encodes the special characters (used in
-         * xml for special purposes) with the appropriate codes. e.g. '&lt;' is
-         * changed to '&amp;lt;'
+         * Parses the passed string, and encodes the special characters (used
+         * in xml for special purposes) with the appropriate codes. e.g.
+         * '&lt;' is changed to '&amp;lt;'
          *
          * @param inData The string to encode into xml.
          *
-         * @return the encoded string. Returns null, if null is passed as argument
+         * @throws IOException DOCUMENT ME!
          *
-         * @task REVISIT: Once we write directly to out, as we should, this  method
-         *       should be simpler, as we can just write strings with escapes
-         *       directly to out, replacing as we iterate of chars to write them.
+         * @task REVISIT: Once we write directly to out, as we should, this
+         *       method should be simpler, as we can just write strings with
+         *       escapes directly to out, replacing as we iterate of chars to
+         *       write them.
          */
-        private void encodeAttribute(String inData) throws IOException
-        {
+        private void encodeAttribute(String inData) throws IOException {
             //return null, if null is passed as argument
             if (inData == null) {
                 return;
@@ -619,7 +629,7 @@ public class SVGWriter extends OutputStreamWriter {
                 //if the ith character is special character, replace by code
                 if (charToCompare == '"') {
                     write("&quot;");
-                } else if(charToCompare > 127){
+                } else if (charToCompare > 127) {
                     writeUnicodeEscapeSequence(charToCompare);
                 } else {
                     write(charToCompare);
@@ -628,18 +638,26 @@ public class SVGWriter extends OutputStreamWriter {
         }
 
         /**
-         * returns the xml unicode escape sequence for the character <code>c</code>,
-         * such as <code>"&#x00d1;"</code> for the character <code>'Ñ'</code>
+         * returns the xml unicode escape sequence for the character
+         * <code>c</code>, such as <code>"&#x00d1;"</code> for the character
+         * <code>'Ñ'</code>
+         *
+         * @param c DOCUMENT ME!
+         *
+         * @throws IOException DOCUMENT ME!
          */
-        private void writeUnicodeEscapeSequence(char c) throws IOException
-        {
-          write("&#x");
-          String hex = Integer.toHexString(c);
-          int pendingZeros = 4 - hex.length();
-          for(int i = 0; i < pendingZeros; i++)
-              write('0');
-          write(hex);
-          write(';');
+        private void writeUnicodeEscapeSequence(char c)
+            throws IOException {
+            write("&#x");
+
+            String hex = Integer.toHexString(c);
+            int pendingZeros = 4 - hex.length();
+
+            for (int i = 0; i < pendingZeros; i++)
+                write('0');
+
+            write(hex);
+            write(';');
         }
     }
 
@@ -647,7 +665,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      */
     private abstract class SVGFeatureWriter {
         /**
@@ -695,7 +713,7 @@ public class SVGWriter extends OutputStreamWriter {
         /**
          * Writes the content of the <b>d</b> attribute in a <i>path</i> SVG
          * element
-         *
+         * 
          * <p>
          * While iterating over the coordinate array passed as parameter, this
          * method performs a kind of very basic path generalization, verifying
