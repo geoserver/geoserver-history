@@ -91,7 +91,7 @@ import javax.servlet.http.HttpServletResponse;
  * Response a chance to cleanup after itself.
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
  * @version $Id: AbstractService.java,v 1.23 2004/09/08 17:34:38 cholmesny Exp $
@@ -100,8 +100,6 @@ public abstract class AbstractService extends HttpServlet {
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
-
-	protected HttpServletRequest curRequest;
 
     /** DOCUMENT ME! */
 
@@ -133,6 +131,9 @@ public abstract class AbstractService extends HttpServlet {
     /** Controls the Safty Mode used when using execute/writeTo. */
     private static Class safetyMode;
 
+    /** DOCUMENT ME!  */
+    protected HttpServletRequest curRequest;
+
     /**
      * loads the "serviceStrategy" servlet context parameter and checks it if
      * reffers to a valid ServiceStrategy (by now, one of SPEED, FILE or
@@ -150,7 +151,7 @@ public abstract class AbstractService extends HttpServlet {
         ServletContext servContext = config.getServletContext();
         String stgyKey = servContext.getInitParameter("serviceStratagy");
         Class stgyClass = BufferStrategy.class;
-	
+
         if (stgyKey == null) {
             LOGGER.info("No service strategy configured, defaulting to BUFFER");
         } else {
@@ -177,6 +178,13 @@ public abstract class AbstractService extends HttpServlet {
         AbstractService.safetyMode = stgyClass;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param req DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected abstract boolean isServiceEnabled(HttpServletRequest req);
 
     /**
@@ -192,6 +200,7 @@ public abstract class AbstractService extends HttpServlet {
         throws ServletException, IOException {
         // implements the main request/response logic
         this.curRequest = request;
+
         Request serviceRequest = null;
 
         if (!isServiceEnabled(request)) {
@@ -203,6 +212,7 @@ public abstract class AbstractService extends HttpServlet {
         try {
             String qString = request.getQueryString();
             LOGGER.fine("reading request: " + qString);
+
             //Map requestParams = KvpRequestReader.parseKvpSet(qString);
             Map requestParams = new HashMap();
             String paramName;
@@ -271,10 +281,11 @@ public abstract class AbstractService extends HttpServlet {
     public void doPost(HttpServletRequest request,
         HttpServletResponse response, Reader requestXml)
         throws ServletException, IOException {
-		this.curRequest = request;
+        this.curRequest = request;
+
         Request serviceRequest = null;
 
-		//TODO: This isn't a proper ogc service response.
+        //TODO: This isn't a proper ogc service response.
         if (!isServiceEnabled(request)) {
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 
@@ -428,19 +439,19 @@ public abstract class AbstractService extends HttpServlet {
             strategy.abort();
 
             return;
-        }catch (IOException ioException) { // strategyOutput error
+        } catch (IOException ioException) { // strategyOutput error
             serviceResponse.abort(s);
             strategy.abort();
             sendError(response, ioException);
 
             return;
-        }catch (ServiceException writeToFailure) { // writeTo Failure
+        } catch (ServiceException writeToFailure) { // writeTo Failure
             serviceResponse.abort(s);
             strategy.abort();
             sendError(response, writeToFailure);
 
             return;
-        }catch (Throwable help) { // This is an unexpected error(!)
+        } catch (Throwable help) { // This is an unexpected error(!)
             serviceResponse.abort(s);
             strategy.abort();
             sendError(response, help);
@@ -463,7 +474,7 @@ public abstract class AbstractService extends HttpServlet {
                 + sockEx);
 
             return;
-        }catch (IOException ioException) {
+        } catch (IOException ioException) {
             // This is bad, the user did not get the completed response
             LOGGER.warning("Could not send completed response to user:"
                 + ioException);
@@ -490,10 +501,6 @@ public abstract class AbstractService extends HttpServlet {
      * @param params A map of the kvp pairs.
      *
      * @return An initialized KVP reader to decode the request.
-     *
-     * @throws ServiceException if the set of key/value pairs of parameters
-     *         defined by <code>params</code> can't be parsed to a valid
-     *         <code>RequestKvpReader</code>
      */
     protected abstract KvpRequestReader getKvpReader(Map params);
 
@@ -575,8 +582,9 @@ public abstract class AbstractService extends HttpServlet {
      */
     protected AbstractService.ServiceStrategy getServiceStrategy()
         throws ServiceException {
-	ServletContext servContext = getServletContext();
+        ServletContext servContext = getServletContext();
         GeoServer geoServer = (GeoServer) servContext.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+
         //If verbose exceptions is on then lets make sure they actually get the
         //exception by using the file strategy.
         if (geoServer.isVerboseExceptions()) {
@@ -595,7 +603,8 @@ public abstract class AbstractService extends HttpServlet {
         ServletContext servContext = getServletContext();
 
         try {
-            return ((GeoServer) servContext.getAttribute("GeoServer")).getMimeType();
+            return ((GeoServer) servContext.getAttribute("GeoServer"))
+            .getMimeType();
         } catch (NullPointerException e) {
             return "text/xml; charset="
             + Charset.forName("UTF-8").displayName();
@@ -609,8 +618,20 @@ public abstract class AbstractService extends HttpServlet {
      * @param content DOCUMENT ME!
      */
     protected void send(HttpServletResponse response, CharSequence content) {
+        send(response, content, getMimeType());
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param response DOCUMENT ME!
+     * @param content DOCUMENT ME!
+     * @param mimeType DOCUMENT ME!
+     */
+    protected void send(HttpServletResponse response, CharSequence content,
+        String mimeType) {
         try {
-            response.setContentType(getMimeType());
+            response.setContentType(mimeType);
             response.getWriter().write(content.toString());
         } catch (IOException ex) { //stream closed by client, do nothing
             LOGGER.fine(ex.getMessage());
@@ -646,12 +667,12 @@ public abstract class AbstractService extends HttpServlet {
 
         //TODO: put the stack trace in the logger.
         //t.printStackTrace();
-
         //String pre = "UNCAUGHT EXCEPTION";
         ExceptionHandler exHandler = getExceptionHandler();
         ServiceException se = exHandler.newServiceException(t);
 
         sendError(response, se);
+
         //GeoServer geoServer = (GeoServer) this.getServletConfig()
         //                                      .getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
         //send(response, se.getXmlResponse(geoServer.isVerboseExceptions()));
@@ -664,13 +685,16 @@ public abstract class AbstractService extends HttpServlet {
      * @param se DOCUMENT ME!
      */
     protected void sendError(HttpServletResponse response, ServiceException se) {
-		GeoServer geoServer = (GeoServer) this.getServletConfig()
-											  .getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
-		
-		send(response, se.getXmlResponse(geoServer.isVerboseExceptions(), curRequest));
-        // send(response, se.getXmlResponse());
+        GeoServer geoServer = (GeoServer) this.getServletConfig()
+                                              .getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
+
+        String mimeType = se.getMimeType(geoServer);
+
+        send(response,
+            se.getXmlResponse(geoServer.isVerboseExceptions(), curRequest),
+            mimeType);
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -767,6 +791,8 @@ public abstract class AbstractService extends HttpServlet {
          * Gives service a chance to finish with destination, and clean up any
          * resources.
          * </p>
+         *
+         * @throws IOException DOCUMENT ME!
          */
         public void flush() throws IOException;
 
@@ -798,6 +824,7 @@ public abstract class AbstractService extends HttpServlet {
  * @author jgarnett
  */
 class SpeedStrategy implements AbstractService.ServiceStrategy {
+    /** DOCUMENT ME!  */
     private OutputStream out = null;
 
     /**
@@ -854,7 +881,10 @@ class SpeedStrategy implements AbstractService.ServiceStrategy {
  *         Comments
  */
 class BufferStrategy implements AbstractService.ServiceStrategy {
+    /** DOCUMENT ME!  */
     ByteArrayOutputStream buffer = null;
+
+    /** DOCUMENT ME!  */
     private HttpServletResponse response;
 
     /**

@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver;
 
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Requests;
 import org.vfny.geoserver.responses.ResponseUtils;
 import java.io.ByteArrayOutputStream;
@@ -62,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * get the real exception included in the stacktrace above.
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @author Chris Holmes
  *
  * @task REVISIT: Take a request in the constructor?  This would make it so  we
@@ -297,5 +298,19 @@ public class ServiceException extends Exception {
         LOGGER.fine("return wfs exception is " + returnXml);
 
         return returnXml.toString();
+    }
+    
+    /**
+     * Returns the mime type that should be exposed to the client
+     * when sending the exception message.
+     * 
+     * <p>
+     * Defaults to <code>geoserver.getMimeType()</code>
+     * </p>
+     * 
+     * @return
+     */
+    public String getMimeType(GeoServer geoserver){
+    	return geoserver.getMimeType();
     }
 }
