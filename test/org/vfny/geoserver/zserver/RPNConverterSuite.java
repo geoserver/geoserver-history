@@ -12,9 +12,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.lucene.search.Query;
-import org.geotools.resources.Geotools;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -22,18 +20,18 @@ import java.util.logging.Logger;
  * Tests the RPNConverter helper methods.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RPNConverterSuite.java,v 1.3 2003/09/09 22:51:25 cholmesny Exp $
+ * @version $Id: RPNConverterSuite.java,v 1.4 2003/09/16 01:42:33 cholmesny Exp $
  */
 public class RPNConverterSuite extends TestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
-    //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
+    //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
+    //java.util.logging.Level.FINEST);
     //}
 
     /** Standard logging instance */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.zserver");
-    private static final String BASE_DIR = System.getProperty("user.dir");
     private static final String TITLE_NUM = "4";
     private static final String TITLE_NAME = "title";
     private static final String ORIGIN_NUM = "1005";

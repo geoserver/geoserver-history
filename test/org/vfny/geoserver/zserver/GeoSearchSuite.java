@@ -14,9 +14,7 @@ import com.k_int.util.RPNQueryRep.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.geotools.resources.Geotools;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -24,13 +22,14 @@ import java.util.logging.Logger;
  * Tests the GeoSearchable and GeoSearchTask classes.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoSearchSuite.java,v 1.3 2003/09/09 23:04:29 cholmesny Exp $
+ * @version $Id: GeoSearchSuite.java,v 1.4 2003/09/16 01:42:33 cholmesny Exp $
  */
 public class GeoSearchSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/
 
     //static {
-    //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
+    //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
+    // java.util.logging.Level.FINEST);
     //}
 
     /** Standard logging instance */
@@ -74,10 +73,9 @@ public class GeoSearchSuite extends TestCase {
         testProps.setProperty("datafolder", DATA_DIRECTORY);
         GeoProfile.setUseAttrMap(ATTRIBUTE_MAP);
 
-        //	testProps.setProperty("fieldmap", ATTRIBUTE_MAP);
+        //To make sure the db is made.
         GeoIndexer indexer = new GeoIndexer(testProps);
-
-        //int numIndexed = indexer.update();
+        int numIndexed = indexer.update();
         root1 = new RootNode();
         root2 = new RootNode();
         rpn1 = new AttrPlusTermNode(root1);
@@ -88,17 +86,6 @@ public class GeoSearchSuite extends TestCase {
         testQuery = new IRQuery(new RPNTree(root1), "default");
     }
 
-    //we are no longer passing the fieldmap about.  Instead it should
-    //set with GeoProfile.setUseAttrMap().  
-
-    /*public void testSearchableInit() {
-       geoSource = new GeoSearchable();
-       geoSource.init(testProps);
-       Properties props = geoSource.getServerProps();
-       String mapPath = props.getProperty("fieldmap");
-       LOGGER.fine("returned prop is " + mapPath);
-       assertTrue(mapPath.equals(ATTRIBUTE_MAP));
-       }*/
     public void testCreateTask() {
         geoSource = new GeoSearchable();
         geoSource.init(testProps);
