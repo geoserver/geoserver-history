@@ -97,6 +97,14 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The default style name. */
     private String defaultStyle;
 
+    
+    // Modif C. Kolbowicz - 06/10/2004 
+    /**
+     * The legend icon description.
+     */    
+    private LegendURLDTO legendURL;
+    //-- Modif C. Kolbowicz - 06/10/2004 
+    
     /**
      * FeatureTypeInfo constructor.
      * 
@@ -135,7 +143,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         _abstract = dto.getAbstract();
         numDecimals = dto.getNumDecimals();
         definitionQuery = dto.getDefinitionQuery();
-
+        
+        // Modif C. Kolbowicz - 06/10/2004
+        legendURL = dto.getLegendURL();
+        //-- Modif C. Kolbowicz - 06/10/2004 
+        
         try {
             keywords = CloneLibrary.clone(dto.getKeywords()); //clone?
         } catch (Exception e) {
@@ -197,6 +209,14 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
             return false;
         }
 
+        // Modif C. Kolbowicz - 06/10/2004
+        if (legendURL != null) {
+            r = r && schema.equals(f.getLegendURL());
+        } else if (f.getLegendURL() != null) {
+            return false;
+        }
+        //-- Modif C. Kolbowicz - 06/10/2004 
+        
         r = r && (defaultStyle == f.getDefaultStyle());
         r = r && (name == f.getName());
         r = r && (title == f.getTitle());
@@ -240,6 +260,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
             r *= dataStoreId.hashCode();
         }
 
+        // Modif C. Kolbowicz - 06/10/2004
+        if (legendURL != null) {
+            r *= legendURL.hashCode();
+        }
+        //-- Modif C. Kolbowicz - 06/10/2004 
+        
         if (title != null) {
             r *= title.hashCode();
         }
@@ -654,11 +680,35 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         schemaBase = string;
     }
 
+       
+    // Modif C. Kolbowicz - 06/10/2004
+    /**
+     * Gets a reference to an optional legend icon.
+     * @return Value of property legendURL.
+     */    
+    public LegendURLDTO getLegendURL() {
+        return this.legendURL;
+    }
+    //-- Modif C. Kolbowicz - 06/10/2004
+    
+    
+    // Modif C. Kolbowicz - 06/10/2004
+    /**
+     * Returns a reference to an optional legend icon.
+     * @param legendURL New value of property legendURL.
+     */    
+    public void setLegendURL(LegendURLDTO legendURL) {
+        this.legendURL = legendURL;
+    }
+    //-- Modif C. Kolbowicz - 06/10/2004
+    
+        
     public String toString() {
         return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId
         + ", latLongBBOX: " + latLongBBox + "\n  SRS: " + SRS + ", schema:"
         + schema + ", schemaName: " + schemaName + ", dirName: " + dirName
         + ", title: " + title + "\n  definitionQuery: " + definitionQuery
-        + ", defaultStyle: " + defaultStyle;
-    }
+        + ", defaultStyle: " + defaultStyle
+        + ", legend icon: " + legendURL;
+    }    
 }
