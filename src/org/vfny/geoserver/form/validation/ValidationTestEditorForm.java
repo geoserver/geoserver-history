@@ -29,7 +29,7 @@ import org.vfny.geoserver.config.validation.TestConfig;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestEditorForm.java,v 1.3 2004/02/25 19:17:26 dmzwiers Exp $
+ * @version $Id: ValidationTestEditorForm.java,v 1.4 2004/02/25 19:42:11 dmzwiers Exp $
  */
 public class ValidationTestEditorForm extends ActionForm {
     
@@ -68,7 +68,7 @@ public class ValidationTestEditorForm extends ActionForm {
         for(int i=0; i<attributeKeys.size();i++){
             String key = (String) attributeKeys.get( i );
             String text = (String) attributeValues.get( i );
-            PropertyDescriptor property = victim.getPropertyDescriptor(name);
+            PropertyDescriptor property = victim.getPropertyDescriptor(key);
             
             if( text == null || text.length() == 0){
                 if( property.isPreferred() ){
