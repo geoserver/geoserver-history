@@ -62,20 +62,21 @@
    		<put name="key" value="config"/>
    		<put name="body" value="/WEB-INF/pages/Configuration.jsp"/>
    		<put name="layer" value="configuration"/>
-   		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
+   		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
         <put name="locationForwards" value="welcome"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
-        <put name="actionForwards" value="config.server:config.wfs:config.wms:config.data"/>   		
+        <put name="actionForwards"
+             value="config.server:config.wfs:config.wms:config.data"/>   		
    	</definition>
 
    	<!-- CONFIG Server -->
    	<definition name="config.server" extends=".mainLayout">
-   		<put name="key" value="config"/>
+   		<put name="key" value="config.server"/>
    		<put name="body" value="/WEB-INF/pages/GeoServerConfiguration.jsp"/>
    		<put name="layer" value="configuration"/>
-   		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
+   		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
         <put name="locationForwards" value="welcome:config"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>   		
    	</definition>
    	
 	<!-- CONFIG VALIDATION -->   	
@@ -119,7 +120,9 @@
 		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="actionForwards"
+             value="config.wfs.content:config.wfs.description:config.validation"/>
    	</definition>
 
    	<definition name="config.wfs.description" extends=".mainLayout">
@@ -129,7 +132,7 @@
 		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>		
    		<put name="layer" value="configuration"/>   				
         <put name="locationForwards" value="welcome:config:config.wfs"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	
    	<definition name="config.wfs.content" extends=".mainLayout">
@@ -151,6 +154,8 @@
    		<put name="layer" value="configuration"/>   				
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="actionForwards"
+             value="config.wms.content:config.wms.description"/>
    	</definition>
 
    	<definition name="config.wms.description" extends=".mainLayout">
@@ -181,6 +186,8 @@
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="actionForwards"
+             value="config.data.store:config.data.namespace:config.data.style:config.data.type"/>
    	</definition>
 
 	<!-- datastores -->
