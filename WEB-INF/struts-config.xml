@@ -168,8 +168,8 @@
        		name="dataConfigDataStores"
        		path="/DataConfigDataStores.do"/>
        	<forward
-       		name="dataConfigDataStoresNew"
-       		path="/DataConfigDataStoresNew.do"/>
+       		name="dataConfigDataStoresNewPage"
+       		path="/DataConfigDataStoresNewPage.do"/>
        	<forward
        		name="dataConfigDataStoresEditor"
        		path="/DataConfigDataStoresEditor.do"/>
@@ -256,6 +256,10 @@
         	path="/DataConfigDataStores"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="data.dataStores.select"/>
+        <action	
+        	path="/DataConfigDataStoresNewPage"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.dataStores.new"/>
         <action
         	path="/DataConfigDataStoresEditor"
         	type="org.apache.struts.actions.ForwardAction"
@@ -342,7 +346,7 @@
         	name="dataDataStoresEditorForm"
         	scope="request"
         	validate="true"
-        	input="data.dataStores"/>
+        	input="data.dataStores.editor"/>
         	
         <action
         	path="/DataConfigDataStoresSelect"
@@ -350,7 +354,7 @@
         	name="dataDataStoresSelectForm"
         	scope="request"
         	validate="true"
-        	input="data.dataStores"/>
+        	input="data.dataStores.select"/>
 
         <action
         	path="/DataConfigDataStoresNew"
@@ -358,7 +362,7 @@
         	name="dataDataStoresNewForm"
         	scope="request"
         	validate="true"
-        	input="data.dataStores"/>        	
+        	input="data.dataStores.new"/>        	
         	        	
         <action
         	path="/DataConfigNamespacesSubmit"

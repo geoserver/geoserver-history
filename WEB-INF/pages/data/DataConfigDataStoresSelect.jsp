@@ -27,7 +27,7 @@
 
 	<tr>
 		<td>&nbsp;</td>
-		<td><html:link forward="dataConfigDataStoresNew"><bean:message key="label.createNewDataStore"/></html:link></td>	
+		<td><html:link forward="dataConfigDataStoresNewPage"><bean:message key="label.createNewDataStore"/></html:link></td>	
 	</tr>
 	
 	</html:form>

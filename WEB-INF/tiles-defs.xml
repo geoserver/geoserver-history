@@ -127,12 +127,6 @@
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
    	</definition>   	
    	
-   	<definition name="data.dataStores.main" page="/WEB-INF/pages/layouts/dataStoreLayout.jsp">
-   		<put name="select" value="/WEB-INF/pages/data/DataConfigDataStoresSelect.jsp"/>
-   		<put name="new" value="/WEB-INF/pages/data/DataConfigDataStoresNew.jsp"/>
-   		<put name="editor" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
-   	</definition>
-
    	<definition name="data.namespaces" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/data/DataConfigNamespaces.jsp"/>
 		<put name="title" value="title.data.namespaces"/>
