@@ -46,6 +46,8 @@ import org.vfny.geoserver.config.ConfigInfo;
  * @author Chris Holmes, TOPP
  * @author Lassi Letho, Finnish Geodetic Institute
  * @version $VERSION$
+ * @tasks TODO: Throw this class out, it's a mess.  Use a visitor, 
+ * do it in geotools.
  */
 public class GMLBuilder {
 
@@ -83,10 +85,13 @@ public class GMLBuilder {
 
     private static final String XML_HEADER = "<?xml version='1.0' encoding='UTF-8'?>";
     
-    private final String FEATURE_COLL_INIT = "<wfs:FeatureCollection " 
-	+ "xmlns=\"" + configInfo.getUrl() + "/myns\" " +
-	"xmlns:gml=\"http://www.opengis.net/gml\" xmlns:wfs=\"" +
-	"http://www.opengis.net/wfs\">";
+    private static final String FEATURE_COLL_HEAD = "<wfs:FeatureCollection ";
+
+    private static final String XMLNS_GML = 
+	"xmlns:gml=\"http://www.opengis.net/gml\"";
+
+    private static final String XMLNS_WFS = 
+	"xmlns:wfs=\"http://www.opengis.net/wfs\"";
 
     private final String FEATURE_COLL_INIT_V = "<wfs:FeatureCollection\n " 
 	+ "  xmlns=\"" + configInfo.getUrl() + "/myns\"\n" + 
@@ -123,10 +128,10 @@ public class GMLBuilder {
     /**
      * Adds the xml namespaces and FeatureCollection tag.
      */
-    public void startFeatureCollection(String srs) {
+    public void startFeatureCollection(String srs, String xmlns) {
 	//hashmap of srs's, each holds its own string buffer, so we can
 	//have multiple fcs, then they all combine at the end?
-	featureTypeWriter.start(srs);        
+	featureTypeWriter.start(srs, xmlns);        
 	//for now we'll just hack - put all in the first srs.
     }
 
@@ -220,15 +225,13 @@ public class GMLBuilder {
          * verbosity.
          * @param srs Spactial reference system for the bounding box
          */ 
-        public void start(String srs) {
+        public void start(String srs, String xmlns) {
             this.srs = srs;
-            if(verbose) {
-                finalResult.append(FEATURE_COLL_INIT_V);
-                boxInsertPos = finalResult.length();
-
-            } else {
-                finalResult.append(FEATURE_COLL_INIT);
-	    }
+	    String indent = ((verbose) ? "\n   " : " ");
+	    finalResult.append(FEATURE_COLL_HEAD + indent);
+            finalResult.append(indent + "xmlns=\"" + xmlns + "\"");
+	    finalResult.append(indent + XMLNS_GML);
+	    finalResult.append(indent + XMLNS_WFS + ">");
 	    boxInsertPos = finalResult.length();
 	}
     
