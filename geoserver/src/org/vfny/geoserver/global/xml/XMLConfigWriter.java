@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.30 2004/08/03 15:20:43 cholmesny Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.31 2004/09/09 16:50:15 cholmesny Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -161,6 +161,9 @@ public class XMLConfigWriter {
             cw.comment("Whether newlines and indents should be returned in \n"
                 + "XML responses.  Default is false");
             cw.valueTag("verbose", "" + g.isVerbose());
+			cw.comment("Whether the Service Exceptions returned to clients should contain\n"
+							+ "full java stack traces (useful for debugging). ");
+			cw.valueTag("verboseExceptions", "" + g.isVerboseExceptions());
             cw.comment(
                 "Sets the max number of decimal places past the zero returned in\n"
                 + "a GetFeature response.  Default is 4");
@@ -289,6 +292,7 @@ public class XMLConfigWriter {
         String u = null;
         String t = "";
         boolean gml = false;
+        boolean srsXmlStyle = false;
         int serviceLevel = 0;
 
         if (obj instanceof WFSDTO) {
@@ -296,6 +300,7 @@ public class XMLConfigWriter {
             s = w.getService();
             t = "WFS";
             gml = w.isGmlPrefixing();
+            srsXmlStyle = w.isSrsXmlStyle();
             serviceLevel = w.getServiceLevel();
         } else if (obj instanceof WMSDTO) {
             WMSDTO w = (WMSDTO) obj;
@@ -349,7 +354,11 @@ public class XMLConfigWriter {
         }
 
         if (gml) {
-            cw.valueTag("gmlPrefixing", gml + "");
+			cw.valueTag("gmlPrefixing", gml + "");
+        }
+        
+        if (srsXmlStyle) {
+			cw.valueTag("srsXmlStyle", srsXmlStyle + "");
         }
 
         if (serviceLevel != 0) {
@@ -866,7 +875,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.30 2004/08/03 15:20:43 cholmesny Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.31 2004/09/09 16:50:15 cholmesny Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
