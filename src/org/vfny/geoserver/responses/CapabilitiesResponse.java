@@ -11,7 +11,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.config.configuration.*;
+
 
 /**
  * Handles a GetCapabilities request and creates a GetCapabilities response 
