@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
-import org.geotools.data.postgis.PostgisConnection;
+import org.geotools.data.postgis.PostgisConnectionFactory;
 import org.geotools.data.postgis.PostgisDataSource;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.Feature;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.FeatureCollection;
@@ -24,7 +25,7 @@ import org.vfny.geoserver.requests.UpdateRequest;
 import org.vfny.geoserver.requests.InsertRequest;
 import org.vfny.geoserver.config.TypeInfo;
 import org.vfny.geoserver.config.TypeRepository;
-
+import java.sql.SQLException;
 
 /**
  * Handles a Transaction request and creates a TransactionResponse string.
@@ -60,16 +61,42 @@ public class TransactionResponse {
         //  generate GML for heander for each table requested
 	WfsTransResponse response = new WfsTransResponse
 	    (WfsTransResponse.SUCCESS, request.getHandle());
+	SubTransactionRequest subRequest = request.getSubRequest(0);
+	TypeInfo meta = repository.getType(subRequest.getTypeName());
+	//HACK: fails if types are in different databases
+
+        if (meta == null) {
+	    throw new WfsTransactionException("Couldnt find Feature Type: -" +
+				      subRequest.getTypeName() + "-, feature information"
+				      + " is not in the data folder.", 
+				      subRequest.getHandle(), transHandle);
+	}
+	PostgisConnectionFactory db = 
+	    new PostgisConnectionFactory (meta.getHost(), meta.getPort(),
+					  meta.getDatabaseName()); 
+        db.setLogin(meta.getUser(), meta.getPassword());
+
+	try {
+	    	java.sql.Connection con = db.getConnection();
+		con.setAutoCommit(false);
 	    for(int i = 0, n = request.getSubRequestSize(); i < n; i++) {  
-		SubTransactionRequest subRequest = request.getSubRequest(i);
-		List addedFids = getSub(request.getSubRequest(i), repository);
+		subRequest = request.getSubRequest(i);
+		List addedFids = getSub(request.getSubRequest(i), con);
 		if (addedFids != null){ LOG.finest("first fid is " + 
-						     addedFids.get(0));
+						   addedFids.get(0));
 		response.addInsertResult(subRequest.getHandle(), addedFids);
 		}
-		LOG.finest("ended feature");
-	    }        
-	    return response.getXmlResponse();
+		
+	    }   
+	    con.commit();
+	    con.close();
+	} catch (SQLException e) {
+	      String message = "Problem with transactions " 
+			+ e.getMessage();
+	    LOG.warning(message);
+	    throw new WfsTransactionException(message, subRequest.getHandle());
+	}
+	return response.getXmlResponse();
     }
 
 
@@ -78,32 +105,26 @@ public class TransactionResponse {
      * @return XML response to send to client
      */ 
     private static List getSub(SubTransactionRequest sub, 
-			       TypeRepository repository)
+			       java.sql.Connection con)
 	throws WfsTransactionException {
 
         String result = new String();
 	LOG.finer("sub request is " + sub);
-	TypeInfo meta = repository.getType(sub.getTypeName());
-        if (meta == null) {
-	    throw new WfsTransactionException("Couldnt find Feature Type: -" +
-				   sub.getTypeName() + "-, feature information"
-				   + " is not in the data folder.", 
-				   sub.getHandle(), transHandle);
-	}
-	PostgisConnection db = new PostgisConnection (meta.getHost(),
-                                                      meta.getPort(),
-                                                      meta.getDatabaseName()); 
-        db.setLogin(meta.getUser(), meta.getPassword());
         DataSource data = null;
 	try {  //TODO: add when geotools gets updated.
-	data = new PostgisDataSource(db, meta.getName());
+	    FeatureType schema = FeatureTypeFactory.create(new AttributeType[0]);
+	data = new PostgisDataSource(con, sub.getTypeName());
 	} catch (DataSourceException e) {
-	    String message = "Problem creating datasource " 
-			+ e.getCause();
+	    String message = "Problem creating datasource: " 
+			+ e.getMessage() +", " + e.getCause();
+	    LOG.warning(message);
+	    throw new WfsTransactionException(message, sub.getHandle());
+	} catch (org.geotools.feature.SchemaException e) {
+	     String message = "Problem creating schema for datasource: " 
+			+ e.getMessage();
 	    LOG.warning(message);
 	    throw new WfsTransactionException(message, sub.getHandle());
 	}
-	
 	switch (sub.getOpType()) {
 	case SubTransactionRequest.UPDATE: 
 	    UpdateRequest update = (UpdateRequest)sub;
@@ -130,11 +151,33 @@ public class TransactionResponse {
 	throws WfsTransactionException {
 	String handle = insert.getHandle();
 	try {
-	    ArrayList committed = new ArrayList();
-	    FeatureCollection features = new FeatureCollectionDefault();
+	    //ArrayList committed = new ArrayList();
+	    Feature[] oldFeatures = data.getFeatures(null).getFeatures();
+	    ArrayList oldFids = new ArrayList();
+	    for (int i = 0; i < oldFeatures.length; i++) {
+		oldFids.add(oldFeatures[i].getId());
+	    }
+	    FeatureCollection newFeatures = new FeatureCollectionDefault();
 	    Feature[] featureArr = insert.getFeatures();
-	    features.addFeatures(featureArr);
-	    data.addFeatures(features);
+	    newFeatures.addFeatures(featureArr);
+	    data.addFeatures(newFeatures);
+	    
+	    //the fids should really be returned from the datasource.
+	    Feature[] allFeatures = data.getFeatures(null).getFeatures();
+	    //This could also be cleaner if a equals method actually existed
+	    //for Feature.  Then we could make Lists and do a removeAll.
+	    ArrayList insertedIds = new ArrayList();
+	    for (int j = 0; j < allFeatures.length; j++) {
+		String curFid = allFeatures[j].getId();
+		if (!oldFids.contains(curFid)){
+		    LOG.finer("adding feature " + curFid);
+		    insertedIds.add(curFid);
+		}
+	    }
+	    return insertedIds;
+ //List allFeatures = Arrays.asList(data.getFeatures(null).getFeatures());
+	    
+	    /*	    return allFeatures.removeAll(oldFeatures);
 	    if (featureArr != null && featureArr.length > 0) {
 		String featureName = featureArr[0].getSchema().getTypeName();
 		LOG.finer("featureArr length is " + featureArr.length);
@@ -147,7 +190,7 @@ public class TransactionResponse {
 		    committed.add(featureName + "." + featureId);
 		}
 	    }
-	    return committed;
+	    return committed;*/
 	} catch (DataSourceException e) {
 	    LOG.warning("Problem with datasource " + e + " cause: " 
 			+ e.getCause());

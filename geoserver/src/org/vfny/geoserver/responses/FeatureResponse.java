@@ -7,6 +7,7 @@ package org.vfny.geoserver.responses;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
+import java.sql.Connection;
 import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -17,7 +18,7 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
-import org.geotools.data.postgis.PostgisConnection;
+import org.geotools.data.postgis.PostgisConnectionFactory;
 import org.geotools.data.postgis.PostgisDataSource;
 import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.Query;
@@ -159,18 +160,20 @@ public class FeatureResponse {
         
 	LOG.finest("about to get query: " + query);
       
-        PostgisConnection db = new PostgisConnection (meta.getHost(),
-                                                      meta.getPort(),
-                                                      meta.getDatabaseName()); 
+        PostgisConnectionFactory db =
+	    new PostgisConnectionFactory (meta.getHost(), meta.getPort(),
+					  meta.getDatabaseName()); 
 	LOG.finest("connecting to db " + meta.getHost() + " is host, port "
 		      + meta.getPort() + " name: " + meta.getDatabaseName());
         db.setLogin(meta.getUser(), meta.getPassword());
 	LOG.finest("setting user and pass " + meta.getUser() + meta.getPassword());
+
 	FeatureCollection collection = null;
 	FeatureType schema = null;
 	String tableName = meta.getName();
 	try {
-	schema = PostgisDataSource.makeSchema(tableName, db);
+	    Connection dbConnection = db.getConnection();
+	schema = PostgisDataSource.makeSchema(tableName, dbConnection);
 	if (!query.allRequested()) {
 	    List propertyNames = query.getPropertyNames();
 	    AttributeType[] properties = new AttributeType[propertyNames.size()];
@@ -193,13 +196,18 @@ public class FeatureResponse {
 	}
 
 	    DataSource data = 
-		new PostgisDataSource(db, tableName, schema, maxFeatures);
+		new PostgisDataSource(dbConnection, tableName, 
+				      schema, maxFeatures);
 	    LOG.finest("filter is " + query.getFilter());
+	    
             collection = data.getFeatures(query.getFilter());
         } catch(DataSourceException e) {
             throw new WfsException(e, "While getting features from datasource",
 				   getLocator(query));
-        }
+        } catch(java.sql.SQLException e) {
+	    throw new WfsException(e, "While attempting to connect to" 
+				   + " datasource", getLocator(query));
+	}
 
         LOG.finest("successfully retrieved collection");
 
