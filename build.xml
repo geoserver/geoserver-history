@@ -32,7 +32,7 @@
   <!-- secondary directories -->
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
   <property name="dir.data" value="${dir.conf}"/>
-  <property name="dir.styles" value="${dir.misc}/wms/styles"/>
+  <!--<property name="dir.styles" value="${dir.misc}/wms/styles"/>-->
   <property name="dir.testsJar" 
   value="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
   <property name="dir.testApp" value="${dir.server}/webapps/ROOT/WEB-INF"/>
@@ -65,7 +65,7 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
-  <!--<property name="test.type" value="CitePostGis"/>-->
+  <property name="test.type" value="CitePostGis"/>
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
   <!-- paths -->
@@ -134,7 +134,7 @@
     <echo message="    test-clean:   builds clean to built-in server"/>
     <echo message="    test-ext:     builds war to external server"/>
     <echo message="                    -param: dir.container=[server_path]"/>
-    <echo message="                    -param: test.typer=CitePostGis"/>
+    <echo message="                    -param: test.type=CitePostGis"/>
     <echo message=""/>
     <echo message=" BUILD TARGETS"/>
     <echo message="    war:          builds geoserver war file"/>
@@ -478,53 +478,37 @@
     <!-- populate base directory -->
     <mkdir dir="${basedir}/data/capabilities"/>
     <copy todir="${basedir}/data/capabilities">
-      <fileset dir="${dir.misc}/documents">
-        <include name="filter.xml"/>
-        <include name="operations.xml"/>
-        <include name="serviceMetadata.xml"/>
-        <include name="additionalCapabilities.xml"/>
-        <include name="operationsSignatures.xml"/>
-        <include name="vfnyWfsWsdl.xml"/>
-        <include name="OGC_Capabilities.xsd"/>
-        <include name="feature.xsd"/>
-        <include name="geometry.xsd"/>
+      <fileset dir="${dir.misc}/capabilities">
+        <include name="*"/>
       </fileset>
     </copy>
 
-     <mkdir dir="${basedir}/data/capabilities/wfs"/>
+    <mkdir dir="${basedir}/data/capabilities/wfs"/>
     <mkdir dir="${basedir}/data/capabilities/wfs/1.0.0"/>
     <copy todir="${basedir}/data/capabilities/wfs/1.0.0">
-      <fileset dir="${dir.misc}/documents/schemas">
-        <include name="WFS-capabilities.xsd"/>
-        <include name="WFS-transaction.xsd"/>
-        <include name="WFS-basic.xsd"/>
-        <include name="OGC-exception.xsd"/>
+      <fileset dir="${dir.misc}/capabilities/wfs">
+        <include name="*"/>
       </fileset>
     </copy>
 
     <mkdir dir="${basedir}/data/capabilities/filter/1.0.0"/>
     <copy todir="${basedir}/data/capabilities/filter/1.0.0">
-      <fileset dir="${dir.misc}/documents/schemas">
-        <include name="expr.xsd"/>
-        <include name="filter.xsd"/>
-        <include name="filterCapabilities.xsd"/>
+      <fileset dir="${dir.misc}/capabilities/filter">
+        <include name="*"/>
       </fileset>
     </copy>
     
     <mkdir dir="${basedir}/data/capabilities/gml/2.1.2"/>
     <copy todir="${basedir}/data/capabilities/gml/2.1.2">
-      <fileset dir="${dir.misc}/documents/schemas">
-        <include name="feature.xsd"/>
-        <include name="geometry.xsd"/>
-        <include name="xlinks.xsd"/>
+      <fileset dir="${dir.misc}/capabilities/gml">
+        <include name="*"/>
       </fileset>
     </copy>
     
     <mkdir dir="${basedir}/data/capabilities/validate"/>
     <copy todir="${basedir}/data/capabilities/validate">
-      <fileset dir="${dir.misc}/schema">
-        <include name="pluginSchema.xsd"/>
-        <include name="testSuiteSchema.xsd"/>
+      <fileset dir="${dir.misc}/capabilities/validate">
+        <include name="*"/>
       </fileset>
     </copy>
 
@@ -538,7 +522,7 @@
 
     <!-- war file -->
     <war warfile="${basedir}/geoserver.war" 
-         webxml="${dir.misc}/documents/web.xml" 
+         webxml="${dir.webinf}/web.xml" 
          update="true">
 
       <!-- classes -->
@@ -553,13 +537,13 @@
 		<include name="ApplicationResources*.properties"/>
 	  </classes>
             
-      <!--webinf dir="${dir.conf}"/-->
       <webinf dir="${basedir}/data">
         <include name="services.xml"/>
         <include name="catalog.xml"/>
       </webinf>
       
       <webinf dir="${dir.webinf}">
+		<exclude name="web.xml"/>
       </webinf>
       
       <!-- libraries -->

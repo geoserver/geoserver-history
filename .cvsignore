@@ -1,2 +1,4 @@
 geoserver.war
 build
+conf
+release
