@@ -61,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.11 2004/02/19 08:58:19 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.12 2004/02/20 00:58:26 cholmesny Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -167,7 +167,7 @@ public class TransactionResponse implements Response {
 
             if (!stores.containsKey(typeName)) {
                 FeatureTypeInfo meta = catalog.getFeatureTypeInfo(typeName);
-
+ 
                 try {
                     FeatureSource source = meta.getFeatureSource();
 
@@ -194,7 +194,11 @@ public class TransactionResponse implements Response {
 
         if (authorizationID != null) {
             LOGGER.finer("got lockId: " + authorizationID);
-
+			if (!catalog.lockExists(authorizationID)) {
+						   String mesg = "Attempting to use a lockID that does not exist"
+							   + ", it has either expired or was entered wrong.";
+						   throw new WfsException(mesg);
+					   }
             try {
                 transaction.addAuthorization(authorizationID);
             } catch (IOException ioException) {
