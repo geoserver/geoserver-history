@@ -50,15 +50,6 @@ public final class WFSContentAction extends ConfigAction {
         config.setOnlineResource(new URL(onlineResource));
         config.setServiceLevel(contentForm.getServiceLevel());
 
-        Set set = new TreeSet();
-
-        if (selectedFeatures != null) {
-            for (int i = 0; i < selectedFeatures.length; i++) {
-                set.add(selectedFeatures[i]);
-            }
-        }
-
-        config.setEnabledFeatures(set);
         getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("wfsConfigContent");
