@@ -21,12 +21,13 @@
 ;5. move documents/geoserver.nsi up one directory ("geoserver/")
 ;6. move the "server/" directory from your development directory geoserver/
 ;     + make sure you deployed the correct configuration!
-;7. move RUNNING.txt from the documentation/ directory up one level to the geoserver/ directory
-;8. download and install the nullsoft installer
-;9. run the installer and load the geoserver.nsi file
+;7.  DELETE THE DIRECTORY server/geoserver/WEB-INF/work   You'll get JSP compile errors if you dont do this!
+;8. move RUNNING.txt from the documentation/ directory up one level to the geoserver/ directory
+;9. download and install the nullsoft installer
+;10. run the installer and load the geoserver.nsi file
 ;
 ;In your temporary directory, you should see a "geoserver-1.3.0-beta.exe"!
-
+;
 ;You should install and test this!
 ;
 ;
@@ -82,7 +83,7 @@
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\GeoServer 1.3" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\GeoServer" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
   
   !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
@@ -274,6 +275,6 @@ Section "Uninstall"
     StrCmp $MUI_TEMP $SMPROGRAMS startMenuDeleteLoopDone startMenuDeleteLoop
   startMenuDeleteLoopDone:
 
-  DeleteRegKey /ifempty HKCU "Software\GeoServer-1.3"
+  DeleteRegKey /ifempty HKCU "Software\GeoServer"
 
 SectionEnd
