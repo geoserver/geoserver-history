@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteRequest.java,v 1.4 2003/09/12 18:37:56 cholmesny Exp $
+ * @version $Id: DeleteRequest.java,v 1.5 2003/09/15 18:32:39 cholmesny Exp $
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */
@@ -59,12 +59,8 @@ public class DeleteRequest extends SubTransactionRequest {
     public DeleteRequest() {
     }
 
-    /* ***********************************************************************
-     * SIMPLE GET AND SET METHODS                                            *
-     * ***********************************************************************/
-
     /**
-     * G
+     * Gets the Name of the FeatureType for this request.
      *
      * @return The feature type name.
      */
@@ -135,12 +131,12 @@ public class DeleteRequest extends SubTransactionRequest {
         return operationType;
     }
 
-    /* ***********************************************************************
-     * OVERRIDES OF toString AND equals METHODS.                             *
-     * ***********************************************************************/
+    /**
+     * Override of toString().
+     * @return a string representation of this delete request.
+     */
     public String toString() {
         StringBuffer returnString = new StringBuffer("Delete Feature Request");
-        String indent = "\n    ";
         returnString.append("\n feature type:" + typeName);
         returnString.append("\n filter:" + filter.toString());
         returnString.append("\n release:" + releaseAll);
