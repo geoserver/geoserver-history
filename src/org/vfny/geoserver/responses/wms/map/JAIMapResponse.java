@@ -1,3 +1,19 @@
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2002, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -10,8 +26,9 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.DefaultMapContext;
-import org.geotools.renderer.Renderer;
-import org.geotools.renderer.j2d.StyledMapRenderer;
+import org.geotools.map.DefaultMapLayer;
+import org.geotools.map.MapContext;
+import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
@@ -42,17 +59,14 @@ import javax.imageio.stream.ImageOutputStream;
  * not sure there's a better way to handle it.
  * 
  * <p>
- * Ok, so Andrea is going to get the streaming stuff working better for us
- * with the LiteRenderer.  Until then we _should_ be using lite with feature
- * collections, but we are using StyledMapRenderer because lite has this
- * silly batik dependancy.
+ * Ok, so Andrea is going to get the streaming stuff working better for us with
+ * the LiteRenderer.  Until then we _should_ be using lite with feature
+ * collections, but we are using StyledMapRenderer because lite has this silly
+ * batik dependancy.
  * </p>
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.18 2004/04/17 15:04:49 cholmesny Exp $
- *
- * @task TODO: replace StyledMapRenderer with LiteRenderer when batik depend is
- *       gone.  Get Lite working with streaming architecture.
+ * @version $Id: JAIMapResponse.java,v 1.19 2004/04/18 05:10:48 groldan Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -71,8 +85,10 @@ public class JAIMapResponse extends GetMapDelegate {
      * supporting the workflow contract of the request processing
      */
     private String format = null;
-    private Renderer renderer;
 
+    /**
+     *
+     */
     public JAIMapResponse() {
     }
 
@@ -101,13 +117,10 @@ public class JAIMapResponse extends GetMapDelegate {
      */
     public List getSupportedFormats() {
         if (supportedFormats == null) {
-            StyledMapRenderer renderer = null;
+            LiteRenderer renderer = null;
 
             try {
-                //change to LiteRenderer when it works w/o batik.
-                renderer = new StyledMapRenderer(null);
-
-                //renderer = new LiteRenderer();
+                renderer = new LiteRenderer();
             } catch (NoClassDefFoundError ncdfe) {
                 supportedFormats = Collections.EMPTY_LIST;
                 LOGGER.warning("could not find jai: " + ncdfe);
@@ -249,42 +262,26 @@ public class JAIMapResponse extends GetMapDelegate {
         int width = request.getWidth();
         int height = request.getHeight();
 
-        //GR: just remove this bunch of code when switch to literenderer
-        //it is here just to adapt the code to this method's signature change
-        int nLayers = requestedLayers.length;
-        FeatureResults[] resultLayers = new FeatureResults[nLayers];
-
-        try {
-            for (int i = 0; i < nLayers; i++) {
-                FeatureSource fSource = requestedLayers[i].getFeatureSource();
-                resultLayers[i] = fSource.getFeatures(queries[i]);
-            }
-        } catch (IOException e) {
-            throw new WmsException(e, "Executing requests: " + e.getMessage(),
-                getClass().getName()
-                + "::execute(FeatureTypeInfo[], Query[], Style[])");
-        }
-
-        // /GR
         try {
             LOGGER.fine("setting up map");
 
-            DefaultMapContext map = new DefaultMapContext();
-            Style[] layerstyle = null;
-            StyleBuilder sb = new StyleBuilder();
+            MapContext map = new DefaultMapContext();
+            MapLayer layer;
 
             for (int i = 0; i < requestedLayers.length; i++) {
                 Style style = styles[i];
-                FeatureCollection fc = resultLayers[i].collection();
-                map.addLayer(fc, style);
+                Query query = queries[i];
+                FeatureSource source = requestedLayers[i].getFeatureSource();
+
+                layer = new DefaultMapLayer(source, style);
+                layer.setQuery(query);
+                map.addLayer(layer);
             }
 
             LOGGER.fine("map setup");
 
-            //Renderer renderer = new LiteRenderer();
             BufferedImage image = new BufferedImage(width, height,
                     BufferedImage.TYPE_INT_RGB);
-            Envelope env = request.getBbox();
 
             //LOGGER.fine("setting up renderer");
             java.awt.Graphics g = image.getGraphics();
@@ -294,29 +291,17 @@ public class JAIMapResponse extends GetMapDelegate {
                 g.fillRect(0, 0, width, height);
             }
 
-            //I tried to change to lite renderer, but still looks like no
-            //success with actually printing features... time to study more
-            //rendering code.  ch
-            StyledMapRenderer renderer = new StyledMapRenderer(null);
+            LiteRenderer renderer = new LiteRenderer(map);
+            renderer.setOptimizedDataLoadingEnabled(true);
 
-            //LiteRenderer renderer = new LiteRenderer(map);
-            Envelope dataArea = map.getLayerBounds();
+            //Envelope dataArea = map.getLayerBounds();
+            Envelope dataArea = request.getBbox();
             Rectangle paintArea = new Rectangle(width, height);
-            AffineTransform at = worldToScreenTransform(dataArea, paintArea);
+            AffineTransform at = renderer.worldToScreenTransform(dataArea,
+                    paintArea);
 
-            synchronized (renderer) {
-                //this is for styled, remove when literender's batik issue
-                //is resolved.
-                renderer.setMapContext(map);
-                renderer.paint((Graphics2D) image.getGraphics(), paintArea, at,
-                    false);
-
-                //end styled.
-                //works with lite, comment back in when we use lite again.
-                //renderer.paint((Graphics2D) image.getGraphics(),
-                //  paintArea, at);
-                LOGGER.fine("called renderer");
-            }
+            renderer.paint((Graphics2D) image.getGraphics(), paintArea, at);
+            LOGGER.fine("called renderer");
 
             map = null;
             this.image = image;
