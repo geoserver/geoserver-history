@@ -4,7 +4,7 @@
 
 <span class="buttons">
 	<span class="buttonLabel">
-		<html:link forward="mainmenu"><bean:message key="label.server"/></html:link><br>
+		<html:link forward="administration"><bean:message key="label.server"/></html:link><br>
 		<html:link forward="validation"><bean:message key="label.validation"/></html:link>
 	</span>
 	

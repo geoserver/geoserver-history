@@ -46,6 +46,8 @@
             <a href="<bean:message key="link.license"/>">&copy;</a>
           </span>
 		</td>
+        <td style="width: 1em">
+        </td>
 		<td style="vertical-align: bottom; white-space: nowrap;">
           <span class="site">
 <logic:notEmpty name="GeoServer" property="title">
@@ -75,6 +77,8 @@
         <tiles:insert attribute="actionator"/>
         <tiles:insert attribute="messages"/>
       </td>
+      <td style="width: 1em">
+      </td>      
       <td style="vertical-align: top;"
           rowspan="1" colspan="2">
             
