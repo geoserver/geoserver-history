@@ -233,7 +233,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
                 };
 
             frame.add(p);
-            frame.setSize(width, height + 30);
+            p.setSize(width, height);
+            frame.pack();
             frame.setVisible(true);
 
             try {
