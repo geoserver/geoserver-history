@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.Servlet;
@@ -19,6 +20,7 @@ import org.vfny.geoserver.config.configuration.GlobalConfiguration;
  * response servlets.
  * 
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  * @version $VERSION$
  */
 public class ConfigInfo {
@@ -193,26 +195,25 @@ public class ConfigInfo {
      */
     public String getServiceXml(String wfsName) {
             
-        // SHOULD CHANGE THIS TO STRINGBUFFER
-        String tempResponse = new String();
+        StringBuffer tempResponse = new StringBuffer();
         
         // Set service section of Response, based on Configuration input
-        tempResponse = tempResponse + "  <Service>\n";
-        tempResponse = tempResponse + "    <Name>" + wfsName + "</Name>\n";
-        tempResponse = tempResponse + "    <Title>" + getTitle() + 
-            "</Title>\n";
-        tempResponse = tempResponse + "    <Abstract>" + getAbstract() + 
-            "</Abstract>\n";
-        tempResponse = tempResponse + "    <Keywords>" + getKeywords() + 
-            "</Keywords>\n";
-        tempResponse = tempResponse + "    <OnlineResource>" + 
-            getOnlineResource() + "</OnlineResource>\n";
-        tempResponse = tempResponse + "    <Fees>" + getFees() + "</Fees>\n";
-        tempResponse = tempResponse + "    <AccessConstraints>" + 
-            getAccessConstraints() + "</AccessConstraints>\n";
-        tempResponse = tempResponse + "  </Service>";
+        tempResponse.append("  <Service>\n");
+        tempResponse.append("    <Name>" + wfsName + "</Name>\n");
+        tempResponse.append("    <Title>" + getTitle() +
+            "</Title>\n");
+        tempResponse.append("    <Abstract>" + getAbstract() + 
+            "</Abstract>\n");
+        tempResponse.append("    <Keywords>" + getKeywords() + 
+            "</Keywords>\n");
+        tempResponse.append("    <OnlineResource>" + 
+            getOnlineResource() + "</OnlineResource>\n");
+        tempResponse.append("    <Fees>" + getFees() + "</Fees>\n");
+        tempResponse.append("    <AccessConstraints>" + 
+            getAccessConstraints() + "</AccessConstraints>\n");
+        tempResponse.append("  </Service>\n");
         
         // Concatenate into XML output stream
-        return tempResponse;
+        return tempResponse.toString();
     }
 }
