@@ -24,18 +24,22 @@ import java.util.logging.Level;
  * 
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version 0.9 beta, 11/01/01
+ * @version 0.92 beta, 1/23/03
  *
  */
 public class FreefsLog extends HttpServlet {
 
-        /** Standard logging instance for class */
+    /** Change this variable for different amounts of log messages.  Options
+       include SEVERE, WARNING, INFO, FINER, FINEST (in order) */
+    private static Level loggingLevel = Level.INFO;
+
+    /** Standard logging instance for class */
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.servlet");
    
-    /** Default name for feature type schemas */
+    /** Default name for configuration file */
     private static final String CONFIG_FILE =  "configuration.xml";
-    /** Default name for feature type schemas */
+    /** Default name for configuration directory */
     private static final String CONFIG_DIR =  "data/";
 
     /**
@@ -45,30 +49,29 @@ public class FreefsLog extends HttpServlet {
    
 
     private GeoZServer server;
-
     /**
      * Initializes logging and config.
      *
      */ 
     public void init() {
-	Level level = Level.FINEST; //Put this in user config file.
-	Log4JFormatter.init("org.geotools", level);
-	Log4JFormatter.init("org.vfny.geoserver", level);
-	String root = this.getServletContext().getRealPath("/");
-	String path = root + CONFIG_DIR;
-	LOG.finest("init with path" + path);
-	ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
-	Properties zserverProps = new Properties();
-	zserverProps.put("port", "5210"); //HACK -allow user to configure this!
-	zserverProps.put("datafolder", cfgInfo.getTypeDir());
-	zserverProps.put("fieldmap", path + cfgInfo.GEO_MAP_FILE);
-	zserverProps.put("database", root + CONFIG_DIR + "zserver-index");
-	try {
-	    server = new GeoZServer(zserverProps);
-	    server.start();
-	} catch (java.io.IOException e) {
-	    LOGGER.info("zserver module could not start: " + e.getMessage());
-	}
+    Level level = loggingLevel; //Put this in user config file.
+    Log4JFormatter.init("org.geotools", level);
+    Log4JFormatter.init("org.vfny.geoserver", level);
+    String root = this.getServletContext().getRealPath("/");
+    String path = root + CONFIG_DIR;
+    LOG.finest("init with path" + path);
+    ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
+    Properties zserverProps = new Properties();
+    zserverProps.put("port", "5210"); //HACK -allow user to configure this!
+    zserverProps.put("datafolder", cfgInfo.getTypeDir());
+    zserverProps.put("fieldmap", path + cfgInfo.GEO_MAP_FILE);
+    zserverProps.put("database", root + CONFIG_DIR + "zserver-index");
+    try {
+        server = new GeoZServer(zserverProps);
+        server.start();
+    } catch (java.io.IOException e) {
+        LOGGER.info("zserver module could not start: " + e.getMessage());
+    }
 
     }
     
@@ -82,11 +85,15 @@ public class FreefsLog extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) {
         //BasicConfigurator.configure();
     }
-    
+
+    /**
+     * Closes down the zserver if it is running.
+     */    
     public void destroy() {
+	super.destroy();
 	LOGGER.finer("shutting down zserver");
-	if (server != null) server.shutdown(1);
-	
+    if (server != null) server.shutdown(1);
+    
     }
 
 }
