@@ -83,8 +83,9 @@ public class LockKvpReader
                                    " feature types.  Filter size: " + 
                                    filterSize + " Feature size: "+featureSize);
         } else {
-            currentRequest.setFeatureTypes(typeList);
-            currentRequest.setFilters(filterList);
+	    currentRequest.setLocks(typeList, filterList);
+            //currentRequest.setFeatureTypes(typeList);
+            //currentRequest.setFilters(filterList);
             return currentRequest;
         }
     }

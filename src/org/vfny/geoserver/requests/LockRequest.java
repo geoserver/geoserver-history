@@ -20,12 +20,6 @@ public class LockRequest extends Request {
     /** Standard logging instance for class */
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.requests");
-    
-    /** A  list of feature types to lock. */
-    protected List featureTypes = new ArrayList();
-        
-    /** Specifies the a list of filters to define locked features. */
-    protected List filters = new ArrayList();
 
     /** Specifies a lock expiration. */
     protected int expiry = -1;
@@ -33,6 +27,7 @@ public class LockRequest extends Request {
     /** Specifices whether or not to lock all features grabbed in request */
     protected boolean lockAll = true;
     
+    protected List locks = new ArrayList();
 
     /** Empty constructor. */ 
     public LockRequest() { setRequest("LockFeature"); }
@@ -41,37 +36,85 @@ public class LockRequest extends Request {
     /*************************************************************************
      * SIMPLE GET AND SET METHODS                                            *
      *************************************************************************/
-    /** Sets the expiration of the locks (in minutes). */ 
-    public List getFeatureTypes() { return featureTypes; }
+   
 
-    /** Sets the expiration of the locks (in minutes). */ 
-    public void addFeatureType(String featureType) { 
-        this.featureTypes.add(featureType); }
-
-    /** Sets the expiration of the locks (in minutes). */ 
-    public void setFeatureTypes(List featureTypes) { 
-        this.featureTypes = featureTypes; }
-
-    /** Sets the expiration of the locks (in minutes). */ 
-    public List getFilters() { return filters; }
-
-    /** Sets the expiration of the locks (in minutes). */ 
-    public void addFilter(Filter filter) { this.filters.add(filter); }
-
-    /** Sets the expiration of the locks (in minutes). */ 
-    public void setFilters(List filters) { this.filters = filters; }
-
-    /** Sets the expiration of the locks (in minutes). */ 
+    /** Gets whether lock request should fail if not all can be locked */ 
     public boolean getLockAll() { return lockAll; }
 
-    /** Sets the expiration of the locks (in minutes). */ 
+    /** Sets whether lock request should fail if not all can be locked */ 
     public void setLockAll(boolean lockAll) { this.lockAll = lockAll; }
 
-    /** Sets the expiration of the locks (in minutes). */ 
-    public int getExpiry() { return expiry; }
+    /** Gets the expiration of the locks (in minutes). */ 
+     public int getExpiry() { return expiry; }
 
     /** Sets the expiration of the locks (in minutes). */ 
     public void setExpiry(int expiry) { this.expiry = expiry; }
+
+    /** Gets a list of the locks held by this request(as LockRequest.Lock 
+	objects) */ 
+    public List getLocks() { return locks; }
+
+    /** adds a single lock to this request */ 
+    public void addLock(Lock lock) { this.locks.add(lock); }
+
+    /** Sets the lock list for this request */
+    //do we need this method?
+    public void setLocks(List locks) { this.locks = locks; }
+    
+    /**
+     * Sets the locks for this request according to the two lists passed in
+     * Little error checking is done, as this is a convenience method for
+     * LockKVP Reader, which does its own error checking.  None of the locks
+     * created will have handles (kvp's don't have handles).
+     *
+     * @param typeList a list of featureTypes as Strings.  
+     * @param filterList a list of Filters.  Should either be null, in which
+     * case the locks have no filters, or else should be of the same length
+     * as the typeList.
+     * @tasks TODO: move error checking from KVP reader here.
+     */
+    public void setLocks(List typeList, List filterList){
+	//int featureSize = typeList.size();
+        //int filterSize = filterList.size();
+	Iterator typeIterator = typeList.listIterator();
+	Iterator filterIterator = filterList.listIterator();
+	this.locks = new ArrayList();
+	while( typeIterator.hasNext()) {
+	    String curType = (String) typeIterator.next();
+	    Filter curFilter = null;
+	    if (filterIterator.hasNext()) {
+		curFilter = (Filter) filterIterator.next();
+	    }	    
+	    addLock(curType, curFilter);
+	}
+    }
+
+    /**
+     * Creates a lock of the given featureType, filter and handle and
+     * adds it to the lock list.
+     * @param featureType the typeName to lock.
+     * @param filter which features of the featureType to lock.
+     * @param handle the name to identify this lock, for error reporting.
+     */
+    public void addLock(String featureType, Filter filter, String handle){
+	Lock addLock = new Lock(featureType);
+	addLock.setHandle(handle);
+	addLock.setFilter(filter);
+	this.locks.add(addLock);
+    }
+
+      /**
+     * Creates a lock of the given featureType and filter and
+     * adds it to the lock list.
+     * @param featureType the typeName to lock.
+     * @param filter which features of the featureType to lock.
+     */
+    public void addLock(String featureType, Filter filter){
+	Lock addLock = new Lock(featureType);
+	addLock.setFilter(filter);
+	this.locks.add(addLock);
+    }
+
 
     /*************************************************************************
      * Overrides of toString and equals methods.                             *
@@ -79,101 +122,146 @@ public class LockRequest extends Request {
     public String toString() {
         StringBuffer returnString = new StringBuffer("\nLock Feature Request");
         String indent = "\n    ";
-        returnString.append("\n lock all features:" + lockAll);
+        returnString.append("\n LockAction: " + (lockAll ? "ALL" : "SOME"));
         returnString.append("\n exires in (min):" + expiry);
-        returnString.append("\n queries:" + indent);
-        
-        int featureSize = featureTypes.size();
-        int filterSize = filters.size();
-        
-        // check for errors in the request
-        if((featureSize > filterSize) && (filterSize == 1)) {
-            Iterator featureIterator = featureTypes.listIterator();
-            while( featureIterator.hasNext()) {
-                returnString.append(featureIterator.next().toString() +indent);
-                returnString.append(filters.get(0).toString() + indent);
-            }
-        } else if((featureSize > filterSize) && (filterSize == 0)) {
-            Iterator featureIterator = featureTypes.listIterator();
-            while( featureIterator.hasNext()) {
-                returnString.append(featureIterator.next().toString() +indent);
-            }
-        } else if(filterSize == featureSize) {
-            Iterator featureIterator = featureTypes.listIterator();
-            Iterator filtersIterator = filters.listIterator();
-            while( featureIterator.hasNext()) {
-                returnString.append(featureIterator.next().toString() +indent);
-                returnString.append(filtersIterator.next().toString() +indent);
-            }
-        } else if((featureSize == 1) && (filterSize == 0)) {
-            returnString.append(featureTypes.get(0).toString() + " \n");
-        }
-
-        //returnString.append("\n inside: " + filter.toString());
-
-        return returnString.toString();
+                
+	Iterator lockIterator = locks.listIterator();
+	while( lockIterator.hasNext()) {
+	    returnString.append(lockIterator.next().toString() +indent);
+	}
+	return returnString.toString();
     }
 
-    public boolean equals(LockRequest request) {
-
-        ListIterator internalIterator;
+    public boolean equals(Object obj) {
+	ListIterator internalIterator;
         ListIterator externalIterator;
-        boolean isEqual = true;
+	boolean isEqual = true;
+	if (obj != null && 
+	    obj.getClass() == this.getClass()){
+	    LockRequest request = (LockRequest)obj;
+	    if(this.expiry == request.getExpiry()) {
+		isEqual = isEqual && true;
+	    } else {
+		isEqual = false;
+	    }
+	    LOGGER.finest("checking expiry equality: " + isEqual);
+	    
+	    if(this.lockAll == request.getLockAll()) {
+		isEqual = isEqual && true;
+	    } else {
+		isEqual = false;
+	    }
+	    LOGGER.finest("checking locking equality: " + isEqual);
+	    
+	    internalIterator = locks.listIterator();
+	    externalIterator = request.getLocks().listIterator();
+	    while( internalIterator.hasNext()) {
+		if( !externalIterator.hasNext()) {
+		    isEqual = false;
+		    LOGGER.finest("lock lists not same size");
+		    break;
+		} else {
+		    Lock internalLock = (Lock) internalIterator.next();
+		    Lock externalLock = (Lock) externalIterator.next();
+		    LOGGER.finest("internal lock: " + internalLock);
+		    LOGGER.finest("external lock: " + externalLock);
+		    if(internalLock.equals(externalLock)) {
+			isEqual = true && isEqual;
+		    } else {
+			isEqual = false;
+		    }
+		    LOGGER.finest("Locks match: " + isEqual);
+		}
+	    }
+	} else {
+	    isEqual = false;
+	}
+	return isEqual;
+    }
 
-        if(this.expiry == request.getExpiry()) {
-            isEqual = isEqual && true;
-        } else {
-            isEqual = false;
-        }
-        LOGGER.finest("checking expiry equality: " + isEqual);
+    /**
+     * helper function for equals.  Checks for nulls, as
+     * this class can hold nulls, and will be equal if
+     * two of the fields are both null.
+     *
+     * @param mine The field of this object.
+     * @param test the field of to test.
+     *
+     * @return true if mine equals test, including if they
+     * are both null.
+     */
+    private boolean testField(Object mine, Object test) {
+	LOGGER.finest("testing " + mine + " and " + test);
+	if (mine != null) {
+	    return mine.equals(test);
+	} else {
+	    return test == null;
+	}
+    }
 
-        if(this.lockAll == request.getLockAll()) {
-            isEqual = isEqual && true;
-        } else {
-            isEqual = false;
-        }
-        LOGGER.finest("checking locking equality: " + isEqual);
+    /**
+     * Represents a single Lock element. 
+     * @author Chris Holmes
+     */
+    public class Lock { 
 
-        internalIterator = filters.listIterator();
-        externalIterator = request.getFilters().listIterator();
-        while( internalIterator.hasNext()) {
-            if( !externalIterator.hasNext()) {
-                isEqual = false;
-                LOGGER.finest("filter lists not same size");
-                break;
-            } else {
-                Filter internalFilter = (Filter) internalIterator.next();
-                Filter externalFilter = (Filter) externalIterator.next();
-                LOGGER.finest("internal filter: " + internalFilter);
-                LOGGER.finest("external filter: " + externalFilter);
-                if(internalFilter.equals(externalFilter)) {
-                    isEqual = true && isEqual;
-                } else {
-                    isEqual = false;
-                }
-                LOGGER.finest("filters match: " + isEqual);
-            }
-        }
+	/** The feature types to lock. */
+	protected String featureType = new String();
+        
+	/** Specifies the filter to define locked features. */
+	protected Filter filter;
 
-        internalIterator = featureTypes.listIterator();
-        externalIterator = request.getFeatureTypes().listIterator();
-        while( internalIterator.hasNext()) {
-            if( !externalIterator.hasNext()) {
-                isEqual = false;
-                LOGGER.finest("feature types not same size");
-                break;
-            } else {
-                if(((String) internalIterator.next()).
-                    equals((String) externalIterator.next())) {
-                    isEqual = true && isEqual;
-                    LOGGER.finest("feature types match: " + isEqual);
-                } else {
-                    isEqual = false;
-                    LOGGER.finest("feature types not equal");
-                    break;
-                }
-            }
-        }
-        return isEqual;
+	/** The handle to identify this lock by.*/
+	protected String handle;
+
+	public Lock(String featureType) {
+	    this.featureType = featureType;
+	}
+	
+	/** Gets the feature for this to lock. */
+	public String getFeatureType() { return featureType; }
+
+	/** Sets the feature for this to lock */ 
+	public void setFeatureType(String featureType) { 
+	    //filter out myns: type prefixes here?
+	    //or will SAXParser do that for us?
+	    this.featureType = featureType; }
+
+	/** Gets the filter of the features to lock. */
+	public Filter getFilter() { return filter; }
+
+	/** Sets the filter to define which features to lock */ 
+	public void setFilter(Filter filter) { this.filter = filter; }
+
+	/** Gets the handle that identifies this lock. */
+	public String getHandle() { return handle; }
+
+	/** Sets the handle that identifies this */ 
+	public void setHandle(String handle) { 
+	    this.handle = handle; }
+
+
+
+	/*************************************************************************
+	 * Overrides of toString and equals methods.                             *
+	 *************************************************************************/
+	public String toString() {
+	    return("\n Lock\n   typeName: " + featureType + 
+		   "\n   handle: " + handle + "\n   filter: " + filter);
+	}
+
+	public boolean equals(Object obj) {
+	    if (obj != null && 
+		obj.getClass() == this.getClass()){
+		Lock testLock = (Lock)obj;
+		return (testField(this.handle, testLock.getHandle()) &&
+			testField(this.featureType, testLock.getFeatureType()) &&
+			testField(this.filter, testLock.getFilter()));
+	    } else {
+		return false;
+	    }
+	}
+	
     }
 }
+
