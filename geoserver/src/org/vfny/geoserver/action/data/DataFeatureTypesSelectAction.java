@@ -42,6 +42,8 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
 		DataConfig dataConfig = (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
 		FeatureTypeConfig ftConfig = dataConfig.getFeatureTypeConfig(selectedFeatureType);
 		
+        request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
+        
 		if ("edit".equals(buttonAction)) {
 			request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE,ftConfig);
             System.out.println("SKAG    "+request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE).getClass());
