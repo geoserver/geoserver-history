@@ -30,6 +30,10 @@ import org.geotools.validation.xml.XMLWriter;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 
@@ -59,13 +63,12 @@ public class SaveXMLAction extends ConfigAction {
 								 HttpServletRequest request,
 								 HttpServletResponse response)
         throws IOException, ServletException {
-        GeoServer gs = getGeoServer(request);
         ServletContext sc = request.getSession().getServletContext();
         File rootDir = new File(sc.getRealPath("/"));
 
         try {
-            XMLConfigWriter.store(gs.toWMSDTO(), gs.toWFSDTO(),
-                gs.toGeoServerDTO(), gs.toDataDTO(), rootDir);
+            XMLConfigWriter.store((WMSDTO)getWMS(request).toDTO(), (WFSDTO)getWFS(request).toDTO(),
+            		(GeoServerDTO)getWFS(request).getGeoServer().toDTO(), (DataDTO)getWFS(request).getData().toDTO(), rootDir);
         } catch (ConfigurationException e) {
         	e.printStackTrace();
             throw new ServletException(e);
@@ -83,14 +86,13 @@ public class SaveXMLAction extends ConfigAction {
 			HttpServletRequest request,
 			HttpServletResponse response)
 	throws IOException, ServletException {
-    	GeoServer gs = getGeoServer(request);
     	ServletContext sc = request.getSession().getServletContext();
     	File rootDir = new File(sc.getRealPath("/"));
     	File plugInDir = new File(rootDir, "data/plugIns");
     	File validationDir = new File(rootDir, "data/validation");
 
-    	Map plugIns = gs.toPlugInDTO();
-    	Map testSuites = gs.toTestSuiteDTO();
+    	Map plugIns = (Map)getWFS(request).getValidation().toPlugInDTO();
+    	Map testSuites = (Map)getWFS(request).getValidation().toTestSuiteDTO();
     	
     	Iterator i = null;
     	
@@ -106,8 +108,6 @@ public class SaveXMLAction extends ConfigAction {
     			fw.close();
     		} catch (Exception e) {
     			e.printStackTrace();
-System.err.println("KEY="+key);
-System.err.println(dto.getClass());
     			throw new ServletException(e);
     		}
     	}

@@ -23,6 +23,8 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
@@ -39,7 +41,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.8 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: GetMapDelegate.java,v 1.9 2004/02/09 23:11:35 dmzwiers Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -74,7 +76,7 @@ public abstract class GetMapDelegate implements Response {
         this.request = request;
 
         FeatureTypeInfo[] layers = request.getLayers();
-        Style[] styles = buildStyles(request.getStyles(), request.getGeoServer());
+        Style[] styles = buildStyles(request.getStyles(), request.getWMS());
         Filter[] filters = request.getFilters();
         List attributes = request.getAttributes();
 
@@ -97,6 +99,8 @@ public abstract class GetMapDelegate implements Response {
         }
 
         execute(layers, resultLayers, styles);
+    }
+    public void abort(Service gs) {
     }
 
     /**
@@ -210,7 +214,7 @@ public abstract class GetMapDelegate implements Response {
         return finalLayerFilter;
     }
 
-    protected Style[] buildStyles(List styleNames, GeoServer gs)
+    protected Style[] buildStyles(List styleNames, WMS gs)
         throws WmsException {
         Style[] styles = new Style[styleNames.size()];
         int i = 0;

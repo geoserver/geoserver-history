@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.5 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -39,6 +39,8 @@ public class WMS extends Service {
         "application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
         "application/vnd.ogc.se_blank"
     };
+    
+    public static final String WEB_CONTAINER_KEY = "WMS";
 
     /**
      * WMS constructor.
@@ -52,6 +54,17 @@ public class WMS extends Service {
      */
     public WMS(WMSDTO config) {
         super(config.getService());
+    }
+
+    /**
+     * load purpose.
+     * <p>
+     * loads a new instance of data into this object.
+     * </p>
+     * @param config
+     */
+    public void load(WMSDTO config) {
+    	super.load(config.getService());
     }
 
     /**
@@ -82,7 +95,7 @@ public class WMS extends Service {
      * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
      * @see WMSDTO
      */
-    Object toDTO() {
+    public Object toDTO() {
         WMSDTO w = new WMSDTO();
         w.setService((ServiceDTO)super.toDTO());
 

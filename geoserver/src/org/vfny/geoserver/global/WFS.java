@@ -26,10 +26,13 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.5 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
  */
 public class WFS extends Service {
     private boolean gmlPrefixing;
+    public static final String WEB_CONTAINER_KEY = "WFS";
+    
+    private GeoValidator gv;
 
     /**
      * WFS constructor.
@@ -45,7 +48,18 @@ public class WFS extends Service {
         super(config.getService());
         gmlPrefixing = config.isGmlPrefixing();
     }
-
+    
+    /**
+     * load purpose.
+     * <p>
+     * Loads a new data set into this object.
+     * </p>
+     * @param config
+     */
+    public void load (WFSDTO config) {
+    	super.load(config.getService());
+    	gmlPrefixing = config.isGmlPrefixing();
+    }
     /**
      * WFS constructor.
      * 
@@ -74,7 +88,7 @@ public class WFS extends Service {
      * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
      * @see WFSDTO
      */
-    Object toDTO() {
+    public Object toDTO() {
         WFSDTO dto = new WFSDTO();
         dto.setService((ServiceDTO)super.toDTO());
         dto.setGmlPrefixing(gmlPrefixing);
@@ -107,4 +121,22 @@ public class WFS extends Service {
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
     }
+	/**
+	 * Access gv property.
+	 * 
+	 * @return Returns the gv.
+	 */
+	public GeoValidator getValidation() {
+		return gv;
+	}
+
+	/**
+	 * Set gv to gv.
+	 *
+	 * @param gv The gv to set.
+	 */
+	void setValidation(GeoValidator gv) {
+		this.gv = gv;
+	}
+
 }

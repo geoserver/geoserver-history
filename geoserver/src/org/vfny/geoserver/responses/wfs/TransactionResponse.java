@@ -31,6 +31,7 @@ import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DeleteRequest;
 import org.vfny.geoserver.requests.wfs.InsertRequest;
@@ -57,7 +58,7 @@ import java.util.logging.Logger;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.8 2004/01/31 00:27:25 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.9 2004/02/09 23:11:36 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -142,7 +143,7 @@ public class TransactionResponse implements Response {
         transaction = new DefaultTransaction();
         LOGGER.fine("request is " + request);
 
-        Data catalog = transactionRequest.getGeoServer().getData();
+        Data catalog = transactionRequest.getWFS().getData();
 
         WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS,
                 transactionRequest.getGeoServer().isVerbose());
@@ -429,7 +430,7 @@ public class TransactionResponse implements Response {
 
     protected void integrityValidation(Map stores, Envelope check)
         throws IOException, WfsTransactionException {
-        Data catalog = request.getGeoServer().getData();
+        Data catalog = request.getWFS().getData();
         ValidationProcessor validation = request.getValidationProcessor();
 
         // go through each modified typeName
@@ -591,7 +592,7 @@ public class TransactionResponse implements Response {
         // We also need to do this if the opperation is not a success,
         // you can find this same code in the abort method
         // 
-        Data catalog = request.getGeoServer().getData();
+        Data catalog = request.getWFS().getData();
 
         if (request.getLockId() != null) {
             if (request.getReleaseAction() == TransactionRequest.ALL) {
@@ -605,7 +606,7 @@ public class TransactionResponse implements Response {
     /* (non-Javadoc)
      * @see org.vfny.geoserver.responses.Response#abort()
      */
-    public void abort(GeoServer gs) {
+    public void abort(Service gs) {
         if (transaction == null) {
             return; // no transaction to rollback
         }

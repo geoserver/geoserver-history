@@ -28,7 +28,7 @@ import java.util.List;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.10 2004/01/31 00:27:29 jive Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.11 2004/02/09 23:11:36 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();
@@ -44,7 +44,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      */
     public WmsCapabilitiesResponseHandler(ContentHandler handler, Request r) {
         super(handler);
-        server = r.getGeoServer();
+        server = r.getWMS().getGeoServer();
         baseUrl = r.getBaseUrl();
     }
 
@@ -161,7 +161,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *       child layers override or inherit.
      */
     protected void handleLayers(WMS config) throws SAXException {
-        Data catalog = server.getData();
+        Data catalog = config.getData();
         Collection ftypes = catalog.getFeatureTypeInfos().values();
         FeatureTypeInfo layer;
         cReturn();

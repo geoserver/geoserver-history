@@ -68,17 +68,17 @@ public class UpdateGSAction extends ConfigAction {
         throws IOException, ServletException {
         GeoServer gs;
         ServletContext sc = request.getSession().getServletContext();
-        gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
 
         try {
         	WMSDTO wmsDTO = getWMSConfig().toDTO();
         	WFSDTO wfsDTO = getWFSConfig().toDTO();
         	GeoServerDTO geoserverDTO = getGlobalConfig().toDTO();
         	DataDTO dataDTO = getDataConfig().toDTO();
-        	// Use baseDir from initial load
-        	//
-        	File baseDir = gs.getData().getBaseDir();  
-            gs.load( wmsDTO,wfsDTO,geoserverDTO,dataDTO, baseDir );
+        	
+        	getWFS(request).load(wfsDTO); 
+        	getWMS(request).load(wmsDTO); 
+        	getWFS(request).getGeoServer().load(geoserverDTO); 
+        	getWFS(request).getData().load(dataDTO);
         } catch (ConfigurationException e) {
         	e.printStackTrace();
             throw new ServletException(e);
@@ -103,10 +103,11 @@ public class UpdateGSAction extends ConfigAction {
     	try {
     		Map plugins = new HashMap();
     		Map testSuites = new HashMap(); 
-    		if(getValidationConfig().toDTO(plugins,testSuites))
-    			gs.load( testSuites,plugins );
-    		else
+    		if(getValidationConfig().toDTO(plugins,testSuites)){
+    			getWFS(request).getValidation().load( testSuites,plugins );
+    		}else{
     			throw new ConfigurationException("ValidationConfig experienced an error exporting Data Transpher Objects.");
+    		}
     	} catch (ConfigurationException e) {
     		e.printStackTrace();
     		throw new ServletException(e);

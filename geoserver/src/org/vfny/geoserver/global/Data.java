@@ -53,9 +53,10 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.29 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.30 2004/02/09 23:11:35 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
+	public static final String WEB_CONTAINER_KEY = "DATA";
     /** for debugging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
@@ -100,7 +101,11 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * @throws ConfigurationException
      */
     public Data(DataDTO config, File dir ) throws ConfigurationException {
-        load(config, dir);
+    	baseDir = dir;
+        load(config);
+    }
+    public Data(File dir ) throws ConfigurationException {
+    	baseDir = dir;
     }
 
     /**
@@ -121,7 +126,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
        featureTypes = new HashMap();
        dataStores = new HashMap();
        }*/
-
+    
     /**
      * Places the data in this container and innitializes it. Complex tests are
      * performed to detect existing datasources,  while the remainder only
@@ -131,8 +136,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      *
      * @throws NullPointerException
      */
-    void load(DataDTO config, File dir) {
-    	baseDir = dir;
+    public void load(DataDTO config) {
     	
         if (config == null) {
             throw new NullPointerException("Non null DataDTO required for load");
@@ -767,7 +771,7 @@ SCHEMA:
      *
      * @return DataDTO the generated object
      */
-    Object toDTO() {
+    public Object toDTO() {
     	DataDTO dto = new DataDTO();
     	
     	HashMap tmp;
