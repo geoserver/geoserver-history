@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<featureType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>roads</Name>
+	<Title>NYC Rail Centerlines</Title>
+	<Abstract>This is a simple rail coverage from the New York City basemap.</Abstract>
+	<Keywords>OWS1, rail, railroad, World Trade Center, New York City</Keywords>
+	<SRS>-1</SRS>
+	<Operations/>
+	<LatLonBoundingBox minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
+	<MetadataURL>
+    <url>none</url>
+    <format>XML</format>
+    <type>TC211</type>
+  </MetadataURL>
+	<Host>localhost</Host>
+	<Port>5432</Port>
+	<DatabaseName>test</DatabaseName>
+	<User>test</User>
+	<Password>test</Password>
+</featureType>
