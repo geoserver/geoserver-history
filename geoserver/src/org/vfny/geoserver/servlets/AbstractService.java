@@ -71,8 +71,7 @@ import javax.servlet.http.*;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.1.2.11 2003/11/17 22:27:36 cholmesny Exp $
- *
+ * @version $Id: AbstractService.java,v 1.1.2.12 2003/11/18 22:32:29 cholmesny Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -173,6 +172,8 @@ public abstract class AbstractService extends HttpServlet {
             serviceRequest = requestReader.getRequest();
         } catch (Throwable e) {
             sendError(response, e);
+
+            return;
         }
 
         doService(request, response, serviceRequest);
@@ -197,8 +198,12 @@ public abstract class AbstractService extends HttpServlet {
             serviceRequest = requestReader.read(request.getReader());
         } catch (ServiceException se) {
             sendError(response, se);
+
+            return;
         } catch (Throwable e) {
             sendError(response, e);
+
+            return;
         }
 
         doService(request, response, serviceRequest);
@@ -206,15 +211,18 @@ public abstract class AbstractService extends HttpServlet {
 
     /**
      * Peforms service according to ServiceStratagy.
+     * 
      * <p>
      * This method has very strict requirements, please see the class
      * description for the specifics.
      * </p>
+     *
      * @param request
      * @param response
      * @param serviceRequest
      *
      * @throws ServletException if the stratagy can't be instantiated
+     *
      * @task TODO: move gzip response encoding to a filter servlet
      */
     protected void doService(HttpServletRequest request,
@@ -266,23 +274,26 @@ public abstract class AbstractService extends HttpServlet {
             stratagyOuput = stratagy.getDestination(response);
             LOGGER.finer("stratagy output is: "
                 + stratagyOuput.getClass().getName());
-        } catch (SocketException socketException ){            
-            LOGGER.fine( "it seems that the user has closed the request stream: "
-                                + socketException.getMessage());
+        } catch (SocketException socketException) {
+            LOGGER.fine(
+                "it seems that the user has closed the request stream: "
+                + socketException.getMessage());
+
             // It seems the user has closed the request stream
             // Apparently this is a "cancel" and will quietly go away
             //
             // I will still give stratagy and serviceResponse
             // a chance to clean up
             //
-            serviceResponse.abort();            
+            serviceResponse.abort();
             stratagy.abort();
+
             return;
-            
         } catch (IOException ex) {
             serviceResponse.abort();
             stratagy.abort();
             sendError(response, ex);
+
             return;
         }
 
@@ -290,39 +301,32 @@ public abstract class AbstractService extends HttpServlet {
             // gather response
             serviceResponse.writeTo(stratagyOuput);
             stratagyOuput.flush();
-            stratagy.flush();            
+            stratagy.flush();
         } catch (java.net.SocketException sockEx) { // user cancel
-            // it's ok, user bored waiting a response or socket error
-            // REVISIT: JG - I don't think this is ok,
-            // I want to abort the opperation - is it too late for that?
             serviceResponse.abort();
             stratagy.abort();
+
             return;
-        } catch (IOException ioException){ // stratagyOutput error
-            // ups! this is the worst error case, since we have already setted
-            // the response's mime type and are not sure about the state of
-            // the response object. Anyway, try to send an error
-            serviceResponse.abort();            
-            stratagy.abort();
-            sendError(response, ioException);            
-            return;
-        } catch (ServiceException writeToFailure){ // writeTo Failure
-            // ups! this is the worst error case, since we have already setted
-            // the response's mime type and are not sure about the state of
-            // the response object. Anyway, try to send an error
-            serviceResponse.abort();            
-            stratagy.abort();
-            sendError(response, writeToFailure);            
-            return;
-        } catch (Throwable help) { // This is an unexpected error(!)
-            //ups! this is the worst error case, since we have already setted
-            //the response's mime type and are not sure about the state of
-            //the response object. Anyway, try to send an error
+        }catch (IOException ioException) { // stratagyOutput error
             serviceResponse.abort();
-            stratagy.abort();            
+            stratagy.abort();
+            sendError(response, ioException);
+
+            return;
+        }catch (ServiceException writeToFailure) { // writeTo Failure
+            serviceResponse.abort();
+            stratagy.abort();
+            sendError(response, writeToFailure);
+
+            return;
+        }catch (Throwable help) { // This is an unexpected error(!)
+            serviceResponse.abort();
+            stratagy.abort();
             sendError(response, help);
+
             return;
         }
+
         // Finish Response
         // I have moved closing the output stream out here, it was being
         // done by a few of the ServiceStratagy       
@@ -332,20 +336,21 @@ public abstract class AbstractService extends HttpServlet {
         //        
         try {
             response.getOutputStream().flush();
-            response.getOutputStream().close();            
-        }
-        catch (SocketException sockEx ){ // user cancel
-            // it's ok, user bored waiting a response or socket error
-            // the response's mime type and started writing
-            LOGGER.warning("Could not send completed response to user:"+sockEx);
+            response.getOutputStream().close();
+        } catch (SocketException sockEx) { // user cancel
+            LOGGER.warning("Could not send completed response to user:"
+                + sockEx);
+
+            return;
+        }catch (IOException ioException) {
+            // This is bad, the user did not get the completed response
+            LOGGER.warning("Could not send completed response to user:"
+                + ioException);
+
             return;
         }
-        catch( IOException ioException ){
-            // This is bad, the user did not get the completed response
-            LOGGER.warning("Could not send completed response to user:"+ioException);
-            return;     
-        }
-        LOGGER.warning("Service handled" );        
+
+        LOGGER.warning("Service handled");
     }
 
     /**
@@ -408,24 +413,29 @@ public abstract class AbstractService extends HttpServlet {
 
     /**
      * Send error produced during getService opperation.
+     * 
      * <p>
-     * Some errors know how to write themselves out WfsTransactionException
-     * for instance. It looks like this might be is handled by
-     * getExceptionHandler().newServiceException( t, pre, null ). I still would not
-     * mind seeing a check for Service Exception here.
+     * Some errors know how to write themselves out WfsTransactionException for
+     * instance. It looks like this might be is handled by
+     * getExceptionHandler().newServiceException( t, pre, null ). I still
+     * would not mind seeing a check for Service Exception here.
      * </p>
+     * 
      * <p>
-     * This code says that it deals with UNCAUGHT EXCEPTIONS, so I think
-     * it would be wise to explicitly catch ServiceExceptions.
+     * This code says that it deals with UNCAUGHT EXCEPTIONS, so I think it
+     * would be wise to explicitly catch ServiceExceptions.
      * </p>
+     *
      * @param response DOCUMENT ME!
      * @param t DOCUMENT ME!
      */
     protected void sendError(HttpServletResponse response, Throwable t) {
-        if( t instanceof ServiceException){
-            sendError( response, (ServiceException) t );
+        if (t instanceof ServiceException) {
+            sendError(response, (ServiceException) t);
+
             return;
         }
+
         LOGGER.info("Had an undefined error: " + t.getMessage());
 
         //TODO: put the stack trace in the logger.
@@ -500,23 +510,28 @@ public abstract class AbstractService extends HttpServlet {
 
     /**
      * Interface used for ServiceMode stratagy objects.
+     * 
      * <p>
      * While this interface resembles the Enum idiom in that only three
      * instances are available SPEED, BUFFER and FILE, we are using this class
      * to plug-in the implementation for our doService request in the manner
      * of the Stratagy pattern.
      * </p>
-     * 
+     *
      * @author Jody Garnett, Refractions Research
      */
     static public interface ServiceStratagy {
         /**
          * Get a OutputStream we can use to add content.
+         * 
          * <p>
          * JG - Can we replace this with a Writer?
          * </p>
+         *
          * @param response
+         *
          * @return
+         *
          * @throws IOException
          */
         public OutputStream getDestination(HttpServletResponse response)
@@ -524,15 +539,17 @@ public abstract class AbstractService extends HttpServlet {
 
         /**
          * Complete opperation in the positive.
+         * 
          * <p>
-         * Gives service a chance to finish with destination,
-         * and clean up any resources.
+         * Gives service a chance to finish with destination, and clean up any
+         * resources.
          * </p>
          */
         public void flush() throws IOException;
-        
+
         /**
          * Complete opperation in the negative.
+         * 
          * <p>
          * Gives Service a chance to clean up resources
          * </p>
@@ -546,12 +563,13 @@ public abstract class AbstractService extends HttpServlet {
  * Fast and Dangeroud service stratagy.
  * 
  * <p>
- * Will fail when a ServiceException is encountered on writeTo,
- * and will not tell the user about it!
+ * Will fail when a ServiceException is encountered on writeTo, and will not
+ * tell the user about it!
  * </p>
+ * 
  * <p>
- * This is the worst case scenario, you are trading
- * speed for danger by using this ServiceStratagy.
+ * This is the worst case scenario, you are trading speed for danger by using
+ * this ServiceStratagy.
  * </p>
  *
  * @author jgarnett
@@ -561,11 +579,13 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
 
     /**
      * Works against the real output stream provided by the response.
+     * 
      * <p>
      * This is dangerous of course, but fast and exciting.
      * </p>
      *
      * @param response Response provided by doService
+     *
      * @return An OutputStream that works against, the response output stream.
      *
      * @throws IOException If response output stream could not be aquired
@@ -581,15 +601,17 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
     /**
      * Completes writing to Response.getOutputStream.
      *
-     * @throws IOException If Response.getOutputStream not available. 
+     * @throws IOException If Response.getOutputStream not available.
      */
     public void flush() throws IOException {
         if (out != null) {
             out.flush();
         }
+
         // should we close? BufferStratagy uses close?
         // out.close();        
     }
+
     /* (non-Javadoc)
      * @see org.vfny.geoserver.servlets.AbstractService.ServiceStratagy#abort()
      */
@@ -634,8 +656,8 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
 
     /**
      * Copies Buffer to Response output output stream.
-     * 
-     *  @throws IOException If the response outputt stream is unavailable.
+     *
+     * @throws IOException If the response outputt stream is unavailable.
      */
     public void flush() throws IOException {
         if ((buffer == null) || (response == null)) {
@@ -648,55 +670,57 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
         buffOut.flush();
         buffOut.close(); // I think this cloes response.getOutputStream()
     }
+
     /**
      * Clears the buffer with out writing anything out to response.
+     *
      * @see org.vfny.geoserver.servlets.AbstractService.ServiceStratagy#abort()
      */
     public void abort() {
-        if( buffer == null ){
+        if (buffer == null) {
             return;
         }
-
     }
-
 }
 
 
 /**
  * A safe Service stratagy that uses a temporary file until writeTo completes.
- * 
+ *
  * @author $author$
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
     private static int BUFF_SIZE = 4096;
-    
+
     /** Temporary file number */
     static int sequence = 0;
-    
+
     /** Response being targeted */
     private HttpServletResponse response;
-    
+
     /** OutputStream provided to writeTo method */
     private OutputStream safe;
-    
+
     /** Temporary file used by safe */
     private File temp;
-        
+
     /**
      * Provides a outputs stream on a temporary file.
+     * 
      * <p>
-     * I have changed this to use a BufferedWriter to agree with
-     * SpeedStratagy.
+     * I have changed this to use a BufferedWriter to agree with SpeedStratagy.
      * </p>
+     *
      * @param response Response being handled
-     * @return Outputstream for a temporary file 
+     *
+     * @return Outputstream for a temporary file
+     *
      * @throws IOException If temporary file could not be created.
      */
     public OutputStream getDestination(HttpServletResponse response)
         throws IOException {
-            
         // REVISIT: Should do more than sequence here
         // (In case we are running two GeoServers at once)    
         // - Could we use response.getHandle() in the filename?
@@ -704,31 +728,33 @@ class FileStratagy implements AbstractService.ServiceStratagy {
         sequence++;
         temp = File.createTempFile("wfs" + sequence, "tmp");
 
-        safe = new BufferedOutputStream( new FileOutputStream(temp) );
-        
+        safe = new BufferedOutputStream(new FileOutputStream(temp));
+
         return safe;
     }
 
     /**
      * Closes safe output stream, copies resulting file to response.
-     * 
+     *
      * @throws IOException If temporay file or response is unavailable
      * @throws IllegalStateException if flush is called before getDestination
      */
     public void flush() throws IOException {
-        if ((temp == null) || (response == null) || safe == null || !temp.exists()) {
-            throw new IllegalStateException("flush should only be called after getDestination");
+        if ((temp == null) || (response == null) || (safe == null)
+                || !temp.exists()) {
+            throw new IllegalStateException(
+                "flush should only be called after getDestination");
         }
-        InputStream copy = null;        
+
+        InputStream copy = null;
+
         try {
             safe.flush();
             safe.close();
             safe = null;
-            
+
             // service succeeded in producing a response!
             // copy the result to out
-            
-        
             // copy result to the real output stream
             copy = new BufferedInputStream(new FileInputStream(temp));
 
@@ -741,6 +767,7 @@ class FileStratagy implements AbstractService.ServiceStratagy {
             while ((b = copy.read(buffer, 0, BUFF_SIZE)) > 0) {
                 out.write(buffer, 0, b);
             }
+
             // Speed Writer closes output Stream
             // I would prefer to leave that up to doService...
             // out.flush();
@@ -748,39 +775,45 @@ class FileStratagy implements AbstractService.ServiceStratagy {
         } catch (IOException ioe) {
             throw ioe;
         } finally {
-            if( copy != null){
+            if (copy != null) {
                 try {
                     copy.close();
                 } catch (Exception ex) {
                 }
             }
+
             copy = null;
-            if( temp != null && temp.exists()){
+
+            if ((temp != null) && temp.exists()) {
                 temp.delete();
             }
+
             temp = null;
             response = null;
             safe = null;
         }
     }
+
     /**
      * Clean up after writeTo fails.
-     * 
+     *
      * @see org.vfny.geoserver.servlets.AbstractService.ServiceStratagy#abort()
      */
     public void abort() {
-        if( safe != null ){
+        if (safe != null) {
             try {
                 safe.close();
+            } catch (IOException ioException) {
             }
-            catch( IOException ioException){                
-            }
+
             safe = null;
         }
-        if( temp != null && temp.exists()){
+
+        if ((temp != null) && temp.exists()) {
             temp.delete();
         }
+
         temp = null;
-        response = null;        
-    }    
+        response = null;
+    }
 }
