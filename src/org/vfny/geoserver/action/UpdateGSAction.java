@@ -49,7 +49,7 @@ public class UpdateGSAction extends ConfigAction {
 		ActionForward r1 = updateGeoserver(mapping,form,request,response);
 		ActionForward r2 = updateValidation(mapping,form,request,response);
 		
-		return mapping.findForward("welcome");
+		return mapping.findForward("config");
 	}
 	
     public ActionForward updateGeoserver(ActionMapping mapping,
@@ -79,7 +79,7 @@ public class UpdateGSAction extends ConfigAction {
         // We need to stay on the same page!
         getApplicationState( request ).notifyToGeoServer();
         
-        return mapping.findForward("welcome");
+        return mapping.findForward("config");
     }
     
     public ActionForward updateValidation(ActionMapping mapping,
@@ -108,6 +108,6 @@ public class UpdateGSAction extends ConfigAction {
     	// We need to stay on the same page!
     	getApplicationState( request ).notifyToGeoServer();
     	
-    	return mapping.findForward("welcome");
+    	return mapping.findForward("config.validation");
     }
 }
