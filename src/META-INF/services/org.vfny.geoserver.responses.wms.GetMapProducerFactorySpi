@@ -1,0 +1,2 @@
+org.vfny.geoserver.responses.wms.map.JaiMapProducerFactory
+org.vfny.geoserver.responses.wms.map.SvgMapProducerFactory
