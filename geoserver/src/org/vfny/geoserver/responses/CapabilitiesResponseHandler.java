@@ -21,7 +21,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.12 2004/02/19 18:38:34 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.13 2004/03/14 15:59:21 groldan Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -70,7 +70,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         handleKeywords(config.getKeywords());
         cReturn();
         unIndent();
-        handleOnlineResouce(config);
+        handleOnlineResource(config);
 
         String fees = config.getFees();
 
@@ -91,7 +91,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
 
         endService(config);
     }
-    
+
     protected void startService(Service config) throws SAXException {
     	startElement("Service");
     }
@@ -103,7 +103,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleOnlineResouce(Service config)
+    protected void handleOnlineResource(Service config)
         throws SAXException {
         Object o = config.getOnlineResource();
 
@@ -197,8 +197,13 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         bboxAtts.addAttribute("", "maxx", "maxx", "", maxx);
         bboxAtts.addAttribute("", "maxy", "maxy", "", maxy);
 
-        startElement("LatLongBoundingBox", bboxAtts);
-        endElement("LatLongBoundingBox");
+        handleLatLongBbox(bboxAtts);
+    }
+
+    protected void handleLatLongBbox(AttributesImpl bboxAtts)
+        throws SAXException {
+      startElement("LatLongBoundingBox", bboxAtts);
+      endElement("LatLongBoundingBox");
     }
 
     /**
