@@ -180,6 +180,24 @@ public class TypeInfo {
         return internalType.getPassword().toString();
     }
 
+    /**
+     * Fetches the mandatory property names.  This should eventually
+     * move to the schema - but we need to be able to read in XML
+     * schemas for that to happen.  For now the info.xml file has
+     * a field that will get the property names that should be 
+     * mandatory.  If they are entered wrong things _will_ mess up.
+     *
+     * @return an array of the property names to be tested.  Unvalidated,
+     * so they will mess up all requests if the datasource does not
+     * contain the names.
+     * @task TODO: only return valid property names.  Also, this could
+     * take a schema as a param, and would return the required names.
+     * Though that should probably happen in the datasource...
+     */
+    public String[] getMandatoryProps() {
+	return internalType.getMandatoryAtts();
+    }
+
     //This is sort of bad.  It's fine if users always use locking, 
     //but if they don't then concurrent transactions are on the same 
     //connection.  The problem is that we _do_ want subtransactions
