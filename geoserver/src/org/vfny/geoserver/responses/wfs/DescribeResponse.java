@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.9 2004/01/15 23:55:56 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.10 2004/01/16 19:33:39 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -152,7 +152,7 @@ public class DescribeResponse implements Response {
             //if there are no specific requested types then get all.
             requestedTypes = new ArrayList(wfsRequest.getGeoServer().getData().getFeatureTypeInfos().keySet());
         }
-
+        
         tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfsRequest.getGeoServer().getCharSet().displayName()+ "\"?>" + "\n<xs:schema ");
 
         //allSameType will throw WfsException if there are types that are not found.
@@ -284,6 +284,11 @@ public class DescribeResponse implements Response {
         Set validTypes = new HashSet();
 
         // Loop through requested tables to add element types
+
+Iterator ii = requestedTypes.iterator();
+while(ii.hasNext())
+	System.out.println("DescribeResponse:generateSpecifiedTypes:"+ii.next().toString());
+        
         for (int i = 0; i < requestedTypes.size(); i++) {
             // set the current file
             // print type data for the table object

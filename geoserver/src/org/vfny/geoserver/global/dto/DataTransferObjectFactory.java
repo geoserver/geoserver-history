@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.2 2004/01/15 19:36:41 dmzwiers Exp $
+ * @version $Id: DataTransferObjectFactory.java,v 1.3 2004/01/16 19:33:38 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -97,7 +97,7 @@ public class DataTransferObjectFactory {
     	AttributeType attributes[] = schema.getAttributeTypes();
     	List list = new ArrayList( attributes.length );
         for( int i=0; i<attributes.length;i++){
-            list.add( create( attributes[0] ) );
+            list.add( create( attributes[i] ) );
         }
         return list;
     }
