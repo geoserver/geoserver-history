@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,7 +23,7 @@ import java.net.URL;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ThreadedBatchTester.java,v 1.1 2004/02/17 01:14:29 dmzwiers Exp $
+ * @version $Id: ThreadedBatchTester.java,v 1.2 2004/02/23 23:29:59 dmzwiers Exp $
  */
 public class ThreadedBatchTester {
 	private static int runs = 100;
@@ -105,6 +106,9 @@ class TestThread extends Thread{
 			HttpURLConnection hc = (HttpURLConnection)url.openConnection();
 			hc.connect();
 			yield(); //wait to let everyone else connect before getting result
+    		BufferedReader br = new BufferedReader(new InputStreamReader(hc.getInputStream()));
+    		while(br.ready())
+    			br.readLine();
 			result = hc.getResponseCode();
 			yield(); //wait to let everyone else hit before disconnecting
 			hc.disconnect();
