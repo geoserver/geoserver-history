@@ -390,19 +390,16 @@ public class GMLBuilder {
          * @param name Attribute name
          * @param value Attribute value as string
          */ 
-        public void write( String name, String value ) {            
-            if (value != null) {
+        public void write( String name, String value ) { 
+	    //should check if mandatory here, 
+            if (value != null && !value.equals("")) {
 		String gmlName = (String)gmlMap.get(name);
 		if (gmlName != null) {
 		    name = gmlName;
 		}
 		finalResult.append(attribute1).append(name);
-		//TODO: handle nulls
-		//Figure out a way so strings do not have xs:nil
-		//prepended.  This is needed for gml:name, so it
-		//passes the test correctly.  Perhaps strings will
-		//naturally come out right?  Empty string is allowed for
-		//string, but integer and date need the xs:nil.
+		//If null and mandatory should prepend nil.
+		//TODO: figure out minOccurs/nillable.
 		if (value.equals("")) {
 		    //should check attributeType for nillable.
 		    finalResult.append(" xs:nil=\"true\"");
@@ -411,7 +408,7 @@ public class GMLBuilder {
                 append(value).append(attribute3).append(name).
                 append(attribute4);
 	    } else {
-		
+		//if null don't write anything.
 	    }
         
 	}
