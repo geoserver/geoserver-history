@@ -1,7 +1,3 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -89,7 +85,7 @@ public class DataTransferObjectFactory {
      * This method uses NameSpaceTranslatorFactorys for xs and gml in order to
      * provide accurate type information describing the provided attribute
      * </p>
-     * @param schemaBase used to determine manditory attribtues
+     * @param schemaBase used to determine manditory attributes
      * @param attributeName Name of attribute being described
      * @return DataTransferObject encapsulating attribute information. 
      */
@@ -151,7 +147,7 @@ public class DataTransferObjectFactory {
     }
 
     /**
-     * List of attribtues DTO information gernated from schema.
+     * List of attributes DTO information gernated from schema.
      * 
      * @param schema
      * @return
@@ -180,9 +176,9 @@ public class DataTransferObjectFactory {
      * </p>
      * @param schemaBase SchemaBase
      * @return List of AttributeTypeInfoDTO representative of schemaBase required
-     *         Attribtues
+     *         Attributes
      */
-    public static List generateRequiredAttribtues( String schemaBase ){
+    public static List generateRequiredAttributes( String schemaBase ){
         String attributeNames[] = getRequiredBaseAttributes( schemaBase );
         
         List list = new ArrayList(attributeNames.length);
@@ -206,7 +202,7 @@ public class DataTransferObjectFactory {
         return false;
     }
     /**
-     * Required Attribtues for schemaBase.
+     * Required Attributes for schemaBase.
      * <p>
      * This information is a hardcoded representation of what woudl be available
      * if we had actually parsed the GML XMLSchema.
@@ -222,9 +218,9 @@ public class DataTransferObjectFactory {
     }
     public static Map schemaBaseMap = new HashMap();
     static {
-        schemaBaseMap.put("AbstractFeatureType",
-            new String[] {"description","name","boundedBy"} );
-        schemaBaseMap.put("AbstractFeatureCollectionBaseType",
+        schemaBaseMap.put("gml:AbstractFeatureType",
+			  new String[] {});//"description","name","boundedBy"} );
+        /*schemaBaseMap.put("AbstractFeatureCollectionBaseType",
             new String[] {"description","name","boundedBy"} );
         schemaBaseMap.put("GeometryPropertyType",
             new String[] {"geometry"} );
@@ -246,7 +242,7 @@ public class DataTransferObjectFactory {
             new String[] {"multiPolygonString"} );
         schemaBaseMap.put("MultiGeometryPropertyType",
             new String[] {"multiGeometry"} );
-        schemaBaseMap.put("NullType", new String[] {} );
+	    schemaBaseMap.put("NullType", new String[] {} );*/
     }
 
     

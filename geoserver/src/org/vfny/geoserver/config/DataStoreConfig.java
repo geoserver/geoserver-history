@@ -331,7 +331,7 @@ public class DataStoreConfig {
      * @throws IOException If DataStore could not be aquired
      */
     public DataStore findDataStore(ServletContext sc) throws IOException {
-        return DataStoreUtils.aquireDataStore(connectionParams,sc);
+        return DataStoreUtils.acquireDataStore(connectionParams,sc);
     }
 
     /**

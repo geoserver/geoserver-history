@@ -122,6 +122,12 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         return id;
     }
 
+    protected Map getParams() {
+        Map params = new HashMap(connectionParams);
+	params.put("namespace", getNameSpace().getURI());
+	return getParams(params, data.getBaseDir().toString());
+    }
+
     /**
      * Get Connect params.
      * 
@@ -135,8 +141,9 @@ public class DataStoreInfo extends GlobalLayerSupertype {
      *
      * @task REVISIT: cache these?
      */
-    protected Map getParams() {
-        Map params = Collections.synchronizedMap(new HashMap(connectionParams));
+
+    public static Map getParams(Map m, String baseDir) {
+        Map params = Collections.synchronizedMap(new HashMap(m));
 
         for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
@@ -146,20 +153,25 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             try {
                 if ("url".equals(key) && value instanceof String) {
                     String path = (String) value;
-
-                    if (path.startsWith("file:")) {
+		    LOGGER.info("in string url");
+                    if (path.startsWith("file:data/")) {
                         path = path.substring(5); // remove 'file:' prefix
 
-                        File file = new File(data.getBaseDir(), path);
+                        File file = new File(baseDir, path);
                         entry.setValue(file.toURL().toExternalForm());
                     }
+		    //Not sure about this
                 } else if (value instanceof URL
                         && ((URL) value).getProtocol().equals("file")) {
+		    LOGGER.info("in URL url");
                     URL url = (URL) value;
                     String path = url.getPath();
-                    File file = new File(data.getBaseDir(), path);
-                    entry.setValue(file.toURL());
-                } else if ("dbtype".equals(key) && value instanceof String) {
+		    LOGGER.info("path is " + path);
+		    if (path.startsWith("data/")){
+			File file = new File(baseDir, path);
+			entry.setValue(file.toURL());
+		    }
+                } /*else if ("dbtype".equals(key) && value instanceof String) {
                     String val = (String) value;
 
                     if ((val != null) && val.equals("postgis")) {
@@ -168,13 +180,11 @@ public class DataStoreInfo extends GlobalLayerSupertype {
                                 data.getGeoServer().getCharSet().toString());
                         }
                     }
-                }
+		    } */
             } catch (MalformedURLException ignore) {
                 // ignore attempt to fix relative paths
             }
         }
-
-        params.put("namespace", getNameSpace().getURI());
 
         return params;
     }

@@ -10,7 +10,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.geotools.data.DataStoreFinder;
-
+import org.vfny.geoserver.global.DataStoreInfo;
 import com.vividsolutions.jts.geom.Envelope;
 
 
@@ -35,20 +35,22 @@ import javax.servlet.ServletContext;
  * @version $Id: DataStoreUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
  */
 public abstract class DataStoreUtils {
-    public static DataStore aquireDataStore(Map params, ServletContext sc)
+    public static DataStore acquireDataStore(Map params, ServletContext sc)
         throws IOException {
     	String baseDir = sc.getRealPath("/");
        	DataStore store = DataStoreFinder.getDataStore(getParams(params,baseDir));
         if (store == null) {
             //TODO: this should throw an exception, but the classes using
             //this class aren't ready to actually get it...
-           //LOGGER.fine("could not acquire datastore with params: " + params);
-           //throw new DataSourceException("could not find a dataStore with " +
-            //			  "params: " + params);
             return null;
 	} else {
 	    return store;
 	}
+    }
+
+    protected static Map getParams(Map m, ServletContext sc) {
+	String baseDir = sc.getRealPath("/");
+	return getParams(m, baseDir);
     }
 
     /**
@@ -60,32 +62,7 @@ public abstract class DataStoreUtils {
      * </p>
      */
     protected static Map getParams(Map m, String baseDir){
-    	Map params = new HashMap( m );
-    	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
-    		Map.Entry entry = (Map.Entry) i.next();
-    		String key = (String) entry.getKey();
-    		Object value = entry.getValue();
-    		try {
-	    		if( "url".equals( key ) && value instanceof String ){
-	    			String path = (String) value;
-	    			if( path.startsWith("file:") ){
-	    				path = path.substring( 5 ); // remove 'file:' prefix
-	    				File file = new File( baseDir, path );
-	    				entry.setValue( file.toURL().toExternalForm() );
-	    			}	    			
-	    		}
-	    		else if (value instanceof URL && ((URL)value).getProtocol().equals("file")){
-	    			URL url = (URL) value;
-	    			String path = url.getPath();
-	    			File file = new File( baseDir, path );
-    				entry.setValue( file.toURL() );
-	    		}	    	
-    		}
-    		catch( MalformedURLException ignore ){
-    			// ignore attempt to fix relative paths
-    		}
-    	}
-    	return params;
+        return DataStoreInfo.getParams(m, baseDir);
     }
 
     /**
