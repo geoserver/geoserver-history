@@ -591,7 +591,8 @@
              private="true"
              windowtitle="GeoServer Documentation"
              classpathref="path.build"
-             stylesheetfile="${dir.misc}/documents/stylesheet.css">
+             stylesheetfile="${dir.misc}/documents/stylesheet.css"
+             overview="${dir.src}/overview.html">
       <package name="org.vfny.geoserver.*"/>
       <doctitle>
         <![CDATA[<h1>GeoServer Documentation</h1>]]>
