@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Logger;
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -47,6 +48,9 @@ public class WfsTransResponse {
 
     /** The name of the root element of the xml document */
     public static final String ROOT = "TransactionResponse";
+
+     /** The name of the insert result element of the xml document */
+    public static final String INSERT_RESULT = "InsertResult";
 
     /** Name of the transaction result element of the xml document */
     public static final String TRANS_RESULT = "TransactionResult";
@@ -159,6 +163,7 @@ public class WfsTransResponse {
 	    Element root = doc.createElement(ROOT);
 	    doc.appendChild( root );
 	    root.setAttribute(VERSION, CUR_VERSION);
+	    addInsertResults(root, doc);
 	    //TODO: insert results
 	    Element transResult = doc.createElement(TRANS_RESULT);
 	    LOG.finer("about to add handle: " + handle);
@@ -228,6 +233,16 @@ public class WfsTransResponse {
 	}
     }
 
+    private void addInsertResults(Element root, Document doc){
+	if (insertResults != null) {
+	    Iterator iter = insertResults.iterator();
+	    while(iter.hasNext()) {
+		((InsertResult)iter.next()).getDOM(root, doc);
+	    }
+	}
+    }
+
+
     /**
      * Private class to reprent an InsertResult xml element.
      */
@@ -244,5 +259,24 @@ public class WfsTransResponse {
 	    this.handle = handle;
 	    this.featureIds = featureIds;
 	}
+
+	public void getDOM(Element root, Document doc) {
+	    Element insResultElem = doc.createElement(INSERT_RESULT);
+	     if (!isEmpty(handle)){
+		insResultElem.setAttribute(HANDLE, handle);
+	    }
+	    root.appendChild(insResultElem);
+	    if (featureIds != null) {
+		LOG.finest("there is a list of feature ids in insertRes");
+		Iterator iter = featureIds.iterator();
+		while(iter.hasNext()) {
+		    Element fid = doc.createElement("FeatureId");
+		    fid.setAttribute("fid", iter.next().toString());
+		    LOG.finest("adding fid " + fid);
+		    insResultElem.appendChild(fid);
+		}
+	    }
+	}
+
     }
 }

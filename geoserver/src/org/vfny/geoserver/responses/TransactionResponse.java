@@ -5,6 +5,7 @@
 package org.vfny.geoserver.responses;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
@@ -12,6 +13,7 @@ import org.geotools.data.postgis.PostgisConnection;
 import org.geotools.data.postgis.PostgisDataSource;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.Feature;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollectionDefault;
@@ -61,7 +63,10 @@ public class TransactionResponse {
 	    for(int i = 0, n = request.getSubRequestSize(); i < n; i++) {  
 		SubTransactionRequest subRequest = request.getSubRequest(i);
 		List addedFids = getSub(request.getSubRequest(i), repository);
+		if (addedFids != null){ LOG.finest("first fid is " + 
+						     addedFids.get(0));
 		response.addInsertResult(subRequest.getHandle(), addedFids);
+		}
 		LOG.finest("ended feature");
 	    }        
 	    return response.getXmlResponse();
@@ -106,8 +111,7 @@ public class TransactionResponse {
 	    break;
 	case SubTransactionRequest.INSERT:
 	    InsertRequest insert = (InsertRequest)sub;
-	    doInsert(insert, data);
-	    break;
+	    return doInsert(insert, data);
 	case SubTransactionRequest.DELETE:
 	    LOG.finer("about to perform delete: " + sub);
 	    doDelete((DeleteRequest)sub, data);
@@ -122,13 +126,28 @@ public class TransactionResponse {
      * @param insert the request to perform.
      * @param data the datasource to remove features from.
      */
-    private static void doInsert(InsertRequest insert, DataSource data) 
+    private static List doInsert(InsertRequest insert, DataSource data) 
 	throws WfsTransactionException {
 	String handle = insert.getHandle();
 	try {
+	    ArrayList committed = new ArrayList();
 	    FeatureCollection features = new FeatureCollectionDefault();
-	    features.addFeatures(insert.getFeatures());
+	    Feature[] featureArr = insert.getFeatures();
+	    features.addFeatures(featureArr);
 	    data.addFeatures(features);
+	    if (featureArr != null && featureArr.length > 0) {
+		String featureName = featureArr[0].getSchema().getTypeName();
+		LOG.finer("featureArr length is " + featureArr.length);
+		for(int i = 0; i < featureArr.length; i++) {
+ 	    //TODO: error checking to make sure they got in successfully.
+		    String featureId = //HACK! need to fix fid all the way
+			//through, then we can just call .getId()
+			featureArr[i].getAttributes()[0].toString();
+		    LOG.finer("adding feature " + featureId);
+		    committed.add(featureName + "." + featureId);
+		}
+	    }
+	    return committed;
 	} catch (DataSourceException e) {
 	    LOG.warning("Problem with datasource " + e + " cause: " 
 			+ e.getCause());
