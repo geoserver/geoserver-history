@@ -8,11 +8,11 @@ package org.vfny.geoserver;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -23,98 +23,100 @@ import java.net.URL;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ThreadedBatchTester.java,v 1.2 2004/02/23 23:29:59 dmzwiers Exp $
+ * @version $Id: ThreadedBatchTester.java,v 1.3 2004/03/03 01:15:46 dmzwiers Exp $
  */
 public class ThreadedBatchTester {
 	private static int runs = 100;
 	private static URL url;
+	private static boolean isPost;
+	private static String req = "";
+	private static File log;
 	
 	public static void main(String[] args) {
 		try{
 			loadArgs(args);
-			TestThread[] threads = new TestThread[runs];
-			for(int i=0;i<runs;i++)
-				threads[i] = new TestThread(url);
+			Thread[] threads = new Thread[runs];
+			if(isPost){
+				for(int i=0;i<runs;i++)
+						threads[i] = new TestPostThread(url,req);
+			}else{
+				if(url == null)
+					url = new URL(req);
+				for(int i=0;i<runs;i++)
+					threads[i] = new TestGetThread(url);
+			}
+			
 
 			for(int i=0;i<runs;i++)
 				threads[i].run();
 
-			int good = 0;
-			for(int i=0;i<runs;i++){
-				switch (threads[i].getResult()){
-					case HttpURLConnection.	HTTP_OK:
-						good++;
-					default:
-				}
+			PrintStream os = System.out;
+			if(log!=null && log.canWrite()){
+				os = new PrintStream(new FileOutputStream(log));
 			}
-			System.out.println(good+"/"+runs+" Tests 'OK' ("+((good*1.0)/(runs*1.0))+")");
+			
+			generateOutput(threads,os);
 		}catch(Exception e){
 			e.printStackTrace();
 			usage();
 		}
 	}
 	
+	private static void generateOutput(Thread[] threads, PrintStream os){
+		int good = 0;
+		for(int i=0;i<runs;i++){
+			switch (((TestGetThread)threads[i]).getResult()){
+				case HttpURLConnection.	HTTP_OK:
+					good++;
+				default:
+			}
+		}
+		os.println(good+"/"+runs+" Tests 'OK' ("+((good*1.0)/(runs*1.0))+")");
+	}
+	
 	private static void loadArgs(String[] args) throws IOException{
 		if(args.length==0)
 			return;
 		int i = 0;
-		while(i+1<args.length){
+		while(i<args.length){
 			String key = args[i++];
-			String val = args[i++];
-			if("-n".equals(key)){
+			if("-n".equals(key) && i<args.length){
+				String val = args[i++];
 				runs = Integer.parseInt(val);
 			}else{
-			if("-f".equals(key)){
+			if("-r".equals(key) && i<args.length){
+				String val = args[i++];
 				File f = new File(val);
 				FileReader fr = new FileReader(f);
 				BufferedReader br = new BufferedReader(fr);
 				String t = "";
 				while(br.ready())
 					t += br.readLine();
-				url = new URL(t);
+				req = t;
 			}else{
-			if("-u".equals(key)){
+			if("-u".equals(key) && i<args.length){
+				String val = args[i++];
 			  	url = new URL(val);
+			}else{
+			if("-l".equals(key) && i<args.length){
+				String val = args[i++];
+			  	log = new File(val);
+			}else{
+			if("-p".equals(key)){
+			  	isPost = true;
 			}else{// usage
 				usage();
-			}}}
+			}}}}}
 		}
 	}
 	
 	static void usage(){
 		System.out.println("USAGE:\n");
-		System.out.println("ThreadedBatchTester [ -n ] [-f | -u ]");
+		System.out.println("ThreadedBatchTester [-p][-n] [-r | -u]");
 		System.out.println("-n\t Optional\t Number of duplicate requests to create and run.");
-		System.out.println("-f\t Optional\t Mutually Exclusive with -u\t The file containing the URL to execute.");
-		System.out.println("-u\t Optional\t Mutually Exclusive with -f\t The URL to execute.");
-	}
-}
-
-class TestThread extends Thread{
-	URL url;
-	int result = 0;
-	TestThread(URL u) throws MalformedURLException{
-		url = new URL(u.toString());
-	}
-	
-	int getResult(){
-		return result;
-	}
-	
-	public void run(){
-		try{
-			HttpURLConnection hc = (HttpURLConnection)url.openConnection();
-			hc.connect();
-			yield(); //wait to let everyone else connect before getting result
-    		BufferedReader br = new BufferedReader(new InputStreamReader(hc.getInputStream()));
-    		while(br.ready())
-    			br.readLine();
-			result = hc.getResponseCode();
-			yield(); //wait to let everyone else hit before disconnecting
-			hc.disconnect();
-		}catch(Exception e){
-			e.printStackTrace();
-			result = 0;
-		}
+		System.out.println("-n\t Optional\t Number of duplicate requests to create and run.");
+		System.out.println("-r\t Optional\t Mutually Exclusive with -u\t The file containing the request to execute.");
+		System.out.println("-u\t Optional\t Mutually Exclusive with -r\t The URL to execute.");
+		System.out.println("-l\t Optional\t The Log file.");
 	}
 }
