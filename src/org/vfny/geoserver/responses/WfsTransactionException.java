@@ -34,22 +34,28 @@ public class WfsTransactionException extends WfsException {
      * @param message indicates to the user what went wrong.
      * @param handle the string of the transaction that failed.
      */
-    public WfsTransactionException (String message, String handle) {
+    public WfsTransactionException (String message) {
         super( message );
-	this.handle = handle;
     }
     
     
     /**
      * Constructor for an exception and a handle.
      * @param message indicates to the user what went wrong.
-     * @param handle the string of the transaction that failed.
      */
-    public WfsTransactionException (Exception e, String handle) {
+    public WfsTransactionException (Exception e) {
         super( e.getMessage() );
-	this.handle = handle;
-    }
+    }    
     
+
+
+    /**
+     * @param message indicates to the user what went wrong.
+     * @param locator The message for the .
+     */
+    public WfsTransactionException (String message, String locator) {
+        super(message, locator);
+    }
     
     /**
      * @param message indicates to the user what went wrong.
@@ -61,18 +67,16 @@ public class WfsTransactionException extends WfsException {
         super(message, locator);
 	this.handle = handle;
     }
-    
+
     /**
      * Constructor for an exception, messages and handles.
      * @param e the root exception.
      * @param preMessage more information about exception.
      * @param message indicates to the user what went wrong.
-     * @param handle the string of the transaction that failed.
      */
     public WfsTransactionException (Exception e, String preMessage, 
-				    String locator, String handle) {
+				    String locator) {
         super(e, preMessage, locator);
-	this.handle = handle;
     }
 
     /**
