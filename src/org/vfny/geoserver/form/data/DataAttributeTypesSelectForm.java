@@ -6,7 +6,10 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -16,8 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+
 /**
  * @author User
  *
@@ -48,7 +53,7 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 	}
 	
 	public SortedSet getAttributeTypes() {
-		
+		try {
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
@@ -56,10 +61,20 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 
 		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);		
 		System.out.println("Return!!" +ftConfig);
+        
+        List list = ftConfig.getSchemaAttributes();
+        SortedSet set = new TreeSet();
+        
+        for (Iterator iter = list.iterator(); iter.hasNext();) {
+			AttributeTypeInfoConfig element = (AttributeTypeInfoConfig) iter.next();
+			set.add(element.getName());
+		}
 		
-		return Collections.unmodifiableSortedSet(new TreeSet(
-					ftConfig.getSchemaAttributes()
-				));
+		return Collections.unmodifiableSortedSet(set);
+        } catch (Throwable t) {
+         t.printStackTrace();   
+        }
+        return null;
 	}
 	/**
 	 * @return Returns the buttonAction.
