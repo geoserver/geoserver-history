@@ -1,11 +1,14 @@
 4=//metadata/idinfo/citation/citeinfo/title
+12=//
 31=//metadata/idinfo/citation/citeinfo/pubdate
 62=//metadata/idinfo/descript/abstract
 1003=//metadata/idinfo/citation/citeinfo/origin
 1005=//metadata/idinfo/citation/citeinfo/origin
+1012=//metadata/metainfo/metd
 1016=/
 1018=//metadata/idinfo/citation/citeinfo/pubinfo/publish
 1024=//metadata/dataqual/lineage/srcinfo/srcscale
+1035=/
 2002=//metadata/idinfo/keywords/theme/themekey
 2003=//metadata/idinfo/descript/purpose
 2021=//metadata/idinfo/citation/citeinfo/onlink
@@ -19,6 +22,7 @@
 2043=//metadata/idinfo/keywords/place/placekt
 100=path
 2060=bounding
+2062=//metadata/idinfo/timeperd/timeinfo
 2072=//metadata/idinfo/timeperd/timeinfo/rngdates/begdate
 2073=//metadata/idinfo/timeperd/timeinfo/rngdates/enddate
 3003=//metadata/idinfo/ptcontac/cntinfo/cntorgp/cntorg
