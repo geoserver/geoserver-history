@@ -38,7 +38,7 @@ public class TransactionSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = 
-        System.getProperty("user.dir") + "/misc/testData/unit/requests";
+        System.getProperty("user.dir") + "/misc/unit/requests";
 
     /* Initializes the logger. */
     static {

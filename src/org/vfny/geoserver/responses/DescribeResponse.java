@@ -114,8 +114,7 @@ public class DescribeResponse {
             // set the current file
             // print type data for the table object
             currentFile = config.getTypeDir() + 
-                requestedTables.get(i).toString() + 
-                "/" + config.TYPE_SCHEMA + ".xml";
+                requestedTables.get(i).toString() + config.SCHEMA_FILE;
             tempResponse = tempResponse + writeFile( currentFile );
             //_log.info("current file: " + currentFile);
         }
@@ -160,7 +159,7 @@ public class DescribeResponse {
             // assign temp variables; convenience/confusion lesseners only
             currentFeatureType = file[i].getName();
             currentFileName = targetDirectoryName + "/" + currentFeatureType + 
-                "/" + config.TYPE_SCHEMA + ".xml";
+                config.SCHEMA_FILE;
             
             // actual work of writing out file is delegated to private function
             tempResponse = tempResponse + writeFile(currentFileName);

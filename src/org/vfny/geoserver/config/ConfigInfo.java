@@ -34,9 +34,9 @@ public class ConfigInfo {
     /** Default name for feature type schemas */
     private static final String CAP_DIR =  "/capabilities";
     /** Default name of feature type information */
-    public static final String TYPE_INFO = "info";    
+    public static final String INFO_FILE = "/info.xml" ;
     /** Default name for feature type schemas */
-    public static final String TYPE_SCHEMA = "schema";
+    public static final String SCHEMA_FILE = "/schema.xml";
 
     /** */
     private static ConfigInfo config = null;
