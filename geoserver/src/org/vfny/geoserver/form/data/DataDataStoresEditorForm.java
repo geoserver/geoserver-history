@@ -9,7 +9,6 @@ package org.vfny.geoserver.form.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
@@ -28,7 +27,7 @@ import org.vfny.geoserver.config.DataStoreConfig;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataDataStoresForm extends ActionForm {
+public class DataDataStoresEditorForm extends ActionForm {
 	
 	private String dataStoreID;
 	private boolean enabled;
@@ -48,6 +47,9 @@ public class DataDataStoresForm extends ActionForm {
 	private TreeSet namespaces;
 	
 	private String action;
+    
+    //Used be the ActionForm to inform us that we are creating an entirely new DataStore
+    private boolean newDataStore;
 	
 	/*
 	 * Because of the way that STRUTS works, if the user does not check the enabled box,
@@ -84,14 +86,21 @@ System.out.println("FormRESET");
 
 		dsConfig = config.getDataStore(selectedDataStore);		
 		if (dsConfig == null) {
-			System.out.println("SDS null||empty, so grabbing first one");
-			dsConfig = config.getDataStore( (String) dataStores.first());
+           
+            //We could be creating a new DS here.
+            if (newDataStore == true){
+                System.out.println("[DSFORM]: creating new DS of type " + selectedDataStoreType);
+                dsConfig = new DataStoreConfig(selectedDataStoreType);
+            } else {
+                System.out.println("[DSFORM]: SDS null||empty, so grabbing first one");
+    			dsConfig = config.getDataStore( (String) dataStores.first());
+            }
 		}
 		
-		dataStoreID = dsConfig.getId();
-		description = dsConfig.getAbstract();
-		enabled = dsConfig.isEnabled();
-		namespace = dsConfig.getNameSpaceId();
+		dataStoreID = dsConfig.getId(); System.out.println("[DSFORM]: dsID: " + dataStoreID);
+		description = dsConfig.getAbstract(); System.out.println("[DSFORM]: desc: " + description);
+		enabled = dsConfig.isEnabled(); System.out.println("[DSFORM]: enabld: " + enabled);
+		namespace = dsConfig.getNameSpaceId(); System.out.println("[DSFORM]: namespace: " + namespace);
 
 		//Retrieve connection params		
 		
@@ -99,7 +108,8 @@ System.out.println("FormRESET");
 		connectionParamValues = new ArrayList (dsConfig.getConnectionParams().values());
 		
 		System.out.println("------------------------------DUMP------------------------------");
-		System.out.println(connectionParamKeys.toString() + " ========= "+connectionParamKeys.size());
+		System.out.println(":KEYS:"+ connectionParamKeys.toString() + " ========= "+connectionParamKeys.size());
+        System.out.println(":VALUES:"+ connectionParamValues.toString() + " ========= "+connectionParamValues.size());
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -260,6 +270,17 @@ System.out.println("FormRESET");
 	 */
 	public void setConnectionParamValues(int index, String value) {
 		connectionParamValues.set(index, value);
+	}
+
+	/**
+	 * setNewDataStore purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param b
+	 */
+	public void setNewDataStore(boolean b) {
+		newDataStore = b;
 	}
 
 }

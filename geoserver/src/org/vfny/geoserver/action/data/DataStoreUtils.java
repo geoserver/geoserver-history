@@ -17,9 +17,9 @@ import java.util.Map;
 /**
  * A collecitno of utilties for dealing with GeotTools DataStore.
  * 
- * @author Richard, Refractions Research, Inc.
+ * @author Richard Gould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.1.2.1 2004/01/11 02:30:35 emperorkefka Exp $
+ * @version $Id: DataStoreUtils.java,v 1.1.2.2 2004/01/12 02:10:10 emperorkefka Exp $
  */
 public abstract class DataStoreUtils {
     

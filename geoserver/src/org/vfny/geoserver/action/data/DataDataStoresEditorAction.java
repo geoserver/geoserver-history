@@ -7,12 +7,10 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,14 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
 
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.form.data.DataDataStoresForm;
+import org.vfny.geoserver.form.data.DataDataStoresEditorForm;
 
 /**
  * @author rgould
@@ -35,21 +31,25 @@ import org.vfny.geoserver.form.data.DataDataStoresForm;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataDataStoresAction extends ConfigAction {
+public class DataDataStoresEditorAction extends ConfigAction {
 
 	public ActionForward execute(ActionMapping mapping,
 		ActionForm form,
 		HttpServletRequest request,
 		HttpServletResponse response)
 		throws IOException, ServletException {
+            
+        ServletContext context = getServlet().getServletContext();
 			
 System.out.println("lalalala DataStoresAction.exexcute!");
 			
-		DataDataStoresForm dataStoresForm = (DataDataStoresForm) form;
+		DataDataStoresEditorForm dataStoresForm = (DataDataStoresEditorForm) form;
 		
 		String dataStoreID = dataStoresForm.getDataStoreID();
 		String namespace = dataStoresForm.getNamespace();
 		String description = dataStoresForm.getDescription();
+        
+        String selectedDataStoreType = dataStoresForm.getSelectedDataStoreType();
 
 		// After extracting params into a map
 		Map aMap = new HashMap();
@@ -71,22 +71,35 @@ System.out.println("lalalala DataStoresAction.exexcute!");
 		System.out.println("[DataStoresAction]: action: "+action+", selectedDS: "+dataStoresForm.getSelectedDataStore());		
 		if (action.equals("edit") || action.equals("submit")) {
 			config = (DataStoreConfig) dataConfig.getDataStore(dataStoresForm.getSelectedDataStore());
-		} else if (action.equals("new")) {
-			config = new DataStoreConfig( dataStoresForm.getSelectedDataStoreType());
+            
+            //if the config comes back null, we are creating a new DataStore.
+            if (config == null) {
+                config = new DataStoreConfig(selectedDataStoreType);
+            }
+		} /* else if (action.equals("new")) {
+            System.out.println("### NEW ### requested, reset, forward, dsType: " + selectedDataStoreType);
+            //Return them back to the form page so they can create a new dataStore.
+            
+            context.removeAttribute("selectedDataStore");
+            dataStoresForm.setNewDataStore(true);
+            dataStoresForm.setSelectedDataStoreType(selectedDataStoreType);
+            dataStoresForm.reset(mapping, request);
+            dataStoresForm.setAction("new");
+            return mapping.findForward("dataConfigDataStores");
 		}
-		
+		*/
 		//If they push edit, simply forward them back so the information is repopulated.
-		if (action.equals("edit")) {
+/*		if (action.equals("edit")) {
 			System.out.println("edit selected for dataStore: " + dataStoresForm.getSelectedDataStore());
 			dataStoresForm.reset(mapping, request);
 			return mapping.findForward("dataConfigDataStores");
 		}
-		
-		if (action.equals("delete")) {
+*/		
+/*		if (action.equals("delete")) {
 			dataConfig.removeDataStore(dataStoresForm.getSelectedDataStore());
 			System.out.println("Delete requested on " + dataStoresForm.getSelectedDataStore());
 		} else {
-			
+*/			
 			config.setId(dataStoreID);
 			config.setEnabled(enabled);
 			config.setNameSpaceId(namespace);
@@ -95,7 +108,7 @@ System.out.println("lalalala DataStoresAction.exexcute!");
 			//Do configuration parameters here.
 		
 			dataConfig.addDataStore(dataStoreID, config);
-		}
+//		}
 			
 		dataStoresForm.reset(mapping, request);				
 		return mapping.findForward("dataConfigDataStores");
