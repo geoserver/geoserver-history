@@ -29,7 +29,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.15 2004/02/09 23:30:05 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.16 2004/03/01 18:58:47 dmzwiers Exp $
  */
 public class FeatureTypeConfig {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -204,7 +204,7 @@ public class FeatureTypeConfig {
      *
      * @throws NullPointerException DOCUMENT ME!
      */
-    public void update(FeatureTypeInfoDTO f) {
+   /* public void update(FeatureTypeInfoDTO f) {
         if (f == null) {
             throw new NullPointerException(
                 "FeatureTypeInfo Data Transfer Object required");
@@ -235,7 +235,7 @@ public class FeatureTypeConfig {
         dirName = f.getDirName();
         schemaName = f.getSchemaName();
         schemaBase = f.getSchemaBase();
-    }
+    }*/
 
     /**
      * Implement toDTO.
@@ -597,12 +597,13 @@ public class FeatureTypeConfig {
      * @return
      */
     public List getSchemaAttributes() {
-        for (Iterator iter = schemaAttributes.iterator(); iter.hasNext();) {
-            AttributeTypeInfoConfig element = (AttributeTypeInfoConfig) iter
-                .next();
-        }
-
-        return schemaAttributes;
+    	if(schemaAttributes == null || schemaAttributes.isEmpty()){
+    		if("".equals(getSchemaBase())){
+    			return null;
+    		}
+    	}
+    	List l = new LinkedList(schemaAttributes);
+        return l;
     }
 
     /**

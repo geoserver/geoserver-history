@@ -14,12 +14,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.requests.Requests;
 
 /**
@@ -30,7 +32,7 @@ import org.vfny.geoserver.requests.Requests;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: JSPCompiler.java,v 1.2 2004/02/24 21:59:46 dmzwiers Exp $
+ * @version $Id: JSPCompiler.java,v 1.3 2004/03/01 18:57:07 dmzwiers Exp $
  */
 public class JSPCompiler extends HttpServlet {
 
@@ -49,7 +51,16 @@ public class JSPCompiler extends HttpServlet {
     	if(spot<pages.length){
     		try{
     		  String base = Requests.getBaseUrl(request);
-    		  doLoad(base + pages[spot],response);
+    	      ServletContext session = request.getSession().getServletContext();
+    	      synchronized (session) {
+    	          UserContainer u2 = new UserContainer();
+    	          u2.setUsername("compiler");
+    	          session.setAttribute(UserContainer.SESSION_KEY,u2);
+    	      }
+    	      doLoad(base + pages[spot],response);
+        	  synchronized (session) {
+    	          session.setAttribute(UserContainer.SESSION_KEY,null);
+        	  }
     		}catch(Exception e){
     			e.printStackTrace();
     		}
