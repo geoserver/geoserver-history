@@ -6,6 +6,8 @@
  */
 package org.geotools.validation;
 
+import java.beans.PropertyDescriptor;
+
 
 /**
  * DefaultFeatureValidationBeanInfo purpose.
@@ -14,8 +16,8 @@ package org.geotools.validation;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DefaultIntegrityValidationBeanInfo.java,v 1.1 2004/01/31 00:24:05 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DefaultIntegrityValidationBeanInfo.java,v 1.2 2004/02/10 20:33:31 dmzwiers Exp $
  */
 public class DefaultIntegrityValidationBeanInfo extends ValidationBeanInfo {
 
@@ -28,5 +30,9 @@ public class DefaultIntegrityValidationBeanInfo extends ValidationBeanInfo {
 	 */
 	public DefaultIntegrityValidationBeanInfo() {
 		super();
+	}
+
+	public PropertyDescriptor[] getPropertyDescriptors(){
+		return super.getPropertyDescriptors();
 	}
 }

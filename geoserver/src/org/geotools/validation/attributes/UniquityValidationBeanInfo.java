@@ -20,7 +20,7 @@ import org.geotools.validation.DefaultFeatureValidationBeanInfo;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UniquityValidationBeanInfo.java,v 1.2 2004/02/10 19:01:55 dmzwiers Exp $
+ * @version $Id: UniquityValidationBeanInfo.java,v 1.3 2004/02/10 20:33:31 dmzwiers Exp $
  */
 public class UniquityValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
 	
@@ -44,7 +44,7 @@ public class UniquityValidationBeanInfo extends DefaultFeatureValidationBeanInfo
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors(){
 			PropertyDescriptor[] pd2 = super.getPropertyDescriptors();
-			ResourceBundle resourceBundle = getResourceBundle(UniquityValidationBeanInfo.class);
+			ResourceBundle resourceBundle = getResourceBundle(UniquityValidation.class);
 			if(pd2 == null)
 				pd2 = new PropertyDescriptor[0];
 			PropertyDescriptor[] pd = new PropertyDescriptor[pd2.length + 1];
@@ -52,7 +52,7 @@ public class UniquityValidationBeanInfo extends DefaultFeatureValidationBeanInfo
 			for(;i<pd2.length;i++)
 				pd[i] = pd2[i];
 			try{
-				pd[i] = createPropertyDescriptor("attributeName",UniquityValidationBeanInfo.class,resourceBundle);
+				pd[i] = createPropertyDescriptor("attributeName",UniquityValidation.class,resourceBundle);
 				pd[i].setExpert(false);
 
 			}catch(IntrospectionException e){

@@ -10,7 +10,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.ResourceBundle;
 
-import org.geotools.validation.DefaultFeatureValidationBeanInfo;
+import org.geotools.validation.DefaultIntegrityValidationBeanInfo;
 
 /**
  * SQLValidationBeanInfo purpose.
@@ -20,9 +20,9 @@ import org.geotools.validation.DefaultFeatureValidationBeanInfo;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UniqueFIDValidationBeanInfo.java,v 1.2 2004/02/10 19:01:55 dmzwiers Exp $
+ * @version $Id: UniqueFIDValidationBeanInfo.java,v 1.3 2004/02/10 20:33:31 dmzwiers Exp $
  */
-public class UniqueFIDValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
+public class UniqueFIDValidationBeanInfo extends DefaultIntegrityValidationBeanInfo {
 	
 	/**
 	 * GazetteerNameValidationBeanInfo constructor.
@@ -44,7 +44,7 @@ public class UniqueFIDValidationBeanInfo extends DefaultFeatureValidationBeanInf
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors(){
 			PropertyDescriptor[] pd2 = super.getPropertyDescriptors();
-			ResourceBundle resourceBundle = getResourceBundle(UniqueFIDValidationBeanInfo.class);
+			ResourceBundle resourceBundle = getResourceBundle(UniqueFIDValidation.class);
 			if(pd2 == null)
 				pd2 = new PropertyDescriptor[0];
 			PropertyDescriptor[] pd = new PropertyDescriptor[pd2.length + 1];
@@ -52,7 +52,7 @@ public class UniqueFIDValidationBeanInfo extends DefaultFeatureValidationBeanInf
 			for(;i<pd2.length;i++)
 				pd[i] = pd2[i];
 			try{
-				pd[i] = createPropertyDescriptor("uniqueID",UniqueFIDValidationBeanInfo.class,resourceBundle);
+				pd[i] = createPropertyDescriptor("uniqueID",UniqueFIDValidation.class,resourceBundle);
 				pd[i].setExpert(false);
 
 			}catch(IntrospectionException e){

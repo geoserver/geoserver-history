@@ -47,7 +47,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.31 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.32 2004/02/10 20:33:30 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
 	public static final String WEB_CONTAINER_KEY = "DATA";
@@ -360,6 +360,12 @@ SCHEMA:
                             LOGGER.severe("FeatureTypeInfo " + key
                                 + " ignored - attribute '" + attributeName
                                 + "' not found!");
+                            String names = "";
+                            Iterator x = attributeNames.iterator();
+
+                            if(x.hasNext()) names = x.next().toString();
+                            while(x.hasNext()) names = ":::"+x.next().toString();
+                            LOGGER.severe("Valid attribute names include :::"+names);
                         }
                        	errors.put(featureTypeDTO,new ConfigurationException("FeatureTypeInfo " + key
                         			+ " could not be used - DataStore " + dataStoreId

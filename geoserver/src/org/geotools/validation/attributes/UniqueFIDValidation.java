@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UniqueFIDValidation.java,v 1.3 2004/02/10 18:30:08 dmzwiers Exp $
+ * @version $Id: UniqueFIDValidation.java,v 1.4 2004/02/10 20:33:31 dmzwiers Exp $
  */
 public class UniqueFIDValidation extends DefaultIntegrityValidation {
 
@@ -135,6 +135,24 @@ public class UniqueFIDValidation extends DefaultIntegrityValidation {
 		}
 		
 		return result;
+	}
+
+	/**
+	 * Access uniqueID property.
+	 * 
+	 * @return Returns the uniqueID.
+	 */
+	public String getUniqueID() {
+		return uniqueID;
+	}
+
+	/**
+	 * Set uniqueID to uniqueID.
+	 *
+	 * @param uniqueID The uniqueID to set.
+	 */
+	public void setUniqueID(String uniqueID) {
+		this.uniqueID = uniqueID;
 	}
 
 }
