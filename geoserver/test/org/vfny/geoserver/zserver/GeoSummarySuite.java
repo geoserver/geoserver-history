@@ -11,7 +11,6 @@ import org.apache.lucene.document.Field;
 import org.w3c.dom.NodeList;
 import java.io.FileInputStream;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -19,9 +18,9 @@ import java.util.logging.Logger;
  * Tests the GeoSummary classes's setting of fields and creation of summaries.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoSummarySuite.java,v 1.2 2003/09/09 21:43:05 cholmesny Exp $
+ * @version $Id: GeoSummarySuite.java,v 1.3 2003/09/16 01:42:33 cholmesny Exp $
  *
- * @task HACK: we need to test xml output.  Our old way of comparing strings.
+ * @task TODO: we need to test xml output.  Our old way of comparing strings.
  *       no longer works, as different xml implementations lead to different
  *       string representations.
  */
@@ -29,7 +28,8 @@ public class GeoSummarySuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/
 
     //static {
-    //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
+    //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
+    //java.util.logging.Level.FINEST);
     //}
 
     /** Standard logging instance */
@@ -183,11 +183,11 @@ public class GeoSummarySuite extends TestCase {
         //    + "</bounding></spdom></idinfo></metadata>");
     }
 
-    private void testXmlSummary(GeoSummary summary, String expected) {
-        org.w3c.dom.Document doc = summary.getXmlSummary();
-        NodeList nodes = doc.getElementsByTagName("metadata");
-        String nodeString = nodes.item(0).toString();
-        LOGGER.finest(nodeString);
-        assertTrue(nodeString.equals(expected));
-    }
+    //private void testXmlSummary(GeoSummary summary, String expected) {
+    //  org.w3c.dom.Document doc = summary.getXmlSummary();
+    //  NodeList nodes = doc.getElementsByTagName("metadata");
+    //  String nodeString = nodes.item(0).toString();
+    //  LOGGER.finest(nodeString);
+    //  assertTrue(nodeString.equals(expected));
+    //}
 }
