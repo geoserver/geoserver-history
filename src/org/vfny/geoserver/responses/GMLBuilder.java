@@ -175,6 +175,20 @@ public class GMLBuilder {
         featureTypeWriter.end();
     }
     
+    /**
+     * Adds the featureType to the current feature collection.  This
+     * currently only adds it to the xmlns to get the right schema, 
+     * so that DescribeFeatureType calls all the type names.  This is
+     * obviously less than ideal, as typeNames in different namespaces
+     * won't really work together that well.
+     *
+     * @param typeName the prefixed typeName that describeFeatureType should
+     * call.
+     */
+    public void addFeatureType(String typeName) {
+	featureTypeWriter.addType(typeName);
+    }
+    
     
     /**
      * Add an attribute start and end tag, with enclosed attribtue value
@@ -317,6 +331,8 @@ public class GMLBuilder {
 	private int boxInsertPos; //= FEATURE_COLL_INIT.length() + 
 	//XML_HEADER.length();
 
+	private int describeInsertPos;
+
 	private Geometry envelope;
 
 	private String srs;
@@ -346,10 +362,18 @@ public class GMLBuilder {
             finalResult.append(schIndent  + configInfo.getUrl() + 
 	    	 "/DescribeFeatureType?" //HACK: bad hard code here.
 	    	 + "typeName=" + typeInfo.getFullName());
+	    describeInsertPos = finalResult.length();
 	    finalResult.append(schIndent + WFS_URI + schIndent + WFS_LOC + "\">");
 	    boxInsertPos = finalResult.length();
 	}
-        
+
+	public void addType(String typeName) {
+	    finalResult.insert(describeInsertPos, "," + typeName);
+	    boxInsertPos += typeName.length() + 1;
+	    describeInsertPos += typeName.length() + 1;
+	}
+		
+
         /**
          * Writes an end tag for the feature collection/type.
          */ 

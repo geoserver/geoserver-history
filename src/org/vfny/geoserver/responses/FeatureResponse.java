@@ -31,7 +31,7 @@ import org.vfny.geoserver.config.ConfigInfo;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.20 2003/06/12 19:43:51 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.21 2003/07/03 14:08:38 cholmesny Exp $
  */
 public class FeatureResponse {
 
@@ -60,7 +60,8 @@ public class FeatureResponse {
 	int maxFeatures = request.getMaxFeatures();
 
 	GMLBuilder gml = new GMLBuilder(configInfo.formatOutput());
-        for(int i = 0, n = request.getQueryCount(); i < n && maxFeatures > 0; i++) {            
+        Set featureTypes = new HashSet();
+	for(int i = 0, n = request.getQueryCount(); i < n && maxFeatures > 0; i++) {            
 	    Query curQuery = request.getQuery(i);
 	    TypeInfo meta = repository.getType(curQuery.getTypeName());
 	    if (meta == null) {
@@ -70,9 +71,21 @@ public class FeatureResponse {
 				       getLocator(curQuery));
 	    }
 	    String srid = meta.getSrs();
+	    String typeName = meta.getFullName();
 	    if (i == 0){ //HACK: different srids can go in same collection.
 		gml.startFeatureCollection(srid, meta);
-	    } //we only make the bbox for the first one.
+		featureTypes.add(typeName);
+	    } else {
+		//HACK: Yet another hack.  I hereby nominate GMLBuilder as
+		//the most hacked class ever.  We need the geotools gml
+		//writer, along with typed featureCollections.  Right now
+		//this just adds the typename to the xmlns describe schema
+		//call.  Does not handle prefixes, or correct srid handling.
+		if (!featureTypes.contains(typeName)){
+		    gml.addFeatureType(typeName);
+		    featureTypes.add(typeName);
+		}
+	    }
 	    Feature[] curFeatures = getQuery(curQuery, meta, maxFeatures);
 	    maxFeatures = maxFeatures - curFeatures.length;
 	    addFeatures(curFeatures, gml, meta);
