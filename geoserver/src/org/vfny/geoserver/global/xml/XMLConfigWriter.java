@@ -14,6 +14,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.xml.transform.TransformerException;
+
+import org.geotools.filter.FilterTransformer;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -769,20 +772,28 @@ public class XMLConfigWriter {
             if (ft.getDefinitionQuery() != null) {
                 cw.openTag("definitionQuery");
 
-                StringWriter sw = new StringWriter();
-
                 /*
-                 * @TODO replace with current implementation.
+                 * @REVISIT: strongly test this works.
                  */
+                /*
+                StringWriter sw = new StringWriter();
                 org.geotools.filter.XMLEncoder xe = new org.geotools.filter.XMLEncoder(sw);
                 xe.encode(ft.getDefinitionQuery());
                 cw.writeln(sw.toString());
                 cw.closeTag("definitionQuery");
+                */
+                FilterTransformer ftransformer = new FilterTransformer();
+                ftransformer.setOmitXMLDeclaration(true);
+                ftransformer.setNamespaceDeclarationEnabled(false);
+                String sfilter = ftransformer.transform(ft.getDefinitionQuery());
+                cw.writeln(sfilter);
             }
 
             cw.closeTag("featureType");
             fw.close();
         } catch (IOException e) {
+            throw new ConfigurationException(e);
+        } catch (TransformerException e) {
             throw new ConfigurationException(e);
         }
     }
