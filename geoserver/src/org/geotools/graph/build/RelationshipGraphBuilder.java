@@ -20,15 +20,20 @@ import org.geotools.graph.*;
 
 
 /**
- * An implentation of GraphBuilder that is used to build graphs in which  the
- * relationship between features can be defined. In this type of graph, the
- * features are represented by the nodes, and the relationships by the edges.
+ * General purpose graph builder based on user defined relationships.
+ * <p>
+ * In this type of graph, the features are represented by the nodes,
+ * and the relationships by the edges. Relationships are defined using the
+ * FeatureRelator interface as a Stratagy object (GOF Stratagy pattern).
+ * </p>
  */
 public class RelationshipGraphBuilder implements GraphBuilder {
     /** DOCUMENT ME!  */
     private Graph m_graph;
 
-    /** DOCUMENT ME!  */
+    /**
+     * Defines the relationship on which this graph is based.     
+     */
     private FeatureRelator m_relator;
 
         /** DOCUMENT ME!  */

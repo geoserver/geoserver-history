@@ -17,8 +17,12 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public class PolygonComparator extends FeatureComparator {
     /**
-     * DOCUMENT ME!
-     *
+     * Implements the touches relationship
+     * <p>
+     * Touches is a bidirecitonal relationship - so the order in which the
+     * features are added into the graph should not effect the resulting
+     * outcome.
+     * </p>
      * @param f1 DOCUMENT ME!
      * @param f2 DOCUMENT ME!
      *

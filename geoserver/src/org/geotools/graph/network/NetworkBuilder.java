@@ -13,10 +13,10 @@ import org.geotools.graph.build.LineGraphBuilder;
 
 
 /**
- * DOCUMENT ME!
+ * Network builder
  *
  * @author Justin Deoliveira
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class NetworkBuilder extends LineGraphBuilder {
     /**

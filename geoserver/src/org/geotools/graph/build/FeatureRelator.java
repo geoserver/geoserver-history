@@ -11,11 +11,38 @@ import org.geotools.feature.Feature;
 
 
 /**
- * A FeatureRelator determines if there is logical relationship between two
- * features at the graph level. A FeatureRelator uses a  {@link
- * FeatureComparator} to determine the kind of relationship present  between
- * two Features, and then determines if this relationship should  be
- * represented explicitly in thh graph.
+ * A FeatureRelator determines the logical relationship between two features.
+ * <p>
+ * A FeatureRelator uses a  {@link FeatureComparator} to determine the kind of
+ * relationship present  between two Features, and then determines if this
+ * relationship should  be represented explicitly in thh graph.
+ * </p>
+ * <p>
+ * Questions for JG:
+ * <ul>
+ * <li>
+ * Q: Do we need to specify any mathmatical limits on this relationship
+ * (bidirectional Y?, reflecive N?, transitive N? )?</li>
+ * <li>
+ * Q: should we just let the result not make sense if the relationship does not
+ * make sense (garbage in, garbage out)?</li>
+ * <li>
+ * Q: is this the kind of thing that should be defined by the given
+ * GraphBuilder's themselves - a directed graph builder may not wish to work
+ * with a reflective relationship?
+ * </li>
+ * </ul>
+ * </p>
+ * <b>Note:</b><br>
+ * If featureRelator provided some kind of metadata on these issues,
+ * especially for ones limited to specific Geometry types like LineString,
+ * we could have a factory that matched relationship with the most efficient
+ * kind of Graph representation.
+ * </p>
+ * <p>
+ * A good example relationship is touches, it is bidirectional. It is not
+ * reflexive. It is not transitive.
+ * </p> 
  */
 public abstract class FeatureRelator {
     /** FeatureComparator  */

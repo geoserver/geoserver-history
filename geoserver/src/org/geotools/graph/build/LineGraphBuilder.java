@@ -7,6 +7,7 @@ package org.geotools.graph.build;
 
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
 import java.util.ArrayList;
@@ -21,11 +22,13 @@ import org.geotools.graph.*;
 
 
 /**
- * A specific implentation of GraphBuilder that is used to build graphs from
- * linear features. In this type of graph, Features are represented by the
+ * Implentation of GraphBuilder that builds graphs from linear features.
+ * <p>
+ * In this type of graph, Features are represented by the
  * edges, and relationships by the nodes. A feature is related to another
  * feature when one of its enpoints is shared with one of the endpoints of
  * another feature.
+ * </p>
  */
 public class LineGraphBuilder implements GraphBuilder {
     /** DOCUMENT ME!  */
@@ -88,18 +91,28 @@ public class LineGraphBuilder implements GraphBuilder {
     }
 
     /**
+     * Adds feature to the graph.
+     * <p>
+     * This is a custom implementaiton in which only the end points of the
+     * feature are considered (LineString geometry is required ).
+     * </p>
      * @see GraphBuilder#add(Feature)
+     * @param feature Feature with LineString geometry
      */
     public GraphComponent add(Feature feature) {
-        LineString ls = (LineString) feature.getDefaultGeometry();
+    	Geometry geometry = feature.getDefaultGeometry();
+    	if( geometry == null || !(geometry instanceof LineString ) ){
+    		throw new IllegalArgumentException("LineString geometry required for graph");
+    	}
+        LineString lineString = (LineString) geometry;
 
-        m_dummy.x = ls.getCoordinateN(0).x;
-        m_dummy.y = ls.getCoordinateN(0).y;
+        m_dummy.x = lineString.getCoordinateN(0).x;
+        m_dummy.y = lineString.getCoordinateN(0).y;
 
         Node n1 = (Node) createNode(null, m_dummy);
 
-        m_dummy.x = ls.getCoordinateN(ls.getNumPoints() - 1).x;
-        m_dummy.y = ls.getCoordinateN(ls.getNumPoints() - 1).y;
+        m_dummy.x = lineString.getCoordinateN(lineString.getNumPoints() - 1).x;
+        m_dummy.y = lineString.getCoordinateN(lineString.getNumPoints() - 1).y;
 
         Node n2 = (Node) createNode(null, m_dummy);
 
