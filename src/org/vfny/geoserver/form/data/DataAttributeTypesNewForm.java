@@ -7,8 +7,11 @@
 package org.vfny.geoserver.form.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -21,11 +24,15 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.data.DataStoreUtils;
+import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.requests.Requests;
 /**
  * @author User
  *
@@ -72,33 +79,45 @@ public class DataAttributeTypesNewForm extends ActionForm {
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
-		System.out.println("HATE LEVEL 1");
 		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+        
+        UserContainer user = Requests.getUserContainer( request );
+        
+        user.getFeatureTypeConfig();
+        
+        
 		String dataStoreID = ftConfig.getDataStoreId();
 		DataStoreConfig dsConfig = config.getDataStore(dataStoreID);
-		System.out.println("HATE LEVEL 2");
 		DataStoreFactorySpi dsFactory = dsConfig.getFactory();
-		System.out.println("HATE LEVEL 3");
 		Map params = DataStoreUtils.toConnectionParams(dsFactory, dsConfig.getConnectionParams());
-		System.out.println("HATE LEVEL 4");	
+
         DataStore dataStore=null;
-        try {
 		dataStore = DataStoreUtils.aquireDataStore(params);
-        }
-        catch( Throwable t){
-         t.printStackTrace();         
-        }
-System.out.println("BORKBORKNBOBRKHJROJFALDKJFLAKD");
 		
-		
-		//int index = selectedFeatureType.indexOf(dataStoreID+".");
-		//String attributeTypeName = selectedFeatureType.substring(index);
-		//System.out.println("ATNew::getNewAttributeTypes -- index = " +index+", substr = " +selectedNewAttributeType);
 		FeatureType featureType = dataStore.getSchema(ftConfig.getName());
+        System.out.println("STRAFBAR");
+        SortedSet set = new TreeSet();
+        List list = Arrays.asList(featureType.getAttributeTypes());
+        for (Iterator iter = list.iterator(); iter.hasNext();) {
+			AttributeType element = (AttributeType) iter.next();
+            System.out.println("STRAFBAR ZWEI: " +element.getName());
+			set.add(element.getName());
+		}
         
-		return Collections.unmodifiableSortedSet(new TreeSet(
-				Arrays.asList(featureType.getAttributeTypes())
-		));
+        
+        //Create list to diff against.
+        
+        List alternateList = ftConfig.getSchemaAttributes();
+        SortedSet alternateSet = new TreeSet();
+        
+        for (Iterator iter = alternateList.iterator(); iter.hasNext();) {
+            AttributeTypeInfoConfig element = (AttributeTypeInfoConfig) iter.next();
+            alternateSet.add(element.getName());
+        }
+        
+        set.removeAll(alternateSet);        
+        
+		return Collections.unmodifiableSortedSet(set);
 	}
 
 }

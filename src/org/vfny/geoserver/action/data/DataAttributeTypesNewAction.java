@@ -15,9 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.geotools.data.DataStore;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataAttributeTypesNewForm;
 /**
@@ -33,19 +37,25 @@ public class DataAttributeTypesNewAction extends ConfigAction {
 			HttpServletResponse response)
 	throws IOException, ServletException {
 		
-		//CREATE A BLANK ATTRIBUTE TYPE, SAVE IT IN SESSION
-		//AND FORWARD TO EDITOR
-        DataConfig dataConfig = (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
-        FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
-        AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) ftConfig.getAttributeFromSchema((String) request.getSession().getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE));
+        DataAttributeTypesNewForm form = (DataAttributeTypesNewForm) incomingForm;
         
-		DataAttributeTypesNewForm form = (DataAttributeTypesNewForm) incomingForm;
-		String selectedAttributeType = form.getSelectedNewAttributeType();
-		
+		DataConfig dataConfig = (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+        FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+        AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) ftConfig.getAttributeFromSchema(form.getSelectedNewAttributeType());
+
+        String dataStoreID = ftConfig.getDataStoreId();
+        String featureTypeName = ftConfig.getName();
+        
+        DataStoreConfig dsConfig = dataConfig.getDataStore(dataStoreID);
+        DataStore dataStore = dsConfig.findDataStore();
+        
+        FeatureType featureType = dataStore.getSchema(featureTypeName);        
+        
 		//Retrieve Selected one and populate and save it
-		AttributeTypeInfoConfig atiConfig = null;
+        AttributeType attributeType = featureType.getAttributeType(form.getSelectedNewAttributeType());
+		AttributeTypeInfoConfig atiConfig = new AttributeTypeInfoConfig(attributeType);
 		
-		request.getSession().setAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE, selectedAttributeType);
+		request.getSession().setAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE, atiConfig);
 		
 		return mapping.findForward("dataConfigFeatureTypes");
 	}

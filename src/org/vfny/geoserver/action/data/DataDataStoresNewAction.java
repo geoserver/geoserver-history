@@ -24,8 +24,8 @@ import org.vfny.geoserver.form.data.DataDataStoresNewForm;
  * </p>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresNewAction.java,v 1.2 2004/01/12 21:01:25 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresNewAction.java,v 1.3 2004/01/20 20:26:49 emperorkefka Exp $
  */
 public class DataDataStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -34,6 +34,13 @@ public class DataDataStoresNewAction extends ConfigAction {
         HttpServletResponse response)
         throws IOException, ServletException {
 
+        /*
+        if( isLoggedIn( request )){
+        	return forward to login page 
+        }
+        UserContainer user = getUserContainer( request );
+        */        
+        
         DataDataStoresNewForm newForm = (DataDataStoresNewForm) form;
         DataStoreConfig newDataStoreConfig;
         

@@ -49,12 +49,8 @@ public class DataAttributeTypesEditorForm extends ActionForm {
 		super.reset(arg0, request);
         this.request = request;
 		
-		String selectedAttributeType = (String) request.getSession().getAttribute("selectedAttributeType");
-				
-		ServletContext context = getServlet().getServletContext();
-		DataConfig dataConfig = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
-		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
-		AttributeTypeInfoConfig config = ftConfig.getAttributeFromSchema(selectedAttributeType);
+        FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+		AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) request.getSession().getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
 		
 		nillible = config.isNillable();
 		minOccurs = Integer.toString(config.getMinOccurs());
@@ -188,11 +184,8 @@ public class DataAttributeTypesEditorForm extends ActionForm {
         
         for (int i = 0; i < types.length; i++) {
             List list = GMLUtils.schemaList(types[i].getName(), types[i].getClass());
-            System.out.println("SKOG["+i+"]"+"name/class:"+types[i].getName()+"/"+types[i].getClass());
-            System.out.println("Listsize:"+list.size());
             for (Iterator iter = list.iterator(); iter.hasNext();) {
 				String element = (String) iter.next();
-                System.out.println("Element: " + element);
                 set.add(element);
 			}
         }    
