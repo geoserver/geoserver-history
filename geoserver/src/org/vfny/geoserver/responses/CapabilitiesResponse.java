@@ -255,6 +255,7 @@ public class CapabilitiesResponse {
         tempCapabilityInfo.append(tempReturnCapability("DescribeFeatureType"));
         tempCapabilityInfo.append(tempReturnCapability("GetFeature"));
 	tempCapabilityInfo.append(tempReturnCapability("Transaction"));
+	tempCapabilityInfo.append(tempReturnCapability("LockFeature"));
         tempCapabilityInfo.append("\n    </Request>\n  </Capability>\n");
         
         try {
