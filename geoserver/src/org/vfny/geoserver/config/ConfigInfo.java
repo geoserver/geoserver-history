@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Map;
+import java.util.Properties;
 import javax.servlet.ServletContext;
 import javax.servlet.Servlet;
 
@@ -51,6 +52,8 @@ public class ConfigInfo {
     private ServiceConfig serviceGlobal;
      /** a DOM class to read wfs global configuration information */
     private WfsConfig wfsGlobal;
+      /** a DOM class to read wfs global configuration information */
+    private ZServerConfig zGlobal;
     /** Root directory for feature types */
     private String typeDir; //= ROOT_DIR + CONFIG_DIR + TYPE_DIR;
     /** Root directory of capabilities data */
@@ -70,8 +73,10 @@ public class ConfigInfo {
 	setTypeDir(rootDir + TYPE_DIR);
 	setCapabilitiesDir(rootDir + CAP_DIR);  
 	if (!rootDir.endsWith("/")) rootDir += "/";
-	wfsGlobal = readWfsTags(rootDir + CONFIG_FILE);
-	serviceGlobal = readServiceTags(rootDir + CONFIG_FILE);
+	String cfgFile = rootDir + CONFIG_FILE;
+	wfsGlobal = readWfsTags(cfgFile);
+	serviceGlobal = readServiceTags(cfgFile);
+	
 
     }
     
@@ -142,6 +147,24 @@ public class ConfigInfo {
 	return wfs;
     }
 
+    /**
+     * constructs a ZServerConfig object, which encapsulates all the ZServer
+     * module specific values in the configuration file.  Note that 
+     * all config classes currently use the same config file, they just
+     * parse out different parts of it.  This allows for those files to be
+     * easily split up in later versions.  ZServer in particular will likely
+     * have its own file, but for now not many fields are read.
+     */
+    private static ZServerConfig readZTags(String configFile) {
+	ZServerConfig zConfig = null;
+	try {
+	    zConfig = ZServerConfig.getInstance(configFile);
+	} catch (ConfigurationException ce){
+	    LOG.warning("problem reading config file: " + ce.getMessage());
+	} 
+	return zConfig;
+    }
+
     /** Returns root webserver application directory 
      * @return a string of the root directory, only works for drop
      * in war, not for embedded.
@@ -150,6 +173,8 @@ public class ConfigInfo {
         return System.getProperty("user.dir") + "/webapps/geoserver/";
     }    
     
+
+    public String getRootDir() { return this.rootDir; }
 
     /** Returns the user-specified title of this service */
     public String getTitle() { return serviceGlobal.getTitle(); }        
@@ -281,6 +306,27 @@ public class ConfigInfo {
 	    String namespace = defaultURI + prefix;
 	    wfsGlobal.addNamespace(prefix, namespace);
 	}
+    }
+
+    public Properties getZServerProps() {
+	Properties retProps = null;
+	if (runZServer()) {
+	    retProps = zGlobal.getProps();
+	} 
+	return retProps;
+    }
+
+		//this should be configInfo.getTypeDir, but the constructor
+		//of ConfigInfo calls this method, so the configInfo won't
+		//yet be initialized.  Perhaps lazy initialization of zserver
+		//variables in config info, this zserver config will then 
+		//be able to get the correct typedirs for sure.
+
+    public boolean runZServer() {
+	if (zGlobal == null) {
+	    zGlobal = readZTags(rootDir + CONFIG_FILE);
+	}
+	return (zGlobal != null && zGlobal.run());
     }
 
 }
