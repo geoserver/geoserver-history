@@ -41,14 +41,14 @@ import javax.servlet.http.HttpSessionBindingListener;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: UserContainer.java,v 1.5 2004/01/31 00:27:23 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: UserContainer.java,v 1.6 2004/02/04 22:05:46 emperorkefka Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";
 
     /** User name for this user */
-    public String username;
+    private String username;
 
     /** User's locale */
     private Locale locale;
@@ -123,7 +123,7 @@ public class UserContainer implements HttpSessionBindingListener {
      * Unlike the DataStores in DataConfig this one does not yet have to work.
      * </p>
      */
-    public DataStoreConfig newDataStore;
+    private DataStoreConfig newDataStore;
 
     /**
      * Create User Container for the current locale
