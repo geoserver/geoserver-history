@@ -7,11 +7,16 @@ package org.vfny.geoserver.requests;
 /**
  * Defines a general Request type and provides accessor methods for universal
  * request information.
+ * <p>
+ * Also provides access to the HttpRequest that spawned this GeoServer Request.
+ * This HttpRequest is most often used to lookup information stored in the
+ * Web Container (such as the GeoServer Global information).
+ * </p>
  * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.5.2.1 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.5.2.2 2004/01/06 00:57:55 jive Exp $
  */
 abstract public class Request {
     /** Request service */
