@@ -39,7 +39,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2.1"/>
+  <property name="name.release" value="1.2.2"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
@@ -398,10 +398,10 @@
   <target name="build-conf-dir" depends="init" 
           unless="conf.folder.present">
     <!-- taking this out until I figure out available tag -->
-    <!--mkdir dir="${basedir}/conf"/>
+    <mkdir dir="${basedir}/conf"/>
     <copy todir="${basedir}/conf">
 	  <fileset dir="${basedir}/cite/confUserBasic"/>
-    </copy-->
+    </copy>
    </target>
 
 <!-- ====================================================================== -->
@@ -835,6 +835,7 @@
       <copy todir="${dir.build}/documents/">
 	  <fileset dir="${dir.doc}">
 	    <include name="**/*"/>
+            <exclude name="api/**"/>
 	  </fileset>
       </copy>    
     <copy todir="${dir.build}/documents">
