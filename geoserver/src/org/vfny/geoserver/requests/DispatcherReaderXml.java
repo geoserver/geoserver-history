@@ -30,49 +30,49 @@ import org.vfny.geoserver.config.*;
 public class DispatcherReaderXml {
 
 
-		/** Standard logging instance for class */
-		private static Category _log = Category.getInstance(DispatcherReaderXml.class.getName());
+        /** Standard logging instance for class */
+        private static Category _log = Category.getInstance(DispatcherReaderXml.class.getName());
 
-		/** Handler for request interpretation duties. */
-		private DispatcherHandler currentRequest;
+        /** Handler for request interpretation duties. */
+        private DispatcherHandler currentRequest;
 
 
-	 /**
-		* Constructor with raw request string.  Calls parent.
-		*
-		* @param rawRequest The raw request string from the client.
-		*/
-		public DispatcherReaderXml (BufferedReader rawRequest)
-				throws WfsException {
-				
-				//InputSource requestSource = new InputSource((Reader) tempReader);
-				InputSource requestSource = new InputSource(rawRequest);
+     /**
+        * Constructor with raw request string.  Calls parent.
+        *
+        * @param rawRequest The raw request string from the client.
+        */
+        public DispatcherReaderXml (BufferedReader rawRequest)
+                throws WfsException {
+                
+                //InputSource requestSource = new InputSource((Reader) tempReader);
+                InputSource requestSource = new InputSource(rawRequest);
 
-				// instantiante parsers and content handlers
-				XMLReader parser = new SAXParser();
-				currentRequest = new DispatcherHandler();
+                // instantiante parsers and content handlers
+                XMLReader parser = new SAXParser();
+                currentRequest = new DispatcherHandler();
 
-				// read in XML file and parse to content handler
-				try {
-						parser.setContentHandler(currentRequest);
-						parser.parse(requestSource);
-				}
-				catch (SAXException e) {
-						throw new WfsException( e, "XML get capabilities request parsing error", DispatcherReaderXml.class.getName() );
-				}
-				catch (IOException e) {
-						throw new WfsException( e, "XML get capabilities request input error", DispatcherReaderXml.class.getName() );
-				}
+                // read in XML file and parse to content handler
+                try {
+                        parser.setContentHandler(currentRequest);
+                        parser.parse(requestSource);
+                }
+                catch (SAXException e) {
+                        throw new WfsException( e, "XML get capabilities request parsing error", DispatcherReaderXml.class.getName() );
+                }
+                catch (IOException e) {
+                        throw new WfsException( e, "XML get capabilities request input error", DispatcherReaderXml.class.getName() );
+                }
 
-		}
+        }
 
-	 /**
-		* Returns the guessed request type..
-		*
-		* @return Request type.
-		*/
-		public int getRequestType () {
-				return currentRequest.getRequestType();
-		}
+     /**
+        * Returns the guessed request type..
+        *
+        * @return Request type.
+        */
+        public int getRequestType () {
+                return currentRequest.getRequestType();
+        }
 
 }

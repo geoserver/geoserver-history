@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # Start Script for GEOSERVER
 #
-# $Id: shutdown.sh,v 1.1 2002/08/22 15:40:40 robhranac Exp $
+# $Id: shutdown.sh,v 1.2 2002/11/14 18:27:41 robhranac Exp $
 # -----------------------------------------------------------------------------
 
 # Make sure prerequisite environment variables are set
@@ -30,7 +30,7 @@ if [ ! -r "$GEOSERVER_HOME"/bin/shutdown.sh ]; then
   echo "This environment variable is needed to run this program"
   exit 1
 fi
-CATALINA_HOME="$GEOSERVER_HOME"/libraries/catalina
+CATALINA_HOME="$GEOSERVER_HOME"/lib/catalina
 
 
 GEOSERVER_PATH="$CATALINA_HOME"/bin/bootstrap.jar

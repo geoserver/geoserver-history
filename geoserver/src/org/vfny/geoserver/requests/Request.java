@@ -1,75 +1,52 @@
-/* Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
- * This code is released under the Apache license, availible at the root GML4j directory.
+/* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root 
+ * application directory.
  */
-
 package org.vfny.geoserver.requests;
 
 import java.io.*;
 import java.util.*;
 
-
 /**
- * Defines a general Request type and provides accessor methods for unversal request information.
+ * Defines a general Request type and provides accessor methods for unversal 
+ * request information.
  * 
- * @author Rob Hranac, Vision for New York
- * @version beta, 12/01/01
- *
+ * @version $VERSION$
+ * @author Rob Hranac, TOPP
  */
 abstract public class Request {
 
+    /** Request service */
+    protected String service = "WFS";
+    
+    /** Request type */
+    protected String request = new String();
+    
+    /** Request version */
+    protected String version = new String();
+    
+    
+    /** Empty constructor. */
+    public Request () {}
+    
+    
+    /** Gets requested service. */
+    public String getService() { return this.service; }
 
-		/** Request version */
-		protected String version = new String();
-
-		/** Request type */
-		protected String request = new String();
-
-
-	 /**
-		* Empty constructor.
-		*
-		*/
-		public Request () {
-		}
-
-
-	 /**
-		* Returns request type.
-		*
-		* @return Request type.
-		*/
-		public String getRequest () {
-				return this.request;
-		}
+    /** Gets requested service. */
+    public void setService(String service) { this.service = service; }
 
 
-	 /**
-		* Return request type.
-		*
-		* @param request Sets the request type.
-		*/
-		public void setRequest (String reqeust) {
-				this.request = request;
-		}
-
-
-	 /**
-		* Return version type.
-		*
-		* @return Version of request.
-		*/
-		public String getVersion () {
-				return this.version;
-		}
-
-
-	 /**
-		* Sets version type.
-		*
-		* @param version Version of request.
-		*/
-		public void setVersion (String version) {
-				this.version = version;
-		}
-
+    /** Gets requested request type. */
+    public String getRequest() { return this.request; }
+        
+    /** Sets requested request type. */
+    public void setRequest(String reqeust) { this.request = request; }
+    
+    
+    /** Return version type. */
+    public String getVersion() { return this.version; }
+    
+    /** Sets version type. */
+    public void setVersion(String version) { this.version = version; }    
 }
