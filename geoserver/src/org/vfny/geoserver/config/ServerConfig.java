@@ -19,7 +19,7 @@ import javax.xml.parsers.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: ServerConfig.java,v 1.3 2003/12/17 22:13:44 cholmesny Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -53,12 +53,17 @@ public class ServerConfig extends AbstractConfig {
     private ValidationConfig validationConfig;
     private String rootDir;
 
+    //HACK: this will no longer be necessary when the config loading is split
+    //out, it's just necessary now so that the loading of styles can 
+    private String dataDir;
+
     /**
      * Creates a new ServerConfig object.
      *
-     * @param rootDir DOCUMENT ME!
+     * @param rootDir The directory on the computer running geoserver where
+     *        geoserver is located.
      *
-     * @throws ConfigurationException DOCUMENT ME!
+     * @throws ConfigurationException For any configuration problems.
      */
     private ServerConfig(String rootDir) throws ConfigurationException {
         this.rootDir = rootDir;
@@ -70,7 +75,8 @@ public class ServerConfig extends AbstractConfig {
 
         Element configElem = loadConfig(configFile);
         Element catalogElem = loadConfig(catalogFile);
-        String dataDir = rootDir + DATA_DIR;
+        this.dataDir = rootDir + DATA_DIR;
+
         String featureTypeDir = dataDir + "featureTypes";
 
         Iterator iter = DataStoreFinder.getAvailableDataStores();
@@ -79,7 +85,7 @@ public class ServerConfig extends AbstractConfig {
             LOGGER.config(iter.next() + " is an available DataSource");
         }
 
-        load(configElem, catalogElem, featureTypeDir);
+        load(configElem, catalogElem, dataDir);
 
         validationConfig = new ValidationConfig(new File(dataDir, "validation"));
     }
@@ -101,8 +107,8 @@ public class ServerConfig extends AbstractConfig {
      * </ul>
      * </p>
      *
-     * @param gt2catalog
-     * @param gt2catalog DOCUMENT ME!
+     * @param config a map of the config params.
+     * @param gt2catalog The gt2 catalog.
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
@@ -119,7 +125,16 @@ public class ServerConfig extends AbstractConfig {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gets the directory where geoserver data is stored.
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getDataDir() {
+        return dataDir;
+    }
+
+    /**
+     * Gets the config for the WMS.
      *
      * @return DOCUMENT ME!
      */
@@ -292,7 +307,7 @@ public class ServerConfig extends AbstractConfig {
             }
         }
 
-        catalog = new CatalogConfig(catalogElement, featureTypeDir);
+        catalog = new CatalogConfig(catalogElement, dataDir);
     }
 
     /**
