@@ -280,6 +280,15 @@ public class ConfigInfo {
     }
 
     /**
+     * Gets the online location where the ogc schemas for the wfs are stored.
+     *
+     * @return The base url to add the wfs/gml/filter suffix location on to.
+     */
+    public String getSchemaBaseUrl() {
+        return wfsGlobal.getSchemaUrl();
+    }
+
+    /**
      * Returns user-specified fees for this service
      *
      * @return The fees associated with this service.
