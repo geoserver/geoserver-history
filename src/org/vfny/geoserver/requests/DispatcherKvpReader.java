@@ -1,4 +1,4 @@
-/* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * Reads in a generic request and attempts to determine its type.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: DispatcherKvpReader.java,v 1.2 2003/08/19 19:55:34 cholmesny Exp $
+ * @version $Id: DispatcherKvpReader.java,v 1.3 2003/09/12 21:34:16 cholmesny Exp $
  */
 public class DispatcherKvpReader extends RequestKvpReader {
     /** Class logger */
@@ -36,6 +36,7 @@ public class DispatcherKvpReader extends RequestKvpReader {
      */
     public int getRequestType() {
         String responseType = ((String) kvpPairs.get("REQUEST"));
+        LOGGER.finer("dispatcher got request " + responseType);
 
         if (responseType != null) {
             responseType = responseType.toUpperCase();
