@@ -1,11 +1,25 @@
 package org.vfny.geoserver.wcs.responses;
 
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geotools.geometry.Envelope2D;
+import org.geotools.geometry.JTS;
+import org.geotools.referencing.FactoryFinder;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.datum.DatumFactory;
+import org.opengis.referencing.operation.CoordinateOperation;
+import org.opengis.referencing.operation.CoordinateOperationFactory;
+import org.opengis.referencing.operation.MathTransform2D;
+import org.opengis.referencing.operation.MathTransformFactory;
+import org.opengis.referencing.operation.OperationNotFoundException;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -14,6 +28,8 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * DOCUMENT ME!
@@ -45,6 +61,27 @@ public class DescribeResponse implements Response {
 	/** Main XML class for interpretation and response. */
 	private String xmlResponse = new String();
 	
+	
+    /**
+     * The default datum factory.
+     */
+    protected  final DatumFactory datumFactory = FactoryFinder.getDatumFactory();
+
+    /**
+     * The default coordinate reference system factory.
+     */
+    protected  final static CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+
+    /**
+     * The default math transform factory.
+     */
+    protected  final MathTransformFactory mtFactory = FactoryFinder.getMathTransformFactory();
+
+    /**
+     * The default transformations factory.
+     */
+    protected  final static CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory();
+
 	public void execute(Request request) throws WcsException {
 		if (!(request instanceof DescribeRequest)) {
 			throw new WcsException(
@@ -171,18 +208,70 @@ public class DescribeResponse implements Response {
 				tempResponse.append("\n  <label>" + tmp + "</label>");
 			}
 
-			tempResponse.append("\n  <lonLatEnvelope" 
-					+ (cv.getSrsName() != null && cv.getSrsName() != "" ? " srsName=\"" + cv.getSrsName() + "\"" : "")
-					+">");
-				tempResponse.append("\n   <gml:pos>" 
-						+ (cv.getEnvelope() != null ? cv.getEnvelope().getMinX() + " " + cv.getEnvelope().getMinY() : "") 
-						+ "</gml:pos>");
-				tempResponse.append("\n   <gml:pos>" 
-						+ (cv.getEnvelope() != null ? cv.getEnvelope().getMaxX() + " " + cv.getEnvelope().getMaxY() : "") 
-						+ "</gml:pos>");
-				tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-				tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-			tempResponse.append("\n  </lonLatEnvelope>");
+			try {
+				if( !cv.getCrs().getName().getCode().equalsIgnoreCase("WGS 84")) {
+					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
+				    		"GEOGCS[\"WGS 84\",\n" 								 + 
+				    		"DATUM[\"WGS_1984\",\n"								 + 
+				    		"  SPHEROID[\"WGS 84\",\n" 							 + 
+				    		"    6378137.0, 298.257223563,\n" 					 + 
+				    		"    AUTHORITY[\"EPSG\",\"7030\"]],\n" 				 +
+				    		"  AUTHORITY[\"EPSG\",\"6326\"]],\n"				 + 
+				    		"  PRIMEM[\"Greenwich\", 0.0,\n" 					 +
+				    		"    AUTHORITY[\"EPSG\",\"8901\"]],\n"				 + 
+				    		"  UNIT[\"degree\", 0.017453292519943295],\n"		 + 
+				    		"  AXIS[\"Lon\", EAST],\n"							 +
+				    		"  AXIS[\"Lat\", NORTH],\n"							 +
+				    		"AUTHORITY[\"EPSG\",\"4326\"]]");
+					
+					
+				    final CoordinateReferenceSystem sourceCRS = cv.getCrs();
+				    
+				    final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
+
+				    MathTransform2D mathTransform = (MathTransform2D) operation.getMathTransform();
+				    
+				    if( mathTransform instanceof AffineTransform ) {
+				    	Envelope envelope = cv.getEnvelope();
+				    	Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
+
+				    	tempResponse.append("\n  <lonLatEnvelope" 
+								+ " srsName=\"WGS84(DD)\""
+								+">");
+						tempResponse.append("\n   <gml:pos>" 
+								+ targetEnvelope.getMinX() + " " + targetEnvelope.getMinY() 
+								+ "</gml:pos>");
+						tempResponse.append("\n   <gml:pos>" 
+								+ targetEnvelope.getMaxX() + " " + targetEnvelope.getMaxY() 
+								+ "</gml:pos>");
+						tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+						tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+						tempResponse.append("\n  </lonLatEnvelope>");
+				    } else {
+				    	tempResponse.append("\n  <lonLatEnvelope" 
+				    			+ "WGS84(DD)"
+				    			+">");
+				    	tempResponse.append("\n   <gml:pos>" 
+				    			+ (cv.getEnvelope() != null ? cv.getEnvelope().getMinX() + " " + cv.getEnvelope().getMinY() : "") 
+				    			+ "</gml:pos>");
+				    	tempResponse.append("\n   <gml:pos>" 
+				    			+ (cv.getEnvelope() != null ? cv.getEnvelope().getMaxX() + " " + cv.getEnvelope().getMaxY() : "") 
+				    			+ "</gml:pos>");
+				    	tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+				    	tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+				    	tempResponse.append("\n  </lonLatEnvelope>");
+				    }
+				}
+			} catch (OperationNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FactoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			if( (cv.getKeywords() != null) && (cv.getKeywords().size() > 0) ) {
 				tempResponse.append("\n  <keywords>");

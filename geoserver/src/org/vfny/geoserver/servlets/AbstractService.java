@@ -487,6 +487,7 @@ public abstract class AbstractService extends HttpServlet {
 
             return;
         } catch (Throwable help) { // This is an unexpected error(!)
+        	help.printStackTrace();
             serviceResponse.abort(s);
             strategy.abort();
             sendError(response, help);

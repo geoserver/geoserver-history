@@ -540,7 +540,7 @@ public class WMSCapsTransformer extends TransformerBase {
             handleLatLonBBox(bbox);
 
             String authority = "";
-            if( coverage.getCrs().getName() != null && coverage.getCrs().getName().getAuthority() != null ) {
+            if( coverage.getCrs() != null && coverage.getCrs().getIdentifiers().length > 0 ) {
             	authority = coverage.getCrs().getIdentifiers()[0].toString();
             	element("SRS", authority);
             }
