@@ -7,6 +7,7 @@ package org.vfny.geoserver.requests.readers.wms;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
+import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.Data;
@@ -122,7 +123,7 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.10 2004/07/10 01:19:09 groldan Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.11 2004/07/10 02:55:56 groldan Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */
@@ -525,7 +526,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                     }
                 }else{ //use the layer's default style
                 	LOGGER.finer("applying default style to " + layers[i].getName());
-                	styles.set(i, layers[i].getDefaultStyle().getName());
+                	Style defStyle = layers[i].getDefaultStyle();
+                	if(defStyle == null){
+                		String msg = "No default style has been defined for " + layers[i].getName();
+                		LOGGER.warning(msg);
+                		throw new WmsException(msg, getClass().getName() + "::parseStyles()");
+                	}
+                	styles.set(i, defStyle.getName());
                 }
             }
         }
