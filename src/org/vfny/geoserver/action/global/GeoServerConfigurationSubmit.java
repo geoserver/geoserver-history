@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -44,7 +46,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.5 2004/04/16 15:52:15 cholmesny Exp $
+ * @version $Id: GeoServerConfigurationSubmit.java,v 1.6 2004/07/23 20:05:56 cholmesny Exp $
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -61,7 +63,16 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         
         int numDecimals = form.getNumDecimals();
         String stringCharset = form.getCharset();
-        Charset charset = Charset.forName(stringCharset);
+	Charset charset;
+	try {
+	    charset = Charset.forName(stringCharset);
+	} catch (java.nio.charset.UnsupportedCharsetException uce) {
+	    ActionErrors errors = new ActionErrors();
+	    errors.add(ActionErrors.GLOBAL_ERROR, 
+		       new ActionError("error.badCharSet"));
+	    saveErrors(request, errors);
+	    return mapping.findForward("config.server");
+	}
         String baseURL = form.getBaseURL();
         String schemaBaseURL = form.getSchemaBaseURL(); 
         String stringLevel = form.getLoggingLevel();
@@ -75,6 +86,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setNumDecimals(numDecimals);
         globalConfig.setBaseUrl(baseURL);
         globalConfig.setSchemaBaseUrl(schemaBaseURL);
+        globalConfig.setCharSet(charset);
         globalConfig.setAdminUserName(adminUserName);
         globalConfig.setAdminPassword(adminPassword);
         globalConfig.setLoggingLevel(loggingLevel);
