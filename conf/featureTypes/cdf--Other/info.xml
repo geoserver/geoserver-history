@@ -8,7 +8,16 @@
       <!-- the list of exposed attributes. If the list is empty or not present
       at all, all the FeatureType's attributes are exposed, if is present,
       only those oattributes in this list will be exposed by the services -->
- <attributes/>
+      <attributes>
+       <attribute name="description"/>
+       <attribute name="name"/>
+       <attribute name="boundedBy"/>
+       <attribute name="pointProperty"/>
+       <attribute name="string1" mandatory="true"/>
+       <attribute name="string2"/>
+       <attribute name="integers"/>
+       <attribute name="dates"/>
+      </attributes>
       <!-- the list of styles this FeatureType can be represented by.
         at least must contain the "default" attribute -->
       <styles default="normal"/>
