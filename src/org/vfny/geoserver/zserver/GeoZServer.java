@@ -28,7 +28,7 @@ import java.util.logging.Level;
 /**
  * GeoZServer : Controller class for a Z39.50 Server
  * @author Chris Holmes, 
- * @version $VERSION$
+ * @version $Id: GeoZServer.java,v 1.5 2003/09/16 18:55:27 cholmesny Exp $
  * Made by slightly modifying ZServer.java to
  * start up with a properties file, so it can be invoked by
  * another class.  Most code by:
@@ -53,14 +53,13 @@ public class GeoZServer extends Thread
 
     /** sets the logging level. */
     static {
-	//LOGGER.setLevel(Level.parse("FINER"));
+    //LOGGER.setLevel(Level.parse("FINER"));
     }
 
   private int socket_timeout = 300000;  // 300 second default timeout
   private boolean running = true;
   private ServerSocket server_socket = null;
-  private Class search_service = null;
-  private Properties server_properties = null;
+   private Properties server_properties = null;
 
 
     /**
@@ -76,33 +75,33 @@ public class GeoZServer extends Thread
     
     // Load default properties
     try {
-	// read from top of any classpath entry
-	InputStream is = reg.getClass().getResourceAsStream
-	    ("/com/k_int/z3950/server/default.props");
-	defaults.load(is);
+    // read from top of any classpath entry
+    InputStream is = reg.getClass().getResourceAsStream
+        ("/com/k_int/z3950/server/default.props");
+    defaults.load(is);
     }
     catch ( Exception e ) {
-	e.printStackTrace();
+    e.printStackTrace();
     }
     
     if (args.length >= 1) {
         // Parameter should be name of a properties file
         try {
-	    String props_file_name = args[0];
-	    LOGGER.finer("Attempting to load local properties file "
-			 +props_file_name);
-	    
-	    InputStream is = new FileInputStream(props_file_name);
-	    props = new Properties(defaults);
-	    props.load(is);
-	    
-	    LOGGER.finer("Done loading local props");
+        String props_file_name = args[0];
+        LOGGER.finer("Attempting to load local properties file "
+             +props_file_name);
+        
+        InputStream is = new FileInputStream(props_file_name);
+        props = new Properties(defaults);
+        props.load(is);
+        
+        LOGGER.finer("Done loading local props");
         } catch ( Exception e ) {
-	    e.printStackTrace();
-	    System.err.println("No system properties parameter given");
-	    System.err.println("Usage: java org.vfny.geoserver.GeoZServer" + 
-			       "<<propsfile>>");
-	    System.exit(0);
+        e.printStackTrace();
+        System.err.println("No system properties parameter given");
+        System.err.println("Usage: java org.vfny.geoserver.GeoZServer" + 
+                   "<<propsfile>>");
+        System.exit(0);
         }
     }
     
@@ -115,21 +114,21 @@ public class GeoZServer extends Thread
      */
     public GeoZServer(Properties props) throws java.io.IOException
     {
-	server_properties = props;
-	
-	String port_str = server_properties.getProperty("port");
-	String timeout_str = server_properties.getProperty("timeout");
-	
-	if ( timeout_str != null ) {
-	    socket_timeout = Integer.parseInt(timeout_str);
-	}
-	LOGGER.info("Creating ZServer on port: "+port_str);
-		    //+" (timeout="+socket_timeout+")");
+    server_properties = props;
+    
+    String port_str = server_properties.getProperty("port");
+    String timeout_str = server_properties.getProperty("timeout");
+    
+    if ( timeout_str != null ) {
+        socket_timeout = Integer.parseInt(timeout_str);
+    }
+    LOGGER.info("Creating ZServer on port: "+port_str);
+            //+" (timeout="+socket_timeout+")");
 
-	String attrMapFile = props.getProperty("fieldmap");
-	if (attrMapFile != null) {
-	GeoProfile.setUseAttrMap(attrMapFile);
-	}
+    String attrMapFile = props.getProperty("fieldmap");
+    if (attrMapFile != null) {
+    GeoProfile.setUseAttrMap(attrMapFile);
+    }
     server_socket = new ServerSocket(Integer.parseInt(port_str));
     GeoIndexer indexer = new GeoIndexer(server_properties);
     int numIndexed = indexer.update();
@@ -140,40 +139,40 @@ public class GeoZServer extends Thread
   public void run()
   {
     try {
-	while ( running ) {
-	    LOGGER.finer("Waiting for connection...");
-	    Socket socket = (Socket)server_socket.accept();
-	    socket.setSoTimeout(socket_timeout);  
-	    GeoZServerAssociation za = 
-		new GeoZServerAssociation(socket, server_properties);
-	} 
-	server_socket.close();
+    while ( running ) {
+        LOGGER.finer("Waiting for connection...");
+        Socket socket = (Socket)server_socket.accept();
+        socket.setSoTimeout(socket_timeout);  
+        GeoZServerAssociation za = 
+        new GeoZServerAssociation(socket, server_properties);
+    } 
+    server_socket.close();
     }
     catch (java.io.IOException e) {
-	LOGGER.finer("problem with zserver " + e);
+    LOGGER.finer("problem with zserver " + e);
     } 
   }
     
     public void shutdown(int shutdown_type) {
-	this.running = false;
-	
-	switch ( shutdown_type ) {
-	default:
-	    // Currently no special processing to join 
-	    //with or shutdown active associations.
-	    try {
-		server_socket.close();
-	    } catch ( java.io.IOException ioe ) {
-		// No special action
-	    }
-	    break;
-	}
-	
-	try {
-	    this.join();
-	} catch ( java.lang.InterruptedException ie ) {
+    this.running = false;
+    
+    switch ( shutdown_type ) {
+    default:
+        // Currently no special processing to join 
+        //with or shutdown active associations.
+        try {
+        server_socket.close();
+        } catch ( java.io.IOException ioe ) {
+        // No special action
+        }
+        break;
+    }
+    
+    try {
+        this.join();
+    } catch ( java.lang.InterruptedException ie ) {
       // No action
-	}
+    }
     }
 }      
 
