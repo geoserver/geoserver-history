@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.27 2004/04/22 03:58:18 emperorkefka Exp $
+ * @version $Id: TransactionResponse.java,v 1.28 2004/04/22 04:55:49 emperorkefka Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -185,7 +185,8 @@ public class TransactionResponse implements Response {
             FeatureTypeInfo meta = null;
             
             if (element instanceof InsertRequest) {
-                
+                // Option 1: Guess FeatureStore based on insert request
+                //
                 Feature feature = ((InsertRequest) element).getFeatures()
                                    .features().next();
 
@@ -216,14 +217,16 @@ public class TransactionResponse implements Response {
                 }
             }
             else {
+                // Option 2: lookup based on elmentName (assume prefix:typeName)
                 typeRef = null; // unknown at this time
                 elementName = element.getTypeName();
                 if( stores.containsKey( elementName )) {
-                    // already loaded
+                    LOGGER.finer("FeatureSource '"+elementName+"' already loaded." );
                     continue;
                 }
-                LOGGER.fine("Locating FeatureSource '"+elementName+"'...");
+                LOGGER.fine("Locating FeatureSource '"+elementName+"'...");                
                 meta = catalog.getFeatureTypeInfo(elementName);
+                element.setTypeName( meta.getNameSpace().getPrefix()+":"+meta.getTypeName() );                
             }            
             typeRef = meta.getDataStoreInfo().getId()+":"+meta.getTypeName();
             elementName = meta.getNameSpace().getPrefix()+":"+meta.getTypeName();
@@ -288,10 +291,18 @@ public class TransactionResponse implements Response {
 
         for (int i = 0; i < request.getSubRequestSize(); i++) {
             SubTransactionRequest element = request.getSubRequest(i);
-            String typeName = element.getTypeName();
+            
+            // We expect element name to be of the format prefix:typeName
+            // We take care to force the insert element to have this format above.
+            //
+            String elementName = element.getTypeName();
             String handle = element.getHandle();
-            FeatureStore store = (FeatureStore) stores.get(typeName);
-
+            FeatureStore store = (FeatureStore) stores.get(elementName);
+            if( store == null ){
+            	throw new ServiceException( "Could not locate FeatureStore for '"+elementName+"'" );                        
+            }
+            String typeName = store.getSchema().getTypeName();
+            
             if (element instanceof DeleteRequest) {
                 if ((request.getWFS().getServiceLevel() & WFSDTO.SERVICE_DELETE) == 0) {
                     // could we catch this during the handler, rather than during execution?
@@ -346,7 +357,7 @@ public class TransactionResponse implements Response {
                             DataStore data = store.getDataStore();
                             FilterFactory factory = FilterFactory
                                 .createFilterFactory();
-                            FeatureWriter writer;
+                            FeatureWriter writer;                            
                             writer = data.getFeatureWriter(typeName, filter,
                                     transaction);
 
