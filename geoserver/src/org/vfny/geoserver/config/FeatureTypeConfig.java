@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.5 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.6 2003/11/17 09:00:24 jive Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
 
@@ -53,6 +53,51 @@ public class FeatureTypeConfig extends BasicConfig {
 
     private int numDecimals = DEFAULT_NUM_DECIMALS;
 
+    /**
+     * GT2 based configuration, Config map supplies extra info.
+     * <p>
+     * We need to make an GeometryAttributeType that knows about SRID
+     * </p>
+     * <ul>
+     * <li>datastore.featuretype.srid: int (default 0)</li>
+     * <li>datastore.featuretype.numDecimals: int (default 8)</li>
+     * <li>datastore.featuretype.bbxo: Envelope (default calcuated)</li>
+     * </ul>
+     * @param config
+     * @param type
+     * @param dataStoreConfig
+     */
+    public FeatureTypeConfig( Map config, FeatureType type, DataStoreConfig dataStoreConfig ){
+        super( config );
+        String key = type.getNamespace()+"."+type.getTypeName();
+        
+        SRS = String.valueOf( get( config, key+".srid", 0 ) );
+        dataStore = dataStoreConfig;
+        numDecimals = get( config, key+".numDecimals", 8 );
+        schema = type;     
+        styles = new HashMap(0);
+        
+        if( type.getDefaultGeometry() == null ){
+            latLongBBox = new Envelope();
+        }
+        else if( config.containsKey( key+".bbox" )){
+            latLongBBox = (Envelope ) config.get( key+".bbox" );            
+        }
+        else {
+            try {
+                FeatureSource access =
+                dataStore.getDataStore().getFeatureSource( type.getTypeName() );
+            
+                latLongBBox = access.getBounds();
+                if( latLongBBox == null ){
+                    latLongBBox = access.getFeatures().getBounds();
+                }
+            }
+            catch (IOException io){
+                latLongBBox = new Envelope();
+            }
+        }                   
+    }
     /**
      * Creates a new FeatureTypeConfig object.
      *

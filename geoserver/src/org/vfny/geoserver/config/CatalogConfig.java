@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.config;
 
+import org.geotools.data.Catalog;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
@@ -11,6 +12,7 @@ import org.geotools.data.FeatureLockFactory;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Transaction;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.*;
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.wfs.*;
@@ -27,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.4 2003/11/16 09:04:53 jive Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.5 2003/11/17 09:00:24 jive Exp $
  */
 public class CatalogConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -55,6 +57,91 @@ public class CatalogConfig extends AbstractConfig {
      */
     private Map featureTypes;
 
+    /**
+     * Configure based on gt2 Catalog.
+     * <p>
+     * Quick hack for JUnit test cases, really the gt2 Catalog interface
+     * should be implemented by CatalogConfig. And whatever methods 
+     * GeoServer needs to get its job done is what gt2 Catalog needs
+     * to provide.
+     * </p>
+     * Right now a Map is provided to set anything that gt2 Catalog
+     * cannot.
+     * <p>
+     * Given a namespace foo in the catalog the config map defines:
+     * <ul>
+     * <li>foo.uri: String (default foo)</li>
+     * <li>foo.default: boolean (default false, true if only one namespace)</li>
+     * </ul>
+     * 
+     * 
+     * @param catalog
+     */
+    public CatalogConfig( Map config, Catalog catalog ){
+        
+        LOGGER.info("loading catalog configuration");       
+        String spaceNames[] = catalog.getNameSpaces();        
+        nameSpaces = new HashMap( spaceNames.length );
+        for (int i = 0; i < spaceNames.length; i++) {
+            String name = spaceNames[i];
+            
+            String uri = get( config, name+".uri", name );
+            boolean defaultNS = get( config, name+".default", spaceNames.length == 1 );
+            
+            NameSpace ns = new NameSpace( name, uri, defaultNS );
+            
+            if( defaultNS ){
+                defaultNameSpace = ns;
+            }
+            
+            LOGGER.config("added namespace " + ns);            
+            nameSpaces.put( name, ns );
+        }
+        LOGGER.info("loading DataStore configuration");
+        // gt2 currently assumes one datastore per namespace
+        //
+        // I know this is wrong, please feed our requirements into the gt2
+        // Catalog        
+        dataStores = new HashMap( spaceNames.length );
+        
+        DataStoreConfig dsConfig;
+        
+        for (int i = 0; i < spaceNames.length; i++) {
+            DataStore store = catalog.getDataStore( spaceNames[i] );
+            NameSpace nameSpace = (NameSpace) nameSpaces.get( spaceNames[i] );
+            DataStoreConfig dataStoreConfig = new DataStoreConfig( config, store, nameSpace );
+            
+            dataStores.put( dataStoreConfig.getId(), dataStoreConfig );
+        }
+        LOGGER.info("loading style configuration");        
+        styles = new HashMap();
+        // just use the default style
+        styles.put("normal", "styles/normal.sld");
+
+        LOGGER.info("loading FeatureType configuration");
+        featureTypes = new HashMap();
+        for( Iterator i=dataStores.values().iterator(); i.hasNext();){
+            DataStoreConfig dataStoreConfig = (DataStoreConfig) i.next();
+            try {
+                DataStore store = dataStoreConfig.getDataStore();
+            
+                String typeNames[] = store.getTypeNames();
+                for( int t=0; t<typeNames.length; t++){
+                    FeatureType type;
+                    try {
+                        type = store.getSchema(typeNames[t]);
+                        FeatureTypeConfig typeConfig = new FeatureTypeConfig( config, type, dataStoreConfig  );                
+                        featureTypes.put( typeNames[t], typeConfig );                    
+                    } catch (IOException e) {
+                        // type was not available?
+                    }                
+                }
+            }
+            catch( IOException e ){
+                // datastore not available                
+            }
+        }
+    }
     /**
      * Creates a new CatalogConfig object.
      *

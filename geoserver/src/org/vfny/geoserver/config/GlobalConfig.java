@@ -4,8 +4,16 @@
  */
 package org.vfny.geoserver.config;
 
+import org.geotools.feature.*;
+import org.geotools.data.*;
 import org.w3c.dom.*;
+
+import com.sun.jndi.toolkit.url.Uri;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.*;
+import java.util.Map;
 import java.util.logging.*;
 
 
@@ -13,7 +21,7 @@ import java.util.logging.*;
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.1.2.4 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: GlobalConfig.java,v 1.1.2.5 2003/11/17 09:00:21 jive Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -55,6 +63,50 @@ public class GlobalConfig extends AbstractConfig {
     private String schemaBaseUrl;
     private ContactConfig contactConfig;
 
+    /**
+     * Used to aquire a GlobalCongif for testing against
+     * <p>
+     * The provided config Map recognizes:
+     * <ul>
+     * <li>global.maxFeatures: int (default 2000 )</li>
+     * <li>global.level: Level (default same as org.vfny.geoserver)</li>
+     * <li>global.verbose: boolean (default true)</li>
+     * <li>global.numDecimals: int (default 8)</li>
+     * <li>global.base: URL (default httpd:/localhost:8080/)</li>
+     * <li>global.schemaBase (default httpd:/localhost:8080/schema)</li>
+     * <li>global.charset: Charset (default ISO-8859-1)</li>
+     * </ul>
+     * <p>
+     * In general this is expected to be used by testcases, in which case
+     * the actual java objects can be supplied. And then only if you
+     * really need to branch off from the defaults.
+     * </p>
+     * 
+     */
+    public GlobalConfig( Map config ){
+        
+        maxFeatures = get( config, "global", 20000 );
+        loggingLevel = get( config, "global.level", Logger.getLogger(
+        "org.vfny.geoserver.config").getLevel() );
+        verbose = get( config, "global.verbose", true );
+        numDecimals = get( config, "global.numDecimal", 8 );
+        charSet = get( config, "global.charset", Charset.forName("foo") );
+        try {
+            baseUrl = get( config, "global.base", new URL("http","localhost",8080,"") ).toExternalForm();
+        }
+        catch ( MalformedURLException ignore ){
+            baseUrl = "localhost";
+        }
+        try {
+            schemaBaseUrl = get( config, "global.schameBase", new URL("http","localhost",8080,"schema")).toString();
+        }
+        catch ( MalformedURLException ignore ){
+            baseUrl = "localhost/schema";
+        }
+        contactConfig = new ContactConfig( config );
+        
+        globalConfig = this;
+    }
     /**
      * Creates a new GlobalConfig object.
      *

@@ -6,13 +6,14 @@ package org.vfny.geoserver.config;
 
 import org.w3c.dom.*;
 import java.util.Date;
+import java.util.Map;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSConfig.java,v 1.1.2.4 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: WMSConfig.java,v 1.1.2.5 2003/11/17 09:00:24 jive Exp $
  */
 public class WMSConfig extends ServiceConfig {
     /** WMS version spec implemented */
@@ -39,7 +40,10 @@ public class WMSConfig extends ServiceConfig {
         super(wmsRoot);
         URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
     }
-
+    public WMSConfig( Map config ){
+        super( config );
+        URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
+    }
     /**
      * DOCUMENT ME!
      *

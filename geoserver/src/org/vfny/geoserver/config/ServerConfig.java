@@ -4,9 +4,11 @@
  */
 package org.vfny.geoserver.config;
 
+import org.geotools.data.Catalog;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.io.*;
+import java.util.Map;
 import java.util.logging.*;
 import javax.xml.parsers.*;
 
@@ -15,9 +17,9 @@ import javax.xml.parsers.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.4 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.5 2003/11/17 09:00:24 jive Exp $
  */
-public class ServerConfig {
+public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
@@ -38,6 +40,7 @@ public class ServerConfig {
 
     /** DOCUMENT ME! */
     private GlobalConfig globalConfig;
+    
     private String rootDir;
 
     /**
@@ -58,7 +61,27 @@ public class ServerConfig {
         String featureTypeDir = rootDir + "featureTypes";
         load(configElem, catalogElem, featureTypeDir);
     }
-
+    /**
+     * Creates a new ServerConfig Object for JUnit testing.
+     * <p>
+     * Configure based on provided Map, and Catalog.
+     * </p>
+     * <p>
+     * ServerConfig understands the followin entries in config map:
+     * <ul>
+     * <li>dir: File (default to current directory</li>
+     * </ul>
+     * @param catalog
+     */
+    private ServerConfig(Map config, Catalog gt2catalog)  {
+        this.rootDir = get( config, "dir", new File(".") ).toString();
+        globalConfig = new GlobalConfig( config );
+        
+        featureServerConfig = new WFSConfig( config );
+        mapServerConfig = new WMSConfig( config );
+        catalog = new CatalogConfig( config, gt2catalog );
+        
+    }        
     /**
      * DOCUMENT ME!
      *
@@ -122,6 +145,7 @@ public class ServerConfig {
         serverConfig = new ServerConfig(rootDir);
     }
 
+    
     /**
      * DOCUMENT ME!
      *
@@ -162,6 +186,24 @@ public class ServerConfig {
             LOGGER.warning(message);
             throw new ConfigurationException(message, saxe);
         }
+    }
+
+    /**
+     * Sets everything up based on provided gt2 Catalog.
+     * <p>
+     * This is a quick hack to allow for basic JUnit testing.
+     * </p>
+     * <p>
+     * We need to get GeoServer to push more functionality into gt2 Catalog
+     * interface. Right now they have similar goals in life, we should
+     * set things up so GeoServer config classes can implement the Catalog
+     * interface, and expand the Catalog interface to the point
+     * it is useful.
+     * </p>
+     * @author jgarnett
+     */
+    public static void load( Map config, Catalog catalog ){
+        serverConfig = new ServerConfig( config, catalog );        
     }
 
     /**

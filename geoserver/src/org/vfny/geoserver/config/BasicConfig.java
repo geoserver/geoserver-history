@@ -12,7 +12,7 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: BasicConfig.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: BasicConfig.java,v 1.1.2.3 2003/11/17 09:00:24 jive Exp $
  */
 public class BasicConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -58,7 +58,28 @@ public class BasicConfig extends AbstractConfig {
 
         this.maintainer = getChildText(serviceRoot, "maintainer");
     }
-
+    /**
+     * Quick config for JUnit tests.
+     * <ul>
+     * <li>name: String (default name)</li>
+     * <li>title: String (default title)</li>
+     * <li>abstract: String</li>
+     * <li>keywords: List (default Collections.EMPTY_LIST)</li>
+     * <li>fees: String</li>
+     * <li>accessConstraints: String (default NONE)</li>
+     * <li>maintainer: String (default username)</li>
+     * </ul>
+     * @param config
+     */
+    public BasicConfig( Map config ){
+        name = get( config, "name", "name" );
+        title = get( config, "title", "title" );
+        _abstract = get( config, "abstract" );
+        keywords = get( config, "keywords", Collections.EMPTY_LIST );
+        fees = get( config, "fees" );
+        accessConstraints = get( config, "accessConstraints", "NONE" );
+        maintainer = get( config, "maintainer", System.getProperty("user.name"));                
+    }
     /**
      * DOCUMENT ME!
      *

@@ -15,9 +15,10 @@ import java.util.logging.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreConfig.java,v 1.1.2.3 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.4 2003/11/17 09:00:24 jive Exp $
  */
 public class DataStoreConfig extends AbstractConfig {
+    
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
@@ -40,6 +41,8 @@ public class DataStoreConfig extends AbstractConfig {
     /** connection parameters to create the DataStore */
     private Map connectionParams;
 
+    /** DataStore we are representing */
+    private DataStore dataStore = null;
     /**
      * Creates a new DataStoreConfig object.
      *
@@ -70,7 +73,31 @@ public class DataStoreConfig extends AbstractConfig {
         loadConnectionParams(getChildElement(dsElem, "connectionParams", true));
         LOGGER.info("created DataStore " + toString());
     }
-
+    /**
+     * Configuration based on gt2 Catalog information.
+     * <p>
+     * For the namespace food the config map defines:
+     * </p>
+     * <ul>
+     * <li>foo.id: String (default foo)</li>
+     * <li>foo.enabled: boolean (default true)</li>
+     * <li>foo.title: String</li>
+     * <li>foo.abstract: String</li>
+     * </ul>
+     * @param config
+     * @param store
+     * @param config2
+     */
+    public DataStoreConfig(Map config, DataStore store, NameSpace namespace ) {
+        LOGGER.finer("creating a new DataStore configuration");
+        String name = namespace.getPrefix();
+        id = get( config, name+".id", name );
+        nameSpace = namespace;
+        enabled = get( config, name+".enabled", true );
+        title = get( config, name+".title" );
+        _abstract = get( config, name+".abstract" );
+        dataStore = store;
+    }
     /**
      * DOCUMENT ME!
      *
@@ -115,7 +142,12 @@ public class DataStoreConfig extends AbstractConfig {
      * see if it is better to cache or pool DataStores for performance, but
      * definitely we shouldn't maintain a single DataStore as instance
      * variable for synchronizing reassons
-     *
+     * <p>
+     * <p>
+     * JG: Umm we actually require a single DataStore for for locking &
+     * transaction support to work. DataStore is expected
+     * to be thread aware (that is why it has Transaction Support).
+     * </p>
      * @return DOCUMENT ME!
      *
      * @throws IOException if a datastore is found but can not be created for
@@ -125,29 +157,26 @@ public class DataStoreConfig extends AbstractConfig {
      * @throws NoSuchElementException if no DataStore is found
      * @throws DataSourceException DOCUMENT ME!
      */
-    public DataStore getDataStore()
+    public synchronized DataStore getDataStore()
         throws IOException, IllegalStateException, NoSuchElementException {
         if (!isEnabled()) {
             throw new IllegalStateException(
                 "this datastore is not enabled, check your configuration files");
         }
-
-        DataStore dataStore = null;
-
-        try {
-            dataStore = DataStoreFinder.getDataStore(connectionParams);
-        } catch (Throwable ex) {
-            throw new DataSourceException("can't create the datastore " +
-                                          getId() + ": " +
-                                          ex.getClass().getName() + ": " +
-                                          ex.getMessage(), ex);
+        if( dataStore == null ){
+            try {
+                dataStore = DataStoreFinder.getDataStore(connectionParams);
+            } catch (Throwable ex) {
+                throw new DataSourceException("can't create the datastore " +
+                                            getId() + ": " +
+                                            ex.getClass().getName() + ": " +
+                                            ex.getMessage(), ex);
+            }
+            if (dataStore == null) {
+                throw new NoSuchElementException(
+                    "No datastore found capable of manage " + toString());
+            }
         }
-
-        if (dataStore == null) {
-            throw new NoSuchElementException(
-                "No datastore found capable of manage " + toString());
-        }
-
         return dataStore;
     }
 

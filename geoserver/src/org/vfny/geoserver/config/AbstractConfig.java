@@ -5,6 +5,14 @@
 package org.vfny.geoserver.config;
 
 import org.w3c.dom.*;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -12,7 +20,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: AbstractConfig.java,v 1.1.2.4 2003/11/14 20:39:13 groldan Exp $
+ * @version $Id: AbstractConfig.java,v 1.1.2.5 2003/11/17 09:00:24 jive Exp $
  */
 public abstract class AbstractConfig {
     /** DOCUMENT ME! */
@@ -310,4 +318,62 @@ public abstract class AbstractConfig {
 
         return value;
     }
+    public static String get( Map map, String key ){
+        if( map.containsKey( key )){
+            return (String) map.get( key );
+        }
+        return null;               
+    }
+    public static File get( Map map, String key, File defaultFile ){
+        if( map.containsKey( key )){
+            return (File) map.get( key );
+        }
+        return defaultFile;
+    }
+    public static String get( Map map, String key, String defaultValue ){
+        if( map.containsKey( key )){
+            return (String) map.get( key );
+        }
+        return defaultValue;
+    }
+    public static List get( Map map, String key, List defaultList ){
+        if( map.containsKey( key )){
+            return (List) map.get( key );
+        }
+        return defaultList;
+    }    
+    public static int get( Map map, String key, int defaultValue ){
+        if( map.containsKey( key )){
+            return Integer.parseInt( (String) map.get( key ));
+        }
+        else {
+            return defaultValue;
+        }
+    }
+    public static boolean get( Map map, String key, boolean defaultValue ){
+        if( map.containsKey( key )){
+            return Boolean.getBoolean( (String) map.get( key ));
+        }
+        else {
+            return defaultValue;
+        }
+    }    
+    public static Charset get( Map map, String key, Charset defaultCharSet ){
+        if( map.containsKey( key )){
+            return (Charset) map.get( key );
+        }
+        return defaultCharSet;        
+    }
+    public static Level get( Map map, String key, Level defaultLevel ){
+        if( map.containsKey( key )){
+            return (Level) map.get( key );            
+        }        
+        return defaultLevel;   
+    }
+    public static URL get( Map map, String key, URL defaultUrl ){
+        if( map.containsKey( key )){
+            return (URL) map.get( key );
+        }
+        return defaultUrl;
+    }    
 }

@@ -13,7 +13,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceConfig.java,v 1.9.4.3 2003/11/11 02:41:40 cholmesny Exp $
+ * @version $Id: ServiceConfig.java,v 1.9.4.4 2003/11/17 09:00:22 jive Exp $
  */
 public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -36,7 +36,19 @@ public abstract class ServiceConfig extends BasicConfig {
 
         //this.URL = getChildText(serviceRoot, "URL");
     }
-
+    /** Quick config for JUnit tests.
+     * <ul>
+     * <li>service.enabled: boolean (default true)</li>
+     * <li>service.type: String (default test)</li>
+     * <li>service.onlineResources (default localhost)</li>
+     * </ul>
+     */
+    public ServiceConfig(Map config ){
+        super( config );
+        enabled = get( config, "service.enabled", true );
+        serviceType = get( config, "service.type", "Test");
+        onlineResource = get( config, "service.onlineResources", "localhost" );                        
+    }
     /**
      * DOCUMENT ME!
      *

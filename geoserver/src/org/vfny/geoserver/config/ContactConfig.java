@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.Map;
+
 import org.w3c.dom.*;
 
 
@@ -27,7 +29,7 @@ import org.w3c.dom.*;
  * &lt;/ContactInformation&gt;<br></code>
  *
  * @author Gabriel Roldán
- * @version $Id: ContactConfig.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: ContactConfig.java,v 1.1.2.3 2003/11/17 09:00:24 jive Exp $
  *
  * @task REVISIT: may be it will be necessary to create a real contact
  *       hierarchy if we plan to add Catalog service.
@@ -85,7 +87,43 @@ public class ContactConfig extends AbstractConfig {
         this.contactEmail = getChildText(contactInfoElement,
                 "ContactElectronicMailAddress");
     }
-
+    /**
+     * Configure for JUnit testcases.
+     * <p>
+     * Provide Map is checked for the following:
+     * <ul>
+     * <li>contact.person: String (default user name )</li>
+     * <li>contact.organization: String</li>
+     * <li>contact.position: String</li>
+     * <li>contact.addressType: String</li>
+     * <li>contact.address: String</li>
+     * <li>contact.city: String</li>
+     * <li>contact.state: String</li>
+     * <li>contact.postalCode: String</li>
+     * <li>contact.country: String</li>
+     * <li>contact.voice: String</li>
+     * <li>contact.facsimile: String</li>
+     * <li>contact.email: String</li>
+     * </ul>
+     * 
+     * @param map
+     */
+    public ContactConfig( Map map ){
+        String username = System.getProperty("user.name");
+        
+        contactPerson = get( map, "contact.person", username );
+        contactOrganization = get( map, "contact.organization" );
+        contactPosition = get( map, "contact.position" );
+        addressType = get( map, "contact.addressType" );
+        address = get( map, "contact.address" );
+        addressCity = get( map, "contact.city" );
+        addressState = get( map, "contact.state" );
+        addressPostalCode = get( map, "contact.postalCode" );
+        addressCountry = get( map, "contact.country" );
+        contactVoice = get( map, "contact.voice" );
+        contactFacsimile = get( map, "contact.facsimile" );
+        contactEmail = get( map, "contact.email" );        
+    }
     /**
      * DOCUMENT ME!
      *

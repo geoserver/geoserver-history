@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.Map;
+
 import org.w3c.dom.Element;
 
 
@@ -13,7 +15,7 @@ import org.w3c.dom.Element;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.1.2.5 2003/11/14 03:19:53 cholmesny Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.6 2003/11/17 09:00:24 jive Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -34,7 +36,11 @@ public class WFSConfig extends ServiceConfig {
         super(root);
         URL = GlobalConfig.getInstance().getBaseUrl() + "/wfs";
     }
-
+    
+    public WFSConfig(Map config ) {
+        super( config );
+        URL = GlobalConfig.getInstance().getBaseUrl() + "/wfs";
+    }
     /**
      * Gets the base url of a describe request.
      *
