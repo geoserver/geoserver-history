@@ -12,6 +12,9 @@ import java.util.logging.Logger;
  * for unversal request information.
  * 
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
+ * @tasks REVISIT: refactor this to be named ServiceException?  To reflect
+ * the 1.0 spec better?  Backwards compatible exceptions for .14 and .15
  * @version $VERSION$
  */
 public class WfsException extends Exception {
@@ -25,6 +28,8 @@ public class WfsException extends Exception {
     /** the standard exception that was thrown */
     protected Exception standardException = new Exception();
     
+    protected String code = new String();
+
     /** Class logger */
     private static Logger LOGGER =  
         Logger.getLogger("org.vfny.geoserver.responses");
@@ -32,7 +37,14 @@ public class WfsException extends Exception {
     
     /** Empty constructor. */
     public WfsException () { super(); }
-        
+     
+    /**
+     * Assigns a diagnostic code to this exception.
+     */
+    public void setCode(String code){
+	this.code = code;
+    }
+ 
     /**
      * Empty constructor.
      * @param message The message for the .
@@ -79,11 +91,45 @@ public class WfsException extends Exception {
     }
     
     
+    private boolean isEmpty(String testString){
+	return (testString == null) || testString.equals("");
+    }
+
     /**
      * Return request type.
      */
     public String getXmlResponse () {
-        String returnXml;
+	String indent = "   ";
+       StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>\n");
+	returnXml.append("<ServiceExceptionReport\n");
+	returnXml.append(indent + "version=\"1.2.0\"\n");
+	returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
+	returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + 
+			 "XMLSchema-instance\"\n");
+	//REVISIT: this probably isn't right, need to learn about xml schemas
+	returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis"
+			 + ".net/ogc ../wfs/1.0.0/OGC-exception.xsd\">\n");
+	//REVISIT: handle multiple service exceptions?  must refactor class.
+	returnXml.append(indent + "<ServiceException");	
+	if (!isEmpty(this.code)) {
+	    returnXml.append(" code=\"" + this.code + "\"");
+	}
+	if (!isEmpty(this.locator)) {
+	    returnXml.append(" locator=\"" + this.locator + "\"");
+	} 
+	returnXml.append(">\n" + indent + indent);
+	if (!isEmpty(this.preMessage)){
+	    returnXml.append(this.preMessage + ": ");
+	} 
+	returnXml.append(this.getMessage() + "\n");
+	returnXml.append(indent + "</ServiceException>\n");
+	returnXml.append("</ServiceExceptionReport>");
+	LOGGER.fine("return wfs exception is " + returnXml);
+	return returnXml.toString();
+	
+	//this is code from .14 and .15.  It can be reused if we need 
+	//backwards compatibility.
+        /*String returnXml;
         returnXml = "<WFS_Exception>\n";
         returnXml = returnXml + "   <Exception>\n";
         returnXml = returnXml + "      <Locator>" + this.locator + 
@@ -92,6 +138,6 @@ public class WfsException extends Exception {
             this.getMessage() + "</Message>\n";
         returnXml = returnXml + "   </Exception>\n";
         returnXml = returnXml + "</WFS_Exception>\n";
-        return returnXml;
+        return returnXml;*/
     }    
 }
