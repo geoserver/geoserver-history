@@ -17,7 +17,7 @@ Service level configuration
       <URL>http://localhost:8080/geoserver/</URL>
 
      <!-- Whether newlines and indents should be returned in -->
-     <!-- XML responses.  Default is false -->
+     <!-- XML responses.  Default is true -->
      <verbose value="true"/>
 
      <!-- Sets the max number of decimal places past the zero returned in
