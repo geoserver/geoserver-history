@@ -71,7 +71,7 @@ public class WfsConfig implements java.io.Serializable {
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.config");
 
-    private Level logLevel = Logger.getLogger("").getLevel();
+    private Level logLevel = Logger.getLogger("org.vfny.geoserver").getLevel();
     
     private int maxFeatures = 1000000;
 
@@ -144,10 +144,10 @@ public class WfsConfig implements java.io.Serializable {
 	
 	    String logLevel = findTextFromTag(configElem, LOG_TAG);
 	    wfsConfig.setLogLevel(logLevel);
-	    Level level = wfsConfig.getLogLevel(); 
+	    // Level level = wfsConfig.getLogLevel(); 
 	    //init this now so the rest of the config has correct log levels.
-	    Log4JFormatter.init("org.geotools", level);
-	    Log4JFormatter.init("org.vfny.geoserver", level);
+	    //Log4JFormatter.init("org.geotools", level);
+	    // Log4JFormatter.init("org.vfny.geoserver", level);
 
 	    Element verboseElem = 
 		(Element) configElem.getElementsByTagName(VERBOSE_TAG).item(0);
@@ -226,11 +226,21 @@ public class WfsConfig implements java.io.Serializable {
 	}
 	return wfsConfig;
     }
-
-        private static String findTextFromTag(Element root, String tag){
+    
+    //TODO: put this in a common utility file, as 3 classes use it, and 
+    //it's a bit confusing getting the ServiceConfig log messages.
+    private static String findTextFromTag(Element root, String tag){
 	return ServiceConfig.findTextFromTag(root, tag);
     }
 
+    /**
+     * Sets the maximum number of features that should be returned by a 
+     * getFeatures request.
+     * 
+     * @param max A string of the max features to set.  Should be parseable
+     * to an integer.  If this method can not parse the string then it just
+     * uses the default maxFeatures of this class.
+     */
     void setMaxFeatures(String max){
 	LOGGER.finest("setting max features with " + max);
 	//if (!max.equals("")){
@@ -244,15 +254,35 @@ public class WfsConfig implements java.io.Serializable {
 	    //}
     }
 
+    /**
+     * Gets the maximum number of features that should be returned by
+     * a get features request.
+     *
+     * @return the max number of features to return.
+     */
     public int getMaxFeatures(){
 	return this.maxFeatures;
     }
 
+    /**
+     * Sets the logging level to be used by GeoServer.  Unlike the other
+     * methods of this class, this method actually performs configuration
+     * action.  This is so logging gets set as soon as possible, so the 
+     * reporting for the rest of the configuration process occurs at the right
+     * level of detail.  
+     *
+     * @param level a String representation of the level to set.  Can be any 
+     * java.util.logging.Level string representation, including integers.  If
+     * the level can not be parsed than the levels set in the jre 
+     * logging.properties are used.
+     */
     void setLogLevel(String level){
 	try {
 	    
 	    logLevel = Level.parse(level);
 	    LOGGER.config("setting LogLevel to " + logLevel);
+	    Log4JFormatter.init("org.geotools", logLevel);
+	     Log4JFormatter.init("org.vfny.geoserver", logLevel);
 	} catch (IllegalArgumentException e){
 	    LOGGER.config("could not parse LogLevel: " + level + ", using " +
 			   "level: " + this.logLevel + ", found in " +
@@ -260,11 +290,21 @@ public class WfsConfig implements java.io.Serializable {
 	}
     }
 
+    /**
+     * gets the logging level.
+     * 
+     * @return the level to be used for logging.
+     */
     public Level getLogLevel(){
 	return this.logLevel;
     }
 
-    /** returns true if the Verbose tag is present in the config file. */
+    /** 
+     * Returns true if the Verbose tag is present in the config file. 
+     *
+     * @return <tt>true</tt> if the verbose tag was present, <tt>false</tt> 
+     * otherwise
+     */
     public boolean isVerbose(){
 	return verbose;
     }
