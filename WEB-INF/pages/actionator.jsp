@@ -11,7 +11,6 @@
     String forwards = (String) request.getAttribute("actionForwards");
     String[] array = forwards.split(":"); 
 	
-    System.out.println("ACTIONATOR");
     for (int index = 0; index < array.length; index ++) {
 %>
       <tr>
