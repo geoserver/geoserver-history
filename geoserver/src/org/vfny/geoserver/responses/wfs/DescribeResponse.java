@@ -22,7 +22,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.1.2.1 2003/11/04 22:54:55 cholmesny Exp $
+ * @version $Id: DescribeResponse.java,v 1.1.2.2 2003/11/11 02:49:52 cholmesny Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -36,7 +36,9 @@ public class DescribeResponse implements Response {
     private static ServerConfig config = ServerConfig.getInstance();
 
     /** Bean that holds global featureType information */
-    private static TypeRepository typeRepo = TypeRepository.getInstance();
+
+    //private static TypeRepository typeRepo = TypeRepository.getInstance();
+    private static CatalogConfig catalog = config.getCatalog();
 
     // Initialize some generic GML information
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE
@@ -144,24 +146,27 @@ public class DescribeResponse implements Response {
         //ComplexType table = new ComplexType();
         if (requestedTypes.size() == 0) {
             //if there are no specific requested types then get all.
-            requestedTypes = typeRepo.getAllTypeNames();
+            requestedTypes = new ArrayList(catalog.getFeatureTypes().keySet());
         }
 
         tempResponse.append(HEADER);
 
         //allSameType will throw WfsException if there are types that are not found.
-        if (typeRepo.allSameType(requestedTypes)) {
+        if (catalog.allSameType(requestedTypes)) {
             //all the requested have the same namespace prefix, so return their
             //schemas.
-            TypeInfo nsInfoType = typeRepo.getType((String) requestedTypes.get(
-                        0));
+            FeatureTypeConfig nsInfoType = catalog.getFeatureType((String) requestedTypes
+                    .get(0));
 
             //all types have same prefix, so just use the first.
-            String nsPrefix = nsInfoType.getPrefix();
-            String targetNs = nsInfoType.getXmlns();
+            NameSpace namespace = nsInfoType.getDataStore().getNameSpace();
+            String targetNs = namespace.getUri();
+
+            //String targetNs = nsInfoType.getXmlns();
             tempResponse.append(TARGETNS_PREFIX + targetNs + TARGETNS_SUFFIX);
-            tempResponse.append("\n  xmlns:" + nsPrefix + "=\"" + targetNs
-                + "\"");
+            tempResponse.append("\n  " + namespace); //xmlns:" + nsPrefix + "=\"" + targetNs
+
+            //+ "\"");
             tempResponse.append(GML_NAMESPACE);
             tempResponse.append(XS_NAMESPACE);
             tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
@@ -180,7 +185,7 @@ public class DescribeResponse implements Response {
             //iterate through the types, and make a set of their prefixes.
             while (nameIter.hasNext()) {
                 String typeName = nameIter.next().toString();
-                String typePrefix = typeRepo.getType(typeName).getPrefix();
+                String typePrefix = catalog.getFeatureType(typeName).getPrefix();
                 prefixes.add(typePrefix);
             }
 
@@ -262,7 +267,7 @@ public class DescribeResponse implements Response {
      */
     private String generateSpecifiedTypes(List requestedTypes)
         throws WfsException {
-        TypeRepository repository = TypeRepository.getInstance();
+        //TypeRepository repository = TypeRepository.getInstance();
         String tempResponse = new String();
         String currentFile = new String();
         String curTypeName = new String();
@@ -275,8 +280,10 @@ public class DescribeResponse implements Response {
             // print type data for the table object
             curTypeName = requestedTypes.get(i).toString();
 
-            TypeInfo meta = repository.getType(curTypeName);
-            curTypeName = meta.getFullName();
+            //TypeInfo meta = repository.getFeatureType(curTypeName);
+            FeatureTypeConfig meta = catalog.getFeatureType(curTypeName);
+
+            curTypeName = meta.getName();
 
             if (meta == null) {
                 throw new WfsException("Feature Type " + curTypeName + " does "
@@ -299,7 +306,8 @@ public class DescribeResponse implements Response {
         //  STORE IN HASH?
         for (Iterator i = validTypes.iterator(); i.hasNext();) {
             // Print element representation of table
-            tempResponse = tempResponse + printElement((TypeInfo) i.next());
+            tempResponse = tempResponse
+                + printElement((FeatureTypeConfig) i.next());
         }
 
         tempResponse = tempResponse + "\n\n";
@@ -314,14 +322,14 @@ public class DescribeResponse implements Response {
      *
      * @return The element part of the response.
      */
-    private static String printElement(TypeInfo type) {
+    private static String printElement(FeatureTypeConfig type) {
         //int prefixDelimPos = typeName.indexOf(":");
         //String tablename = typeName;
         //if (prefixDelimPos > 0) {
         //String tableName = typeName.substring(prefixDelimPos + 1);
         //  }
-        return "\n  <xs:element name='" + type.getName() + "' type='"
-        + type.getFullName() + "_Type' substitutionGroup='gml:_Feature'/>";
+        return "\n  <xs:element name='" + type.getShortName() + "' type='"
+        + type.getName() + "_Type' substitutionGroup='gml:_Feature'/>";
     }
 
     /**
