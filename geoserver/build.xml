@@ -39,7 +39,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2.0-rc2"/>
+  <property name="name.release" value="1.2.0-rc3"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
