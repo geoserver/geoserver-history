@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.8 2003/10/24 21:22:41 cholmesny Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.9 2003/12/10 17:30:40 cholmesny Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -207,8 +207,11 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             }
 
             try {
+		//Note localName is used here instead of typeName as typeName's
+		//meaning is with the prefix for internal GeoServer types,
+		//which we don't want passed to our datasources.
                 FeatureType schema = FeatureTypeFactory.newFeatureType(attDef,
-                        typeName, namespaceURI);
+                        localName, namespaceURI);
                 Feature feature = schema.create(attributes.toArray());
 
                 //currentFeature.setAttributes((Object []) attributes.toArray());
