@@ -20,6 +20,19 @@
 		</argument>
 	</test>
 	<test>
+		<name>BC Roads Length</name>
+		<description>Checks that road lengths are non zero.</description>
+		<plugin>Null Zero</plugin>
+		<argument >
+			<name>attributeName</name>
+			<string>LENGTH</string>
+		</argument>
+		<argument >
+			<name>typeRef</name>
+			<string>bc_shapefile:bc_roads</string>
+		</argument>
+	</test>	
+	<test>
 		<name>Attr Check</name>
 		<description>Checks all pointProperty's are non null.</description>
 		<plugin>Null Zero</plugin>
