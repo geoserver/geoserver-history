@@ -91,7 +91,6 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         //
         ftConfig.setSRS(0);
         
-        
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
                 
         // TODO translate to lat long, pending

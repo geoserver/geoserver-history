@@ -186,7 +186,7 @@ public class FeatureTypeConfig {
         definitionQuery = null;
         dirName = dataStoreId + "_" + name;
         schemaName = name + "_Type";        
-        schemaBase = "AbstractFeatureType";
+        schemaBase = "gml:AbstractFeatureType";
     }
 
     /**
@@ -552,5 +552,11 @@ public class FeatureTypeConfig {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String toString() {
+	return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName
+	    + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes + 
+	    " schemaBase " + schemaBase + "]";
     }
 }

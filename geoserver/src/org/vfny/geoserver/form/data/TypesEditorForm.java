@@ -192,7 +192,7 @@ public class TypesEditorForm extends ActionForm {
 
         System.out.println("rest based on schemaBase: " + type.getSchemaBase());
 
-        // Generate ReadOnly list of Attribtues
+        // Generate ReadOnly list of Attributes
         //
         DataStoreConfig dataStoreConfig = config.getDataStore(dataStoreId);
         FeatureType featureType = null;
@@ -213,10 +213,10 @@ public class TypesEditorForm extends ActionForm {
             this.schemaName = typeName + "_Type";
             this.attributes = new LinkedList();
 
-            // Generate ReadOnly list of Attribtues
+            // Generate ReadOnly list of Attributes
             //
             List generated = DataTransferObjectFactory.generateAttributes(featureType);
-            this.attributes = attribtuesDisplayList(generated);
+            this.attributes = attributesDisplayList(generated);
             addList = Collections.EMPTY_LIST;
         } else {
             this.schemaBase = type.getSchemaBase();
@@ -227,10 +227,10 @@ public class TypesEditorForm extends ActionForm {
             // Need to add read only AttributeDisplay for each required attribute
             // defined by schemaBase
             //
-            List schemaAttribtues = DataTransferObjectFactory
-                .generateRequiredAttribtues(schemaBase);
-            attributes.addAll(attribtuesDisplayList(schemaAttribtues));
-            attributes.addAll(attribtuesFormList(type.getSchemaAttributes(),
+            List schemaAttributes = DataTransferObjectFactory
+                .generateRequiredAttributes(schemaBase);
+            attributes.addAll(attributesDisplayList(schemaAttributes));
+            attributes.addAll(attributesFormList(type.getSchemaAttributes(),
                     featureType));
             addList = new ArrayList(featureType.getAttributeCount());
 
@@ -301,13 +301,13 @@ public class TypesEditorForm extends ActionForm {
      *
      * @return
      */
-    private List attribtuesDisplayList(List dtoList) {
+    private List attributesDisplayList(List dtoList) {
         List list = new ArrayList();
         int index = 0;
 
         for (Iterator i = dtoList.iterator(); i.hasNext(); index++) {
             Object next = i.next();
-            System.out.println(index + " attribute: " + next);
+            //System.out.println(index + " attribute: " + next);
             list.add(new AttributeDisplay(
                     new AttributeTypeInfoConfig((AttributeTypeInfoDTO) next)));
         }
@@ -323,7 +323,7 @@ public class TypesEditorForm extends ActionForm {
      *
      * @return
      */
-    private List attribtuesFormList(List dtoList, FeatureType schema) {
+    private List attributesFormList(List dtoList, FeatureType schema) {
         List list = new ArrayList();
 
         for (Iterator i = dtoList.iterator(); i.hasNext();) {
