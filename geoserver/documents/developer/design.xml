@@ -15,36 +15,36 @@
     documents or pretty pictures, but we think that this document along with a
     decent examination of the source code itself should get most anyone up to
     date. For a more concrete discussion of some of the issues contained here
-    see the document on <ulink url="???">files in GeoServer,</ulink> as it
-    completely explains the structure of files GeoServer uses for
-    configuration. If there are further questions please do not hesitate to
-    ask the development list: <ulink
-    url="???">geoserver-devel@lists.sourceforge.net</ulink>. </para>
+    see the document on <ulink url="dev_files.html">files in
+    GeoServer,</ulink> as it completely explains the structure of files
+    GeoServer uses for configuration. If there are further questions please do
+    not hesitate to ask the development list:
+    <email>geoserver-devel@lists.sourceforge.net</email>.</para>
 
     <section>
       <title>A note on GeoTools2</title>
 
       <para>Perhaps the most important understanding needed about the design
       of GeoServer is the incredibly close linkage with <ulink
-      url="???">GeoTools2</ulink>. Browsing the GeoServer code likely gives
-      one less than half of the understanding needed to comprehend what
-      exactly is going on. This is by design, the GeoServer Project does not
-      want to reinvent the wheel with yet another feature model, so instead we
-      have worked extensively with GeoTools to improve their feature model to
-      handle the functionality GeoServer needs. GeoTools does all the 'heavy
-      lifting', the reading and writing to datastores, the querying and
-      filtering, the rendering and generation of GML. So many GeoServer
-      improvements and bug fixes actually fall into the GeoTools code base.
-      This has the nice effect of having even more eyes to find bugs, as other
-      projects make use of GeoTools, and there are more developers there to
-      put their minds on improvements. For any serious GeoServer development
-      work we highly recommend getting acquainted with GeoTools, the best
-      place to start is with the <ulink
+      url="http://geotools.org">GeoTools2</ulink>. Browsing the GeoServer code
+      likely gives one less than half of the understanding needed to
+      comprehend what exactly is going on. This is by design, the GeoServer
+      Project does not want to reinvent the wheel with yet another feature
+      model, so instead we have worked extensively with GeoTools to improve
+      their feature model to handle the functionality GeoServer needs.
+      GeoTools does all the 'heavy lifting', the reading and writing to
+      datastores, the querying and filtering, the rendering and generation of
+      GML. So many GeoServer improvements and bug fixes actually fall into the
+      GeoTools code base. This has the nice effect of having even more eyes to
+      find bugs, as other projects make use of GeoTools, and there are more
+      developers there to put their minds on improvements. For any serious
+      GeoServer development work we highly recommend getting acquainted with
+      GeoTools, the best place to start is with the <ulink
       url="http://geotools.codehaus.org/Developers+Guide">Developer's
       Guide</ulink>. GeoServer follows most all the same conventions and
       philosophy as GeoTools, so that guide should serve as a good guide for
       GeoServer as well. As GeoTools is a huge code base we will also discuss
-      the parts that GeoServer makes use of. </para>
+      the parts that GeoServer makes use of.</para>
     </section>
   </section>
 
@@ -62,9 +62,9 @@
     wfs, wms, web config, catalog, coverage, ect., with each handling the
     input, request, response stack as it chooses to – servlet, request
     response for w*s, action form config for the web app, and z39.50 and
-    others for the Catalog. </para>
+    others for the Catalog.</para>
 
-    <para> But until we actually have time to rearchitect (and bring out 2.0)
+    <para>But until we actually have time to rearchitect (and bring out 2.0)
     we've got our current structure. Three packages handle the webapp –
     action, form and config should look pretty familiar for anyone with STRUTS
     experience. Three packages fall in a parallel stack for wfs and wms
@@ -82,9 +82,9 @@
     You will also notice some packages in the geotools packages. These are
     generally classes that belong in the geotools framework, but that have not
     yet been rolled in. Many times GeoServer developers like to try things out
-    in GeoServer before presenting them to the GeoTools developers. </para>
+    in GeoServer before presenting them to the GeoTools developers.</para>
 
-    <para> So that's the big picture – now we shall examine each of the pieces
+    <para>So that's the big picture – now we shall examine each of the pieces
     mentioned, as they do things a bit differently, have various intricacies
     that one should know. This should hopefully complement the javadocs and
     the code itself, we're just hoping to give an overview here for developers
@@ -96,7 +96,7 @@
       <para>The core wfs and wms functionality consists of the requests,
       responses and servlets packages. Each package contains a main abstract
       class that each type subclasses and fills in with its particular
-      functionality. </para>
+      functionality.</para>
 
       <section>
         <title>Servlets</title>
@@ -116,7 +116,7 @@
         This allows us to send all requests to
         http://localhost:8080/geoserver/wfs, instead of a getCapabilities to
         geoserver/wfs/GetCapabilities and a getFeature to
-        geoserver/wfs/GetFeature, for example. </para>
+        geoserver/wfs/GetFeature, for example.</para>
       </section>
 
       <section>
@@ -164,7 +164,7 @@
         responses have not yet moved over to SAX generation – we would like
         all to do it, but have stopped short at doing only the performance
         sensitive ones, like GetFeature, and those that were already being
-        refactored, like Capabilities. </para>
+        refactored, like Capabilities.</para>
       </section>
     </section>
 
@@ -183,7 +183,7 @@
       system. The xml package contains the configuration readers and writers,
       to persist the current application state.</para>
 
-      <para> One topic in the global package worth examining a bit is the
+      <para>One topic in the global package worth examining a bit is the
       question of data access, as that's primarily what GeoServer does,
       provides different ways of accessing data over the web. The first thing
       to understand is that GeoTools handles all the dirty details of the
@@ -205,17 +205,17 @@
       Shapefile a DataStore could be the directory and the FeatureType a
       single file. Some files could also include a number of FeatureTypes. We
       use FeatureType, which is the WFS way of referring to them, but one
-      could just as easily call it a 'Layer', as the WMS does. </para>
+      could just as easily call it a 'Layer', as the WMS does.</para>
 
-      <para> Each FeatureType has a FeatureTypeInfo class, which mediates
+      <para>Each FeatureType has a FeatureTypeInfo class, which mediates
       between GeoServer and GeoTools. GeoServer allows users to limit their
       FeatureTypes, and this is done in the FeatureTypeInfo class, using the
       GeoServerFeatureStore. A FeatureStore is a GeoTools object that offers
       streaming access to a particular FeatureType in a DataStore. The
       FeatureStore takes queries and returns FeatureResults, which can then be
-      turned into GML or rendered into images. </para>
+      turned into GML or rendered into images.</para>
 
-      <para> The FeatureStore can also return the FeatureType, which can be
+      <para>The FeatureStore can also return the FeatureType, which can be
       turned into a DescribeFeatureType response, using a
       FeatureTypeTransformer. A subclass of FeatureStore, called
       FeatureLocking, provides Locking functionality, to complete the possible
@@ -234,7 +234,7 @@
       configuration interface to match the rest of GeoServer. We are hoping to
       bring it back at some point, as there is a decent bit of useful code
       there, we just need to make it a lot easier to set up. Hopefully it will
-      also integrate with a full OGC Catalog interface as well. </para>
+      also integrate with a full OGC Catalog interface as well.</para>
     </section>
 
     <section>
@@ -249,9 +249,9 @@
       up on STRUTS, and then diving into the Javadocs of GeoServer – we
       closely followed the recommended ways of implementing STRUTS, so talking
       extensively about the design here would just replicate past design
-      discussions of STRUTS. </para>
+      discussions of STRUTS.</para>
 
-      <para> A few things bear mentioning, however. One thing to note is that
+      <para>A few things bear mentioning, however. One thing to note is that
       our STRUTS implementation only makes use of DTO objects, it does not
       actually control the GeoServer application itself, it simply sends
       updated DTO objects. This allows us to keep a clear separation between
@@ -293,7 +293,7 @@
     <section>
       <title>Feature</title>
 
-      <para> A Feature is the atomic unit of GIS processing, it is generally a
+      <para>A Feature is the atomic unit of GIS processing, it is generally a
       geometry, with zero or more non-spatial attributes. It most often
       corresponds to a row in a table or a line in a file. In GeoTools it is
       made up of one or more Attributes, which can be any Java objects.
@@ -327,7 +327,7 @@
       translate filters into appropriate SQL WHERE clauses. The SQLUnpacker
       can be used to process what filters to pass to the encoder, and what to
       filters should be used for post-processing after the select statements
-      has been made. </para>
+      has been made.</para>
     </section>
 
     <section>
@@ -352,7 +352,7 @@
       DataStore with. There are several advanced DataStore topics, such as
       filter unpacking and fid generation, but we shall leave them off here,
       if interested please email the list and we can reply on there and then
-      add the results to this guide. </para>
+      add the results to this guide.</para>
     </section>
 
     <section>
@@ -361,7 +361,7 @@
       <para>Style is directly based on the OpenGIS Styled Layer Description
       (SLD) specification. The package provides a java implementation of
       Styles, and xml encoders and decoders to read to and from the SLD
-      language. </para>
+      language.</para>
     </section>
 
     <section>
@@ -375,7 +375,7 @@
       first rendering, which is the only rendering which GeoServer cares
       about. Both renderers make use of JAI (Java Advanced Imaging), and we
       encourage users to install the version specific to their operating
-      system, as it will perform much better. </para>
+      system, as it will perform much better.</para>
     </section>
 
     <section>
@@ -411,7 +411,7 @@
     <section>
       <title>GeoServer 1.3</title>
 
-      <para> First is GeoServer 1.3, which is the next major development
+      <para>First is GeoServer 1.3, which is the next major development
       target. There is a good chance it will be the last major development in
       the 1.* GeoServer series, as it will complete the current services and
       configurations. We want to make sure that any additional services are
@@ -449,7 +449,7 @@
       on/off. It would be quite nice if we could figure out a way to specify
       roles and various permission levels for different users. And finally we
       want to have full one click installers for a variety of operating
-      systems. </para>
+      systems.</para>
     </section>
 
     <section>
@@ -477,7 +477,7 @@
       GeoTools on top of which most anything could be added. There have also
       been recent thoughts to make GeoServer a true J2EE application, so that
       each plug-in can be it's own bean, and run on a separate machine, to
-      bring real scalability to GeoServer. </para>
+      bring real scalability to GeoServer.</para>
     </section>
   </section>
 </article>
