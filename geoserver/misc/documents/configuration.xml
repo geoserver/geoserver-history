@@ -8,7 +8,7 @@
 		<Fees>This is a free server.</Fees>
 		<AccessConstraints>There are no access constraints to this server.</AccessConstraints>
                 <LoggingLevel>INFO</LoggingLevel>
-                <MaxFeatures>1000</MaxFeatures> 
+                <MaxFeatures>20000</MaxFeatures> 
 		<URL>http://beta.openplans.org/geoserver</URL>
 		<Maintainer>The Open Planning Project</Maintainer>
                 <Verbose value="true"/>
