@@ -19,7 +19,7 @@
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
   <property name="dir.build" value="${basedir}/build"/>
-  <property name="dir.doc" value="${basedir}/documents"/>
+  <property name="dir.doc" value="${basedir}/documents/generated"/>
   <property name="dir.lib" value="${basedir}/lib"/>
   <property name="dir.server" value="${basedir}/server"/>
   <property name="dir.src" value="${basedir}/src"/>
@@ -37,7 +37,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\resin-3.0.6\webapps"/>
+  <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
   <property name="dir.geotools" 
             value="e:\workspace\geotools2\geotools-src"/>
             
@@ -575,6 +575,7 @@
 <!-- DOCUMENTATION -->
 <!-- generates all project documentation -->
   <target name="document" depends="init">
+    <mkdir dir="${dir.doc}"/>
     <javadoc sourcepath="${dir.src}"
              destdir="${dir.doc}/api"
              private="true"
@@ -613,6 +614,42 @@
             href="http://jakarta.apache.org/log4j/docs/api/" 
             packagelistLoc="${dir.doc}/package-lists/log4j"/>
     </javadoc>
+    
+    
+    <!-- Copy docbook XSL images into the release docs directory -->
+    <copy todir="${dir.doc}/developer/images">
+        <fileset dir="${dir.doc}/../docbook-xsl/images"/>
+    </copy>
+    <copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
+
+    <!-- Convert docbook to html -->
+    <style
+        basedir="${dir.doc}/../developer"
+        destdir="${dir.doc}/developer"
+        extension=".html"
+        style="${dir.doc}/../docbook-xsl/html/docbook.xsl"
+        includes="*.xml"
+        processor="trax">
+        <param name="section.autolabel" expression="1"/>
+        <param name="toc.section.depth" expression="4"/>
+    </style>
+    
+    <copy todir="${dir.doc}/user/images">
+        <fileset dir="${dir.doc}/../docbook-xsl/images"/>
+    </copy>
+    <copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
+
+    <!-- Convert docbook to html -->
+    <style
+        basedir="${dir.doc}/../user"
+        destdir="${dir.doc}/user"
+        extension=".html"
+        style="${dir.doc}/../docbook-xsl/html/docbook.xsl"
+        includes="*.xml"
+        processor="trax">
+        <param name="section.autolabel" expression="1"/>
+        <param name="toc.section.depth" expression="4"/>
+    </style>
   </target>
 
 
@@ -672,10 +709,10 @@
 	  </fileset>
     </copy>
     <copy todir="${dir.build}/documents">
-	  <fileset dir="${dir.doc}">
+	  <fileset dir="${dir.build}/documents">
 	    <include name="**/*"/>
-	    <exclude name="*api*/*"/>
-	    <exclude name="*api*/**/*"/>
+	    <exclude name="*generated*/*"/>
+	    <exclude name="*generated*/**/*"/>
 	    <exclude name="*CVS*/*"/>
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
