@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.8 2004/01/15 23:45:21 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.9 2004/01/15 23:55:56 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -92,9 +92,6 @@ public class DescribeResponse implements Response {
 
         // generates response, using general function
         xmlResponse = generateTypes(wfsRequest);
-//System.out.println("***** response *****");
-//System.out.println(xmlResponse);
-//System.out.println("***** end *****");
         if (!request.getGeoServer().isVerbose()) {
             //strip out the formatting.  This is pretty much the only way we
             //can do this, as the user files are going to have newline
@@ -104,9 +101,6 @@ public class DescribeResponse implements Response {
             xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
-//System.out.println("***** response *****");
-//System.out.println(xmlResponse);
-//System.out.println("***** end *****");
     }
 
     /**
