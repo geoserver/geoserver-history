@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.7 2004/01/17 22:33:12 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.8 2004/01/19 18:31:30 emperorkefka Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -42,7 +42,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  */
 public class DataConfig {
     public static final String CONFIG_KEY = "Config.Data";
-    public static final String SEPARATOR  = ".";
+    public static final String SEPARATOR  = ":::";
 
     /**
      * A set of datastores and their names.
@@ -138,7 +138,7 @@ public class DataConfig {
 
         while (i.hasNext()) {
             Object key = i.next();
-            System.out.println("DataConf ConstruktDTO key = "+key);
+            
             featuresTypes.put(key,
                 new FeatureTypeConfig(
                     (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
@@ -203,7 +203,7 @@ public class DataConfig {
 
         while (i.hasNext()) {
             Object key = i.next();
-            System.out.println("DataConf updateDTO key = "+key);
+            
             FeatureTypeInfoDTO f = (FeatureTypeInfoDTO) data.getFeaturesTypes()
                                                             .get(key);
             featuresTypes.put(f.getDataStoreId() + f.getName(),
@@ -373,8 +373,6 @@ public class DataConfig {
      * @return
      */
     public FeatureTypeConfig getFeatureTypeConfig(String key) {
-    	System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FTCONFIG KEYS:::::::");
-    	System.out.println(featuresTypes.keySet());
         return (FeatureTypeConfig) featuresTypes.get(key);
     }
 
@@ -526,7 +524,7 @@ public class DataConfig {
         if (featuresTypes == null) {
             featuresTypes = new HashMap();
         }
-System.out.println("DataConf.addFeatureType key = " +key);
+
         if ((key != null) && (ft != null)) {
             featuresTypes.put(key, ft);
         }
@@ -666,10 +664,9 @@ System.out.println("DataConf.addFeatureType key = " +key);
     public SortedSet getFeatureTypeIdentifiers(){
     	
     	TreeSet set = new TreeSet();
-    	
+
     	for (Iterator iter = dataStores.values().iterator(); iter.hasNext();) {
 			DataStoreConfig dataStoreConfig = (DataStoreConfig) iter.next();
-			
 			try {
 				DataStore dataStore = dataStoreConfig.findDataStore();
 				
@@ -688,7 +685,7 @@ System.out.println("DataConf.addFeatureType key = " +key);
 			}
 			
 		}
-    	
+		
     	return Collections.unmodifiableSortedSet(set);
     }
 }

@@ -50,7 +50,7 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
 		String _abstract = featureTypesForm.get_abstract();
 		
 		DataConfig dataConfig = (DataConfig) getDataConfig();			
-		FeatureTypeConfig config = null; //TODO - RETRIEVE featuretype config		
+		FeatureTypeConfig config = dataConfig.getFeatureTypeConfig(name); //TODO - RETRIEVE featuretype config		
 		
 		config.setAbstract(_abstract);
 		config.setName(name);
