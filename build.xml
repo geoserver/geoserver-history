@@ -35,15 +35,9 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\resin-3.0.6\webapps"/>
+  <property name="dir.container" value="C:\resin-3.0.7\webapps"/>
   <property name="dir.geotools" 
-            value="c:\java\workspace\geotools2\geotools-src"/>
-            
-  <!-- linux example
-  <property name="dir.container" value="/usr/local/resin-2.1.4/webapps"/>
-  <property name="dir.geotools" 
-            value="/home/rob/wfs/geotools/geotools2/geotools-src"/>
-   -->
+            value="c:\eclipse\workspace\geotools2\geotools-src"/>
 
  <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
@@ -70,7 +64,7 @@
   <!-- If you don't have your own conf directory uncomment on of the following -->
   <!--<property name="test.type" value="UserBasic"/>-->
   <!--<property name="test.type" value="CitePostGis"/>-->
-  <!--<property name="test.type" value="CiteShapeFiles"/>-->
+  <property name="test.type" value="CiteShapeFiles"/>
 
   <!-- paths -->
   <path id="path.lib">
@@ -87,6 +81,7 @@
     <pathelement location="${jar.xercesImpl}" />
     <pathelement location="${jar.xml}" />
    </path>
+   
   <path id="path.build">
     <path refid="path.lib"/>
     <fileset dir="${dir.build}">
@@ -336,26 +331,6 @@
     </java>
   </target>
 
-
-<!-- STOP SERVER -->
-<!-- TODO: implement this somehow... 
-  <target name="test-stop" depends="init">
-    <java classname="org.mortbay.jetty.Server"
-          dir="${basedir}"
-          fork="yes"
-          failonerror="yes"
-          >
-       <classpath>
-         <pathelement path="${env.CLASSPATH}" />
-         <path refid="path.jetty" />
-       </classpath>
-       <jvmarg line="${jetty.jvmarg}" />
-       <arg line="${jetty.run}" />
-    </java>
-  </target-->
-
-
-
 <!-- EXTERNAL TEST -->
 <!-- deploys application to test server -->
   <target name="test-ext" depends="init, war">
@@ -579,13 +554,7 @@
             href="http://jakarta.apache.org/log4j/docs/api/" 
             packagelistLoc="${dir.doc}/package-lists/log4j"/>
     </javadoc>
-    
-    
-    <!-- Copy docbook XSL images into the release docs directory -->
-    <!--<copy todir="${dir.doc}/developer/images">
-        <fileset dir="${dir.doc}/../docbook-xsl/images"/>
-    </copy>-->
-    
+        
     <copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
     <copy todir="${dir.doc}/" file="${dir.doc}/../index.html"/>
 
@@ -616,9 +585,6 @@
         <param name="toc.section.depth" expression="4"/>
     </style>
     
-    <!--<copy todir="${dir.doc}/user/images">
-        <fileset dir="${dir.doc}/../docbook-xsl/images"/>
-    </copy>-->
     <copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
     <copy todir="${dir.doc}/user" file="${dir.doc}/../user/**/*.pdf" failonerror="false"/>
 
@@ -796,8 +762,8 @@ failonerror="true"/>
     <mkdir dir="${basedir}/conf" />
     
     <!-- populate new conf -->
-    <unzip src="${basedir}/cite/conf${test.type}.zip" dest="${basedir}"/>
-    <copy todir="${basedir}/conf">
+    <!--<unzip src="${basedir}/cite/conf${test.type}.zip" dest="${basedir}"/>-->
+    <copy todir="${basedir}/cite/conf${test.type}">
 	  <fileset dir="${basedir}/data">
 	    <include name="**/*"/>
 	  </fileset>
@@ -833,6 +799,8 @@ failonerror="true"/>
                includes="**/*.class"/>   
       <fileset dir="${dir.geotools}/opengis/target/classes/"
                includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/map/target/classes/"
+               includes="**/*.class"/>     
       <fileset dir="${dir.geotools}/graph/target/classes/"
                includes="**/*.class"/>     
       <fileset dir="${dir.geotools}/validation/target/classes/">
@@ -881,11 +849,11 @@ failonerror="true"/>
 	</jar>
 	
     <!-- Java Property support, include META-INF -->		
-    <delete file="${dir.lib}/arcsde-SNAPSHOT.jar" failonerror="true"/>                
+    <!--<delete file="${dir.lib}/arcsde-SNAPSHOT.jar" failonerror="true"/>                
 	<jar jarfile="${dir.lib}/arcsde-SNAPSHOT.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/arcsde/target/classes/"/>
-	</jar>	
+	</jar>	-->
 	
   </target>
 </project>

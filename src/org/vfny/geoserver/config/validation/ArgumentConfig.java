@@ -20,8 +20,8 @@ import org.geotools.validation.dto.ArgumentDTO;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ArgumentConfig.java,v 1.1 2004/01/31 00:27:24 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ArgumentConfig.java,v 1.2 2004/04/07 19:37:48 dmzwiers Exp $
  */
 public class ArgumentConfig {
 	private String name;
@@ -136,6 +136,8 @@ public class ArgumentConfig {
 	 * @param value The value to set.
 	 */
 	public void setValue(Object value) {
+		if(value == null)
+			throw new NullPointerException("value should only be set when it has a value");
 		this.value = value;
 	}
 
