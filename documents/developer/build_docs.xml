@@ -272,8 +272,10 @@
     url="http://geotools.codehaus.org/Developers+Guide">Developer's
     Guide</ulink> . GeoServer follows most all the same conventions as
     GeoTools, so any questions about coding style or unit testing should be
-    found there until we get that information in our Developer's Guide.
-    </para>
+    found there until we get that information in our Developer's Guide. The
+    GeoServer 1.2.0 release directly uses the Geotools 2.0-rc1 jars, and the
+    latest GeoServer geotools jars will attempt to always stay in sync with
+    the 2.0.x branch of GeoTools2.</para>
   </sect1>
 
   <sect1>
