@@ -66,7 +66,8 @@ public class GeoIndexerSuite extends TestCase {
         testProps = new Properties();
 	testProps.setProperty("database", INDEX_DIR);
 	testProps.setProperty("datafolder", DATA_DIRECTORY);
-	testProps.setProperty("fieldmap", ATTRIBUTE_MAP);
+	GeoProfile.setUseAttrMap(ATTRIBUTE_MAP);
+	//testProps.setProperty("fieldmap", ATTRIBUTE_MAP);
     }
 
 
