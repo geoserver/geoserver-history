@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
 import org.geotools.filter.AbstractFilter;
@@ -176,6 +177,15 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         coords[3] = new Coordinate(upperLeft.x, lowerRight.y);
         coords[4] = coords[0];
 
+        	//DJB: 
+            //TODO: this should probably put a max features restriction on the query
+            //      unforunately, this queryies by filter not by query, so this is a slightly more difficult problem
+            //      Its not a big deal not to do this because the writer will ensure that the correct # of items
+            //      are actually printed out.
+            //DJB: DONE - see "q", below
+            // NOTE: you can ask for results from multiple layers at once.  So, if max features is 2 (after you add max features query to above) and you
+            //       query 10 layers, you could still get 20 features being sent on.
+            //       Thats why max features is handled at the query portion!
         GeometryFactory geomFac = new GeometryFactory();
 
         LinearRing boundary = geomFac.createLinearRing(coords);
@@ -199,10 +209,12 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         results = new ArrayList(layerCount);
         metas = new ArrayList(layerCount);
 
+        
         try {
             for (int i = 0; i < layerCount; i++) {
                 FeatureTypeInfo finfo = requestedLayers[i];
-                FeatureResults match = finfo.getFeatureSource().getFeatures(getFInfoFilter);
+                Query q = new DefaultQuery( finfo.getTypeName(), null, getFInfoFilter,request.getFeatureCount(), Query.ALL_NAMES, null ); 
+                FeatureResults match = finfo.getFeatureSource().getFeatures(q);
 
                 if (match.getCount() > 0) {
                     results.add(match);
