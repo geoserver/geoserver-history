@@ -195,37 +195,38 @@ public class Log4JFormatter extends Formatter {
             }
 
             final Handler[] handlers = parent.getHandlers();
-
-            for (int i = 0; i < handlers.length; i++) {
-                /*
-                 * Search for a ConsoleHandler. Search is performed in the target
-                 * handler and all its parent loggers. When a ConsoleHandler is
-                 * found, it will be replaced by the Stdout handler for 'logger'
-                 * only.
-                 */
-                Handler handler = handlers[i];
-
-                if (handler.getClass().equals(ConsoleHandler.class)) {
-                    final Formatter formatter = handler.getFormatter();
-
-                    if (formatter.getClass().equals(SimpleFormatter.class)) {
-                        if (log4j == null) {
-                            log4j = new Log4JFormatter(base);
-                        }
-
-                        try {
-                            handler = new Stdout(handler, log4j);
-                            handler.setLevel(filterLevel);
-                        } catch (UnsupportedEncodingException exception) {
-                            unexpectedException(exception);
-                        } catch (SecurityException exception) {
-                            unexpectedException(exception);
+            if( handlers != null ){
+                for (int i = 0; i < handlers.length; i++) {
+                    /*
+                     * Search for a ConsoleHandler. Search is performed in the target
+                     * handler and all its parent loggers. When a ConsoleHandler is
+                     * found, it will be replaced by the Stdout handler for 'logger'
+                     * only.
+                     */
+                    Handler handler = handlers[i];
+    
+                    if (handler.getClass().equals(ConsoleHandler.class)) {
+                        final Formatter formatter = handler.getFormatter();
+    
+                        if (formatter.getClass().equals(SimpleFormatter.class)) {
+                            if (log4j == null) {
+                                log4j = new Log4JFormatter(base);
+                            }
+    
+                            try {
+                                handler = new Stdout(handler, log4j);
+                                handler.setLevel(filterLevel);
+                            } catch (UnsupportedEncodingException exception) {
+                                unexpectedException(exception);
+                            } catch (SecurityException exception) {
+                                unexpectedException(exception);
+                            }
                         }
                     }
+    
+                    logger.addHandler(handler);
+                    logger.setLevel(filterLevel);
                 }
-
-                logger.addHandler(handler);
-                logger.setLevel(filterLevel);
             }
         }
 
