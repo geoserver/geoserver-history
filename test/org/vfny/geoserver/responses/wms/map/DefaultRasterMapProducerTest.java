@@ -58,13 +58,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         .createFilterFactory();
 
     /** DOCUMENT ME! */
-    private static final boolean INTERACTIVE = true;
-
-    /** DOCUMENT ME! */
     private static final StyleFactory sFac = StyleFactory.createStyleFactory();
-
-    /** DOCUMENT ME! */
-    private static final int SHOW_TIMEOUT = 200;
 
     /** DOCUMENT ME! */
     private static final Color BG_COLOR = Color.white;
@@ -88,9 +82,14 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         this.rasterMapProducer = getProducerInstance();
         super.setUp();
     }
-    
-    protected DefaultRasterMapProducer getProducerInstance(){
-    	return new DummyRasterMapProducer();
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    protected DefaultRasterMapProducer getProducerInstance() {
+        return new DummyRasterMapProducer();
     }
 
     /**
@@ -215,32 +214,10 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
     protected void assertNotBlank(String testName,
         DefaultRasterMapProducer producer) {
         BufferedImage image = producer.getImage();
-        assertNotBlank(testName, image);
-        showImage(testName, SHOW_TIMEOUT, image);
+        assertNotBlank(testName, image, BG_COLOR);
+        showImage(testName, image);
     }
 
-    /**
-     * Just asserts that the passed image is not completely blank.
-     *
-     * @param testName DOCUMENT ME!
-     * @param image
-     */
-    protected void assertNotBlank(String testName, BufferedImage image) {
-        int pixelsDiffer = 0;
-
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                if (image.getRGB(x, y) != BG_COLOR.getRGB()) {
-                    ++pixelsDiffer;
-                }
-            }
-        }
-
-        LOGGER.info(testName + ": pixel count="
-            + (image.getWidth() * image.getHeight()) + " non bg pixels: "
-            + pixelsDiffer);
-        assertTrue(testName + " image is comlpetely blank", 0 < pixelsDiffer);
-    }
 
     /**
      * DOCUMENT ME!
@@ -301,91 +278,6 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      */
     protected Envelope getBlueLakeBounds() throws IOException {
         return getCiteDataStore().getFeatureSource(MAP_NEATLINE_TYPE).getBounds();
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param citeTypeName DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws Exception DOCUMENT ME!
-     */
-    private Style getDefaultStyle(String citeTypeName)
-        throws Exception {
-        return getStyle(citeTypeName + ".sld");
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param styleName DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws Exception DOCUMENT ME!
-     */
-    private Style getStyle(String styleName) throws Exception {
-        SLDParser parser = new SLDParser(sFac);
-        URL styleRes = getClass().getResource("/test-data/styles/" + styleName);
-        parser.setInput(styleRes);
-
-        Style s = parser.readXML()[0];
-
-        return s;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param frameName DOCUMENT ME!
-     * @param image DOCUMENT ME!
-     */
-    protected void showImage(String frameName, final BufferedImage image) {
-        showImage(frameName, SHOW_TIMEOUT, image);
-    }
-
-    /**
-     * Shows <code>image</code> in a Frame.
-     *
-     * @param frameName
-     * @param timeOut
-     * @param image
-     */
-    protected void showImage(String frameName, long timeOut,
-        final BufferedImage image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        if (((System.getProperty("java.awt.headless") == null)
-                || !System.getProperty("java.awt.headless").equals("true"))
-                && INTERACTIVE) {
-            Frame frame = new Frame(frameName);
-            frame.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent e) {
-                        e.getWindow().dispose();
-                    }
-                });
-
-            Panel p = new Panel() {
-                    public void paint(Graphics g) {
-                        g.drawImage(image, 0, 0, this);
-                    }
-                };
-
-            frame.add(p);
-            frame.setSize(width, height);
-            frame.setVisible(true);
-
-            try {
-                Thread.sleep(timeOut);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            frame.dispose();
-        }
     }
 
     /**

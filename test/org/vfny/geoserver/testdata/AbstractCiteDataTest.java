@@ -16,15 +16,7 @@
  */
 package org.vfny.geoserver.testdata;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
-
 import junit.framework.TestCase;
-
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -32,7 +24,25 @@ import org.geotools.data.property.PropertyDataStore;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.referencing.crs.GeographicCRS;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Panel;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -47,37 +57,53 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  */
 public abstract class AbstractCiteDataTest extends TestCase {
     /** DOCUMENT ME! */
+    private static final Logger LOGGER = Logger.getLogger(AbstractCiteDataTest.class.getPackage()
+                                                                                    .getName());
+
+    /** featuretype name for CITE BasicPolygons features */
     public static String BASIC_POLYGONS_TYPE = "BasicPolygons";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Bridges features */
     public static String BRIDGES_TYPE = "Bridges";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Buildings features */
     public static String BUILDINGS_TYPE = "Buildings";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Divided Routes features */
     public static String DIVIDED_ROUTES_TYPE = "DividedRoutes";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Forests features */
     public static String FORESTS_TYPE = "Forests";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Lakes features */
     public static String LAKES_TYPE = "Lakes";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Map Neatliine features */
     public static String MAP_NEATLINE_TYPE = "MapNeatline";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Named Places features */
     public static String NAMED_PLACES_TYPE = "NamedPlaces";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Ponds features */
     public static String PONDS_TYPE = "Ponds";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Road Segments features */
     public static String ROAD_SEGMENTS_TYPE = "RoadSegments";
 
-    /** DOCUMENT ME! */
+    /** featuretype name for CITE Streams features */
     public static String STREAMS_TYPE = "Streams";
+
+    /**
+     * used to create default styles for cite types loading them from
+     * test-data/styles/&lt;cite-typename&gt;.sld
+     */
+    private static final StyleFactory sFac = StyleFactory.createStyleFactory();
+
+    /** DOCUMENT ME! */
+    private static final int SHOW_TIMEOUT = 200;
+
+    /** DOCUMENT ME! */
+    private static final boolean INTERACTIVE = true;
 
     /**
      * Convenient array with all the CITE type names for dealing with copying
@@ -98,7 +124,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
     /** User temp dir, where to store .property files containing cite data */
     private File tempDir;
 
-    /** DOCUMENT ME! */
+    /** the DataStore instance that provides cite test data */
     private PropertyDataStore propsDS;
 
     /**
@@ -109,16 +135,16 @@ public abstract class AbstractCiteDataTest extends TestCase {
     }
 
     /**
-     * DOCUMENT ME!
+     * does nothing but what super.setUp() does.
      *
-     * @throws Exception DOCUMENT ME!
+     * @throws Exception should not do.
      */
     public void setUp() throws Exception {
         super.setUp();
     }
 
     /**
-     * DOCUMENT ME!
+     * deletes temporary files
      *
      * @throws Exception DOCUMENT ME!
      */
@@ -143,6 +169,119 @@ public abstract class AbstractCiteDataTest extends TestCase {
         }
 
         return this.propsDS;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param citeTypeName DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws Exception DOCUMENT ME!
+     */
+    protected Style getDefaultStyle(String citeTypeName)
+        throws Exception {
+        return getStyle(citeTypeName + ".sld");
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param styleName DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws Exception DOCUMENT ME!
+     */
+    protected Style getStyle(String styleName) throws Exception {
+        SLDParser parser = new SLDParser(sFac);
+        URL styleRes = getClass().getResource("/test-data/styles/" + styleName);
+        parser.setInput(styleRes);
+
+        Style s = parser.readXML()[0];
+
+        return s;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param frameName DOCUMENT ME!
+     * @param image DOCUMENT ME!
+     */
+    protected void showImage(String frameName, final BufferedImage image) {
+        showImage(frameName, SHOW_TIMEOUT, image);
+    }
+
+    /**
+     * Shows <code>image</code> in a Frame.
+     *
+     * @param frameName
+     * @param timeOut
+     * @param image
+     */
+    protected void showImage(String frameName, long timeOut,
+        final BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        if (((System.getProperty("java.awt.headless") == null)
+                || !System.getProperty("java.awt.headless").equals("true"))
+                && INTERACTIVE) {
+            Frame frame = new Frame(frameName);
+            frame.addWindowListener(new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
+                        e.getWindow().dispose();
+                    }
+                });
+
+            Panel p = new Panel() {
+                    public void paint(Graphics g) {
+                        g.drawImage(image, 0, 0, this);
+                    }
+                };
+
+            frame.add(p);
+            frame.setSize(width, height + 30);
+            frame.setVisible(true);
+
+            try {
+                Thread.sleep(timeOut);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            frame.dispose();
+        }
+    }
+
+    /**
+     * Asserts that the image is not blank, in the sense that there must be
+     * pixels different from the passed background color.
+     *
+     * @param testName the name of the test to throw meaningfull messages if
+     *        something goes wrong
+     * @param image the imgage to check it is not "blank"
+     * @param bgColor the background color for which differing pixels are
+     *        looked for
+     */
+    protected void assertNotBlank(String testName, BufferedImage image,
+        Color bgColor) {
+        int pixelsDiffer = 0;
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                if (image.getRGB(x, y) != bgColor.getRGB()) {
+                    ++pixelsDiffer;
+                }
+            }
+        }
+
+        LOGGER.info(testName + ": pixel count="
+            + (image.getWidth() * image.getHeight()) + " non bg pixels: "
+            + pixelsDiffer);
+        assertTrue(testName + " image is comlpetely blank", 0 < pixelsDiffer);
     }
 
     /**

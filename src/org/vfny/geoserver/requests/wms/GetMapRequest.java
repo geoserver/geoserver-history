@@ -1,19 +1,3 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2002, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
- */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -30,14 +14,7 @@ import java.util.List;
 
 
 /**
- * represents a WMS GetMap request. as a extension to the WMS spec 1.1, we
- * provide the posibility to pass xml encoded Filters in the
- * <code>FILTERS</code>  parameters. This list of filters attachs to the same
- * constraints as the parameters <code>LAYERS</code> and <code>STYLES</code>.
- * In a few words, if the FILTERS parameter is present, it's value must
- * contain as many comma separated filters as LAYERS requested, in a one to
- * one order relationship. If for a given layer the user do not wants to
- * specify any filter, it's position in the list of filters may be empty.
+ * Represents a WMS GetMap request. as a extension to the WMS spec 1.1.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetMapRequest.java,v 1.8 2004/03/14 16:00:54 groldan Exp $
@@ -45,9 +22,6 @@ import java.util.List;
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
     static final Color DEFAULT_BG = Color.white;
-
-    /** DOCUMENT ME! */
-    static final Filter[] NO_FILTERS = new Filter[0];
 
     /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
@@ -58,30 +32,12 @@ public class GetMapRequest extends WMSRequest {
     /** set of optionals request's parameters */
     private OptionalParameters optionalParams = new OptionalParameters();
 
-    /** set of custom, non spec conformant, request's parameters */
-    private CustomParameters customParams = new CustomParameters();
-
     /**
      * Creates a new GetMapRequest object.
      */
     public GetMapRequest() {
         super();
         setRequest("GetMap");
-    }
-
-    /**
-     * Gets the list of attributes to return in output map formats that
-     * supports returning feature attributes as well as styled geometries
-     * (e.g. SVG).
-     * 
-     * <p>
-     * This is a custom element, not part of the normal wms request.
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     */
-    public List getUserSuppliedAttributes() {
-        return this.customParams.attributes;
     }
 
     /**
@@ -161,15 +117,6 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public Filter[] getUserSuppliedFilters() {
-        return this.customParams.filters;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
     public boolean isTransparent() {
         return this.optionalParams.transparent;
     }
@@ -181,33 +128,6 @@ public class GetMapRequest extends WMSRequest {
      */
     public int getWidth() {
         return this.mandatoryParams.width;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param writeSvgHeader DOCUMENT ME!
-     */
-    public void setWriteSvgHeader(boolean writeSvgHeader) {
-        this.customParams.writeSvgHeader = writeSvgHeader;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean getWriteSvgHeader() {
-        return this.customParams.writeSvgHeader;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param attributes DOCUMENT ME!
-     */
-    public void setAttributes(List attributes) {
-        this.customParams.attributes = attributes;
     }
 
     /**
@@ -267,15 +187,6 @@ public class GetMapRequest extends WMSRequest {
     /**
      * DOCUMENT ME!
      *
-     * @param filters DOCUMENT ME!
-     */
-    public void setFilters(Filter[] filters) {
-        this.customParams.filters = (filters == null) ? NO_FILTERS : filters;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param layers DOCUMENT ME!
      */
     public void setLayers(FeatureTypeInfo[] layers) {
@@ -307,42 +218,6 @@ public class GetMapRequest extends WMSRequest {
      */
     public void setWidth(int width) {
         this.mandatoryParams.width = width;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param collect DOCUMENT ME!
-     */
-    public void setCollectGeometries(boolean collect) {
-        this.customParams.collectGeometries = collect;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param gfactor DOCUMENT ME!
-     */
-    public void setGeneralizationFactor(double gfactor) {
-        this.customParams.generalizationFactor = gfactor;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean isCollectGeometries() {
-        return this.customParams.collectGeometries;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public double getGeneralizationFactor() {
-        return this.customParams.generalizationFactor;
     }
 
     /**
@@ -409,36 +284,4 @@ public class GetMapRequest extends WMSRequest {
         boolean transparent = false;
     }
 
-    /**
-     * holding of custom request parameters: FILTERS, SVGHEADER, ATTRIBUTES,
-     * COLLECT, GENERALIZATIONFACTOR
-     */
-    private class CustomParameters {
-        /** wether the xml header and SVG element must be printed */
-        boolean writeSvgHeader = true;
-
-        /**
-         * as a extension to the WMS spec 1.1, we provide the posibility to
-         * pass xml encoded Filters in the <code>FILTERS</code>  parameters.
-         * This list of filters attachs to the same constraints as the
-         * parameters <code>LAYERS</code> and <code>STYLES</code>
-         */
-        Filter[] filters = NO_FILTERS;
-
-        /**
-         * list of lists, with an entry for each layer requested, being each
-         * entry a List of String's, who's elements are the attribute's type
-         * names requested. By now, it is just used when generating SVG maps,
-         * to send attribute info together with the XML elements that
-         * represents the geometries in SVG, but can be used too for the
-         * production of other non raster map formats.
-         */
-        List attributes = Collections.EMPTY_LIST;
-
-        /** DOCUMENT ME!  */
-        double generalizationFactor = -1;
-
-        /** DOCUMENT ME!  */
-        boolean collectGeometries = false;
-    }
 }
