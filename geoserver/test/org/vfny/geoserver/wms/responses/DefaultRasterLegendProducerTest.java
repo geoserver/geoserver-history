@@ -20,7 +20,6 @@ import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 
 
 /**

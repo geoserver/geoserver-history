@@ -7,6 +7,8 @@ package org.vfny.geoserver.wms.responses;
 import java.util.Collections;
 import java.util.Set;
 
+import org.vfny.geoserver.wms.GetLegendGraphicProducer;
+import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 

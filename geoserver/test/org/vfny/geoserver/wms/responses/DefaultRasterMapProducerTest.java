@@ -18,9 +18,8 @@ import org.geotools.filter.IllegalFilterException;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
+import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import org.vfny.geoserver.wms.responses.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
 

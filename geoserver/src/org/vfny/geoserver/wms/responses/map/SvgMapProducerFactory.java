@@ -4,11 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
-import org.vfny.geoserver.wms.responses.GetMapProducer;
-import org.vfny.geoserver.wms.responses.GetMapProducerFactorySpi;
-
 import java.util.Collections;
 import java.util.Set;
+
+import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
 
 /**

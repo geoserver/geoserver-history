@@ -20,7 +20,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
-import org.vfny.geoserver.wms.responses.WMSMapContext;
+import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
