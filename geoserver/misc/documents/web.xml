@@ -81,6 +81,11 @@
   </servlet-mapping>
 
  <servlet-mapping>
+    <servlet-name>Dispatcher</servlet-name>
+    <url-pattern>/wfs*</url-pattern>
+  </servlet-mapping>
+
+ <servlet-mapping>
     <servlet-name>Transaction</servlet-name>
     <url-pattern>/Transaction/*</url-pattern>
   </servlet-mapping>
