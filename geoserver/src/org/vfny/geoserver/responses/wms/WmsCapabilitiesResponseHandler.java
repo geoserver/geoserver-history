@@ -333,6 +333,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
             handleSingleElem("Format", legend.getFormat());
             attrs.clear();
+            attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", 
+                               "http://www.w3.org/1999/xlink");
             attrs.addAttribute("http://www.w3.org/1999/xlink", "type", "xlink:type", "", "simple");            
             attrs.addAttribute("http://www.w3.org/1999/xlink", "href", "xlink:href", "", legend.getOnlineResource());
             startElement("OnlineResource", attrs);
