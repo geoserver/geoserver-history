@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.25 2004/04/05 23:50:01 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.26 2004/04/13 20:33:25 dmzwiers Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -146,7 +146,7 @@ public class XMLConfigWriter {
                     "Defines the logging level.  Common options are SEVERE,\n"
                     + "WARNING, INFO, CONFIG, FINER, FINEST, in order of\n"
                     + "Increasing statements logged.");
-                cw.textTag("loggingLevel", g.getLoggingLevel().toString());
+                cw.textTag("loggingLevel", g.getLoggingLevel().getName());
             }
 
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
@@ -854,7 +854,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.25 2004/04/05 23:50:01 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.26 2004/04/13 20:33:25 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
