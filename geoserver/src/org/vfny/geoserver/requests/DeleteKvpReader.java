@@ -61,7 +61,10 @@ public class DeleteKvpReader
         List typeList = readFlat((String) kvpPairs.get("TYPENAME"), 
                                  INNER_DELIMETER);
         LOGGER.finest("type list size: " + typeList.size());
-        LOGGER.finest("type list element: " + typeList.get(0));
+        if(typeList.size() == 0) {
+	    throw new WfsException("need a typename");
+	}
+	//LOGGER.finest("type list element: " + typeList.get(0));
         List filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
                                       (String) kvpPairs.get("FILTER"),
                                       (String) kvpPairs.get("BBOX"));
