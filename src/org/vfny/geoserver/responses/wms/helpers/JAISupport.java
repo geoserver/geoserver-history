@@ -126,7 +126,7 @@ public final class JAISupport {
      * @throws IllegalArgumentException if <code>format</code> is not a
      *         supported output format for the installed JAI library.
      */
-    protected void encode(String format, BufferedImage image,
+    public static void encode(String format, BufferedImage image,
         OutputStream outStream) throws IOException {
         if (format.equalsIgnoreCase("jpeg")) {
             format = "image/jpeg";
