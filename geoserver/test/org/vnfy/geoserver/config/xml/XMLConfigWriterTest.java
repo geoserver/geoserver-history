@@ -16,9 +16,11 @@
  */
 package org.vnfy.geoserver.config.xml;
 
+import java.io.File;
+
 import junit.framework.TestCase;
-import java.io.*;
-import org.vnfy.geoserver.config.*;
+
+import org.vnfy.geoserver.config.Model;
 /**
  * XMLConfigWriterTest purpose.
  * <p>
@@ -26,7 +28,7 @@ import org.vnfy.geoserver.config.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriterTest.java,v 1.1.2.1 2003/12/30 23:39:28 dmzwiers Exp $
+ * @version $Id: XMLConfigWriterTest.java,v 1.1.2.2 2003/12/31 00:36:51 dmzwiers Exp $
  */
 public class XMLConfigWriterTest extends TestCase {
 	private static final String testPath1 = "C:/Java/workspace/Geoserver-Model/tests/test3/";

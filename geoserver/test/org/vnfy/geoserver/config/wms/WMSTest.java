@@ -17,7 +17,8 @@
 package org.vnfy.geoserver.config.wms;
 
 import junit.framework.TestCase;
-import org.vnfy.geoserver.config.*;
+
+import org.vnfy.geoserver.config.Service;
 /**
  * WFSTest purpose.
  * <p>
@@ -25,7 +26,7 @@ import org.vnfy.geoserver.config.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSTest.java,v 1.1.2.1 2003/12/30 23:39:27 dmzwiers Exp $
+ * @version $Id: WMSTest.java,v 1.1.2.2 2003/12/31 00:36:51 dmzwiers Exp $
  */
 public class WMSTest extends TestCase {
 

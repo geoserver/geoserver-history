@@ -17,7 +17,8 @@
 package org.vnfy.geoserver.config.data;
 
 import junit.framework.TestCase;
-import org.vnfy.geoserver.config.*;
+
+import org.vnfy.geoserver.config.EqualsLibrary;
 
 /**
  * CatalogTest purpose.
@@ -26,7 +27,7 @@ import org.vnfy.geoserver.config.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogTest.java,v 1.1.2.1 2003/12/31 00:35:53 dmzwiers Exp $
+ * @version $Id: CatalogTest.java,v 1.1.2.2 2003/12/31 00:36:52 dmzwiers Exp $
  */
 public class CatalogTest extends TestCase {
 

@@ -16,13 +16,19 @@
  */
 package org.vnfy.geoserver.config.xml;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import junit.framework.TestCase;
-import java.io.*;
-import java.util.*;
-import org.vnfy.geoserver.config.*;
-import org.vnfy.geoserver.config.data.*;
-import org.vnfy.geoserver.config.wfs.*;
-import org.vnfy.geoserver.config.wms.*;
+
+import org.vnfy.geoserver.config.Global;
+import org.vnfy.geoserver.config.Model;
+import org.vnfy.geoserver.config.data.Catalog;
+import org.vnfy.geoserver.config.data.FeatureType;
+import org.vnfy.geoserver.config.wfs.WFS;
+import org.vnfy.geoserver.config.wms.WMS;
 
 /**
  * XMLConfigReaderTest purpose.
@@ -31,7 +37,7 @@ import org.vnfy.geoserver.config.wms.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReaderTest.java,v 1.1.2.2 2003/12/31 00:35:05 dmzwiers Exp $
+ * @version $Id: XMLConfigReaderTest.java,v 1.1.2.3 2003/12/31 00:36:51 dmzwiers Exp $
  */
 public class XMLConfigReaderTest extends TestCase {
 

@@ -17,7 +17,8 @@
 package org.vnfy.geoserver.config.wfs;
 
 import junit.framework.TestCase;
-import org.vnfy.geoserver.config.*;
+
+import org.vnfy.geoserver.config.Service;
 /**
  * WFSTest purpose.
  * <p>
@@ -25,7 +26,7 @@ import org.vnfy.geoserver.config.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSTest.java,v 1.1.2.1 2003/12/30 23:39:30 dmzwiers Exp $
+ * @version $Id: WFSTest.java,v 1.1.2.2 2003/12/31 00:36:51 dmzwiers Exp $
  */
 public class WFSTest extends TestCase {
 

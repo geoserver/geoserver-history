@@ -4,20 +4,16 @@
  */
 package org.vfny.geoserver.requests;
 
+import java.util.Map;
+import java.util.logging.Logger;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.vfny.geoserver.requests.CapabilitiesRequest;
+
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.CapabilitiesKvpReader;
 import org.vfny.geoserver.requests.readers.wfs.CapabilitiesXmlReader;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.Map;
-import java.util.logging.Logger;
 
 
 /**
@@ -25,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesSuite.java,v 1.4 2003/12/19 03:38:40 cholmesny Exp $
+ * @version $Id: CapabilitiesSuite.java,v 1.4.2.1 2003/12/31 00:36:51 dmzwiers Exp $
  */
 public class CapabilitiesSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.

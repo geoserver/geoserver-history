@@ -3,12 +3,12 @@ package org.vfny.geoserver.responses.wfs;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geotools.data.*;
-import org.geotools.data.memory.*;
-
-import org.vfny.geoserver.requests.wfs.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.global.*;
+import org.geotools.data.Catalog;
+import org.geotools.data.DataTestCase;
+import org.geotools.data.DefaultCatalog;
+import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.requests.wfs.FeatureRequest;
 /**
  * This is my attempt at testing FeatureResponse using
  * normal JUnit tests.
