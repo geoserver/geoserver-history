@@ -45,7 +45,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.22 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.23 2004/02/09 19:10:45 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -110,7 +110,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         latLongBBox = dto.getLatLongBBox();
         name = dto.getName();
         numDecimals = dto.getNumDecimals();
-        schema = dto.getSchemaAttributes();
+        List tmp = dto.getSchemaAttributes();
+        schema = new LinkedList();
+        Iterator i = tmp.iterator();
+        while(i.hasNext())
+        	schema.add(new AttributeTypeInfo((AttributeTypeInfoDTO)i.next()));
         schemaBase = dto.getSchemaBase();
         schemaName = dto.getSchemaName();
         SRS = dto.getSRS();
@@ -542,7 +546,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      *
      * @throws ConfigurationException
      */
-    public static Element loadConfig(Reader fis) throws ConfigurationException {
+    /*public static Element loadConfig(Reader fis) throws ConfigurationException {
         try {
             InputSource in = new InputSource(fis);
             DocumentBuilderFactory dfactory = DocumentBuilderFactory
@@ -552,7 +556,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
              * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
              * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.
              */
-            dfactory.setNamespaceAware(false);
+     /*       dfactory.setNamespaceAware(false);
             dfactory.setValidating(false);
             dfactory.setIgnoringComments(true);
             dfactory.setCoalescing(true);
@@ -578,7 +582,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
             LOGGER.warning(message);
             throw new ConfigurationException(message, saxe);
         }
-    }
+    }*/
 
     /**
      * here we must make the transformation. Crhis: do you know how to do it? I
