@@ -41,7 +41,7 @@ import org.geotools.gml.producer.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+ * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
  */
 class ArgHelper {
 	
@@ -54,7 +54,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected interface Mapping{
 		
@@ -179,7 +179,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class FilterMapping implements Mapping{
 		
@@ -193,6 +193,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "ogc:FilterType";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "filter";
 		}
 		
 		/**
@@ -259,7 +271,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class GeometryMapping implements Mapping{
 		
@@ -273,6 +285,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "gml:AbstractGeometryType";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "geometry";
 		}
 		
 		/**
@@ -329,7 +353,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class EnvelopeMapping implements Mapping{
 		
@@ -343,6 +367,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "ogc:BBOXType";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "bbox";
 		}
 		
 		/**
@@ -424,7 +460,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class ShortMapping implements Mapping{
 		
@@ -438,6 +474,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:short";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "short";
 		}
 		
 		/**
@@ -496,7 +544,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class IntegerMapping implements Mapping{
 		
@@ -510,6 +558,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:integer";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "integer";
 		}
 		
 		/**
@@ -567,7 +627,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class LongMapping implements Mapping{
 		
@@ -581,6 +641,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:long";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "long";
 		}
 		
 		/**
@@ -638,7 +710,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class FloatMapping implements Mapping{
 		
@@ -652,6 +724,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:float";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "float";
 		}
 		
 		/**
@@ -709,7 +793,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class DoubleMapping implements Mapping{
 		
@@ -723,6 +807,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:double";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "double";
 		}
 		
 		/**
@@ -780,7 +876,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class DateMapping implements Mapping{
 		
@@ -794,6 +890,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:dateTime";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "dateTime";
 		}
 		
 		/**
@@ -855,7 +963,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class URIMapping implements Mapping{
 		
@@ -869,6 +977,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:anyUri";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "anyUri";
 		}
 		
 		/**
@@ -928,7 +1048,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class BooleanMapping implements Mapping{
 		
@@ -942,6 +1062,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:boolean";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "boolean";
 		}
 		
 		/**
@@ -999,7 +1131,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.2 2004/01/20 00:27:11 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
 	 */
 	protected static class StringMapping implements Mapping{
 		
@@ -1013,6 +1145,18 @@ class ArgHelper {
 		 */
 		public String getType(){
 			return "xs:string";
+		}
+		
+		/**
+		 * 
+		 * Implementation of getElementName.
+		 * 
+		 * @see org.geotools.validation.xml.ArgHelper.Mapping#getElementName()
+		 * 
+		 * @return the element name
+		 */
+		public String getElementName(){
+			return "string";
 		}
 		
 		/**
