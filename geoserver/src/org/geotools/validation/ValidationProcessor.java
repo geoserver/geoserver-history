@@ -4,21 +4,24 @@
  */
 package org.geotools.validation;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.FeatureSource;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.validation.attributes.UniqueFIDValidation;
-import org.geotools.validation.dto.*;
-import org.geotools.validation.spatial.IsValidGeometryValidation;
-import org.geotools.validation.xml.ValidationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.geotools.data.FeatureSource;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
+import org.geotools.validation.dto.ArgumentDTO;
+import org.geotools.validation.dto.PlugInDTO;
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
+import org.geotools.validation.xml.ValidationException;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -82,8 +85,8 @@ import java.util.Set;
  * </p>
  *
  * @author bowens, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.7 2004/02/03 18:39:38 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: ValidationProcessor.java,v 1.8 2004/02/07 01:00:25 jive Exp $
  */
 public class ValidationProcessor {
     // These are no longer used for Integrity Validation tests
