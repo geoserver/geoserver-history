@@ -4,7 +4,7 @@
 
 <bean:message key="label.newLoginAndPassword"/>:<br>
 
-<html:form action="/admin/loginEditSubmit">
+<html:form action="/config/loginEditSubmit">
   <table class="info">
     <tbody>
       <tr>
