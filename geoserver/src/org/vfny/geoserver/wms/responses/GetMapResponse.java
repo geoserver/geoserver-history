@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
@@ -12,19 +13,24 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.FactoryFinder;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
+import org.geotools.styling.ColorMap;
+import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Style;
+import org.geotools.styling.StyleBuilder;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
@@ -74,7 +80,7 @@ public class GetMapResponse implements Response {
 
         this.delegate = getDelegate(outputFormat);
 
-        final FeatureTypeInfo[] layers = request.getLayers();
+        final MapLayerInfo[] layers = request.getLayers();
         final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
 
         final WMSMapContext map = new WMSMapContext();
@@ -96,27 +102,65 @@ public class GetMapResponse implements Response {
         for (int i = 0; i < layers.length; i++) {
             Style style = styles[i];
 
-            try {
-                source = layers[i].getFeatureSource();
-            } catch (IOException exp) {
-                LOGGER.log(Level.SEVERE,
-                    "Getting feature source: " + exp.getMessage(), exp);
-                throw new WmsException(null,
-                    "Internal error : " + exp.getMessage());
+            if( layers[i].getType() == MapLayerInfo.TYPE_VECTOR ) {
+                try {
+                    source = layers[i].getFeature().getFeatureSource();
+                } catch (IOException exp) {
+                    LOGGER.log(Level.SEVERE,
+                        "Getting feature source: " + exp.getMessage(), exp);
+                    throw new WmsException(null,
+                        "Internal error : " + exp.getMessage());
+                }
+
+                layer = new DefaultMapLayer(source, style);
+
+                Filter definitionFilter = layers[i].getFeature().getDefinitionQuery();
+
+                if (definitionFilter != null) {
+                    Query definitionQuery = new DefaultQuery(source.getSchema()
+                                                                   .getTypeName(),
+                            definitionFilter);
+                    layer.setQuery(definitionQuery);
+                }
+
+                map.addLayer(layer);
+            } else if( layers[i].getType() == MapLayerInfo.TYPE_RASTER ) {
+    			FeatureCollection fcDem;
+    			
+    			/**
+    			 * @task TODO: How can we read RasterSimbolizer Rules from SLD files?
+    			 */
+				try {
+					// A trick to Render the Coverages ...
+					StyleBuilder sb = new StyleBuilder();
+	    			RasterSymbolizer rsDem;
+					ColorMap cm =
+						sb.createColorMap(
+								new double[] { -1000, 0.0, 100, 1000, 10000 },
+								new Color[] {
+										new Color(0, 255, 0),
+										new Color(255, 255, 0),
+										new Color(255, 127, 0),
+										new Color(191, 127, 63),
+										new Color(255, 255, 255)},
+										ColorMap.TYPE_RAMP);
+					rsDem = sb.createRasterSymbolizer();
+					rsDem.setColorMap(cm);
+					style = sb.createStyle(rsDem);
+					
+					fcDem = layers[i].getCoverageToFeatures(req.getHttpServletRequest());
+				} catch (DataSourceException e) {
+					throw new ServiceException(e.getMessage(), e);
+				} catch (ClassCastException e) {
+					throw new ServiceException(e.getMessage(), e);
+				}
+				
+				LOGGER.fine("[DEBUG] Features: " + fcDem.toString());
+				LOGGER.fine("[DEBUG] Style: " + style.toString());
+
+				layer = new DefaultMapLayer(fcDem, style);
+				map.addLayer(layer);    			
             }
-
-            layer = new DefaultMapLayer(source, style);
-
-            Filter definitionFilter = layers[i].getDefinitionQuery();
-
-            if (definitionFilter != null) {
-                Query definitionQuery = new DefaultQuery(source.getSchema()
-                                                               .getTypeName(),
-                        definitionFilter);
-                layer.setQuery(definitionQuery);
-            }
-
-            map.addLayer(layer);
         }
 
         this.delegate.produceMap(map);

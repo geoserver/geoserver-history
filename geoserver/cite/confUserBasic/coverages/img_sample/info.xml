@@ -8,8 +8,8 @@
 	</metadataLink>
 	<keywords>Image,WCS</keywords>
 	<envelope srsName="WGS84(DD)">
-		<pos>74.0 30.0</pos>
-		<pos>174.0 80.0</pos>
+		<pos>-130.85168 20.7052</pos>
+		<pos>-62.0054 54.1141</pos>
 	</envelope>
 	<supportedCRSs>
 		<requestCRSs codeSpace="0">WGS84</requestCRSs>

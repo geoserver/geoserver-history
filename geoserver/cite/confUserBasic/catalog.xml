@@ -235,7 +235,7 @@
     
     <format enabled="true" id="worldImageSample" >
 			<type>World Image</type>
-			<url>file:data/coverages/img_sample/etopo.png</url>
+			<url>file:data/coverages/img_sample/usa.png</url>
 		</format>
   </formats>
 
