@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
@@ -67,4 +68,13 @@ public class JaiLegendGraphicProducerFactory
 
         return new JaiLegendGraphicProducer(format);
     }
+    
+    /* (non-Javadoc)
+	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 * This just returns java.util.Collections.EMPTY_MAP
+	 */
+	public Map getImplementationHints() {
+		return java.util.Collections.EMPTY_MAP;
+	}
+	
 }

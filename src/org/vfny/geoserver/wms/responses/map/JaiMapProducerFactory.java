@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -90,4 +91,13 @@ public class JaiMapProducerFactory implements GetMapProducerFactorySpi {
     		throw new IllegalArgumentException("Can't produce " + mapFormat + " format");
     	return new JAIMapProducer(mapFormat);
     }
+    
+    /* (non-Javadoc)
+	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 * This just returns java.util.Collections.EMPTY_MAP
+	 */
+	public Map getImplementationHints() {
+		return java.util.Collections.EMPTY_MAP;
+	}
+	
 }
