@@ -11,32 +11,27 @@ import org.geotools.graph.Node;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-
-
-
-
 /**
- * DOCUMENT ME!
+ * An Edge connects two nodes in the network.
  *
  * @author Justin Deoliveira
- * @version $Revision: 1.1 $
  */
 public class NetworkEdge extends Edge {
     /**
-     * Creates a new NetworkEdge object.
+     * Creates a NetworkEdge instance.
      *
-     * @param feature DOCUMENT ME!
-     * @param nodeA DOCUMENT ME!
-     * @param nodeB DOCUMENT ME!
+     * @param feature Underlying Feature represented by the edge.
+     * @param nodeA Node at the source of the edge.
+     * @param nodeB Node at the destination of the edge.
      */
     public NetworkEdge(Feature feature, Node nodeA, Node nodeB) {
         super(feature, nodeA, nodeB);
     }
 
     /**
-     * DOCUMENT ME!
+     * Builds a Geometry object to represent the network edge spatially.
      *
-     * @return DOCUMENT ME!
+     * @see Geometry
      */
     public Geometry buildGeometry() {
         return (getFeature().getDefaultGeometry());
