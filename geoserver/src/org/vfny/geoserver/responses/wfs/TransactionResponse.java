@@ -59,7 +59,7 @@ import java.util.logging.Logger;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.21 2004/04/16 00:34:36 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.22 2004/04/18 03:52:41 cholmesny Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -351,9 +351,21 @@ public class TransactionResponse implements Response {
                     FeatureCollection collection = insert.getFeatures();
 
                     FeatureReader reader = DataUtilities.reader(collection);
+                    FeatureType schema = store.getSchema();
 
-                    //
-                    featureValidation(catalog.getFeatureTypeInfo(store.getSchema().getTypeName()).getDataStoreInfo().getId(),store.getSchema(), collection);
+                    // Need to use the namespace here for the lookup, due to our weird
+                    //prefixed internal typenames.  see 
+                    //http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-143
+                    //Once we get our datastores making features with the correct namespaces
+                    //we can do something like this:
+                    //FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(schema.getTypeName(), schema.getNamespace());
+                    //until then (when geos-144 is resolved) we're stuck with:
+                    FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element
+                            .getTypeName());
+
+                    //this is possible with the insert hack above.  
+                    featureValidation(typeInfo.getDataStoreInfo().getId(),
+                        schema, collection);
 
                     Set fids = store.addFeatures(reader);
                     build.addInsertResult(element.getHandle(), fids);
@@ -435,7 +447,7 @@ public class TransactionResponse implements Response {
         response = build;
     }
 
-    protected void featureValidation(String dsid,FeatureType type,
+    protected void featureValidation(String dsid, FeatureType type,
         FeatureCollection collection)
         throws IOException, WfsTransactionException {
         ValidationProcessor validation = request.getValidationProcessor();
@@ -464,7 +476,7 @@ public class TransactionResponse implements Response {
             };
 
         try {
-            validation.runFeatureTests(dsid,type, collection, results);
+            validation.runFeatureTests(dsid, type, collection, results);
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
