@@ -11,8 +11,10 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.action.data.DataStoreUtils;
+import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.requests.Requests;
 
 import java.io.IOException;
@@ -150,10 +152,16 @@ public class DataDataStoresEditorForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        ServletContext context = getServlet().getServletContext();
-        DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
-        DataStoreConfig dsConfig = config.getDataStore(dataStoreId);
-
+        //ServletContext context = getServlet().getServletContext();
+        //DataConfig config = ConfigRequests.getDataConfig( request );
+        //DataStoreConfig dsConfig = config.getDataStore(dataStoreId);
+        
+        // Selected DataStoreConfig is in session
+        //
+        UserContainer user = Requests.getUserContainer( request );
+        DataStoreConfig dsConfig = user.getDataStoreConfig();
+        //
+        // dsConfig is the only way to get a factory
         DataStoreFactorySpi factory = dsConfig.getFactory();
         Param[] info = factory.getParametersInfo();
 
