@@ -87,7 +87,8 @@ public class LockResponse {
     private static String generateXml(String lockId, boolean lockAll,
 				      Set lockedFeatures, Set notLockedFeatures){
 	String indent = verbose ? "   " : "";
-	StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+	String xmlHeader = ConfigInfo.getInstance().getXmlHeader();
+	StringBuffer returnXml = new StringBuffer(xmlHeader);
 	returnXml.append(nl + "<WFS_LockFeatureResponse " + nl);
 	returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
 	//this not needed yet, only when FeaturesLocked element used.

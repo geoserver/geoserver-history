@@ -163,7 +163,8 @@ public class WfsTransResponse {
     public String getXmlResponse() {
 	//boolean verbose = ConfigInfo.getInstance().formatOutput();
 	//String indent = ((verbose) ? "\n" + OFFSET : " ");
-	StringBuffer retXml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+	String xmlHeader = ConfigInfo.getInstance().getXmlHeader();
+	StringBuffer retXml = new StringBuffer(xmlHeader);
 	if (verbose) retXml.append("\n");
 	retXml.append("<wfs:TransactionResponse");
 	retXml.append(indent + "version=\"" + CUR_VERSION + "\""); 
@@ -173,7 +174,7 @@ public class WfsTransResponse {
 	//}
 	retXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
 	retXml.append(indent + "xsi:schemaLocation=\"http://www.opengis.net/wfs"
-		      + " ../wfs/1.0.0/WFS-transaction.xsd\">");
+		      + " http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">");
 	appendInsertResults(retXml);
 	retXml.append(indent + "<wfs:TransactionResult");
 	if (handle!= null) {

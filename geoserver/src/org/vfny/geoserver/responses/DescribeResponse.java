@@ -47,8 +47,8 @@ public class DescribeResponse {
     private static final String GML_NAMESPACE = 
 	"\n  xmlns:gml=\"http://www.opengis.net/gml\"";
 
-    private static final String HEADER = 
-	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema ";
+    private static final String HEADER = config.getXmlHeader() 
+    + "\n<xs:schema ";
 
     private static final String ELEMENT_FORM_DEFAULT = 
 	"\n  elementFormDefault=\"qualified\"";

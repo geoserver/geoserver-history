@@ -60,7 +60,7 @@ public class GMLBuilder {
         Logger.getLogger("org.vfny.geoserver.responses");
 
     /** Gets global server configuration information **/
-    private ConfigInfo configInfo = ConfigInfo.getInstance();
+    private static ConfigInfo configInfo = ConfigInfo.getInstance();
     
     /** Spatial reference system for this response **/
     private String srs;
@@ -89,7 +89,7 @@ public class GMLBuilder {
 
     private NumberFormat coordFormatter = NumberFormat.getInstance(Locale.US);
 
-    private static final String XML_HEADER = "<?xml version='1.0' encoding='UTF-8'?>";
+    private static final String XML_HEADER = configInfo.getXmlHeader();
     
     private static final String FEATURE_COLL_HEAD = "<wfs:FeatureCollection ";
 
