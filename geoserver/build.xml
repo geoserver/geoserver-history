@@ -36,7 +36,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\java\resin-2.1.9\webapps"/>
+  <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
   <property name="dir.geotools" 
             value="C:\java\workspace\geotools\geotools-src"/>
             
