@@ -19,7 +19,7 @@ import org.vfny.geoserver.config.ConfigRequests;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.8 2004/01/12 08:51:37 emperorkefka Exp $
+ * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.9 2004/01/12 09:28:31 emperorkefka Exp $
  */
 public class DataDataStoresSelectForm extends ActionForm {
     
@@ -48,18 +48,18 @@ public class DataDataStoresSelectForm extends ActionForm {
     /** Validate as required */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-                   /* 
+                    
         if( !getDataStoreIds().contains( getSelectedDataStoreId() ) ){
             errors.add( "selectedDataStoreId",            
-                new ActionError("errors.requiredFactory", getSelectedDataStoreId() )
+                new ActionError("errors.factory.invalid", getSelectedDataStoreId() )
             );
         }
         if( !"delete".equals( getButtonAction() ) &&
             !"edit".equals( getButtonAction() ) ){
             errors.add( "buttonAction",            
-                new ActionError("errors.requireDataStoreID", getButtonAction() )
+                new ActionError("errors.buttonAction.invalid", getButtonAction() )
             );            
-        }*/
+        }
         return errors;
     }    
 

@@ -26,7 +26,7 @@ import org.vfny.geoserver.action.data.DataStoreUtils;
  * </p>
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.1.2.7 2004/01/12 08:51:37 emperorkefka Exp $
+ * @version $Id: DataDataStoresNewForm.java,v 1.1.2.8 2004/01/12 09:28:31 emperorkefka Exp $
  */
 public class DataDataStoresNewForm extends ActionForm {
     /** Description provided by selected Datastore Factory */
@@ -61,17 +61,22 @@ public class DataDataStoresNewForm extends ActionForm {
     /** Check NewForm for correct use */ 
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-    /*                
+                    
         if( !getDescriptions().contains( getSelectedDescription() ) ){
             errors.add( "selectedDescription",            
                 new ActionError("error.dataStoreFactory.invalid", getSelectedDescription() )
             );
         }
-        if( Pattern.matches("^\\w*$", getDataStoreID() )){
+        if (getDataStoreID() == null || getDataStoreID().equals("")) {
+            errors.add( "dataStoreID", 
+                new ActionError("error.dataStoreId.required", getDataStoreID() )
+            );
+        }
+        if( !Pattern.matches("^\\w*$", getDataStoreID() )){
             errors.add( "dataStoreID",            
                 new ActionError("error.dataStoreId.invalid", getDataStoreID() )
             );            
-        } */
+        } 
         return errors;
     }
 

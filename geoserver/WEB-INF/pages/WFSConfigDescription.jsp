@@ -2,8 +2,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 
 <table border=0 width=100%>
-	<html:errors/><BR>
-	
+
 	<html:form action="WFSConfigDescriptionSubmit" focus="name">
 	<tr><td align="right"><span class="help" title="<bean:message key="help.name_service"/>"><bean:message key="label.name"/>:</span></td><td><html:text property="name" size="60"/></td></tr>
 	<tr><td align="right"><span class="help" title="<bean:message key="help.title_service"/>"><bean:message key="label.title"/>:</span></td><td><html:text property="title" size="60"/></td></tr>

@@ -3,8 +3,6 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <table border=0 width=100%>
-	<html:errors/><BR>
-	
 	<html:form action="WFSConfigContentSubmit">
 	
 	<tr><td align="right">
