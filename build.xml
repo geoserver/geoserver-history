@@ -429,8 +429,10 @@
     </antcall>
   </target>
   
-  <target name="user_conf" depends="init" if="dir.conf" unless="test.type">
+  <target name="user_conf" depends="init" unless="test.type">
+    <antcall target="build-war">
       <param name="conf.path" value="${basedir}/conf"/>
+    </antcall>
   </target>
 
 <!-- ====================================================================== -->
