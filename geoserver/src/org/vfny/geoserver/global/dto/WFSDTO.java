@@ -14,7 +14,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.6 2004/02/19 08:58:21 jive Exp $
+ * @version $Id: WFSDTO.java,v 1.7 2004/03/31 05:06:33 cholmesny Exp $
  */
 public final class WFSDTO implements DataTransferObject {
 	/** ServiceLevel bit used to indicate Basic support */
@@ -46,7 +46,7 @@ public final class WFSDTO implements DataTransferObject {
     /** The service parameters for this instance. */
     private ServiceDTO service;
     private boolean gmlPrefixing;
-    private int serviceLevel;   
+    private int serviceLevel = COMPLETE; //if not set then it should be complete.   
 
     /**
      * WFS Data Transfer Object constructor.  does nothing
