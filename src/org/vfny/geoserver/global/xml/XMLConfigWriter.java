@@ -601,17 +601,17 @@ public class XMLConfigWriter {
     protected static void storeFeatures(File dir, DataDTO data)
         throws ConfigurationException {
         LOGGER.fine("In method storeFeatures");
-
-		// write them
+	
+	// write them
         Iterator i = data.getFeaturesTypes().keySet().iterator();
         while (i.hasNext()) {
             String s = (String) i.next();
             FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) data.getFeaturesTypes()
-                                                             .get(s);
-
+		.get(s);
+	    
             if (ft != null) {
                 File dir2 = WriterUtils.initWriteFile(new File(dir,
-                            ft.getDirName()), true);
+							       ft.getDirName()), true);
                 
                 storeFeature(ft, dir2);
                 
@@ -623,29 +623,56 @@ public class XMLConfigWriter {
         }
         
         // delete old ones that are not overwritten
-		File[] fa = dir.listFiles();
-		for(int j=0;j<fa.length;j++){
-			// find dir name
-			i = data.getFeaturesTypes().values().iterator();
-			FeatureTypeInfoDTO fti = null;
-			while(fti==null && i.hasNext()){
-				FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO)i.next();
-				if(ft.getDirName().equals(fa[j].getName())){
-					fti = ft;
-				}
-			}
-			if(fti == null){
-				//delete it
-				File[] t = fa[j].listFiles();
-				if (t != null) {
-				    for(int x=0;x<t.length;x++)
-					t[x].delete();
-				}
-				fa[j].delete();
-			}
-		}
-    }
+        //I'm changing this action, as it is directly leading to users not 
+        //being able to create their own shapefiles in the web admin tool.
+        //since their shit always gets deleted.  The behaviour has now changed
+	//to just getting rid of the geoserver config files, info.xml and 
+	//schema.xml and leaving any others.  We should revisit this, I 
+        //do think getting rid of stale featureTypes is a good thing.  For 1.3
+        //I want to look into directly uploading shapefiles, and perhaps they
+        //would then go in a 'shapefile' directory, next to featureTypes or
+        //or something, so that the featureTypes directory only contains
+        //the info, and schema and those sorts of files.  But I do kind of like
+        //being able to access the shapefiles directly from the web app, and
+        //indeed have had thoughts of expanding that, so that users could 
+        //always download the full shape for a layer, generated automatically
+        //if it's from another datastore.  Though I suppose that is not 
+        //mutually exclusive, just a little wasting of space, for shapefiles
+        //would be held twice.
 
+	File[] fa = dir.listFiles();
+	for(int j=0;j<fa.length;j++){
+	    // find dir name
+	    i = data.getFeaturesTypes().values().iterator();
+	    FeatureTypeInfoDTO fti = null;
+	    while(fti==null && i.hasNext()){
+		FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO)i.next();
+		if(ft.getDirName().equals(fa[j].getName())){
+		    fti = ft;
+		}
+	    }
+	    if(fti == null){
+		//delete it
+		File[] t = fa[j].listFiles();
+		if (t != null) {
+		    for(int x=0;x<t.length;x++) {
+			//hold on to the data, but be sure to get rid of the
+			//geoserver config shit, as these were deleted.
+			if (t[x].getName().equals("info.xml") ||
+			    t[x].getName().equals("schema.xml")) {
+			    //sorry for the hardcodes, I don't remember if/where
+			    //we have these file names.
+			    t[x].delete();
+			}
+		    }
+		}
+		if (fa[j].listFiles().length == 0) {
+		    fa[j].delete();
+		}
+	    }
+	}
+    }
+    
     /**
      * storeStyle purpose.
      * 
