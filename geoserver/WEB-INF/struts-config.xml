@@ -133,7 +133,21 @@
         <forward 
        		name="logout"
         	path="/admin/logout.do"/>
+
+        <!-- CONFIG -->        	
+       	<forward
+       		name="config"
+       		path="/config/index.do"/>
         	
+       	<forward
+       		name="geoServer"
+       		path="/config/geoServer.do"/>
+       		
+       	<forward
+       		name="config.server"
+       		path="/config/server.do"/>
+
+        <!-- CONFIG validation -->
         <forward
         	name="config.validation"
         	path="/config/validation/suite.do"/>
@@ -154,22 +168,17 @@
         	name="validationTestEditor"
         	path="/config/validation/testEdit.do"/>
         	
-        	
-       	<forward
-       		name="config"
-       		path="/config/index.do"/>
-        	
-       	<forward
-       		name="geoServer"
-       		path="/config/geoServer.do"/>
-       		
-       	<forward
-       		name="config.server"
-       		path="/config/server.do"/>
-
+        <!-- CONFIG wfs -->
+        
        	<forward
        		name="config.wfs"
        		path="/config/wfs/index.do"/>
+        <forward
+       		name="config.wfs.description"
+       		path="/config/wfs/description.do"/>
+       	<forward
+       		name="config.wfs.content"
+       		path="/config/wfs/content.do"/>
        		
        	<forward
        		name="wfsConfigDescription"
@@ -178,9 +187,17 @@
        		name="wfsConfigContent"
        		path="/config/wfs/content.do"/>
        		
+        <!-- CONFIG wms -->       		
        	<forward
        		name="config.wms"
        		path="/config/wms/index.do"/>
+        <forward
+       		name="config.wms.description"
+       		path="/config/wms/description.do"/>
+       	<forward
+       		name="config.wms.content"
+       		path="/config/wms/content.do"/>
+       		       		
        	<forward
        		name="wmsConfigDescription"
        		path="/config/wms/description.do"/>
@@ -188,10 +205,12 @@
        		name="wmsConfigContent"
        		path="/config/wms/content.do"/>
 
+        <!-- CONFIG data -->
        	<forward
        		name="config.data"
        		path="/config/data/index.do"/>
-       		
+
+        <!-- CONFIG data store -->
        	<forward
        		name="config.data.store"
        		path="/config/data/store.do"/>
@@ -202,6 +221,7 @@
        		name="config.data.store.editor"
        		path="/config/data/storeEditor.do"/>
        		
+        <!-- CONFIG data namespace -->
        	<forward
        		name="config.data.namespace"
        		path="/config/data/namespace.do"/>
@@ -214,19 +234,22 @@
        	<forward
        		name="config.data.namespace.new"
        		path="/config/data/namespaceNew.do"/>
-      		       		
+       		
+        <!-- CONFIG data style -->
        	<forward
        		name="config.data.style"
        		path="/config/data/style.do"/>
-       		
+
+        <!-- CONFIG data type -->       		
        	<forward
        		name="config.data.type"
-       		path="/config/data/featureType.do"/>   
+       		path="/config/data/featureType.do"/>
        		
        	<forward
        		name="config.data.calculateBoundingBox"
        		path="/config/data/calculateBoundingBox.do"/>      	       		
-       		
+
+        <!-- Appearance -->       		
        	<forward
        		name="baseStyle"
        		path="/style.css"/>

@@ -1,9 +1,19 @@
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<span class="wfsMenu">
 
-<html:link forward="wfsConfigDescription"><bean:message key="label.wfsDescription"/></html:link><br>
-<html:link forward="wfsConfigContent"><bean:message key="label.wfsContent"/></html:link><br>
-
-</span>
+<table class="info">
+  <tr>
+    <td class="label">	
+		<logic:iterate id="key" indexId="ctr" name="GeoServer.ApplicationState" property="nameSpaceErrorKeys">
+			<nobr><%= key %></nobr><br>
+		</logic:iterate>
+	</td>
+	<td class="datum">
+		<logic:iterate id="value" indexId="ctr" name="GeoServer.ApplicationState" property="nameSpaceErrorValues">
+			<nobr><%= value %></nobr><br>
+		</logic:iterate>
+	</td>
+  </tr>	
+</table>
