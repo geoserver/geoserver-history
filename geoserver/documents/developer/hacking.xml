@@ -5,11 +5,11 @@
   <title>Hacking</title>
 
   <para>This document is focused on actually working with the GeoServer source
-  code. It is recommended that you read the <ulink url="???">Building</ulink>
-  section first, and should also at least glance at the <ulink
-  url="???">Design</ulink> document. It contains hints on debugging, testing,
-  as well as code conventions, and hints on working with GeoTools, our primary
-  library.</para>
+  code. It is recommended that you read the <ulink
+  url="build_docs.html">Building</ulink> section first, and should also at
+  least glance at the <ulink url="design.html">Design</ulink> document. It
+  contains hints on debugging, testing, as well as code conventions, and hints
+  on working with GeoTools, our primary library.</para>
 
   <section>
     <title>Debugging</title>
@@ -19,8 +19,8 @@
     about debugging that we wanted to get here. Many GeoServer developers just
     make use of log statements and java stack traces. Others can not work
     without a real debugger. For hints on running a GeoServer war in debug
-    mode in Eclipse using Tomcat see the <ulink url="???">wiki</ulink>.
-    </para>
+    mode in Eclipse using Tomcat see the <ulink
+    url="http://docs.codehaus.org/display/GEOS/Home">wiki</ulink>. </para>
 
     <para>GeoServer comes configured to run quickly and is geared to users. A
     few things can be done to make GeoServer more friendly for debugging. The
@@ -66,24 +66,25 @@
     <para>There are two main types of testing in GeoServer. The first is
     automated unit tests, found in the test/ directory of the source tree. The
     second is conformance testing, for which we now make use of two tools, the
-    OGC's <ulink url="???">Conformance and Interoperability Testing and
-    Evaluation (CITE)</ulink> tests, and a more flexible, easier to use, and
-    open source test suite developed by the <ulink url="???">ACE-GIS</ulink>
-    project. </para>
+    OGC's <ulink url="http://cite.occamlab.com/tsOGC/">Conformance and
+    Interoperability Testing and Evaluation (CITE)</ulink> tests, and a more
+    flexible, easier to use, and open source test suite developed by the
+    <ulink url="http://acegis.net/">ACE-GIS</ulink> project. </para>
 
     <para>Unit tests should be written for all code in GeoServer. Our unit
     tests are based on Junit, and are contained in the test folder. For more
     information on writing junit tests explore the <ulink
-    url="???">homepage</ulink>. By far the easiest way to get acquainted with
-    how to write tests is to look at the current tests, and model your tests
-    after those. To run all the tests you can run the 'unit-all' target in
-    ant. There are several targets to run groups of tests, such as
-    'unit-requests', and the 'unit' target allows you to pass in a package and
-    class of a single test to run with the 'test.name' parameter. We also
-    recommend doing test driven development, that is, if you are going to
-    write a new interface or method then you write the test first, and then
-    the code to solve the exact problem. For more information on test driven
-    development <ulink url="???">see</ulink>.</para>
+    url="http://junit.sourceforge.net/">junit.sourceforge.net</ulink>. By far
+    the easiest way to get acquainted with how to write tests is to look at
+    the current tests, and model your tests after those. To run all the tests
+    you can run the 'unit-all' target in ant. There are several targets to run
+    groups of tests, such as 'unit-requests', and the 'unit' target allows you
+    to pass in a package and class of a single test to run with the
+    'test.name' parameter. We also recommend doing test driven development,
+    that is, if you are going to write a new interface or method then you
+    write the test first, and then the code to solve the exact problem. For
+    more information on test driven development <ulink
+    url="http://www.testdriven.com/modules/news/">go here</ulink>.</para>
 
     <para>Unit tests should be run as often as possible, the conformance tests
     should ideally be run before every release. Between the two is testing
@@ -97,21 +98,23 @@
     joint debugging, so that developers are assured of having exactly the same
     set up. </para>
 
-    <para>As for testing actual web based requests, the <ulink url="???">CITE
-    tests</ulink> are the most complete, and GeoServer is required to pass all
-    for any non-beta release. The cite/ directory is especially useful for
-    setting up the tests on PostGIS. The other DataStores will not work as
-    well, not because we are not extremely confident in them, much more
-    because CITE is extremely rigid about the data that must be used and
-    implicitly imposes a number of requirements, for example the server must
-    support more than 10 characters for attributes, which shapefiles do not
-    support (at least not without implementing non open standard helper
-    files). For a more flexible (and open source) tests, we highly recommend
-    the <ulink url="???">WMS and WFS suites</ulink> developed as part of the
-    ACE-GIS project. They are available online here (link). And if you are
-    interested in the source files and running them yourselves, then email the
-    list, as we have access to them, and indeed are looking to make them
-    available for download on the GeoServer community site. </para>
+    <para>As for testing actual web based requests, the <ulink
+    url="http://cite.occamlab.com/tsOGC/">CITE tests</ulink> are the most
+    complete, and GeoServer is required to pass all for any non-beta release.
+    The cite/ directory is especially useful for setting up the tests on
+    PostGIS. The other DataStores will not work as well, not because we are
+    not extremely confident in them, much more because CITE is extremely rigid
+    about the data that must be used and implicitly imposes a number of
+    requirements, for example the server must support more than 10 characters
+    for attributes, which shapefiles do not support (at least not without
+    implementing non open standard helper files). For a more flexible (and
+    open source) tests, we highly recommend the <ulink
+    url="http://150.128.82.168/webACEGIS/ACEGIS_Test_Engines.htm">WMS and WFS
+    suites</ulink> developed as part of the ACE-GIS project. They are
+    available online here (link). And if you are interested in the source
+    files and running them yourselves, then email the list, as we have access
+    to them, and indeed are looking to make them available for download on the
+    GeoServer community site. </para>
   </section>
 
   <section>
