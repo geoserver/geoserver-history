@@ -37,7 +37,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.6 2004/04/22 20:31:37 emperorkefka Exp $
+ * @version $Id: WmsDispatcher.java,v 1.7 2004/07/15 21:13:13 jmacgill Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
@@ -122,6 +122,11 @@ public class WmsDispatcher extends Dispatcher {
             dispatched = new GetMap();
 
             break;
+            
+        case GET_FEATURE_INFO_REQUEST:
+            dispatched = new GetFeatureInfo();
+
+            break;   
 
         default:
             dispatched = null;
