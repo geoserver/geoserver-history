@@ -1,4 +1,4 @@
-/* Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
+/* Copyright (c) 2002 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root application directory.
  */
 
@@ -6,61 +6,58 @@ package org.vfny.geoserver.db.jdbc;
 
 import java.util.*;
 
-public class SQLStatement {
+import org.apache.log4j.Category;
 
-		private String sqlOperation = new String();
-		private String featureTypeName = new String();
-		private List properties = Collections.synchronizedList(new ArrayList());
-		private String predicate = new String();
+import org.vfny.geoserver.requests.Query;
 
-		public SQLStatement(String sqlOperation) {
-				this.sqlOperation = sqlOperation;
+
+public class SQLStatement extends Query {
+
+		/** create standard logging instance for class */
+		private static Category _log = Category.getInstance(SQLStatement.class.getName());
+
+		private static final String SQL_OPERATION = "SELECT ";
+
+
+		public SQLStatement(Query genericQuery) {
+				super();
+
+				// HORRIBLE HACK ALERT
+				// CASTING PROBLEMS CAUSED THIS, BUT THERE MUST BE A BETTER WAY
+				this.handle = genericQuery.getHandle();
+				this.featureTypeName = genericQuery.getFeatureTypeName();
+				this.version = genericQuery.getVersion();
+				this.propertyNames = genericQuery.getPropertyNames();
+				this.filter = genericQuery.getFilter();
+				this.featureType = genericQuery.getDatastoreConfiguration();
 		}
 
-		public void empty() {
-				this.featureTypeName = "";
-				this.predicate = "";
-				this.properties.clear();
-		}
-
-		public void setPredicate(String predicate) {
-				this.predicate = predicate;
-		}
-
-		public String getPredicate() {
-				return this.predicate;
-		}
-
-		public void setFeatureTypeName(String featureTypeName) {
-				this.featureTypeName = featureTypeName;
-		}
-
-		public String getFeatureTypeName() {
-				return this.featureTypeName;
-		}
-
-		public void addProperty(String property) {
-				this.properties.add(property);
-		}
 
 		public String getSQL() {
-				String SQL = new String();
+
+
+				String SQL = SQL_OPERATION;
 
 				SQL = "SELECT ";
-				if( properties.isEmpty() )
+
+				if( propertyNames.isEmpty() )
 						SQL = SQL + "* ";
 				else {
-						for( int i=0; i < this.properties.size() - 1; i++ )
-								SQL = SQL + this.properties.get(i) + ", ";
-						SQL = SQL + this.properties.get(this.properties.size() - 1) + " ";
+						for( int i=0; i < this.propertyNames.size() - 1; i++ )
+								SQL = SQL + this.propertyNames.get(i) + ", ";
+						SQL = SQL + this.propertyNames.get(this.propertyNames.size() - 1) + " ";
 				}
 
 				SQL = SQL + "FROM " + this.featureTypeName;
 
-				if( !this.predicate.equals("") )
-						SQL = SQL + " WHERE " + this.predicate;
+				if( !this.getFilter().getSQL().equals("") )
+						SQL = SQL + " WHERE " + this.getFilter().getSQL();
 
 				SQL = SQL + ";";
+
+				_log.info("sql is: " + SQL);
+
+
 
 				return SQL;
 		}
