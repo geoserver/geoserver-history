@@ -5,25 +5,39 @@
 package org.vfny.geoserver.responses.wms.map;
 
 import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.*;
-import org.geotools.feature.*;
-import org.geotools.filter.*;
-import org.geotools.styling.*;
-import org.vfny.geoserver.*;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureResults;
+import org.geotools.data.Query;
+import org.geotools.feature.FeatureType;
+import org.geotools.filter.AbstractFilter;
+import org.geotools.filter.BBoxExpression;
+import org.geotools.filter.Expression;
+import org.geotools.filter.Filter;
+import org.geotools.filter.FilterFactory;
+import org.geotools.filter.GeometryFilter;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.LogicFilter;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
- * base class for delegates who creates a map based on a GetMap request.
+ * Base class for delegates who creates a map based on a GetMap request.
  * Subclasses should implement one or more output format
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapDelegate.java,v 1.3 2003/12/17 22:34:26 cholmesny Exp $
+ * @author Chris Holmes
+ * @version $Id: GetMapDelegate.java,v 1.4 2003/12/17 23:46:29 cholmesny Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -35,25 +49,26 @@ public abstract class GetMapDelegate implements Response {
     }
 
     /**
-     * DOCUMENT ME!
+     * Executes a Request, which must be a GetMapRequest.  Any other will
+     * cause a class cast exception.
      *
-     * @param request DOCUMENT ME!
+     * @param request A valid GetMapRequest.
      *
-     * @throws ServiceException DOCUMENT ME!
+     * @throws ServiceException If the request can not be executed.
      */
     public void execute(Request request) throws ServiceException {
         execute((GetMapRequest) request);
     }
 
     /**
-     * DOCUMENT ME!
+     * Executes a GetMapRequest.  Builds the proper objects from the request
+     * names.
      *
-     * @param request DOCUMENT ME!
+     * @param request A valid GetMapRequest.
      *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
+     * @throws WmsException If anything goes wrong.
      */
-    protected void execute(GetMapRequest request) throws ServiceException {
+    protected void execute(GetMapRequest request) throws WmsException {
         this.request = request;
 
         FeatureTypeConfig[] layers = request.getLayers();
@@ -83,27 +98,31 @@ public abstract class GetMapDelegate implements Response {
     }
 
     /**
-     * DOCUMENT ME!
+     * Execute method for concrete children to implement.  Each param is an
+     * array in the order things should be processed.
      *
-     * @param resultLayers DOCUMENT ME!
-     * @param styles DOCUMENT ME!
+     * @param requestedLayers Array of config information of the FeatureTypes
+     *        to be processed.
+     * @param resultLayers Matching array of results from the queries of the
+     *        requested layers.
+     * @param styles Matching array of the styles to process the results with.
      *
-     * @throws WmsException DOCUMENT ME!
+     * @throws WmsException For any problems executing.
      */
     protected abstract void execute(FeatureTypeConfig[] requestedLayers,
         FeatureResults[] resultLayers, Style[] styles)
         throws WmsException;
 
     /**
-     * DOCUMENT ME!
+     * Creates the array of queries to be executed for the request.
      *
-     * @param layers DOCUMENT ME!
-     * @param filters DOCUMENT ME!
-     * @param attributes DOCUMENT ME!
+     * @param layers The layers to request against.
+     * @param filters The matching filters to process with.
+     * @param attributes The matching attributes to process with.
      *
-     * @return DOCUMENT ME!
+     * @return An array of queries, matching the arrays passed in.
      *
-     * @throws WmsException DOCUMENT ME!
+     * @throws WmsException If the custom filter can't be constructed.
      */
     private Query[] buildQueries(FeatureTypeConfig[] layers, Filter[] filters,
         List attributes) throws WmsException {
@@ -151,18 +170,18 @@ public abstract class GetMapDelegate implements Response {
     }
 
     /**
-     * builds the filter for a layer containing at leas the BBOX filter defined
+     * Builds the filter for a layer containing at leas the BBOX filter defined
      * by the extent queries (BBOX param), and optionally AND'ed with the
      * customized filter for that layer (from FILTERS param)
      *
-     * @param filter DOCUMENT ME!
-     * @param requestExtent DOCUMENT ME!
-     * @param ffactory DOCUMENT ME!
-     * @param schema DOCUMENT ME!
+     * @param filter The additional filter to process with.
+     * @param requestExtent The extent to filter out.
+     * @param ffactory A filterFactory to create new filters.
+     * @param schema The FeatureType of the request of this filter.
      *
-     * @return DOCUMENT ME!
+     * @return A custom filter of the bbox and any optional custom filters.
      *
-     * @throws IllegalFilterException DOCUMENT ME!
+     * @throws IllegalFilterException For problems making the filter.
      */
     private Filter buildFilter(Filter filter, Envelope requestExtent,
         FilterFactory ffactory, FeatureType schema)
@@ -200,7 +219,7 @@ public abstract class GetMapDelegate implements Response {
     }
 
     /**
-     * tryies to guesss exactly wich property names are needed to query for a
+     * Tries to guesss exactly wich property names are needed to query for a
      * given FeatureType and the Filter that will be applied to it. By this
      * way, only the needed propertied will be queried to the underlying
      * FeatureSource in the hope that it will speed up the query
@@ -217,11 +236,11 @@ public abstract class GetMapDelegate implements Response {
      * <code>layer</code> will be returned.
      * </p>
      *
-     * @param layer DOCUMENT ME!
-     * @param filter DOCUMENT ME!
-     * @param attributes DOCUMENT ME!
+     * @param layer The layer to process.
+     * @param filter The filter to process with.
+     * @param attributes The attributes to return.
      *
-     * @return DOCUMENT ME!
+     * @return An array of the propertyNames needed.
      *
      * @task TODO: by now just returns the geometry att. Implement the rest of
      *       the method to find the rest of attributes needed by inspecting
@@ -245,16 +264,17 @@ public abstract class GetMapDelegate implements Response {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gets the map request.  Used by delegate children to find out more
+     * information about the request.
      *
-     * @return DOCUMENT ME!
+     * @return The request to be processed.
      */
     protected GetMapRequest getRequest() {
         return this.request;
     }
 
     /**
-     * evaluates if this Map producer can generate the map format specified by
+     * Evaluates if this Map producer can generate the map format specified by
      * <code>mapFormat</code>
      *
      * @param mapFormat the mime type of the output map format requiered
@@ -264,9 +284,9 @@ public abstract class GetMapDelegate implements Response {
     public abstract boolean canProduce(String mapFormat);
 
     /**
-     * DOCUMENT ME!
+     * Gets A list of the formats this delegate supports.
      *
-     * @return DOCUMENT ME!
+     * @return A list of strings of the formats supported.
      */
     public abstract List getSupportedFormats();
 }
