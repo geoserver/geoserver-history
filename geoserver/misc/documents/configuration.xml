@@ -38,7 +38,7 @@
 	      WARNING, INFO, CONFIG, FINER, FINEST, in order of 
 	      Increasing statements logged.  
 	  -->
-	 <LoggingLevel>INFO</LoggingLevel>
+	 <LoggingLevel>FINER</LoggingLevel>
 
 	 <!-- Sets the max number of Features returned by GetFeature -->
 	 <MaxFeatures>20000</MaxFeatures> 

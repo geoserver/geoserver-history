@@ -21,21 +21,28 @@
   <property name="dir.server" value="${basedir}/server"/>
   <property name="dir.src" value="${basedir}/src"/>
   <property name="dir.test" value="${basedir}/test"/>
+  <property name="dir.conf" value="${basedir}/conf"/>
   <property name="dir.release" value="${basedir}/release"/>
 
   <!-- secondary directories -->
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
-  <property name="dir.data" value="${dir.misc}/data"/>
+  <property name="dir.data" value="${dir.conf}"/>
   <property name="dir.testsJar" 
   value="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
   <property name="dir.testApp" value="${dir.server}/webapps/ROOT/WEB-INF"/>
   <property name="dir.catalina" value="${dir.lib}/catalina"/>
 
   <!-- external directories -->
+  <!-- pc example -->
+  <property name="dir.container" value="C:\java\resin-2.1.9\webapps"/>
+  <property name="dir.geotools" 
+            value="C:\java\workspace\geotools\geotools-src"/>
+            
+  <!-- linux example
   <property name="dir.container" value="/usr/local/resin-2.1.4/webapps"/>
   <property name="dir.geotools" 
             value="/home/rob/wfs/geotools/geotools2/geotools-src"/>
-
+   -->
   <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
   <property name="jar.geoserver" value="${dir.lib}/geoserver.jar"/>
@@ -229,7 +236,8 @@
            destdir="${dir.build}" 
            includes="**/*.java" 
            classpathref="path.build" 
-           deprecation="on"/>
+           deprecation="on"
+              debug="on"/>
     <antcall target="all"/>
     <junit fork="false"
            printsummary="on">
@@ -259,7 +267,8 @@
            destdir="${dir.build}" 
            includes="**/*.java" 
            classpathref="path.build" 
-           deprecation="on"/>
+           deprecation="on"
+              debug="on"/>
     <antcall target="all"/>
     <junit fork="false"
            printsummary="on">
@@ -314,6 +323,13 @@
       </fileset>
     </copy>
 
+     <copy todir="${dir.server}/webapps/ROOT/WEB-INF">
+      <fileset dir="${dir.conf}">
+        <include name="services.xml"/>
+        <include name="catalog.xml"/>
+      </fileset>
+    </copy>
+
     <!-- populate base directory -->
     <mkdir dir="${dir.server}/webapps/ROOT/data/capabilities"/>
     <copy todir="${dir.server}/webapps/ROOT/data/capabilities">
@@ -331,10 +347,9 @@
     </copy>
 
     <!-- make feature types directory and populate -->
-    <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF/featureTypes"/>
-    <copy todir="${dir.server}/webapps/ROOT/WEB-INF">
-    <fileset dir="${dir.data}"/>
-    <fileset file="${dir.misc}/documents/configuration.xml"/>
+    <mkdir dir="${dir.server}/webapps/ROOT/data/featureTypes"/>
+    <copy todir="${dir.server}/webapps/ROOT/data/featureTypes">
+    <fileset dir="${dir.data}/featureTypes"/>
     </copy>
 
     <!-- stops a running server -->
@@ -356,7 +371,8 @@
     <javac srcdir="${dir.src}" 
            destdir="${dir.testApp}/classes/" 
            includes="**/servlets/*.java" 
-           classpathref="path.build"/>
+           classpathref="path.build"
+              debug="on"/>
     <!-- builds embedded jar -->
     <jar jarfile="${dir.lib}/embedded.jar">
       <fileset dir="${dir.build}">
@@ -441,6 +457,7 @@
       </fileset>
     </copy>
 
+
     <!-- populate base directory -->
     <mkdir dir="${basedir}/data/capabilities"/>
     <copy todir="${basedir}/data/capabilities">
@@ -487,6 +504,19 @@
       </fileset>
     </copy>
 
+     <mkdir dir="${basedir}/data/styles"/>
+    <copy todir="${basedir}/data/styles">
+      <fileset dir="${dir.misc}/wms/styles">
+        <include name="**"/>
+      </fileset>
+    </copy>
+
+    <!-- make feature types directory and populate -->
+    <mkdir dir="${basedir}/data/featureTypes"/>
+    <copy todir="${basedir}/data/featureTypes">
+      <fileset dir="${dir.data}/featureTypes"/>
+    </copy>
+
     <copy todir="${dir.build}">
       <fileset dir="${dir.misc}/documents">
         <include name="log4j.properties"/>
@@ -505,6 +535,12 @@
         <exclude name="**/servlets/utilities/**" />
         <exclude name="**/EmbeddedTomcat.class" />
       </classes>
+
+      <!--webinf dir="${dir.conf}"/-->
+      <webinf dir="${dir.conf}">
+        <include name="services.xml"/>
+        <include name="catalog.xml"/>
+      </webinf>
       
       <webinf dir="${dir.data}"/>
       <webinf dir="${dir.misc}/documents">
@@ -516,8 +552,6 @@
         <exclude name="**/junit.jar" />
         <exclude name="**/servlet.jar" />
       </lib>
-      
- 
       <!-- directories -->
       <fileset dir="${basedir}">
         <include name="data/**"/>
@@ -641,18 +675,73 @@
     <delete file="${dir.lib}/geotools.jar" failonerror="true"/>
     <jar jarfile="${dir.lib}/geotools.jar"
          whenempty="fail">
-      <fileset dir="${dir.geotools}/filter/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/defaultcore/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/postgis/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/resources/target/classes/"
-               includes="**/*.class"/>
       <fileset dir="${dir.geotools}/core/target/classes/"
                includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/data/target/classes/"
+               includes="**/*.class"/>                        
+      <fileset dir="${dir.geotools}/defaultcore/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/filter/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/cts-coordtrans/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/gcs-coverage/target/classes/"
+               includes="**/*.class"/>          
+      <fileset dir="${dir.geotools}/lite-rendering/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/resources/target/classes/"
+               includes="**/*.class"/>   
+      <fileset dir="${dir.geotools}/sldstyling/target/classes/"
+               includes="**/*.class"/>               
+      <fileset dir="${dir.geotools}/svgsupport/target/classes/"
+               includes="**/*.class"/>   
     </jar>
+    
+    <!-- I am not sure why this is not part of the geotools jar -->
+    <delete file="${dir.lib}/gmldatasource-SNAPSHOT.jar" failonerror="true"/>    
+    <jar jarfile="${dir.lib}/gmldatasource-SNAPSHOT.jar"
+         whenempty="fail">
+      <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
+               includes="**/*.class"/>
+	</jar>
+
+    <!-- Potgis support, include META-INF -->	
+    <delete file="${dir.lib}/postgis-SNAPSHOT.jar" failonerror="true"/>        
+	<jar jarfile="${dir.lib}/postgis-SNAPSHOT.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/postgis/target/classes/"/>
+	</jar>
+	
+    <!-- Esri Shapefile support, include META-INF -->	
+    <delete file="${dir.lib}/shapefile-SNAPSHOT.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/shapefile-SNAPSHOT.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/shapefile/target/classes/"/>
+	</jar>
+	
+    <!-- Oracle Spatial support, include META-INF -->		
+    <delete file="${dir.lib}/oracle-spatial-SNAPSHOT.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/oracle-spatial-SNAPSHOT.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/oraclespatial/target/classes/"/>
+	</jar>	
+	
+    <!-- Java Property support, include META-INF -->		
+    <delete file="${dir.lib}/property-SNAPSHOT.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/property-SNAPSHOT.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/j2se-demos/target/classes/"
+      	       includes="META-INF/**"/>
+      <fileset dir="${dir.geotools}/j2se-demos/target/classes/"
+      	       includes="geotools/data/**"/>
+	</jar>
+	
+    <!-- Java Property support, include META-INF -->		
+    <delete file="${dir.lib}/arcsde-SNAPSHOT.jar" failonerror="true"/>                
+	<jar jarfile="${dir.lib}/arcsde-SNAPSHOT.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/arcsde/target/classes/"/>
+	</jar>	
+	
   </target>
 </project>

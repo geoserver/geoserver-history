@@ -59,7 +59,7 @@ CREATE TABLE "Seven" (
 --
 
 CREATE TABLE "Nulls" (
-	"gmldescription" character varying,
+	"description" character varying,
 	"name" character varying,
 	"boundedBy" geometry,
 	"integers" integer,
@@ -221,8 +221,13 @@ CREATE TABLE "Fifteen" (
 --
 
 CREATE TABLE "Locks" (
-	"gmlname" character varying,
-	"id" character varying
+	"boundedBy" geometry,
+	"id" character varying, 
+	"pointProperty" geometry,
+	CHECK ((srid("pointProperty") = 32615)),
+	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL))),
+	CHECK ((srid("boundedBy") = 32615)),
+	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
 );
 
 --
@@ -232,8 +237,8 @@ CREATE TABLE "Locks" (
 --
 
 CREATE TABLE "Other" (
-	"gmldescription" character varying,
-	"gmlname" character varying,
+	"description" character varying,
+	"name" character varying,
 	"boundedBy" geometry,
 	"pointProperty" geometry,
 	"string1" character varying NOT NULL,
@@ -295,6 +300,8 @@ COPY "geometry_columns" FROM stdin;
  	public	Inserts	boundedBy	2	32615	POLYGON	17539	20	\N
  	public	Deletes	pointProperty	2	32615	POINT	17539	21	\N
  	public	Deletes	boundedBy	2	32615	POLYGON	17539	22	\N
+ 	public	Locks	pointProperty	2	32615	POINT	17539	21	\N
+ 	public	Locks	boundedBy	2	32615	POLYGON	17539	22	\N
 \.
 --
 -- Data for TOC Entry ID 39 (OID 113496)
@@ -450,75 +457,79 @@ SRID=32615;POLYGON((500000 500000,500000 500100,500100 500100,500100 500000,5000
 
 
 COPY "Locks" FROM stdin;
-\N	lfla0001
-\N	lfla0002
-\N	lfla0003
-\N	lfla0004
-\N	gfwlla0001
-\N	gfwlla0002
-\N	gfwlla0003
-\N	gfwlla0004
-\N	lfbt0001
-\N	lfbt0002
-\N	lfbt0003
-\N	lfbt0004
-\N	lfbt0005
-\N	lfbt0006
-\N	gfwlbt0001
-\N	gfwlbt0002
-\N	gfwlbt0003
-\N	gfwlbt0004
-\N	gfwlbt0005
-\N	gfwlbt0006
-\N	lfe0001
-\N	lfe0002
-\N	lfe0003
-\N	lfe0004
-\N	gfwle0001
-\N	gfwle0002
-\N	gfwle0003
-\N	gfwle0004
-\N	lfra0001
-\N	lfra0002
-\N	lfra0003
-\N	lfra0004
-\N	lfra0005
-\N	lfra0006
-\N	lfra0007
-\N	lfra0008
-\N	lfra0009
-\N	lfra0010
-\N	gfwlra0001
-\N	gfwlra0002
-\N	gfwlra0003
-\N	gfwlra0004
-\N	gfwlra0005
-\N	gfwlra0006
-\N	gfwlra0007
-\N	gfwlra0008
-\N	gfwlra0009
-\N	gfwlra0010
-\N	lfrs0001
-\N	lfrs0002
-\N	lfrs0003
-\N	lfrs0004
-\N	lfrs0005
-\N	lfrs0006
-\N	lfrs0007
-\N	lfrs0008
-\N	lfrs0009
-\N	lfrs0010
-\N	gfwlrs0001
-\N	gfwlrs0002
-\N	gfwlrs0003
-\N	gfwlrs0004
-\N	gfwlrs0005
-\N	gfwlrs0006
-\N	gfwlrs0007
-\N	gfwlrs0008
-\N	gfwlrs0009
-\N	gfwlrs0010
+\N	lfla0001	\N
+\N	lfla0002	\N
+\N	lfla0003	\N
+\N	lfla0004	\N
+\N	gfwlla0001	\N
+\N	gfwlla0002	\N
+\N	gfwlla0003	\N
+\N	gfwlla0004	\N
+\N	lfbt0001	\N
+\N	lfbt0002	\N
+\N	lfbt0003	\N
+\N	lfbt0004	\N
+\N	lfbt0005	\N
+\N	lfbt0006	\N
+\N	gfwlbt0001	\N
+\N	gfwlbt0002	\N
+\N	gfwlbt0003	\N
+\N	gfwlbt0004	\N
+\N	gfwlbt0005	\N
+\N	gfwlbt0006	\N
+\N	lfe0001	\N
+\N	lfe0002	\N
+\N	lfe0003	\N
+\N	lfe0004	\N
+\N	gfwle0001	\N
+\N	gfwle0002	\N
+\N	gfwle0003	\N
+\N	gfwle0004	\N
+\N	lfra0001	\N
+\N	lfra0002	\N
+\N	lfra0003	\N
+\N	lfra0004	\N
+\N	lfra0005	\N
+\N	lfra0006	\N
+\N	lfra0007	\N
+\N	lfra0008	\N
+\N	lfra0009	\N
+\N	lfra0010	\N
+\N	gfwlra0001	\N
+\N	gfwlra0002	\N
+\N	gfwlra0003	\N
+\N	gfwlra0004	\N
+\N	gfwlra0005	\N
+\N	gfwlra0006	\N
+\N	gfwlra0007	\N
+\N	gfwlra0008	\N
+\N	gfwlra0009	\N
+\N	gfwlra0010	\N
+\N	lfrs0001	\N
+\N	lfrs0002	\N
+\N	lfrs0003	\N
+\N	lfrs0004	\N
+\N	lfrs0005	\N
+\N	lfrs0006	\N
+\N	lfrs0007	\N
+\N	lfrs0008	\N
+\N	lfrs0009	\N
+\N	lfrs0010	\N
+\N	gfwlrs0001	\N
+\N	gfwlrs0002	\N
+\N	gfwlrs0003	\N
+\N	gfwlrs0004	\N
+\N	gfwlrs0005	\N
+\N	gfwlrs0006	\N
+\N	gfwlrs0007	\N
+\N	gfwlrs0008	\N
+\N	gfwlrs0009	\N
+\N	gfwlrs0010	\N
 \.
+
+UPDATE "Locks" SET "boundedBy" = GeometryFromText('POLYGON((500000 500000,500000 500100,500100 500100,500100 500000,500000 500000))', 32615) WHERE TRUE;
+UPDATE "Locks" SET "pointProperty" = GeometryFromText('POINT(500050 500050)', 32615) WHERE TRUE;
+
 --
 -- Data for TOC Entry ID 71 (OID 312570)
 --
