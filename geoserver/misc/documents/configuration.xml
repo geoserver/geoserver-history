@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GlobalConfiguration>
+                <!-- Service elements, needed for the capabilities document -->
 		<Name>FreeFS</Name>
 		<Title>The Open Planning Project Basemap Server</Title>
 		<Abstract>This is a test server.  It contains some basemap data from New York City.</Abstract>
@@ -7,11 +8,37 @@
 		<OnlineResource>http://www.openplans.org/</OnlineResource>
 		<Fees>This is a free server.</Fees>
 		<AccessConstraints>There are no access constraints to this server.</AccessConstraints>
-                <LoggingLevel>INFO</LoggingLevel>
+                <Maintainer>The Open Planning Project</Maintainer>
+
+                <!-- The base url where this servlet will run -->
+                <URL>http://beta.openplans.org/geoserver</URL>
+                
+                <!-- Define a base url for the location of the wfs schemas. -->
+                <!-- By default GeoServer loads and references its own at -->
+                <!-- <URL>/data/capabilities. Uncomment to enable -->
+                <!--
+                <SchemaBaseUrl>http://schemas.opengis.net</SchemaBaseUrl>
+                 -->
+
+                <!-- Defines the logging level.  Common options are SEVERE, -->
+                <!-- WARNING, INFO, CONFIG, FINER, FINEST, in order of -->
+                <!-- Increasing statements logged.  -->
+                <LoggingLevel>FINER</LoggingLevel>
+                
+                <!-- Sets the max number of Features returned by GetFeature -->
                 <MaxFeatures>20000</MaxFeatures> 
-		<URL>http://beta.openplans.org/geoserver</URL>
-		<Maintainer>The Open Planning Project</Maintainer>
+		
+		<!-- Whether newlines and indents should be returned in -->
+                <!-- XML responses.  Default is false -->
                 <Verbose value="true"/>
+
+                <!-- Defines a mapping of a namespace to a featureType -->
+                <!-- directory prefix.  If only one namespace -->
+                <!-- is present in this file it becomes the default, if -->
+                <!-- more than one namespace is present then one must have -->
+                <!-- its 'default' attribute set to true. -->
+                <!-- The default namespace is that assigned to featureTypes -->
+                <!-- that have no prefix (featureTypes/rail) -->
                 <Namespace uri="http://www.openplans.org/topp" 
                            prefix="topp"/>
 </GlobalConfiguration>
