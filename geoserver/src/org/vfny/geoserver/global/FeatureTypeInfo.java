@@ -38,7 +38,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.33 2004/03/08 21:59:12 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.34 2004/03/09 16:45:13 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -698,6 +698,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     private FeatureType getFeatureType(FeatureSource fs) throws IOException {
     	if(ft == null){
     		if(schemaBase==null || schemaBase==""){
+    			// means there is not a schema file
     			ft = fs.getSchema();
     		}else{
     			int count = 0;
