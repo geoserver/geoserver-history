@@ -4,15 +4,16 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.vfny.geoserver.config.ConfigInfo;
-import org.vfny.geoserver.requests.DispatcherKvpReader;
-import org.vfny.geoserver.responses.WfsException;
-import java.io.IOException;
-import java.util.logging.Logger;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.vfny.geoserver.*;
+import org.vfny.geoserver.config.*;
+import org.vfny.geoserver.requests.*;
+import org.vfny.geoserver.requests.readers.*;
+import org.vfny.geoserver.servlets.wfs.*;
+import java.io.*;
+import java.util.Map;
+import java.util.logging.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 
 /**
@@ -31,16 +32,17 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.5 2003/09/12 21:22:15 cholmesny Exp $
+ * @version $Id: Dispatcher.java,v 1.5.4.1 2003/11/04 23:29:19 cholmesny Exp $
  */
 public class Dispatcher extends HttpServlet {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
-    private static final ConfigInfo config = ConfigInfo.getInstance();
+    private static final ServerConfig config = ServerConfig.getInstance();
 
     /** Specifies MIME type */
-    private static final String MIME_TYPE = config.getMimeType();
+    private static final String MIME_TYPE = config.getGlobalConfig()
+                                                  .getMimeType();
 
     /** Map metadata request type */
     public static String META_REQUEST = "GetMeta";
@@ -100,17 +102,16 @@ public class Dispatcher extends HttpServlet {
 
         //request.getReader().mark(10000);
         /*    try {
-        
-                  if ( request.getReader() != null ) {
-                  DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
-                 targetRequest = requestTypeAnalyzer.getRequestType();
-                  } else {
-                   targetRequest = UNKNOWN;
-                   }
-                  } catch (WfsException wfs) {
-                              targetRequest = ERROR;
-                              tempResponse = wfs.getXmlResponse();
-                  }*/
+           if ( request.getReader() != null ) {
+           DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
+           targetRequest = requestTypeAnalyzer.getRequestType();
+            } else {
+             targetRequest = UNKNOWN;
+             }
+            } catch (WfsException wfs) {
+                        targetRequest = ERROR;
+                        tempResponse = wfs.getXmlResponse();
+            }*/
         //request.getReader().reset();
         doResponse(false, request, response, targetRequest);
     }
@@ -133,9 +134,8 @@ public class Dispatcher extends HttpServlet {
         //  to deal with each request
         //              try {
         if (request.getQueryString() != null) {
-            DispatcherKvpReader requestTypeAnalyzer = new DispatcherKvpReader(request
-                    .getQueryString());
-            targetRequest = requestTypeAnalyzer.getRequestType();
+            Map kvPairs = KvpRequestReader.parseKvpSet(request.getQueryString());
+            targetRequest = DispatcherKvpReader.getRequestType(kvPairs);
         } else {
             targetRequest = UNKNOWN;
 
