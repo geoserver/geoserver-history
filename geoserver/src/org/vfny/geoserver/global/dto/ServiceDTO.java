@@ -1,11 +1,11 @@
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.global.dto;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.net.URL;
+import java.util.Arrays;
 
 
 /**
@@ -30,47 +30,103 @@ import java.util.List;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: ServiceDTO.java,v 1.1.2.2 2004/01/06 23:35:33 jive Exp $
  */
 public final class ServiceDTO implements DataStructure {
     /**
-     * Represents when the web service is enabled/disabled. True when enabled.
+     * Represents when the Web Service is enabled/disabled.
+     * 
+     * <p>
+     * Example: <code>true</code>
+     * </p>
      */
-    private boolean enabled = true;
+    private boolean enabled;
 
     /**
-     * Online Reference URL for the web service. A location to look for when
-     * additional assistance is required.
+     * Online Reference URL for the web service.
+     * 
+     * <p>
+     * A location to look for when additional assistance is required.
+     * </p>
+     * 
+     * <p>
+     * Example: <code>new URL("http://www.openplans.org/")</code>
+     * </p>
      */
-    private String onlineResource;
+    private URL onlineResource;
 
-    /** The name of the service. */
+    /**
+     * The name of the service.
+     * 
+     * <p>
+     * Example: <code>FreeWFS</code>
+     * </p>
+     * 
+     * <p>
+     * It is not clear from the examples if this name allows whitespace?
+     * </p>
+     */
     private String name;
 
-    /** The title of the service. */
+    /**
+     * The title of the service.
+     * 
+     * <p>
+     * Example: <code>The Open Planning Project Basemap Server</code>
+     * </p>
+     */
     private String title;
 
-    /** A short abstract about the service. */
-    private String _abstract;
-
-    /** A list of keywords associated with the service. */
-    private List keywords;
+    /**
+     * A short abstract about the service.
+     * 
+     * <p>
+     * Example:
+     * <pre><code>
+     * This is a test server.  It contains some basemap data from New York City.
+     * </code></pre>
+     * </p>
+     */
+    private String serverAbstract;
 
     /**
-     * The fees associated with the service. When there are not any fees, the
-     * value  "NONE" is used.
+     * A list of keywords associated with the service.
+     * 
+     * <p>
+     * Example: <code>new String[]{"WFS","New York"}</code>
+     * </p>
+     */
+    private String[] keywords;
+
+    /**
+     * The fees associated with the service.
+     * <p>
+     * When there are not any fees, the value  "NONE" is used.
+     * </p>
+     * 
+     * <p>
+     * Example: <code>NONE</code>
+     * </p>
      */
     private String fees;
 
     /**
      * The access constraints associated with the service. When there are not
-     * any,  the value "NONE" is used.
+     * any, the value "NONE" is used.
+     * 
+     * <p>
+     * Example: <code>"NONE"</code>
+     * </p>
      */
     private String accessConstraints = "NONE";
 
     /**
      * Name of the person who maintains the web service. Should ideally be
      * contact  information such as a email address.
+     * 
+     * <p>
+     * Example: <code>"The Open Planning Project"</code>
+     * </p>
      */
     private String maintainer;
 
@@ -78,13 +134,13 @@ public final class ServiceDTO implements DataStructure {
      * ServiceConfig constructor.
      * 
      * <p>
-     * Creates an empty ServiceConfig representation with default values.
+     * Creates an empty ServiceConfig representation values will need to  be
+     * supplied.
      * </p>
      *
      * @see defaultSettings()
      */
     public ServiceDTO() {
-        defaultSettings();
     }
 
     /**
@@ -97,53 +153,27 @@ public final class ServiceDTO implements DataStructure {
      * table in memory representation).
      * </p>
      *
-     * @param s The ServiceConfig object to copy into the new ServiceConfig
+     * @param dto The ServiceConfig object to copy into the new ServiceConfig
      *        object.
+     *
+     * @throws NullPointerException If dto is null
      *
      * @see defaultSettings()
      * @see clone()
      */
-    public ServiceDTO(ServiceDTO s) {
-        if (s == null) {
-            defaultSettings();
-
-            return;
+    public ServiceDTO(ServiceDTO dto) {
+        if (dto == null) {
+            throw new NullPointerException("ServiceDTO object required");
         }
 
-        enabled = s.isEnabled();
-        name = s.getName();
-        title = s.getTitle();
-        _abstract = s.getAbstract();
-
-        try {
-            keywords = CloneLibrary.clone(s.getKeywords());
-        } catch (Exception e) {
-            // should only happen for null
-            keywords = new LinkedList();
-        }
-
-        fees = s.getFees();
-        accessConstraints = s.getAccessConstraints();
-        maintainer = s.getMaintainer();
-    }
-
-    /**
-     * defaultSettings purpose.
-     * 
-     * <p>
-     * Sets the class variables to default settings. This method should only be
-     * used  by the constructors.
-     * </p>
-     */
-    private void defaultSettings() {
-        enabled = true;
-        name = "";
-        title = "";
-        _abstract = "";
-        keywords = new LinkedList();
-        fees = "";
-        accessConstraints = "NONE";
-        maintainer = "";
+        enabled = dto.isEnabled();
+        name = dto.getName();
+        title = dto.getTitle();
+        serverAbstract = dto.getAbstract();
+        keywords = CloneLibrary.clone(dto.getKeywords());
+        fees = dto.getFees();
+        accessConstraints = dto.getAccessConstraints();
+        maintainer = dto.getMaintainer();
     }
 
     /**
@@ -161,39 +191,79 @@ public final class ServiceDTO implements DataStructure {
     /**
      * Implement equals.
      *
-     * @param obj The ServiceConfig object which will be tested.
+     * @param other The ServiceConfig object which will be tested.
      *
      * @return true when the classes are equal.
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object obj) {
-        if (!(obj instanceof ServiceDTO) || (obj == null)) {
+    public boolean equals(Object other) {
+        if ((other == null) || !(other instanceof ServiceDTO)) {
             return false;
         }
 
-        ServiceDTO s = (ServiceDTO) obj;
-        boolean r = true;
-        r = r && (enabled == s.isEnabled());
-        r = r && (name == s.getName());
-        r = r && (title == s.getTitle());
-        r = r && (_abstract == s.getAbstract());
+        ServiceDTO dto = (ServiceDTO) other;
 
-        if (keywords != null) {
-            r = r && keywords.equals(s.getKeywords());
-        } else if (s.getKeywords() != null) {
+        if (enabled != dto.isEnabled()) {
             return false;
         }
 
-        r = r && (fees == s.getFees());
-        r = r && (accessConstraints == s.getAccessConstraints());
-        r = r && (maintainer == s.getMaintainer());
+        if ((name != null) ? (!name.equals(dto.name)) : (dto.name != null)) {
+            return false;
+        }
 
-        return r;
+        if ((title != null) ? (!title.equals(dto.title)) : (dto.title != null)) {
+            return false;
+        }
+
+        if ((serverAbstract != null)
+                ? (!serverAbstract.equals(dto.getAbstract()))
+                    : (dto.serverAbstract != null)) {
+            return false;
+        }
+
+        if (!Arrays.equals(keywords, dto.keywords)) {
+            return false;
+        }
+
+        if ((fees != null) ? (!fees.equals(dto.fees)) : (dto.fees != null)) {
+            return false;
+        }
+
+        if ((accessConstraints != null)
+                ? (!accessConstraints.equals(dto.accessConstraints))
+                    : (dto.accessConstraints != null)) {
+            return false;
+        }
+
+        if ((maintainer != null) ? (!maintainer.equals(dto.maintainer))
+                                     : (dto.maintainer != null)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
-     * getName purpose.
+     * Implement hashCode for ServiceDTO.
+     *
+     * @return Hashcode in agreement with equals method
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return (enabled ? 1 : 0)
+        | ((name != null) ? name.hashCode() : 0)
+        | ((title != null) ? title.hashCode() : 0)
+        | ((serverAbstract != null) ? serverAbstract.hashCode() : 0)
+        | ((keywords != null) ? keywords.hashCode() : 0)
+        | ((fees != null) ? fees.hashCode() : 0)
+        | ((accessConstraints != null) ? accessConstraints.hashCode() : 0)
+        | ((maintainer != null) ? maintainer.hashCode() : 0);
+    }
+
+    /**
+     * Name of Service.
      *
      * @return
      */
@@ -202,18 +272,26 @@ public final class ServiceDTO implements DataStructure {
     }
 
     /**
-     * getOnlineResource purpose.
-     *
-     * @return
+     * Online Reference URL for the web service.
+     * 
+     * <p>
+     * A location to look for when additional assistance is required.
+     * </p>
+     * 
+     * <p>
+     * Example: <code>new URL("http://www.openplans.org/")</code>
+     * </p>
      */
-    public String getOnlineResource() {
+    public URL getOnlineResource() {
         return onlineResource;
     }
 
     /**
-     * getTitle purpose.
-     *
-     * @return
+     * The title of the service.
+     * 
+     * <p>
+     * Example: <code>The Open Planning Project Basemap Server</code>
+     * </p>
      */
     public String getTitle() {
         return title;
@@ -231,16 +309,19 @@ public final class ServiceDTO implements DataStructure {
     /**
      * setOnlineResource purpose.
      *
-     * @param string
+     * @param url
      */
-    public void setOnlineResource(String string) {
-        onlineResource = string;
+    public void setOnlineResource(URL url) {
+        onlineResource = url;
     }
 
     /**
-     * setTitle purpose.
-     *
-     * @param string
+     * Sets the title of the service.
+     * 
+     * <p>
+     * Example: <code>The Open Planning Project Basemap Server</code>
+     * </p>
+     * @param string Title of the Service
      */
     public void setTitle(String string) {
         title = string;
@@ -252,70 +333,99 @@ public final class ServiceDTO implements DataStructure {
      * @return
      */
     public String getAbstract() {
-        return _abstract;
+        return serverAbstract;
     }
 
     /**
-     * getAccessConstraints purpose.
-     *
-     * @return
+     * The access constraints associated with the service.
+     * <p>
+     * When there are not any, the value "NONE" is used.
+     * </p>
+     * <p>
+     * Example: <code>"NONE"</code>
+     * </p>
      */
     public String getAccessConstraints() {
         return accessConstraints;
     }
 
     /**
-     * isEnabled purpose.
-     *
-     * @return
+     * Represents when the Web Service is enabled/disabled.
+     * 
+     * @return <code>true</code> is service is enabled
      */
     public boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * getFees purpose.
-     *
-     * @return
+     * The fees associated with the service.
+     * <p>
+     * When there are not any fees, the value  "NONE" is used.
+     * </p>
+     * 
+     * <p>
+     * Example: <code>NONE</code>
+     * </p>
      */
     public String getFees() {
         return fees;
     }
 
     /**
-     * getKeywords purpose.
-     *
-     * @return
+     * Keywords associated with the service.
+     * 
+     * <p>
+     * Example: <code>new String[]{"WFS","New York"}</code>
+     * </p>
      */
-    public List getKeywords() {
+    public String[] getKeywords() {
         return keywords;
     }
 
     /**
-     * getMaintainer purpose.
-     *
-     * @return
+     * Name of the party who maintains the web service.
+     * 
+     * <p>
+     * Should ideally be contact information such as a email address.
+     * </p>
+     * 
+     * <p>
+     * Example: <code>"The Open Planning Project"</code>
+     * </p>
+     * @return The maintainer of this Service
      */
     public String getMaintainer() {
         return maintainer;
     }
 
     /**
-     * setAbstract purpose.
-     *
-     * @param string
+     * Provides a short abstract about the service.
+     * 
+     * <p>
+     * Example:
+     * <pre><code>
+     * This is a test server.  It contains some basemap data from New York City.
+     * </code></pre>
+     * </p>
+     * @param serviceAbstract Abstract describing service
      */
-    public void setAbstract(String string) {
-        _abstract = string;
+    public void setAbstract(String serviceAbstract) {
+        serverAbstract = serviceAbstract;
     }
 
     /**
-     * setAccessConstraints purpose.
-     *
-     * @param string
+     * Provide the access constraints associated with the service.
+     * 
+     * <p>
+     * When there are not any, use the value "NONE".
+     * </p>
+     * <p>
+     * Example: <code>"NONE"</code>
+     * </p>
      */
-    public void setAccessConstraints(String string) {
-        accessConstraints = string;
+    public void setAccessConstraints(String constraints) {
+        accessConstraints = constraints;
     }
 
     /**
@@ -328,51 +438,40 @@ public final class ServiceDTO implements DataStructure {
     }
 
     /**
-     * setFees purpose.
-     *
-     * @param string
+     * Provide the fees associated with the service.
+     * <p>
+     * When there are not any fees, use the value "NONE".
+     * </p>
+     * 
+     * <p>
+     * Example: <code>NONE</code>
+     * </p>
      */
     public void setFees(String string) {
         fees = string;
     }
 
     /**
-     * setKeywords purpose.
-     *
-     * @param list
+     * Provide keywords associated with the service.
+     * 
+     * <p>
+     * Example: <code>new String[]{"WFS","New York"}</code>
+     * </p>
      */
-    public void setKeywords(List list) {
-        keywords = list;
+    public void setKeywords(String[] array) {
+        keywords = array;
     }
 
     /**
-     * addKeyword purpose.
-     *
-     * @param item The keyword to add to the list.
-     *
-     * @see java.util.List#add
-     */
-    public void addKeyword(String item) {
-        keywords.add(item);
-    }
-
-    /**
-     * removeKeyword purpose.
-     *
-     * @param item The keyword to remove from the list.
-     *
-     * @return true if the item was removed.
-     *
-     * @see java.util.List#remove
-     */
-    public boolean removeKeyword(String item) {
-        return keywords.remove(item);
-    }
-
-    /**
-     * setMaintainer purpose.
-     *
-     * @param string
+     * Provide the party that maintains the web service.
+     * 
+     * <p>
+     * Should ideally be contact information such as a email address.
+     * </p>
+     * 
+     * <p>
+     * Example: <code>"The Open Planning Project"</code>
+     * </p>
      */
     public void setMaintainer(String string) {
         maintainer = string;
