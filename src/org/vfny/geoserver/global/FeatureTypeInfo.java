@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 import org.geotools.data.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
+import org.geotools.data.DataUtilities;
 import org.geotools.data.AttributeTypeMetaData;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreMetaData;
@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.8 2004/01/15 23:45:21 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.9 2004/01/16 01:15:16 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -78,7 +78,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
     private String xmlSchemaFrag;
     
     /** will be lazily created*/
-    private FeatureType ft;
     private FeatureSource fs;
     
 	/**
@@ -254,12 +253,35 @@ e.printStackTrace();
         }
         if(fs == null){
         	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-        	FeatureSource realSource = dataStore.getFeatureSource(ftc.getName());
-            fs = GeoServerFeatureLocking.create(realSource, getFeatureType(), ftc.getDefinitionQuery());
+        	String typeName = ftc.getSchemaName();
+        	FeatureSource realSource = dataStore.getFeatureSource( typeName );
+        	
+        	if( ftc.getSchema().isEmpty() && ftc.getDefinitionQuery() == null ){
+        		fs = realSource;
+        	}
+        	else {
+        		try{
+        		fs = reTypeSource( realSource, ftc );
+        		}catch(SchemaException e){
+        			throw new DataSourceException("Could not make FeatureSource attributes don't match",e);
+        		}
+        	}
         }
         return fs;
     }
-
+    
+    public static FeatureSource reTypeSource( FeatureSource source, FeatureTypeInfoDTO ftc ) throws SchemaException {
+    	String attributeNames[] = new String[ ftc.getSchema().size() ];
+    	List attributeDefinitions = ftc.getSchema();
+    	int index=0;
+    	for( Iterator i=attributeDefinitions.iterator(); i.hasNext(); index++ ){
+    		attributeNames[index] = ((AttributeTypeInfoDTO)i.next()).getName(); 
+    	}
+    	FeatureType myType = DataUtilities.createSubType( source.getSchema(), attributeNames );
+    	
+    	return GeoServerFeatureLocking.create( source, myType, ftc.getDefinitionQuery());
+    }
+    
 	/**
 	 * getRealFeatureSource purpose.
 	 * <p>
@@ -690,27 +712,7 @@ System.out.println("getSchema"+ftc.getName());
      * @throws IOException
      */
     public FeatureType getFeatureType() throws IOException {
-    	if(ft==null){
-    		DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-    		ft = dataStore.getSchema( ftc.getName());
-    		List attribs = ftc.getSchema();
-    		if( attribs.size() != 0 ){
-    			Object[] list = new Object[ attribs.size() ];
-    			
-    			for( int i=0;i<list.length;i++ ){
-    				AttributeTypeInfoDTO at = (AttributeTypeInfoDTO) attribs.get(i);
-    				list[i]=at.getName();               
-    			}
-    			AttributeType[] at = new AttributeType[ftc.getSchema().size()];
-    			for(int i=0;i<at.length;i++)
-    				at[i] = AttributeTypeMetaData(((AttributeTypeInfoDTO)ftc.getSchema().get(i)).getType()).getAttributeType();
-    			try{
-    			ft = FeatureTypeFactory.newFeatureType(at,ftc.getSchemaBase(),data.getDataStoreInfo( ftc.getDataStoreId() ).getNameSpace().getPrefix());
-    			}catch(SchemaException e){}//use default
-    			
-    		}
-    	}
-        return ft;
+    	return getFeatureSource().getSchema();
     }
 
     /**
