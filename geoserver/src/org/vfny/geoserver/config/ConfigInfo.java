@@ -206,6 +206,10 @@ public class ConfigInfo {
 
     public Level getLogLevel() { return wfsGlobal.getLogLevel(); }
     
+    public String getFilePrefixDelimiter() { 
+	return wfsGlobal.getFilePrefixDelimiter(); 
+    }
+
     /**
      * gets the default namespace prefix.  This is really more for backwards
      * compatibility, as all feature type directories should now be named
