@@ -18,7 +18,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP <br>
  * @author Chris Holmes, TOPP
- * @version $Id: LockRequest.java,v 1.1.2.2 2003/11/14 01:37:36 jive Exp $
+ * @version $Id: LockRequest.java,v 1.1.2.3 2003/11/22 01:27:34 cholmesny Exp $
  */
 public class LockRequest extends WFSRequest {
     private String handle;
@@ -73,8 +73,8 @@ public class LockRequest extends WFSRequest {
             // perma lock with no expiry!
             return FeatureLockFactory.generate( handle, 0 );            
         }
-        // FeatureLock is specified in seconds
-        return FeatureLockFactory.generate( handle, expiry*60 );
+        // FeatureLock is specified in milli seconds
+        return FeatureLockFactory.generate( handle, expiry*60*1000 );
     }
     
     public void setHandle( String handle){
@@ -120,6 +120,10 @@ public class LockRequest extends WFSRequest {
      */
     public void setExpiry(int expiry) {
         this.expiry = expiry;
+    }
+
+    public int getExpirySeconds() {
+	return expiry * 60;
     }
 
     /**
