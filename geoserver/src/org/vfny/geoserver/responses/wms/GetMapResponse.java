@@ -20,7 +20,7 @@ import java.util.*;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.1.2.1 2003/11/14 20:39:15 groldan Exp $
+ * @version $Id: GetMapResponse.java,v 1.1.2.2 2003/11/15 00:06:12 jive Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME!  */
@@ -110,4 +110,8 @@ public class GetMapResponse implements Response {
 
         return delegate;
     }
+    public void abort() {
+        // nothing to undo
+    }
+
 }
