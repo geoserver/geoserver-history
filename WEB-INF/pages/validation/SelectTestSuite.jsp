@@ -44,7 +44,9 @@
 </table>
 <table border="0">
 <%
-org.vfny.geoserver.action.validation.TestValidationResults tvr = (org.vfny.geoserver.action.validation.TestValidationResults)session.getAttribute(org.vfny.geoserver.action.validation.TestValidationResults.CURRENTLY_SELECTED_KEY);
+try {
+org.vfny.geoserver.action.validation.TestValidationResults tvr =
+	(org.vfny.geoserver.action.validation.TestValidationResults) session.getAttribute(org.vfny.geoserver.action.validation.TestValidationResults.CURRENTLY_SELECTED_KEY);
 if(tvr!=null && tvr.getErrors().size()>0){
 %>
 <table border="0">
@@ -68,4 +70,7 @@ while(i.hasNext()){
 </table>
 <%
 } // if
+} catch( NullPointerException bad){
+	bad.printStackTrace();
+}
 %>
