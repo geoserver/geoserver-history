@@ -88,7 +88,7 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
         featureTypesForm.reset(mapping, request);
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("config.data.types");
+        return mapping.findForward("config.data.type");
     }
 
     DataStore aquireDataStore(String dataStoreID) throws IOException {
