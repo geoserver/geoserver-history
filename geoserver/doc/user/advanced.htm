@@ -378,7 +378,10 @@ name, should be the same as the SERVICE ID</td>
               <br>
 Also note that the name element in the <i>info.xml</i> file to specify the 
 featureType must be all capitalized, for some reason the JDBC driver does
-not recognize the table otherwise.
+not recognize the table otherwise.  If specifying attributes in the info.xml
+file they must also be all capitalized.  It does not matter what case is used 
+inside of oracle, this is only an issue with the driver that connects GeoServer
+to the database.
 Additionally, two jars are required in the GeoServer/lib directory. As
 Oracle is not open source we can not distribute these, but you should
 be able to find them, either somewhere within your oracle install, or
