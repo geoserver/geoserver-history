@@ -697,13 +697,13 @@
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
     </copy>
-    <copy todir="${dir.build}/bin">
+    <!--copy todir="${dir.build}/bin">
 	  <fileset dir="${dir.bin}">
 	    <include name="**/*"/>
 	    <exclude name="*CVS*/*"/>
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
-    </copy>
+    </copy-->
     <copy todir="${dir.build}/WEB-INF">
 	  <fileset dir="${dir.webinf}">
 	    <include name="**/*"/>
