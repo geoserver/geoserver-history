@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FidFilter;
+import org.vfny.geoserver.responses.WfsTransactionException;
 import org.vfny.geoserver.responses.WfsException;
 
 /**
@@ -41,7 +42,7 @@ public class DeleteKvpReader
      * not for all dbs.  So we need clarification on the spec. (ch)
      */
     public TransactionRequest getRequest()
-        throws WfsException {
+        throws WfsTransactionException {
 
         TransactionRequest parentRequest = new TransactionRequest();
         boolean releaseAll = true;
@@ -62,32 +63,41 @@ public class DeleteKvpReader
                                  INNER_DELIMETER);
         LOGGER.finest("type list size: " + typeList.size());
         if(typeList.size() == 0) {
-	    throw new WfsException("need a typename");
+	    throw new WfsTransactionException("need a typename");
 	}
 	//LOGGER.finest("type list element: " + typeList.get(0));
-        List filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
-                                      (String) kvpPairs.get("FILTER"),
-                                      (String) kvpPairs.get("BBOX"));
-        int featureSize = typeList.size();
-        int filterSize = filterList.size();
+	List filterList = null;
+        try {
+	    filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
+					  (String) kvpPairs.get("FILTER"),
+					  (String) kvpPairs.get("BBOX"));
+        } catch (WfsException e) {
+	    throw new WfsTransactionException(e, "Problem reading Filters: ", 
+					      null);
+	}
+	int featureSize = typeList.size();
+        int filterSize = (filterList == null) ? 0 : filterList.size();
         
         // prepare the release action boolean for all delete transactions
         if( kvpPairs.containsKey("RELEASEACTION")) {
             String lockAction = (String) kvpPairs.get("RELEASEACTION");
-            if(lockAction == null) {
+	    parentRequest.setReleaseAll(lockAction);
+            
+	    //moved this to TransactionRequest, to avoid duplicate code.
+	    /*if(lockAction == null) {
             } else if(lockAction.toUpperCase().equals("ALL")) {
                 releaseAll = true;                
             } else if(lockAction.toUpperCase().equals("SOME")) {
                 releaseAll = false;                
             } else {
                 throw new WfsException("Illegal lock action: " + lockAction);
-            }
+		}*/
         }
         
         // check for errors in the request
         if((filterSize != featureSize) && (filterSize > 0) || 
            ((filterSize > 0) && (featureSize == 0))) {
-            throw new WfsException("Filter size does not match" +  
+            throw new WfsTransactionException("Filter size does not match" +  
                                    " feature types.  Filter size: " + 
                                    filterSize + " Feature size: "+featureSize);
         } else if(filterSize == featureSize) {
@@ -98,7 +108,14 @@ public class DeleteKvpReader
                 childRequest.setReleaseAll(releaseAll);
                 parentRequest.addSubRequest(childRequest);
             }
-        }
+        } else if (filterSize == 0) {
+	    String message = "geoserver is currently unclear on 1.0 spec, as "
+		+ "delete post requests require a filter, while the kvp delete"
+		+ " seems to imply that it is not required allowed.  This is "
+		+ "not consistent and also fairly dangerous, as someone could "
+		+ "quite easily wipe out the whole database accidentally.";
+	    throw new WfsTransactionException(message);
+	}
         return parentRequest;
     }
 }
