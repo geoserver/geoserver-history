@@ -528,7 +528,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         String msg = "No default style has been defined for "
                             + currLayer.getName();
                         throw new WmsException(msg,
-                            "GetMapKvpReader::parseStyles()");
+                            "StyleNotDefined");
                     }
                 }
 
@@ -891,8 +891,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         try {
             ftype = catalog.getFeatureTypeInfo(layerName);
         } catch (NoSuchElementException ex) {
-            throw new WmsException(ex,
+        	WmsException e = new WmsException(ex,
                 layerName + ": no such layer on this server", "LayerNotDefined");
+        	e.setCode("LayerNotDefined"); //DJB: added this for cite tests
+        	throw e;
         }
 
         return ftype;
