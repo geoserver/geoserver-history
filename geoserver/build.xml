@@ -22,14 +22,15 @@
   <property file="build.properties"/>  
   <!--These should be defined in the build.properties file, which will -->
   <!-- override these values -->      
-  <property name="dir.container" value="C:\java\tomcat4\webapps"/>
-  <property name="dir.geotools" value="C:\java\geotools\gt"/>
-  <property name="version.geotools" value="2.0-B6-DEV"/>		
-  <property name="dir.maven" value="C:\Documents and Settings\jgarnett\.maven\repository"/>
+  <property name="dir.container" value="C:\apps\jakarta-tomcat-4.1.27\webapps"/>
+  <property name="dir.geotools" value="C:\SCO\CVS\geotools\trunk\gt"/>
+  <!--property name="version.geotools" value="2.0-B6-DEV"/-->		
+  <property name="version.geotools" value="2.1.x"/>		  
+  <property name="dir.maven" value="C:\Documents and Settings\Peter Barrs\.maven\repository"/>
 
   <!-- If you don't have your own conf directory then define one of -->
   <!-- these test.type's in your build.properties file-->
-  <!--<property name="test.type" value="UserBasic"/>-->
+  <property name="test.type" value="UserBasic"/>
   <!--property name="test.type" value="DemoPostGIS"/-->
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>--> 
@@ -39,7 +40,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2.2"/>
+  <property name="name.release" value="1.2.0-rc2"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
@@ -77,8 +78,8 @@
   <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}" />
 
   <!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
-  <available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
-  <available file="${basedir}/server/geoserver" type="dir" property="server.built"/>
+  <!--available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
+  <available file="${basedir}/server/geoserver" type="dir" property="server.built"/-->
 
   <!-- paths -->
   <path id="path.lib">
@@ -175,15 +176,13 @@
     <copy todir="${dir.build}">
       <fileset dir="${dir.src}">
         <include name="**/*.properties"/>
-        <include name="**/*.config"/>
       </fileset>
     </copy>
     <jar jarfile="${dir.lib}/geoserver.jar">
       <fileset dir="${dir.build}">
         <exclude name="geoserver.war"/>
         <exclude name="**/servlets/*" />
-        <exclude name="**/mortbay/**" />
-        <exclude name="**/zserver/**" />
+        <exclude name="**/EmbeddedTomcat.class" />
       </fileset>
     </jar>
   </target>
@@ -247,7 +246,7 @@
            destdir="${dir.build}" 
            includes="**/*.java" 
            classpathref="path.build" 
-           deprecation="off"
+           deprecation="on"
               debug="on"/>
     <antcall target="all"/>
     <junit fork="false"
@@ -278,7 +277,7 @@
            destdir="${dir.build}" 
            includes="**/*.java" 
            classpathref="path.build" 
-           deprecation="off"
+           deprecation="on"
               debug="on"/>
     <antcall target="all"/>
     <junit fork="false"
@@ -295,17 +294,17 @@
             name="org.vfny.geoserver.zserver.ApplyXPathSuite"/>
       <test fork="true" 
             name="org.vfny.geoserver.zserver.GeoIndexerSuite"/>
-      <test fork="true" 
+  <test fork="true" 
             name="org.vfny.geoserver.zserver.GeoProfileSuite"/>
-      <test fork="true" 
+<test fork="true" 
             name="org.vfny.geoserver.zserver.GeoSearchSuite"/>
-      <test fork="true" 
+<test fork="true" 
             name="org.vfny.geoserver.zserver.GeoSummarySuite"/>
-      <test fork="true" 
+<test fork="true" 
             name="org.vfny.geoserver.zserver.NumericFieldSuite"/>
-      <test fork="true" 
+<test fork="true" 
             name="org.vfny.geoserver.zserver.RPNConverterSuite"/>
-      <test fork="true" 
+<test fork="true" 
             name="org.vfny.geoserver.zserver.XMLDocumentSuite"/>
     </junit>
   </target>
@@ -313,8 +312,7 @@
 <!-- TEST -->
   <target name="test" depends="init, all"
     description="Depolys application to the test server">
-    <!-- no longer needed, as work is in geoserver/WEB-INF -->
-    <!--mkdir dir="${dir.server}/work"/-->
+    <mkdir dir="${dir.server}/work"/>
 
     <!-- This will now build with the users directory, which I think is
          appropriate for testing of this sort, as you'll want to configure
@@ -329,16 +327,17 @@
 
   </target>
     
-  <!-- Prepares embedded server, server.built isn't working, so users must
+  <!-- prepares embedded server, server.built isn't working, so users must
       run this manually -->
   <target name="prepareEmbedded" depends="init" unless="server.built">
      <antcall target="war"/>
+     <mkdir dir="${dir.server}/work"/>
     <mkdir dir="${dir.server}/geoserver"/>
      <unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/"/>
   </target> 
 
   <!-- runs the server -->
-  <target name="run" depends="prepareEmbedded, init">
+  <target name="run" depends="init">
     <echo message="Please be sure that either prepareEmbedded or"/>
     <echo message="test has been run before using this target"/>
     
@@ -354,15 +353,30 @@
        <arg line="${jetty.run}" />
     </java>
   </target>
-
-  <target name="stop" depends="init">
-    <java classname="org.mortbay.stop.Main" fork="yes">
-       <classpath>
-         <pathelement location="${dir.bin}/stop.jar"/>
-       </classpath>
-    </java>
   
-  </target>
+  <!-- runs the server -->
+  <target name="go">
+  
+    <echo message="Building and deploying geoserver.jar to jetty"/>
+    
+    <antcall target="all"/>
+    
+    <copy file="lib/Geoserver.Jar" todir="${dir.server}/geoserver/WEB-INF/lib"/> 
+    
+    <java classname="org.mortbay.jetty.Server"
+          dir="${basedir}"
+          fork="yes"
+          failonerror="yes"
+          >
+       <classpath>
+         <path refid="path.jetty" />
+       </classpath>
+       <jvmarg line="${jetty.jvmarg}" />
+       <arg line="${jetty.run}" />
+    </java>
+    
+  </target>  
+  
 
 <!-- EXTERNAL TEST -->
   <target name="test-ext" depends="init, war"
@@ -398,24 +412,24 @@
   <target name="build-conf-dir" depends="init" 
           unless="conf.folder.present">
     <!-- taking this out until I figure out available tag -->
-    <mkdir dir="${basedir}/conf"/>
+    <!--mkdir dir="${basedir}/conf"/>
     <copy todir="${basedir}/conf">
 	  <fileset dir="${basedir}/cite/confUserBasic"/>
-    </copy>
+    </copy-->
    </target>
 
 <!-- ====================================================================== -->
 <!-- BUILD TARGETS                                                          -->
 <!-- ====================================================================== -->
 
-  <target name="war" depends="init"
+  <target name="war" depends="init, all"
       description="generate geoserver.war (with your choice of conf directory)">
     <!-- only one of the two will execute -->
     <antcall target="user_conf"/>
     <antcall target="misc_conf"/>
   </target>  
  <!-- BUILD WAR -->
-  <target name="build-war" depends="all" if="conf.path">
+  <target name="build-war" if="conf.path">
     <!-- preparation -->
     <delete file="${dir.build}/geoserver.war" 
             failonerror="false"/>
@@ -488,7 +502,6 @@
       </fileset>
     </copy>
 
-     <mkdir dir="${dir.webinf}/work"/>
     <!-- war file -->
     <war warfile="${dir.build}/geoserver.war" 
          webxml="${dir.webinf}/web.xml" 
@@ -499,8 +512,7 @@
         <include name="**/servlets/**" />
         <include name="**/*.properties" />
         <exclude name="**/servlets/utilities/**" />
-	<exclude name="**/mortbay/**" />
-	<exclude name="**/zserver/**" />
+        <exclude name="**/EmbeddedTomcat.class" />
       </classes>
 
 	  <classes dir="${dir.webinf}">
@@ -526,7 +538,7 @@
         <exclude name="**/xalan.jar" />
         <exclude name="**/ki*.jar" />
         <exclude name="**/a2jruntime.jar" />
-        <!--exclude name="**/log4j-1.2.5.jar" /-->
+        <exclude name="**/log4j-1.2.5.jar" />
         <exclude name="**/lucene.jar" />
         <exclude name="**/xml-apis.jar" />
         <exclude name="**/xercesImpl.jar" />
@@ -556,34 +568,7 @@
     <delete dir="${basedir}/data" failonerror="true"/>
   </target>
 
-  <!-- BUILD JARS FOR SCRIPTS -->  
-  <target name="script-jars" depends="start.jar, stop.jar"/>
-
-  <!-- START JAR -->
-  <target name="start.jar" depends="all"
-      description="generates the start.jar to run the start-up scripts">   
-    <jar jarfile="${dir.bin}/start.jar" basedir="${dir.build}">
-      <manifest>
-        <attribute name="Main-Class" value="org.mortbay.start.Main"/>
-      </manifest>
-       <include name="org/mortbay/start/**"/>
-    </jar>
-  </target>
-
-  <!-- STOP JAR -->
-  <target name="stop.jar" depends="all"
-      description="generates the stop.jar to run the shutdown scripts">   
-    <jar jarfile="${dir.bin}/stop.jar" basedir="${dir.build}">
-      <manifest>
-        <attribute name="Main-Class" value="org.mortbay.stop.Main"/>
-      </manifest>
-       <include name="org/mortbay/stop/**"/>
-    </jar>
-  </target>
-
-  
- 
-  <!-- DOCUMENTATION -->
+<!-- DOCUMENTATION -->
   <target name="document" depends="init"
       description="generate all project documentation">
     <mkdir dir="${dir.doc}"/>
@@ -625,11 +610,8 @@
             href="http://jakarta.apache.org/log4j/docs/api/" 
             packagelistLoc="${dir.doc}/package-lists/log4j"/>
     </javadoc>
-    <antcall target="generate-docbook"/>
-  </target>
-
-  <target name="generate-docbook" depends="init">
-     <copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
+        
+    <copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
     <copy todir="${dir.doc}/" file="${dir.doc}/../index.html"/>
 
     <!-- Convert docbook to html -->
@@ -646,6 +628,7 @@
     </style>
     
     <copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
+    <copy todir="${dir.doc}/developer" file="${dir.doc}/../developer/**/*.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
@@ -660,9 +643,7 @@
     </style>
     
     <copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
-    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/DataStoreUserGuide.pdf" failonerror="false"/>
-    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/ValidationUserGuide.pdf" failonerror="false"/>
-    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/FeatureTypeUserGuide.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/**/*.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
@@ -675,57 +656,40 @@
         <param name="section.autolabel" expression="1"/>
         <param name="toc.section.depth" expression="4"/>
     </style>
-  </target>   
-
-<!-- RELEASE -->
-<!-- builds a release version of the application -->
-  <target name="release-all" depends="release-war, release-src, release-docs"/>
-
-  <target name="release-common" depends="clean, all"
-   description="Performs the release operations common to binary and source">
-    <delete dir="${basedir}/data" failonerror="false"/>
-    <copy todir="${dir.build}">
-	  <fileset dir="${basedir}/documents">
-        <include name="license.txt"/>
-        <include name="README.txt"/>
-	  </fileset>
-    </copy>
-    <copy todir="${dir.build}/lib">
-	  <fileset dir="${dir.lib}">
-	    <include name="**/jetty/*"/>
-	    <exclude name="*CVS*/*"/>
-	    <exclude name="**/*CVS*/*"/>
-            <include name="xml-apis.jar"/>
-            <include name="xercesImpl.jar"/>
-            <include name="servlet.jar"/>
-	  </fileset>
-    </copy>
-    <copy todir="${dir.build}/bin">
-	  <fileset dir="${dir.bin}">
-	    <include name="**/*"/>
-	    <exclude name="*CVS*/*"/>
-	    <exclude name="**/*CVS*/*"/>
-	  </fileset>
-    </copy>
   </target>
 
 
+<!-- RELEASE -->
+<!-- builds a release version of the application -->
+  <target name="release-all" depends="release-binary, release-src, release-docs"/>
   
-  <target name="release-src" depends="release-common">
+  <target name="release-src" depends="clean">
     <delete file="${basedir}/geoserver-${name.release}-src.tar.gz" 
             failonerror="false"/>
     <delete file="${basedir}/geoserver-${name.release}-src.tar" 
             failonerror="false"/>
+    <delete dir="${dir.build}" failonerror="false"/>
+    
+    <mkdir dir="${dir.build}"/>
+    
+    <copy todir="${dir.build}/conf">
+	  <fileset dir="${basedir}/cite/confUserBasic">
+	    <include name="**/*"/>
+	  </fileset>
+    </copy>
+    <delete dir="${basedir}/data" failonerror="false"/>
     
     <copy todir="${dir.build}">
 	  <fileset dir="${basedir}">
+	    <include name="license.txt"/>
 	    <include name="build.xml"/>
 	    <include name=".classpath"/>
 	  </fileset>
     </copy>
-    <copy todir="${dir.build}/conf">
-	  <fileset dir="${basedir}/cite/confUserBasic">
-	    <include name="**/*"/>
+    <copy todir="${dir.build}">
+	  <fileset dir="${basedir}/documents">
+        <include name="license.txt"/>
+        <include name="README.txt"/>
 	  </fileset>
     </copy>
     <copy todir="${dir.build}/src">
@@ -758,6 +722,13 @@
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
     </copy>
+    <copy todir="${dir.build}/bin">
+	  <fileset dir="${dir.bin}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
     <copy todir="${dir.build}/WEB-INF">
 	  <fileset dir="${dir.webinf}">
 	    <include name="**/*"/>
@@ -783,20 +754,13 @@
     <tar destfile="${basedir}/geoserver-${name.release}-src.tar">
 	  <tarfileset dir="${dir.build}" prefix="geoserver">
 	    <include name="**/*"/>
-            <exclude name="geoserver.war"/>
-            <exclude name="org/**"/>
 	  </tarfileset>
 	</tar>
 	 	 
 	<zip destfile="${basedir}/geoserver-${name.release}-src.zip">
 	  <zipfileset dir="${dir.build}" prefix="geoserver">
 	    <include name="**/*"/>
-            <exclude name="bin/*"/>
-            <exclude name="geoserver.war"/>
-            <exclude name="org/**"/>
 	  </zipfileset>
-          <zipfileset dir="${dir.build}" prefix="geoserver"
-                      filemode="755" includes="bin/*"/>
 	</zip>
 	
     <delete dir="${dir.build}" failonerror="false"/>
@@ -817,8 +781,8 @@
     <delete file="${basedir}/license.txt" failonerror="true"/>
   </target>
   
-  <target name="release-war" depends="clean, all"
-    description="Genearte the Geoserver.war war release (includes UserBasic)">
+  <target name="release-binary" depends="clean"
+    description="Genearte the Geoserver.war binary release (includes UserBasic)">
     <antcall target="build-war">
       <param name="conf.path" value="${basedir}/cite/confUserBasic"/>
     </antcall>
@@ -826,62 +790,14 @@
           todir="${dir.release}"/>
   </target>
   
-  <target name="release-binary" depends="release-common">
-    <copy todir="${dir.build}">
-	  <fileset dir="${basedir}/documents">
-            <include name="RUNNING.txt"/>
-	  </fileset>
-    </copy>
-      <copy todir="${dir.build}/documents/">
-	  <fileset dir="${dir.doc}">
-	    <include name="**/*"/>
-            <exclude name="api/**"/>
-	  </fileset>
-      </copy>    
-    <copy todir="${dir.build}/documents">
-	  <fileset dir="${basedir}/documents">
-	    <include name="jetty.xml"/>
-	    <include name="admin.xml"/>
-	  </fileset>
-    </copy> 
-    <antcall target="build-war">
-       <param name="conf.path" value="${basedir}/cite/confUserBasic"/>
-    </antcall>
-    <!--copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/-->
-    <unwar src="${dir.build}/geoserver.war" 
-          dest="${dir.build}/server/geoserver/"/>
-
-  	<zip destfile="${basedir}/geoserver-${name.release}-bin.zip">
-	  <zipfileset dir="${dir.build}" prefix="geoserver">
-	    <include name="**/*"/>
-            <exclude name="bin/*"/>
-            <exclude name="geoserver.war"/>
-            <exclude name="org/**"/>
-	  </zipfileset>
-          <zipfileset dir="${dir.build}" prefix="geoserver"
-                      filemode="755" includes="bin/*"/>
-	</zip>
-	
-    <copy file="${basedir}/geoserver-${name.release}-bin.zip" 
-          todir="${dir.release}"/>
-    <delete dir="${dir.build}" failonerror="false"/>
-    <delete file="${basedir}/geoserver-${name.release}-bin.zip" 
-            failonerror="true"/>
-  
- </target>
-
   <target name="release-docs" depends="document">
     <mkdir dir="${basedir}/docs"/>
     <copy todir="${basedir}/docs/">
 	  <fileset dir="${dir.doc}">
 	    <include name="**/*"/>
 	  </fileset>
-    </copy>    
-    <zip destfile="${basedir}/geoserver-${name.release}-docs.zip">
-	  <zipfileset dir="${basedir}/docs/" prefix="geoserver-docs">
-	    <include name="**/*"/>
-	  </zipfileset>
-	</zip>
+    </copy>
+    <zip destfile="${basedir}/geoserver-${name.release}-docs.zip" basedir="${basedir}/docs/"/>
     <tar destfile="${basedir}/geoserver-${name.release}-docs.tar" basedir="${basedir}/docs/"/>
     <gzip src="${basedir}/geoserver-${name.release}-docs.tar" zipfile="${basedir}/geoserver-${name.release}-docs.tar.gz"/>
     <copy file="${basedir}/geoserver-${name.release}-docs.zip" todir="${dir.release}"/>
