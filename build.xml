@@ -470,6 +470,8 @@
       <webinf dir="${basedir}/data">
         <include name="services.xml"/>
         <include name="catalog.xml"/>
+        <include name="*.html"/>
+        <include name="*.png"/>          
       </webinf>
       
       <webinf dir="${dir.webinf}">
