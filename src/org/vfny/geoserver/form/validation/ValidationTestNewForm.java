@@ -6,6 +6,12 @@
  */
 package org.vfny.geoserver.form.validation;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -14,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.validation.PlugInConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 
 /**
@@ -38,16 +45,24 @@ import org.vfny.geoserver.config.validation.ValidationConfig;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestNewForm.java,v 1.2 2004/02/07 01:30:05 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: ValidationTestNewForm.java,v 1.3 2004/04/19 22:36:57 emperorkefka Exp $
  */
 public class ValidationTestNewForm extends ActionForm {
     
     private String newName;
     private String selectedPlugIn;
     
+    //Key is the PlugIn name, Value is the description
+    private Collection plugInConfigs;
+    private Set plugInNames;
+    
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
+        
+        ValidationConfig validationConfig = (ValidationConfig) this.getServlet().getServletContext().getAttribute(ValidationConfig.CONFIG_KEY);
+        plugInConfigs = validationConfig.getPlugIns().values();
+        plugInNames = validationConfig.getPlugInNames();
         
         newName ="";
     }
@@ -59,10 +74,12 @@ public class ValidationTestNewForm extends ActionForm {
         return errors;
     }    
     
-    public SortedSet getPlugIns(){
-        
-        ValidationConfig validationConfig = (ValidationConfig) this.getServlet().getServletContext().getAttribute(ValidationConfig.CONFIG_KEY);
-        return new TreeSet(validationConfig.getPlugInNames());
+    public Collection getPlugInConfigs(){
+        return plugInConfigs;
+    }
+    
+    public Set getPlugIns() {
+    	return plugInNames;
     }
     
 	/**
