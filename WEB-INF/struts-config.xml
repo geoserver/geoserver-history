@@ -189,34 +189,34 @@
        		path="/config/data/index.do"/>
        		
        	<forward
-       		name="config.data.stores"
+       		name="config.data.store"
        		path="/config/data/store.do"/>
        	<forward
-       		name="config.data.stores.new"
+       		name="config.data.store.new"
        		path="/config/data/storesNew.do"/>
        	<forward
-       		name="config.data.stores.editor"
+       		name="config.data.store.editor"
        		path="/config/data/storeEditor.do"/>
        		
        	<forward
-       		name="config.data.namespaces"
-       		path="/config/data/namespace.do"/>
+       		name="config.data.namespace"
+       		path="/config/data/namespaceSelect.do"/>
        	<forward
-       		name="config.data.namespaces.select"
-       		path="/config/data/namespacesSelect.do"/>
+       		name="config.data.namespace.select"
+       		path="/config/data/namespaceSelect.do"/>
        	<forward
-       		name="config.data.namespaces.editor"
-       		path="/config/data/namespacesEditor.do"/>
+       		name="config.data.namespace.editor"
+       		path="/config/data/namespaceEditor.do"/>
        	<forward
-       		name="config.data.namespaces.new"
-       		path="/config/data/namespacesNew.do"/>
+       		name="config.data.namespace.new"
+       		path="/config/data/namespaceNew.do"/>
       		       		
        	<forward
-       		name="config.data.styles"
+       		name="config.data.style"
        		path="/config/data/style.do"/>
        		
        	<forward
-       		name="config.data.types"
+       		name="config.data.type"
        		path="/config/data/featureType.do"/>   
        		
        	<forward
@@ -378,14 +378,14 @@
         	parameter="config.data.store.editor"/>        	
         	
        <!-- DATA NAMESPACES -->        	
-        <action
+        <!--<action
         	path="/config/data/namespace"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.namespace"/>
-        <action
+        	parameter="config.data.namespace"/>-->
+        <!--<action
         	path="/config/data/namespaceNew"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.namespace.new"/> 
+        	parameter="config.data.namespace.new"/> -->
         <action
         	path="/config/data/namespaceEditor"
         	type="org.apache.struts.actions.ForwardAction"
@@ -395,7 +395,7 @@
         <action
         	path="/config/data/style"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.styles"/>
+        	parameter="config.data.style"/>
         	
 		<!-- DATA featuretypes -->
         <action
@@ -482,28 +482,28 @@
         	scope="request"
         	validate="true"
         	input="/config/data/storesNew"/>        	
-        	        	
+      
         <action
-        	path="/config/data/namespacesSelect"
+        	path="/config/data/namespaceSelect"
         	type="org.vfny.geoserver.action.data.DataNamespacesSelectAction"
         	name="dataNamespacesSelectForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/namespacesSelect"/>
+        	input="/config/data/namespaceSelect"/>
         <action
-        	path="/config/data/namespacesNew"
+        	path="/config/data/namespaceNew"
         	type="org.vfny.geoserver.action.data.DataNamespacesNewAction"
         	name="dataNamespacesNewForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/namespacesNew"/>
+        	input="/config/data/namespaceNew"/>
         <action
-        	path="/config/data/namespacesSubmit"
+        	path="/config/data/namespaceSubmit"
         	type="org.vfny.geoserver.action.data.DataNamespacesEditorAction"
         	name="dataNamespacesEditorForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/namespacesEditor"/>
+        	input="/config/data/namespaceEditor"/>
         	
         	
         <action
@@ -512,7 +512,7 @@
         	name="dataStylesForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/styles"/>
+        	input="/config/data/style"/>
         <action
         	path="/config/data/featureTypesSubmit"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesEditorAction"

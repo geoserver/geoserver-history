@@ -3,9 +3,9 @@
 
 <span class="dataMenu">
 
-<html:link forward="config.data.stores"><bean:message key="label.dataStores"/></html:link><br>
-<html:link forward="config.data.namespaces"><bean:message key="label.namespaces"/></html:link><br>
-<html:link forward="config.data.styles"><bean:message key="label.styles"/></html:link><br>
-<html:link forward="config.data.types"><bean:message key="label.featureTypes"/></html:link><br>
+<html:link forward="config.data.store"><bean:message key="label.dataStores"/></html:link><br>
+<html:link forward="config.data.namespace"><bean:message key="label.namespaces"/></html:link><br>
+<html:link forward="config.data.style"><bean:message key="label.styles"/></html:link><br>
+<html:link forward="config.data.type"><bean:message key="label.featureTypes"/></html:link><br>
 
 </span>

@@ -173,8 +173,8 @@
    	</definition>
 
 	<!-- datastores -->
-   	<definition name="config.data.stores" extends=".mainLayout">
-   		<put name="key" value="config.data.stores"/>
+   	<definition name="config.data.store" extends=".mainLayout">
+   		<put name="key" value="config.data.store"/>
 		<put name="body" value="data.dataStores.main"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				
@@ -187,7 +187,7 @@
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresSelect.jsp"/>
         <put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				   		
-        <put name="locationForwards" value="welcome:config:config.data:config.data.stores"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.store"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	
@@ -196,7 +196,7 @@
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresNew.jsp"/>
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
         <put name="layer" value="data"/>   				   		
-        <put name="locationForwards" value="welcome:config:config.data:config.data.stores:config.data.store"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.store:config.data.store"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
@@ -205,7 +205,7 @@
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:config.data.stores:config.data.store"/>
+        <put name="locationForwards" value="welcome:config:data:config.data.store:config.data.store"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
 
@@ -228,8 +228,8 @@
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
    	
-   	<definition name="config.data.namespaces.editor" extends=".mainLayout">
-   		<put name="key" value="config.data.namespaces.editor"/>
+   	<definition name="config.data.namespace.editor" extends=".mainLayout">
+   		<put name="key" value="config.data.namespace.editor"/>
    		<put name="body" value="/WEB-INF/pages/data/namespaces/Editor.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   						
@@ -238,8 +238,8 @@
    	</definition>   	
 
 	<!-- styles -->
-   	<definition name="config.data.styles" extends=".mainLayout">
-   		<put name="key" value="config.data.styles"/>
+   	<definition name="config.data.style" extends=".mainLayout">
+   		<put name="key" value="config.data.style"/>
    		<put name="body" value="/WEB-INF/pages/data/DataConfigStyles.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
