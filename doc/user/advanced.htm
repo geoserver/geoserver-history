@@ -376,6 +376,9 @@ name, should be the same as the SERVICE ID</td>
                 </tbody>
               </table>
               <br>
+Also note that the name element in the <i>info.xml</i> file to specify the 
+featureType must be all capitalized, for some reason the JDBC driver does
+not recognize the table otherwise.
 Additionally, two jars are required in the GeoServer/lib directory. As
 Oracle is not open source we can not distribute these, but you should
 be able to find them, either somewhere within your oracle install, or
