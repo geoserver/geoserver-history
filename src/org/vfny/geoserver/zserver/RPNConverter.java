@@ -5,6 +5,15 @@
 
 package org.vfny.geoserver.zserver;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.logging.Logger;
+
 import com.k_int.util.RPNQueryRep.AttrPlusTermNode;
 import com.k_int.util.RPNQueryRep.RootNode;
 import com.k_int.util.RPNQueryRep.ComplexNode;
@@ -20,13 +29,7 @@ import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.PhraseQuery;
 
-import java.util.Enumeration;
-import java.util.Properties;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.logging.Logger;
+
 
 
 /**
@@ -60,6 +63,14 @@ public class RPNConverter
     /** Regular Expression to match for whitespace */
     public static final String WHITE_SPACE = "[\\s]+";
 
+    public static final String QUERY_CLASS = "com.k_int.util.RPNQueryRep.";
+	
+    public static final String TERM_CLASS = QUERY_CLASS + "AttrPlusTermNode";
+
+    public static final String COMPLEX_CLASS = QUERY_CLASS + "ComplexNode";
+
+    public static final String ROOT_CLASS = QUERY_CLASS + "RootNode";
+
     /**
      * Initializes the database and request handler.
      *
@@ -77,7 +88,8 @@ public class RPNConverter
      *
      * @param rpnQuery the internal jzkit representation of a z39.50 query
      */
-    public org.apache.lucene.search.Query toLuceneQuery(QueryNode rpnQuery) throws SearchException {
+    public org.apache.lucene.search.Query toLuceneQuery(QueryNode rpnQuery) 
+	throws SearchException {
 	return doConversion(rpnQuery);
     }		    
 	
@@ -92,17 +104,19 @@ public class RPNConverter
 	try {
 	    Class queryClass = rpnQuery.getClass();
 	//LOGGER.finer("Our query class is " + queryClass);
-	//Possibly do these compares with strings?  Wouldn't have to load class...
-	if (queryClass.equals(Class.forName("com.k_int.util.RPNQueryRep.AttrPlusTermNode"))) {
-	    return convertTermNode((AttrPlusTermNode)rpnQuery);
-	} else if (queryClass.equals(Class.forName("com.k_int.util.RPNQueryRep.RootNode"))) {
-	    return doConversion(((RootNode)rpnQuery).getChild());
-	} else if (queryClass.equals(Class.forName("com.k_int.util.RPNQueryRep.ComplexNode"))) {
-	    return convertComplexNode((ComplexNode)rpnQuery);
-	} else {
-	    LOGGER.severe("Unknown query node:" + queryClass);
-	    return null;
-	}
+	    if (queryClass.equals(Class.forName(TERM_CLASS))){
+		return convertTermNode((AttrPlusTermNode)rpnQuery);
+	    
+	    } else if (queryClass. equals(Class.forName(ROOT_CLASS))) {
+		return doConversion(((RootNode)rpnQuery).getChild());
+	    
+	    } else if (queryClass.equals(Class.forName(COMPLEX_CLASS))) {
+		return convertComplexNode((ComplexNode)rpnQuery);
+	    
+	    } else {
+		LOGGER.finer("Unknown query node:" + queryClass);
+		return null;
+	    }
 	} catch (ClassNotFoundException e) {
 	    LOGGER.finer("class not found " + e.getMessage());
 	}
@@ -117,24 +131,26 @@ public class RPNConverter
      *
      * @param rpnQuery the internal jzkit representation of a z39.50 query
      */
-    private Query convertComplexNode(ComplexNode complexQuery) throws SearchException {
+    private Query convertComplexNode(ComplexNode complexQuery) 
+	throws SearchException {
 	int queryType = complexQuery.getOp();
 	BooleanQuery retQuery = new BooleanQuery();
 	switch (queryType) {
 
-	case ComplexNode.COMPLEX_AND:
-	    retQuery.add(doConversion(complexQuery.getLHS()), true, false); //require both
+	case ComplexNode.COMPLEX_AND: //require both
+	    retQuery.add(doConversion(complexQuery.getLHS()), true, false); 
 	    retQuery.add(doConversion(complexQuery.getRHS()), true, false);
 	    break;
-	case ComplexNode.COMPLEX_OR:
-	    retQuery.add(doConversion(complexQuery.getLHS()), false, false); //no require
-	    retQuery.add(doConversion(complexQuery.getRHS()), false, false); //or prohibit
+	case ComplexNode.COMPLEX_OR://no require or prohibit
+	    retQuery.add(doConversion(complexQuery.getLHS()), false, false); 
+	    retQuery.add(doConversion(complexQuery.getRHS()), false, false); 
 	    break;
-	case ComplexNode.COMPLEX_ANDNOT:
-	    retQuery.add(doConversion(complexQuery.getLHS()), true, false); //require  (AND)
-	    retQuery.add(doConversion(complexQuery.getRHS()), false, true); //prohibit (NOT)
+	case ComplexNode.COMPLEX_ANDNOT: //require (AND) &  prohibit (NOT)
+	    retQuery.add(doConversion(complexQuery.getLHS()), true, false); 
+	    retQuery.add(doConversion(complexQuery.getRHS()), false, true); 
 	    break;
-	case ComplexNode.COMPLEX_PROX: throw new SearchException("Proximity searches not supported.");
+	case ComplexNode.COMPLEX_PROX: throw new 
+	    SearchException("Proximity searches not supported.");
 	default:  throw new SearchException("Op type not recognized.");
 	    
 	}
@@ -147,7 +163,8 @@ public class RPNConverter
      * Helper function for the base case of the recursive conversion.  Turns
      * a jzkit AttrPlusTermNode into a lucene TermQuery.
      *
-     * @param rpnTermNode the internal jzkit representation of a z39.50 term and Attribute.
+     * @param rpnTermNode the internal jzkit representation of a 
+     * z39.50 term and Attribute.
      */
     private Query convertTermNode(AttrPlusTermNode rpnTermNode) 
     	throws SearchException {	
@@ -161,6 +178,7 @@ public class RPNConverter
 	    throw new SearchException("term passed in is null");
 	}
 	term = term.toLowerCase();
+	//to lower case for case insensitivity, to mimic our Analyzer
 	Enumeration enum = rpnTermNode.getAttrEnum();
 	String useVal = GeoProfile.Attribute.ANY; //default is any.
 	int  relation = GeoProfile.EQUALS; //default is equals.
@@ -174,9 +192,11 @@ public class RPNConverter
 		break;
 	    case GeoProfile.RELATION: relation = Integer.parseInt(attrVal);
 		break;
-	    case GeoProfile.STRUCTURE:  break;//REVISIT: currently we treat everything as
+	    case GeoProfile.STRUCTURE:  break;
+		//REVISIT: currently we treat everything as
 		//a string, decide what to do based on the use value.
-	    case GeoProfile.TRUNCATION: truncation = (attrVal.equals(GeoProfile.TRUNCATE));
+	    case GeoProfile.TRUNCATION: 
+		truncation = (attrVal.equals(GeoProfile.TRUNCATE));
 		break;
 	    default: break;
 	    }
@@ -186,41 +206,43 @@ public class RPNConverter
 	 LOGGER.finer("use val = " + useVal);
 	String searchField = attrMap.getProperty(useVal.toString());
 	if (searchField == null) {
-	    throw new SearchException("Unsupported Use Attribute - " + 
-				      useVal, GeoProfile.Diag.UNSUPPORTED_ATTR);
+	    throw new SearchException("Unsupported Use Attribute - " + useVal,
+				      GeoProfile.Diag.UNSUPPORTED_ATTR);
 	} 
-	LOGGER.finer("search field is " + searchField);
-	//	Term searchTerm = new Term(searchField, rpnTermNode.getTerm().toLowerCase());
-	//to lower case for case insensitivity, to mimic the SimpleAnalyzer.  
-	//Query indexQuery = new TermQuery(searchTerm);
+	LOGGER.finest("search field is " + searchField);
 	Query indexQuery = getQuery(searchField, term, relation, truncation);
-	//LOGGER.finer("Searching for: " + indexQuery);
+	LOGGER.finer("Searching for: " + indexQuery);
 	return indexQuery;
     }
 
     /**
-     * Creates the query for a date field.  Can take one or two dates in the value
-     * string, seperated by a space.  If there are more than two dates it just uses
-     * the first two.
+     * Creates the query for a date field.  Can take one or two dates in 
+     * the value string, seperated by a space.  If there are more than 
+     * two dates it just uses the first two.
      *
-     * @param relation the int representation of the relation attribute for this search.
+     * @param relation the int representation of the relation attribute.
      * @param searchField the name of the field to be queried.
      * @param searchValue a date string
      */
-     private Query getDateQuery(int relation, String searchField, String searchValue) {
-	/*Implementation notes:  the searchValue is a Datestring, which should have one
-	  date or two.  If it has more we just use the first two.  If there are two
-	  we set which is the higher date.  Calling getHighTerm appends 9's if needed,
-	  so that a date like 1996 will turn into 19969999, so that dates such as 19960405
-	  are not matched when we want all dates after 1996.  For the low term we want
-	  to use the 1996, as it is lower than 19960101, so there is no getLowTerm function.
-	  If there is just one date we create a highTerm with the same date as the low
-	  term.  Then a switch is used, using range queries to get the right behavior.
-	  REVISIT: One border case still fails, when a date is stored in our index as
-	  1995 and we do a more specific during search, such as 19950204 to 19980203.  Such
-	  a search will not match 1995, which it should, because 1995 is below the low term.
-	  The only way I can now think of to work around this is to store both a highTerm and lowTerm
-	  in the index for each date, which seems to be too much overhead for that one case/ */
+     private Query getDateQuery(int relation, String searchField, 
+				String searchValue) {
+	/*Implementation notes:  the searchValue is a Datestring, which 
+	  should have one date or two.  If it has more we just use the 
+	  first two.  If there are two we set which is the higher date.  
+	  Calling getHighTerm appends 9's if needed, so that a date like 
+	  1996 will turn into 19969999, so that dates such as 19960405
+	  are not matched when we want all dates after 1996.  For the low 
+	  term we want to use the 1996, as it is lower than 19960101, so 
+	  there is no getLowTerm function.  If there is just one date we 
+	  create a highTerm with the same date as the low term.  Then a 
+	  switch is used, using range queries to get the right behavior.
+	  REVISIT: One border case still fails, when a date is stored in 
+	  our index as 1995 and we do a more specific during search, such 
+	  as 19950204 to 19980203.  Such a search will not match 1995, 
+	  which it should, because 1995 is below the low term.  The only 
+	  way I can now think of to work around this is to store both a 
+	  highTerm and lowTerm in the index for each date, which seems to 
+	  be too much overhead for that one case/ */
 	Query returnQuery;
 	Term highTerm;
 	Term lowTerm;
@@ -230,8 +252,10 @@ public class RPNConverter
 	if (dates.length > 1) { // = 2?  If more we just use first 2 dates
 	    twoDates = true;
 	    if (dates[0].compareTo(dates[1]) > 0) {
-		highTerm = getHighTerm(searchField, dates[0]);  //getHighTerm appends 9's if needed
-		lowTerm = new Term(searchField, dates[1]); //no need to with low term.
+		highTerm = getHighTerm(searchField, dates[0]);  
+		//getHighTerm appends 9's if needed
+		lowTerm = new Term(searchField, dates[1]); 
+		//no need to with low term.
 	    } else {
 		highTerm = getHighTerm(searchField, dates[1]);
 		lowTerm = new Term(searchField, dates[0]);
@@ -248,29 +272,33 @@ public class RPNConverter
 	    returnQuery = new RangeQuery(null, lowTerm, false);
 	    break;
 	case GeoProfile.BEFORE_OR_DURING:
-	case GeoProfile.LESS_THAN_EQUAL : returnQuery = new RangeQuery(null, highTerm, true);
+	case GeoProfile.LESS_THAN_EQUAL : 
+	    returnQuery = new RangeQuery(null, highTerm, true);
 	    break;
 	case GeoProfile.DURING: 
 	case GeoProfile.EQUALS: 
 	default: 
 	    if (twoDates) {
-		returnQuery = new RangeQuery(lowTerm, highTerm, true);  //must be
-		//between low and high, inclusive.
+		returnQuery = new RangeQuery(lowTerm, highTerm, true);  
+		//must be between low and high, inclusive.
 	    } else {
 		returnQuery = new PrefixQuery(lowTerm);
-		//even if a full ccyymmdd date term a prefix query doesn't hurt.
+		//even if a full ccyymmdd date term prefix query doesn't hurt.
 	    }
 	    break;
 	case GeoProfile.DURING_OR_AFTER:
-	case GeoProfile.GREATER_THAN_EQUAL : returnQuery = new RangeQuery(lowTerm, null, true);
+	case GeoProfile.GREATER_THAN_EQUAL : 
+	    returnQuery = new RangeQuery(lowTerm, null, true);
 	    break;
 	case GeoProfile.AFTER:
-	case GeoProfile.GREATER_THAN : returnQuery = new RangeQuery(highTerm, null, false);
+	case GeoProfile.GREATER_THAN : 
+	    returnQuery = new RangeQuery(highTerm, null, false);
 	    break; 
-	case GeoProfile.NOT_EQUAL : returnQuery = notEqualQuery(new PrefixQuery(lowTerm)); 
+	case GeoProfile.NOT_EQUAL : 
+	    returnQuery = notEqualQuery(new PrefixQuery(lowTerm)); 
 	    //REVISIT: not equal with two date terms.  Is that even possible?
-	    //maybe turn it into a boolean with two ranges, before and after the
-	    //two dates.
+	    //maybe turn it into a boolean with two ranges, before and after
+	    //the two dates.
 	    break;
 
 	}
@@ -312,7 +340,8 @@ public class RPNConverter
 	for (int i=0; i < cleanArr.length; i++) {
 	    retString += cleanArr[i];
 	}
-	if ( retString.matches(NEG_OR_DEC)) { //if just dots or dashes it won't be parsed right.
+	if ( retString.matches(NEG_OR_DEC)) { 
+	    //if just dots or dashes it won't be parsed right.
 	    retString = "";
 	}
 	LOGGER.finer("The number we're using is " + retString);
@@ -321,7 +350,7 @@ public class RPNConverter
 
 
     /**
-     * If the given value is a date or number formats it to the proper searchable
+     * If the given value is a date or number formats it to the proper 
      * lucene searchable string.  If not just returns the value.
      *
      * @param value to be formatted to a date or number.
@@ -329,14 +358,11 @@ public class RPNConverter
      * @return the properly formated string
      */
 
-    private Query getQuery(String searchField, String searchValue, int relation, boolean truncation){
+    private Query getQuery(String searchField, String searchValue, 
+			   int relation, boolean truncation){
 	Query returnQuery;
-	//TODO: type checking...maybe put all in NumericField?  yes.
-	//if (GeoProfile.isFGDCnum(searchField)) {
-	//    searchValue = NumericField.numberToString(searchValue);
-	//}
 	Term searchTerm = new Term(searchField, searchValue);
-	if (GeoProfile.isBoundingField(searchField)) { //(searchField.matches(".*bounding")) {
+	if (GeoProfile.isBoundingField(searchField)) { 
 	    returnQuery= getBoundingQuery(searchValue);
 	} else if (GeoProfile.isFGDCdate(searchField)) {
 	    //if only one term.
@@ -359,17 +385,22 @@ public class RPNConverter
 	    }		    
 	    Term numTerm = new Term(searchField, searchNumber);
 	    switch (relation) {
-	    case GeoProfile.LESS_THAN: returnQuery = new RangeQuery(null, numTerm, false);
+	    case GeoProfile.LESS_THAN: 
+		returnQuery = new RangeQuery(null, numTerm, false);
 		break;
-	    case GeoProfile.LESS_THAN_EQUAL : returnQuery = new RangeQuery(null, numTerm, true);
+	    case GeoProfile.LESS_THAN_EQUAL : 
+		returnQuery = new RangeQuery(null, numTerm, true);
 		break;
 	    case GeoProfile.EQUALS: returnQuery = new TermQuery(numTerm);
 		break;
-	    case GeoProfile.GREATER_THAN_EQUAL : returnQuery = new RangeQuery(numTerm, null, true);
+	    case GeoProfile.GREATER_THAN_EQUAL : 
+		returnQuery = new RangeQuery(numTerm, null, true);
 		break;
-	    case GeoProfile.GREATER_THAN : returnQuery = new RangeQuery(numTerm, null, false);
+	    case GeoProfile.GREATER_THAN : 
+		returnQuery = new RangeQuery(numTerm, null, false);
 		break; 
-	    case GeoProfile.NOT_EQUAL : returnQuery = notEqualQuery(new TermQuery(numTerm)); 
+	    case GeoProfile.NOT_EQUAL : 
+		returnQuery = notEqualQuery(new TermQuery(numTerm)); 
 
 		break;
 	    default: returnQuery = new TermQuery(numTerm); //default equals.
@@ -377,8 +408,8 @@ public class RPNConverter
 	    }
 	} else if (truncation) {
 	    returnQuery = new PrefixQuery(searchTerm);
-	    //TODO: truncation with a phrase.  Not sure how to do this in lucene, as you
-	    //can't put prefix queries in phrase queries.
+	    //TODO3: truncation with a phrase.  Not sure how to do this in l
+	    //lucene, as youcan't put prefix queries in phrase queries.
 	} else {
 	    String[] terms = searchValue.split(WHITE_SPACE); 
 	    if (terms.length == 1) {
@@ -395,11 +426,6 @@ public class RPNConverter
 	LOGGER.finer("Search value = " + searchValue);
 	return returnQuery;
 	
-	//} else if (isFGDCnum(pathName)) {
-	    //format value       
-	//} else { //nothing to be done if not date or time.
-	//    return value;
-	//}
     }
 
     private Query notEqualQuery(Query notQuery) {
@@ -435,14 +461,8 @@ public class RPNConverter
     }
 
     private Query getBoundingQuery(String searchValue){
-	//REVISIT: This currently acts the same as Isite, where it just assumes that
-	//a coordinate string is the short-cut version with only 4 values, the northwest
-	//and southeast corners of a rectangle, corresponding to the north, west, south, and
-	//east bounding coordinates.  Would be nice to actual use the coordinate string as it
-	//was intended.  First step would be to parse it into a JTS polygon.  From there one 
-	//could just use the bounding envelope of that, which would still be an approximation,
-	//such as if the user did not pass in a rectangle, but would be a good start.
-	String[] bounds = searchValue.split(WHITE_SPACE_OR_COMMA); //split string along whitespace or a comma
+	String[] bounds = searchValue.split(WHITE_SPACE_OR_COMMA); 
+	//split string along whitespace or a comma
 
 	String north = null;
 	String west = null;
@@ -464,22 +484,26 @@ public class RPNConverter
 
 	//if our strings
 	if (north != null) {
-	Term southTerm = new Term("southbc", north);
+	Term southTerm = new Term(attrMap.getProperty
+				  (GeoProfile.Attribute.SOUTHBC), north);
 	//the southbc field must be less than the north passed in.
 	retQuery.add(new RangeQuery(null, southTerm, true), true, false);
 	}
 	if (south != null) {
-	Term northTerm = new Term("northbc", south);
+	Term northTerm = new Term(attrMap.getProperty
+				  (GeoProfile.Attribute.NORTHBC), south);
 	//the northbc field must be greater than the southbc passed in.
 	retQuery.add(new RangeQuery(northTerm, null, true), true, false);
 	}
 	if (east != null) {
-	Term westTerm = new Term("westbc", east);
+	Term westTerm = new Term(attrMap.getProperty
+				 (GeoProfile.Attribute.WESTBC), east);
 	//the westbc field must be less than the east passed in.
 	retQuery.add(new RangeQuery(null, westTerm, true), true, false);
 	}
 	if (west != null) {
-	Term eastTerm = new Term("eastbc", west);
+	Term eastTerm = new Term(attrMap.getProperty
+				 (GeoProfile.Attribute.EASTBC), west);
 	//the eastbc field must be greater than the westbc passed in.
 	retQuery.add(new RangeQuery(eastTerm, null, true), true, false);
 	}
