@@ -35,7 +35,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\Program Files\Apache Software Foundation\Tomcat 5.0\webapps"/>
+  <property name="dir.container" value="C:\java\tomcat4\webapps"/>
   <property name="dir.geotools" 
             value="..\geotools2\geotools-src"/>
 
@@ -63,8 +63,8 @@
 
 
   <!-- If you don't have your own conf directory uncomment on of the following -->
-  <!--<property name="test.type" value="UserBasic"/>-->
-  <property name="test.type" value="Demo"/>
+  <property name="test.type" value="UserBasic"/>
+  <!--property name="test.type" value="Demo"/-->
   <!--<property name="test.type" value="DemoPostGIS"/>-->
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
