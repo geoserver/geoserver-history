@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <datastores>
+    <datastore id="cdf-deletes"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Deletes/Deletes.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cdf-fifteen"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Fifteen/Fifteen.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cdf-inserts"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Inserts/Inserts.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cdf-locks"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Locks/Locks.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cdf-nulls"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Nulls/Nulls.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cdf-other"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Other/Other.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cdf-seven"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Seven/Seven.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cdf-updates"
+               enabled="true"
+               namespace="cdf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cdf--Updates/Updates.shp"/>
+      </connectionParams>
+    </datastore>
+     
+    <datastore id="cgf-lines"
+               enabled="true"
+               namespace="cgf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cgf--Lines/Lines.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cgf-mlines"
+               enabled="true"
+               namespace="cgf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cgf--MLines/MLines.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cgf-mpoints"
+               enabled="true"
+               namespace="cgf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cgf--MPoints/MPoints.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cgf-points"
+               enabled="true"
+               namespace="cgf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cgf--Points/Points.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cgf-mpoly"
+               enabled="true"
+               namespace="cgf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cgf--MPolygons/MPolygons.shp"/>
+      </connectionParams>
+    </datastore>
+    <datastore id="cgf-poly"
+               enabled="true"
+               namespace="cgf">
+      <connectionParams>
+        <!-- change the file to the location where geoserver puts the file.
+             We're working on making this easier to configure, automatically detect it for you.  -->
+        <parameter name="url" value="file:data/featureTypes/cgf--Polygons/Polygons.shp"/>
+      </connectionParams>
+    </datastore>
+  </datastores>
+
+  <namespaces>
+	<namespace default="true" uri="http://www.opengis.net/cite/data"
+	           prefix="cdf"/>
+	<namespace uri="http://www.opengis.net/cite/geometry"
+	           prefix="cgf"/>
+  </namespaces>
+
+  <styles>
+      <style id="dotty" filename="funkypolyshp.sld"/>
+      <style id="green" filename="green.sld"/>
+      <style id="maleVsFemale" filename="usa_ratio.sld"/>
+      <style id="normal" filename="normal.sld" default="true"/>
+  </styles>
+
+</catalog>
