@@ -20,6 +20,7 @@ import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.featureInfo.GetFeatureInfoDelegate;
+import org.vfny.geoserver.responses.wms.featureInfo.HTMLTableFeatureInfoResponse;
 import org.vfny.geoserver.responses.wms.featureInfo.TextFeatureInfoResponse;
 import org.vfny.geoserver.responses.wms.map.GetMapDelegate;
 import org.vfny.geoserver.responses.wms.map.JAIMapResponse;
@@ -32,7 +33,7 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetFeatureInfoResponse.java,v 1.2 2004/07/16 17:38:06 jmacgill Exp $
+ * @version $Id: GetFeatureInfoResponse.java,v 1.3 2004/07/21 18:43:30 jmacgill Exp $
  */
 public class GetFeatureInfoResponse implements Response {
 
@@ -49,6 +50,11 @@ public class GetFeatureInfoResponse implements Response {
         producer = new TextFeatureInfoResponse();
         supportedMimeTypes.addAll(producer.getSupportedFormats());
         delegates.add(producer);
+        
+         producer = new HTMLTableFeatureInfoResponse();
+        supportedMimeTypes.addAll(producer.getSupportedFormats());
+        delegates.add(producer);
+
 
     }
 
