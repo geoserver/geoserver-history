@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.5 2004/01/02 23:01:24 cholmesny Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.6 2004/01/05 23:12:06 cholmesny Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -48,6 +48,7 @@ public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
     private Map styles;
     private CatalogConfig catalog;
+    private List mandatoryAtts;
 
     /**
      * defaultStyle is not currently written to, and there are not any
@@ -148,6 +149,8 @@ public class FeatureTypeConfig extends BasicConfig {
                     + getName() + ": " + ex.getMessage(), ex);
             }
 
+            this.mandatoryAtts = getMandatoryAtts(getChildElement(fTypeRoot,
+                        "attributes"));
             loadStyles(getChildElement(fTypeRoot, "styles"), catalog);
             loadLatLongBBox(getChildElement(fTypeRoot, "latLonBoundingBox"));
         } else {
@@ -339,7 +342,7 @@ public class FeatureTypeConfig extends BasicConfig {
 
         FeatureSource realSource = getRealFeatureSource();
         FeatureSource mappedSource = new DEFQueryFeatureLocking(realSource,
-                getSchema(), this.definitionQuery);
+                getSchema(), this.definitionQuery, this.mandatoryAtts);
 
         return mappedSource;
     }
@@ -512,6 +515,56 @@ public class FeatureTypeConfig extends BasicConfig {
         }
 
         return filteredSchema;
+    }
+
+    /**
+     * This method extracts the mandatory attributes that should always be
+     * returned.  This is a hack, it should at least be part of the geotools
+     * featureType, and extracted in the getSchema method.  Ideally it should
+     * be read from the datasource or customized with specific gml schema.
+     *
+     * @param attsElem The attributes element, with attribute child elements.
+     *
+     * @return A list of the mandatory attributes, an empty list if none of the
+     *         attributes are mandatory if attsElem has no child attribute
+     *         elements.
+     *
+     * @throws ConfigurationException DOCUMENT ME!
+     */
+    private List getMandatoryAtts(Element attsElem)
+        throws ConfigurationException {
+        List mandAtts = new ArrayList();
+
+        NodeList exposedAttributes = null;
+
+        if (attsElem != null) {
+            exposedAttributes = attsElem.getElementsByTagName("attribute");
+        }
+
+        if ((exposedAttributes == null) || (exposedAttributes.getLength() == 0)) {
+            return mandAtts;
+        }
+
+        int attCount = exposedAttributes.getLength();
+        Element attElem;
+        String attName;
+
+        for (int i = 0; i < attCount; i++) {
+            attElem = (Element) exposedAttributes.item(i);
+            attName = getAttribute(attElem, "name", true);
+            LOGGER.finer("attribute name is " + attName + ", from " + attElem);
+
+            String mandatory = notNull(getAttribute(attElem, "mandatory", false));
+
+            if (mandatory.equalsIgnoreCase("true")) {
+                mandAtts.add(attName);
+            }
+        }
+
+        LOGGER.fine("returning mandatory atts " + mandAtts + ", from "
+            + attsElem);
+
+        return mandAtts;
     }
 
     /**
