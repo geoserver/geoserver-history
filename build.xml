@@ -30,10 +30,8 @@
 
   <!-- secondary directories -->
   <property name="dir.data" value="${dir.conf}"/>
-  <property name="dir.testsJar" 
-  value="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
-  <property name="dir.testApp" value="${dir.server}/webapps/ROOT/WEB-INF"/>
-  <property name="dir.catalina" value="${dir.lib}/catalina"/>
+  <property name="dir.testApp" value="${dir.server}/geoserver"/>
+  <property name="dir.jetty" value="${dir.lib}/jetty"/>
 
   <!-- external directories -->
   <!-- pc example -->
@@ -50,13 +48,11 @@
  <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
   <property name="jar.geoserver" value="${dir.lib}/geoserver.jar"/>
-  <property name="jar.log" value="${dir.lib}/log4j-1.2.5.jar"/>
   <property name="jar.servlet" value="${dir.lib}/servlet.jar"/>
   <property name="jar.xercesImpl" value="${dir.lib}/xercesImpl.jar"/>
   <property name="jar.xml" value="${dir.lib}/xml-apis.jar"/>
   <property name="jar.jdbcPostgres" value="${dir.lib}/jdbcPostgres.jar"/>
-  <property name="jar.castor" value="${dir.lib}/castor.jar"/>
-  <property name="jar.jts" value="${dir.lib}/jts-1.0.0.jar"/>
+  <property name="jar.jts" value="${dir.lib}/jts-1.4.0.jar"/>
   <property name="jar.lucene" value="${dir.lib}/lucene.jar"/>
   <property name="jar.xalan" value="${dir.lib}/xalan.jar"/>
   <property name="jar.a2j" value="${dir.lib}/a2jruntime.jar"/>
@@ -68,6 +64,8 @@
  <property name="jetty.run"  value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml"/>
 
   <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}" />
+
+  <available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
 
   <!-- If you don't have your own conf directory uncomment on of the following -->
   <!--<property name="test.type" value="UserBasic"/>-->
@@ -89,37 +87,8 @@
     <pathelement location="${jar.xercesImpl}" />
     <pathelement location="${jar.xml}" />
    </path>
-  <!--path id="path.catalina">
-    <fileset dir="${dir.catalina}" includes="embedded.jar"/>
-    <fileset dir="${dir.catalina}/bin" includes="bootstrap.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="catalina.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="servlets-cgi.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="servlets-common.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="servlets-default.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="servlets-invoker.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="servlets-manager.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="servlets-snoop.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="servlets-ssi.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="servlets.webdav.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" 
-             includes="jakarta-regexp-1.2.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="tomcat-ajp.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="tomcat-util.jar"/>
-    <fileset dir="${dir.catalina}/lib" includes="naming-factory.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="crimson.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="jasper-compiler.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="jasper-runtime.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="jaxp.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="jndi.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="naming-common.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="naming-resources.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="servlet.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="tools.jar"/>
-    <fileset dir="${dir.catalina}/common/lib" includes="log4j.jar"/>
-  </path-->
   <path id="path.build">
     <path refid="path.lib"/>
-    <!--path refid="path.catalina"/-->
     <fileset dir="${dir.build}">
       <include name="**"/>
     </fileset>
@@ -405,10 +374,19 @@
   </target>
   
   <target name="user_conf" depends="init" unless="test.type">
+    <antcall target="build-conf-dir"/>
     <antcall target="build-war">
       <param name="conf.path" value="${basedir}/conf"/>
     </antcall>
   </target>
+
+  <target name="build-conf-dir" depends="init" 
+          unless="conf.folder.present">
+    <mkdir dir="${basedir}/conf"/>
+    <copy todir="${basedir}/conf">
+	  <fileset dir="${basedir}/cite/confUserBasic"/>
+    </copy>
+   </target>
 
 <!-- ====================================================================== -->
 <!-- BUILD TARGETS                                                          -->
@@ -565,7 +543,7 @@
       <classpath>
         <fileset dir="${dir.lib}">
           <include name="*.jar"/>
-          <exclude name="*/catalina/*"/>
+          <exclude name="*/jetty/*"/>
         </fileset>
       </classpath>      
       <doctitle>
