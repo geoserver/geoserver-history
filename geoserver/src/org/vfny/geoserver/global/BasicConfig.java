@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: BasicConfig.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: BasicConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public class BasicConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -48,7 +48,7 @@ public class BasicConfig extends AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public BasicConfig(Element serviceRoot) throws ConfigurationException {
+   /* public BasicConfig(Element serviceRoot) throws ConfigurationException {
         this.name = getChildText(serviceRoot, "name", true);
         this.title = getChildText(serviceRoot, "title", true);
         this._abstract = getChildText(serviceRoot, "abstract");
@@ -56,7 +56,7 @@ public class BasicConfig extends AbstractConfig {
         this.fees = getChildText(serviceRoot, "fees");
         this.accessConstraints = getChildText(serviceRoot, "accessConstraints");
         this.maintainer = getChildText(serviceRoot, "maintainer");
-    }
+    }*/
 	public BasicConfig(org.vfny.geoserver.config.ServiceConfig config){
 		this.name = config.getName();
 		this.title = config.getTitle();
@@ -89,7 +89,7 @@ public class BasicConfig extends AbstractConfig {
      * </ul>
      * @param config
      */
-    public BasicConfig( Map config ){
+   /* public BasicConfig( Map config ){
         name = get( config, "name", "name" );
         title = get( config, "title", "title" );
         _abstract = get( config, "abstract" );
@@ -97,7 +97,7 @@ public class BasicConfig extends AbstractConfig {
         fees = get( config, "fees" );
         accessConstraints = get( config, "accessConstraints", "NONE" );
         maintainer = get( config, "maintainer", System.getProperty("user.name"));                
-    }
+    }*/
     /**
      * DOCUMENT ME!
      *
@@ -105,7 +105,7 @@ public class BasicConfig extends AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    private List getKeyWords(Element keywordsElem) {
+    /*private List getKeyWords(Element keywordsElem) {
         NodeList klist = keywordsElem.getElementsByTagName("keyword");
 
         int kCount = klist.getLength();
@@ -127,7 +127,7 @@ public class BasicConfig extends AbstractConfig {
         }
 
         return keywords;
-    }
+    }*/
 
     /**
      * DOCUMENT ME!

@@ -16,7 +16,7 @@ import org.vfny.geoserver.config.wms.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public class WMSConfig extends ServiceConfig {
     /** WMSConfig version spec implemented */
@@ -39,14 +39,14 @@ public class WMSConfig extends ServiceConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public WMSConfig(Element wmsRoot) throws ConfigurationException {
+    /*public WMSConfig(Element wmsRoot) throws ConfigurationException {
         super(wmsRoot);
         URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
     }
     public WMSConfig( Map config ){
         super( config );
         URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
-    }
+    }*/
     public WMSConfig(org.vfny.geoserver.config.wms.WMSConfig config){
     	super(config.getService());
     	updateTime = config.getUpdateTime();

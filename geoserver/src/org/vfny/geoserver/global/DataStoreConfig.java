@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public class DataStoreConfig extends AbstractConfig {
     
@@ -57,7 +57,7 @@ public class DataStoreConfig extends AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public DataStoreConfig(Element dsElem, CatalogConfig catalog)
+   /* public DataStoreConfig(Element dsElem, CatalogConfig catalog)
         throws ConfigurationException {
         LOGGER.finer("creating a new DataStoreConfig configuration");
         this.id = getAttribute(dsElem, "id", true);
@@ -78,7 +78,7 @@ public class DataStoreConfig extends AbstractConfig {
         this._abstract = getChildText(dsElem, "abstract", false);
         loadConnectionParams(getChildElement(dsElem, "connectionParams", true));
         LOGGER.info("created " + toString());
-    }
+    }*/
     public DataStoreConfig(org.vfny.geoserver.config.data.DataStoreConfig config){
     	_abstract = config.getAbstract();
     	connectionParams = config.getConnectionParams();
@@ -101,7 +101,7 @@ public class DataStoreConfig extends AbstractConfig {
      * @param store
      * @param config2
      */
-    public DataStoreConfig(Map config, DataStore store, NameSpace namespace ) {
+  /*  public DataStoreConfig(Map config, DataStore store, NameSpace namespace ) {
         LOGGER.finer("creating a new DataStoreConfig configuration");
         String name = namespace.getPrefix();
         id = get( config, name+".id", name );
@@ -110,7 +110,7 @@ public class DataStoreConfig extends AbstractConfig {
         title = get( config, name+".title" );
         _abstract = get( config, name+".abstract" );
         dataStore = store;
-    }
+    }*/
     /**
      * DOCUMENT ME!
      *
@@ -127,7 +127,7 @@ public class DataStoreConfig extends AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private void loadConnectionParams(Element connElem)
+   /* private void loadConnectionParams(Element connElem)
         throws ConfigurationException {
         LOGGER.fine("loading connection parameters for DataStoreConfig "
             + nameSpace.getPrefix());
@@ -147,7 +147,7 @@ public class DataStoreConfig extends AbstractConfig {
             LOGGER.finer("added parameter " + paramKey + ": '" + paramValue
                 + "'");
         }
-    }
+    }*/
 
     /**
      * By now just uses DataStoreFinder to find a new instance of a DataStoreConfig

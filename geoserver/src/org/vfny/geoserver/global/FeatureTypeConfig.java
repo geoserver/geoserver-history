@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -94,7 +94,7 @@ public class FeatureTypeConfig extends BasicConfig {
      * @param type
      * @param dataStoreConfig
      */
-    public FeatureTypeConfig(Map config, FeatureType type,
+  /*  public FeatureTypeConfig(Map config, FeatureType type,
         DataStoreConfig dataStoreConfig) {
         super(config);
 
@@ -123,7 +123,7 @@ public class FeatureTypeConfig extends BasicConfig {
                 latLongBBox = new Envelope();
             }
         }
-    }
+    }*/
 
     /**
      * Creates a new FeatureTypeConfig object.
@@ -133,7 +133,7 @@ public class FeatureTypeConfig extends BasicConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public FeatureTypeConfig(CatalogConfig catalog, Element fTypeRoot)
+   /* public FeatureTypeConfig(CatalogConfig catalog, Element fTypeRoot)
         throws ConfigurationException {
         super(fTypeRoot);
 
@@ -173,7 +173,7 @@ public class FeatureTypeConfig extends BasicConfig {
         }
 
         loadDefinitionQuery(fTypeRoot);
-    }
+    }*/
     
     public FeatureTypeConfig(org.vfny.geoserver.config.data.FeatureTypeConfig config)throws ConfigurationException{
     	super(config);
@@ -201,7 +201,7 @@ public class FeatureTypeConfig extends BasicConfig {
 		styles = catalog.getStyles();
     }
 
-    private void loadDefinitionQuery(Element typeRoot)
+   /* private void loadDefinitionQuery(Element typeRoot)
         throws ConfigurationException {
         Element defQNode = getChildElement(typeRoot, "definitionQuery", false);
         Filter filter = null;
@@ -220,7 +220,7 @@ public class FeatureTypeConfig extends BasicConfig {
 
             LOGGER.fine("No Filter definition query found");
         }
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -550,6 +550,30 @@ public class FeatureTypeConfig extends BasicConfig {
         return filteredSchema;
     }
     
+	protected String getAttribute(Element elem, String attName,
+		boolean mandatory) throws ConfigurationException {
+		Attr att = elem.getAttributeNode(attName);
+
+		String value = null;
+
+		if (att != null) {
+			value = att.getValue();
+		}
+
+		if (mandatory) {
+			if (att == null) {
+				throw new ConfigurationException("element "
+					+ elem.getNodeName()
+					+ " does not contains an attribute named " + attName);
+			} else if ("".equals(value)) {
+				throw new ConfigurationException("attribute " + attName
+					+ "in element " + elem.getNodeName() + " is empty");
+			}
+		}
+
+		return value;
+	}
+    
     private FeatureType getSchema(String schema) throws ConfigurationException{
     	try{
     		return getSchema(loadConfig(new StringReader(schema)));
@@ -625,7 +649,7 @@ public class FeatureTypeConfig extends BasicConfig {
         return bbox;
     }
 
-    private void loadLatLongBBox(Element bboxElem)
+   /* private void loadLatLongBBox(Element bboxElem)
         throws ConfigurationException {
         boolean dynamic = getBooleanAttribute(bboxElem, "dynamic", false);
 
@@ -636,7 +660,7 @@ public class FeatureTypeConfig extends BasicConfig {
             double maxy = getDoubleAttribute(bboxElem, "minx", true);
             this.latLongBBox = new Envelope(minx, miny, maxx, maxy);
         }
-    }
+    }*/
 
     /**
      * DOCUMENT ME!

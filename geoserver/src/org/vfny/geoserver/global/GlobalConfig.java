@@ -18,7 +18,7 @@ import org.vfny.geoserver.config.*;
  * GlobalConfig server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -99,7 +99,7 @@ public class GlobalConfig extends AbstractConfig {
      *
      * @param config DOCUMENT ME!
      */
-    public GlobalConfig(Map config) {
+   /* public GlobalConfig(Map config) {
         maxFeatures = get(config, "global", 20000);
         loggingLevel = get(config, "global.level",
                 Logger.getLogger("org.vfny.geoserver.config").getLevel());
@@ -124,7 +124,7 @@ public class GlobalConfig extends AbstractConfig {
         contactConfig = new ContactConfig(config);
 
         globalConfig = this;
-    }
+    }*/
 
     /**
      * Creates a new GlobalConfig object.
@@ -133,7 +133,7 @@ public class GlobalConfig extends AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public GlobalConfig(Element globalConfigElem) throws ConfigurationException {
+    /*public GlobalConfig(Element globalConfigElem) throws ConfigurationException {
         LOGGER.fine("parsing global configuration parameters");
 
         Element elem = null;
@@ -204,7 +204,7 @@ public class GlobalConfig extends AbstractConfig {
         }
 
         globalConfig = this;
-    }
+    }*/
     
     public GlobalConfig(org.vfny.geoserver.config.GlobalConfig config){
     	baseUrl = config.getBaseUrl();
@@ -250,7 +250,7 @@ public class GlobalConfig extends AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    private Level getLoggingLevel(Element globalConfigElem) {
+   /* private Level getLoggingLevel(Element globalConfigElem) {
         Level level = this.loggingLevel;
         Element levelElem = getChildElement(globalConfigElem, "loggingLevel");
 
@@ -268,7 +268,7 @@ public class GlobalConfig extends AbstractConfig {
         }
 
         return level;
-    }
+    }*/
 
     /**
      * DOCUMENT ME!

@@ -22,7 +22,7 @@ import org.w3c.dom.NodeList;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: AbstractConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: AbstractConfig.java,v 1.1.2.2 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public abstract class AbstractConfig {
     /** DOCUMENT ME! */
@@ -40,7 +40,7 @@ public abstract class AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    protected String getAttribute(Element elem, String attName,
+   /* protected String getAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
         Attr att = elem.getAttributeNode(attName);
 
@@ -62,7 +62,7 @@ public abstract class AbstractConfig {
         }
 
         return value;
-    }
+    }*/
 
     /**
      * checks <code>s</code> for nullity and if so, returns an empty String,
@@ -87,12 +87,12 @@ public abstract class AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    protected boolean getBooleanAttribute(Element elem, String attName,
+    /*protected boolean getBooleanAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
         String value = getAttribute(elem, attName, mandatory);
 
         return Boolean.valueOf(value).booleanValue();
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -110,7 +110,7 @@ public abstract class AbstractConfig {
      *         <code>elem</code>, or if the attribute exists but cannot be
      *         parsed as a <code>double</code>
      */
-    protected double getDoubleAttribute(Element elem, String attName,
+    /*protected double getDoubleAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
         String value = getAttribute(elem, attName, mandatory);
 
@@ -127,7 +127,7 @@ public abstract class AbstractConfig {
         }
 
         return d;
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -141,7 +141,7 @@ public abstract class AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    protected int getIntAttribute(Element elem, String attName,
+    /*protected int getIntAttribute(Element elem, String attName,
         boolean mandatory, int defaultValue) throws ConfigurationException {
         String attValue = getAttribute(elem, attName, mandatory);
 
@@ -160,7 +160,7 @@ public abstract class AbstractConfig {
                 return defaultValue;
             }
         }
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -170,15 +170,15 @@ public abstract class AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    protected Element getChildElement(Element root, String name) {
+    /*protected Element getChildElement(Element root, String name) {
         try {
             return getChildElement(root, name, false);
         } catch (ConfigurationException ex) {
             return null;
         }
-    }
+    }*/
 
-    public Element getFirstChildElement(Element root)
+    /*public Element getFirstChildElement(Element root)
     {
       Node child = root.getFirstChild();
 
@@ -190,7 +190,7 @@ public abstract class AbstractConfig {
           child = child.getNextSibling();
       }
       return null;
-    }
+    }*/
 
     /**
      * returns the first Element that is a direct child of <code>root</code>
@@ -204,7 +204,7 @@ public abstract class AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    protected Element getChildElement(Element root, String name,
+    /*protected Element getChildElement(Element root, String name,
         boolean mandatory) throws ConfigurationException {
         Node child = root.getFirstChild();
 
@@ -224,7 +224,7 @@ public abstract class AbstractConfig {
         }
 
         return null;
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -234,13 +234,13 @@ public abstract class AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    protected String getChildText(Element root, String childName) {
+    /*protected String getChildText(Element root, String childName) {
         try {
             return getChildText(root, childName, false);
         } catch (ConfigurationException ex) {
             return null;
         }
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -253,7 +253,7 @@ public abstract class AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    protected String getChildText(Element root, String childName,
+    /*protected String getChildText(Element root, String childName,
         boolean mandatory) throws ConfigurationException {
         Element elem = getChildElement(root, childName, mandatory);
 
@@ -269,7 +269,7 @@ public abstract class AbstractConfig {
 
             return null;
         }
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -278,13 +278,13 @@ public abstract class AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    protected String getElementText(Element elem) {
+    /*protected String getElementText(Element elem) {
         try {
             return getElementText(elem, false);
         } catch (ConfigurationException ex) {
             return null;
         }
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -296,7 +296,7 @@ public abstract class AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    protected String getElementText(Element elem, boolean mandatory)
+    /*protected String getElementText(Element elem, boolean mandatory)
         throws ConfigurationException {
         String value = null;
 
@@ -333,7 +333,7 @@ public abstract class AbstractConfig {
         }
 
         return value;
-    }
+    }*/
     public static String get( Map map, String key ){
         if( map.containsKey( key )){
             return (String) map.get( key );

@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
  * &lt;/ContactInformation&gt;<br></code>
  *
  * @author Gabriel Roldán
- * @version $Id: ContactConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: ContactConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
  *
  * @task REVISIT: may be it will be necessary to create a real contact
  *       hierarchy if we plan to add CatalogConfig service.
@@ -54,7 +54,7 @@ public class ContactConfig extends AbstractConfig {
      *
      * @param contactInfoElement DOCUMENT ME!
      */
-    public ContactConfig(Element contactInfoElement) {
+   /* public ContactConfig(Element contactInfoElement) {
         if (contactInfoElement == null) {
             return;
         }
@@ -87,7 +87,7 @@ public class ContactConfig extends AbstractConfig {
                 "ContactFacsimileTelephone");
         this.contactEmail = getChildText(contactInfoElement,
                 "ContactElectronicMailAddress");
-    }
+    }*/
 	public ContactConfig(org.vfny.geoserver.config.ContactConfig config){
 		this.contactPerson = config.getContactPerson(); 
 		this.contactOrganization = config.getContactOrganization();
@@ -123,7 +123,7 @@ public class ContactConfig extends AbstractConfig {
      * 
      * @param map
      */
-    public ContactConfig( Map map ){
+ /*   public ContactConfig( Map map ){
         String username = System.getProperty("user.name");
         
         contactPerson = get( map, "contact.person", username );
@@ -138,7 +138,7 @@ public class ContactConfig extends AbstractConfig {
         contactVoice = get( map, "contact.voice" );
         contactFacsimile = get( map, "contact.facsimile" );
         contactEmail = get( map, "contact.email" );        
-    }
+    }*/
     /**
      * DOCUMENT ME!
      *

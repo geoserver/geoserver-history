@@ -35,7 +35,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public class CatalogConfig extends AbstractConfig
 /**
@@ -94,7 +94,7 @@ public class CatalogConfig extends AbstractConfig
      * @param config DOCUMENT ME!
      * @param catalog
      */
-    public CatalogConfig(Map config, Catalog catalog) {
+  /*  public CatalogConfig(Map config, Catalog catalog) {
         LOGGER.info("loading catalog configuration");
 
         String[] spaceNames = catalog.getNameSpaces();
@@ -182,7 +182,7 @@ public class CatalogConfig extends AbstractConfig
                 // datastore not available                
             }
         }
-    }
+    }*/
 
     /**
      * Creates a new CatalogConfig object.
@@ -192,7 +192,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public CatalogConfig(Element root, String dataDir)
+    /*public CatalogConfig(Element root, String dataDir)
         throws ConfigurationException {
         LOGGER.info("loading catalog configuration");
         loadNameSpaces(getChildElement(root, "namespaces", true));
@@ -203,7 +203,7 @@ public class CatalogConfig extends AbstractConfig
         File startDir = new File(featureTypeDir);
         this.featureTypes = new HashMap();
         loadFeatureTypes(startDir);
-    }
+    }*/
     public CatalogConfig(org.vfny.geoserver.config.data.CatalogConfig config) throws ConfigurationException {
     	//dataStores = config.getDataStores();
     	Iterator i = config.getDataStores().keySet().iterator();
@@ -403,7 +403,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private void loadNameSpaces(Element nsRoot) throws ConfigurationException {
+   /* private void loadNameSpaces(Element nsRoot) throws ConfigurationException {
         NodeList nsList = nsRoot.getElementsByTagName("namespace");
         Element elem;
         String uri;
@@ -427,7 +427,7 @@ public class CatalogConfig extends AbstractConfig
                 defaultNameSpace = ns;
             }
         }
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -436,7 +436,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private void loadDataStores(Element dsRoot) throws ConfigurationException {
+   /* private void loadDataStores(Element dsRoot) throws ConfigurationException {
         dataStores = new HashMap();
 
         NodeList dsElements = dsRoot.getElementsByTagName("datastore");
@@ -455,7 +455,7 @@ public class CatalogConfig extends AbstractConfig
 
             dataStores.put(dsConfig.getId(), dsConfig);
         }
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -471,7 +471,7 @@ public class CatalogConfig extends AbstractConfig
      *       like datastores, that we we used to do dynamically, is to give
      *       users the option of when they want to load them...
      */
-    private void loadStyles(Element stylesElem, String styleDir)
+    /*private void loadStyles(Element stylesElem, String styleDir)
         throws ConfigurationException {
         styles = new HashMap();
 
@@ -511,7 +511,7 @@ public class CatalogConfig extends AbstractConfig
 
             //styles.put(stId, stFile);
         }
-    }
+    }*/
 
     //TODO: detect if a user put a full url, instead of just one to be resolved, and
     //use that instead.
@@ -555,7 +555,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private void loadFeatureTypes(File currentFile)
+   /* private void loadFeatureTypes(File currentFile)
         throws ConfigurationException {
         LOGGER.finest("examining: " + currentFile.getAbsolutePath());
         LOGGER.finest("is dir: " + currentFile.isDirectory());
@@ -588,7 +588,7 @@ public class CatalogConfig extends AbstractConfig
                     + " due to " + cfge);
             }
         }
-    }
+    }*/
 
     /*  private void loadType(String filePath) throws ConfigurationException {
        try {

@@ -60,7 +60,7 @@ import org.vfny.geoserver.config.*;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: ValidationConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
@@ -96,7 +96,7 @@ public class ValidationConfig extends AbstractConfig {
      * @param config DOCUMENT ME!
      * @param catalog
      */
-    public ValidationConfig(Map config ) throws ConfigurationException {
+  /*  public ValidationConfig(Map config ) throws ConfigurationException {
         LOGGER.info("loading validation configuration");
 
         List tests = get( config, "validation", Collections.EMPTY_LIST );
@@ -134,7 +134,7 @@ public class ValidationConfig extends AbstractConfig {
                 processor.addValidation( (IntegrityValidation) validation );
             }                                     
         }                
-    }
+    }*/
     /**
      * ValidationConfig constructor.
      * <p>
@@ -142,7 +142,7 @@ public class ValidationConfig extends AbstractConfig {
      * </p>
      * @param dir Validation Directory
      */
-    public ValidationConfig(File dir) {
+   /* public ValidationConfig(File dir) {
         if( dir.exists() ){
             LOGGER.info("Default isValidALL and uniqueFID enabled");
             // XML not supported yet - lets use a couple Validations
@@ -162,7 +162,7 @@ public class ValidationConfig extends AbstractConfig {
                 )
             );
         }        
-    }
+    }*/
     
     public ValidationConfig(ModelConfig config){
     	// do nothing yet.

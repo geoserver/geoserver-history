@@ -16,7 +16,7 @@ import org.vfny.geoserver.config.wfs.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -33,7 +33,7 @@ public class WFSConfig extends ServiceConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public WFSConfig(Element root) throws ConfigurationException {
+    /*public WFSConfig(Element root) throws ConfigurationException {
         super(root);
         URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
     }
@@ -41,7 +41,7 @@ public class WFSConfig extends ServiceConfig {
     public WFSConfig(Map config ) {
         super( config );
         URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
-    }
+    }*/
     
     public WFSConfig(org.vfny.geoserver.config.wfs.WFSConfig config){
     	super(config.getService());

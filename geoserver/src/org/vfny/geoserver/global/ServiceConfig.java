@@ -14,7 +14,7 @@ import org.vfny.geoserver.config.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -29,13 +29,13 @@ public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */
     protected String URL;
 
-    public ServiceConfig(Element serviceRoot) throws ConfigurationException {
+  /*  public ServiceConfig(Element serviceRoot) throws ConfigurationException {
         super(serviceRoot);
         this.serviceType = getAttribute(serviceRoot, "type", true);
         this.enabled = getBooleanAttribute(serviceRoot, "enabled", true);
         this.onlineResource = getChildText(serviceRoot, "onlineResource", true);
 
-    }
+    }*/
     /** Quick config for JUnit tests.
      * <ul>
      * <li>service.enabled: boolean (default true)</li>
@@ -43,12 +43,12 @@ public abstract class ServiceConfig extends BasicConfig {
      * <li>service.onlineResources (default localhost)</li>
      * </ul>
      */
-    public ServiceConfig(Map config ){
+   /* public ServiceConfig(Map config ){
         super( config );
         enabled = get( config, "service.enabled", true );
         serviceType = get( config, "service.type", "Test");
         onlineResource = get( config, "service.onlineResources", "localhost" );                        
-    }
+    }*/
     
     public ServiceConfig(org.vfny.geoserver.config.ServiceConfig config){
     	super(config);

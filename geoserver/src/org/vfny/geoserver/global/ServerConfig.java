@@ -24,13 +24,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import org.vfny.geoserver.config.*;
+import org.vfny.geoserver.config.xml.*;
 
 
 /**
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -77,7 +78,7 @@ public class ServerConfig extends AbstractConfig {
      * @throws ConfigurationException For any configuration problems.
      */
     private ServerConfig(String rootDir) throws ConfigurationException {
-        this.rootDir = rootDir;
+        /*this.rootDir = rootDir;
 
         String configDir = rootDir + CONFIG_DIR;
         String configFile = configDir + "services.xml";
@@ -99,6 +100,23 @@ public class ServerConfig extends AbstractConfig {
         load(configElem, catalogElem, dataDir);
 
         validationConfig = new ValidationConfig(new File(dataDir, "validation"));
+        */
+        File f = new File(rootDir);
+		XMLConfigReader cr = null;
+        try{
+        	cr = new XMLConfigReader(f);
+        }catch(ConfigException e){
+        	throw new ConfigurationException(e.toString());
+        }
+		this.rootDir = rootDir;	//check for removal
+		ModelConfig config = cr.getModel();
+
+		globalConfig = new GlobalConfig(config.getGlobal());
+
+		featureServerConfig = new WFSConfig(config.getWfs());
+		mapServerConfig = new WMSConfig(config.getWms());
+		catalog = new CatalogConfig(config.getCatalog());
+		validationConfig = new ValidationConfig(config);
     }
 
     /**
@@ -123,7 +141,7 @@ public class ServerConfig extends AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private ServerConfig(Map config, Catalog gt2catalog)
+    /*private ServerConfig(Map config, Catalog gt2catalog)
         throws ConfigurationException {
         this.rootDir = get(config, "dir", new File(".")).toString();
 
@@ -133,8 +151,7 @@ public class ServerConfig extends AbstractConfig {
         mapServerConfig = new WMSConfig(config);
         catalog = new CatalogConfig(config, gt2catalog);
         validationConfig = new ValidationConfig(config);
-    }
-    
+    }*/
 	public ServerConfig(ModelConfig config)
 		throws ConfigurationException {
 			
@@ -301,10 +318,10 @@ public class ServerConfig extends AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public static void load(Map config, Catalog catalog)
+    /*public static void load(Map config, Catalog catalog)
         throws ConfigurationException {
         serverConfig = new ServerConfig(config, catalog);
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -315,7 +332,7 @@ public class ServerConfig extends AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private void load(Element configElem, Element catalogElement,
+  /*  private void load(Element configElem, Element catalogElement,
         String featureTypeDir) throws ConfigurationException {
         LOGGER.fine("parsing configuration documents");
 
@@ -343,7 +360,7 @@ public class ServerConfig extends AbstractConfig {
         }
 
         catalog = new CatalogConfig(catalogElement, dataDir);
-    }
+    }*/
 
     /**
      * saves the server configuration to <code>dest</code> as an XML stream
