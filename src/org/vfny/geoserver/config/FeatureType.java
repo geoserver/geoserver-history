@@ -28,7 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.8 $ $Date: 2003/09/19 17:36:00 $
+ * @version $Revision: 1.9 $ $Date: 2003/10/03 17:49:31 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
  *       castor generated FeatureType, but it is now unclear if we _really_
@@ -46,6 +46,10 @@ class FeatureType {
     public static final String MINY_ATT = "miny";
     public static final String MAXX_ATT = "maxx";
     public static final String MAXY_ATT = "maxy";
+    public static final String STYLE_TAG = "Style";
+    public static final String STYLE_ID_ATTR = "id";
+    public static final String STYLE_FILE_ATTR = "filename";
+    public static final String STYLE_DEFAULT_ATTR = "default";
 
     //we're using ServiceConfig's final String tags for abstract, title,
     //keywords and name, under the assumption that in future versions the 
@@ -70,6 +74,8 @@ class FeatureType {
 
     /** indicates which spatial reference system should be used */
     private String srs;
+    private Map styles = new HashMap();
+    private String defaultStyle;
 
     /**
      * Indicates the edges of the enclosing rectangle in latitude/longitude
@@ -174,6 +180,35 @@ class FeatureType {
             featureType.setDataParams(getDataParams(featureElem, featureTypeFile));
             featureType.setMandatoryAtts(findTextFromTag(featureElem,
                     MANDATORY_TAG));
+
+            NodeList styleNodes = featureElem.getElementsByTagName(STYLE_TAG);
+
+            for (int j = 0; j < styleNodes.getLength(); j++) {
+                Node curNode = styleNodes.item(j);
+
+                if (curNode instanceof org.w3c.dom.Element) {
+                    Element style = (Element) curNode;
+                    String id = style.getAttribute(STYLE_ID_ATTR);
+                    String file = style.getAttribute(STYLE_FILE_ATTR);
+
+                    if ((id.equals("")) || (file.equals(""))) {
+                        String mesg = "Problem adding style, found id: " + id
+                            + ", and file: " + file
+                            + ".  Both are required.  In " + "file "
+                            + featureTypeFile;
+                        LOGGER.warning(mesg);
+                    } else {
+                        featureType.addStyle(id, file);
+
+                        String defaultA = style.getAttribute(STYLE_DEFAULT_ATTR);
+
+                        if (defaultA.equals("true")) {
+                            featureType.setDefaultStyle(id);
+                        }
+                    }
+                }
+            }
+
             fis.close();
         } catch (IOException ioe) {
             String message = "problem reading file " + featureTypeFile
@@ -218,7 +253,6 @@ class FeatureType {
     private static Map getDataParams(Element root, String featureTypeFile) {
         Map params = new HashMap();
 
-        //try to get text in Keywords element.
         Element paramElem = (Element) root.getElementsByTagName(PARAMS_TAG)
                                           .item(0);
 
@@ -334,7 +368,7 @@ class FeatureType {
         return this.dsParams;
     }
 
-    public void setDataParams(Map dsParams) {
+    void setDataParams(Map dsParams) {
         this.dsParams = dsParams;
     }
 
@@ -343,7 +377,7 @@ class FeatureType {
      *
      * @param ftAbstract
      */
-    public void setAbstract(String ftAbstract) {
+    void setAbstract(String ftAbstract) {
         this.ftAbstract = ftAbstract;
     }
 
@@ -352,7 +386,7 @@ class FeatureType {
      *
      * @param keywords
      */
-    public void setKeywords(List keywords) {
+    void setKeywords(List keywords) {
         this.keywords = keywords;
     }
 
@@ -361,7 +395,7 @@ class FeatureType {
      *
      * @param latLongBBox
      */
-    public void setLatLonBoundingBox(LatLonBoundingBox latLongBBox) {
+    void setLatLonBoundingBox(LatLonBoundingBox latLongBBox) {
         this.latLongBBox = latLongBBox;
     }
 
@@ -370,7 +404,7 @@ class FeatureType {
      *
      * @param name
      */
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -379,7 +413,7 @@ class FeatureType {
      *
      * @param srs
      */
-    public void setSRS(String srs) {
+    void setSRS(String srs) {
         this.srs = srs;
     }
 
@@ -388,8 +422,30 @@ class FeatureType {
      *
      * @param title The title for the capabilities document.
      */
-    public void setTitle(String title) {
+    void setTitle(String title) {
         this.title = title;
+    }
+
+    void addStyle(String id, String fileName) {
+        styles.put(id, fileName);
+    }
+
+    void setDefaultStyle(String name) throws ConfigurationException {
+        if (!styles.containsKey(name)) {
+            String mesg = "could not find style: " + name + " in style list: "
+                + styles + "\n  Make sure the default style is added first";
+            throw new ConfigurationException(mesg);
+        }
+
+        this.defaultStyle = name;
+    }
+
+    public Map getStyles() {
+        return this.styles;
+    }
+
+    public String getDefaultStyle() {
+        return this.defaultStyle;
     }
 
     /**
@@ -434,6 +490,8 @@ class FeatureType {
         returnString.append("\n   [srs: " + srs + "] ");
         returnString.append("\n   [params: " + dsParams + "] ");
         returnString.append("\n   [" + latLongBBox + "] ");
+        returnString.append("\n   [defaultStyle" + defaultStyle + "] ");
+        returnString.append("\n   [styles" + styles + "] ");
 
         //returnString.append("\n   [access constraints: " + accessConstraints + "] ");
         return returnString.toString();
