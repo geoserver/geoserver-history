@@ -6,13 +6,14 @@ package org.vfny.geoserver.global;
 
 import java.util.*;
 import java.text.*;
-import org.vfny.geoserver.global.dto.wms.*;
+
+import org.vfny.geoserver.global.dto.*;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.1.2.2 2004/01/05 23:26:26 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */

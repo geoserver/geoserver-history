@@ -2,10 +2,8 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.global.dto.data;
+package org.vfny.geoserver.global.dto;
 
-import org.vfny.geoserver.global.dto.CloneLibrary;
-import org.vfny.geoserver.global.dto.DataStructure;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +23,7 @@ import java.util.Map;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
  */
 public final class DataStoreInfoDTO implements DataStructure {
     /** unique datasore identifier */

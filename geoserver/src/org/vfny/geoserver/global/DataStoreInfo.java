@@ -11,13 +11,13 @@ import java.util.logging.Logger;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.vfny.geoserver.global.dto.data.*;
+import org.vfny.geoserver.global.dto.*;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreInfo.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
  */
 public class DataStoreInfo extends Abstract {
     

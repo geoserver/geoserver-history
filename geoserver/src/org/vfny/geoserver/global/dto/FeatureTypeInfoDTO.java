@@ -2,13 +2,10 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.global.dto.data;
+package org.vfny.geoserver.global.dto;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.dto.CloneLibrary;
-import org.vfny.geoserver.global.dto.DataStructure;
-import org.vfny.geoserver.global.dto.EqualsLibrary;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +25,7 @@ import java.util.List;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.2 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataStructure {
     /** The Id of the datastore which should be used to get this featuretype. */

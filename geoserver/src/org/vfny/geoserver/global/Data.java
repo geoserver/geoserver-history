@@ -22,14 +22,14 @@ import org.geotools.data.Transaction;
 import org.geotools.styling.SLDStyle;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.vfny.geoserver.global.dto.data.*;
+import org.vfny.geoserver.global.dto.*;
 
 /**
  * Holds the featureTypes.  Replaced TypeRepository.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**

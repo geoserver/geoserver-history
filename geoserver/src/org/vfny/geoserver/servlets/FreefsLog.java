@@ -21,7 +21,7 @@
 package org.vfny.geoserver.servlets;
 
 import java.util.logging.Logger;
-
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +37,7 @@ import org.vfny.geoserver.zserver.GeoZServer;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.15.2.4 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: FreefsLog.java,v 1.15.2.5 2004/01/05 23:26:26 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -51,22 +51,15 @@ public class FreefsLog extends HttpServlet {
     /**
      * Initializes logging and config.
      */
-    public void init() {
+    public void init() throws ServletException{
         //HACK: java.util.prefs are awful.  See
         //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
 
-        String root = this.getServletContext().getRealPath("/");
-        String path = root; // + CONFIG_DIR;
-        LOGGER.fine("init with path: " + path);
-
-        try {
-            GeoServer.load(path);
-        } catch (ConfigurationException ex) {
-            LOGGER.severe("Can't initialize server: " + ex.getMessage());
-            ex.printStackTrace();
-        }
+		if(GeoServer.getInstance()==null){
+			(new GeoServer()).init(this);
+		}
 
         /*
            ConfigInfo cfgInfo = ConfigInfo.getInstance(path);

@@ -35,9 +35,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.geotools.filter.FilterDOMParser;
 import org.vfny.geoserver.global.*;
 import org.vfny.geoserver.global.dto.*;
-import org.vfny.geoserver.global.dto.data.*;
-import org.vfny.geoserver.global.dto.wfs.*;
-import org.vfny.geoserver.global.dto.wms.*;
 import org.vfny.geoserver.global.Log4JFormatter;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -60,7 +57,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.1 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -893,7 +890,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.1 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

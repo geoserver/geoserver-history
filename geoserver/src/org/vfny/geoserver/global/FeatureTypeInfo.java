@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.vfny.geoserver.global.dto.data.*;
+import org.vfny.geoserver.global.dto.*;
 import com.vividsolutions.jts.geom.Envelope;
 import java.util.List;
 
@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends Abstract {
     /** DOCUMENT ME! */

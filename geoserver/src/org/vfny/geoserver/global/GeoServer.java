@@ -10,18 +10,19 @@ import java.util.logging.*;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.global.dto.*;
-import org.vfny.geoserver.global.dto.data.*;
-import org.vfny.geoserver.global.dto.wms.*;
-import org.vfny.geoserver.global.dto.wfs.*;
 import java.nio.charset.*;
+import org.apache.struts.action.*;
+import org.apache.struts.config.*;
+import javax.servlet.*;
+import javax.servlet.http.HttpServlet;
 
 /**
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
  */
-public class GeoServer extends Abstract {
+public class GeoServer extends Abstract implements org.apache.struts.action.PlugIn{
 	
 	/** DOCUMENT ME! */
 	private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
@@ -84,58 +85,7 @@ public class GeoServer extends Abstract {
 	public String getBaseUrl() {
 	    return geoServer.getBaseUrl();
 	}
-	    /**
-	     * DOCUMENT ME!
-	     *
-	     * @return DOCUMENT ME!
-	     *
-	     * @throws java.lang.IllegalStateException DOCUMENT ME!
-	     */
-	    /*public static GlobalData getInstance() {
-	        if (globalConfig == null) {
-	            String mesg = "GeoServer must be initialized before calling "
-	                + " getInstance on globalConfig";
-	            throw new java.lang.IllegalStateException(mesg);
-	        }
-	
-	        return globalConfig;
-	    }*/
-	
-	    /**
-	     * DOCUMENT ME!
-	     *
-	     * @return DOCUMENT ME!
-	     */
-	    /*public ContactConfig getContactInformation() {
-	        return contactConfig;
-	    }*/
-	
-	    /**
-	     * DOCUMENT ME!
-	     *
-	     * @param globalConfigElem DOCUMENT ME!
-	     *
-	     * @return DOCUMENT ME!
-	     */
-	   /* private Level getLoggingLevel(Element globalConfigElem) {
-	        Level level = this.loggingLevel;
-	        Element levelElem = getChildElement(globalConfigElem, "loggingLevel");
-	
-	        if (levelElem != null) {
-	            String levelName = levelElem.getFirstChild().getNodeValue();
-	
-	            try {
-	                level = Level.parse(levelName);
-	            } catch (IllegalArgumentException ex) {
-	                LOGGER.warning("illegal loggingLevel name: " + levelName);
-	            }
-	        } else {
-	            LOGGER.config("No loggingLevel found, using default "
-	                + "logging.properties setting");
-	        }
-	
-	        return level;
-	    }*/
+	 
 	
 	    /**
 	     * DOCUMENT ME!
@@ -244,9 +194,11 @@ public class GeoServer extends Abstract {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
+            
+    public static final String NAME = "GeoServer";
 
     /** server configuration singleton */
-    private static GeoServer serverConfig;
+    //private static GeoServer serverConfig;
 
     /** DOCUMENT ME! */
     private WMS wms;
@@ -261,6 +213,21 @@ public class GeoServer extends Abstract {
     private Validation validation;
     private String rootDir;
 
+	/**
+	 * GeoServer constructor.
+	 * <p>
+	 * To be called by the Struts ActionServlet
+	 * </p>
+	 *
+	 */
+	public GeoServer(){
+		rootDir = null;
+		wms = null;
+		wfs = null;
+		data = null;
+		validation = null;
+		geoServer = null;
+	}
 
     /**
      * Creates a new GeoServer object.
@@ -270,7 +237,7 @@ public class GeoServer extends Abstract {
      *
      * @throws ConfigurationException For any configuration problems.
      */
-    private GeoServer(String rootDir) throws ConfigurationException {
+    /*private GeoServer(String rootDir) throws ConfigurationException {
         File f = new File(rootDir);
 		XMLConfigReader cr = null;
         cr = new XMLConfigReader(f);
@@ -284,7 +251,7 @@ public class GeoServer extends Abstract {
 			validation = new Validation();
 		}else
 			throw new ConfigurationException("An error occured loading the initial configuration.");
-    }
+    }*/
 
     /**
      * Creates a new GeoServer Object for JUnit testing.
@@ -307,7 +274,7 @@ public class GeoServer extends Abstract {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-	private GeoServer(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, DataDTO data) throws ConfigurationException {
+	/*private GeoServer(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, DataDTO data) throws ConfigurationException {
 		if(rootDir == null)
 			throw new ConfigurationException("RootDir not specified, server was not loaded initially from configuration files.");
 		this.geoServer = geoServer;
@@ -315,6 +282,11 @@ public class GeoServer extends Abstract {
 		this.wms = new WMS(wms);
 		this.data = new Data(data);
 		this.validation = new Validation();
+	}*/
+
+	private static ServletContext sc = null;
+	public static GeoServer getInstance(){
+		return (GeoServer)sc.getAttribute(NAME);
 	}
 
     /**
@@ -360,14 +332,14 @@ public class GeoServer extends Abstract {
      *
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public static GeoServer getInstance() {
+    /*public static GeoServer getInstance() {
         if (serverConfig == null) {
             throw new IllegalStateException(
                 "The server configuration has not been loaded yet");
         }
 
         return serverConfig;
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -376,9 +348,9 @@ public class GeoServer extends Abstract {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public static void load(String rootDir) throws ConfigurationException {
+    /*public static void load(String rootDir) throws ConfigurationException {
         serverConfig = new GeoServer(rootDir);
-    }
+    }*/
 
 	/**
 	 * DOCUMENT ME!
@@ -387,8 +359,18 @@ public class GeoServer extends Abstract {
 	 *
 	 * @throws ConfigurationException DOCUMENT ME!
 	 */
-	public static void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, DataDTO data) throws ConfigurationException {
-		serverConfig = new GeoServer(wms,wfs,geoServer,data);
+	public void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, DataDTO data) throws ConfigurationException {
+		//serverConfig = new GeoServer(wms,wfs,geoServer,data);
+		if(rootDir == null)
+			throw new ConfigurationException("RootDir not specified, server was not loaded initially from configuration files.");
+		this.geoServer = geoServer;
+		if(wfs!=null)
+			this.wfs = new WFS(wfs);
+		if(wms!=null)
+			this.wms = new WMS(wms);
+		if(data!=null)
+			this.data = new Data(data);
+		this.validation = new Validation();
 	}
 
     /**
@@ -445,38 +427,33 @@ public class GeoServer extends Abstract {
     public String getRootDir() {
         return rootDir;
     }
-
-    /**
-     * Returns the directory where the featureTypes are stored.
-     *
-     * @return A string of the dir where the featureType folders are.
-     *
-     * @task TODO:remove it when no longer needed
-     */
-    /*public String getTypeDir() {
-        return getRootDir() + "featureTypes/";
-    }*/
-
-    /**
-     * Returns root capabilities directory for this service.
-     *
-     * @return The directory where the capabilities are held.
-     */
-    /*public String getCapabilitiesDir() {
-        return getRootDir() + "capabilities/";
-    }*/
-
-    /**
-     * Gets if full stack traces should be reported in the ogc service
-     * exceptions.
-     *
-     * @return <tt>true</tt> if the full stack trace should be printed for
-     *         every service exception, <tt>false</tt> otherwise.
-     *
-     * @task TODO - implement this in WfsConfig, so users can configure how
-     *       much is printed in return messages.
-     */
-    /*public boolean isPrintStack() {
-        return false;
-    }*/
+    
+    public void destroy(){
+    	// do nothing
+    }
+    
+    public void init(ActionServlet as, ModuleConfig mc) throws javax.servlet.ServletException{
+    	init((HttpServlet)as);
+    }
+    public void init(HttpServlet hs) throws javax.servlet.ServletException{
+    	sc = hs.getServletContext();
+    	rootDir = sc.getRealPath("/");
+    	
+    	try{
+			File f = new File(rootDir);
+			XMLConfigReader cr = new XMLConfigReader(f);
+		
+			if(cr.isInitialized()){	
+				geoServer = cr.getGeoServer();
+				wfs = new WFS(cr.getWfs());
+				wms = new WMS(cr.getWms());
+				data = new Data(cr.getData());
+				validation = new Validation();
+			}else
+				throw new ConfigurationException("An error occured loading the initial configuration.");
+    	}catch(ConfigurationException e){
+    		throw new ServletException(e);
+    	}
+		sc.setAttribute(NAME,this);
+    }
 }

@@ -29,9 +29,6 @@ import java.util.logging.Logger;
 
 import org.vfny.geoserver.global.*;
 import org.vfny.geoserver.global.dto.*;
-import org.vfny.geoserver.global.dto.data.*;
-import org.vfny.geoserver.global.dto.wfs.*;
-import org.vfny.geoserver.global.dto.wms.*;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -41,7 +38,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.1 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -527,7 +524,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.1 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -605,7 +602,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.1 2004/01/05 22:14:43 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

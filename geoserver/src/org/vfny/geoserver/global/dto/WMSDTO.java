@@ -2,12 +2,10 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.global.dto.wms;
+package org.vfny.geoserver.global.dto;
 
 import java.util.Date;
 
-import org.vfny.geoserver.global.dto.DataStructure;
-import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
 /**
@@ -24,7 +22,7 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSDTO.java,v 1.1.2.2 2004/01/05 22:14:43 dmzwiers Exp $
+ * @version $Id: WMSDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
  */
 public final class WMSDTO implements DataStructure {
     private static final String WMS_VERSION = "1.1.1";

@@ -2,9 +2,8 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.global.dto.data;
+package org.vfny.geoserver.global.dto;
 
-import org.vfny.geoserver.global.dto.DataStructure;
 
 
 /**
@@ -26,7 +25,7 @@ import org.vfny.geoserver.global.dto.DataStructure;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceDTO.java,v 1.1.2.2 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: NameSpaceDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
  */
 public final class NameSpaceDTO implements DataStructure {
     //public static final String PREFIX_DELIMITER = ":";
