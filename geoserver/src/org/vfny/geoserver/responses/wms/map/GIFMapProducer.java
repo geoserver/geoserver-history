@@ -22,10 +22,6 @@ import java.util.logging.Logger;
  * @version $Id
  */
 class GIFMapProducer extends DefaultRasterMapProducer {
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
-
     /**
      * Transforms the rendered image into the appropriate format, streaming to
      * the output stream.
@@ -34,28 +30,19 @@ class GIFMapProducer extends DefaultRasterMapProducer {
      * @param image The image to be formatted.
      * @param outStream The stream to write to.
      *
-     * @throws WmsException
-     * @throws IOException DOCUMENT ME!
+     * @throws WmsException not really.
+     * @throws IOException if encoding to <code>outStream</code> fails.
      */
     protected void formatImageOutputStream(String format, BufferedImage image,
         OutputStream outStream) throws WmsException, IOException {
-        LOGGER.fine("image/gif");
 
-        WMSMapContext mapCtx = getMapContext();
+    	WMSMapContext mapCtx = getMapContext();
 
         if (mapCtx.isTransparent()) {
-            try {
-                GIFOutputStream.writeGIF(outStream, image,
-                    GIFOutputStream.STANDARD_256_COLORS, mapCtx.getBgColor());
-            } catch (Exception e) {
-                LOGGER.warning(e.toString());
-            }
+            GIFOutputStream.writeGIF(outStream, image,
+                GIFOutputStream.STANDARD_256_COLORS, mapCtx.getBgColor());
         } else {
-            try {
-                GIFOutputStream.writeGIF(outStream, image);
-            } catch (Exception e) {
-                LOGGER.warning(e.toString());
-            }
+            GIFOutputStream.writeGIF(outStream, image);
         }
     }
 }
