@@ -33,6 +33,11 @@
   <property name="dir.catalina" value="${dir.lib}/catalina"/>
 
   <!-- external directories -->
+  <!-- pc example -->
+  <property name="dir.container" value="C:\java\resin-2.1.9\webapps"/>
+  <property name="dir.geotools" 
+            value="C:\java\workspace\geotools2\geotools-src"/>
+  <!-- linux example -->
   <property name="dir.container" value="/usr/local/resin-2.1.4/webapps"/>
   <property name="dir.geotools" 
             value="/home/rob/wfs/geotools/geotools2/geotools-src"/>
@@ -672,18 +677,73 @@
     <delete file="${dir.lib}/geotools.jar" failonerror="true"/>
     <jar jarfile="${dir.lib}/geotools.jar"
          whenempty="fail">
-      <fileset dir="${dir.geotools}/filter/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/defaultcore/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/postgis/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/resources/target/classes/"
-               includes="**/*.class"/>
       <fileset dir="${dir.geotools}/core/target/classes/"
                includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/data/target/classes/"
+               includes="**/*.class"/>                        
+      <fileset dir="${dir.geotools}/defaultcore/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/filter/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/cts-coordtrans/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/gcs-coverage/target/classes/"
+               includes="**/*.class"/>          
+      <fileset dir="${dir.geotools}/lite-rendering/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/resources/target/classes/"
+               includes="**/*.class"/>   
+      <fileset dir="${dir.geotools}/sldstyling/target/classes/"
+               includes="**/*.class"/>               
+      <fileset dir="${dir.geotools}/svgsupport/target/classes/"
+               includes="**/*.class"/>   
     </jar>
+    
+    <!-- I am not sure why this is not part of the geotools jar -->
+    <delete file="${dir.lib}/gmldatasource.jar" failonerror="true"/>    
+    <jar jarfile="${dir.lib}/gmldatasource.jar"
+         whenempty="fail">
+      <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
+               includes="**/*.class"/>
+	</jar>
+
+    <!-- Potgis support, include META-INF -->	
+    <delete file="${dir.lib}/postgis.jar" failonerror="true"/>        
+	<jar jarfile="${dir.lib}/postgis.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/postgis/target/classes/"/>
+	</jar>
+	
+    <!-- Esri Shapefile support, include META-INF -->	
+    <delete file="${dir.lib}/shapefile.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/shapefile.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/shapefile/target/classes/"/>
+	</jar>
+	
+    <!-- Oracle Spatial support, include META-INF -->		
+    <delete file="${dir.lib}/oraclespatial.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/oraclespatial.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/oraclespatial/target/classes/"/>
+	</jar>	
+	
+    <!-- Java Property support, include META-INF -->		
+    <delete file="${dir.lib}/property.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/property.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/j2se-demos/target/classes/"
+      	       includes="META-INF/**"/>
+      <fileset dir="${dir.geotools}/j2se-demos/target/classes/"
+      	       includes="geotools/data/**"/>
+	</jar>
+	
+    <!-- Java Property support, include META-INF -->		
+    <delete file="${dir.lib}/arcsde.jar" failonerror="true"/>                
+	<jar jarfile="${dir.lib}/arcsde.jar"
+         whenempty="fail">	
+      <fileset dir="${dir.geotools}/arcsde/target/classes/"/>
+	</jar>	
+	
   </target>
 </project>
