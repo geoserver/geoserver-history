@@ -15,10 +15,11 @@ import java.util.*;
 
 
 /**
- * DOCUMENT ME!
+ * Represents a FeatureType, its user config and autodefined information.
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @author Chris Holmes
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.4 2003/11/11 02:44:44 cholmesny Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -45,6 +46,10 @@ public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
     private String defaultStyle;
 
+    private String pathToSchemaFile;
+
+    private String prefix;
+
     /**
      * Creates a new FeatureTypeConfig object.
      *
@@ -56,7 +61,7 @@ public class FeatureTypeConfig extends BasicConfig {
     public FeatureTypeConfig(CatalogConfig catalog, Element fTypeRoot)
         throws ConfigurationException {
         super(fTypeRoot);
-
+	
         String msg = null;
         String dataStoreNS = getAttribute(fTypeRoot, "datastore", true);
         NameSpace dsNs = catalog.getNameSpace(dataStoreNS);
@@ -98,6 +103,24 @@ public class FeatureTypeConfig extends BasicConfig {
         return schema;
     }
 
+    
+    /**
+     * gets the string of the path to the schema file.  This is set during
+     * feature reading, the schema file should be in the same folder as the
+     * feature type info, with the name schema.xml.  This function does not
+     * guarantee that the schema file actually exists, it just gives the
+     * location where it _should_ be located.
+     *
+     * @return The path to the schema file.
+     */
+    public String getSchemaFile() {
+        return pathToSchemaFile;
+    }
+
+    public void setSchemaFile(String pathToSchema) {
+	this.pathToSchemaFile = pathToSchema;
+    }
+
     public DataStoreConfig getDataStore() {
         return this.dataStore;
     }
@@ -117,6 +140,13 @@ public class FeatureTypeConfig extends BasicConfig {
         return (this.dataStore != null) && (this.dataStore.isEnabled());
     }
 
+    public String getPrefix() {
+	if (this.prefix == null) {
+	    this.prefix = getDataStore().getNameSpace().getPrefix();
+	}
+	return prefix;
+    }
+
     /**
      * overrides getName to return full type name with namespace prefix
      *
@@ -126,7 +156,7 @@ public class FeatureTypeConfig extends BasicConfig {
         //getDataStore().getNameSpace().getPrefix() is causing too many null
         //pointers on unitialized stuff.  figure out a more elegant way to 
         //handle this.
-        return new StringBuffer(getDataStore().getNameSpace().getPrefix()).append(NameSpace.PREFIX_DELIMITER)
+        return new StringBuffer(getPrefix()).append(NameSpace.PREFIX_DELIMITER)
                                                                           .append(super
             .getName()).toString();
     }
@@ -144,10 +174,14 @@ public class FeatureTypeConfig extends BasicConfig {
      */
     public String getName(boolean allowShort) {
         if (allowShort && (!isEnabled() || (getDataStore() == null))) {
-            return super.getName();
+            return getShortName();
         } else {
             return getName();
         }
+    }
+
+    public String getShortName(){
+	return super.getName();
     }
 
     /**
