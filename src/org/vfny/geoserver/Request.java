@@ -2,12 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests;
+package org.vfny.geoserver;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.Requests;
 
 /**
  * Defines a general Request type and provides accessor methods for universal

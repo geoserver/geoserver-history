@@ -12,8 +12,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.DescribeHandler;
 import org.xml.sax.InputSource;

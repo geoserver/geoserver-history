@@ -56,14 +56,14 @@ public class DemoAction extends GeoServerAction {
 
         File dir = demoForm.getDir();
         String demo = demoForm.getDemo();
-        String baseUrl = org.vfny.geoserver.requests.Requests.getBaseUrl(request);
+        String baseUrl = org.vfny.geoserver.util.Requests.getBaseUrl(request);
 
         if (demo.equals("")) {
             demoForm.setUrl(baseUrl + "wfs");
             demoForm.setBody("");
         }
 
-        String url = org.vfny.geoserver.requests.Requests.getBaseUrl(request)
+        String url = org.vfny.geoserver.util.Requests.getBaseUrl(request)
             + "wfs";
 
         File file = new File(dir, demo);

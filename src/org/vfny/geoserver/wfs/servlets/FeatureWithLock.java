@@ -6,9 +6,9 @@ package org.vfny.geoserver.wfs.servlets;
 
 import java.util.Map;
 
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.Response;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureXmlReader;
 import org.vfny.geoserver.wfs.responses.FeatureResponse;

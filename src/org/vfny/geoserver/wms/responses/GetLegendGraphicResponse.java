@@ -11,11 +11,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.geotools.factory.FactoryFinder;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;

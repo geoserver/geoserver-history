@@ -11,12 +11,12 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.requests.CapabilitiesRequest;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.WmsException;
 
 

@@ -6,9 +6,9 @@ package org.vfny.geoserver.wms.servlets;
 
 import java.util.Map;
 
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.Response;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 

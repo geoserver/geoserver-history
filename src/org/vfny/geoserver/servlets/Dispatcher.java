@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
 
 /**

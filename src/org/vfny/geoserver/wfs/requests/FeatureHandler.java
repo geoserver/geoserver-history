@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
-import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.wfs.Query;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

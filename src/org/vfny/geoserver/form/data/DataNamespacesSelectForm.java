@@ -16,7 +16,7 @@ import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.util.Requests;
 
 /**
  * DataNamespacesSelectForm

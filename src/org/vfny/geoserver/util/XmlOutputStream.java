@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses;
+package org.vfny.geoserver.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -19,6 +19,7 @@ import org.vfny.geoserver.wfs.WfsException;
  *
  * @author Rob Hranac, Vision for New York
  * @version 0.9 beta, 11/01/01
+ * @task TODO: remove this class since it is not used
  */
 public class XmlOutputStream extends ByteArrayOutputStream {
     /** XML preamble encoding length */

@@ -14,8 +14,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.TransactionFeatureHandler;
 import org.vfny.geoserver.wfs.requests.TransactionFilterHandler;
 import org.vfny.geoserver.wfs.requests.TransactionHandler;
