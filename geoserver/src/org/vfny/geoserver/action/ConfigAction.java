@@ -73,7 +73,7 @@ import org.vfny.geoserver.global.UserContainer;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ConfigAction.java,v 1.10 2004/02/21 06:59:52 jive Exp $
+ * @version $Id: ConfigAction.java,v 1.11 2004/03/02 02:36:00 jive Exp $
  */
 public class ConfigAction extends GeoServerAction {
 	/**
@@ -91,7 +91,7 @@ public class ConfigAction extends GeoServerAction {
 		if( !isLoggedIn( request )){
             ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.required"));
-            request.setAttribute(Globals.ERROR_KEY, errors);
+            request.setAttribute(Globals.ERROR_KEY, errors);            
             request.setAttribute("forward", mapping.getForward());
 			return mapping.findForward("login");
 		}

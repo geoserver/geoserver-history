@@ -50,8 +50,8 @@ import javax.servlet.http.HttpServletResponse;
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.11 2004/02/26 00:50:16 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.12 2004/03/02 02:36:00 jive Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
@@ -76,7 +76,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         FeatureType featureType = dataStore.getSchema(featureTypeName);
 
         FeatureTypeConfig ftConfig = new FeatureTypeConfig(dataStoreID,
-                featureType);
+                featureType, false);
 
         // What is the Spatial Reference System for this FeatureType?
         // 

@@ -5,9 +5,12 @@
 package org.vfny.geoserver.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -20,16 +23,10 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 
 
 /**
- * FeatureTypeInfo purpose.
+ * User interface FeatureType staging area.
  * 
- * <p>
- * Description of FeatureTypeInfo ...
- * </p>
- * 
- * <p></p>
- *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.16 2004/03/01 18:58:47 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.17 2004/03/02 02:36:00 jive Exp $
  */
 public class FeatureTypeConfig {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -41,22 +38,45 @@ public class FeatureTypeConfig {
     /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
 
-    /** This is an ordered list of AttributeTypeInfoConfig. */
+    /**
+     * This is an ordered list of AttributeTypeInfoConfig
+     * <p>
+     * These attribtue have been defined by the user (or schema.xml file).
+     * Additional attribute may be assumed based on the schemaBase
+     * </p>
+     * <p>
+     * If this is <code>null</code>, all Attribtue information
+     * will be generated. An empty list is used to indicate that only
+     * attribtues indicated by the schemaBase will be returned.
+     * </p>
+     */
     private List schemaAttributes;
 
     /** The featuretype name. */
     private String name;
 
-    /** the schema name */
+    /** The schema name */
     private String schemaName;
 
-    /** the schema base */
+    /**
+     * The schema base.
+     * <p>
+     * The schema base is used to indicate additional attribtues, not defined
+     * by the user. These attribute are fixed -not be edited by the user.
+     * </p>
+     */
     private String schemaBase;
 
     /**
-     * The featuretype directory name. This is used to write to, and is  stored
-     * because it may be longer than the name, as this often includes
-     * information about the source of the featuretype.
+     * The featuretype directory name.
+     * <p>
+     * This is used to write to, and is  stored because it may be longer than
+     * the name, as this often includes information about the source of the
+     * featuretype.
+     * </p>
+     * <p>
+     * A common naming convention is: <code>dataStoreId + "_" + name</code>
+     * </p>
      */
     private String dirName;
 
@@ -66,8 +86,14 @@ public class FeatureTypeConfig {
     /** The feature type abstract, short explanation of this featuretype. */
     private String _abstract;
 
-    /** A list of keywords to associate with this featuretype. */
-    private List keywords;
+    /**
+     * A list of keywords to associate with this featuretype.
+     * <p>
+     * Keywords are destinct strings, often rendered surrounded by brackets
+     * to aid search engines.
+     * </p>
+     */
+    private Set keywords;
 
     /** configuration information. */
     private int numDecimals;
@@ -87,17 +113,15 @@ public class FeatureTypeConfig {
      */
     FeatureTypeConfig() {
     }
-
+    
     /**
-     * FeatureTypeInfo constructor.
-     * 
-     * <p>
      * Creates a FeatureTypeInfo to represent an instance with default data.
-     * </p>
-     *
-     * @see defaultSettings()
+     * 
+     * @param dataStoreId ID for data store in catalog
+     * @param schema Geotools2 FeatureType
+     * @param generate True to generate entries for all attribtues
      */
-    public FeatureTypeConfig(String dataStoreId, FeatureType schema) {
+    public FeatureTypeConfig(String dataStoreId, FeatureType schema, boolean generate) {
         if ((dataStoreId == null) || (dataStoreId.length() == 0)) {
             throw new IllegalArgumentException(
                 "dataStoreId is required for FeatureTypeConfig");
@@ -107,7 +131,6 @@ public class FeatureTypeConfig {
             throw new IllegalArgumentException(
                 "FeatureType is required for FeatureTypeConfig");
         }
-
         this.dataStoreId = dataStoreId;
         latLongBBox = new Envelope();
 
@@ -119,30 +142,34 @@ public class FeatureTypeConfig {
                                                     .getGeometryFactory();
 
             if (geometryFactory == null) {
-                SRS = 0; // Assume Cartisian Coordiantes
+                // Assume Cartisian Coordiantes
+                SRS = 0; 
             } else {
-                SRS = geometryFactory.getSRID(); // Assume SRID number is good enough
+                // Assume SRID number is good enough                
+                SRS = geometryFactory.getSRID();
             }
         }
-
-        this.schemaAttributes = new ArrayList();
-
-        for (int i = 0; i < schema.getAttributeCount(); i++) {
-            AttributeType attrib = schema.getAttributeType(i);
-            this.schemaAttributes.add(new AttributeTypeInfoConfig(attrib));
+        if( generate ){         
+            this.schemaAttributes = new ArrayList();
+            for (int i = 0; i < schema.getAttributeCount(); i++) {
+                AttributeType attrib = schema.getAttributeType(i);
+                this.schemaAttributes.add(new AttributeTypeInfoConfig(attrib));
+            }
         }
-
+        else {
+            this.schemaAttributes = null;        
+        }
         defaultStyle = "";
         name = schema.getTypeName();
         title = schema.getTypeName() + "_Type";
         _abstract = "Generated from " + dataStoreId;
-        keywords = new LinkedList();
+        keywords = new HashSet();
         keywords.add(dataStoreId);
         keywords.add(name);
         numDecimals = 8;
         definitionQuery = null;
         dirName = dataStoreId + "_" + name;
-        schemaName = name + "_Type";
+        schemaName = name + "_Type";        
         schemaBase = "AbstractFeatureType";
     }
 
@@ -167,13 +194,18 @@ public class FeatureTypeConfig {
         dataStoreId = dto.getDataStoreId();
         latLongBBox = new Envelope(dto.getLatLongBBox());
         SRS = dto.getSRS();
-        schemaAttributes = new LinkedList();
-        if(dto.getSchemaAttributes()!=null){
+        
+        if(dto.getSchemaAttributes() == null){
+            schemaAttributes = null;
+        }
+        else {
+            schemaAttributes = new LinkedList();
+            
         	Iterator i = dto.getSchemaAttributes().iterator();
-
-        	while (i.hasNext())
+        	while (i.hasNext()){
         		schemaAttributes.add(new AttributeTypeInfoConfig(
         			(AttributeTypeInfoDTO) i.next()));
+            }
         }
         name = dto.getName();
         title = dto.getTitle();
@@ -182,9 +214,9 @@ public class FeatureTypeConfig {
         definitionQuery = dto.getDefinitionQuery();
 
         try {
-            keywords = new ArrayList(dto.getKeywords());
+            keywords = new HashSet(dto.getKeywords());
         } catch (Exception e) {
-            keywords = new LinkedList();
+            keywords = new HashSet();
         }
 
         defaultStyle = dto.getDefaultStyle();
@@ -192,50 +224,6 @@ public class FeatureTypeConfig {
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
     }
-
-    /**
-     * load purpose.
-     * 
-     * <p>
-     * Loads the new data into this instance object from an FeatureTypeInfoDTO.
-     * </p>
-     *
-     * @param f an instance of FeatureTypeInfoDTO to load.
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-   /* public void update(FeatureTypeInfoDTO f) {
-        if (f == null) {
-            throw new NullPointerException(
-                "FeatureTypeInfo Data Transfer Object required");
-        }
-
-        dataStoreId = f.getDataStoreId();
-        latLongBBox = new Envelope(f.getLatLongBBox());
-        SRS = f.getSRS();
-        schemaAttributes = new ArrayList();
-
-        for (int i = 0; i < f.getSchemaAttributes().size(); i++)
-            schemaAttributes.add(new AttributeTypeInfoConfig(
-                    (AttributeTypeInfoDTO) f.getSchemaAttributes().get(i)));
-
-        name = f.getName();
-        title = f.getTitle();
-        _abstract = f.getAbstract();
-        numDecimals = f.getNumDecimals();
-        definitionQuery = f.getDefinitionQuery();
-
-        try {
-            keywords = new ArrayList(f.getKeywords());
-        } catch (Exception e) {
-            keywords = new LinkedList();
-        }
-
-        defaultStyle = f.getDefaultStyle();
-        dirName = f.getDirName();
-        schemaName = f.getSchemaName();
-        schemaBase = f.getSchemaBase();
-    }*/
 
     /**
      * Implement toDTO.
@@ -254,12 +242,18 @@ public class FeatureTypeConfig {
         f.setLatLongBBox(new Envelope(latLongBBox));
         f.setSRS(SRS);
 
-        List s = new ArrayList();
-
-        for (int i = 0; i < schemaAttributes.size(); i++)
-            s.add(((AttributeTypeInfoConfig)schemaAttributes.get(i)).toDTO());
-
-        f.setSchemaAttributes(s);
+        if( schemaAttributes == null ){
+            // Use generated default attributes
+            f.setSchemaAttributes( null );            
+        }
+        else {
+            // Use user provided attribtue + schemaBase attribtues
+            List s = new ArrayList();
+            for (int i = 0; i < schemaAttributes.size(); i++){
+                s.add(((AttributeTypeInfoConfig)schemaAttributes.get(i)).toDTO());
+            }
+            f.setSchemaAttributes(s);            
+        }        
         f.setName(name);
         f.setTitle(title);
         f.setAbstract(_abstract);
@@ -276,335 +270,9 @@ public class FeatureTypeConfig {
         f.setDirName(dirName);
         f.setSchemaBase(schemaBase);
         f.setSchemaName(schemaName);
-
         return f;
     }
 
-    /**
-     * getAbstract purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getAbstract() {
-        return _abstract;
-    }
-
-    /**
-     * getDataStore purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getDataStoreId() {
-        return dataStoreId;
-    }
-
-    /**
-     * getKeywords purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public List getKeywords() {
-        return keywords;
-    }
-
-    /**
-     * Convience method for dataStoreId.typeName.
-     * 
-     * <p>
-     * This key may be used to store this FeatureType in a Map for later.
-     * </p>
-     *
-     * @return dataStoreId.typeName
-     */
-    public String getKey() {
-        return getDataStoreId() + DataConfig.SEPARATOR + getName();
-    }
-
-    /**
-     * getLatLongBBox purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Envelope getLatLongBBox() {
-        return latLongBBox;
-    }
-
-    /**
-     * getName purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * getSRS purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public int getSRS() {
-        return SRS;
-    }
-
-    /**
-     * getTitle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * setAbstract purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setAbstract(String string) {
-        _abstract = string;
-    }
-
-    /**
-     * setDataStore purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param store
-     */
-    public void setDataStoreId(String store) {
-        dataStoreId = store;
-    }
-
-    /**
-     * setKeywords purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param list
-     */
-    public void setKeywords(List list) {
-        keywords = list;
-    }
-
-    /**
-     * setKeywords purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param key
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean addKeyword(String key) {
-        if (keywords == null) {
-            keywords = new LinkedList();
-        }
-
-        return keywords.add(key);
-    }
-
-    /**
-     * setKeywords purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param key
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean removeKeyword(String key) {
-        return keywords.remove(key);
-    }
-
-    /**
-     * setLatLongBBox purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param envelope
-     */
-    public void setLatLongBBox(Envelope envelope) {
-        latLongBBox = envelope;
-    }
-
-    /**
-     * setName purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setName(String string) {
-        name = string;
-    }
-
-    /**
-     * setSRS purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param i
-     */
-    public void setSRS(int i) {
-        SRS = i;
-    }
-
-    /**
-     * setTitle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setTitle(String string) {
-        title = string;
-    }
-
-    /**
-     * getNumDecimals purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public int getNumDecimals() {
-        return numDecimals;
-    }
-
-    /**
-     * setNumDecimals purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param i
-     */
-    public void setNumDecimals(int i) {
-        numDecimals = i;
-    }
-
-    /**
-     * getDefinitionQuery purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Filter getDefinitionQuery() {
-        return definitionQuery;
-    }
-
-    /**
-     * setDefinitionQuery purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param filter
-     */
-    public void setDefinitionQuery(Filter filter) {
-        definitionQuery = filter;
-    }
-
-    /**
-     * getDefaultStyle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getDefaultStyle() {
-        return defaultStyle;
-    }
-
-    /**
-     * setDefaultStyle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setDefaultStyle(String string) {
-        defaultStyle = string;
-    }
-
-    /**
-     * getSchema purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public List getSchemaAttributes() {
-    	if(schemaAttributes == null || schemaAttributes.isEmpty()){
-    		if("".equals(getSchemaBase())){
-    			return null;
-    		}
-    	}
-    	List l = new LinkedList(schemaAttributes);
-        return l;
-    }
 
     /**
      * Searches through the schema looking for an AttributeTypeInfoConfig that
@@ -632,93 +300,245 @@ public class FeatureTypeConfig {
     }
 
     /**
-     * setSchema purpose.
+     * Convience method for dataStoreId.typeName.
      * 
      * <p>
-     * Description ...
+     * This key may be used to store this FeatureType in a Map for later.
      * </p>
      *
-     * @param schemaElements
+     * @return dataStoreId.typeName
      */
-    public void setSchemaAttributes(List schemaElements) {
-        this.schemaAttributes = schemaElements;
-    }
-
+    public String getKey() {
+        return getDataStoreId() + DataConfig.SEPARATOR + getName();
+    }    
+    
     /**
-     * getDirName purpose.
+     * Access _abstract property.
      * 
-     * <p>
-     * Description ...
-     * </p>
+     * @return Returns the _abstract.
+     */
+    public String getAbstract() {
+        return _abstract;
+    }
+    /**
+     * Set _abstract to _abstract.
      *
-     * @return
+     * @param _abstract The _abstract to set.
+     */
+    public void setAbstract(String _abstract) {
+        this._abstract = _abstract;
+    }
+    /**
+     * Access dataStoreId property.
+     * 
+     * @return Returns the dataStoreId.
+     */
+    public String getDataStoreId() {
+        return dataStoreId;
+    }
+    /**
+     * Set dataStoreId to dataStoreId.
+     *
+     * @param dataStoreId The dataStoreId to set.
+     */
+    public void setDataStoreId(String dataStoreId) {
+        this.dataStoreId = dataStoreId;
+    }
+    /**
+     * Access defaultStyle property.
+     * 
+     * @return Returns the defaultStyle.
+     */
+    public String getDefaultStyle() {
+        return defaultStyle;
+    }
+    /**
+     * Set defaultStyle to defaultStyle.
+     *
+     * @param defaultStyle The defaultStyle to set.
+     */
+    public void setDefaultStyle(String defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
+    /**
+     * Access definitionQuery property.
+     * 
+     * @return Returns the definitionQuery.
+     */
+    public Filter getDefinitionQuery() {
+        return definitionQuery;
+    }
+    /**
+     * Set definitionQuery to definitionQuery.
+     *
+     * @param definitionQuery The definitionQuery to set.
+     */
+    public void setDefinitionQuery(Filter definitionQuery) {
+        this.definitionQuery = definitionQuery;
+    }
+    /**
+     * Access dirName property.
+     * 
+     * @return Returns the dirName.
      */
     public String getDirName() {
         return dirName;
     }
-
     /**
-     * setDirName purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
+     * Set dirName to dirName.
      *
-     * @param string
+     * @param dirName The dirName to set.
      */
-    public void setDirName(String string) {
-        dirName = string;
+    public void setDirName(String dirName) {
+        this.dirName = dirName;
     }
-
     /**
-     * getSchemaName purpose.
+     * Access keywords property.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return Returns the keywords.
      */
-    public String getSchemaName() {
-        return schemaName;
+    public Set getKeywords() {
+        return keywords;
     }
-
     /**
-     * setSchemaName purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
+     * Set keywords to keywords.
      *
-     * @param string
+     * @param keywords The keywords to set.
      */
-    public void setSchemaName(String string) {
-        schemaName = string;
+    public void setKeywords(Set keywords) {
+        this.keywords = keywords;
     }
-
     /**
-     * getSchemaBase purpose.
+     * Access latLongBBox property.
      * 
-     * <p>
-     * Description ...
-     * </p>
+     * @return Returns the latLongBBox.
+     */
+    public Envelope getLatLongBBox() {
+        return latLongBBox;
+    }
+    /**
+     * Set latLongBBox to latLongBBox.
      *
-     * @return
+     * @param latLongBBox The latLongBBox to set.
+     */
+    public void setLatLongBBox(Envelope latLongBBox) {
+        this.latLongBBox = latLongBBox;
+    }
+    /**
+     * Access name property.
+     * 
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
+    /**
+     * Set name to name.
+     *
+     * @param name The name to set.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    /**
+     * Access numDecimals property.
+     * 
+     * @return Returns the numDecimals.
+     */
+    public int getNumDecimals() {
+        return numDecimals;
+    }
+    /**
+     * Set numDecimals to numDecimals.
+     *
+     * @param numDecimals The numDecimals to set.
+     */
+    public void setNumDecimals(int numDecimals) {
+        this.numDecimals = numDecimals;
+    }
+    /**
+     * Access schemaAttributes property.
+     * 
+     * @return Returns the schemaAttributes.
+     */
+    public List getSchemaAttributes() {
+        return Collections.unmodifiableList( schemaAttributes );
+    }
+    /**
+     * Set schemaAttributes to schemaAttributes.
+     *
+     * @param schemaAttributes The schemaAttributes to set.
+     */
+    public void setSchemaAttributes(List schemaAttributes) {
+        this.schemaAttributes = schemaAttributes;
+//    	if(schemaAttributes == null || schemaAttributes.isEmpty()){
+//    		if("".equals(getSchemaBase())){
+//    			return null;
+//    		}
+//    	}
+    }
+    /**
+     * Access schemaBase property.
+     * 
+     * @return Returns the schemaBase.
      */
     public String getSchemaBase() {
         return schemaBase;
     }
-
     /**
-     * setSchemaBase purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
+     * Set schemaBase to schemaBase.
      *
-     * @param string
+     * @param schemaBase The schemaBase to set.
      */
-    public void setSchemaBase(String string) {
-        schemaBase = string;
+    public void setSchemaBase(String schemaBase) {
+        this.schemaBase = schemaBase;
+    }
+    /**
+     * Access schemaName property.
+     * 
+     * @return Returns the schemaName.
+     */
+    public String getSchemaName() {
+        return schemaName;
+    }
+    /**
+     * Set schemaName to schemaName.
+     *
+     * @param schemaName The schemaName to set.
+     */
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
+    }
+    /**
+     * Access sRS property.
+     * 
+     * @return Returns the sRS.
+     */
+    public int getSRS() {
+        return SRS;
+    }
+    /**
+     * Set sRS to srs.
+     *
+     * @param srs The sRS to set.
+     */
+    public void setSRS(int srs) {
+        SRS = srs;
+    }
+    /**
+     * Access title property.
+     * 
+     * @return Returns the title.
+     */
+    public String getTitle() {
+        return title;
+    }
+    /**
+     * Set title to title.
+     *
+     * @param title The title to set.
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
