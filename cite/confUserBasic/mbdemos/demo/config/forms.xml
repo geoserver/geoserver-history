@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+
+<MapbuilderConfig id="simpleTemplate">
+  <skinDir>../lib/skin/default</skinDir>
+
+  <models>
+
+    <ModelBase id="mainMap">
+      <!--defaultModelUrl>config/simpleConfig.xml</defaultModelUrl-->
+      <defaultModelUrl>context/atlasWorld.xml</defaultModelUrl>
+      
+      <widgets>
+        
+        <WidgetBase id="xmlForm">
+          <stylesheet>/mapbuilder/lib/widget/XmlForm.xsl</stylesheet>
+          <debug/>
+        </WidgetBase>
+        
+      </widgets>
+    </ModelBase>
+      
+    <ModelBase id="schema">
+      <defaultModelUrl>../lib/schemas/context.xsd</defaultModelUrl>
+      
+      <widgets>
+        <WidgetBase id="xmlSchemaForm">
+          <stylesheet>/mapbuilder/lib/widget/XmlSchemaForm.xsl</stylesheet>
+          <debug/>
+        </WidgetBase>
+        
+      </widgets>
+    </ModelBase>
+      
+  </models>
+
+</MapbuilderConfig>
