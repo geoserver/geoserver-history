@@ -41,6 +41,8 @@ public class ConfigInfo {
     public static final String INFO_FILE = "info.xml" ;
     /** Default name for feature type schemas */
     public static final String SCHEMA_FILE = "schema.xml";
+    /** Default name for zserver module mappings */
+    public static final String GEO_MAP_FILE = "z3950-geo.map";
 
     /** */
     private static ConfigInfo config = null;
