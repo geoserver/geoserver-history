@@ -258,7 +258,7 @@
     </java>
     <!-- remove the classes forcing the server to build new class,
          so changes to the code actually are reflected in test server. -->
-     <delete>
+     <delete  failonerror="false">
        <fileset dir="${dir.testApp}/classes/org"> 
          <exclude name="**/servlets/*"/>
        </fileset>
