@@ -243,7 +243,7 @@ public class GMLBuilder {
 	    finalResult.append(indent + XMLNS_GML);
 	    finalResult.append(indent + XMLNS_WFS);
 	    finalResult.append(indent + XS_NAMESPACE);
-	    finalResult.append(indent + "schemaLocation=\"" + xmlns + " " );
+	    finalResult.append(indent + "xs:schemaLocation=\"" + xmlns + " " );
 	    finalResult.append(schIndent  + configInfo.getUrl() + 
 			 "/DescribeFeatureType?" //HACK: bad hard code here.
 			 + "typeName=" + typeInfo.getFullName() + schIndent +  
