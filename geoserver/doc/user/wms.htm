@@ -195,6 +195,14 @@ great way to get involved in the GeoServer project.&nbsp; Soon we will
 have some better design documents, but until then just email
 geoserver-devel@lists.sourceforge.net and we can point you in the right
 directions.</p>
+  <p>Note: In order to render most images the java installation running
+the WMS needs to be installed with the Java Advanced Imaging and JAI Image 
+I/O apis.  The JAI can be downloaded <a href="http://java.sun.com/products/java-media/jai/downloads/download-1_1_2.html">here</a> 
+and the Image I/O extension <a href="http://java.sun.com/products/java-media/jai/downloads/download-iio.html">here</a>.  
+If neither of these is included then the only format available will be SVG (which
+requires a <a href="http://www.adobe.com/svg/viewer/install/main.html">SVG Viewer</a>
+).  JAI alone will support jpeg and png, the Image I/O extensions provide even more
+formats.
             </blockquote>
             </td>
           </tr>
@@ -315,6 +323,15 @@ It should also work with the 'blue' style - just do <span
  style="font-style: italic;">styles=normal</span>.&nbsp; Other formats
 are also available, check the capabilities document.&nbsp; For SVG just
 issue <span style="font-style: italic;">Format=image/svg</span>.&nbsp;
+<p>If you are using linux and are getting an error like 
+'Can't connect to X11 window server using ':0.0' as the value of the DISPLAY 
+variable.'  then you need to run the server in headless mode.  The easiest
+way to do this is to use Xfvb with a command like: 
+'Xvfb :1 -screen 1 1024x768x16 &'.  Then set your DISPLAY variable to 
+:1 (export DISPLAY=:1 in bash).  This will render the images in the background,
+as x on linux needs somewhere to render images.
+
+
               <br>
             </blockquote>
             </td>

@@ -13,7 +13,7 @@ import org.xml.sax.helpers.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: XmlResponseHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: XmlResponseHandler.java,v 1.2.4.1 2004/02/02 21:23:45 cholmesny Exp $
  */
 public abstract class XmlResponseHandler implements ResponseHandler {
     /** blank attributes to be used when none are needed. */
@@ -23,6 +23,7 @@ public abstract class XmlResponseHandler implements ResponseHandler {
     private char[] cr = new char[0];
     private char[] tab = new char[0];
     private int indentLevel = 0;
+    private boolean indent = true;
 
     /** DOCUMENT ME! */
     private ContentHandler contentHandler;
@@ -169,10 +170,12 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      * @throws SAXException DOCUMENT ME!
      */
     protected void indent(int level) throws SAXException {
+       if (indent) {
         while (level > 0) {
             contentHandler.ignorableWhitespace(tab, 0, TAB_SIZE);
             --level;
         }
+       }
     }
 
     /**
@@ -181,24 +184,29 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      * @throws SAXException DOCUMENT ME!
      */
     protected void cReturn() throws SAXException {
+    	if (indent){
         contentHandler.characters(cr, 0, cr.length);
         indent(indentLevel);
+    	}
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets pretty printing.  
      *
-     * @param newLines DOCUMENT ME!
-     * @param indent DOCUMENT ME!
+     * @param newLines Does nothing.
+     * @param indent Sets pretty printing.
+     * @task TODO: change method signature to take just on argument, pretty
+     * printing on or off.
      */
     public void setPrettyPrint(boolean newLines, boolean indent) {
         if (newLines) {
             cr = new char[1];
             cr[0] = '\n';
         } else {
-            cr = new char[0];
+            cr = new char[1];
+            cr[0] = ' ';
         }
-
+        this.indent = indent;
         if (indent) {
             tab = new char[TAB_SIZE];
             java.util.Arrays.fill(tab, 0, TAB_SIZE, ' ');

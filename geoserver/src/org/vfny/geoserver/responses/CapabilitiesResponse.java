@@ -22,7 +22,7 @@ import javax.xml.transform.stream.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.25 2004/01/05 23:18:38 cholmesny Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.25.2.1 2004/02/02 20:50:07 cholmesny Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -84,6 +84,11 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
      */
     public void writeTo(OutputStream out) throws ServiceException {
         try {
+        	//See note in FeatureTransformer - this ensures things function right.
+        	//I had an error in resin with wms if this was not set, their 
+        	//transformer could not handle the dtd I was trying to make with WMS.
+			System.setProperty("javax.xml.transform.TransformerFactory",
+						   "org.apache.xalan.processor.TransformerFactoryImpl");
             TransformerFactory tFactory = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer();
 

@@ -4,22 +4,21 @@
  */
 package org.vfny.geoserver.config;
 
-import com.sun.jndi.toolkit.url.Uri;
-import org.geotools.data.*;
-import org.geotools.feature.*;
-import org.w3c.dom.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.*;
+import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.w3c.dom.Element;
 
 
 /**
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.3 2003/12/23 20:44:12 cholmesny Exp $
+ * @version $Id: GlobalConfig.java,v 1.3.4.1 2004/02/04 18:43:33 cholmesny Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -60,6 +59,7 @@ public class GlobalConfig extends AbstractConfig {
     private String baseUrl;
     private String schemaBaseUrl;
     private ContactConfig contactConfig;
+
 
     /**
      * Used to aquire a GlobalConfig for testing against
@@ -169,7 +169,7 @@ public class GlobalConfig extends AbstractConfig {
 
         LOGGER.config("numDecimals returning is " + numDecimals);
         elem = getChildElement(globalConfigElem, "charSet");
-        charSet = Charset.forName("ISO-8859-1");
+        charSet = Charset.forName("UTF-8");
 
         if (elem != null) {
             String chSet = getAttribute(elem, "value", true);
@@ -223,6 +223,7 @@ public class GlobalConfig extends AbstractConfig {
 
         return globalConfig;
     }
+
 
     /**
      * DOCUMENT ME!

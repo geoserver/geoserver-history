@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.3 2004/01/05 17:36:45 cholmesny Exp $
+ * @version $Id: WFSConfig.java,v 1.3.2.3 2004/02/07 03:51:26 cholmesny Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -23,8 +23,13 @@ public class WFSConfig extends ServiceConfig {
         + "WFS-capabilities.xsd";
     private GlobalConfig global = GlobalConfig.getInstance();
     private String describeUrl;
+    
+    /** Whether name, description, and bounded by should have gml: prepended. */
     private boolean gmlPrefixing = false;
 
+	/** Whether transactions should be enabled. */
+	private boolean transactionsEnabled = true;
+	
     /**
      * Creates a new WFSConfig object.
      *
@@ -41,6 +46,10 @@ public class WFSConfig extends ServiceConfig {
         Element elem = getChildElement(root, "gmlPrefixing", false);
         LOGGER.info("gml element is " + elem + " root is " + root);
 
+		String transType = notNull(getChildText(root, "serviceLevel", false));
+		if (transType.equalsIgnoreCase("basic")){
+			this.transactionsEnabled = false;
+		}
         if (elem != null) {
             this.gmlPrefixing = getBooleanAttribute(elem, "value", false);
         }
@@ -80,6 +89,10 @@ public class WFSConfig extends ServiceConfig {
     public String getWfsCapLocation() {
         return global.getSchemaBaseUrl() + WFS_CAP_LOC;
     }
+
+	public boolean isTransactionsEnabled(){
+		return transactionsEnabled;
+	}
 
     /**
      * Returns whether the gml prefix should be appended to name, description

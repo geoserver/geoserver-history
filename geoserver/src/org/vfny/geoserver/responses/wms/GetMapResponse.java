@@ -4,14 +4,20 @@
  */
 package org.vfny.geoserver.responses.wms;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wms.map.*;
-import java.io.*;
-import java.util.*;
+import org.vfny.geoserver.responses.wms.map.GetMapDelegate;
+import org.vfny.geoserver.responses.wms.map.JAIMapResponse;
+import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
 
 
 /**
@@ -20,10 +26,10 @@ import java.util.*;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.3 2003/12/26 21:59:01 cholmesny Exp $
+ * @version $Id: GetMapResponse.java,v 1.3.4.3 2004/02/07 03:26:44 cholmesny Exp $
  */
 public class GetMapResponse implements Response {
-    /** DOCUMENT ME! */
+    /** The delegates to produce maps */
     private static final List delegates = new LinkedList();
 
     private static final List supportedMimeTypes = new LinkedList();
@@ -34,10 +40,13 @@ public class GetMapResponse implements Response {
         producer = new SVGMapResponse();
         supportedMimeTypes.addAll(producer.getSupportedFormats());
         delegates.add(producer);
-
+        try {
         producer = new JAIMapResponse();
-        supportedMimeTypes.addAll(producer.getSupportedFormats());
+        supportedMimeTypes.addAll(producer.getSupportedFormats() );
         delegates.add(producer);
+        } catch (NoClassDefFoundError ncdfe){
+        	//do nothing, no jai found, so the delegate just won't be added.
+        }
     }
 
     private GetMapDelegate delegate;
