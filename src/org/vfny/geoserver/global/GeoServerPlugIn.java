@@ -9,6 +9,7 @@
 package org.vfny.geoserver.global;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -32,7 +33,7 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.8 2004/02/17 22:01:56 dmzwiers Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.9 2004/02/20 00:28:19 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
  */
@@ -115,13 +116,22 @@ public class GeoServerPlugIn implements PlugIn {
                     "An error occured loading the initial configuration.");
             }
 
-            File plugInDir = new File(rootDir, "data/plugIns");
-            File validationDir = new File(rootDir, "data/validation");
 
             try {
-            	Map plugIns = XMLReader.loadPlugIns(plugInDir);
-				Map testSuites = XMLReader.loadValidations(validationDir, plugIns);
-            	gv.load(testSuites,plugIns);
+            	File plugInDir = new File(rootDir, "data/plugIns");
+            	File validationDir = new File(rootDir, "data/validation");
+            	Map plugIns = null;
+            	Map testSuites = null;
+            	if(plugInDir.exists()){
+            		plugIns = XMLReader.loadPlugIns(plugInDir);
+            		if(validationDir.exists()){
+            			testSuites = XMLReader.loadValidations(validationDir, plugIns);
+            			gv.load(testSuites,plugIns);
+            		}
+            		testSuites = new HashMap();
+            	}else{
+            		plugIns = new HashMap();
+            	}
             	wfs.setValidation(gv);
             } catch (Exception e) {
             	// LOG error
