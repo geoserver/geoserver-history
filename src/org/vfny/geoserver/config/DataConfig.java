@@ -36,7 +36,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.13 2004/03/09 01:37:40 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.14 2004/04/15 20:59:29 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -211,7 +211,7 @@ public class DataConfig {
 
             FeatureTypeInfoDTO f = (FeatureTypeInfoDTO) data.getFeaturesTypes()
                                                             .get(key);
-            featuresTypes.put(f.getDataStoreId() + f.getName(),
+            featuresTypes.put(f.getDataStoreId() +":"+ f.getName(),
                 new FeatureTypeConfig(f));
         }
 
