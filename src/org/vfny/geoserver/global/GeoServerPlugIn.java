@@ -32,7 +32,7 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.7 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.8 2004/02/17 22:01:56 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
  */
@@ -88,7 +88,7 @@ public class GeoServerPlugIn implements PlugIn {
             GeoServer gs = new GeoServer();
             sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, gs);
             
-            Data dt = new Data(f);
+            Data dt = new Data(f,gs);
             sc.setAttribute(Data.WEB_CONTAINER_KEY, dt);
             
             WFS wfs = new WFS();
