@@ -28,13 +28,14 @@ public class DescribeRequest
     /** Stores all feature types */
     protected List featureTypes = new ArrayList();
     
+    protected String outputFormat = "XMLSCHEMA";
     
     /** Empty constructor. */
     public DescribeRequest() { super(); }
     
     /** Return request type. */
     public String getRequest() { return "DESCRIBEFATURETYPE"; }
-    
+                                                                
     /** Return boolean for all requested types. */
     public boolean allRequested() { return this.allRequested; }    
 
@@ -53,18 +54,34 @@ public class DescribeRequest
     /** Return requested feature types. */
     public List getFeatureTypes() { return this.featureTypes; }    
 
+    /**
+     * Sets the outputFormat.  Right now XMLSCHEMA is the only allowed
+     * format.
+     * 
+     * @param outputFormat the new outputFormat
+     */
+    public void setOutputFormat(String outputFormat){
+	if (!(outputFormat == null || outputFormat.equals(""))){
+	    this.outputFormat = outputFormat;
+	}
+    }
+    
+    /** Returns the format for printing the feature type. */
+    public String getOutputFormat() {
+	return outputFormat;
+    }
 
     /*************************************************************************
      * OVERRIDES OF toString AND equals METHODS.                             *
      *************************************************************************/
     public String toString() {
-        String returnString = "DescribeFeatureType Request [feature types: ";
-        Iterator i = featureTypes.listIterator();
-
+        String returnString = "DescribeFeatureType Request [outputFormat: ";
+	returnString = returnString + outputFormat + " [feature types: ";
         LOGGER.finest("all req: " + allRequested());
         if( this.allRequested()) {
             return returnString + " ALL ]";
         } else {
+	    Iterator i = featureTypes.listIterator();
             while(i.hasNext()) {
                 returnString = returnString + i.next(); 
                 if(i.hasNext()) {
