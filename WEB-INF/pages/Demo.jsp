@@ -39,13 +39,13 @@
       <tr>
         <td class="label">url:</td>
         <td class="datum">
-          <input type="text" size="80" name="url">
+          <input type="text" size="80" name="url" value="<bean:write name="demoForm" property="url"/>">
         </td>
       </tr>
       <tr>
         <td class="label">body:</td>
         <td class="datum">
-          <textarea rows=4 cols=80 name="body"></textarea>
+          <textarea rows=4 cols=80 name="body"><bean:write name="demoForm" property="body"/></textarea>
         </td>
       </tr>    
       <tr>

@@ -45,28 +45,35 @@ import org.vfny.geoserver.global.UserContainer;
  */
 public class DemoAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         
         DemoForm demoForm = (DemoForm) form;
         
         File dir = demoForm.getDir();
         String demo = demoForm.getDemo();
+        System.out.println("Demo Exists:"+demo);
         if( demo.equals("")){
-            demoForm.setUrl( "" );
+            demoForm.setUrl( org.vfny.geoserver.requests.Requests.getBaseUrl(request)+"wfs" );
             demoForm.setBody( "" );
         }
+        String url = org.vfny.geoserver.requests.Requests.getBaseUrl(request)+"wfs";
+        System.out.println("Demo update url:"+url);
+        
         File file = new File( dir, demo );
+        System.out.println("Demo reading:"+file );
         BufferedReader reader = new BufferedReader( new FileReader(file));
-        String url = reader.readLine();
         StringBuffer buf = new StringBuffer();
         for( String line = reader.readLine(); line != null; line = reader.readLine() ){
             buf.append( line );
+            System.out.println( "demo:"+line );
             buf.append("\n");
         }
         demoForm.setUrl( url );
         demoForm.setBody( buf.toString() );
         
-        return null;        
+        // return back to the admin demo
+        //
+        return mapping.findForward("admin.demo");     
     }
 }

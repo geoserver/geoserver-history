@@ -20,7 +20,7 @@ import org.apache.struts.action.ActionMapping;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DemoForm.java,v 1.1 2004/04/15 23:12:28 jive Exp $
+ * @version $Id: DemoForm.java,v 1.2 2004/04/16 00:14:36 jive Exp $
  */
 public class DemoForm extends ActionForm {
     private String action;
@@ -40,20 +40,19 @@ public class DemoForm extends ActionForm {
      */
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
-        url = org.vfny.geoserver.requests.Requests.getBaseUrl(request)+"/geoserver/wfs";
-        body = "";
         
         ServletContext context = getServlet().getServletContext();
         this.dir = new File(context.getRealPath("/data/demo"));
         demoList = new ArrayList();
         demoList.add("");
-        System.out.println(dir+" exists "+dir.exists());
-        System.out.println(dir+" isDir  "+dir.isDirectory());        
+                
         if( dir.exists() && dir.isDirectory() ){
             File files[] = dir.listFiles();
             for( int i=0; i<files.length;i++){
                 File file = files[i];                
-                demoList.add( file.getName() );                
+                demoList.add( file.getName() );
+                System.out.println( "Demo "+file );
+                                
             }            
         }        
     }
