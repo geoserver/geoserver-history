@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.vfny.geoserver.global.ConfigurationException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,9 +25,9 @@ import org.xml.sax.SAXException;
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.1 2004/01/15 23:45:21 dmzwiers Exp $
+ * @version $Id: ReaderUtils.java,v 1.2 2004/01/19 23:54:56 dmzwiers Exp $
  */
-public class ReaderUtils{
+class ReaderUtils{
 	/**
 	 * Used internally to create log information to detect errors.
 	 */
@@ -53,45 +52,22 @@ public class ReaderUtils{
 	 * @return the resulting DOM tree
 	 * @throws ConfigurationException
 	 */
-	public static Element loadConfig(Reader configFile)
-		throws ConfigurationException {
-		try {
-			LOGGER.fine("loading configuration file " + configFile);
+	public static Element loadConfig(Reader configFile) throws IOException, ParserConfigurationException, SAXException{
+		LOGGER.fine("loading configuration file " + configFile);
 
-			InputSource in = new InputSource(configFile);
-			DocumentBuilderFactory dfactory = DocumentBuilderFactory
+		InputSource in = new InputSource(configFile);
+		DocumentBuilderFactory dfactory = DocumentBuilderFactory
 				.newInstance();
-			//dfactory.setNamespaceAware(true);
-			/*set as optimizations and hacks for geoserver schema config files
-			 * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
-			 * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.
-			 */
-			dfactory.setNamespaceAware(false);
-			dfactory.setValidating(false);
-			dfactory.setIgnoringComments(true);
-			dfactory.setCoalescing(true);
-			dfactory.setIgnoringElementContentWhitespace(true);
+		dfactory.setNamespaceAware(true);
+		dfactory.setValidating(true);
+		dfactory.setIgnoringComments(true);
+		dfactory.setCoalescing(true);
+		dfactory.setIgnoringElementContentWhitespace(true);
 
-			Document serviceDoc = dfactory.newDocumentBuilder().parse(in);
-			Element configElem = serviceDoc.getDocumentElement();
+		Document serviceDoc = dfactory.newDocumentBuilder().parse(in);
+		Element configElem = serviceDoc.getDocumentElement();
 
-			return configElem;
-		} catch (IOException ioe) {
-			String message = "problem reading file " + configFile + "due to: "
-				+ ioe.getMessage();
-			LOGGER.warning(message);
-			throw new ConfigurationException(message, ioe);
-		} catch (ParserConfigurationException pce) {
-			String message = "trouble with parser to read org.vfny.geoserver.global.xml, make sure class"
-				+ "path is correct, reading file " + configFile;
-			LOGGER.warning(message);
-			throw new ConfigurationException(message, pce);
-		} catch (SAXException saxe) {
-			String message = "trouble parsing XML in " + configFile + ": "
-				+ saxe.getMessage();
-			LOGGER.warning(message);
-			throw new ConfigurationException(message, saxe);
-		}
+		return configElem;
 	}
 	
 	/**
@@ -104,15 +80,15 @@ public class ReaderUtils{
 	 * @return the File handle passed in
 	 * @throws ConfigurationException When the file does not exist or is not the type specified.
 	 */
-	public static File initFile(File f, boolean isDir) throws ConfigurationException{
+	public static File initFile(File f, boolean isDir) throws IOException{
 		if(!f.exists()){
-			throw new ConfigurationException("Path specified does not have a valid file.\n"+f+"\n\n");
+			throw new IOException("Path specified does not have a valid file.\n"+f+"\n\n");
 		}
 		if(isDir && !f.isDirectory()){
-			throw new ConfigurationException("Path specified does not have a valid file.\n"+f+"\n\n");
+			throw new IOException("Path specified does not have a valid file.\n"+f+"\n\n");
 		}
 		if(!isDir && !f.isFile()){
-			throw new ConfigurationException("Path specified does not have a valid file.\n"+f+"\n\n");
+			throw new IOException("Path specified does not have a valid file.\n"+f+"\n\n");
 		}
 		LOGGER.fine("File is valid: " + f);
 		return f;
@@ -130,7 +106,7 @@ public class ReaderUtils{
 	 * @return The child element found, null if not found.
 	 * @throws ConfigurationException When a child element is required and not found.
 	 */
-	public static Element getChildElement(Element root, String name, boolean mandatory) throws ConfigurationException {
+	public static Element getChildElement(Element root, String name, boolean mandatory) throws SAXException {
 		Node child = root.getFirstChild();
 
 		while (child != null) {
@@ -144,7 +120,7 @@ public class ReaderUtils{
 		}
 
 		if (mandatory && (child == null)) {
-			throw new ConfigurationException(root.getNodeName()
+			throw new SAXException(root.getNodeName()
 				+ " does not contains a child element named " + name);
 		}
 
@@ -164,7 +140,7 @@ public class ReaderUtils{
 	public static Element getChildElement(Element root, String name){
 		try{
 			return getChildElement(root, name, false);
-		}catch(ConfigurationException e){
+		}catch(SAXException e){
 			//will never be here.
 			return null;
 		}
@@ -183,7 +159,7 @@ public class ReaderUtils{
 	 * @return The int value if the attribute was found, the default otherwise.
 	 * @throws ConfigurationException When a attribute element is required and not found.
 	 */
-	public static int getIntAttribute(Element elem, String attName, boolean mandatory, int defaultValue) throws ConfigurationException {
+	public static int getIntAttribute(Element elem, String attName, boolean mandatory, int defaultValue) throws SAXException {
 		String attValue = getAttribute(elem, attName, mandatory);
 
 		if (!mandatory && (attValue == null)) {
@@ -194,7 +170,7 @@ public class ReaderUtils{
 			return Integer.parseInt(attValue);
 		} catch (Exception ex) {
 			if (mandatory) {
-				throw new ConfigurationException(attName
+				throw new SAXException(attName
 					+ " attribute of element " + elem.getNodeName()
 					+ " must be an integer, but it's '" + attValue + "'");
 			} else {
@@ -215,7 +191,7 @@ public class ReaderUtils{
 	 * @return The value if the attribute was found, the null otherwise.
 	 * @throws ConfigurationException When a child attribute is required and not found.
 	 */
-	public static String getAttribute(Element elem, String attName, boolean mandatory) throws ConfigurationException {
+	public static String getAttribute(Element elem, String attName, boolean mandatory) throws SAXException {
 		Attr att = elem.getAttributeNode(attName);
 
 		String value = null;
@@ -226,11 +202,11 @@ public class ReaderUtils{
 
 		if (mandatory) {
 			if (att == null) {
-				throw new ConfigurationException("element "
+				throw new SAXException("element "
 					+ elem.getNodeName()
 					+ " does not contains an attribute named " + attName);
 			} else if ("".equals(value)) {
-				throw new ConfigurationException("attribute " + attName
+				throw new SAXException("attribute " + attName
 					+ "in element " + elem.getNodeName() + " is empty");
 			}
 		}
@@ -250,7 +226,7 @@ public class ReaderUtils{
 	 * @return The value if the attribute was found, the false otherwise.
 	 * @throws ConfigurationException When a child attribute is required and not found.
 	 */
-	public static boolean getBooleanAttribute(Element elem, String attName, boolean mandatory) throws ConfigurationException {
+	public static boolean getBooleanAttribute(Element elem, String attName, boolean mandatory) throws SAXException {
 		String value = getAttribute(elem, attName, mandatory);
 
 		return Boolean.valueOf(value).booleanValue();
@@ -268,7 +244,7 @@ public class ReaderUtils{
 	public static String getChildText(Element root, String childName) {
 		try {
 			return getChildText(root, childName, false);
-		} catch (ConfigurationException ex) {
+		} catch (SAXException ex) {
 			return null;
 		}
 	}
@@ -285,7 +261,7 @@ public class ReaderUtils{
 	 * @return The value if the child was found, the null otherwise.
 	 * @throws ConfigurationException When a child attribute is required and not found.
 	 */
-	public static String getChildText(Element root, String childName, boolean mandatory) throws ConfigurationException {
+	public static String getChildText(Element root, String childName, boolean mandatory) throws SAXException {
 		Element elem = getChildElement(root, childName, mandatory);
 
 		if (elem != null) {
@@ -295,7 +271,7 @@ public class ReaderUtils{
 				String msg = "Mandatory child " + childName + "not found in "
 					+ " element: " + root;
 
-				throw new ConfigurationException(msg);
+				throw new SAXException(msg);
 			}
 
 			return null;
@@ -313,7 +289,7 @@ public class ReaderUtils{
 	public static String getElementText(Element elem) {
 		try {
 			return getElementText(elem, false);
-		} catch (ConfigurationException ex) {
+		} catch (SAXException ex) {
 			return null;
 		}
 	}
@@ -329,7 +305,7 @@ public class ReaderUtils{
 	 * @return The value if the text was found, the null otherwise.
 	 * @throws ConfigurationException When text is required and not found.
 	 */
-	public static String getElementText(Element elem, boolean mandatory) throws ConfigurationException {
+	public static String getElementText(Element elem, boolean mandatory) throws SAXException {
 		String value = null;
 
 		LOGGER.finer("getting element text for " + elem);
@@ -348,7 +324,7 @@ public class ReaderUtils{
 					value = child.getNodeValue();
 
 					if (mandatory && "".equals(value.trim())) {
-						throw new ConfigurationException(elem.getNodeName()
+						throw new SAXException(elem.getNodeName()
 							+ " text is empty");
 					}
 
@@ -357,11 +333,11 @@ public class ReaderUtils{
 			}
 
 			if (mandatory && (value == null)) {
-				throw new ConfigurationException(elem.getNodeName()
+				throw new SAXException(elem.getNodeName()
 					+ " element does not contains text");
 			}
 		} else {
-			throw new ConfigurationException("Argument element can't be null");
+			throw new SAXException("Argument element can't be null");
 		}
 
 		return value;
@@ -430,7 +406,7 @@ public class ReaderUtils{
 	 * @return The double value if the attribute was found, the NaN otherwise.
 	 * @throws ConfigurationException When a attribute element is required and not found.
 	 */
-	public static double getDoubleAttribute(Element elem, String attName, boolean mandatory) throws ConfigurationException {
+	public static double getDoubleAttribute(Element elem, String attName, boolean mandatory) throws SAXException {
 		String value = getAttribute(elem, attName, mandatory);
 
 		double d = Double.NaN;
@@ -439,7 +415,7 @@ public class ReaderUtils{
 			try {
 				d = Double.parseDouble(value);
 			} catch (NumberFormatException ex) {
-				throw new ConfigurationException("Illegal attribute value for "
+				throw new SAXException("Illegal attribute value for "
 					+ attName + " in element " + elem.getNodeName()
 					+ ". Expected double, but was " + value);
 			}

@@ -33,7 +33,7 @@ import java.util.List;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestSuiteDTO.java,v 1.2 2004/01/15 01:14:44 dmzwiers Exp $
+ * @version $Id: TestSuiteDTO.java,v 1.3 2004/01/19 23:54:56 dmzwiers Exp $
  */
 public class TestSuiteDTO {
 	/** the test suite name */
@@ -106,8 +106,12 @@ public class TestSuiteDTO {
 			return false;
 		boolean r = true;
 		TestSuiteDTO ts = (TestSuiteDTO)obj;
-		r = r && (name == ts.getName());
-		r = r && (description == ts.getDescription());
+		
+		if(name!=null)
+		r = r && (name.equals(ts.getName()));
+		if(description!=null)
+		r = r && (description.equals(ts.getDescription()));
+		
 		if(tests == null){
 			if(ts.getTests()!=null)
 				return false;
