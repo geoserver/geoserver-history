@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.global;
 
+import java.net.URL;
 import java.util.List;
+import java.util.LinkedList;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
 /**
@@ -12,7 +14,7 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.1.2.3 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.1.2.4 2004/01/07 00:51:42 dmzwiers Exp $
  */
 public abstract class Service extends Abstract{
 	
@@ -39,7 +41,7 @@ public abstract class Service extends Abstract{
      *
      * @return DOCUMENT ME!
      */
-    public String getOnlineResource() {
+    public URL getOnlineResource() {
         return config.getOnlineResource();
     }
 
@@ -103,7 +105,11 @@ public abstract class Service extends Abstract{
 		 * @return DOCUMENT ME!
 		 */
 		public List getKeywords() {
-			return config.getKeywords();
+			LinkedList ll = new LinkedList();
+			String [] s = config.getKeywords();
+			for(int i=0;i<s.length;i++)
+				ll.add(s[i]);
+			return ll;
 		}
 
 		/**

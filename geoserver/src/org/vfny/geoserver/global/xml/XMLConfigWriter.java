@@ -47,7 +47,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/06 23:03:15 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/07 00:51:42 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -255,16 +255,15 @@ public class XMLConfigWriter {
 			cw.textTag("title",s.getTitle());
 		if(s.getAbstract()!=null && s.getAbstract()!="")
 			cw.textTag("abstract",s.getAbstract());
-		if(s.getKeywords().size()!=0){
+		if(s.getKeywords().length!=0){
 			cw.openTag("keywords");
-			Iterator i = s.getKeywords().iterator();
-			while(i.hasNext()){
-				cw.textTag("keyword",i.next().toString());
+			for(int i=0;i<s.getKeywords().length;i++){
+				cw.textTag("keyword",(s.getKeywords())[i].toString());
 			}
 			cw.closeTag("keywords");
 		}
-		if(s.getOnlineResource()!=null && s.getOnlineResource()!="")
-			cw.textTag("onlineResource",s.getOnlineResource());
+		if(s.getOnlineResource()!=null)
+			cw.textTag("onlineResource",s.getOnlineResource().toString());
 		if(s.getFees()!=null && s.getFees()!="")
 			cw.textTag("fees",s.getFees());
 		if(s.getAccessConstraints()!=null && s.getAccessConstraints()!="")
@@ -531,7 +530,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/06 23:03:15 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/07 00:51:42 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -609,7 +608,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/06 23:03:15 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/07 00:51:42 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

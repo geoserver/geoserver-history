@@ -21,7 +21,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.8 2004/01/06 23:03:13 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.9 2004/01/07 00:51:42 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -106,7 +106,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      */
     protected void handleOnlineResouce(Service config)
         throws SAXException {
-        handleSingleElem("OnlineResource", config.getOnlineResource());
+        handleSingleElem("OnlineResource", config.getOnlineResource().toString());
     }
 
     /**

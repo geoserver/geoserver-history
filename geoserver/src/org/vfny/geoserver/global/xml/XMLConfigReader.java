@@ -52,7 +52,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
+import java.net.URL;
+import java.net.MalformedURLException;
 import com.vividsolutions.jts.geom.Envelope;
 /**
  * XMLConfigReader purpose.
@@ -66,7 +67,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.6 2004/01/06 23:03:15 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.7 2004/01/07 00:51:42 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -433,7 +434,11 @@ public class XMLConfigReader {
 		s.setAccessConstraints(ReaderUtils.getChildText(serviceRoot, "accessConstraints"));
 		s.setMaintainer(ReaderUtils.getChildText(serviceRoot, "maintainer"));
 		s.setEnabled(ReaderUtils.getBooleanAttribute(serviceRoot, "enabled", true));
-		s.setOnlineResource(ReaderUtils.getChildText(serviceRoot, "onlineResource", true));
+		try{
+			s.setOnlineResource(new URL(ReaderUtils.getChildText(serviceRoot, "onlineResource", true)));
+		}catch(MalformedURLException e){
+			throw new ConfigurationException(e);
+		}
 		
 		return s;
 	}
@@ -904,7 +909,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.6 2004/01/06 23:03:15 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.7 2004/01/07 00:51:42 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**
@@ -1254,7 +1259,7 @@ class ReaderUtils{
 	 * @param keywordsElem The root element to look for children in.
 	 * @return The list of keywords that were found.
 	 */
-	public static List getKeyWords(Element keywordsElem) {
+	public static String [] getKeyWords(Element keywordsElem) {
 		NodeList klist = keywordsElem.getElementsByTagName("keyword");
 		int kCount = klist.getLength();
 		List keywords = new ArrayList(kCount);
@@ -1267,7 +1272,7 @@ class ReaderUtils{
 				keywords.add(kword);
 			}
 		}
-		return keywords;
+		return (String [])keywords.toArray();
 	}
 
 	/**

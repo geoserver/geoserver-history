@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.8 2004/01/06 23:03:14 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.9 2004/01/07 00:51:42 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();
@@ -370,7 +370,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      */
     protected void handleOnlineResouce(Service config)
         throws SAXException {
-        String url = config.getOnlineResource();
+        String url = config.getOnlineResource().toString();
         AttributesImpl olAtts = new AttributesImpl();
         String xlinkNs = "http://www.w3c.org/1999/xlink";
 
