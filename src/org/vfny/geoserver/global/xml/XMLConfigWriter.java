@@ -4,16 +4,7 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -26,8 +17,15 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -41,7 +39,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.23 2004/02/16 23:46:56 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.24 2004/04/05 11:44:40 cholmesny Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -74,7 +72,7 @@ public class XMLConfigWriter {
                     "catalog.xml"), false);
 
         try {
-        	FileWriter fw = new FileWriter(catalogFile);
+            FileWriter fw = new FileWriter(catalogFile);
             storeCatalog(new WriterHelper(fw), data);
             fw.close();
         } catch (IOException e) {
@@ -103,9 +101,8 @@ public class XMLConfigWriter {
                     "services.xml"), false);
 
         try {
-        	FileWriter fw = new FileWriter(configFile);
-            storeServices(new WriterHelper(fw), wms,
-                wfs, geoServer);
+            FileWriter fw = new FileWriter(configFile);
+            storeServices(new WriterHelper(fw), wms, wfs, geoServer);
             fw.close();
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
@@ -190,6 +187,20 @@ public class XMLConfigWriter {
                     + "standalone Tomcat server needs SchemaBaseUrl defined\n"
                     + "for validation.");
                 cw.textTag("SchemaBaseUrl", g.getSchemaBaseUrl());
+            }
+
+            if ((g.getAdminUserName() != null) && (g.getAdminUserName() != "")) {
+                cw.comment(
+                    "Defines the user name of the administrator for log in\n"
+                    + "to the web based administration tool.");
+                cw.textTag("adminUserName", g.getAdminUserName());
+            }
+
+            if ((g.getAdminPassword() != null) && (g.getAdminPassword() != "")) {
+                cw.comment(
+                    "Defines the password of the administrator for log in\n"
+                    + "to the web based administration tool.");
+                cw.textTag("adminPassword", g.getAdminPassword());
             }
 
             if (g.getContact() != null) {
@@ -278,7 +289,7 @@ public class XMLConfigWriter {
         String u = null;
         String t = "";
         boolean gml = false;
-        int serviceLevel=0;
+        int serviceLevel = 0;
 
         if (obj instanceof WFSDTO) {
             WFSDTO w = (WFSDTO) obj;
@@ -340,8 +351,8 @@ public class XMLConfigWriter {
             cw.valueTag("gmlPrefixing", gml + "");
         }
 
-        if (serviceLevel!=0) {
-        	cw.valueTag("serviceLevel", serviceLevel + "");
+        if (serviceLevel != 0) {
+            cw.valueTag("serviceLevel", serviceLevel + "");
         }
 
         if ((s.getMaintainer() != null) && (s.getMaintainer() != "")) {
@@ -620,7 +631,7 @@ public class XMLConfigWriter {
         File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
 
         try {
-        	FileWriter fw = new FileWriter(f);
+            FileWriter fw = new FileWriter(f);
             WriterHelper cw = new WriterHelper(fw);
             Map m = new HashMap();
 
@@ -647,7 +658,7 @@ public class XMLConfigWriter {
 
             cw.valueTag("numDecimals", ft.getNumDecimals() + "");
 
-            if (ft.getKeywords()!=null && ft.getKeywords().size() != 0) {
+            if ((ft.getKeywords() != null) && (ft.getKeywords().size() != 0)) {
                 String s = "";
                 Iterator i = ft.getKeywords().iterator();
 
@@ -713,14 +724,18 @@ public class XMLConfigWriter {
 
     protected static void storeFeatureSchema(FeatureTypeInfoDTO fs, File dir)
         throws ConfigurationException {
-    	if(fs.getSchemaName() == null || fs.getSchemaName()=="")
-    		return;
-    	if(fs.getSchemaBase() == null || fs.getSchemaBase()=="")
-    		return;
+        if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {
+            return;
+        }
+
+        if ((fs.getSchemaBase() == null) || (fs.getSchemaBase() == "")) {
+            return;
+        }
+
         File f = WriterUtils.initWriteFile(new File(dir, "schema.xml"), false);
 
         try {
-        	FileWriter fw = new FileWriter(f);
+            FileWriter fw = new FileWriter(f);
             storeFeatureSchema(fs, fw);
             fw.close();
         } catch (IOException e) {
@@ -733,9 +748,12 @@ public class XMLConfigWriter {
         WriterHelper cw = new WriterHelper(w);
         HashMap m = new HashMap();
         String t = fs.getSchemaName();
+
         if (t != null) {
-        	if(!"_Type".equals(t.substring(t.length()-5)))
-        		t = t + "_Type";
+            if (!"_Type".equals(t.substring(t.length() - 5))) {
+                t = t + "_Type";
+            }
+
             m.put("name", t);
         }
 
@@ -758,22 +776,33 @@ public class XMLConfigWriter {
             m.put("nillable", "" + ati.isNillable());
             m.put("minOccurs", "" + ati.getMinOccurs());
             m.put("maxOccurs", "" + ati.getMaxOccurs());
-            NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
-            NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+
+            NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance()
+                                                                 .getNameSpaceTranslator("xs");
+            NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance()
+                                                                 .getNameSpaceTranslator("gml");
+
             if (!ati.isComplex()) {
                 if (ati.getName() == ati.getType()) {
                     String r = "";
                     NameSpaceElement nse = nst1.getElement(ati.getType());
-                    if(nse == null)
-                    	nse = nst2.getElement(ati.getType());
+
+                    if (nse == null) {
+                        nse = nst2.getElement(ati.getType());
+                    }
+
                     r = nse.getQualifiedTypeRefName();
                     m.put("ref", r);
                 } else {
                     m.put("name", ati.getName());
+
                     String r = "";
                     NameSpaceElement nse = nst1.getElement(ati.getType());
-                    if(nse == null)
-                    	nse = nst2.getElement(ati.getType());
+
+                    if (nse == null) {
+                        nse = nst2.getElement(ati.getType());
+                    }
+
                     r = nse.getQualifiedTypeRefName();
 
                     m.put("type", r);
@@ -807,7 +836,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.23 2004/02/16 23:46:56 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.24 2004/04/05 11:44:40 cholmesny Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
