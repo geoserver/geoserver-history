@@ -146,7 +146,7 @@ abstract public class KvpRequestReader {
                 LOGGER.finer("looking at featureId" + fid);
 
                 int pos = fid.indexOf(".");
-                String typeName = fid.substring(0, fid.indexOf("."));
+                String typeName = fid.substring(0, fid.lastIndexOf("."));
                 LOGGER.finer("adding typename: " + typeName + " from fid");
                 typeList.add(typeName);
             }
