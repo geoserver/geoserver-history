@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.DefaultAttributeType.Geometric;
+//import org.geotools.feature.AttributeType;
+//import org.geotools.feature.DefaultAttributeType.Geometric;
 import org.vfny.geoserver.global.xml.NameSpaceElement;
 import org.vfny.geoserver.global.xml.NameSpaceTranslator;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.12 2004/03/14 05:19:52 cholmesny Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.13 2004/03/30 11:14:52 cholmesny Exp $
  */
 public class AttributeTypeInfoDTO implements DataTransferObject {
     /** For debugging */
@@ -113,7 +113,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
      * @param attrType a Geotools attribute, for example directly from a schema
      *        when no schema.xml file is defined.
      */
-    public AttributeTypeInfoDTO(AttributeType attrType) {
+  /*  public AttributeTypeInfoDTO(AttributeType attrType) {
         this.name = attrType.getName();
         this.isComplex = false;
 
@@ -132,7 +132,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         NameSpaceElement firstElem = (NameSpaceElement) elements.iterator()
                                                                 .next();
         this.type = firstElem.getTypeDefName();
-    }
+    }*/
 
     /**
      * AttributeTypeInfoDTO constructor.
