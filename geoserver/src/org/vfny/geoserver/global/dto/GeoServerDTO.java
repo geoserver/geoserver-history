@@ -7,9 +7,6 @@ package org.vfny.geoserver.global.dto;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
-//Yeah, I know this shouldn't go here, but we aren't setting our loggers
-//anywhere, and this is the easiest place to do it since it's central. ch
-import org.vfny.geoserver.global.Log4JFormatter;
 
 /**
  * Data Transfer Object for Global GeoServer Configuration information.
@@ -21,9 +18,37 @@ import org.vfny.geoserver.global.Log4JFormatter;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.8 2004/04/03 13:10:49 cholmesny Exp $
+ * @version $Id: GeoServerDTO.java,v 1.9 2004/04/05 11:51:15 cholmesny Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
+	
+	public static class Defaults {
+		/**
+		 * The default MaxFeatures is 10000
+		 *
+		 * @see #getMaxFeatures(int)
+		 */
+		public static final int MaxFeatures = 10000;
+
+		/**
+		 * The default encoding for GeoServer it UTF-8.
+		 *
+		 * @see #getCharSet()
+		 */
+		public static final Charset Encoding = Charset.forName("UTF-8");
+
+		/** The default verbosity is true, human readable. */
+		public static final boolean Verbose = true;
+
+		/** Default is four decimal places. */
+		public static final int NumDecimals = 4;
+
+		/** The default logging level is info. */
+		public static final Level LoggingLevel = Level.INFO;
+		public static final String AdminUserName = "admin";
+		public static final String AdminPassword = "geoserver";
+	}
+	
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = Defaults.MaxFeatures;
 
@@ -435,8 +460,6 @@ public final class GeoServerDTO implements DataTransferObject {
     public void setLoggingLevel(Level level) {
         //init this now so the rest of the config has correct log levels.
         loggingLevel = level;
-		Log4JFormatter.init("org.geotools", loggingLevel);
-		Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
     }
 
     /**
@@ -477,30 +500,4 @@ public final class GeoServerDTO implements DataTransferObject {
         this.adminPassword = password;
     }
 
-    public static class Defaults {
-        /**
-         * The default MaxFeatures is 10000
-         *
-         * @see #getMaxFeatures(int)
-         */
-        public static final int MaxFeatures = 10000;
-
-        /**
-         * The default encoding for GeoServer it UTF-8.
-         *
-         * @see #getCharSet()
-         */
-        public static final Charset Encoding = Charset.forName("UTF-8");
-
-        /** The default verbosity is true, human readable. */
-        public static final boolean Verbose = true;
-
-        /** Default is four decimal places. */
-        public static final int NumDecimals = 4;
-
-        /** The default logging level is info. */
-        public static final Level LoggingLevel = Level.INFO;
-        public static final String AdminUserName = "admin";
-        public static final String AdminPassword = "geoserver";
-    }
 }
