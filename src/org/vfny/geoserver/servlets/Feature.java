@@ -59,13 +59,13 @@ public class Feature
         catch (WfsException wfs) {
             tempResponse = wfs.getXmlResponse();
             LOGGER.info("Threw a wfs exception: " + wfs.getMessage());
-            wfs.printStackTrace(response.getWriter());
+            if(response != null) wfs.printStackTrace(response.getWriter());
             wfs.printStackTrace();
         }
         catch (Exception e) {
             tempResponse = e.getMessage();
             LOGGER.info("Had an undefined error: " + e.getMessage());
-            e.printStackTrace(response.getWriter());
+            if(response != null) e.printStackTrace(response.getWriter());
             e.printStackTrace();
         }
         
