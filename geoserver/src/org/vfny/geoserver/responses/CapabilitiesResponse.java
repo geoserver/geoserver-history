@@ -83,6 +83,13 @@ public class CapabilitiesResponse {
  
     private static final String OGC_XMLNS_URL =	"http://www.opengis.net/ogc";
     
+    private static final String CAP_LOC = //config.getUrl() + "/data/capabilities" + 
+	"http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd";
+
+      private static final String SCHEMA_URI = "http://www.w3.org/2001/XMLSchema-instance";
+
+    private static final String XS_NAMESPACE = "xmlns:xsi=" + SCHEMA_URI;
+
     
     /**
      * Sets version and service.
@@ -180,12 +187,14 @@ public class CapabilitiesResponse {
 	    }
 	    //REVISIT: put this ns in config?
 	    firstTag += addNameSpace(":ogc", OGC_XMLNS_URL);
+	    firstTag += addNameSpace(":xsi", SCHEMA_URI);
 	} else if (version.equals("0.0.14")){
 	    //because our filter file now has the ogc prefix.  
 	    //REVISIT: could also strip out ogc: from that file.
 	     firstTag += addNameSpace(":ogc", OGC_XMLNS_URL);
 	}
-	firstTag += ">";	   
+	firstTag += "\n   xsi:schemaLocation=\"" + WFS_XMLNS_URL + " " + CAP_LOC;
+	firstTag += "\">";	   
         xmlOutFinal.write( encoding.getBytes(), 0, encoding.length() );
         xmlOutFinal.write( firstTag.getBytes(), 0, firstTag.length() );
     }
