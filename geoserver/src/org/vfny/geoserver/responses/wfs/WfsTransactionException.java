@@ -9,6 +9,7 @@
 package org.vfny.geoserver.responses.wfs;
 
 import org.vfny.geoserver.*;
+import org.vfny.geoserver.responses.ResponseUtils;
 import java.util.logging.*;
 
 
@@ -50,10 +51,10 @@ public class WfsTransactionException extends WfsException {
     /**
      * Constructor for an exception and a handle.
      *
-     * @param e indicates to the user what went wrong.
+     * @param cause indicates to the user what went wrong.
      */
-    public WfsTransactionException(Exception e) {
-        super(e.getMessage());
+    public WfsTransactionException(Throwable cause) {
+        super(cause);
     }
 
     /**
@@ -108,7 +109,10 @@ public class WfsTransactionException extends WfsException {
         WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,
                 handle);
         response.setLocator(locator);
-        response.setMessage(this.preMessage + ": " + this.getMessage());
+
+        //right now defaults to full stack traces, should change before
+        //production release.
+        response.setMessage(this.getXmlMessage(true));
 
         return response.getXmlResponse();
     }
