@@ -37,7 +37,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.7 2004/02/09 23:30:04 dmzwiers Exp $
+ * @version $Id: ConfigPlugIn.java,v 1.8 2004/02/20 00:28:19 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  */
@@ -93,7 +93,14 @@ public class ConfigPlugIn implements PlugIn {
         sc.setAttribute(GlobalConfig.CONFIG_KEY,
             new GlobalConfig((GeoServerDTO)wfs.getGeoServer().toDTO()));
         sc.setAttribute(DataConfig.CONFIG_KEY, new DataConfig((DataDTO)wfs.getData().toDTO()));
-        ValidationConfig vc = new ValidationConfig((Map)wfs.getValidation().toPlugInDTO(), (Map)wfs.getValidation().toTestSuiteDTO());
+        
+        ValidationConfig vc = null;
+		try{
+			vc = new ValidationConfig((Map)wfs.getValidation().toPlugInDTO(), (Map)wfs.getValidation().toTestSuiteDTO());
+		}catch(Exception e){
+			//load error
+			vc = new ValidationConfig();
+		}
         sc.setAttribute(ValidationConfig.CONFIG_KEY, vc);
     }
 }
