@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.DataAttributeTypesSelectForm;
 /**
  * @author User
@@ -31,18 +32,20 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
 	throws IOException, ServletException {
 		
 		DataAttributeTypesSelectForm form = (DataAttributeTypesSelectForm) incomingForm; 
-		String action = "";  // = form.getAction();
+		String action = form.getButtonAction();
 		
 		//SAVE SELECTED ATTRIBUTE AND FORWARD TO EDITOR
 		if (action.equals("edit")) {
+			request.getSession().setAttribute("selectedAttributeType", form.getSelectedAttributeType());
 			form.reset(mapping, request);
 			return mapping.findForward("dataConfigFeatureTypes");
 		}
 		
 		if (action.equals("delete")) {
 			//dataConfig.removeFeatureType(featureTypesForm.getSelectedFeatureType());
+			return mapping.findForward("dataConfigFeatureTypes");
 		}
 		
-		return mapping.findForward("dataConfigFeatureTypes");
+		throw new ServletException("Action must equal either 'edit' or 'delete'");        		
 	}
 }

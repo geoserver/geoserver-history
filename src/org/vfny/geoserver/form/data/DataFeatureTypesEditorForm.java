@@ -35,10 +35,9 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 	private TreeSet featureTypes;
 	
 	private String action;	
-	private String selectedFeatureType;	
 	
-	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
-		super.reset(arg0, arg1);
+	public void reset(ActionMapping arg0, HttpServletRequest request) {
+		super.reset(arg0, request);
 
 		action="";
 		
@@ -50,13 +49,8 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 				
 		FeatureTypeConfig ftConfig;
 		
-		selectedFeatureType = (String) context.getAttribute("selectedFeatureType");		
-		
-		ftConfig = config.getFeatureTypeConfig(selectedFeatureType);		
-		if (ftConfig == null) {
-			selectedFeatureType = (String) featureTypes.first();
-			ftConfig = config.getFeatureTypeConfig(selectedFeatureType);
-		}
+	
+		ftConfig = config.getFeatureTypeConfig((String) request.getSession().getAttribute("selectedFeatureType"));		
 		
 		_abstract = ftConfig.getAbstract();
 		latlonBoundingBox = ftConfig.getLatLongBBox().toString();
@@ -168,27 +162,12 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 		return action;
 	}
 
-	/**
-	 * @return
-	 */
-	public String getSelectedFeatureType() {
-		return selectedFeatureType;
-	}
 
 	/**
 	 * @param string
 	 */
 	public void setAction(String string) {
 		action = string;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setSelectedFeatureType(String string) {
-		ServletContext context = getServlet().getServletContext();
-		context.setAttribute("selectedFeatureType", string);		
-		selectedFeatureType = string;
 	}
 
 	/**
