@@ -8,31 +8,17 @@
   <servlet>
     <servlet-name>FreefsLog</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.FreefsLog</servlet-class>
-    <init-param>
-      <param-name>log4j-init-file</param-name>
-      <param-value>geoserver.log</param-value>
-    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
   <servlet>
-    <servlet-name>HelloWorld</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.HelloWorld</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>HelloWorld</servlet-name>
-    <url-pattern>/HelloWorld/*</url-pattern>
-  </servlet-mapping>
-
-
-  <servlet>
     <servlet-name>GetCapabilities</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.GetCapabilities</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.Capabilities</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>GetFeature</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.GetFeature</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.Feature</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>TestAuthentication</servlet-name>
@@ -43,6 +29,17 @@
     <servlet-name>Dispatcher</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.Dispatcher</servlet-class>
   </servlet>
+
+  <servlet>
+    <servlet-name>DescribeFeatureType</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.Describe</servlet-class>
+  </servlet>
+
+<servlet>
+    <servlet-name>Transaction</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.Transaction</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>FreefsLog</servlet-name>
     <url-pattern>/FreefsLog</url-pattern>
@@ -57,11 +54,6 @@
     <servlet-name>DescribeFeatureType</servlet-name>
     <url-pattern>/DescribeFeatureType/*</url-pattern>
   </servlet-mapping>
-  <servlet>
-    <servlet-name>DescribeFeatureType</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.DescribeFeatureType</servlet-class>
-  </servlet>
-
 
   <servlet-mapping>
     <servlet-name>GetFeature</servlet-name>
@@ -76,6 +68,11 @@
   <servlet-mapping>
     <servlet-name>Dispatcher</servlet-name>
     <url-pattern>/DispatcherDontUse</url-pattern>
+  </servlet-mapping>
+
+ <servlet-mapping>
+    <servlet-name>Transaction</servlet-name>
+    <url-pattern>/Transaction/*</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list><welcome-file>default.jsp</welcome-file></welcome-file-list>
