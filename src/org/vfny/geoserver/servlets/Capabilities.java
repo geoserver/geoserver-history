@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.requests.XmlRequestReader;
 import org.vfny.geoserver.requests.CapabilitiesRequest;
 import org.vfny.geoserver.requests.CapabilitiesKvpReader;
@@ -32,7 +33,8 @@ public class Capabilities
         Logger.getLogger("org.vfny.geoserver.servlets");
     
     /** Specifies mime type */
-    private static final String MIME_TYPE = "text/xml; charset=UTF-8";
+    private static final String MIME_TYPE =
+	ConfigInfo.getInstance().getMimeType();
     
     
     /**
