@@ -208,8 +208,11 @@ public class XmlRequestReader {
 
         // instantiante parsers and content handlers
         TransactionHandler contentHandler = new TransactionHandler();
-        FilterFilter filterParser = new FilterFilter(contentHandler, null);
-        GMLFilterGeometry geometryFilter = new GMLFilterGeometry(filterParser);
+	TransactionFilterHandler filterParser = 
+	    new TransactionFilterHandler(contentHandler, null);
+        TransactionFeatureHandler featureParser = 
+	    new TransactionFeatureHandler(filterParser);
+	GMLFilterGeometry geometryFilter = new GMLFilterGeometry(featureParser);
         GMLFilterDocument documentFilter = 
             new GMLFilterDocument(geometryFilter);
 
@@ -220,14 +223,18 @@ public class XmlRequestReader {
             ParserAdapter adapter = new ParserAdapter(parser.getParser());
             
             adapter.setContentHandler(documentFilter);
-            adapter.parse(requestSource);
-            LOGGER.fine("just parsed: " + requestSource);
+            LOGGER.finest("about to start parsing");
+	    adapter.parse(requestSource);
+            LOGGER.finer("just parsed: " + requestSource);
         } catch (SAXException e) {
+	    e.getCause().printStackTrace(System.out);
+	    e.printStackTrace(System.out);
+	    
             throw new WfsTransactionException( e, 
-                                    "XML getFeature request SAX parsing error",
+                                    "XML transaction request SAX parsing error",
                                     XmlRequestReader.class.getName() );
         } catch (IOException e) {
-            throw new WfsTransactionException( e, "XML get feature request input error",
+            throw new WfsTransactionException( e, "XML transaction request input error",
                                     XmlRequestReader.class.getName() );
         } catch (ParserConfigurationException e) {
             throw new WfsTransactionException( e, "Some sort of issue creating parser",
