@@ -45,7 +45,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.6 2004/01/16 00:22:44 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.7 2004/01/16 00:31:37 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -164,8 +164,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             Object key = i.next();
             FeatureTypeInfoDTO fti = (FeatureTypeInfoDTO) config.getFeaturesTypes().get(key);
             DataStoreInfo dsi = (DataStoreInfo)dataStores.get(fti.getDataStoreId());
-            //TODO JODYFIXTHIS
-                featureTypes.put(dsi.getNameSpace().getPrefix() + ":" + fti.getName(),
+            featureTypes.put(dsi.getNamesSpacePrefix() + ":" + fti.getName(),
                     new FeatureTypeInfo(fti,this));
         }
         

@@ -21,7 +21,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.3 2004/01/15 01:09:52 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.4 2004/01/16 00:31:37 jive Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMetaData {
     /** for logging */
@@ -186,9 +186,12 @@ System.out.println("***");*/
      * @return NameSpaceInfo the namespace for this datastore.
      */
     public NameSpaceInfo getNameSpace() {
-        return (NameSpaceInfo) data.getNameSpace(dsc.getNameSpaceId());
+        return (NameSpaceInfo) data.getNameSpace( getNamesSpacePrefix() );
     }
-
+    /** Access namespace id */
+    public String getNamesSpacePrefix(){
+        return dsc.getNameSpaceId();
+    }
     /**
      * Implement toString.
      *
