@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
@@ -46,10 +47,10 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
         
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
-        String edit = messages.getMessage(locale, "label.edit");
-        String delete = messages.getMessage(locale, "label.delete");
-        String moveUp = messages.getMessage(locale, "label.moveUp");
-        String moveDown = messages.getMessage(locale, "label.moveDown");        
+        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        String moveUp = HTMLEncoder.decode(messages.getMessage(locale, "label.moveUp"));
+        String moveDown = HTMLEncoder.decode(messages.getMessage(locale, "label.moveDown"));        
 
         //SAVE SELECTED ATTRIBUTE AND FORWARD TO EDITOR
         if (action.equals(edit)) {

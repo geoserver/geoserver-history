@@ -9,9 +9,14 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
+import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
 import java.util.List;
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -19,12 +24,12 @@ import javax.servlet.http.HttpServletRequest;
  *
 <<<<<<< DataDataStoresSelectForm.java
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.5 2004/01/31 00:27:25 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.6 2004/02/02 23:27:26 emperorkefka Exp $
 =======
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.5 2004/01/31 00:27:25 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.6 2004/02/02 23:27:26 emperorkefka Exp $
 >>>>>>> 1.4
  */
 public class DataDataStoresSelectForm extends ActionForm {
@@ -65,14 +70,22 @@ public class DataDataStoresSelectForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
+        Locale locale = (Locale) request.getLocale();
+        System.out.println(locale.getDisplayLanguage());
+        MessageResources messages = servlet.getResources();
+        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        
+        System.out.println(getButtonAction() + " == " + edit);
+        
         if (!getDataStoreIds().contains(getSelectedDataStoreId())) {
             errors.add("selectedDataStoreId",
                 new ActionError("errors.factory.invalid",
                     getSelectedDataStoreId()));
         }
 
-        if (!"delete".equals(getButtonAction())
-                && !"edit".equals(getButtonAction())) {
+        if (!delete.equals(getButtonAction())
+                && !edit.equals(getButtonAction())) {
             errors.add("buttonAction",
                 new ActionError("errors.buttonAction.invalid", getButtonAction()));
         }
