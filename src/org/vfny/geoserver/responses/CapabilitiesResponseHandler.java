@@ -16,7 +16,7 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3 2003/12/26 22:00:08 cholmesny Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.4 2004/01/02 23:03:10 cholmesny Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -24,6 +24,9 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
     /** DOCUMENT ME! */
     protected static final ServerConfig server = ServerConfig.getInstance();
     protected static final CatalogConfig catalog = server.getCatalog();
+
+    //Using WFS one for default, should check other ogc specs.
+    protected String BBOX_ELEM_NAME = "LatLongBoundingBox";
 
     /**
      * Creates a new CapabilitiesResponseHandler object.
@@ -60,7 +63,10 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         throws SAXException {
         startElement("Service");
         handleConfig((BasicConfig) config);
-        handleOnlineResouce(config);
+        handleOnlineResource(config);
+        indent();
+        handleContactInformation(config);
+        unIndent();
 
         String fees = config.getFees();
 
@@ -83,6 +89,11 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         unIndent();
     }
 
+    protected void handleContactInformation(ServiceConfig config)
+        throws SAXException {
+        //wfs does nothing (at least not 1.0 spec), wms should override this.
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -90,7 +101,7 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleOnlineResouce(ServiceConfig config)
+    protected void handleOnlineResource(ServiceConfig config)
         throws SAXException {
         handleSingleElem("OnlineResource", config.getOnlineResource());
     }
@@ -154,7 +165,6 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         handleConfig((BasicConfig) ftype);
 
         //indent();
-
         /**
          * @task REVISIT: should getSRS() return the full URL?
          */
@@ -172,7 +182,17 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         bboxAtts.addAttribute("", "maxx", "maxx", "", maxx);
         bboxAtts.addAttribute("", "maxy", "maxy", "", maxy);
 
-        startElement("LatLongBoundingBox", bboxAtts);
-        endElement("LatLongBoundingBox");
+        startElement(getBboxElementName(), bboxAtts);
+        endElement(getBboxElementName());
     }
+
+    /**
+     * Returns the name of the name of the bounding box element.  This is
+     * needed because for some silly reason in the WMS spec they call it
+     * LatLonBoundingBox and in the WFS spec they call it  LatLongBoundingBox.
+     * Go fiture.
+     *
+     * @return DOCUMENT ME!
+     */
+    protected abstract String getBboxElementName();
 }
