@@ -225,6 +225,9 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             }
 
             if (dataStore == null) {
+            	 // If datastore is not present, then disable it
+                // (although no change in config).
+                enabled=false;
                 LOGGER.fine("failed to establish connection with " + toString());
                 throw new NoSuchElementException(
                     "No datastore found capable of managing " + toString());
