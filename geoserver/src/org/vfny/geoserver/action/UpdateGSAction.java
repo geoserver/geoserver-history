@@ -10,6 +10,15 @@
  */
 package org.vfny.geoserver.action;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -18,16 +27,8 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -37,8 +38,8 @@ import javax.servlet.http.HttpServletResponse;
  * This is a real ConfigAction - you need to be logged in to use it.
  * </p>
  *
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author User To change the template for this generated type comment go to
+ *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class UpdateGSAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -61,15 +62,11 @@ public class UpdateGSAction extends ConfigAction {
         try {
             WMSDTO wmsDTO = getWMSConfig().toDTO();
             WFSDTO wfsDTO = getWFSConfig().toDTO();
-            WCSDTO wcsDTO = getWCSConfig().toDTO();
             GeoServerDTO geoserverDTO = getGlobalConfig().toDTO();
             DataDTO dataDTO = getDataConfig().toDTO();
 
-            getWCS(request).load(wcsDTO);
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
-            getWCS(request).getGeoServer().load(geoserverDTO);
-            getWCS(request).getData().load(dataDTO);
             getWFS(request).getGeoServer().load(geoserverDTO);
             getWFS(request).getData().load(dataDTO);
 

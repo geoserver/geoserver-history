@@ -11,11 +11,10 @@ import org.vfny.geoserver.Request;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: CapabilitiesRequest.java,v 1.4 2004/01/31 00:27:25 jive Exp $
  */
 public class CapabilitiesRequest extends Request {
+	
     /**
      * Empty constructor.
      *

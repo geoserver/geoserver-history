@@ -17,8 +17,6 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  *
  * @author Gabriel Rold?n
  * @author dzwiers
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
@@ -52,7 +50,6 @@ public class GeoServer extends GlobalLayerSupertype {
     private String contactVoice;
     private String contactFacsimile;
     private String contactEmail;
-    private String onlineResource;
     
     /** Should we throw the stack traces back in responses? */
     private boolean verboseExceptions = false;
@@ -236,19 +233,6 @@ public class GeoServer extends GlobalLayerSupertype {
     }
 
     /**
-     * getOnlineResource purpose.
-     * 
-     * <p>
-     * Returns the online Resource.
-     * </p>
-     *
-     * @return String the online Resource.
-     */
-    public String getOnlineResource() {
-        return notNull(onlineResource);
-    }
-    
-    /**
      * getLoggingLevel purpose.
      * 
      * <p>
@@ -368,7 +352,6 @@ public class GeoServer extends GlobalLayerSupertype {
             Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
             maxFeatures = dto.getMaxFeatures();
             numDecimals = dto.getNumDecimals();
-            onlineResource = dto.getContact().getOnlineResource();
             schemaBaseUrl = dto.getSchemaBaseUrl();
             verbose = dto.isVerbose();
             adminUserName = dto.getAdminUserName();
@@ -404,6 +387,7 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setVerboseExceptions(verboseExceptions);
 
         ContactDTO cdto = new ContactDTO();
+        dto.setContact(cdto);
 
         cdto.setAddress(address);
         cdto.setAddressCity(addressCity);
@@ -417,9 +401,6 @@ public class GeoServer extends GlobalLayerSupertype {
         cdto.setContactPerson(contactPerson);
         cdto.setContactPosition(contactPosition);
         cdto.setContactVoice(contactVoice);
-        cdto.setOnlineResource(onlineResource);
-
-        dto.setContact(cdto);
 
         return dto;
     }

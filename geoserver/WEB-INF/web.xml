@@ -2,7 +2,7 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>GeoServer</display-name>
-  <description>Web Mapping, Feature and Coverage Services</description>
+  <description>Web Mapping and Feature Services</description>
   <context-param>
     <param-name>serviceStratagy</param-name>
     <param-value>SPEED</param-value>
@@ -32,10 +32,6 @@
     <servlet-class>org.vfny.geoserver.wfs.servlets.Describe</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>DescribeCoverage</servlet-name>
-    <servlet-class>org.vfny.geoserver.wcs.servlets.Describe</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>Dispatcher</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.Dispatcher</servlet-class>
   </servlet>
@@ -48,17 +44,9 @@
     <servlet-class>org.vfny.geoserver.wfs.servlets.WfsDispatcher</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>WcsDispatcher</servlet-name>
-    <servlet-class>org.vfny.geoserver.wcs.servlets.WcsDispatcher</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>FreefsLog</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.FreefsLog</servlet-class>
     <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet>
-    <servlet-name>GetCoverage</servlet-name>
-    <servlet-class>org.vfny.geoserver.wcs.servlets.Coverage</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>GetFeature</servlet-name>
@@ -79,10 +67,6 @@
   <servlet>
     <servlet-name>Transaction</servlet-name>
     <servlet-class>org.vfny.geoserver.wfs.servlets.Transaction</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>WCSGetCapabilities</servlet-name>
-    <servlet-class>org.vfny.geoserver.wcs.servlets.Capabilities</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>WFSGetCapabilities</servlet-name>
@@ -114,10 +98,6 @@
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>WcsDispatcher</servlet-name>
-    <url-pattern>/wcs/*</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
     <servlet-name>WfsDispatcher</servlet-name>
     <url-pattern>/wfs/*</url-pattern>
   </servlet-mapping>
@@ -130,10 +110,6 @@
     <url-pattern>/FreefsLog</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>DescribeCoverage</servlet-name>
-    <url-pattern>/wcs/DescribeCoverage/*</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
     <servlet-name>DescribeFeatureType</servlet-name>
     <url-pattern>/wfs/DescribeFeatureType/*</url-pattern>
   </servlet-mapping>
@@ -142,16 +118,8 @@
     <url-pattern>/dispatcher/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>WCSGetCapabilities</servlet-name>
-    <url-pattern>/wcs/GetCapabilities/*</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
     <servlet-name>WFSGetCapabilities</servlet-name>
     <url-pattern>/wfs/GetCapabilities/*</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>GetCoverage</servlet-name>
-    <url-pattern>/wcs/GetCoverage/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>GetFeature</servlet-name>

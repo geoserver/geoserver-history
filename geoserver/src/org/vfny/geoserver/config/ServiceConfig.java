@@ -6,7 +6,6 @@ package org.vfny.geoserver.config;
 
 import java.net.URL;
 
-import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
@@ -21,8 +20,6 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: ServiceConfig.java,v 1.16 2004/02/09 23:30:05 dmzwiers Exp $
  */
 public class ServiceConfig {
@@ -67,7 +64,6 @@ public class ServiceConfig {
      */
     private String maintainer;
 
-    private MetaDataLink metadataLink;
     /**
      * ServiceConfig constructor.
      * 
@@ -86,7 +82,6 @@ public class ServiceConfig {
         fees = "";
         accessConstraints = "NONE";
         maintainer = "";
-        metadataLink = null;
     }
 
     /**
@@ -151,7 +146,6 @@ public class ServiceConfig {
         accessConstraints = s.getAccessConstraints();
         maintainer = s.getMaintainer();
         onlineResource = s.getOnlineResource();
-        metadataLink = s.getMetadataLink();
     }
 
     /**
@@ -184,7 +178,6 @@ public class ServiceConfig {
         sDto.setName(name);
         sDto.setOnlineResource(onlineResource);
         sDto.setTitle(title);
-        sDto.setMetadataLink(metadataLink);
 
         return sDto;
     }
@@ -350,16 +343,4 @@ public class ServiceConfig {
     public void setMaintainer(String string) {
         maintainer = string;
     }
-	/**
-	 * @return Returns the metadataLink.
-	 */
-	public MetaDataLink getMetadataLink() {
-		return metadataLink;
-	}
-	/**
-	 * @param metadataLink The metadataLink to set.
-	 */
-	public void setMetadataLink(MetaDataLink metadataLink) {
-		this.metadataLink = metadataLink;
-	}
 }
