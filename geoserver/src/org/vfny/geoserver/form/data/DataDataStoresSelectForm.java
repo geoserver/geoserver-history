@@ -19,7 +19,7 @@ import org.vfny.geoserver.config.DataConfig;
  * Select current DataStore for edit or delete Action.
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.3 2004/01/12 04:10:28 emperorkefka Exp $
+ * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.4 2004/01/12 04:24:07 emperorkefka Exp $
  */
 public class DataDataStoresSelectForm extends ActionForm {
     /** Action that spawned us? Edit or Delete? */
@@ -49,4 +49,48 @@ public class DataDataStoresSelectForm extends ActionForm {
 
         return new TreeSet(config.getDataStores().keySet());
     }
+	/**
+	 * getSelectedDataStore purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSelectedDataStore() {
+		return selectedDataStore;
+	}
+
+	/**
+	 * setSelectedDataStore purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSelectedDataStore(String string) {
+		selectedDataStore = string;
+	}
+
+	/**
+	 * getAction purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * setAction purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setAction(String string) {
+		action = string;
+	}
+
 }
