@@ -148,10 +148,12 @@ xmlns:gml="http://www.opengis.net/gml"
     support better mapping from data to pre-defined schemas, based on some
     good thinking and experiments from <ulink
     url="http://socialchange.net.au">Social Change Online</ulink> for the
-    Australian Government. See the roadmap in the wiki for more information
-    (link). When this is available you will define the namespace, and indeed
-    the schema itself, in a known 'information community', so that the
-    attributes mean the same thing, achieving true interoperability.</para>
+    Australian Government. See the <ulink
+    url="http://docs.codehaus.org/display/GEOS/Roadmap">roadmap</ulink> in the
+    wiki for more information (coming soon). When this is available you will
+    define the namespace, and indeed the schema itself, in a known
+    'information community', so that the attributes mean the same thing,
+    achieving true interoperability.</para>
 
     <para>Additionally, from the main Namespace page you can define the
     'default' namespace. Just hit the 'Default' button when the namespace you
@@ -198,10 +200,11 @@ xmlns:gml="http://www.opengis.net/gml"
     will not include all the possible DataStores. For example the oracle
     datastore(s) will only show up when the proper oracle jars are in the lib/
     section, as we can not legally distribute these with GeoServer. There are
-    also a number of DataStores available in the DataStore Extras download
-    section (link), that for some reason or another are not quite ready for
-    the default GeoServer installation. Many will be once they are well
-    tested. Others are the latest versions of common DataStores, we make these
+    also a number of DataStores available in the DataStore Extras <ulink
+    url="http://sourceforge.net/project/showfiles.php?group_id=25086&amp;package_id=129885&amp;release_id=271218">download</ulink>
+    section, that for some reason or another are not quite ready for the
+    default GeoServer installation. Many will be once they are well tested.
+    Others are the latest versions of common DataStores, we make these
     available so users need not go through a whole upgrade procedure, they can
     just drop in the latest jar for their datastore. When the jars are
     installed correctly in the lib/ directory (each should have instructions
@@ -250,41 +253,73 @@ xmlns:gml="http://www.opengis.net/gml"
     supported and most tested. PostGIS is based on the advanced open source
     database <ulink url="http://postgresql.org">Postgresql</ulink>, with
     extensions to handle spatial types and operations. It conforms to the
-    OGC's Simple Features for SQL (link) specification, and will be submitted
-    to formal conformance certification soon, as it approaches 1.0. Shapefiles
-    were the first additional datastore supported, allowing users to quickly
-    get GeoServer running. We recommend using a real transactional database,
-    but do offer the ability to serve and do transactions on shapefiles in
+    OGC's <ulink url="http://www.opengeospatial.org/docs/99-049.pdf">Simple
+    Features for SQL</ulink> specification, and will be submitted to formal
+    conformance certification soon, as it approaches 1.0. Shapefiles were the
+    first additional datastore supported, allowing users to quickly get
+    GeoServer running. We recommend using a real transactional database, but
+    do offer the ability to serve and do transactions on shapefiles in
     GeoServer directly, with solid performance. Note that there is also a new
     shapefile datastore that builds and uses a spatial index, available as a
-    DataStore Extra (link). Oracle is also available, though it needs an extra
-    jar in order to run, as we are not allowed to redistribute the jar. ArcSDE
-    is also supported, and 1.2.3 brought a number of bug fixes to get it
-    actually working decently well, but it still is not that fast. Proprietary
+    <ulink
+    url="http://sourceforge.net/project/showfiles.php?group_id=25086&amp;package_id=129885&amp;release_id=271218">DataStore
+    Extra</ulink>. Oracle is also available, though it needs an extra jar in
+    order to run, as we are not allowed to redistribute the jar. ArcSDE is
+    also supported, and 1.2.3 brought a number of bug fixes to get it actually
+    working decently well, but it still is not that fast. Proprietary
     datastores such as Oracle and ArcSDE are harder for us to support, since
     they can not be easily downloaded, installed and tested (and it gets even
     nastier when you get into different versions). The GeoServer project will
     do all that we can to support them, but if you require real support then
-    we recommend you hire someone to do consulting on GeoServer (link to
-    section on this).</para>
+    we recommend you hire someone to do consulting on GeoServer, see the
+    section on <ulink url="user_intro.html#commercial">Commercial
+    Support</ulink>.</para>
 
-    <para>We have also started offering 'DataStore Extras'. This a section of
-    the download page where we offer new and experimental DataStores.
-    DataStores are written to be completely pluggable, you just put the
-    appropriate jar files (link to gloss) in the lib/ directory of GeoServer,
-    and they are available at the next GeoServer start up. This means that we
-    can offer new DataStores, such as MySQL and Indexed Shapefile, for
-    advanced users to test out, as well as easily make upgrades to older
-    DataStores available. VPF support should also be available shortly. For
-    example there were a number of speed improvements to the PostGIS datastore
-    in 1.2.3, but instead of downloading the whole new server, you could just
-    download the jar into your 1.2.0 version, and get all the improvements.
-    (General procedure for installing datastore extras?)</para>
+    <para>We have also started offering <ulink
+    url="http://sourceforge.net/project/showfiles.php?group_id=25086&amp;package_id=129885&amp;release_id=271218">DataStore
+    Extras</ulink>. This a section of the download page where we offer new and
+    experimental DataStores. DataStores are written to be completely
+    pluggable, you just put the appropriate jar files in the lib/ directory of
+    GeoServer, and they are available at the next GeoServer start up. This
+    means that we can offer new DataStores, such as MySQL and Indexed
+    Shapefile, for advanced users to test out, as well as easily make upgrades
+    to older DataStores available. VPF support should also be available
+    shortly. For example there were a number of speed improvements to the
+    PostGIS datastore in 1.2.3, but instead of downloading the whole new
+    server, you could just download the jar into your 1.2.0 version, and get
+    all the improvements.</para>
 
     <para>From here we recommend that you follow the configuration of the
-    DataStore that you are most interested in. See the DataStore page for
-    specific information on Shapefile, Indexed Shapefile, PostGIS, Oracle,
-    ArcSDE, and MySQL.</para>
+    DataStore that you are most interested in. Please click on one of the
+    following to take you to the right section in <ulink
+    url="datastores.html">DataStore</ulink> page:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink url="datastores.html#shapefile">Shapefile</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="datastores.html#indexed-shapefile">Indexed
+        Shapefile</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="datastores.html#postgis">PostGIS</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="datastores.html#oracle">Oracle</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="datastores.html#arcsde">ArcSDE</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="datastores.html#mysql">MySQL</ulink></para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section>
@@ -331,6 +366,115 @@ xmlns:gml="http://www.opengis.net/gml"
   <section>
     <title>FeatureType</title>
 
-    <para>This should be done. Silly computers lost it. </para>
+    <para>The final piece of the configuration puzzle is to set up your
+    FeatureType. Our use of the term FeatureType betrays our WFS roots, in WMS
+    speak it is called a layer. But configuration for both is done in the
+    FeatureType section. It represents a number of features that have the same
+    types of properties, both geometric and non-geometric attributes. As we
+    said earlier, it generally represents a table in a database, or a single
+    file. Since you have already configured all the connection parameters in
+    the DataStore section, the FeatureType configuration is mostly meta
+    information, along with setting how you would like to expose the
+    attributes of the table. To create a FeatureTYpe click on the FeatureType
+    link and you will be taken to a page like the following:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="../images/featuretype.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>From here you can select a FeatureType to edit from the drop down
+    box, or you can create a new one. GeoServer comes with two shapefile
+    FeatureTypes by default, you can edit them if you would like, and should
+    delete them if this is a public instance. To create a new one click on the
+    'New' button, and you will be taken to a page like this:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="../images/featuretype-new.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>From here you select the FeatureType to edit. The drop down list
+    will show all the possible FeatureTypes for the DataStores you have
+    configured. If you have a database with many tables then there will be
+    many options to select from. Note that for now we only allow you to select
+    the names of the FeatureTypes as they appear in the backend data type. In
+    the future we will likely allow you to configure them to a name you want.
+    So select the FeatureType you would like to create and hit 'New'. This
+    will take you to the FeatureType Editor page. Note that in the future you
+    can get here by just selecting your FeatureType from the main FeatureType
+    page and hitting 'Edit'</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="../images/featuretype-editor.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>On this page you should fill out as much information as possible.
+    The Style is a drop down list of the available styles that are configured
+    for GeoServer. This just selects the default style, which is the one that
+    will return in a WMS request for this layer when no style is explicitly
+    named. It also appears in the WMS capabilities document. Other styles are
+    also available for the layer, you just have to know their name to request
+    them. If you have lines or polygons then the normal style is a good
+    default, as it just draws a black line.</para>
+
+    <para>The SRS (Spatial Reference System) should be an EPSG code. Right now
+    we do not do much with it, just return it directly to the client. In the
+    future, when we add reprojection, it will become a lot more important.
+    Related to that is the Bounding Box. This should be in Latitude and
+    Longitude; it is reported in the capabilities document so clients will
+    know approximately where in the world the layer is located. Note that
+    there is a generate button, to calculate the bounds for you, but since we
+    are not yet quite SRS capable this only works if the data itself is in
+    Latitude or Longitude. If it is not you will have to figure the bounds out
+    for yourself. It does not need to be exact, just an approximation. You
+    should replace the generated Keywords, Abstract, and Title, with more
+    relevant information about your FeatureType.</para>
+
+    <para>By default GeoServer just generates the attributes based exactly on
+    the back end data format. But a little known (and even less advertised
+    since it was kind of broken up until 1.2.4) feature is that you actually
+    can customize your attributes from the FeatureType Editor page. We still
+    need to make it a bit more intuitive, but to launch the attribute editor
+    you just change the Schema Base from '-' to gml:AbstractFeatureType'
+    (select it from the drop down list and hit change). Unfortunately we do
+    not have a good picture at the moment, but try it out. &nbsp;You will be
+    given a new user interface. You can change the order that your attributes
+    appear in, moving them up or down. You can also delete them (with the X
+    button), effectively 'hiding' those attributes from the user. And you can
+    change minOccurs to 1, which will ensure that the feature is
+    <emphasis>always</emphasis> returned, since it must be present for the xml
+    to be valid. The nilleable check box does not really do anything at the
+    moment, except appear in the DescribeFeatureType response.</para>
+
+    <para>You will also notice that you can select the type of each attribute.
+    We have not yet checked all of these for validity, and recommend going
+    with the default. But also note the (xml fragment) option. This allows you
+    to completely customize the attribute - whatever you write in that field
+    is exactly what is returned to the user. You can even do complex imports
+    and other XML tricks. Just be sure to make sure it validates, since
+    configuring in this way gives you completely control, but also gives you
+    all the responsibility. Also note that you can completely write your own
+    schema.xml file, if configuring each attribute is not sufficient for you.
+    See the developers page on <ulink url="dev_files.html">working with
+    files</ulink> for more information.</para>
+
+    <para>One last thing to mention, there is a little bug that should be
+    fixed in the next release. If you are doing the customization of
+    attributes then a simply 'Apply" will not get them to show up. To have the
+    new schema that you created return in the DescribeFeatureType response you
+    must also 'Save' and then 'Load', or else restart GeoServer. </para>
+
+    <para>After you have configured your FeatureType, be sure to hit Submit,
+    and then do the normal save procedure. </para>
+
+    <para>Congratulations! You have successfully configured GeoServer. In the
+    future we hope to have more documents on what you actually _do_ with it,
+    but for now we have a bit up on the <ulink
+    url="working.html">working</ulink> page.</para>
   </section>
 </article>

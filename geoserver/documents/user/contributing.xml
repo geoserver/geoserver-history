@@ -56,23 +56,25 @@
     start relatively soon. Please feel free to not limit yourself to adding
     straight documentation, we really welcome most any information that might
     be relevant to other users. This could be howtos on getting GeoServer
-    working with various clients (link to client section), or background
-    explanations of OGC specs that you had to look up and would have found
-    useful, or even how GeoServer compares to other WMS/WFSes out there. We
-    believe in having as much open information as possible. Eventually we hope
-    to contribute various portions of our wiki that are more general than just
-    GeoServer to wider projects, such as the wiki based Open Source GIS book
-    we are collaborating on. So for now just put that information on the
-    GeoServer wiki, so it is available somewhere, and we will figure out
-    exactly where it should go later. We would very much like the wiki to be a
-    vast repository of information, of all things GeoServer related. If you
-    are interested in becoming involved in GeoServer, but lack the coding
-    skills, then leading the GeoServer documentation would be a great way to
-    join. Eventually we are hoping to move even the user and developers docs
-    to wiki (as soon as we can figure out good internationalization and how to
-    work offline). To use the wiki you will have to sign up for an account.
-    This is just so that we can recognize who posted what to the wiki. (we
-    will try to get a good tutorial on using the wiki soon)</para>
+    working with various <ulink
+    url="http://docs.codehaus.org/display/GEOS/Client+Applications+for+GeoServer">clients</ulink>,
+    or background explanations of OGC specs that you had to look up and would
+    have found useful, or even how GeoServer compares to other WMS/WFSes out
+    there. We believe in having as much open information as possible.
+    Eventually we hope to contribute various portions of our wiki that are
+    more general than just GeoServer to wider projects, such as the wiki based
+    Open Source GIS book we are collaborating on. So for now just put that
+    information on the GeoServer wiki, so it is available somewhere, and we
+    will figure out exactly where it should go later. We would very much like
+    the wiki to be a vast repository of information, of all things GeoServer
+    related. If you are interested in becoming involved in GeoServer, but lack
+    the coding skills, then leading the GeoServer documentation would be a
+    great way to join. Eventually we are hoping to move even the user and
+    developers docs to wiki (as soon as we can figure out good
+    internationalization and how to work offline). To use the wiki you will
+    have to sign up for an account. This is just so that we can recognize who
+    posted what to the wiki. (we will try to get a good tutorial on using the
+    wiki soon)</para>
   </section>
 
   <section>
@@ -83,14 +85,16 @@
     using GeoServer by thoroughly reading the documentation, reading the list
     archives, and being on the lists for awhile. But even if you can’t answer
     the questions yourself, it is a great help to direct things where
-    appropriate. Send bugs to the JIRA task tracker, ask the devel list, and
-    point to the documentation. And perhaps the best thing to do is to work to
-    close the gap between the email lists and the documentation. The ideal
-    would be if every question asked and answered on the email lists were then
-    turned into documentation. If someone asks a questions once it is fairly
-    likely that someone else has the same question. It would be great if
-    someone could build a really comprehensive FAQ, answering common questions
-    and pointing to other points in the documentation.</para>
+    appropriate. Send bugs to the JIRA <ulink
+    url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">task
+    tracke</ulink>r, ask the devel list, and point to the documentation. And
+    perhaps the best thing to do is to work to close the gap between the email
+    lists and the documentation. The ideal would be if every question asked
+    and answered on the email lists were then turned into documentation. If
+    someone asks a questions once it is fairly likely that someone else has
+    the same question. It would be great if someone could build a really
+    comprehensive FAQ, answering common questions and pointing to other points
+    in the documentation.</para>
 
     <para>You can also help us keep the JIRA task tracker organized. We tend
     to not get too many duplicate bugs, as most people do not yet report
@@ -144,7 +148,7 @@
     is a war install then put the servlet container type and version. Include
     your version of Java (found by typing ‘java –version’ at the command
     line), your operating system and its version, and the backend datastore
-    you are using (oracle, postgis, ect.) as well as its version. </para>
+    you are using (oracle, postgis, ect.) as well as its version.</para>
 
     <para>Then describe the issue in as much depth as possible. If the error
     is in a request made to GeoServer (as opposed to in the web admin tool),
@@ -162,7 +166,7 @@
     error. The other very helpful piece of information is the logs from
     GeoServer. In the binary installation these go to the console, in the war
     installation it depends on the servlet container (tomcat puts it in
-    $CATALINA_HOME/logs/catalina.out). </para>
+    $CATALINA_HOME/logs/catalina.out).</para>
 
     <para>Before reporting the bug please check the relevant specifications to
     make sure that you are making the correct request, though if you include
@@ -263,9 +267,9 @@
     that you are more than welcome to use in house developers or your favorite
     software company to perform improvements on GeoServer, we just ask that
     they roll their improvements back in to the code base. If you need help
-    finding good developers we can easily assist, just email <ulink
-    url="???">geoserver@openplans.org</ulink>. We are building a network of
-    consulting companies and government agencies in different countries who
-    can all make incremental improvements on GeoServer.</para>
+    finding good developers we can easily assist, just email geoserver at
+    openplans dot org. We are building a network of companies and government
+    agencies in different countries who can all make incremental improvements
+    on GeoServer.</para>
   </section>
 </article>

@@ -19,25 +19,26 @@
     so that users need not ever touch configuration files. It additionally
     offers the ability to 'try out' new configurations before actually saving
     them. The work was driven by the excellent team at <ulink
-    url="???">Refractions Research</ulink>, with funding from the
-    GeoConnections program (link). Note that the web administration tool is in
-    no way required to operate GeoServer, you are more than welcome to work
-    directly with the configuration files. We discuss these at length in the
-    Developer's section, see <ulink
-    url="../developer/config_files.html">GeoServer Config Files</ulink>, but
-    for the User docs we assume that you are working through the web admin
-    tool. Some advanced users may need to access the files directly, we will
-    discuss those situations in the user docs. In the future it may be
-    possible to administer a remote GeoServer using a desktop client like
-    uDig, as we designed for such a situation. The admin tool is meant to be
-    as intuitive and self explanatory as possible, and much help from it
-    directly. Most every operation and link has a tool tip that pops up on a
-    mouse over (when you leave the mouse on top of it for over a second). It
-    is also designed for Internationalization, and has been translated into
-    French, with Spanish hopefully coming shortly. It should start up
-    automatically in the language that the computer running GeoServer is set
-    to. If you are interested in translating GeoServer into another language,
-    please get in touch. See the translation section in <ulink
+    url="http://www.refractions.net">Refractions Research</ulink>, with
+    funding from the <ulink
+    url="http://www.geoconnections.org">GeoConnections</ulink> program. Note
+    that the web administration tool is in no way required to operate
+    GeoServer, you are more than welcome to work directly with the
+    configuration files. We discuss these at length in the Developer's
+    section, see <ulink url="../developer/dev_files.html">GeoServer Config
+    Files</ulink>, but for the User docs we assume that you are working
+    through the web admin tool. Some advanced users may need to access the
+    files directly, we will discuss those situations in the user docs. In the
+    future it may be possible to administer a remote GeoServer using a desktop
+    client like uDig, as we designed for such a situation. The admin tool is
+    meant to be as intuitive and self explanatory as possible, and much help
+    from it directly. Most every operation and link has a tool tip that pops
+    up on a mouse over (when you leave the mouse on top of it for over a
+    second). It is also designed for Internationalization, and has been
+    translated into French, with Spanish hopefully coming shortly. It should
+    start up automatically in the language that the computer running GeoServer
+    is set to. If you are interested in translating GeoServer into another
+    language, please get in touch. See the translation section in <ulink
     url="contributing.html">How to Help</ulink> for more information.</para>
 
     <section>
@@ -191,9 +192,9 @@ password: geoserver</programlisting>
     work in most any order. If you are making a production instance of
     GeoServer it is very important to fill out all fields. If you are just
     evaluating GeoServer, wanting to try out your own data, then you can just
-    focus on the data section (link) (just Stores and FeatureType (links?) if
-    you want to get very minimal). Though the server (link) section should
-    also be useful, especially if you need to debug (link?).</para>
+    focus on the <ulink url="config_data.html">data section</ulink> (just
+    Stores and FeatureType if you want to get very minimal). Though the server
+    section should also be useful, especially if you need to debug.</para>
 
     <section>
       <title>Server</title>
@@ -254,7 +255,8 @@ password: geoserver</programlisting>
               With Verbose Exceptions the server will return a full set of
               information for programmers to figure out the problem. For more
               information on reporting bugs in GeoServer see the section in
-              the <ulink url="???">How To Help</ulink> document.</entry>
+              the <ulink url="contributing.html">How To Help</ulink>
+              document.</entry>
             </row>
 
             <row>
@@ -318,16 +320,16 @@ password: geoserver</programlisting>
       <para>Next you should configure the WMS and WFS sections. They are quite
       similar, mostly setting up meta information for the capabilities
       documents that each serve. The WFS section additionally offers a few WFS
-      specific configuration items, and access to the Validation (link)
-      interface. If you are just evaluating GeoServer then the meta
-      information need not be configured, but if you are serving GeoServer
-      publically then we highly recommend that you take the time to fill these
-      out appropriately, so that clients don't confuse your layers for the
-      GeoServer defaults. If you are only using one of the WFS and WMS then we
-      recommend that you disable the one not being used in the Contents
-      section. Each Service has a Contents and a Description. The Contents
-      section controls options specific to each, and the Description section
-      focuses on the Capabilities document's meta information.</para>
+      specific configuration items, and access to the Validation interface. If
+      you are just evaluating GeoServer then the meta information need not be
+      configured, but if you are serving GeoServer publically then we highly
+      recommend that you take the time to fill these out appropriately, so
+      that clients don't confuse your layers for the GeoServer defaults. If
+      you are only using one of the WFS and WMS then we recommend that you
+      disable the one not being used in the Contents section. Each Service has
+      a Contents and a Description. The Contents section controls options
+      specific to each, and the Description section focuses on the
+      Capabilities document's meta information.</para>
 
       <section>
         <title>Contents</title>
@@ -388,11 +390,6 @@ password: geoserver</programlisting>
         the change is not reflected in the Capabilities document, ie it will
         still tell the address for Transactions, just none will go
         through.</para>
-
-        <para>To start GeoServer simply click on the 'Start GeoServer' icon.
-        This will run the application until 'Stop GeoServer' is hit. The
-        application can also be stopped by closing the console window that is
-        open, or hitting 'ctrl-c' in the console window.</para>
       </section>
 
       <section>

@@ -24,7 +24,7 @@
     url="http://www.esri.com/data/download/census2000_tigerline/index.html">here</ulink>.
     The GeoServer also includes support for using shapefiles directly,
     information about this option is available in the <ulink
-    url="advanced.html">advanced</ulink> section. Using the shapefiles
+    url="datastores.html">datastores</ulink> page. Using the shapefiles
     directly sacrifices a lot of speed and flexibility, so converting them to
     PostGIS is the recommended way, but the option is available for easier set
     up.</para>

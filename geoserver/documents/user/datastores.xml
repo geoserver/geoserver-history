@@ -13,7 +13,7 @@
   geoserver-devel@lists.sourceforge.net and let us know, since it is likely
   that someone else in the future will also want that information.</para>
 
-  <section>
+  <section id="postgis">
     <title>PostGIS</title>
 
     <para>We used to say more about the installation about PostGIS, but the
@@ -32,16 +32,14 @@
     use cygwin, which we highly recommend, but which can be a bitch to set up.
     PostGIS will work with both 7 and 8. If you are a windows user check out
     the <ulink url="http://dcmms.sourceforge.net/postgis_installer.php">dcmms
-    source forge project</ulink>, which has a great PostGIS installer. And
-    there's also a good page on Windows and postgis <ulink
-    url="http://www.gasai.com/gisapps/WindowsHowTo.html">here</ulink>. If you
+    source forge project</ulink>, which has a great PostGIS installer. If you
     have just installed PostGIS then we recommend connecting to it with the
     command line psql tool before testing with GeoServer, just to make sure
     that it works. When running it be sure to start it using the -i flag,
     which allows GeoServer (and other TCP/IP connections), should look
     something like:</para>
 
-    <programlisting>postmaster -i -D /usr/ext/postgres/data (confirm this)</programlisting>
+    <programlisting>postmaster -i -D /your/data/folder/location</programlisting>
 
     <para>Then fill out the PostGIS specific parameters as follows:</para>
 
@@ -138,7 +136,7 @@
     to postgis (the web admin tool does this automatically)</para>
   </section>
 
-  <section>
+  <section id="shapefile">
     <title>Shapefile</title>
 
     <para>For users who don't have a spatial database already set up and want
@@ -174,8 +172,6 @@
     An example of this is the states shapefile, its url is:</para>
 
     <programlisting>file:data/featureTypes/states/states.shp </programlisting>
-
-    <para>(would be nice to get a picture here)</para>
 
     <para>Note that the web admin tool does some magic as to where to place
     the files. If you are adding a new shapefile we recommend that you put it
@@ -229,26 +225,194 @@
     DBF file (the file that contains the attributes of the Shapefile). The
     default is ISO-8859-1.</para>
 
-    <section>
+    <section id="indexed-shapefile">
       <title>Indexed Shapefile</title>
 
-      <para>A recent contribution by Tomasso Nill (get this right) has given
-      some nice speed increases for Shapefiles with spatial queries. He wrote
-      an open source spatial index, which is built when on the first start up.
-      ESRI does have spatial indexes on their shapefiles, but they keep that
-      part of the 'open' shapefile specification private. So the indexed
-      shapefile provides a nice way to get spatial filters to work faster.
-      Right now it is available in the DataStore extras section, just download
-      it and replace the old gt2-shapefile jar in
+      <para>A recent contribution by Tomasso Nolli has given some nice speed
+      increases for Shapefiles with spatial queries. He wrote an open source
+      spatial index, which is built when on the first start up. ESRI does have
+      spatial indexes on their shapefiles, but they keep that part of the
+      'open' shapefile specification private. So the indexed shapefile
+      provides a nice way to get spatial filters to work faster. Right now it
+      is available in the DataStore extras section, just download it and
+      replace the old gt2-shapefile jar in
       geoserver/server/geoserver/WEB-INF/lib/. Then make sure that you set the
       index parameter to true. For more details please download the file from
-      the DataStore Extras section, <ulink url="???">here</ulink>. It will
-      have complete instructions on how to install it. This will be a default
-      for 1.3.</para>
+      the DataStore Extras section, <ulink
+      url="http://sourceforge.net/project/showfiles.php?group_id=25086&amp;package_id=129885&amp;release_id=271218">here</ulink>.
+      It will have complete instructions on how to install it. This will be a
+      default for 1.3.</para>
     </section>
   </section>
 
-  <section>
+  <section id="arcsde">
+    <title>ArcSDE</title>
+
+    <para>ArcSDE is the least supported of the main GeoServer DataStores,
+    mostly due to the expense and license limitations of setting up ArcSDE
+    instances. We have also found their connection drivers a bit buggy (and
+    the source is closed so we can't just fix them ourselves), and have also
+    encountered problems that only seem to manifest themselves in certain
+    instances, leading us to do some complicated work arounds. We suspect the
+    differing problems have to do with the backend data format, but could be
+    different versions of ArcSDE. The DataStore was contributed by and
+    maintained by Gabriel Roldán, testing against ArcSDE 8.3. We got a number
+    of good bugs fixed for 1.2.3, so please let us know if you encounter
+    problems, and we will do our best to fix them.</para>
+
+    <para>To connect to an ArcSDE instance you must have the following
+    parameters:</para>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="100" />
+
+        <thead>
+          <row>
+            <entry align="center">Option Name</entry>
+
+            <entry align="center">Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>server</entry>
+
+            <entry>The machine which the ArcSDE instance is running
+            on.</entry>
+          </row>
+
+          <row>
+            <entry>port</entry>
+
+            <entry>The port the ArcSDE instance is running on. The default is
+            1521</entry>
+          </row>
+
+          <row>
+            <entry>instance</entry>
+
+            <entry>The ArcSDE instance name</entry>
+          </row>
+
+          <row>
+            <entry>user</entry>
+
+            <entry>The name of the user to connect with.</entry>
+          </row>
+
+          <row>
+            <entry>passwd</entry>
+
+            <entry>The password of the user you are connecting with.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>As with PostGIS and Oracle configuration of the files directly also
+    needs a 'dbtype' parameter equal to 'arcsde'.</para>
+
+    <para>There are also a number of optional parameters to configure the
+    ArcSDE connection 'pool'. GeoTools makes use of a number of connections,
+    but does a decent job of managing them, so that new connections need not
+    be made for each request. The big reason for this is that some ArcSDE
+    licenses only allow a limited number of connections, so these values can
+    be adjusted to minimize the number of simultaneous connections. GeoTools
+    will share the active connections instead of making new ones. Right now it
+    requires at least two connections, as we were having some nasty bugs with
+    ArcSDE connections going stale (only with certain instances, and only with
+    spatial queries, which made debugging a big hassle). With some funded
+    development work this could easily be improved, ArcSDE could definitely
+    benefit from some more effort. If you have more connections available we
+    do recommend upping the pool.maxConnections parameter. The meaning of
+    these optional parameters is as follows:</para>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="100" />
+
+        <thead>
+          <row>
+            <entry align="center">Option Name</entry>
+
+            <entry align="center">Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>pool.minConnections</entry>
+
+            <entry>The number of connections the pool makes on start up. If
+            needed these will be incremented.</entry>
+          </row>
+
+          <row>
+            <entry>pool.maxConnections</entry>
+
+            <entry>The maximum number of connections that a pool is allowed to
+            make. This should be as high as possible, but there may be license
+            limitations.</entry>
+          </row>
+
+          <row>
+            <entry>pool.increment</entry>
+
+            <entry>The number of new connections to add to the pool when
+            incrementing. One is most likely fine.</entry>
+          </row>
+
+          <row>
+            <entry>pool.timeOut</entry>
+
+            <entry>The amount of time that a connection request should wait
+            for an unused connection before failing.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>For ArcSDE 8.3 GeoServer includes the jsde_sdk.8.3.jar with
+    installation, and no additional jars should be needed. ArcSDE 9 has also
+    been recently tested, it requires an upgrade to the java sdk, you must
+    replace jsde_sdk-8.3.jar in the GeoServer lib directory with the
+    equivalent from SDE 9. We have not found it publicly distributed yet, once
+    we do we will add it to the default GeoServer download.</para>
+
+    <para>ArcSDE 9 has also been recently tested, it requires an upgrade to
+    the java sdk, you must replace jsde_sdk-8.3.jar in the GeoServer lib
+    directory with the equivalent from SDE 9. We have not found it publicly
+    distributed yet, once we do we will add it to the default GeoServer
+    download.</para>
+
+    <para>One more thing to note is that in the info.xml file the &lt;name&gt;
+    parameter of the featureType may need to be the full qualified type name.
+    It should be &lt;instance&gt;.&lt;table_owner&gt;.&lt;table_name&gt;, so
+    in the example above a table called roads should be named
+    sde.testsde.roads. But some users have also reported success without the
+    instance prepended. Also make sure that the port number specified is the
+    same as in the services file
+    (%(%(%systemRoot%\system32\drivers\etc\services in windows), it should
+    contain a line like (if yours is different then change the port param of
+    your datastore definition):<programlisting>esri_sde
+    5151/tcp</programlisting></para>
+  </section>
+
+  <section id="mysql">
+    <title>MySQL</title>
+
+    <para>We don't have time to get a full section in for MySQL for 1.2.4, but
+    it is also still a <ulink
+    url="http://sourceforge.net/project/showfiles.php?group_id=25086&amp;package_id=129885&amp;release_id=271218">DataStore
+    Extension</ulink>. So please just go to the DataStore Extension download
+    page, and then unzip the MySQL file that you download, and it will have
+    complete instructions on configuring and installing MySQL with
+    GeoServer.</para>
+  </section>
+
+  <section id="oracle">
     <title>Oracle</title>
 
     <para>GeoServer also offers Oracle Spatial support, contributed by Sean
@@ -443,170 +607,5 @@
     cases. If specifying attributes in the schema.xml file they must also be
     all capitalized. Oracle does not use cases, but things seem to work better
     all around if all upper case letters are used.</para>
-  </section>
-
-  <section>
-    <title>ArcSDE</title>
-
-    <para>ArcSDE is the least supported of the main GeoServer DataStores,
-    mostly due to the expense and license limitations of setting up ArcSDE
-    instances. We have also found their connection drivers a bit buggy (and
-    the source is closed so we can't just fix them ourselves), and have also
-    encountered problems that only seem to manifest themselves in certain
-    instances, leading us to do some complicated work arounds. We suspect the
-    differing problems have to do with the backend data format, but could be
-    different versions of ArcSDE. The DataStore was contributed by and
-    maintained by Gabriel Roldán, testing against ArcSDE 8.3. We got a number
-    of good bugs fixed for 1.2.3, so please let us know if you encounter
-    problems, and we will do our best to fix them.</para>
-
-    <para>To connect to an ArcSDE instance you must have the following
-    parameters:</para>
-
-    <informaltable>
-      <tgroup cols="2">
-        <colspec align="left" colwidth="100" />
-
-        <thead>
-          <row>
-            <entry align="center">Option Name</entry>
-
-            <entry align="center">Description</entry>
-          </row>
-        </thead>
-
-        <tbody>
-          <row>
-            <entry>server</entry>
-
-            <entry>The machine which the ArcSDE instance is running
-            on.</entry>
-          </row>
-
-          <row>
-            <entry>port</entry>
-
-            <entry>The port the ArcSDE instance is running on. The default is
-            1521</entry>
-          </row>
-
-          <row>
-            <entry>instance</entry>
-
-            <entry>The ArcSDE instance name</entry>
-          </row>
-
-          <row>
-            <entry>user</entry>
-
-            <entry>The name of the user to connect with.</entry>
-          </row>
-
-          <row>
-            <entry>passwd</entry>
-
-            <entry>The password of the user you are connecting with.</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable>
-
-    <para>As with PostGIS and Oracle configuration of the files directly also
-    needs a 'dbtype' parameter equal to 'arcsde'.</para>
-
-    <para>There are also a number of optional parameters to configure the
-    ArcSDE connection 'pool'. GeoTools makes use of a number of connections,
-    but does a decent job of managing them, so that new connections need not
-    be made for each request. The big reason for this is that some ArcSDE
-    licenses only allow a limited number of connections, so these values can
-    be adjusted to minimize the number of simultaneous connections. GeoTools
-    will share the active connections instead of making new ones. Right now it
-    requires at least two connections, as we were having some nasty bugs with
-    ArcSDE connections going stale (only with certain instances, and only with
-    spatial queries, which made debugging a big hassle). With some funded
-    development work this could easily be improved, ArcSDE could definitely
-    benefit from some more effort. If you have more connections available we
-    do recommend upping the pool.maxConnections parameter. The meaning of
-    these optional parameters is as follows:</para>
-
-    <informaltable>
-      <tgroup cols="2">
-        <colspec align="left" colwidth="100" />
-
-        <thead>
-          <row>
-            <entry align="center">Option Name</entry>
-
-            <entry align="center">Description</entry>
-          </row>
-        </thead>
-
-        <tbody>
-          <row>
-            <entry>pool.minConnections</entry>
-
-            <entry>The number of connections the pool makes on start up. If
-            needed these will be incremented.</entry>
-          </row>
-
-          <row>
-            <entry>pool.maxConnections</entry>
-
-            <entry>The maximum number of connections that a pool is allowed to
-            make. This should be as high as possible, but there may be license
-            limitations.</entry>
-          </row>
-
-          <row>
-            <entry>pool.increment</entry>
-
-            <entry>The number of new connections to add to the pool when
-            incrementing. One is most likely fine.</entry>
-          </row>
-
-          <row>
-            <entry>pool.timeOut</entry>
-
-            <entry>The amount of time that a connection request should wait
-            for an unused connection before failing.</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable>
-
-    <para>For ArcSDE 8.3 GeoServer includes the jsde_sdk.8.3.jar with
-    installation, and no additional jars should be needed. ArcSDE 9 has also
-    been recently tested, it requires an upgrade to the java sdk, you must
-    replace jsde_sdk-8.3.jar in the GeoServer lib directory with the
-    equivalent from SDE 9. We have not found it publicly distributed yet, once
-    we do we will add it to the default GeoServer download.</para>
-
-    <para>ArcSDE 9 has also been recently tested, it requires an upgrade to
-    the java sdk, you must replace jsde_sdk-8.3.jar in the GeoServer lib
-    directory with the equivalent from SDE 9. We have not found it publicly
-    distributed yet, once we do we will add it to the default GeoServer
-    download.</para>
-
-    <para>One more thing to note is that in the info.xml file the &lt;name&gt;
-    parameter of the featureType may need to be the full qualified type name.
-    It should be &lt;instance&gt;.&lt;table_owner&gt;.&lt;table_name&gt;, so
-    in the example above a table called roads should be named
-    sde.testsde.roads. But some users have also reported success without the
-    instance prepended. Also make sure that the port number specified is the
-    same as in the services file
-    (%(%(%systemRoot%\system32\drivers\etc\services in windows), it should
-    contain a line like (if yours is different then change the port param of
-    your datastore definition):<programlisting>esri_sde
-    5151/tcp</programlisting></para>
-  </section>
-
-  <section>
-    <title>MySQL</title>
-
-    <para>We don't have time to get a full section in for MySQL for 1.2.4, but
-    it is also still a DataStore Extension. So please just go to the DataStore
-    Extension download page, and then unzip the MySQL file that you download,
-    and it will have complete instructions on configuring and installing MySQL
-    with GeoServer.</para>
   </section>
 </article>
