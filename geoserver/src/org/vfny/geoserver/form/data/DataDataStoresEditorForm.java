@@ -1,14 +1,9 @@
-/*
- * Created on Jan 8, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.vfny.geoserver.form.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
@@ -22,36 +17,48 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 
 /**
- * @author rgould
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * Represents the information required for editing a DataStore.
+ * <p>
+ * The parameters required by a DataStore are dynamically generated from the
+ * DataStoreFactorySPI. Most use of DataStoreFactorySPI has been hidden behind
+ * the DataStoreUtil class.
+ * </p>
+ * 
+ * @author Richard Gould, Refractions Research
  */
 public class DataDataStoresEditorForm extends ActionForm {
-	
-	private String dataStoreID;
+    
+	/**
+     * Used to identify the DataStore being edited.
+     * Maybe we should grab this from session?
+     */
+	private String dataStoreId;
+    
+    /** Enabled status of DataStore */
 	private boolean enabled;
-	private String namespace;
+    
+    /* NamespaceID used for DataStore content */
+	private String namespaceId;
+    
+    /* Description of DataStore (abstract?) */
 	private String description;
 	
-	//These are not stored in a single map so we can access them
-	//easily from JSP page
-	private List connectionParamKeys;
-	private List connectionParamValues;
-	
-	private String selectedDataStore;
-	private String selectedDataStoreType;
-	
-	private TreeSet dataStores;
-	private TreeSet dataStoreTypes;
-	private TreeSet namespaces;
-	
-	private String action;
+	// These are not stored in a single map so we can access them
+	// easily from JSP page
+    //
+    /** String representation of connection parameter keys */
+	private List paramKeys;
     
-    //Used be the ActionForm to inform us that we are creating an entirely new DataStore
-    private boolean newDataStore;
+    /** String representation of connection parameter values */
+	private List paramValues;
 	
-	/*
+    //
+    // More hacky attempts to transfer information into the JSP smoothly
+    //
+    /** Available NamespaceIds */
+	private SortedSet namespaces;
+	
+	/**
 	 * Because of the way that STRUTS works, if the user does not check the enabled box,
 	 * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
 	 * to see if it doesn't get called. This must be accessible, as ActionForms need to
@@ -63,53 +70,28 @@ public class DataDataStoresEditorForm extends ActionForm {
 	 */
 	private boolean enabledChecked = false; 	
 	
-	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
-		super.reset(arg0, arg1);
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		super.reset(mapping, request );
 
-System.out.println("FormRESET");
-		
 		enabledChecked = false;		
-		action = "";
 				
 		ServletContext context = getServlet().getServletContext();
-		DataConfig config =
-			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+		DataConfig config =(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-		dataStores = new TreeSet(config.getDataStores().keySet());
 		namespaces = new TreeSet(config.getNameSpaces().keySet());
-		dataStoreTypes = new TreeSet( DataStoreUtils.listDataStoresDescriptions());
 				
-		DataStoreConfig dsConfig;
 		
-		selectedDataStore = (String) context.getAttribute("selectedDataStore");
-		System.out.println("retrieving from context: selectedDataStor:::: " + selectedDataStore);
-
-		dsConfig = config.getDataStore(selectedDataStore);		
-		if (dsConfig == null) {
-           
-            //We could be creating a new DS here.
-            if (newDataStore == true){
-                System.out.println("[DSFORM]: creating new DS of type " + selectedDataStoreType);
-                dsConfig = new DataStoreConfig(selectedDataStoreType);
-            } else {
-                System.out.println("[DSFORM]: SDS null||empty, so grabbing first one");
-    			dsConfig = config.getDataStore( (String) dataStores.first());
-            }
-		}
-		
-		dataStoreID = dsConfig.getId(); System.out.println("[DSFORM]: dsID: " + dataStoreID);
-		description = dsConfig.getAbstract(); System.out.println("[DSFORM]: desc: " + description);
-		enabled = dsConfig.isEnabled(); System.out.println("[DSFORM]: enabld: " + enabled);
-		namespace = dsConfig.getNameSpaceId(); System.out.println("[DSFORM]: namespace: " + namespace);
+		dataStoreId = (String) request.getSession().getAttribute("selectedDataStoreId");
+        
+		DataStoreConfig dsConfig = config.getDataStore( dataStoreId );
+        
+        description = dsConfig.getAbstract();
+		enabled = dsConfig.isEnabled();
+		namespaceId = dsConfig.getNameSpaceId();
 
 		//Retrieve connection params		
-		
-		connectionParamKeys   = new ArrayList (dsConfig.getConnectionParams().keySet());
-		connectionParamValues = new ArrayList (dsConfig.getConnectionParams().values());
-		
-		System.out.println("------------------------------DUMP------------------------------");
-		System.out.println(":KEYS:"+ connectionParamKeys.toString() + " ========= "+connectionParamKeys.size());
-        System.out.println(":VALUES:"+ connectionParamValues.toString() + " ========= "+connectionParamValues.size());
+		paramKeys   = new ArrayList(dsConfig.getConnectionParams().keySet());
+		paramValues = new ArrayList(dsConfig.getConnectionParams().values());
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -117,170 +99,152 @@ System.out.println("FormRESET");
 		
 		return errors;
 	}
-	/**
-	 * @return
-	 */
-	public String getDataStoreID() {
-		return dataStoreID;
-	}
 
 	/**
 	 * @return
 	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getNamespace() {
-		return namespace;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setDataStoreID(String string) {
-		dataStoreID = string;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setDescription(String string) {
-		description = string;
-	}
-
-	/**
-	 * @param b
-	 */
-	public void setEnabled(boolean b) {
-		enabledChecked = true;		
-		enabled = b;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setNamespace(String string) {
-		namespace = string;
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isEnabledChecked() {
-		return enabledChecked;
-	}
-
-	/**
-	 * @param b
-	 */
-	public void setEnabledChecked(boolean b) {
-		enabledChecked = b;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getSelectedDataStore() {
-		return selectedDataStore;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setSelectedDataStore(String string) {
-		ServletContext context = getServlet().getServletContext();
-		context.setAttribute("selectedDataStore", string);
-		System.out.println("selectedDataStor in context set to " + string);
-		selectedDataStore = string;
-	}
-	
-	public Collection getDataStores() {
-		return dataStores;
-	}
-	
-	public Collection getDataStoreTypes() {
-		return dataStoreTypes;
-	}
-	
-	public Collection getNamespaces() {
-		return namespaces;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getSelectedDataStoreType() {
-		return selectedDataStoreType;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setSelectedDataStoreType(String string) {
-		selectedDataStoreType = string;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getAction() {
-		return action;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setAction(String string) {
-		action = string;
-	}
-
-
-	/**
-	 * @return
-	 */
-	public List getConnectionParamKeys() {
-		return connectionParamKeys;
+	public List getParamKeys() {
+		return paramKeys;
 	}
 	/**
 	 * @return
 	 */
-	public String getConnectionParamKey(int index) {
-		return (String) connectionParamKeys.get(index);
+	public String getParamKey(int index) {
+		return (String) paramKeys.get(index);
 	}
 	/**
 	 * @return
 	 */
-	public String getConnectionParamValue(int index) {
-		return (String) connectionParamValues.get(index);
+	public String getParamValue(int index) {
+		return (String) paramValues.get(index);
 	}
 
 	/**
 	 * @param list
 	 */
-	public void setConnectionParamValues(int index, String value) {
-		connectionParamValues.set(index, value);
+	public void setParamValues(int index, String value) {
+		paramValues.set(index, value);
 	}
 
-	/**
-	 * setNewDataStore purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param b
-	 */
-	public void setNewDataStore(boolean b) {
-		newDataStore = b;
-	}
+    /**
+     * getDataStoreId purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @return
+     */
+    public String getDataStoreId() {
+        return dataStoreId;
+    }
+
+    /**
+     * getDescription purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @return
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * isEnabled purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @return
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * getNamespaces purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @return
+     */
+    public SortedSet getNamespaces() {
+        return namespaces;
+    }
+
+    /**
+     * getParamValues purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @return
+     */
+    public List getParamValues() {
+        return paramValues;
+    }
+
+    /**
+     * setDescription purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @param string
+     */
+    public void setDescription(String string) {
+        description = string;
+    }
+
+    /**
+     * setEnabled purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @param b
+     */
+    public void setEnabled(boolean b) {
+        enabled = b;
+    }
+
+    /**
+     * setParamKeys purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @param list
+     */
+    public void setParamKeys(List list) {
+        paramKeys = list;
+    }
+
+    /**
+     * setParamValues purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @param list
+     */
+    public void setParamValues(List list) {
+        paramValues = list;
+    }
+
+    /**
+     * getNamespaceId purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @return
+     */
+    public String getNamespaceId() {
+        return namespaceId;
+    }
+
+    /**
+     * setNamespaceId purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @param string
+     */
+    public void setNamespaceId(String string) {
+        namespaceId = string;
+    }
 
 }
