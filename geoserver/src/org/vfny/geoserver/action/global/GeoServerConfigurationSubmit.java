@@ -43,8 +43,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.2 2004/02/05 00:01:52 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: GeoServerConfigurationSubmit.java,v 1.3 2004/02/05 17:33:20 dmzwiers Exp $
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -89,6 +89,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         contactConfig.setContactFacsimile( form.getContactFacsimile() );
         contactConfig.setContactEmail( form.getContactEmail() );
         globalConfig.setContact(contactConfig);
+        getApplicationState().notifyConfigChanged();
         
         
         getServlet().getServletContext().setAttribute(GlobalConfig.CONFIG_KEY, globalConfig);

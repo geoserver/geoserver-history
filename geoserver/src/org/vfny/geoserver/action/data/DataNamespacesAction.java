@@ -73,12 +73,14 @@ public class DataNamespacesAction extends ConfigAction {
 
         if (action.equals(delete)) {
             dataConfig.removeNameSpace(namespacesForm.getSelectedNamespace());
+            getApplicationState().notifyConfigChanged();
         } else {
             config.setDefault(_default);
             config.setPrefix(prefix);
             config.setUri(URI);
 
             dataConfig.addNameSpace(prefix, config);
+            getApplicationState().notifyConfigChanged();
         }
 
         namespacesForm.reset(mapping, request);

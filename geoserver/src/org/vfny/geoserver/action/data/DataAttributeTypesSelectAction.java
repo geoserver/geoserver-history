@@ -59,7 +59,7 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
             request.getSession().setAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE,
                 config);
             form.reset(mapping, request);
-
+            getApplicationState().notifyConfigChanged();
             return mapping.findForward("dataConfigFeatureTypes");
         }
 
@@ -69,6 +69,7 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
             List list = ftConfig.getSchemaAttributes();
             list.remove(config);
             ftConfig.setSchemaAttributes(list);
+            getApplicationState().notifyConfigChanged();
 
             return mapping.findForward("dataConfigFeatureTypes");
         }
@@ -100,6 +101,7 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
 
             list.set(targetIndex + direction, config);
             list.set(targetIndex, temp);
+            getApplicationState().notifyConfigChanged();
 
             return mapping.findForward("dataConfigFeatureTypes");
         }

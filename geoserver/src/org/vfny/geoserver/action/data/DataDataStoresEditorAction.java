@@ -155,6 +155,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
         dataConfig.addDataStore(config);
 
         request.getSession().removeAttribute("selectedDataStoreId");
+        getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("dataConfigDataStores");
     }

@@ -33,8 +33,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </p>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ValidationTestSuiteSelectAction.java,v 1.2 2004/02/05 00:01:51 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationTestSuiteSelectAction.java,v 1.3 2004/02/05 17:33:19 dmzwiers Exp $
  */
 public class ValidationTestSuiteSelectAction extends ConfigAction {
 
@@ -65,6 +65,7 @@ public class ValidationTestSuiteSelectAction extends ConfigAction {
             Map suites = validationConfig.getTestSuites();
             suites.remove(selectedTestSuite);
             validationConfig.setTestSuites(suites);
+            getApplicationState().notifyConfigChanged();
             
             request.getSession().removeAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
             

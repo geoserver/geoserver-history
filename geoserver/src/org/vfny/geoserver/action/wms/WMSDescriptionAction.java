@@ -51,6 +51,7 @@ public final class WMSDescriptionAction extends ConfigAction {
             ? keywords.split(System.getProperty("line.separator")) : new String[0];
 
         config.setKeywords(array);
+        getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("wmsConfigDescription");
     }

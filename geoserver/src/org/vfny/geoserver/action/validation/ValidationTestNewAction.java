@@ -44,8 +44,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ValidationTestNewAction.java,v 1.2 2004/02/05 00:01:51 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationTestNewAction.java,v 1.3 2004/02/05 17:33:19 dmzwiers Exp $
  */
 public class ValidationTestNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -68,6 +68,7 @@ public class ValidationTestNewAction extends ConfigAction {
         
         TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession().getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
         suiteConfig.addTest(testConfig);
+        getApplicationState().notifyConfigChanged();
         
         request.getSession().setAttribute(TestConfig.CURRENTLY_SELECTED_KEY, testConfig);
         

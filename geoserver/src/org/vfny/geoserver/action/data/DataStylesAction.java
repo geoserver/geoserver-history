@@ -74,7 +74,8 @@ public class DataStylesAction extends ConfigAction {
         }
 
         if (action.equals(delete)) {
-            dataConfig.removeStyle(stylesForm.getSelectedStyle());
+            dataConfig.removeStyle(stylesForm.getSelectedStyle()); 
+            getApplicationState().notifyConfigChanged();
         } else {
             config.setFilename(new File(filename));
             config.setDefault(_default);
@@ -82,6 +83,7 @@ public class DataStylesAction extends ConfigAction {
 
             //Do configuration parameters here.
             dataConfig.addStyle(styleID, config);
+            getApplicationState().notifyConfigChanged();
         }
 
         stylesForm.reset(mapping, request);
