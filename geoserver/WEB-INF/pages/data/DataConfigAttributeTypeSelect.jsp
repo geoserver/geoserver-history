@@ -7,9 +7,9 @@
 <table border=0 width=100%>
 	<html:form action="DataConfigAttributeTypesSelect">
 
-	<tr><td>
+	<tr><td align="right" valign="top">
 		<bean:message key="label.attributeTypes"/>:
-	</td><td>
+	</td><td align="left" valign="top">
 		<html:select property="selectedAttributeType">
 			<html:options property="attributeTypes"/>
 		</html:select>
