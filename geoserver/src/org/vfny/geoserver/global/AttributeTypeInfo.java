@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.5 2004/02/05 00:48:04 jive Exp $
+ * @version $Id: AttributeTypeInfo.java,v 1.6 2004/02/07 00:52:30 jive Exp $
  */
 public class AttributeTypeInfo implements AttributeTypeMetaData {
     /** Following Davids lead with use of DTO delegate */
@@ -100,7 +100,7 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
      *
      * @return The element, or <code>TYPE_FRAGMENT</code>
      */    
-    String getType(){
+    public String getType(){
         if( delegate.isComplex() ){
             return "(xml fragment)";
         }
@@ -122,7 +122,7 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
      *
      * @param fragment The fragment to set.
      */    
-    String getFragment(){
+    public String getFragment(){
         if( delegate.isComplex() ){
             return delegate.getType();
         }
