@@ -65,7 +65,7 @@ public class WfsConfig implements java.io.Serializable {
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.config");
 
-    private Level logLevel = Logger.getLogger("org.vfny.geoserver").getLevel();
+    private Level logLevel = Logger.getLogger("").getLevel();
     
     
 
