@@ -15,7 +15,6 @@ A styling layer used for the unit tests of sldstyler
   <Abstract>A sample filter that filters the United States into three 
             categories of population, drawn in different colors</Abstract>
     <FeatureTypeStyle>
-      <FeatureTypeName>feature</FeatureTypeName>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
         <Filter xmlns:gml="http://www.opengis.net/gml">
