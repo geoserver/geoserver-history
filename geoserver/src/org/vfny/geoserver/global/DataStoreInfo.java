@@ -27,9 +27,6 @@ import java.util.logging.Logger;
  * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype {
-    /** for logging */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.config");
 
     /** DataStoreInfo we are representing */
     private DataStore dataStore = null;

@@ -20,9 +20,6 @@ import java.util.logging.Logger;
  * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
-    /** For debugging */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
 
     /**
      * For finding the instance of this class to use from the web container
