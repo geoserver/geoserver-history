@@ -31,8 +31,8 @@ import org.geotools.validation.spatial.LinesNotIntersectValidation;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationPlugInTester.java,v 1.5 2004/01/31 00:17:52 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationPlugInTester.java,v 1.6 2004/02/25 20:05:10 dmzwiers Exp $
  */
 public class ValidationPlugInTester extends DataTestCase {
 
@@ -158,7 +158,7 @@ public class ValidationPlugInTester extends DataTestCase {
 					= new LineNoSelfOverlappingValidation();
         selfOverlappingValidatorRoads.setName("RoadSelfIntersect");
         selfOverlappingValidatorRoads.setDescription("Tests to see if a road intersects itself, which is bad!");
-        selfOverlappingValidatorRoads.setTypeRef("road");
+        selfOverlappingValidatorRoads.setLineTypeRef("road");
 	
 		try {
 			processor.addValidation(selfOverlappingValidatorRoads);
@@ -189,7 +189,7 @@ public class ValidationPlugInTester extends DataTestCase {
         = new LineNoSelfOverlappingValidation();
         selfOverlappingValidatorRoads.setName("RoadSelfIntersect");
         selfOverlappingValidatorRoads.setDescription("Tests to see if a road intersects itself, which is bad!");
-        selfOverlappingValidatorRoads.setTypeRef("road");
+        selfOverlappingValidatorRoads.setLineTypeRef("road");
         
 
 		try {
