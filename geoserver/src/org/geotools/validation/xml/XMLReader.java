@@ -35,7 +35,7 @@ import javax.xml.parsers.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLReader.java,v 1.1 2004/01/19 23:54:56 dmzwiers Exp $
+ * @version $Id: XMLReader.java,v 1.2 2004/01/20 00:52:30 dmzwiers Exp $
  */
 public class XMLReader {
 	
@@ -80,7 +80,7 @@ public class XMLReader {
 						elem = (Element)nl2.item(0);
 					}
 					// elem whould have the value now
-					Object val = ArgHelper.getArgumentInstance(elem.getTagName(),elem);
+					Object val = ArgHelper.getArgumentInstance(elem.getTagName().trim(),elem);
 					m.put(key,val);
 				}
 			}
