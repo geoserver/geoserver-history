@@ -17,6 +17,7 @@
 package org.vfny.geoserver.global.xml;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -68,7 +70,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.7 2004/01/15 21:55:15 emperorkefka Exp $
+ * @version $Id: XMLConfigReader.java,v 1.8 2004/01/15 23:02:08 jive Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -610,69 +612,107 @@ public class XMLConfigReader {
 	}
 
 	/**
-	 * loadFeatureTypes purpose.
+	 * Load map of FeatureTypeDTO instances from a directory.
 	 * <p>
-	 * Converts a DOM tree into a Map of FeatureTypes.
-	 * </p>
-	 * @param featureTypeDir a DOM tree to convert into a Map of FeatureTypes.
-	 * @return A complete Map of FeatureTypes loaded from the DOM tree provided.
+     * Expected directory structure:
+     * </p>
+     * <ul>
+     * <li>rootDir/</li>
+     * <li>rootDir/featureType1/info.xml - required</li>
+     * <li>rootDir/featureType1/schema.xml - optional</li>
+     * <li>rootDir/featureType2/info.xml - required</li>
+     * <li>rootDir/featureType2/schema.xml - optional</li> 
+     * </ul> 
+	 * <p>
+     * If a schema.xml file is not used, the information may be generated from
+     * a FeatureType using DataTransferObjectFactory.
+     * </p>
+     * 
+	 * @param featureTypeRoot Root FeatureType directory
+	 * @return Map of FeatureTypeInfoDTO by <code>dataStoreId:typeName</code>
+     * 
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	protected Map loadFeatureTypes(File featureTypeDir) throws ConfigurationException {
-		LOGGER.finest("examining: " + featureTypeDir.getAbsolutePath());
-		LOGGER.finest("is dir: " + featureTypeDir.isDirectory());
-		Map featureTypes = new HashMap();
-
-		if (featureTypeDir.isDirectory()) {
-			File[] file = featureTypeDir.listFiles();
-			for (int i = 0, n = file.length; i < n; i++) {
-				LOGGER.fine("Info dir:"+file[i].toString());
-				FeatureTypeInfoDTO ft = loadFeature(new File(file[i],"info.xml"));
-				DataStoreInfoDTO dsi = (DataStoreInfoDTO)data.getDataStores().get(ft.getDataStoreId());
-				
-				//TODO JODYFIXTHIS
-				featureTypes.put(dsi.getNameSpaceId()+":"+ft.getName(), ft);
-			}
-		}
-		return featureTypes;
-	}
-
+	protected Map loadFeatureTypes(File featureTypeRoot) throws ConfigurationException {
+		LOGGER.finest("examining: " + featureTypeRoot.getAbsolutePath());
+		LOGGER.finest("is dir: " + featureTypeRoot.isDirectory());
+        
+        if( !featureTypeRoot.isDirectory()){
+            throw new IllegalArgumentException( "featureTypeRoot must be a directoy");
+        }
+        File[] directories = featureTypeRoot.listFiles( new FileFilter(){
+            public boolean accept(File pathname){
+                return pathname.isDirectory();
+            }
+        });
+		Map map = new HashMap();
+		for (int i = 0, n = directories.length; i < n; i++) {
+		    File info = new File( directories[i], "info.xml" );
+            
+            if( info.exists() && info.isFile() ){
+                LOGGER.fine("Info dir:"+info );                
+                FeatureTypeInfoDTO dto = loadFeature( info );
+                map.put( dto.getKey(), dto );                
+            }            
+        }
+        return map;
+    }
+    
 	/**
-	 * loadDataStore purpose.
+	 * Load FeatureTypeInfoDTO from a directory.
 	 * <p>
-	 * Converts a intoFile tree into a FeatureTypeInfo object. Uses loadFeaturePt2(Element) to interpret the XML.
+     * Expected directory structure:
+     * </p>
+     * <ul>
+     * <li>info.xml - required</li>
+     * <li>schema.xml - optional</li>
+     * </ul>
 	 * </p>
+     * <p>
+     * If a schema.xml file is not used, the information may be generated from
+     * a FeatureType using DataTransferObjectFactory.
+     * </p>
 	 * @param infoFile a File to convert into a FeatureTypeInfo object. (info.xml)
 	 * @return A complete FeatureTypeInfo object loaded from the File handle provided.
 	 * @throws ConfigurationException When an error occurs.
 	 * @see loadFeaturePt2(Element)
 	 */
 	protected FeatureTypeInfoDTO loadFeature(File infoFile) throws ConfigurationException{
-		if (isInfoFile(infoFile)) {
-			Element featureElem = null;
-			try{
-				featureElem=ReaderUtils.loadConfig(new FileReader(infoFile));
-		}catch(FileNotFoundException e){throw new ConfigurationException(e);}
-			FeatureTypeInfoDTO ft = null;
-
-			File parentDir = infoFile.getParentFile();
-			ft = loadFeaturePt2(featureElem);
-			ft.setDirName(parentDir.getName());
-			//attemp to load a schema
-			try{
-				File pathToSchemaFile = new File(parentDir, "schema.xml");
-				LOGGER.finest("pathToSchema is " + pathToSchemaFile);
-				ft.setSchema(loadSchema(pathToSchemaFile,ft));
-				LOGGER.finer("added featureType " + ft.getName());
-			}catch(Exception e){
-				ft.setSchema(new ArrayList());
-				// prob means schema missing;
-				LOGGER.fine("error" + e);
-			}
-			
-			return ft;
+        if( !infoFile.exists() ){
+            throw new IllegalArgumentException("Info File not found:"+infoFile);
+        }
+        if( !infoFile.isFile() ){
+            throw new IllegalArgumentException("Info file is the wrong type:"+infoFile );
+        }
+		if (!isInfoFile(infoFile)) {
+            throw new IllegalArgumentException("Info File not valid:"+infoFile);
+        }
+		Element featureElem = null;
+		try{
+            LOGGER.finest("process info file " + infoFile );            
+			featureElem=ReaderUtils.loadConfig(new FileReader(infoFile));
+		} catch(FileNotFoundException e){
+            throw new ConfigurationException(e);
 		}
-		throw new ConfigurationException("Invalid Info file.");
+		FeatureTypeInfoDTO dto = null;
+
+		File parentDir = infoFile.getParentFile();
+        
+		dto = loadFeaturePt2(featureElem);
+		dto.setDirName(parentDir.getName());
+        
+		// attempt to load optional schema information
+        //
+        File schemaFile = new File(parentDir, "schema.xml");
+        if( schemaFile.exists() && schemaFile.isFile() ){
+            LOGGER.finest("process schema file " + infoFile );
+            dto.setSchema( loadSchema(schemaFile, dto ));
+            LOGGER.finer("added featureType " + dto.getName());            
+        }
+        else {
+            dto.setSchema( Collections.EMPTY_LIST );
+        }
+		return dto;		
 	}
 
 	/**
@@ -796,6 +836,7 @@ public class XMLConfigReader {
 	 */
 	protected static boolean isInfoFile(File testFile) {
 		String testName = testFile.getAbsolutePath();
+        
 		int start = testName.length() - "info.xml".length();
 		int end = testName.length();
 
@@ -812,22 +853,37 @@ public class XMLConfigReader {
 	 * @return A string representation of the file contents.
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	protected List loadSchema(File path, FeatureTypeInfoDTO fti) throws ConfigurationException{
+	protected List loadSchema(File path, FeatureTypeInfoDTO dto) throws ConfigurationException{
 		path = ReaderUtils.initFile(path, false);
 		Element elem = null;
 		try{
 			elem=ReaderUtils.loadConfig(new FileReader(path));
-	}catch(FileNotFoundException e){throw new ConfigurationException(e);}
-		return loadSchema(elem,fti);
+		}catch(FileNotFoundException e){
+            throw new ConfigurationException(e);
+        }
+		return processSchema(elem,dto);
 	}
-
-	public static List loadSchema(Element elem, FeatureTypeInfoDTO fti) throws ConfigurationException{
-		ArrayList al = new ArrayList();
-		fti.setSchemaName(ReaderUtils.getAttribute(elem,"name",true));
+    
+	/**
+     * Process schema DOM for a list of AttributeTypeInfoDTO.
+     * <p>
+	 * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
+	 * </p>
+	 * @param elem Schema DOM element
+	 * @param featureTypeInfoDTO
+	 * @return List of AttributeTypeInfoDTO
+	 * @throws ConfigurationException
+	 */
+	public static List processSchema(Element elem, FeatureTypeInfoDTO featureTypeInfoDTO) throws ConfigurationException{
+		ArrayList list = new ArrayList();
+        
+		featureTypeInfoDTO.setSchemaName(ReaderUtils.getAttribute(elem,"name",true));
+        
 		elem = ReaderUtils.getChildElement(elem,"xs:extension");
-		fti.setSchemaBase(ReaderUtils.getAttribute(elem,"base",true));
+		featureTypeInfoDTO.setSchemaBase(ReaderUtils.getAttribute(elem,"base",true));
 		elem = ReaderUtils.getChildElement(elem,"xs:sequence");
 		NodeList nl = elem.getElementsByTagName("xs:element");
+        
 		for(int i=0;i<nl.getLength();i++){
 			// one element now
 			elem = (Element)nl.item(i);
@@ -865,9 +921,9 @@ public class XMLConfigReader {
 			ati.setNillable(ReaderUtils.getBooleanAttribute(elem,"nillable",false));
 			ati.setMaxOccurs(ReaderUtils.getIntAttribute(elem,"maxOccurs",false,1));
 			ati.setMinOccurs(ReaderUtils.getIntAttribute(elem,"minOccurs",false,0));
-			al.add(ati);
+			list.add(ati);
 		}
-		return al;
+		return list;
 	}
 	
 	/**
