@@ -4,11 +4,6 @@
        "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
        "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
 
-
-<!--
-     This is a blank Tiles definition file with a commented example.
--->
-
 <tiles-definitions>
 
    	<definition name=".mainLayout" page="/WEB-INF/pages/layouts/mainLayout.jsp">

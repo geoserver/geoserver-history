@@ -117,7 +117,7 @@
    		<put name="selectedIndex" value="0"/>
    		<put name="parameterName" value="selected"/>
    		<putList name="tabList">
-   			<item value="Entrep&ocirc;ts"
+   			<item value="Entrep\&ocirc;ts"
    				link="data.dataStores.main"
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    			<item value="Espaces de nommage"
