@@ -3,49 +3,46 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:html locale="true" xhtml="true">
-
-<bean:define id="key">
-	<tiles:getAsString name='key'/>
-</bean:define>
-<bean:define id="keyLabel">
-  <tiles:getAsString name='key'/>.label
-</bean:define>
-<bean:define id="keyTitle">
-	<tiles:getAsString name='key'/>.title
-</bean:define>
-<bean:define id="keyShort">
-	<tiles:getAsString name='key'/>.short
-</bean:define>
-<bean:define id="keyWords">
-	<tiles:getAsString name='key'/>.words
-</bean:define>
-
-<head>
-  <title>
-    <bean:message key="geoserver.logo"/>
-    <bean:message key="<%= keyTitle %>"/>
-  </title>
-
-  <meta content="text/html; charset=iso-8859-1" http-equiv="content-type">
-  <meta content="text/css" http-equiv="content-style-type">  
-  <meta name="description"
-        content="<bean:message key="<%= keyShort %>"/>">
-  <meta name="keywords"
-        content="(GeoServer) (GIS) (Geographic Information Systems)     <bean:message key="<%= keyWords %>"/>"/>
-  <meta name="author" content="Jody Garnett, Richard Gould">
-
-  <style type="text/css">
-    <!-- @import url("<html:rewrite forward='baseStyle'/>"); -->
-  </style>
-  
-  <link type="image/gif" href="images/gs.gif" rel="icon"><!-- mozilla --> 
-  <link href="images/gs.ico" rel="SHORTCUT ICON"><!-- ie -->
-
-<html:base/>
-</head>
 <tiles:importAttribute scope="request"/>
-<body>
+
+<bean:define id="key"><tiles:getAsString name='key'/></bean:define>
+<bean:define id="keyLabel"><tiles:getAsString name='key'/>.label</bean:define>
+<bean:define id="keyTitle"><tiles:getAsString name='key'/>.title</bean:define>
+<bean:define id="keyShort"><tiles:getAsString name='key'/>.short</bean:define>
+<bean:define id="keyWords"><tiles:getAsString name='key'/>.words</bean:define>
+<bean:define id="layer"><tiles:getAsString name='layer'/></bean:define>
+
+<html:html locale="true" xhtml="true">
+  <head>
+    <title>
+      <bean:message key="geoserver.logo"/>
+      <bean:message key="<%= keyTitle %>"/>
+    </title>
+    <meta content="text/html; charset=iso-8859-1" http-equiv="content-type"/>
+    <meta content="text/css" http-equiv="content-style-type"/>  
+    <meta name="description"
+          content="<bean:message key="<%= keyShort %>"/>">
+    <meta name="keywords"
+          content="(GeoServer) (GIS) (Geographic Information Systems) <bean:message key="<%= keyWords %>"/>"/>
+    <meta name="author" content="Jody Garnett, Richard Gould, David Zwiers"/>
+  
+    <style type="text/css">
+      <!-- @import url("<html:rewrite forward='style'/>"); -->
+    </style>
+  
+    <link type="/geoserver/image/gif" href="<html:rewrite forward='icon'/>" rel="icon"/>
+    <link href="<html:rewrite forward='favicon'/>" rel="SHORTCUT ICON"/>
+    <html:base/>
+  </head>
+  <body>
+  
+<!-- Security Check (for non application layers -->
+<logic:notEqual name="layer" value="application">  
+  <logic:notPresent name="GEOSERVER.USER">
+    <logic:redirect forward="login" />
+  </logic:notPresent>
+</logic:notEqual>
+    
 <table class="page">
   <tbody>
 	<tr class="header">
@@ -102,20 +99,17 @@
                 <tiles:insert attribute="locator"/>
               </td>
               <td class="loginStatus">
-                <span class="loginStatus">
-                  
-                  <logic:present name="GEOSERVER.USER">
+                <span class="loginStatus">                  
+<logic:present name="GEOSERVER.USER">
                     <html:link forward="logout">
 				      <bean:message key="label.logout"/>
 			        </html:link>
-                  </logic:present>
-                  
-                  <logic:notPresent name="GEOSERVER.USER">
+</logic:present>                  
+<logic:notPresent name="GEOSERVER.USER">
                     <html:link forward="login">
                       <bean:message key="label.login"/>
                     </html:link>
-                  </logic:notPresent>
-                  
+</logic:notPresent>                  
                 </span>
               </td>
             </tr>

@@ -117,11 +117,15 @@
         <forward
             name="welcome"
             path="/welcome.do"/>           
-        
+                
         <forward 
         	name="contact"
         	path="/contactInformation.do"/>
 
+        <!-- Appearance -->       		
+       	<forward name="style" path="/style.css"/>
+       	<forward name="icon" path="/images/gs.gif"/>
+       	<forward name="favicon" path="/images/gs.ico"/>	
         <!-- ADMIN -->
         <forward 
         	name="admin"
@@ -261,11 +265,6 @@
        	<forward
        		name="config.data.calculateBoundingBox"
        		path="/config/data/calculateBoundingBox.do"/>
-
-        <!-- Appearance -->       		
-       	<forward
-       		name="baseStyle"
-       		path="/style.css"/>
 
     </global-forwards>
 
