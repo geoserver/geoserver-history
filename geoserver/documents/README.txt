@@ -7,9 +7,11 @@ Whew!  This release was a lot more difficult than expected.  The lesson
 learned is that it is in fact _possible_ to release software from an 
 internet care, but it is certainly not recommended ;)  Yes, thats right, 
 this release is coming you straight from the Village Novo internet cafe in
-beautiful Salvador, Brazil.  This is what happens when your ac adapter breaks
-in Brazil.  The release already felt late before the adapter broke, so it felt
-worthwhile to get all the latest bug fixes and documentation out.  
+beautiful Salvador, Brazil.  This is what happens when your ac adapter 
+breaks and you do not have a back up.  The release already felt late 
+before the adapter broke, so it seemed worthwhile to get all the latest 
+bug fixes and documentation out sooner, rather than waiting for a part 
+that may not even come.
 
 The biggest improvement of this release is our completely revised user 
 documentation.  We are hoping to blow away the conception that it is hard to 
