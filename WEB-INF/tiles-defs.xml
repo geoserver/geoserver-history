@@ -24,23 +24,26 @@
    		<put name="actions"	value="/WEB-INF/pages/blank.jsp"/>
 
 		<!-- BODY -->
-   		<put name="location" value="/WEB-INF/pages/location.jsp"/>
+   		<put name="locator" value="/WEB-INF/pages/locator.jsp"/>
    		<put name="loginStatus" value="/WEB-INF/pages/loginStatus.jsp"/>
 		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
 
    		<put name="layer" value="application"/>
+        <put name="locationForwards" value="welcome"/>   		
    	</definition>
    	
    	<definition name="main.welcome" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/Welcome.jsp"/>
    		<put name="title" value="title.welcome"/>
    		<put name="layer" value="application"/>
+        <put name="locationForwards" value="welcome"/>   		
    	</definition>
 
    	<definition name="main.contact" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/ContactInformation.jsp"/>
    		<put name="title" value="title.contact"/>
    		<put name="layer" value="application"/>
+        <put name="locationForwards" value="welcome|contact"/>   		   		
    	</definition>
    	
    	<definition name="main.menu" extends=".mainLayout">

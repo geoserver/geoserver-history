@@ -60,7 +60,7 @@
           <tbody>
             <tr class="bar">
               <td class="locator">
-                <tiles:insert attribute="location"/>
+                <tiles:insert attribute="locator"/>
               </td>
               <td class="loginStatus">
                 <tiles:insert attribute="loginStatus"/>
