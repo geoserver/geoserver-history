@@ -25,6 +25,7 @@ import org.geotools.filter.DefaultExpression;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.LiteralExpression;
 import org.geotools.resources.Geotools;
+import org.vfny.geoserver.config.ConfigInfo;
 
 /**
  * Tests the get feature request handling.
@@ -50,6 +51,12 @@ public class FeatureSuite extends TestCase {
     /** Holds mappings between HTTP and ASCII encodings */
     private static FilterFactory factory = FilterFactory.createFilterFactory();
 
+      /** Unit test data directory */
+    private static final String CONFIG_DIR = 
+        System.getProperty("user.dir") + "/misc/unit/config/";
+
+    //classes complain if we don't set up a valid config info.
+    private static ConfigInfo config = ConfigInfo.getInstance(CONFIG_DIR);
 
     /** Constructor with super. */
     public FeatureSuite (String testName) { super(testName); }
