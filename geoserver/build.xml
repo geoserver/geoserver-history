@@ -114,15 +114,15 @@
     <echo message=" TEST TARGETS"/>
     <echo message="    unit:         compiles, runs unit tests"/>
     <echo message="                    -param: test.name=[package.class]"/>
-    <echo message="    test:         builds all classes to server, runs"/>
-    <echo message="    test-clean:   builds clean to server, runs server"/>
+    <echo message="    test:         builds and runs the built-in server"/>
+    <echo message="    test-clean:   builds clean to built-in server"/>
     <echo message="    test-ext:     builds war to external server"/>
     <echo message="                    -param: dir.container=[server_path]"/>
     <echo message=""/>
     <echo message=" BUILD TARGETS"/>
     <echo message="    war:          builds geoserver war file"/>
     <echo message="    document:     generates all javadocs for project"/>
-    <echo message="    nightly:      puts up the nightly build"/>
+    <echo message="    clean:        rebuilds all classes"/>
     <echo message="    release:      makes a full release build"/>
     <echo message="                    -param: name.release=[release]"/>
     <echo message=""/>
@@ -532,7 +532,7 @@
     <delete dir="${dir.release}" failonerror="false"/>
     <copy file="${dir.misc}/documents/license.txt" todir="${basedir}"/>
     <tar longfile="gnu"
-         basedir="${basedir}"
+         basedir="${basedir}/.."
          tarfile="geoserver-${name.release}.tar"/>
 
     <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
