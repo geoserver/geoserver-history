@@ -1,0 +1,2252 @@
+Index: gt/module/main/src/org/geotools/data/coverage/grid/file/FileMetadataImpl.java
+===================================================================
+--- gt/module/main/src/org/geotools/data/coverage/grid/file/FileMetadataImpl.java	(revision 12530)
++++ gt/module/main/src/org/geotools/data/coverage/grid/file/FileMetadataImpl.java	(working copy)
+@@ -28,7 +28,7 @@
+  * A simple implementation of FileMetadata
+  *
+  * @author jeichar
+- *
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  */
+ public class FileMetadataImpl extends AbstractMetadataEntity implements FileMetadata {
+     String name;
+Index: gt/module/main/src/org/geotools/data/coverage/grid/file/FileSystemGridCoverageExchange.java
+===================================================================
+--- gt/module/main/src/org/geotools/data/coverage/grid/file/FileSystemGridCoverageExchange.java	(revision 12530)
++++ gt/module/main/src/org/geotools/data/coverage/grid/file/FileSystemGridCoverageExchange.java	(working copy)
+@@ -46,6 +46,7 @@
+  * Is both a GridCoverageExchange and a Catalog
+  *
+  * @author $author$
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  * @version $Revision: 1.9 $
+  */
+ public class FileSystemGridCoverageExchange extends AbstractCatalog
+Index: gt/module/main/src/org/geotools/data/coverage/grid/file/FormatFileFilter.java
+===================================================================
+--- gt/module/main/src/org/geotools/data/coverage/grid/file/FormatFileFilter.java	(revision 12530)
++++ gt/module/main/src/org/geotools/data/coverage/grid/file/FormatFileFilter.java	(working copy)
+@@ -27,6 +27,7 @@
+  * DOCUMENT ME!
+  *
+ *  @author Jesse Eichar
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  * @author $author$ (Last Modified)
+  * @version $Revision: 1.9 $
+  */
+Index: gt/module/main/src/org/geotools/data/coverage/grid/AbstractGridFormat.java
+===================================================================
+--- gt/module/main/src/org/geotools/data/coverage/grid/AbstractGridFormat.java	(revision 12530)
++++ gt/module/main/src/org/geotools/data/coverage/grid/AbstractGridFormat.java	(working copy)
+@@ -44,7 +44,7 @@
+  * }</code>
+  *
+  * @author jeichar
+- *
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  * @see AbstractFormatFactory
+  */
+ public abstract class AbstractGridFormat implements Format {
+Index: gt/module/main/src/org/geotools/data/coverage/grid/UnknownFormat.java
+===================================================================
+--- gt/module/main/src/org/geotools/data/coverage/grid/UnknownFormat.java	(revision 12530)
++++ gt/module/main/src/org/geotools/data/coverage/grid/UnknownFormat.java	(working copy)
+@@ -28,6 +28,7 @@
+  *
+ *  @author Jesse Eichar
+  * @author $author$ (Last Modified)
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  * @version $Revision: 1.9 $
+  */
+ public class UnknownFormat extends AbstractGridFormat implements Format {
+Index: gt/module/main/src/org/geotools/data/coverage/grid/stream/StreamGridCoverageExchange.java
+===================================================================
+--- gt/module/main/src/org/geotools/data/coverage/grid/stream/StreamGridCoverageExchange.java	(revision 12530)
++++ gt/module/main/src/org/geotools/data/coverage/grid/stream/StreamGridCoverageExchange.java	(working copy)
+@@ -45,6 +45,7 @@
+  * A simple stateless GridCoverageExchange that will write/read to/from files and streams
+  *
+  * @author jeichar
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  */
+ public class StreamGridCoverageExchange implements GridCoverageExchange {
+     Set formats=new java.util.HashSet();
+Index: gt/module/main/src/org/geotools/resources/TestData.java
+===================================================================
+--- gt/module/main/src/org/geotools/resources/TestData.java	(revision 12530)
++++ gt/module/main/src/org/geotools/resources/TestData.java	(working copy)
+@@ -180,7 +180,7 @@
+         }
+         throw new FileNotFoundException("Could not locate test-data: "+path);
+     }
+-    
++
+     /**
+      * Creates a temporary file with the given name.
+      */
+@@ -189,8 +189,8 @@
+         int split = name.lastIndexOf('.');
+         String prefix = split == -1 ? name : name.substring(0,split);
+         String suffix = split == -1 ? null : name.substring(split+1);
+-        File tmp = File.createTempFile( prefix, suffix, testData );
+-        tmp.deleteOnExit();    	
++        File tmp = File.createTempFile( prefix, "."+suffix, testData );
++        tmp.deleteOnExit();
+         return tmp;
+     }
+ }
+Index: gt/plugin/image/test/org/geotools/gce/image/WorldImageFormatTest.java
+===================================================================
+--- gt/plugin/image/test/org/geotools/gce/image/WorldImageFormatTest.java	(revision 12530)
++++ gt/plugin/image/test/org/geotools/gce/image/WorldImageFormatTest.java	(working copy)
+@@ -33,26 +33,13 @@
+ 		format = new WorldImageFormat();
+ 	}
+ 
+-	public void testGetReader() throws MalformedURLException {
+-		assertNotNull(format.getReader(new URL("http://something.com/temp.tiff")));
+-	}
+-
+-	public void testGetWriter() throws MalformedURLException {
+-		assertNotNull(format.getWriter(new URL("http://something.com/temp.tiff")));
+-	}
+-
+-	public void testAccepts() throws MalformedURLException {
+-		assertTrue(format.accepts(new File("c:\temp.gif")));
+-		assertTrue(format.accepts(new URL("http://something.com/temp.jpeg")));
+-	}
+-
+ 	public void testGetWorldExtension() {
+-		assertEquals(WorldImageFormat.getWorldExtension(".png"), ".pgw");
+-		assertEquals(WorldImageFormat.getWorldExtension(".gif"), ".gfw");
+-		assertEquals(WorldImageFormat.getWorldExtension(".jpg"), ".jgw");
+-		assertEquals(WorldImageFormat.getWorldExtension(".jpeg"), ".jgw");
+-		assertEquals(WorldImageFormat.getWorldExtension(".tif"), ".tfw");
+-		assertEquals(WorldImageFormat.getWorldExtension(".tiff"), ".tfw");
++		assertEquals(WorldImageFormat.getWorldExtension("png"), ".pgw");
++		assertEquals(WorldImageFormat.getWorldExtension("gif"), ".gfw");
++		assertEquals(WorldImageFormat.getWorldExtension("jpg"), ".jgw");
++		assertEquals(WorldImageFormat.getWorldExtension("jpeg"), ".jgw");
++		assertEquals(WorldImageFormat.getWorldExtension("tif"), ".tfw");
++		assertEquals(WorldImageFormat.getWorldExtension("tiff"), ".tfw");
+ 		
+ 	}
+ 
+Index: gt/plugin/image/test/org/geotools/gce/image/WorldImageWriterTest.java
+===================================================================
+--- gt/plugin/image/test/org/geotools/gce/image/WorldImageWriterTest.java	(revision 12530)
++++ gt/plugin/image/test/org/geotools/gce/image/WorldImageWriterTest.java	(working copy)
+@@ -11,6 +11,18 @@
+ import junit.framework.TestCase;
+ 
+ import org.geotools.resources.TestData;
++import javax.media.jai.PlanarImage;
++import org.geotools.referencing.crs.GeographicCRS;
++import java.awt.BorderLayout;
++import java.io.IOException;
++import org.geotools.coverage.grid.GridCoverage2D;
++import org.opengis.parameter.ParameterValueGroup;
++import javax.swing.ImageIcon;
++import org.opengis.coverage.grid.Format;
++import java.net.URL;
++import org.geotools.geometry.GeneralEnvelope;
++import javax.swing.JLabel;
++import javax.swing.JFrame;
+ 
+ /**
+  * @author rgould
+@@ -20,29 +32,54 @@
+  */
+ public class WorldImageWriterTest extends TestCase {
+ 
++    WorldImageReader wiReader;
++    ParameterValueGroup paramsRead = null,paramsWrite=null;
++    WorldImageWriter wiWriter;
++    Object destination;
+ 
+-	WorldImageWriter writer;
+-	Object destination;
+-	
+-	public WorldImageWriterTest(String name) {
+-		super(name);
+-	}
+-	
+-	protected void setUp() throws Exception {
+-		super.setUp();
+-		destination = TestData.file(this, "etopo.png");
+-		writer = new WorldImageWriter ((File) destination);
+-	}
++    public WorldImageWriterTest(String name) {
++        super(name);
++    }
+ 
+-	public void testGetFormat() {
+-		assertNotNull(writer.getFormat());
+-	}
++    protected void setUp() throws Exception {
++        super.setUp();
+ 
+-	public void testGetDestination() {
+-		assertEquals(destination, writer.getDestination());
+-	}
++        destination =  TestData.temp(this, "worldimage.aaa");
+ 
+-	public void testWrite() {
+-	}
++        wiWriter = new WorldImageWriter(destination);
++        wiReader = new WorldImageReader(new URL(
++                "http://java.sun.com/im/logo_java.gif"));
++    }
+ 
++
++    public void testWrite() throws IOException, IllegalArgumentException {
++        Format readerFormat = wiReader.getFormat();
++        paramsRead = readerFormat.getReadParameters();
++        //setting crs
++        paramsRead.parameter("crs").setValue(GeographicCRS.WGS84);
++        //setting envelope
++        paramsRead.parameter("envelope").setValue(new GeneralEnvelope(
++                new double[] {10, 42}, new double[] {11, 43}));
++
++        GridCoverage2D coverage = (GridCoverage2D) wiReader.read(null);
++        //(GeneralParameterValue[]) paramsRead.values().toArray(new GeneralParameterValue[paramsRead.values().size()]));
++        assertNotNull(coverage);
++        assertNotNull(((GridCoverage2D) coverage).getRenderedImage());
++        assertNotNull(coverage.getEnvelope());
++
++
++
++        //writing
++        paramsWrite=wiWriter.getFormat().getWriteParameters();
++        paramsWrite.parameter("format").setValue("tiff");
++
++        wiWriter.write(coverage,null);
++
++    }
++
+ }
++
++
++
++
++
+Index: gt/plugin/image/test/org/geotools/gce/image/WorldImageReaderTest.java
+===================================================================
+--- gt/plugin/image/test/org/geotools/gce/image/WorldImageReaderTest.java	(revision 12530)
++++ gt/plugin/image/test/org/geotools/gce/image/WorldImageReaderTest.java	(working copy)
+@@ -9,10 +9,23 @@
+ import java.io.File;
+ import java.io.IOException;
+ 
++import org.geotools.gce.image.*;
+ import junit.framework.TestCase;
+-
+-import org.geotools.coverage.grid.GridCoverageImpl;
++import javax.swing.ImageIcon;
++import javax.swing.JLabel;
++import javax.swing.JFrame;
++import java.awt.image.BufferedImage;
++import javax.swing.JScrollPane;
++import org.geotools.coverage.grid.GridCoverage2D;
++import javax.media.jai.PlanarImage;
+ import org.geotools.resources.TestData;
++import java.net.URL;
++import org.opengis.coverage.grid.Format;
++import org.opengis.parameter.ParameterValueGroup;
++import org.geotools.geometry.GeneralEnvelope;
++import org.geotools.referencing.crs.GeographicCRS;
++import org.opengis.parameter.GeneralParameterValue;
++import java.awt.BorderLayout;
+ 
+ /**
+  * @author rgould
+@@ -22,32 +35,47 @@
+  */
+ public class WorldImageReaderTest extends TestCase {
+ 
+-	WorldImageReader wiReader;
+-	
+-	/*
+-	 * @see TestCase#setUp()
+-	 */
+-	protected void setUp() throws Exception {
+-		super.setUp();
+-		File imageFile = TestData.file(this, "etopo.png");
+-		wiReader = new WorldImageReader(imageFile);
+-	}
++        WorldImageReader wiReader;
++        ParameterValueGroup paramsRead=null;
+ 
+-	/**
+-	 * Constructor for WorldImageReaderTest.
+-	 * @param arg0
+-	 */
+-	public WorldImageReaderTest(String arg0) {
+-		super(arg0);
+-	}
++        /*
++         * @see TestCase#setUp()
++         */
++        protected void setUp() throws Exception {
++                super.setUp();
++                wiReader = new WorldImageReader(new URL("http://java.sun.com/im/logo_java.gif"));
+ 
+-	public void testWorldImageReader() {
+-	}
++        }
+ 
+-	public void testRead() throws IOException {
+-		org.opengis.coverage.grid.GridCoverage coverage = wiReader.read(null);
+-		assertNotNull(coverage);
+-		assertNotNull(((GridCoverageImpl)coverage).getRenderedImage());
+-		assertNotNull(coverage.getEnvelope());
+-	}
++        /**
++         * Constructor for WorldImageReaderTest.
++         * @param arg0
++         */
++        public WorldImageReaderTest(String arg0) {
++                super(arg0);
++        }
++
++        public void testRead() throws IOException {
++            Format readerFormat=wiReader.getFormat();
++            paramsRead = readerFormat.getReadParameters();
++            //setting crs
++            paramsRead.parameter("crs").setValue(GeographicCRS.WGS84);
++            //setting envelope
++            paramsRead.parameter("envelope").setValue(new GeneralEnvelope(
++                    new double[] {10, 42}, new double[] {11, 43}));
++
++            GridCoverage2D coverage = (GridCoverage2D)wiReader.read(null);
++                      //(GeneralParameterValue[]) paramsRead.values().toArray(new GeneralParameterValue[paramsRead.values().size()]));
++            assertNotNull(coverage);
++            assertNotNull(((GridCoverage2D)coverage).getRenderedImage());
++            assertNotNull(coverage.getEnvelope());
++
++            JFrame frame = new JFrame();
++            JLabel label = new JLabel(new ImageIcon( ((PlanarImage)coverage.getRenderedImage()).getAsBufferedImage()));
++            frame.getContentPane().add(label, BorderLayout.CENTER);
++            frame.pack();
++            frame.show();
++
++
++        }
+ }
+Index: gt/plugin/image/project.xml
+===================================================================
+--- gt/plugin/image/project.xml	(revision 12530)
++++ gt/plugin/image/project.xml	(working copy)
+@@ -3,22 +3,31 @@
+   <pomVersion>3</pomVersion>
+   <extend>${basedir}/../../project.xml</extend>
+   <name>geotools-image</name>
+-  <id>image</id>
++  <id>arcgrid</id>
+   <currentVersion>2.1.x</currentVersion>
+   <package>org.geotools</package>
+-  <shortDescription>Imagedatasource module</shortDescription>
+-  <description>Imagedatasource module</description>
++  <shortDescription>WorldImage datasource module</shortDescription>
++  <description>Datasource created to read images georeferenced by a world file
++  </description>
+   <developers>
+-    <developer>
+-      <name>Ian Turton</name>
+-      <id>iant</id>
+-      <email>ianturton@users.sourceforge.net</email>
+-      <organization>CCG</organization>
++     <developer>
++      <name>Alessio Fabiani</name>
++      <id>alfa</id>
++      <email>alessio.fabiani@gmail.com</email>
++      <organization></organization>
+       <roles>
+-        <role>Module Maintainer</role>
+         <role>Java Developer</role>
+       </roles>
+-    </developer>
++    </developer>   
++     <developer>
++      <name>Simone Giannecchini</name>
++      <id>simboss</id>
++      <email>simboss_ml@tiscali.it</email>
++      <organization></organization>
++      <roles>
++        <role>Java Developer</role>
++      </roles>
++    </developer>   
+   </developers>
+   <dependencies>
+     <dependency>
+@@ -26,24 +35,32 @@
+       <groupId>gt2</groupId>
+       <version>2.1.x</version>
+     </dependency>
++    <!--<dependency>
++      <artifactId>view</artifactId>
++      <groupId>gt2</groupId>
++      <version>2.1.x</version>
++    </dependency>-->
+     <dependency>
+       <id>JTS</id>
+       <version>1.6</version>
+       <url>http://www.vividsolutions.com/JTS/jts_frame.htm</url>
+     </dependency>
+-    
+     <dependency>
+       <id>units</id>
+       <version>0.01</version>
+       <url>http://jsr-108.sourceforge.net</url>
+     </dependency>
+     <dependency>
++      <id>opengis+legacy</id>
++      <version>0.1</version>
++      <url>http://www.opengis.org</url>
++    </dependency>
++    <dependency>
+       <id>vecmath</id>
+       <version>1.3</version>
+       <url>http://java.sun.com/products/java-media/3D/</url>
+-    </dependency>        
++    </dependency>
+   </dependencies>
+-  
+   <build>
+     <unitTest>
+       <includes>
+@@ -53,10 +70,11 @@
+         <resource>
+           <directory>${basedir}/test</directory>
+           <includes>
+-            <include>**/test-data/</include>
++            <include>**/*.*</include>
++            <include>**/*.*</include>
+           </includes>
+         </resource>
+       </resources>
+     </unitTest>
+-  </build>  
++  </build>
+ </project>
+Index: gt/plugin/image/src/org/geotools/gce/image/WorldImageFormat.java
+===================================================================
+--- gt/plugin/image/src/org/geotools/gce/image/WorldImageFormat.java	(revision 12530)
++++ gt/plugin/image/src/org/geotools/gce/image/WorldImageFormat.java	(working copy)
+@@ -23,160 +23,174 @@
+ import org.opengis.coverage.grid.GridCoverageReader;
+ import org.opengis.coverage.grid.GridCoverageWriter;
+ import org.opengis.parameter.ParameterValueGroup;
+-
++import org.opengis.parameter.GeneralParameterDescriptor;
+ import org.geotools.data.coverage.grid.AbstractGridFormat;
++import java.util.HashMap;
++import org.geotools.parameter.ParameterDescriptor;
++import org.geotools.parameter.ParameterDescriptorGroup;
++import org.geotools.parameter.ParameterGroup;
++import org.opengis.referencing.crs.CoordinateReferenceSystem;
++import org.opengis.spatialschema.geometry.Envelope;
++import org.geotools.referencing.crs.GeographicCRS;
++import org.geotools.geometry.GeneralEnvelope;
+ 
+ /**
+  * @author rgould
+  *
+  * A Format to allow discovery of Readers/Writers for raster images
+  * that support world files containing information about the image.
+- * 
++ *
+  * Supports .gif+.gfw, .jpg/.jpeg+.jgw, .tif/.tiff+.tfw and .png+.pgw.
+  * .wld may be used in place of the format specific extension (.jpg+.wld, etc)
+- * 
+- * Designed to be used with GridCoverageExchange. 
++ *
++ * Designed to be used with GridCoverageExchange.
+  */
+-public class WorldImageFormat  extends AbstractGridFormat
+-    implements Format {
++public class WorldImageFormat extends AbstractGridFormat implements Format {
++    /**
++     * WorldImageFormat
++     */
++    public WorldImageFormat() {
++        setInfo();
++    }
+ 
++    /**Format writing  parameter.
++     *
++     * When writing a world image we need to provide an output format in which we want
++     * to encode the image itself.
++     *
++     * PNG is default output format.
++     *
++     */
++    public static final ParameterDescriptor FORMAT = new ParameterDescriptor(
++            "Format", "Indicates the output format for this image", "png", true);
++    public static final ParameterDescriptor CRS = new ParameterDescriptor(
++            "crs",
++            CoordinateReferenceSystem.class, //calss of the object we will pass
++            null, //list of valid values not provided
++            GeographicCRS.WGS84//default value
++                                                  );
++    public static final ParameterDescriptor ENVELOPE = new ParameterDescriptor(
++            "envelope",
++            Envelope.class,
++            null,
++            new GeneralEnvelope(
++                    new double[] {0, 0}, new double[] {0, 0}));
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.Format#getReader(java.lang.Object)
+-	 */
+-	/**
+-	 * Call the accepts() method before asking for a reader to determine 
+-	 * if the current object is supported.
+-	 * 
+-	 * @param source The source object to read a WorldImage from
+-	 * @return a new WorldImageReader for the source
+-	 */
+-	public GridCoverageReader getReader(Object source) {
+-		return new WorldImageReader(source);
+-	}
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.Format#getWriter(java.lang.Object)
+-	 */
+-	/**
+-	 * Call the accepts() method before asking for a writer to determine
+-	 * if the current object is supported.
+-	 * 
+-	 * @param destination the destination object to write a WorldImage to
+-	 * @return a new WorldImageWriter for the destination
+-	 */
+-	public GridCoverageWriter getWriter(Object destination) {
+-		return new WorldImageWriter(destination);
+-	}
++    private void setInfo() {
++        //information for this format
++        HashMap info = new HashMap();
++        info.put("name", "WorldImage");
++        info.put("description",
++                 "A raster file accompanied by a spatial data file");
++        info.put("vendor", "Geotools");
++        info.put("docURL", "http://www.geotools.org/WorldImageReader+formats");
++        info.put("version", "1.0");
++        mInfo = info;
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.Format#accepts(java.lang.Object)
+-	 */
+-	/**
+-	 * Takes the input and determines if it is a class that we can understand
+-	 * and then futher checks the format of the class to make sure we can 
+-	 * read/write to it.
+-	 * 
+-	 * @param input The object to check for acceptance.
+-	 * @return true if the input is acceptable, false otherwise
+-	 */
+-	public boolean accepts(Object input) {
+-		String pathname = "";
+-		
+-		if (input instanceof URL) {
+-			URL url = (URL) input;
+-			pathname = url.getFile();
+-		}
+-		if (input instanceof File) {
+-			File file = (File) input;
+-			pathname = file.getName();
+-		}
+-		
+-		if (pathname.endsWith(".gif")  ||
+-			pathname.endsWith(".jpg")  ||
+-			pathname.endsWith(".jpeg") ||
+-			pathname.endsWith(".tif")  ||
+-			pathname.endsWith(".tiff") ||
+-			pathname.endsWith(".png")  ) {
+-			
+-			return true;
+-		}
+-		return false;
+-	}
++        //reading parameters
++        readParameters = new ParameterGroup(new ParameterDescriptorGroup(mInfo,
++                new GeneralParameterDescriptor[] {CRS, ENVELOPE}));
++        //writing parameters
++        writeParameters = new ParameterGroup(new ParameterDescriptorGroup(mInfo,
++                new GeneralParameterDescriptor[] {FORMAT}));
++    }
+ 
+-	/**
+-	 * Takes an image file extension (such as .gif, including the '.') and
+-	 * returns it's corresponding world file extension (such as .gfw).
+-	 * 
+-	 * @param fileExtension an image file extension, including the '.'
+-	 * @return a corresponding world file extension, including the '.'
+-	 */
+-	public static String getWorldExtension(String fileExtension) {
+-		if (fileExtension == null)
+-			return null;
+-		if (fileExtension.equals(".png"))
+-			return ".pgw";
+-		if (fileExtension.equals(".gif"))
+-			return ".gfw";
+-		if (fileExtension.equals(".jpg") || fileExtension.equals(".jpeg")) 
+-			return ".jgw";
+-		if (fileExtension.equals(".tif") || fileExtension.equals(".tiff")) 
+-			return ".tfw";
+-		return null;
+-	}
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.Format#getReader(java.lang.Object)
++     */
++    /**
++     * Call the accepts() method before asking for a reader to determine
++     * if the current object is supported.
++     *
++     * @param source The source object to read a WorldImage from
++     * @return a new WorldImageReader for the source
++     */
++    public GridCoverageReader getReader(Object source) {
++        return new WorldImageReader(source);
++    }
+ 
+-	/* (non-Javadoc)
+-	 * @see org.opengis.coverage.grid.Format#getName()
+-	 */
+-	public String getName() {
+-		return "World Image";
+-	}
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.Format#getWriter(java.lang.Object)
++     */
++    /**
++     * Call the accepts() method before asking for a writer to determine
++     * if the current object is supported.
++     *
++     * @param destination the destination object to write a WorldImage to
++     * @return a new WorldImageWriter for the destination
++     */
++    public GridCoverageWriter getWriter(Object destination) {
++        return new WorldImageWriter(destination);
++    }
+ 
+-	/* (non-Javadoc)
+-	 * @see org.opengis.coverage.grid.Format#getDescription()
+-	 */
+-	public String getDescription() {
+-		return "A raster file accompanied by a spatial data file";
+-	}
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.Format#accepts(java.lang.Object)
++     */
++    /**
++     * Takes the input and determines if it is a class that we can understand
++     * and then futher checks the format of the class to make sure we can
++     * read/write to it.
++     *
++     * @param input The object to check for acceptance.
++     * @return true if the input is acceptable, false otherwise
++     */
++    public boolean accepts(Object input) {
++        String pathname = "";
+ 
+-	/* (non-Javadoc)
+-	 * @see org.opengis.coverage.grid.Format#getVendor()
+-	 */
+-	public String getVendor() {
+-		// TODO Auto-generated method stub
+-		return null;
+-	}
++        if (input instanceof URL) {
++            URL url = (URL) input;
++            pathname = url.getFile();
++        }
++        if (input instanceof File) {
++            File file = (File) input;
++            pathname = file.getName();
++        }
+ 
+-	/* (non-Javadoc)
+-	 * @see org.opengis.coverage.grid.Format#getDocURL()
+-	 */
+-	public String getDocURL() {
+-		// TODO Auto-generated method stub
+-		return null;
+-	}
++        if (pathname.endsWith(".gif") ||
++            pathname.endsWith(".jpg") ||
++            pathname.endsWith(".jpeg") ||
++            pathname.endsWith(".tif") ||
++            pathname.endsWith(".tiff") ||
++            pathname.endsWith(".png")) {
+ 
+-	/* (non-Javadoc)
+-	 * @see org.opengis.coverage.grid.Format#getVersion()
+-	 */
+-	public String getVersion() {
+-		// TODO Auto-generated method stub
+-		return null;
+-	}
++            return true;
++        }
++        return false;
++    }
+ 
+-	/* (non-Javadoc)
+-	 * @see org.opengis.coverage.grid.Format#getReadParameters()
+-	 */
+-	public ParameterValueGroup getReadParameters() {
+-		// TODO Auto-generated method stub
+-		return null;
+-	}
++    /**
++     * Takes an image file extension (such as .gif, including the '.') and
++     * returns it's corresponding world file extension (such as .gfw).
++     *
++     * @param fileExtension an image file extension, including the '.'
++     * @return a corresponding world file extension, including the '.'
++     */
++    public static String getWorldExtension(String fileExtension) {
++        if (fileExtension == null) {
++            return null;
++        }
++        if (fileExtension.equals("png")) {
++            return ".pgw";
++        }
++        if (fileExtension.equals("gif")) {
++            return ".gfw";
++        }
++        if (fileExtension.equals("jpg") || fileExtension.equals("jpeg")) {
++            return ".jgw";
++        }
++        if (fileExtension.equals("tif") || fileExtension.equals("tiff")) {
++            return ".tfw";
++        }
++        if (fileExtension.equals("bmp")) {
++            return ".bfw";
++        }
++        if (fileExtension.equals("gif") ) {
++            return ".gfw";
++        }
+ 
+-	/* (non-Javadoc)
+-	 * @see org.opengis.coverage.grid.Format#getWriteParameters()
+-	 */
+-	public ParameterValueGroup getWriteParameters() {
+-		// TODO Auto-generated method stub
+-		return null;
+-	}
++        return null;
++    }
+ 
++
+ }
+Index: gt/plugin/image/src/org/geotools/gce/image/WorldImageWriter.java
+===================================================================
+--- gt/plugin/image/src/org/geotools/gce/image/WorldImageWriter.java	(revision 12530)
++++ gt/plugin/image/src/org/geotools/gce/image/WorldImageWriter.java	(working copy)
+@@ -25,19 +25,40 @@
+ import java.net.URL;
+ 
+ import javax.imageio.ImageIO;
+-
+-import org.geotools.coverage.grid.GridCoverageImpl;
++import java.io.FileOutputStream;
++import java.io.BufferedOutputStream;
++import java.io.PrintWriter;
++import java.io.FileWriter;
++import org.geotools.parameter.Parameter;
++import org.geotools.coverage.grid.GridCoverage2D;
+ import org.opengis.coverage.MetadataNameNotFoundException;
+-import org.opengis.coverage.grid.FileFormatNotCompatibleWithGridCoverageException;
++import org.opengis.coverage.grid.
++        FileFormatNotCompatibleWithGridCoverageException;
+ import org.opengis.coverage.grid.Format;
+ import org.opengis.coverage.grid.GridCoverage;
+ import org.opengis.coverage.grid.GridCoverageWriter;
+ import org.opengis.parameter.GeneralParameterValue;
+ import org.opengis.parameter.ParameterValueGroup;
+ import org.opengis.spatialschema.geometry.Envelope;
++import java.awt.image.DataBufferDouble;
++import javax.media.jai.PlanarImage;
++import java.io.OutputStream;
++import javax.media.jai.JAI;
++import java.awt.image.renderable.ParameterBlock;
++import javax.media.jai.RenderedOp;
++import java.awt.image.DataBuffer;
++import java.awt.image.DataBufferFloat;
++import java.awt.RenderingHints;
++import javax.media.jai.ImageLayout;
++import java.awt.image.ComponentColorModel;
++import java.awt.Transparency;
++import java.awt.color.ColorSpace;
++import javax.media.jai.IHSColorSpace;
+ 
+ /**
+  * @author rgould
++ * @author alessio fabiani (alessio.fabiani@gmail.com)
++ * @author simone giannecchini (simboss_ml@tiscali.it)
+  *
+  * Writes a GridCoverage to a raster image file and an accompanying world file.
+  * The destination specified must point to the location of the raster file to
+@@ -45,134 +66,440 @@
+  * located in must also already exist.
+  */
+ public class WorldImageWriter implements GridCoverageWriter {
+-	
+-	private Object destination;
+-	
+-	/**
+-	 * Destination must be a File. The directory it resides in must already exist.
+-	 * It must point to where the raster image is to be located. The world image will
+-	 * be derived from there.
+-	 * 
+-	 * @param destination
+-	 */
+-	public WorldImageWriter (Object destination) {
+-		this.destination = destination;
+-	}
+-	
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.GridCoverageWriter#getFormat()
+-	 */
+-	/**
+-	 * Returns the format supported by this WorldImageWriter, a new WorldImageFormat
+-	 */
+-	public Format getFormat() {
+-		return new WorldImageFormat();
+-	}
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.GridCoverageWriter#getDestination()
+-	 */
+-	/**
+-	 * Returns the location of the raster that the GridCoverage will be written to.
+-	 */
+-	public Object getDestination() {
+-		return destination;
+-	}
++    /*format for this writer*/
++    private Format format = new WorldImageFormat();
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.GridCoverageWriter#getMetadataNames()
+-	 */
+-	/**
+-	 * Metadata is not supported. Returns null.
+-	 */
+-	public String[] getMetadataNames() {
+-		return null;
+-	}
++    /**Destination to write to*/
++    private Object destination;
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.GridCoverageWriter#setMetadataValue(java.lang.String, java.lang.String)
+-	 */
+-	/**
+-	 * Metadata not supported, does nothing.
+-	 */
+-	public void setMetadataValue(String name, String value) throws IOException,
+-			MetadataNameNotFoundException {
+-	}
++    /**
++     * Destination must be a File. The directory it resides in must already exist.
++     * It must point to where the raster image is to be located. The world image will
++     * be derived from there.
++     *
++     * @param destination
++     */
++    public WorldImageWriter(Object destination) {
++        this.destination = destination;
++    }
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.GridCoverageWriter#setCurrentSubname(java.lang.String)
+-	 */
+-	/**
+-	 * Raster images don't support names. Does nothing.
+-	 */
+-	public void setCurrentSubname(String name) throws IOException {
+-	}
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.GridCoverageWriter#getFormat()
++     */
++    /**
++     * Returns the format supported by this WorldImageWriter, a new WorldImageFormat
++     */
++    public Format getFormat() {
++        return format;
++    }
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.GridCoverageWriter#write(org.geotools.gc.GridCoverage, org.opengis.parameter.GeneralParameterValue[])
+-	 */
+-	/**
+-	 * Takes a GridCoverage and writes the image to the destination file.
+-	 * It then reads the format of the file and writes an accompanying world file.
+-	 * It will throw a FileFormatNotCompatibleWithGridCoverageException if Destination
+-	 * is not a File (URL is a read-only format!).
+-	 * 
+-	 * @param coverage the GridCoverage to write.
+-	 * @param parameters no parameters are accepted. Currently ignored.
+-	 */
+-	public void write(GridCoverage coverage, GeneralParameterValue[] parameters)
+-			throws IllegalArgumentException, IOException {
+-		
+-		RenderedImage image = ((GridCoverageImpl)coverage).getRenderedImage();
+-		
+-		Envelope env = coverage.getEnvelope();
+-		double xMin = env.getMinimum(0);
+-		double yMin = env.getMinimum(1);
+-		double xMax = env.getMaximum(0);
+-		double yMax = env.getMaximum(1);
+-		
+-		double xPixelSize = (xMax-xMin)/image.getWidth();
+-		double rotation1 = 0;
+-		double rotation2 = 0;
+-		double yPixelSize = (yMax-yMin)/image.getHeight();
+-		double xLoc = xMin;
+-		double yLoc = yMax;
+-		
+-		if (!(destination instanceof File)) {
+-			throw new FileFormatNotCompatibleWithGridCoverageException("Not a valid format.");
+-		} else if (destination instanceof URL) {
+-			throw new FileFormatNotCompatibleWithGridCoverageException("URL is a read-only format");
+-		}
+-		
+-		File imageFile = (File) destination;
+-		String path = imageFile.getAbsolutePath();
+-		int index = path.lastIndexOf(".");
+-		String baseFile = path.substring(0, index);
+-		String extension = path.substring(index);
+-		File worldFile = new File(baseFile+WorldImageFormat.getWorldExtension(extension));
+-		
+-		imageFile.createNewFile();
+-		worldFile.createNewFile();
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.GridCoverageWriter#getDestination()
++     */
++    /**
++     * Returns the location of the raster that the GridCoverage will be written to.
++     */
++    public Object getDestination() {
++        return destination;
++    }
+ 
+-		ImageIO.write(image, extension.substring(1), imageFile);
+-		
+-		PrintWriter out = new PrintWriter(new FileWriter(worldFile));
+-		out.println(xPixelSize);
+-		out.println(rotation1);
+-		out.println(rotation2);
+-		out.println("-"+yPixelSize);
+-		out.println(xLoc);
+-		out.println(yLoc);
+-		out.close();
+-	}
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.GridCoverageWriter#getMetadataNames()
++     */
++    /**
++     * Metadata is not supported. Returns null.
++     */
++    public String[] getMetadataNames() {
++        return null;
++    }
+ 
+-	/* (non-Javadoc)
+-	 * @see org.geotools.data.coverage.grid.GridCoverageWriter#dispose()
+-	 */
+-	/**
+-	 * Cleans up the writer. Currently does nothing.
+-	 */
+-	public void dispose() throws IOException {
+-	}
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.GridCoverageWriter#setMetadataValue(java.lang.String, java.lang.String)
++     */
++    /**
++     * Metadata not supported, does nothing.
++     */
++    public void setMetadataValue(String name, String value) throws IOException,
++            MetadataNameNotFoundException {
++    }
+ 
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.GridCoverageWriter#setCurrentSubname(java.lang.String)
++     */
++    /**
++     * Raster images don't support names. Does nothing.
++     */
++    public void setCurrentSubname(String name) throws IOException {
++    }
++
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.GridCoverageWriter#write(org.geotools.gc.GridCoverage, org.opengis.parameter.GeneralParameterValue[])
++     */
++    /**
++     * Takes a GridCoverage and writes the image to the destination file.
++     * It then reads the format of the file and writes an accompanying world file.
++     * It will throw a FileFormatNotCompatibleWithGridCoverageException if Destination
++     * is not a File (URL is a read-only format!).
++     *
++     * @param coverage the GridCoverage to write.
++     * @param parameters no parameters are accepted. Currently ignored.
++     */
++    public void write(GridCoverage coverage, GeneralParameterValue[] parameters) throws
++            IllegalArgumentException, IOException {
++
++        //checking parameters
++        //if provided we have to use them
++        //specifically this is one of the way we can provide an output format
++        if (parameters != null) {
++            this.format.getWriteParameters().parameter("format").setValue(((
++                    Parameter) parameters[0]).stringValue());
++        }
++
++        //convert everything into a file when possible
++        //we have to separate the handling of a file from the handling of an
++        //output stream due to the fact that the latter requires no world file.
++        if (this.destination instanceof String) {
++            destination = new File((String) destination);
++        } else
++        if (this.destination instanceof URL) {
++            destination = new File(((URL) destination).getPath());
++        } else
++        //OUTPUT STREAM HANDLING
++        if (destination instanceof OutputStream) {
++            this.encode(coverage, (OutputStream) destination);
++        }
++
++        if (destination instanceof File) {
++            //WRITING TO A FILE
++
++            RenderedImage image = ((PlanarImage) ((GridCoverage2D) coverage).
++                                   getRenderedImage()).getAsBufferedImage();
++            Envelope env = coverage.getEnvelope();
++            double xMin = env.getMinimum(0);
++            double yMin = env.getMinimum(1);
++            double xMax = env.getMaximum(0);
++            double yMax = env.getMaximum(1);
++
++            double xPixelSize = (xMax - xMin) / image.getWidth();
++            double rotation1 = 0;
++            double rotation2 = 0;
++            double yPixelSize = (yMax - yMin) / image.getHeight();
++            double xLoc = xMin;
++            double yLoc = yMax;
++
++            //files destinations
++            File imageFile = (File) destination;
++            String path = imageFile.getAbsolutePath();
++            int index = path.lastIndexOf(".");
++            String baseFile = path.substring(0, index);
++            File worldFile = new File(baseFile +
++                                      WorldImageFormat.getWorldExtension(
++                                              format.getWriteParameters().
++                                              parameter("format").stringValue()));
++
++
++            //create new files
++            imageFile=new File(baseFile+"."+format.getWriteParameters().
++                                              parameter("format").stringValue());
++            imageFile.createNewFile();
++            worldFile.createNewFile();
++
++            //writing world file
++            PrintWriter out = new PrintWriter(new FileOutputStream(worldFile));
++            out.println(xPixelSize);
++            out.println(rotation1);
++            out.println(rotation2);
++            out.println("-" + yPixelSize);
++            out.println(xLoc);
++            out.println(yLoc);
++            out.close();
++
++            BufferedOutputStream outBuf = new BufferedOutputStream(new
++                    FileOutputStream(imageFile));
++            this.encode(coverage, outBuf);
++        }
++
++    }
++
++    /* (non-Javadoc)
++     * @see org.geotools.data.coverage.grid.GridCoverageWriter#dispose()
++     */
++    /**
++     * Cleans up the writer. Currently does nothing.
++     */
++    public void dispose() throws IOException {
++    }
++
++
++    /**Encode.
++     *
++     * @param output OutputStream
++     * @throws IOException
++     */
++    private void encode(GridCoverage sourceCoverage, OutputStream output) throws
++            IOException {
++
++        //do we have a source coverage?
++        if (sourceCoverage == null) {
++            throw new IllegalArgumentException(
++                    "A coverage must be provided in order for write to succeed!");
++        }
++
++        //trying to perform a rendering for this image
++        try {
++
++            PlanarImage surrogateImage = null;
++
++            /**
++             * ARE WE DEALING WITH A GRAYSCALE IMAGE? LET'S RESCALE AND GO TO
++             * BYTE DATABUFFER FOR DISPLAYING.
++             */
++            if (sourceCoverage.getSampleDimension(0).getColorInterpretation().
++                name().equals("GRAY_INDEX")) {
++                //getting rendered image
++                RenderedImage image = ((GridCoverage2D) sourceCoverage).
++                                      getRenderedImage();
++                //image dimensions
++                int width = image.getWidth();
++                int height = image.getHeight();
++
++                double[] dpixel = new double[image.getSampleModel().getNumBands()];
++
++                // Which are the max and min of the image ? We need to know to create the
++                // surrogate image.
++                // Let's use the extrema operator to get them.
++                ParameterBlock pbMaxMin = new ParameterBlock();
++                pbMaxMin.addSource(image);
++                RenderedOp extrema = JAI.create("extrema", pbMaxMin);
++                // Must get the extrema of all bands !
++                double[] allMins = (double[]) extrema.getProperty("minimum");
++                double[] allMaxs = (double[]) extrema.getProperty("maximum");
++                double minValue = Double.MAX_VALUE;
++                double maxValue = Double.MIN_VALUE;
++
++                //looking for the minimum sample
++                //TODO convert this code into a cycle
++                if (!Double.isNaN(allMins[0])) {
++                    minValue = allMins[0];
++                } else {
++                    Double[] buffer = null;
++                    if (image.getData().getDataBuffer() instanceof
++                        DataBufferFloat) {
++                        float[] tmp = ((DataBufferFloat) image.getData().
++                                       getDataBuffer()).getData();
++                        buffer = new Double[tmp.length];
++                        for (int i = 0; i < tmp.length; i++) {
++                            buffer[i] = new Double(tmp[i]);
++                        }
++                    } else if (image.getData().getDataBuffer() instanceof
++                               DataBufferDouble) {
++                        double[] tmp = ((DataBufferDouble) image.getData().
++                                        getDataBuffer()).getData();
++                        buffer = new Double[tmp.length];
++                        for (int i = 0; i < tmp.length; i++) {
++                            buffer[i] = new Double(tmp[i]);
++                        }
++                    }
++
++                    for (int i = 0; i < buffer.length; i++) {
++                        if (minValue > buffer[i].doubleValue()) {
++                            minValue = buffer[i].doubleValue();
++                        }
++                    }
++                }
++
++                //looking for the maximum sample
++                //TODO convert this code into a cycle
++                if (!Double.isNaN(allMaxs[0])) {
++                    maxValue = allMaxs[0];
++                } else {
++                    Double[] buffer = null;
++                    if (image.getData().getDataBuffer() instanceof
++                        DataBufferFloat) {
++                        float[] tmp = ((DataBufferFloat) image.getData().
++                                       getDataBuffer()).getData();
++                        buffer = new Double[tmp.length];
++                        for (int i = 0; i < tmp.length; i++) {
++                            buffer[i] = new Double(tmp[i]);
++                        }
++                    } else if (image.getData().getDataBuffer() instanceof
++                               DataBufferDouble) {
++                        double[] tmp = ((DataBufferDouble) image.getData().
++                                        getDataBuffer()).getData();
++                        buffer = new Double[tmp.length];
++                        for (int i = 0; i < tmp.length; i++) {
++                            buffer[i] = new Double(tmp[i]);
++                        }
++                    }
++
++                    for (int i = 0; i < buffer.length; i++) {
++                        if (maxValue < buffer[i].doubleValue()) {
++                            maxValue = buffer[i].doubleValue();
++                        }
++                    }
++                }
++
++                //looking for the max and the min
++                //TODO use max function
++                for (int v = 1; v < allMins.length; v++) {
++                    if (allMins[v] < minValue) {
++                        minValue = allMins[v];
++                    }
++                    if (allMaxs[v] > maxValue) {
++                        maxValue = allMaxs[v];
++                    }
++                }
++
++//    double minValue = sourceCoverage.getSampleDimension(0).getMinimumValue();
++//    double maxValue = sourceCoverage.getSampleDimension(0).getMinimumValue();
++
++                /**
++                 * RESCALING SOURCE IMAGE
++                 */
++                double[] subtract = new double[1];
++                subtract[0] = minValue;
++                double[] divide = new double[1];
++                divide[0] = 255.0 / (maxValue - minValue);
++
++                // Now we can rescale the pixels gray levels:
++                ParameterBlock pbRescale = new ParameterBlock();
++                pbRescale.add(divide);
++                pbRescale.add(subtract);
++                pbRescale.addSource(image);
++                surrogateImage = (PlanarImage) JAI.create("rescale", pbRescale, null);
++
++                // Let's convert the data type for displaying.
++                ParameterBlock pbConvert = new ParameterBlock();
++                pbConvert.addSource(surrogateImage);
++                pbConvert.add(DataBuffer.TYPE_BYTE);
++                surrogateImage = JAI.create("format", pbConvert);
++                //TODO check this if it is needed
++                surrogateImage = JAI.create("invert", surrogateImage);
++            } else {
++                /**
++                 * WORKING ON A COLORED IMAGE
++                 */
++                surrogateImage = (PlanarImage) ((GridCoverage2D) sourceCoverage).
++                                 getRenderedImage();
++            }
++
++            /** WRITE TO OUTPUTBUFER */
++            ImageIO.write(surrogateImage,
++                          (String) (this.format.getWriteParameters().parameter(
++                    "format").getValue()), output);
++            output.flush();
++            output.close();
++        } catch (Exception e) {
++            throw new IOException(e.getMessage());
++        }
++    }
++
++    private RenderedImage highlightImage(RenderedImage stillImg) {
++
++        RenderedImage dispImg = null;
++
++        // Highlight the human pixels (detection results img)
++
++        // Create a constant image
++
++        Byte[] bandValues = new Byte[1];
++
++        bandValues[0] = new Byte("65"); //32 -- orangeish, 65 -- greenish
++
++        ParameterBlock pbConstant = new ParameterBlock();
++
++        pbConstant.add(new Float(stillImg.getWidth())); // The width
++
++        pbConstant.add(new Float(stillImg.getHeight())); // The height
++
++        pbConstant.add(bandValues); // The band values
++
++        PlanarImage imgConstant = (PlanarImage) JAI.create("constant",
++                pbConstant);
++
++        //System.out.println("Making multiply image");
++
++        // Multiply the mask by 255 so the values are 0 or 255
++
++        ParameterBlock pbMultiply = new ParameterBlock();
++
++        pbMultiply.addSource((PlanarImage) stillImg);
++
++        double[] multiplyArray = new double[] {255.0};
++
++        pbMultiply.add(multiplyArray);
++
++        PlanarImage imgMask = (PlanarImage) JAI.create("multiplyconst",
++                pbMultiply);
++
++        //System.out.println("Making IHS image");
++
++        // Create a Intensity, Hue, Saturation image
++
++        ParameterBlock pbIHS = new ParameterBlock();
++
++        pbIHS.setSource(stillImg, 0); //still img is the intensity
++
++        pbIHS.setSource(imgConstant, 1); //constant img is the hue
++
++        pbIHS.setSource(imgMask, 2); //mask is the saturation
++
++        //create rendering hint for IHS image to specify the color model
++
++        ComponentColorModel IHS_model = new
++                                        ComponentColorModel(IHSColorSpace.
++
++                getInstance(),
++
++                new int[] {8, 8, 8}
++
++                ,
++
++                false, false,
++
++                Transparency.OPAQUE,
++
++                DataBuffer.TYPE_BYTE);
++
++        ImageLayout layout = new ImageLayout();
++
++        layout.setColorModel(IHS_model);
++
++        RenderingHints rh = new RenderingHints(JAI.KEY_IMAGE_LAYOUT,
++                                               layout);
++
++        PlanarImage IHSImg = JAI.create("bandmerge", pbIHS, rh);
++
++        //System.out.println("Making RGB image");
++
++        // Convert IHS image to a RGB image
++
++        ParameterBlock pbRGB = new ParameterBlock();
++
++        //create rendering hint for RGB image to specify the color model
++
++        ComponentColorModel RGB_model = new ComponentColorModel(ColorSpace.
++
++                getInstance(ColorSpace.CS_sRGB),
++
++                new int[] {8, 8, 8}
++
++                ,
++
++                false, false,
++
++                Transparency.OPAQUE,
++
++                DataBuffer.TYPE_BYTE);
++
++        pbRGB.addSource(IHSImg);
++
++        pbRGB.add(RGB_model);
++
++        dispImg = JAI.create("colorconvert", pbRGB);
++
++        return dispImg;
++
++    }
+ }
+Index: gt/plugin/image/src/org/geotools/gce/image/WorldImageReader.java
+===================================================================
+--- gt/plugin/image/src/org/geotools/gce/image/WorldImageReader.java	(revision 12530)
++++ gt/plugin/image/src/org/geotools/gce/image/WorldImageReader.java	(working copy)
+@@ -27,7 +27,7 @@
+ 
+ import javax.imageio.ImageIO;
+ 
+-import org.geotools.coverage.grid.GridCoverageImpl;
++import org.geotools.coverage.grid.GridCoverage2D;
+ import org.geotools.geometry.GeneralEnvelope;
+ import org.geotools.referencing.crs.GeographicCRS;
+ import org.opengis.coverage.MetadataNameNotFoundException;
+@@ -40,28 +40,39 @@
+ import org.opengis.referencing.crs.CoordinateReferenceSystem;
+ import org.opengis.referencing.operation.OperationNotFoundException;
+ import org.opengis.spatialschema.geometry.Envelope;
++import org.geotools.parameter.Parameter;
+ 
+ /**
+  * @author rgould
++ * @author simone giannecchini (simboss_ml@tiscali.it)
++ * @author alessio fabiani (alessio.fabiani@gmail.com)
+  *
+  * Reads a GridCoverage from a given source. WorldImage sources
+- * only support one GridCoverage so hasMoreGridCoverages() will 
++ * only support one GridCoverage so hasMoreGridCoverages() will
+  * return true until the only GridCoverage is read.
+- * 
++ *
+  * No metadata is currently supported, so all those methods return null.
+  */
+ public class WorldImageReader implements GridCoverageReader {
+ 
+-	private Object source;
++    public static int WORLD_WLD = 1;
++    public static int WORLD_META = 2;
++    public static int WORLD_BASE = 3;
++
++    /**Format for this reader*/
++    private Format format=new WorldImageFormat();
++    /*Source to read from*/
++    private Object source;
++
+     private boolean gridLeft = true;
+ 
+     /**
+      * Construct a new ImageWorldReader to read a GridCoverage from the
+      * source object. The source must point to the raster file itself,
+      * not the world file.
+-     * 
++     *
+      * @param source The source of a GridCoverage
+-     */    
++     */
+ 	public WorldImageReader (Object source) {
+ 		this.source = source;
+ 	}
+@@ -74,7 +85,7 @@
+ 	 * @return a new WorldImageFormat class
+ 	 */
+ 	public Format getFormat() {
+-		return new WorldImageFormat();
++		return this.format;
+ 	}
+ 
+ 	/* (non-Javadoc)
+@@ -134,7 +145,7 @@
+ 	 * @see org.geotools.data.coverage.grid.GridCoverageReader#hasMoreGridCoverages()
+ 	 */
+ 	/**
+-	 * Returns true until read has been called, as World Image files only 
++	 * Returns true until read has been called, as World Image files only
+ 	 * support one GridCoverage.
+ 	 */
+ 	public boolean hasMoreGridCoverages() throws IOException {
+@@ -144,112 +155,205 @@
+ 	/* (non-Javadoc)
+ 	 * @see org.geotools.data.coverage.grid.GridCoverageReader#read(org.opengis.parameter.GeneralParameterValue[])
+ 	 */
+-	/**
+-	 * Reads an image from the source, then reads the values from the world file
++	/**Reads an image from a source stream.
++         *
++	 * Loads an image from a source stream, then loads the values from the world file
+ 	 * and constructs a new GridCoverage from this information.
+-	 * 
+-	 * If it cannot find a world file, it will throw a FileNotFoundException.
+-	 * 
+-	 * @param parameters WorldImage supports no parameters, it ignores this param
+-	 * @return a new GridCoverage read from the source
++	 *
++	 * When reading from a remote stream we do not look for a world fiel but we suppose those information comes from
++         * a different way (xml, gml, pigeon?)
++	 *
++	 * @param parameters WorldImageReader supports no parameters, it just ignores them.
++	 * @return a new GridCoverage read from the source.
+ 	 */
+ 	public GridCoverage read( GeneralParameterValue[] parameters)
+ 			throws IllegalArgumentException, IOException {
+-		
+-		URL sourceURL = null;
+-		if (source instanceof File) {
+-			sourceURL = ((File) source).toURL();
+-		} else {
+-			sourceURL = (URL) source;
+-		}
+ 
+-		String sourceAsString = sourceURL.toExternalForm();
+-		int index = sourceAsString.lastIndexOf(".");
+-		String base = sourceAsString.substring(0, index);
+-		String fileExtension = sourceAsString.substring(index);
++        //do we have paramters to use for reading from the specified source
++        if(parameters!=null)
++        {
++            //they will be ignored if we will find a world file
++            this.format.getReadParameters().parameter("crs").setValue(((Parameter)
++                    parameters[0]).getValue());
++            this.format.getReadParameters().parameter("envelope").setValue(((Parameter)
++                    parameters[1]).getValue());
++        }
++        URL sourceURL = null;
+ 
+-		//We can now construct the baseURL from this string.
+-		
+-		float xPixelSize = 0;
+-		float rotation1 = 0;
+-		float rotation2 = 0;
+-		float yPixelSize = 0;
+-		float xLoc = 0;
+-		float yLoc = 0;
+-		
+-        BufferedReader in = null;
++        double xMin = 0.0;
++        double yMax = 0.0;
++        double xMax = 0.0;
++        double yMin = 0.0;
++        float xPixelSize = 0;
++        float rotation1 = 0;
++        float rotation2 = 0;
++        float yPixelSize = 0;
++        float xLoc = 0;
++        float yLoc = 0;
++        int world_type = -1;
++        BufferedImage image = null;
++        CoordinateReferenceSystem crs = GeographicCRS.WGS84;
++        Envelope envelope = null;
+ 
++        //are we reading from a file?
++        //in such a case we will look for the associated world file
++        if (source instanceof File)
++        {
++
++
++            sourceURL = ((File) source).toURL();
++
++            String sourceAsString = sourceURL.toExternalForm();
++            int index = sourceAsString.lastIndexOf(".");
++            String base = sourceAsString.substring(0, index);
++            String fileExtension = sourceAsString.substring(index);
++
++            //We can now construct the baseURL from this string.
++
++
++
++            BufferedReader in = null;
++
++
++            try {
++                URL worldURL = new URL(base + ".wld");
++                in = new BufferedReader(new InputStreamReader(worldURL.
++                        openStream()));
++                world_type = WORLD_WLD;
++            } catch (FileNotFoundException e1) {
++                try {
++                    //.wld extension not found, go for .meta.
++                    URL worldURL = new URL(base + ".meta");
++                    in = new BufferedReader(new InputStreamReader(worldURL.
++                            openStream()));
++                    world_type = WORLD_META;
++                } catch (FileNotFoundException e2) {
++                    //.wld & .meta extension not found, go for file based one.
++                    URL worldURL = new URL(base +
++                                           WorldImageFormat.
++                                           getWorldExtension(fileExtension));
++                    in = new BufferedReader(new InputStreamReader(worldURL.
++                            openStream()));
++                    world_type = WORLD_BASE;
++                }
++            }
++
++            String str;
++            index = 0;
++
++            while ((str = in.readLine()) != null) {
++
++                if (world_type == WORLD_WLD || world_type == WORLD_BASE) {
++                    float value = Float.parseFloat(str.trim());
++                    switch (index) {
++                    case 0:
++                        xPixelSize = value;
++                        break;
++                    case 1:
++                        rotation1 = value;
++                        break;
++                    case 2:
++                        rotation2 = value;
++                        break;
++                    case 3:
++                        yPixelSize = value;
++                        break;
++                    case 4:
++                        xLoc = value;
++                        break;
++                    case 5:
++                        yLoc = value;
++                        break;
++                    default:
++                        break;
++                    }
++                } else if (world_type == WORLD_META) {
++                    String line = str;
++                    rotation1 = 0.0f;
++                    rotation2 = 0.0f;
++                    double value;
++                    switch (index) {
++                    case 1:
++                        value = Double.parseDouble(line.substring(
++                                "Origin Longitude = ".length()));
++                        xMin = value;
++                        break;
++                    case 2:
++                        value = Double.parseDouble(line.substring(
++                                "Origin Latitude = ".length()));
++                        yMin = value;
++                        break;
++                    case 3:
++                        value = Double.parseDouble(line.substring(
++                                "Corner Longitude = ".length()));
++                        xMax = value;
++                        break;
++                    case 4:
++                        value = Double.parseDouble(line.substring(
++                                "Corner Latitude = ".length()));
++                        yMax = value;
++                        break;
++                    default:
++                        break;
++                    }
++                }
++                index++;
++            }
++            in.close();
++
++            //building up envelope
++            if (world_type == WORLD_WLD || world_type == WORLD_BASE) {
++                xMin = xLoc;
++                yMax = yLoc;
++                xMax = xLoc + (image.getWidth() * xPixelSize);
++                yMin = yLoc + (image.getHeight() * yPixelSize);
++            }
++
++            envelope = new GeneralEnvelope(new double[] {xMin, yMin},
++                                           new double[] {xMax, yMax});
++
++        }
++        else {
++
++            //well it seems we are not reading from a file
++            //therefore we need the parameters
++            //if(parameters==null)
++                //throw new IllegalArgumentException("To read froma a source which is not a file please provided read parameters!");
++
++            sourceURL = (URL) source;
++            //getting crs
++            crs = (CoordinateReferenceSystem) this.format.getReadParameters().parameter("crs").
++                  getValue();
++            //getting envelope
++            envelope = (Envelope)  this.format.getReadParameters().parameter("envelope").getValue();
++
++            if(envelope==null|| crs==null)
++                throw new IllegalArgumentException("To read froma a source which is not a file please provided read parameters!");
++
++        }
++
++
++        //reading the image as given
++        image = ImageIO.read(sourceURL);
++
++
++        //no more grid left
++        gridLeft = false;
++
++        //building up a coverage
++        GridCoverage coverage = null;
+         try {
+-        	URL worldURL = new URL(base+".wld");
+-        	in = new BufferedReader(new InputStreamReader(worldURL.openStream()));
+-		} catch (FileNotFoundException e) {
+-			//.wld extension not found, go for file based one.
+-			URL worldURL = new URL(base+WorldImageFormat.getWorldExtension(fileExtension));
+-			in = new BufferedReader(new InputStreamReader(worldURL.openStream()));
+-		}
+-        
+-        String str;
+-        index = 0;
+-        while ((str = in.readLine()) != null) {
+-        	float value = Float.parseFloat(str.trim());
+-        	switch(index) {
+-        		case 0:
+-        			xPixelSize = value;
+-        			break;
+-        		case 1:
+-        			rotation1 = value;
+-        			break;
+-        		case 2:
+-        			rotation2 = value;
+-        			break;
+-        		case 3:
+-        			yPixelSize = value;
+-        			break;
+-        		case 4:
+-        			xLoc = value;
+-        			break;
+-        		case 5:
+-        			yLoc = value;
+-        			break;
+-        		default:
+-        			break;
+-        	}
+-        	index++;
++            coverage = new GridCoverage2D(
++                    sourceURL.getFile(), image, crs, envelope);
+         }
+-        in.close();
++        catch (NoSuchElementException e1) {
+ 
+-		BufferedImage image = null;
+-		image = ImageIO.read(sourceURL);
+-		
+-		CoordinateReferenceSystem crs = GeographicCRS.WGS84;
+-		Envelope envelope = null;
+-		
+-		double xMin = xLoc;
+-		double yMax = yLoc;
+-		double xMax = xLoc + (image.getWidth()*xPixelSize);
+-		double yMin = yLoc + (image.getHeight()*yPixelSize);
++            throw new IOException(e1.getMessage());
+ 
+-		envelope = new GeneralEnvelope(new double[] {xMin, yMin}, new double[] {xMax, yMax});
++        }
++        return coverage;
++  }
+ 
+-		gridLeft = false;
+-		
+-		GridCoverage coverage = null;
+-		try {
+-			coverage = new GridCoverageImpl(
+-					sourceURL.getFile(), crs, null, null, image, envelope);
+-		} catch (OperationNotFoundException e1) {
+-			// TODO Auto-generated catch block
+-			e1.printStackTrace();
+-		} catch (NoSuchElementException e1) {
+-			// TODO Auto-generated catch block
+-			e1.printStackTrace();
+-		} catch (FactoryException e1) {
+-			// TODO Auto-generated catch block
+-			e1.printStackTrace();
+-		}
+-		return coverage;
+-	}
+-
+ 	/* (non-Javadoc)
+ 	 * @see org.geotools.data.coverage.grid.GridCoverageReader#skip()
+ 	 */
+Index: gt/plugin/arcgrid/test/org/geotools/gce/arcgrid/ArcGridReadWriteTest.java
+===================================================================
+--- gt/plugin/arcgrid/test/org/geotools/gce/arcgrid/ArcGridReadWriteTest.java	(revision 12530)
++++ gt/plugin/arcgrid/test/org/geotools/gce/arcgrid/ArcGridReadWriteTest.java	(working copy)
+@@ -9,7 +9,7 @@
+ import java.awt.image.Raster;
+ import java.io.File;
+ 
+-import org.geotools.coverage.grid.GridCoverageImpl;
++import org.geotools.coverage.grid.GridCoverage2D;
+ import org.geotools.resources.TestData;
+ import org.opengis.coverage.grid.Format;
+ import org.opengis.coverage.grid.GridCoverage;
+@@ -63,7 +63,7 @@
+ 
+     void test(TestParams testParam) throws Exception {
+ 
+-    //create a temporary output file
++   //create a temporary output file
+     //temporary file to use
+     File tmpFile = null;
+     if (testParam.compressed)
+@@ -80,13 +80,25 @@
+     Format f = new ArcGridFormat();
+ 
+     //setting general format parameteres to be used later on
+-    ParameterValueGroup params = null;
++    ParameterValueGroup params = f.getReadParameters();
++    params.parameter("Compressed").setValue(testParam.compressed);
++    params.parameter("GRASS").setValue(testParam.grass);
++    params = f.getWriteParameters();
++    params.parameter("Compressed").setValue(testParam.compressed);
++    params.parameter("GRASS").setValue(testParam.grass);
+ 
+     /*Step 1 read it*/
+ 
+     //read in the grid coverage
+     GridCoverageReader reader = new ArcGridReader((TestData.getResource(this,testParam.fileName )));
++    params = reader.getFormat().getReadParameters();
+ 
++    //setting params
++    params.parameter("Compressed").setValue(f.getReadParameters().parameter(
++        "Compressed").booleanValue());
++    params.parameter("GRASS").setValue(f.getReadParameters().parameter("GRASS").
++                                       booleanValue());
++
+     //reading the coverage
+     GridCoverage gc1 = reader.read(null); //
+ //            (GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])
+@@ -110,7 +122,7 @@
+     //read the grid coverage back in from temp file
+     reader = new ArcGridReader(tmpFile);
+ 
+-    //setting params (ATTENTION It is performed just to show how we colud do that, but it is useless here)
++    //setting params
+     params = reader.getFormat().getReadParameters();
+     params.parameter("Compressed").setValue(f.getReadParameters().parameter(
+         "Compressed").booleanValue());
+@@ -136,14 +148,12 @@
+ 
+         Envelope e1 = gc1.getEnvelope();
+         Envelope e2 = gc2.getEnvelope();
+-        if (!e1.equals(e2)) {
+-            throw new Exception("GridCoverage Envelopes are not equal");
+-        }
+-
++        if(e1.equals(e2))
++            throw new Exception("GridCoverage Envelopes are not equal" + e1.toString() + e2.toString());
+         double[] values1 = null;
+         double[] values2 = null;
+-        Raster r1 = ((GridCoverageImpl)gc1).getRenderedImage().getData();
+-        Raster r2 = ((GridCoverageImpl)gc2).getRenderedImage().getData();
++        Raster r1 = ((GridCoverage2D)gc1).getRenderedImage().getData();
++        Raster r2 = ((GridCoverage2D)gc2).getRenderedImage().getData();
+         for(int i=r1.getMinX(); i < r1.getWidth(); i++) {
+             for(int j=r1.getMinY(); j<r1.getHeight(); j++) {
+                 values1 = r1.getPixel(i,j, values1);
+@@ -158,6 +168,7 @@
+         }
+     }
+ 
++
+   public static final void main(String[] args) throws Exception {
+       junit.textui.TestRunner.run(suite(ArcGridReadWriteTest.class));
+   }
+Index: gt/plugin/arcgrid/project.xml
+===================================================================
+--- gt/plugin/arcgrid/project.xml	(revision 12530)
++++ gt/plugin/arcgrid/project.xml	(working copy)
+@@ -29,6 +29,15 @@
+         <role>Java Developer</role>
+       </roles>
+     </developer>
++    <developer>
++      <name>Simone Giannecchini</name>
++      <id>simboss</id>
++      <email>simboss_ml@tiscali.it</email>
++      <organization></organization>
++      <roles>
++        <role>Java Developer</role>
++      </roles>
++    </developer>   
+   </developers>
+   <dependencies>
+     <dependency>
+Index: gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridFormat.java
+===================================================================
+--- gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridFormat.java	(revision 12530)
++++ gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridFormat.java	(working copy)
+@@ -33,11 +33,11 @@
+ import org.geotools.data.coverage.grid.stream.IOExchange;
+ import java.io.IOException;
+ 
+-/**A simple implementation of the Arc Grid Format Metadata.
++/**A simple implementation of the Arc Grid Format.
+  *
+  *
+  *  @author jeichar
+- *  @author simbos  <a href="mailto:simboss_ml@tiscali.it">
++ *  @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  */
+ public class ArcGridFormat
+     extends AbstractGridFormat
+Index: gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridWriter.java
+===================================================================
+--- gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridWriter.java	(revision 12530)
++++ gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridWriter.java	(working copy)
+@@ -18,7 +18,12 @@
+ 
+ import java.io.IOException;
+ import java.io.PrintWriter;
++import org.opengis.referencing.operation.CoordinateOperationFactory;
++import org.opengis.referencing.crs.CoordinateReferenceSystem;
++import org.opengis.referencing.operation.MathTransform;
++import org.opengis.referencing.operation.CoordinateOperation;
+ 
++import org.geotools.referencing.FactoryFinder;
+ import org.geotools.data.DataSourceException;
+ import org.geotools.data.coverage.grid.stream.IOExchange;
+ import org.geotools.feature.FeatureCollection;
+@@ -32,7 +37,7 @@
+ import org.opengis.parameter.InvalidParameterValueException;
+ import org.opengis.parameter.ParameterValue;
+ import org.opengis.parameter.ParameterValueGroup;
+-import org.geotools.coverage.grid.GridCoverageImpl;
++import org.geotools.coverage.grid.GridCoverage2D;
+ import org.geotools.geometry.GeneralEnvelope;
+ import org.opengis.spatialschema.geometry.Envelope;
+ import org.opengis.referencing.crs.CoordinateReferenceSystem;
+@@ -41,6 +46,7 @@
+ import java.net.URL;
+ import java.io.BufferedWriter;
+ import java.io.FileWriter;
++import org.opengis.spatialschema.geometry.DirectPosition;
+ 
+ /**
+  * ArcGridWriter Supports writing of an ArcGrid GridCoverage to an Desination
+@@ -48,7 +54,7 @@
+  * with the IOExchange
+  *
+  * @author jeichar
+- * @author simboss
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  *
+  */
+ public class ArcGridWriter
+@@ -172,29 +178,37 @@
+    * @see ArcGridDataSource#setFeatures(FeatureCollection)
+    */
+   private void writeGridCoverage(GridCoverage gc) throws DataSourceException {
++    try {
++      //getting crs from gc
++      CoordinateReferenceSystem crs = gc.getCoordinateReferenceSystem();
++      ///////////////////////////////////////////////////////////////////////
++      //
++      // to be changed in the future
++      //
++      ///////////////////////////////////////////////////////////////////////
+ 
+-    ///////////////////////////////////////////////////////////////////////
+-    //
+-    // to be changed in the future
+-    //
+-    ///////////////////////////////////////////////////////////////////////
+-    java.awt.image.Raster data = ( (GridCoverageImpl) gc).getRenderedImage().
+-        getData();
++      //getting the underlying raster
++      java.awt.image.Raster data = ( (GridCoverage2D) gc).getRenderedImage().
++          getData();
+ 
+-    Envelope env = ( (GridCoverageImpl) gc).getEnvelope();
+-    long height = data.getHeight();
+-    long width = data.getWidth();
++      //getting the envelope
++      GeneralEnvelope env = (GeneralEnvelope) ( (GridCoverage2D) gc).
++          getEnvelope();
+ 
+-    double xl = env.getLowerCorner().getOrdinate(0);
+-    double yl = env.getLowerCorner().getOrdinate(1);
+ 
+-    double cellsize = env.getUpperCorner().getOrdinate(0) -
+-        env.getLowerCorner().getOrdinate(0);
+-    cellsize = cellsize / width; //rivedi
++      long height = data.getHeight();
++      long width = data.getWidth();
+ 
+-    try {
++      double xl = env.getLowerCorner().getOrdinate(0);
++      double yl = env.getLowerCorner().getOrdinate(1);
++
++      double cellsize = env.getUpperCorner().getOrdinate(0) -
++          env.getLowerCorner().getOrdinate(0);
++      cellsize = cellsize / width; //rivedi
++
++
+       //writing crs info
+-      writeCRSInfo(gc);
++      writeCRSInfo(crs);
+ 
+       if (format.getWriteParameters().parameter("GRASS").booleanValue()) {
+         arcGridRaster = new GRASSArcGridRaster(mWriter);
+@@ -214,25 +228,25 @@
+       ///////////////////////////////////////////////////////////////////////
+       data = null;
+     }
+-    catch (java.io.IOException ioe) {
++    catch (Exception ioe) {
+       throw new DataSourceException("IOError writing", ioe);
+     }
+   }
+ 
+-  private void writeCRSInfo(GridCoverage gc) throws IOException {
++  private void writeCRSInfo(CoordinateReferenceSystem crs) throws IOException {
+ 
+-    //getting crs from gc
+-    CoordinateReferenceSystem crs = gc.getCoordinateReferenceSystem();
+ 
++
+     //is it null?
+     if (crs == null) {
+ 
+       //default gcs wgs84
+       crs = org.geotools.referencing.crs.GeographicCRS.WGS84;
+ 
+-      //get the destination path
+-      //getting the path of this object and the name
++
+     }
++    //get the destination path
++    //getting the path of this object and the name
+     File outProj = null;
+     URL url=null;
+     String pathname = null, name = null;
+@@ -253,8 +267,11 @@
+       pathname=url.getPath().substring(0,url.getPath().lastIndexOf("/")+1);
+       name = url.getPath().substring(url.getPath().lastIndexOf("/")+1,url.getPath().length());
+     }
++    else
++      //do nothing for the moment
++      return;
+     //build up the name
+-    name = pathname + 
++    name = pathname +
+         (name.indexOf(".") > 0 ? name.substring(0, name.indexOf(".")) :
+          name) +
+         ".prj";
+Index: gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridFormatFactory.java
+===================================================================
+--- gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridFormatFactory.java	(revision 12530)
++++ gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridFormatFactory.java	(working copy)
+@@ -24,6 +24,7 @@
+  * Implementation of the GridCoverageFormat service provider interface for arc grid files.
+  *
+  * @author aaime
++ *
+  */
+ public class ArcGridFormatFactory
+     implements GridFormatFactorySpi {
+Index: gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/GRASSArcGridRaster.java
+===================================================================
+--- gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/GRASSArcGridRaster.java	(revision 12530)
++++ gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/GRASSArcGridRaster.java	(working copy)
+@@ -32,6 +32,7 @@
+  * outputs (a variation of the original format...)
+  *
+  * @author aaime
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  */
+ public class GRASSArcGridRaster extends ArcGridRaster {
+     /** Column number tag in the header file */
+@@ -79,11 +80,11 @@
+         st.resetSyntax();
+         st.eolIsSignificant(true);
+         st.whitespaceChars(0,' ');
+-		st.whitespaceChars(':', ':');
++        st.whitespaceChars(':', ':');
+         st.wordChars('a', 'z');
+         st.wordChars('A', 'Z');
+         st.wordChars('_', '_');
+-		st.wordChars('*', '*');
++        st.wordChars('*', '*');
+         st.parseNumbers();
+ 
+         double north = 0;
+@@ -96,8 +97,8 @@
+             if (st.ttype == StreamTokenizer.TT_WORD) {
+                 String key = st.sval;
+ 
+-				if (NO_DATA_MARKER.equalsIgnoreCase(key))
+-					break;
++                if (NO_DATA_MARKER.equalsIgnoreCase(key))
++                        break;
+ 
+                 if (st.nextToken() != StreamTokenizer.TT_NUMBER) {
+                     throw new IOException("Expected number after " + key);
+Index: gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridRaster.java
+===================================================================
+--- gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridRaster.java	(revision 12530)
++++ gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridRaster.java	(working copy)
+@@ -456,8 +456,8 @@
+         out.print(NODATA_VALUE); spaces(out, 2); out.println(noData = -9999);
+ 
+         // reset min and max
+-        minValue = Double.MAX_VALUE;
+-        maxValue = Double.MIN_VALUE;
++        minValue = Double.MIN_VALUE;
++        maxValue = Double.MAX_VALUE;
+ 
+         // a buffer to flush each line to
+         // this technique makes things a bit quicker because buffer.append()
+Index: gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridReader.java
+===================================================================
+--- gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridReader.java	(revision 12530)
++++ gt/plugin/arcgrid/src/org/geotools/gce/arcgrid/ArcGridReader.java	(working copy)
+@@ -16,51 +16,34 @@
+  */
+ package org.geotools.gce.arcgrid;
+ 
+-import java.awt.Color;
+-import java.io.IOException;
+-import java.io.Reader;
+-import java.util.NoSuchElementException;
++import java.io.*;
++import java.net.*;
++import java.util.*;
++import javax.media.jai.*;
+ 
+-import org.geotools.coverage.grid.GridCoverageImpl;
+-import org.geotools.data.DataSourceException;
+-import org.geotools.data.coverage.grid.stream.IOExchange;
+-import org.geotools.geometry.GeneralEnvelope;
+-import org.geotools.parameter.Parameter;
+-import org.geotools.parameter.ParameterGroup;
+-import org.geotools.referencing.crs.GeographicCRS;
+-import org.opengis.coverage.MetadataNameNotFoundException;
+-import org.opengis.coverage.grid.Format;
+-import org.opengis.coverage.grid.GridCoverage;
+-import org.opengis.coverage.grid.GridCoverageReader;
+-import org.opengis.parameter.GeneralParameterValue;
+-import org.opengis.parameter.InvalidParameterNameException;
+-import org.opengis.parameter.InvalidParameterValueException;
+-import org.opengis.referencing.FactoryException;
+-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+-import org.opengis.referencing.operation.OperationNotFoundException;
++import java.awt.*;
++import java.awt.color.*;
++import java.awt.image.*;
+ 
+-import com.vividsolutions.jts.geom.Envelope;
+-import java.io.File;
+-import java.net.URL;
+-import org.opengis.parameter.ParameterValueGroup;
+-import org.geotools.data.coverage.grid.UnknownFormat;
+-import java.awt.image.BufferedImage;
+-import java.awt.image.ColorModel;
+-import javax.media.jai.RasterFactory;
+-import java.awt.Transparency;
+-import java.awt.color.ColorSpace;
+-import java.awt.image.DataBuffer;
+-import java.awt.color.ICC_Profile;
+-import java.awt.color.ICC_ColorSpace;
+-import java.io.BufferedReader;
+-import java.io.FileReader;
++import org.geotools.coverage.grid.*;
++import org.geotools.data.*;
++import org.geotools.data.coverage.grid.stream.*;
++import org.geotools.geometry.*;
++import org.geotools.parameter.*;
+ import org.geotools.referencing.wkt.Parser;
++import org.opengis.coverage.*;
++import org.opengis.coverage.grid.*;
++import org.opengis.coverage.grid.GridCoverage;
++import org.opengis.parameter.*;
++import org.opengis.referencing.crs.*;
++import com.vividsolutions.jts.geom.*;
+ 
+ /**
+  * This class can read an arc grid data source and create a grid coverage from
+  * the data.
+  *
+  * @author jeichar
++ * @author <a href="mailto:simboss_ml@tiscali.it">Simone Giannecchini (simboss)</a>
+  */
+ public class ArcGridReader  implements GridCoverageReader {
+   /**Source object to read from.*/
+@@ -89,7 +72,7 @@
+   private ArcGridRaster arcGridRaster = null;
+ 
+   /** A name for the grid coverage. */
+-  private String name;
++  private String name="ArcGrid";
+ 
+   /**Creates a new instance of an ArcGridReader.
+    *
+@@ -262,7 +245,7 @@
+   public GridCoverage read(GeneralParameterValue[] params) throws
+       IllegalArgumentException, IOException {
+     if(params!=null)
+-      setEnvironment("ArcGrid", params);
++    	setEnvironment( params);
+ 
+     return getGridCoverage();
+   }
+@@ -299,10 +282,9 @@
+    * @throws IOException
+    *             Thrown for any other unexpected exception
+    */
+-  private void setEnvironment(String name, GeneralParameterValue[] params) throws
++  private void setEnvironment( GeneralParameterValue[] params) throws
+       InvalidParameterNameException,
+       InvalidParameterValueException, IOException {
+-    this.name = name;
+ 
+     for (int i = 0; i < params.length; i++) {
+       Parameter param = (Parameter) params[i];
+@@ -373,11 +355,15 @@
+ 
+   private GridCoverage createCoverage() throws java.io.IOException {
+     java.awt.image.WritableRaster raster = null;
++
++    //  reading the raster of data from the specified source
+     raster = openArcGridRaster().readRaster();
+ 
++    //  getting the coordinate reference system
+     CoordinateReferenceSystem coordinateSystem = getCoordinateSystem();
+ 
+-    org.opengis.spatialschema.geometry.Envelope envelope = new GeneralEnvelope(
++    //  building up the envelope
++        GeneralEnvelope envelope = new GeneralEnvelope(
+         new double[] {this.arcGridRaster.getXlCorner(),
+         this.arcGridRaster.getYlCorner()}
+         ,
+@@ -385,6 +371,8 @@
+         this.arcGridRaster.getNCols() * this.arcGridRaster.getCellSize(),
+         this.arcGridRaster.getYlCorner() +
+         this.arcGridRaster.getNRows() * this.arcGridRaster.getCellSize()});
++        
++        envelope.setCoordinateReferenceSystem(coordinateSystem);
+ 
+     try {
+       //////////////////////////////////////////////////////////////////////////////////////////////////
+@@ -398,12 +386,10 @@
+           false,
+           false,//ignored since
+           Transparency.OPAQUE);
+-      return new GridCoverageImpl(name,
++      return new GridCoverage2D(name,
++            new BufferedImage(cm,raster,false,null),
+                                   coordinateSystem,
+-                                  null,
+-                                  null,
+-                                  new BufferedImage(cm,raster,false,null),
+-                                  envelope);
++            envelope);
+       //////////////////////////////////////////////////////////////////////////////////////////////////
+       //
+       //TODO this is not finished
+@@ -411,18 +397,10 @@
+       //////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+     }
+-    catch (OperationNotFoundException e) {
+-      // TODO Auto-generated catch block
+-      e.printStackTrace();
+-    }
+     catch (NoSuchElementException e) {
+       // TODO Auto-generated catch block
+       e.printStackTrace();
+     }
+-    catch (FactoryException e) {
+-      // TODO Auto-generated catch block
+-      e.printStackTrace();
+-    }
+     return null;
+   }
+ 
+@@ -456,7 +434,8 @@
+ 	      url = (URL)this.mSource;
+               pathname=url.getPath().substring(0,url.getPath().lastIndexOf("/")+1);
+ 	      name = url.getPath().substring(url.getPath().lastIndexOf("/")+1,url.getPath().length());
+-	    }
++	    }else
++	    	throw new Exception("fake exception");
+ 	    //build up the name
+ 	    name = pathname +
+ 	        (name.lastIndexOf(".") > 0 ? name.substring(0, name.indexOf(".")) :
+@@ -480,12 +459,12 @@
+ 		this.coordinateSystem= null;
+ 	}
+ 
+-    //is it null the we gor for wgs84?
++	//	is it null? Then we gor for wgs84
+     if(this.coordinateSystem==null)
+       this.coordinateSystem= org.geotools.referencing.crs.GeographicCRS.WGS84;
+ 
+ 
+-	return this.coordinateSystem;
++    return this.coordinateSystem;
+ 
+   }
+ 
