@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -93,11 +92,13 @@ public class TestWfsPost extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request,
         HttpServletResponse response) throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
         String requestString = request.getParameter("body");
         String urlString = request.getParameter("url");
+        boolean doGet = (requestString == null)
+            || requestString.trim().equals("");
 
-        if ((requestString == null) || (urlString == null)) {
+        if ((urlString == null)) {
+            PrintWriter out = response.getWriter();
             StringBuffer urlInfo = request.getRequestURL();
 
             if (urlInfo.indexOf("?") != -1) {
@@ -168,6 +169,7 @@ public class TestWfsPost extends HttpServlet {
             out.println("</form>");
             out.println("</body>");
             out.println("</html>");
+            out.close();
         } else {
             response.setContentType("application/xml");
 
@@ -181,39 +183,68 @@ public class TestWfsPost extends HttpServlet {
                 java.net.HttpURLConnection acon = (java.net.HttpURLConnection) u
                     .openConnection();
                 acon.setAllowUserInteraction(false);
-                acon.setRequestMethod("POST");
+
+                if (!doGet) {
+                    System.out.println("set to post");
+                    acon.setRequestMethod("POST");
+                } else {
+                    System.out.println("set to get");
+                    acon.setRequestMethod("GET");
+                }
+
                 acon.setDoOutput(true);
                 acon.setDoInput(true);
                 acon.setUseCaches(false);
-                acon.setRequestProperty("Content-Type", "application/xml");
-                xmlOut = new PrintWriter(new BufferedWriter(
-                            new OutputStreamWriter(acon.getOutputStream())));
-                xmlOut = new java.io.PrintWriter(acon.getOutputStream());
-                xmlOut.write(requestString);
-                xmlOut.flush();
-                xmlIn = new BufferedReader(new InputStreamReader(
-                            acon.getInputStream()));
 
-                String line;
+                //acon.setRequestProperty("Content-Type", "application/xml");
+                if (!doGet) {
+                    xmlOut = new PrintWriter(new BufferedWriter(
+                                new OutputStreamWriter(acon.getOutputStream())));
+                    xmlOut = new java.io.PrintWriter(acon.getOutputStream());
 
-                while ((line = xmlIn.readLine()) != null) {
-                    out.print(line);
+                    xmlOut.write(requestString);
+                    xmlOut.flush();
                 }
+
+                //xmlIn = new BufferedReader(new InputStreamReader(
+                //            acon.getInputStream()));
+                String line;
+                System.out.println("got encoding from acon: "
+                    + acon.getContentType());
+                response.setContentType(acon.getContentType());
+
+                java.io.OutputStream output = response.getOutputStream();
+                int c;
+                java.io.InputStream in = acon.getInputStream();
+
+                while ((c = in.read()) != -1)
+                    output.write(c);
+
+                in.close();
+                output.close();
+
+                //while ((line = xmlIn.readLine()) != null) {
+                //    out.print(line);
+                //}
             } catch (Exception e) {
+                PrintWriter out = response.getWriter();
                 out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 out.println("<servlet-exception>");
                 out.println(e.toString());
                 out.println("</servlet-exception>");
+                out.close();
             } finally {
                 try {
                     if (xmlIn != null) {
                         xmlIn.close();
                     }
                 } catch (Exception e1) {
+                    PrintWriter out = response.getWriter();
                     out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     out.println("<servlet-exception>");
                     out.println(e1.toString());
                     out.println("</servlet-exception>");
+                    out.close();
                 }
 
                 try {
@@ -221,14 +252,14 @@ public class TestWfsPost extends HttpServlet {
                         xmlOut.close();
                     }
                 } catch (Exception e2) {
+                    PrintWriter out = response.getWriter();
                     out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     out.println("<servlet-exception>");
                     out.println(e2.toString());
                     out.println("</servlet-exception>");
+                    out.close();
                 }
             }
         }
-
-        out.close();
     }
 }
