@@ -7,8 +7,9 @@
   <tbody>	
 	<tr>
 	  <td class="label">
-		<bean:message key="label.maxFeatures"
-		              titleKey="help.global.maxFeatures"/>:
+		<span class="help" title="<bean:message key="help.global.maxFeatures"/>">	  
+          <bean:message key="label.maxFeatures"/>:
+        </span>
       </td>
 	  <td class="datum">
 		<html:text property="maxFeatures" size="60"/>
