@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <table width=100%>
-	<tr><td class="head"><font class="pn-title"> <bean:message key="label.buttons"/></font></td></tr>
+	<tr><td class="head"><font class="pn-title"><bean:message key="label.buttons"/></font></td></tr>
 	<tr><td class="main" align="center" valign="top">
 	<html:form action="SaveToGeoServer">
 		<html:submit>
