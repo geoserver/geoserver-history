@@ -6,6 +6,7 @@ package org.vfny.geoserver.zserver;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.Properties;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -34,6 +35,8 @@ public class GeoProfileSuite extends TestCase {
         /** Unit test data directory */
     private static final String DATA_DIRECTORY = 
         System.getProperty("user.dir") + "/misc/testData/unit/zserver";
+    
+    private static final String ATTRIBUTE_MAP = DATA_DIRECTORY + "/geo.map";
 
     /**
      * Initializes the database and request handler.
@@ -100,4 +103,10 @@ public class GeoProfileSuite extends TestCase {
 	assertNull(result);
     }
 
+    public void testAttributeUseMap(){
+	GeoProfile.setUseAttrMap(ATTRIBUTE_MAP);
+	Properties attrMap = GeoProfile.getUseAttrMap();
+	assertEquals("//metadata/idinfo/citation/citeinfo/origin", 
+		     attrMap.get("1005"));
+    }
 }

@@ -88,7 +88,8 @@ public class GeoSearchSuite extends TestCase {
         testProps = new Properties();
 	testProps.setProperty("database", INDEX_DIR);
 	testProps.setProperty("datafolder", DATA_DIRECTORY);
-	testProps.setProperty("fieldmap", ATTRIBUTE_MAP);
+	GeoProfile.setUseAttrMap(ATTRIBUTE_MAP);
+	//	testProps.setProperty("fieldmap", ATTRIBUTE_MAP);
 	GeoIndexer indexer = new GeoIndexer(testProps);
 	int numIndexed = indexer.update();
 	root1 = new RootNode();
@@ -103,14 +104,16 @@ public class GeoSearchSuite extends TestCase {
 	
     }
 
-    public void testSearchableInit() {
+    //we are no longer passing the fieldmap about.  Instead it should
+    //set with GeoProfile.setUseAttrMap().  
+    /*public void testSearchableInit() {
 	geoSource = new GeoSearchable();
 	geoSource.init(testProps);
 	Properties props = geoSource.getServerProps();
 	String mapPath = props.getProperty("fieldmap");
 	LOGGER.fine("returned prop is " + mapPath);
 	assertTrue(mapPath.equals(ATTRIBUTE_MAP));
-    }
+	}*/
 
     public void testCreateTask() {
 	geoSource = new GeoSearchable();
