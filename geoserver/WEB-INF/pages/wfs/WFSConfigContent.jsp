@@ -28,6 +28,7 @@
 		<html:select property="serviceLevel" size="2">
 			<html:option key="label.serviceLevel.basic" value="<%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.BASIC) %>"/>
 			<html:option key="label.serviceLevel.transactional" value="<%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.TRANSACTIONAL) %>"/>
+			<html:option key="label.serviceLevel.complete" value="<%=java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.COMPLETE) %>"/>
 		</html:select>
 	</td></tr>	
 	
