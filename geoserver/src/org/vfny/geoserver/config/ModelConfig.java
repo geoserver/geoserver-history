@@ -28,31 +28,31 @@ import org.vfny.geoserver.config.wms.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ModelConfig.java,v 1.1.2.1 2003/12/31 23:35:18 dmzwiers Exp $
+ * @version $Id: ModelConfig.java,v 1.1.2.2 2004/01/02 17:47:43 dmzwiers Exp $
  */
 public class ModelConfig implements DataStructure {
 	
 	/**
 	 * The catalog configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.data.CatalogConfig
+	 * @see org.vfny.geoserver.config.data.GlobalCatalog
 	 */
 	private CatalogConfig catalog;
 	
 	/**
 	 * The server configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.GlobalConfig
+	 * @see org.vfny.geoserver.config.GlobalData
 	 */
 	private GlobalConfig global;
 	
 	/**
 	 * The wfs configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.wfs.WFSConfig
+	 * @see org.vfny.geoserver.config.wfs.GlobalWFS
 	 */
 	private WFSConfig wfs;
 	
 	/**
 	 * The wms configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.wms.WMSConfig
+	 * @see org.vfny.geoserver.config.wms.GlobalWMS
 	 */
 	private WMSConfig wms;
 	
@@ -109,10 +109,10 @@ public class ModelConfig implements DataStructure {
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * @return A clone of this object.
-	 * @see org.vfny.geoserver.config.GlobalConfig#clone()
-	 * @see org.vfny.geoserver.config.data.CatalogConfig#clone()
-	 * @see org.vfny.geoserver.config.wfs.WFSConfig#clone()
-	 * @see org.vfny.geoserver.config.wms.WMSConfig#clone()
+	 * @see org.vfny.geoserver.config.GlobalData#clone()
+	 * @see org.vfny.geoserver.config.data.GlobalCatalog#clone()
+	 * @see org.vfny.geoserver.config.wfs.GlobalWFS#clone()
+	 * @see org.vfny.geoserver.config.wms.GlobalWMS#clone()
 	 */
 	public Object clone(){
 		return new ModelConfig(this);
@@ -127,10 +127,10 @@ public class ModelConfig implements DataStructure {
 	 * 
 	 * @param obj An instance of a ModelConfig Object to be tested for equality.
 	 * @return true when the two objects are recursively equal.
-	 * @see org.vfny.geoserver.config.GlobalConfig#equals()
-	 * @see org.vfny.geoserver.config.data.CatalogConfig#equals()
-	 * @see org.vfny.geoserver.config.wfs.WFSConfig#equals()
-	 * @see org.vfny.geoserver.config.wms.WMSConfig#equals()
+	 * @see org.vfny.geoserver.config.GlobalData#equals()
+	 * @see org.vfny.geoserver.config.data.GlobalCatalog#equals()
+	 * @see org.vfny.geoserver.config.wfs.GlobalWFS#equals()
+	 * @see org.vfny.geoserver.config.wms.GlobalWMS#equals()
 	 */
 	public boolean equals(Object obj){
 		if(obj == null || !(obj instanceof ModelConfig))
