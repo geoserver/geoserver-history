@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
-class PlugIn {
+public class PlugIn {
     Map defaults;
     String plugInName;
     String plugInDescription;
@@ -40,7 +40,7 @@ class PlugIn {
             get(config, "description"), config);
     }
 
-    PlugIn(String name, Class type, String description, Map config)
+    public PlugIn(String name, Class type, String description, Map config)
         throws ValidationException {
         if ((type == null)
                 || (!Validation.class.isAssignableFrom(type)
