@@ -19,6 +19,7 @@ import org.geotools.filter.FilterHandler;
 import org.geotools.gml.GMLFilterGeometry;
 import org.geotools.gml.GMLFilterDocument;
 import org.vfny.geoserver.responses.WfsException;
+import org.vfny.geoserver.responses.WfsTransactionException;
 
 /**
  * This utility reads in XML requests and returns them as appropriate request 
@@ -200,7 +201,7 @@ public class XmlRequestReader {
      * @param rawRequest The plain POST text from the client.
      */ 
     public static TransactionRequest readTransaction(Reader rawRequest) 
-        throws WfsException {
+        throws WfsTransactionException {
 
         // translate string into a proper SAX input source
         InputSource requestSource = new InputSource(rawRequest);
@@ -222,14 +223,14 @@ public class XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new WfsException( e, 
+            throw new WfsTransactionException( e, 
                                     "XML getFeature request SAX parsing error",
                                     XmlRequestReader.class.getName() );
         } catch (IOException e) {
-            throw new WfsException( e, "XML get feature request input error",
+            throw new WfsTransactionException( e, "XML get feature request input error",
                                     XmlRequestReader.class.getName() );
         } catch (ParserConfigurationException e) {
-            throw new WfsException( e, "Some sort of issue creating parser",
+            throw new WfsTransactionException( e, "Some sort of issue creating parser",
                                     XmlRequestReader.class.getName() );
         }
 
