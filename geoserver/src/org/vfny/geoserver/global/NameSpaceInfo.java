@@ -8,6 +8,14 @@
  */
 package org.vfny.geoserver.global;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.geotools.data.FeatureTypeMetaData;
+import org.geotools.data.NamespaceMetaData;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 
 
@@ -26,15 +34,20 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.1.2.1 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.1.2.2 2004/01/12 13:38:25 jive Exp $
  */
-public class NameSpaceInfo extends GlobalLayerSupertype {
+public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMetaData{
     /**
      * A copy of the NameSpaceInfoDTO which contains the data for this class.
      * Editing the DTO should be completed with extreme caution.
      */
     private NameSpaceInfoDTO nsDTO;
 
+    /** ref to parent set of datastores. */
+    private Data data;
+    
+    /** metadata */
+    private Map meta; 
     /**
      * NameSpaceConfig constructor.
      * 
@@ -42,8 +55,10 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * Creates a NameSpaceConfig to represent an instance with default data.
      * </p>
      */
-    public NameSpaceInfo() {
+    public NameSpaceInfo(Data data) {
+        this.data = data;
         nsDTO = new NameSpaceInfoDTO();
+        meta = new HashMap();
     }
 
     /**
@@ -222,4 +237,86 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     public void setUri(String string) {
         nsDTO.setUri(string);
     }
+
+
+    /**
+     * Implement containsMetaData.
+     * 
+     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
+     * 
+     * @param key
+     * @return
+     */
+    public boolean containsMetaData(String key) {
+        return meta.containsKey( key );
+    }
+
+    /**
+     * Implement putMetaData.
+     * 
+     * @see org.geotools.data.MetaData#putMetaData(java.lang.String, java.lang.Object)
+     * 
+     * @param key
+     * @param value
+     */
+    public void putMetaData(String key, Object value) {
+        meta.put( key, value );
+    }
+
+    /**
+     * Implement getMetaData.
+     * 
+     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
+     * 
+     * @param key
+     * @return
+     */
+    public Object getMetaData(String key) {
+        return meta.get( key );
+    }
+
+    /**
+     * Implement getURI.
+     * <p>
+     * Description ...
+     * </p>
+     * @see org.geotools.data.NamespaceMetaData#getURI()
+     * 
+     * @return
+     */
+    public String getURI() {
+        return nsDTO.getUri();
+    }
+
+    /**
+     * Implement getTypeNames.
+     * <p>
+     * Description ...
+     * </p>
+     * @see org.geotools.data.NamespaceMetaData#getTypeNames()
+     * 
+     * @return
+     */
+    public Set getTypeNames() {
+        Set set = new HashSet();
+        for( Iterator i=data.getFeatureTypeInfos().values().iterator(); i.hasNext(); ){
+            FeatureTypeInfo type = (FeatureTypeInfo) i.next();
+            if( type.getNameSpace() == this ) set.add( type ); 
+        }
+        return set;
+    }
+
+    /**
+     * Implement getFeatureTypeMetaData.
+     * <p>
+     * Description ...
+     * </p>
+     * @see org.geotools.data.NamespaceMetaData#getFeatureTypeMetaData(java.lang.String)
+     * 
+     * @param typeName
+     * @return
+     */
+    public FeatureTypeMetaData getFeatureTypeMetaData(String typeName) {
+        return data.getFeatureTypeInfo( typeName );
+    }    
 }
