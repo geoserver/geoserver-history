@@ -14,12 +14,12 @@
 
   <servlet>
     <servlet-name>GetCapabilities</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Capabilities</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Capabilities</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>GetFeature</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Feature</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Feature</servlet-class>
   </servlet>
 
   <servlet>
@@ -29,22 +29,22 @@
 
   <servlet>
     <servlet-name>DescribeFeatureType</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Describe</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Describe</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>Transaction</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Transaction</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Transaction</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>LockFeature</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.Lock</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.Lock</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>GetFeatureWithLock</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.FeatureWithLock</servlet-class>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.FeatureWithLock</servlet-class>
   </servlet>
 
 
