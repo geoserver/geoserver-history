@@ -26,7 +26,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
-import org.geotools.validation.spatial.IsValidFeatureValidation;
+import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -46,7 +46,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.1.2.3 2003/11/26 04:46:34 sploreg Exp $
+ * @version $Id: ValidationProcessor.java,v 1.1.2.4 2003/11/26 06:51:08 sploreg Exp $
  */
 public class ValidationProcessor {
 
@@ -104,8 +104,8 @@ public class ValidationProcessor {
 	private void testInit()
 	{
 		// create a feature validation tests
-		IsValidFeatureValidation isValidFV = new IsValidFeatureValidation("isValidALL", "Tests to see if a geometry is valid", Validation.ALL);
-		IsValidFeatureValidation isValidFV_roads = new IsValidFeatureValidation("isValidRoads", "Tests to see if a geometry is valid", new String[] {"road"});
+		IsValidGeometryFeatureValidation isValidFV = new IsValidGeometryFeatureValidation("isValidALL", "Tests to see if a geometry is valid", Validation.ALL);
+		IsValidGeometryFeatureValidation isValidFV_roads = new IsValidGeometryFeatureValidation("isValidRoads", "Tests to see if a geometry is valid", new String[] {"road"});
 		
 		// add them to the featureLookup map
 		addToFVLookup(isValidFV);
@@ -197,31 +197,28 @@ public class ValidationProcessor {
 	
 	
 	/**
-	 * addPlugIn purpose.
+	 * addValidation
 	 * <p>
-	 * Checks the type of Validation: ether a FeatureValidation or an IntegrityValidation.
-	 * Once the Validation type is determined, it is passed onto addTo*VLookup() to be inserted.
-	 * 
-	 * This method might not be in the final cut, or could be made private and called by the other addPlugIn()s
+	 * Add a FeatureValidation to the list of Feature tests
 	 * </p>
-	 * @param validation Either a FeatureValidation or an IntegrityValidation to be added to the processor.
-	 * @throws Exception Invalid Validation type
+	 * @param validation
 	 */
-	public void addValidation(Validation validation) throws Exception
+	public void addValidation(FeatureValidation validation)
 	{
-		if (validation instanceof FeatureValidation)
-		{
 			addToFVLookup((FeatureValidation)validation);
-		}
-		else if (validation instanceof IntegrityValidation)
-		{
-			addToIVLookup((IntegrityValidation)validation);
-		}
-		else
-		{
-			throw new Exception("Validation type not recognized. Expected FeatureValidation or IntegrityValidation.");
-		}
-		
+	}
+	
+	
+	/**
+	 * addValidation
+	 * <p>
+	 * Add an IntegrityValidation to the list of Integrity tests
+	 * </p>
+	 * @param validation
+	 */
+	public void addValidation(IntegrityValidation validation)
+	{
+		addToIVLookup((IntegrityValidation)validation);
 	}
 	
 	
