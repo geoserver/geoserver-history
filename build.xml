@@ -551,9 +551,9 @@
       <lib dir="${dir.lib}">
         <exclude name="**/junit.jar" />
         <exclude name="**/servlet.jar" />
-        <!--<exclude name="**/xercesImpl.jar" />
-        <exclude name="**/xml-apis.jar" />
-        <exclude name="**/xalan.jar" />-->
+        <exclude name="**/xercesImpl.jar" />
+        <!--<exclude name="**/xml-apis.jar" />-->
+        <!--<exclude name="**/xalan.jar" />-->
         <exclude name="*catalina*/**/*" />
       </lib>
       
