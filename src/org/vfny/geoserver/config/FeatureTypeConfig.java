@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.11 2004/01/15 21:36:52 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.12 2004/01/15 23:04:16 jive Exp $
  */
 public class FeatureTypeConfig{
 	
@@ -279,7 +279,17 @@ public class FeatureTypeConfig{
 	public List getKeywords() {
 		return keywords;
 	}
-
+    
+    /**
+     * Convience method for dataStoreId.typeName.
+     * <p>
+     * This key may be used to store this FeatureType in a Map for later.
+     * </p>
+     * @return dataStoreId.typeName
+     */    
+    public String getKey(){
+        return getDataStoreId()+":"+getName();
+    }
 	/**
 	 * getLatLongBBox purpose.
 	 * <p>
