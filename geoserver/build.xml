@@ -559,7 +559,7 @@
       </classes>
 
 	  <classes dir="${dir.webinf}">
-		<include name="ApplicationResources.properties"/>
+		<include name="ApplicationResources*.properties"/>
 	  </classes>
             
       <!--webinf dir="${dir.conf}"/-->
