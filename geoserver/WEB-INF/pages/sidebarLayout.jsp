@@ -1,17 +1,19 @@
 <table border=1 width=100%>
 	<tr>
 		<td>
-			<tiles:insert attribute="status"/>
+			Status
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<tiles:insert attribute="buttons"/>
+			Try Out<BR>
+			Save<BR>
+			Load<BR>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<tiles:insert attribute="actions"/>
+			Actions
 		</td>
 	</tr>
 </table>

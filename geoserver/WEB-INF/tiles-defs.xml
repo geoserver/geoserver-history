@@ -43,10 +43,29 @@
         <!--<put name="body"   value=".aPage.body" />-->
     </definition>
    
-   	<definition name="test" page="/WEB-INF/pages/WFSConfigDescription.jsp">
+   	<definition name="test" page="/WEB-INF/pages/mainLayout.jsp">
 		<put name="title" value="DEFAULT TITLE"/>
-		<put name="header" value="/WEB-INF/pages/header.jsp"/>
-		<put name="sidebar" value="/WEB-INF/pages/sidebar.jsp"/>
+		<put name="header" value="headTest"/>
+		<put name="sidebar" value="sidebarTest"/>
+		<put name="body" value="bodyTest"/>
+   	</definition>
+   	
+   	<definition name="headTest" page="/WEB-INF/pages/headerLayout.jsp">
+   		<put name="logo" value="/WEB-INF/pages/logo.jsp"/>
+   		<put name="location" value="/WEB-INF/pages/location.jsp"/>
+   		<put name="menu" value="/WEB-INF/pages/menu.jsp"/>
+   	</definition>
+   	
+   	<definition name="sidebarTest" page="/WEB-INF/pages/sidebarLayout.jsp">
+   		<put name="status" value="/WEB-INF/pages/status.jsp"/>
+   		<put name="buttons" value="/WEB-INF/pages/buttons.jsp"/>
+   		<put name="actions" value="/WEB-INF/pages/actions.jsp"/>
+   	</definition>
+   	
+   	<definition name="bodyTest" page="/WEB-INF/pages/bodyLayout.jsp">
+   		<put name="tabs" value="/WEB-INF/pages/tabs.jsp"/>
+   		<put name="selector" value="/WEB-INF/pages/blank.jsp"/>
+   		<put name="editor" value="/WEB-INF/pages/WFSConfigDescription.jsp"/>
    	</definition>
     
 </tiles-definitions>
