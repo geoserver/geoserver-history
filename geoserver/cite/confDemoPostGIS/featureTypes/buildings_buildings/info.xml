@@ -3,7 +3,7 @@
 	<!--
 		native wich EPGS code for the FeatureTypeInfoDTO
 	-->
-	<SRS>0</SRS>
+	<SRS>26910</SRS>
 	<title>buildings_Type</title>
 	<abstract>Generated from buildings</abstract>
 	<numDecimals value = "8" />

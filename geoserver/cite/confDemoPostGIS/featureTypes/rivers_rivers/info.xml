@@ -3,7 +3,7 @@
 	<!--
 		native wich EPGS code for the FeatureTypeInfoDTO
 	-->
-	<SRS>0</SRS>
+	<SRS>26910</SRS>
 	<title>rivers_Type</title>
 	<abstract>Generated from rivers</abstract>
 	<numDecimals value = "8" />
