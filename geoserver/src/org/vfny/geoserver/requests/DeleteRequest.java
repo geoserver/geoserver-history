@@ -38,7 +38,9 @@ public class DeleteRequest
     
     /** Specifies the output format */
     protected static final String operation = "Delete";
-    
+
+    protected static short operationType = DELETE;
+
     /** Specifies the output format */
     protected String typeName = null;
         
@@ -80,6 +82,7 @@ public class DeleteRequest
     /** Sets the expiration of the locks (in minutes). */ 
     public String getOperation() { return operation; }
 
+    public short getOpType() { return operationType; }
 
     /*************************************************************************
      * OVERRIDES OF toString AND equals METHODS.                             *
