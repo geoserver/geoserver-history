@@ -80,6 +80,9 @@ public class TypeInfo {
      * such as ns01:rail, where rail is the name and ns01 is the prefix.
      */
     void setPrefix(String prefix){ 
+	if (config.getNSUri(prefix) == null){
+	    config.addPrefixNamespace(prefix);
+	}
 	this.prefix = prefix;
     }
 
@@ -105,7 +108,7 @@ public class TypeInfo {
     /** Fetches the feature type name (also the table name)  */
     //REVISIT: name getTableName()?  It should only be used for that purpose.
     public String getName() { 
-	LOG.finer("returning name " + internalType.getName());
+	LOG.finest("returning name " + internalType.getName());
 	return internalType.getName(); 
     }
     
@@ -321,12 +324,12 @@ public class TypeInfo {
 	    File featureTypeFile = new File(typeName);
 	    File parentDir = featureTypeFile.getParentFile();
 	    String parentDirName =  parentDir.getName();
+	    String typePrefix = config.getDefaultNSPrefix();
 	    int prefixDelimPos = parentDirName.indexOf(prefixFileDelimiter);
 	    if (prefixDelimPos > 0) {
-		prefix = parentDirName.substring(0, prefixDelimPos);
-	    } else {
-		prefix = config.getDefaultNSPrefix();
-	    }
+		typePrefix = parentDirName.substring(0, prefixDelimPos);
+	    } 
+	    setPrefix(typePrefix);
 	    pathToSchemaFile = 
 		new File(parentDir, config.SCHEMA_FILE).toString();
 	    LOG.finer("pathToSchema is " + pathToSchemaFile);

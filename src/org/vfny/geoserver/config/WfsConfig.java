@@ -181,7 +181,7 @@ public class WfsConfig implements java.io.Serializable {
 	    LOGGER.info("delimiter is " + delimiter);
 	    wfsConfig.setFilePrefixDelimiter(delimiter);
 
-	    HashMap namespaces = new HashMap();
+	    //HashMap namespaces = new HashMap();
 	    NodeList namespaceElems = 
 		configElem.getElementsByTagName(NAMESPACE_TAG);
 	    LOGGER.finer("namespaceElems is " + namespaceElems);
@@ -201,7 +201,7 @@ public class WfsConfig implements java.io.Serializable {
 		    LOGGER.warning(message);
 		}
 		LOGGER.config("adding namespace: " + prefix + ":" + uri);
-		namespaces.put(prefix, uri);
+		wfsConfig.addNamespace(prefix, uri);
 		if (defaultA != null && defaultA.equals("true")){
 		    LOGGER.config("setting default namespace to " + uri);
 		    wfsConfig.setDefaultPrefix(prefix);
@@ -215,10 +215,10 @@ public class WfsConfig implements java.io.Serializable {
 		defaultURI += defaultURI.endsWith("/") ? "" : "/";
 		defaultURI += DEFAULT_PREFIX;
 		LOGGER.finest("adding uri " + defaultURI);
-		namespaces.put(DEFAULT_PREFIX, defaultURI);
+		wfsConfig.addNamespace(DEFAULT_PREFIX, defaultURI);
 		wfsConfig.setDefaultPrefix(DEFAULT_PREFIX);
 	    }
-	    wfsConfig.setNamespaces(namespaces);
+		//wfsConfig.setNamespaces(namespaces);
 	    fis.close();
 
 	  
@@ -346,11 +346,15 @@ public class WfsConfig implements java.io.Serializable {
     /** 
     * Gets the map of prefixes to namespace uris.  
     */
-    public Map getNamespaces()
+    Map getNamespaces()
     {
         return this.nameSpaces;
     }
     
+    void addNamespace(String prefix, String namespace){
+	nameSpaces.put(prefix, namespace);
+    }
+
     /** 
      * Sets the map of prefixes to namespace uris.
      */

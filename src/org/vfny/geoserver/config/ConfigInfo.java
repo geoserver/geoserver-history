@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.Servlet;
 
@@ -271,4 +272,15 @@ public class ConfigInfo {
 	return serviceGlobal.getWfsXml();
 	
     }
+
+    void addPrefixNamespace(String prefix) {
+	//Map namespaces = wfsGlobal.getNamespaces();
+	if (getNSUri(prefix) == null) {
+	    String defaultURI = getOnlineResource();
+	    defaultURI += defaultURI.endsWith("/") ? "" : "/";
+	    String namespace = defaultURI + prefix;
+	    wfsGlobal.addNamespace(prefix, namespace);
+	}
+    }
+
 }
