@@ -4,8 +4,12 @@
 <article>
   <title>Quickstart</title>
 
-  <para>The GeoServer 1.2.* WFS and WMS server ships with a minimal
+  <para>The GeoServer 1.3.* WFS and WMS server ships with a minimal
   configuration of two shapefile and a couple of validation tests.</para>
+
+
+  <para>There is more help available at the <a href='http://docs.codehaus.org/display/GEOS/Home'>Geoserver WIKI</a> </para>
+
 
   <para>The steps are:</para>
 
@@ -17,8 +21,8 @@
     </listitem>
 
     <listitem>
-      <para>Download and install geoserver-1.2.*-bin.zip or
-      geoserver-1.2.*.exe. </para>
+      <para>Download and install geoserver-1.3.*-bin.zip or
+      geoserver-1.3.*.exe. </para>
     </listitem>
 
     <listitem>

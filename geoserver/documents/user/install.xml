@@ -65,7 +65,7 @@
   <sect1 id="servlet">
     <title>Installing a Servlet Container</title>
 
-    <para>If you downloaded the binary (geoserver-1.2.*-bin.zip) or windows
+    <para>If you downloaded the binary (geoserver-1.3.*-bin.zip) or windows
     (.exe) release of GeoServer you do not need to install a servlet
     container, as GeoServer now includes an embedded Jetty servlet container.
     But if you want to use your servlet container then the war install works
