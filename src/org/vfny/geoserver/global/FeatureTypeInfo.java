@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geotools.data.AttributeTypeMetaData;
+import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.FeatureSource;
@@ -25,7 +26,6 @@ import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
@@ -38,7 +38,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.30 2004/03/02 10:20:27 jive Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.31 2004/03/03 09:39:09 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -461,20 +461,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @throws IOException DOCUMENT ME!
      */
     private synchronized FeatureTypeInfoDTO getGeneratedDTO()
-        throws IOException {
-        FeatureTypeInfoDTO dto = (FeatureTypeInfoDTO)toDTO();
-
-        if ((dto.getSchemaAttributes() == null)
-                || (dto.getSchemaAttributes().size() == 0)) {
-            // generate stuff
-            FeatureType schema = getFeatureType();
-            dto.setSchemaBase(NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml").getElement("AbstractFeatureType").getQualifiedTypeDefName());
-            dto.setSchemaName(schema.getTypeName()); //.toUpperCase()+"_TYPE" );
-            dto.setSchemaAttributes(DataTransferObjectFactory
-                .generateAttributes(schema));
-        }
-
-        return dto;
+        throws IOException {        
+        return DataTransferObjectFactory.create( dataStoreId, getFeatureType() );      
     }
 
     /**

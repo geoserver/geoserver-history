@@ -6,26 +6,31 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.global.xml;
+package org.vfny.geoserver.global.dto;
 
-import com.vividsolutions.jts.geom.*;
-import junit.framework.TestCase;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import junit.framework.TestCase;
+
+import org.vfny.geoserver.global.xml.GMLSchemaTranslator;
+import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
+import org.vfny.geoserver.global.xml.XMLSchemaTranslator;
+
+import com.vividsolutions.jts.geom.Point;
 
 /**
- * Test mappings provided by GMLUtilsTest.
+ * @author Jody Garnett
  *
- * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GMLUtilsTest.java,v 1.5 2004/02/06 19:58:05 dmzwiers Exp $
+ * To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Generation - Code and Comments
  */
-public class GMLUtilsTest extends TestCase {
-    public GMLUtilsTest(String name) {
+public class DataTransferObjectFactoryTest extends TestCase {
+    XMLSchemaTranslator xs = (XMLSchemaTranslator) NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
+    GMLSchemaTranslator gml = (GMLSchemaTranslator) NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+    
+    public DataTransferObjectFactoryTest(String name) {
         super(name);
     }
 
@@ -35,13 +40,13 @@ public class GMLUtilsTest extends TestCase {
 
     public void testPointPropertyTypeMappings() {
         Set expected = new HashSet();
-        //expected.add(GMLUtils.POINTPROPERTYTYPE);
-        //expected.add(GMLUtils.POINTTYPE);
-        //expected.add(GMLUtils.ABSTRACTGEOMETRYTYPE);
-        //expected.add(GMLUtils.STRING);
+        expected.add( gml.getElement("PointPropertyType") );
+        expected.add( gml.getElement("PointType") );
+        expected.add( gml.getElement("AbstractGeometryType") );
+        expected.add( xs.getElement("string") );
 
-        //List mappings = GMLUtils.mappingList("pointPropertyType", Point.class);
-        //assertEquals(expected, new HashSet(mappings));
+        List mappings = DataTransferObjectFactory.getElements("pointPropertyType", Point.class);
+        assertEquals(expected, new HashSet(mappings));
     }
 
     public void testSimpleTypes() {

@@ -15,8 +15,8 @@ package org.vfny.geoserver.global.xml;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceElement.java,v 1.2 2004/02/06 19:10:50 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: NameSpaceElement.java,v 1.3 2004/03/03 09:39:09 jive Exp $
  */
 public abstract class NameSpaceElement{
 	/** the namespace prefix to use for qualification*/
@@ -148,4 +148,11 @@ public abstract class NameSpaceElement{
 	 * @return Class instance of the Class object which would best represent this element.
 	 */
 	public abstract Class getJavaClass();
+    
+    /* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return getQualifiedTypeDefName( prefix );
+	}
 }
