@@ -40,6 +40,21 @@
    		<put name="tabs" value=".tabsLayout"/>
    	</definition>
    	
+   	<definition name="main.welcome" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/Welcome.jsp"/>
+   		<put name="title" value="GeoServer Configuration"/>
+   	</definition>
+   	
+   	<definition name="main.menu" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/MainMenu.jsp"/>
+   		<put name="title" value="GeoServer Configuration - Main Menu"/>
+   	</definition>
+   	
+   	<definition name="main.system.config.menu" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/SystemConfigMenu.jsp"/>
+   		<put name="title" value="GeoServer Configuration - System Configuration Menu"/>
+   	</definition>
+   	
    	<definition name="wfs.description" extends=".mainLayout">
    		<put name="body" value="wfs.description.tabLayout"/>
 		<put name="title" value="WFS Configuration - Description"/>

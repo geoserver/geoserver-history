@@ -18,9 +18,4 @@
 			<tiles:insert attribute="actions"/>
 		</td>
 	</tr>
-	<tr>
-		<td valign="top" align="left">
-			<html:errors/>
-		</td>
-	</tr>
 </table>
