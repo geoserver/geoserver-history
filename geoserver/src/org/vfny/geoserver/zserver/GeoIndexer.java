@@ -108,33 +108,26 @@ public class GeoIndexer {
 	    
 	    if (dataFolder.isDirectory()) {
 		//DirectoryFilter dirFilter = new DirectoryFilter();
-	    File[] dirFiles = dataFolder.listFiles();
-	   	    IndexSearcher searcher = null;
-	       try {
-		   LOGGER.finer("using index at " + pathToIndex);
-		   searcher = new IndexSearcher(pathToIndex);
-	       } catch (IOException e) {
-		   LOGGER.info("No zserver index found at: " + pathToIndex + 
-			       ".  Creating new index" );
-	       }		
-	        for (int i = 0; i < dirFiles.length; i++) {
+		File[] dirFiles = dataFolder.listFiles();
+		IndexSearcher searcher = null;	
+		searcher = createSearcher(pathToIndex);
+		for (int i = 0; i < dirFiles.length; i++) {
 		    File curDir = dirFiles[i];
 		    File curFile = new File( curDir.getPath(), META_NAME);
 		    if (curFile.exists()) {
 			String path = curFile.getPath();
-		    //currentFiles.add(path);
-		    long fileModified = curFile.lastModified();
-		    Hits hits = null;
-		    //try {
-		    if (searcher != null) {
-			//search to see if this file is already in the index
-			Term searchTerm = new Term(PATH_FIELD, path);
-			Query searchQuery = new TermQuery(searchTerm);
-			hits = searcher.search(searchQuery);
-			
-		    }
+			long fileModified = curFile.lastModified();
+			Hits hits = null;
+			//try {
+			if (searcher != null) {
+			    //search to see if this file is already in the index
+			    Term searchTerm = new Term(PATH_FIELD, path);
+			    Query searchQuery = new TermQuery(searchTerm);
+			    hits = searcher.search(searchQuery);
+			    
+			}
 		    
-		    try {
+			try {
 			if (hits != null && hits.length() > 0) {
 			    Document doc = hits.doc(0);
 			    long docModified = 
@@ -194,6 +187,17 @@ public class GeoIndexer {
 
     }
 
+    private IndexSearcher createSearcher(String pathToIndex){
+	IndexSearcher searcher = null;
+	try {
+	    LOGGER.finer("using index at " + pathToIndex);
+	    searcher = new IndexSearcher(pathToIndex);
+	} catch (IOException e) {
+	    LOGGER.finer("No zserver index found at: " + pathToIndex + 
+			 ".  Creating new index if necessary." );
+	}
+	return searcher;
+    }
 
     /**
      * Helper method to update.  Handles iterating through currently 
@@ -227,15 +231,17 @@ public class GeoIndexer {
 		reader.close();
 		//}
 	}
-	writer = new IndexWriter(pathToIndex, new ZServAnalyzer(), createNew);
-	LOGGER.finer("about to add docs....");
-	for (int i = 0; i < docsToAdd.size(); i++) {
-	    Document doc = (Document)docsToAdd.get(i);
-	    writer.addDocument(doc);
+	if(!docsToAdd.isEmpty()) {
+	    writer = new IndexWriter(pathToIndex, new ZServAnalyzer(), createNew);
+	    LOGGER.finer("about to add docs....");
+	    for (int i = 0; i < docsToAdd.size(); i++) {
+		Document doc = (Document)docsToAdd.get(i);
+		writer.addDocument(doc);
+	    }
+	    writer.optimize();
+	    writer.close();
+	    LOGGER.finer("closed writer");
 	}
-	writer.optimize();
-	writer.close();
-	LOGGER.finer("closed writer");
     }
 
     public int numDocs() {
