@@ -2,36 +2,33 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table border=1 width=100%>
-<tr><td>
-<table border=0 width=100%>
+<html:form action="/config/data/storeSelect">
 
-	<html:form action="/config/data/storeSelect">
-	<tr><td valign="top" align="left">
-		<bean:message key="label.dataStoreID"/>:
-	</td><td>
-		<html:select property="selectedDataStoreId">
+<table class="info">
+  <tbody>
+    <tr>
+      <td class="label">
+        <bean:message key="label.dataStoreID"/>:
+      </td>
+      <td class="datum" colspan=2>
+        <html:select property="selectedDataStoreId">
 			<html:options name="Config.Data" property="dataStoreIds"/>
 		</html:select>
-	</td></tr>
-	<tr><td>&nbsp;</td><td valign="top" align="left">
+      </td>
+    </tr>
+    <tr>
+      <td class="label">&nbsp;</td>
+      <td class="datum">
 		<html:submit property="buttonAction">
 			<bean:message key="label.edit"/>
 		</html:submit>
-	</td></tr>
-	<tr><td>&nbsp;</td><td valign="top" align="left">
-		<html:submit property="buttonAction">
+      </td>
+      <td>
+        <html:submit property="buttonAction">
 			<bean:message key="label.delete"/>
 		</html:submit>
-	</td></tr>
-
-	<tr>
-		<td>&nbsp;</td>
-		<td><html:link forward="config.data.store.new"><bean:message key="label.createNewDataStore"/></html:link></td>	
-	</tr>
-	
-	</html:form>
-
+	  </td>
+    </tr>
+  </tbody>
 </table>
-</td></tr>
-</table>
+</html:form>

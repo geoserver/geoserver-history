@@ -2,63 +2,81 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table border=0 width=100%>
-
-	<html:form action="/config/data/featureTypeSubmit">
-	
-	<tr><td align="right">
-		<bean:message key="label.name"/>:
-	</td><td colspan=2 align="left">
+<html:form action="/config/data/featureTypeSubmit">
+  <table class="info">
+	<tr>
+      <td class="label">
+        <bean:message key="label.name"/>:
+      </td>
+      <td class="datum">
 		<bean:write name="dataFeatureTypesEditorForm" property="name"/>
-	</td></tr>
-	
-	<tr><td align="right">
+      </td>
+    </tr>
+	<tr>
+      <td class="label">
 		<bean:message key="label.SRS"/>:
-	</td><td colspan=2 align="left">
+      </td>
+	  <td class="datum">
 		<html:text property="SRS" size="60"/>
 	</td></tr>
 
-	<tr><td align="right">
+    <tr>
+      <td class="label">
 		<bean:message key="label.title"/>:
-	</td><td colspan=2 align="left">
+	  </td>
+	  <td class="datum">
 		<html:text property="title" size="60"/>
 	</td></tr>
 
-	<tr><td align="right">
+    <tr>
+      <td class="label">
 		<bean:message key="label.latLonBoundingBox"/>:
-	</td><td colspan=2 align="left">
+	  </td>
+	  <td class="datum">
 		<html:text property="latLonBoundingBoxMinX" size="30"/>
 		<html:text property="latLonBoundingBoxMinY" size="30"/>
-	</td></tr>
-	<tr><td align="right">
-
-	</td><td colspan=2 align="left">
+        <br/>
 		<html:text property="latLonBoundingBoxMaxX" size="30"/>
 		<html:text property="latLonBoundingBoxMaxY" size="30"/>
-	</td></tr>
+	  </td>
+    </tr>
 
-	<tr><td align="right">
+    <tr>
+      <td class="label">
 		<span class="help" title="<bean:message key="help.dataFeatureTypeKeywords"/>">
 			<bean:message key="label.keywords"/>:
 		</span>
-	</td><td>
+	  </td>
+	  <td class="datum">
 		<html:textarea property="keywords" cols="60" rows="2"/>
-	</td></tr>
+	  </td>
+    </tr>
 
-	<tr><td align="right">
+    <tr>
+      <td class="label">
 		<span class="help" title="<bean:message key="help.dataFeatureTypeAbstract"/>">
 			<bean:message key="label.abstract"/>:
 		</span>
-	</td><td>
+	  </td>
+	  <td class="datum">
 		<html:textarea property="_abstract" cols="60" rows="3"/>
-	</td></tr>
-	<tr><td align="right" valign="top">
+      </td>
+    </tr>
+	<tr>
+      <td class="label">
 		<bean:message key="label.default"/>:
-	</td><td valign="top" align="left">
+	  </td>
+	  <td class="datum">
 		<html:checkbox property="_default"/>
-	</td></tr>
+	  </td>
+    </tr>
 
-	<tr><td align="right">&nbsp;</td><td colspan=2>
+    <tr>
+      <td class="label">
+        &nbsp;
+      </td>
+	  <td class="datum">
+
 		<html:submit>
 			<bean:message key="label.submit"/>
 		</html:submit>
@@ -66,7 +84,8 @@
 		<html:reset>
 			<bean:message key="label.reset"/>
 		</html:reset>
-	</td></tr>						
-	
-	</html:form>
-</table>
+
+	  </td>
+    </tr>
+  </table>
+</html:form>
