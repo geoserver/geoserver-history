@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.logging.Logger;
 import java.util.Iterator;
+import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.Servlet;
 
@@ -53,16 +54,6 @@ public class ConfigInfo {
     /** Root directory of capabilities data */
     private String capabilitiesDir;// = ROOT_DIR + CONFIG_DIR + CAP_DIR;
     
-
-    /**
-     * Constructor that reads in configuration information from FreeFS 
-     * configuration file.  This information is primarily used in the 
-     * 'Service' section of the return document.
-     */
-    //private ConfigInfo() {
-    //    service = readServiceTags(ROOT_DIR);
-    //LOG.finer("empty constructor called");
-    //}
 
     /**
      * Constructor that reads in configuration information from FreeFS 
@@ -116,7 +107,10 @@ public class ConfigInfo {
         return config;
     }    
 
-
+    /**
+     * constructs a ServiceConfig object, which encapsulates the values
+     * used for the Service section of a capabilities object.
+     */
     private static ServiceConfig readServiceTags(String configFile) {
 	ServiceConfig service = null;
 	try {
@@ -127,6 +121,13 @@ public class ConfigInfo {
 	return service;
     }
 
+    /**
+     * constructs a WfsConfig object, which encapsulates all the GeoServer
+     * specific values in the configuration file.  Note that readServiceTags
+     * and readWfsTags currently use the same config file, they just
+     * parse out different parts of it.  This allows for those files to be
+     * easily split up in later versions.
+     */
     private static WfsConfig readWfsTags(String configFile) {
 	WfsConfig wfs = null;
 	try {
@@ -168,6 +169,9 @@ public class ConfigInfo {
     }
     /** Returns URL for this service */
     //REVIST: should this be different from onlineResource?  Re-add url field?
+    //REVISIT: put getDescribeURL and getFeatureURL, ect.?  Would be good for
+    //DescribeResponse with multiple types, to keep it consistent with 
+    //capabilities.
     public String getUrl(){ return serviceGlobal.getOnlineResource(); }
     /** Returns user-specified fees for this service */
     public String getFees() { return serviceGlobal.getFees(); }
@@ -218,7 +222,34 @@ public class ConfigInfo {
     public String getNSUri(String prefix){
 	return wfsGlobal.getUriFromPrefix(prefix);
     }
-    
+ 
+    /**
+     * gets the namespace declartion associated with this prefix.  
+     * to go in the root element.
+     *
+     * @param prefix the internal prefix that is mapped to a uri.
+     * @return the xmlns:---="http:..." type declaration, using this
+     * prefix and its associated uri.
+     */
+    public String getXmlnsDeclaration(String prefix){
+	return "xmlns:" + prefix + "=\"" + getNSUri(prefix) + "\"";
+    }
+
+    /**
+     * gets all the xmlns declarations mapped in this ConfigInfo.
+     * 
+     * @return the array of xmlns declarations.
+    public String[] getAllXmlns(){
+	Set prefixSet = wfsGlobal.getNamespaces().keySet();
+	String[] retStrings = new String[prefixSet.size()];
+	Iterator prefixIter = prefixSet.iterator();
+	int i = 0;
+	while(prefixIter.hasNext()){
+	    retStrings[i++] = getXmlnsDeclaration((String)prefixIter.next());
+	}
+	return retStrings;
+    }
+
     /** 
      * Returns the current time as a string
      * @param wfsName Name of the WFS
