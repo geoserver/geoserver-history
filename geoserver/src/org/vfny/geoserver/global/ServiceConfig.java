@@ -14,7 +14,7 @@ import org.vfny.geoserver.config.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -35,7 +35,6 @@ public abstract class ServiceConfig extends BasicConfig {
         this.enabled = getBooleanAttribute(serviceRoot, "enabled", true);
         this.onlineResource = getChildText(serviceRoot, "onlineResource", true);
 
-        //this.URL = getChildText(serviceRoot, "URL");
     }
     /** Quick config for JUnit tests.
      * <ul>

@@ -8,7 +8,7 @@ package org.vfny.geoserver.global;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: NameSpace.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: NameSpace.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class NameSpace {
     /** DOCUMENT ME!  */
@@ -32,6 +32,12 @@ public class NameSpace {
     public NameSpace(String prefix, String uri) {
         this(prefix, uri, false);
     }
+
+	public NameSpace(org.vfny.geoserver.config.data.NameSpaceConfig config){
+		prefix = config.getPrefix();
+		uri = config.getUri();
+		_default = config.isDefault();
+	}
 
     /**
      * Creates a new NameSpaceConfig object.

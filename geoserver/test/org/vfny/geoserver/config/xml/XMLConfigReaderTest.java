@@ -23,12 +23,12 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.config.Global;
-import org.vfny.geoserver.config.Config;
-import org.vfny.geoserver.config.data.Catalog;
-import org.vfny.geoserver.config.data.FeatureType;
-import org.vfny.geoserver.config.wfs.WFS;
-import org.vfny.geoserver.config.wms.WMS;
+import org.vfny.geoserver.config.GlobalConfig;
+import org.vfny.geoserver.config.ModelConfig;
+import org.vfny.geoserver.config.data.CatalogConfig;
+import org.vfny.geoserver.config.data.FeatureTypeConfig;
+import org.vfny.geoserver.config.wfs.WFSConfig;
+import org.vfny.geoserver.config.wms.WMSConfig;
 
 /**
  * XMLConfigReaderTest purpose.
@@ -37,12 +37,12 @@ import org.vfny.geoserver.config.wms.WMS;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReaderTest.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+ * @version $Id: XMLConfigReaderTest.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class XMLConfigReaderTest extends TestCase {
 
-	private static final String testPath1 = "C:\\Java\\workspace\\Geoserver-Config\\tests\\test1\\";
-	private static final String testPath2 = "C:\\Java\\workspace\\Geoserver-Config\\tests\\test2\\";
+	private static final String testPath1 = "C:\\Java\\workspace\\Geoserver-ModelConfig\\tests\\test1\\";
+	private static final String testPath2 = "C:\\Java\\workspace\\Geoserver-ModelConfig\\tests\\test2\\";
 	private File root1 = null;
 	private File root2 = null;
 
@@ -65,16 +65,16 @@ public class XMLConfigReaderTest extends TestCase {
 			fail(e.toString());
 		}
 		
-		Config m = cfe.getModel();
+		ModelConfig m = cfe.getModel();
 		boolean r = true;
 		r = r && m!=null;
 		if(r){
 			r = r && m.getGlobal() != null;
-			r = r && !m.getGlobal().equals(new Global());
+			r = r && !m.getGlobal().equals(new GlobalConfig());
 			r = r && m.getWfs() != null;
-			r = r && !m.getWfs().equals(new WFS());
+			r = r && !m.getWfs().equals(new WFSConfig());
 			r = r && m.getWms() != null;
-			r = r && !m.getWms().equals(new WMS());
+			r = r && !m.getWms().equals(new WMSConfig());
 		}
 		assertTrue(r);
 	}
@@ -87,8 +87,8 @@ public class XMLConfigReaderTest extends TestCase {
 		}catch(ConfigException e){
 			fail(e.toString());
 		}
-		Config m = cfe.getModel();
-		Catalog c = m.getCatalog();
+		ModelConfig m = cfe.getModel();
+		CatalogConfig c = m.getCatalog();
 		boolean r = true;
 		r = r && c!=null;
 		if(r){
@@ -120,7 +120,7 @@ System.out.println("***************");
 			Iterator i = m.keySet().iterator();
 			while(i.hasNext() && r){
 				String key = (String)i.next();
-				FeatureType f = (FeatureType)m.get(key);
+				FeatureTypeConfig f = (FeatureTypeConfig)m.get(key);
 				if(f == null)
 					r = false;
 				else{
@@ -142,17 +142,17 @@ System.out.println("***************");
 		boolean r = true;
 		
 
-		Config m = rc.getModel();
+		ModelConfig m = rc.getModel();
 		r = r && m!=null;
 		if(r){
 			r = r && m.getGlobal() != null;
-			r = r && !m.getGlobal().equals(new Global());
+			r = r && !m.getGlobal().equals(new GlobalConfig());
 			r = r && m.getWfs() != null;
-			r = r && !m.getWfs().equals(new WFS());
+			r = r && !m.getWfs().equals(new WFSConfig());
 			r = r && m.getWms() != null;
-			r = r && !m.getWms().equals(new WMS());
+			r = r && !m.getWms().equals(new WMSConfig());
 
-			Catalog c = m.getCatalog();
+			CatalogConfig c = m.getCatalog();
 			r = r && c!=null;
 			if(r){
 				r = r && c.getDataStores()!= null;
@@ -170,7 +170,7 @@ System.out.println("***************");
 					Iterator i = mp.keySet().iterator();
 					while(i.hasNext() && r){
 						String key = (String)i.next();
-						FeatureType f = (FeatureType)mp.get(key);
+						FeatureTypeConfig f = (FeatureTypeConfig)mp.get(key);
 						if(f == null)
 							r = false;
 						else{

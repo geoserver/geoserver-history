@@ -20,7 +20,7 @@ import org.vfny.geoserver.requests.wfs.UpdateRequest;
  * Tests the Update request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: UpdateSuite.java,v 1.4.2.1 2003/12/31 00:36:51 dmzwiers Exp $
+ * @version $Id: UpdateSuite.java,v 1.4.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  *
  * @task TODO: Bring back tests 4 and 6, they are broken due to reading of the
  *       same literals in different ways - string/double/int.
@@ -132,7 +132,7 @@ public class UpdateSuite extends TransactionSuite {
        baseRequest.addSubRequest(update2);
        baseRequest.addSubRequest(update);
        baseRequest.setVersion("1.0.0");
-       baseRequest.setService("WFS");
+       baseRequest.setService("WFSConfig");
        // run test
        assertTrue(runXmlTest(baseRequest, "update4", true));
        }*/
@@ -168,7 +168,7 @@ public class UpdateSuite extends TransactionSuite {
        TransactionRequest baseRequest = new TransactionRequest();
        baseRequest.addSubRequest(update2);
        baseRequest.setVersion("1.0.0");
-       baseRequest.setService("WFS");
+       baseRequest.setService("WFSConfig");
        baseRequest.setHandle("oceans");
        // run test
        assertTrue(runXmlTest(baseRequest, "update6", true));

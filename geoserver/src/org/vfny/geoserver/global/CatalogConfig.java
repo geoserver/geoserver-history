@@ -35,7 +35,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class CatalogConfig extends AbstractConfig
 /**
@@ -203,6 +203,38 @@ public class CatalogConfig extends AbstractConfig
         File startDir = new File(featureTypeDir);
         this.featureTypes = new HashMap();
         loadFeatureTypes(startDir);
+    }
+    public CatalogConfig(org.vfny.geoserver.config.data.CatalogConfig config) throws ConfigurationException {
+    	//dataStores = config.getDataStores();
+    	Iterator i = config.getDataStores().keySet().iterator();
+    	while(i.hasNext()){
+    		Object key = i.next();
+    		dataStores.put(key,new DataStoreConfig((org.vfny.geoserver.config.data.DataStoreConfig)config.getDataStores().get(key)));
+    	}
+    	//featureTypes = config.getFeaturesTypes();
+		i = config.getFeaturesTypes().keySet().iterator();
+		while(i.hasNext()){
+			Object key = i.next();
+			featureTypes.put(key,new FeatureTypeConfig((org.vfny.geoserver.config.data.FeatureTypeConfig)config.getFeaturesTypes().get(key)));
+		}
+    	defaultNameSpace = new NameSpace(config.getDefaultNameSpace());
+    	//nameSpaces = config.getNameSpaces();
+		i = config.getNameSpaces().keySet().iterator();
+		while(i.hasNext()){
+			Object key = i.next();
+			nameSpaces.put(key,new NameSpace((org.vfny.geoserver.config.data.NameSpaceConfig)config.getNameSpaces().get(key)));
+		}
+    	//styles = config.getStyles();
+		i = config.getStyles().keySet().iterator();
+		while(i.hasNext()){
+			Object key = i.next();
+			// should be re-worked
+			try{
+				styles.put(key,loadStyle(((org.vfny.geoserver.config.data.StyleConfig)config.getStyles().get(key)).getFilename()));
+			}catch(IOException e){
+				LOGGER.fine("Error loading style:"+key.toString());
+			}
+		}
     }
 
     /**
@@ -496,6 +528,19 @@ public class CatalogConfig extends AbstractConfig
 
         return layerstyle[0];
     }
+	public Style loadStyle(File fileName)
+		throws IOException {
+		URL url;
+
+		//HACK: but I'm not sure if we can get the ServerConfig instance.  This is one thing
+		//that will benefit from splitting up of config loading from representation.
+		url = fileName.toURL();
+
+		SLDStyle stylereader = new SLDStyle(styleFactory, url);
+		Style[] layerstyle = stylereader.readXML();
+
+		return layerstyle[0];
+	}
 
     //} else {
     //url = file.toURL();

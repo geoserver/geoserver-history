@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: BasicConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: BasicConfig.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class BasicConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -50,19 +50,32 @@ public class BasicConfig extends AbstractConfig {
      */
     public BasicConfig(Element serviceRoot) throws ConfigurationException {
         this.name = getChildText(serviceRoot, "name", true);
-
         this.title = getChildText(serviceRoot, "title", true);
-
         this._abstract = getChildText(serviceRoot, "abstract");
-
         this.keywords = getKeyWords(getChildElement(serviceRoot, "keywords"));
-
         this.fees = getChildText(serviceRoot, "fees");
-
         this.accessConstraints = getChildText(serviceRoot, "accessConstraints");
-
         this.maintainer = getChildText(serviceRoot, "maintainer");
     }
+	public BasicConfig(org.vfny.geoserver.config.ServiceConfig config){
+		this.name = config.getName();
+		this.title = config.getTitle();
+		this._abstract = config.getAbstract();
+		this.keywords = config.getKeywords();
+		this.fees = config.getFees();
+		this.accessConstraints = config.getAccessConstraints();
+		this.maintainer = config.getMaintainer();
+	}
+	public BasicConfig(org.vfny.geoserver.config.data.FeatureTypeConfig config){
+		this.name = config.getName();
+		this.title = config.getTitle();
+		this._abstract = config.getAbstract();
+		this.keywords = config.getKeywords();
+		//@HACK 3 next lines should be removed.
+		this.fees = "";
+		this.accessConstraints = "";
+		this.maintainer = "";
+	}
     /**
      * Quick config for JUnit tests.
      * <ul>

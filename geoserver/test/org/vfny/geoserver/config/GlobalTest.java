@@ -26,7 +26,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GlobalTest.java,v 1.1.2.1 2003/12/31 20:05:32 dmzwiers Exp $
+ * @version $Id: GlobalTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class GlobalTest extends TestCase {
 
@@ -36,22 +36,22 @@ public class GlobalTest extends TestCase {
 	 */
 	public GlobalTest(String arg0) {
 		super(arg0);
-		a = new Global(); b = null;
+		a = new GlobalConfig(); b = null;
 			a.setSchemaBaseUrl("http://www.google.ca");
 		a.setMaxFeatures(0);
 	}
 
 
 
-	private Global a,b;
+	private GlobalConfig a,b;
 
 	/*
-	 * Test for void Contact(Contact)
+	 * Test for void ContactConfig(ContactConfig)
 	 */
 	public void testDataStoreDataStore() {
 		//test requires equals.
-		b = new Global(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new GlobalConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -59,15 +59,15 @@ public class GlobalTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(Global)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(GlobalConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new Global();
+		b = new GlobalConfig();
 			b.setSchemaBaseUrl("http://www.google.ca");
 		b.setMaxFeatures(0);
 		
@@ -79,7 +79,7 @@ public class GlobalTest extends TestCase {
 		a.setMaxFeatures(300);
 		assertTrue(a.equals(b));
 		
-		Contact c = new Contact();
+		ContactConfig c = new ContactConfig();
 		c.setContactPerson("Me");
 		b.setContact(c);
 		assertTrue(!a.equals(b));

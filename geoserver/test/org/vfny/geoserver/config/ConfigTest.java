@@ -19,8 +19,8 @@ package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.config.data.Catalog;
-import org.vfny.geoserver.config.data.NameSpace;
+import org.vfny.geoserver.config.data.CatalogConfig;
+import org.vfny.geoserver.config.data.NameSpaceConfig;
 
 /**
  * ConfigTest purpose.
@@ -29,31 +29,31 @@ import org.vfny.geoserver.config.data.NameSpace;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigTest.java,v 1.1.2.1 2003/12/31 20:05:32 dmzwiers Exp $
+ * @version $Id: ConfigTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class ConfigTest extends TestCase {
 
-	private Config a,b;
+	private ModelConfig a,b;
 	/**
 	 * Constructor for ConfigTest.
 	 * @param arg0
 	 */
 	public ConfigTest(String arg0) {
 		super(arg0);
-		a = new Config(); b = null;
-		Global g = new Global();
+		a = new ModelConfig(); b = null;
+		GlobalConfig g = new GlobalConfig();
 			g.setSchemaBaseUrl("http://www.google.ca");
 		g.setMaxFeatures(0);
 		a.setGlobal(g);
 	}
 
 	/*
-	 * Test for void Contact(Contact)
+	 * Test for void ContactConfig(ContactConfig)
 	 */
 	public void testDataStoreDataStore() {
 		//test requires equals.
-		b = new Config(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new ModelConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -61,16 +61,16 @@ public class ConfigTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(Config)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(ModelConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new Config();
-		Global g = new Global();
+		b = new ModelConfig();
+		GlobalConfig g = new GlobalConfig();
 			g.setSchemaBaseUrl("http://www.google.ca");
 		g.setMaxFeatures(0);
 		b.setGlobal(g);
@@ -78,8 +78,8 @@ public class ConfigTest extends TestCase {
 		assertTrue(a.getGlobal().equals(b.getGlobal()));
 		assertTrue(a.equals(b));
 		
-		Catalog c = new Catalog();
-		c.addNameSpace("c",new NameSpace());
+		CatalogConfig c = new CatalogConfig();
+		c.addNameSpace("c",new NameSpaceConfig());
 		b.setCatalog(c);
 		assertTrue(!a.equals(b));
 	}

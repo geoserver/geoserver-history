@@ -24,11 +24,11 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceTest.java,v 1.1.2.1 2003/12/31 20:05:32 dmzwiers Exp $
+ * @version $Id: ServiceTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class ServiceTest extends TestCase {
 
-	private Service a,b;
+	private ServiceConfig a,b;
 	
 	/**
 	 * Constructor for ServiceTest.
@@ -36,18 +36,18 @@ public class ServiceTest extends TestCase {
 	 */
 	public ServiceTest(String arg0) {
 		super(arg0);
-		a = new Service();
+		a = new ServiceConfig();
 		a.setName("test 1");
 		a.setMaintainer("tester 1");
 	}
 
 	/*
-	 * Test for void NameSpace(NameSpace)
+	 * Test for void NameSpaceConfig(NameSpaceConfig)
 	 */
 	public void testNameSpaceNameSpace() {
 		//test requires equals.
-		b = new Service(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new ServiceConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -55,15 +55,15 @@ public class ServiceTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(Service)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(ServiceConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new Service();
+		b = new ServiceConfig();
 		b.setName("test 1");
 		b.setMaintainer("tester 1");
 		assertTrue(a.equals(b));

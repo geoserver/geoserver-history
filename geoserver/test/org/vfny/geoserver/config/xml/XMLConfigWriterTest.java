@@ -20,7 +20,7 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.config.Config;
+import org.vfny.geoserver.config.ModelConfig;
 /**
  * XMLConfigWriterTest purpose.
  * <p>
@@ -28,12 +28,12 @@ import org.vfny.geoserver.config.Config;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriterTest.java,v 1.1.2.1 2003/12/31 20:05:38 dmzwiers Exp $
+ * @version $Id: XMLConfigWriterTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class XMLConfigWriterTest extends TestCase {
-	private static final String testPath1 = "C:/Java/workspace/Geoserver-Config/tests/test3/";
-	private static final String testPath2 = "C:/Java/workspace/Geoserver-Config/tests/test2/";
-	private static final String testPath3 = "C:/Java/workspace/Geoserver-Config/tests/test4/";
+	private static final String testPath1 = "C:/Java/workspace/Geoserver-ModelConfig/tests/test3/";
+	private static final String testPath2 = "C:/Java/workspace/Geoserver-ModelConfig/tests/test2/";
+	private static final String testPath3 = "C:/Java/workspace/Geoserver-ModelConfig/tests/test4/";
 	private File root1 = null;
 	private File root2 = null;
 	private File root3 = null;
@@ -51,7 +51,7 @@ public class XMLConfigWriterTest extends TestCase {
 	}
 
 	public void testStoreBlank(){
-		Config m = new Config();
+		ModelConfig m = new ModelConfig();
 		try{
 			XMLConfigWriter cw = new XMLConfigWriter(m);
 			cw.store(root1);

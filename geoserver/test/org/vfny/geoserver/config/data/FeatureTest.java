@@ -25,7 +25,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTest.java,v 1.1.2.1 2003/12/31 20:05:38 dmzwiers Exp $
+ * @version $Id: FeatureTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class FeatureTest extends TestCase {
 
@@ -35,7 +35,7 @@ public class FeatureTest extends TestCase {
 	 */
 	public FeatureTest(String arg0) {
 		super(arg0);
-		a = new FeatureType(); b = null;
+		a = new FeatureTypeConfig(); b = null;
 		a.setAbstract("abstract");
 		a.setDataStoreId("dsId");
 		a.setSRS(0);
@@ -43,15 +43,15 @@ public class FeatureTest extends TestCase {
 
 
 
-	private FeatureType a,b;
+	private FeatureTypeConfig a,b;
 
 	/*
-	 * Test for void Contact(Contact)
+	 * Test for void ContactConfig(ContactConfig)
 	 */
 	public void testDataStoreDataStore() {
 		//test requires equals.
-		b = new FeatureType(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new FeatureTypeConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -59,15 +59,15 @@ public class FeatureTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(FeatureType)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(FeatureTypeConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new FeatureType();
+		b = new FeatureTypeConfig();
 		b.setAbstract("abstract");
 		b.setDataStoreId("dsId");
 		b.setSRS(0);

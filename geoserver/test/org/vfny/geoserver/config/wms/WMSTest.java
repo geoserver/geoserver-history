@@ -18,7 +18,7 @@ package org.vfny.geoserver.config.wms;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.config.Service;
+import org.vfny.geoserver.config.ServiceConfig;
 /**
  * WFSTest purpose.
  * <p>
@@ -26,28 +26,28 @@ import org.vfny.geoserver.config.Service;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSTest.java,v 1.1.2.1 2003/12/31 20:05:37 dmzwiers Exp $
+ * @version $Id: WMSTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class WMSTest extends TestCase {
 
-	private WMS a,b;
+	private WMSConfig a,b;
 	/**
 	 * Constructor for WFSTest.
 	 * @param arg0
 	 */
 	public WMSTest(String arg0) {
 		super(arg0);
-		a = new WMS();
+		a = new WMSConfig();
 		a.setDescribeUrl("http://www.cs.uvic.ca/~dzwiers/");
 	}
 
 	/*
-	 * Test for void NameSpace(NameSpace)
+	 * Test for void NameSpaceConfig(NameSpaceConfig)
 	 */
 	public void testNameSpaceNameSpace() {
 		//test requires equals.
-		b = new WMS(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new WMSConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -55,15 +55,15 @@ public class WMSTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(WMS)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(WMSConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new WMS();
+		b = new WMSConfig();
 		b.setDescribeUrl("http://www.cs.uvic.ca/~dzwiers/");
 		assertTrue(a.equals(b));
 
@@ -71,7 +71,7 @@ public class WMSTest extends TestCase {
 		assertTrue(!a.equals(b));
 
 		b.setDescribeUrl("http://www.cs.uvic.ca/~dzwiers/");
-		Service s = new Service();
+		ServiceConfig s = new ServiceConfig();
 		s.setName("test");
 		b.setService(s);
 		assertTrue(!a.equals(b));

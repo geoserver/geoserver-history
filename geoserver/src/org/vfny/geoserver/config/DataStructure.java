@@ -26,7 +26,7 @@ package org.vfny.geoserver.config;
  * @see java.util.Map
  * @see java.util.List
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStructure.java,v 1.1.2.1 2003/12/31 20:05:33 dmzwiers Exp $
+ * @version $Id: DataStructure.java,v 1.1.2.2 2004/01/02 17:13:27 dmzwiers Exp $
  */
 public interface DataStructure extends Cloneable {
 	
@@ -39,7 +39,7 @@ public interface DataStructure extends Cloneable {
 	 * 
 	 * @return A new DataStructure which is a copy of this DataStructure.
 	 */
-	public abstract Object clone();
+	Object clone();
 
 	/**
 	 * Implement equals.
@@ -51,5 +51,5 @@ public interface DataStructure extends Cloneable {
 	 * @param obj The object to checked for equivalence.
 	 * @return true when the objects are the same.
 	 */
-	public abstract boolean equals(Object obj);
+	boolean equals(Object obj);
 }

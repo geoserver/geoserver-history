@@ -21,7 +21,7 @@ import org.vfny.geoserver.requests.wfs.DescribeRequest;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeSuite.java,v 1.5.2.1 2003/12/31 00:36:51 dmzwiers Exp $
+ * @version $Id: DescribeSuite.java,v 1.5.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class DescribeSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
@@ -131,7 +131,7 @@ public class DescribeSuite extends RequestTestCase {
      * @throws Exception If anything goes wrong.
      */
     public void testKvp1() throws Exception {
-	String requestString = "service=WFS&typename=rail";
+	String requestString = "service=WFSConfig&typename=rail";
         //DescribeRequest request = reader.getRequest();
 
         //LOGGER.fine("KVP 1 test passed: " + baseRequest[0].equals(request));
@@ -147,7 +147,7 @@ public class DescribeSuite extends RequestTestCase {
      * @throws Exception If anything goes wrong.
      */
     public void testKvp2() throws Exception {
-        String requestString = "service=WFS&typename=rail,roads";
+        String requestString = "service=WFSConfig&typename=rail,roads";
         assertTrue(runKvpTest(baseRequest[1],requestString, true));
     }
 }

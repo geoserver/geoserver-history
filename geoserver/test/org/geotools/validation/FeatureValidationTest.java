@@ -32,8 +32,8 @@ import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
  * <p></p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: FeatureValidationTest.java,v 1.3 2003/12/16 23:11:23 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: FeatureValidationTest.java,v 1.3.2.1 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class FeatureValidationTest extends DataTestCase {
     MemoryDataStore store;
@@ -110,7 +110,7 @@ public class FeatureValidationTest extends DataTestCase {
         // the visitor
         RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
 
-        // various FeatureType tests
+        // various FeatureTypeConfig tests
         IsValidGeometryFeatureValidation isValidValidator1 = new IsValidGeometryFeatureValidation("isValidRoad",
                 "Tests to see if a road is valid", new String[] { "roads" });
         IsValidGeometryFeatureValidation isValidValidator2 = new IsValidGeometryFeatureValidation("isValidRail",

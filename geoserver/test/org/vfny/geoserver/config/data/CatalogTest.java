@@ -27,11 +27,11 @@ import org.vfny.geoserver.config.EqualsLibrary;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogTest.java,v 1.1.2.1 2003/12/31 20:05:38 dmzwiers Exp $
+ * @version $Id: CatalogTest.java,v 1.1.2.2 2004/01/02 17:13:25 dmzwiers Exp $
  */
 public class CatalogTest extends TestCase {
 
-	private Catalog a,b;
+	private CatalogConfig a,b;
 
 	/**
 	 * Constructor for CatalogTest.
@@ -40,66 +40,66 @@ public class CatalogTest extends TestCase {
 	public CatalogTest(String arg0) {
 		super(arg0);
 		
-		a = new Catalog();
-		a.addDataStore("a",new DataStore());
-		a.addDataStore("b",new DataStore());
-		a.addDataStore("c",new DataStore());
+		a = new CatalogConfig();
+		a.addDataStore("a",new DataStoreConfig());
+		a.addDataStore("b",new DataStoreConfig());
+		a.addDataStore("c",new DataStoreConfig());
 		
-		a.addFeature("a",new FeatureType());
-		a.addFeature("b",new FeatureType());
-		a.addFeature("c",new FeatureType());
+		a.addFeature("a",new FeatureTypeConfig());
+		a.addFeature("b",new FeatureTypeConfig());
+		a.addFeature("c",new FeatureTypeConfig());
 		
-		a.addNameSpace("a",new NameSpace());
-		a.addNameSpace("b",new NameSpace());
-		a.addNameSpace("c",new NameSpace());
+		a.addNameSpace("a",new NameSpaceConfig());
+		a.addNameSpace("b",new NameSpaceConfig());
+		a.addNameSpace("c",new NameSpaceConfig());
 		
 		a.getNameSpace("a").setDefault(true);
 		a.setDefaultNameSpace(a.getNameSpace("a"));
 		
-		a.addStyle("a",new Style());
-		a.addStyle("b",new Style());
-		a.addStyle("c",new Style());
+		a.addStyle("a",new StyleConfig());
+		a.addStyle("b",new StyleConfig());
+		a.addStyle("c",new StyleConfig());
 	}
 
 	/*
-	 * Test for void Catalog(Catalog)
+	 * Test for void CatalogConfig(CatalogConfig)
 	 */
 	public void testCatalogCatalog() {
-		b = new Catalog(a);
-		assertTrue("Testing Catalog(Catalog)\nRelies on Catalog.equals.",a.equals(b));
+		b = new CatalogConfig(a);
+		assertTrue("Testing CatalogConfig(CatalogConfig)\nRelies on CatalogConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for Object clone()
 	 */
 	public void testClone() {
-		b = (Catalog)a.clone();
-		assertTrue("Testing clone()\nRelies on Catalog.equals.",a.equals(b));
+		b = (CatalogConfig)a.clone();
+		assertTrue("Testing clone()\nRelies on CatalogConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new Catalog();
-		b.addDataStore("a",new DataStore());
-		b.addDataStore("b",new DataStore());
-		b.addDataStore("c",new DataStore());
+		b = new CatalogConfig();
+		b.addDataStore("a",new DataStoreConfig());
+		b.addDataStore("b",new DataStoreConfig());
+		b.addDataStore("c",new DataStoreConfig());
 		
-		b.addFeature("a",new FeatureType());
-		b.addFeature("b",new FeatureType());
-		b.addFeature("c",new FeatureType());
+		b.addFeature("a",new FeatureTypeConfig());
+		b.addFeature("b",new FeatureTypeConfig());
+		b.addFeature("c",new FeatureTypeConfig());
 		
-		b.addNameSpace("a",new NameSpace());
-		b.addNameSpace("b",new NameSpace());
-		b.addNameSpace("c",new NameSpace());
+		b.addNameSpace("a",new NameSpaceConfig());
+		b.addNameSpace("b",new NameSpaceConfig());
+		b.addNameSpace("c",new NameSpaceConfig());
 		
 		b.getNameSpace("a").setDefault(true);
 		b.setDefaultNameSpace(a.getNameSpace("a"));
 
-		b.addStyle("a",new Style());
-		b.addStyle("b",new Style());
-		b.addStyle("c",new Style());
+		b.addStyle("a",new StyleConfig());
+		b.addStyle("b",new StyleConfig());
+		b.addStyle("c",new StyleConfig());
 
 		assertTrue(EqualsLibrary.equals(a.getDataStores(),b.getDataStores()));
 		assertTrue(a.getDefaultNameSpace().equals(b.getDefaultNameSpace()));

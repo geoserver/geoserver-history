@@ -24,29 +24,29 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceTest.java,v 1.1.2.1 2003/12/31 20:05:38 dmzwiers Exp $
+ * @version $Id: NameSpaceTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class NameSpaceTest extends TestCase {
 
-	private NameSpace a,b;
+	private NameSpaceConfig a,b;
 	/**
 	 * Constructor for NameSpaceTest.
 	 * @param arg0
 	 */
 	public NameSpaceTest(String arg0) {
 		super(arg0);
-		a = new NameSpace();
+		a = new NameSpaceConfig();
 		a.setPrefix(":");
 		a.setUri("http://www.google.ca");
 	}
 
 	/*
-	 * Test for void NameSpace(NameSpace)
+	 * Test for void NameSpaceConfig(NameSpaceConfig)
 	 */
 	public void testNameSpaceNameSpace() {
 		//test requires equals.
-		b = new NameSpace(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new NameSpaceConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -54,15 +54,15 @@ public class NameSpaceTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(NameSpace)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(NameSpaceConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new NameSpace();
+		b = new NameSpaceConfig();
 		b.setPrefix(":");
 		b.setUri("http://www.google.ca");
 		assertTrue(a.equals(b));

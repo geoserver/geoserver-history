@@ -26,11 +26,11 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleTest.java,v 1.1.2.1 2003/12/31 20:05:38 dmzwiers Exp $
+ * @version $Id: StyleTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class StyleTest extends TestCase {
 
-	private Style a,b;
+	private StyleConfig a,b;
 	File f;
 	/**
 	 * Constructor for StyleTest.
@@ -38,7 +38,7 @@ public class StyleTest extends TestCase {
 	 */
 	public StyleTest(String arg0) {
 		super(arg0);
-		a = new Style();
+		a = new StyleConfig();
 		a.setId("test 1");
 		f = null;
 		try{
@@ -48,12 +48,12 @@ public class StyleTest extends TestCase {
 	}
 
 	/*
-	 * Test for void NameSpace(NameSpace)
+	 * Test for void NameSpaceConfig(NameSpaceConfig)
 	 */
 	public void testNameSpaceNameSpace() {
 		//test requires equals.
-		b = new Style(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new StyleConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -61,15 +61,15 @@ public class StyleTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(Style)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(StyleConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new Style();
+		b = new StyleConfig();
 		b.setId("test 1");
 		b.setFilename(f);
 		assertTrue(a.equals(b));

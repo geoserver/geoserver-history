@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class DataStoreConfig extends AbstractConfig {
     
@@ -78,6 +78,13 @@ public class DataStoreConfig extends AbstractConfig {
         this._abstract = getChildText(dsElem, "abstract", false);
         loadConnectionParams(getChildElement(dsElem, "connectionParams", true));
         LOGGER.info("created " + toString());
+    }
+    public DataStoreConfig(org.vfny.geoserver.config.data.DataStoreConfig config){
+    	_abstract = config.getAbstract();
+    	connectionParams = config.getConnectionParams();
+    	enabled = config.isEnabled();
+    	nameSpace = ServerConfig.getInstance().getCatalog().getNameSpace(config.getNameSpaceId());
+    	title = config.getTitle();
     }
     /**
      * Configuration based on gt2 CatalogConfig information.

@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureSuite.java,v 1.7.2.1 2003/12/31 00:36:51 dmzwiers Exp $
+ * @version $Id: FeatureSuite.java,v 1.7.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class FeatureSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
@@ -363,7 +363,7 @@ public class FeatureSuite extends RequestTestCase {
      * ***********************************************************************/
     public void test9() throws Exception {
         String testRequest = "VERSION=0.0.14&" + "REQUEST=GETFEATURE&"
-            + "SERVICE=WFS&" + "TYPENAME=rail";
+            + "SERVICE=WFSConfig&" + "TYPENAME=rail";
 
         // make base comparison objects        
         Query query = new Query();
@@ -379,7 +379,7 @@ public class FeatureSuite extends RequestTestCase {
 
     public void test10() throws Exception {
         String testRequest = "VERSION=0.0.14&" + "REQUEST=GETFEATURE&"
-            + "SERVICE=WFS&" + "PROPERTYNAME=location,id&" + "TYPENAME=rail";
+            + "SERVICE=WFSConfig&" + "PROPERTYNAME=location,id&" + "TYPENAME=rail";
 
         // make base comparison objects        
         Query query = new Query();
@@ -396,7 +396,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test11() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail&" + "FEATUREID=123";
 
         // make base comparison objects        
@@ -413,7 +413,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test12() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + 
             //           "TYPENAME=rail&" +
             "FEATUREID=rail.123,rail.456,rail.789";
@@ -443,7 +443,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test13() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&"
             + 
             //"TYPENAME=rail1,rail2,rail3&" +
@@ -481,7 +481,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test14() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail&"
             + "FILTER=<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>";
 
@@ -519,7 +519,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test15() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail,roads";
 
         // make base comparison objects        
@@ -539,7 +539,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test16() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + "PROPERTYNAME=(loc1,id1)(*)&"
             + "TYPENAME=rail,roads";
 
@@ -562,7 +562,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test17() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + 
             //"TYPENAME=rail&" +
             "FEATUREID=rail.123,rail.456";
@@ -587,7 +587,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test18() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + 
             //     "TYPENAME=rail1,rail2&" +
             "PROPERTYNAME=(loc1,id1)(loc2)&" + "FEATUREID=rail1.123,rail2.456";
@@ -616,7 +616,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test19() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail,roads&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
 
@@ -658,7 +658,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test20() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail,roads&"
             + "PROPERTYNAME=(loc1,id1,cat1)(loc2)&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
@@ -705,7 +705,7 @@ public class FeatureSuite extends RequestTestCase {
     }
 
     public void test21() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail&" + "BBOX=10,10,20,20";
 
         FeatureRequest baseRequest = new FeatureRequest();

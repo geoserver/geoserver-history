@@ -28,7 +28,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreTest.java,v 1.1.2.1 2003/12/31 20:05:38 dmzwiers Exp $
+ * @version $Id: DataStoreTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class DataStoreTest extends TestCase {
 
@@ -38,7 +38,7 @@ public class DataStoreTest extends TestCase {
 	 */
 	public DataStoreTest(String arg0) {
 		super(arg0);
-		a = new DataStore(); b = null;
+		a = new DataStoreConfig(); b = null;
 		a.setAbstract("abstract");
 		a.setEnabled(true);
 		a.setId("id");
@@ -52,15 +52,15 @@ public class DataStoreTest extends TestCase {
 	}
 
 
-	private DataStore a,b;
+	private DataStoreConfig a,b;
 
 	/*
-	 * Test for void Contact(Contact)
+	 * Test for void ContactConfig(ContactConfig)
 	 */
 	public void testDataStoreDataStore() {
 		//test requires equals.
-		b = new DataStore(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new DataStoreConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -68,15 +68,15 @@ public class DataStoreTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(DataStore)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(DataStoreConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new DataStore();
+		b = new DataStoreConfig();
 		b.setAbstract("abstract");
 		b.setEnabled(true);
 		b.setId("id");

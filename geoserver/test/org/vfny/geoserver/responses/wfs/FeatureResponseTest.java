@@ -13,7 +13,7 @@ import org.vfny.geoserver.requests.wfs.FeatureRequest;
  * This is my attempt at testing FeatureResponse using
  * normal JUnit tests.
  * <p>
- * Due to the interaction with Config.getInstance() this
+ * Due to the interaction with ModelConfig.getInstance() this
  * may not be possible.
  * </p>
  * <p>

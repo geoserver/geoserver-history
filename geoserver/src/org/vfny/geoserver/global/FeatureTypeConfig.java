@@ -4,11 +4,12 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
+import org.xml.sax.*;
+import javax.xml.parsers.*;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
@@ -21,7 +22,7 @@ import org.geotools.styling.Style;
 import org.vfny.geoserver.WmsException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
+import org.w3c.dom.*;
 import com.vividsolutions.jts.geom.Envelope;
 
 
@@ -30,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -172,6 +173,32 @@ public class FeatureTypeConfig extends BasicConfig {
         }
 
         loadDefinitionQuery(fTypeRoot);
+    }
+    
+    public FeatureTypeConfig(org.vfny.geoserver.config.data.FeatureTypeConfig config)throws ConfigurationException{
+    	super(config);
+    	//@TODO check these 2 lines
+    	try{
+			FeatureSource source = getRealFeatureSource();
+			this.bbox = source.getBounds();
+    	}catch(IOException e){
+    		throw new ConfigurationException(e.toString());
+    	}
+    	//@HACK to fix.
+    	catalog = ServerConfig.getInstance().getCatalog();
+		this.dataStore = catalog.getDataStore(config.getDataStoreId());
+		defaultStyle = config.getDefaultStyle();
+		definitionQuery = config.getDefinitionQuery();
+		latLongBBox = config.getLatLongBBox();
+		numDecimals = config.getNumDecimals();
+		pathToSchemaFile = null;
+		//@HACK to remove
+		prefix = ":";
+		schema = getSchema(config.getSchema());
+		//@HACK to fix
+		SRS = config.getSRS()+"";
+		//@HACK to remove
+		styles = catalog.getStyles();
     }
 
     private void loadDefinitionQuery(Element typeRoot)
@@ -522,6 +549,62 @@ public class FeatureTypeConfig extends BasicConfig {
 
         return filteredSchema;
     }
+    
+    private FeatureType getSchema(String schema) throws ConfigurationException{
+    	try{
+    		return getSchema(loadConfig(new StringReader(schema)));
+    	}catch(IOException e){
+    		throw new ConfigurationException("",e);
+    	}
+    }
+
+	/**
+	 * loadConfig purpose.
+	 * <p>
+	 * Parses the specified file into a DOM tree.
+	 * </p>
+	 * @param configFile The file to parse int a DOM tree.
+	 * @return the resulting DOM tree
+	 * @throws ConfigException
+	 */
+	public static Element loadConfig(Reader fis)
+		throws ConfigurationException {
+		try {
+			InputSource in = new InputSource(fis);
+			DocumentBuilderFactory dfactory = DocumentBuilderFactory
+				.newInstance();
+			//dfactory.setNamespaceAware(true);
+			/*set as optimizations and hacks for geoserver schema config files
+			 * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
+			 * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.
+			 */
+			dfactory.setNamespaceAware(false);
+			dfactory.setValidating(false);
+			dfactory.setIgnoringComments(true);
+			dfactory.setCoalescing(true);
+			dfactory.setIgnoringElementContentWhitespace(true);
+
+			Document serviceDoc = dfactory.newDocumentBuilder().parse(in);
+			Element configElem = serviceDoc.getDocumentElement();
+
+			return configElem;
+		} catch (IOException ioe) {
+			String message = "problem reading file " + "due to: "
+				+ ioe.getMessage();
+			LOGGER.warning(message);
+			throw new ConfigurationException(message, ioe);
+		} catch (ParserConfigurationException pce) {
+			String message = "trouble with parser to read org.vfny.geoserver.config.org.vfny.geoserver.config.xml, make sure class"
+				+ "path is correct, reading file " ;
+			LOGGER.warning(message);
+			throw new ConfigurationException(message, pce);
+		} catch (SAXException saxe) {
+			String message = "trouble parsing XML "  + ": "
+				+ saxe.getMessage();
+			LOGGER.warning(message);
+			throw new ConfigurationException(message, saxe);
+		}
+	}
 
     /**
      * here we must make the transformation. Crhis: do you know how to do it? I

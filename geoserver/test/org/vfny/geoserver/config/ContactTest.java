@@ -25,18 +25,18 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ContactTest.java,v 1.1.2.1 2003/12/31 20:05:32 dmzwiers Exp $
+ * @version $Id: ContactTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
  */
 public class ContactTest extends TestCase {
 
-	private Contact a,b;
+	private ContactConfig a,b;
 	/**
 	 * Constructor for ContactTest.
 	 * @param arg0
 	 */
 	public ContactTest(String arg0) {
 		super(arg0);
-		a = new Contact(); b = null;
+		a = new ContactConfig(); b = null;
 		a.setAddress("101 happy lane");
 		a.setAddressCity("victoria");
 		a.setAddressCountry("canada");
@@ -52,12 +52,12 @@ public class ContactTest extends TestCase {
 	}
 
 	/*
-	 * Test for void Contact(Contact)
+	 * Test for void ContactConfig(ContactConfig)
 	 */
 	public void testContactContact() {
 		//test requires equals.
-		b = new Contact(a);
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b = new ContactConfig(a);
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
@@ -65,15 +65,15 @@ public class ContactTest extends TestCase {
 	 */
 	public void testClone() {
 		//test requires equals.
-		b =(Contact)a.clone();
-		assertTrue("Testing Contact(Contact)\nRelies on Contact.equals.",a.equals(b));
+		b =(ContactConfig)a.clone();
+		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
 	}
 
 	/*
 	 * Test for boolean equals(Object)
 	 */
 	public void testEqualsObject() {
-		b = new Contact();
+		b = new ContactConfig();
 		b.setAddress("101 happy lane");
 		b.setAddressCity("victoria");
 		b.setAddressCountry("canada");

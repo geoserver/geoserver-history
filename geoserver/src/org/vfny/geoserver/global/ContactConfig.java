@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
  * &lt;/ContactInformation&gt;<br></code>
  *
  * @author Gabriel Roldán
- * @version $Id: ContactConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: ContactConfig.java,v 1.1.2.3 2004/01/02 17:13:26 dmzwiers Exp $
  *
  * @task REVISIT: may be it will be necessary to create a real contact
  *       hierarchy if we plan to add CatalogConfig service.
@@ -88,6 +88,20 @@ public class ContactConfig extends AbstractConfig {
         this.contactEmail = getChildText(contactInfoElement,
                 "ContactElectronicMailAddress");
     }
+	public ContactConfig(org.vfny.geoserver.config.ContactConfig config){
+		this.contactPerson = config.getContactPerson(); 
+		this.contactOrganization = config.getContactOrganization();
+		this.contactPosition = config.getContactPosition();
+		this.addressType = config.getAddressType();
+		this.address = config.getAddress();
+		this.addressCity = config.getAddressCity();
+		this.addressState = config.getAddressState();
+		this.addressPostalCode = config.getAddressPostalCode();
+		this.addressCountry = config.getAddressCountry();
+		this.contactVoice = config.getContactVoice();
+		this.contactFacsimile = config.getContactFacsimile();
+		this.contactEmail = config.getContactEmail();
+	}
     /**
      * Configure for JUnit testcases.
      * <p>
