@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * Tests the GeoSearchable and GeoSearchTask classes.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoSearchSuite.java,v 1.7 2004/01/31 00:17:51 jive Exp $
+ * @version $Id: GeoSearchSuite.java,v 1.8 2004/04/02 11:35:45 cholmesny Exp $
  */
 public class GeoSearchSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/
@@ -40,8 +40,8 @@ public class GeoSearchSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = BASE_DIR
-        + "/misc/unit/zserver";
-    private static final String INDEX_DIR = BASE_DIR + "/misc/documents/index";
+        + "/test/test-data/zserver";
+    private static final String INDEX_DIR = DATA_DIRECTORY + "/index";
     private static final String ATTRIBUTE_MAP = DATA_DIRECTORY + "/geo.map";
     private Properties testProps;
     private IRQuery testQuery;

@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Tests the GeoProfile helper methods.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoProfileSuite.java,v 1.6 2004/01/31 00:17:51 jive Exp $
+ * @version $Id: GeoProfileSuite.java,v 1.7 2004/04/02 11:35:45 cholmesny Exp $
  */
 public class GeoProfileSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/
@@ -30,7 +30,7 @@ public class GeoProfileSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/zserver";
+        + "/test/test-data/zserver";
     private static final String ATTRIBUTE_MAP = DATA_DIRECTORY + "/geo.map";
 
     /**

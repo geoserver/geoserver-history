@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Tests the NumericField number and string conversion.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ApplyXPathSuite.java,v 1.9 2004/01/31 00:17:51 jive Exp $
+ * @version $Id: ApplyXPathSuite.java,v 1.10 2004/04/02 11:35:45 cholmesny Exp $
  */
 public class ApplyXPathSuite extends TestCase {
     /** Standard logging instance */
@@ -24,7 +24,7 @@ public class ApplyXPathSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/zserver";
+        + "/test/test-data/zserver";
     private String testPath = DATA_DIRECTORY + "/test1/metadata.xml";
     private String[] results = null;
 
