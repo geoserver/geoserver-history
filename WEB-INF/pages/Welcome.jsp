@@ -17,10 +17,21 @@
 <p>
   <bean:write name="WFS" property="abstract"/>
 </p>
+<p>
+  <span class="url">
+  <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/getCapabilities">getCapabilities</a>
+  </span>
+</p>
 
 <h2>
   <bean:write name="WMS" property="title"/>
 </h2>
 <p>
   <bean:write name="WMS" property="abstract"/>
+</p>
+
+<p>
+  <span class="url">
+  <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wms/getCapabilities">getCapabilities</a>
+  </span>
 </p>
