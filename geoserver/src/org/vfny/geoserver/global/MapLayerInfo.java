@@ -23,6 +23,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
+import org.geotools.styling.Style;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageExchange;
@@ -318,4 +319,12 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		return collection;
 	}
 	
+	public Style getDefaultStyle() {
+		if( this.type == TYPE_VECTOR )
+			return this.feature.getDefaultStyle();
+		else if( this.type == TYPE_RASTER )
+			return this.coverage.getDefaultStyle();
+		
+		return null;
+	}
 }

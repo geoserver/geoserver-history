@@ -256,82 +256,7 @@ public class CoverageResponse implements Response {
 			    
 			    WritableRaster croppedRaster = (WritableRaster) result.getAsBufferedImage().getData();
 			    
-//			    Raster child =
-//			    	raster.createChild(new Double(lonIndex1).intValue(),
-//			    			new Double(latIndex1).intValue(),cnX,cnY,0,0,null
-//			    	);
-//
-//			    
-//			    WritableRaster croppedRaster = RasterFactory.createWritableRaster(
-//			    		raster.getSampleModel().createCompatibleSampleModel(cnX,cnY),
-//			    		new DataBufferDouble(cnX*cnY, raster.getNumBands()),
-//			    		null
-//			    );
-//
-//			    for( int nB = 0; nB < croppedRaster.getNumBands(); nB++) {
-//			    	for(int nC = 0; nC < cnX; nC++ ) {
-//			    		for( int nR = 0; nR < cnY; nR++ ) {
-//			    			try {
-//								croppedRaster.setSample(nC, nR, nB,
-//										raster.getSampleDouble((new Double(lonIndex1).intValue() + nC), 
-//												(new Double(latIndex1).intValue() + nR), nB)
-//								);
-//							} catch (Exception e1) {
-//								// TODO Auto-generated catch block
-//								// e1.printStackTrace();
-//								//System.out.println("" + nC + " : " + nR + " : " + nB);
-//							} 
-//			    		}
-//			    	}
-//			    }
-
-//			    DataBuffer croppedBuffer = null;
-//			    
-//			    if( raster.getDataBuffer().getDataType() == DataBuffer.TYPE_FLOAT ) {
-//				    float[] rasterData = ((DataBufferFloat) raster.getDataBuffer()).getData();
-//				    float[] croppdData = new float[cnX * cnY * raster.getNumBands()];
-//
-//				    for( int nB = 0; nB < raster.getNumBands(); nB++) {
-//					    for(int nC = 0; nC < cnX; nC++ ) {
-//					    	for( int nR = 0; nR < cnY; nR++ ) {
-//					    		//croppedRaster.setSample(nC, nR, nB, raster.getSampleFloat((new Double(lonIndex1).intValue() + nC), (new Double(latIndex1).intValue() + nR), nB)); 
-//					    		croppdData[nR*cnX + cnX*cnY*nB + nC] = 
-//					    			rasterData[(new Double(latIndex1).intValue() + nR)*nX + nX*nY*nB + (new Double(lonIndex1).intValue() + nC)];
-//					    	}
-//					    }
-//				    }
-//
-//				    croppedBuffer = new DataBufferFloat(croppdData, croppdData.length);
-//			    } else if( raster.getDataBuffer().getDataType() == DataBuffer.TYPE_DOUBLE ) {
-//				    double[] rasterData = ((DataBufferDouble) raster.getDataBuffer()).getData();
-//				    double[] croppdData = new double[cnX * cnY * raster.getNumBands()];
-//
-//				    for( int nB = 0; nB < raster.getNumBands(); nB++) {
-//					    for(int nC = 0; nC < cnX; nC++ ) {
-//					    	for( int nR = 0; nR < cnY; nR++ ) {
-//					    		//croppedRaster.setSample(nC, nR, nB, raster.getSampleFloat((new Double(lonIndex1).intValue() + nC), (new Double(latIndex1).intValue() + nR), nB)); 
-//					    		croppdData[nR*cnX + cnX*cnY*nB + nC] = 
-//					    			rasterData[(new Double(latIndex1).intValue() + nR)*nX + nX*nY*nB + (new Double(lonIndex1).intValue() + nC)];
-//					    	}
-//					    }
-//				    }
-//
-//				    croppedBuffer = new DataBufferDouble(croppdData, croppdData.length);
-//			    }
-//				    
-//			    WritableRaster croppedRaster = RasterFactory.createWritableRaster(
-//			    		raster.getSampleModel().createCompatibleSampleModel(cnX, cnY),
-//			    		croppedBuffer,
-//			    		null
-//			    ); 
-
 				ColorModel cm = coverage.getRenderedImage().getColorModel();
-//			    ColorModel cm = RasterFactory.createComponentColorModel(
-//						DataBuffer.TYPE_FLOAT,
-//						ColorSpace.getInstance(ColorSpace.CS_GRAY),//
-//						false,
-//						false,//ignored since
-//						Transparency.OPAQUE);
 				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
 						new BufferedImage(cm,croppedRaster,false,null),
 						coverage.getCoordinateReferenceSystem(),
@@ -341,12 +266,6 @@ public class CoverageResponse implements Response {
 			} else {
 				WritableRaster raster = (WritableRaster) coverage.getRenderedImage().getData();
 				ColorModel cm = coverage.getRenderedImage().getColorModel();
-//				ColorModel cm = RasterFactory.createComponentColorModel(
-//						DataBuffer.TYPE_FLOAT,
-//						ColorSpace.getInstance(ColorSpace.CS_GRAY),//
-//						false,
-//						false,//ignored since
-//						Transparency.OPAQUE);
 				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
 						new BufferedImage(cm,raster,false,null),
 						coverage.getCoordinateReferenceSystem(),

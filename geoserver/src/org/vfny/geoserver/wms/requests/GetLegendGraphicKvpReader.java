@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.geotools.feature.FeatureType;
+import org.geotools.feature.Feature;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLDParser;
@@ -23,7 +23,9 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WmsException;
 
 
@@ -80,21 +82,29 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         }
 
         String layer = getValue("LAYER");
-        FeatureTypeInfo fti;
-        FeatureType ft;
+        MapLayerInfo mli = new MapLayerInfo();
 
         try {
-            fti = glgr.getWMS().getData().getFeatureTypeInfo(layer);
-            ft = fti.getFeatureType();
+            FeatureTypeInfo fti = glgr.getWMS().getData().getFeatureTypeInfo(layer);
+            mli.setFeature(fti);
+            glgr.setLayer(mli.getFeature().getFeatureType());
         } catch (NoSuchElementException e) {
-            throw new WmsException(layer + " layer does not exists.",
-                "LayerNotDefined");
+        	try {
+        		CoverageInfo cvi = glgr.getWMS().getData().getCoverageInfo(layer);
+        		mli.setCoverage(cvi);
+        		Feature feature = mli.getCoverageToFeatures(request).features().next();
+                glgr.setLayer(feature.getFeatureType());
+        	} catch (NoSuchElementException ne) {
+                throw new WmsException(layer + " layer does not exists.",
+                	"LayerNotDefined");
+            } catch (IOException ioe) {
+                throw new WmsException(
+                    "Can't obtain the schema for the required layer.");
+			}
         } catch (IOException e) {
             throw new WmsException(
                 "Can't obtain the schema for the required layer.");
         }
-
-        glgr.setLayer(ft);
 
         String format = getValue("FORMAT");
 
@@ -106,7 +116,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
         glgr.setFormat(format);
 
-        parseOptionalParameters(glgr, fti);
+        parseOptionalParameters(glgr, mli);
 
         return glgr;
     }
@@ -122,8 +132,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * @task TODO: validate EXCEPTIONS parameter
      */
     private void parseOptionalParameters(GetLegendGraphicRequest req,
-        FeatureTypeInfo ft) throws WmsException {
-        parseStyleAndRule(req, ft);
+        MapLayerInfo mli) throws WmsException {
+        parseStyleAndRule(req, mli);
 
         // not used by now
         String featureType = getValue("FEATURETYPE");
@@ -179,7 +189,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * @throws WmsException
      */
     private void parseStyleAndRule(GetLegendGraphicRequest req,
-        FeatureTypeInfo ftype) throws WmsException {
+        MapLayerInfo layer) throws WmsException {
         String style = getValue("STYLE");
         String sld = getValue("SLD");
         String sldBody = getValue("SLD_BODY");
@@ -198,7 +208,15 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
             LOGGER.finer("taking style from STYLE parameter");
             sldStyle = req.getWMS().getData().getStyle(style);
         } else {
-            sldStyle = ftype.getDefaultStyle();
+        	
+        	// FIXME
+        	// Actually Geotools cannot handle RasterSimbolizer correctly ...
+        	
+        	if( layer.getType() == MapLayerInfo.TYPE_VECTOR ) {
+                sldStyle = layer.getDefaultStyle();
+        	} else if( layer.getType() == MapLayerInfo.TYPE_RASTER ) {
+        		sldStyle = req.getWMS().getData().getStyle("normal");
+        	}
         }
 
         req.setStyle(sldStyle);

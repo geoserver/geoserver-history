@@ -545,7 +545,7 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Name", cvStyle.getName());
             element("Title", cvStyle.getTitle());
             element("Abstract", cvStyle.getAbstract());
-            //handleLegendURL(coverage);
+            handleLegendURL(coverage);
             end("Style");
 
             end("Layer");
@@ -568,8 +568,16 @@ public class WMSCapsTransformer extends TransformerBase {
          * @task TODO: figure out how to unhack legend parameters such as
          *       WIDTH, HEIGHT and FORMAT
          */
-        protected void handleLegendURL(FeatureTypeInfo ft) {
-            LegendURL legend = ft.getLegendURL();
+        protected void handleLegendURL(Object layer) {
+            LegendURL legend = null;
+            String layerName = null;
+
+        	if( layer instanceof FeatureTypeInfo ) {
+        		legend = ((FeatureTypeInfo) layer).getLegendURL();
+        		layerName = ((FeatureTypeInfo) layer).getName();
+        	} else if( layer instanceof CoverageInfo ) {
+        		layerName = ((CoverageInfo) layer).getName();
+        	}
 
             if (legend != null) {
                 LOGGER.config("using user supplied legend URL");
@@ -628,7 +636,11 @@ public class WMSCapsTransformer extends TransformerBase {
                 onlineResource.append("&HEIGHT=");
                 onlineResource.append(GetLegendGraphicRequest.DEFAULT_HEIGHT);
                 onlineResource.append("&LAYER=");
-                onlineResource.append(ft.getName());
+                onlineResource.append(layerName);
+                if( layer instanceof CoverageInfo ) {
+                    onlineResource.append("&STYLE=");
+                    onlineResource.append("normal");
+                }
 
                 attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
                     XLINK_NS);
