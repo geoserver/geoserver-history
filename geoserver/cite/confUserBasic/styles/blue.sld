@@ -18,7 +18,6 @@ A styling layer used for the unit tests of sldstyler
     <!-- FeatureTypeStyles describe how to render different features -->
     <!-- a feature type for polygons -->
     <FeatureTypeStyle>
-      <FeatureTypeName>feature</FeatureTypeName>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
         <Filter>
