@@ -37,6 +37,7 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
 		String selectedFeatureType = form.getSelectedFeatureTypeName();
 		
 		request.getSession().setAttribute("selectedFeatureType", form.getSelectedFeatureTypeName());
+		System.out.println("request.getsession(.setAttrib(selectedFeatureType) now = "+form.getSelectedFeatureTypeName());
 		return mapping.findForward("dataConfigFeatureTypes");
 	}
 }
