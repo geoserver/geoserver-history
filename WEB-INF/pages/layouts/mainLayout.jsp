@@ -30,7 +30,7 @@
 
 <html:base/>
 </head>
-
+<tiles:importAttribute scope="request"/>
 <body>
 <table class="page">
   <tbody>
