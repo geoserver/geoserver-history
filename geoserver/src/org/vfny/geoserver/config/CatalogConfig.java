@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.4 2004/01/02 23:01:59 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.5 2004/01/07 01:47:12 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig
 /**
@@ -66,6 +66,7 @@ public class CatalogConfig extends AbstractConfig
      * (namespace prefix + PREFIX_DELIMITER + typeName)
      */
     private Map featureTypes;
+    private File typeDir;
 
     /**
      * Configure based on gt2 Catalog.
@@ -194,14 +195,22 @@ public class CatalogConfig extends AbstractConfig
     public CatalogConfig(Element root, String dataDir)
         throws ConfigurationException {
         LOGGER.info("loading catalog configuration");
+
+        String featureTypeDir = dataDir + "featureTypes";
+        File startDir = new File(featureTypeDir);
+        this.typeDir = startDir;
         loadNameSpaces(getChildElement(root, "namespaces", true));
         loadDataStores(getChildElement(root, "datastores", true));
         loadStyles(getChildElement(root, "styles", false), dataDir + "styles/");
 
-        String featureTypeDir = dataDir + "featureTypes";
-        File startDir = new File(featureTypeDir);
         this.featureTypes = new HashMap();
         loadFeatureTypes(startDir);
+    }
+
+    //HACK: this is just so shapefiles can perform resolve relative paths,
+    //all will be relative to the data/featureTypes directory.
+    File getFeatureTypeDir() {
+        return typeDir;
     }
 
     /**
@@ -753,11 +762,12 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws IOException
      *
+     * @task REVISIT: consider having this method handle the release action -
+     *       it doesn't seem like TransactionResponse should really be the one
+     *       figuring out how and when to release it.
+     *
      * @see org.geotools.data.Catalog#lockRelease(java.lang.String,
      *      org.geotools.data.Transaction)
-     * @task REVISIT: consider having this method handle the release action - 
-     *       it doesn't seem like TransactionResponse should really be the one
-     *       figuring out how and when to release it.  
      */
     public boolean lockRelease(String lockID, Transaction t)
         throws IOException {
