@@ -1,19 +1,11 @@
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.global.dto;
 
-
-
 /**
- * Data Transfer Object for GeoServer's Web Feature Service.
- * 
- * <p></p>
+ * Data Transfer Object for communication with GeoServer's Web Feature Service.
  * 
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
@@ -22,33 +14,17 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
+ * @version $Id: WFSDTO.java,v 1.1.2.2 2004/01/06 22:16:55 jive Exp $
  */
 public final class WFSDTO implements DataStructure {
-    //public static final String WFS_FOLDER = "wfs/1.0.0/";
-    //public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFS-basic.xsd";
-    //public static final String WFS_CAP_LOC = WFS_FOLDER
-    //	+ "WFS-capabilities.xsd";
-
-    /**
-     * Constant when loaded. Describes where to find the service on the server.
-     */
-    private String describeUrl;
 
     /** The service parameters for this instance. */
     private ServiceDTO service;
 
     /**
-     * WFS constructor.
-     * 
-     * <p>
-     * Creates a WFS to represent an instance with default data.
-     * </p>
-     *
-     * @see defaultSettings()
+     * WFS Data Transfer Object constructor.
      */
     public WFSDTO() {
-        describeUrl = "";
         service = new ServiceDTO();
     }
 
@@ -56,32 +32,23 @@ public final class WFSDTO implements DataStructure {
      * WFS constructor.
      * 
      * <p>
-     * Creates a copy of the WFS provided. If the WFS provided  is
-     * null then default values are used. All the data structures are cloned.
+     * Creates a copy of the WFS provided. If the WFS provided  is null then
+     * default values are used. All the data structures are cloned.
      * </p>
      *
      * @param w The WFS to copy.
      */
-    public WFSDTO(WFSDTO w) {
-        if (w == null) {
-            describeUrl = "";
-            service = new ServiceDTO();
-
-            return;
+    public WFSDTO(WFSDTO other) {
+        if (other == null) {
+            throw new NullPointerException("Data Transfer Object required");            
         }
-
-        describeUrl = w.getDescribeUrl();
-        service = (ServiceDTO) w.getService().clone();
+        service = (ServiceDTO) new ServiceDTO( other.getService() );
     }
 
     /**
-     * Implement clone.
-     * 
-     * <p>
-     * creates a clone of this object
-     * </p>
+     * Implement clone as a DeepCopy.
      *
-     * @return A copy of this WFS
+     * @return A Deep Copy of this WFSDTO
      *
      * @see java.lang.Object#clone()
      */
@@ -92,77 +59,56 @@ public final class WFSDTO implements DataStructure {
     /**
      * Implement equals.
      * 
-     * <p>
-     * recursively tests to determine if the object passed in is a copy of this
-     * object.
-     * </p>
-     *
-     * @param obj The WFS object to test.
-     *
-     * @return true when the object passed is the same as this object.
+     * @param other Other object to test for equality
+     * @return true when the object passed is equal to this object.
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object obj) {
-        WFSDTO w = (WFSDTO) obj;
-
-        return (describeUrl.equals(w.getDescribeUrl())
-        && service.equals(w.getService()));
+    public boolean equals(Object other) {
+        if( other == null || !(other instanceof WFSDTO) ){
+            return false;
+        }
+        WFSDTO dto = (WFSDTO) other;
+        return service == null ? dto.getService() == null
+                               : service.equals( dto.getService() );
     }
 
     /**
-     * getDescribeUrl purpose.
+     * Implement hashCode.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @see java.lang.Object#hashCode()
+     * 
+     * @return Service hashcode or 0
      */
-    public String getDescribeUrl() {
-        return describeUrl;
+    public int hashCode() {
+        return service == null ? 0 : service.hashCode();
     }
 
     /**
-     * getService purpose.
-     * 
+     * Provides access to the Service DTO object.
      * <p>
-     * Description ...
+     * Note well that this is the internal ServiceDTO object used
+     * by the WFSDTO - any changes made to the result of this method will
+     * change the state of this WFSDTO object.
      * </p>
-     *
-     * @return
+     * @return ServericeDTO used by this WFSDTO
      */
     public ServiceDTO getService() {
         return service;
     }
 
     /**
-     * setDescribeUrl purpose.
-     * 
+     * Set this WFS Data Tranfer Object to use the provided Service DTO.
      * <p>
-     * Description ...
+     * A copy of the provided dto is made.
      * </p>
      *
-     * @param string
+     * @param dto ServiceDTO used to configure this WFSDTO
      */
-    public void setDescribeUrl(String string) {
-        describeUrl = string;
-    }
-
-    /**
-     * setService purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param service
-     */
-    public void setService(ServiceDTO service) {
-        if (service == null) {
-            service = new ServiceDTO();
+    public void setService(ServiceDTO dto) {
+        if (dto == null) {
+            throw new NullPointerException("ServiceDTO requrired");            
         }
-
-        this.service = service;
+        service = new ServiceDTO( dto );    
     }
 }

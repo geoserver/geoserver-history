@@ -9,7 +9,7 @@ import java.util.Date;
 
 
 /**
- * Data Transfer Object for GeoServer Web Map Server information.
+ * Data Transfer Object for communication GeoServer Web Map Server information.
  * 
  * <p>
  * Information required for GeoServer to set up a Web Map Service.
@@ -22,43 +22,27 @@ import java.util.Date;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
+ * @version $Id: WMSDTO.java,v 1.1.2.2 2004/01/06 22:16:55 jive Exp $
  */
 public final class WMSDTO implements DataStructure {
-    private static final String WMS_VERSION = "1.1.1";
-
-    /** WMS spec specifies this fixed service name */
-
-    //private static final String FIXED_SERVICE_NAME = "OGC:WMS";
-    //private static final String[] EXCEPTION_FORMATS = {
-    //	"application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
-    //	"application/vnd.ogc.se_blank"
-    //};
-
-    /** when the configuration was loaded. */
-    private Date updateTime = new Date();
-	private boolean gmlPrefixing = false;
+    
     /**
-     * Constant when loaded. Describes where to find the service on the server.
+     * For the writer!
      */
-    private String describeUrl;
-
-    /** The service parameters for this instance. */
+	private boolean gmlPrefixing;
+    
+    /**
+     * The service parameters for this instance.
+     */
     private ServiceDTO service;
 
     /**
      * WMS constructor.
-     * 
-     * <p>
-     * Creates a WMS to represent an instance with default data.
-     * </p>
-     *
      * @see defaultSettings()
      */
     public WMSDTO() {
-        service = new ServiceDTO();
-        describeUrl = "";
-        updateTime = new Date();
+        service = null;
+        gmlPrefixing = false;
     }
 
     /**
@@ -71,27 +55,18 @@ public final class WMSDTO implements DataStructure {
      *
      * @param w The WMS to copy.
      */
-    public WMSDTO(WMSDTO w) {
-        if (w == null) {
-            service = new ServiceDTO();
-
-            return;
+    public WMSDTO(WMSDTO other) {
+        if (other== null) {
+            throw new NullPointerException("Data Transfer Object required");
         }
-
-        updateTime = (Date) w.getUpdateTime().clone();
-        describeUrl = w.getDescribeUrl();
-        service = (ServiceDTO) w.getService().clone();
-		gmlPrefixing = w.isGmlPrefixing();
+        service = (ServiceDTO) other.getService().clone();
+		gmlPrefixing = other.isGmlPrefixing();
     }
 
     /**
-     * Implement clone.
+     * Implement clone as a DeepCopy.
      * 
-     * <p>
-     * creates a clone of this object
-     * </p>
-     *
-     * @return A copy of this WMS
+     * @return A Deep Copy of this WMSDTO
      *
      * @see java.lang.Object#clone()
      */
@@ -113,14 +88,28 @@ public final class WMSDTO implements DataStructure {
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object obj) {
-        WMSDTO w = (WMSDTO) obj;
-
-        //time was left out as it was not relevant for most comparisons
-        return ((describeUrl == w.getDescribeUrl())
-        && service.equals(w.getService()));
+    public boolean equals(Object other) {
+        if( other == null || !(other instanceof WMSDTO) ){
+            return false;
+        }
+        WMSDTO dto = (WMSDTO) other;
+        return gmlPrefixing == dto.gmlPrefixing &&     
+               service == null ? dto.getService() == null
+                               : service.equals( dto.getService() );
     }
 
+    /**
+     * Implement hashCode.
+     * 
+     * @see java.lang.Object#hashCode()
+     * 
+     * @return Service hashcode or 0
+     */
+    public int hashCode() {
+        return (gmlPrefixing ? 1 : 0 )|
+               (service == null ? 0 : service.hashCode());
+    }
+    
     /**
      * getService purpose.
      * 
@@ -135,19 +124,6 @@ public final class WMSDTO implements DataStructure {
     }
 
     /**
-     * getUpdateTime purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    /**
      * setService purpose.
      * 
      * <p>
@@ -158,54 +134,11 @@ public final class WMSDTO implements DataStructure {
      */
     public void setService(ServiceDTO service) {
         if (service == null) {
-            service = new ServiceDTO();
+            throw new NullPointerException("ServiceDTO required");
         }
-
         this.service = service;
     }
 
-    /**
-     * setUpdateTime purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param date
-     */
-    public void setUpdateTime(Date date) {
-        if (date == null) {
-            date = new Date();
-        }
-
-        updateTime = date;
-    }
-
-    /**
-     * getDescribeUrl purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getDescribeUrl() {
-        return describeUrl;
-    }
-
-    /**
-     * setDescribeUrl purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setDescribeUrl(String string) {
-        describeUrl = string;
-    }
 	/**
 	 * isGmlPrefixing purpose.
 	 * <p>
