@@ -152,7 +152,7 @@ public class GetMapResponse implements Response {
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (this.delegate == null) {
-            throw new IllegalStateException("No request has been proceced");
+            throw new IllegalStateException("No request has been processed");
         }
 
         return this.delegate.getContentType();
