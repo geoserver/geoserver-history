@@ -23,7 +23,7 @@
   <!--These should be defined in the build.properties file, which will -->
   <!-- override these values -->      
   <property name="dir.container" value="C:\java\tomcat4\webapps"/>
-  <property name="dir.geotools" value="C:\java\mm\gt"/>
+  <property name="dir.geotools" value="C:\java\geotools\gt"/>
   <property name="version.geotools" value="2.0-B6-DEV"/>		
   <property name="dir.maven" value="C:\Documents and Settings\jgarnett\.maven\repository"/>
 
@@ -814,38 +814,38 @@ failonerror="true"/>
 -->
   <target name="geotools" depends="init"
       description="Generate geotools2 jars for quick testing (use maven for jars you commit)">    
-  	<copy
+  	<copy failonerror="false"
   	  toFile="${dir.lib}/geoapi-SNAPSHOT.jar"
   	  file="${dir.maven}/geoapi/jars/geoapi-SNAPSHOT.jar"/>
-  	<copy
+  	<copy failonerror="false"
   	  toFile="${dir.lib}/opengis-css-0.1.jar"
   	  file="${dir.maven}/opengis/jars/opengis-css-0.1.jar"/>
-  	<copy
+  	<copy failonerror="false"
   	  toFile="${dir.lib}/opengis-legacy-0.1.jar"
   	  file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar"/>
-  	<copy
+  	<copy failonerror="false"
   	  toFile="${dir.lib}/units-0.01.jar"
   	  file="${dir.maven}/units/jars/units-0.01.jar"/>
   	  	
-  	<copy
+  	<copy failonerror="false"
 	  toFile="${dir.lib}/gt2-arcsde.jar"
   	  file="${dir.geotools}/plugin/arcsde/target/arcsde-${version.geotools}.jar"/>
-  	<copy
+  	<copy failonerror="false"
       toFile="${dir.lib}/gt2-graph.jar"
   	  file="${dir.geotools}/ext/graph/target/graph-${version.geotools}.jar"/>
-  	<copy
+  	<copy failonerror="false"
       toFile="${dir.lib}/gt2-main.jar"
   	  file="${dir.geotools}/module/main/target/main-${version.geotools}.jar"/>  	
-  	<copy
+  	<copy failonerror="false"
    	  file="${dir.geotools}/plugin/oraclespatial/target/oracle-spatial-${version.geotools}.jar"
       toFile="${dir.lib}/gt2-oracle-spatial.jar"/>
-  	<copy
+  	<copy failonerror="false"
   		file="${dir.geotools}/plugin/postgis/target/postgis-${version.geotools}.jar"
   		toFile="${dir.lib}/gt2-postgis.jar"/>  	  	
-  	<copy
+  	<copy failonerror="false"
   	  file="${dir.geotools}/plugin/shapefile/target/shapefile-${version.geotools}.jar"
   	  toFile="${dir.lib}/gt2-shapefile.jar"/>  	
-  	<copy
+  	<copy failonerror="false"
   		file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar"
   		toFile="${dir.lib}/gt2-validation.jar"/> 	  	                              
   </target>
