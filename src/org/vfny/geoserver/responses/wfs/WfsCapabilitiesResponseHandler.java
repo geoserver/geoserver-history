@@ -25,7 +25,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.17 2004/02/20 19:17:49 cholmesny Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.18 2004/02/20 22:23:45 jive Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -113,10 +113,13 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleCapability(config, "GetCapabilities");
         handleCapability(config, "DescribeFeatureType");
         handleCapability(config, "GetFeature");
-        handleCapability(config, "Transaction");
-        handleCapability(config, "LockFeature");
-        handleCapability(config, "GetFeatureWithLock");
-
+        if((config.getServiceLevel() | WFSDTO.TRANSACTIONAL) != 0){
+            handleCapability(config, "Transaction");    
+        }
+        if((config.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0){        
+            handleCapability(config, "LockFeature");
+            handleCapability(config, "GetFeatureWithLock");
+        }
         endElement("Request");
         unIndent();
         endElement("Capability");
@@ -127,10 +130,6 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     private void handleCapability(WFS config, String capabilityName)
         throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
-        if("Transaction".equals(capabilityName) &&
-        	(config.getServiceLevel() | WFSDTO.TRANSACTIONAL) == 0){
-        	return;
-        }
         indent();
         startElement(capabilityName);
         indent();

@@ -61,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.12 2004/02/20 00:58:26 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.13 2004/02/20 22:23:45 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -84,13 +84,13 @@ public class TransactionResponse implements Response {
         transaction = null;
     }
 
-    public void execute(Request request) throws WfsException {
+    public void execute(Request request) throws ServiceException, WfsException {
         if (!(request instanceof TransactionRequest)) {
             throw new WfsException(
                 "bad request, expected TransactionRequest, but got " + request);
         }
         if( (request.getWFS().getServiceLevel() | WFSDTO.TRANSACTIONAL ) == 0 ){
-        	throw new WfsException("Transaction support is not enabled");
+        	throw new ServiceException("Transaction support is not enabled");
         }
         //REVISIT: this should maybe integrate with the other exception 
         //handlers better - but things that go wrong here should cause 
@@ -143,7 +143,7 @@ public class TransactionResponse implements Response {
      * @throws WfsTransactionException DOCUMENT ME!
      */
     protected void execute(TransactionRequest transactionRequest)
-        throws WfsException {
+        throws ServiceException, WfsException {
         request = transactionRequest; // preserved toWrite() handle access 
         transaction = new DefaultTransaction();
         LOGGER.fine("request is " + request);
@@ -193,6 +193,10 @@ public class TransactionResponse implements Response {
         String authorizationID = request.getLockId();
 
         if (authorizationID != null) {
+            if( (request.getWFS().getServiceLevel() | WFSDTO.SERVICE_LOCKING ) == 0 ){
+                // could we catch this during the handler, rather than during execution?
+                throw new ServiceException("Lock support is not enabled");
+            }            
             LOGGER.finer("got lockId: " + authorizationID);
 			if (!catalog.lockExists(authorizationID)) {
 						   String mesg = "Attempting to use a lockID that does not exist"
@@ -224,6 +228,10 @@ public class TransactionResponse implements Response {
             FeatureStore store = (FeatureStore) stores.get(typeName);
 
             if (element instanceof DeleteRequest) {
+                if( (request.getWFS().getServiceLevel() | WFSDTO.SERVICE_DELETE ) == 0 ){
+                    // could we catch this during the handler, rather than during execution?
+                    throw new ServiceException("Transaction Delete support is not enabled");
+                }
                 try {
                     DeleteRequest delete = (DeleteRequest) element;
                     Filter filter = delete.getFilter();
@@ -302,6 +310,10 @@ public class TransactionResponse implements Response {
             }
 
             if (element instanceof InsertRequest) {
+                if( (request.getWFS().getServiceLevel() | WFSDTO.SERVICE_INSERT ) != 0 ){
+                    // could we catch this during the handler, rather than during execution?
+                    throw new ServiceException("Transaction INSERT support is not enabled");
+                }
                 try {
                     InsertRequest insert = (InsertRequest) element;
                     FeatureCollection collection = insert.getFeatures();
@@ -324,6 +336,10 @@ public class TransactionResponse implements Response {
             }
 
             if (element instanceof UpdateRequest) {
+                if( (request.getWFS().getServiceLevel() | WFSDTO.SERVICE_UPDATE ) == 0 ){
+                    // could we catch this during the handler, rather than during execution?
+                    throw new ServiceException("Transaction Update support is not enabled");
+                }
                 try {
                     UpdateRequest update = (UpdateRequest) element;
                     Filter filter = update.getFilter();
