@@ -221,7 +221,7 @@ CREATE TABLE "Fifteen" (
 --
 
 CREATE TABLE "Locks" (
-	"boundedBy" character varying,
+	"boundedBy" geometry,
 	"id" character varying, 
 	"pointProperty" geometry,
 	CHECK ((srid("pointProperty") = 32615)),
