@@ -24,6 +24,7 @@ import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.config.TypeInfo;
 import org.vfny.geoserver.config.TypeRepository;
+import org.vfny.geoserver.config.ConfigInfo;
 
 /**
  * Handles a Get Feature request and creates a Get Feature response GML string.
@@ -50,13 +51,11 @@ public class FeatureResponse {
 	LOG.finest("get xml response called request is: " + request);
 
         TypeRepository repository = TypeRepository.getInstance();
+	ConfigInfo configInfo = ConfigInfo.getInstance();
         StringBuffer result = new StringBuffer();
 	int maxFeatures = request.getMaxFeatures();
 
-	GMLBuilder gml = new GMLBuilder(true);
-	gml.startFeatureCollection(null);
-	//HACK: different srids can go in same collection.  Doesn't matter now
-	//since we don't use the bbox for our feature collections.
+	GMLBuilder gml = new GMLBuilder(configInfo.formatOutput());
         for(int i = 0, n = request.getQueryCount(); i < n; i++) {            
 	    Query curQuery = request.getQuery(i);
 	    TypeInfo meta = repository.getType(curQuery.getTypeName());
@@ -67,6 +66,9 @@ public class FeatureResponse {
 				       getLocator(curQuery));
 	    }
 	    String srid = meta.getSrs();
+	    if (i == 0){ //HACK: different srids can go in same collection.
+		gml.startFeatureCollection(srid);
+	    } //we only make the bbox for the first one.
 	    Feature[] curFeatures = getQuery(curQuery, meta, maxFeatures);
 	    addFeatures(curFeatures, gml, meta);
             LOG.finest("ended feature");
@@ -120,6 +122,8 @@ public class FeatureResponse {
             LOG.finest("att total: " + schema.attributeTotal());
             for(int j = 0, n = schema.attributeTotal(); j < n; j++) {
                 //LOG.finest("sent attribute: " + attributes[j].toString());
+		//TODO: use attributeType.isGeometry() - get working with
+		//multiple geometries (in GMLBuilder).
 		if (j == geometryPosition) {
 		    //LOG.finest("geometry att: " + attributes[j].getClass());
 		    //LOG.finest("att name: " + attributeTypes[j].getName());
