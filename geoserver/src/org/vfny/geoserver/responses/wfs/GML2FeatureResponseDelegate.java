@@ -34,7 +34,7 @@ import javax.xml.transform.TransformerException;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.8 2004/04/05 12:05:07 cholmesny Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.9 2004/07/23 16:56:48 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
@@ -142,7 +142,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
-
+	transformer.setEncoding(request.getWFS().getGeoServer().getCharSet());
         String wfsSchemaLoc = request.getSchemaBaseUrl()
             + "wfs/1.0.0/WFS-basic.xsd";
 
@@ -154,7 +154,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         }
 
         transformer.setGmlPrefixing(request.getWFS().isGmlPrefixing());
-
+	
         FeatureLock featureLock = results.getFeatureLock();
 
         if (featureLock != null) {
