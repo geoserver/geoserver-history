@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.1.2.4 2003/11/16 19:29:39 groldan Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.1.2.5 2003/11/17 23:46:56 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -140,7 +140,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         startElement("DCPType");
         startElement("HTTP");
 
-        String baseUrl = server.getGlobalConfig().getBaseUrl();
+        String baseUrl = config.getURL();
         String url = baseUrl + capabilityName + "?";
         attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
 
