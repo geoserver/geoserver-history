@@ -43,7 +43,7 @@ import javax.imageio.stream.ImageOutputStream;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.23 2004/04/20 17:23:45 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.24 2004/06/19 00:08:37 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -97,21 +97,22 @@ public class JAIMapResponse extends GetMapDelegate {
     public List getSupportedFormats() {
         if (supportedFormats == null) {
             //LiteRenderer renderer = null;
+            String[] mimeTypes = null;
+
             try {
                 renderer = new LiteRenderer();
+                mimeTypes = ImageIO.getWriterMIMETypes();
             } catch (NoClassDefFoundError ncdfe) {
                 supportedFormats = Collections.EMPTY_LIST;
                 LOGGER.warning("could not find jai: " + ncdfe);
-
                 //this will occur if JAI is not present, so please do not
                 //delete, or we get really nasty messages on getCaps for wms.
             }
 
-            if (renderer == null) {
+            if ((renderer == null) || (mimeTypes == null)) {
                 LOGGER.info("renderer was null, so jai not found");
                 supportedFormats = Collections.EMPTY_LIST;
             } else {
-                String[] mimeTypes = ImageIO.getWriterMIMETypes();
                 supportedFormats = Arrays.asList(mimeTypes);
 
                 if (LOGGER.isLoggable(Level.CONFIG)) {
@@ -147,8 +148,9 @@ public class JAIMapResponse extends GetMapDelegate {
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {
         formatImageOutputStream(format, image, out);
-		graphic.dispose(); //I think this may have been causing problems,
-		//getting rid of it too soon.
+        graphic.dispose(); //I think this may have been causing problems,
+
+        //getting rid of it too soon.
     }
 
     /**
@@ -196,11 +198,11 @@ public class JAIMapResponse extends GetMapDelegate {
     public void abort(GeoServer gs) {
         renderer.stopRendering();
 
-		//taking out for now, Andrea says it might have problems.
-		//though this is in the abort, so do we really care if it throws
-		//an exception?  Can it mess things up more than that?
-       // if (graphic != null) {
-         //   graphic.dispose();
+        //taking out for now, Andrea says it might have problems.
+        //though this is in the abort, so do we really care if it throws
+        //an exception?  Can it mess things up more than that?
+        // if (graphic != null) {
+        //   graphic.dispose();
         //}
     }
 
