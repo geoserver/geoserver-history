@@ -55,13 +55,13 @@
     <tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.type.bbox"/>">
-          <bean:message key="label.bbox"/>:<BR>
-          <html:submit property="action">
-	          <bean:message key="config.data.calculateBoundingBox.label"/>
-	      </html:submit>
+          <bean:message key="label.bbox"/>:          
         </span>
 	  </td>
 	  <td class="datum">
+        <html:submit property="action">
+          <bean:message key="config.data.calculateBoundingBox.label"/>
+        </html:submit><br/>
         <table border=0>
           <tr>
             <td style="white-space: nowrap;">
@@ -172,6 +172,9 @@
             	<html:select property='<%= "attributes[" + index + "].type"%>'>
           			<html:options property='<%= "attributes[" + index + "].types"%>'/>
         		</html:select>
+				<html:submit property="action">
+					<bean:message key="label.change"/>
+				</html:submit>        		
             </td>
             <td><bean:message key="label.nillable"/>:<html:checkbox property='<%= "attributes[" + index + "].nillable" %>'/></td>
             <td><bean:message key="label.min"/>:<html:text size="2" property='<%= "attributes[" + index + "].minOccurs"%>'/></td>
