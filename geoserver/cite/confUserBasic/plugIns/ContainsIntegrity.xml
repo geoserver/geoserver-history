@@ -1,7 +1,0 @@
-<plugin xs:schemaLocation="pluginSchema /data/capabilities/validate/pluginSchema.xsd">
-	<name>Geometry Contains Geometry</name>
-	<description> A Geometry Contains another Geometry.</description>
-	<class>
-		org.geotools.validation.spatial.relate.ContainsIntegrity
-	</class>
-</plugin>
