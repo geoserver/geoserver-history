@@ -1,11 +1,13 @@
-<html><!-- #BeginTemplate "/Templates/main.dwt" -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
 <head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta content="Rob Hranac" name="author">
-<!-- #BeginEditable "doctitle" --> 
-<title>the GeoServer Project :: Documentation</title>
-<!-- #EndEditable --> 
-<style type="text/css">
+<!-- #BeginTemplate "/Templates/main.dwt" -->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta content="Rob Hranac" name="author">
+<!-- #BeginEditable "doctitle" -->
+  <title>the GeoServer Project :: Documentation</title>
+<!-- #EndEditable -->
+  <style type="text/css">
 <!--
 .title {  font-family: Arial, Helvetica, sans-serif; font-size: 14pt; color: #FFFFFF; font-weight: bold}
 .navigation {  font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #333366}
@@ -15,596 +17,764 @@
 .titleSection { font-family: Arial, Helvetica, sans-serif; font-size: 14pt; color: #333366; font-weight: bold }
 .modifyMe {  color: #FF0000}
 -->
-</style>
+  </style>
 </head>
-<body vlink="#333366" alink="#333366" link="#333366" text="#000000" bgcolor="#ffffff">
+<body vlink="#333366" alink="#333366" link="#333366" text="#000000"
+ bgcolor="#ffffff">
 <table cellspacing="5" width="100%" border="0">
-  <tr> 
-    <td colspan="2">
+  <tbody>
+    <tr>
+      <td colspan="2">
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr> 
-          <td><a href="http://geoserver.sourceforge.net"><img border="0" align="left" src="http://geoserver.sourceforge.net/html/images/logo.gif"></a></td>
-          <td align="right" valign="top"><font color="#333366"><strong class="header">Documentation</strong></font></td>
-        </tr>
+        <tbody>
+          <tr>
+            <td><a href="http://geoserver.sourceforge.net"><img
+ border="0" align="left"
+ src="http://geoserver.sourceforge.net/html/images/logo.gif"></a></td>
+            <td align="right" valign="top"><font color="#333366"><strong
+ class="header">Documentation</strong></font></td>
+          </tr>
+        </tbody>
       </table>
-    </td>
-  </tr>
-  <tr> 
-    <td colspan="2"> 
-      <hr size="1" noshade>
-    </td>
-  </tr>
-  <tr> 
-    <td valign="top" width="188" height="272"> 
-      <title></title>
-      <table width="100%" border="0" cellspacing="0" cellpadding="0" height="100%">
-        <tr>
-          <td valign="top"> 
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+      <hr size="1" noshade="noshade"> </td>
+    </tr>
+    <tr>
+      <td valign="top" width="188" height="272">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0"
+ height="100%">
+        <tbody>
+          <tr>
+            <td valign="top">
             <table cellspacing="5" border="0">
-              <tr> 
-                <th align="left" colspan="2" height="8"><font color="#333366"><strong class="navigation">User</strong></font></th>
-              </tr>
-              <tr> 
-                <td width="11" align="center"></td>
-                <td width="165" class="navigationSub"><font size="-1"><a href="install.htm">Install</a></font></td>
-              </tr>
-              <tr> 
-                <td width="11" align="center"></td>
-                <td width="165" class="navigationSub"><font size="-1"><a href="schemaTutorial.htm">Schema 
-                  Tutorial</a></font></td>
-              </tr>
-	      <tr> 
-                <td width="11" align="center"></td>
-                <td width="165" class="navigationSub"><font size="-1"><a href="advanced.htm">Advanced</a></font></td>
-              </tr>
+              <tbody>
+                <tr>
+                  <th align="left" colspan="2" height="8"><font
+ color="#333366"><strong class="navigation">User</strong></font></th>
+                </tr>
+                <tr>
+                  <td width="11" align="center"><br>
+                  </td>
+                  <td width="165" class="navigationSub"><font size="-1"><a
+ href="install.htm">Install</a></font></td>
+                </tr>
+                <tr>
+                  <td width="11" align="center"><br>
+                  </td>
+                  <td width="165" class="navigationSub"><font size="-1"><a
+ href="schemaTutorial.htm">Schema Tutorial</a></font></td>
+                </tr>
+                <tr>
+                  <td width="11" align="center"><br>
+                  </td>
+                  <td width="165" class="navigationSub"><font size="-1"><a
+ href="advanced.htm">Advanced</a></font></td>
+                </tr>
+              </tbody>
             </table>
             <table cellspacing="5" border="0">
-              <tr> 
-                <th align="left" colspan="2" height="8"><font color="#333366"><strong class="navigation">Developer 
-                  </strong></font></th>
-              </tr>
-              <tr> 
-                <td width="11" align="center"></td>
-                <td width="165" class="navigationSub"><font size="-1"><a href="../developer/build.htm">Build</a></font></td>
-              </tr>
-              <tr> 
-                <td width="11" align="center" height="16"></td>
-                <td width="165" height="16" class="navigationSub"><a href="../developer/testingUtility.htm">Testing 
-                  Utility</a></td>
-              </tr>
-              <tr> 
-                <td width="11" align="center" height="16"></td>
-                <td width="165" height="16" class="navigationSub"><a href="../developer/license.htm">License</a></td>
-              </tr>
-              <tr> 
-                <td width="11" align="center" height="16"></td>
-                <td width="165" height="16" class="navigationSub"><font size="-1"><a href="http://geoserver.sourceforge.net/documentation/javadocs/index.html">API</a></font></td>
-              </tr>
-              <tr> 
-                <td width="11" align="center"></td>
-                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/specs/02-058.pdf">WFS 
-                  Specification</a></font></td>
-              </tr>
+              <tbody>
+                <tr>
+                  <th align="left" colspan="2" height="8"><font
+ color="#333366"><strong class="navigation">Developer </strong></font></th>
+                </tr>
+                <tr>
+                  <td width="11" align="center"><br>
+                  </td>
+                  <td width="165" class="navigationSub"><font size="-1"><a
+ href="../developer/build.htm">Build</a></font></td>
+                </tr>
+                <tr>
+                  <td width="11" align="center" height="16"><br>
+                  </td>
+                  <td width="165" height="16" class="navigationSub"><a
+ href="../developer/testingUtility.htm">Testing Utility</a></td>
+                </tr>
+                <tr>
+                  <td width="11" align="center" height="16"><br>
+                  </td>
+                  <td width="165" height="16" class="navigationSub"><a
+ href="../developer/license.htm">License</a></td>
+                </tr>
+                <tr>
+                  <td width="11" align="center" height="16"><br>
+                  </td>
+                  <td width="165" height="16" class="navigationSub"><font
+ size="-1"><a
+ href="http://geoserver.sourceforge.net/documentation/javadocs/index.html">API</a></font></td>
+                </tr>
+                <tr>
+                  <td width="11" align="center"><br>
+                  </td>
+                  <td width="165" class="navigationSub"><font size="-1"><a
+ href="http://www.opengis.org/docs/02-058.pdf">WFS Specification</a></font></td>
+                </tr>
+              </tbody>
             </table>
-          </td>
-        </tr>
-        <tr>
-          <td valign="bottom"> 
-            <p><span class="finePrint">Java, Servlets, J2EE, EJB, JDBC, JNDI, 
-              JTA, Sun, Sun Microsystems are trademarks or registered trademarks 
-              of Sun Microsystems, Inc. in the United States and in other countries. 
-              XML, XML Schema, XSLT and related standards are trademarks or registered 
-              trademarks of MIT, INRIA, Keio or others, and a product of the World 
-              Wide Web Consortium. All other product names mentioned herein are 
-              trademarks of their respective owners.</span></p>
+            </td>
+          </tr>
+          <tr>
+            <td valign="bottom">
+            <p><span class="finePrint">Java, Servlets, J2EE, EJB, JDBC,
+JNDI, JTA, Sun, Sun Microsystems are trademarks or registered
+trademarks of Sun Microsystems, Inc. in the United States and in other
+countries. XML, XML Schema, XSLT and related standards are trademarks
+or registered trademarks of MIT, INRIA, Keio or others, and a product
+of the World Wide Web Consortium. All other product names mentioned
+herein are trademarks of their respective owners.</span></p>
             <p>&nbsp;</p>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </tbody>
       </table>
-      
-    </td>
-    <td valign="top" width="961" height="272">
-<table width="100%" cellpadding="5" cellspacing="5" border="0">
-        <tr> 
-          <td class="titleSection"><!-- #BeginEditable "Title"  -->Install 
-      Documentation <!-- #EndEditable --></td>
-        </tr>
-      </table>
-      <!-- #BeginEditable "main" --> 
+      </td>
+      <td valign="top" width="961" height="272">
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-       <a name="welcome"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Welcome</td>
-        </tr>
-        <tr> 
-          <td height="67"> 
-            <blockquote> 
-              <p>The GeoServer project is a Java implementation of the 1.0 Web 
-                Feature Server specification from the <a href="http://www.opengis.org">OpenGIS 
-                Consortium</a>. &nbsp; GeoServer aspires to be the '<a href="http://www.apache.org">Apache</a>' 
-                of OpenGIS data serving and its mission is to enable greater geographic 
-                interoperability by enforcing OpenGIS standards and lowering the 
-                barriers to entry for geographic data providers.</p>
-              <p>Before you can use this GeoServer beta, you must successfully 
-                install <a href="http://java.sun.com">Java</a>, a Java Servlet 
-                container such as <a href="http://www.caucho.com">Resin</a> or 
-                <a href="http://jakarta.apache.org">Tomcat</a>, and <a href="http://postgis.refractions.net">PostGIS</a>. 
-                This is by far the hardest part of the installation process, but 
-                the documentation to install these three components is quite good. 
-                Our testing has occurred on JDK 1.4.1, Tomcat 4.1.27, and PostGIS 
-                0.7.4 on top of Postgresql 7.2.3. To actually build geoserver you 
-		must use <a href="http://ant.apache.org">Ant</a>, an excellent build
-		tool from apache.  The latest stable versions of these components should
-                work fine.</p>
-              <p>GeoServer has an active user community that you can engage by 
-                joining the GeoServer mailing list and asking questions or making 
-                suggestions.&nbsp;&nbsp;If you create a user account at this site, 
-                you may participate in forums and vote in polls as well.</p>
+        <tbody>
+          <tr>
+            <td class="titleSection"><!-- #BeginEditable "Title"  -->Install
+Documentation<!-- #EndEditable --> </td>
+          </tr>
+        </tbody>
+      </table>
+<!-- #BeginEditable "main" --> <a name="welcome"></a>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Welcome</td>
+          </tr>
+          <tr>
+            <td height="67">
+            <blockquote>
+              <p>The GeoServer project is a Java implementation of the
+1.0 Web Feature Server specification from the <a
+ href="http://www.opengis.org">OpenGIS Consortium</a>. &nbsp; GeoServer
+aspires to be the '<a href="http://www.apache.org">Apache</a>' of
+OpenGIS data serving and its mission is to enable greater geographic
+interoperability by enforcing OpenGIS standards and lowering the
+barriers to entry for geographic data providers.</p>
+              <p>Before you can use GeoServer, you must
+successfully install <a href="http://java.sun.com">Java</a>, a Java
+Servlet container such as <a href="http://www.caucho.com">Resin</a> or
+              <a href="http://jakarta.apache.org">Tomcat</a>, and <a
+ href="http://postgis.refractions.net">PostGIS</a>. This is by far the
+hardest part of the installation process, but the documentation to
+install these three components is quite good. Our testing has occurred
+on JDK 1.4.1, Tomcat 4.1.27, and PostGIS 0.7.5 on top of Postgresql
+7.2.3. To actually build GeoServer you must use <a
+ href="http://ant.apache.org">Ant</a>, an excellent build tool from
+apache. The latest stable versions of these components should work fine.</p>
+              <p>GeoServer has an active user community that you can
+engage by joining the GeoServer <a
+ href="https://sourceforge.net/mail/?group_id=25086">mailing list</a>
+and asking questions or
+making suggestions.&nbsp;&nbsp;If you create a user account at this
+site, you may participate in forums and vote in polls as well.&nbsp; We
+also strongly encourage you to submit bugs and improvements you would
+like to see to our <a
+ href="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">tracker</a>,
+as the only way we can improve GeoServer is with your feedback.&nbsp;
+You will have to create an account to use it, but your email address
+will not be used except to notify you when your issue is worked
+on.&nbsp; <br>
+              </p>
             </blockquote>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </tbody>
       </table>
-      <table width="100%" cellpadding="5" cellspacing="5" border="0" height="90">
-       <a name="java"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Installing Java</td>
-        </tr>
-        <tr> 
-          <td height="56"> 
-            <blockquote>GeoServer is built against the <a href="http://java.sun.com/j2se/1.4/">JDK1.4</a>.&nbsp;&nbsp;If 
-              you do not have the JDK1.4 installed on your machine, you should 
-              download it from Sun and point to the root install directory with 
-              the JAVA_HOME environment variable (set JAVA_HOME = C:\j2sdk1.4.2).  Most of
-              our testing occured against JDK1.4.1.  If your not sure if you have 
-	      java, or not sure what version, type <i>java -version</i> from the
-              command line.  If the command doesn't work or if the version is less
-              than 4.1 then you'll have to download, install, and set JAVA_HOME</blockquote>
-          </td>
-        </tr>
+      <a name="java"></a>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0"
+ height="90">
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Installing Java</td>
+          </tr>
+          <tr>
+            <td height="56">
+            <blockquote>GeoServer is built against the <a
+ href="http://java.sun.com/j2se/1.4/">JDK1.4</a>.&nbsp;&nbsp;If you do
+not have the JDK1.4 installed on your machine, you should download it
+from Sun and point to the root install directory with the JAVA_HOME
+environment variable (set JAVA_HOME = C:\j2sdk1.4.2). Most of our
+testing occurred against JDK1.4.1. If your not sure if you have java,
+or not sure what version, type <i>java -version</i> from the command
+line. If the command doesn't work or if the version is less than 4.1
+then you'll have to download, install, and set JAVA_HOME</blockquote>
+            </td>
+          </tr>
+        </tbody>
       </table>
+      <a name="servlet"></a>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-       <a name="servlet"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Installing a Servlet Container</td>
-        </tr>
-        <tr> 
-          <td height="33"> 
-            <blockquote>Several good open source, free servlet containers and 
-              a bevy of commercial ones exist on the market.&nbsp;&nbsp;We recommend 
-              <a href="http://www.caucho.com">Resin</a> (open source, free to 
-              non-commercial users) or <a href="http://jakarta.apache.org/tomcat/index.html">Tomcat</a> 
-              (open source, free). &nbsp;Most GeoServer testing has occured on 
-              Tomcat, which is remarkably simple to set up and administer. If you can 
-              not get a working servlet container, then GeoServer also comes with a 
-              built in version of Tomcat.&nbsp; To use it type <i>ant test</i> from the
-              geoserver home directory.&nbsp;We 
-              recommend using a stand-alone server installation over the built in 
-              install, but it is useful for testing things out.&nbsp;It just is not
-              as configurable and flexible for a producation environment.&nbsp;The servlet
-              containers should have good documentation, so we shall say nothing
-              further here about the install.&nbsp; We do recommend sticking
-              with the latest stable versions.</blockquote>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Installing a Servlet
+Container</td>
+          </tr>
+          <tr>
+            <td height="33">
+            <blockquote>Several good open source, free servlet
+containers and a bevy of commercial ones exist on the
+market.&nbsp;&nbsp;We recommend <a href="http://www.caucho.com">Resin</a>
+(open source, free to non-commercial users) or <a
+ href="http://jakarta.apache.org/tomcat/index.html">Tomcat</a> (open
+source, free). &nbsp;Most GeoServer testing has occurred on Tomcat,
+which is remarkably simple to set up and administer. If you can not get
+a working servlet container, then GeoServer also comes with a built in
+version of Tomcat.&nbsp; To use it type <i>ant test</i> from the
+geoserver home directory.&nbsp;We recommend using a stand-alone server
+installation over the built in install, but it is useful for testing
+things out.&nbsp;It just is not as configurable and flexible for a
+production environment.&nbsp;The servlet containers should have good
+documentation, so we shall say nothing further here about the
+install.&nbsp; We do recommend sticking with the latest stable versions.</blockquote>
+            </td>
+          </tr>
+        </tbody>
       </table>
+      <a name="database"></a>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-       <a name="database"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Installing a Database</td>
-        </tr>
-        <tr> 
-          <td height="33"> 
-            <blockquote> 
-              <p>The GeoServer project currently supports the Oracle and 
-	      Shapefile data formats, but unless you already have a running
-	      Oracle installation we recommend PostGIS, an excellent extension
-	       of the venerable Postgresql relational 
-                database. &nbsp;<a href="/Templates/http;//postgis.refractions.net/%20">PostGIS</a> 
-                and <a href="http://www.postgresql.org/">Postgresql</a> are open 
-                source databases that are free to all users. Postgresql was developed 
-                at <a href="http://www.berkeley.edu">Berkeley</a> several years 
-                ago and PostGIS is a recent extension developed by the clever 
-                programmers at <a href="http://www.refractions.net/">Refractions 
-                Research</a>. </p>
-              <p>If you'd just like to get an installation up and running
-	      quickly, and don't care so much about advanced features and speed,
-	      then we recommend the Shapefile format, with installation information
-	      <a href="advanced.htm#shapefile">here</a>.  If you have an existing Oracle
-	      spatial installation, and would like to use GeoServer to serve that data as
-	      gml, then check out the install information <a href="advanced.htm#oracle">
-	      here</a>.  Be sure to fully read this installation document before trying
-	      out Oracle or Shapefile Datasources, even if you are not going to use
-	      Postgis.</p>
-              <p>Installing Postgresql and PostGIS is the most complicated 
-                part of setting up a GeoServer site and for this reason, we will 
-                supplement the documentation to do so a little here.
-		First, you should download the full source of Postgresql.&nbsp;&nbsp;Binaries, 
-                RPMs, and other packaged builds will generally not suffice because 
-                you will need to compile the PostGIS extension and JDBC bindings 
-                into Postgresql in order for it to correctly speak with GeoServer.</p>
-              <p>First, download Postgresql - we have had the best luck with version 
-                7.2.3. &nbsp;You should configure and install it, per the installation 
-                instructions. &nbsp;It should go something like this:</p>
-              <blockquote> 
-                <p>./configure<br>
-                  gmake<br>
-                  gmake install</p>
-              </blockquote>
-              <p>Configuring with java is no longer required, as we supply the jdbc
-	      jar with the installation.   &nbsp; Be sure that it 
-                 is up and running, it's best to create a database and test it using
-		 psql from the command line.  &nbsp;Then, download 
-                PostGIS. &nbsp;You should place PostGIS in your Postgresql 'contrib' 
-                directory, change to the postgresql root directory 
-		and follow the directions for installation there.</p>
-              <p>You should, of course, check to make sure that Postgresql and 
-                PostGIS are functioning correctly before you attempt to connect 
-                with then using GeoServer.&nbsp;&nbsp;After installing postgis attempt
-		to create tables with geometry columns, and insert a few 
-		features.  If you are a windows user a good page on installing
-		Postgis is avaialable 
-		<a href="http://www.gasai.com/gisapps/WindowsHowTo.html">here</a>.
- </p>
-            </blockquote>
-          </td>
-        </tr>
-      </table>
-      <table width="100%" cellpadding="5" cellspacing="5" border="0">
-       <a name="geoserver"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Installing GeoServer</td>
-        </tr>
-        <tr> 
-          <td height="2"> 
-            <blockquote> 
-              <p>If you have an existing GeoServer installation on your machine, 
-                you should backup your <i>geoserver/data/featureTypes</i> directory 
-                before placing the new <i>.war</i> file. To create the <i>.war</i>
-		file you must have a working install of Ant, available for download
-		<a href="http://ant.apache.org/bindownload.cgi">here</a>.  For it 
-		to work properly the ANT_HOME environment varialble must point to 
-                the location it was installed and ANT_HOME/bin/ant must be added to your path.
-             .  The geoserver build file can perform a number of tasks with Ant - 
-		to see the options just type <i>ant</i> from the geoserver root
-		directory.  To create geoserver.war run ant with the <i>war</i> build
-		target -  type <i>ant war</i> from the root geoserver directory. 
-		This creates the <i>geoserver.war</i> in the same directory.
-              <p>Move 'geoserver.war' from the GeoServer root directory to the 
-                war file directory of your Java Servlet container (generally named 
-                'webapps'). You may run a simple test by starting your container
-		and entering this address:</p>
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Installing a Database</td>
+          </tr>
+          <tr>
+            <td height="33">
+            <blockquote>
+              <p>The GeoServer project currently supports the Oracle
+and Shapefile data formats, but unless you already have a running
+Oracle installation we recommend PostGIS, an excellent extension of the
+venerable Postgresql relational database. &nbsp;<a
+ href="/Templates/http;//postgis.refractions.net/%20">PostGIS</a> and <a
+ href="http://www.postgresql.org/">Postgresql</a> are open source
+databases that are free to all users. Postgresql was developed at <a
+ href="http://www.berkeley.edu">Berkeley</a> several years ago and
+PostGIS is a recent extension developed by the clever programmers at <a
+ href="http://www.refractions.net/">Refractions Research</a>. </p>
+              <p>If you'd just like to get an installation up and
+running quickly, and don't care so much about advanced features and
+speed, then we recommend the Shapefile format, with installation
+information <a href="advanced.htm#shapefile">here</a>. If you have an
+existing Oracle spatial installation, and would like to use GeoServer
+to serve that data as gml, then check out the install information <a
+ href="advanced.htm#oracle"> here</a>. Be sure to fully read this
+installation document before trying out Oracle or Shapefile
+Datasources, even if you are not going to use PostGIS.</p>
+              <p>Installing Postgresql and PostGIS is the most
+complicated part of setting up a GeoServer site and for this reason, we
+will supplement the documentation to do so a little here. First, you
+should download the full source of Postgresql.&nbsp;&nbsp;Binaries,
+RPMs, and other packaged builds will generally not suffice because you
+will need to compile the PostGIS extension and JDBC bindings into
+Postgresql in order for it to correctly speak with GeoServer.</p>
+              <p>First, download Postgresql - we have had the best luck
+with version 7.2.3. &nbsp;You should configure and install it, per the
+installation instructions. &nbsp;It should go something like this:</p>
               <blockquote>
-                <p><i>http://<b>SERVER_ADDRESS</b>:</i><i><b>SERVER_PORT</b>/geoserver/GetCapabilities</i></p>
+                <p>./configure<br>
+gmake<br>
+gmake install</p>
               </blockquote>
-              <p>Note that <i><b>SERVER_ADDRESS</b></i> and <i><b>SERVER_PORT</b></i> 
-                should be replaced by your server's address and port. If GeoServer 
-                is running, you should see an XML capabilities document. If you 
-                get nothing, then you should consult your server documentation 
-                to see what has gone wrong. If a <i>geoserver</i> directory has 
-                not been created automatically by your server, then your server 
-                is probably not behaving as it should.  You can also have geoserver
-		copy <i>geoserver.war</i> directly to your servlet container with the
-		test-ext ant build target.</p>
+              <p>Configuring with java is no longer required, as we
+supply the jdbc jar with the installation. &nbsp; Be sure that it is up
+and running, it's best to create a database and test it using psql from
+the command line. &nbsp;Then, download PostGIS. &nbsp;You should place
+PostGIS in your Postgresql 'contrib' directory, change to the
+postgresql root directory and follow the directions for installation
+there.&nbsp; We highly recommend installing PostGIS 0.8 with <a
+ href="http://geos.refractions.net/">GEOS</a>, as it will greatly speed
+up spatial queries. If installing GEOS be sure to read all the
+directions for it and postgis, as you have to configure your postgresql
+installation to make use of it.</p>
+              <p>You should, of course, check to make sure that
+Postgresql and PostGIS are functioning correctly before you attempt to
+connect with then using GeoServer.&nbsp;&nbsp;After installing postgis
+attempt to create tables with geometry columns, and insert a few
+features. If you are a windows user a good page on installing Postgis
+is available <a href="http://www.gasai.com/gisapps/WindowsHowTo.html">here</a>.
+              </p>
             </blockquote>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </tbody>
       </table>
+      <a name="geoserver"></a>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-       <a name="configuration"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Configuring GeoServer</td>
-        </tr>
-        <tr> 
-          <td height="2"> 
-            <blockquote> 
-              <blockquote> 
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Installing GeoServer</td>
+          </tr>
+          <tr>
+            <td height="2">
+            <blockquote>
+              <p>If you have an existing GeoServer installation on your
+machine, you should backup your <i>geoserver/conf</i> directory before
+placing the new <i>.war</i> file. To create the <i>.war</i> file you
+must have a working install of Ant, available for download <a
+ href="http://ant.apache.org/bindownload.cgi">here</a>. For it to work
+properly the ANT_HOME environment variable must point to the location
+it was installed and ANT_HOME/bin/ant must be added to your path. . The
+geoserver build file can perform a number of tasks with Ant - to see
+the options just type <i>ant</i> from the geoserver root directory. To
+create geoserver.war run ant with the <i>war</i> build target - type <i>ant
+war</i> from the root geoserver directory. This creates the <i>geoserver.war</i>
+in the same directory. </p>
+              <p>Move 'geoserver.war' from the GeoServer root directory
+to the war file directory of your Java Servlet container (generally
+named 'webapps'). You may run a simple test by starting your container
+and entering this address:</p>
+              <blockquote>
+                <p><i>http://<b>SERVER_ADDRESS</b>:</i><i><b>SERVER_PORT</b>/geoserver/wfs/GetCapabilities</i></p>
+              </blockquote>
+              <p>Note that <i><b>SERVER_ADDRESS</b></i> and <i><b>SERVER_PORT</b></i>
+should be replaced by your server's address and port (localhost:8080
+will suffice for the default of tomcat or resin running on your local
+machine). If GeoServer is
+running, you should see an XML capabilities document. If you get
+nothing, then you should consult your server documentation to see what
+has gone wrong. If a <i>geoserver</i> directory has not been created
+automatically by your server, then your server is probably not behaving
+as it should. You can also have geoserver copy <i>geoserver.war</i>
+directly to your servlet container with the test-ext ant build target.</p>
+            </blockquote>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <a name="configuration"></a>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Configuring GeoServer</td>
+          </tr>
+          <tr>
+            <td height="2">
+            <blockquote>
+              <blockquote>
                 <p></p>
               </blockquote>
-              <p>This section assumes at least passing familiarity with XML files. 
-                &nbsp;However, if you simply follow the test file example exactly, 
-                you should be able to create a working configuration file. &nbsp;The
-		configuration.xml file resides at <i>geoserver/misc/documents/</i> You
-		may edit this file, and changes will be picked up when you run <i>ant war</i>
-		Or you may go to your root web application (webapps in tomcat or resin) 
-		directory and edit the 
-                following file: <i>geoserver/data/configuration.xml</i>. &nbsp;This 
-                sets the global configuration options for your server and is defined 
-                by a schema that exists in the root geoserver directory ast the 
-                file: <i>misc/schema/configuration.xsd</i>. &nbsp;An example <i>configuration.xml</i> 
-                is shown here:</p>
-              <blockquote> 
-                <blockquote> 
-                  <p> <i>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; 
-                    ?&gt; <br>
-                    &lt;GlobalConfiguration version=&quot;0.0.13&quot; updateSequence=&quot;0&quot;&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Name&gt;GeoServer&lt;/Name&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Title&gt;The VFNY OWS1 Basemap 
-                    Server&lt;/Title&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Abstract&gt;This is a test server. 
-                    It contains some basemap data from New York City.&lt;/Abstract&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Keywords&gt;WFS, OGS, OWS1&lt;/Keywords&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;OnlineResource&gt;http://beta.vfny.org/geoserver&lt;/OnlineResource&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Fees&gt;This is a free server.&lt;/Fees&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;AccessConstraints&gt;There are 
-                    no access constraints to this server.&lt;/AccessConstraints&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;URL&gt;http://beta.vfny.org/geoserver&lt;/URL&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Maintainer&gt;Vision for New York&lt;/Maintainer&gt; 
-                    <br>
-                    &lt;/GlobalConfiguration&gt;</i></p>
+              <p>This section assumes at least passing familiarity with
+XML files. &nbsp;However, if you simply follow the test file example
+exactly, you should be able to create a working configuration file.
+&nbsp;The configuration.xml file resides at <i>geoserver/misc/documents/</i>
+You may edit this file, and changes will be picked up when you run <i>ant
+war</i> Or you may go to your root web application (webapps in tomcat
+or resin) directory and edit the following file: <i>geoserver/data/configuration.xml</i>.
+&nbsp;This sets the global configuration options for your server and is
+defined by a schema that exists in the root geoserver directory as the
+file: <i>misc/schema/configuration.xsd</i>. &nbsp;An example <i>configuration.xml</i>
+is shown here:</p>
+              <blockquote>
+                <blockquote>
+                  <p> <i><br>
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt; <br>
+&lt;serverConfiguration&gt;<br>
+&nbsp; &lt;global&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;loggingLevel&gt;FINE&lt;/loggingLevel&gt;<br>
+&nbsp;&nbsp;&nbsp;
+&lt;URL&gt;http://localhost:8080/geoserver/&lt;/URL&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;verbose value="true"&gt;<br>
+&nbsp; &lt;/global&gt;<br>
+&nbsp; &lt;services&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;service type="WFS" enabled="true"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;name&gt;GeoServer&lt;/name&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;title&gt;The TOPP Basemap
+Server&lt;/title&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;abstract&gt;This is a test server.
+It contains some basemap data from New York City.&lt;/abstract&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;keywords&gt;&lt;keyword&gt;New
+York&lt;/keyword&gt;&lt;keyword&gt;transportation&lt;/keyword&gt;&lt;/keywords&gt;
+                  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;onlineResource&gt;http://beta.vfny.org/geoserver&lt;/onlineResource&gt;
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;maintainer&gt;Vision for New
+York&lt;/maintainer&gt; <br>
+&nbsp;&nbsp;&nbsp; &lt;/service<br>
+&nbsp; &lt;/services&gt;<br>
+&lt;/serverConfiguration&gt;</i></p>
                 </blockquote>
               </blockquote>
-              <p>You should modify the values between the tags only.&nbsp;&nbsp;All 
-                values are defined below:</p>
-              <table width="91%" border="0" cellspacing="3" cellpadding="3" align="center">
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="20"><b>Option Name</b></td>
-                  <td width="74%" height="20"><b>Description</b></td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="2"> 
-                    <p>Name</p>
-                  </td>
-                  <td width="74%" height="2">This is the name of your server and 
-                    is arbitrary.</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="6">Title</td>
-                  <td width="74%" height="6">This is the title of the server and 
-                    is arbitrary</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%">Abstract</td>
-                  <td width="74%">This is a brief description of what your server 
-                    does and is arbitrary.</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%">Keywords</td>
-                  <td width="74%">A series of comma seperated keywords, describing 
-                    the data and purpose of the server.</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%">OnlineResource</td>
-                  <td width="74%">A unique url where information for this server
-		  resides.  Even if you have no real online source it is important
-		  to put something here, for default namespace surfaces.  It is
-		  fine to use the same url as the URL element.</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%">URL</td>
-                  <td width="74%">Must be the exact base URL of the server or 
-                    client connections will fail.</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="17"> 
-                    <p>Maintainer</p>
-                  </td>
-                  <td width="74%" height="17">The name of the maintainer for this 
-                    server. </td>
-                </tr>
+              <p>You should modify the values between the tags
+only.&nbsp;&nbsp;All values are defined below:</p>
+              <table width="91%" border="0" cellspacing="3"
+ cellpadding="3" align="center">
+                <tbody>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="20"><b>Option Name</b></td>
+                    <td width="74%" height="20"><b>Description</b></td>
+                  </tr>
+                  <tr>
+                    <td style="vertical-align: top;">loggingLevel</td>
+                    <td style="vertical-align: top;">How much ouput
+should go to the logs, one of: <i><font size="2"><font
+ face="Times New Roman, serif">SEVERE, WARNING, INFO, CONFIG, FINER,
+FINEST,</font></font></i></td>
+                  </tr>
+                  <tr>
+                    <td style="vertical-align: top;">URL<br>
+                    </td>
+                    <td style="vertical-align: top;">The base url where
+geoserver will be available. If just testing on a local machine
+localhost should be fine. This is used in the capabilities document,
+which reports to clients the entry points for accessing features.</td>
+                  </tr>
+                  <tr>
+                    <td style="vertical-align: top;">verbose<br>
+                    </td>
+                    <td style="vertical-align: top;"><span
+ style="font-style: italic;">true</span> if the xml returned should
+have human readable formatting<br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="2">
+                    <p>name</p>
+                    </td>
+                    <td width="74%" height="2">This is the name of your
+server and is arbitrary.</td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="6">title</td>
+                    <td width="74%" height="6">This is the title of the
+server and is arbitrary</td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%">abstract</td>
+                    <td width="74%">This is a brief description of what
+your server does and is arbitrary.</td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%">keywords</td>
+                    <td width="74%">A series of comma seperated
+keywords, describing the data and purpose of the server.</td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%">onlineResource</td>
+                    <td width="74%">A unique url where information for
+this server resides. Even if you have no real online source it is
+important to put something here, for default namespace surfaces. It is
+fine to use the same url as the URL element.</td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="17">
+                    <p>maintainer</p>
+                    </td>
+                    <td width="74%" height="17">The name of the
+maintainer for this server. </td>
+                  </tr>
+                </tbody>
               </table>
-              <p>If you would like to correctly service 0.0.15 capabilities, you 
-                must also modify the WSDL document in the <i>geoserver/data/capabilities</i> 
-                folder. &nbsp;It is beyond the scope of this document to explain 
-                these modifications, but they are not particularly complex.</p>
-		<p>For more configuration options, check the <a href="advanced.htm">Advanced</a>
-		section.</p>
+              <p><br>
+For more configuration options, check the <a href="advanced.htm">Advanced</a>
+section.</p>
             </blockquote>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </tbody>
       </table>
+      <a name="data"></a>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-       <a name="data"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Adding Data to GeoServer</td>
-        </tr>
-        <tr> 
-          <td height="45"> 
-            <blockquote> 
-              <p>Next, you should go to the <i>misc/data/featureTypes</i> directory under
-                geoserver home, or if working on the container directly, go to your root 
-                web application directory and 
-                navigate to: <i>geoserver/data/featureTypes/</i>.&nbsp;&nbsp;For 
-                every table in your PostGIS database, you should create a directory 
-                which matches the table name <b>exactly</b>.</p>
-              <p>This directory <b>must</b> contain two files: <i>info.xml</i> 
-                and <i>schema.xml</i>. &nbsp;The <i>schema.xml</i> document is 
-                the feature type schema and its structure is defined in the GML 
-                2.1 specification. &nbsp;The <i>info.xml</i> is specific to GeoServer 
-                and <b>must</b> be correctly specified in order for you to serve 
-                a given feature type. &nbsp;The two directories currenlty there serve
-                as excellent examples, and you can copy and modify them as needed.
-                &nbsp;Here is an example <i>info.xml</i> 
-                file for a feature tupe named <i>rail</i>:</p>
-              <blockquote> 
-                <blockquote> 
-                  <p> <i>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; 
-                    ?&gt; <br>
-                    &lt;featureType xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Name&gt;rail&lt;/Name&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Title&gt;NYC Rail Centerlines&lt;/Title&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Abstract&gt;This is a simple rail 
-                    coverage from the New York City basemap.&lt;/Abstract&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;Keywords&gt;OWS1, rail, railroad, 
-                    World Trade Center, New York City&lt;/Keywords&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;SRS&gt;32118&lt;/SRS&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;LatLonBoundingBox minx=&quot;-74.27000&quot; 
-                    miny=&quot;40.50000&quot; maxx=&quot;-73.80000&quot; maxy=&quot;40.94000&quot; 
-                    /&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;DatasourceParams&gt;<br>
-                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;host&gt;localhost&lt;/host&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;port&gt;5432&lt;/port&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;database&gt;test&lt;/database&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;user&gt;test&lt;/user&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;passwd&gt;test&lt;/passwd&gt; <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table&gt;rail&lt;/table&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dbtype&gt;postgis&lt;/dbtype&gt; 
-                    <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/DatasourceParams&gt;<br>
-                   
-                    &lt;/featureType&gt;</i></p>
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Adding Data to GeoServer</td>
+          </tr>
+          <tr>
+            <td height="45">
+            <blockquote>
+              <p>Adding data to geoserver is now centralized in the <span
+ style="font-style: italic;">catalog.xml</span> file, located in <span
+ style="font-style: italic;">geoserver/conf</span>.&nbsp; This file can
+be thought of the central place for data in GeoServer.&nbsp; It
+contains the connection parameters to various datastores, as well as
+style and namespace information.&nbsp; In older versions of GeoServer
+each featureType's <span style="font-style: italic;">info.xml</span>
+file contained connection parameters, but this lead to a lot of
+duplication as many featureTypes are often contained in a single
+database.&nbsp; So now each <span style="font-style: italic;"></span>featureType
+just references a datastore defined in the <span
+ style="font-style: italic;">catalog.xml </span>file.&nbsp; The
+following sample <span style="font-style: italic;">catalog.xml</span>
+file is for a PostGIS datastore, as it is the most solid one that
+GeoServer supports.&nbsp; <a
+ href="file:///home/chris/geoserver/doc/user/advanced.htm#shapefile">Shapefile</a>,
+              <a
+ href="file:///home/chris/geoserver/doc/user/advanced.htm#oracle">Oracle</a>
+and ArcSDE datastores are also available in various degrees of
+maturity; click on the hyperlinks for more information.<br>
+              </p>
+              <blockquote>
+                <blockquote>
+                  <p> <i>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+                  <br>
+&lt;catalog&gt;<br>
+&nbsp; &lt;!-- defines the datastores, more than one is possible --&gt;<br>
+&nbsp; &lt;datastores&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;datastore id="local.postgis" enabled="true"
+namespace="topp"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;connectionParams&gt;<br>
+                  </i><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;parameter name="host" value="localhost"/&gt;</i><i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;parameter name="port"
+value="5432"/&gt;</i><i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;parameter
+name="database" value="testdb"/&gt;</i><i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;parameter name="user"
+value="testuser"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </i><i>&lt;parameter
+name="passwd" value="pass"/&gt;</i><i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;parameter name="dbtype"
+value="postgis"/&gt;</i><i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/connectionParams&gt;</i><i><br>
+&nbsp;&nbsp;&nbsp; &lt;/datastore&gt;<br>
+                  </i><i>&nbsp; &lt;/datastores&gt;<br>
+                  </i></p>
+                  <p><i>&nbsp; &lt;!--defines the namespaces, should
+have at least a default --&gt;<br>
+&nbsp; &lt;namespaces&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;namespace default="true"
+uri="http://www.openplans.org/topp" prefix="topp"/&gt;</i><i>&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &lt;namespace uri="http://www.opengis.net/cite/data"
+prefix="cdf"/&gt;</i><br>
+                  <i>&nbsp; &lt;/namespaces&gt;<br>
+&nbsp;&lt;/catalog&gt;<br>
+                  </i></p>
                 </blockquote>
               </blockquote>
-              <p>The <i>info.xml</i> file is used by GeoServer and its fields 
-                are a superset of those returned per feature type by the GetCapabilities 
-                document defined by the WFS specification.&nbsp;&nbsp;There are 
-                also additional database fileds. &nbsp;The SRS is currently the 
-                most important field and its value should correspond to an approved 
-                <a href="http://www.epsg.org">EPSG</a> code only (no GML namespace, 
-                which is added by the server intenally.</p>
-              <p> Those experienced with GeoServer may notice a few changes in this file.
-	          This is part of an effort to provide different datasources with minimal
-		  user configuration.  The DatasourceParams tag is now used, with the
-		  appropriate datasource fields.  The old tags will still work for postgis,
-		  but future additional datasources will only support the new style. The
-		  metadata tags have been removed since they were not used, though they
-		  may come back in a future version of geoserver.  The operations tag was
-		  never really used, and now will be determined by the datasource's 
-		  advertised capabilities.</p>
-              <table width="91%" border="0" cellspacing="3" cellpadding="3" align="center">
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="20"><b>Option Name</b></td>
-                  <td width="74%" height="20"><b>Description</b></td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="2"> 
-                    <p>Name</p>
-                  </td>
-                  <td width="74%" height="2">This must match the PostGIS table 
-                    name exactly.  Yes, this is repeated in tablename, but for
-		    now both are required.</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%" height="6">Title</td>
-                  <td width="74%" height="6">This is the title of the feature 
-                    type and is arbitrary</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%">Abstract</td>
-                  <td width="74%">This is a brief description of what your feature 
-                    type represents and is arbitrary.</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%">Keywords</td>
-                  <td width="74%">A series of comma seperated keywords, describing 
-                    the data in this feature type of the server.</td>
-                </tr>
-                <tr align="left" valign="top"> 
-                  <td width="12%">LatLonBoundingBox</td>
-                  <td width="74%">Must have attributes in geographic coordinates 
-                    denoting feature type bounding box.</td>
-                </tr>
-                <tr align="left" valign="top">
-                  <td width="12%" height="11">host</td>
-                  <td width="74%" height="11">Must match the PostGIS postmaster 
-                    daemon URI (serving feature type) exactly, port excluded.</td>
-                </tr>
-                <tr align="left" valign="top">
-                  <td width="12%" height="17">port</td>
-                  <td width="74%" height="17">Must match the PostGIS postmaster 
-                    daemon port (serving feature type) exactly.</td>
-                </tr>
-                <tr align="left" valign="top">
-                  <td width="12%" height="17">database</td>
-                  <td width="74%" height="17">Must match the PostGIS database 
-                    name (holding feature type) exactly.</td>
-                </tr>
-                <tr align="left" valign="top">
-                  <td width="12%" height="26">user</td>
-                  <td width="74%" height="26">Must match the PostGIS database 
-                    user (with access to feature type) exactly.</td>
-                </tr>
-                <tr align="left" valign="top">
-                  <td width="12%" height="17">passwd</td>
-                  <td width="74%" height="17">Must match the PostGIS database 
-                    user password (with access to feature type) exactly.</td>
-                </tr>
-		<tr align="left" valign="top">
-                  <td width="12%" height="17">dbtype</td>
-                  <td width="74%" height="17">Must always be postgis, as it
-		   is the only currently supported db.</td>
-                </tr>
-		<tr align="left" valign="top">
-                  <td width="12%" height="17">table</td>
-                  <td width="74%" height="17">Must match the PostGIS table 
-                    name exactly.</td>
-                </tr>
+This file defines a datastore, that featureTypes will reference using
+its <span style="font-style: italic;">local.postgis</span> id.&nbsp;
+The namespace attribute references the prefix of the <span
+ style="font-style: italic;">topp</span> namespace defined below.&nbsp;
+The enabled attribute is used to 'turn off' the datastore, featureTypes
+referencing it will not be accesible to users.&nbsp; The
+connectionParams for postgis should be as follows: <br>
+              <br>
+              <table width="91%" border="0" cellspacing="3"
+ cellpadding="3" align="center">
+                <tbody>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="20"><b>Option Name</b></td>
+                    <td width="74%" height="20"><b>Description</b></td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="2">
+                    <p>dbtype</p>
+                    </td>
+                    <td width="74%" height="2">Must be 'postgis' for a
+postgis datastore.<br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="11">host</td>
+                    <td width="74%" height="11">Must match the PostGIS
+postmaster daemon URI exactly, port excluded.&nbsp; Can be a number or
+name - localhost or 127.0.0.1 if PostGIS is on the same machine as
+geoserver, if not it can reference the ip address or host name.<br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="17">port</td>
+                    <td width="74%" height="17">Must match the PostGIS
+postmaster daemon port exactly (generally 5432). <br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="17">database</td>
+                    <td width="74%" height="17">Must match the PostGIS
+database name exactly.</td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="26">user</td>
+                    <td width="74%" height="26">Must match the PostGIS
+database user exactly.</td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="17">passwd</td>
+                    <td width="74%" height="17">Must match the PostGIS
+database user password exactly.</td>
+                  </tr>
+                </tbody>
               </table>
-              <p>The DatasourceParams child elements (host, port, database, user,
-                 passwd, dbtype and table) are specific to Postgis.  If you are using 
-                 another datasource (like <a href="advanced.htm#shapefile">Shapefile</a> 
-                 or <a href="advanced.htm#oracle">Oracle</a>), then the DatasourceParams
-		 will be different, but the rest of the fields remain the same.</p>
-              <p>The <i>schema.xml</i> file <b>must</b> also be correctly specified 
-                for GeoServer to work correctly. &nbsp;To create a schema.xml 
-                file, you must be capable of creating valid XML schemas (in general) 
-                and valid GML schemas (in particular). &nbsp;This remains a pretty 
-                obscure skill, so we have written a small tutorial on it <a href="/user/schemaTutorial.htm">here</a>. 
-                &nbsp;The 'topp--road' directory is included as a shapefile example, 
-                and 'rail' as a postgis example.  These should 
-                be deleted before you do any serving (unless you also have a tables called
-                road and rail).</p>
-              <p>&nbsp;</p>
-              <p></p>
-              <p></p>
-              <p></p>
+              <p>The namespace element should have a uri attribute,
+which just needs to be unique, it does not have to actually reference
+anything.&nbsp; Each prefix should be unique as well, as it is used
+internally by geoserver.&nbsp; The default value indicates which
+namespace will be used if a user asks for a typeName without specifying
+its namespace.&nbsp; It should generally be sufficient to just define
+one namespace, as the default, and to use it for all datastores.&nbsp;
+If two featureTypes need to be in different namespaces but share the
+same datastore then the easy solution is to just define two datastores
+with the same connectionParams but different ids and namespaces. <br>
+              </p>
+              <p>Once <span style="font-style: italic;">catalog.xml</span>
+is set up then individual featureTypes contained in the datastores need
+to be configured.&nbsp; Each featureType gets its own directory in <span
+ style="font-style: italic;">conf/featureTypes</span>.&nbsp; The
+general convention is to name each directory has the same name as the
+featureType contained in it, but it does not matter.&nbsp; If two
+featureTypes have the same name then the namespace prefix should be
+appended (as two with different names <span style="font-style: italic;">must</span>
+be in different namespaces).&nbsp; So if we have a featureType named
+rail, it should have a directory <span style="font-style: italic;">geoserver/conf/featureTypes/rail</span>.&nbsp;
+In this directory there is one required file, <span
+ style="font-style: italic;">info.xml</span>, which contains a
+reference to the datastore and meta information about the
+featureType.&nbsp; The meta information is only used in the returned
+Capabilities document, <span style="font-style: italic;">name</span>
+and <span style="font-style: italic;">datastore</span> are the only
+values that affect the running of GeoServer.&nbsp; It looks like this:<br>
+              </p>
+              <p style="margin-left: 80px;"><i>&lt;?xml version="1.0"
+encoding="UTF-8" ?&gt; <br>
+&lt;featureType datastore="local.postgis"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;rail&lt;/name&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;NYC Rail Centerlines&lt;/title&gt;
+              <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;abstract&gt;This is a simple rail coverage
+from the New York City basemap.&lt;/abstract&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;keywords&gt;rail, railroad, World
+Trade Center, New York City&lt;/keywords&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;SRS&gt;32118&lt;/SRS&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;latLonBoundingBox minx="-74.27000"
+miny="40.50000" maxx="-73.80000" maxy="40.94000" /&gt;<br>
+&lt;/featureType&gt;</i></p>
+              <p><br>
+              </p>
+              <br>
+              <table width="91%" border="0" cellspacing="3"
+ cellpadding="3" align="center">
+                <tbody>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="20"><b>Option Name</b></td>
+                    <td width="74%" height="20"><b>Description</b></td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="2">
+                    <p>datastore</p>
+                    </td>
+                    <td width="74%" height="2">Must reference a
+datastore that contains the featureType of name.<br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="11">name<br>
+                    </td>
+                    <td width="74%" height="11">The name of the
+featureType.&nbsp; Must be in the referenced datastore.&nbsp; For
+example in postgis it must refer to a table in the database of
+local.postgis.<br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="17">abstract<br>
+                    </td>
+                    <td width="74%" height="17">A brief description of
+what the featureType represents.<br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="17">keywords<br>
+                    </td>
+                    <td width="74%" height="17">Words to search that
+represent the featureType, reported in <br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="26">SRS<br>
+                    </td>
+                    <td width="74%" height="26">The <a
+ href="http://www.epsg.org">EPSG</a> code of the spatial reference
+system of this featureType.&nbsp; Other SRS's are not yet supported.<br>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td width="12%" height="17">latLonBoundingBox<br>
+                    </td>
+                    <td width="74%" height="17">The bounding box in
+LatLon coordinates.&nbsp; <br>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <p><br>
+There is also an optional file called <span style="font-style: italic;">schema.xml</span>.&nbsp;
+In past versions
+this was required, it is a fragment of the GML schema of the
+featureType, returned by DescribeFeatureType.&nbsp; As of 1.1.0 the <span
+ style="font-style: italic;">schema.xml</span> file is only needed if a
+more precise schema is needed.&nbsp; If the file is not present then
+GeoServer will automatically generate the schema for
+DescribeFeatureType responses - this should be sufficient for most
+users.<br>
+              </p>
             </blockquote>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </tbody>
       </table>
-       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-       <a name="testdata"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Obtaining test data</td>
-        </tr>
-        <tr> 
-          <td height="45"> 
-            <blockquote>The easiest way to get some postgis data to work with
-	    is to acquire shapefiles and use the shp2pgsql utility provided
-	    by Postgis.  It should be in your pgsql installation directory, 
-	    under the bin subdirectory.  As for acquiring shapefiles, the US
-	    census provides a lot of their data free of cost in the shape
-	    format, available <a href="http://www.esri.com/data/download/census2000_tigerline/index.html">here</a>.  The latest release of geoserver also
-	    includes support for using shapefiles directly, information is
-	    about this option is available in the <a href="advanced.htm">
-	    advanced</a> section.  Using the shapefiles directly sacrifices
-	    a lot of speed and flexibility, so converting them to Postgis
-	    is the recommended way, but the option is available for easier
-	    set up.
-            </blockquote>
-          </td>
-        </tr>
-      </table>
+      <a name="testdata"></a>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-       <a name="testing"></a>
-        <tr> 
-          <td bgcolor="#333366" class="title">Testing GeoServer</td>
-        </tr>
-        <tr> 
-          <td height="45"> 
-            <blockquote>This release includes an extremely simple WFS testing 
-              utility, written in Java. It uses XML files to specify a variety 
-              of inputs such as host, request, and service. &nbsp;You may use 
-              this utility to determine whether or not you have correctly installed 
-              and configured GeoServer. &nbsp;The operation of this utility is 
-              described in greater depth <a href="../developer/testingUtility.htm">here</a>. 
-              &nbsp;Happy GeoServing!<br>
-            </blockquote>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Obtaining test data</td>
+          </tr>
+          <tr>
+            <td height="45">
+            <blockquote>The easiest way to get some postgis data to
+work with is to acquire shapefiles and use the shp2pgsql utility
+provided by Postgis. It should be in your pgsql installation directory,
+under the bin subdirectory. As for acquiring shapefiles, the US census
+provides a lot of their data free of cost in the shape format,
+available <a
+ href="http://www.esri.com/data/download/census2000_tigerline/index.html">here</a>.
+The GeoServer also includes support for using
+shapefiles directly, information about this option is available in
+the <a href="advanced.htm"> advanced</a> section. Using the shapefiles
+directly sacrifices a lot of speed and flexibility, so converting them
+to Postgis is the recommended way, but the option is available for
+easier set up. </blockquote>
+            </td>
+          </tr>
+        </tbody>
       </table>
-      <!-- #EndEditable --> </td>
-  </tr>
+      <a name="testing"></a>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tbody>
+          <tr>
+            <td bgcolor="#333366" class="title">Testing GeoServer</td>
+          </tr>
+          <tr>
+            <td height="45">
+            <blockquote>Testing GeoServer can be done with any standard
+web browser.&nbsp; The easiest way is to use URL encoded Key Value
+pairs.&nbsp; If GeoServer is running on the same machine as the web
+browser, say on a tomcat instance running on port 8080, then the
+Capabilities document can be tested by just typing in the location: <span
+ style="font-style: italic;">http://localhost:8080/geoserver/wfs?request=GetCapabilities</span>,
+for example, or <span style="font-style: italic;">http://localhost:8080/geoserver/wfs?request=GetFeature&amp;typename=topp:rail.</span>&nbsp;
+The WFS specification has more information on KVP encoding.&nbsp; It is
+good for basic requests, but it falls short with more complex filters
+and transactions.&nbsp; For that we recommend using XML encoding.<br>
+              <br>
+The latest release of GeoServer also includes a great testing utility
+for XML post requests.&nbsp; It is available at <i>http://<b>SERVER_ADDRESS</b>:</i><i><b>SERVER_PORT</b>/geoserver/wfs/TestWfsPost.&nbsp;
+              </i>To use it just make sure that the request is going to
+the right location (it defaults to GetFeature), and write the XML
+request just as the WFS specification does it.&nbsp;
+              <blockquote> </blockquote>
+            </blockquote>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+<!-- #EndEditable --> </td>
+    </tr>
+  </tbody>
 </table>
-</body><!-- #EndTemplate --></html>
+<!-- #EndTemplate -->
+</body>
+</html>
