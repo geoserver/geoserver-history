@@ -2,7 +2,7 @@
 REM -----------------------------------------------------------------------------
 REM Start Script for GEOSERVER
 REM
-REM $Id: shutdown.bat,v 1.5 2004/08/23 13:42:48 cholmesny Exp $
+REM $Id: shutdown.bat,v 1.6 2004/09/08 17:32:20 cholmesny Exp $
 REM -----------------------------------------------------------------------------
 
 if "%JAVA_HOME%" == "" goto noJava1
@@ -57,4 +57,3 @@ goto end
 goto end
 
 :end
- pause
