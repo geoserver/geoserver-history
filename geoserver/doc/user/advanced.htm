@@ -266,35 +266,6 @@
          </td>
         </tr>
       </table>
-       <table width="100%" cellpadding="5" cellspacing="5" border="0">
-        <tr> 
-          <td bgcolor="#333366" class="title">Plug-in Datasources</td>
-        </tr>
-        <tr> 
-          <td height="45"> 
-            <blockquote>
-	    Geoserver 0.96 also introduces new support for plug-in datasources.
-	    Shapefiles are the first instance of the new plug-in style, but 
-	    the work done for them will make new geotools datasource much 
-	    easier to add to geoserver.  If you find a datasource in geotools
-	    that you would like to try out with geoserver then it can be
-	    used with hopefully a fairly minimal amount of tweaking.  If 
-	    implemented exactly right then the jar should be able to be
-	    added directly to the lib directory of geoserver.  The geotools
-	    datasource must implement the DataSourceFactorySpi interface for
-	    the plugin jar to work, and the jar must include a META-INF 
-	    entry for the factory implementing class.  If everything is 
-	    correct on the datasource side then the only thing to be done
-	    is to edit the info.xml file for the correct DatasourceParams, 
-	    which are the params that the DataSourceFactorySpi will look for.
-	    If there are developers interested in new datasources for geoserver,
-	    please don't hesitate to contact us, we've been working to make 
-	    the process relatively painless, with plug-in mechanisms and a new
-	    AbstractDataSource in geotools to handle much of the messy work.
-	     </blockquote>
-          </td>
-        </tr>
-      </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
         <tr> 
           <td bgcolor="#333366" class="title">z39.50 Module</td>
@@ -344,6 +315,51 @@
           </td>
         </tr>
       </table>
+       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Internationalization</td>
+        </tr>
+        <tr> 
+          <td height="45"> 
+            <blockquote>
+	    A side effect of the new plug-in datasources of the 0.96 release is
+	    that support for international encoding in postgis has been momentarily
+	    lost.  We have resolved the problem, and the fix is now in cvs and will
+	    be a part of the 0.97 release.  If you are currently using a version of
+	    GeoServer where you have modified the source code to handle international
+	    encodings you are advised to either stay with that install or to work
+	    off of cvs (look <a href="http://sourceforge.net/cvs/?group_id=25086">here</a>
+	    for info on cvs access).  There are no major architectural
+	    changes planned for 0.97, so working off
+	    of cvs should not be too much of a problem.  To use the new internationalization
+	    fixes, the easiest way is to add a &lt;CharSet&gt; element to the 
+	    configuration.xml file that contains the encoding you wish to use:<br>
+	     <i> &nbsp;&nbsp;&nbsp;&nbsp;&lt;CharSet&gt;iso-8859-1&lt;/CharSet&gt;</i><br>
+	     This will set the mime encoding and the xml header encoding to that charset, 
+	     as well as setting the charSet property for all instances of postgis.  If
+	     no CharSet element is found then the default is UTF-8 for the return xml, and
+	     no charset property for postgis.  If you would like to still return UTF-8, 
+	     but would like your database to read the correct character sets, you can just
+	     set the &lt;charset&gt; element in the info.xml file of the individual 
+	     featureType.  This allows access to different databases of different encodings.
+	     If the charset element of an info.xml file is set then it overrides the 
+	     CharSet set in the configuration.xml file.  <p>
+	     This is a new feature, and has not been tested too extensively, so we'd 
+	     appreciate user feedback on it.  If you'd like it set up differently just
+	     let us know, as the user interface has not been thought through too  
+	     extensively.  Also be aware that we currently do no checking to see if
+	     the charsets are valid.  If you set a bad charset then GeoServer will
+	     fail, miserably, with a number of strange errors.  We will work to clean
+	     that up a bit, but need to find a good way to figure out which charsets
+	     will work with the various places they are used - mime encoding, xml 
+	     declaration and the postgis jdbc driver.  Please send email to the
+	     list at geoserver-devel@lists.sourceforge.net, or to the geoserver team:
+	     geoserver@openplans.org
+	   </blockquote>
+          </td>
+        </tr>
+      </table>
+
  </td>
   </tr>
 </table>
