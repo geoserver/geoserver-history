@@ -117,7 +117,9 @@ public class WfsTransactionException extends WfsException {
 
         //right now defaults to full stack traces, should change before
         //production release.
-        response.setMessage(this.getXmlMessage(true));
+        //-It has been changed!
+        //TODO - Ideally it would have knowledge of GeoServer.isVerboseException()
+        response.setMessage(this.getXmlMessage(false));
 
         return response.getXmlResponse(null);
     }

@@ -37,7 +37,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.5 2004/02/09 23:29:46 dmzwiers Exp $
+ * @version $Id: WmsDispatcher.java,v 1.6 2004/04/22 20:31:37 emperorkefka Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
@@ -144,13 +144,16 @@ public class WmsDispatcher extends Dispatcher {
                 message = "No wms kvp request recognized.  The REQUEST parameter"
                     + " must be one of GetMap or GetCapabilities";
             }
-
-            WmsException wmse = new WmsException(message);
-            String tempResponse = wmse.getXmlResponse(false);
+            
             HttpSession session = request.getSession();
             ServletContext context = session.getServletContext();
-            response.setContentType(((GeoServer) context.getAttribute(
-                    GeoServer.WEB_CONTAINER_KEY)).getCharSet().toString());
+
+            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+            
+            WmsException wmse = new WmsException(message);
+            String tempResponse = wmse.getXmlResponse(geoServer.isVerboseExceptions());
+
+            response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);
         }
     }

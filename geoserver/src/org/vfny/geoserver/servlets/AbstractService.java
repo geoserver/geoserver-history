@@ -95,7 +95,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.19 2004/03/30 04:42:59 cholmesny Exp $
+ * @version $Id: AbstractService.java,v 1.20 2004/04/22 20:31:33 emperorkefka Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -580,7 +580,8 @@ public abstract class AbstractService extends HttpServlet {
         ServiceException se = exHandler.newServiceException(t, pre, null);
 
         //sendError(response, se);
-        send(response, se.getXmlResponse(true));
+        GeoServer geoServer = (GeoServer) this.getServletConfig().getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
+        send(response, se.getXmlResponse(geoServer.isVerboseExceptions()));
     }
 
     /**
@@ -830,7 +831,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
