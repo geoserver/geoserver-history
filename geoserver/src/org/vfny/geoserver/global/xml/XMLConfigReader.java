@@ -57,7 +57,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.3 2004/01/06 00:21:25 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -176,9 +176,9 @@ public class XMLConfigReader {
 
 			String serviceType = elem.getAttribute("type");
 
-			if ("GlobalWFS".equalsIgnoreCase(serviceType)) {
+			if ("WFS".equalsIgnoreCase(serviceType)) {
 				loadWFS(elem,geoServer);
-			} else if ("GlobalWMS".equalsIgnoreCase(serviceType)) {
+			} else if ("WMS".equalsIgnoreCase(serviceType)) {
 				loadWMS(elem,geoServer);
 			} else if ("Z39.50".equalsIgnoreCase(serviceType)) {
 				//...
@@ -890,7 +890,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.3 2004/01/06 00:21:25 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**
