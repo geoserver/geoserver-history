@@ -318,10 +318,11 @@ abstract public class RequestKvpReader {
             //  server.
             try {
                 GeometryFilter finalFilter = factory.
-                    createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-                AttributeExpression leftExpression = 
-                    factory.createAttributeExpression(null);
-                leftExpression.setAttributePath("@");
+                    createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
+                //leave as null and postgisDatSource will use default geom.
+		//AttributeExpression leftExpression = 
+                //    factory.createAttributeExpression(null);
+		//leftExpression.setAttributePath("@");
                 // Creates coordinates for the linear ring
                 Coordinate[] coords = new Coordinate[5];
                 coords[0] = new Coordinate(rawCoords[0], rawCoords[1]);
@@ -335,7 +336,7 @@ abstract public class RequestKvpReader {
                     new Polygon(outerShell, new PrecisionModel(), 0);
                 LiteralExpression rightExpression = 
                     factory.createLiteralExpression(polygon); 
-                finalFilter.addLeftGeometry(leftExpression);
+                //finalFilter.addLeftGeometry(leftExpression);
                 finalFilter.addRightGeometry(rightExpression);
                 filters.add(finalFilter);
                 return filters;
