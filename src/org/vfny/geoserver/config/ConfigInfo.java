@@ -69,8 +69,9 @@ public class ConfigInfo {
 	setTypeDir(rootDir + TYPE_DIR);
 	setCapabilitiesDir(rootDir + CAP_DIR);  
 	if (!rootDir.endsWith("/")) rootDir += "/";
-	serviceGlobal = readServiceTags(rootDir + CONFIG_FILE);
 	wfsGlobal = readWfsTags(rootDir + CONFIG_FILE);
+	serviceGlobal = readServiceTags(rootDir + CONFIG_FILE);
+
     }
     
     /** Returns root webserver application directory 
