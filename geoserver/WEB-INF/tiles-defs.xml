@@ -6,15 +6,15 @@
 
 <tiles-definitions>
 
-   	<definition name=".mainLayout" page="/WEB-INF/pages/layouts/mainLayout.jsp">
-		<put name="title" value="GeoServer"/>
+   	<definition name=".mainLayout"
+   	            page="/WEB-INF/pages/layouts/mainLayout.jsp">
+		<put name="key" value="GeoServer"/>
 		
 		<!-- SIDEBAR -->
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    		<put name="messages" value="/WEB-INF/pages/messages.jsp"/>
    		<put name="actionator"	value="/WEB-INF/pages/actionator.jsp"/>
-
+   		<put name="configActions" value="/WEB-INF/pages/blank.jsp"/>
 		<!-- BODY -->
    		<put name="locator" value="/WEB-INF/pages/locator.jsp"/>
 		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
@@ -22,227 +22,259 @@
 		<!-- CONTEXT -->
    		<put name="layer" value="application"/>
         <put name="locationForwards" value="welcome"/>
-        <put name="actionForwards" value="welcome:admin:config:validation"/>
-        
+        <put name="actionForwards" value=""/>
    	</definition>
-   	
+
    	<!-- WELCOME -->
    	<definition name="welcome" extends=".mainLayout">
+        <put name="key" value="welcome"/>
    		<put name="body" value="/WEB-INF/pages/Welcome.jsp"/>
-   		<put name="title" value="title.welcome"/>
    		<put name="layer" value="application"/>
-        <put name="locationForwards" value=""/>   		
+        <put name="locationForwards" value=""/>
+        <put name="actionForwards" value="Administration"/>
    	</definition>
 
    	<definition name="welcome.login" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/Login.jsp"/>
-   		<put name="title" value="title.login"/>
+   		<put name="key" value="welcome.login"/>
+   		<put name="body" value="/WEB-INF/pages/Login.jsp"/>   		
    		<put name="layer" value="application"/>
+        <put name="locationForwards" value=""/>        
    	</definition>
    	
    	<definition name="welcome.contact" extends=".mainLayout">
+        <put name="key" value="welcome.contact"/>
    		<put name="body" value="/WEB-INF/pages/ContactInformation.jsp"/>
-   		<put name="title" value="title.contact"/>
    		<put name="layer" value="application"/>
+        <put name="locationForwards" value="welcome"/>   		
    	</definition>
    	
    	<!-- ADMIN -->
    	<definition name="admin" extends=".mainLayout">
+   		<put name="key" value="admin"/>
    		<put name="body" value="/WEB-INF/pages/MainMenu.jsp"/>
-   		<put name="title" value="title.mainMenu"/>
-   		<put name="layer" value="application"/>
-        <put name="actionForwards" value="welcome"/>
+   		<put name="layer" value="administration"/>
+        <put name="locationForwards" value="welcome"/>
+        <put name="actionForwards" value="Configuration"/>        
    	</definition>
    	
    	<!-- CONFIG -->
    	<definition name="config" extends=".mainLayout">
+   		<put name="key" value="config"/>
    		<put name="body" value="/WEB-INF/pages/GeoServerConfiguration.jsp"/>
-   		<put name="title" value="title.geoServer.configuration"/>
-   		<put name="layer" value="administration"/>
+   		<put name="layer" value="configuration"/>
+   		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
         <put name="locationForwards" value="welcome"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition>
 
 	<!-- CONFIG VALIDATION -->   	
    	<definition name="validation" extends=".mainLayout">
+   		<put name="key" value="validation"/>
    		<put name="body" value="/WEB-INF/pages/validation/Validation.jsp"/>
-   		<put name="title" value="title.validation"/>
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition> 
    		
    	<definition name="validation.suite" extends=".mainLayout">
+   		<put name="key" value="validation.suite"/>
    		<put name="body" value="/WEB-INF/pages/validation/SelectTestSuite.jsp"/>
-   		<put name="title" value="title.testSuiteSelect"/>
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config:validation"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition>   	
 
    	<definition name="validation.test" extends=".mainLayout">
+   		<put name="key" value="validation.test"/>
    		<put name="body" value="/WEB-INF/pages/validation/SelectTest.jsp"/>
-   		<put name="title" value="title.testSelect"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:validation:suite"/>
+        <put name="locationForwards" value="welcome:config:validation:validation.suite"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition>     	
 
    	<definition name="validation.test.editor" extends=".mainLayout">
+   		<put name="key" value="validation.test.editor"/>
    		<put name="body" value="/WEB-INF/pages/validation/TestEditor.jsp"/>
-   		<put name="title" value="title.testEditor"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:validation:suite:test"/>
+        <put name="locationForwards" value="welcome:config:validation:validation.suite:validation.test"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
     </definition>
    	
    	<!-- CONFIG WFS -->
    	<definition name="config.wfs" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigMenu.jsp"/>
-		<put name="title" value="title.wfs.menu"/>
+   		<put name="key" value="config.wfs"/>
+		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigMenu.jsp"/>
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition>
 
    	<definition name="config.wfs.description" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigDescription.jsp"/>
-		<put name="title" value="title.wfs.description"/>
+   		<put name="key" value="config.wfs.description"/>
+		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigDescription.jsp"/>
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>		
    		<put name="layer" value="configuration"/>   				
-        <put name="locationForwards" value="welcome:config:wfs"/>
+        <put name="locationForwards" value="welcome:config:config.wfs"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition>
    	
    	<definition name="config.wfs.content" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigContent.jsp"/>
-		<put name="title" value="title.wfs.content"/>   		
+   		<put name="key" value="config.wfs.content"/>   		
+		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigContent.jsp"/>
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>		
    		<put name="layer" value="configuration"/>   				
-        <put name="locationForwards" value="welcome:config:wfs"/>   		
+        <put name="locationForwards" value="welcome:config:config.wfs"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	
    	<!-- CONFIG WFS -->
    	<definition name="config.wms" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/wms/WMSConfigMenu.jsp"/>
-		<put name="title" value="title.wms.menu"/>   		
+   		<put name="key" value="config.wms"/>
+		<put name="body" value="/WEB-INF/pages/wms/WMSConfigMenu.jsp"/>
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>		
    		<put name="layer" value="configuration"/>   				
         <put name="locationForwards" value="welcome:config"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
 
    	<definition name="config.wms.description" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/wms/WMSConfigDescription.jsp"/>
-		<put name="title" value="title.wms.description"/>   		
+   		<put name="key" value="config.wms.description"/>   		
+		<put name="body" value="/WEB-INF/pages/wms/WMSConfigDescription.jsp"/>
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>			
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:wms"/>
+        <put name="locationForwards" value="welcome:config:config.wms"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	   	
    	<definition name="config.wms.content" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/wms/WMSConfigContent.jsp"/>
-		<put name="title" value="title.wms.content"/>   		
+   		<put name="key" value="config.wms.content"/>   		
+		<put name="body" value="/WEB-INF/pages/wms/WMSConfigContent.jsp"/>
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>		
 		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>			
    		<put name="layer" value="configuration"/>   				
-        <put name="locationForwards" value="welcome:config:wms"/>
+        <put name="locationForwards" value="welcome:config:config.wms"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
     
     <!-- CONFIG DATA -->
    	<definition name="data" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/data/DataMenu.jsp"/>
-		<put name="title" value="title.data.menu"/>
+   		<put name="key" value="data"/>
+		<put name="body" value="/WEB-INF/pages/data/DataMenu.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
 
 	<!-- datastores -->
    	<definition name="data.stores" extends=".mainLayout">
-   		<put name="body" value="data.dataStores.main"/>
-		<put name="title" value="title.data.dataStores"/>
+   		<put name="key" value="data.stores"/>
+		<put name="body" value="data.dataStores.main"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				
         <put name="locationForwards" value="welcome:config:data"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	
    	<definition name="data.store" extends=".mainLayout">
+        <put name="key" value="data.store"/>
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresSelect.jsp"/>
+        <put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				   		
-        <put name="locationForwards" value="welcome:config:data:stores"/>
-   	</definition>   	
+        <put name="locationForwards" value="welcome:config:data:data.stores"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+   	</definition>
    	
    	<definition name="data.store.new" extends=".mainLayout">
+        <put name="key" value="data.store.new"/>
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresNew.jsp"/>
-   		<put name="layer" value="data"/>   				   		
-        <put name="locationForwards" value="welcome:config:data:stores:store"/>
+   		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
+        <put name="layer" value="data"/>   				   		
+        <put name="locationForwards" value="welcome:config:data:data.stores:data.store"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
    	<definition name="data.store.editor" extends=".mainLayout">
+        <put name="key" value="data.store.editor"/>   	
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
+   		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:stores:store"/>
-   	</definition>   	
+        <put name="locationForwards" value="welcome:config:data:data.stores:data.store"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+   	</definition>
 
-	<!-- namespaces -->   	
+	<!-- namespace -->   	
    	<definition name="data.namespace" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/data/namespaces/Select.jsp"/>
-		<put name="title" value="title.data.namespaces"/>
+   		<put name="key" value="data.namespace"/>
+		<put name="body" value="/WEB-INF/pages/data/namespaces/Select.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config:data"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
    	<definition name="data.namespace.new" extends=".mainLayout">
+   		<put name="key" value="data.namespace.new"/>
    		<put name="body" value="/WEB-INF/pages/data/namespaces/New.jsp"/>
-		<put name="title" value="title.data.namespaces"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:namespace"/>
+        <put name="locationForwards" value="welcome:config:data:data.namespace"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
    	
    	<definition name="data.namespaces.editor" extends=".mainLayout">
+   		<put name="key" value="data.namespaces.editor"/>
    		<put name="body" value="/WEB-INF/pages/data/namespaces/Editor.jsp"/>
-		<put name="title" value="title.data.namespaces"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   						
-        <put name="locationForwards" value="welcome:config:data:namespace"/>
+        <put name="locationForwards" value="welcome:config:data:data.namespace"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
 	<!-- styles -->
    	<definition name="data.styles" extends=".mainLayout">
+   		<put name="key" value="data.styles"/>
    		<put name="body" value="/WEB-INF/pages/data/DataConfigStyles.jsp"/>
-		<put name="title" value="title.data.styles"/>   
-		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
-   		<put name="layer" value="data"/>   						
-        <put name="locationForwards" value="welcome:config:data"/>   		
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
+   		<put name="layer" value="data"/>
+        <put name="locationForwards" value="welcome:config:data"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
 	<!-- featuretypes -->   	
    	<definition name="data.type" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/data/featureTypes/Select.jsp"/>
-		<put name="title" value="title.data.featureTypes"/> 
+   		<put name="key" value="data.type"/> 
+		<put name="body" value="/WEB-INF/pages/data/featureTypes/Select.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:types"/>
+        <put name="locationForwards" value="welcome:config:data"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
    	
 	<definition name="data.type.new" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/data/featureTypes/New.jsp"/>
-		<put name="title" value="title.data.featureTypes"/> 
+   		<put name="key" value="data.type.new"/> 
+		<put name="body" value="/WEB-INF/pages/data/featureTypes/New.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
-        <put name="actionForwards" value="Administration:CalculateBoundingBox"/>		
+        <put name="actionForwards" value="CalculateBoundingBox"/>		
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:types:type"/>
+        <put name="locationForwards" value="welcome:config:data:data.type"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
 
 	<definition name="data.type.editor" extends=".mainLayout">
+   		<put name="key" value="data.type.editor"/>
    		<put name="body" value="/WEB-INF/pages/data/featureTypes/Editor.jsp"/>
-		<put name="title" value="title.data.featureTypes"/> 
-		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
-        <put name="actionForwards" value="Administration:CalculateBoundingBox"/>		
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:types:type"/>
-        <put name="actionForwards" value="Administration:CalculateBoundingBox"/>        
+        <put name="locationForwards" value="welcome:config:data:data.type"/>
+        <put name="actionForwards" value="Administration:CalculateBoundingBox"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	   	
 </tiles-definitions>

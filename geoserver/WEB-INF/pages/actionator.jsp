@@ -7,10 +7,12 @@
 <table class="actions">
   <tbody>
 <%  String forwards = (String) request.getAttribute("actionForwards");
-    String[] array = forwards.split(":");
-    ActionServlet servlet =
-        (ActionServlet) application.getAttribute(Action.ACTION_SERVLET_KEY);
-    for (int index = 0; index < array.length; index ++) { %>    
+    String[] array = forwards.split(":"); 
+	
+    System.out.println("ACTIONATOR");
+    for (int index = 0; index < array.length; index ++) {
+      System.out.println( index+":"+array[index] );
+      %>
     <tr>
       <td>
         <html:form action="<%= array[index] %>">

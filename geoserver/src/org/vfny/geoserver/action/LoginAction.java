@@ -27,7 +27,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: LoginAction.java,v 1.3 2004/02/21 07:00:15 jive Exp $
+ * @version $Id: LoginAction.java,v 1.4 2004/02/24 10:03:21 jive Exp $
  */
 public class LoginAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping,
@@ -48,7 +48,7 @@ public class LoginAction extends GeoServerAction {
             request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
             String forward = (String) request.getAttribute("forward");
             if(forward == null){
-                forward = "admin";
+                forward = "welcome";
             }            
             return mapping.findForward( forward );
         }

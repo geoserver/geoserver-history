@@ -1,7 +1,6 @@
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 
-
 <html:form action="LoginSubmit">
   <table class="info">
     <tbody>
@@ -25,5 +24,4 @@
       </tr>    
     </tbody>
   </table>
-  <bean:write name="forward"/>
 </html:form>
