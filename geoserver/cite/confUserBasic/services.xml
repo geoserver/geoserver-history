@@ -9,7 +9,7 @@ Service level configuration
            WARNING, INFO, CONFIG, FINE, FINER, FINEST, in order of
            Increasing statements logged.
        -->
-     <loggingLevel>FINEST</loggingLevel>
+     <loggingLevel>WARNING</loggingLevel>
 
 
      <!-- Sets the maximum features returned by GeoServer.  This used to
@@ -18,7 +18,7 @@ Service level configuration
           data returned, so naive clients don't ask for megabytes.
        -->
      <!--     
-     <maxFeatures value="1000000"/>
+     <maxFeatures value="10000"/>
      -->
 
      <!-- Sets if the xml returned should have line feeds and indents. 
@@ -67,63 +67,36 @@ Service level configuration
     <service type="WFS" enabled="true">
       <!-- Service elements, needed for the capabilities document -->
       <!-- Title and OnlineResource are the two required -->
-      <name>TOPP GeoServer</name>
-      <title>The Open Planning Project Basemap Server</title>
-      <abstract>This is a test server.  It contains some basemap data 
-from New York City.</abstract>
+      <name>My GeoServer WFS</name>
+      <title>My GeoSpacial WFS Server</title>
+      <abstract>The GeoServer project is a full transactional <a href="http://java.sun.com/j2ee/">Java (J2EE)</a> implementation of the <a href="http://opengis.org">OpenGIS Consortium's</a> <a href="http://geoserver.sourceforge.net/html/modules.php?op=modload&name=News&file=article&sid=2&mode=&order=0"> Web Feature Server</a> specification, with an integrated WMS. It is free software, available under the <a href="http://www.gnu.org/copyleft/gpl.html">GPL 2.0 license</a>. Users who would like to access and modify their geographic data over the Internet using flexible, industry-approved standards should take a look at GeoServer or one of the existing commercial Web Feature Servers. If you are interested in a deeper examination of the importance of the GeoServer Project, you should read our <a href="http://geoserver.sourceforge.net/html/modules.php?op=modload&name=FAQ&file=index">FAQ</a>, where we have more descriptive <a href="http://geoserver.sourceforge.net/html/modules.php?op=modload&name=FAQ&file=index&myfaq=yes&id_cat=2&categories=General&parent_id=0#3">explanations</a>.</abstract>
       <keywords>
         <keyword>WFS</keyword>
-        <keyword>TEST</keyword>
-        <keyword>NY</keyword>
-        <keyword>New York</keyword>
+        <keyword>WMS</keyword>
+        <keyword>GEOSERVER</keyword>
       </keywords>
-      <onlineResource>http://www.openplans.org/</onlineResource>
+      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
       <fees>NONE</fees>
       <accessConstraints>NONE</accessConstraints>
-      <maintainer>The Open Planning Project</maintainer>
+      <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
       <gmlPrefixing value="true"/>
-      <!-- Define mappings of namespaces to featureType directory
-           prefixes.  If only one namespace is present in this file it
-           becomes the default, if more than one namespace is present
-           then one must have its 'default' attribute set to true.
-           The default namespace is that which is assigned to featureTypes
-           that have no prefix (for example, "featureTypes/rail")
-           * This field is highly recommended.  If not present
-           then a namespace will be constructed for you.
-       -->
-      <namespace default="true"
-                 uri="http://www.openplans.org/topp"
-                 prefix="topp"/>
-      <namespace uri="http://www.opengis.net/cite/data"
-                 prefix="cdf"/>
-      <namespace uri="http://www.opengis.net/cite/geometry"
-                 prefix="cgf"/>
     </service>
 
     <service type="WMS" enabled="true">
       <!-- Service elements, needed for the capabilities document -->
       <!-- Title and OnlineResource are the two required -->
-      <name>FreeWMS</name>
-      <title>The Open Planning Project Basemap Server</title>
-      <abstract>This is a test server.  It contains some basemap data 
-from New York City.</abstract>
+      <name>My GeoServer WMS</name>
+      <title>My GeoSpacial WFS Server</title>
+      <abstract>The GeoServer project is a full transactional <a href="http://java.sun.com/j2ee/">Java (J2EE)</a> implementation of the <a href="http://opengis.org">OpenGIS Consortium's</a> <a href="http://geoserver.sourceforge.net/html/modules.php?op=modload&name=News&file=article&sid=2&mode=&order=0"> Web Feature Server</a> specification, with an integrated WMS. It is free software, available under the <a href="http://www.gnu.org/copyleft/gpl.html">GPL 2.0 license</a>. Users who would like to access and modify their geographic data over the Internet using flexible, industry-approved standards should take a look at GeoServer or one of the existing commercial Web Feature Servers. If you are interested in a deeper examination of the importance of the GeoServer Project, you should read our <a href="http://geoserver.sourceforge.net/html/modules.php?op=modload&name=FAQ&file=index">FAQ</a>, where we have more descriptive <a href="http://geoserver.sourceforge.net/html/modules.php?op=modload&name=FAQ&file=index&myfaq=yes&id_cat=2&categories=General&parent_id=0#3">explanations</a>.</abstract>
       <keywords>
+        <keyword>WFS</keyword>
         <keyword>WMS</keyword>
-        <keyword>TEST</keyword>
-        <keyword>NY</keyword>
-        <keyword>New York</keyword>
+        <keyword>GEOSERVER</keyword>
       </keywords>
-      <onlineResource>http://www.openplans.org/</onlineResource>
+      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
       <fees>NONE</fees>
       <accessConstraints>NONE</accessConstraints>
-      <maintainer>The Open Planning Project</maintainer>
-      <!-- The base URL where this servlet will run.  If running locally
-           then http://localhost:8080 (or whatever port you're running 
-on)
-           should work.  If you are serving to the world then this must 
-be
-           the location where the geoserver servlets appear-->
-      <URL>http://www.openplans.org:8081/geoserver/wms</URL>
+      <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
     </service>
 
      <!-- This tag is to run the zserver module. -->
