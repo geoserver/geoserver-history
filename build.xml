@@ -545,6 +545,11 @@
         <exclude name="**/servlet.jar" />
         <exclude name="**/gt2-oracle-spatial.jar"/>
         <exclude name="**/xalan.jar" />
+        <exclude name="**/ki*.jar" />
+        <exclude name="**/a2jruntime.jar" />
+        <exclude name="**/log4j-1.2.5.jar" />
+        <exclude name="**/lucene.jar" />
+        <exclude name="**/xml-apis.jar" />
         <exclude name="*catalina*/**/*" />
       </lib>
       
