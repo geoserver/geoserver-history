@@ -2,8 +2,6 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table class="serviceTitle">
-<tr><td>
+<span class="serviceTitle">
 	<bean:write name="Config.WFS" property="title"/>
-</td></tr>
-</table>
+</span>

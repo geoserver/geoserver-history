@@ -10,6 +10,22 @@
 
 <head>
 <title><bean:message key="<%= titleKey %>"/></title>
+
+  <meta content="text/html; charset=iso-8859-1" http-equiv="content-type">
+  <meta content="text/css" http-equiv="content-style-type">
+  <meta name="description"
+        content="Template created on Feb 11, 2004">
+  <meta name="keywords"
+        content="(GeoServer) (WFS) (Web Feature Server) (GIS) (Geographic Information Systems)">
+  <meta name="author" content="Jody Garnett, Richard Gould">
+
+  <style type="text/css">
+    <!-- @import url("<html:rewrite forward='baseStyle'/>"); -->
+  </style>
+  
+  <link type="image/gif" href="gs.gif" rel="icon"><!-- mozilla --> 
+  <link href="gs.ico" rel="SHORTCUT ICON"><!-- ie -->
+
 <html:base/>
 </head>
 
@@ -56,12 +72,10 @@
 				<tbody>	
 				<tr>
             		<td class="location">
-            			<span class="location">
-            				Configuration | Data | FeatureType | Editor
-            			</span><br>
+            			<tiles:insert attribute="location"/>
             		</td>
             		<td class="login">
-            			<span class="login">login</span><br>
+            			<tiles:insert attribute="loginStatus"/>
             		</td>
           		</tr>
           		<tr>

@@ -7,10 +7,9 @@
 	org.vfny.geoserver.config.ContactConfig contact = global.getContact();
 %>
 
-<span class="contact>		<bean:message key="label.contact"/>: 
-        	<html:link forward="geoServerConfiguration">
-       
-			<%= contact.getContactPerson() %>
-	   	
-         	</html:link>
-         	</span>
+<span class="contact">		
+	<bean:message key="label.contact"/>: 
+    <html:link forward="geoServerConfiguration">
+    	<%= (contact.getContactPerson() != null && !contact.getContactPerson().equals("")) ? contact.getContactPerson() : "None" %>
+	</html:link>
+</span>
