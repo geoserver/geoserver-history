@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.7 2003/09/15 18:27:06 cholmesny Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.7.2.1 2003/10/30 21:50:20 cholmesny Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -220,7 +220,6 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             } catch (org.geotools.feature.IllegalAttributeException ife) {
                 throw new RuntimeException("problem creating feature", ife);
             }
-
             insideFeature = false;
 
             //HACK: the local name stuff should be handled in geotools.
@@ -233,6 +232,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             if ((tempValue != null) && !tempValue.toString().trim().equals("")) {
                 attributes.add(tempValue);
                 attributeNames.add(attName);
+		tempValue = null;
             }
 
             int index = attName.lastIndexOf('/');
