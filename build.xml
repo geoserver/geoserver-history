@@ -27,6 +27,7 @@
   <!-- secondary directories -->
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
   <property name="dir.data" value="${dir.conf}"/>
+  <property name="dir.styles" value="${dir.misc}/wms/styles"/>
   <property name="dir.testsJar" 
   value="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
   <property name="dir.testApp" value="${dir.server}/webapps/ROOT/WEB-INF"/>
@@ -351,6 +352,13 @@
     <copy todir="${dir.server}/webapps/ROOT/data/featureTypes">
     <fileset dir="${dir.data}/featureTypes"/>
     </copy>
+     
+      <mkdir dir="${dir.server}/webapps/ROOT/data/styles"/>
+    <copy todir="${dir.server}/webapps/ROOT/data/styles">
+      <fileset dir="${dir.styles}">
+        <include name="**"/>
+      </fileset>
+    </copy>
 
     <!-- stops a running server -->
     <java classname="org.vfny.geoserver.EmbeddedTomcat" 
@@ -506,7 +514,7 @@
 
      <mkdir dir="${basedir}/data/styles"/>
     <copy todir="${basedir}/data/styles">
-      <fileset dir="${dir.misc}/wms/styles">
+      <fileset dir="${dir.styles}">
         <include name="**"/>
       </fileset>
     </copy>
@@ -542,10 +550,10 @@
         <include name="catalog.xml"/>
       </webinf>
       
-      <webinf dir="${dir.data}"/>
+      <!--webinf dir="${dir.data}"/>
       <webinf dir="${dir.misc}/documents">
         <include name="configuration.xml"/>
-      </webinf>
+      </webinf-->
 
       <!-- libraries -->
       <lib dir="${dir.lib}">
