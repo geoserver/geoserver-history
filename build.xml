@@ -74,8 +74,8 @@
   
   <property name="test.name" value="config.ConfigSuite"/>
   <property name="jetty.run"  value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml"/>
-  <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}/server" />
-
+  <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}" />
+  <property name="GEOSERVER_HOME" value="${basedir}"/> 
   <!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
   <!--available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
   <available file="${basedir}/server/geoserver" type="dir" property="server.built"/-->
@@ -175,13 +175,15 @@
     <copy todir="${dir.build}">
       <fileset dir="${dir.src}">
         <include name="**/*.properties"/>
+        <include name="**/*.config"/>
       </fileset>
     </copy>
     <jar jarfile="${dir.lib}/geoserver.jar">
       <fileset dir="${dir.build}">
         <exclude name="geoserver.war"/>
         <exclude name="**/servlets/*" />
-        <exclude name="**/EmbeddedTomcat.class" />
+        <exclude name="**/mortbay/**" />
+        <exclude name="**/zserver/**" />
       </fileset>
     </jar>
   </target>
@@ -192,7 +194,7 @@
       <fileset dir="${dir.build}" />
     </delete>
     <delete file="${dir.lib}/geoserver.jar" failonerror="true"/>
-    <antcall target="all"/>
+    <!--antcall target="all"/-->
   </target>
 
 <!-- ====================================================================== -->
@@ -353,6 +355,15 @@
     </java>
   </target>
 
+  <target name="stop" depends="init">
+    <java classname="org.mortbay.stop.Main" fork="yes">
+       <classpath>
+         <pathelement location="${dir.bin}/stop.jar"/>
+       </classpath>
+    </java>
+  
+  </target>
+
 <!-- EXTERNAL TEST -->
   <target name="test-ext" depends="init, war"
       description="deploys application to the test server located at dir.container">  
@@ -487,7 +498,8 @@
         <include name="**/servlets/**" />
         <include name="**/*.properties" />
         <exclude name="**/servlets/utilities/**" />
-        <exclude name="**/EmbeddedTomcat.class" />
+	<exclude name="**/mortbay/**" />
+	<exclude name="**/zserver/**" />
       </classes>
 
 	  <classes dir="${dir.webinf}">
@@ -543,7 +555,34 @@
     <delete dir="${basedir}/data" failonerror="true"/>
   </target>
 
-<!-- DOCUMENTATION -->
+  <!-- BUILD JARS FOR SCRIPTS -->  
+  <target name="script-jars" depends="start.jar, stop.jar"/>
+
+  <!-- START JAR -->
+  <target name="start.jar" depends="all"
+      description="generates the start.jar to run the start-up scripts">   
+    <jar jarfile="${dir.bin}/start.jar" basedir="${dir.build}">
+      <manifest>
+        <attribute name="Main-Class" value="org.mortbay.start.Main"/>
+      </manifest>
+       <include name="org/mortbay/start/**"/>
+    </jar>
+  </target>
+
+  <!-- STOP JAR -->
+  <target name="stop.jar" depends="all"
+      description="generates the stop.jar to run the shutdown scripts">   
+    <jar jarfile="${dir.bin}/stop.jar" basedir="${dir.build}">
+      <manifest>
+        <attribute name="Main-Class" value="org.mortbay.stop.Main"/>
+      </manifest>
+       <include name="org/mortbay/stop/**"/>
+    </jar>
+  </target>
+
+  
+ 
+  <!-- DOCUMENTATION -->
   <target name="document" depends="init"
       description="generate all project documentation">
     <mkdir dir="${dir.doc}"/>
