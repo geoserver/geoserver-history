@@ -76,22 +76,6 @@ from New York City.</abstract>
       <fees>NONE</fees>
       <accessConstraints>NONE</accessConstraints>
       <maintainer>The Open Planning Project</maintainer>
-      <!-- Define mappings of namespaces to featureType directory
-           prefixes.  If only one namespace is present in this file it
-           becomes the default, if more than one namespace is present
-           then one must have its 'default' attribute set to true.
-           The default namespace is that which is assigned to featureTypes
-           that have no prefix (for example, "featureTypes/rail")
-           * This field is highly recommended.  If not present
-           then a namespace will be constructed for you.
-       -->
-      <namespace default="true"
-                 uri="http://www.openplans.org/topp"
-                 prefix="topp"/>
-      <namespace uri="http://www.opengis.net/cite/data"
-                 prefix="cdf"/>
-      <namespace uri="http://www.opengis.net/cite/geometry"
-                 prefix="cgf"/>
     </service>
 
     <service type="WMS" enabled="true">
