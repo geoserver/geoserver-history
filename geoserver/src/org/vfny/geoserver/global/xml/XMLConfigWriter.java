@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.11 2004/01/18 01:08:13 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.12 2004/01/19 17:53:40 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -484,12 +484,14 @@ public class XMLConfigWriter {
 				m = new HashMap();
 				Envelope e = ft.getLatLongBBox();
 				// from creation, isn't stored otherwise
-				if(!e.equals(new Envelope())){
-					m.put("dynamic","true");
+				if(!e.isNull()){
+					m.put("dynamic","false");
 					m.put("minx",e.getMinX()+"");
 					m.put("miny",e.getMinY()+"");
 					m.put("maxx",e.getMaxX()+"");
 					m.put("maxy",e.getMaxY()+"");
+				}else{
+					m.put("dynamic","true");
 				}
 				cw.attrTag("latLonBoundingBox",m);
 			}
@@ -586,7 +588,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.11 2004/01/18 01:08:13 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.12 2004/01/19 17:53:40 dmzwiers Exp $
  */
 class WriterUtils{
 	/**

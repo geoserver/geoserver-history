@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.17 2004/01/18 00:33:07 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.18 2004/01/19 17:53:40 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -995,9 +995,9 @@ public class XMLConfigReader {
 
         if (!dynamic) {
             double minx = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
-            double miny = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
-            double maxx = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
-            double maxy = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
+            double miny = ReaderUtils.getDoubleAttribute(bboxElem, "miny", true);
+            double maxx = ReaderUtils.getDoubleAttribute(bboxElem, "maxx", true);
+            double maxy = ReaderUtils.getDoubleAttribute(bboxElem, "maxy", true);
 
             return new Envelope(minx, maxx, miny, maxy);
         }
