@@ -7,6 +7,7 @@
 		<OnlineResource>http://www.openplans.org/</OnlineResource>
 		<Fees>This is a free server.</Fees>
 		<AccessConstraints>There are no access constraints to this server.</AccessConstraints>
+                <LoggingLevel>INFO</LoggingLevel>
 		<URL>http://beta.openplans.org/geoserver</URL>
 		<Maintainer>The Open Planning Project</Maintainer>
                 <Verbose value="true"/>
