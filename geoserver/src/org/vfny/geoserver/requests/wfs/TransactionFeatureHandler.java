@@ -30,7 +30,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.gml.GMLFilterFeature;
-import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.GlobalCatalog;
 import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.global.ServerConfig;
 import org.xml.sax.Attributes;
@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.2.2.2 2003/12/30 23:08:28 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -72,7 +72,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private TransactionFilterHandler parent;
 
     //private TypeRepository typeRepo = TypeRepository.getInstance();
-    private CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+    private GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.

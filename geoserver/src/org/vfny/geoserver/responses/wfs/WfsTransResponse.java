@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.global.GlobalConfig;
+import org.vfny.geoserver.global.GlobalData;
 import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.responses.ResponseUtils;
 import org.w3c.dom.Document;
@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.2.2.3 2003/12/31 23:36:54 dmzwiers Exp $
+ * @version $Id: WfsTransResponse.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
@@ -181,10 +181,10 @@ public class WfsTransResponse {
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         writer.write(indent);
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
-        writer.write(GlobalConfig.getInstance().getSchemaBaseUrl());
-        writer.write("wfs/1.0.0/WFSConfig-transaction.xsd\">");
+        writer.write(GlobalData.getInstance().getSchemaBaseUrl());
+        writer.write("wfs/1.0.0/GlobalWFS-transaction.xsd\">");
 
-        //  + " http://schemas.opengis.net/wfs/1.0.0/WFSConfig-transaction.xsd\">");
+        //  + " http://schemas.opengis.net/wfs/1.0.0/GlobalWFS-transaction.xsd\">");
         if (insertResults != null) {
             Iterator iter = insertResults.iterator();
 

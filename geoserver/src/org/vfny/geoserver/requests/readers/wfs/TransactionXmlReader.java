@@ -25,11 +25,11 @@ import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
- * reads in a Transaction WFSConfig request from an XML stream
+ * reads in a Transaction GlobalWFS request from an XML stream
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionXmlReader.java,v 1.2.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: TransactionXmlReader.java,v 1.2.2.3 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public class TransactionXmlReader extends XmlRequestReader {
     /**

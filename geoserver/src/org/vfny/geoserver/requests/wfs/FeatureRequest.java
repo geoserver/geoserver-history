@@ -15,7 +15,7 @@ import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**
- * Implements the WFSConfig GetFeature interface, which responds to requests for GML.
+ * Implements the GlobalWFS GetFeature interface, which responds to requests for GML.
  * This servlet accepts a getFeatures request and returns GML2.0 structured
  * XML docs.  It is made up of the standard request params, plus one or  more
  * {@link Query} objects, plus a user-assigned handle.  There are also params
@@ -23,7 +23,7 @@ import org.vfny.geoserver.requests.WFSRequest;
  * support those.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureRequest.java,v 1.3.2.2 2003/12/31 23:36:45 dmzwiers Exp $
+ * @version $Id: FeatureRequest.java,v 1.3.2.3 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class FeatureRequest extends WFSRequest {
     /** Standard logging instance for class */

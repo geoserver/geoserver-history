@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Simple tester for WFSConfig post requests. Can be called two ways. If
+/** Simple tester for GlobalWFS post requests. Can be called two ways. If
  *  called with no parameters, it displays the form, otherwise it displays
  *  the result page.
  *
@@ -58,7 +58,7 @@ public class TestWfsPost extends HttpServlet {
     /** Returns a short description of the servlet.
      */
     public String getServletInfo() {
-        return "Tests a WFSConfig post request using a form entry.";
+        return "Tests a GlobalWFS post request using a form entry.";
     }
     
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

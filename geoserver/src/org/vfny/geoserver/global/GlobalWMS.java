@@ -16,14 +16,14 @@ import org.vfny.geoserver.config.wms.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: GlobalWMS.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
  */
-public class WMSConfig extends ServiceConfig {
-    /** WMSConfig version spec implemented */
+public class GlobalWMS extends ServiceConfig {
+    /** GlobalWMS version spec implemented */
     private static final String WMS_VERSION = "1.1.1";
 
-    /** WMSConfig spec specifies this fixed service name */
-    private static final String FIXED_SERVICE_NAME = "OGC:WMSConfig";
+    /** GlobalWMS spec specifies this fixed service name */
+    private static final String FIXED_SERVICE_NAME = "OGC:GlobalWMS";
 
     /** DOCUMENT ME!  */
     private static final String[] EXCEPTION_FORMATS = {
@@ -33,24 +33,24 @@ public class WMSConfig extends ServiceConfig {
     private Date updateTime = new Date();
 
     /**
-     * Creates a new WMSConfig object.
+     * Creates a new GlobalWMS object.
      *
      * @param wmsRoot DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    /*public WMSConfig(Element wmsRoot) throws ConfigurationException {
+    /*public GlobalWMS(Element wmsRoot) throws ConfigurationException {
         super(wmsRoot);
-        URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
+        URL = GlobalData.getInstance().getBaseUrl() + "/wms";
     }
-    public WMSConfig( Map config ){
+    public GlobalWMS( Map config ){
         super( config );
-        URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
+        URL = GlobalData.getInstance().getBaseUrl() + "/wms";
     }*/
-    public WMSConfig(org.vfny.geoserver.config.wms.WMSConfig config){
+    public GlobalWMS(org.vfny.geoserver.config.wms.WMSConfig config){
     	super(config.getService());
     	updateTime = config.getUpdateTime();
-    	URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
+    	URL = GlobalData.getInstance().getBaseUrl() + "/wms";
     }
     /**
      * DOCUMENT ME!
@@ -63,7 +63,7 @@ public class WMSConfig extends ServiceConfig {
 
     /**
      * overrides getName() to return the fixed service name as specified by OGC
-     * WMSConfig 1.1 spec
+     * GlobalWMS 1.1 spec
      *
      * @return DOCUMENT ME!
      */
@@ -73,7 +73,7 @@ public class WMSConfig extends ServiceConfig {
 
     /**
      * returns a GMT time string that represents the last modification time of
-     * the capabilities aspects of the WMSConfig service
+     * the capabilities aspects of the GlobalWMS service
      *
      * @return DOCUMENT ME!
      */

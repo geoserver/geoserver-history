@@ -23,7 +23,7 @@ import org.vfny.geoserver.config.CloneLibrary;
 import org.vfny.geoserver.config.EqualsLibrary;
 import org.vfny.geoserver.config.DataStructure;
 /**
- * CatalogConfig purpose.
+ * GlobalCatalog purpose.
  * <p>
  * Represents an instance of the catalog.xml file in the configuration of the 
  * server, along with associated configuration files for the feature types.
@@ -33,7 +33,7 @@ import org.vfny.geoserver.config.DataStructure;
  * @see DataSource
  * @see FeatureTypeConfig
  * @see StyleConfig 
- * @version $Id: CatalogConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.2 2004/01/02 17:53:29 dmzwiers Exp $
  */
 public class CatalogConfig implements DataStructure{
 	
@@ -68,9 +68,9 @@ public class CatalogConfig implements DataStructure{
 	private NameSpaceConfig defaultNameSpace;
 	
 	/**
-	 * CatalogConfig constructor.
+	 * GlobalCatalog constructor.
 	 * <p>
-	 * Creates a CatalogConfig to represent an instance with default data.
+	 * Creates a GlobalCatalog to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
@@ -94,9 +94,9 @@ public class CatalogConfig implements DataStructure{
 	}
 	
 	/**
-	 * CatalogConfig constructor.
+	 * GlobalCatalog constructor.
 	 * <p>
-	 * Creates a copy of the CatalogConfig provided. If the CatalogConfig provided 
+	 * Creates a copy of the GlobalCatalog provided. If the GlobalCatalog provided 
 	 * is null then default values are used. All the datastructures are cloned. 
 	 * </p>
 	 * @param c The catalog to copy.
@@ -132,7 +132,7 @@ public class CatalogConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this CatalogConfig
+	 * @return A copy of this GlobalCatalog
 	 */
 	public Object clone(){
 		return new CatalogConfig(this);
@@ -145,7 +145,7 @@ public class CatalogConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The CatalogConfig object to test.
+	 * @param obj The GlobalCatalog object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){

@@ -20,20 +20,20 @@ import org.vfny.geoserver.config.ServiceConfig;
 import org.vfny.geoserver.config.DataStructure;
 
 /**
- * WFSConfig purpose.
+ * GlobalWFS purpose.
  * <p>
- * Description of WFSConfig 
- * Used to store WFSConfig data. 
+ * Description of GlobalWFS 
+ * Used to store GlobalWFS data. 
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.1.2.1 2003/12/31 23:35:18 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.2 2004/01/02 17:53:29 dmzwiers Exp $
  */
 public class WFSConfig implements DataStructure{
 	//public static final String WFS_FOLDER = "wfs/1.0.0/";
-	//public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFSConfig-basic.xsd";
+	//public static final String WFS_BASIC_LOC = WFS_FOLDER + "GlobalWFS-basic.xsd";
 	//public static final String WFS_CAP_LOC = WFS_FOLDER
-	//	+ "WFSConfig-capabilities.xsd";
+	//	+ "GlobalWFS-capabilities.xsd";
 
 	/**
 	 * Constant when loaded. Describes where to find the service on the server.
@@ -46,9 +46,9 @@ public class WFSConfig implements DataStructure{
 	private ServiceConfig service;	
 
 	/**
-	 * WFSConfig constructor.
+	 * GlobalWFS constructor.
 	 * <p>
-	 * Creates a WFSConfig to represent an instance with default data.
+	 * Creates a GlobalWFS to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
@@ -58,12 +58,12 @@ public class WFSConfig implements DataStructure{
 	}
 
 	/**
-	 * WFSConfig constructor.
+	 * GlobalWFS constructor.
 	 * <p>
-	 * Creates a copy of the WFSConfig provided. If the WFSConfig provided 
+	 * Creates a copy of the GlobalWFS provided. If the GlobalWFS provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
-	 * @param f The WFSConfig to copy.
+	 * @param f The GlobalWFS to copy.
 	 */
 	public WFSConfig(WFSConfig w){
 		if(w == null){
@@ -82,7 +82,7 @@ public class WFSConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this WFSConfig
+	 * @return A copy of this GlobalWFS
 	 */
 	public Object clone(){
 		return new WFSConfig(this);
@@ -95,7 +95,7 @@ public class WFSConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The WFSConfig object to test.
+	 * @param obj The GlobalWFS object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj) {

@@ -15,16 +15,16 @@ import org.vfny.geoserver.config.*;
 
 
 /**
- * GlobalConfig server configuration parameters
+ * GlobalData server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: GlobalData.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
  */
-public class GlobalConfig extends AbstractConfig {
+public class GlobalData extends AbstractConfig {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
-    private static GlobalConfig globalConfig = null;
+    private static GlobalData globalConfig = null;
 
     /** DOCUMENT ME! */
     private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
@@ -61,7 +61,7 @@ public class GlobalConfig extends AbstractConfig {
     private ContactConfig contactConfig;
 
     /**
-     * Used to aquire a GlobalConfig for testing against
+     * Used to aquire a GlobalData for testing against
      * 
      * <p>
      * The provided config Map recognizes:
@@ -99,7 +99,7 @@ public class GlobalConfig extends AbstractConfig {
      *
      * @param config DOCUMENT ME!
      */
-   /* public GlobalConfig(Map config) {
+   /* public GlobalData(Map config) {
         maxFeatures = get(config, "global", 20000);
         loggingLevel = get(config, "global.level",
                 Logger.getLogger("org.vfny.geoserver.config").getLevel());
@@ -127,13 +127,13 @@ public class GlobalConfig extends AbstractConfig {
     }*/
 
     /**
-     * Creates a new GlobalConfig object.
+     * Creates a new GlobalData object.
      *
      * @param globalConfigElem DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    /*public GlobalConfig(Element globalConfigElem) throws ConfigurationException {
+    /*public GlobalData(Element globalConfigElem) throws ConfigurationException {
         LOGGER.fine("parsing global configuration parameters");
 
         Element elem = null;
@@ -206,7 +206,7 @@ public class GlobalConfig extends AbstractConfig {
         globalConfig = this;
     }*/
     
-    public GlobalConfig(org.vfny.geoserver.config.GlobalConfig config){
+    public GlobalData(org.vfny.geoserver.config.GlobalConfig config){
     	baseUrl = config.getBaseUrl();
     	charSet = config.getCharSet();
     	contactConfig = new ContactConfig(config.getContact());
@@ -224,7 +224,7 @@ public class GlobalConfig extends AbstractConfig {
      *
      * @throws java.lang.IllegalStateException DOCUMENT ME!
      */
-    public static GlobalConfig getInstance() {
+    public static GlobalData getInstance() {
         if (globalConfig == null) {
             String mesg = "ServerConfig must be initialized before calling "
                 + " getInstance on globalConfig";

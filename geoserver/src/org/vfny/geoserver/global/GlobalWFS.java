@@ -11,42 +11,42 @@ import org.vfny.geoserver.config.wfs.*;
 
 
 /**
- * Represents a configuration of the WFSConfig service.  Inherits most everything
+ * Represents a configuration of the GlobalWFS service.  Inherits most everything
  * from ServiceConfig.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: GlobalWFS.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
  */
-public class WFSConfig extends ServiceConfig {
+public class GlobalWFS extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
-    public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFSConfig-basic.xsd";
+    public static final String WFS_BASIC_LOC = WFS_FOLDER + "GlobalWFS-basic.xsd";
     public static final String WFS_CAP_LOC = WFS_FOLDER
-        + "WFSConfig-capabilities.xsd";
-    private GlobalConfig global = GlobalConfig.getInstance();
+        + "GlobalWFS-capabilities.xsd";
+    private GlobalData global = GlobalData.getInstance();
     private String describeUrl;
 
     /**
-     * Creates a new WFSConfig object.
+     * Creates a new GlobalWFS object.
      *
      * @param root DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    /*public WFSConfig(Element root) throws ConfigurationException {
+    /*public GlobalWFS(Element root) throws ConfigurationException {
         super(root);
-        URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
+        URL = GlobalData.getInstance().getBaseUrl() + "wfs/";
     }
     
-    public WFSConfig(Map config ) {
+    public GlobalWFS(Map config ) {
         super( config );
-        URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
+        URL = GlobalData.getInstance().getBaseUrl() + "wfs/";
     }*/
     
-    public WFSConfig(org.vfny.geoserver.config.wfs.WFSConfig config){
+    public GlobalWFS(org.vfny.geoserver.config.wfs.WFSConfig config){
     	super(config.getService());
     	describeUrl = config.getDescribeUrl();
-		URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
+		URL = GlobalData.getInstance().getBaseUrl() + "wfs/";
     }
     /**
      * Gets the base url of a describe request.

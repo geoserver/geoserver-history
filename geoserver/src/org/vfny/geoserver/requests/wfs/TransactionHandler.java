@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.2.2.2 2003/12/31 23:36:45 dmzwiers Exp $
+ * @version $Id: TransactionHandler.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {
@@ -308,7 +308,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     /**
      * Gets a filter and adds it to the appropriate query (or queries).
      *
-     * @param filter (OGC WFSConfig) Filter from (SAX) filter.
+     * @param filter (OGC GlobalWFS) Filter from (SAX) filter.
      *
      * @throws RuntimeException If trying to add a filter to an insert
      *         subrequest.

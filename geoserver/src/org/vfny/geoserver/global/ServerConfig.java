@@ -31,7 +31,7 @@ import org.vfny.geoserver.config.xml.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.4 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -50,19 +50,19 @@ public class ServerConfig extends AbstractConfig {
     private static ServerConfig serverConfig;
 
     /** DOCUMENT ME! */
-    private WMSConfig mapServerConfig;
+    private GlobalWMS mapServerConfig;
 
     /** DOCUMENT ME! */
-    private WFSConfig featureServerConfig;
+    private GlobalWFS featureServerConfig;
 
     /** DOCUMENT ME! */
-    private CatalogConfig catalog;
+    private GlobalCatalog catalog;
 
     /** DOCUMENT ME! */
-    private GlobalConfig globalConfig;
+    private GlobalData globalConfig;
 
     /** Validation Configuration */
-    private ValidationConfig validationConfig;
+    private GlobalValidation validationConfig;
     private String rootDir;
 
     //HACK: this will no longer be necessary when the config loading is split
@@ -99,7 +99,7 @@ public class ServerConfig extends AbstractConfig {
 
         load(configElem, catalogElem, dataDir);
 
-        validationConfig = new ValidationConfig(new File(dataDir, "validation"));
+        validationConfig = new GlobalValidation(new File(dataDir, "validation"));
         */
         File f = new File(rootDir);
 		XMLConfigReader cr = null;
@@ -111,19 +111,19 @@ public class ServerConfig extends AbstractConfig {
 		this.rootDir = rootDir;	//check for removal
 		ModelConfig config = cr.getModel();
 
-		globalConfig = new GlobalConfig(config.getGlobal());
+		globalConfig = new GlobalData(config.getGlobal());
 
-		featureServerConfig = new WFSConfig(config.getWfs());
-		mapServerConfig = new WMSConfig(config.getWms());
-		catalog = new CatalogConfig(config.getCatalog());
-		validationConfig = new ValidationConfig(config);
+		featureServerConfig = new GlobalWFS(config.getWfs());
+		mapServerConfig = new GlobalWMS(config.getWms());
+		catalog = new GlobalCatalog(config.getCatalog());
+		validationConfig = new GlobalValidation(config);
     }
 
     /**
      * Creates a new ServerConfig Object for JUnit testing.
      * 
      * <p>
-     * Configure based on provided Map, and CatalogConfig.
+     * Configure based on provided Map, and GlobalCatalog.
      * </p>
      * 
      * <p>
@@ -145,24 +145,24 @@ public class ServerConfig extends AbstractConfig {
         throws ConfigurationException {
         this.rootDir = get(config, "dir", new File(".")).toString();
 
-        globalConfig = new GlobalConfig(config);
+        globalConfig = new GlobalData(config);
 
-        featureServerConfig = new WFSConfig(config);
-        mapServerConfig = new WMSConfig(config);
-        catalog = new CatalogConfig(config, gt2catalog);
-        validationConfig = new ValidationConfig(config);
+        featureServerConfig = new GlobalWFS(config);
+        mapServerConfig = new GlobalWMS(config);
+        catalog = new GlobalCatalog(config, gt2catalog);
+        validationConfig = new GlobalValidation(config);
     }*/
 	public ServerConfig(ModelConfig config)
 		throws ConfigurationException {
 			
 		//this.rootDir = rootDir;	//check for removal
 
-		globalConfig = new GlobalConfig(config.getGlobal());
+		globalConfig = new GlobalData(config.getGlobal());
 
-		featureServerConfig = new WFSConfig(config.getWfs());
-		mapServerConfig = new WMSConfig(config.getWms());
-		catalog = new CatalogConfig(config.getCatalog());
-		validationConfig = new ValidationConfig(config);
+		featureServerConfig = new GlobalWFS(config.getWfs());
+		mapServerConfig = new GlobalWMS(config.getWms());
+		catalog = new GlobalCatalog(config.getCatalog());
+		validationConfig = new GlobalValidation(config);
 	}
 
     /**
@@ -175,11 +175,11 @@ public class ServerConfig extends AbstractConfig {
     //}
 
     /**
-     * Gets the config for the WMSConfig.
+     * Gets the config for the GlobalWMS.
      *
      * @return DOCUMENT ME!
      */
-    public WMSConfig getWMSConfig() {
+    public GlobalWMS getWMSConfig() {
         return mapServerConfig;
     }
 
@@ -188,7 +188,7 @@ public class ServerConfig extends AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    public WFSConfig getWFSConfig() {
+    public GlobalWFS getWFSConfig() {
         return featureServerConfig;
     }
 
@@ -197,7 +197,7 @@ public class ServerConfig extends AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    public GlobalConfig getGlobalConfig() {
+    public GlobalData getGlobalConfig() {
         return globalConfig;
     }
 
@@ -206,7 +206,7 @@ public class ServerConfig extends AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    public CatalogConfig getCatalog() {
+    public GlobalCatalog getCatalog() {
         return catalog;
     }
 
@@ -215,7 +215,7 @@ public class ServerConfig extends AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    public ValidationConfig getValidationConfig() {
+    public GlobalValidation getValidationConfig() {
         return validationConfig;
     }
 
@@ -300,17 +300,17 @@ public class ServerConfig extends AbstractConfig {
     }
 
     /**
-     * Sets everything up based on provided gt2 CatalogConfig.
+     * Sets everything up based on provided gt2 GlobalCatalog.
      * 
      * <p>
      * This is a quick hack to allow for basic JUnit testing.
      * </p>
      * 
      * <p>
-     * We need to get GeoServer to push more functionality into gt2 CatalogConfig
+     * We need to get GeoServer to push more functionality into gt2 GlobalCatalog
      * interface. Right now they have similar goals in life, we should set
-     * things up so GeoServer config classes can implement the CatalogConfig
-     * interface, and expand the CatalogConfig interface to the point it is useful.
+     * things up so GeoServer config classes can implement the GlobalCatalog
+     * interface, and expand the GlobalCatalog interface to the point it is useful.
      * </p>
      *
      * @param config DOCUMENT ME!
@@ -337,7 +337,7 @@ public class ServerConfig extends AbstractConfig {
         LOGGER.fine("parsing configuration documents");
 
         Element elem = (Element) configElem.getElementsByTagName("global").item(0);
-        globalConfig = new GlobalConfig(elem);
+        globalConfig = new GlobalData(elem);
 
         NodeList configuredServices = configElem.getElementsByTagName("service");
         int nServices = configuredServices.getLength();
@@ -347,10 +347,10 @@ public class ServerConfig extends AbstractConfig {
 
             String serviceType = elem.getAttribute("type");
 
-            if ("WFSConfig".equalsIgnoreCase(serviceType)) {
-                featureServerConfig = new WFSConfig(elem);
-            } else if ("WMSConfig".equalsIgnoreCase(serviceType)) {
-                mapServerConfig = new WMSConfig(elem);
+            if ("GlobalWFS".equalsIgnoreCase(serviceType)) {
+                featureServerConfig = new GlobalWFS(elem);
+            } else if ("GlobalWMS".equalsIgnoreCase(serviceType)) {
+                mapServerConfig = new GlobalWMS(elem);
             } else if ("Z39.50".equalsIgnoreCase(serviceType)) {
                 //...
             } else {
@@ -359,7 +359,7 @@ public class ServerConfig extends AbstractConfig {
             }
         }
 
-        catalog = new CatalogConfig(catalogElement, dataDir);
+        catalog = new GlobalCatalog(catalogElement, dataDir);
     }*/
 
     /**

@@ -24,11 +24,11 @@ import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
- * reads in a GetFeature XML WFSConfig request from a XML stream
+ * reads in a GetFeature XML GlobalWFS request from a XML stream
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: GetFeatureXmlReader.java,v 1.2.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: GetFeatureXmlReader.java,v 1.2.2.3 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public class GetFeatureXmlReader extends XmlRequestReader {
     /**

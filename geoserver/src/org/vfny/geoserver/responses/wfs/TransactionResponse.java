@@ -41,7 +41,7 @@ import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.GlobalCatalog;
 import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.requests.Request;
@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.2.2.3 2003/12/31 23:36:46 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -127,7 +127,7 @@ public class TransactionResponse implements Response {
      * </p>
      * 
      * <p>
-     * The specification allows a WFSConfig to implement PARTIAL sucess if it is
+     * The specification allows a GlobalWFS to implement PARTIAL sucess if it is
      * unable to rollback all the requested changes.  This implementation is
      * able to offer full Rollback support and will not require the use of
      * PARTIAL success.
@@ -144,7 +144,7 @@ public class TransactionResponse implements Response {
         transaction = new DefaultTransaction();
         LOGGER.fine("request is " + request);
 
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
 
         WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS);
 
@@ -422,7 +422,7 @@ public class TransactionResponse implements Response {
 
     protected void integrityValidation(Map stores, Envelope check)
         throws IOException, WfsTransactionException {
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
         ValidationProcessor validation =
             ServerConfig.getInstance().getValidationConfig().getProcessor();
         
@@ -557,7 +557,7 @@ public class TransactionResponse implements Response {
         // 
         // Lets deal with the locks
         //
-        // Q: Why talk to CatalogConfig you ask
+        // Q: Why talk to GlobalCatalog you ask
         // A: Only class that knows all the DataStores
         //
         // We really need to ask all DataStores to release/refresh
@@ -570,7 +570,7 @@ public class TransactionResponse implements Response {
         // We also need to do this if the opperation is not a success,
         // you can find this same code in the abort method
         // 
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
 
         if (request.getLockId() != null) {
             if (request.getReleaseAction() == TransactionRequest.ALL) {
@@ -602,7 +602,7 @@ public class TransactionResponse implements Response {
             // 
             // TODO: Do we need release/refresh during an abort?               
             if (request.getLockId() != null) {
-                CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+                GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
 
                 if (request.getReleaseAction() == TransactionRequest.ALL) {
                     catalog.lockRelease(request.getLockId());

@@ -43,7 +43,7 @@ import org.vfny.geoserver.global.Log4JFormatter;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.4 2004/01/02 17:53:29 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -169,9 +169,9 @@ public class XMLConfigReader {
 
 			String serviceType = elem.getAttribute("type");
 
-			if ("WFSConfig".equalsIgnoreCase(serviceType)) {
+			if ("GlobalWFS".equalsIgnoreCase(serviceType)) {
 				model.setWfs(loadWFS(elem,model.getGlobal()));
-			} else if ("WMSConfig".equalsIgnoreCase(serviceType)) {
+			} else if ("GlobalWMS".equalsIgnoreCase(serviceType)) {
 				model.setWms(loadWMS(elem,model.getGlobal()));
 			} else if ("Z39.50".equalsIgnoreCase(serviceType)) {
 				//...
@@ -255,10 +255,10 @@ public class XMLConfigReader {
 	/**
 	 * loadGlobal purpose.
 	 * <p>
-	 * Converts a DOM tree into a GlobalConfig configuration.
+	 * Converts a DOM tree into a GlobalData configuration.
 	 * </p>
 	 * @param globalElem A DOM tree representing a complete global configuration.
-	 * @return A complete GlobalConfig object loaded from the DOM tree provided.
+	 * @return A complete GlobalData object loaded from the DOM tree provided.
 	 * @throws ConfigException When an error occurs.
 	 */
 	protected GlobalConfig loadGlobal(Element globalElem) throws ConfigException{
@@ -371,12 +371,12 @@ public class XMLConfigReader {
 	/**
 	 * loadWFS purpose.
 	 * <p>
-	 * Converts a DOM tree into a WFSConfig object.
+	 * Converts a DOM tree into a GlobalWFS object.
 	 * </p>
-	 * @param wfsElement a DOM tree to convert into a WFSConfig object.
-	 * @param g A reference to the already loaded GlobalConfig object. Used to get the baseUrl
-	 * @return A complete WFSConfig object loaded from the DOM tree provided.
-	 * @see GlobalConfig#getBaseUrl()
+	 * @param wfsElement a DOM tree to convert into a GlobalWFS object.
+	 * @param g A reference to the already loaded GlobalData object. Used to get the baseUrl
+	 * @return A complete GlobalWFS object loaded from the DOM tree provided.
+	 * @see GlobalData#getBaseUrl()
 	 * @throws ConfigException When an error occurs.
 	 */
 	protected WFSConfig loadWFS(Element wfsElement, GlobalConfig g) throws ConfigException{
@@ -389,12 +389,12 @@ public class XMLConfigReader {
 	/**
 	 * loadWMS purpose.
 	 * <p>
-	 * Converts a DOM tree into a WMSConfig object.
+	 * Converts a DOM tree into a GlobalWMS object.
 	 * </p>
-	 * @param wmsElement a DOM tree to convert into a WMSConfig object.
-	 * @param g A reference to the already loaded GlobalConfig object. Used to get the baseUrl
-	 * @return A complete WMSConfig object loaded from the DOM tree provided.
-	 * @see GlobalConfig#getBaseUrl()
+	 * @param wmsElement a DOM tree to convert into a GlobalWMS object.
+	 * @param g A reference to the already loaded GlobalData object. Used to get the baseUrl
+	 * @return A complete GlobalWMS object loaded from the DOM tree provided.
+	 * @see GlobalData#getBaseUrl()
 	 * @throws ConfigException When an error occurs.
 	 */
 	protected WMSConfig loadWMS(Element wmsElement, GlobalConfig g) throws ConfigException{
@@ -800,7 +800,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.4 2004/01/02 17:53:29 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

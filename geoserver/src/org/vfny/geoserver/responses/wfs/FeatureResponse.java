@@ -33,11 +33,11 @@ import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.GlobalCatalog;
 import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.global.ServerConfig;
-import org.vfny.geoserver.global.WFSConfig;
+import org.vfny.geoserver.global.GlobalWFS;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -216,7 +216,7 @@ public class FeatureResponse implements Response {
         // - if we fail to aquire all the locks we will need to fail and
         //   itterate through the the FeatureSources to release the locks 
         //
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();        
+        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();        
         FeatureTypeConfig meta = null;
         NameSpace namespace;       
         Query query;
@@ -325,7 +325,7 @@ public class FeatureResponse implements Response {
             transformer.setIndentation(2);
 
             ServerConfig config = ServerConfig.getInstance();
-            WFSConfig wfsConfig = config.getWFSConfig();
+            GlobalWFS wfsConfig = config.getWFSConfig();
             String wfsSchemaLoc = wfsConfig.getWfsBasicLocation();
             String fSchemaLoc = wfsConfig.getDescribeUrl(typeNames.toString());
             namespace = meta.getDataStore().getNameSpace();
@@ -434,7 +434,7 @@ public class FeatureResponse implements Response {
             return; // we have no locks
         }
         
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();            
+        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();            
         // I think we need to release and fail when lockAll fails
         //
         catalog.lockRelease( featureLock.getAuthorization() );        

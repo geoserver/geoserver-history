@@ -35,11 +35,11 @@ import org.w3c.dom.NodeList;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: GlobalCatalog.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
  */
-public class CatalogConfig extends AbstractConfig
+public class GlobalCatalog extends AbstractConfig
 /**
- * implements CatalogConfig
+ * implements GlobalCatalog
  */
  {
     /** DOCUMENT ME! */
@@ -69,14 +69,14 @@ public class CatalogConfig extends AbstractConfig
     private Map featureTypes;
 
     /**
-     * Configure based on gt2 CatalogConfig.
+     * Configure based on gt2 GlobalCatalog.
      * 
      * <p>
-     * Quick hack for JUnit test cases, really the gt2 CatalogConfig interface should
-     * be implemented by CatalogConfig. And whatever methods  GeoServer needs
-     * to get its job done is what gt2 CatalogConfig needs to provide.
+     * Quick hack for JUnit test cases, really the gt2 GlobalCatalog interface should
+     * be implemented by GlobalCatalog. And whatever methods  GeoServer needs
+     * to get its job done is what gt2 GlobalCatalog needs to provide.
      * </p>
-     * Right now a Map is provided to set anything that gt2 CatalogConfig cannot.
+     * Right now a Map is provided to set anything that gt2 GlobalCatalog cannot.
      * 
      * <p>
      * Given a namespace foo in the catalog the config map defines:
@@ -94,7 +94,7 @@ public class CatalogConfig extends AbstractConfig
      * @param config DOCUMENT ME!
      * @param catalog
      */
-  /*  public CatalogConfig(Map config, Catalog catalog) {
+  /*  public GlobalCatalog(Map config, Catalog catalog) {
         LOGGER.info("loading catalog configuration");
 
         String[] spaceNames = catalog.getNameSpaces();
@@ -128,7 +128,7 @@ public class CatalogConfig extends AbstractConfig
         // gt2 currently assumes one datastore per namespace
         //
         // I know this is wrong, please feed our requirements into the gt2
-        // CatalogConfig        
+        // GlobalCatalog        
         dataStores = new HashMap(spaceNames.length);
 
         DataStoreConfig dsConfig;
@@ -185,14 +185,14 @@ public class CatalogConfig extends AbstractConfig
     }*/
 
     /**
-     * Creates a new CatalogConfig object.
+     * Creates a new GlobalCatalog object.
      *
      * @param root DOCUMENT ME!
      * @param dataDir DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    /*public CatalogConfig(Element root, String dataDir)
+    /*public GlobalCatalog(Element root, String dataDir)
         throws ConfigurationException {
         LOGGER.info("loading catalog configuration");
         loadNameSpaces(getChildElement(root, "namespaces", true));
@@ -204,7 +204,7 @@ public class CatalogConfig extends AbstractConfig
         this.featureTypes = new HashMap();
         loadFeatureTypes(startDir);
     }*/
-    public CatalogConfig(org.vfny.geoserver.config.data.CatalogConfig config) throws ConfigurationException {
+    public GlobalCatalog(org.vfny.geoserver.config.data.CatalogConfig config) throws ConfigurationException {
     	//dataStores = config.getDataStores();
     	Iterator i = config.getDataStores().keySet().iterator();
     	while(i.hasNext()){
@@ -753,7 +753,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws IOException
      *
-     * @see org.geotools.data.CatalogConfig#lockRefresh(java.lang.String,
+     * @see org.geotools.data.GlobalCatalog#lockRefresh(java.lang.String,
      *      org.geotools.data.Transaction)
      */
     public boolean lockRefresh(String lockID, Transaction t)
@@ -799,7 +799,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws IOException
      *
-     * @see org.geotools.data.CatalogConfig#lockRelease(java.lang.String,
+     * @see org.geotools.data.GlobalCatalog#lockRelease(java.lang.String,
      *      org.geotools.data.Transaction)
      */
     public boolean lockRelease(String lockID, Transaction t)
@@ -842,7 +842,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @return true if lockID exists
      *
-     * @see org.geotools.data.CatalogConfig#lockExists(java.lang.String)
+     * @see org.geotools.data.GlobalCatalog#lockExists(java.lang.String)
      */
     public boolean lockExists(String lockID) {
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {

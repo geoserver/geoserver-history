@@ -529,7 +529,7 @@ public class ConfigInfo
    * Retrieves the appropriate xml to go in the service section of a
    * capabilities document.
    *
-   * @param wfsName Name of the WFSConfig
+   * @param wfsName Name of the GlobalWFS
    *
    * @return An xml string of the service section of a capabilities document.
    */

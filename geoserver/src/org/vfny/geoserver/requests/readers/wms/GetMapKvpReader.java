@@ -15,7 +15,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.GlobalCatalog;
 import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.2.2.3 2003/12/31 23:36:46 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.2.2.4 2004/01/02 17:53:29 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -167,7 +167,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * <li>
      * FILTERS if present, must contain a list of filters, exactly one per
      * feature type requested, in the same format as for the <i>FILTER</i>
-     * parameter in WFSConfig's GetFeature request.
+     * parameter in GlobalWFS's GetFeature request.
      * </li>
      * <li>
      * ATTRIBUTES wich attributes of each layer will be sent as XML attributes
@@ -370,7 +370,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         FeatureTypeConfig[] featureTypes = new FeatureTypeConfig[layerCount];
-        CatalogConfig catalog = config.getCatalog();
+        GlobalCatalog catalog = config.getCatalog();
         String layerName = null;
         FeatureTypeConfig ftype = null;
 

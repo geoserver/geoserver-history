@@ -26,7 +26,7 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.GlobalCatalog;
 import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.global.ServerConfig;
@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.3 2003/12/31 23:36:50 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -132,7 +132,7 @@ public class LockResponse implements Response {
         Set lockedFids = new HashSet();
         Set lockFailedFids = new HashSet();
         ServerConfig config = ServerConfig.getInstance();
-        CatalogConfig catalog = config.getCatalog();
+        GlobalCatalog catalog = config.getCatalog();
         FilterFactory filterFactory = FilterFactory.createFilterFactory();
         LOGGER.info("locks size is " + locks.size());
 
@@ -284,7 +284,7 @@ public class LockResponse implements Response {
         returnXml.append(".net/wfs ");
         returnXml.append(ServerConfig.getInstance().getWFSConfig()
                                      .getSchemaBaseUrl());
-        returnXml.append("wfs/1.0.0/WFSConfig-transaction.xsd\">");
+        returnXml.append("wfs/1.0.0/GlobalWFS-transaction.xsd\">");
         returnXml.append(nl);
         returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);
 
@@ -333,7 +333,7 @@ public class LockResponse implements Response {
             return; // we have no locks
         }
 
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
 
         // I think we need to release and fail when lockAll fails
         //

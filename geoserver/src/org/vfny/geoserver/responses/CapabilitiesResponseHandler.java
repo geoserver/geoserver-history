@@ -7,7 +7,7 @@ package org.vfny.geoserver.responses;
 import java.io.IOException;
 
 import org.vfny.geoserver.global.BasicConfig;
-import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.GlobalCatalog;
 import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.global.ServiceConfig;
@@ -22,14 +22,14 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.3 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.4 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";
 
     /** DOCUMENT ME! */
     protected static final ServerConfig server = ServerConfig.getInstance();
-    protected static final CatalogConfig catalog = server.getCatalog();
+    protected static final GlobalCatalog catalog = server.getCatalog();
 
     /**
      * Creates a new CapabilitiesResponseHandler object.

@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
  * Streams out a BasicConfig element
  *
  * @author Gabriel Roldán
- * @version $Id: ConfigResponseHandler.java,v 1.2.2.3 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: ConfigResponseHandler.java,v 1.2.2.4 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public abstract class ConfigResponseHandler extends XmlResponseHandler {
     /**
@@ -57,7 +57,7 @@ public abstract class ConfigResponseHandler extends XmlResponseHandler {
      *
      * @task REVISIT: I don't think this is currently right for wms or wfs
      *       service elements.  I'm just subclassing for WfsCapabilities
-     *       response. It should be Keywords instead of Keyword.  For WMSConfig I
+     *       response. It should be Keywords instead of Keyword.  For GlobalWMS I
      *       think it should be KeywordList or something to that effect, with
      *       individual keywords delimited by keyword elements.  So I'm not
      *       sure what should go here by default, perhaps should just remain

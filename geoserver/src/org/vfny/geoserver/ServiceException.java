@@ -64,7 +64,7 @@ import org.vfny.geoserver.responses.ResponseUtils;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.3.2.3 2003/12/31 23:36:46 dmzwiers Exp $
+ * @version $Id: ServiceException.java,v 1.3.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  *
  * @task TODO: print directly to an output stream for getXmlResponse.
  */
@@ -228,7 +228,7 @@ public class ServiceException extends Exception {
      *
      * @return The ServiceExceptionReport of this error.
      *
-     * @task REVISIT: adapt it to handle WMSConfig too
+     * @task REVISIT: adapt it to handle GlobalWMS too
      */
     public String getXmlResponse(boolean printStackTrace) {
         String indent = "   ";

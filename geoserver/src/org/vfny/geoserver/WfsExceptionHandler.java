@@ -5,10 +5,10 @@
 package org.vfny.geoserver;
 
 /**
- * ServiceConfig exception handler for WFSConfig services
+ * ServiceConfig exception handler for GlobalWFS services
  * GR: should we rename it? ExceptionHandler don't seems appropiate.
  * @author Gabriel Roldán
- * @version $Id: WfsExceptionHandler.java,v 1.2.2.1 2003/12/31 23:36:46 dmzwiers Exp $
+ * @version $Id: WfsExceptionHandler.java,v 1.2.2.2 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class WfsExceptionHandler implements ExceptionHandler {
     /** DOCUMENT ME!  */

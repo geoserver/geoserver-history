@@ -35,9 +35,9 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.7.2.3 2003/12/31 23:36:45 dmzwiers Exp $
+ * @version $Id: Dispatcher.java,v 1.7.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  *
- * @task TODO: rework to work too for WMSConfig servlets, and to get the servlets
+ * @task TODO: rework to work too for GlobalWMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
  */
 public class Dispatcher extends HttpServlet {

@@ -18,7 +18,7 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.2.2.3 2003/12/31 23:36:46 dmzwiers Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.2.2.4 2004/01/02 17:53:29 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader
     extends KvpRequestReader
@@ -41,7 +41,7 @@ public class CapabilitiesKvpReader
   public Request getRequest()
       throws ServiceException
   {
-    CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMSConfig");
+    CapabilitiesRequest currentRequest = new CapabilitiesRequest("GlobalWMS");
     String reqVersion = ServerConfig.getInstance().getWMSConfig().getVersion();
 
     if(keyExists("VERSION"))

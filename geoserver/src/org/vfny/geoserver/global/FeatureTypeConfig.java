@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.5 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -57,7 +57,7 @@ public class FeatureTypeConfig extends BasicConfig {
 
     /** DOCUMENT ME! */
     private Map styles;
-    private CatalogConfig catalog;
+    private GlobalCatalog catalog;
 
     /** 
      * defaultStyle is not currently written to, and there are not any subclasses.
@@ -133,7 +133,7 @@ public class FeatureTypeConfig extends BasicConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-   /* public FeatureTypeConfig(CatalogConfig catalog, Element fTypeRoot)
+   /* public FeatureTypeConfig(GlobalCatalog catalog, Element fTypeRoot)
         throws ConfigurationException {
         super(fTypeRoot);
 
@@ -679,7 +679,7 @@ public class FeatureTypeConfig extends BasicConfig {
      *       should do is analyze the styles of catalog, see if they match
      *       this FeatureTypeConfig, and if they do then load the styles.
      */
-    private void loadStyles(Element styles, CatalogConfig catalog)
+    private void loadStyles(Element styles, GlobalCatalog catalog)
         throws ConfigurationException {
         NodeList stylesList = null;
         int numStyles = 0;

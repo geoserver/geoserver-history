@@ -22,7 +22,7 @@ import javax.xml.transform.TransformerException;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.GlobalCatalog;
 import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.global.ServerConfig;
@@ -37,7 +37,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.3.2.3 2003/12/31 23:36:48 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.3.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -53,7 +53,7 @@ public class DescribeResponse implements Response {
     /** Bean that holds global featureType information */
 
     //private static TypeRepository typeRepo = TypeRepository.getInstance();
-    private static CatalogConfig catalog = config.getCatalog();
+    private static GlobalCatalog catalog = config.getCatalog();
 
     // Initialize some generic GML information
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE

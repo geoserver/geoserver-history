@@ -33,7 +33,7 @@ import com.vividsolutions.jts.geom.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -119,7 +119,7 @@ public class XMLConfigWriter {
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/02 17:53:28 dmzwiers Exp $
 	 */
 	protected class WriterHelper{
 		/**
@@ -420,9 +420,9 @@ public class XMLConfigWriter {
 	 * 
 	 * storeService purpose.
 	 * <p>
-	 * Writes a service into the WriterHelper provided from the WFSConfig or WMSConfig object provided.
+	 * Writes a service into the WriterHelper provided from the GlobalWFS or GlobalWMS object provided.
 	 * </p>
-	 * @param obj either a WFSConfig or WMSConfig object.
+	 * @param obj either a GlobalWFS or GlobalWMS object.
 	 * @param cw The Configuration Writer
 	 * @throws ConfigException When an IO exception occurs or the object provided is not of the correct type.
 	 */
@@ -435,15 +435,15 @@ public class XMLConfigWriter {
 			WFSConfig w = (WFSConfig)obj;
 			s = w.getService();
 			u = w.getDescribeUrl();
-			t = "WFSConfig";
+			t = "GlobalWFS";
 		}else
 		if(obj instanceof WMSConfig){
 			WMSConfig w = (WMSConfig)obj;
 			s = w.getService();
 			u = w.getDescribeUrl();
-			t = "WMSConfig";
+			t = "GlobalWMS";
 		}else
-		throw new ConfigException("Invalid object: not WMSConfig of WFSConfig");
+		throw new ConfigException("Invalid object: not GlobalWMS of GlobalWFS");
 		Map atrs = new HashMap();
 		atrs.put("type",t);
 		atrs.put("enabled",s.isEnabled()+"");
@@ -479,7 +479,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeCatalog purpose.
 	 * <p>
-	 * Writes a catalog into the WriterHelper provided from CatalogConfig provided in memory.
+	 * Writes a catalog into the WriterHelper provided from GlobalCatalog provided in memory.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @throws ConfigException When an IO exception occurs.
@@ -732,7 +732,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.3 2003/12/31 23:35:18 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  */
 class WriterUtils{
 	/**

@@ -84,7 +84,7 @@ public class GMLBuilder {
     private static final String WFS_URI = "http://www.opengis.net/wfs";
     private static final String XMLNS_WFS = "xmlns:wfs=\"" + WFS_URI + "\"";
     private static final String WFS_LOC = configInfo.getSchemaBaseUrl()
-        + "wfs/1.0.0/WFSConfig-basic.xsd";
+        + "wfs/1.0.0/GlobalWFS-basic.xsd";
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
     private static final String XS_NAMESPACE = "xmlns:xs=" + SCHEMA_URI;
     private static Map gmlMap = new HashMap();

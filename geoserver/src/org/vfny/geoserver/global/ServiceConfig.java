@@ -14,7 +14,7 @@ import org.vfny.geoserver.config.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.1.2.5 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -98,9 +98,9 @@ public abstract class ServiceConfig extends BasicConfig {
      *
      * @return The url to use as the base for schema locations.
      *
-     * @deprecated Use GlobalConfig.getSchemaBaseUrl()
+     * @deprecated Use GlobalData.getSchemaBaseUrl()
      */
     public String getSchemaBaseUrl() {
-        return GlobalConfig.getInstance().getSchemaBaseUrl();
+        return GlobalData.getInstance().getSchemaBaseUrl();
     }
 }

@@ -12,7 +12,7 @@ import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.global.NameSpace;
 import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.global.ServiceConfig;
-import org.vfny.geoserver.global.WFSConfig;
+import org.vfny.geoserver.global.GlobalWFS;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -24,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.3 2003/12/31 23:36:46 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -96,7 +96,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      */
     protected void handleCapabilities(ServiceConfig serviceConfig)
         throws SAXException {
-        WFSConfig config = (WFSConfig) serviceConfig;
+        GlobalWFS config = (GlobalWFS) serviceConfig;
 
         cReturn();
 
@@ -119,7 +119,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleFeatureTypes(config);
     }
 
-    private void handleCapability(WFSConfig config, String capabilityName)
+    private void handleCapability(GlobalWFS config, String capabilityName)
         throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
 
@@ -173,7 +173,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
     private void handleFeatureTypes(ServiceConfig serviceConfig)
         throws SAXException {
-        WFSConfig config = (WFSConfig) serviceConfig;
+        GlobalWFS config = (GlobalWFS) serviceConfig;
 
         startElement("FeatureTypeList");
 

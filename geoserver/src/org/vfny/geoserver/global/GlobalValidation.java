@@ -32,7 +32,7 @@ import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
 import org.vfny.geoserver.config.*;
 
 /**
- * ValidationConfig sets up the Tests used for the VWFS.
+ * GlobalValidation sets up the Tests used for the VWFS.
  * 
  * <p>
  * The ValidationProcess stores test in two data structures according to test
@@ -60,11 +60,11 @@ import org.vfny.geoserver.config.*;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.1.2.3 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: GlobalValidation.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
-public class ValidationConfig extends AbstractConfig {
+public class GlobalValidation extends AbstractConfig {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");    
     /** This is the validation processor we are configuring.
@@ -81,7 +81,7 @@ public class ValidationConfig extends AbstractConfig {
     Map plugIns;
     
     /**
-     * Configure based on gt2 CatalogConfig.
+     * Configure based on gt2 GlobalCatalog.
      * <p>
      * Configuration based on the following:
      * <ul>
@@ -96,7 +96,7 @@ public class ValidationConfig extends AbstractConfig {
      * @param config DOCUMENT ME!
      * @param catalog
      */
-  /*  public ValidationConfig(Map config ) throws ConfigurationException {
+  /*  public GlobalValidation(Map config ) throws ConfigurationException {
         LOGGER.info("loading validation configuration");
 
         List tests = get( config, "validation", Collections.EMPTY_LIST );
@@ -136,13 +136,13 @@ public class ValidationConfig extends AbstractConfig {
         }                
     }*/
     /**
-     * ValidationConfig constructor.
+     * GlobalValidation constructor.
      * <p>
      * Description
      * </p>
      * @param dir Validation Directory
      */
-   /* public ValidationConfig(File dir) {
+   /* public GlobalValidation(File dir) {
         if( dir.exists() ){
             LOGGER.info("Default isValidALL and uniqueFID enabled");
             // XML not supported yet - lets use a couple Validations
@@ -164,7 +164,7 @@ public class ValidationConfig extends AbstractConfig {
         }        
     }*/
     
-    public ValidationConfig(ModelConfig config){
+    public GlobalValidation(ModelConfig config){
     	// do nothing yet.
     }
     

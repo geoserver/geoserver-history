@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.3 2003/12/31 23:36:52 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */
@@ -69,7 +69,7 @@ public class OldCapabilitiesResponse {
     private static final String OGC_XMLNS_URL = "http://www.opengis.net/ogc";
     private static final String CAP_LOC = config.getWFSConfig()
                                                 .getSchemaBaseUrl()
-        + "wfs/1.0.0/WFSConfig-capabilities.xsd";
+        + "wfs/1.0.0/GlobalWFS-capabilities.xsd";
     private static final String SCHEMA_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
     /** Version of the response */
@@ -329,7 +329,7 @@ public class OldCapabilitiesResponse {
     /**
      * Adds feature type metadata to the XML output stream.
      *
-     * @param responseVersion The expected version of the WFSConfig response.
+     * @param responseVersion The expected version of the GlobalWFS response.
      *
      * @throws WfsException For IO problems.
      */

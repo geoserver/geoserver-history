@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreConfig.java,v 1.1.2.4 2004/01/02 17:34:57 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.5 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public class DataStoreConfig extends AbstractConfig {
     
@@ -57,7 +57,7 @@ public class DataStoreConfig extends AbstractConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-   /* public DataStoreConfig(Element dsElem, CatalogConfig catalog)
+   /* public DataStoreConfig(Element dsElem, GlobalCatalog catalog)
         throws ConfigurationException {
         LOGGER.finer("creating a new DataStoreConfig configuration");
         this.id = getAttribute(dsElem, "id", true);
@@ -87,7 +87,7 @@ public class DataStoreConfig extends AbstractConfig {
     	title = config.getTitle();
     }
     /**
-     * Configuration based on gt2 CatalogConfig information.
+     * Configuration based on gt2 GlobalCatalog information.
      * <p>
      * For the namespace food the config map defines:
      * </p>

@@ -16,7 +16,7 @@ import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
- * represents a WMSConfig GetMap request. as a extension to the WMSConfig spec 1.1, we
+ * represents a GlobalWMS GetMap request. as a extension to the GlobalWMS spec 1.1, we
  * provide the posibility to pass xml encoded Filters in the
  * <code>FILTERS</code>  parameters. This list of filters attachs to the same
  * constraints as the parameters <code>LAYERS</code> and <code>STYLES</code>.
@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.3.2.3 2003/12/31 23:37:03 dmzwiers Exp $
+ * @version $Id: GetMapRequest.java,v 1.3.2.4 2004/01/02 17:53:29 dmzwiers Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
@@ -328,7 +328,7 @@ public class GetMapRequest extends WMSRequest {
         boolean writeSvgHeader = true;
 
         /**
-         * as a extension to the WMSConfig spec 1.1, we provide the posibility to
+         * as a extension to the GlobalWMS spec 1.1, we provide the posibility to
          * pass xml encoded Filters in the <code>FILTERS</code>  parameters.
          * This list of filters attachs to the same constraints as the
          * parameters <code>LAYERS</code> and <code>STYLES</code>

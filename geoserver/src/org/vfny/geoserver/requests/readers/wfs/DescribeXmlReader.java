@@ -21,7 +21,7 @@ import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
- * reads in a DescribeFeatureType WFSConfig request from a XML stream
+ * reads in a DescribeFeatureType GlobalWFS request from a XML stream
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP

@@ -16,14 +16,14 @@ import org.vfny.geoserver.servlets.WFService;
 
 
 /**
- * Implements the WFSConfig DescribeFeatureTypes inteface, which tells clients the
+ * Implements the GlobalWFS DescribeFeatureTypes inteface, which tells clients the
  * schema for each feature type. This servlet returns descriptions of all
  * feature types served by the server. Note that this assumes that the
  * possible schemas are only single tables, with no foreign key relationships
  * with other tables.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: Describe.java,v 1.2.2.2 2003/12/31 23:36:45 dmzwiers Exp $
+ * @version $Id: Describe.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
  */
 public class Describe extends WFService {
     /**

@@ -17,7 +17,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * incoming XML stream.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: CapabilitiesHandler.java,v 1.3.2.2 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: CapabilitiesHandler.java,v 1.3.2.3 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
@@ -25,7 +25,7 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
             "org.vfny.geoserver.requests");
 
     /** Internal Capabilities request for construction. */
-    private CapabilitiesRequest request = new CapabilitiesRequest("WFSConfig");
+    private CapabilitiesRequest request = new CapabilitiesRequest("GlobalWFS");
 
     /**
      * Returns the GetCapabilities request.
