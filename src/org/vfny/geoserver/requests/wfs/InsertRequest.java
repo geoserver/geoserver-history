@@ -22,7 +22,7 @@ import org.vfny.geoserver.WfsException;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: InsertRequest.java,v 1.7 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: InsertRequest.java,v 1.8 2004/04/05 11:55:12 cholmesny Exp $
  */
 public class InsertRequest extends SubTransactionRequest {
     /** Class logger */
@@ -78,6 +78,9 @@ public class InsertRequest extends SubTransactionRequest {
     public void addFeature(Feature feature) throws WfsException {
         if (typeName == null) {
             features.add(feature);
+            String name = feature.getFeatureType().getTypeName();
+            String uri = feature.getFeatureType().getNamespace();
+            LOGGER.info("got type " + name +"," + uri);
             setTypeName(feature.getFeatureType().getTypeName());
         } else {
             String addTypeName = feature.getFeatureType().getTypeName();
@@ -121,16 +124,26 @@ public class InsertRequest extends SubTransactionRequest {
      * want to ensure that they all match this name.
      *
      * @param typeName the name of the schema of the added features.
+     * @task REVISIT: This is hacked, so that the typename can be set to
+     * use the proper prefix when it can be found out (currently in 
+     * TransactionResponse).  The getTypeName is a bit funky for insert 
+     * requests though, in many ways it should just not be used, for example
+     * when there are different featureTypes in an insert request.  The
+     * stores to use should really be determined by each Feature.  Also,
+     * this should be noted elsewhere, but we probably should not be relying
+     * on our internal prefixes for the typename.  It might make more sense
+     * for each Request to contain a typeName and a typeURI.  Of course that
+     * does not work super well either, since kvp requests will sometimes
+     * just use the prefix, without it referencing anything (though strictly
+     * accoring to the spec that is illegal, but it's nice to be able to do).
+     * But if we actually use the uris then that can make this method less
+     * hacky. ch
+     * Another option to this problem would be a getType(Data) method to 
+     * replace String getTypeName(), as then the insert request could do 
+     * the right lookup with its uri.
      */
     public void setTypeName(String typeName) {
-        if ((this.typeName == null) || this.typeName.equals(typeName)) {
             this.typeName = typeName;
-        } else {
-            //throw exception?  do nothing?  We should not
-            //be setting a different type name if the typeName of
-            //the schemas is different.  To throw exception we must
-            //modify SubTransactionRequest.
-        }
     }
 
     /**
