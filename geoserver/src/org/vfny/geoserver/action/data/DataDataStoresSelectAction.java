@@ -4,6 +4,15 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 
 /**
@@ -29,7 +38,7 @@ import org.vfny.geoserver.action.ConfigAction;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.1.2.1 2004/01/12 02:10:10 emperorkefka Exp $
+ * @version $Id: DataDataStoresSelectAction.java,v 1.1.2.2 2004/01/12 05:18:37 emperorkefka Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
 
@@ -44,7 +53,7 @@ public class DataDataStoresSelectAction extends ConfigAction {
     //IF EDIT, FORWARD TO EDITOR WITH CURRENT DATASTORE
                 
     //If they push edit, simply forward them back so the information is repopulated.
-    if (action.equals("edit")) {
+ /*   if (action.equals("edit")) {
         System.out.println("edit selected for dataStore: " + dataStoresForm.getSelectedDataStore());
         dataStoresForm.reset(mapping, request);
         return mapping.findForward("dataConfigDataStores");
@@ -63,6 +72,7 @@ public class DataDataStoresSelectAction extends ConfigAction {
         //Do configuration parameters here.
         
         dataConfig.addDataStore(dataStoreID, config);
-    }
+    } */
+    return null;
     }
 }
