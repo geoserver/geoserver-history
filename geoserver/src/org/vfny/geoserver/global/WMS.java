@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.7 2004/02/24 02:08:50 cholmesny Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -135,38 +135,40 @@ public class WMS extends Service {
     }
 
     /**
-     * Informs the user that this WMS supports SLD
+     * Informs the user that this WMS supports SLD.  We don't currently
+     * handle sld, still needs to be rolled in from geotools, so this now
+     * must be false.
      *
-     * @return true
+     * @return false
      */
     public boolean supportsSLD() {
-        return true;
+        return false;
     }
 
     /**
      * Informs the user that this WMS supports User Layers
      *
-     * @return true
+     * @return false
      */
     public boolean supportsUserLayer() {
-        return true;
+        return false;
     }
 
     /**
      * Informs the user that this WMS supports User Styles
      *
-     * @return true
+     * @return false
      */
     public boolean supportsUserStyle() {
-        return true;
+        return false;
     }
 
     /**
      * Informs the user that this WMS supports Remote WFS.
      *
-     * @return true
+     * @return false
      */
     public boolean supportsRemoteWFS() {
-        return true;
+        return false;
     }
 }
