@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.40 2004/04/16 06:28:56 jive Exp $
+ * @version $Id: Data.java,v 1.41 2004/04/16 21:42:10 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -1010,17 +1010,17 @@ SCHEMA:
      *
      * @return FeatureTypeInfo
      */
-    public FeatureTypeInfo getFeatureTypeInfo(String namespacePrefix, String uri) {
-        if ((namespacePrefix == null) || (namespacePrefix == "")) {
-            namespacePrefix = defaultNameSpace.getPrefix();
-        }
-
+    public FeatureTypeInfo getFeatureTypeInfo(String typename, String uri) {
+//System.out.println("Finding TypeName = "+typename+" URI = "+uri);
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
 
             if (fType.isEnabled()) {
-                if (fType.getPrefix().equals(namespacePrefix)
-                        && fType.getNameSpace().getUri().equals(uri)) {
+            	String typeId = fType.getNameSpace().getPrefix()+":"+typename;
+            	boolean t1 = fType.getName().equals(typeId);
+            	boolean t2 = fType.getNameSpace().getUri().equals(uri);
+//System.out.println("Type id = "+typeId+" real name = "+fType.getName()+" T1="+t1+" T2="+t2);
+                if (t1 && t2) {
                     return fType;
                 }
             }

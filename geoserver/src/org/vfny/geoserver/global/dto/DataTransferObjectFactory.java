@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.19 2004/04/15 19:28:45 dmzwiers Exp $
+ * @version $Id: DataTransferObjectFactory.java,v 1.20 2004/04/16 21:42:09 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -219,48 +219,6 @@ public class DataTransferObjectFactory {
             return (String[]) schemaBaseMap.get( schemaBase );
         }
         return new String[] {};
-        /*
-        if("AbstractFeatureType".equals(schemaBase)){
-            return new String[] {"description","name","boundedBy"};
-        }
-        if("AbstractFeatureCollectionBaseType".equals(schemaBase)){
-            return new String[] {"description","name","boundedBy"};
-        }
-        if("GeometryPropertyType".equals(schemaBase)){
-            return new String[] {"geometry"};
-        }
-        if("FeatureAssociationType".equals(schemaBase)){
-            return new String[] {"feature"};
-        }
-        if("BoundingShapeType".equals(schemaBase)){
-            return new String[] {"box"};
-        }
-        if("PointPropertyType".equals(schemaBase)){
-            return new String[] {"point"};
-        }
-        if("PolygonPropertyType".equals(schemaBase)){
-            return new String[] {"polygon"};
-        }
-        if("LineStringPropertyType".equals(schemaBase)){
-            return new String[] {"lineString"};
-        }
-        if("MultiPointPropertyType".equals(schemaBase)){
-            return new String[] {"multiPoint"};
-        }
-        if("MultiLineStringPropertyType".equals(schemaBase)){
-            return new String[] {"multiLineString"};
-        }
-        if("MultiPolygonPropertyType".equals(schemaBase)){
-            return new String[] {"multiPolygonString"};
-        }
-        if("MultiGeometryPropertyType".equals(schemaBase)){
-            return new String[] {"multiGeometry"};
-        }
-        if("NullType".equals(schemaBase)){
-            return new String[] {};
-        }
-        return new String[] {};
-        */
     }
     public static Map schemaBaseMap = new HashMap();
     static {
