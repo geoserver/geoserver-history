@@ -61,8 +61,7 @@ public class TransactionResponse {
      * @return XML response to send to client
      */ 
     public static String getXmlResponse(TransactionRequest request) 
-	throws WfsTransactionException, WfsException {
-	
+	throws WfsTransactionException {
 	LOGGER.finer("doing transaction response");
 	//        TypeRepository repository = TypeRepository.getInstance();
 	transHandle = request.getHandle();            
@@ -71,11 +70,9 @@ public class TransactionResponse {
 	WfsTransResponse response = new WfsTransResponse
 	    (WfsTransResponse.SUCCESS, request.getHandle());
 	SubTransactionRequest subRequest = request.getSubRequest(0);
-	//Connection con = getConnection(subRequest);
-	//HACK: fails if types are in different databases
-	
 	String lockId = request.getLockId();
 	LOGGER.finer("got lockId: " + lockId);
+	try {
 	for(int i = 0, n = request.getSubRequestSize(); i < n; i++) {  
 	    subRequest = request.getSubRequest(i);
 	    String typeName = subRequest.getTypeName(); 
@@ -94,16 +91,23 @@ public class TransactionResponse {
 		//should this be transaction exception?  Spec says this, but
 		//seems like transaction exception would give user more info.
 		throw new WfsException(message, subRequest.getHandle()); 
+		//moot now, we're catching all and turning into transactionExcs
 	    } 
 	     
 	    Collection addedFids = getSub(subRequest);
 	    if (addedFids != null) {
 		response.addInsertResult(subRequest.getHandle(), addedFids);
 	    }
+	    
+	}
+	} catch (WfsException e){
+	    throw new WfsTransactionException(e, subRequest.getHandle(), 
+					      request.getHandle());
 	}
 	commitAll(request);
 	repository.unlock(request);
 	return response.getXmlResponse();
+
     }
 
     /**
