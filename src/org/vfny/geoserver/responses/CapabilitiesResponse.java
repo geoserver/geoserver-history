@@ -139,13 +139,14 @@ public class CapabilitiesResponse {
             addTag("FeatureTypeList", TAG_START, 2 );
             addFeatureTypeInfo( config.getTypeDir(), version );
             addTag("FeatureTypeList", TAG_END, 2 );
-            
             xmlOutFinal.writeFile( FILTER_FILE );
             addTag("WFS_Capabilities", TAG_END, 0 );
         }
 
-	    
-        return xmlOutFinal.toString();
+	//if(config.formatOutput()){
+	String retString = xmlOutFinal.toString();//.replaceAll(">\n[ \\t\\n]*", ">");
+	    //}
+        return retString;//xmlOutFinal.toString();
 
     }
     
@@ -155,16 +156,24 @@ public class CapabilitiesResponse {
      *
      */
     private void addHeaderInfo(String version) {
-
+	String spaces = "   ";
         String encoding = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         String firstTag = "<WFS_Capabilities version=\"" + version + "\"";
         if (version.equals("0.0.15")) {
 	    //I don\"t have 0.0.15 spec right now, but this element is not in .14 or 1.0
 	    firstTag += " sequence=\"" + versionInfo.getWfsUpdateSequence() + "\"";
 	} else if (version.equals("1.0.0")) {
-	    firstTag += addNameSpace("", WFS_XMLNS_URL) + 
-		addNameSpace(":myns", config.getUrl())
-		+ addNameSpace(":ogc", OGC_XMLNS_URL);
+	    firstTag += addNameSpace("", WFS_XMLNS_URL);
+	    String[] namespaces = config.getAllXmlns();
+	    for(int i = 0; i < namespaces.length; i++) {
+		firstTag += "\n" + spaces + namespaces[i];
+	    }
+	    //REVISIT: put this ns in config?
+	    firstTag += addNameSpace(":ogc", OGC_XMLNS_URL);
+	} else if (version.equals("0.0.14")){
+	    //because our filter file now has the ogc prefix.  
+	    //REVISIT: could also strip out ogc: from that file.
+	     firstTag += addNameSpace(":ogc", OGC_XMLNS_URL);
 	}
 	firstTag += ">";	   
         xmlOutFinal.write( encoding.getBytes(), 0, encoding.length() );
@@ -312,6 +321,10 @@ public class CapabilitiesResponse {
     private void addFeatureType(String featureTypeName, String responseVersion) 
         throws WfsException {
         TypeRepository repository = TypeRepository.getInstance();
+	if (featureTypeName.indexOf(":") == -1) {
+	    featureTypeName = 
+		config.getDefaultNSPrefix() + ":" + featureTypeName;
+	}
         TypeInfo responseFeatureType = repository.getType( featureTypeName );
 	String tempResponse = new String();
         if (responseFeatureType != null) {

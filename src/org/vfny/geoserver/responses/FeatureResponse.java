@@ -67,7 +67,7 @@ public class FeatureResponse {
 	    }
 	    String srid = meta.getSrs();
 	    if (i == 0){ //HACK: different srids can go in same collection.
-		gml.startFeatureCollection(srid);
+		gml.startFeatureCollection(srid, meta.getXmlns());
 	    } //we only make the bbox for the first one.
 	    Feature[] curFeatures = getQuery(curQuery, meta, maxFeatures);
 	    addFeatures(curFeatures, gml, meta);
