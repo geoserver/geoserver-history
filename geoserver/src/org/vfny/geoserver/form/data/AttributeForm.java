@@ -149,7 +149,7 @@ public class AttributeForm {
             NameSpaceElement element = (NameSpaceElement) i.next();
 
             if (!element.isAbstract()) {
-            	list.add( element.getTypeRefName() );
+            	list.add( element.getTypeDefName() );
             }
         }
         list.add( AttributeTypeInfoConfig.TYPE_FRAGMENT );

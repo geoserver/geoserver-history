@@ -172,15 +172,29 @@ public class AttributeTypeInfoConfig {
         minOccurs = 1;
         maxOccurs = 1;
 
-        NameSpaceTranslator nst = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
+	NameSpaceTranslatorFactory nsFactory = NameSpaceTranslatorFactory.getInstance();
+        NameSpaceTranslator nst = nsFactory.getNameSpaceTranslator("xs");
         NameSpaceElement nse = nst.getElement(name);
-
+	if (nse == null) {
+	    nse = nst.getDefaultElement(attributeType.getType());
+	}
+        if (nse == null) {
+	    nst = nsFactory.getNameSpaceTranslator("gml");
+	    nse = nst.getElement(name);
+	    if (nse == null) {
+		nse = nst.getDefaultElement(attributeType.getType());
+	    }
+	}
+	    
+	//System.out.println("creating new atypininfig for: " + attributeType + 
+	//		   ", nse = " + nse);
+	//if (nse != null) System.out.println(", nse type = " + nse.getTypeDefName());
+	fragment = "<!-- definition for " + attributeType.getType()
+	    + " -->";
         if (nse == null) {
             type = TYPE_FRAGMENT;
-            fragment = "<!-- definition for " + attributeType.getType()
-                + " -->";
         } else {
-            type = nse.getTypeRefName();
+            type = nse.getTypeDefName();
             fragment = "";
         }
     }

@@ -9,6 +9,7 @@ package org.vfny.geoserver.global.xml;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.math.BigDecimal;
 
 /**
  * XMLSchemaTranslator purpose.
@@ -17,6 +18,11 @@ import java.util.Set;
  * </p>
  * <p>
  * Instances of this object should always be retrieved through the NameSpaceTranslatorFactory.
+ * </p>
+ * <p>
+ * Added a bit of a hack to get the right default mappings.  Added isDefault to
+ * the classes we want.  Note that this list comes from 
+ * org.geotools.gml.producer.FeatureTypeTransformer.
  * </p>
  * @see NameSpaceTranslatorFactory
  * 
@@ -145,8 +151,9 @@ class DecimalElement extends NameSpaceElement{
 			return this.prefix+":decimal";
 		return null;
 	}
-	public Class getJavaClass(){return Double.class;}
+	public Class getJavaClass(){return BigDecimal.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class IntegerElement extends NameSpaceElement{
@@ -267,6 +274,7 @@ class LongElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Long.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class IntElement extends NameSpaceElement{
@@ -291,6 +299,7 @@ class IntElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Integer.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class ShortElement extends NameSpaceElement{
@@ -315,6 +324,7 @@ class ShortElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Short.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class ByteElement extends NameSpaceElement{
@@ -339,6 +349,7 @@ class ByteElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Byte.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class UnsignedLongElement extends NameSpaceElement{
@@ -459,6 +470,7 @@ class FloatElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Float.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class DoubleElement extends NameSpaceElement{
@@ -483,6 +495,7 @@ class DoubleElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Double.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class DateElement extends NameSpaceElement{
@@ -531,6 +544,7 @@ class DateTimeElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return Date.class;}
 	public boolean isAbstract(){return false;}
+        public boolean isDefault(){return true;}
 }
 
 class DurationElement extends NameSpaceElement{
@@ -916,6 +930,7 @@ class StringElement extends NameSpaceElement{
 	}
 	public Class getJavaClass(){return String.class;}
 	public boolean isAbstract(){return false;}
+    public boolean isDefault(){return true;}
 }
 
 class NormalizedStringElement extends NameSpaceElement{

@@ -226,8 +226,31 @@ public abstract class NameSpaceTranslator{
 		}
 		return null;
 	}
-	
-	/**
+
+    /**
+     * Gets the default element for the class type passed in.  Note that this
+     * is a bit hacky, as it doesn't not depend on a real namespace map, but
+     * on careful assignment of the NamespaceElements, so that each class only
+     * has one that returns true for isDefault().  Sorry for the hackiness,
+     * I need to get a release out.
+     */
+    public NameSpaceElement getDefaultElement(Class type) {
+	Set posibilities = getElements(type);
+	System.out.println("getting default for type: " + type + " = "+ posibilities);
+	if(posibilities.size() == 0) {
+	    return null;
+	}
+	Iterator i = posibilities.iterator();
+	while(i.hasNext()){
+	    NameSpaceElement nse = (NameSpaceElement)i.next();
+	    if(nse!=null){
+		if(nse.isDefault())
+		    return nse;
+	    }
+	}			
+	return null;
+    }
+			/**
 	 * Gets an element definition by name.
 	 * 
 	 * @param name The name of the element definition
@@ -259,6 +282,8 @@ public abstract class NameSpaceTranslator{
 					return nse;
 				if(name.equals(nse.getQualifiedTypeDefName()))
 					return nse;
+				if(nse.isDefault())
+				    return nse;
 			}
 		}	
 		return (NameSpaceElement)posibilities.toArray()[0];
