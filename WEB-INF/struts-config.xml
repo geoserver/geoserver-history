@@ -630,21 +630,21 @@
         	name="dataFeatureTypesSelectForm"
         	scope="request"
         	validate="true"
-        	input="config/data/typeSelect.do"/>
+        	input="/config/data/typeSelect.do"/>
          <action
         	path="/config/data/typeNewSubmit"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesNewAction"
         	name="dataFeatureTypesNewForm"
         	scope="request"
         	validate="true"
-        	input="config/data/typeNew.do"/>        	
+        	input="/config/data/typeNew.do"/>        	
         <action
         	path="/config/data/typeEditorSubmit"
         	type="org.vfny.geoserver.action.data.TypesEditorAction"
         	name="typesEditorForm"
         	scope="request"
         	validate="true"
-        	input="config/data/typeEditor.do"/>
+        	input="/config/data/typeEditor.do"/>
 		 <!-- DATA Validation -->
  
          <action
