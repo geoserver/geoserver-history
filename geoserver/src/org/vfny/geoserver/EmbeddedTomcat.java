@@ -8,9 +8,9 @@ package org.vfny.geoserver;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
+//import org.apache.log4j.BasicConfigurator;
+//import org.apache.log4j.PropertyConfigurator;
+//import org.apache.log4j.Category;
 import org.apache.catalina.Connector;
 import org.apache.catalina.Context;
 import org.apache.catalina.Deployer;
@@ -20,6 +20,11 @@ import org.apache.catalina.logger.SystemOutLogger;
 import org.apache.catalina.Logger;
 import org.apache.catalina.startup.Embedded;
 import org.apache.catalina.Container;
+import org.geotools.resources.Geotools;
+
+//Logging system
+//import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * This class handles the starting and stopping of the embedded Tomcat server.
@@ -31,9 +36,18 @@ import org.apache.catalina.Container;
  */
 public class EmbeddedTomcat {
 
-    /** Standard logging instance for the class */
-    private Category _log = Category.getInstance(EmbeddedTomcat.class.getName());
     
+    /**
+     * The logger for the filter module.
+     */
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("org.vfny.geoserver.EmbeddedTomcat");
+    
+
+        static {
+	Geotools.init("Log4JFormatter", Level.FINEST);
+	LOG.info("initing embedded");
+    }
+
     /** Sets the global test file for the instance to check if all is OK. */
     private static final String TEST_FILE = "/lib/catalina/embedded.jar";
       // TODO 3: Would be nicer to check entire directory structure.
@@ -97,12 +111,24 @@ public class EmbeddedTomcat {
         embedded = new Embedded();
 
         // print all log statments to standard error
-        embedded.setDebug(0);
+        embedded.setDebug(5);
         embedded.setLogger(new SystemOutLogger());
 
         // Create an engine
         engine = embedded.createEngine();
         engine.setDefaultHost("localhost");
+        // Create a default virtual host
+        host = embedded.createHost("localhost", getPath() + "/webapps");
+        
+        // Create the ROOT context
+        Context context =
+            embedded.createContext("", getPath() + "/webapps/ROOT");
+        context.setLogger(embedded.getLogger());
+        //context.setDebug(5);
+        host.addChild(context);
+        
+        engine.addChild(host);
+
         embedded.addEngine(engine);
 
         // Assemble and install a default HTTP connector
@@ -130,6 +156,8 @@ public class EmbeddedTomcat {
      */
     public void registerWAR(String contextPath, URL warFile) throws Exception {
         
+	LOG.info("registered war: " + contextPath);
+
         if (contextPath == null) {
             throw new Exception("Invalid Path : " + contextPath);
         }
@@ -171,8 +199,7 @@ public class EmbeddedTomcat {
     public static void main(String args[]) {
         
         EmbeddedTomcat tomcat = new EmbeddedTomcat();
-        
-        // if geoserver home is not defined, make a guess that it is the current
+	// if geoserver home is not defined, make a guess that it is the current
         //  user directory.  check to make sure this is the case.  if this is not
         //  the case, then bail out with appropriate error message.
         // also, set path to the shut down file.
@@ -211,7 +238,8 @@ public class EmbeddedTomcat {
                 shutDown.delete();
                 
                 // start tomcat server and notify user
-                System.out.println("Starting GeoServer...");
+                System.out.println("Starting GeoServer.....");
+		LOG.info("about to start tomcat");
                 tomcat.startTomcat();
                 
                 // check for shutdown file at specified frequency
