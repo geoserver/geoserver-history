@@ -85,22 +85,22 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author bowens, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.8 2004/02/07 01:00:25 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationProcessor.java,v 1.9 2004/02/09 22:19:23 dmzwiers Exp $
  */
 public class ValidationProcessor {
     // These are no longer used for Integrity Validation tests
     // used to hold a place in the lookup tables for ALL feature types
     public final static Object ANYTYPENAME = new Object();
-    HashMap featureLookup; // a hashMap with featureTypes as keys that map to array lists 
+    protected HashMap featureLookup; // a hashMap with featureTypes as keys that map to array lists 
 
     //    of feature validation tests
-    HashMap integrityLookup; // a hashMap with featureTypes as keys that map to array lists 
+    protected HashMap integrityLookup; // a hashMap with featureTypes as keys that map to array lists 
 
     //	of integrity validation tests
-    ArrayList modifiedFeatureTypes; // a list of feature types that have been modified
+    protected ArrayList modifiedFeatureTypes; // a list of feature types that have been modified
 
-    private HashMap errors;
+    protected HashMap errors;
     
     /**
      * ValidationProcessor constructor.
@@ -113,129 +113,6 @@ public class ValidationProcessor {
         featureLookup = new HashMap();
         integrityLookup = new HashMap();
         errors = new HashMap();
-    }
-
-    /**
-     * ValidationProcessor constructor.
-     * 
-     * <p>
-     * Builds a ValidationProcessor with the DTO provided.
-     * </p>
-     *
-     * @param testSuites Map a map of names -> TestSuiteDTO objects
-     * @param plugIns Map a map of names -> PlugInDTO objects
-     */
-    public ValidationProcessor(Map testSuites, Map plugIns) {
-        featureLookup = new HashMap();
-        integrityLookup = new HashMap();
-        errors = new HashMap();
-
-        // TODO this method body
-        // step 1 make a list required plug-ins
-        Set plugInNames = new HashSet();
-        Iterator i = testSuites.keySet().iterator();
-
-        while (i.hasNext()) {
-            TestSuiteDTO dto = (TestSuiteDTO) testSuites.get(i.next());
-            Iterator j = dto.getTests().keySet().iterator();
-            while (j.hasNext()) {
-                TestDTO tdto = (TestDTO) dto.getTests().get(j.next());
-                plugInNames.add(tdto.getPlugIn().getName());
-            }
-        }
-
-        i = plugIns.values().iterator();
-        while(i.hasNext())
-        	errors.put(i.next(),Boolean.FALSE);
-        
-        // step 2 configure plug-ins with defaults
-        Map defaultPlugIns = new HashMap(plugInNames.size());
-        i = plugInNames.iterator();
-
-        while (i.hasNext()) {
-            String plugInName = (String) i.next();
-            PlugInDTO dto = (PlugInDTO) plugIns.get(plugInName);
-            Class plugInClass = null;
-
-            try {
-                plugInClass = Class.forName(dto.getClassName());
-            } catch (ClassNotFoundException e) {
-                //Error, using default.
-            	errors.put(dto,e);
-            	e.printStackTrace();
-            }
-
-            if (plugInClass == null) {
-                plugInClass = Validation.class;
-            }
-
-            Map plugInArgs = dto.getArgs();
-
-            if (plugInArgs == null) {
-                plugInArgs = new HashMap();
-            }
-
-            try {
-                org.geotools.validation.PlugIn plugIn = new org.geotools.validation.PlugIn(plugInName,
-                        plugInClass, dto.getDescription(), plugInArgs);
-                defaultPlugIns.put(plugInName, plugIn);
-            } catch (ValidationException e) {
-                e.printStackTrace();
-                errors.put(dto,e);
-                //error should log here
-                continue;
-            }
-            errors.put(dto,Boolean.TRUE);
-        }
-
-        // step 3 configure plug-ins with tests + add to processor
-        i = testSuites.keySet().iterator();
-
-        while (i.hasNext()) {
-            TestSuiteDTO tdto = (TestSuiteDTO) testSuites.get(i.next());
-            Iterator j = tdto.getTests().keySet().iterator();
-
-            while (j.hasNext()) {
-                TestDTO dto = (TestDTO) tdto.getTests().get(j.next());
-
-                // deal with test
-                Map testArgs = dto.getArgs();
-
-                if (testArgs == null) {
-                    testArgs = new HashMap();
-                }else{
-                	Map m = new HashMap();
-                	Iterator k = testArgs.keySet().iterator();
-                	while(k.hasNext()){
-                		ArgumentDTO adto = (ArgumentDTO)testArgs.get(k.next());
-                		m.put(adto.getName(),adto.getValue());
-                	}
-                	testArgs = m;
-                }
-
-                try {
-                    org.geotools.validation.PlugIn plugIn = (org.geotools.validation.PlugIn) defaultPlugIns
-                        .get(dto.getPlugIn().getName());
-                    Validation validation = plugIn.createValidation(dto.getName(),
-                            dto.getDescription(), testArgs);
-
-                    if (validation instanceof FeatureValidation) {
-                        addValidation((FeatureValidation) validation);
-                    }
-
-                    if (validation instanceof IntegrityValidation) {
-                        addValidation((IntegrityValidation) validation);
-                    }
-                } catch (ValidationException e) {
-                    e.printStackTrace();
-                    errors.put(dto,e);
-                    //error should log here
-                    continue;
-                }
-                errors.put(dto,Boolean.TRUE);
-            }
-            errors.put(tdto,Boolean.TRUE);
-        }
     }
 
     /**
