@@ -166,7 +166,7 @@ public class WfsTransResponse {
 	String xmlHeader = ConfigInfo.getInstance().getXmlHeader();
 	StringBuffer retXml = new StringBuffer(xmlHeader);
 	if (verbose) retXml.append("\n");
-	retXml.append("<wfs:TransactionResponse");
+	retXml.append("<wfs:WFS_TransactionResponse");
 	retXml.append(indent + "version=\"" + CUR_VERSION + "\""); 
 	retXml.append(indent + "xmlns:wfs=\"http://www.opengis.net/wfs\"");
 	//if (insertResults.size() > 0){
@@ -205,7 +205,7 @@ public class WfsTransResponse {
 	}
 	retXml.append(indent + "</wfs:TransactionResult>");
 	if (verbose) retXml.append("\n");
-	retXml.append("</wfs:TransactionResponse>");
+	retXml.append("</wfs:WFS_TransactionResponse>");
 
 
 
