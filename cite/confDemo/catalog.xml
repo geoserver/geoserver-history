@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <datastores>
+   
+  	<datastore namespace = "gd" enabled = "true" id = "rivers" >
+		<abstract>Rivers</abstract>
+		<connectionParams>
+			<parameter value = "gd" name = "namespace"  />
+			<parameter value = "file:data/featureTypes/rivers_rivers/rivers.shp" name = "url"  />
+		</connectionParams>
+	</datastore>
+	
+	<datastore namespace = "gd" enabled = "true" id = "roads" >
+		<abstract>Roads</abstract>
+		<connectionParams>
+			<parameter value = "gd" name = "namespace"  />
+			<parameter value = "file:data/featureTypes/roads_roads/roads.shp" name = "url"  />
+		</connectionParams>
+	</datastore>
+	
+	<datastore namespace = "gd" enabled = "true" id = "swamps" >
+		<abstract>Swamps</abstract>
+		<connectionParams>
+			<parameter value = "gd" name = "namespace"  />
+			<parameter value = "file:data/featureTypes/swamps_swamps/swamps.shp" name = "url"  />
+		</connectionParams>
+	</datastore>
+
+	<datastore namespace = "gd" enabled = "true" id = "lakes" >
+		<abstract>Lakes</abstract>
+		<connectionParams>
+			<parameter value = "gd" name = "namespace"  />
+			<parameter value = "file:data/featureTypes/lakes_lakes/lakes.shp" name = "url"  />
+		</connectionParams>
+	</datastore>
+	
+	<datastore namespace = "gd" enabled = "true" id = "streams" >
+		<abstract>Streams</abstract>
+		<connectionParams>
+			<parameter value = "gd" name = "namespace"  />
+			<parameter value = "file:data/featureTypes/streams_streams/streams.shp" name = "url"  />
+		</connectionParams>
+	</datastore>
+	
+	<datastore namespace = "gd" enabled = "true" id = "buildings" >
+		<abstract>Buildings!</abstract>
+		<connectionParams>
+			<parameter value = "gd" name = "namespace"  />
+			<parameter value = "file:data/featureTypes/buildings_buildings/buildings.shp" name = "url"  />
+		</connectionParams>
+	</datastore>
+	
+  </datastores>
+
+  <!-- Defines the namespaces to be used.  All dataStores must refer to a   -->
+  <!-- namespace.  If two namespaces are required for the same database then-->
+  <!-- it is possible to just define two datastores with different ids but  -->
+  <!-- the same connection parameters.                                      -->
+  <namespaces>
+  	<namespace uri="http://www.refractions.net" 
+  			   prefix="gd"/>
+  </namespaces>
+
+  <!-- Style definitions - maps a style name to a file.  The style files  -->
+  <!-- be contained in the styles folder                                  --> 
+  <styles>
+      <style id="normal" filename="normal.sld" default="true"/>
+  </styles>
+
+</catalog>
+ 
