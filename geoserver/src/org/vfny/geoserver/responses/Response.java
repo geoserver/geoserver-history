@@ -34,7 +34,7 @@ import org.vfny.geoserver.requests.Request;
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.2.2.3 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: Response.java,v 1.2.2.4 2004/01/03 00:20:15 dmzwiers Exp $
  */
 public interface Response {
     /**
@@ -56,7 +56,7 @@ public interface Response {
      *        Request will be created by either a KVP or XML request reader;
      *        resulting in a Request object more usefull than a set of raw
      *        parameters, as can be the list of feature types requested as a
-     *        set of FeatureTypeConfig objects rather than just a list of
+     *        set of GlobalFeatureType objects rather than just a list of
      *        String type names
      *
      * @throws ServiceException

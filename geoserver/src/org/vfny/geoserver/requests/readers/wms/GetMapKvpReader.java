@@ -15,8 +15,8 @@ import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.global.GlobalFeatureType;
 import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.2.2.4 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.2.2.5 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -57,7 +57,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String version = getRequestVersion();
         request.setVersion(version);
 
-        FeatureTypeConfig[] layers = parseMandatoryParameters(request);
+        GlobalFeatureType[] layers = parseMandatoryParameters(request);
         parseOptionalParameters(request);
         parseCustomParameters(request, layers);
 
@@ -129,9 +129,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private FeatureTypeConfig[] parseMandatoryParameters(GetMapRequest request)
+    private GlobalFeatureType[] parseMandatoryParameters(GetMapRequest request)
         throws WmsException {
-        FeatureTypeConfig[] layers = parseLayers();
+        GlobalFeatureType[] layers = parseLayers();
         request.setLayers(layers);
 
         List styles = parseStyles(layers.length);
@@ -191,7 +191,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * @throws ServiceException DOCUMENT ME!
      */
     private void parseCustomParameters(GetMapRequest request,
-        FeatureTypeConfig[] layers) throws ServiceException {
+        GlobalFeatureType[] layers) throws ServiceException {
         Filter[] filters = parseFilters(layers.length);
         request.setFilters(filters);
 
@@ -205,7 +205,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         request.setWriteSvgHeader(writeSvgHeader);
     }
 
-    private List parseAttributes(FeatureTypeConfig[] layers)
+    private List parseAttributes(GlobalFeatureType[] layers)
         throws WmsException {
         String rawAtts = getValue("ATTRIBUTES");
         LOGGER.finer("parsing attributes " + rawAtts);
@@ -360,7 +360,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private FeatureTypeConfig[] parseLayers() throws WmsException {
+    private GlobalFeatureType[] parseLayers() throws WmsException {
         List layers = layers = readFlat(getValue("LAYERS"), INNER_DELIMETER);
         int layerCount = layers.size();
 
@@ -369,10 +369,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 getClass().getName());
         }
 
-        FeatureTypeConfig[] featureTypes = new FeatureTypeConfig[layerCount];
+        GlobalFeatureType[] featureTypes = new GlobalFeatureType[layerCount];
         GlobalCatalog catalog = config.getCatalog();
         String layerName = null;
-        FeatureTypeConfig ftype = null;
+        GlobalFeatureType ftype = null;
 
         try {
             for (int i = 0; i < layerCount; i++) {

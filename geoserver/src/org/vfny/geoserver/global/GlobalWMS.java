@@ -4,21 +4,17 @@
  */
 package org.vfny.geoserver.global;
 
-import java.util.Date;
-import java.util.Map;
-
-import org.w3c.dom.Element;
-
+import java.util.*;
+import java.text.*;
 import org.vfny.geoserver.config.wms.*;
-
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalWMS.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: GlobalWMS.java,v 1.1.2.2 2004/01/03 00:20:15 dmzwiers Exp $
  */
-public class GlobalWMS extends ServiceConfig {
+public class GlobalWMS extends GlobalService {
     /** GlobalWMS version spec implemented */
     private static final String WMS_VERSION = "1.1.1";
 
@@ -30,27 +26,13 @@ public class GlobalWMS extends ServiceConfig {
         "application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
         "application/vnd.ogc.se_blank"
     };
-    private Date updateTime = new Date();
 
-    /**
-     * Creates a new GlobalWMS object.
-     *
-     * @param wmsRoot DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-    /*public GlobalWMS(Element wmsRoot) throws ConfigurationException {
-        super(wmsRoot);
-        URL = GlobalData.getInstance().getBaseUrl() + "/wms";
-    }
-    public GlobalWMS( Map config ){
-        super( config );
-        URL = GlobalData.getInstance().getBaseUrl() + "/wms";
-    }*/
-    public GlobalWMS(org.vfny.geoserver.config.wms.WMSConfig config){
+	private WMSConfig config = null;
+
+    public GlobalWMS(WMSConfig config){
     	super(config.getService());
-    	updateTime = config.getUpdateTime();
-    	URL = GlobalData.getInstance().getBaseUrl() + "/wms";
+    	this.config = config;
+    	URL = GlobalServer.getInstance().getGlobalData().getBaseUrl() + "/wms";
     }
     /**
      * DOCUMENT ME!
@@ -78,7 +60,9 @@ public class GlobalWMS extends ServiceConfig {
      * @return DOCUMENT ME!
      */
     public String getUpdateTime() {
-        return updateTime.toGMTString();
+    	DateFormat df = DateFormat.getInstance();
+    	df.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return df.format(config.getUpdateTime());
     }
 
     /**

@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
@@ -49,7 +49,7 @@ import org.vfny.geoserver.responses.Response;
  * <li>
  * ask the Request Reader for the Request object - t this time, request
  * parameters should be fully checked<br>
- * i.e. the Request objects contains the list of FeatureTypeConfig's rather
+ * i.e. the Request objects contains the list of GlobalFeatureType's rather
  * than just the type names.
  * </li>
  * <li>
@@ -89,7 +89,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.3.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.3.2.5 2004/01/03 00:20:15 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -97,10 +97,10 @@ public abstract class AbstractService extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
-    protected static final ServerConfig config = ServerConfig.getInstance();
+    protected static final GlobalServer config = GlobalServer.getInstance();
 
     /** Specifies mime type */
-    protected static final String MIME_TYPE = config.getGlobalConfig()
+    protected static final String MIME_TYPE = config.getGlobalData()
                                                     .getMimeType();
     private static Map context;
 
@@ -449,7 +449,7 @@ public abstract class AbstractService extends HttpServlet {
      * @return DOCUMENT ME!
      */
     protected String getMimeType() {
-        return config.getGlobalConfig().getMimeType();
+        return config.getGlobalData().getMimeType();
     }
 
     /**
@@ -744,7 +744,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.3.2.4 $
+ * @version $Revision: 1.3.2.5 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

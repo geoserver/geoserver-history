@@ -30,9 +30,9 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.gml.GMLFilterFeature;
+import org.vfny.geoserver.global.GlobalFeatureType;
 import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.FeatureTypeConfig;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalServer;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.2.2.4 2004/01/03 00:20:16 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -72,7 +72,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private TransactionFilterHandler parent;
 
     //private TypeRepository typeRepo = TypeRepository.getInstance();
-    private GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
+    private GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.
@@ -112,7 +112,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             //featureTypes?  Like add a 
             //!namespaceURI.equals("http://www.opengis.net/gml"); 
             //(not sure if that'd work, but something to that effect
-            FeatureTypeConfig fType = catalog.getFeatureType(localName,
+            GlobalFeatureType fType = catalog.getFeatureType(localName,
                     namespaceURI);
             String internalTypeName = null;
 
@@ -227,7 +227,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             insideInsert = false;
         }
 
-        FeatureTypeConfig fType = catalog.getFeatureType(localName, namespaceURI);
+        GlobalFeatureType fType = catalog.getFeatureType(localName, namespaceURI);
         String internalTypeName = null;
 
         if (fType != null) {

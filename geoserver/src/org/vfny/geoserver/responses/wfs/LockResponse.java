@@ -26,10 +26,10 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.GlobalFeatureType;
 import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.FeatureTypeConfig;
-import org.vfny.geoserver.global.NameSpace;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalNameSpace;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.LockRequest;
@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.5 2004/01/03 00:20:17 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -55,7 +55,7 @@ public class LockResponse implements Response {
     private static TypeRepository repository = TypeRepository.getInstance();
 
     /** indicates whether the output should be formatted. */
-    private static boolean verbose = ServerConfig.getInstance().getGlobalConfig()
+    private static boolean verbose = GlobalServer.getInstance().getGlobalData()
                                                  .isVerbose();
 
     /** the new line character to use in the response. */
@@ -85,7 +85,7 @@ public class LockResponse implements Response {
     }
 
     public String getContentType() {
-        return ServerConfig.getInstance().getGlobalConfig().getMimeType();
+        return GlobalServer.getInstance().getGlobalData().getMimeType();
     }
 
     public void writeTo(OutputStream out) throws ServiceException {
@@ -131,7 +131,7 @@ public class LockResponse implements Response {
         FeatureLock featureLock = request.toFeatureLock();
         Set lockedFids = new HashSet();
         Set lockFailedFids = new HashSet();
-        ServerConfig config = ServerConfig.getInstance();
+        GlobalServer config = GlobalServer.getInstance();
         GlobalCatalog catalog = config.getCatalog();
         FilterFactory filterFactory = FilterFactory.createFilterFactory();
         LOGGER.info("locks size is " + locks.size());
@@ -149,8 +149,8 @@ public class LockResponse implements Response {
             Filter curFilter = curLock.getFilter();
 
             //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
-            FeatureTypeConfig meta = catalog.getFeatureType(curTypeName);
-            NameSpace namespace = meta.getDataStore().getNameSpace();
+            GlobalFeatureType meta = catalog.getFeatureType(curTypeName);
+            GlobalNameSpace namespace = meta.getDataStore().getNameSpace();
             FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
             FeatureResults features = source.getFeatures(curFilter);
             source.setFeatureLock(featureLock);
@@ -189,9 +189,9 @@ public class LockResponse implements Response {
             } catch (IllegalAttributeException e) {
                 // TODO: JG - I really dont like this
                 // reader says it will throw this if the attribtues do not match
-                // the FeatureTypeConfig
+                // the GlobalFeatureType
                 // I figure if this is thrown we are poorly configured or
-                // the DataStoreConfig needs some quality control
+                // the GlobalDataStore needs some quality control
                 //
                 // should rollback the lock as well :-(
                 throw new WfsException("Lock request " + curFilter
@@ -264,7 +264,7 @@ public class LockResponse implements Response {
     private static String generateXml(String lockId, boolean lockAll,
         Set lockedFeatures, Set notLockedFeatures) {
         String indent = verbose ? "   " : "";
-        String xmlHeader = ServerConfig.getInstance().getXmlHeader();
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + GlobalServer.getInstance().getGlobalData().getCharSet().displayName()+ "\"?>";
         StringBuffer returnXml = new StringBuffer(xmlHeader);
         returnXml.append(nl + "<WFS_LockFeatureResponse " + nl);
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
@@ -282,7 +282,7 @@ public class LockResponse implements Response {
             + "XMLSchema-instance\" " + nl);
         returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis");
         returnXml.append(".net/wfs ");
-        returnXml.append(ServerConfig.getInstance().getWFSConfig()
+        returnXml.append(GlobalServer.getInstance().getWFS()
                                      .getSchemaBaseUrl());
         returnXml.append("wfs/1.0.0/GlobalWFS-transaction.xsd\">");
         returnXml.append(nl);
@@ -333,19 +333,19 @@ public class LockResponse implements Response {
             return; // we have no locks
         }
 
-        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
+        GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();
 
         // I think we need to release and fail when lockAll fails
         //
         try {
-            ServerConfig config = ServerConfig.getInstance();
+            GlobalServer config = GlobalServer.getInstance();
 
             for (Iterator i = request.getLocks().iterator(); i.hasNext();) {
                 LockRequest.Lock curLock = (LockRequest.Lock) i.next();
 
                 String curTypeName = curLock.getFeatureType();
 
-                FeatureTypeConfig meta = catalog.getFeatureType(curTypeName);
+                GlobalFeatureType meta = catalog.getFeatureType(curTypeName);
                 FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
 
                 Transaction t = new DefaultTransaction();

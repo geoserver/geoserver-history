@@ -38,12 +38,12 @@ import org.vfny.geoserver.responses.wfs.WfsTransactionException;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeRepository.java,v 1.2.2.2 2003/12/31 23:36:45 dmzwiers Exp $
+ * @version $Id: TypeRepository.java,v 1.2.2.3 2004/01/03 00:20:15 dmzwiers Exp $
  *
  * @task TODO: Rethink synchronization.  Just wanted to get things with locks
  *       working for this version, but obviously we need to examine
  *       synchronization completely if this class is to be useful at all.
- * @task TODO: convert over to the locking provided by DataStoreConfig, this class
+ * @task TODO: convert over to the locking provided by GlobalDataStore, this class
  *       is the last hold out for DataSource use that I could see, it
  *       uses TypeInfo.getDataSource to get a list of FeatureIDs.
  */

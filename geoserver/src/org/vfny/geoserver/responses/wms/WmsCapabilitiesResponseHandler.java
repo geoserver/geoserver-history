@@ -8,12 +8,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.vfny.geoserver.global.GlobalData;
+import org.vfny.geoserver.global.GlobalFeatureType;
 import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.ContactConfig;
-import org.vfny.geoserver.global.FeatureTypeConfig;
-import org.vfny.geoserver.global.ServerConfig;
-import org.vfny.geoserver.global.ServiceConfig;
 import org.vfny.geoserver.global.GlobalWMS;
+import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.GlobalService;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -24,11 +24,11 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.5 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
-    private static final String CAP_VERSION = ServerConfig.getInstance()
-                                                          .getWMSConfig()
+    private static final String CAP_VERSION = GlobalServer.getInstance()
+                                                          .getWMS()
                                                           .getVersion();
 
     /**
@@ -47,7 +47,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void startDocument(ServiceConfig config)
+    protected void startDocument(GlobalService config)
         throws SAXException {
         GlobalWMS wmsConfig = (GlobalWMS) config;
 
@@ -69,7 +69,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void endDocument(ServiceConfig config) throws SAXException {
+    public void endDocument(GlobalService config) throws SAXException {
         unIndent();
         endElement("WMT_MS_Capabilities");
     }
@@ -81,7 +81,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void startService(ServiceConfig config) throws SAXException {
+    protected void startService(GlobalService config) throws SAXException {
         startElement("ServiceConfig");
     }
 
@@ -92,7 +92,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void endService(ServiceConfig config) throws SAXException {
+    protected void endService(GlobalService config) throws SAXException {
         endElement("ServiceConfig");
     }
 
@@ -103,7 +103,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void handleService(ServiceConfig config) throws SAXException {
+    public void handleService(GlobalService config) throws SAXException {
         super.handleService(config);
         indent();
         handleContactInformation(config);
@@ -117,7 +117,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleCapabilities(ServiceConfig serviceConfig)
+    protected void handleCapabilities(GlobalService serviceConfig)
         throws SAXException {
         GlobalWMS config = (GlobalWMS) serviceConfig;
 
@@ -139,10 +139,10 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     protected void handleLayers(GlobalWMS config) throws SAXException {
         GlobalCatalog catalog = server.getCatalog();
         Collection ftypes = catalog.getFeatureTypes().values();
-        FeatureTypeConfig layer;
+        GlobalFeatureType layer;
 
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
-            layer = (FeatureTypeConfig) it.next();
+            layer = (GlobalFeatureType) it.next();
 
             if (layer.isEnabled()) {
                 cReturn();
@@ -156,7 +156,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     }
 
     /**
-     * calls super.handleFeatureType to add common FeatureTypeConfig content such as
+     * calls super.handleFeatureType to add common GlobalFeatureType content such as
      * Name, Title and LatLonBoundingBox, and then writes GlobalWMS specific layer
      * properties as Styles, Scale Hint, etc.
      *
@@ -164,7 +164,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleFeatureType(FeatureTypeConfig ftype)
+    protected void handleFeatureType(GlobalFeatureType ftype)
         throws SAXException {
         super.handleFeatureType(ftype);
     }
@@ -299,9 +299,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleContactInformation(ServiceConfig config)
+    protected void handleContactInformation(GlobalService config)
         throws SAXException {
-        ContactConfig contact = server.getGlobalConfig().getContactInformation();
+		GlobalData contact = server.getGlobalData();
         startElement("ContactInformation");
         indent();
         startElement("ContactPersonPrimary");
@@ -333,7 +333,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     }
 
     /**
-     * Overrides BasicConfig.handleKeywords to write the keywords list in GlobalWMS
+     * Overrides GlobalBasic.handleKeywords to write the keywords list in GlobalWMS
      * style
      *
      * @param kwords DOCUMENT ME!
@@ -370,7 +370,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleOnlineResouce(ServiceConfig config)
+    protected void handleOnlineResouce(GlobalService config)
         throws SAXException {
         String url = config.getOnlineResource();
         AttributesImpl olAtts = new AttributesImpl();

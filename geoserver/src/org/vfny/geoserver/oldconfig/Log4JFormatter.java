@@ -113,7 +113,7 @@ public class Log4JFormatter
   {
     this.base = base.trim();
     this.margin = getHeaderWidth();
-    this.startMillis = System.currentTimeMillis();
+	Log4JFormatter.startMillis = System.currentTimeMillis();
 
     final StringWriter str = new StringWriter();
     writer = new LineWriter(str);

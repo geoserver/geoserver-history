@@ -33,7 +33,7 @@ import org.geotools.filter.Filter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteRequest.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: DeleteRequest.java,v 1.2.2.4 2004/01/03 00:20:16 dmzwiers Exp $
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */
@@ -55,7 +55,7 @@ public class DeleteRequest extends SubTransactionRequest {
     }
 
     /**
-     * Gets the Name of the FeatureTypeConfig for this request.
+     * Gets the Name of the GlobalFeatureType for this request.
      *
      * @return The feature type name.
      */

@@ -26,7 +26,7 @@ public interface IntegrityValidation extends Validation
     /**
      * Used to check features against this validation rule.
      * 
-     * @param layers Allows access to FeatureTypeConfig and Collection by "name"   
+     * @param layers Allows access to GlobalFeatureType and Collection by "name"   
      * @param envelope The bounding box that encloses the unvalidated data  
      * @param results Used to coallate results information
      * @return True if all the features pass this test.

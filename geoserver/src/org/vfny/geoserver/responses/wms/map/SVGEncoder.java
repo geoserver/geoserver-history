@@ -20,7 +20,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.global.FeatureTypeConfig;
+import org.vfny.geoserver.global.GlobalFeatureType;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -36,7 +36,7 @@ import com.vividsolutions.jts.geom.Point;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.3.2.3 2003/12/31 23:36:45 dmzwiers Exp $
+ * @version $Id: SVGEncoder.java,v 1.3.2.4 2004/01/03 00:20:16 dmzwiers Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -65,7 +65,7 @@ public class SVGEncoder {
     /** temporary holding of the geometry currently being encoded */
     private Geometry currentGeometry = null;
 
-    /** temporary holding of the FeatureTypeConfig currently being encoded */
+    /** temporary holding of the GlobalFeatureType currently being encoded */
     private FeatureType featureType;
 
     /** the writer used to wrap the output stream */
@@ -152,7 +152,7 @@ public class SVGEncoder {
 
     /**
      * If <code>collect == true</code>, then all the geometries will be grouped
-     * in a single SVG element by FeatureTypeConfig requested. The effect is like a
+     * in a single SVG element by GlobalFeatureType requested. The effect is like a
      * union operation upon the geometries of the whole FeatureResults
      * resulting in a single geometry collection.
      * 
@@ -259,7 +259,7 @@ public class SVGEncoder {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void encode(final FeatureTypeConfig[] layers,
+    public void encode(final GlobalFeatureType[] layers,
         final FeatureResults[] results, final Style[] styles,
         final OutputStream out) throws IOException {
         this.writer = new SVGWriter(out);
@@ -298,13 +298,13 @@ public class SVGEncoder {
         }
     }
 
-    private void writeLayers(FeatureTypeConfig[] layers,
+    private void writeLayers(GlobalFeatureType[] layers,
         FeatureResults[] results, Style[] styles)
         throws IOException, AbortedException {
         int nLayers = results.length;
         int nConfigs = ((layers != null) && (layers.length >= nLayers))
             ? nLayers : 0;
-        FeatureTypeConfig layerConfig = null;
+        GlobalFeatureType layerConfig = null;
         int defMaxDecimals = writer.getMaximunFractionDigits();
 
         for (int i = 0; i < nLayers; i++) {
@@ -357,7 +357,7 @@ public class SVGEncoder {
         }
     }
 
-    private void writeDefs(FeatureTypeConfig[] layers)
+    private void writeDefs(GlobalFeatureType[] layers)
         throws IOException {
         if (layers == null) {
             LOGGER.warning(
@@ -789,7 +789,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.3.2.3 $
+ * @version $Revision: 1.3.2.4 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(

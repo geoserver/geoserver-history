@@ -23,7 +23,7 @@ import org.vfny.geoserver.requests.WFSRequest;
  * support those.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureRequest.java,v 1.3.2.3 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: FeatureRequest.java,v 1.3.2.4 2004/01/03 00:20:16 dmzwiers Exp $
  */
 public class FeatureRequest extends WFSRequest {
     /** Standard logging instance for class */
@@ -34,7 +34,7 @@ public class FeatureRequest extends WFSRequest {
      * The maximum returned if the user requests no limit of features at all,
      * but the other request parameters don't restrict to below 500.
      */
-    //protected static final int SOFT_MAX_FEATURES = ServerConfig.getInstance()
+    //protected static final int SOFT_MAX_FEATURES = GlobalServer.getInstance()
     //                                                           .getGlobalConfig()
     //                                                           .getMaxFeatures();
 

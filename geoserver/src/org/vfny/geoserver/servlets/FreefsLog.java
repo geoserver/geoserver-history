@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.zserver.GeoZServer;
 
 
@@ -37,7 +37,7 @@ import org.vfny.geoserver.zserver.GeoZServer;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.15.2.2 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: FreefsLog.java,v 1.15.2.3 2004/01/03 00:20:15 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -62,7 +62,7 @@ public class FreefsLog extends HttpServlet {
         LOGGER.fine("init with path: " + path);
 
         try {
-            ServerConfig.load(path);
+            GlobalServer.load(path);
         } catch (ConfigurationException ex) {
             LOGGER.severe("Can't initialize server: " + ex.getMessage());
             ex.printStackTrace();

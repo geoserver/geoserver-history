@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,28 +15,23 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.data.Catalog;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
-import org.geotools.feature.FeatureType;
 import org.geotools.styling.SLDStyle;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
+import org.vfny.geoserver.config.data.*;
 
 /**
  * Holds the featureTypes.  Replaced TypeRepository.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GlobalCatalog.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: GlobalCatalog.java,v 1.1.2.2 2004/01/03 00:20:14 dmzwiers Exp $
  */
-public class GlobalCatalog extends AbstractConfig
+public class GlobalCatalog extends GlobalAbstract
 /**
  * implements GlobalCatalog
  */
@@ -47,14 +41,15 @@ public class GlobalCatalog extends AbstractConfig
             "org.vfny.geoserver.config");
 
     /** Default name of feature type information */
-    public static final String INFO_FILE = "info.xml";
-    static StyleFactory styleFactory = StyleFactory.createStyleFactory();
+	private static final String INFO_FILE = "info.xml";
+	
+	private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
 
     /** The holds the mappings between prefixes and uri's */
     private Map nameSpaces;
 
     /** DOCUMENT ME! */
-    private NameSpace defaultNameSpace;
+    private GlobalNameSpace defaultNameSpace;
 
     /** DOCUMENT ME! */
     private Map dataStores;
@@ -63,168 +58,37 @@ public class GlobalCatalog extends AbstractConfig
     private Map styles;
 
     /**
-     * Map of <code>FeatureTypeConfig</code>'s stored by full qualified name
+     * Map of <code>GlobalFeatureType</code>'s stored by full qualified name
      * (namespace prefix + PREFIX_DELIMITER + typeName)
      */
     private Map featureTypes;
 
-    /**
-     * Configure based on gt2 GlobalCatalog.
-     * 
-     * <p>
-     * Quick hack for JUnit test cases, really the gt2 GlobalCatalog interface should
-     * be implemented by GlobalCatalog. And whatever methods  GeoServer needs
-     * to get its job done is what gt2 GlobalCatalog needs to provide.
-     * </p>
-     * Right now a Map is provided to set anything that gt2 GlobalCatalog cannot.
-     * 
-     * <p>
-     * Given a namespace foo in the catalog the config map defines:
-     * 
-     * <ul>
-     * <li>
-     * foo.uri: String (default foo)
-     * </li>
-     * <li>
-     * foo.default: boolean (default false, true if only one namespace)
-     * </li>
-     * </ul>
-     * </p>
-     *
-     * @param config DOCUMENT ME!
-     * @param catalog
-     */
-  /*  public GlobalCatalog(Map config, Catalog catalog) {
-        LOGGER.info("loading catalog configuration");
+    
+    private CatalogConfig catalog;
+    
+    // we create instances of everything at the start to support the datastore connections
+    public GlobalCatalog(CatalogConfig config) throws ConfigurationException {
+    	catalog = config;
 
-        String[] spaceNames = catalog.getNameSpaces();
-        nameSpaces = new HashMap(spaceNames.length);
-
-        for (int i = 0; i < spaceNames.length; i++) {
-            String name = spaceNames[i];
-
-            String uri = get(config, name + ".uri", name);
-            boolean defaultNS = get(config, name + ".default",
-                    spaceNames.length == 1);
-
-            NameSpace ns = new NameSpace(name, uri, defaultNS);
-
-            if (defaultNS) {
-                defaultNameSpace = ns;
-            }
-
-            LOGGER.config("Added NameSpaceConfig: " + ns);
-            nameSpaces.put(name, ns);
-        }
-
-        LOGGER.info("loading DataStoreConfig configuration");
-
-        Iterator iter = DataStoreFinder.getAvailableDataStores();
-
-        while (iter.hasNext()) {
-            LOGGER.fine(iter.next() + " is an available DataSource");
-        }
-
-        // gt2 currently assumes one datastore per namespace
-        //
-        // I know this is wrong, please feed our requirements into the gt2
-        // GlobalCatalog        
-        dataStores = new HashMap(spaceNames.length);
-
-        DataStoreConfig dsConfig;
-
-        for (int i = 0; i < spaceNames.length; i++) {
-            DataStore store = catalog.getDataStore(spaceNames[i]);
-            NameSpace nameSpace = (NameSpace) nameSpaces.get(spaceNames[i]);
-            DataStoreConfig dataStoreConfig = new DataStoreConfig(config,
-                    store, nameSpace);
-
-            dataStores.put(dataStoreConfig.getId(), dataStoreConfig);
-        }
-
-        LOGGER.info("loading style configuration");
-        styles = new HashMap();
-
-        // just use the default style
-        styles.put("normal", "styles/normal.sld");
-
-        LOGGER.info("loading FeatureTypeConfig configuration");
-        featureTypes = new HashMap();
-
-        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            DataStoreConfig dataStoreConfig = (DataStoreConfig) i.next();
-
-            try {
-                DataStore store = dataStoreConfig.getDataStore();
-
-                String[] typeNames = store.getTypeNames();
-
-                for (int t = 0; t < typeNames.length; t++) {
-                    FeatureType type;
-
-                    try {
-                        type = store.getSchema(typeNames[t]);
-
-                        FeatureTypeConfig typeConfig = new FeatureTypeConfig(config,
-                                type, dataStoreConfig);
-                        featureTypes.put(typeNames[t], typeConfig);
-                    } catch (IOException e) {
-                        LOGGER.log(Level.CONFIG,
-                            "problem loading type " + typeNames[t], e);
-
-                        // type was not available?
-                    }
-                }
-            } catch (IOException e) {
-                LOGGER.log(Level.CONFIG,
-                    "problem loading datastore " + dataStoreConfig, e);
-
-                // datastore not available                
-            }
-        }
-    }*/
-
-    /**
-     * Creates a new GlobalCatalog object.
-     *
-     * @param root DOCUMENT ME!
-     * @param dataDir DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-    /*public GlobalCatalog(Element root, String dataDir)
-        throws ConfigurationException {
-        LOGGER.info("loading catalog configuration");
-        loadNameSpaces(getChildElement(root, "namespaces", true));
-        loadDataStores(getChildElement(root, "datastores", true));
-        loadStyles(getChildElement(root, "styles", false), dataDir + "styles/");
-
-        String featureTypeDir = dataDir + "featureTypes";
-        File startDir = new File(featureTypeDir);
-        this.featureTypes = new HashMap();
-        loadFeatureTypes(startDir);
-    }*/
-    public GlobalCatalog(org.vfny.geoserver.config.data.CatalogConfig config) throws ConfigurationException {
-    	//dataStores = config.getDataStores();
     	Iterator i = config.getDataStores().keySet().iterator();
     	while(i.hasNext()){
     		Object key = i.next();
-    		dataStores.put(key,new DataStoreConfig((org.vfny.geoserver.config.data.DataStoreConfig)config.getDataStores().get(key)));
+    		dataStores.put(key,new GlobalDataStore((org.vfny.geoserver.config.data.DataStoreConfig)config.getDataStores().get(key)));
     	}
-    	//featureTypes = config.getFeaturesTypes();
+
 		i = config.getFeaturesTypes().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			featureTypes.put(key,new FeatureTypeConfig((org.vfny.geoserver.config.data.FeatureTypeConfig)config.getFeaturesTypes().get(key)));
+			featureTypes.put(key,new GlobalFeatureType((org.vfny.geoserver.config.data.FeatureTypeConfig)config.getFeaturesTypes().get(key)));
 		}
-    	defaultNameSpace = new NameSpace(config.getDefaultNameSpace());
-    	//nameSpaces = config.getNameSpaces();
+    	defaultNameSpace = new GlobalNameSpace(config.getDefaultNameSpace());
+
 		i = config.getNameSpaces().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			nameSpaces.put(key,new NameSpace((org.vfny.geoserver.config.data.NameSpaceConfig)config.getNameSpaces().get(key)));
+			nameSpaces.put(key,new GlobalNameSpace((org.vfny.geoserver.config.data.NameSpaceConfig)config.getNameSpaces().get(key)));
 		}
-    	//styles = config.getStyles();
+
 		i = config.getStyles().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
@@ -242,39 +106,39 @@ public class GlobalCatalog extends AbstractConfig
      *
      * @return DOCUMENT ME!
      */
-    public DataStoreConfig[] getDataStores() {
+    public GlobalDataStore[] getDataStores() {
         List dslist = new ArrayList(dataStores.values());
-        DataStoreConfig[] dStores = new DataStoreConfig[dslist.size()];
-        dStores = (DataStoreConfig[]) dslist.toArray(dStores);
+        GlobalDataStore[] dStores = new GlobalDataStore[dslist.size()];
+        dStores = (GlobalDataStore[]) dslist.toArray(dStores);
 
         return dStores;
     }
 
     /**
-     * searches a DataStoreConfig by its id attribute
+     * searches a GlobalDataStore by its id attribute
      *
-     * @param id the DataStoreConfig id looked for
+     * @param id the GlobalDataStore id looked for
      *
-     * @return the DataStoreConfig with id attribute equals to <code>id</code>
+     * @return the GlobalDataStore with id attribute equals to <code>id</code>
      *         or null if there no exists
      */
-    public DataStoreConfig getDataStore(String id) {
-        return (DataStoreConfig) dataStores.get(id);
+    public GlobalDataStore getDataStore(String id) {
+        return (GlobalDataStore) dataStores.get(id);
     }
 
     /**
-     * returns the list of DataStoreConfig's of the given namespace
+     * returns the list of GlobalDataStore's of the given namespace
      *
      * @param ns DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public List getDataStores(NameSpace ns) {
+    public List getDataStores(GlobalNameSpace ns) {
         List dataStoresNs = new ArrayList();
-        DataStoreConfig dsc;
+        GlobalDataStore dsc;
 
         for (Iterator it = dataStores.values().iterator(); it.hasNext();) {
-            dsc = (DataStoreConfig) it.next();
+            dsc = (GlobalDataStore) it.next();
 
             if (dsc.getNameSpace().equals(ns)) {
                 dataStoresNs.add(dsc);
@@ -289,10 +153,10 @@ public class GlobalCatalog extends AbstractConfig
      *
      * @return DOCUMENT ME!
      */
-    public NameSpace[] getNameSpaces() {
-        NameSpace[] ns = new NameSpace[nameSpaces.values().size()];
+    public GlobalNameSpace[] getNameSpaces() {
+        GlobalNameSpace[] ns = new GlobalNameSpace[nameSpaces.values().size()];
 
-        return (NameSpace[]) new ArrayList(nameSpaces.values()).toArray(ns);
+        return (GlobalNameSpace[]) new ArrayList(nameSpaces.values()).toArray(ns);
     }
 
     /**
@@ -302,8 +166,8 @@ public class GlobalCatalog extends AbstractConfig
      *
      * @return DOCUMENT ME!
      */
-    public NameSpace getNameSpace(String prefix) {
-        NameSpace retNS = (NameSpace) nameSpaces.get(prefix);
+    public GlobalNameSpace getNameSpace(String prefix) {
+        GlobalNameSpace retNS = (GlobalNameSpace) nameSpaces.get(prefix);
 
         return retNS;
     }
@@ -313,7 +177,7 @@ public class GlobalCatalog extends AbstractConfig
      *
      * @return DOCUMENT ME!
      */
-    public NameSpace getDefaultNameSpace() {
+    public GlobalNameSpace getDefaultNameSpace() {
         return defaultNameSpace;
     }
 
@@ -339,20 +203,20 @@ public class GlobalCatalog extends AbstractConfig
      *
      * @throws NoSuchElementException DOCUMENT ME!
      */
-    public FeatureTypeConfig getFeatureType(String typeName)
+    public GlobalFeatureType getFeatureType(String typeName)
         throws NoSuchElementException {
-        int prefixDelimPos = typeName.lastIndexOf(NameSpace.PREFIX_DELIMITER);
+        int prefixDelimPos = typeName.lastIndexOf(GlobalNameSpace.PREFIX_DELIMITER);
 
         if (prefixDelimPos < 0) {
             //for backwards compatibility.  Only works if all
             //featureTypes have the same prefix.
             typeName = getDefaultNameSpace().getPrefix()
-                + NameSpace.PREFIX_DELIMITER + typeName;
+                + GlobalNameSpace.PREFIX_DELIMITER + typeName;
         }
 
         LOGGER.finest("getting type " + typeName);
 
-        FeatureTypeConfig ftype = (FeatureTypeConfig) featureTypes.get(typeName);
+        GlobalFeatureType ftype = (GlobalFeatureType) featureTypes.get(typeName);
 
         if (ftype == null) {
             throw new NoSuchElementException("there is no FeatureTypeConfig named "
@@ -363,7 +227,7 @@ public class GlobalCatalog extends AbstractConfig
     }
 
     /**
-     * Gets a FeatureTypeConfig from a local type name (ie unprefixed), and a
+     * Gets a GlobalFeatureType from a local type name (ie unprefixed), and a
      * uri.  This method is slow, use getFeatureType(String typeName), where
      * possible.  For not he only user should be TransactionFeatureHandler.
      *
@@ -372,9 +236,9 @@ public class GlobalCatalog extends AbstractConfig
      *
      * @return DOCUMENT ME!
      */
-    public FeatureTypeConfig getFeatureType(String localName, String uri) {
+    public GlobalFeatureType getFeatureType(String localName, String uri) {
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
-            FeatureTypeConfig fType = (FeatureTypeConfig) it.next();
+            GlobalFeatureType fType = (GlobalFeatureType) it.next();
 
             if (fType.isEnabled()) {
                 if (fType.getShortName().equals(localName)
@@ -419,7 +283,7 @@ public class GlobalCatalog extends AbstractConfig
             defaultNS = getBooleanAttribute(elem, "default", false);
             defaultNS = (defaultNS || (nsCount == 1));
 
-            NameSpace ns = new NameSpace(prefix, uri, defaultNS);
+            GlobalNameSpace ns = new GlobalNameSpace(prefix, uri, defaultNS);
             LOGGER.config("added namespace " + ns);
             nameSpaces.put(prefix, ns);
 
@@ -441,12 +305,12 @@ public class GlobalCatalog extends AbstractConfig
 
         NodeList dsElements = dsRoot.getElementsByTagName("datastore");
         int dsCnt = dsElements.getLength();
-        DataStoreConfig dsConfig;
+        GlobalDataStore dsConfig;
         Element dsElem;
 
         for (int i = 0; i < dsCnt; i++) {
             dsElem = (Element) dsElements.item(i);
-            dsConfig = new DataStoreConfig(dsElem, this);
+            dsConfig = new GlobalDataStore(dsElem, this);
 
             if (dataStores.containsKey(dsConfig.getId())) {
                 throw new ConfigurationException("duplicated datastore id: "
@@ -519,7 +383,7 @@ public class GlobalCatalog extends AbstractConfig
         throws IOException {
         URL url;
 
-        //HACK: but I'm not sure if we can get the ServerConfig instance.  This is one thing
+        //HACK: but I'm not sure if we can get the GlobalServer instance.  This is one thing
         //that will benefit from splitting up of config loading from representation.
         url = new File(base + fileName).toURL();
 
@@ -532,7 +396,7 @@ public class GlobalCatalog extends AbstractConfig
 		throws IOException {
 		URL url;
 
-		//HACK: but I'm not sure if we can get the ServerConfig instance.  This is one thing
+		//HACK: but I'm not sure if we can get the GlobalServer instance.  This is one thing
 		//that will benefit from splitting up of config loading from representation.
 		url = fileName.toURL();
 
@@ -568,12 +432,12 @@ public class GlobalCatalog extends AbstractConfig
             }
         } else if (isInfoFile(currentFile)) {
             String curPath = currentFile.getAbsolutePath();
-            Element featureElem = ServerConfig.loadConfig(currentFile.toString());
-            FeatureTypeConfig ft = null;
+            Element featureElem = GlobalServer.loadConfig(currentFile.toString());
+            GlobalFeatureType ft = null;
 
             try {
                 File parentDir = currentFile.getParentFile();
-                ft = new FeatureTypeConfig(this, featureElem);
+                ft = new GlobalFeatureType(this, featureElem);
 
                 String pathToSchemaFile = new File(parentDir, "schema.xml")
                     .toString();
@@ -584,7 +448,7 @@ public class GlobalCatalog extends AbstractConfig
             } catch (ConfigurationException cfge) {
                 //HACK: should use a logger.
                 cfge.printStackTrace(System.out);
-                LOGGER.warning("could not add FeatureTypeConfig at " + currentFile
+                LOGGER.warning("could not add GlobalFeatureType at " + currentFile
                     + " due to " + cfge);
             }
         }
@@ -592,7 +456,7 @@ public class GlobalCatalog extends AbstractConfig
 
     /*  private void loadType(String filePath) throws ConfigurationException {
        try {
-           Element featureElem = ServerConfig.loadConfig(configFile);
+           Element featureElem = GlobalServer.loadConfig(configFile);
            String featureTag = featureElem.getTagName();
            if (!featureTag.equals(rootTag) && !featureTag.equals(OLD_ROOT_TAG)) {
                featureElem = (Element) featureElem.getElementsByTagName(rootTag)
@@ -607,9 +471,9 @@ public class GlobalCatalog extends AbstractConfig
        NodeList ftlist = fTypesElem.getElementsByTagName("featureType");
        Element ftypeElem;
        int ftCount = ftlist.getLength();
-       FeatureTypeConfig ft = null;
+       GlobalFeatureType ft = null;
        for (int i = 0; i < ftCount; i++) {
-           ft = new FeatureTypeConfig(this, (Element) ftlist.item(i));
+           ft = new GlobalFeatureType(this, (Element) ftlist.item(i));
            featureTypes.put(ft.getName(), ft);
        }
        }*/
@@ -638,7 +502,7 @@ public class GlobalCatalog extends AbstractConfig
         boolean refresh = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            DataStoreConfig meta = (DataStoreConfig) i.next();
+            GlobalDataStore meta = (GlobalDataStore) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
@@ -697,7 +561,7 @@ public class GlobalCatalog extends AbstractConfig
         boolean refresh = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            DataStoreConfig meta = (DataStoreConfig) i.next();
+            GlobalDataStore meta = (GlobalDataStore) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
@@ -761,7 +625,7 @@ public class GlobalCatalog extends AbstractConfig
         boolean refresh = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            DataStoreConfig meta = (DataStoreConfig) i.next();
+            GlobalDataStore meta = (GlobalDataStore) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
@@ -807,7 +671,7 @@ public class GlobalCatalog extends AbstractConfig
         boolean release = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            DataStoreConfig meta = (DataStoreConfig) i.next();
+            GlobalDataStore meta = (GlobalDataStore) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
@@ -846,7 +710,7 @@ public class GlobalCatalog extends AbstractConfig
      */
     public boolean lockExists(String lockID) {
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            DataStoreConfig meta = (DataStoreConfig) i.next();
+            GlobalDataStore meta = (GlobalDataStore) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled

@@ -9,27 +9,18 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.validation.FeatureValidation;
-import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
-import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
-import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
-
-import org.vfny.geoserver.config.*;
+import org.vfny.geoserver.config.ModelConfig;
 
 /**
  * GlobalValidation sets up the Tests used for the VWFS.
@@ -60,11 +51,11 @@ import org.vfny.geoserver.config.*;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GlobalValidation.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: GlobalValidation.java,v 1.1.2.2 2004/01/03 00:20:15 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
-public class GlobalValidation extends AbstractConfig {
+public class GlobalValidation extends GlobalAbstract {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");    
     /** This is the validation processor we are configuring.
@@ -189,7 +180,7 @@ public class GlobalValidation extends AbstractConfig {
  * 
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf 
  */
-class PlugIn extends AbstractConfig {
+class PlugIn extends GlobalAbstract {
     Map defaults;
     String plugInName;
     String plugInDescription;

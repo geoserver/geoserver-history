@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.vfny.geoserver.global.FeatureTypeConfig;
-import org.vfny.geoserver.global.NameSpace;
-import org.vfny.geoserver.global.ServerConfig;
-import org.vfny.geoserver.global.ServiceConfig;
+import org.vfny.geoserver.global.GlobalFeatureType;
 import org.vfny.geoserver.global.GlobalWFS;
+import org.vfny.geoserver.global.GlobalNameSpace;
+import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.GlobalService;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -24,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.5 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -48,13 +48,13 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void startDocument(ServiceConfig config)
+    protected void startDocument(GlobalService config)
         throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "version", "version", "", CUR_VERSION);
         attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
 
-        NameSpace[] namespaces = catalog.getNameSpaces();
+        GlobalNameSpace[] namespaces = catalog.getNameSpaces();
 
         for (int i = 0; i < namespaces.length; i++) {
             String prefixDef = "xmlns:" + namespaces[i].getPrefix();
@@ -70,7 +70,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         String locationAtt = XSI_PREFIX + ":schemaLocation";
         String locationDef = WFS_URI + " "
-            + ServerConfig.getInstance().getWFSConfig().getWfsCapLocation();
+            + GlobalServer.getInstance().getWFS().getWfsCapLocation();
         attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
         startElement("WFS_Capabilities", attributes);
     }
@@ -82,7 +82,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void endDocument(ServiceConfig config) throws SAXException {
+    public void endDocument(GlobalService config) throws SAXException {
         handleFilters();
         endElement("WFS_Capabilities");
     }
@@ -94,7 +94,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleCapabilities(ServiceConfig serviceConfig)
+    protected void handleCapabilities(GlobalService serviceConfig)
         throws SAXException {
         GlobalWFS config = (GlobalWFS) serviceConfig;
 
@@ -171,7 +171,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
     }
 
-    private void handleFeatureTypes(ServiceConfig serviceConfig)
+    private void handleFeatureTypes(GlobalService serviceConfig)
         throws SAXException {
         GlobalWFS config = (GlobalWFS) serviceConfig;
 
@@ -194,10 +194,10 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         endElement("Operations");
 
         Collection featureTypes = server.getCatalog().getFeatureTypes().values();
-        FeatureTypeConfig ftype;
+        GlobalFeatureType ftype;
 
         for (Iterator it = featureTypes.iterator(); it.hasNext();) {
-            ftype = (FeatureTypeConfig) it.next();
+            ftype = (GlobalFeatureType) it.next();
 
             //can't handle ones that aren't enabled.
             //and they shouldn't be handled, as they won't function.

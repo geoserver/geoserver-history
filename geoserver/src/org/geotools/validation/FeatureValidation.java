@@ -67,14 +67,14 @@ import org.geotools.feature.FeatureType;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @version $Id: FeatureValidation.java,v 1.3.2.1 2003/12/31 23:36:44 dmzwiers Exp $
+ * @version $Id: FeatureValidation.java,v 1.3.2.2 2004/01/03 00:20:14 dmzwiers Exp $
  */
 public interface FeatureValidation extends Validation {
     /**
      * Used to check features against this validation rule.
      *
      * @param feature Feature to be Validated
-     * @param type FeatureTypeConfig schema of feature
+     * @param type GlobalFeatureType schema of feature
      * @param results coallate results information
      *
      * @return True if all the features pass this test.

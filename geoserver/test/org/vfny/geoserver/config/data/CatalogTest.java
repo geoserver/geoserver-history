@@ -27,7 +27,7 @@ import org.vfny.geoserver.config.EqualsLibrary;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogTest.java,v 1.1.2.2 2004/01/02 17:13:25 dmzwiers Exp $
+ * @version $Id: CatalogTest.java,v 1.1.2.3 2004/01/03 00:20:18 dmzwiers Exp $
  */
 public class CatalogTest extends TestCase {
 
@@ -62,11 +62,11 @@ public class CatalogTest extends TestCase {
 	}
 
 	/*
-	 * Test for void CatalogConfig(CatalogConfig)
+	 * Test for void GlobalCatalog(GlobalCatalog)
 	 */
 	public void testCatalogCatalog() {
 		b = new CatalogConfig(a);
-		assertTrue("Testing CatalogConfig(CatalogConfig)\nRelies on CatalogConfig.equals.",a.equals(b));
+		assertTrue("Testing GlobalCatalog(GlobalCatalog)\nRelies on GlobalCatalog.equals.",a.equals(b));
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class CatalogTest extends TestCase {
 	 */
 	public void testClone() {
 		b = (CatalogConfig)a.clone();
-		assertTrue("Testing clone()\nRelies on CatalogConfig.equals.",a.equals(b));
+		assertTrue("Testing clone()\nRelies on GlobalCatalog.equals.",a.equals(b));
 	}
 
 	/*

@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import org.vfny.geoserver.global.ServerConfig;
-import org.vfny.geoserver.global.ServiceConfig;
+import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.GlobalService;
 import org.vfny.geoserver.responses.CapabilitiesResponse;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.vfny.geoserver.responses.ResponseHandler;
@@ -16,7 +16,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSCapabilitiesResponse.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: WMSCapabilitiesResponse.java,v 1.2.2.3 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class WMSCapabilitiesResponse extends CapabilitiesResponse {
     /**
@@ -24,8 +24,8 @@ public class WMSCapabilitiesResponse extends CapabilitiesResponse {
      *
      * @return DOCUMENT ME!
      */
-    protected ServiceConfig getServiceConfig() {
-        return ServerConfig.getInstance().getWMSConfig();
+    protected GlobalService getGlobalService() {
+        return GlobalServer.getInstance().getWMS();
     }
 
     /**
@@ -38,7 +38,7 @@ public class WMSCapabilitiesResponse extends CapabilitiesResponse {
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
         CapabilitiesResponseHandler cr = new WmsCapabilitiesResponseHandler(contentHandler);
         cr.setPrettyPrint(true,
-            ServerConfig.getInstance().getGlobalConfig().isVerbose());
+            GlobalServer.getInstance().getGlobalData().isVerbose());
 
         return cr;
     }

@@ -20,7 +20,7 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * Tests the get feature request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionSuite.java,v 1.6.2.2 2003/12/31 00:36:51 dmzwiers Exp $
+ * @version $Id: TransactionSuite.java,v 1.6.2.3 2004/01/03 00:20:17 dmzwiers Exp $
  *
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.
@@ -57,7 +57,7 @@ public class TransactionSuite extends RequestTestCase {
     protected static FilterFactory factory = FilterFactory.createFilterFactory();
     protected FeatureType schema;
     protected Feature testFeature;
-    protected ServerConfig config;
+    protected GlobalServer config;
 
     /**
      * Constructor with super.
@@ -83,7 +83,7 @@ public class TransactionSuite extends RequestTestCase {
 
     public void setUp() throws Exception {
         Map values = new HashMap();
-        ServerConfig.load(values, new DefaultCatalog());
+        GlobalServer.load(values, new DefaultCatalog());
 
         //config = ConfigInfo.getInstance(CONFIG_DIR);
         //config.setTypeDir(TYPE_DIR);

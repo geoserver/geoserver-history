@@ -5,61 +5,57 @@
 package org.vfny.geoserver.global;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
+import org.vfny.geoserver.config.data.*;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreConfig.java,v 1.1.2.5 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: GlobalDataStore.java,v 1.1.2.1 2004/01/03 00:20:14 dmzwiers Exp $
  */
-public class DataStoreConfig extends AbstractConfig {
+public class GlobalDataStore extends GlobalAbstract {
     
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
 
     /** unique datasore identifier */
-    private String id;
+    //private String id;
 
     /** unique namespace to refer to this datastore */
-    private NameSpace nameSpace;
+    //private GlobalNameSpace nameSpace;
 
     /** wether this data store is enabled */
-    private boolean enabled;
+    //private boolean enabled;
 
     /** a short description about this data store */
-    private String title;
+    //private String title;
 
     /** a short description about this data store */
-    private String _abstract;
+    //private String _abstract;
 
-    /** connection parameters to create the DataStoreConfig */
-    private Map connectionParams;
+    /** connection parameters to create the GlobalDataStore */
+    //private Map connectionParams;
 
-    /** DataStoreConfig we are representing */
+    /** GlobalDataStore we are representing */
     private DataStore dataStore = null;
     /**
-     * Creates a new DataStoreConfig object.
+     * Creates a new GlobalDataStore object.
      *
      * @param dsElem DOCUMENT ME!
      * @param catalog DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-   /* public DataStoreConfig(Element dsElem, GlobalCatalog catalog)
+   /* public GlobalDataStore(Element dsElem, GlobalCatalog catalog)
         throws ConfigurationException {
-        LOGGER.finer("creating a new DataStoreConfig configuration");
+        LOGGER.finer("creating a new GlobalDataStore configuration");
         this.id = getAttribute(dsElem, "id", true);
 
         String namespacePrefix = getAttribute(dsElem, "namespace", true);
@@ -79,12 +75,11 @@ public class DataStoreConfig extends AbstractConfig {
         loadConnectionParams(getChildElement(dsElem, "connectionParams", true));
         LOGGER.info("created " + toString());
     }*/
-    public DataStoreConfig(org.vfny.geoserver.config.data.DataStoreConfig config){
-    	_abstract = config.getAbstract();
-    	connectionParams = config.getConnectionParams();
-    	enabled = config.isEnabled();
-    	nameSpace = ServerConfig.getInstance().getCatalog().getNameSpace(config.getNameSpaceId());
-    	title = config.getTitle();
+    
+    private DataStoreConfig dsc;
+    
+    public GlobalDataStore(DataStoreConfig config){
+    	dsc = config;
     }
     /**
      * Configuration based on gt2 GlobalCatalog information.
@@ -101,8 +96,8 @@ public class DataStoreConfig extends AbstractConfig {
      * @param store
      * @param config2
      */
-  /*  public DataStoreConfig(Map config, DataStore store, NameSpace namespace ) {
-        LOGGER.finer("creating a new DataStoreConfig configuration");
+  /*  public GlobalDataStore(Map config, DataStore store, GlobalNameSpace namespace ) {
+        LOGGER.finer("creating a new GlobalDataStore configuration");
         String name = namespace.getPrefix();
         id = get( config, name+".id", name );
         nameSpace = namespace;
@@ -117,7 +112,7 @@ public class DataStoreConfig extends AbstractConfig {
      * @return DOCUMENT ME!
      */
     public String getId() {
-        return this.id;
+        return dsc.getId();
     }
 
     /**
@@ -129,7 +124,7 @@ public class DataStoreConfig extends AbstractConfig {
      */
    /* private void loadConnectionParams(Element connElem)
         throws ConfigurationException {
-        LOGGER.fine("loading connection parameters for DataStoreConfig "
+        LOGGER.fine("loading connection parameters for GlobalDataStore "
             + nameSpace.getPrefix());
         this.connectionParams = new HashMap();
 
@@ -150,24 +145,24 @@ public class DataStoreConfig extends AbstractConfig {
     }*/
 
     /**
-     * By now just uses DataStoreFinder to find a new instance of a DataStoreConfig
+     * By now just uses DataStoreFinder to find a new instance of a GlobalDataStore
      * capable of process <code>connectionParams</code>. In the future we can
      * see if it is better to cache or pool DataStores for performance, but
-     * definitely we shouldn't maintain a single DataStoreConfig as instance
+     * definitely we shouldn't maintain a single GlobalDataStore as instance
      * variable for synchronizing reassons
      * <p>
      * <p>
-     * JG: Umm we actually require a single DataStoreConfig for for locking &
-     * transaction support to work. DataStoreConfig is expected
+     * JG: Umm we actually require a single GlobalDataStore for for locking &
+     * transaction support to work. GlobalDataStore is expected
      * to be thread aware (that is why it has Transaction Support).
      * </p>
      * @return DOCUMENT ME!
      *
      * @throws IOException if a datastore is found but can not be created for
      *         the passed parameters
-     * @throws IllegalStateException if this DataStoreConfig is disabled by
+     * @throws IllegalStateException if this GlobalDataStore is disabled by
      *         configuration
-     * @throws NoSuchElementException if no DataStoreConfig is found
+     * @throws NoSuchElementException if no GlobalDataStore is found
      * @throws DataSourceException DOCUMENT ME!
      */
     public synchronized DataStore getDataStore()
@@ -178,7 +173,7 @@ public class DataStoreConfig extends AbstractConfig {
         }
         if( dataStore == null ){
             try {
-                dataStore = DataStoreFinder.getDataStore(connectionParams);
+                dataStore = DataStoreFinder.getDataStore(dsc.getConnectionParams());
 		LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
                 throw new DataSourceException("can't create the datastore " +
@@ -201,7 +196,7 @@ public class DataStoreConfig extends AbstractConfig {
      * @return DOCUMENT ME!
      */
     public String getTitle() {
-        return title;
+        return dsc.getTitle();
     }
 
     /**
@@ -210,7 +205,7 @@ public class DataStoreConfig extends AbstractConfig {
      * @return DOCUMENT ME!
      */
     public String getAbstract() {
-        return _abstract;
+        return dsc.getAbstract();
     }
 
     /**
@@ -219,7 +214,7 @@ public class DataStoreConfig extends AbstractConfig {
      * @return DOCUMENT ME!
      */
     public boolean isEnabled() {
-        return enabled;
+        return dsc.isEnabled();
     }
 
     /**
@@ -227,8 +222,8 @@ public class DataStoreConfig extends AbstractConfig {
      *
      * @return DOCUMENT ME!
      */
-    public NameSpace getNameSpace() {
-        return nameSpace;
+    public GlobalNameSpace getNameSpace() {
+    	return GlobalServer.getInstance().getCatalog().getNameSpace(dsc.getNameSpaceId());
     }
 
     /**
@@ -237,12 +232,12 @@ public class DataStoreConfig extends AbstractConfig {
      * @return DOCUMENT ME!
      */
     public String toString() {
-        return new StringBuffer("DataStoreConfig[namespace=").append(nameSpace
-            .getPrefix()).append(", enabled=").append(enabled)
+        return new StringBuffer("DataStoreConfig[namespace=").append(getNameSpace()
+            .getPrefix()).append(", enabled=").append(isEnabled())
                                                              .append(", abstract=")
-                                                             .append(_abstract)
+                                                             .append(getAbstract())
                                                              .append(", connection parameters=")
-                                                             .append(connectionParams)
+                                                             .append(dsc.getConnectionParams())
                                                              .append("]")
                                                              .toString();
     }

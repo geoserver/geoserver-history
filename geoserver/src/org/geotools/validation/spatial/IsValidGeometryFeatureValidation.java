@@ -45,7 +45,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: IsValidGeometryFeatureValidation.java,v 1.3.2.1 2003/12/31 23:37:00 dmzwiers Exp $
+ * @version $Id: IsValidGeometryFeatureValidation.java,v 1.3.2.2 2004/01/03 00:20:18 dmzwiers Exp $
  */
 public class IsValidGeometryFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
@@ -184,10 +184,10 @@ public class IsValidGeometryFeatureValidation implements FeatureValidation {
 	 * The geometry is first tested to see if it is null, and if it is null, 
 	 * then it is tested to see if it is allowed to be null by calling isNillable().
 	 * </p>
-	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureTypeConfig, org.geotools.validation.ValidationResults)
+	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.GlobalFeatureType, org.geotools.validation.ValidationResults)
 	 * 
  	 * @param feature The Feature to be validated
-	 * @param type The FeatureTypeConfig of the feature
+	 * @param type The GlobalFeatureType of the feature
 	 * @param results The storage for error messages.
 	 * @return True if the feature is a valid geometry.
 	 */

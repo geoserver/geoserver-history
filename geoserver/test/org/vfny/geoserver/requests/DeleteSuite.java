@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteSuite.java,v 1.10.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: DeleteSuite.java,v 1.10.2.3 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class DeleteSuite extends TransactionSuite {
     // Initializes the logger. Uncomment to see log messages.
@@ -96,12 +96,12 @@ public class DeleteSuite extends TransactionSuite {
      * *********************************************************************/
 
     /**
-     * Example 1 from the WFSConfig 1.0 specification.
+     * Example 1 from the GlobalWFS 1.0 specification.
      *
      * @throws Exception DOCUMENT ME!
      */
     public void testKVP1() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=GlobalWFS&"
             + "REQUEST=TRANSACTION&" + "OPERATION=delete&" + "TYPENAME=rail&"
             + "featureID=123";
 
@@ -119,12 +119,12 @@ public class DeleteSuite extends TransactionSuite {
     }
 
     /**
-     * Example 2 from the WFSConfig 1.0 specification.
+     * Example 2 from the GlobalWFS 1.0 specification.
      *
      * @throws Exception DOCUMENT ME!
      */
     public void testKVP2() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=GlobalWFS&"
             + "REQUEST=TRANSACTION&" + "OPERATION=delete&"
             + "TYPENAME=rail,roads&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
@@ -169,12 +169,12 @@ public class DeleteSuite extends TransactionSuite {
     }
 
     /**
-     * Example 3 from the WFSConfig 1.0 specification.
+     * Example 3 from the GlobalWFS 1.0 specification.
      *
      * @throws Exception DOCUMENT ME!
      */
     public void testKVP3() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=GlobalWFS&"
             + "REQUEST=TRANSACTION&" + "OPERATION=delete&" + "TYPENAME=rail&"
             + "BBOX=10,10,20,20";
 

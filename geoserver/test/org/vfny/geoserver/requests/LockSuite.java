@@ -29,7 +29,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: LockSuite.java,v 1.5.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: LockSuite.java,v 1.5.2.3 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class LockSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
@@ -120,11 +120,11 @@ public class LockSuite extends RequestTestCase {
      * themselves are quite generic, so documentation is minimal.
      */
     /*
-     * Example 1 from the WFSConfig 1.0 specification.
+     * Example 1 from the GlobalWFS 1.0 specification.
      */
     public void testKVP1() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFSConfig&" + "TYPENAME=rail";
+            + "SERVICE=GlobalWFS&" + "TYPENAME=rail";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest();
@@ -135,11 +135,11 @@ public class LockSuite extends RequestTestCase {
     }
 
     /*
-     * Example 2 from the WFSConfig 1.0 specification.
+     * Example 2 from the GlobalWFS 1.0 specification.
      */
     public void testKVP2() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFSConfig&" + "TYPENAME=rail&" + "featureID=123";
+            + "SERVICE=GlobalWFS&" + "TYPENAME=rail&" + "featureID=123";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest();
@@ -155,11 +155,11 @@ public class LockSuite extends RequestTestCase {
     }
 
     /*
-     * Example 3 from the WFSConfig 1.0 specification.
+     * Example 3 from the GlobalWFS 1.0 specification.
      */
     public void testKVP3() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFSConfig&" + "TYPENAME=rail,roads";
+            + "SERVICE=GlobalWFS&" + "TYPENAME=rail,roads";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest();
@@ -171,10 +171,10 @@ public class LockSuite extends RequestTestCase {
     }
 
     /*
-     * Example 13 from the WFSConfig 1.0 specification.
+     * Example 13 from the GlobalWFS 1.0 specification.
      */
     public void testKVP4() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFSConfig&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=GlobalWFS&"
             + "REQUEST=LockFEATURE&" + "LOCKACTION=all&"
             + "TYPENAME=rail,roads&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";

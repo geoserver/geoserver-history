@@ -41,9 +41,9 @@ import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.GlobalFeatureType;
 import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.FeatureTypeConfig;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DeleteRequest;
 import org.vfny.geoserver.requests.wfs.InsertRequest;
@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.2.2.5 2004/01/03 00:20:16 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -144,7 +144,7 @@ public class TransactionResponse implements Response {
         transaction = new DefaultTransaction();
         LOGGER.fine("request is " + request);
 
-        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
+        GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();
 
         WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS);
 
@@ -161,7 +161,7 @@ public class TransactionResponse implements Response {
             String typeName = element.getTypeName();
 
             if (!stores.containsKey(typeName)) {
-                FeatureTypeConfig meta = catalog.getFeatureType(typeName);
+                GlobalFeatureType meta = catalog.getFeatureType(typeName);
 
                 try {
                     FeatureSource source = meta.getFeatureSource();
@@ -380,7 +380,7 @@ public class TransactionResponse implements Response {
         FeatureCollection collection) throws IOException, WfsTransactionException {
             
         ValidationProcessor validation =
-            ServerConfig.getInstance().getValidationConfig().getProcessor();
+            GlobalServer.getInstance().getValidationConfig().getProcessor();
 
         final Map failed = new TreeMap();
         ValidationResults results = new ValidationResults(){
@@ -422,9 +422,9 @@ public class TransactionResponse implements Response {
 
     protected void integrityValidation(Map stores, Envelope check)
         throws IOException, WfsTransactionException {
-        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
+        GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();
         ValidationProcessor validation =
-            ServerConfig.getInstance().getValidationConfig().getProcessor();
+            GlobalServer.getInstance().getValidationConfig().getProcessor();
         
         // go through each modified typeName
         // and ask what we need to check
@@ -449,7 +449,7 @@ public class TransactionResponse implements Response {
                 // These will be using Transaction.AUTO_COMMIT
                 // this is okay as they were not involved in our
                 // Transaction...
-                FeatureTypeConfig meta = catalog.getFeatureType( typeName );
+                GlobalFeatureType meta = catalog.getFeatureType( typeName );
                 sources.put( typeName, meta.getFeatureSource() );                
             }
         }
@@ -497,7 +497,7 @@ public class TransactionResponse implements Response {
      * @return DOCUMENT ME!
      */
     public String getContentType() {
-        return ServerConfig.getInstance().getGlobalConfig().getMimeType();
+        return GlobalServer.getInstance().getGlobalData().getMimeType();
     }
 
     /**
@@ -570,7 +570,7 @@ public class TransactionResponse implements Response {
         // We also need to do this if the opperation is not a success,
         // you can find this same code in the abort method
         // 
-        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
+        GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();
 
         if (request.getLockId() != null) {
             if (request.getReleaseAction() == TransactionRequest.ALL) {
@@ -602,7 +602,7 @@ public class TransactionResponse implements Response {
             // 
             // TODO: Do we need release/refresh during an abort?               
             if (request.getLockId() != null) {
-                GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();
+                GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();
 
                 if (request.getReleaseAction() == TransactionRequest.ALL) {
                     catalog.lockRelease(request.getLockId());

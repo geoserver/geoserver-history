@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.global.GlobalData;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.responses.ResponseUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: WfsTransResponse.java,v 1.2.2.5 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
@@ -66,7 +66,7 @@ public class WfsTransResponse {
     /** Name of the status element of the xml document */
     public static final String STATUS = "Status";
     public static final String V_OFFSET = "   ";
-    private boolean verbose = ServerConfig.getInstance().getGlobalConfig()
+    private boolean verbose = GlobalServer.getInstance().getGlobalData()
                                           .isVerbose();
     private String indent = (verbose) ? ("\n" + V_OFFSET) : " ";
     private String offset = (verbose) ? V_OFFSET : "";
@@ -163,7 +163,7 @@ public class WfsTransResponse {
     public void writeXmlResponse(Writer writer) throws IOException {
         //boolean verbose = ConfigInfo.getInstance().formatOutput();
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
-        String xmlHeader = ServerConfig.getInstance().getXmlHeader();
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + GlobalServer.getInstance().getGlobalData().getCharSet().displayName()+ "\"?>";
 
         if (verbose) {
             writer.write("\n");
@@ -181,7 +181,8 @@ public class WfsTransResponse {
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         writer.write(indent);
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
-        writer.write(GlobalData.getInstance().getSchemaBaseUrl());
+        
+        writer.write(GlobalServer.getInstance().getGlobalData().getSchemaBaseUrl());
         writer.write("wfs/1.0.0/GlobalWFS-transaction.xsd\">");
 
         //  + " http://schemas.opengis.net/wfs/1.0.0/GlobalWFS-transaction.xsd\">");

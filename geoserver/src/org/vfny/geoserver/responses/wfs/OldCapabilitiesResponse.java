@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.NameSpace;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalNameSpace;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.oldconfig.TypeInfo;
 import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.oldconfig.VersionBean;
@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.5 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */
@@ -39,7 +39,7 @@ public class OldCapabilitiesResponse {
             "org.vfny.geoserver.requests");
 
     /** Configuration information for the server. */
-    private static ServerConfig config = ServerConfig.getInstance();
+    private static GlobalServer config = GlobalServer.getInstance();
 
     /** XML Tag Type: start */
     private static final int TAG_START = 1;
@@ -51,23 +51,22 @@ public class OldCapabilitiesResponse {
     private static final int TAG_ONLY = 3;
 
     /** Filter capabilities file */
-    private static final String FILTER_FILE = config.getCapabilitiesDir()
+    private static final String FILTER_FILE = config.getRootDir() + "capabilities/"
         + "filter.xml";
 
     /** ServiceConfig metadata file */
-    private static final String SERVICE_METADATA_FILE = config
-        .getCapabilitiesDir() + "serviceMetadata.xml";
+    private static final String SERVICE_METADATA_FILE = config.getRootDir() + "capabilities/" + "serviceMetadata.xml";
 
     /** Operations signatures file */
     private static final String OPERATIONS_SIGNATURES_FILE = config
-        .getCapabilitiesDir() + "operationsSignatures.xml";
+        .getRootDir() + "capabilities/" + "operationsSignatures.xml";
 
     /** Additional capabilities file */
     private static final String ADDITIONAL_CAPABILITIES_FILE = config
-        .getCapabilitiesDir() + "additionalCapabilities.xml";
+        .getRootDir() + "capabilities/" + "additionalCapabilities.xml";
     private static final String WFS_XMLNS_URL = "http://www.opengis.net/wfs";
     private static final String OGC_XMLNS_URL = "http://www.opengis.net/ogc";
-    private static final String CAP_LOC = config.getWFSConfig()
+    private static final String CAP_LOC = config.getWFS()
                                                 .getSchemaBaseUrl()
         + "wfs/1.0.0/GlobalWFS-capabilities.xsd";
     private static final String SCHEMA_URI = "http://www.w3.org/2001/XMLSchema-instance";
@@ -155,7 +154,7 @@ public class OldCapabilitiesResponse {
 
         String retString = xmlOutFinal.toString();
 
-        if (!config.getGlobalConfig().isVerbose()) {
+        if (!config.getGlobalData().isVerbose()) {
             //REVISIT: this is not as fast as doing all the formatting
             //ourselves, but I'm not sure if it's worth the effort and
             //code complication, as these return strings will never be
@@ -174,7 +173,7 @@ public class OldCapabilitiesResponse {
      */
     private void addHeaderInfo(String version) {
         String spaces = "   ";
-        String encoding = config.getXmlHeader();
+        String encoding = "<?xml version=\"1.0\" encoding=\"" + config.getGlobalData().getCharSet().displayName()+ "\"?>";
         String firstTag = "<WFS_Capabilities version=\"" + version + "\"";
 
         if (version.equals("0.0.15")) {
@@ -184,7 +183,7 @@ public class OldCapabilitiesResponse {
         } else if (version.equals("1.0.0")) {
             firstTag += addNameSpace("", WFS_XMLNS_URL);
 
-            NameSpace[] namespaces = config.getCatalog().getNameSpaces();
+            GlobalNameSpace[] namespaces = config.getCatalog().getNameSpaces();
 
             for (int i = 0; i < namespaces.length; i++) {
                 firstTag += ("\n" + spaces + namespaces[i].toString());
@@ -301,7 +300,7 @@ public class OldCapabilitiesResponse {
      * @return The requested capability in the capability document format.
      */
     private String tempReturnCapability(String request) {
-        String url = config.getWFSConfig().getURL();
+        String url = config.getWFS().getURL();
         String tempCapability = new String();
 
         tempCapability = "\n      <" + request + ">";

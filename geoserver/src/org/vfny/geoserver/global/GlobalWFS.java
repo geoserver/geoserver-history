@@ -4,11 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import java.util.Map;
-
-import org.w3c.dom.Element;
 import org.vfny.geoserver.config.wfs.*;
-
 
 /**
  * Represents a configuration of the GlobalWFS service.  Inherits most everything
@@ -16,37 +12,19 @@ import org.vfny.geoserver.config.wfs.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GlobalWFS.java,v 1.1.2.1 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: GlobalWFS.java,v 1.1.2.2 2004/01/03 00:20:15 dmzwiers Exp $
  */
-public class GlobalWFS extends ServiceConfig {
+public class GlobalWFS extends GlobalService {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
     public static final String WFS_BASIC_LOC = WFS_FOLDER + "GlobalWFS-basic.xsd";
     public static final String WFS_CAP_LOC = WFS_FOLDER
         + "GlobalWFS-capabilities.xsd";
-    private GlobalData global = GlobalData.getInstance();
-    private String describeUrl;
+    private WFSConfig config;
 
-    /**
-     * Creates a new GlobalWFS object.
-     *
-     * @param root DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-    /*public GlobalWFS(Element root) throws ConfigurationException {
-        super(root);
-        URL = GlobalData.getInstance().getBaseUrl() + "wfs/";
-    }
-    
-    public GlobalWFS(Map config ) {
-        super( config );
-        URL = GlobalData.getInstance().getBaseUrl() + "wfs/";
-    }*/
-    
-    public GlobalWFS(org.vfny.geoserver.config.wfs.WFSConfig config){
+    public GlobalWFS(WFSConfig config){
     	super(config.getService());
-    	describeUrl = config.getDescribeUrl();
-		URL = GlobalData.getInstance().getBaseUrl() + "wfs/";
+		URL = GlobalServer.getInstance().getGlobalData().getBaseUrl() + "wfs/";
+		this.config = config;
     }
     /**
      * Gets the base url of a describe request.
@@ -59,12 +37,11 @@ public class GlobalWFS extends ServiceConfig {
      *       will process it correctly.
      */
     public String getDescribeBaseUrl() {
-        if (this.describeUrl == null) {
-            this.describeUrl = URL
-                + "DescribeFeatureType?typeName=";
+        if (config.getDescribeUrl() == null) {
+			config.setDescribeUrl(URL + "DescribeFeatureType?typeName=");
         }
 
-        return describeUrl;
+        return config.getDescribeUrl();
     }
 
     public String getDescribeUrl(String typeName) {
@@ -72,10 +49,10 @@ public class GlobalWFS extends ServiceConfig {
     }
 
     public String getWfsBasicLocation() {
-        return global.getSchemaBaseUrl() + WFS_BASIC_LOC;
+        return GlobalServer.getInstance().getGlobalData().getSchemaBaseUrl() + WFS_BASIC_LOC;
     }
 
     public String getWfsCapLocation() {
-        return global.getSchemaBaseUrl() + WFS_CAP_LOC;
+        return GlobalServer.getInstance().getGlobalData().getSchemaBaseUrl() + WFS_CAP_LOC;
     }
 }

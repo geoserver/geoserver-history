@@ -2,7 +2,7 @@ package org.vfny.geoserver.requests.readers;
 
 import java.util.Map;
 
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalServer;
 
 
 /**
@@ -14,12 +14,12 @@ import org.vfny.geoserver.global.ServerConfig;
  * to recognize it
  *
  * @author Gabriel Roldán
- * @version $Id: WmsKvpRequestReader.java,v 1.2.2.4 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: WmsKvpRequestReader.java,v 1.2.2.5 2004/01/03 00:20:18 dmzwiers Exp $
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader
 {
     /** DOCUMENT ME! */
-    protected static final ServerConfig config = ServerConfig.getInstance();
+    protected static final GlobalServer config = GlobalServer.getInstance();
 
     /**
      * Creates a new WmsKvpRequestReader object.
@@ -44,7 +44,7 @@ public abstract class WmsKvpRequestReader extends KvpRequestReader
             version = getValue("WMTVER");
 
         if (version == null)
-            version = config.getWMSConfig().getVersion();
+            version = config.getWMS().getVersion();
 
         return version;
     }

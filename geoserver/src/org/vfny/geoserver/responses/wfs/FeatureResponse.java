@@ -33,11 +33,11 @@ import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.GlobalFeatureType;
 import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.FeatureTypeConfig;
-import org.vfny.geoserver.global.NameSpace;
-import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.global.GlobalWFS;
+import org.vfny.geoserver.global.GlobalNameSpace;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.4 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -117,7 +117,7 @@ public class FeatureResponse implements Response {
      * @return DOCUMENT ME!
      */
     public String getContentType() {
-        return ServerConfig.getInstance().getGlobalConfig().getMimeType();
+        return GlobalServer.getInstance().getGlobalData().getMimeType();
     }
 
     /**
@@ -216,9 +216,9 @@ public class FeatureResponse implements Response {
         // - if we fail to aquire all the locks we will need to fail and
         //   itterate through the the FeatureSources to release the locks 
         //
-        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();        
-        FeatureTypeConfig meta = null;
-        NameSpace namespace;       
+        GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();        
+        GlobalFeatureType meta = null;
+        GlobalNameSpace namespace;       
         Query query;
         int maxFeatures = request.getMaxFeatures();
 
@@ -324,8 +324,8 @@ public class FeatureResponse implements Response {
             FeatureType schema = meta.getSchema();
             transformer.setIndentation(2);
 
-            ServerConfig config = ServerConfig.getInstance();
-            GlobalWFS wfsConfig = config.getWFSConfig();
+            GlobalServer config = GlobalServer.getInstance();
+            GlobalWFS wfsConfig = config.getWFS();
             String wfsSchemaLoc = wfsConfig.getWfsBasicLocation();
             String fSchemaLoc = wfsConfig.getDescribeUrl(typeNames.toString());
             namespace = meta.getDataStore().getNameSpace();
@@ -384,7 +384,7 @@ public class FeatureResponse implements Response {
      * @throws WfsException For any problems with the DataSource.
      */
     private static FeatureResults getFeatures(Query query,
-        FeatureTypeConfig meta, int maxFeatures) throws WfsException {
+        GlobalFeatureType meta, int maxFeatures) throws WfsException {
         LOGGER.finest("about to get query: " + query);
 
         List propertyNames = null;
@@ -434,7 +434,7 @@ public class FeatureResponse implements Response {
             return; // we have no locks
         }
         
-        GlobalCatalog catalog = ServerConfig.getInstance().getCatalog();            
+        GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();            
         // I think we need to release and fail when lockAll fails
         //
         catalog.lockRelease( featureLock.getAuthorization() );        

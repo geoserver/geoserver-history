@@ -22,10 +22,9 @@ import javax.xml.transform.TransformerException;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.FeatureTypeConfig;
-import org.vfny.geoserver.global.NameSpace;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalFeatureType;
+import org.vfny.geoserver.global.GlobalNameSpace;
+import org.vfny.geoserver.global.GlobalServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DescribeRequest;
 import org.vfny.geoserver.responses.Response;
@@ -37,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.3.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.3.2.5 2004/01/03 00:20:17 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -47,13 +46,7 @@ public class DescribeResponse implements Response {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
 
-    /** Bean that holds global server configuration information. */
-    private static ServerConfig config = ServerConfig.getInstance();
-
     /** Bean that holds global featureType information */
-
-    //private static TypeRepository typeRepo = TypeRepository.getInstance();
-    private static GlobalCatalog catalog = config.getCatalog();
 
     // Initialize some generic GML information
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE
@@ -61,15 +54,15 @@ public class DescribeResponse implements Response {
     private static final String XS_NAMESPACE = "\n  xmlns:xs=" + SCHEMA_URI;
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
     private static final String GML_NAMESPACE = "\n  xmlns:gml=" + GML_URL;
-    private static final String HEADER = config.getXmlHeader()
-        + "\n<xs:schema ";
+    private static final String HEADER = "<?xml version=\"1.0\" encoding=\"" + GlobalServer.getInstance().getGlobalData().getCharSet().displayName()+ "\"?>" + "\n<xs:schema ";
+		
     private static final String ELEMENT_FORM_DEFAULT = "\n  elementFormDefault=\"qualified\"";
     private static final String ATTR_FORM_DEFAULT = "\n  attributeFormDefault=\"unqualified\" version=\"1.0\">";
     private static final String TARGETNS_PREFIX = "\n  targetNamespace=\"";
     private static final String TARGETNS_SUFFIX = "\" ";
     private static final String GML_IMPORT = "\n\n<xs:import namespace="
         + GML_URL + " schemaLocation=\""
-        + config.getWFSConfig().getSchemaBaseUrl()
+        + GlobalServer.getInstance().getWFS().getSchemaBaseUrl()
         + "gml/2.1.2/feature.xsd\"/>\n\n";
 
     /** Fixed return footer information */
@@ -105,7 +98,7 @@ public class DescribeResponse implements Response {
         // generates response, using general function
         xmlResponse = generateTypes(wfsRequest);
 
-        if (!config.getGlobalConfig().isVerbose()) {
+        if (!GlobalServer.getInstance().getGlobalData().isVerbose()) {
             //strip out the formatting.  This is pretty much the only way we
             //can do this, as the user files are going to have newline
             //characters and whatnot, unless we can get rid of formatting
@@ -122,7 +115,7 @@ public class DescribeResponse implements Response {
      * @return DOCUMENT ME!
      */
     public String getContentType() {
-        return ServerConfig.getInstance().getGlobalConfig().getMimeType();
+        return GlobalServer.getInstance().getGlobalData().getMimeType();
     }
 
     /**
@@ -163,7 +156,7 @@ public class DescribeResponse implements Response {
         //ComplexType table = new ComplexType();
         if (requestedTypes.size() == 0) {
             //if there are no specific requested types then get all.
-            requestedTypes = new ArrayList(catalog.getFeatureTypes().keySet());
+            requestedTypes = new ArrayList(GlobalServer.getInstance().getCatalog().getFeatureTypes().keySet());
         }
 
         tempResponse.append(HEADER);
@@ -172,11 +165,11 @@ public class DescribeResponse implements Response {
         if (allSameType(requestedTypes)) {
             //all the requested have the same namespace prefix, so return their
             //schemas.
-            FeatureTypeConfig nsInfoType = catalog.getFeatureType((String) requestedTypes
+            GlobalFeatureType nsInfoType = GlobalServer.getInstance().getCatalog().getFeatureType((String) requestedTypes
                     .get(0));
 
             //all types have same prefix, so just use the first.
-            NameSpace namespace = nsInfoType.getDataStore().getNameSpace();
+            GlobalNameSpace namespace = nsInfoType.getDataStore().getNameSpace();
             String targetNs = namespace.getUri();
 
             //String targetNs = nsInfoType.getXmlns();
@@ -202,7 +195,7 @@ public class DescribeResponse implements Response {
             //iterate through the types, and make a set of their prefixes.
             while (nameIter.hasNext()) {
                 String typeName = nameIter.next().toString();
-                String typePrefix = catalog.getFeatureType(typeName).getPrefix();
+                String typePrefix = GlobalServer.getInstance().getCatalog().getFeatureType(typeName).getPrefix();
                 prefixes.add(typePrefix);
             }
 
@@ -237,10 +230,10 @@ public class DescribeResponse implements Response {
         LOGGER.finer("prefix is " + prefix);
 
         StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
-        String namespace = config.getCatalog().getNameSpace(prefix).getUri();
+        String namespace = GlobalServer.getInstance().getCatalog().getNameSpace(prefix).getUri();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\""
-            + config.getWFSConfig().getDescribeBaseUrl());
+            + GlobalServer.getInstance().getWFS().getDescribeBaseUrl());
 
         Iterator nameIter = typeNames.iterator();
 
@@ -250,7 +243,7 @@ public class DescribeResponse implements Response {
 
             if (typeName.startsWith(prefix)
                     || ((typeName.indexOf(':') == -1)
-                    && prefix.equals(config.getCatalog().getDefaultNameSpace()
+                    && prefix.equals(GlobalServer.getInstance().getCatalog().getDefaultNameSpace()
                                                .getPrefix()))) {
                 retBuffer.append(typeName + ",");
             }
@@ -301,7 +294,7 @@ public class DescribeResponse implements Response {
             curTypeName = requestedTypes.get(i).toString();
 
             //TypeInfo meta = repository.getFeatureType(curTypeName);
-            FeatureTypeConfig meta = catalog.getFeatureType(curTypeName);
+            GlobalFeatureType meta = GlobalServer.getInstance().getCatalog().getFeatureType(curTypeName);
 
             curTypeName = meta.getName();
 
@@ -311,15 +304,11 @@ public class DescribeResponse implements Response {
             }
 
             if (!validTypes.contains(meta)) {
-                currentFile = meta.getSchemaFile();
+                FeatureType ft = meta.getSchema();
 
                 File inputFile = new File(currentFile);
 
-                if (inputFile.exists()) {
-                    generatedType = writeFile(currentFile);
-                } else {
-                    generatedType = generateFromSchema(meta.getSchema());
-                }
+                generatedType = generateFromSchema(meta.getSchema());
 
                 if (!generatedType.equals("")) {
                     tempResponse = tempResponse + generatedType;
@@ -334,7 +323,7 @@ public class DescribeResponse implements Response {
         for (Iterator i = validTypes.iterator(); i.hasNext();) {
             // Print element representation of table
             tempResponse = tempResponse
-                + printElement((FeatureTypeConfig) i.next());
+                + printElement((GlobalFeatureType) i.next());
         }
 
         tempResponse = tempResponse + "\n\n";
@@ -343,7 +332,7 @@ public class DescribeResponse implements Response {
     }
 
     /**
-     * Transforms a FeatureTypeConfig into gml, with no headers.
+     * Transforms a GlobalFeatureType into gml, with no headers.
      *
      * @param schema the schema to transform.
      *
@@ -377,7 +366,7 @@ public class DescribeResponse implements Response {
      *
      * @return The element part of the response.
      */
-    private static String printElement(FeatureTypeConfig type) {
+    private static String printElement(GlobalFeatureType type) {
         //int prefixDelimPos = typeName.indexOf(":");
         //String tablename = typeName;
         //if (prefixDelimPos > 0) {
@@ -467,7 +456,7 @@ public class DescribeResponse implements Response {
      * @throws WfsException if the featureTypeName is not in the repository.
      */
     private String getPrefix(String featureTypeName) throws WfsException {
-        FeatureTypeConfig ftConf = catalog.getFeatureType(featureTypeName);
+        GlobalFeatureType ftConf = GlobalServer.getInstance().getCatalog().getFeatureType(featureTypeName);
 
         if (ftConf == null) {
             throw new WfsException("Feature Type " + featureTypeName + " does "

@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.FeatureTypeConfig;
+import org.vfny.geoserver.global.GlobalFeatureType;
 import org.vfny.geoserver.requests.WMSRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.3.2.4 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: GetMapRequest.java,v 1.3.2.5 2004/01/03 00:20:18 dmzwiers Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
@@ -124,7 +124,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public FeatureTypeConfig[] getLayers() {
+    public GlobalFeatureType[] getLayers() {
         return mandatorys.layers;
     }
 
@@ -249,7 +249,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param layers DOCUMENT ME!
      */
-    public void setLayers(FeatureTypeConfig[] layers) {
+    public void setLayers(GlobalFeatureType[] layers) {
         mandatorys.layers = layers;
     }
 
@@ -294,7 +294,7 @@ public class GetMapRequest extends WMSRequest {
 
     private class MandatoryParameters {
         /** ordered list of requested layers */
-        FeatureTypeConfig[] layers;
+        GlobalFeatureType[] layers;
 
         /**
          * ordered list of requested layers' styles, in a one to one

@@ -21,7 +21,7 @@ import org.vfny.geoserver.requests.readers.wfs.CapabilitiesXmlReader;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesSuite.java,v 1.4.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: CapabilitiesSuite.java,v 1.4.2.3 2004/01/03 00:20:17 dmzwiers Exp $
  */
 public class CapabilitiesSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
@@ -53,12 +53,12 @@ public class CapabilitiesSuite extends RequestTestCase {
     }
 
     public void setUp() {
-        baseRequest[0] = new CapabilitiesRequest("WFSConfig");
+        baseRequest[0] = new CapabilitiesRequest("GlobalWFS");
 
-        //baseRequest[0].setService("WFSConfig");
+        //baseRequest[0].setService("GlobalWFS");
         baseRequest[0].setVersion("1.0.0");
 
-        baseRequest[1] = new CapabilitiesRequest("WFSConfig");
+        baseRequest[1] = new CapabilitiesRequest("GlobalWFS");
         baseRequest[1].setVersion("0.0.14");
     }
 
@@ -103,9 +103,9 @@ public class CapabilitiesSuite extends RequestTestCase {
      * @throws Exception If anything goes wrong.
      */
     public void testKvp1() throws Exception {
-        String requestString = ("service=WFSConfig&version=1.0.0");
+        String requestString = ("service=GlobalWFS&version=1.0.0");
         assertTrue(runKvpTest(baseRequest[0], requestString, true));
-        baseRequest[0].setService("WMSConfig");
+        baseRequest[0].setService("GlobalWMS");
         assertTrue(runKvpTest(baseRequest[0], requestString, false));
     }
 
@@ -116,7 +116,7 @@ public class CapabilitiesSuite extends RequestTestCase {
      * @throws Exception If anything goes wrong.
      */
     public void testKvp2() throws Exception {
-        String requestString = ("service=WFSConfig&version=0.0.14");
+        String requestString = ("service=GlobalWFS&version=0.0.14");
         assertTrue(runKvpTest(baseRequest[1], requestString, true));
     }
 }

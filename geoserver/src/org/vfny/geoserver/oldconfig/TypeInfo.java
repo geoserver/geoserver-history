@@ -20,12 +20,12 @@ import org.vfny.geoserver.global.ConfigurationException;
  * Reads all necessary feature type information to abstract away from servlets.
  * <p>
  * TODO: Currently holds featureDSource and transactionDS, We switching over to
- * DataStoreConfig api so this will need to be removed.
+ * GlobalDataStore api so this will need to be removed.
  * </p>
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán, Dominion t.i.
- * @version $Id: TypeInfo.java,v 1.2.2.3 2003/12/31 23:36:45 dmzwiers Exp $
+ * @version $Id: TypeInfo.java,v 1.2.2.4 2004/01/03 00:20:15 dmzwiers Exp $
  */
 public class TypeInfo
 {
@@ -203,7 +203,7 @@ public class TypeInfo
    */
   public String getMetadataUrl()
   {
-    return null; //not implemented in new FeatureTypeConfig internal type yet.
+    return null; //not implemented in new GlobalFeatureType internal type yet.
   }
 
   /**
@@ -382,7 +382,7 @@ public class TypeInfo
    *
    * @param version 0.0.14 or 1.0.0
    *
-   * @return the FeatureTypeConfig element for the capabilites document.
+   * @return the GlobalFeatureType element for the capabilites document.
    */
   private String getCapabilitiesXmlv14(String version)
   {
@@ -473,7 +473,7 @@ public class TypeInfo
   /**
    * Generates v0.0.15 capabilities document fragment for a feature type.
    *
-   * @return the 0.0.15 capabilities FeatureTypeConfig element for this feature.
+   * @return the 0.0.15 capabilities GlobalFeatureType element for this feature.
    */
   private String getCapabilitiesXmlv15()
   {

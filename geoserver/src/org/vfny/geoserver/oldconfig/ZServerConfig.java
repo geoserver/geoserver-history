@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.GlobalServer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
  * used to configure the zserver module.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ZServerConfig.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: ZServerConfig.java,v 1.2.2.3 2004/01/03 00:20:15 dmzwiers Exp $
  */
 public class ZServerConfig
     implements java.io.Serializable
@@ -49,13 +49,13 @@ public class ZServerConfig
       "org.vfny.geoserver.config");
 
   /** The configuration singleton. */
-  private static ServerConfig cfgInfo = ServerConfig.getInstance();
+  private static GlobalServer cfgInfo = GlobalServer.getInstance();
 
   /** The port to run zserver on.  Default is 5210 */
   private String port = "5210";
 
   /** The folder where the metadata files are. */
-  private String dataFolder = cfgInfo.getTypeDir();
+  private String dataFolder = cfgInfo.getRootDir() + "featureTypes/";
 
   /** The location of the mapping between field names and numbers. */
   private String fieldmap;
