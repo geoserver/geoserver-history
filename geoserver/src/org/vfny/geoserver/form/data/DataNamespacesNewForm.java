@@ -25,7 +25,7 @@ import org.vfny.geoserver.config.NameSpaceConfig;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataNamespacesNewForm.java,v 1.2 2004/02/27 22:07:06 jive Exp $
+ * @version $Id: DataNamespacesNewForm.java,v 1.3 2004/02/28 07:45:00 jive Exp $
  */
 public class DataNamespacesNewForm extends ActionForm {
     private String prefix;
@@ -36,6 +36,15 @@ public class DataNamespacesNewForm extends ActionForm {
         prefix ="";
     }
 
+    /**
+     * Implementation of validate.
+     * 
+     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
+     * 
+     * @param mapping
+     * @param request
+     * @return Any ActionErrors produced by validation
+     */
     public ActionErrors validate(ActionMapping mapping,
             HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
@@ -49,6 +58,7 @@ public class DataNamespacesNewForm extends ActionForm {
         }        
         return errors;
     }
+
 	/**
 	 * Access prefix property.
 	 * 

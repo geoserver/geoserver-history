@@ -88,7 +88,7 @@
    		<put name="key" value="config.validation"/>
    		<put name="body" value="/WEB-INF/pages/validation/Validation.jsp"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config"/>
+        <put name="locationForwards" value="welcome:config:config.wfs"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
         <put name="menuForwards"
              value="config.validation.suite"/>
@@ -107,7 +107,7 @@
    		<put name="key" value="config.validation.test"/>
    		<put name="body" value="/WEB-INF/pages/validation/SelectTest.jsp"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:config.validation:config.validation.suite"/>
+        <put name="locationForwards" value="welcome:config:config.wfs:config.validation:config.validation.suite"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition>     	
 
@@ -115,7 +115,7 @@
    		<put name="key" value="config.validation.test.editor"/>
    		<put name="body" value="/WEB-INF/pages/validation/TestEditor.jsp"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:config.validation:config.validation.suite:config.validation.test"/>
+        <put name="locationForwards" value="welcome:config:config.wfs:config.validation:config.validation.suite:config.validation.test"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
         <put name="actionForwards" value="config.validation.test.doit"/>
     </definition>
@@ -153,7 +153,7 @@
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	
-   	<!-- CONFIG WFS -->
+   	<!-- CONFIG WMS -->
    	<definition name="config.wms" extends=".mainLayout">
    		<put name="key" value="config.wms"/>
 		<put name="body" value="/WEB-INF/pages/wms/WMSConfigMenu.jsp"/>
@@ -261,12 +261,32 @@
 	<!-- styles -->
    	<definition name="config.data.style" extends=".mainLayout">
    		<put name="key" value="config.data.style"/>
-   		<put name="body" value="/WEB-INF/pages/data/DataConfigStyles.jsp"/>
+   		<put name="body" value="/WEB-INF/pages/data/styles/Select.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
-   	</definition>   	
+        <put name="menuForwards"
+             value="config.data.style.new"/>
+   	</definition>
+   	   	
+   	<definition name="config.data.style.new" extends=".mainLayout">
+   		<put name="key" value="config.data.style.new"/>
+   		<put name="body" value="/WEB-INF/pages/data/styles/New.jsp"/>
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
+   		<put name="layer" value="data"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.style"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+   	</definition>
+
+   	<definition name="config.data.style.editor" extends=".mainLayout">
+   		<put name="key" value="config.data.style.editor"/>
+   		<put name="body" value="/WEB-INF/pages/data/styles/Editor.jsp"/>
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
+   		<put name="layer" value="data"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.style"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+   	</definition>
 
 	<!-- featuretypes -->   	
    	<definition name="config.data.type" extends=".mainLayout">
