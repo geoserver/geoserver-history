@@ -8,6 +8,11 @@
     <title>User </title>
 
     <itemizedlist>
+    
+      <listitem>
+        <para><ulink url="user/quickstart.html">Quickstart</ulink></para>
+      </listitem>
+          
       <listitem>
         <para><ulink url="user/install.html">Install</ulink></para>
       </listitem>
