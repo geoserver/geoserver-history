@@ -42,3 +42,23 @@
 	
 
 </table>
+<table border="0">
+<%
+org.vfny.geoserver.action.validation.TestValidationResults tvr = (org.vfny.geoserver.action.validation.TestValidationResults)session.getAttribute(org.vfny.geoserver.action.validation.TestValidationResults.CURRENTLY_SELECTED_KEY);
+if(tvr!=null && tvr.getErrors().size()>0){
+%>
+<table border="0">
+<tr><td>ERRORS</td></tr>
+<%
+java.util.Iterator i = tvr.getErrors().values().iterator();
+while(i.hasNext()){
+  String s = i.next().toString(); // should be a string anyways
+  %>
+<tr><td><%=s%></td></tr>
+  <%
+}
+%>
+</table>
+<%
+}
+%>

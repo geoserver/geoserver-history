@@ -178,7 +178,7 @@
         	path="/config/validation/testSelect.do"/>
        	<forward
        		name="config.validation.test.doit"
-       		path="/config/validation/testRun.do"/>
+       		path="/config/validation/suiteRun.do"/>
         <forward
         	name="validationTestEditor"
         	path="/config/validation/testEdit.do"/>
@@ -391,13 +391,7 @@
         	path="/config/validation/suite"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.validation.suite"/>
-        	
-        <action
-        	path ="/config/validation/suiteRun"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.validation.suite.doit"
-        	name="blankBean"/>
-        	
+        	        	
         <action
         	path="/config/validation/testSelect"
         	type="org.apache.struts.actions.ForwardAction"
@@ -407,12 +401,6 @@
         	path="/config/validation/testEdit"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.validation.test.editor"/>
-
-        <action
-        	path ="/config/validation/testRun"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.validation.test.doit"
-        	name="blankBean"/>
         	        	
         <!-- DATA -->
         <action
@@ -657,6 +645,14 @@
         	scope="request"
         	validate="true"
         	input="/config/validation/testEditor.do"/>
+        	
+        <action
+        	path ="/config/validation/suiteRun"
+        	type="org.vfny.geoserver.action.validation.ValidationTestDoIt"
+        	name="validationTestDoIt"
+        	scope="request"
+        	validate="true"
+        	input="/config/validation/suite.do"/>
         	
         <action
         	path="/config/data/calculateBoundingBox"
