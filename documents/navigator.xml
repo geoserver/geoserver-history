@@ -31,7 +31,25 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="developer/build_docs.html">Build</ulink></para>
+        <para><ulink
+        url="developer/dev_intro.html">Introduction</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/build_docs.html">Building</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/design.html">Design</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/dev_files.html">Configuration
+        Files</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="developer/hacking.html">Hacking</ulink></para>
       </listitem>
 
       <listitem>
@@ -40,12 +58,11 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="developer/license.html">License</ulink></para>
+        <para><ulink url="release_guide.html">Release Guide</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="user/schemaTutorial.html">Schema
-        Tutorial</ulink></para>
+        <para><ulink url="developer/license.html">License</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
