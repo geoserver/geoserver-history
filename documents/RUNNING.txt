@@ -1,8 +1,8 @@
-$Id: RUNNING.txt,v 1.1 2004/08/24 17:54:13 cholmesny Exp $
+$Id: RUNNING.txt,v 1.2 2004/08/24 20:00:20 cholmesny Exp $
 
 
                Running The GeoServer Binary Distribution
-               =====================================
+               =========================================
 
 Note: This is 1.2.1 release is a first attempt at a binary distribution.
 We would greatly appreciate feedback on if it works properly.  GeoServer 
@@ -111,7 +111,7 @@ GeoServer 1.2 install:
 
 1) The most common hiccup is when another web server (or any process for that
    matter) has laid claim to port 8080.  This is the default HTTP port that
-   Tomcat attempts to bind to at startup.  To change this, open the file:
+   GeoServer attempts to bind to at startup.  To change this, open the file:
 
        $GEOSERVER_HOME/documents/jetty.xml
     
