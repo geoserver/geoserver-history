@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -21,8 +22,10 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.feature.FeatureType;
+import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
@@ -41,7 +44,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.15 2004/04/13 21:56:07 emperorkefka Exp $
+ * @version $Id: TypesEditorForm.java,v 1.16 2004/04/13 23:15:38 emperorkefka Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -306,11 +309,16 @@ public class TypesEditorForm extends ActionForm {
         HttpServletRequest request) {        
         ActionErrors errors = new ActionErrors();
 
+        Locale locale = (Locale) request.getLocale();
+        MessageResources messages = servlet.getResources();
+        final String BBOX   = HTMLEncoder.decode(messages.getMessage(locale, "config.data.calculateBoundingBox.label"));
+        
         // Pass Attribute Management Actions through without
         // much validation.
         if( action.startsWith("Up") ||
             action.startsWith("Down") ||
-            action.startsWith("Remove")){
+            action.startsWith("Remove") ||
+            action.equals(BBOX)) {
             return errors;            
         }
         // Check selected style exists

@@ -25,6 +25,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.ConfigAction;
@@ -80,9 +81,14 @@ public class TypesEditorAction extends ConfigAction {
         MessageResources messages = servlet.getResources();
         final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));
         final String ADD    = HTMLEncoder.decode(messages.getMessage(locale, "label.add"));
-        
+        final String BBOX   = HTMLEncoder.decode(messages.getMessage(locale, "config.data.calculateBoundingBox.label"));
+        System.out.println("BBOX: " +BBOX);
         if( action.equals(SUBMIT)){
             return executeSubmit(mapping, typeForm, user, request);
+        }
+        
+        if (action.equals(BBOX)) {
+        	return executeBBox(mapping, typeForm, user, request);
         }
         
         LinkedList attributes = (LinkedList) typeForm.getAttributes();
@@ -106,7 +112,30 @@ public class TypesEditorAction extends ConfigAction {
         form.reset( mapping, request );
         return mapping.findForward("config.data.type.editor");        
     }    
+
     /**
+	 * Populate the bounding box fields from the source and pass control back to the UI
+	 */
+	private ActionForward executeBBox(ActionMapping mapping, TypesEditorForm typeForm, UserContainer user, HttpServletRequest request)
+        throws IOException, ServletException {
+        
+        DataConfig dataConfig = getDataConfig();
+        DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
+        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
+        FeatureType featureType = dataStore.getSchema(typeForm.getName());
+        FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+
+        Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
+        
+        typeForm.setMinX(Double.toString(envelope.getMinX()));
+        typeForm.setMaxX(Double.toString(envelope.getMaxX()));
+        typeForm.setMinY(Double.toString(envelope.getMinY()));
+        typeForm.setMaxY(Double.toString(envelope.getMaxY()));        
+        
+        return mapping.findForward("config.data.type.editor");
+	}
+    
+	/**
      * Sync generated attributes with schemaBase.
      * @param mapping
      * @param form
