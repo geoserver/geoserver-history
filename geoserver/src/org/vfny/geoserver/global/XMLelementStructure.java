@@ -152,7 +152,7 @@ public class XMLelementStructure {
 			LOGGER.finer("has Children");
 			
 			// find or create a grouping element
-			treeNode = treeNode.doGroupElement(structure);
+			treeNode = treeNode.doGroupElement(structure, lpath);
 			element = treeNode.groupingElement;
 			LOGGER.finer("Grouping Element is " + element.name.get(0));
 			
@@ -160,9 +160,9 @@ public class XMLelementStructure {
 			LOGGER.finer("element, no children");
 
 			if (rpath == null) {
-				element = treeNode.doBreakElement(structure, dbAttName, dbAttIndex);
+				element = treeNode.doBreakElement(structure, lpath, dbAttName, dbAttIndex);
 			} else {
-				element = treeNode.doBreakElement(structure, null, -1);				
+				element = treeNode.doBreakElement(structure, lpath, null, -1);				
 			}
 			
 		} else if (structure.startsWith("@")) {
@@ -201,18 +201,18 @@ public class XMLelementStructure {
 		if (!(breakElement == null || breakElement == "" )) {
 
 			// determine position to write from
-			start = helper.findGroupingElementInList(breakElement, head);
+			// start = helper.findGroupingElementInList(breakElement, head);
+			start = helper.findGroupingElement(breakElement);			
 			if (start == null) {
 
 				// breakElement should be a repeated leaf element, write this
 				// out directly
-				Element leaf = helper.findLeafElement(breakElement, head);
+				// Element leaf = helper.findLeafElement(breakElement, head);
+				
+				Element leaf = helper.findLeafElement(breakElement);				
 				if (leaf != null) {
 					// LOGGER.fine("Writing repeated leaf element" + leaf.getName());
-					AttributesImpl SAXatts = leaf.buildSAXatts(feature);
-					featureTranslator.handleAttribute(
-							leaf.getName(), leaf.getValue(feature),
-							SAXatts, true);	
+					writeLeaf(leaf, feature, featureTranslator);					
 					return;
 				} else
 					throw new RuntimeException (
@@ -224,8 +224,6 @@ public class XMLelementStructure {
 		}
 
 		// LOGGER.fine ("writing elements from and including " + breakElement);
-		
-		// write elements
 		
 		Element element; 
 		AttributesImpl SAXatts; 
@@ -248,10 +246,7 @@ public class XMLelementStructure {
 				while (i.hasNext()) {
 					element = (Element)i.next();
 					// LOGGER.fine("writing leaf element " + element.getName());
-					SAXatts = element.buildSAXatts(feature);
-					featureTranslator.handleAttribute(
-							element.getName(), element.getValue(feature),
-							SAXatts, true);
+					writeLeaf(element, feature, featureTranslator);
 				}
 			}
 			
@@ -266,6 +261,24 @@ public class XMLelementStructure {
 		}
 	}
 
+	private void writeLeaf(Element e, Feature f, FeatureTranslator ft) {
+		
+		if (e.flattenedPath)
+			
+			// handle case of a nested element that is non repeating; internally
+			// represented as a leaf node; need to expand nesting element tags
+			
+			for (int i = 0; i < e.subPath.length; i++)
+				ft.handleAttribute(e.subPath[i], null, new AttributesImpl(), false);
+		
+		AttributesImpl SAXatts = e.buildSAXatts(f);
+		ft.handleAttribute(e.getName(), e.getValue(f), SAXatts, true);
+		
+		if (e.flattenedPath)
+			for (int i = (e.subPath.length)-1; i>=0; i--)
+				ft.closeTag(e.subPath[i]);
+	}
+	
     /**
      * Closes grouping element tags, working from the grouping element at
      * the end of the list back to the grouping element given by 
@@ -277,16 +290,13 @@ public class XMLelementStructure {
      *
      */
 	public void closeTags(String breakElement, FeatureTranslator ft) {
-
-		// todo - figure out a caching or flattening strategy, 
-		// don't need/want to recompute each row
-		
+	
 		Elements node = head;
 		
 		if (! (breakElement == null || breakElement == "" )) {
 
 			// determine position to write from
-			node = helper.findGroupingElementInList(breakElement, node);
+			node = helper.findGroupingElement(breakElement);			
 			if (node == null)
 				// not an open tag - will happen with repeated leaf nodes
 				// probably needs a tidy up - shouldn't need to do this
@@ -347,7 +357,38 @@ public class XMLelementStructure {
      * @return the group element name of the group in which a changed value was
      * detected 
      */
-	public String findBreak(Feature feature, Object[] previousValue) {
+	public String findBreak(Feature feature, Object[] previousValue, Elements node) {
+
+		// this version processes Elements as a tree, the commented version below
+		// processes it as a list, which is currently all we can output. 
+		
+		if (node == null) node = head;
+		String breakElement = null;
+
+		// LOGGER.fine("examining element group " + node.groupingElement.getName() + " for change");
+		breakElement = node.checkForBreak(feature, previousValue);
+
+		if (breakElement != null ) {
+			// LOGGER.fine("value change on " + breakElement);
+			return breakElement;
+		}
+
+		Iterator i = node.nestingElements.iterator();
+		while (i.hasNext()) {
+			node = (Elements) i.next();
+			if (node != null) {
+				breakElement = findBreak( feature, previousValue, node);
+				if (breakElement != null ) return breakElement;
+			}
+		}
+		LOGGER.fine("no change detected - report as top level element change");
+		return head.groupingElement.getName();
+	}
+
+/*	
+	// list version - see above
+	
+	public String findBreak(Feature feature, Object[] previousValue, Elements node) {
 
 		Elements node = head;
 		Elements lastNode = null;
@@ -355,11 +396,11 @@ public class XMLelementStructure {
 		
 		while (node != null && breakElement == null) {
 			
-			// LOGGER.fine("examining element group " + node.groupingElement.getName() + " for change");
+			LOGGER.fine("examining element group " + node.groupingElement.getName() + " for change");
 			breakElement = node.checkForBreak(feature, previousValue);
 
 			if (breakElement != null) {
-				// LOGGER.fine("found break at element " + breakElement);
+				LOGGER.fine("found break at element " + breakElement);
 				return breakElement;
 			} else {
 				Iterator i = node.nestingElements.iterator();
@@ -375,7 +416,10 @@ public class XMLelementStructure {
 		LOGGER.fine("no change detected - report as top level element change");
 		return head.groupingElement.getName();
 	}
-
+*/	
+	
+	
+	
 	/**
 	*
 	* Load the namespaces corresponding to the prefixes scanned from the 
@@ -412,11 +456,14 @@ public class XMLelementStructure {
 
 		private ArrayList name = new ArrayList();
 		private ArrayList rsAttName = new ArrayList();		// column in result set
-		private ArrayList rsAttIndex = new ArrayList(); 	// position of attribute in result set 
+		private ArrayList xpathName = new ArrayList();
+		private ArrayList rsAttIndex = new ArrayList(); 	// position of attribute in result set
+		private String[] subPath;
 		private int fidIndex = -1;
 		boolean suppressFID = false;
+		boolean flattenedPath = false;
 
-		private void addParentElement(String elementName) {
+		private void addParentElement(String elementName, String xpath) {
 			
 			// a parent element is not associated with a db attribute
 			// (it could have attributes though - added subsequently through addLeaf )
@@ -424,9 +471,10 @@ public class XMLelementStructure {
 			if (name.size() == 0) {
 				elementName = elementName.replaceFirst("/","");
 				name.add(elementName);
+				xpathName.add(xpath);
 				rsAttName.add("");
 				rsAttIndex.add(new Integer(0));
-				LOGGER.finer("added grouping element " + elementName);
+				LOGGER.finer("added grouping element " + elementName + " : " + xpath);
 			} else {
 				// throw an exception ?
 				LOGGER.warning("Error adding parent XML element " + elementName + " to processing tree");
@@ -443,8 +491,20 @@ public class XMLelementStructure {
 				leafName = leafName.replaceFirst("@","");
 			} else {
 				leafName = leafName.replaceFirst("/","");
+				if (leafName.indexOf("->") > -1) {
+					flattenedPath = true;
+					String[] paths = leafName.split("->");
+					leafName = paths[paths.length-1];
+					subPath = new String[paths.length - 1];
+					for (int i = 0; i < paths.length-1; i++) {
+						subPath[i] = paths[i];
+						LOGGER.finer("subPath " + (i) + " = " + subPath[i]);
+					}
+				}
 			}
+			
 			name.add(leafName);
+			xpathName.add(xpath);
 			rsAttName.add(dbAttName);
 			rsAttIndex.add(new Integer(attIndex));			
 			
@@ -460,13 +520,17 @@ public class XMLelementStructure {
 					}
 				}
 			}
-			LOGGER.finer("Added leaf " + leafName + ", " + dbAttName + ", " + attIndex);
+			LOGGER.finer("Added leaf " + leafName + " : "  + xpath + ", " + dbAttName + ", " + attIndex);
 		}
 
 		private String getName() {
 			return (String)name.get(0);
 		}
-		 
+
+		private String getXpath() {
+			return (String)xpathName.get(0);
+		}		
+		
 		private Object getValue(Feature f) {
 			if ( ((Integer)rsAttIndex.get(0)).intValue() > -1 ) {
 				return f.getAttribute( ((Integer)rsAttIndex.get(0)).intValue() );
@@ -541,13 +605,14 @@ public class XMLelementStructure {
 		 *
 		 * @return Elements object with groupingElement of groupName
 		 */	
-		private Elements doGroupElement(String groupName) {
+		private Elements doGroupElement(String groupName, String xpath) {
 
 			groupName = groupName.replaceFirst("/","");
 			if (groupingElement == null) {
 				// this is for the initial case
 				groupingElement = new Element();
-				groupingElement.addParentElement(groupName);
+				groupingElement.addParentElement(groupName, xpath);
+				helper.elementsIndex.put(xpath, this);				
 				return this;
 			}
 			
@@ -566,11 +631,12 @@ public class XMLelementStructure {
 			}
 			
 			// have a new nesting element (element that nests other elements)
-			// LOGGER.fine("creating new nesting element - adding new group element");
+			// LOGGER.fine("creating new nesting element - adding new group element, index = " + xpath);
 			Elements es = new Elements();
 			es.groupingElement = new Element();			
-			es.groupingElement.addParentElement(groupName);
+			es.groupingElement.addParentElement(groupName, xpath);
 			nestingElements.add(es);
+			helper.elementsIndex.put(xpath, es);
 			return es;
 		}
 
@@ -581,7 +647,7 @@ public class XMLelementStructure {
 		 *
 		 * @return BreakGroup.Element object with groupingElement of groupName
 		 */		
-		private Element doBreakElement(String breakName, String dbAttName, int attIndex) {
+		private Element doBreakElement(String breakName, String xpath, String dbAttName, int attIndex) {
 			// searches within this Elements only 
 			breakName = breakName.replaceFirst("/","");
 			Iterator i = breakElements.iterator();
@@ -592,18 +658,18 @@ public class XMLelementStructure {
 				}
 			}
 			//not found - create it
-			Element e = addBreakElement(breakName, dbAttName, attIndex);
+			Element e = addBreakElement(breakName, xpath, dbAttName, attIndex);
 			return e;
 		}
 
-		private Element addBreakElement(String leafName, String dbAttName, int attIndex) {
-			LOGGER.finer("adding break element");
+		private Element addBreakElement(String leafName, String xpath, String dbAttName, int attIndex) {
+			LOGGER.finer("adding break element, index = " + xpath);
 			Element e = new Element();
-			e.addLeaf(leafName, "", dbAttName, attIndex);
-			breakElements.add(e);			
+			e.addLeaf(leafName, xpath, dbAttName, attIndex);
+			breakElements.add(e);
+			helper.breakElementsIndex.put(xpath, e);
 			return e;
 		}
-
 		
 		/*
 		 * See if there was a change in database attribute values in this Elements
@@ -624,25 +690,19 @@ public class XMLelementStructure {
 					int rsAttIndex = ((Integer)groupingElement.rsAttIndex.get(fidIndex)).intValue();
 					
 					// only have to look at the fid attribute for this Elements
-/*				
-					LOGGER.fine("rsAttIndex = " + rsAttIndex + " db att name = " + groupingElement.rsAttName.get(fidIndex) + " schema name = " + groupingElement.name.get(fidIndex));
-					LOGGER.fine("current fid = " + f.getAttribute(rsAttIndex));
-					if (previousValue[rsAttIndex] != null) {
-						LOGGER.fine("previous fid = " + previousValue[rsAttIndex]);
-					} else {
-						LOGGER.fine("previous fid is null");
-					}
-*/					
+					
 	               	if (previousValue[rsAttIndex] == null ||
 	               			!f.getAttribute(rsAttIndex).equals(previousValue[rsAttIndex])) {
-	               		return groupingElement.getName();
+	               		// return groupingElement.getName();
+	               		return groupingElement.getXpath();	               		
 	               	}
 
 					// if this is the terminal Elements - iterate through the 
 					// leaf elements looking for those that may repeat (currently must
 					// have a fid or gml:id XML attribute)
 
-	               	if (nestingElements.isEmpty()) {
+	               	//if (nestingElements.isEmpty()) {
+	               	if (breakElements != null) {	               	
 	               		Iterator i = breakElements.iterator();
 	               		while (i.hasNext()) {
 	               			Element e = (Element)i.next();
@@ -653,14 +713,13 @@ public class XMLelementStructure {
 	               				// LOGGER.fine("f.getAttribute(rsAttIndex) = " + f.getAttribute(rsAttIndex));	               				
 	        	               	if (previousValue[rsAttIndex] == null ||
 	        	               			!f.getAttribute(rsAttIndex).equals(previousValue[rsAttIndex])) {
-	        	               		return e.getName();
+	        	               		// return e.getName();
+	        	               	 	return e.getXpath();	        	               		
 	        	               	}
 	               			}
 	               		}
 	               	}
-	               		
 	               	return null;
-
 				}
 			}
 			
@@ -677,9 +736,10 @@ public class XMLelementStructure {
 	private static class Helper {
 		
 		TreeSet elementList = new TreeSet();
-		HashMap fidElementList = new HashMap();
 		HashSet prefixList = new HashSet();
-		
+		HashMap fidElementList = new HashMap();
+		HashMap breakElementsIndex = new HashMap();
+		HashMap elementsIndex = new HashMap(); 
 
 		private static boolean checkXpaths(FeatureTypeInfo ft) {
 
@@ -698,11 +758,8 @@ public class XMLelementStructure {
 			return isOK;
 		}
 		
-		// String xpath;
-		
+	
 		private Helper(FeatureTypeInfo ft) {
-
-			// todo : fold into one loop 
 
 			// compile a list of elements
 			
@@ -865,48 +922,27 @@ public class XMLelementStructure {
 			return false;			// nothing else to match against
 		}
 		
-		private Elements findGroupingElementInList(String breakElement, Elements node) {
+		private Elements findGroupingElement(String breakElement) {
 
-			// treats tree as List - ie only looks at first element in
-			// nestingElements
+			// this is to allow ASFeatureTransformer to mainatin the breakElement state
+			// as a string - ie it doesn't need to know about the structures in this file
+			//
+			// writeElements needs to knowif breakElement is a group (Elements)
+			// or leaf (Element) - could have done type check
 			
-			// todo : save results in a cache
+			return (Elements) elementsIndex.get(breakElement);
 			
-			while (node != null && 
-					!node.groupingElement.name.get(0).equals(breakElement) ) {
-				Iterator i = node.nestingElements.iterator();
-				if (i.hasNext()) {
-					 // treat as list - only look at top element in this level
-					node = (Elements) i.next();  
-				} else {
-					node = null;
-				}
-			}
-			return node;
 		}
 
-		private Element findLeafElement(String breakElement, Elements node) {
+		private Element findLeafElement(String breakElement) {
 
-			// todo : save results in a cache
-		
-			while (!node.nestingElements.isEmpty()) {
-			
-				Iterator i = node.nestingElements.iterator();
-				if (i.hasNext()) {
-					 // treat as list - only look at top element in this level
-					node = (Elements) i.next();
-				}
-			}
-			
-			// see if breakElement is a repeating leaf element
-			Iterator i = node.breakElements.iterator();
-			while ( i.hasNext() ) {
-				Element e = (Element)i.next();
-				if (e.getName().equals(breakElement))
-					return e; 
-			}
-			return null;
+			// this is to allow ASFeatureTransformer to mainatin the breakElement state
+			// as a string - ie it doesn't need to know about the structures in this file
+			//
+			// writeElements needs to knowif breakElement is a group (Elements)
+			// or leaf (Element) - could have done type check
+
+			return (Element)breakElementsIndex.get(breakElement);
 		}
-		
 	}
 }

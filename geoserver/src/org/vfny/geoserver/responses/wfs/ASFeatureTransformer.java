@@ -428,7 +428,7 @@ public class ASFeatureTransformer extends TransformerBase {
         			+ structure.getDBattributeCount() + " elements");
         	
         	Feature f = null;
-        	String typeName = r.getFeatureType().getTypeName(); 
+        	String typeName = "/" + r.getFeatureType().getTypeName(); 
         	
             try {
             	
@@ -460,7 +460,7 @@ public class ASFeatureTransformer extends TransformerBase {
                 	
                 	f = r.next();
                 	
-                	breakElement = structure.findBreak(f, previousValue);
+                	breakElement = structure.findBreak(f, previousValue, null);
                 	
                 	structure.closeTags(breakElement, this);
                 	
