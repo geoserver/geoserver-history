@@ -78,6 +78,10 @@ public class CapabilitiesResponse {
     /** Temporary XML output stream elements and configuration object */
     private static XmlOutputStream xmlOutTemp = new XmlOutputStream(60000);
     
+    private static final String WFS_XMLNS_URL = "http://www.opengis.org/wfs";
+
+    private static final String OGC_XMLNS_URL =	"http://www.opengis.org/ogc";
+    
     
     /**
      * Sets version and service.
@@ -103,20 +107,8 @@ public class CapabilitiesResponse {
         xmlOutTemp.reset();
         xmlOutFinal.reset();
         
-        if( version.equals("0.0.14") ) {
-            addTag("WFS_Capabilities", TAG_START, 0 );
-            service();
-            capability();
-            //xmlOutFinal.writeFile( OPERATIONS_FILE );
-            
-            addTag("FeatureTypeList", TAG_START, 2 );
-            addFeatureTypeInfo( config.getTypeDir(), version );
-            addTag("FeatureTypeList", TAG_END, 2 );
-            
-            xmlOutFinal.writeFile( FILTER_FILE );
-            addTag("WFS_Capabilities", TAG_END, 0 );
-        }
-        else {
+	if(version.equals("0.0.15")) {
+	    addHeaderInfo(version);
             xmlOutFinal.writeFile( SERVICE_METADATA_FILE );
             xmlOutFinal.writeFile( OPERATIONS_SIGNATURES_FILE );
 
@@ -128,7 +120,26 @@ public class CapabilitiesResponse {
             
             xmlOutFinal.writeFile( ADDITIONAL_CAPABILITIES_FILE );
 
+        } else { //0.0.14 or 1.0.0
+	    if (!version.equals("0.0.14")) {
+		//default is to return 1.0.0
+		version = "1.0.0";
+	    }
+	    addHeaderInfo(version);
+            //addTag("WFS_Capabilities", TAG_START, 0 );
+            service();
+            capability();
+            //xmlOutFinal.writeFile( OPERATIONS_FILE );
+            
+            addTag("FeatureTypeList", TAG_START, 2 );
+            addFeatureTypeInfo( config.getTypeDir(), version );
+            addTag("FeatureTypeList", TAG_END, 2 );
+            
+            xmlOutFinal.writeFile( FILTER_FILE );
+            addTag("WFS_Capabilities", TAG_END, 0 );
         }
+
+	    
         return xmlOutFinal.toString();
 
     }
@@ -138,13 +149,35 @@ public class CapabilitiesResponse {
      * Internal utility that writes some header information.
      *
      */
-    private void addHeaderInfo() {
+    private void addHeaderInfo(String version) {
 
         String encoding = "<?xml version='1.0' encoding='UTF-8'?>\n";
-        String firstTag = "<WFS_Capabilities version='" + versionInfo.getWfsVersion() + "' sequence='" + versionInfo.getWfsUpdateSequence() + "'>\n";
-        
+        String firstTag = "<WFS_Capabilities version='" + version + "'";
+        if (version.equals("0.0.15")) {
+	    //I don't have 0.0.15 spec right now, but this element is not in .14 or 1.0
+	    firstTag += " sequence='" + versionInfo.getWfsUpdateSequence();
+	} else if (version.equals("1.0.0")) {
+	    firstTag += addNameSpace("", WFS_XMLNS_URL) + 
+		addNameSpace(":myns", config.getUrl())
+		+ addNameSpace(":ogc", OGC_XMLNS_URL);
+	}
+	firstTag += "/>\n";	   
         xmlOutFinal.write( encoding.getBytes(), 0, encoding.length() );
         xmlOutFinal.write( firstTag.getBytes(), 0, firstTag.length() );
+    }
+
+
+    /**
+     * Internal utility that writes a namespace tag.
+     *
+     * @param qName the qualified name, use the empty string
+     * if it is to be the default namespace, if not be sure
+     * to include the colon (:wfs for example)
+     * @param url The uri of the schema.
+     */
+    private String addNameSpace(String qName, String url){
+	String spaces = "   ";
+	return "\n" + spaces + "xmlns" + qName + "='" + url + "'";
     }
     
     
@@ -195,16 +228,17 @@ public class CapabilitiesResponse {
     private void capability()
         throws WfsException {
         
-        String tempCapabilityInfo = new String();
+        StringBuffer tempCapabilityInfo = new StringBuffer();
         
-        tempCapabilityInfo = "\n  <Capability>\n    <Request>";
-        tempCapabilityInfo = tempCapabilityInfo + tempReturnCapability("Capabilities");
-        tempCapabilityInfo = tempCapabilityInfo + tempReturnCapability("DescribeFeatureType");
-        tempCapabilityInfo = tempCapabilityInfo + tempReturnCapability("GetFeature");
-        tempCapabilityInfo = tempCapabilityInfo + "\n    </Request>\n  </Capability>";
+        tempCapabilityInfo.append("\n  <Capability>\n    <Request>");
+        tempCapabilityInfo.append(tempReturnCapability("GetCapabilities"));
+        tempCapabilityInfo.append(tempReturnCapability("DescribeFeatureType"));
+        tempCapabilityInfo.append(tempReturnCapability("GetFeature"));
+	tempCapabilityInfo.append(tempReturnCapability("Transaction"));
+        tempCapabilityInfo.append("\n    </Request>\n  </Capability>\n");
         
         try {
-            xmlOutFinal.write(tempCapabilityInfo.getBytes());
+            xmlOutFinal.write(tempCapabilityInfo.toString().getBytes());
         } catch (IOException e) {
             throw new WfsException( e, "Error appending to XML file", CapabilitiesResponse.class.getName() );
         }
@@ -272,8 +306,8 @@ public class CapabilitiesResponse {
      */
     private void addFeatureType(String featureTypeName, String responseVersion) 
         throws WfsException {
-        
-        TypeInfo responseFeatureType = new TypeInfo( featureTypeName );
+        TypeRepository repository = TypeRepository.getInstance();
+        TypeInfo responseFeatureType = repository.getType( featureTypeName );
         String tempResponse = responseFeatureType.getCapabilitiesXml( responseVersion );
         
         try {
