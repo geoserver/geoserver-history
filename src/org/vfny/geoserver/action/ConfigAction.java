@@ -7,6 +7,9 @@ package org.vfny.geoserver.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.Globals;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -68,8 +71,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ConfigAction.java,v 1.5 2004/02/03 20:09:15 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: ConfigAction.java,v 1.6 2004/02/05 00:01:50 emperorkefka Exp $
  */
 public class ConfigAction extends GeoServerAction {
 	/**
@@ -85,6 +88,10 @@ public class ConfigAction extends GeoServerAction {
 			                     HttpServletRequest request,
 								 HttpServletResponse response) throws Exception {
 		if( !isLoggedIn( request )){
+            ActionErrors errors = new ActionErrors();
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.required"));
+            request.setAttribute(Globals.ERROR_KEY, errors);
+            
 			return mapping.findForward("login");
 		}
 		return execute( mapping, form, getUserContainer( request ), request, response );
@@ -96,7 +103,7 @@ public class ConfigAction extends GeoServerAction {
      * this service. 
      * </p>
 	 */
-	ActionForward execute( ActionMapping mapping,
+	public ActionForward execute( ActionMapping mapping,
 			               ActionForm form,
 						   UserContainer user,
 						   HttpServletRequest request,

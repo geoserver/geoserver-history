@@ -17,6 +17,8 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresEditorForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class DataDataStoresEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         DataDataStoresEditorForm dataStoresForm = (DataDataStoresEditorForm) form;
 

@@ -15,6 +15,8 @@ import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresSelectForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import java.util.Locale;
 
@@ -28,11 +30,11 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.6 2004/02/02 23:27:26 emperorkefka Exp $
+ * @version $Id: DataDataStoresSelectAction.java,v 1.7 2004/02/05 00:01:50 emperorkefka Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, HttpServletRequest request,
+        ActionForm incomingForm, UserContainer user, HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
 
         DataDataStoresSelectForm form = (DataDataStoresSelectForm) incomingForm;

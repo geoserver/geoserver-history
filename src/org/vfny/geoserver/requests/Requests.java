@@ -88,10 +88,6 @@ public final class Requests {
     /**
      * Aquire type safe session information in a UserContainer.
      * 
-     * <p>
-     * Please note that the UserContainer may be lazyly created.
-     * </p>
-     *
      * @param request Http Request used to aquire session reference
      *
      * @return UserContainer containing typesafe session information.
@@ -101,13 +97,6 @@ public final class Requests {
 
         synchronized (session) {
             UserContainer user = (UserContainer) session.getAttribute(UserContainer.SESSION_KEY);
-
-            if (user == null) {
-                user = new UserContainer(request.getLocale());
-                user.setUsername("Administrator");
-
-                session.setAttribute(UserContainer.SESSION_KEY, user);
-            }
 
             return user;
         }
@@ -129,7 +118,6 @@ public final class Requests {
 
         synchronized (session) {
             UserContainer user = (UserContainer) session.getAttribute(UserContainer.SESSION_KEY);
-
             return user != null;
         }
     }

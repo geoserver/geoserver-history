@@ -8,8 +8,15 @@
 		<html:link forward="mainmenu">
 			<bean:message key="label.mainMenu"/>
 		</html:link>
+<logic:present name="GEOSERVER.USER">
 		<html:link forward="logout">
-			<bean:message key="label.logout"/> 
+			<bean:message key="label.logout"/>
 		</html:link>
+</logic:present>
+<logic:notPresent name="GEOSERVER.USER">
+		<html:link forward="login">
+			<bean:message key="label.login"/>
+		</html:link>
+</logic:notPresent>
 	</tr></td>
 </table>

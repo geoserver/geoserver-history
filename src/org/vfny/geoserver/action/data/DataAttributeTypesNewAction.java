@@ -17,6 +17,8 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataAttributeTypesNewForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +33,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class DataAttributeTypesNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+            ActionForm incomingForm,
+            UserContainer user,
+            HttpServletRequest request,
+            HttpServletResponse response)
+        throws IOException, ServletException {
+        
         DataAttributeTypesNewForm form = (DataAttributeTypesNewForm) incomingForm;
 
         DataConfig dataConfig = (DataConfig) getServlet().getServletContext()

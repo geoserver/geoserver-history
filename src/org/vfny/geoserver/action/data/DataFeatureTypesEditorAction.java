@@ -16,6 +16,8 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesEditorForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class DataFeatureTypesEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         DataFeatureTypesEditorForm featureTypesForm = (DataFeatureTypesEditorForm) form;
 

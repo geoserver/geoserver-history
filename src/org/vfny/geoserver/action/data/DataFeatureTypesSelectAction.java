@@ -14,6 +14,8 @@ import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesSelectForm;
+import org.vfny.geoserver.global.UserContainer;
+
 import java.io.IOException;
 import java.util.Locale;
 
@@ -31,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataFeatureTypesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
         ActionForm incomingForm, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+        UserContainer user, HttpServletResponse response) throws IOException, ServletException {
         DataFeatureTypesSelectForm form = (DataFeatureTypesSelectForm) incomingForm;
 
         String selectedFeatureType = form.getSelectedFeatureTypeName();

@@ -20,6 +20,7 @@ import org.vfny.geoserver.config.validation.TestSuiteConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.form.validation.ValidationTestNewForm;
 import org.vfny.geoserver.form.validation.ValidationTestSuiteNewForm;
+import org.vfny.geoserver.global.UserContainer;
 
 /**
  * ValidationTestNewAction purpose.
@@ -43,12 +44,12 @@ import org.vfny.geoserver.form.validation.ValidationTestSuiteNewForm;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestNewAction.java,v 1.1 2004/01/31 00:27:26 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: ValidationTestNewAction.java,v 1.2 2004/02/05 00:01:51 emperorkefka Exp $
  */
 public class ValidationTestNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
-            ActionForm incomingForm, HttpServletRequest request,
+            ActionForm incomingForm, UserContainer user, HttpServletRequest request,
             HttpServletResponse response){
 
         ServletContext context = this.getServlet().getServletContext();

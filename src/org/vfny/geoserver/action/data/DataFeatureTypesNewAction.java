@@ -16,6 +16,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesNewForm;
+import org.vfny.geoserver.global.UserContainer;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -49,15 +50,15 @@ import javax.servlet.http.HttpServletResponse;
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.6 2004/02/02 21:45:13 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.7 2004/02/05 00:01:50 emperorkefka Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
 
     public ActionForward execute(ActionMapping mapping,
         ActionForm incomingForm, HttpServletRequest request,
-        HttpServletResponse response) throws IOException {
+        UserContainer user, HttpServletResponse response) throws IOException {
         DataFeatureTypesNewForm form = (DataFeatureTypesNewForm) incomingForm;
         String selectedNewFeatureType = form.getSelectedNewFeatureType();
 
