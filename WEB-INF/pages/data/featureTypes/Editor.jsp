@@ -137,14 +137,27 @@
       <td class="label">
 		<bean:write name="attribute" property="name"/>:
 	  </td>
-	  <td class="datum">
+	  <td class="datum"><% System.out.println("Hmmm.."); %>
         <table border=0 width="100%">
+		<% if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) { %>
           <tr style="white-space: nowrap;">
             <td width="70%"><bean:write name="attribute" property="type"/></td>
             <td>nillable:<bean:write name="attribute" property="nillable"/></td>
             <td>min:<bean:write name="attribute" property="minOccurs"/></td>
             <td>max:<bean:write name="attribute" property="maxOccurs"/></td>
           </tr>
+        <% } else { %>
+          <tr style="white-space: nowrap;">
+            <td width="70%">
+            	<html:select property='<%= "attributes[" + index + "].type"%>'>
+          			<html:options property='<%= "attributes[" + index + "].types"%>'/>
+        		</html:select>
+            </td>
+            <td>nillable:<html:checkbox property='<%= "attributes[" + index + "].nillable" %>'/></td>
+            <td>min:<html:text size="2" property='<%= "attributes[" + index + "].minOccurs"%>'/></td>
+            <td>max:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
+          </tr>
+        <% } %>
           <tr>
             <td>
               <pre><code><bean:write name="attribute" property="fragment"/></code></pre>
