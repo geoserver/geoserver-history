@@ -53,6 +53,10 @@
                 <td width="165" class="navigationSub"><font size="-1"><a href="../user/schemaTutorial.htm">Schema 
                   Tutorial</a></font></td>
               </tr>
+	      <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="../user/advanced.htm">Advanced</a></font></td>
+              </tr>
             </table>
             <table cellspacing="5" border="0">
               <tr> 
@@ -78,7 +82,7 @@
               </tr>
               <tr> 
                 <td width="11" align="center"></td>
-                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/rfc13info.htm">WFS 
+                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/specs/02-058.pdf">WFS 
                   Specification</a></font></td>
               </tr>
             </table>
@@ -291,22 +295,18 @@
                       in the Building section.</td>
                   </tr>
                   <tr align="left" valign="top"> 
-                    <td width="13%">classes</td>
+                    <td width="13%">build</td>
                     <td width="87%">This section contains all the .CLASS files 
                       and is an exact mirror of the source directory.</td>
                   </tr>
                   <tr align="left" valign="top"> 
-                    <td width="13%">documentation</td>
-                    <td width="87%">This section - for the moment - contains the 
-                      JavaDocs only.</td>
+                    <td width="13%">doc</td>
+                    <td width="87%">This section contains the JavaDocs and
+		    html documentation</td>
                   </tr>
+		  
                   <tr align="left" valign="top"> 
-                    <td width="13%">jsp</td>
-                    <td width="87%">This section contains all the .JSP files used 
-                      for administration.</td>
-                  </tr>
-                  <tr align="left" valign="top"> 
-                    <td width="13%">libraries</td>
+                    <td width="13%">lib</td>
                     <td width="87%">This section contains all the libraries used 
                       by GeoServer and is discussed in the Libraries section.</td>
                   </tr>
@@ -317,26 +317,24 @@
                       complex; it is discussed below.</td>
                   </tr>
                   <tr align="left" valign="top"> 
-                    <td width="13%">source</td>
+                    <td width="13%">src</td>
                     <td width="87%">This sectioin contains all of the .JAVA files 
                       and is an exact mirror of the classes directory.</td>
+		  </tr>
+		  <tr align="left" valign="top"> 
+                    <td width="13%">test</td>
+                    <td width="87%">This section contains all the .JAVA testing files</td>
                   </tr>
+
                 </table>
               </blockquote>
               <p>The 'misc' directory is further divided into the following sub-directories.</p>
               <blockquote> 
                 <table width="100%" border="0" cellspacing="3" cellpadding="3">
                   <tr align="left" valign="top"> 
-                    <td width="13%" height="6"> changelog</td>
-                    <td width="87%" height="6">This section contains a list of 
-                      daily changelogs. &nbsp;Changelogs must be saved using a 
-                      name of the form: changelog-<i>MM.DD.YYYY</i>.txt, where 
-                      <i>MM</i> is the two digit month, <i>DD</i> is the two digit 
-                      day, and <i>YYYY</i> is the four digit year. &nbsp;If saved 
-                      in this form, they will be automatically placed in thier 
-                      correct nightly build. &nbsp;If a changelog for that day 
-                      does not exist, the nightly build will complain.&nbsp;&nbsp;They 
-                      also serve as a useful reference to new developers.</td>
+                    <td width="13%" height="6"> data</td>
+                    <td width="87%" height="6">This section contains the featureType folders.
+		    See the user installation documentation for more information.</td>
                   </tr>
                   <tr align="left" valign="top"> 
                     <td width="13%" height="264">documents</td>
@@ -374,17 +372,17 @@
                           <td width="81%">This is the JavaDoc stylesheet.</td>
                         </tr>
                         <tr> 
-                          <td width="19%">web_production.xml</td>
+                          <td width="19%">web.xml</td>
                           <td width="81%">This is the web.xml file for the .WAR 
-                            release build. </td>
-                        </tr>
-                        <tr> 
-                          <td width="19%">web_test.xml</td>
-                          <td width="81%">This is the web.xml file for the.WAR 
-                            test builds.</td>
+                            build. </td>
                         </tr>
                       </table>
                     </td>
+                  </tr>
+		   <tr align="left" valign="top"> 
+                    <td width="13%">jsp</td>
+                    <td width="87%">This section contains all the .JSP files used 
+                      for administration.</td>
                   </tr>
                   <tr align="left" valign="top"> 
                     <td width="13%">packageLists</td>
@@ -420,17 +418,6 @@
                 of how they fit into GeoServer.</p>
               <blockquote> 
                 <table width="100%" border="0" cellspacing="3" cellpadding="3">
-                  <tr align="left" valign="top"> 
-                    <td width="12%" height="39"> 
-                      <p><a href="http://castor.exolab.org/">Castor</a><br>
-                        (<a href="http://www.exolab.org/">Exolab</a>) </p>
-                    </td>
-                    <td width="14%" height="39">castor.jar</td>
-                    <td width="74%" height="39">This is an XML binding library 
-                      and marshalling framework. &nbsp;It is currently used to 
-                      read all of the local XML configuration and information 
-                      files.</td>
-                  </tr>
                   <tr align="left" valign="top"> 
                     <td width="12%" height="6"><a href="http://geoserver.sourceforge.net">GeoServer</a><br>
                       (<a href="http://www.vfny.org">VFNY</a>)</td>
@@ -509,7 +496,7 @@
                 are ready to test GeoServer. &nbsp;If you have correctly configured 
                 your build file, from the GeoServer root directory you can type:</p>
               <blockquote> 
-                <p>ant warTest</p>
+                <p>ant test-ext</p>
               </blockquote>
               <p>Which will build a .WAR file and place it in the application 
                 directory of your servlet container. &nbsp;A .WAR file is a Web 
@@ -541,9 +528,9 @@
                 by the GetCapabilities document defined by the WFS specification.&nbsp;&nbsp;The 
                 SRS is currently the most important field and its value should 
                 correspond to an approved <a href="http://www.epsg.org">EPSG</a> 
-                code. &nbsp;The 'rail2' directory is included as an example, but 
+                code. &nbsp;The 'rail' directory is included as an example, but 
                 should be deleted before you do any testing (unless you also have 
-                a table called 'rail2').</p>
+                a table called 'rail').</p>
               <p>That is it!&nbsp;&nbsp;You should now be ready to build and test 
                 GeoServer.</p>
             </blockquote>
