@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
+import org.vfny.geoserver.responses.WfsTransactionException;
 
 /**
  * Transactional request object, consisting of one or more sub transactional
@@ -53,7 +54,10 @@ public class TransactionRequest
      * @return the request at i.
      */
     public SubTransactionRequest getSubRequest(int i) {
-        return (SubTransactionRequest) subRequests.get(i);
+	//if (subRequest.size() == 0 || subRequest.size < i){
+	    return (SubTransactionRequest) subRequests.get(i);
+	    //} else {
+	    //throw new WfsTransactionException("
     }
 
     /** Gets the number of delete, update, and insert operations*/
@@ -68,6 +72,22 @@ public class TransactionRequest
     public String getHandle() { return handle; }
 
     
+    public void setReleaseAll(String releaseAction) 
+	throws WfsTransactionException {
+	if (releaseAction != null) {
+	    if(releaseAction.toUpperCase().equals("ALL")) {
+                this.releaseAll = true;                
+            } else if(releaseAction.toUpperCase().equals("SOME")) {
+                this.releaseAll = false;                
+            } else {
+                throw new WfsTransactionException("Illegal releaseAction: " + 
+						  releaseAction + ", only " +
+						  "SOME or ALL allowed", 
+						  handle, handle);
+            }
+	}
+    }
+
     /** Sets the release for the Transaction request. */
     public void setReleaseAll(boolean release) { this.releaseAll = release; }
     
