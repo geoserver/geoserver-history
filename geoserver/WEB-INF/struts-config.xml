@@ -116,97 +116,106 @@
         <!-- Demonstrates using index.jsp to forward -->
         <forward
             name="welcome"
-            path="/Welcome.do"/>
+            path="/welcome.do"/>
            
         <forward 
         	name="admin"
-        	path="/Administration.do"/>
+        	path="/admin/index.do"/>
         
         <forward 
         	name="contact"
-        	path="/ContactInformation.do"/>
+        	path="/contactInformation.do"/>
         		
         <forward 
         	name="login"
-        	path="/Login.do"/>
+        	path="/login.do"/>
         	
         <forward 
        		name="logout"
-        	path="/Logout.do"/>
+        	path="/logout.do"/>
         	
         <forward
-        	name="validation"
-        	path="/ValidationTestSuite.do"/>
+        	name="config.validation"
+        	path="/config/validation/suite.do"/>
         <forward
         	name="suite"
-        	path="/ValidationTestSuite.do"/>
+        	path="/config/validation/suite.do"/>
         <forward
         	name="test"
-        	path="/ValidationTest.do"/>
+        	path="/config/validation/test.do"/>
 
         <forward
         	name="validationTestEditor"
-        	path="/ValidationTestEdit.do"/>
+        	path="/config/validation/testEdit.do"/>
         	
         	
        	<forward
        		name="config"
-       		path="/Configuration.do"/>
+       		path="/config/index.do"/>
+        	
+       	<forward
+       		name="geoServer"
+       		path="/config/geoServer.do"/>
        		
        	<forward
-       		name="wfs"
-       		path="/WFSConfigMenu.do"/>
+       		name="config.wfs"
+       		path="/config/wfs/index.do"/>
+       		
        	<forward
        		name="wfsConfigDescription"
-       		path="/WFSConfigDescription.do"/>
+       		path="/config/wfs/description.do"/>
        	<forward
        		name="wfsConfigContent"
-       		path="/WFSConfigContent.do"/>
+       		path="/config/wfs/content.do"/>
        		
        	<forward
-       		name="wms"
-       		path="/WMSConfigMenu.do"/>
+       		name="config.wms"
+       		path="/config/wms/index.do"/>
        	<forward
        		name="wmsConfigDescription"
-       		path="/WMSConfigDescription.do"/>
+       		path="/config/wms/description.do"/>
        	<forward
        		name="wmsConfigContent"
-       		path="/WMSConfigContent.do"/>
+       		path="/config/wms/content.do"/>
 
        	<forward
-       		name="data"
-       		path="/DataConfigMenu.do"/>
+       		name="config.data"
+       		path="/config/data/index.do"/>
        		
        	<forward
        		name="stores"
-       		path="/DataConfigDataStores.do"/>
+       		path="/config/data/stores.do"/>
        	<forward
        		name="dataConfigDataStoresNewPage"
-       		path="/DataConfigDataStoresNewPage.do"/>
+       		path="/config/data/storesNewPage.do"/>
        	<forward
        		name="dataConfigDataStoresEditor"
-       		path="/DataConfigDataStoresEditor.do"/>
+       		path="/config/data/storesEditor.do"/>
        		
        	<forward
        		name="namespaces"
-       		path="/DataConfigNamespacesSelectPage.do"/>
+       		path="/config/data/namespacesSelectPage.do"/>
        	<forward
        		name="dataConfigNamespacesSelect"
-       		path="/DataConfigNamespacesSelectPage.do"/>
+       		path="/config/data/namespacesSelectPage.do"/>
        	<forward
        		name="dataConfigNamespacesEditorPage"
-       		path="/DataConfigNamespacesEditorPage.do"/>
+       		path="/config/data/namespacesEditorPage.do"/>
        	<forward
        		name="dataConfigNamespacesNewPage"
-       		path="/DataConfigNamespacesNewPage.do"/>
+       		path="/config/data/namespacesNewPage.do"/>
       		       		
        	<forward
        		name="styles"
-       		path="/DataConfigStyles.do"/>
+       		path="/config/data/styles.do"/>
        		
        	<forward
        		name="types"
-       		path="/DataConfigFeatureTypes.do"/>       	       		
+       		path="/config/data/featureTypes.do"/>   
+       		
+       	<forward
+       		name="calculateBoundingBox"
+       		path="/config/data/calculateBoundingBox.do"/>      	       		
        		
        	<forward
        		name="baseStyle"
@@ -219,150 +228,186 @@
     <action-mappings>
         <!-- WELCOME -->
         <action
-            path="/Welcome"
+            path="/welcome"
+            type="org.apache.struts.actions.ForwardAction"
+            parameter="welcome"
+            name="blankBean"/>
+        <action
+            path="/"
             type="org.apache.struts.actions.ForwardAction"
             parameter="welcome"
             name="blankBean"/>
 
         <action
-            path="/ContactInformation"
+            path="/contactInformation"
             type="org.apache.struts.actions.ForwardAction"
             parameter="welcome.contact"/>
                               	       	
 		<action
-			path ="/Login"
+			path ="/login"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="welcome.login"/>
 
 		<action        	
-			path ="/Logout"
+			path ="/logout"
         	type="org.vfny.geoserver.action.LogoutAction"
         	parameter=""/>
 
         <!-- ADMIN -->
         <action
-        	path ="/Administration"
+        	path ="/admin/index"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin"
         	name="blankBean"/>        	
+        <action
+        	path ="/admin"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="admin"
+        	name="blankBean"/>       
         	
         <!-- CONFIG -->
         <action
-        	path="/Configuration"
+        	path="/config/index"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config"
+        	name="blankBean"/>
+        <action
+        	path="/config"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config"
+        	name="blankBean"/>
+        <action
+        	path="/config/geoServer"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="geoServer"
         	name="blankBean"/>
 
         <!-- CONFIG WFS -->        	
         <action
-        	path="/WFSConfigMenu"
+        	path="/config/wfs/index"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wfs"/>
+        	parameter="config.wfs"/>    	
+        <action
+        	path="/config/wfs"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wfs"/>
 
         <action
-        	path="/WFSConfigDescription"
+        	path="/config/wfs/description"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wfs.description"/>
+        	parameter="config.wfs.description"/>
 
         <action
-        	path="/WFSConfigContent"
+        	path="/config/wfs/content"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wfs.content"/>
+        	parameter="config.wfs.content"/>
         	
         <!-- CONFIG WMS -->       	
         <action
-        	path="/WMSConfigMenu"
+        	path="/config/wms/index"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wms"/>        
+        	parameter="config.wms"/>      	
+        <action
+        	path="/config/wms"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wms"/>      
 
         <action
-        	path="/WMSConfigDescription"
+        	path="/config/wms/description"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wms.description"/>
+        	parameter="config.wms.description"/>
 
         <action
-        	path="/WMSConfigContent"
+        	path="/config/wms/content"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wms.content"/>
+        	parameter="config.wms.content"/>
 
         <!-- CONFIG VALIDATION -->
         <action
-        	path="/Validation"
+        	path="/config/validation/index"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="validation"/>
+        	parameter="config.validation"/>
+        <action
+        	path="/config/validation"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.validation"/>
 
         <action
-        	path="/Validation/Suite"
+        	path="/config/validation/suite"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="validation.suite"/>
+        	parameter="config.validation.suite"/>
         	
         <action
-        	path="/Validation/Test"
+        	path="/config/validation/test"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="validation.test"/>
+        	parameter="config.validation.test"/>
         	
         <action
-        	path="/Validation/TestEdit"
+        	path="/config/validation/testEdit"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="validation.test.editor"/>
+        	parameter="config.validation.test.editor"/>
         	        	
         <!-- DATA -->
         <action
-        	path="/Data"
+        	path="/config/data/index"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data"/>        
+        	parameter="config.data"/>    
+        <action
+        	path="/config/data"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data"/>      
         	
        <!-- DATA STORES -->
         <action
-        	path="/Data/Store"
+        	path="/config/data/store"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.store"/>
+        	parameter="config.data.store"/>
         <action	
-        	path="/Data/StoreNew"
+        	path="/config/data/storeNew"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.store.new"/>
+        	parameter="config.data.store.new"/>
         <action
-        	path="/Data/StoreEditor"
+        	path="/config/data/storeEditor"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.store.editor"/>        	
+        	parameter="config.data.store.editor"/>        	
         	
        <!-- DATA NAMESPACES -->        	
         <action
-        	path="/Data/Namespace"
+        	path="/config/data/namespace"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.namespace"/>
+        	parameter="config.data.namespace"/>
         <action
-        	path="/Data/NamespaceNew"
+        	path="/config/data/namespaceNew"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.namespace.new"/> 
+        	parameter="config.data.namespace.new"/> 
         <action
-        	path="/Data/NamespaceEditor"
+        	path="/config/data/namespaceEditor"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.namespace.editor"/>        	        	
+        	parameter="config.data.namespace.editor"/>        	        	
 
 		<!-- DATA styles -->        	
         <action
-        	path="/Data/Style"
+        	path="/config/data/style"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.styles"/>
+        	parameter="config.data.styles"/>
         	
 		<!-- DATA featuretypes -->
         <action
-        	path="/Data/FeatureType"
+        	path="/config/data/featureType"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.type"/>
+        	parameter="config.data.type"/>
         <action
-        	path="/Data/FeatureTypeNew"
+        	path="/config/data/featureTypeNew"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.type.new"/>
+        	parameter="config.data.type.new"/>
         <action
-        	path="/Data/FeatureTypeEditor"
+        	path="/config/data/featureTypeEditor"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.type.editor"/>        	        	
+        	parameter="config.data.type.editor"/>        	        	
 <!-- Submit Actions -->    
 
 		<action
-			path="/LoginSubmit"
+			path="/loginSubmit"
 			type="org.vfny.geoserver.action.LoginAction"
 			name="loginForm"
 			scope="request"
@@ -370,7 +415,7 @@
 			input="welcome.login"/>
 
 		<action    	
-        	path="/GeoServerConfigurationSubmit"
+        	path="/config/geoServerSubmit"
         	type="org.vfny.geoserver.action.global.GeoServerConfigurationSubmit"
         	name="geoServerConfigurationForm"
         	scope="request"
@@ -378,189 +423,189 @@
         	input="main.geoServer.configuration"/>
         	
         <action
-        	path="/WFSConfigDescriptionSubmit"
+        	path="/config/wfs/descriptionSubmit"
         	type="org.vfny.geoserver.action.wfs.WFSDescriptionAction"
         	name="wfsDescriptionForm"
         	scope="request"
         	validate="true"
-        	input="wfs.description"/>
+        	input="config.wfs.description"/>
         	
         <action
-        	path="/WFSConfigContentSubmit"
+        	path="/config/wfs/contentSubmit"
         	type="org.vfny.geoserver.action.wfs.WFSContentAction"
         	name="wfsContentForm"
         	scope="request"
         	validate="true"
-        	input="wfs.content"/>
+        	input="config.wfs.content"/>
 
         <action
-        	path="/WMSConfigDescriptionSubmit"
+        	path="/config/wms/descriptionSubmit"
         	type="org.vfny.geoserver.action.wms.WMSDescriptionAction"
         	name="wmsDescriptionForm"
         	scope="request"
         	validate="true"
-        	input="wms.description"/>
+        	input="config.wms.description"/>
         <action
-        	path="/WMSConfigContentSubmit"
+        	path="/config/wms/contentSubmit"
         	type="org.vfny.geoserver.action.wms.WMSContentAction"
         	name="wmsContentForm"
         	scope="request"
         	validate="true"
-        	input="wms.content"/>
+        	input="config.wms.content"/>
 
         <action
-        	path="/DataConfigDataStoresSubmit"
+        	path="/config/data/dataStoresSubmit"
         	type="org.vfny.geoserver.action.data.DataDataStoresEditorAction"
         	name="dataDataStoresEditorForm"
         	scope="request"
         	validate="true"
-        	input="data.dataStores.editor"/>
+        	input="config.data.dataStores.editor"/>
         	
         <action
-        	path="/DataConfigDataStoresSelect"
+        	path="/config/data/dataStoresSelect"
         	type="org.vfny.geoserver.action.data.DataDataStoresSelectAction"
         	name="dataDataStoresSelectForm"
         	scope="request"
         	validate="true"
-        	input="data.dataStores.select"/>
+        	input="config.data.dataStores.select"/>
 
         <action
-        	path="/DataConfigDataStoresNew"
+        	path="/config/data/dataStoresNew"
         	type="org.vfny.geoserver.action.data.DataDataStoresNewAction"
         	name="dataDataStoresNewForm"
         	scope="request"
         	validate="true"
-        	input="data.dataStores.new"/>        	
+        	input="config.data.dataStores.new"/>        	
         	        	
         <action
-        	path="/DataConfigNamespacesSelect"
+        	path="/config/data/namespacesSelect"
         	type="org.vfny.geoserver.action.data.DataNamespacesSelectAction"
         	name="dataNamespacesSelectForm"
         	scope="request"
         	validate="true"
-        	input="data.namespaces.select"/>
+        	input="config.data.namespaces.select"/>
         <action
-        	path="/DataConfigNamespacesNew"
+        	path="/config/data/namespacesNew"
         	type="org.vfny.geoserver.action.data.DataNamespacesNewAction"
         	name="dataNamespacesNewForm"
         	scope="request"
         	validate="true"
-        	input="data.namespaces.new"/>
+        	input="config.data.namespaces.new"/>
         <action
-        	path="/DataConfigNamespacesSubmit"
+        	path="/config/data/namespacesSubmit"
         	type="org.vfny.geoserver.action.data.DataNamespacesEditorAction"
         	name="dataNamespacesEditorForm"
         	scope="request"
         	validate="true"
-        	input="data.namespaces.editor"/>
+        	input="config.data.namespaces.editor"/>
         	
         	
         <action
-        	path="/DataConfigStylesSubmit"
+        	path="/config/data/stylesSubmit"
         	type="org.vfny.geoserver.action.data.DataStylesAction"
         	name="dataStylesForm"
         	scope="request"
         	validate="true"
-        	input="data.styles"/>
+        	input="config.data.styles"/>
         <action
-        	path="/DataConfigFeatureTypesSubmit"
+        	path="/config/data/featureTypesSubmit"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesEditorAction"
         	name="dataFeatureTypesEditorForm"
         	scope="request"
         	validate="true"
-        	input="data.featureTypes"/>        	        	
+        	input="config.data.featureTypes"/>        	        	
         <action
-        	path="/DataConfigFeatureTypesSelect"
+        	path="/config/data/featureTypesSelect"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesSelectAction"
         	name="dataFeatureTypesSelectForm"
         	scope="request"
         	validate="true"
-        	input="data.featureTypes"/>   
+        	input="config.data.featureTypes"/>   
          <action
-        	path="/DataConfigFeatureTypesNew"
+        	path="/config/data/featureTypesNew"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesNewAction"
         	name="dataFeatureTypesNewForm"
         	scope="request"
         	validate="true"
-        	input="data.featureTypes"/>   
+        	input="config.data.featureTypes"/>   
         	       	
         <action
-        	path="/DataConfigAttributeTypesSelect"
+        	path="/config/data/attributeTypesSelect"
         	type="org.vfny.geoserver.action.data.DataAttributeTypesSelectAction"
         	name="dataAttributeTypesSelectForm"
         	scope="request"
         	validate="true"
-        	input="data.featureTypes"/>   
+        	input="config.data.featureTypes"/>   
         <action
-        	path="/DataConfigAttributeTypesNew"
+        	path="/config/data/attributeTypesNew"
         	type="org.vfny.geoserver.action.data.DataAttributeTypesNewAction"
         	name="dataAttributeTypesNewForm"
         	scope="request"
         	validate="true"
-        	input="data.featureTypes"/>
+        	input="config.data.featureTypes"/>
         <action
-        	path="/DataConfigAttributeTypesSubmit"
+        	path="/config/data/attributeTypesSubmit"
         	type="org.vfny.geoserver.action.data.DataAttributeTypesEditorAction"
         	name="dataAttributeTypesEditorForm"
         	scope="request"
         	validate="true"
-        	input="data.featureTypes"/>
+        	input="config.data.featureTypes"/>
  
          <action
-        	path="/ValidationTestSuiteSelect"
+        	path="/config/validation/testSuiteSelect"
         	type="org.vfny.geoserver.action.validation.ValidationTestSuiteSelectAction"
         	name="validationTestSuiteSelectForm"
         	scope="request"
         	validate="true"
-        	input="validation.testSuiteSelect"/>
+        	input="config.validation.testSuiteSelect"/>
 
          <action
-        	path="/ValidationTestSuiteNew"
+        	path="/config/validation/testSuiteNew"
         	type="org.vfny.geoserver.action.validation.ValidationTestSuiteNewAction"
         	name="validationTestSuiteNewForm"
         	scope="request"
         	validate="true"
-        	input="validation.testSuiteSelect"/>
+        	input="config.validation.testSuiteSelect"/>
 
          <action
-        	path="/ValidationTestSelect"
+        	path="/config/validation/testSelect"
         	type="org.vfny.geoserver.action.validation.ValidationTestSelectAction"
         	name="validationTestSelectForm"
         	scope="request"
         	validate="true"
-        	input="validation.testSelect"/>
+        	input="config.validation.testSelect"/>
         	
          <action
-			path="/ValidationTestNew"
+			path="/config/validation/testNew"
         	type="org.vfny.geoserver.action.validation.ValidationTestNewAction"
         	name="validationTestNewForm"
         	scope="request"
         	validate="true"
-        	input="validation.testSelect"/>
+        	input="config.validation.testSelect"/>
         	        	
          <action
-        	path="/ValidationTestEditor"
+        	path="/config/validation/testEditor"
         	type="org.vfny.geoserver.action.validation.ValidationTestEditorAction"
         	name="validationTestEditorForm"
         	scope="request"
         	validate="true"
-        	input="validation.testEditor"/>
+        	input="config.validation.testEditor"/>
         	
         <action
-        	path="/CalculateBoundingBox"
+        	path="/config/data/calculateBoundingBox"
         	type="org.vfny.geoserver.action.data.CalculateBoundingBoxAction"
         	name="blankBean"/>
         	
         <action
-        	path="/SaveToGeoServer"
+        	path="/admin/saveToGeoServer"
         	type="org.vfny.geoserver.action.UpdateGSAction"
         	name="blankBean"/>
         <action
-        	path="/SaveToXML"
+        	path="/admin/saveToXML"
         	type="org.vfny.geoserver.action.SaveXMLAction"
         	name="blankBean"/>
         <action
-        	path="/LoadFromXML"
+        	path="/admin/loadFromXML"
         	type="org.vfny.geoserver.action.LoadXMLAction"
         	name="blankBean"/>        	        	
 
