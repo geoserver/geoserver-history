@@ -85,6 +85,8 @@ public class TypeRepository {
      * Returns a capabilities XML fragment for a specific feature type.
      * @param version The version of the request (0.0.14 or 0.0.15)
      */ 
+    //TODO: throw wfs exception here if type is not found? this would reduce
+    //duplicate code. 
     public TypeInfo getType(String typeName) {
 	int prefixDelimPos = typeName.lastIndexOf(PREFIX_DELIMITER);
 	if (prefixDelimPos < 0) {
@@ -253,7 +255,13 @@ public class TypeRepository {
      * @throws WfsException if there were any datasource problems, like the 
      * typeName not existing, or problems with the connection.
      */
-    private List getFidFeatures(String typeName, Filter filter) throws WfsException {
+    private List getFidFeatures(String typeName, Filter filter) 
+	throws WfsException {
+	TypeInfo typeInfo = getType(typeName);
+	if (typeInfo == null) {
+	    throw new WfsException("could not find feature type: " + typeName 
+				   + ", information not in data folder");
+	}
 	DataSource data = 
 	    getType(typeName).getDataSource(new ArrayList(), 1000000);
 	Feature[] features = null;
