@@ -16,11 +16,28 @@
 %>
       <tr>
         <td>
+<%  String forward = array[ index ];
+    if( forward.length() == 0 ){
+%>
+          <hr/>
+<%  }
+    else if (forward.startsWith("/")) {
+        String action = forward.substring(1);
+%>
           <html:link style="action"
-                     forward="<%= array[index] %>"
-                     titleKey="<%= array[ index ]+".short" %>">
-            <bean:message key="<%= array[ index ]+".label" %>"/>
+                     action="<%= action %>">
+            <%= action %>
           </html:link>
+<%  }
+    else {
+%>              
+          <html:link style="action"
+                     forward="<%= forward %>"
+                     titleKey="<%= forward+".short" %>">
+            <bean:message key="<%= forward+".label" %>"/>
+          </html:link>
+<%  }
+%>          
         </td>
       </tr>
 <%  } %>
