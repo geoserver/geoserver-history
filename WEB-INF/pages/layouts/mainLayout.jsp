@@ -63,7 +63,7 @@
               <td class="locator">                        
                 <tiles:insert attribute="location"/>
               </td>
-              <td class="login">
+              <td class="loginStatus">
                 <tiles:insert attribute="loginStatus"/>
               </td>
             </tr>
