@@ -11,7 +11,7 @@
                 <ZServer>
                   <Port>3210</Port>
                 </ZServer>
-                <PrefixDelimiter>:</PrefixDelimiter>
+                <PrefixDelimiter>--</PrefixDelimiter>
                 <MaxFeatures>455</MaxFeatures>
                 <LoggingLevel>FINE</LoggingLevel>
 		<URL>http://beta.openplans.org/geoserver</URL>
@@ -22,3 +22,4 @@
                            prefix="roads"/>
 </GlobalConfiguration>
 
+ 
