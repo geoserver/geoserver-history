@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLockFactory;
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.requests.*;
 import java.util.*;
@@ -19,7 +21,7 @@ import java.util.logging.*;
  * should be trivial, as it's already a part of lockRequest.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureWithLockRequest.java,v 1.1.2.1 2003/11/04 22:48:26 cholmesny Exp $
+ * @version $Id: FeatureWithLockRequest.java,v 1.1.2.2 2003/11/12 19:58:14 jive Exp $
  */
 public class FeatureWithLockRequest extends FeatureRequest {
     /** Standard logging instance for class */
@@ -33,6 +35,34 @@ public class FeatureWithLockRequest extends FeatureRequest {
         super();
     }
 
+    /**
+     * Turn this request into a FeatureLock.
+     * <p>
+     * You will return FeatureLock.getAuthorization()
+     * to your user so they can refer to this lock again.
+     * </p>
+     * <p>
+     * The getAuthorization() value is based on getHandle(), with a default
+     * of "GeoServer" if the user has not provided a handle.
+     * </p>
+     * @return
+     */
+    public FeatureLock toFeatureLock(){
+        String handle = getHandle();
+        if( handle == null || handle.length()==0){
+            handle = "GeoServer";
+        }
+        if( expiry < 0 ){
+            // negative time used to query if lock is available!
+            return FeatureLockFactory.generate( handle, expiry );           
+        }
+        if( expiry == 0 ){
+            // perma lock with no expiry!
+            return FeatureLockFactory.generate( handle, 0 );            
+        }
+        // FeatureLock is specified in seconds
+        return FeatureLockFactory.generate( handle, expiry*60 );
+    }
     /**
      * Turns this request into a lock request.
      *
