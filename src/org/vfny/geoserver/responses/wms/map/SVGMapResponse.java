@@ -5,7 +5,7 @@
 package org.vfny.geoserver.responses.wms.map;
 
 import org.geotools.data.*;
-
+import org.geotools.styling.Style;
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.requests.Request;
@@ -15,21 +15,23 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+
 /**
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: SVGMapResponse.java,v 1.3 2003/12/17 22:35:03 cholmesny Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.responses.wms.map");
 
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private static final String MIME_TYPE = "image/svg+xml";
     private SVGEncoder svgEncoder;
     private FeatureTypeConfig[] requestedLayers;
     private FeatureResults[] resultLayers;
-    private List styles;
+    private Style[] styles;
 
     /**
      * DOCUMENT ME!
@@ -40,33 +42,29 @@ public class SVGMapResponse extends GetMapDelegate {
         return MIME_TYPE;
     }
 
-    public List getSupportedFormats()
-    {
-      return Collections.singletonList(MIME_TYPE);
+    public List getSupportedFormats() {
+        return Collections.singletonList(MIME_TYPE);
     }
 
     /**
-     * evaluates if this Map producer can generate the map format specified
-     * by <code>mapFormat</code>
+     * evaluates if this Map producer can generate the map format specified by
+     * <code>mapFormat</code>
      *
      * @param mapFormat the mime type of the output map format requiered
      *
      * @return true if class can produce a map in the passed format
      */
-    public boolean canProduce(String mapFormat)
-    {
-      return mapFormat.startsWith("image/svg");
+    public boolean canProduce(String mapFormat) {
+        return mapFormat.startsWith("image/svg");
     }
 
+    public void abort() {
+        LOGGER.fine("aborting SVG map response");
 
-    public void abort()
-    {
-      LOGGER.fine("aborting SVG map response");
-      if(svgEncoder != null)
-      {
-        LOGGER.info("aborting SVG encoder");
-        svgEncoder.abort();
-      }
+        if (svgEncoder != null) {
+            LOGGER.info("aborting SVG encoder");
+            svgEncoder.abort();
+        }
     }
 
     /**
@@ -79,7 +77,8 @@ public class SVGMapResponse extends GetMapDelegate {
      * @throws WmsException DOCUMENT ME!
      */
     protected void execute(FeatureTypeConfig[] requestedLayers,
-        FeatureResults[] resultLayers, List styles) throws WmsException {
+        FeatureResults[] resultLayers, Style[] styles)
+        throws WmsException {
         GetMapRequest request = getRequest();
         this.requestedLayers = requestedLayers;
         this.resultLayers = resultLayers;
@@ -100,7 +99,7 @@ public class SVGMapResponse extends GetMapDelegate {
      * @param out DOCUMENT ME!
      *
      * @throws ServiceException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         svgEncoder.encode(requestedLayers, resultLayers, styles, out);
