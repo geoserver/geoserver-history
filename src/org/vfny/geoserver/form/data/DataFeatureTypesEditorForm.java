@@ -5,11 +5,7 @@
 
 package org.vfny.geoserver.form.data;
 
-import java.util.Iterator;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -19,8 +15,9 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.requests.Requests;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.Iterator;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -33,7 +30,10 @@ public class DataFeatureTypesEditorForm extends ActionForm {
     private String name;
     private String SRS;
     private String title;
-    private String bBox;
+    private String latLonBoundingBoxMinX;
+    private String latLonBoundingBoxMinY;
+    private String latLonBoundingBoxMaxX;
+    private String latLonBoundingBoxMaxY;    
     private String keywords;
     private String _abstract;
     private boolean _default;
@@ -68,10 +68,12 @@ public class DataFeatureTypesEditorForm extends ActionForm {
         Envelope bounds = ftConfig.getLatLongBBox();
 
         if (bounds.isNull()) {
-            bBox = "";
+            latLonBoundingBoxMinX = "";
         } else {
-            bBox = bounds.getMinX() + " " + bounds.getMinY() + " "
-                + bounds.getMaxX() + " " + bounds.getMaxY();
+            latLonBoundingBoxMinX = Double.toString(bounds.getMinX());
+            latLonBoundingBoxMinY = Double.toString(bounds.getMinY());
+            latLonBoundingBoxMaxX = Double.toString(bounds.getMaxX());
+            latLonBoundingBoxMaxY = Double.toString(bounds.getMaxY());
         }
 
         name = ftConfig.getName();
@@ -102,27 +104,23 @@ public class DataFeatureTypesEditorForm extends ActionForm {
         DataConfig data = ConfigRequests.getDataConfig(request);
 
         // check name exists in current DataStore?
-        if ("".equals(bBox)) {
+        if ("".equals(latLonBoundingBoxMinX)
+         || "".equals(latLonBoundingBoxMinY)
+         || "".equals(latLonBoundingBoxMaxX)
+         || "".equals(latLonBoundingBoxMaxY)) {
+           
             errors.add("latlongBoundingBox",
-                new ActionError("Lat Long Bounding box required"));
+                new ActionError("error.latLonBoundingBox.required"));
         } else {
-            String[] parse = bBox.trim().split("\\w");
-
-            if (parse.length != 4) {
+            try {
+                double minX = Double.parseDouble(latLonBoundingBoxMinX);
+                double minY = Double.parseDouble(latLonBoundingBoxMinY);
+                double maxX = Double.parseDouble(latLonBoundingBoxMaxX);
+                double maxY = Double.parseDouble(latLonBoundingBoxMaxY);
+            } catch (NumberFormatException badNumber) {
                 errors.add("latlongBoundingBox",
-                    new ActionError(
-                        "Invalid Lat Long Bounding required format: minx miny maxx maxy"));
-            } else {
-                try {
-                    double minX = Double.parseDouble(parse[0]);
-                    double minY = Double.parseDouble(parse[1]);
-                    double maxX = Double.parseDouble(parse[2]);
-                    double maxY = Double.parseDouble(parse[3]);
-                } catch (NumberFormatException badNumber) {
-                    errors.add("latlongBoundingBox",
-                        new ActionError("Invliad Lat Long Bounding box",
-                            badNumber));
-                }
+                    new ActionError("error.latLonBoundingBox.invalid",
+                        badNumber));
             }
         }
 
@@ -152,8 +150,8 @@ public class DataFeatureTypesEditorForm extends ActionForm {
      *
      * @return
      */
-    public String getLatlonBoundingBox() {
-        return bBox;
+    public String getLatLonBoundingBoxMinX() {
+        return latLonBoundingBoxMinX;
     }
 
     /**
@@ -206,8 +204,8 @@ public class DataFeatureTypesEditorForm extends ActionForm {
      *
      * @param text
      */
-    public void setLatlonBoundingBox(String text) {
-        bBox = text;
+    public void setLatLonBoundingBoxMinX(String text) {
+        latLonBoundingBoxMinX = text;
     }
 
     /**
@@ -264,4 +262,58 @@ public class DataFeatureTypesEditorForm extends ActionForm {
     public boolean isDefaultChecked() {
         return defaultChecked;
     }
+	/**
+	 * Access latLonBoundingBox2 property.
+	 * 
+	 * @return Returns the latLonBoundingBox2.
+	 */
+	public String getLatLonBoundingBoxMinY() {
+		return latLonBoundingBoxMinY;
+	}
+
+	/**
+	 * Set latLonBoundingBox2 to latLonBoundingBox2.
+	 *
+	 * @param latLonBoundingBox2 The latLonBoundingBox2 to set.
+	 */
+	public void setLatLonBoundingBoxMinY(String latLonBoundingBox2) {
+		this.latLonBoundingBoxMinY = latLonBoundingBox2;
+	}
+
+	/**
+	 * Access latLonBoundingBox3 property.
+	 * 
+	 * @return Returns the latLonBoundingBox3.
+	 */
+	public String getLatLonBoundingBoxMaxX() {
+		return latLonBoundingBoxMaxX;
+	}
+
+	/**
+	 * Set latLonBoundingBox3 to latLonBoundingBox3.
+	 *
+	 * @param latLonBoundingBox3 The latLonBoundingBox3 to set.
+	 */
+	public void setLatLonBoundingBoxMaxX(String latLonBoundingBox3) {
+		this.latLonBoundingBoxMaxX = latLonBoundingBox3;
+	}
+
+	/**
+	 * Access latLonBoundingBox4 property.
+	 * 
+	 * @return Returns the latLonBoundingBox4.
+	 */
+	public String getLatLonBoundingBoxMaxY() {
+		return latLonBoundingBoxMaxY;
+	}
+
+	/**
+	 * Set latLonBoundingBox4 to latLonBoundingBox4.
+	 *
+	 * @param latLonBoundingBox4 The latLonBoundingBox4 to set.
+	 */
+	public void setLatLonBoundingBoxMaxY(String latLonBoundingBox4) {
+		this.latLonBoundingBoxMaxY = latLonBoundingBox4;
+	}
+
 }

@@ -5,15 +5,6 @@
 
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -26,6 +17,16 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesEditorForm;
 import org.vfny.geoserver.global.UserContainer;
+
+import com.vividsolutions.jts.geom.Envelope;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -43,7 +44,10 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
         String name = featureTypesForm.getName();
         String SRS = featureTypesForm.getSRS();
         String title = featureTypesForm.getTitle();
-        String latLonBoundingBox = featureTypesForm.getLatlonBoundingBox();
+        double latLonBoundingBoxMinX = Double.parseDouble(featureTypesForm.getLatLonBoundingBoxMinX());
+        double latLonBoundingBoxMinY = Double.parseDouble(featureTypesForm.getLatLonBoundingBoxMinY());
+        double latLonBoundingBoxMaxX = Double.parseDouble(featureTypesForm.getLatLonBoundingBoxMaxX());
+        double latLonBoundingBoxMaxY = Double.parseDouble(featureTypesForm.getLatLonBoundingBoxMaxY());
         String keywords = featureTypesForm.getKeywords();
         String _abstract = featureTypesForm.get_abstract();
         boolean _default = featureTypesForm.is_default();
@@ -59,6 +63,10 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
         config.setName(name);
         config.setSRS(Integer.parseInt(SRS));
         config.setTitle(title);
+        config.setLatLongBBox(new Envelope(latLonBoundingBoxMinX, 
+                                           latLonBoundingBoxMinY,
+                                           latLonBoundingBoxMaxX,
+                                           latLonBoundingBoxMaxY));
 
         
         List list = new ArrayList();

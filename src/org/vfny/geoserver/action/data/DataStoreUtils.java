@@ -4,6 +4,15 @@
  */
 package org.vfny.geoserver.action.data;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.DataStoreFactorySpi.Param;
+import org.geotools.data.DataStoreFinder;
+
+import com.vividsolutions.jts.geom.Envelope;
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,18 +20,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DataStoreFactorySpi.Param;
-
 
 /**
  * A collecitno of utilties for dealing with GeotTools DataStore.
  *
  * @author Richard Gould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataStoreUtils.java,v 1.7 2004/02/10 00:35:28 emperorkefka Exp $
  */
 public abstract class DataStoreUtils {
     public static DataStore aquireDataStore(Map params)
@@ -216,5 +220,17 @@ public abstract class DataStoreUtils {
         }
 
         return map;
+    }
+ 
+    public static Envelope getBoundingBoxEnvelope(FeatureSource fs) throws IOException {
+        Envelope ev = fs.getBounds();
+        if(ev == null || ev.isNull()){
+            try{
+                ev = fs.getFeatures().getBounds();
+            }catch(Throwable t){
+                ev = null;
+            }
+        }
+        return ev;
     }
 }

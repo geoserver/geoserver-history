@@ -5,15 +5,6 @@
 
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -27,6 +18,14 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresEditorForm;
 import org.vfny.geoserver.global.UserContainer;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -50,6 +49,12 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);
 
+        if( config == null ) {
+        	// we are creating a new one.
+            dataConfig.addDataStore(getUserContainer(request).getDataStoreConfig());
+            config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);            
+        }
+        
         // After extracting params into a map
         Map paramValues = new HashMap();
         Map paramTexts = new HashMap();
@@ -155,7 +160,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         dataConfig.addDataStore(config);
 
-        request.getSession().removeAttribute("selectedDataStoreId");
+        getUserContainer(request).setDataStoreConfig(null);
         getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("dataConfigDataStores");

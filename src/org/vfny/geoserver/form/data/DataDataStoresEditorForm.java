@@ -4,17 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -24,6 +13,17 @@ import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.requests.Requests;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -93,9 +93,9 @@ public class DataDataStoresEditorForm extends ActionForm {
 
         namespaces = new TreeSet(config.getNameSpaces().keySet());
 
-        dataStoreId = (String) request.getSession().getAttribute("selectedDataStoreId");
+        DataStoreConfig dsConfig = Requests.getUserContainer(request).getDataStoreConfig();
 
-        if (dataStoreId == null) {
+        if (dsConfig == null) {
             // something is horribly wrong no DataStoreID selected!
             // The JSP needs to not include us if there is no
             // selected DataStore
@@ -104,8 +104,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                 "selectedDataStoreId required in Session");
         }
 
-        DataStoreConfig dsConfig = config.getDataStore(dataStoreId);
- 
+        dataStoreId = dsConfig.getId();
         description = dsConfig.getAbstract();
         enabled = dsConfig.isEnabled();
         namespaceId = dsConfig.getNameSpaceId();
@@ -145,8 +144,6 @@ public class DataDataStoresEditorForm extends ActionForm {
             paramHelp.add(param.description
                 + (param.required ? "" : " (optional)"));
         }
-
-        System.out.println("rest to:" + getParams());
     }
 
     public ActionErrors validate(ActionMapping mapping,

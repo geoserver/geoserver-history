@@ -27,8 +27,8 @@ import org.vfny.geoserver.global.UserContainer;
  * Select a DataStore for editing.
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.8 2004/02/07 01:30:05 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresSelectAction.java,v 1.9 2004/02/10 00:35:28 emperorkefka Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -51,16 +51,13 @@ public class DataDataStoresSelectAction extends ConfigAction {
         if (editLabel.equals(buttonAction)) {
             dsConfig = (DataStoreConfig) dataConfig.getDataStore(form
                     .getSelectedDataStoreId());
-
-            //This would be ideal. Perhaps later. Session for now.
-            //getUserContainer(request).setDataStoreID(form.getSelectedDataStoreId());
-            request.getSession().setAttribute("selectedDataStoreId",
-                form.getSelectedDataStoreId());
+           
+            getUserContainer(request).setDataStoreConfig(dsConfig);
 
             return mapping.findForward("dataConfigDataStores");
         } else if (deleteLabel.equals(buttonAction)) {
             dataConfig.removeDataStore(form.getSelectedDataStoreId());
-            request.getSession().removeAttribute("selectedDataStoreId");
+            getUserContainer(request).setDataStoreConfig(null);
 
             form.reset(mapping, request);
 
