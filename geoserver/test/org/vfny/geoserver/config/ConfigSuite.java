@@ -5,7 +5,6 @@
 package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
-import org.geotools.resources.MonolineFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,15 +14,13 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: ConfigSuite.java,v 1.9 2003/09/10 19:52:02 cholmesny Exp $
+ * @version $Id: ConfigSuite.java,v 1.10 2003/09/13 00:27:57 cholmesny Exp $
  */
 public class ConfigSuite extends TestCase {
-    /* Initializes the logger.  It's going to be initted anyways, might as
-       well do so now*/
-    static {
-        Log4JFormatter.init("org.vfny.geoserver", Level.FINER);
-        Log4JFormatter.init("org.geotools", Level.FINER);
-    }
+    // Initializes the logger. Uncomment to see log messages.
+    //static {
+    //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
+    //}
 
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger(
@@ -158,7 +155,13 @@ public class ConfigSuite extends TestCase {
         LOGGER.fine("prefix delimiter is " + config.getFilePrefixDelimiter());
         LOGGER.fine("format output is " + config.formatOutput());
         assertEquals(455, config.getMaxFeatures());
-        assertEquals(Level.FINE, config.getLogLevel());
+
+        //REVISIT: we dont want to set the log level here, so that user
+        //tests can run with what they have set up.  So we should maybe
+	//make another configuration.xml test where we can read this.
+	//For now it's fine if we set it on configInfo.
+        //assertEquals(Level.FINE, config.getLogLevel());
+	//this is another where an alternate location could be good.
         assertEquals("--", config.getFilePrefixDelimiter());
         assertTrue(config.formatOutput());
     }
