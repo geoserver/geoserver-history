@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * now will just use the second
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.15 2004/04/16 21:42:10 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.16 2004/04/16 22:07:05 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -341,11 +341,14 @@ System.out.println("\n\n\nTYPE NAME = "+curFeatureType.getTypeName()+"  :: Attr 
      */
     public void geometry(Geometry geometry) {
         if (insideFeature) {
+			curAttributeType = curFeatureType.getDefaultGeometry();
             if (attName.equals("")) {
                 attributeNames.add("geometry");
             } else {
                 attributeNames.add(attName);
             }
+System.out.println("cur attr type "+curAttributeType);
+
 
             int position = curFeatureType.find(curAttributeType);
             attributes[position] = geometry;
