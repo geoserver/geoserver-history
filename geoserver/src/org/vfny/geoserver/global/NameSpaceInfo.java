@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.3 2004/01/15 21:53:06 dmzwiers Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.4 2004/01/20 03:26:40 emperorkefka Exp $
  */
 public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMetaData{
     /**
@@ -48,18 +48,6 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
     
     /** metadata */
     private Map meta; 
-    /**
-     * NameSpaceConfig constructor.
-     * 
-     * <p>
-     * Creates a NameSpaceConfig to represent an instance with default data.
-     * </p>
-     */
-    public NameSpaceInfo(Data data) {
-        this.data = data;
-        nsDTO = new NameSpaceInfoDTO();
-        meta = new HashMap();
-    }
 
     /**
      * NameSpaceConfig constructor.
@@ -73,11 +61,14 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
      *
      * @throws NullPointerException when the param is null
      */
-    public NameSpaceInfo(NameSpaceInfoDTO ns) {
+    public NameSpaceInfo(Data data, NameSpaceInfoDTO ns) {
         if (ns == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("Non null NameSpaceInfoDTO required");
         }
-
+        if( data == null ){
+            throw new NullPointerException("Non null Data required");
+        }
+        this.data = data;
         nsDTO = (NameSpaceInfoDTO) ns.clone();
     }
 
@@ -299,6 +290,9 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
      */
     public Set getTypeNames() {
         Set set = new HashSet();
+        System.out.println("getTypeNames data:"+data );
+        System.out.println("getTypeNames data getFeatureTypeInfo:"+data.getFeatureTypeInfos() );
+                
         for( Iterator i=data.getFeatureTypeInfos().values().iterator(); i.hasNext(); ){
             FeatureTypeInfo type = (FeatureTypeInfo) i.next();
             if( type.getNameSpace() == this ) set.add( type ); 

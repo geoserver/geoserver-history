@@ -54,7 +54,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.19 2004/01/20 01:04:20 jive Exp $
+ * @version $Id: Data.java,v 1.20 2004/01/20 03:26:40 emperorkefka Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -154,8 +154,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         Map status1=null;
         Map status2=null;        
         try {
-            status1 = statusDataStores();
-            
+            status1 = statusDataStores();            
         }
         catch (Throwable ignore ){
             LOGGER.warning("Problem checking DataStore status:"+ignore);
@@ -165,7 +164,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         }
         catch (Throwable ignore ){
             LOGGER.warning("Problem checking Namespace status:"+ignore);            
-        }   
+        }        
         outputStatus( "DataStore Status", status1 );
         outputStatus( "Namespace Status", status2 );        
     }
@@ -232,7 +231,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         for( Iterator i = dto.getNameSpaces().values().iterator(); i.hasNext();){
             NameSpaceInfoDTO namespaceDto = (NameSpaceInfoDTO) i.next();
             String prefix = namespaceDto.getPrefix();
-            NameSpaceInfo namespaceInfo = new NameSpaceInfo( namespaceDto );
+            NameSpaceInfo namespaceInfo = new NameSpaceInfo( this, namespaceDto );
             
             map.put( prefix, namespaceInfo );            
         }        
@@ -392,7 +391,8 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             }
             else if (value instanceof Throwable ){
                 Throwable t = (Throwable) value;
-                LOGGER.severe( key +": "+t.getMessage() );                
+                LOGGER.log( Level.SEVERE, key +" not ready", t );
+                
             }
             else {
                 LOGGER.warning( key +": '"+value+"'" );                
@@ -500,11 +500,11 @@ public class Data extends GlobalLayerSupertype implements Catalog {
     public SortedMap status( NameSpaceInfo info ){
         SortedMap status = new TreeMap();
         
-        String id = info.getPrefix();
-        LOGGER.finer( id+": checking status of Namespace!" );
-        LOGGER.finest( id+": namespace prefix '"+info.getPrefix() +"'");
-        LOGGER.finest( id+": uri '"+info.getURI()+"'");
-        LOGGER.finest( id+": default "+info.isDefault() );
+        String prefix = info.getPrefix();
+        LOGGER.finer( prefix+": checking status of Namespace!" );
+        LOGGER.finest( prefix+": namespace prefix '"+info.getPrefix() +"'");
+        LOGGER.finest( prefix+": uri '"+info.getURI()+"'");
+        LOGGER.finest( prefix+": default "+info.isDefault() );
         
         for( Iterator i=info.getTypeNames().iterator(); i.hasNext();){
             String typeName = (String) i.next();
@@ -513,12 +513,12 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             try {
                 typeInfo = (FeatureTypeInfo) info.getFeatureTypeMetaData(typeName);
                 assertWorking( typeInfo );
-                status.put( id+":"+typeName, Boolean.TRUE );                
+                status.put( prefix+":"+typeName, Boolean.TRUE );                
             }
             catch( Throwable badInfo ){
-                LOGGER.warning( id+":"+typeName+": FeatureTypeInfo did not work!" );
+                LOGGER.warning( prefix+":"+typeName+": FeatureTypeInfo did not work!" );
                 //badInfo.printStackTrace();
-                status.put( id+":"+typeName, badInfo );
+                status.put( prefix+":"+typeName, badInfo );
             }
         }
         return status;        

@@ -1,4 +1,5 @@
-<featureType datastore="cgf">
+<?xml version="1.0" encoding="UTF-8"?> 
+<featureType datastore="cite_postgis">
 	<name>MPoints</name>
 	<title>The cite:MultiPoint layer</title>
 	<abstract>Test MultiPoint features for the CITE project</abstract>
