@@ -24,8 +24,8 @@ import org.geotools.validation.dto.*;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: TestSuiteConfig.java,v 1.1 2004/01/31 00:27:24 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: TestSuiteConfig.java,v 1.2 2004/02/03 00:38:54 dmzwiers Exp $
  */
 public class TestSuiteConfig{
 
@@ -83,7 +83,7 @@ public class TestSuiteConfig{
      *
      * @param ts The Test Suite to copy
      */
-    public TestSuiteConfig(TestSuiteDTO ts) {
+    public TestSuiteConfig(TestSuiteDTO ts, Map plugInConfigs) {
     	name = ts.getName();
     	description = ts.getDescription();
     	tests = new HashMap();
@@ -92,7 +92,7 @@ public class TestSuiteConfig{
 
     	while (i.hasNext()) {
     		TestDTO t = (TestDTO)  ts.getTests().get(i.next());
-    		tests.put(t.getName(),new TestConfig(t));
+    		tests.put(t.getName(),new TestConfig(t,plugInConfigs));
     	}
     }
 

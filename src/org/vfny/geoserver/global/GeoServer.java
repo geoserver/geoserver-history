@@ -5,6 +5,8 @@
 package org.vfny.geoserver.global;
 
 import org.geotools.validation.ValidationProcessor;
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
@@ -14,6 +16,7 @@ import sun.security.action.GetBooleanAction;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.8 2004/02/02 08:56:45 jive Exp $
+ * @version $Id: GeoServer.java,v 1.9 2004/02/03 00:38:55 dmzwiers Exp $
  */
 public class GeoServer extends GlobalLayerSupertype { // implements org.apache.struts.action.PlugIn{
 
@@ -361,7 +364,11 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
     
     public void load(Map testSuites, Map plugIns){
     	this.testSuites = testSuites;this.plugIns = plugIns;
-    	processor = new ValidationProcessor(testSuites,plugIns);
+    	try{
+    		processor = new ValidationProcessor(testSuites,plugIns);
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
     }
     
     public Map toPlugInDTO(){

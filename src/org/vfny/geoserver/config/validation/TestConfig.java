@@ -33,8 +33,8 @@ import org.geotools.validation.xml.ValidationException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: TestConfig.java,v 1.1 2004/01/31 00:27:24 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: TestConfig.java,v 1.2 2004/02/03 00:38:55 dmzwiers Exp $
  */
 public class TestConfig{
     
@@ -107,10 +107,10 @@ public class TestConfig{
      *
      * @param t the data to copy
      */
-    public TestConfig(TestDTO t) {
+    public TestConfig(TestDTO t, Map plugInConfigs) {
     	name = t.getName();
     	description = t.getDescription();
-    	plugIn = new PlugInConfig(t.getPlugIn());
+    	plugIn = (PlugInConfig)plugInConfigs.get(t.getPlugIn().getName());
     	args = new HashMap();
 
     	if (t.getArgs() != null) {
