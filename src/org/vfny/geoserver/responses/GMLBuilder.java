@@ -209,7 +209,7 @@ public class GMLBuilder {
                 }
                 */
             } else {
-                finalResult.append("<?xml version='1.0' encoding='UTF-8'?>");
+                
                 finalResult.append("<wfs:FeatureCollection xmlns:gml=\"" + 
                                    "http://www.opengis.net/gml\" xmlns:wfs=\""
 				   + "http://www.opengis.net/wfs\" scope=\"" + 
