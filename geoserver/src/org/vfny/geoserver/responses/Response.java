@@ -91,7 +91,7 @@ import java.io.OutputStream;
  *
  * <p></p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: Response.java,v 1.9 2004/03/10 23:39:06 groldan Exp $
  */
 public interface Response {
