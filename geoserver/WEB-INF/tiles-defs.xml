@@ -67,86 +67,51 @@
    		<put name="body" value="/WEB-INF/pages/validation/TestEditor.jsp"/>
    		<put name="title" value="title.testEditor"/>
    	</definition>     	
+   	
+   	<definition name="wfs.menu" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigMenu.jsp"/>
+		<put name="title" value="title.wfs.menu"/>
+		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
+   	</definition>
 
    	<definition name="wfs.description" extends=".mainLayout">
-   		<put name="body" value="wfs.description.tabLayout"/>
+   		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigDescription.jsp"/>
 		<put name="title" value="title.wfs.description"/>
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
    	</definition>
    	
-   	<definition name="wfs.description.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
-   		<put name="selectedIndex" value="0"/>
-   		<put name="parameterName" value="selected"/>
-   		<putList name="tabList">
-   			<item value="tab.description"
-   				link="/WEB-INF/pages/wfs/WFSConfigDescription.jsp"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.content"
-   				link="/geoserver/WFSConfigContent.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   		</putList>
-   	</definition>
-   	
    	<definition name="wfs.content" extends=".mainLayout">
-   		<put name="body" value="wfs.content.tabLayout"/>
+   		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigContent.jsp"/>
 		<put name="title" value="title.wfs.content"/>   		
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
    	</definition>
-
-   	<definition name="wfs.content.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
-   		<put name="selectedIndex" value="1"/>
-   		<put name="parameterName" value="selected"/>
-   		<putList name="tabList">
-   			<item value="tab.description"
-   				link="/geoserver/WFSConfigDescription.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.content"
-   				link="/WEB-INF/pages/wfs/WFSConfigContent.jsp"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   		</putList>
+   	
+   	<definition name="wms.menu" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/wms/WMSConfigMenu.jsp"/>
+		<put name="title" value="title.wms.menu"/>   		
+		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
    	</definition>
 
-
    	<definition name="wms.description" extends=".mainLayout">
-   		<put name="body" value="wms.description.tabLayout"/>
+   		<put name="body" value="/WEB-INF/pages/wms/WMSConfigDescription.jsp"/>
 		<put name="title" value="title.wms.description"/>   		
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
    	</definition>
-   	
-   	<definition name="wms.description.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
-   		<put name="selectedIndex" value="0"/>
-   		<put name="parameterName" value="selected"/>
-   		<putList name="tabList">
-   			<item value="tab.description"
-   				link="/WEB-INF/pages/wms/WMSConfigDescription.jsp"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.content"
-   				link="/geoserver/WMSConfigContent.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   		</putList>
-   	</definition>
-   	
+   	   	
    	<definition name="wms.content" extends=".mainLayout">
-   		<put name="body" value="wms.content.tabLayout"/>
+   		<put name="body" value="/WEB-INF/pages/wms/WMSConfigContent.jsp"/>
 		<put name="title" value="title.wms.content"/>   		
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>		
    	</definition>
 
-   	<definition name="wms.content.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
-   		<put name="selectedIndex" value="1"/>
-   		<put name="parameterName" value="selected"/>
-   		<putList name="tabList">
-   			<item value="tab.description"
-   				link="/geoserver/WMSConfigDescription.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.content"
-   				link="/WEB-INF/pages/wms/WMSConfigContent.jsp"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   		</putList>
+   	<definition name="data.menu" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/data/DataMenu.jsp"/>
+		<put name="title" value="title.data.menu"/>
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    	</definition>
 
    	<definition name="data.dataStores" extends=".mainLayout">
-   		<put name="body" value="data.dataStores.tabLayout"/>
+   		<put name="body" value="data.dataStores.main"/>
 		<put name="title" value="title.data.dataStores"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    	</definition>
@@ -157,77 +122,20 @@
    		<put name="editor" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
    	</definition>
 
-   	<definition name="data.dataStores.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
-   		<put name="selectedIndex" value="0"/>
-   		<put name="parameterName" value="selected"/>
-   		<putList name="tabList">
-   			<item value="tab.dataStores"
-   				link="data.dataStores.main"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.namespaces"
-   				link="/geoserver/DataConfigNamespaces.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.styles"
-   				link="/geoserver/DataConfigStyles.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.featureTypes"
-   				link="/geoserver/DataConfigFeatureTypes.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   		</putList>
-   	</definition>
-
    	<definition name="data.namespaces" extends=".mainLayout">
-   		<put name="body" value="data.namespaces.tabLayout"/>
+   		<put name="body" value="/WEB-INF/pages/data/DataConfigNamespaces.jsp"/>
 		<put name="title" value="title.data.namespaces"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    	</definition>   	
 
-   	<definition name="data.namespaces.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
-   		<put name="selectedIndex" value="1"/>
-   		<put name="parameterName" value="selected"/>
-   		<putList name="tabList">
-   			<item value="tab.dataStores"
-   				link="/geoserver/DataConfigDataStores.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.namespaces"
-   				link="/WEB-INF/pages/data/DataConfigNamespaces.jsp"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.styles"
-   				link="/geoserver/DataConfigStyles.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.featureTypes"
-   				link="/geoserver/DataConfigFeatureTypes.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   		</putList>
-   	</definition>
-
    	<definition name="data.styles" extends=".mainLayout">
-   		<put name="body" value="data.styles.tabLayout"/>
+   		<put name="body" value="/WEB-INF/pages/data/DataConfigStyles.jsp"/>
 		<put name="title" value="title.data.styles"/>   
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    	</definition>   	
 
-   	<definition name="data.styles.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
-   		<put name="selectedIndex" value="2"/>
-   		<put name="parameterName" value="selected"/>
-   		<putList name="tabList">
-   			<item value="tab.dataStores"
-   				link="/geoserver/DataConfigDataStores.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.namespaces"
-   				link="/geoserver/DataConfigNamespaces.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.styles"
-   				link="/WEB-INF/pages/data/DataConfigStyles.jsp"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.featureTypes"
-   				link="/geoserver/DataConfigFeatureTypes.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   		</putList>
-   	</definition>
-   	
    	<definition name="data.featureTypes" extends=".mainLayout">
-   		<put name="body" value="data.featureTypes.tabLayout"/>
+   		<put name="body" value="data.featureTypes.main"/>
 		<put name="title" value="title.data.featureTypes"/> 
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
 		<put name="actions" value="/WEB-INF/pages/data/featureTypeActions.jsp"/>	  		
@@ -242,22 +150,4 @@
    		<put name="atEditor" value="/WEB-INF/pages/data/DataConfigAttributeTypeEditor.jsp"/>
    	</definition>
 
-   	<definition name="data.featureTypes.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
-   		<put name="selectedIndex" value="3"/>
-   		<put name="parameterName" value="selected"/>
-   		<putList name="tabList">
-   			<item value="tab.dataStores"
-   				link="/geoserver/DataConfigDataStores.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.namespaces"
-   				link="/geoserver/DataConfigNamespaces.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.styles"
-   				link="/geoserver/DataConfigStyles.do"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   			<item value="tab.featureTypes"
-   				link="data.featureTypes.main"
-   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-   		</putList>
-   	</definition>
 </tiles-definitions>
