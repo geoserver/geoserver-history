@@ -33,7 +33,7 @@ import java.util.Map;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.1.2.2 2004/01/06 23:54:39 dmzwiers Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.1.2.3 2004/01/09 08:42:13 jive Exp $
  */
 public final class DataStoreInfoDTO implements DataStructure {
     /** unique datasore identifier */
@@ -51,7 +51,11 @@ public final class DataStoreInfoDTO implements DataStructure {
     /** a short description about this data store */
     private String _abstract;
 
-    /** connection parameters to create the DataStoreInfo */
+    /**
+     * Connection parameters to create the DataStoreInfo
+     * <p>
+     * Limitied to Strings for both Keys and Values.
+     */
     private Map connectionParams;
 
     /**
@@ -201,26 +205,22 @@ public final class DataStoreInfoDTO implements DataStructure {
     }
 
     /**
-     * getConnectionParams purpose.
+     * Map of param:value both of which are represented as text.
      * 
      * <p>
-     * Description ...
+     * The map is based on String Keys, and String values.
      * </p>
      *
-     * @return
+     * @return Map of Params for DataStoreFactoryAPI use
      */
     public Map getConnectionParams() {
         return connectionParams;
     }
 
     /**
-     * isEnabled purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
+     * Tests if the DataStore represented by this Object should be enabled. 
      *
-     * @return
+     * @return ture if DataStore shoudl be enabled
      */
     public boolean isEnabled() {
         return enabled;
