@@ -54,15 +54,16 @@ if(tvr!=null && tvr.getErrors().size()>0){
 <%}else{%>
 <tr><td>RUN NOT COMPLETED</td></tr>
 <%
+}
 java.util.Iterator i = tvr.getErrors().values().iterator();
 while(i.hasNext()){
   String s = i.next().toString(); // should be a string anyways
   %>
 <tr><td><%=s%></td></tr>
   <%
-}
+} // while
 %>
 </table>
 <%
-}
+} // if
 %>
