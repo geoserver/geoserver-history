@@ -34,7 +34,7 @@ import javax.xml.transform.TransformerException;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.9 2004/07/23 16:56:48 cholmesny Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.10 2004/09/09 16:48:54 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
@@ -160,9 +160,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         if (featureLock != null) {
             transformer.setLockId(featureLock.getAuthorization());
         }
-
-        transformer.setSrsName("http://www.opengis.net/gml/srs/epsg.xml#"
-            + meta.getSRS());
+		transformer.setSrsName(request.getWFS().getSrsPrefix() + meta.getSRS());
     }
 
     /**
