@@ -57,6 +57,6 @@ public class DataNamespacesEditorAction extends ConfigAction {
         dataConfig.addNameSpace(prefix, config);
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("dataConfigNamespaces");
+        return mapping.findForward("config.data.namespaces");
     }
 }

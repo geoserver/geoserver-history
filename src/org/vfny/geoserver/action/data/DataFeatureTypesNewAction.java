@@ -50,8 +50,8 @@ import javax.servlet.http.HttpServletResponse;
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.9 2004/02/10 00:35:28 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.10 2004/02/25 00:38:53 dmzwiers Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
@@ -103,6 +103,6 @@ public class DataFeatureTypesNewAction extends ConfigAction {
             ftConfig);
         request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
 
-        return mapping.findForward("dataConfigFeatureTypes");
+        return mapping.findForward("config.data.types");
     }
 }

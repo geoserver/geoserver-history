@@ -78,7 +78,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                     new ActionError("error.cannotProcessConnectionParams"));
                 saveErrors(request, errors);
 
-                return mapping.findForward("dataConfigDataStores");
+                return mapping.findForward("config.data.stores");
             }
 
             Object value;
@@ -92,7 +92,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                     new ActionError("error.cannotProcessConnectionParams"));
                 saveErrors(request, errors);
 
-                return mapping.findForward("dataConfigDataStores");
+                return mapping.findForward("config.data.stores");
             }
 
             if (value != null) {
@@ -117,7 +117,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                 new ActionError("error.cannotProcessConnectionParams"));
             saveErrors(request, errors);
 
-            return mapping.findForward("dataConfigDataStores");
+            return mapping.findForward("config.data.stores");
         }
 
         try {
@@ -133,7 +133,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                     new ActionError("error.invalidConnectionParams"));
                 saveErrors(request, errors);
 
-                return mapping.findForward("dataConfigDataStores");
+                return mapping.findForward("config.data.stores");
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -144,7 +144,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
             saveErrors(request, errors);
 
-            return mapping.findForward("dataConfigDataStores");
+            return mapping.findForward("config.data.stores");
         }
 
         boolean enabled = dataStoresForm.isEnabled();
@@ -163,6 +163,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
         getUserContainer(request).setDataStoreConfig(null);
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("dataConfigDataStores");
+        return mapping.findForward("config.data.stores");
     }
 }

@@ -138,10 +138,13 @@
         	name="config.validation"
         	path="/config/validation/suite.do"/>
         <forward
+        	name="config.validation.suite"
+        	path="/config/validation/suite.do"/>
+        <forward
         	name="suite"
         	path="/config/validation/suite.do"/>
         <forward
-        	name="test"
+        	name="validationTest"
         	path="/config/validation/test.do"/>
 
         <forward
@@ -187,23 +190,23 @@
        		path="/config/data/store.do"/>
        	<forward
        		name="config.data.stores.new"
-       		path="/config/data/storesNewPage.do"/>
+       		path="/config/data/storesNew.do"/>
        	<forward
        		name="config.data.stores.editor"
-       		path="/config/data/storesEditor.do"/>
+       		path="/config/data/storeEditor.do"/>
        		
        	<forward
        		name="config.data.namespaces"
        		path="/config/data/namespace.do"/>
        	<forward
        		name="config.data.namespaces.select"
-       		path="/config/data/namespacesSelectPage.do"/>
+       		path="/config/data/namespacesSelect.do"/>
        	<forward
        		name="config.data.namespaces.editor"
-       		path="/config/data/namespacesEditorPage.do"/>
+       		path="/config/data/namespacesEditor.do"/>
        	<forward
        		name="config.data.namespaces.new"
-       		path="/config/data/namespacesNewPage.do"/>
+       		path="/config/data/namespacesNew.do"/>
       		       		
        	<forward
        		name="config.data.styles"
@@ -568,12 +571,12 @@
         	input="config.validation.testSuiteSelect"/>
 
          <action
-        	path="/config/validation/testSelect"
+        	path="/config/validation/test"
         	type="org.vfny.geoserver.action.validation.ValidationTestSelectAction"
         	name="validationTestSelectForm"
         	scope="request"
         	validate="true"
-        	input="config.validation.testSelect"/>
+        	input="config.validation.test"/>
         	
          <action
 			path="/config/validation/testNew"
@@ -581,7 +584,7 @@
         	name="validationTestNewForm"
         	scope="request"
         	validate="true"
-        	input="config.validation.testSelect"/>
+        	input="config.validation.test"/>
         	        	
          <action
         	path="/config/validation/testEditor"

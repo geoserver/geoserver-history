@@ -46,8 +46,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </code></pre>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: CalculateBoundingBoxAction.java,v 1.1 2004/02/10 00:35:28 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: CalculateBoundingBoxAction.java,v 1.2 2004/02/25 00:38:53 dmzwiers Exp $
  */
 public class CalculateBoundingBoxAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -67,6 +67,6 @@ public class CalculateBoundingBoxAction extends ConfigAction {
         ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));
         request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
         
-        return mapping.findForward("dataConfigFeatureTypes");
+        return mapping.findForward("config.data.types");
     }
 }

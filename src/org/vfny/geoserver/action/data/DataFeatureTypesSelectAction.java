@@ -55,13 +55,13 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
             request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE,
                 ftConfig);
 
-            return mapping.findForward("dataConfigFeatureTypes");
+            return mapping.findForward("config.data.types");
         } else if (delete.equals(buttonAction)) {
             dataConfig.removeFeatureType(selectedFeatureType);
             request.getSession().removeAttribute(DataConfig.SELECTED_FEATURE_TYPE);
             getApplicationState().notifyConfigChanged();
 
-            return mapping.findForward("dataConfigFeatureTypes");
+            return mapping.findForward("config.data.types");
         }
 
         throw new ServletException(

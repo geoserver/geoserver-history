@@ -44,7 +44,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.3 2004/02/05 17:33:20 dmzwiers Exp $
+ * @version $Id: GeoServerConfigurationSubmit.java,v 1.4 2004/02/25 00:38:54 dmzwiers Exp $
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -94,6 +94,6 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         
         getServlet().getServletContext().setAttribute(GlobalConfig.CONFIG_KEY, globalConfig);
         
-    	return mapping.findForward("geoServerConfiguration");
+    	return mapping.findForward("config");
     }
 }
