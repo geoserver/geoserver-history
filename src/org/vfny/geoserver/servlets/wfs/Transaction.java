@@ -6,6 +6,10 @@ package org.vfny.geoserver.servlets.wfs;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.requests.Requests;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
@@ -22,7 +26,7 @@ import org.vfny.geoserver.servlets.WFService;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: Transaction.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
+ * @version $Id: Transaction.java,v 1.7 2004/02/17 22:42:33 dmzwiers Exp $
  */
 public class Transaction extends WFService {
     /**
@@ -52,5 +56,13 @@ public class Transaction extends WFService {
      */
     protected XmlRequestReader getXmlRequestReader() {
         return new TransactionXmlReader();
+    }
+    
+    protected boolean isServiceEnabled(HttpServletRequest req){
+    	boolean r = Requests.getWFS(req).isEnabled();
+    	if(r){
+    		return (Requests.getWFS(req).getServiceLevel()==WFSDTO.TRANSACTION);
+    	}
+    	return false;
     }
 }

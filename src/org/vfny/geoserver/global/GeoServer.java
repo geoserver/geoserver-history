@@ -17,7 +17,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.12 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.13 2004/02/17 22:42:33 dmzwiers Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
 
@@ -160,7 +160,9 @@ public class GeoServer extends GlobalLayerSupertype {
      * @return Charset the default charset for this server instance.
      */
     public Charset getCharSet() {
-        return charSet;
+    	if(charSet!=null)
+    		return charSet;
+    	return Charset.forName("UTF-8");
     }
 
     /**

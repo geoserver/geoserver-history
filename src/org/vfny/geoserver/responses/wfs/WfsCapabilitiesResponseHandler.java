@@ -12,6 +12,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
@@ -24,7 +25,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.13 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.14 2004/02/17 22:42:32 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -126,7 +127,9 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     private void handleCapability(WFS config, String capabilityName)
         throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
-
+        if("Transaction".equals(capabilityName) && config.getServiceLevel()!=WFSDTO.TRANSACTION){
+        	return;
+        }
         indent();
         startElement(capabilityName);
         indent();

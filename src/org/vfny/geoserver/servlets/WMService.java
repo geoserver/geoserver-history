@@ -4,8 +4,11 @@
  */
 package org.vfny.geoserver.servlets;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.WmsExceptionHandler;
+import org.vfny.geoserver.requests.Requests;
 
 
 /**
@@ -17,7 +20,7 @@ import org.vfny.geoserver.WmsExceptionHandler;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMService.java,v 1.5 2004/01/31 00:27:29 jive Exp $
+ * @version $Id: WMService.java,v 1.6 2004/02/17 22:42:32 dmzwiers Exp $
  */
 abstract public class WMService extends AbstractService {
     /**
@@ -27,5 +30,9 @@ abstract public class WMService extends AbstractService {
      */
     protected ExceptionHandler getExceptionHandler() {
         return WmsExceptionHandler.getInstance();
+    }
+    
+    protected boolean isServiceEnabled(HttpServletRequest req){
+    	return Requests.getWMS(req).isEnabled();
     }
 }
