@@ -59,7 +59,7 @@ public final class WFSDescriptionAction extends ConfigAction {
 			config.setKeywords(array);
 
 
-			return mapping.findForward("welcome");
+			return mapping.findForward("wfsConfigDescription");
 		}
 
 }

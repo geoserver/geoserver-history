@@ -29,7 +29,7 @@ public final class WFSContentAction extends ConfigAction {
 		HttpServletRequest request,
 		HttpServletResponse response)
 		throws IOException, ServletException {
-			return mapping.findForward("welcome");
+			return mapping.findForward("wfsConfigContent");
 	}
 
 }
