@@ -7,7 +7,18 @@ package org.vfny.geoserver.config;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
+import org.geotools.filter.Filter;
+import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceException;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.vfny.geoserver.requests.TransactionRequest;
+import org.vfny.geoserver.requests.SubTransactionRequest;
+import org.vfny.geoserver.requests.UpdateRequest;
+import org.vfny.geoserver.requests.DeleteRequest;
 import org.vfny.geoserver.responses.WfsException;
+import org.vfny.geoserver.responses.WfsTransactionException;
+
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
@@ -15,6 +26,9 @@ import org.vfny.geoserver.responses.WfsException;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @version $VERSION$
+ * @tasks TODO: Rethink synchronization.  Just wanted to get things with locks
+ * working for this version, but obviously we need to examine synchronization
+ * completely if this class is to be useful at all.
  */
 public class TypeRepository {
         
@@ -28,17 +42,23 @@ public class TypeRepository {
 
     private static ConfigInfo config = ConfigInfo.getInstance();
 
+    /** to generate the lockIds.*/
     private Random keyMaster = null;
 
+    /** keeps track of the TypeInfo objects.*/
     private Map types = new HashMap();
 
-    //REVISIT: this may not be necessary, since we're never going to have that 
-    //many featureTypes, so we could just iterate through the lock list to see 
-    //if they are locked.  But we'll leave it in for now since it was like this
-    //originally (though this was named locks), and if we do individual feature
-    //locking this could hold them efficiently.
+    /** A map of all locked features to the internal locks that hold them.*/
+    //REVISIT: Synchronization, should this whole map be synchronized?  This
+    //could be inefficient.  An improvement could be to iterate through the 
+    //InternalLocks held, asking them if they have the locked features.  This
+    //could be optimized in the InternalLock by first checking the correct
+    //typename (a typename map would have to be added), and if it matches then
+    //checking the actual locked feature.
     private Map lockedFeatures = new HashMap();
 
+    //This could probably be eliminated, if we had the lock operation return 
+    //InternalLocks, but keeping them private seems like a good idea.
     private Map locks = new HashMap();
     
     /** Initializes the database and request handler. */ 
@@ -138,145 +158,7 @@ public class TypeRepository {
 	return new ArrayList(types.keySet());
     }
 
-
-    /**
-     * Returns a capabilities XML fragment for a specific feature type.
-     */
-    public int typeCount() {        
-        return types.size();
-    }
-
-
-    /**
-     * Inidicates whether a featureType has been locked.
-     * @param typeName the name of the feature to check for a lock.
-     */ 
-    public boolean isLocked(String typeName) {        
-        return lockedFeatures.containsKey(typeName);
-    }
-
-    /**
-     * Gets rid of all lockedFeatures held by this repository.  Used as a
-     * convenience method for unit tests, but should eventually be used by
-     * an admin tool to clear unclosed lockedFeatures.
-     */
-    public void clearLocks(){
-	lockedFeatures = new HashMap();
-	locks = new HashMap();
-    }
-
-    /**
-     * indicates whether the lockId is the one that currently locks the
-     * passed in typeName.
-     *
-     * @param typeName the featureType name to test the lockId against.
-     * @param lockId the string of the id of the lock.
-     */
-    public boolean isCorrectLock(String typeName, String lockId){
-	if(lockedFeatures.containsKey(typeName)) { 
-	    String targetLockId = ((InternalLock)lockedFeatures.get(typeName)).getId();
-            return (targetLockId.equals(lockId));
-	} else {
-	    return false;
-	}
-    }
-
-    /**
-     * A convenience method to lock a typeName for the default expiry
-     * length of time.
-     *
-     * @param typeName the name of the featureType to lock.
-     * @return  the id string of the lock, if successful, null otherwise.
-     */
-    public synchronized String lock(String typeName){
-	return lock(typeName, -1);
-    }
-
-    /**
-     * Locks the given typeName for a length of expiry minutes.
-     *
-     * @param typeName the name of the featureType to lock.
-     * @param expiry the length in minutes to lock the featureType for.
-     * @return the id string of the lock, if successful, null otherwise.
-     */ 
-    public synchronized String lock(String typeName, int expiry){        
-        if(lockedFeatures.containsKey(typeName)) {
-            LOG.finer("no lock on: " + typeName);
-	    //TODO: this common code should go in InternalLock
-            return null;
-        } else {
-            String lockId = 
-		String.valueOf(keyMaster.nextInt(Integer.MAX_VALUE));
-	    InternalLock lock = new InternalLock(lockId, expiry);
-	    lock.addFeatureType(typeName);
-            locks.put(lockId, lock);
-	    //lockedFeatures.put(typeName, lock);
-            LOG.finer("locked " + typeName + " with: " + lock);
-            return lockId;
-        }
-    }
-
-    /**
-     * Performs a lock operation with an already assigned lockValue.  This
-     * is for cases when more than one Lock is requested in a LockFeature
-     * request, as all must have the same lock.
-     *
-     * @param typeName the name of the Feature Type to lock.
-     * @param lockValue the value to store as the lock.
-     * @return the value of the lock assigned.  Will be the same as the 
-     * lockValue argument.  Null if that type was already locked.
-     */
-     public synchronized String lock(String typeName, String lockId) {   
-        if(lockedFeatures.containsKey(typeName)) {
-	    //REVISIT: SOME vs. ALL, what to do if first is successful?
-	    //probably grab the lock and call release for ALL.  Some we 
-	    //don't handle yet.
-            LOG.finest("no lock on: " + typeName);
-            return null;
-        } else {
-	  //String lock = String.valueOf(keyMaster.nextInt(Integer.MAX_VALUE));
-	    if (!locks.containsKey(lockId)){ 
-		//REVISIT: this should only be called on valid locks, what to
-		//do if that doesn't happen?  Maybe require expiry?
-	    }
-	    InternalLock existingLock = (InternalLock)locks.get(lockId);
-	    existingLock.addFeatureType(typeName);
-	    //lockedFeatures.put(typeName, lockId);
-            LOG.finest("locked " + typeName + " with: " + lockId);
-            return lockId;
-        }
-    }
-
-    public synchronized boolean unlock(String typeName, String lockId) {
-	return unlock(typeName, lockId, true);
-    }
-
-    /**
-     * Returns a capabilities XML fragment for a specific feature type.
-     * @param typeName The version of the request (0.0.14 or 0.0.15)
-     * @param key The version of the request (0.0.14 or 0.0.15)
-     */ 
-    public synchronized boolean unlock(String typeName, String lockId, 
-				       boolean releaseAll) {        	
-        if(lockedFeatures.containsKey(typeName)) {
-            InternalLock targetLock = (InternalLock) lockedFeatures.get(typeName);
-	    String targetLockId = targetLock.getId();
-            if(targetLockId.equals(lockId)) {
-                targetLock.unlock(typeName, releaseAll);
-		//lockedFeatures.remove(typeName);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    
-
-
-    /**
+        /**
      * This function lists all files in HTML for the meta-data pages.
      * 
      * Simple recursive function to read through all subdirectories and 
@@ -313,6 +195,244 @@ public class TypeRepository {
         int end = testName.length();
         return testName.substring(start, end).equals(config.INFO_FILE);
     }
+
+    /**
+     * Returns a capabilities XML fragment for a specific feature type.
+     */
+    public int typeCount() {        
+        return types.size();
+    }
+
+    /********************************************************************
+     * Locking methods.
+     ********************************************************************/
+
+    /**
+     * Inidicates whether a featureType has been locked.
+     * @param typeName the name of the featureType to check for a lock.
+     * @param filter the filter of the features to check.  If null all are
+     * checked.
+     * @param lockId the id to check with.  Each feature is locked with a 
+     * certain lockId, and if the lockId supplied matches the one the feature
+     * is locked with then isLocked will still return false for that feature.  
+     * If the lockId is null than any locked feature will return false for this
+     * method.
+     * @return true if a feature that matches the filter is locked and the
+     * lockId does not match the id of the locked feature, false otherwise.
+     */ 
+    public boolean isLocked(String typeName, Filter filter, String lockId) 
+	throws WfsException {  
+	LOG.finer("checking isLocked on: " + typeName + ", " + lockId + ", " + filter);
+	List features = getFidFeatures(typeName, filter);    
+	//LOG.finer("locked features = " + lockedFeatures);
+	for (Iterator i = features.iterator(); i.hasNext();){
+	    String curFid = i.next().toString();
+	    //LOG.finer("checking feature: " + curFid);
+	    if (lockedFeatures.containsKey(curFid)){
+		if (lockId == null) {
+		    return true;
+		} else {
+		    String targetLockId = 
+			((InternalLock)lockedFeatures.get(curFid)).getId();
+		    if (!targetLockId.equals(lockId)){
+			return true;
+		    }
+		    
+		}
+	    }
+	}
+	return false;//lockedFeatures.containsKey(typeName);
+    }
+
+    /**
+     * gets a list of the feature ids for the given typename and filter.
+     *
+     * @param typeName the featureType to query.
+     * @param filter which features of the type to return.  If null then all.
+     * @return a list of fid strings.
+     * @throws WfsException if there were any datasource problems, like the 
+     * typeName not existing, or problems with the connection.
+     */
+    private List getFidFeatures(String typeName, Filter filter) throws WfsException {
+	DataSource data = 
+	    getType(typeName).getDataSource(new ArrayList(), 1000000);
+	Feature[] features = null;
+	try {
+	    features = data.getFeatures(filter).getFeatures();
+	} catch(DataSourceException e) {
+	    throw new WfsException(e, "DataSource problem checking lock: ",
+				   "at featureType: " + typeName);
+	} 	
+	List fids = new ArrayList(features.length);
+	for (int i = 0; i < features.length; i++) {
+	    //LOG.finer("adding feature " + features[i]);
+	    fids.add(features[i].getId());
+	}
+
+	return fids;
+    }
+
+    /**
+     * Gets rid of all lockedFeatures held by this repository.  Used as a
+     * convenience method for unit tests, but should eventually be used by
+     * an admin tool to clear unclosed lockedFeatures.
+     */
+    public void clearLocks(){
+	lockedFeatures = new HashMap();
+	locks = new HashMap();
+    }
+
+    /**
+     * A convenience method to lock all the features in a given typeName for 
+     * the default expiry length of time.
+     *
+     * @param typeName the name of the featureType to lock.
+     * @return  the id string of the lock, if successful, null otherwise.
+     */
+    public synchronized String lock(String typeName) throws WfsException{
+	return lock(typeName, null, true, -1);
+    }
+
+    /**
+     * Locks the given typeName for a length of expiry minutes.
+     *
+     * @param typeName the name of the featureType to lock.
+     * @param filter which features to lock.  If null than all in typeName.
+     * @param lockAll the lock action.  If true and all can not be locked
+     * then the lock operation fails.  If false then as many features not
+     * all ready locked are locked.
+     * @param expiry the length in minutes to lock the featureType for.
+     * @return the id string of the lock, if successful, null otherwise.
+     * @throws WfsException if the lock fails.
+     */ 
+    public synchronized String lock(String typeName, Filter filter, 
+					  boolean lockAll, int expiry) 
+	throws WfsException {       
+	String lockId = 
+	    String.valueOf(keyMaster.nextInt(Integer.MAX_VALUE));
+	InternalLock lock = new InternalLock(lockId, expiry);
+	List features =  getFidFeatures(typeName, filter);
+	if (!lock.addFeatures(lockAll, features) && lockAll){
+	    throw new WfsException("all features were not able to be locked," +
+				   " and lockAction is ALL, so lock failed");
+	}
+	//locks.put(lockId, lock); - now done in InternalLock constructor.
+	//lockedFeatures.put(typeName, lock);
+	LOG.finer("locked " + typeName + " with: " + lock);
+	return lockId;
+        
+    }
+
+
+    /**
+     * Performs a lock operation with an already assigned lockValue.  This
+     * is for cases when more than one Lock is requested in a LockFeature
+     * request, as all must have the same lock.
+     *
+     * @param typeName the name of the Feature Type to lock.
+     * @param filter which features to lock.  If null than all in typeName.
+     * @param lockAll the lock action.  If true and all can not be locked
+     * then the lock operation fails.  If false then as many features not
+     * all ready locked are locked.
+     * @param lockId the id string of the lock to be added to.
+     * @return the value of the lock assigned.  Will be the same as the 
+     * lockValue argument.  Null if that type was already locked.
+     *  @throws WfsException if the lock fails.
+     */
+    public synchronized String addToLock(String typeName, Filter filter, 
+				     boolean lockAll, String lockId) 
+	throws WfsException {   
+	InternalLock lock = (InternalLock)locks.get(lockId);
+	lock.addFeatures(lockAll, getFidFeatures(typeName, filter));
+	LOG.finest("locked " + typeName + " with: " + lock.getId());
+	return lockId;
+    }
+
+    /**
+     * convenience unlock that assumes releaseAction ALL.  This completely
+     * releases the lock.
+     * 
+     * @param lockId the id string of the lock to release
+     */
+    public synchronized boolean unlock(String lockId) {
+	 InternalLock lock = (InternalLock)locks.get(lockId);
+	 if (lock != null) {
+	     return lock.unlock(null, true);
+	 } else {
+	     return false;
+	 }
+	//return unlock(typeName, lockId, true);
+    }
+
+    /**
+     * Unlocks a completed transaction request.  This should only be called
+     * after the transaction is committed.  It performs the proper release
+     * action for each of the sub-requests.  This method should be called
+     * by transactions, as they are the only way to release a lock, which is
+     * why a WfsTransactionException is thrown here.
+     * @param completed a successfully completed transaction request.
+     * @return true if there were features released, false otherwise.
+     * @throws WfsTransactionException if there was trouble with the backend.
+     */ 
+    public synchronized boolean unlock(TransactionRequest completed)
+	throws WfsTransactionException {//String typeName, String lockId, 
+				       //boolean releaseAll) {       
+ 	String lockId = completed.getLockId();
+	InternalLock lock = (InternalLock)locks.get(lockId);
+	if (lock == null) {
+	    return false;
+	} else {
+	    boolean releaseAll = completed.getReleaseAll();
+	    if (releaseAll) {
+		return lock.unlock(null, true);
+	    } else {
+		List unlockFeatures = new ArrayList();
+		for(int i = 0, n = completed.getSubRequestSize(); i < n; i++) {  
+		    SubTransactionRequest sub = completed.getSubRequest(i);
+		    String typeName = sub.getTypeName(); 
+		    Filter filter = null;
+		    try {
+		    if (sub.getOpType() == SubTransactionRequest.DELETE){
+			filter = ((DeleteRequest)sub).getFilter();
+			unlockFeatures.addAll(getFidFeatures(typeName, filter));
+		    } else if (sub.getOpType() == SubTransactionRequest.UPDATE){
+			filter = ((UpdateRequest)sub).getFilter();
+			unlockFeatures.addAll(getFidFeatures(typeName, filter));
+		    }
+		    } catch (WfsException e){
+			//this should never really happen, as the transaction should
+			//have already gone through.
+			throw new WfsTransactionException(e, sub.getHandle(),
+							  completed.getHandle());
+		    }
+		}
+		lock.unlock(unlockFeatures, releaseAll);
+	    }
+            return true;
+	    }
+	}
+
+    /**
+     * gets the set of features locked by the given lockId.
+     * @param lockId the id of the lock to query.
+     * @return a Set of fids that this lock holds.
+     */
+    public Set getLockedFeatures(String lockId){
+	InternalLock lock = (InternalLock)locks.get(lockId);
+	return lock.getLockedFeatures();
+    }
+
+    /**
+     * gets the set of features that the lock attempted to lock but
+     * failed at.
+     * @param lockId the id of the lock to query.
+     * @return a Set of fids that the lock tried to lock but did not go through.
+     */
+    public Set getNotLockedFeatures(String lockId){
+	InternalLock lock = (InternalLock)locks.get(lockId);
+	return lock.getNotLockedFeatures();
+    }
+
     
     /**
      * Override of toString method. */
@@ -339,14 +459,9 @@ public class TypeRepository {
      */
     private class InternalLock {
         
-	/** Class logger */
-	//private static Logger LOGGER = 
-	//  Logger.getLogger("org.vfny.geoserver.config");
-	
-	/** Repository of Type and Lock information  */
-	//private static TypeRepository repository = null;
-	
 	/** If no expiry is set then default to a day.*/
+	//REVISIT: would be nice to have an admin tool to clear the
+	//locks.
 	public static final int DEFAULT_EXPIRY = 1440;
 	
 	/** to turn from expiry minutes to timer milliseconds */
@@ -365,7 +480,10 @@ public class TypeRepository {
 	private String lockId;
 	
 	/** The feature Types held by this lock. */
-	private Set featureTypes = new HashSet();
+	private Set features = new HashSet();
+
+	/** The features that matched the lock but were already locked.*/
+	private Set notLockedFeatures = new HashSet();
 
 	
     /** Initializes a lock with the number of minutes until it should expire*/ 
@@ -378,6 +496,19 @@ public class TypeRepository {
 	    } 
 	    this.expiryTime = expiryMinutes * MILLISECONDS_PER_MINUTE;
 	    expiryTimer.schedule(expiry, expiryTime);
+	    locks.put(lockId, this);
+	}
+
+	/** returns the set of features locked.*/
+	public Set getLockedFeatures(){
+	    return features;
+	}
+
+	/** returns the set of features not locked.*/
+	//this is a little weird, as it just depends on attempted lockings.
+	//I guess if locks are ever used twice we can clear out the field.
+	public Set getNotLockedFeatures(){
+	    return notLockedFeatures;
 	}
 	
 	/** 
@@ -388,22 +519,40 @@ public class TypeRepository {
 	}
 	
 	/**
-	 * Adds a feature type to this internal lock.
-	 * TODO: test with multiple featureTypes in one lock, with SOME 
-	 * release action.
+	 * adds the given fids to this lock, if they are not already held by
+	 * another lock.  Follows the lockAll action.
+	 * @param lockAll if true and all features can not be locked then this
+	 * lock is released, false returned.  If false then all features that
+	 * are not held by other locks are added.
+	 * @param addFeatures the features to attempt to add.
+	 * @return true if the features were successfully added, false 
+	 * otherwise.  Should only be false when lockAll is true and one
+	 * or more addFeatures is already held by another lock.
 	 */
-	public void addFeatureType(String typeName){
-	    featureTypes.add(typeName); 
-	    lockedFeatures.put(typeName, this);
+	public boolean addFeatures(boolean lockAll, List addFeatures){
+	    for (Iterator i = addFeatures.iterator(); i.hasNext();){
+		String curFid = i.next().toString();
+		if (lockedFeatures.containsKey(curFid)){
+		    if (lockAll) {
+			release();
+			return false;
+		    } else {
+			notLockedFeatures.add(curFid);
+		    }
+		} else {
+		    features.add(curFid);
+		    lockedFeatures.put(curFid, this);
+		}
+		
+	    }
+	    return true;
 	}
-
-	//public void getFeatureTypes
 
 	/**
 	 * clears this lock and everything that it holds.
 	 */
-	public void release(){
-	    Iterator featureIter = featureTypes.iterator();
+	private void release(){
+	    Iterator featureIter = features.iterator();
 	    while(featureIter.hasNext()){
 		lockedFeatures.remove(featureIter.next().toString());
 	    }
@@ -421,26 +570,32 @@ public class TypeRepository {
 	 * @param releaseAll if true then get rid of this lock, if false then
 	 * this only unlocks the feature of typeName.
 	 */
-	public void unlock(String typeName, boolean releaseAll){
+ 	public boolean unlock(List releaseFeatures, boolean releaseAll){
 	    if (releaseAll) {
 		this.release();
+		return true;
 	    } else {
-		Iterator featureIter = featureTypes.iterator();
-		while(featureIter.hasNext()){
-		    if (featureIter.next().equals(typeName)){
-			lockedFeatures.remove(featureIter.next().toString());
+		boolean featuresReleased = false;
+		for (Iterator i = releaseFeatures.iterator(); i.hasNext();){
+		    String curFid = i.next().toString();
+		    if (this.features.contains(curFid)){
+			featuresReleased=true;
+			lockedFeatures.remove(curFid);
+			this.features.remove(curFid);
 		    }
 		}
-		if (featureTypes.size() == 0) {
+		if (this.features.size() == 0) {
 		    locks.remove(this.lockId);
 		} else {
 		    expiry.cancel();
 		    expiry = new ExpireTask();
 		    expiryTimer.schedule(expiry, expiryTime);
 		}
+		return featuresReleased;
 	    }
 	}
-
+	
+	/** task to expire a lock, calls release and cancels the timer.*/
 	private class ExpireTask extends TimerTask {
 	    public void run() {
 		LOG.fine("expiring lock: " + lockId);
