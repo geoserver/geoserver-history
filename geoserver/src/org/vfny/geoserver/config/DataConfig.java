@@ -40,7 +40,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.6 2004/01/09 00:19:05 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.7 2004/01/09 17:39:50 dmzwiers Exp $
  */
 public class DataConfig{
 	public static final String CONFIG_KEY = "Config.Data";
@@ -216,7 +216,7 @@ public class DataConfig{
 			Object key = i.next();
 			tmp.put(key,((NameSpaceConfig)nameSpaces.get(key)).toDTO());
 			if(((NameSpaceDTO)tmp.get(key)).isDefault())
-				dt.setDefaultNameSpace((NameSpaceDTO)tmp.get(key));
+				dt.setDefaultNameSpacePrefix(((NameSpaceDTO)tmp.get(key)).getPrefix());
 		}
 		dt.setNameSpaces(tmp);
 		

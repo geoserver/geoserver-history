@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.1.2.7 2004/01/09 01:21:15 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.1.2.8 2004/01/09 17:36:59 dmzwiers Exp $
  *
  * @see WMS
  * @see WFS
@@ -42,7 +42,7 @@ public abstract class Service extends GlobalLayerSupertype {
      *
      * @param config
      *
-     * @throws NullPointerException DOCUMENT ME!
+     * @throws NullPointerException when the param is null
      */
     public Service(ServiceDTO config) {
         if (config == null) {

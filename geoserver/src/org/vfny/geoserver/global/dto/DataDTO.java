@@ -41,7 +41,7 @@ import java.util.NoSuchElementException;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: DataDTO.java,v 1.1.2.5 2004/01/09 17:34:18 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -85,13 +85,9 @@ public final class DataDTO implements DataTransferObject {
      * in a Map. For 99% of the time when no default has been provided it is
      * because there is only one Namespace for the application.
      * </p>
-     * <p>
-     * TODO: It is really tempting to use a "prefix" here - in fact that is probably
-     * the correct thing to do.
-     * </p>
      * @see org.vfny.geoserver.global.dto.NameSpace
      */
-    private NameSpaceDTO defaultNameSpace;
+    private String defaultNameSpacePrefix;
 
     /**
      * Data constructor.
@@ -107,9 +103,8 @@ public final class DataDTO implements DataTransferObject {
 		nameSpaces = new HashMap();
 		styles = new HashMap();
 		featuresTypes = new HashMap();
-		
-		// TODO: David I am not sure we can have a default until a namespace is defined		
-		defaultNameSpace = new NameSpaceDTO();			
+			
+		defaultNameSpacePrefix = "";			
     }
 
     /**
@@ -151,7 +146,7 @@ public final class DataDTO implements DataTransferObject {
             styles = new HashMap();
         }
 
-        defaultNameSpace = (NameSpaceDTO) dto.getDefaultNameSpace().clone();
+		defaultNameSpacePrefix = dto.getDefaultNameSpacePrefix();
     }
 
     /**
@@ -210,9 +205,9 @@ public final class DataDTO implements DataTransferObject {
 			return false;
 		}
 
-        if (defaultNameSpace != null) {
-            r = r && defaultNameSpace.equals(c.getDefaultNameSpace());
-        } else if (c.getDefaultNameSpace() != null) {
+        if (defaultNameSpacePrefix != null) {
+            r = r && defaultNameSpacePrefix.equals(c.getDefaultNameSpacePrefix());
+        } else if (c.getDefaultNameSpacePrefix() != null) {
             return false;
         }
 
@@ -244,10 +239,6 @@ public final class DataDTO implements DataTransferObject {
 		if (styles != null) {
 			r *= styles.hashCode();
 		}
-
-		if (defaultNameSpace != null) {
-			r *= defaultNameSpace.hashCode();
-		}
 		return r;
 	}
 	
@@ -271,8 +262,8 @@ public final class DataDTO implements DataTransferObject {
      *
      * @return Default namespace or <code>null</code>
      */
-    public NameSpaceDTO getDefaultNameSpace() {
-        return defaultNameSpace;
+    public String getDefaultNameSpacePrefix() {
+        return defaultNameSpacePrefix;
     }
 
     /**
@@ -296,7 +287,7 @@ public final class DataDTO implements DataTransferObject {
     /**
      * Retrive Map of StyleDTO by "something?".
      * 
-     * TODO: What is the key?
+     * Key is Style.id
      * 
      * @return Map of StyleDTO by "something"?
      */
@@ -325,18 +316,12 @@ public final class DataDTO implements DataTransferObject {
      * <p>
      * Note the provided namespace must be present in the namespace map.
      * </p>
-     * <p>
-     * TODO: Consider using just the prefix?
-     * </p>
-     * @param support
+     * @param dnsp the default namespace prefix.
      */
-    public void setDefaultNameSpace(NameSpaceDTO defaultNamespaceDTO) {
-    	if( nameSpaces.containsValue( defaultNamespaceDTO )){
-			defaultNameSpace = defaultNamespaceDTO;
-    	}
-    	else {
-    		throw new NoSuchElementException("Provided namespace "+defaultNamespaceDTO.getPrefix()+" must be contained in Namespaces");
-    	}
+    public void setDefaultNameSpacePrefix(String dnsp) {
+		defaultNameSpacePrefix = dnsp;
+		if(!nameSpaces.containsKey(dnsp))
+			throw new NoSuchElementException("Invalid NameSpace Prefix for Default");
     }
 
     /**
@@ -358,7 +343,7 @@ public final class DataDTO implements DataTransferObject {
     /**
      * Sets the NameSpaceDTO map.
      * <p>
-     * TODO: Should we reset the default when given a new Map? Consider using just prefix for default
+     * The default prefix is not changed by this operation.
      * </p>
      * @param Map of NameSpaceDTO by "prefix"
      */

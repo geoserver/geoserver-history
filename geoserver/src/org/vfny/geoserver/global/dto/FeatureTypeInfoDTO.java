@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.5 2004/01/09 17:34:18 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -368,7 +368,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      *
      * @param key
      *
-     * @return DOCUMENT ME!
+     * @return boolean true when added.
      */
     public boolean addKeyword(String key) {
         if (keywords == null) {
@@ -387,7 +387,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      *
      * @param key
      *
-     * @return DOCUMENT ME!
+     * @return true whwn removed
      */
     public boolean removeKeyword(String key) {
         return keywords.remove(key);

@@ -36,7 +36,7 @@ package org.vfny.geoserver.global.dto;
  * </code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: ContactDTO.java,v 1.1.2.5 2004/01/09 17:34:18 dmzwiers Exp $
  */
 public final class ContactDTO implements DataTransferObject {
     /** The name of the contact person */
@@ -84,7 +84,8 @@ public final class ContactDTO implements DataTransferObject {
      * </p>
      *
      * <p>
-     * TODO: Do we really want to supply empty Strings here?
+     * The empty strings are used to avoid null pointer exceptions during the 
+     * load phase, as we do not control the init order of the servlets.
      * </p>
      * @see defaultSettings()
      */

@@ -28,7 +28,7 @@ import javax.servlet.ServletException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.1.2.5 2004/01/09 01:21:15 dmzwiers Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.1.2.6 2004/01/09 17:36:59 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
  */
@@ -64,7 +64,7 @@ public class GeoServerPlugIn implements PlugIn {
      * @param mc Not used
      *
      * @throws javax.servlet.ServletException
-     * @throws ServletException DOCUMENT ME!
+     * @throws ServletException when a load error occurs
      *
      * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet,
      *      org.apache.struts.config.ModuleConfig)

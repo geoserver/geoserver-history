@@ -69,7 +69,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.11 2004/01/09 01:21:16 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.12 2004/01/09 17:39:50 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -234,7 +234,7 @@ public class XMLConfigReader {
 		while(i.hasNext()){
 			NameSpaceDTO ns = (NameSpaceDTO)i.next();
 			if(ns.isDefault()){
-				c.setDefaultNameSpace(ns);
+				c.setDefaultNameSpacePrefix(ns.getPrefix());
 				return;
 			}
 		}
@@ -865,7 +865,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.11 2004/01/09 01:21:16 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.12 2004/01/09 17:39:50 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

@@ -26,7 +26,7 @@ import org.vfny.geoserver.global.dto.NameSpaceDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpace.java,v 1.1.2.10 2004/01/09 17:15:30 dmzwiers Exp $
+ * @version $Id: NameSpace.java,v 1.1.2.11 2004/01/09 17:36:59 dmzwiers Exp $
  */
 public class NameSpace extends GlobalLayerSupertype {
     /**
@@ -56,7 +56,7 @@ public class NameSpace extends GlobalLayerSupertype {
      *
      * @param ns The namespace to copy.
      *
-     * @throws NullPointerException DOCUMENT ME!
+     * @throws NullPointerException when the param is null
      */
     public NameSpace(NameSpaceDTO ns) {
         if (ns == null) {
@@ -76,7 +76,7 @@ public class NameSpace extends GlobalLayerSupertype {
      *
      * @param ns The namespace to copy.
      *
-     * @throws NullPointerException DOCUMENT ME!
+     * @throws NullPointerException when the param is null
      */
     public NameSpace(NameSpace ns) {
         if (ns == null) {

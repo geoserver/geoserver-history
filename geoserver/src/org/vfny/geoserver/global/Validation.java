@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: Validation.java,v 1.1.2.4 2004/01/09 17:15:30 dmzwiers Exp $
+ * @version $Id: Validation.java,v 1.1.2.5 2004/01/09 17:36:59 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
@@ -264,7 +264,7 @@ class PlugIn extends GlobalLayerSupertype {
      *
      * @return Validation ready for use by the ValidationProcessor
      *
-     * @throws ConfigurationException DOCUMENT ME!
+     * @throws ConfigurationException when an error occurs
      */
     public Validation createValidation(Map test) throws ConfigurationException {
         BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
