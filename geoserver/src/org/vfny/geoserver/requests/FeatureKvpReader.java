@@ -58,6 +58,10 @@ public class FeatureKvpReader
             currentRequest.
                 setFeatureVersion((String) kvpPairs.get("FEATUREVERSION"));
         }
+        if( kvpPairs.containsKey("OUTPUTFORMAT")) {
+            currentRequest.
+		setOutputFormat((String) kvpPairs.get("OUTPUTFORMAT"));
+        }
 
         // declare tokenizers for repeating elements
         LOGGER.finest("setting query request parameters");
