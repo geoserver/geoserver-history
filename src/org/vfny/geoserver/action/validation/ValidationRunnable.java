@@ -77,15 +77,9 @@ public class ValidationRunnable implements Runnable {
 
 		gv.load(plugins, testSuites);
 
-		//GeoValidator gv = new GeoValidator(testSuites,plugins);
 		LOGGER.finer("testSuites.size() = " + testSuites.size());
 		LOGGER.finer("plugins.size() = " + plugins.size());
-		Set entries = testSuites.entrySet();
-		TestSuiteDTO tss = (TestSuiteDTO) testSuites.values().toArray()[0];
-		
-		LOGGER.finer("-----------------------");
-		LOGGER.finer(tss.getName());
-		LOGGER.finer("-----------------------");
+		LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
 		
 		//DataConfig dataConfig = (DataConfig) getDataConfig();
 		Map dataStoreConfigs = dataConfig.getDataStores();
