@@ -9,12 +9,14 @@
 package org.vfny.geoserver.global.dto;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
 import org.vfny.geoserver.global.xml.GMLSchemaTranslator;
+import org.vfny.geoserver.global.xml.NameSpaceElement;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 import org.vfny.geoserver.global.xml.XMLSchemaTranslator;
 
@@ -40,12 +42,29 @@ public class DataTransferObjectFactoryTest extends TestCase {
 
     public void testPointPropertyTypeMappings() {
         Set expected = new HashSet();
-        expected.add( gml.getElement("PointPropertyType") );
-        expected.add( gml.getElement("PointType") );
-        expected.add( gml.getElement("AbstractGeometryType") );
-        expected.add( xs.getElement("string") );
+        NameSpaceElement nse = null;
+        nse = gml.getElement("PointPropertyType");
+System.out.println("Expected PointPropertyType : "+nse.getTypeDefName());
+        expected.add( nse );
+        nse = gml.getElement("PointType");
+System.out.println("Expected PointType : "+nse.getTypeDefName());
+        expected.add( nse );
+        nse = gml.getElement("GeometryPropertyType");
+System.out.println("Expected GeometryPropertyType : "+nse.getTypeDefName());
+		expected.add( nse );
+		nse = gml.getElement("AbstractGeometryType");
+		System.out.println("Expected AbstractGeometryType : "+nse.getTypeDefName());
+        expected.add( nse );
+        nse = xs.getElement("string");
+System.out.println("Expected string : "+nse.getTypeDefName());
+        expected.add( nse );
 
-        List mappings = DataTransferObjectFactory.getElements("pointPropertyType", Point.class);
+        List mappings = DataTransferObjectFactory.getElements("pointProperty", Point.class);
+Iterator i = mappings.iterator();
+while(i.hasNext()){
+	System.out.println("Result : "+((NameSpaceElement)i.next()).getTypeDefName());
+}
+System.out.println("Result End");
         assertEquals(expected, new HashSet(mappings));
     }
 

@@ -38,8 +38,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.15 2004/03/03 09:39:09 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.16 2004/03/08 21:49:20 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -303,35 +303,58 @@ public class DataTransferObjectFactory {
     	if(type==null)
     		throw new NullPointerException("Element type must be defined.");
     	
-    	Set s = xs.getElements(type);s.addAll(gml.getElements(type)); 
+    	Set s = xs.getAssociatedTypes(type);
+    	s.addAll(xs.getAssociatedTypes(name)); 
+    	s.addAll(gml.getAssociatedTypes(type));
+    	s.addAll(gml.getAssociatedTypes(name));
     	Iterator i = s.iterator();
     	while(i.hasNext()){
         	NameSpaceElement element = (NameSpaceElement)i.next();
         	if(name.equals(element.getTypeDefName()))
-        		if(!result.contains(element)) result.add(element);
+        		if(!result.contains(element)){
+        			result.add(element);
+        		}
+        	else
             if(name.equals(element.getTypeRefName()))
-        		if(!result.contains(element)) result.add(element);
+        		if(!result.contains(element)){
+        			result.add(element);
+        		}
+        	else
             if(name.equals(element.getQualifiedTypeDefName()))
-        		if(!result.contains(element)) result.add(element);
+        		if(!result.contains(element)){
+        			result.add(element);
+        		}
+        	else
             if(name.equals(element.getQualifiedTypeRefName()))
-        		if(!result.contains(element)) result.add(element);
+        		if(!result.contains(element)){
+        			result.add(element);
+        		}
     	}
     	
-    	i = s.iterator();
-    	while(i.hasNext()){
-        	NameSpaceElement element = (NameSpaceElement)i.next();
-        	// add the rest afterwards
-        	if(!result.contains(element)) result.add(element);
+    	if(!Object.class.equals(type)){
+    		Class cls = type;
+    		while(!Object.class.equals(cls)){
+    			i = s.iterator();
+    			while(i.hasNext()){
+    				NameSpaceElement element = (NameSpaceElement)i.next();
+    				// 	add the rest afterwards
+    				if(element.getJavaClass().equals(cls) && !result.contains(element)){
+    					result.add(element);
+    				}
+    			}
+    			cls = cls.getSuperclass();
+    		}
     	}
     	
-    	// order may not be exact here.
-    	s = xs.getAssociatedTypes(type);s.addAll(gml.getAssociatedTypes(type));
-    	i = s.iterator();
-    	while(i.hasNext()){
-        	NameSpaceElement element = (NameSpaceElement)i.next();
-        	// add the rest afterwards
-        	if(!result.contains(element)) result.add(element);
-    	}    	
+		i = s.iterator();
+		while(i.hasNext()){
+			NameSpaceElement element = (NameSpaceElement)i.next();
+			// 	add the rest afterwards
+			if(!result.contains(element)){
+				result.add(element);
+			}
+		}
+    	
     	NameSpaceElement element = xs.getElement("string");
     	if(!result.contains(element)) result.add(element);
     	
