@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.25 2004/02/02 19:22:18 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.26 2004/02/02 19:41:49 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -1098,7 +1098,10 @@ public class XMLConfigReader {
         schemaFile = ReaderUtils.checkFile(schemaFile, false);
 
         Element elem = null;
-
+        if(schemaFile == null || (!schemaFile.exists() || !schemaFile.canRead())){
+        	System.err.println("File does not exist for schema for "+dto.getName());
+        	return;
+        }
         try {
         	Reader reader;
         	reader = new FileReader(schemaFile);
