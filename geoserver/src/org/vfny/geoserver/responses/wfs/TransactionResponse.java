@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.28 2004/04/22 04:55:49 emperorkefka Exp $
+ * @version $Id: TransactionResponse.java,v 1.29 2004/04/22 08:27:06 emperorkefka Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -594,12 +594,14 @@ public class TransactionResponse implements Response {
         // go through each modified typeName
         // and ask what we need to check
         //
-        Set typeNames = new HashSet();                
+        Set typeRefs = new HashSet();                
         for (Iterator i = stores.keySet().iterator(); i.hasNext();) {
             String typeRef = (String) i.next();
+            typeRefs.add( typeRef );
+            
             Set dependencies = validation.getDependencies( typeRef );
-            LOGGER.finer( "typeRef "+typeRef+" requires "+dependencies);
-            typeNames.addAll( dependencies ); 
+            LOGGER.finer( "typeRef "+typeRef+" requires "+dependencies);            
+            typeRefs.addAll( dependencies ); 
         }
 
         // Grab a source for each typeName we need to check
@@ -608,18 +610,33 @@ public class TransactionResponse implements Response {
         //
         Map sources = new HashMap();
 
-        for (Iterator i = typeNames.iterator(); i.hasNext();) {
-            String typeName = (String) i.next();
+        for (Iterator i = typeRefs.iterator(); i.hasNext();) {
+            String typeRef = (String) i.next();
+            LOGGER.finer("Searching for required typeRef: " + typeRef );
 
-            if (stores.containsKey(typeName)) {
-                sources.put(typeName, stores.get(typeName));
+            if (stores.containsKey( typeRef )) {
+                LOGGER.finer(" found required typeRef: " + typeRef +" (it was already loaded)");                
+                sources.put( typeRef, stores.get(typeRef));
             } else {
                 // These will be using Transaction.AUTO_COMMIT
                 // this is okay as they were not involved in our
                 // Transaction...
-                FeatureTypeInfo meta = catalog.getFeatureTypeInfo(typeName);
-                sources.put(typeName, meta.getFeatureSource());
-                LOGGER.finer( typeName + " retrieved for testing" );                                
+                LOGGER.finer(" could not find typeRef: " + typeRef +" (we will now load it)");
+                String split[] = typeRef.split(":");
+                String dataStoreId = split[0];
+                String typeName = split[1];
+                LOGGER.finer(" going to look for dataStoreId:"+dataStoreId+" and typeName:"+typeName );                
+                
+                // FeatureTypeInfo meta = catalog.getFeatureTypeInfo(typeName);
+                String uri = catalog.getDataStoreInfo( dataStoreId ).getNameSpace().getURI();
+                LOGGER.finer(" sorry I mean uri: " + uri +" and typeName:"+typeName );
+                
+                FeatureTypeInfo meta = catalog.getFeatureTypeInfo( typeName, uri );
+                if( meta == null ){
+                	throw new IOException( "Could not find typeRef:"+typeRef +" for validation processor" );
+                }
+                LOGGER.finer(" loaded required typeRef: " + typeRef );                
+                sources.put( typeRef, meta.getFeatureSource());                                                
             }
         }
         LOGGER.finer( "Total of "+sources.size()+" featureSource marshalled for testing" );
@@ -651,7 +668,7 @@ public class TransactionResponse implements Response {
         	//don't want transactions to mess up just because validation 
         	//stuff is messed up. ch
             LOGGER.finer("Runing integrity tests using validation processor ");
-        	validation.runIntegrityTests(stores, check, results);        	
+        	validation.runIntegrityTests(typeRefs, stores, check, results);        	
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
