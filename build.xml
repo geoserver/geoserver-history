@@ -807,6 +807,8 @@
     
     <delete file="${basedir}/geoserver-${name.release}-docs.zip" failonerror="true"/>
     <delete file="${basedir}/geoserver-${name.release}-docs.tar" failonerror="true"/>
+    <delete file="${basedir}/geoserver-${name.release}-docs.tar.gz" 
+failonerror="true"/>
     <delete dir="${basedir}/docs" failonerror="true"/>
   </target>
 
