@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -179,7 +180,7 @@ public class TypeInfo {
     public DataSource getTransactionDataSource() throws WfsException {
 	if (transactionDS == null) {
 	    try {
-		HashMap params = internalType.getDataParams();
+		Map params = internalType.getDataParams();
 		transactionDS = DataSourceFinder.getDataSource(params);
 	    } catch (DataSourceException e) {
             throw new WfsException(e, "While getting connection to datasource",
