@@ -128,6 +128,10 @@
         	name="contact"
         	path="/contactInformation.do"/>
 
+        <forward 
+        	name="welcome.demo"
+        	path="/demo.do"/>
+        	
         <!-- Appearance -->       		
        	<forward name="style" path="/style.css"/>
        	<forward name="icon" path="/images/gs.gif"/>
@@ -149,10 +153,6 @@
         <forward 
         	name="login"
         	path="/admin/login.do"/>
-
-        <forward 
-        	name="admin.demo"
-        	path="/admin/demo.do"/>
         	        	
         <forward 
        		name="logout"
@@ -315,6 +315,11 @@
             type="org.apache.struts.actions.ForwardAction"
             parameter="welcome.contact"/>                             	       	
 
+		<action
+			path ="/demo"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="welcome.demo"/>
+        	
         <!-- ADMIN -->
         <action
         	path ="/admin/index"
@@ -343,11 +348,6 @@
 			path ="/admin/login"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin.login"/>
-
-		<action
-			path ="/admin/demo"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="admin.demo"/>
         	
 		<action        	
 			path ="/admin/logout"
@@ -513,12 +513,12 @@
 			input="/admin/login.do"/>
 
 		<action
-			path="/admin/demoSubmit"
+			path="/demoSubmit"
 			type="org.vfny.geoserver.action.DemoAction"
 			name="demoForm"
 			scope="request"
 			validate="true"
-			input="/admin/demo.do"/>
+			input="/demo.do"/>
 			
 		<!-- Admin Actions -->
         <action

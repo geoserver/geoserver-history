@@ -34,7 +34,7 @@
    		<put name="body" value="/WEB-INF/pages/Welcome.jsp"/>
    		<put name="layer" value="application"/>
         <put name="locationForwards" value=""/>
-        <put name="menuForwards" value="admin:config"/>
+        <put name="menuForwards" value="admin:config:welcome.demo"/>
    	</definition>
    	
    	<definition name="welcome.contact" extends=".mainLayout">
@@ -51,8 +51,8 @@
         <put name="locationForwards" value="welcome"/>        
    	</definition>
 
-   	<definition name="admin.demo" extends=".mainLayout">
-   		<put name="key" value="admin.demo"/>
+   	<definition name="welcome.demo" extends=".mainLayout">
+   		<put name="key" value="welcome.demo"/>
    		<put name="body" value="/WEB-INF/pages/Demo.jsp"/>   		
    		<put name="layer" value="application"/>
         <put name="locationForwards" value="welcome"/>        

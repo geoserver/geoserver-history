@@ -39,6 +39,8 @@
       TestWfsPost
     </a>
   </li>
+  <li><a action="welcome.demo"    
+  </li>  
 </ul>
 
 <h2>
