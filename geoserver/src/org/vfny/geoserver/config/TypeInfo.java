@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.config;
 
 import org.geotools.data.DataSource;
@@ -5,7 +9,9 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DataSourceFinder;
 import org.geotools.data.DataSourceMetaData;
 import org.vfny.geoserver.responses.WfsException;
+import org.vfny.geoserver.wms.gtserver.LayerEntry;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -16,16 +22,17 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeInfo.java,v 1.22 2003/09/19 17:15:30 cholmesny Exp $
+ * @version $Id: TypeInfo.java,v 1.23 2003/10/03 17:49:31 cholmesny Exp $
  */
 public class TypeInfo {
     /** Class logger */
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
 
-    /** the deliminter between namespace prefixes and types.*/
+    /** the deliminter between namespace prefixes and types. */
+
     //public static final String PREFIX_DELIMITER = ":";
 
-     /** Internal representation of user defined type information. */
+    /** Internal representation of user defined type information. */
     private FeatureType internalType;
     private ConfigInfo config = ConfigInfo.getInstance();
 
@@ -35,7 +42,6 @@ public class TypeInfo {
 
     /** the string of where the schema file should be located. */
     private String pathToSchemaFile;
-
     private DataSource transactionDS;
     private DataSource featureDSource;
 
@@ -111,8 +117,9 @@ public class TypeInfo {
     }
 
     /**
-     * Fetches the featureType name with its proper namespace prefix.
-     * This should be used for all internal references to the type.
+     * Fetches the featureType name with its proper namespace prefix. This
+     * should be used for all internal references to the type.
+     *
      * @return The name with its prefix.
      */
     public String getFullName() {
@@ -402,16 +409,17 @@ public class TypeInfo {
 
             tempResponse.append("      </Operations>\n");
         }
-	if (internalType.getLatLonBoundingBox() != null) {
-        tempResponse.append("      <" + latLonName + " minx=\""
-            + internalType.getLatLonBoundingBox().getMinx() + "\" ");
-        tempResponse.append("miny=\""
-            + internalType.getLatLonBoundingBox().getMiny() + "\" ");
-        tempResponse.append("maxx=\""
-            + internalType.getLatLonBoundingBox().getMaxx() + "\" ");
-        tempResponse.append("maxy=\""
-            + internalType.getLatLonBoundingBox().getMaxy() + "\"/>\n");
-	}
+
+        if (internalType.getLatLonBoundingBox() != null) {
+            tempResponse.append("      <" + latLonName + " minx=\""
+                + internalType.getLatLonBoundingBox().getMinx() + "\" ");
+            tempResponse.append("miny=\""
+                + internalType.getLatLonBoundingBox().getMiny() + "\" ");
+            tempResponse.append("maxx=\""
+                + internalType.getLatLonBoundingBox().getMaxx() + "\" ");
+            tempResponse.append("maxy=\""
+                + internalType.getLatLonBoundingBox().getMaxy() + "\"/>\n");
+        }
 
         //tempResponse.append("      <MetaDataURL";
         //tempResponse.append(" type=\"" + internalType.getMetadataURL().getType();
@@ -437,16 +445,18 @@ public class TypeInfo {
         tempResponse.append("            <wfsfl:SRS srsName=\""
             + "http://www.opengis.net/gml/srs/epsg#" + internalType.getSRS()
             + "\"/>\n");
-	if (internalType.getLatLonBoundingBox() != null) {
-        tempResponse.append("            <wfsfl:LatLonBoundingBox minx=\""
-            + internalType.getLatLonBoundingBox().getMinx());
-        tempResponse.append("\" miny=\""
-            + internalType.getLatLonBoundingBox().getMiny());
-        tempResponse.append("\" maxx=\""
-            + internalType.getLatLonBoundingBox().getMaxx());
-        tempResponse.append("\" maxy=\""
-            + internalType.getLatLonBoundingBox().getMaxy() + "\"/>\n");
-	}
+
+        if (internalType.getLatLonBoundingBox() != null) {
+            tempResponse.append("            <wfsfl:LatLonBoundingBox minx=\""
+                + internalType.getLatLonBoundingBox().getMinx());
+            tempResponse.append("\" miny=\""
+                + internalType.getLatLonBoundingBox().getMiny());
+            tempResponse.append("\" maxx=\""
+                + internalType.getLatLonBoundingBox().getMaxx());
+            tempResponse.append("\" maxy=\""
+                + internalType.getLatLonBoundingBox().getMaxy() + "\"/>\n");
+        }
+
         tempResponse.append(
             "            <wfsfl:Operations><wfsfl:Query/></wfsfl:"
             + "Operations>\n");
@@ -464,7 +474,23 @@ public class TypeInfo {
      * which can shut itself down.
      */
     public void close() {
-	featureDSource = null;
+        featureDSource = null;
         transactionDS = null;
+    }
+
+    public LayerEntry asWMSLayer() {
+        LOG.info("getting featureType as wms layer from " + internalType);
+
+        LayerEntry layer = new LayerEntry();
+        layer.id = getName();
+        layer.description = getAbstract();
+        layer.srs = "EPSG:" + getSrs();
+        layer.properties = internalType.getDataParams();
+        layer.styles = internalType.getStyles();
+        layer.defaultStyle = internalType.getDefaultStyle();
+
+        return layer;
+
+        //Do this later - layer.bbox[0] =
     }
 }

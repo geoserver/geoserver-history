@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeRepository.java,v 1.20 2003/09/17 15:55:25 cholmesny Exp $
+ * @version $Id: TypeRepository.java,v 1.21 2003/10/03 17:49:31 cholmesny Exp $
  *
  * @task TODO: Rethink synchronization.  Just wanted to get things with locks
  *       working for this version, but obviously we need to examine
@@ -155,6 +155,14 @@ public class TypeRepository {
 
         return (TypeInfo) types.get(typeName);
     }
+    
+    /**
+     * Not sure if this is a good idea...
+     */ 
+    public Iterator getTypes() {
+	return types.values().iterator();
+    }
+	
 
     /**
      * Adds a type to the repository, reading from the path given.
