@@ -34,7 +34,7 @@ import java.util.Set;
  * </p>
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceTranslator.java,v 1.1 2004/02/06 00:31:39 dmzwiers Exp $
+ * @version $Id: NameSpaceTranslator.java,v 1.2 2004/02/09 18:00:02 dmzwiers Exp $
  */
 public abstract class NameSpaceTranslator{
 	/** the prefix for this translator instance*/
@@ -220,6 +220,10 @@ public abstract class NameSpaceTranslator{
 				if(name.equals(nse.getTypeRefName()))
 					return nse;
 				if(name.equals(nse.getTypeDefName()))
+					return nse;
+				if(name.equals(nse.getQualifiedTypeRefName()))
+					return nse;
+				if(name.equals(nse.getQualifiedTypeDefName()))
 					return nse;
 			}
 		}

@@ -32,15 +32,14 @@ import java.util.Set;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.7 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.8 2004/02/09 18:02:20 dmzwiers Exp $
  */
 public class NameSpaceInfo extends GlobalLayerSupertype
     implements NamespaceMetaData {
-    /**
-     * A copy of the NameSpaceInfoDTO which contains the data for this class.
-     * Editing the DTO should be completed with extreme caution.
-     */
-    private NameSpaceInfoDTO nsDTO;
+	
+	private String prefix;
+	private String uri;
+	private boolean _default;
 
     /** ref to parent set of datastores. */
     private Data data;
@@ -71,7 +70,10 @@ public class NameSpaceInfo extends GlobalLayerSupertype
         }
 
         this.data = data;
-        nsDTO = (NameSpaceInfoDTO) ns.clone();
+        
+        prefix = ns.getPrefix();
+        uri = ns.getUri();
+        _default = ns.isDefault();
     }
 
     /**
@@ -91,10 +93,9 @@ public class NameSpaceInfo extends GlobalLayerSupertype
             throw new NullPointerException();
         }
 
-        nsDTO = new NameSpaceInfoDTO();
-        nsDTO.setPrefix(ns.getPrefix());
-        nsDTO.setUri(ns.getUri());
-        nsDTO.setDefault(ns.isDefault());
+        setPrefix(ns.getPrefix());
+        setUri(ns.getUri());
+        setDefault(ns.isDefault());
     }
 
     /**
@@ -113,7 +114,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      * @see NameSpaceInfoDTO
      */
     Object toDTO() {
-        return nsDTO;
+    	NameSpaceInfoDTO dto = new NameSpaceInfoDTO();
+    	dto.setDefault(isDefault());
+    	dto.setPrefix(getPrefix());
+    	dto.setUri(getUri());
+        return dto;
     }
 
     /**
@@ -148,9 +153,9 @@ public class NameSpaceInfo extends GlobalLayerSupertype
     public boolean equals(Object obj) {
         NameSpaceInfo ns = (NameSpaceInfo) obj;
 
-        return ((nsDTO.getPrefix() == ns.getPrefix())
-        && ((nsDTO.getUri() == ns.getUri())
-        && (nsDTO.isDefault() == ns.isDefault())));
+        return ((getPrefix() == ns.getPrefix())
+        && ((getUri() == ns.getUri())
+        && (isDefault() == ns.isDefault())));
     }
 
     /**
@@ -163,7 +168,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      * @return true when this is the default namespace.
      */
     public boolean isDefault() {
-        return nsDTO.isDefault();
+        return _default;
     }
 
     /**
@@ -176,7 +181,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      * @return String the namespace's prefix
      */
     public String getPrefix() {
-        return nsDTO.getPrefix();
+        return prefix;
     }
 
     /**
@@ -189,7 +194,18 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      * @return String the namespace's uri.
      */
     public String getUri() {
-        return nsDTO.getUri();
+        return uri;
+    }
+    
+    /**
+     * Implementation of getURI.
+     * 
+     * @see org.geotools.data.NamespaceMetaData#getURI()
+     * 
+     * @return
+     */
+    public String getURI() {
+    	return uri;
     }
 
     /**
@@ -202,7 +218,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      * @param b this is the default namespace.
      */
     public void setDefault(boolean b) {
-        nsDTO.setDefault(b);
+        _default = b;
     }
 
     /**
@@ -215,7 +231,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      * @param string the namespace's prefix.
      */
     public void setPrefix(String string) {
-        nsDTO.setPrefix(string);
+        prefix=string;
     }
 
     /**
@@ -228,7 +244,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      * @param string the namespace's uri.
      */
     public void setUri(String string) {
-        nsDTO.setUri(string);
+        uri=string;
     }
 
     /**
@@ -268,21 +284,6 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      */
     public Object getMetaData(String key) {
         return meta.get(key);
-    }
-
-    /**
-     * Implement getURI.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     *
-     * @see org.geotools.data.NamespaceMetaData#getURI()
-     */
-    public String getURI() {
-        return nsDTO.getUri();
     }
 
     /**

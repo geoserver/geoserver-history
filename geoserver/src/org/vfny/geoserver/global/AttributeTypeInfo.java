@@ -23,25 +23,33 @@ import java.util.Map;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.6 2004/02/07 00:52:30 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: AttributeTypeInfo.java,v 1.7 2004/02/09 18:02:20 dmzwiers Exp $
  */
 public class AttributeTypeInfo implements AttributeTypeMetaData {
-    /** Following Davids lead with use of DTO delegate */
-    private AttributeTypeInfoDTO delegate;
+	private String name;
+	private int minOccurs;
+	private int maxOccurs;
+	private boolean nillable;
+	private String typeName;
+	private boolean isComplex;
 
     /** Readl GeoTools2 AttributeType */
     private AttributeType type;
     private Map meta;
 
     public AttributeTypeInfo(AttributeTypeInfoDTO dto) {
-        delegate = dto;
         type = null;
         meta = new HashMap();
+        name = dto.getName();
+        minOccurs = dto.getMinOccurs();
+        maxOccurs = dto.getMaxOccurs();
+        nillable = dto.isNillable();
+        isComplex = dto.isComplex();
+        typeName = dto.getType();
     }
 
     public AttributeTypeInfo(AttributeType type) {
-        delegate = null;
         this.type = type;
         meta = new HashMap();
     }
@@ -74,15 +82,13 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
      * @see org.geotools.data.AttributeTypeMetaData#getAttributeName()
      */
     public String getAttributeName() {
-        if (delegate != null) {
-            delegate.getName();
+    	String r = typeName;
+
+        if (r==null && type != null) {
+            r = type.getName();
         }
 
-        if (type != null) {
-            type.getName();
-        }
-
-        return null;
+        return r;
     }
 
     /**
@@ -100,12 +106,12 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
      *
      * @return The element, or <code>TYPE_FRAGMENT</code>
      */    
-    public String getType(){
-        if( delegate.isComplex() ){
+    String getType(){
+        if( isComplex ){
             return "(xml fragment)";
         }
         else {
-            return delegate.getType();
+            return typeName;
         }        
     }
     
@@ -122,9 +128,9 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
      *
      * @param fragment The fragment to set.
      */    
-    public String getFragment(){
-        if( delegate.isComplex() ){
-            return delegate.getType();
+    String getFragment(){
+        if( isComplex ){
+            return typeName;
         }
         else {
             return null;
@@ -168,5 +174,16 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
      */
     public Object getMetaData(String key) {
         return meta.get(key);
+    }
+    
+    Object toDTO(){
+    	AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
+    	dto.setComplex(isComplex);
+    	dto.setMaxOccurs(maxOccurs);
+    	dto.setMinOccurs(minOccurs);
+    	dto.setName(name);
+    	dto.setNillable(nillable);
+    	dto.setType(typeName);
+		return dto;
     }
 }

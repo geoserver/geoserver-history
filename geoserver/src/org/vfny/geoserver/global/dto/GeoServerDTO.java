@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.6 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: GeoServerDTO.java,v 1.7 2004/02/09 18:02:23 dmzwiers Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
     /** Sets the max number of Features returned by GetFeature */
@@ -110,14 +110,6 @@ public final class GeoServerDTO implements DataTransferObject {
      * </p>
      */
     private Level loggingLevel = null;
-
-    /* Default name for configuration directory */
-
-    //private static final String CONFIG_DIR = "WEB-INF/";
-
-    /* Default name for configuration directory */
-
-    //private static final String DATA_DIR = "data/";
 
     /** The Server contact person and their contact information. */
     private ContactDTO contact = null;
