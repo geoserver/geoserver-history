@@ -39,6 +39,7 @@ import org.vfny.geoserver.responses.WfsException;
  * conflicts.</p>
  * 
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  * @version $version$
  */
 abstract public class RequestKvpReader {
@@ -152,6 +153,35 @@ abstract public class RequestKvpReader {
         }
         LOGGER.finest("cleaned request: " + raw);
         return raw;
+    }
+
+    /**
+     * Attempts to parse out the proper typeNames from the FeatureId filters.
+     * It simply uses the value before the '.' character.
+     * 
+     * @param rawFidList the strings after the FEATUREID url component.  Should
+     * be found using kvpPairs.get("FEATUREID") in this class or one of its
+     * children
+     * @return A list of typenames, made from the featureId filters.
+     */
+    protected static List getTypesFromFids(String rawFidList) 
+	throws WfsException {
+	List typeList = new ArrayList();
+	List unparsed = readNested(rawFidList);
+	Iterator i = unparsed.listIterator();
+	while(i.hasNext()) {
+	    List ids = (List) i.next();
+	    ListIterator innerIterator = ids.listIterator();
+	    while(innerIterator.hasNext()) {
+		String fid = innerIterator.next().toString();
+		LOGGER.finer("looking at featureId" + fid);
+		int pos = fid.indexOf(".");
+		String typeName = fid.substring(0, fid.indexOf("."));
+		LOGGER.finer("adding typename: " + typeName + " from fid");
+		typeList.add(typeName);
+	    }
+	}
+	return typeList;
     }
 
     /**

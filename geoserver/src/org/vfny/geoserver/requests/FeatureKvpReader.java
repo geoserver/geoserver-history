@@ -20,6 +20,7 @@ import org.vfny.geoserver.responses.WfsException;
  * that you  must check for validity before passing the request.</p>
  * 
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  * @version $version$
  */
 public class FeatureKvpReader 
@@ -68,34 +69,19 @@ public class FeatureKvpReader
         List typeList = readFlat((String)kvpPairs.get("TYPENAME"), 
                                  INNER_DELIMETER);
         List propertyList = readNested((String) kvpPairs.get("PROPERTYNAME"));
-        List filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
+	String fidKvps = (String) kvpPairs.get("FEATUREID");
+        List filterList = readFilters(fidKvps, 
                                       (String) kvpPairs.get("FILTER"),
                                       (String) kvpPairs.get("BBOX"));
        
         int propertySize = propertyList.size();
         int filterSize = filterList.size();
 
-	//TODO: PUT THIS CODE IN REQUEST, SO THAT LOCK AND TRANSACTION CAN USE IT
 	if (typeList.size() == 0) {
-	    // for (Iterator i = filterSize.iterator(); i.hasNext();){
-	    //Filter curFilter = (Filter) i.next();
-	    List unparsed = readNested((String)kvpPairs.get("FEATUREID"));
-	    Iterator i = unparsed.listIterator();
-	    while(i.hasNext()) {
-                List ids = (List) i.next();
-                ListIterator innerIterator = ids.listIterator();
-		while(innerIterator.hasNext()) {
-		    String fid = innerIterator.next().toString();
-		    LOGGER.finer("looking at featureId" + fid);
-		    int pos = fid.indexOf(".");
-		    String typeName = fid.substring(0, fid.indexOf("."));
-		    LOGGER.finer("adding typename: " + typeName + " from fid");
-                    typeList.add(typeName);
-                }
-            }
+	    typeList = getTypesFromFids(fidKvps);
 	    if (typeList.size() == 0) {
-		throw new WfsException("The typename element is mandatory if no"
-				       + " FEATUREID is present");
+		throw new WfsException("The typename element is mandatory if "
+				       + "no FEATUREID is present");
 	    }
 	}
 	
