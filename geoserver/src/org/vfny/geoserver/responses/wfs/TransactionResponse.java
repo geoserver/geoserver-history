@@ -15,12 +15,15 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
+import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
+import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.validation.Validation;
@@ -49,6 +52,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -59,7 +63,7 @@ import java.util.logging.Logger;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.22 2004/04/18 03:52:41 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.23 2004/04/21 00:12:44 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -354,16 +358,17 @@ public class TransactionResponse implements Response {
                     FeatureType schema = store.getSchema();
 
                     // Need to use the namespace here for the lookup, due to our weird
-                    //prefixed internal typenames.  see 
-                    //http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-143
-                    //Once we get our datastores making features with the correct namespaces
-                    //we can do something like this:
-                    //FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(schema.getTypeName(), schema.getNamespace());
-                    //until then (when geos-144 is resolved) we're stuck with:
+                    // prefixed internal typenames.  see 
+                    //   http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-143
+                    
+                    // Once we get our datastores making features with the correct namespaces
+                    // we can do something like this:
+                    // FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(schema.getTypeName(), schema.getNamespace());
+                    // until then (when geos-144 is resolved) we're stuck with:
                     FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element
                             .getTypeName());
 
-                    //this is possible with the insert hack above.  
+                    // this is possible with the insert hack above.  
                     featureValidation(typeInfo.getDataStoreInfo().getId(),
                         schema, collection);
 
@@ -396,30 +401,51 @@ public class TransactionResponse implements Response {
                     DefaultQuery query = new DefaultQuery(update.getTypeName(),
                             filter);
 
-                    //These are commented out because PostgisDataStore
-                    //getBounds is not yet implemented.  It returns null which
-                    //breaks this.  But we probably should program in case
-                    //datasources don't implement, use the FeatureSource 
-                    //bounds, or FeatureResults?  Whichever one will compute
-                    //it for you if datastore can't.
-                    //envelope.expandToInclude(store.getBounds(query));
+                    // Pass through data to collect fids and damaged region
+                    // for validation
+                    //
+                    Set fids = new HashSet();
+                    
+                    FeatureReader preprocess = store.getFeatures( filter ).reader();
+                    try {
+                        while( preprocess.hasNext() ){
+                            Feature feature = preprocess.next();
+                            fids.add( feature.getID() );
+                            envelope.expandToInclude( feature.getBounds() );
+                        }
+                    } catch (NoSuchElementException e) {
+                        throw new ServiceException( "Could not aquire FeatureIDs", e );
+                    } catch (IllegalAttributeException e) {
+                        throw new ServiceException( "Could not aquire FeatureIDs", e );
+                    }
+                    finally {
+                        preprocess.close();
+                    }
+                    
                     if (types.length == 1) {
                         store.modifyFeatures(types[0], values[0], filter);
                     } else {
                         store.modifyFeatures(types, values, filter);
                     }
-
+                    
                     if ((request.getLockId() != null)
                             && store instanceof FeatureLocking
                             && (request.getReleaseAction() == TransactionRequest.SOME)) {
                         FeatureLocking locking = (FeatureLocking) store;
                         locking.unLockFeatures(filter);
                     }
-
-                    // we only have to do this again if values contains a geometry type
-                    //
-                    //envelope.expandToInclude(store.getBounds(
-                    //      new DefaultQuery(update.getTypeName(), filter)));
+                    
+                    // Post process - check features for changed boundary and
+                    // pass them off to the ValidationProcessor
+                    FidFilter modified = FilterFactory.createFilterFactory().createFidFilter();
+                    modified.addAllFids( fids );
+                    
+                    FeatureCollection changed = store.getFeatures( modified ).collection();
+                    envelope.expandToInclude( changed.getBounds() );
+                    
+                    FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element.getTypeName());
+                    featureValidation(typeInfo.getDataStoreInfo().getId(),store.getSchema(), changed);                    
+                    
                 } catch (IOException ioException) {
                     throw new WfsTransactionException(ioException,
                         element.getHandle(), request.getHandle());
@@ -446,7 +472,7 @@ public class TransactionResponse implements Response {
         // after user has got the response
         response = build;
     }
-
+    
     protected void featureValidation(String dsid, FeatureType type,
         FeatureCollection collection)
         throws IOException, WfsTransactionException {
