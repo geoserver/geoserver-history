@@ -46,11 +46,14 @@ class TestGetThread extends Thread{
 		}
 	}
 	
-	public Date getTime1(){
+	Date getTime1(){
 		return t1;
 	}
-	public Date getTime2(){
+	Date getTime2(){
 		return t2;
+	}
+	Date getTime3(){
+		return t3;
 	}
 }
 
@@ -90,8 +93,5 @@ class TestPostThread extends TestGetThread{
 			e.printStackTrace();
 			result = 0;
 		}
-	}
-	public Date getTime3(){
-		return t3;
 	}
 }

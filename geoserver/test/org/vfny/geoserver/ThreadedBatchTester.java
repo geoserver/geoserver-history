@@ -23,7 +23,7 @@ import java.net.URL;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ThreadedBatchTester.java,v 1.3 2004/03/03 01:15:46 dmzwiers Exp $
+ * @version $Id: ThreadedBatchTester.java,v 1.4 2004/03/04 20:47:48 dmzwiers Exp $
  */
 public class ThreadedBatchTester {
 	private static int runs = 100;
@@ -71,7 +71,14 @@ public class ThreadedBatchTester {
 				default:
 			}
 		}
-		os.println(good+"/"+runs+" Tests 'OK' ("+((good*1.0)/(runs*1.0))+")");
+		os.println(good+"/"+runs+" Tests 'OK' ("+((good*1.0)/(runs*1.0))+")\n");
+		for(int i=0;i<runs;i++){
+			TestGetThread tpt = (TestGetThread) threads[i];
+			os.print(tpt.getResult()+", ");
+			os.print(tpt.getTime1()+", ");
+			os.print(tpt.getTime2()+", ");
+			os.print(tpt.getTime3()+"\n");
+		}
 	}
 	
 	private static void loadArgs(String[] args) throws IOException{
