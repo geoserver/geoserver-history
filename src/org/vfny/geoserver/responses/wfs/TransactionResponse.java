@@ -4,20 +4,7 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -53,15 +40,26 @@ import org.vfny.geoserver.requests.wfs.SubTransactionRequest;
 import org.vfny.geoserver.requests.wfs.TransactionRequest;
 import org.vfny.geoserver.requests.wfs.UpdateRequest;
 import org.vfny.geoserver.responses.Response;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.18 2004/03/31 05:15:07 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.19 2004/04/05 12:00:45 cholmesny Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -89,14 +87,17 @@ public class TransactionResponse implements Response {
             throw new WfsException(
                 "bad request, expected TransactionRequest, but got " + request);
         }
-        if( (request.getWFS().getServiceLevel() & WFSDTO.TRANSACTIONAL ) == 0 ){
-        	throw new ServiceException("Transaction support is not enabled");
+
+        if ((request.getWFS().getServiceLevel() & WFSDTO.TRANSACTIONAL) == 0) {
+            throw new ServiceException("Transaction support is not enabled");
         }
+
         //REVISIT: this should maybe integrate with the other exception 
         //handlers better - but things that go wrong here should cause 
         //transaction exceptions.
         //try {
-            execute((TransactionRequest) request);
+        execute((TransactionRequest) request);
+
         //} catch (Throwable thrown) {
         //    throw new WfsTransactionException(thrown);
         //}
@@ -139,6 +140,7 @@ public class TransactionResponse implements Response {
      *
      * @param transactionRequest
      *
+     * @throws ServiceException DOCUMENT ME!
      * @throws WfsException
      * @throws WfsTransactionException DOCUMENT ME!
      */
@@ -163,11 +165,34 @@ public class TransactionResponse implements Response {
         // to agree with the spec docs)
         for (int i = 0; i < request.getSubRequestSize(); i++) {
             SubTransactionRequest element = request.getSubRequest(i);
+
+            //HACK: The insert request does not get the correct typename,
+            //as we can no longer hack in the prefix since we are using the
+            //real featureType.  So this is the only good place to do the
+            //look-up for the internal typename to use.  We should probably
+            //rethink our use of prefixed internal typenames (cdf:bc_roads),
+            //and have our requests actually use a type uri and type name.
+            //Internally we can keep the prefixes, but if we do that then
+            //this will be less hacky and we'll also be able to read in xml
+            //for real, since the prefix should refer to the uri.
+            if (element instanceof InsertRequest) {
+                Feature feature = ((InsertRequest) element).getFeatures()
+                                   .features().next();
+
+                if (feature != null) {
+                    String name = feature.getFeatureType().getTypeName();
+                    String uri = feature.getFeatureType().getNamespace();
+                    String typeName = catalog.getFeatureTypeInfo(name, uri)
+                                             .getName();
+                    element.setTypeName(typeName);
+                }
+            }
+
             String typeName = element.getTypeName();
 
             if (!stores.containsKey(typeName)) {
                 FeatureTypeInfo meta = catalog.getFeatureTypeInfo(typeName);
- 
+
                 try {
                     FeatureSource source = meta.getFeatureSource();
 
@@ -193,16 +218,19 @@ public class TransactionResponse implements Response {
         String authorizationID = request.getLockId();
 
         if (authorizationID != null) {
-            if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_LOCKING ) == 0 ){
+            if ((request.getWFS().getServiceLevel() & WFSDTO.SERVICE_LOCKING) == 0) {
                 // could we catch this during the handler, rather than during execution?
                 throw new ServiceException("Lock support is not enabled");
-            }            
+            }
+
             LOGGER.finer("got lockId: " + authorizationID);
-			if (!catalog.lockExists(authorizationID)) {
-						   String mesg = "Attempting to use a lockID that does not exist"
-							   + ", it has either expired or was entered wrong.";
-						   throw new WfsException(mesg);
-					   }
+
+            if (!catalog.lockExists(authorizationID)) {
+                String mesg = "Attempting to use a lockID that does not exist"
+                    + ", it has either expired or was entered wrong.";
+                throw new WfsException(mesg);
+            }
+
             try {
                 transaction.addAuthorization(authorizationID);
             } catch (IOException ioException) {
@@ -228,10 +256,12 @@ public class TransactionResponse implements Response {
             FeatureStore store = (FeatureStore) stores.get(typeName);
 
             if (element instanceof DeleteRequest) {
-                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_DELETE ) == 0 ){
+                if ((request.getWFS().getServiceLevel() & WFSDTO.SERVICE_DELETE) == 0) {
                     // could we catch this during the handler, rather than during execution?
-                    throw new ServiceException("Transaction Delete support is not enabled");
+                    throw new ServiceException(
+                        "Transaction Delete support is not enabled");
                 }
+
                 try {
                     DeleteRequest delete = (DeleteRequest) element;
                     Filter filter = delete.getFilter();
@@ -310,10 +340,12 @@ public class TransactionResponse implements Response {
             }
 
             if (element instanceof InsertRequest) {
-                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_INSERT ) == 0 ){
+                if ((request.getWFS().getServiceLevel() & WFSDTO.SERVICE_INSERT) == 0) {
                     // could we catch this during the handler, rather than during execution?
-                    throw new ServiceException("Transaction INSERT support is not enabled");
+                    throw new ServiceException(
+                        "Transaction INSERT support is not enabled");
                 }
+
                 try {
                     InsertRequest insert = (InsertRequest) element;
                     FeatureCollection collection = insert.getFeatures();
@@ -336,10 +368,12 @@ public class TransactionResponse implements Response {
             }
 
             if (element instanceof UpdateRequest) {
-                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_UPDATE ) == 0 ){
+                if ((request.getWFS().getServiceLevel() & WFSDTO.SERVICE_UPDATE) == 0) {
                     // could we catch this during the handler, rather than during execution?
-                    throw new ServiceException("Transaction Update support is not enabled");
+                    throw new ServiceException(
+                        "Transaction Update support is not enabled");
                 }
+
                 try {
                     UpdateRequest update = (UpdateRequest) element;
                     Filter filter = update.getFilter();
@@ -547,10 +581,10 @@ public class TransactionResponse implements Response {
         return gs.getMimeType();
     }
 
-    public String getContentEncoding()
-    {
-      return null;
+    public String getContentEncoding() {
+        return null;
     }
+
     /**
      * Writes generated xmlResponse.
      * 
