@@ -58,7 +58,7 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 		System.out.println("Return!!" +ftConfig);
 		
 		return Collections.unmodifiableSortedSet(new TreeSet(
-					ftConfig.getSchema()
+					ftConfig.getSchemaAttributes()
 				));
 	}
 	/**

@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.18 2004/01/19 17:53:40 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.19 2004/01/20 00:30:43 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -882,7 +882,7 @@ public class XMLConfigReader {
                 attributeList = Collections.EMPTY_LIST;
             }
         } else {
-            dto.setSchema(Collections.EMPTY_LIST);
+            dto.setSchemaAttributes(Collections.EMPTY_LIST);
         }
 
         LOGGER.finer("added featureType " + dto.getName());
@@ -1186,7 +1186,7 @@ public class XMLConfigReader {
                     false, 0));
             list.add(ati);
         }
-        featureTypeInfoDTO.setSchema(list);
+        featureTypeInfoDTO.setSchemaAttributes(list);
     }
 
     /**

@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.12 2004/01/19 17:53:40 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.13 2004/01/20 00:30:43 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -436,7 +436,7 @@ public class XMLConfigWriter {
 			if(ft!=null){
 				File dir2 = WriterUtils.initWriteFile(new File(dir,ft.getDirName()),true);
 				storeFeature(ft,dir2);
-				if(ft.getSchema()!=null)
+				if(ft.getSchemaAttributes()!=null)
 					storeFeatureSchema(ft,dir2);
 			}
 		}
@@ -541,8 +541,8 @@ public class XMLConfigWriter {
 				m.put("base",t);
 			cw.openTag("xs:extension",m);
 			cw.openTag("xs:sequence");
-			for(int i=0;i<fs.getSchema().size();i++){
-				AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO)fs.getSchema().get(i);
+			for(int i=0;i<fs.getSchemaAttributes().size();i++){
+				AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO)fs.getSchemaAttributes().get(i);
 				m = new HashMap();
 				m.put("nillable",""+ati.isNillable());
 				m.put("minOccurs",""+ati.getMinOccurs());
@@ -588,7 +588,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.12 2004/01/19 17:53:40 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.13 2004/01/20 00:30:43 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
