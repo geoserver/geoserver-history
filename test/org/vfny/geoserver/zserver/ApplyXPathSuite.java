@@ -52,7 +52,7 @@ public class ApplyXPathSuite extends TestCase {
     
     public static Test suite() {
         TestSuite suite = new TestSuite(ApplyXPathSuite.class);
-	LOGGER.info("Creating ApplyXPath suite.");
+	LOGGER.fine("Creating ApplyXPath suite.");
         return suite;
     }
     
@@ -65,6 +65,7 @@ public class ApplyXPathSuite extends TestCase {
     public void testApply1() {
 	
 	String xpath = "//metadata/idinfo/citation/citeinfo/title/text()";
+	LOGGER.fine("testing xpath: " + xpath);
 	try {
 	    results = ApplyXPath.apply(testPath, xpath);
 	} catch (java.io.FileNotFoundException e) {
@@ -77,6 +78,7 @@ public class ApplyXPathSuite extends TestCase {
       public void testApply2() {
 
 	String xpath2 = "//metadata/idinfo/spdom/bounding//";
+	LOGGER.fine("testing xpath: " + xpath2);
 	try {
 	    results = ApplyXPath.apply(testPath, xpath2);
 	} catch (FileNotFoundException e) {
@@ -89,6 +91,7 @@ public class ApplyXPathSuite extends TestCase {
     public void testApply3() {
 
 	String xpath3 = "//metadata/idinfo/spdom/bounding/westbc/text()";
+	LOGGER.fine("testing xpath: " + xpath3);
 	try {
 	    results = ApplyXPath.apply(testPath, xpath3);
 	} catch (FileNotFoundException e) {
@@ -99,6 +102,7 @@ public class ApplyXPathSuite extends TestCase {
 
 
   public void testApply4() {
+      LOGGER.fine("testing xpath: " + xpath4);
 	String xpath4 = "//metadata/nadfme";
 	try {
 	    results = ApplyXPath.apply(testPath, xpath4);
@@ -115,9 +119,9 @@ public class ApplyXPathSuite extends TestCase {
 	    results = ApplyXPath.apply(failPath, xpath);
 	    fail("didn't throw FileNotFoundException");
 	} catch (FileNotFoundException e) {
-	    LOGGER.info("threw proper exception");
+	    LOGGER.finer("threw proper exception");
 	}
-	//LOGGER.info("dude " + results.length);
+
     }
 
 }
