@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite xmlns="testSuiteSchema" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns:ogc="http://www.opengis.net/ogc" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+	xs:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd">
+	<name>Lake Integrity Checks</name>
+	<description>Checks to ensure the lakes are valid</description>
+	<!--<test>
+		<name>lake is valid geom</name>
+		<description>Checks that Lakes are represented by valid geometries</description>
+		<plugin>Is Valid Geometry</plugin>
+		<argument >
+			<name>typeRef</name>
+			<string>lakes:lakes</string>
+		</argument>
+	</test>
+	<test>
+		<name>lake == polygon</name>
+		<description>Checks that Lakes are closed polygons</description>
+		<plugin>Polygon Gap Detection</plugin>
+		<argument >
+			<name>typeRef</name>
+			<string>lakes:lakes</string>
+		</argument>
+	</test>-->
+</suite>
