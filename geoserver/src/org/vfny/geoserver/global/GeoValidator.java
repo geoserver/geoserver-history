@@ -31,7 +31,7 @@ import org.geotools.validation.xml.ValidationException;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GeoValidator.java,v 1.1 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: GeoValidator.java,v 1.2 2004/04/20 23:20:51 dmzwiers Exp $
  */
 public class GeoValidator extends ValidationProcessor {
 	public static final String WEB_CONTAINER_KEY = "GeoValidator";
@@ -66,6 +66,11 @@ public class GeoValidator extends ValidationProcessor {
 	private Map testSuites;
 	private Map plugIns;
 	
+	private Map errors;
+	public Map getErrors(){
+		return errors;
+	}
+	
 	/**
 	 * load purpose.
 	 * <p>
@@ -77,6 +82,7 @@ public class GeoValidator extends ValidationProcessor {
 	public void load(Map testSuites, Map plugIns){
 		this.plugIns = plugIns;
 		this.testSuites = testSuites;
+		errors = new HashMap();
 		
 		// step 1 make a list required plug-ins
 		Set plugInNames = new HashSet();
