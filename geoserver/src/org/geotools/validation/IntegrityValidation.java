@@ -26,9 +26,9 @@ public interface IntegrityValidation extends Validation
     /**
      * Used to check features against this validation rule.
      * 
-     * @param layers Allows access to FeatureType and Colleaction by "name"     
+     * @param layers Allows access to FeatureType and Collection by "name"   
+     * @param envelope The bounding box that encloses the unvalidated data  
      * @param results Used to coallate results information
-     * @param the bounding box that encloses the unvalidated data
      * @return True if all the features pass this test.
      */
     public boolean validate( Map layers, Envelope envelope, ValidationResults results ) throws Exception;
