@@ -33,7 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.4 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: ReaderUtils.java,v 1.5 2004/01/21 01:26:55 jive Exp $
  *
  * @see XMLConfigReader
  */
@@ -75,7 +75,6 @@ public class ReaderUtils {
                 .newInstance();
 
             //dfactory.setNamespaceAware(true);
-
             /*set as optimizations and hacks for geoserver schema config files
              * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
              * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.

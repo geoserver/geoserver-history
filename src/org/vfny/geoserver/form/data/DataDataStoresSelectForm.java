@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletRequest;
  * Select current DataStore for edit or delete Action.
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.3 2004/01/21 00:26:08 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.4 2004/01/21 01:26:54 jive Exp $
  */
 public class DataDataStoresSelectForm extends ActionForm {
     /** Action that spawned us must be "edit" or "delete" */
@@ -92,8 +92,8 @@ public class DataDataStoresSelectForm extends ActionForm {
      * DataStoreID selected by User.
      * 
      * <p>
-     * If the user has not selected anything (is this possible?) we will
-     * return <code>null</code>.
+     * If the user has not selected anything (is this possible?) we will return
+     * <code>null</code>.
      * </p>
      *
      * @return Selected DataStoreID or <code>null</code> if nothing is selected

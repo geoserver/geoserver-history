@@ -2,22 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 19, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package org.geotools.validation.xml;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
@@ -26,35 +11,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * XMLReader purpose.
- * 
- * <p>
- * Description of XMLReader ...
- * </p>
- * 
- * <p>
- * Capabilities:
- * </p>
- * 
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * 
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * XMLReader x = new XMLReader(...);
- * </code></pre>
+ * Load validation configuration from XML.
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLReader.java,v 1.5 2004/01/21 00:35:55 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: XMLReader.java,v 1.6 2004/01/21 01:26:54 jive Exp $
  */
 public class XMLReader {
     /**

@@ -71,6 +71,7 @@ import java.io.OutputStream;
  * useable form. You should assume you are writing directly to the client.
  * </li>
  * </ul>
+ * 
  * </li>
  * </ol>
  * 
@@ -90,7 +91,7 @@ import java.io.OutputStream;
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.4 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: Response.java,v 1.5 2004/01/21 01:26:54 jive Exp $
  */
 public interface Response {
     /**
