@@ -25,7 +25,7 @@ public class EncoderConfig {
     public static final String SVG_HEADER =
         "<?xml version=\"1.0\" standalone=\"no\"?>\n\t"
         + "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n"
-        + "<svg \n\tstroke=\"green\" \n\tfill=\"none\" \n\tstroke-width=\"0.001%\" \n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
+        + "<svg xmlns=\"http://www.w3.org/2000/svg\" \n\tstroke=\"green\" \n\tfill=\"none\" \n\tstroke-width=\"0.001%\" \n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
 
     /** the SVG closing element */
     public static final String SVG_FOOTER = "</svg>\n";
