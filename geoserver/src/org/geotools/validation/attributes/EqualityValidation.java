@@ -7,6 +7,7 @@ package org.geotools.validation.attributes;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
+import org.geotools.validation.DefaultFeatureValidation;
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.ValidationResults;
 import java.util.logging.Logger;
@@ -22,33 +23,13 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: EqualityValidation.java,v 1.1 2004/01/31 00:24:07 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: EqualityValidation.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
  */
-public class EqualityValidation implements FeatureValidation {
+public class EqualityValidation extends DefaultFeatureValidation {
     /** The logger for the validation module. */
     private static final Logger LOGGER = Logger.getLogger(
             "org.geotools.validation");
-
-    /** User's Name of this validation test. */
-    private String name; // name of the validation
-
-    /** User's description of this validation test. */
-    private String description;
-
-    /**
-     * Identification of required FeatureType as dataStoreId:typeName.
-     * 
-     * <p>
-     * The provided ValidationProcessor assumes that FeatureTypes will be
-     * references will be of the form dataStoreId:typeName.
-     * </p>
-     * 
-     * <p>
-     * If "" or null is used All FetureTypes will be checked.
-     * </p>
-     */
-    private String typeRef;
 
     private String attributeName;
     
@@ -62,54 +43,6 @@ public class EqualityValidation implements FeatureValidation {
      * No argument constructor, required by the Java Bean Specification.
      */
     public EqualityValidation() {
-    }
-
-    /**
-     * Sets the name of this validation.
-     *
-     * @param name The name of this validation.
-     *
-     * @see org.geotools.validation.Validation#setName(java.lang.String)
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Access the user's name for this test.
-     *
-     * @return The name of this validation.
-     *
-     * @see org.geotools.validation.Validation#getName()
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the description of this validation.
-     *
-     * @param description The description of the validation.
-     *
-     * @see org.geotools.validation.Validation#setDescription(java.lang.String)
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Override getDescription.
-     * 
-     * <p>
-     * Returns the description of this validation as a string.
-     * </p>
-     *
-     * @return The description of this validation.
-     *
-     * @see org.geotools.validation.Validation#getDescription()
-     */
-    public String getDescription() {
-        return description;
     }
 
     /**
@@ -131,31 +64,13 @@ public class EqualityValidation implements FeatureValidation {
      * @see org.geotools.validation.Validation#getTypeRefs()
      */
     public String[] getTypeRefs() {
-        if( typeRef == null ){
+        if( getTypeRef() == null ){
             return null;
         }
-        if( typeRef.equals("*")){
+        if( getTypeRef().equals("*")){
             return ALL;
         }
-        return new String[]{ typeRef, };
-    }
-
-    /**
-     * Access typeRef property.
-     *
-     * @return Returns the typeName.
-     */
-    public String getTypeRef() {
-        return typeRef;
-    }
-
-    /**
-     * Set typeRef to typeName.
-     *
-     * @param typeName The typeName to set.
-     */
-    public void setTypeRef(String typeRef) {
-        this.typeRef = typeRef;
+        return new String[]{ getTypeRef(), };
     }
 
     /**
@@ -186,4 +101,58 @@ public class EqualityValidation implements FeatureValidation {
         results.error( feature, attributeName+" did not not equals "+expected );
         return false;
     }
+	/**
+	 * Access attributeName property.
+	 * 
+	 * @return Returns the attributeName.
+	 */
+	public String getAttributeName() {
+		return attributeName;
+	}
+
+	/**
+	 * Set attributeName to attributeName.
+	 *
+	 * @param attributeName The attributeName to set.
+	 */
+	public void setAttributeName(String attributeName) {
+		this.attributeName = attributeName;
+	}
+
+	/**
+	 * Access expected property.
+	 * 
+	 * @return Returns the expected.
+	 */
+	public Object getExpected() {
+		return expected;
+	}
+
+	/**
+	 * Set expected to expected.
+	 *
+	 * @param expected The expected to set.
+	 */
+	public void setExpected(Object expected) {
+		this.expected = expected;
+	}
+
+	/**
+	 * Access filter property.
+	 * 
+	 * @return Returns the filter.
+	 */
+	public Filter getFilter() {
+		return filter;
+	}
+
+	/**
+	 * Set filter to filter.
+	 *
+	 * @param filter The filter to set.
+	 */
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+	}
+
 }

@@ -20,9 +20,9 @@ import org.geotools.validation.DefaultFeatureValidationBeanInfo;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GazetteerNameValidationBeanInfo.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
+ * @version $Id: EqualityValidationBeanInfo.java,v 1.1 2004/02/03 21:40:52 dmzwiers Exp $
  */
-public class GazetteerNameValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
+public class EqualityValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
 	
 	/**
 	 * GazetteerNameValidationBeanInfo constructor.
@@ -31,7 +31,7 @@ public class GazetteerNameValidationBeanInfo extends DefaultFeatureValidationBea
 	 * </p>
 	 * 
 	 */
-	public GazetteerNameValidationBeanInfo() {
+	public EqualityValidationBeanInfo() {
 		super();
 	}
 	
@@ -44,18 +44,20 @@ public class GazetteerNameValidationBeanInfo extends DefaultFeatureValidationBea
 	 */
 	public PropertyDescriptor[] getPropertyDescriptors(){
 			PropertyDescriptor[] pd2 = super.getPropertyDescriptors();
-			ResourceBundle resourceBundle = getResourceBundle(GazetteerNameValidation.class);
+			ResourceBundle resourceBundle = getResourceBundle(EqualityValidation.class);
 			if(pd2 == null)
 				pd2 = new PropertyDescriptor[0];
-			PropertyDescriptor[] pd = new PropertyDescriptor[pd2.length + 2];
+			PropertyDescriptor[] pd = new PropertyDescriptor[pd2.length + 3];
 			int i=0;
 			for(;i<pd2.length;i++)
 				pd[i] = pd2[i];
 			try{
-				pd[i] = createPropertyDescriptor("attributeName",GazetteerNameValidation.class,resourceBundle);
+				pd[i] = createPropertyDescriptor("attributeName",EqualityValidation.class,resourceBundle);
 				pd[i].setExpert(false);
-				pd[i+1] = createPropertyDescriptor("gazetteer",GazetteerNameValidation.class,resourceBundle);
+				pd[i+1] = createPropertyDescriptor("expected",EqualityValidation.class,resourceBundle);
 				pd[i+1].setExpert(true);
+				pd[i+2] = createPropertyDescriptor("filter",EqualityValidation.class,resourceBundle);
+				pd[i+2].setExpert(true);
 			}catch(IntrospectionException e){
 				pd = pd2;
 				// TODO error, log here

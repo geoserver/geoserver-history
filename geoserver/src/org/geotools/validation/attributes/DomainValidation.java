@@ -6,7 +6,10 @@
  */
 package org.geotools.validation.attributes;
 
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
 import org.geotools.validation.DefaultFeatureValidation;
+import org.geotools.validation.ValidationResults;
 
 /**
  * DomainValidation purpose.
@@ -15,8 +18,8 @@ import org.geotools.validation.DefaultFeatureValidation;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DomainValidation.java,v 1.1 2004/01/31 00:24:07 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DomainValidation.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
  */
 public class DomainValidation extends DefaultFeatureValidation {
 
@@ -31,4 +34,22 @@ public class DomainValidation extends DefaultFeatureValidation {
 		super();
 	}
 
+	/**
+	 * Validation test for feature.
+	 * 
+	 * <p>
+	 * Description of test ...
+	 * </p>
+	 *
+	 * @param feature The Feature to be validated
+	 * @param type The FeatureType of the feature
+	 * @param results The storage for error messages.
+	 *
+	 * @return <code>true</code> if the feature is a valid geometry.
+	 *
+	 * @see org.geotools.validation.FeatureValidation#validate
+	 */
+	public boolean validate(Feature feature, FeatureType type,ValidationResults results) {
+		return false;
+	}
 }

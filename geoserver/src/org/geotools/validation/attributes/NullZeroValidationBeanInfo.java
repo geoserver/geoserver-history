@@ -20,9 +20,9 @@ import org.geotools.validation.DefaultFeatureValidationBeanInfo;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GazetteerNameValidationBeanInfo.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
+ * @version $Id: NullZeroValidationBeanInfo.java,v 1.1 2004/02/03 21:40:52 dmzwiers Exp $
  */
-public class GazetteerNameValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
+public class NullZeroValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
 	
 	/**
 	 * GazetteerNameValidationBeanInfo constructor.
@@ -31,7 +31,7 @@ public class GazetteerNameValidationBeanInfo extends DefaultFeatureValidationBea
 	 * </p>
 	 * 
 	 */
-	public GazetteerNameValidationBeanInfo() {
+	public NullZeroValidationBeanInfo() {
 		super();
 	}
 	
@@ -54,8 +54,6 @@ public class GazetteerNameValidationBeanInfo extends DefaultFeatureValidationBea
 			try{
 				pd[i] = createPropertyDescriptor("attributeName",GazetteerNameValidation.class,resourceBundle);
 				pd[i].setExpert(false);
-				pd[i+1] = createPropertyDescriptor("gazetteer",GazetteerNameValidation.class,resourceBundle);
-				pd[i+1].setExpert(true);
 			}catch(IntrospectionException e){
 				pd = pd2;
 				// TODO error, log here

@@ -38,8 +38,8 @@ import org.xml.sax.*;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: GazetteerNameValidation.java,v 1.1 2004/01/31 00:24:06 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: GazetteerNameValidation.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
  */
 public class GazetteerNameValidation extends DefaultFeatureValidation {
 	
@@ -47,7 +47,7 @@ public class GazetteerNameValidation extends DefaultFeatureValidation {
 	private URL gazetteer;
 	
 	/** used to store the Feature Attribute name to test for existance */
-	private String attrName;
+	private String attributeName;
 	
 	/**
 	 * GazetteerNameValidation constructor.
@@ -75,7 +75,7 @@ public class GazetteerNameValidation extends DefaultFeatureValidation {
 	 * @throws Exception
 	 */
 	public boolean validate(Feature feature, FeatureType type, ValidationResults results){// throws Exception {
-		String place = (String)feature.getAttribute(attrName);
+		String place = (String)feature.getAttribute(attributeName);
 		URL gazetteerURL = null;
 		try{
 			gazetteerURL = new URL( gazetteer.toString()+"&placename="+place);
@@ -139,21 +139,21 @@ public class GazetteerNameValidation extends DefaultFeatureValidation {
 	}
 
 	/**
-	 * Access attrName property.
+	 * Access attributeName property.
 	 * 
-	 * @return Returns the attrName.
+	 * @return Returns the attributeName.
 	 */
-	public String getAttrName() {
-		return attrName;
+	public String getAttributeName() {
+		return attributeName;
 	}
 
 	/**
-	 * Set attrName to attrName.
+	 * Set attributeName to attributeName.
 	 *
-	 * @param attrName The attrName to set.
+	 * @param attributeName The attributeName to set.
 	 */
-	public void setAttrName(String attrName) {
-		this.attrName = attrName;
+	public void setAttributeName(String attrName) {
+		this.attributeName = attrName;
 	}
 
 	/**
