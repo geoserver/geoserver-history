@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * Tests the get feature request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionSuite.java,v 1.8 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: TransactionSuite.java,v 1.9 2004/01/31 00:17:52 jive Exp $
  *
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.

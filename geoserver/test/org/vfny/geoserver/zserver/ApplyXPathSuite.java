@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Tests the NumericField number and string conversion.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ApplyXPathSuite.java,v 1.8 2004/01/21 19:09:27 dmzwiers Exp $
+ * @version $Id: ApplyXPathSuite.java,v 1.9 2004/01/31 00:17:51 jive Exp $
  */
 public class ApplyXPathSuite extends TestCase {
     /** Standard logging instance */

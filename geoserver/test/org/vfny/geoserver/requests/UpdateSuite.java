@@ -19,7 +19,7 @@ import org.vfny.geoserver.requests.wfs.UpdateRequest;
  * Tests the Update request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: UpdateSuite.java,v 1.6 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: UpdateSuite.java,v 1.7 2004/01/31 00:17:52 jive Exp $
  *
  * @task TODO: Bring back tests 4 and 6, they are broken due to reading of the
  *       same literals in different ways - string/double/int.

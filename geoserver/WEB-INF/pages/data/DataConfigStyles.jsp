@@ -48,7 +48,15 @@
 		<html:text property="filename" size="60"/>
 	</td></tr>
 	
-	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit property="action" value="submit"/><html:reset/></td></tr>						
+	<tr><td align="right">&nbsp;</td><td colspan=2>
+		<html:submit property="action">
+			<bean:message key="label.submit"/>
+		</html:submit>
+		
+		<html:reset>
+			<bean:message key="label.reset"/>
+		</html:reset>
+	</td></tr>						
 	
 	</html:form>
 </table>

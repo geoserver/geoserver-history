@@ -15,12 +15,43 @@
 <table border=0 width=1024 valign="top">
 	<tr>
 		<td colspan=2>
-			<tiles:insert attribute="header"/>
+			<table width=100% border=0>
+				<tr>
+					<td width=378>
+						<tiles:insert attribute="logo"/>
+					</td>
+					<td valign="bottom" align="left">
+						<tiles:insert attribute="location"/>
+					</td>
+					<td align="right" valign="bottom">
+						<tiles:insert attribute="menu"/>
+					</td>
+				</tr>
+				<tr>
+				<td colspan=3><hr></td>
+				</tr>
+			</table>
 		</td>
 	</tr>
 	<tr>
 		<td width=192 valign="top">
-			<tiles:insert attribute="sidebar"/>
+			<table border=0 width=100% height=100%>
+				<tr>
+					<td valign="top" align="left">
+						<tiles:insert attribute="status"/>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" align="left">
+						<tiles:insert attribute="buttons"/>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" align="left">
+						<tiles:insert attribute="messages"/>
+					</td>
+				</tr>
+			</table>
 		</td>
 		<td>
 			<tiles:insert attribute="body"/>

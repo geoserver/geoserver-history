@@ -461,7 +461,7 @@
 <!-- ====================================================================== -->
 
 <!-- WAR -->
-  <target name="war" depends="init, all ,unit-all">
+  <target name="war" depends="init, all">
     <!-- preparation -->
     <delete file="${basedir}/geoserver.war" 
             failonerror="false"/>
@@ -623,10 +623,15 @@
              destdir="${dir.doc}/api"
              private="true"
              windowtitle="GeoServer Documentation"
-             classpathref="path.build"
              stylesheetfile="${dir.misc}/documents/stylesheet.css"
              overview="${dir.src}/overview.html">
       <package name="org.vfny.geoserver.*"/>
+      <classpath>
+        <fileset dir="${dir.lib}">
+          <include name="*.jar"/>
+          <exclude name="*/catalina/*"/>
+        </fileset>
+      </classpath>      
       <doctitle>
         <![CDATA[<h1>GeoServer Documentation</h1>]]>
       </doctitle>

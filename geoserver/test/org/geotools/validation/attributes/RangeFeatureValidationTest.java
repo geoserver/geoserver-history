@@ -30,13 +30,13 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: RangeFeatureValidationTest.java,v 1.3 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: RangeFeatureValidationTest.java,v 1.4 2004/01/31 00:17:52 jive Exp $
  */
 public class RangeFeatureValidationTest extends TestCase {
 	private RoadValidationResults results;
 	private FeatureType type;
 	private Feature feature;
-	RangeFeatureValidation test;
+	RangeValidation test;
 	/**
 	 * Constructor for RangeFeatureValidationTest.
 	 * @param arg0
@@ -50,7 +50,7 @@ public class RangeFeatureValidationTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		GeometryFactory gf = new GeometryFactory();
-		test = new RangeFeatureValidation();
+		test = new RangeValidation();
 		super.setUp();
 		
 		type = DataUtilities.createType(getName()+".road",
@@ -114,18 +114,6 @@ public class RangeFeatureValidationTest extends TestCase {
 
 	public void testGetPriority() {
 		//TODO Implement getPriority().
-	}
-
-	public void testSetTypeNames() {
-		String[] names = { "one", "two" };
-		test.setTypeNames(names);
-		assertEquals(names, test.getTypeNames());
-	}
-
-	public void testGetTypeNames() {
-		String[] names = { "one", "two" };
-		test.setTypeNames(names);
-		assertEquals(names, test.getTypeNames());
 	}
 
 	public void testGetMax() {

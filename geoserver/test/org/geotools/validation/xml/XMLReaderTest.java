@@ -42,8 +42,8 @@ import java.util.*;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLReaderTest.java,v 1.4 2004/01/21 18:48:27 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: XMLReaderTest.java,v 1.5 2004/01/31 00:17:53 jive Exp $
  */
 public class XMLReaderTest extends TestCase {
     public XMLReaderTest() {
@@ -104,14 +104,9 @@ public class XMLReaderTest extends TestCase {
                "see if they are on the list of possible road names.\n"+
                "It also checks to see if any roads are contained in\n"+
                "a specified box.").equals(testsuite.getDescription()));*/
-            TestDTO test = (TestDTO) testsuite.getTests().get(0);
+            TestDTO test = (TestDTO) testsuite.getTests().get("NameLookup");
 
-            //cannot assure order, nor is it important
-            if (!("NameLookup".equals(test.getName()))) {
-                test = (TestDTO) testsuite.getTests().get(1);
-            }
-
-            assertTrue("Test Name read", "NameLookup".equals(test.getName()));
+            assertNotNull("NameLookup does not exist as a test",test);
 
             // multi line so cannot effectively test
             // assertTrue("Test Description read","Checks to see if the road name is in the list of possible names.".equals(test.getDescription()));

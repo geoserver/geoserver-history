@@ -18,10 +18,10 @@
 	<tr><td>&nbsp;</td>
 	<td align="left" valign="top">
 
-		<html:submit property="buttonAction" value="edit">
+		<html:submit property="buttonAction">
 			<bean:message key="label.edit"/>
 		</html:submit>
-		<html:submit property="buttonAction" value="delete">
+		<html:submit property="buttonAction">
 			<bean:message key="label.delete"/>
 		</html:submit>
 					

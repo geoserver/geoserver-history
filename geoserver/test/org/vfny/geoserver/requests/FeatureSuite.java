@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureSuite.java,v 1.9 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: FeatureSuite.java,v 1.10 2004/01/31 00:17:52 jive Exp $
  */
 public class FeatureSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.

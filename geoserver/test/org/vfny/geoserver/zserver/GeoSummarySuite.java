@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * Tests the GeoSummary classes's setting of fields and creation of summaries.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoSummarySuite.java,v 1.5 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: GeoSummarySuite.java,v 1.6 2004/01/31 00:17:51 jive Exp $
  *
  * @task TODO: we need to test xml output.  Our old way of comparing strings.
  *       no longer works, as different xml implementations lead to different

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: LockSuite.java,v 1.7 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: LockSuite.java,v 1.8 2004/01/31 00:17:52 jive Exp $
  */
 public class LockSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.

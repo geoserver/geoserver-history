@@ -56,6 +56,14 @@
 	</tr>
 </logic:iterate>
 
-	<tr><td align="right">&nbsp;</td><td><html:submit/><html:reset/></td></tr>
+	<tr><td align="right">&nbsp;</td><td>
+		<html:submit>
+			<bean:message key="label.submit"/>
+		</html:submit>
+		
+		<html:reset>
+			<bean:message key="label.reset"/>
+		</html:reset>
+	</td></tr>
 	</html:form>
 </table>

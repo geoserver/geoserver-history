@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Tests the GeoProfile helper methods.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoProfileSuite.java,v 1.5 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: GeoProfileSuite.java,v 1.6 2004/01/31 00:17:51 jive Exp $
  */
 public class GeoProfileSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/

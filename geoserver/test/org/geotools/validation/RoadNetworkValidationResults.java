@@ -24,7 +24,7 @@ import org.geotools.feature.Feature;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: RoadNetworkValidationResults.java,v 1.3 2004/01/21 18:42:25 jive Exp $
+ * @version $Id: RoadNetworkValidationResults.java,v 1.4 2004/01/31 00:17:52 jive Exp $
  */
 public class RoadNetworkValidationResults implements ValidationResults {
 

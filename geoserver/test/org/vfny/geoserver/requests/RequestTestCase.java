@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * null, as long as that test runner is not called by the client at all.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RequestTestCase.java,v 1.5 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: RequestTestCase.java,v 1.6 2004/01/31 00:17:52 jive Exp $
  */
 public abstract class RequestTestCase extends TestCase {
     //Initializes the logger. Uncomment to see log messages.
@@ -113,7 +113,7 @@ public abstract class RequestTestCase extends TestCase {
         // Read the file and parse it
         Map kvps = KvpRequestReader.parseKvpSet(requestString);
         KvpRequestReader reader = getKvpReader(kvps);
-        Request request = reader.getRequest();
+        Request request = reader.getRequest( baseRequest.httpServletRequest );
 
         LOGGER.finer("base request: " + baseRequest);
         LOGGER.finer("read request: " + request);

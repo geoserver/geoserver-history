@@ -6,8 +6,8 @@ package org.geotools.validation;
 
 import org.geotools.data.DataTestCase;
 import org.geotools.data.memory.MemoryDataStore;
-import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
-import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
+import org.geotools.validation.attributes.UniqueFIDValidation;
+import org.geotools.validation.spatial.IsValidGeometryValidation;
 import java.util.HashMap;
 
 
@@ -22,7 +22,7 @@ import java.util.HashMap;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: IntegrityValidationTest.java,v 1.5 2004/01/21 18:42:25 jive Exp $
+ * @version $Id: IntegrityValidationTest.java,v 1.6 2004/01/31 00:17:52 jive Exp $
  */
 public class IntegrityValidationTest extends DataTestCase {
     MemoryDataStore store;
@@ -70,9 +70,9 @@ public class IntegrityValidationTest extends DataTestCase {
         // the visitor
         RoadValidationResults validationResults = new RoadValidationResults();
 
-        UniqueFIDIntegrityValidation validator = new UniqueFIDIntegrityValidation("isValidRoad",
+        UniqueFIDValidation validator = new UniqueFIDValidation("isValidRoad",
                 "Tests to see if a road is valid",
-                IsValidGeometryFeatureValidation.ALL, "FID");
+                IsValidGeometryValidation.ALL, "FID");
         validationResults.setValidation(validator);
 
         HashMap layers = new HashMap();

@@ -28,7 +28,7 @@ import org.geotools.feature.IllegalAttributeException;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationProcessorTest.java,v 1.4 2004/01/21 18:42:25 jive Exp $
+ * @version $Id: ValidationProcessorTest.java,v 1.5 2004/01/31 00:17:52 jive Exp $
  */
 public class ValidationProcessorTest extends DataTestCase {
 	MemoryDataStore store;
@@ -70,7 +70,7 @@ public class ValidationProcessorTest extends DataTestCase {
 	{
 		// the visitor
 		RoadNetworkValidationResults validationResults = new RoadNetworkValidationResults();
-		processor = new ValidationProcessor(true);
+		processor = new ValidationProcessor(); // was true as param
 		
 	// test the correct roads
 		processor.runFeatureTests(this.roadType, DataUtilities.collection(this.roadFeatures), validationResults);

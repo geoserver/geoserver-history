@@ -4,10 +4,8 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/a2jruntime.jar"/>
-	<classpathentry kind="lib" path="lib/arcsde-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/embedded.jar"/>
-	<classpathentry kind="lib" path="lib/gmldatasource-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/jdbcPostgres.jar"/>
 	<classpathentry kind="lib" path="lib/jts-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
@@ -16,11 +14,7 @@
 	<classpathentry kind="lib" path="lib/ki-util.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.5.jar"/>
 	<classpathentry kind="lib" path="lib/lucene.jar"/>
-	<classpathentry kind="lib" path="lib/oracle-spatial-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/postgis-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/property-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/servlet.jar"/>
-	<classpathentry kind="lib" path="lib/shapefile-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/xalan.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
@@ -50,7 +44,6 @@
 	<classpathentry kind="lib" path="lib/catalina/server/lib/tomcat-util.jar"/>
 	<classpathentry kind="lib" path="lib/catalina/server/lib/warp.jar"/>
 	<classpathentry kind="lib" path="lib/catalina/lib/naming-factory.jar"/>
-	<classpathentry kind="lib" path="lib/geotools.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections.jar"/>
 	<classpathentry kind="lib" path="lib/commons-digester.jar"/>
@@ -61,5 +54,14 @@
 	<classpathentry kind="lib" path="lib/jakarta-oro.jar"/>
 	<classpathentry kind="lib" path="lib/struts.jar"/>
 	<classpathentry kind="lib" path="lib/jsde_sdk-8.3.jar"/>
+	<classpathentry kind="lib" path="lib/arcsde-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/cts-coordtrans-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/geotools.jar"/>
+	<classpathentry kind="lib" path="lib/gmldatasource-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/oracle-spatial-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/postgis-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/property-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/shapefile-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/vecmath-1.2.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
