@@ -15,21 +15,15 @@
         <parameter name="url" value="file:///c:/java/resin-3.0.4/webapps/geoserver/data/featureTypes/bc_roads/bc_roads.shp"/>
       </connectionParams>
     </datastore>
-    
-    <datastore id="cite_postgis"
+
+    <datastore id="dSkae"
                enabled="true"
-               namespace="cite">
-               <!-- enabled is optional, defaults to true -->
-      <description>A sample postgis testing database</description>
+               namespace="lakes">
+      <description>Sample source data for lakes. Should not pass all validations.</description>
       <connectionParams>
-        <parameter name="dbtype" value="postgis"/>
-        <parameter name="host" value="hydra"/>
-        <parameter name="port" value="5432"/>
-        <parameter name="database" value="dzwiers"/>
-        <parameter name="user" value="cite"/>
-        <parameter name="passwd" value="cite"/>
+        <parameter name="url" value="file:///c:/java/resin-3.0.4/webapps/geoserver/data/featureTypes/skae_lakes/skae_lakes.shp"/>
       </connectionParams>
-    </datastore> 
+    </datastore>
     
     <datastore id="cdf"
                enabled="true"
@@ -72,6 +66,8 @@
 	           prefix="cdf"/>
 	<namespace uri="http://www.opengis.net/cite/geometry"
 	           prefix="cgf"/>
+    <namespace uri="http://www.refractions.net/lakes" 
+	           prefix="lakes"/>
   </namespaces>
 
   <styles>
