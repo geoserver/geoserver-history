@@ -397,7 +397,7 @@ public abstract class DefaultRasterLegendProducer
      *
      * @throws IllegalStateException DOCUMENT ME!
      */
-    BufferedImage getLegendGraphic() {
+    public BufferedImage getLegendGraphic() {
         if (this.legendGraphic == null) {
             throw new IllegalStateException();
         }
@@ -406,7 +406,7 @@ public abstract class DefaultRasterLegendProducer
     }
 
     /**
-     * DOCUMENT ME!
+     * Asks the rendering to stop processing.
      */
     public void abort() {
         this.renderingStopRequested = true;
