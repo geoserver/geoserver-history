@@ -16,6 +16,14 @@
     <servlet-class>org.vfny.geoserver.servlets.Dispatcher</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>WmsDispatcher</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wms.WmsDispatcher</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>WfsDispatcher</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wfs.WfsDispatcher</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>FreefsLog</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.FreefsLog</servlet-class>
     <load-on-startup>1</load-on-startup>
@@ -54,8 +62,12 @@
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>Dispatcher</servlet-name>
+    <servlet-name>WfsDispatcher</servlet-name>
     <url-pattern>/wfs/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>WmsDispatcher</servlet-name>
+    <url-pattern>/wms/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>FreefsLog</servlet-name>
@@ -67,7 +79,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>Dispatcher</servlet-name>
-    <url-pattern>/wfs/Dispatcher/*</url-pattern>
+    <url-pattern>/dispatcher/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>WFSGetCapabilities</servlet-name>
