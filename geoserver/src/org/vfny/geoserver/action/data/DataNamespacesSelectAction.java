@@ -23,7 +23,6 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
-import org.vfny.geoserver.form.data.DataNamespacesEditorForm;
 import org.vfny.geoserver.form.data.DataNamespacesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
 
@@ -31,8 +30,8 @@ import org.vfny.geoserver.global.UserContainer;
  * Select Namespaces for editing.
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataNamespacesSelectAction.java,v 1.6 2004/03/01 09:39:08 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataNamespacesSelectAction.java,v 1.7 2004/03/01 19:35:23 dmzwiers Exp $
  */
 public class DataNamespacesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -50,6 +49,7 @@ public class DataNamespacesSelectAction extends ConfigAction {
         
         String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
         String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        String _default = HTMLEncoder.decode(messages.getMessage(locale, "label.default"));
 
         config = (NameSpaceConfig) dataConfig.getNameSpace(namespacesForm.getSelectedNamespace());
         if(config==null){
@@ -60,6 +60,17 @@ public class DataNamespacesSelectAction extends ConfigAction {
         if (action.equals(delete)) {
             dataConfig.removeNameSpace(namespacesForm.getSelectedNamespace());
             getApplicationState().notifyConfigChanged();
+            
+            getUserContainer(request).setNamespaceConfig(null);
+            namespacesForm.reset(mapping, request);
+            return mapping.findForward("config.data.namespace");
+        }
+        if (action.equals(_default)) {
+        	if(!namespacesForm.getSelectedNamespace()
+        			.equals(dataConfig.getDefaultNameSpace().getPrefix())){
+        		dataConfig.setDefaultNameSpace(dataConfig.getNameSpace(namespacesForm.getSelectedNamespace()));
+                getApplicationState().notifyConfigChanged();
+        	}
             
             getUserContainer(request).setNamespaceConfig(null);
             namespacesForm.reset(mapping, request);
