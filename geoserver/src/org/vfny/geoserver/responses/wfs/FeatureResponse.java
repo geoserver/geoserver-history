@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.1.2.13 2003/11/14 21:50:31 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.14 2003/11/14 23:54:16 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -163,7 +163,7 @@ public class FeatureResponse implements Response {
      */
     public void execute( FeatureRequest request ) throws ServiceException {
         LOGGER.finest("execute FeatureRequest response. Called request is: " + request);
-               
+	this.request = request;
         if( request instanceof FeatureWithLockRequest){
             featureLock = ((FeatureWithLockRequest)request).toFeatureLock();
             String authorization = featureLock.getAuthorization();        
@@ -278,7 +278,13 @@ public class FeatureResponse implements Response {
                     "Could not aquire locks for:" + lockFailedFids
                 );
             }
+
             // Can someone tell me what this does?
+	    //Um, I'm not sure if it's needed, but it makes sure that xalan is
+	    //used to perform the transformation.  If it's not set than it 
+	    //could juse use whatever the user has on their classpath.  We 
+	    //should check with IanS, he might have some particular reason
+	    //for wanting xalan.
             System.setProperty("javax.xml.transform.TransformerFactory",
                 "org.apache.xalan.processor.TransformerFactoryImpl");
 
@@ -292,11 +298,16 @@ public class FeatureResponse implements Response {
             namespace = meta.getDataStore().getNameSpace();
             transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
             transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
+	    transformer.setGmlPrefixing(true); //TODO: make this a user config
             if( featureLock != null){
                 // TODO: chris needs to add the lock authorization to
                 //       the transformer header info
-                //transformer.setLockID( featureLock.getAuthorization() );
+		transformer.setLockId( featureLock.getAuthorization() );
             }
+	    transformer.setSrsName("http://www.opengis.net/gml/srs/epsg.xml#" +
+				   meta.getSRS());
+	    resultList = results;
+	    
         }
         catch (IOException e){
             throw new ServiceException(e, "problem with FeatureResults",
