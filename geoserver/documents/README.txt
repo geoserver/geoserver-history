@@ -1,51 +1,38 @@
-GeoServer 1.2.1 README file
+GeoServer 1.2.2 README file
 ---------------------------
 
-The 1.2.1 release is focused on easier installation.  First is a binary
-release, consisting of a built in servlet container to run the included
-geoserver war, and startup and shutdown scripts for windows and linux.  
-Please report any errors to: geoserver-devel@lists.sourceforge.net
-The only changes to the source code are two minor fixes to datastores,
-a fix in ArcSDE to deal with requests that are out of bounds, and an 
-improvement in postgis to speed up spatial requests in large tables.
-The readme for 1.2.0 is as follows:
+Welcome to GeoServer 1.2.2!  This release marks the culmination of a
+number of bug fixes and speed improvements to several datastores.  Most of
+the fixes are minor, slight tweaks on the user interface to be a bit more
+friendly.  The biggest news is the PostGIS datastore, which now contains
+two new options aimed at speed.  The first is Well Known Binary (WKB)
+support, which in our tests has increased speed by 50 - 400%, depending on
+the size of the geometries.  The PostGIS driver used to read Well Known 
+Text, which was slower and could lead to inaccuracies.  As the WKB driver 
+has not been extensively tested yet it remains a configuration option, we 
+turn it on by default, but if it seems to be causing problems it is easily 
+switched off, in the UI and config files.  The second improvement is 
+allowing users to tell GeoServer to not be as deadly precise for BBOX 
+geometry filters.  Instead of operating against the geometry it will 
+operate against the envelope of the geometry.  This leads to a nice speed 
+increase for users who do not care so much if the answer is exactly 
+correct, such as in the WMS, where you are just displaying the results.  
+Again this option is user configurable in the web admin interface.
 
-Welcome to GeoServer 1.2.0!  This release has been a long time coming, but we 
-think it's well worth the wait.  First off a huge thanks go out to everyone
-who helped make this possible, from the core developers to the bug fixers to 
-everyone who downloaded the betas and release candidates to help out with 
-testing.  The main thrust of this release comes from the hard work of 
-Refractions Research, as part of their GeoConnections project of 2003-4.  
+The Oracle DataStore has also received a potential speed increase, it now 
+allows users to make a connection using the JDBC OCI (thick) client 
+interface.  Not all clients will have this capability, but when GeoServer 
+is installed on the same computer as Oracle then it will automatically 
+have the drivers available.  Using them is a good bit faster than going 
+through the thin interface.  For more information see the oracle section 
+of the documentation.  
 
-With the 1.2.0 release GeoServer becomes a much more useable product, fully 
-supporting a variety of data formats with very easy configuration.  The center
-of the release is the new web based administration tool, allowing GeoServer to
-be completely configured and administered from any browser, eliminating the
-need to dig into complex configuration files.  Refractions also added an 
-innovative validation engine which ensures the integrity of the backend 
-databases using GeoServer for transactions.  
-
-A number of more evolutionary changes are in the release as well, as the long
-wait for 1.2.0 has allowed us to fix a number of bugs.  ArcSDE and Oracle have
-been tested much more extensively than in previous releases, and transactions
-can now be performed against Shapefiles (as long as they are not on a ntfs 
-file system, as windows seems to not allow changes occasionally).  PostGIS 
-remains as solid as ever, and includes automatic detection of GEOS support, 
-allowing much faster spatial queries.  Improvements have also been made to the
-generation of FeatureIDs in Oracle and PostGIS, automatically making use of the
-best fid candidates.
-
-Oracle is also no longer dependant on the oftentimes buggy and newly deprecated
-sdoapi.jar.  Oracle 8i, 9i, and 10g will all work with the new geotools sdo
-library.  So now the only jar that we can not distribute with GeoServer is the
-classes12, which can be found with oracle installs or at the otn site.  
-
-The integrated Web Map Service (WMS) has also improved, allowing users to 
-visualize their data in a variety of formats.  Its speed has increased as data 
-is loaded on the fly like the WFS.  Style configuration has been improved, as
-well as error reporting.  The GetFeatureInfo operation was also added, bringing
-GeoServer closer to full WMS compliance.  The server should be fully compliant
-by 1.3.0, with user defined Styled Layer Description (SLD) capabilities.
+One other thing to note is that MySQL is now available as a DataStore for 
+GeoServer.  We did not include in this release, as it has not been as well 
+tested as the other stores.  But we encourage you to download it and give 
+us feedback, it is easily plugged into this release.  It can be found from 
+the geoserver home page, or on the sourceforge download page under the 
+'GeoServer Extensions' package.
 
 
 Supporting GeoServer

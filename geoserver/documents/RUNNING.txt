@@ -1,10 +1,10 @@
-$Id: RUNNING.txt,v 1.2 2004/08/24 20:00:20 cholmesny Exp $
+$Id: RUNNING.txt,v 1.3 2004/09/22 13:31:18 cholmesny Exp $
 
 
                Running The GeoServer Binary Distribution
                =========================================
 
-Note: This is 1.2.1 release is a first attempt at a binary distribution.
+Note: This is 1.2.2 release is the second attempt at a binary distribution.
 We would greatly appreciate feedback on if it works properly.  GeoServer 
 itself is quite stable, but the startup and shutdown scripts may need 
 a bit of debugging.
@@ -52,21 +52,21 @@ and run this application you must do the following:
 There are two techniques by which GeoServer 1.2 can be started:
 
 * Via an environment variable:
-  - Set an environment variable CATALINA_HOME to the path of the directory
+  - Set an environment variable GEOSERVER_HOME to the path of the directory
     into which you have installed GeoServer 1.2.
   - Execute the shell command:
 
-      %CATALINA_HOME%\bin\startup             (Windows)
+      %GEOSERVER_HOME%\bin\startup             (Windows)
 
-      $CATALINA_HOME/bin/startup.sh           (Unix)
+      $GEOSERVER_HOME/bin/startup.sh           (Unix)
 
 * By modifying your current working directory:
   - Execute the following shell commands:
 
-      cd %CATALINA_HOME%\bin                  (Windows)
+      cd %GEOSERVER_HOME%\bin                  (Windows)
       startup                                 (Windows)
 
-      cd $CATALINA_HOME/bin                   (Unix)
+      cd $GEOSERVER_HOME/bin                   (Unix)
       ./startup.sh                            (Unix)
 
 After startup, the default web administration tool included with GeoServer 1.2 
@@ -90,17 +90,17 @@ There are two techniques by which GeoServer 1.2 can be stopped:
     into which you have installed GeoServer 1.2.
   - Execute the shell command:
 
-      %CATALINA_HOME%\bin\shutdown            (Windows)
+      %GEOSERVER_HOME%\bin\shutdown            (Windows)
 
-      $CATALINA_HOME/bin/shutdown.sh          (Unix)
+      $GEOSERVER_HOME/bin/shutdown.sh          (Unix)
 
 * By modifying your current working directory:
   - Execute the following shell commands:
 
-      cd %CATALINA_HOME%\bin                  (Windows)
+      cd %GEOSERVER_HOME%\bin                  (Windows)
       shutdown                                (Windows)
 
-      cd $CATALINA_HOME/bin                   (Unix)
+      cd $GEOSERVER_HOME/bin                   (Unix)
       ./shutdown.sh                           (Unix)
 
 
