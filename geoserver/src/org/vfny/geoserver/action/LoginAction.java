@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /*
  * Created on Feb 3, 2004
  *
@@ -6,58 +10,67 @@
  */
 package org.vfny.geoserver.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.form.LoginForm;
 import org.vfny.geoserver.global.UserContainer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * LoginAction purpose.
+ * 
  * <p>
  * Processes the login of a user to gain access to the GeoServer Configuration.
- * Currently the only valid parameters are "admin" for username, "geoserver" for password, case insensitive.
+ * Currently the defaults are "admin" for username, "geoserver"
+ * for password, case insensitive.  This value can be changed in the services.xml
+ * file, found in the WEB-INF directory of a running GeoServer.  A page to change
+ * the log in would be nice, but it's not here yet.
  * </p>
- * 
+ *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: LoginAction.java,v 1.5 2004/03/15 08:16:10 jive Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: LoginAction.java,v 1.6 2004/04/03 13:14:04 cholmesny Exp $
+ * @task TODO: add a page to change the username and password from the ui.
  */
 public class LoginAction extends GeoServerAction {
-    public ActionForward execute(ActionMapping mapping,
-            ActionForm form,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        
-    	LoginForm loginForm = (LoginForm) form;
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        HttpServletRequest request, HttpServletResponse response) {
+        LoginForm loginForm = (LoginForm) form;
         String username = loginForm.getUsername();
         String password = loginForm.getPassword();
-        
-        /*
-         * @TODO Change this! Allow support for real users!
-         */
-        if (username.equalsIgnoreCase("admin") && password.equalsIgnoreCase("geoserver")) {
+
+        GlobalConfig global = (GlobalConfig) getServlet().getServletContext()
+                                                 .getAttribute(GlobalConfig.CONFIG_KEY);
+
+        if (username.equalsIgnoreCase(global.getAdminUserName())
+                && password.equalsIgnoreCase(global.getAdminPassword())) {
             UserContainer user = new UserContainer();
             user.setUsername(username);
             request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
+
             String forward = (String) request.getAttribute("forward");
-            if(forward == null){
+
+            if (forward == null) {
                 forward = "welcome";
-            }            
-            return mapping.findForward( forward );
+            }
+
+            return mapping.findForward(forward);
         }
-        
+
         ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.invalidCombo"));
-        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.login.hint"));        
+        errors.add(ActionErrors.GLOBAL_ERROR,
+            new ActionError("error.login.invalidCombo"));
+        errors.add(ActionErrors.GLOBAL_ERROR,
+            new ActionError("message.login.hint"));
         request.setAttribute(Globals.ERROR_KEY, errors);
-        
+
         return mapping.findForward("login");
     }
 }
