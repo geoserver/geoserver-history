@@ -16,6 +16,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
+import org.geotools.styling.Style;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -35,7 +36,7 @@ import java.util.Map;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.39 2004/04/16 07:06:20 jive Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.40 2004/06/12 12:18:18 groldan Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -259,6 +260,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         return data.getDataStoreInfo(dataStoreId);
     }
 
+    /**
+     * By now just return the default style to be able to declare it in
+     * WMS capabilities, but all this stuff needs to be revisited since it seems
+     * currently there is no way of retrieving all the styles declared for
+     * a given FeatureType.
+     * 
+     * @return the default Style for the FeatureType
+     */
+    public Style getDefaultStyle(){
+    	return data.getStyle(defaultStyle);
+    }
+    
     /**
      * Indicates if this FeatureTypeInfo is enabled.  For now just gets whether
      * the backing datastore is enabled.
