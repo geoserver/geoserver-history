@@ -111,9 +111,16 @@ public class GeoSearchTask extends SearchTask
      */
     public GeoSearchTask(GeoSearchable source, IRQuery q){	
 	this.q = q;
+	//REVISIT: We should get rid of these Server Props, and make
+	//a singleton that holds the attribute map, the databases, and
+	//other configuration information.  Could be good to have it 
+	//similar to geoserver's ConfigInfo, and geoserver's config could
+	//initialize zserver's configuration information, instead of 
+	//using these props files as we do now.  Would be good to do this
+	//the same time that we get rid of GeoSearchable.
 	this.serverProps = source.getServerProps();
-	String attrMapFile = serverProps.getProperty("fieldmap");
-	attrMap =  getAttrMap(attrMapFile);
+	//String attrMapFile = serverProps.getProperty("fieldmap");
+	attrMap =  GeoProfile.getUseAttrMap();//getAttrMap(attrMapFile);
     }
 
     /**
@@ -375,35 +382,6 @@ public class GeoSearchTask extends SearchTask
       }
       return retval;
   }
-
-    /**
-     * Gets the attribute map given it's path.
-     *
-     * @param pathToPropFile the string representation of the path.
-     * @return a Properties object of the attribute mappings.
-     */
-    private Properties getAttrMap(String pathToPropFile) {
-	//TODO: put default behavior in, good way might be to
-	//have call the Properties constructor with defaults.
-	//Question is where to store the defaults...in the same
-	//directory as this file?  As a class that just creates
-	//the default props?
-	File propFile = new File(pathToPropFile);
-	//add defaults for any field?
-	Properties propertyList = null;
-	try {
-	    FileInputStream fis = new FileInputStream(propFile);
-	    propertyList = new Properties();
-	    propertyList.load(fis);
-	    return propertyList;
-	} catch (FileNotFoundException e) {
-	    LOGGER.warning("File not found: " + e.getMessage());
-	} catch (IOException e) {
-	    LOGGER.warning("IO exception: " + e.getMessage());
-	}
-    
-    return propertyList;
-    }  
 
     /**
      * Turns a vector of database names into the paths to their
