@@ -15,7 +15,7 @@ import org.w3c.dom.Element;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.1.2.6 2003/11/17 09:00:24 jive Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.7 2003/11/17 22:17:54 cholmesny Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -34,12 +34,12 @@ public class WFSConfig extends ServiceConfig {
      */
     public WFSConfig(Element root) throws ConfigurationException {
         super(root);
-        URL = GlobalConfig.getInstance().getBaseUrl() + "/wfs";
+        URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
     }
     
     public WFSConfig(Map config ) {
         super( config );
-        URL = GlobalConfig.getInstance().getBaseUrl() + "/wfs";
+        URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
     }
     /**
      * Gets the base url of a describe request.
