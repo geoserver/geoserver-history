@@ -14,6 +14,7 @@ import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.responses.Response;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
@@ -93,7 +95,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.18 2004/03/12 10:57:49 cholmesny Exp $
+ * @version $Id: AbstractService.java,v 1.19 2004/03/30 04:42:59 cholmesny Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -185,8 +187,8 @@ public abstract class AbstractService extends HttpServlet {
      * @throws ServletException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
      */
-    protected void doGet(HttpServletRequest request,
-        HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
         // implements the main request/response logic
         Request serviceRequest = null;
 
@@ -232,7 +234,10 @@ public abstract class AbstractService extends HttpServlet {
     }
 
     /**
-     * DOCUMENT ME!
+     * Performs the post method.  Simply passes itself on to the three argument
+     * doPost method, with null for the reader, because the
+     * request.getReader() will not have been used if this servlet is called
+     * directly.
      *
      * @param request DOCUMENT ME!
      * @param response DOCUMENT ME!
@@ -240,8 +245,30 @@ public abstract class AbstractService extends HttpServlet {
      * @throws ServletException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
      */
-    protected void doPost(HttpServletRequest request,
-        HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        doPost(request, response, null);
+    }
+
+    /**
+     * Performs the post method.  Gets the appropriate xml reader and
+     * determines the request from that, and then passes the request on to
+     * doService.
+     *
+     * @param request The request made.
+     * @param response The response to be returned.
+     * @param requestXml A reader of the xml to be read.  This is only used by
+     *        the dispatcher, everyone else should just pass in null.  This is
+     *        needed because afaik HttpServletRequest.getReader() can not be
+     *        used twice.  So in a dispatched case we write it to a temp file,
+     *        which we can then read in twice.
+     *
+     * @throws ServletException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
+     */
+    public void doPost(HttpServletRequest request,
+        HttpServletResponse response, Reader requestXml)
+        throws ServletException, IOException {
         Request serviceRequest = null;
 
         if (!isServiceEnabled(request)) {
@@ -253,7 +280,8 @@ public abstract class AbstractService extends HttpServlet {
         // implements the main request/response logic
         try {
             XmlRequestReader requestReader = getXmlRequestReader();
-            serviceRequest = requestReader.read(request.getReader(), request);
+            Reader xml = (requestXml != null) ? requestXml : request.getReader();
+            serviceRequest = requestReader.read(xml, request);
             serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
             sendError(response, se);
@@ -282,9 +310,9 @@ public abstract class AbstractService extends HttpServlet {
      * that everything is wrapped correctly.
      * </p>
      *
-     * @param request
-     * @param response
-     * @param serviceRequest
+     * @param request The httpServlet of the request.
+     * @param response The response to be returned.
+     * @param serviceRequest The OGC request to service.
      *
      * @throws ServletException if the stratagy can't be instantiated
      */
@@ -450,16 +478,19 @@ public abstract class AbstractService extends HttpServlet {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gets the response class that should handle the request of this service.
+     * All subclasses must implement.
      *
-     * @return DOCUMENT ME!
+     * @return The response that the request read by this servlet should be
+     *         passed to.
      */
     protected abstract Response getResponseHandler();
 
     /**
-     * DOCUMENT ME!
+     * Gets a reader that will figure out the correct KVP pairs for this
+     * service.
      *
-     * @param params DOCUMENT ME!
+     * @param params A map of the kvp pairs.
      *
      * @return DOCUMENT ME!
      *
@@ -470,16 +501,16 @@ public abstract class AbstractService extends HttpServlet {
     protected abstract KvpRequestReader getKvpReader(Map params);
 
     /**
-     * DOCUMENT ME!
+     * Gets a reader that will handle a posted xml request for this servlet.
      *
-     * @return DOCUMENT ME!
+     * @return An XmlRequestReader appropriate to this service.
      */
     protected abstract XmlRequestReader getXmlRequestReader();
 
     /**
-     * DOCUMENT ME!
+     * Gets the exception handler for this service.
      *
-     * @return DOCUMENT ME!
+     * @return The correct ExceptionHandler
      */
     protected abstract ExceptionHandler getExceptionHandler();
 
@@ -495,7 +526,7 @@ public abstract class AbstractService extends HttpServlet {
             return ((GeoServer) context.getAttribute("GeoServer")).getMimeType();
         } catch (NullPointerException e) {
             return "text/xml; charset="
-            + Charset.forName("ISO-8859-1").displayName();
+            + Charset.forName("UTF-8").displayName();
         }
     }
 
@@ -799,7 +830,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
