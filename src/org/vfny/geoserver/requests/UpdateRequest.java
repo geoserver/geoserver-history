@@ -58,7 +58,24 @@ public class UpdateRequest extends SubTransactionRequest {
      * @param value The value to be changed.
      */
      public void addProperty(String propertyName, Object value) {
-    	properties.add(new Property(propertyName, value));
+	 //HACK - this code is taken straight from Query.java, this should
+	 //be in a common utility, to get the proper property name, do the
+	 //correct stripping of prefixes and whatnot.
+	 String[] splitName = propertyName.split("[.:/]");
+	 String newPropName = propertyName;
+	 if (splitName.length == 1) {
+	     newPropName = splitName[0];
+	 } else {
+	     //REVISIT: move this code to geotools?
+	     //REVISIT: not sure what to do if there are multiple
+	     //delimiters.  
+	     //REVISIT: should we examine the first value?  See
+	     //if the namespace or typename matches up right?
+	     //this is currently very permissive, just grabs
+	     //the value of the end.
+	     newPropName = splitName[splitName.length - 1];
+	 }
+    	properties.add(new Property(newPropName, value));
     }
 
     /** Gets the name of the features to update. */
