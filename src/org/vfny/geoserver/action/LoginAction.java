@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.form.LoginForm;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,15 +29,16 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * <p>
  * Processes the login of a user to gain access to the GeoServer Configuration.
- * Currently the defaults are "admin" for username, "geoserver"
- * for password, case insensitive.  This value can be changed in the services.xml
- * file, found in the WEB-INF directory of a running GeoServer.  A page to change
+ * Currently the defaults are "admin" for username, "geoserver" for password,
+ * case insensitive.  This value can be changed in the services.xml file,
+ * found in the WEB-INF directory of a running GeoServer.  A page to change
  * the log in would be nice, but it's not here yet.
  * </p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: LoginAction.java,v 1.6 2004/04/03 13:14:04 cholmesny Exp $
+ * @version $Id: LoginAction.java,v 1.7 2004/04/20 18:58:39 cholmesny Exp $
+ *
  * @task TODO: add a page to change the username and password from the ui.
  */
 public class LoginAction extends GeoServerAction {
@@ -46,11 +48,12 @@ public class LoginAction extends GeoServerAction {
         String username = loginForm.getUsername();
         String password = loginForm.getPassword();
 
-        GlobalConfig global = (GlobalConfig) getServlet().getServletContext()
-                                                 .getAttribute(GlobalConfig.CONFIG_KEY);
+        //GlobalConfig global = (GlobalConfig) getServlet().getServletContext()
+        //                                       .getAttribute(GlobalConfig.CONFIG_KEY);
+        GeoServer geoserver = getWFS(request).getGeoServer();
 
-        if (username.equalsIgnoreCase(global.getAdminUserName())
-                && password.equalsIgnoreCase(global.getAdminPassword())) {
+        if (username.equalsIgnoreCase(geoserver.getAdminUserName())
+                && password.equalsIgnoreCase(geoserver.getAdminPassword())) {
             UserContainer user = new UserContainer();
             user.setUsername(username);
             request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
