@@ -102,7 +102,7 @@ public class TransactionRequest
 		    }
 		    if(this.subRequests.size() == testTrans.getSubRequestSize()){
 			for(int i = 0; i < subRequests.size(); i++) {
-			    isEqual = isEqual && subRequests.get(i).equals
+			    isEqual = isEqual && subRequests.contains
 			    (testTrans.getSubRequest(i));
 			}
 		    } else {
