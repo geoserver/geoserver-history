@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.14 2004/01/16 00:27:16 jive Exp $
+ * @version $Id: XMLConfigReader.java,v 1.15 2004/01/16 00:31:56 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -866,7 +866,7 @@ public class XMLConfigReader {
 
         File parentDir = infoFile.getParentFile();
         dto.setDirName(parentDir.getName());
-        
+
         List attributeList;
 
         File schemaFile = new File(parentDir, "schema.xml");
@@ -877,14 +877,10 @@ public class XMLConfigReader {
             LOGGER.finest("process schema file " + infoFile);
             try {
                 attributeList = loadSchema(schemaFile, dto);
-            } catch (NullPointerException badDog ){
+            } catch (Exception badDog ){
                 System.out.println("IGNORING PROBLEM WITH Schema File:"+schemaFile);
                 badDog.printStackTrace();
                 attributeList = Collections.EMPTY_LIST;
-            } catch (Throwable unExpected ){
-                System.out.println("IGNORING PROBLEM WITH Schema File:"+schemaFile);
-                unExpected.printStackTrace();
-                attributeList = Collections.EMPTY_LIST;                
             }
         } else {
             attributeList = Collections.EMPTY_LIST;
@@ -918,9 +914,7 @@ public class XMLConfigReader {
         ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
         ft.setKeywords(getKeyWords(ReaderUtils.getChildElement(fTypeRoot,
                     "keywords")));
-        
         ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
-        
         ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
                     true)));
 
@@ -1124,6 +1118,7 @@ public class XMLConfigReader {
         featureTypeInfoDTO.setSchemaName(ReaderUtils.getAttribute(elem, "name",
                 true));
 
+        elem = ReaderUtils.getChildElement(elem, "xs:complexContent");
         elem = ReaderUtils.getChildElement(elem, "xs:extension");
         featureTypeInfoDTO.setSchemaBase(ReaderUtils.getAttribute(elem, "base",
                 true));
@@ -1151,7 +1146,7 @@ public class XMLConfigReader {
                     ati.setComplex(false);
                 } else {
                     Element tmp = ReaderUtils.getFirstChildElement(elem);
-                    OutputFormat format = new OutputFormat((Document) tmp);
+                    OutputFormat format = new OutputFormat(tmp.getOwnerDocument());
                     format.setLineSeparator(LineSeparator.Windows);
                     format.setIndenting(true);
                     format.setLineWidth(0);
@@ -1167,7 +1162,7 @@ public class XMLConfigReader {
                         throw new ConfigurationException(e);
                     }
 
-                    ati.setType(sw.toString());
+                    ati.setType(elem.toString());
                     ati.setComplex(true);
                 }
             }
