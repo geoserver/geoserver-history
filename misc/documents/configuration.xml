@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GlobalConfiguration>
-        <!-- Service elements, needed for the capabilities document -->
-        <!-- Title and OnlineResource are the two required -->
-        <Name>FreeFS</Name>
+	<!-- Service elements, needed for the capabilities document -->
+	<!-- Title and OnlineResource are the two required -->
+	<Name>FreeFS</Name>
 	<Title>The Open Planning Project Basemap Server</Title>
 	<Abstract>This is a test server.  It contains some basemap data from New York City.</Abstract>
 	<Keywords>WFS, CITE, New York</Keywords>
 	<OnlineResource>http://www.openplans.org/</OnlineResource>
 	<Fees>NONE</Fees>
 	<AccessConstraints>NONE</AccessConstraints>
-        <Maintainer>The Open Planning Project</Maintainer>
-        
-        <!-- The base url where this servlet will run -->
-        <URL>http://beta.openplans.org/geoserver</URL>
-                
-        <!-- Defines a mapping of a namespace to a featureType directory 
-             prefix.  If only one namespace is present in this file it 
+	<Maintainer>The Open Planning Project</Maintainer>
+
+	<!-- The base URL where this servlet will run.  If running locally
+             then http://localhost:8080 (or whatever port you're running on)
+             should work.  If you are serving to the world then this must be
+             the location where the geoserver servlets appear-->
+	<URL>http://www.openplans.org:8081/geoserver</URL>
+
+        <!-- Define mappings of namespaces to featureType directory 
+             prefixes.  If only one namespace is present in this file it 
              becomes the default, if more than one namespace is present 
              then one must have its 'default' attribute set to true.
-             The default namespace is that assigned to featureTypes that 
-             have no prefix (featureTypes/rail)           
-             * This field is all but required.  If not present
+             The default namespace is that which is assigned to featureTypes
+             that have no prefix (for example, "featureTypes/rail")
+             * This field is highly recommended.  If not present
              then a namespace will be constructed for you.
          -->
         <Namespace default="true" 
@@ -35,7 +38,7 @@
               WARNING, INFO, CONFIG, FINER, FINEST, in order of 
               Increasing statements logged.  
           -->
-         <LoggingLevel>FINER</LoggingLevel>
+         <LoggingLevel>INFO</LoggingLevel>
 
          <!-- Sets the max number of Features returned by GetFeature -->
          <MaxFeatures>20000</MaxFeatures> 
@@ -48,10 +51,7 @@
 
          <!-- Sets the max number of decimal places past the zero returned in
               a GetFeature response.  Default is 4 -->
-         <!--
-         <NumDecimals>15</NumDecimals>         
-          -->
-
+         <NumDecimals>8</NumDecimals>
 
          <!-- This tag is to run the zserver module. -->
          <!-- Set the run attribute to false or comment the tag -->
@@ -75,7 +75,9 @@
 
          <!-- Define a base url for the location of the wfs schemas. 
               By default GeoServer loads and references its own at
-              <URL>/data/capabilities. Uncomment to enable 
+              <URL>/data/capabilities. Uncomment to enable.  The
+              standalone Tomcat server needs SchemaBaseUrl defined
+              for validation.
           -->
          <!--
          <SchemaBaseUrl>http://schemas.opengis.net</SchemaBaseUrl>
