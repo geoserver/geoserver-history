@@ -236,6 +236,28 @@ public class ConfigInfo {
 	return wfsGlobal.getFilePrefixDelimiter(); 
     }
 
+    /** Returns the number of decimal places to return in GetFeature 
+     * coordinates */
+    public int getNumDecimals() { return wfsGlobal.getNumDecimals(); }
+
+    /** Returns the character set set by the user, UTF-8 if none is set.*/
+    public String getCharSet() { return wfsGlobal.getCharSet(); }
+
+    /** Returns the declared xml header with the correct character set.*/
+    public String getXmlHeader() { 
+	return "<?xml version=\"1.0\" encoding=\"" + getCharSet() + "\"?>";
+    }
+
+    /** Returns the mimeType to set, using the charset from getCharSet*/
+    public String getMimeType() {
+	return "text/xml; charset=" + getCharSet();
+    }
+
+    /** Returns if the charset parameter for databases should be set to
+     * what {@link #getCharSet} returns.
+     */
+    public boolean useCharSetForDB() { return wfsGlobal.getCharSetPostgis(); }
+
     /**
      * gets the default namespace prefix.  This is really more for backwards
      * compatibility, as all feature type directories should now be named
