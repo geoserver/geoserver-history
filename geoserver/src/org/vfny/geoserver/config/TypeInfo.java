@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.HashMap;
 import java.util.logging.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,9 +19,11 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.postgis.PostgisConnectionFactory;
 import org.geotools.data.postgis.PostgisDataSource;
+import org.geotools.data.postgis.PostgisDataSourceFactory;
 import org.vfny.geoserver.responses.WfsException;
 /**
  * Reads all necessary feature type information to abstract away from servlets.
@@ -51,6 +54,8 @@ public class TypeInfo {
 
     /** standard connection for getFeatures. */
     Connection dbConnection;
+
+    private DataSource transactionDS;
 
     //hold the default schema for this datasource?  Would save processing, and
     //when schemas can go to xsd and back it would be good to have here.
@@ -171,6 +176,20 @@ public class TypeInfo {
         return internalType.getPassword().toString();
     }
 
+    public DataSource getTransactionDataSource() throws WfsException {
+	if (transactionDS == null) {
+	    try {
+		HashMap params = internalType.getDataParams();
+		transactionDS = DataSourceFinder.getDataSource(params);
+	    } catch (DataSourceException e) {
+            throw new WfsException(e, "While getting connection to datasource",
+				   getName());
+	    }
+	    LOG.finer("data source is " + transactionDS);
+	}
+	return transactionDS;
+    }
+
     /**
      * returns a connection to the database containing the table for this
      * type.  If this typeInfo has already made a connection to the database
@@ -179,21 +198,12 @@ public class TypeInfo {
      * used instead, or else the getFeature calls risk returning modified 
      * features that have not yet been committed and could roll back.
      */
-    public Connection getConnection() throws WfsException {
+    public Connection getConnection() throws SQLException {
 	LOG.finer("getting connection for type: " + getName());
-	try {
-	    if (dbConnection == null || dbConnection.isClosed()) {
-		
-		this.dbConnection = getNewConnection();
-	    }	
-	} catch (SQLException e) {
-	    String preMessage = "Problem getting Connection to db";
-	    String message = preMessage + ": " + e.getMessage();
-	    LOG.warning(message);
-	    throw new WfsException(e, preMessage, 
-				   "typeInfo for: " + getFullName());
-	}
-	
+	if (dbConnection == null || dbConnection.isClosed()) {
+	    
+	    this.dbConnection = getNewConnection();
+	}	
 	return dbConnection;
     }
 
@@ -223,7 +233,6 @@ public class TypeInfo {
 	return connection;
     }
 
-
     /**
      * gets the datasource associated with this typeInfo.  This uses the current
      * datasource connection, so it should not be used for transactions, those
@@ -237,21 +246,34 @@ public class TypeInfo {
      * @throws WfsException if there were problems creating the datasource
      * or the schema.
      */
-    public DataSource getDataSource(List propertyNames, int maxFeatures) 
+    public DataSource getDataSource(List propertyNames, int maxFeatures, 
+				    boolean createNewConnection) 
 	throws WfsException {
 	LOG.finer("about to get datasource for " + getName());
-	Connection connection = getConnection();
+	Connection connection = null;
+	try {
+	    if (createNewConnection) {  
+		connection = getNewConnection();
+	    } else {
+		connection = getConnection();
+	    }
+	} catch (SQLException e) {
+	    String preMessage = "Problem getting Connection to db";
+	    String message = preMessage + ": " + e.getMessage();
+	    LOG.warning(message);
+	    throw new WfsException(e, preMessage, 
+				   "typeInfo for: " + getFullName());
+	}
 	DataSource data = null;
 	try {
 	    data = new PostgisDataSource(connection, getName(), maxFeatures);
 	    if (propertyNames != null  && propertyNames.size() > 0 &&
-		!propertyNames.get(0).toString().equals("*")) {
+		!propertyNames.get(0).toString().endsWith("*")) {
 		org.geotools.feature.FeatureType schema = data.getSchema();
 		AttributeType[] properties = new AttributeType[propertyNames.size()];
 		try {
 		    for(int i = 0; i < propertyNames.size(); i++) {
 			String curPropName = propertyNames.get(i).toString();
-			//TODO: get rid of this code duplication.  
 			String[] splitName = curPropName.split("[.:/]");
 			String newPropName = curPropName;
 			if (splitName.length == 1) {
