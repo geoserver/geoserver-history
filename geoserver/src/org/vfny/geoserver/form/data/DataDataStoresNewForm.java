@@ -6,6 +6,8 @@ package org.vfny.geoserver.form.data;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +25,8 @@ import org.vfny.geoserver.action.data.DataStoreUtils;
  * is simply to make writing the JSP easier.
  * </p>
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.1.2.4 2004/01/12 04:49:11 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresNewForm.java,v 1.1.2.5 2004/01/12 05:00:00 emperorkefka Exp $
  */
 public class DataDataStoresNewForm extends ActionForm {
     /** Description provided by selected Datastore Factory */
@@ -88,5 +90,12 @@ public class DataDataStoresNewForm extends ActionForm {
     public void setSelectedDescription(String string) {
         selectedDescription = string;
     }
+    
+    /*
+     * Allows the JSP page to easily access the list of dataStore Descriptions
+     */
+    public SortedSet getDataStoreDescriptions () {
+        return new TreeSet(DataStoreUtils.listDataStoresDescriptions());
+    }    
 
 }
