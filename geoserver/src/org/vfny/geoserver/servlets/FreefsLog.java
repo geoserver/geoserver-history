@@ -58,9 +58,10 @@ public class FreefsLog extends HttpServlet {
     String path = root + CONFIG_DIR;
     LOG.finest("init with path" + path);
     ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
-    Level level = cfgInfo.getLogLevel(); //Put this in user config file.
-    Log4JFormatter.init("org.geotools", level);
-    Log4JFormatter.init("org.vfny.geoserver", level);
+    //this is now set in WfsConfig, so it gets set earlier.
+    //Level level = cfgInfo.getLogLevel(); //Put this in user config file.
+    //Log4JFormatter.init("org.geotools", level);
+    //Log4JFormatter.init("org.vfny.geoserver", level);
     Properties zserverProps = new Properties();
     zserverProps.put("port", "5210"); //HACK -allow user to configure this!
     zserverProps.put("datafolder", cfgInfo.getTypeDir());
