@@ -6,45 +6,25 @@ package org.vfny.geoserver.form.data;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.data.DataStoreUtils;
 
 /**
- * DataDataStoresNewForm purpose.
+ * Used to accept information from user for a New DataStore Action.
  * <p>
- * Description of DataDataStoresNewForm ...
+ * This form contains a convience property getDataStoreDescrptions() which
+ * is simply to make writing the JSP easier.
  * </p>
- * 
- * <p>
- * Capabilities:
- * </p>
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * DataDataStoresNewForm x = new DataDataStoresNewForm(...);
- * </code></pre>
- * 
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.1.2.3 2004/01/12 04:41:38 jive Exp $
+ * @version $Id: DataDataStoresNewForm.java,v 1.1.2.4 2004/01/12 04:49:11 jive Exp $
  */
 public class DataDataStoresNewForm extends ActionForm {
     /** Description provided by selected Datastore Factory */
@@ -67,7 +47,7 @@ public class DataDataStoresNewForm extends ActionForm {
      * </p>
      * @return Sorted set of DataStore Descriptions.
      */
-    public List getDataStoreDescriptions(){
+    public List getDescriptions(){
         List descriptions = DataStoreUtils.listDataStoresDescriptions();
         if( descriptions == null || descriptions.isEmpty() ){
             return Collections.EMPTY_LIST;
@@ -79,19 +59,15 @@ public class DataDataStoresNewForm extends ActionForm {
     /** Check NewForm for correct use */ 
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-        MessageResources resources = (MessageResources) request.getAttribute( Action.MESSAGES_KEY );
                     
-        if( !getDataStoreDescriptions().contains( getSelectedDescription() ) ){
-            String message = resources.getMessage("label.selectedDescription", getSelectedDescription() );
-            errors.add( "selectedDataStoreDescription",            
-                new ActionError("errors.required", message)
+        if( !getDescriptions().contains( getSelectedDescription() ) ){
+            errors.add( "selectedDescription",            
+                new ActionError("errors.requiredFactory", getSelectedDescription() )
             );
         }
         if( Pattern.matches("^\\w*$", getDataStoreID() )){
-                   
-            String message = resources.getMessage("label.dataStoreID",getDataStoreID() );
             errors.add( "dataStoreID",            
-                new ActionError("errors.required", message)
+                new ActionError("errors.requireDataStoreID", getDataStoreID() )
             );            
         }
         return errors;
