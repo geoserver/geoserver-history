@@ -49,7 +49,11 @@ public class FeatureResponse {
     public static String getXmlResponse(FeatureRequest request) 
         throws WfsException {
 	LOG.finest("get xml response called request is: " + request);
-
+	String outputFormat = request.getOutputFormat();
+        if (!outputFormat.equalsIgnoreCase("GML2")) {
+	    throw new WfsException("output format: " + outputFormat + " not " +
+				   "supported by geoserver");
+	}
         TypeRepository repository = TypeRepository.getInstance();
 	ConfigInfo configInfo = ConfigInfo.getInstance();
         StringBuffer result = new StringBuffer();
