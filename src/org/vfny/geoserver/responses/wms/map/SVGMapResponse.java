@@ -22,11 +22,14 @@ import java.util.logging.Logger;
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.10 2004/04/13 03:16:39 groldan Exp $
+ * @version $Id: SVGMapResponse.java,v 1.11 2004/04/16 18:36:49 cholmesny Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
 
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
+    
+    private static final String PRODUCE_TYPE = "image/svg";
+    
     /** DOCUMENT ME!  */
     private static final String MIME_TYPE = "image/svg+xml";
 
@@ -69,7 +72,9 @@ public class SVGMapResponse extends GetMapDelegate {
      */
     public boolean canProduce(String mapFormat)
     {
-      return mapFormat.startsWith(MIME_TYPE);
+    	LOGGER.fine("checking if can producer " + mapFormat +", returning"
+    	+ mapFormat.startsWith(PRODUCE_TYPE));
+      return mapFormat.startsWith(PRODUCE_TYPE);
     }
 
     /**
