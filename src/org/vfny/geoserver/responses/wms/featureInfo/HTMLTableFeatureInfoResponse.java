@@ -59,15 +59,15 @@ import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill Exp $
+ * @version $Id: HTMLTableFeatureInfoResponse.java,v 1.1 2004/07/19 22:32:22 jmacgill Exp $
  */
-public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
+public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
     
     /**
      *
      */
-    public TextFeatureInfoResponse() {
-        format = "text/plain";
+    public HTMLTableFeatureInfoResponse() {
+        format = "text/html";
         supportedFormats = new ArrayList();
         supportedFormats.add(format);
     }
@@ -84,10 +84,11 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         return getSupportedFormats().contains(mapFormat);
     }
     
-    public List getSupportedFormats(){        
+    public List getSupportedFormats(){
+        LOGGER.info("supported formats = " + supportedFormats);
         if (supportedFormats == null) {
             //LiteRenderer renderer = null;
-            String[] mimeTypes = new String[]{"text/plain"};
+            String[] mimeTypes = new String[]{"text/html"};
             supportedFormats = Arrays.asList(mimeTypes);
         }
         return supportedFormats;
@@ -104,29 +105,43 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     public void writeTo(OutputStream out)
     throws org.vfny.geoserver.ServiceException, java.io.IOException {
         PrintWriter writer = new PrintWriter(out);
+        writer.println("<html><body>");
         try {
             for(int i = 0; i < results.size(); i++){
                 FeatureResults fr = (FeatureResults)results.get(i);
+                FeatureType schema = fr.getSchema();
                 
+                writer.println("<table border='1'>");
+                writer.println("<tr><th colspan="+ schema.getAttributeCount() +" scope='col'>" + schema.getTypeName() + " </th></tr>");
+                writer.println("<tr>");
+                for(int j = 0; j < schema.getAttributeCount(); j++){
+                    writer.println("<td>" + schema.getAttributeType(j).getName() + "</td>");
+                }
+                writer.println("</tr>");
+                
+                
+                //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
                 FeatureReader reader = fr.reader();
+                
                 while(reader.hasNext()){
                     Feature f = reader.next();
-                    
-                    FeatureType schema = f.getFeatureType();
-                    writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
                     AttributeType[] types = schema.getAttributeTypes();
-                    writer.println("------");
-                    
+                    writer.println("<tr>");
                     for (int j = 0; j < types.length; j++) {
                         if (Geometry.class.isAssignableFrom(types[j].getType())) {
-                            writer.println(types[j].getName() + " = [GEOMETRY]");
+                            writer.println("<td>");
+                            writer.println("[GEOMETRY]");
+                            writer.println("</td>");
                         } else {
-                            writer.println(types[j].getName() + " = " +
-                            f.getAttribute(types[j].getName()));
+                            writer.println("<td>");
+                            writer.print(f.getAttribute(types[j].getName()));
+                            writer.println("</td>");
                         }
                     }
+                    writer.println("</tr>");
                 }
-                
+                writer.println("</table>");
+                writer.println("<p>");
             }
         } catch (IllegalAttributeException ife) {
             writer.println("Unable to generate information " + ife);
