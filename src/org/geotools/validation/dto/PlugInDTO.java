@@ -30,7 +30,7 @@ import java.util.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: PlugInDTO.java,v 1.2 2004/01/15 18:57:45 dmzwiers Exp $
+ * @version $Id: PlugInDTO.java,v 1.3 2004/01/19 23:54:56 dmzwiers Exp $
  */
 public class PlugInDTO {
 	
@@ -101,9 +101,12 @@ public class PlugInDTO {
 			return false;
 		PlugInDTO pi = (PlugInDTO)obj;
 		boolean r = true;
-		r = r && (name == pi.getName());
-		r = r && (description == pi.getDescription());
-		r = r && (className == pi.getClassName());
+		if(name!=null)
+		r = r && (name.equals(pi.getName()));
+		if(description!=null)
+		r = r && (description.equals(pi.getDescription()));
+		if(className!=null)
+		r = r && (className.equals(pi.getClassName()));
 
 		if(args == null){
 			if(pi.getArgs() != null){

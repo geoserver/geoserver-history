@@ -32,9 +32,9 @@ import org.vfny.geoserver.global.ConfigurationException;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterUtils.java,v 1.1 2004/01/15 23:45:21 dmzwiers Exp $
+ * @version $Id: WriterUtils.java,v 1.2 2004/01/19 23:54:56 dmzwiers Exp $
  */
-public class WriterUtils{
+class WriterUtils{
 	/**
 	 * Used internally to create log information to detect errors.
 	 */

@@ -33,7 +33,7 @@ import java.util.Map;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestDTO.java,v 1.3 2004/01/15 18:57:45 dmzwiers Exp $
+ * @version $Id: TestDTO.java,v 1.4 2004/01/19 23:54:56 dmzwiers Exp $
  */
 public class TestDTO {
 	
@@ -104,8 +104,10 @@ public class TestDTO {
 		TestDTO t = (TestDTO)obj;
 		boolean r = true;
 		
-		r = r && (name == t.getName());
-		r = r && (description == t.getDescription());
+		if(name!=null)
+		r = r && (name.equals(t.getName()));
+		if(description!=null)
+		r = r && (description.equals(t.getDescription()));
 		
 		if(plugIn == null){
 			if(t.getPlugIn() != null){
