@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.9 2004/01/17 01:00:20 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.10 2004/01/18 00:33:17 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -475,7 +475,7 @@ public class XMLConfigWriter {
 				if(i.hasNext()){
 					s = i.next().toString();
 					while(i.hasNext()){
-						s = s + "," + i.next().toString();
+						s = s + ", " + i.next().toString();
 					}
 				}
 				cw.textTag("keywords",s);
@@ -529,11 +529,14 @@ public class XMLConfigWriter {
 	public static void storeFeatureSchema(FeatureTypeInfoDTO fs,Writer w) throws ConfigurationException{
 			WriterHelper cw = new WriterHelper(w);
 			HashMap m = new HashMap();
-			m.put("name",fs.getSchemaName());
+			String t = fs.getSchemaName();
+			if(t!=null)
+			m.put("name",t);
 			cw.openTag("xs:complexType",m);
 			cw.openTag("xs:complexContent");
-			m = new HashMap();
-			m.put("base",fs.getSchemaBase());
+			m = new HashMap();t = fs.getSchemaBase();
+			if(t!=null)
+				m.put("base",t);
 			cw.openTag("xs:extension",m);
 			cw.openTag("xs:sequence");
 			for(int i=0;i<fs.getSchema().size();i++){
@@ -583,7 +586,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.9 2004/01/17 01:00:20 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.10 2004/01/18 00:33:17 dmzwiers Exp $
  */
 class WriterUtils{
 	/**

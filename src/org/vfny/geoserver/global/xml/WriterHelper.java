@@ -32,7 +32,7 @@ import org.vfny.geoserver.global.ConfigurationException;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterHelper.java,v 1.2 2004/01/15 19:04:19 dmzwiers Exp $
+ * @version $Id: WriterHelper.java,v 1.3 2004/01/18 00:33:17 dmzwiers Exp $
  */
 public class WriterHelper{
 	/**
@@ -126,6 +126,7 @@ public class WriterHelper{
 		Iterator i = attributes.keySet().iterator();
 		while(i.hasNext()){
 			String s = (String)i.next();
+			if(attributes.get(s)!=null)
 			write(s+" = "+"\""+(attributes.get(s)).toString()+"\" ");
 		}
 		writeln(">");
@@ -183,6 +184,7 @@ public class WriterHelper{
 		Iterator i = attributes.keySet().iterator();
 		while(i.hasNext()){
 			String s = (String)i.next();
+			if(attributes.get(s)!=null)
 			write(s+" = "+"\""+(attributes.get(s)).toString()+"\" ");
 		}
 		write(" />");
@@ -203,6 +205,7 @@ public class WriterHelper{
 		Iterator i = attributes.keySet().iterator();
 		while(i.hasNext()){
 			String s = (String)i.next();
+			if(attributes.get(s)!=null)
 			write(s+" = "+"\""+(attributes.get(s)).toString()+"\" ");
 		}
 		write(">"+data+"</"+tagName+">");
