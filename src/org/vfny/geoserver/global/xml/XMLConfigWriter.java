@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.28 2004/04/16 07:08:37 jive Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.29 2004/06/03 19:40:13 cholmesny Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -552,7 +552,7 @@ public class XMLConfigWriter {
      */
     protected static void storeStyle(WriterHelper cw, StyleDTO s)
         throws ConfigurationException {
-        LOGGER.fine("In method storeStyle");
+        LOGGER.fine("In method storeStyle: " + s);
 
         Map attr = new HashMap();
 
@@ -568,6 +568,7 @@ public class XMLConfigWriter {
             attr.put("default", "true");
         }
 
+		LOGGER.fine("storing style " + attr);
         if (attr.size() != 0) {
             cw.attrTag("style", attr);
         }
@@ -605,7 +606,7 @@ public class XMLConfigWriter {
                 storeFeature(ft, dir2);
                 
                 if (ft.getSchemaAttributes() != null) {
-                    LOGGER.info( ft.getKey() +" writing schema.xml w/ "+ft.getSchemaAttributes().size() );
+                    LOGGER.fine( ft.getKey() +" writing schema.xml w/ "+ft.getSchemaAttributes().size() );
                     storeFeatureSchema(ft, dir2);
                 }
             }
@@ -749,15 +750,15 @@ public class XMLConfigWriter {
         throws ConfigurationException {
 
         if ((fs.getSchemaBase() == null) || (fs.getSchemaBase() == "")) {
-            LOGGER.info( "No schema base" );
-            System.out.println( fs.getKey() + " has not schemaBase");            
+            //LOGGER.info( "No schema base" );
+            LOGGER.fine( fs.getKey() + " has not schemaBase");            
             return;
         }
         
         if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {                   
             // Should assume Null?
-            LOGGER.info( "No schema name" ); // Do we even have a field for this?
-            System.out.println( fs.getKey() + " has not schemaName");
+            //LOGGER.info( "No schema name" ); // Do we even have a field for this?
+            LOGGER.fine( fs.getKey() + " has not schemaName");
             return;
         }
         
@@ -864,7 +865,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.28 2004/04/16 07:08:37 jive Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.29 2004/06/03 19:40:13 cholmesny Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
