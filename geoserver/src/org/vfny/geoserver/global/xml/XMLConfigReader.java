@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.42 2004/09/09 16:50:15 cholmesny Exp $
+ * @version $Id: XMLConfigReader.java,v 1.43 2004/09/13 16:04:26 cholmesny Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -179,7 +179,7 @@ public class XMLConfigReader {
      * @throws ConfigurationException When an error occurs.
      */
     protected void loadServices(File configFile) throws ConfigurationException {
-        LOGGER.fine("loading config file: " + configFile);
+        LOGGER.finer("loading config file: " + configFile);
 
         Element configElem = null;
 
@@ -336,7 +336,7 @@ public class XMLConfigReader {
      */
     protected void loadGlobal(Element globalElem) throws ConfigurationException {
         geoServer = new GeoServerDTO();
-        LOGGER.fine("parsing global configuration parameters");
+        LOGGER.finer("parsing global configuration parameters");
 
         Level loggingLevel = getLoggingLevel(globalElem);
 
@@ -765,7 +765,7 @@ public class XMLConfigReader {
                 true));
         ds.setTitle(ReaderUtils.getChildText(dsElem, "title", false));
         ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
-        LOGGER.fine("loading connection parameters for DataStoreDTO "
+        LOGGER.finer("loading connection parameters for DataStoreDTO "
             + ds.getNameSpaceId());
         ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(
                     dsElem, "connectionParams", true)));
@@ -870,7 +870,7 @@ public class XMLConfigReader {
             File info = new File(directories[i], "info.xml");
 
             if (info.exists() && info.isFile()) {
-                LOGGER.fine("Info dir:" + info);
+                LOGGER.finer("Info dir:" + info);
 
                 FeatureTypeInfoDTO dto = loadFeature(info);
                 map.put(dto.getKey(), dto);
@@ -1119,7 +1119,7 @@ public class XMLConfigReader {
         org.geotools.filter.Filter filter = null;
 
         if (defQNode != null) {
-            LOGGER.fine("definitionQuery element found, looking for Filter");
+            LOGGER.finer("definitionQuery element found, looking for Filter");
 
             Element filterNode = ReaderUtils.getChildElement(defQNode,
                     "Filter", false);
@@ -1132,7 +1132,7 @@ public class XMLConfigReader {
                 return filter;
             }
 
-            LOGGER.fine("No Filter definition query found");
+            LOGGER.finer("No Filter definition query found");
         }
 
         return filter;
