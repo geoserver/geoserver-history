@@ -241,8 +241,42 @@ public class TypeInfo {
 		AttributeType[] properties = new AttributeType[propertyNames.size()];
 		try {
 		    for(int i = 0; i < propertyNames.size(); i++) {
+			String curPropName = propertyNames.get(i).toString();
+			//TODO: get rid of this code duplication.  
+			int prefixDelimPos = 
+			    curPropName.lastIndexOf(PREFIX_DELIMITER);
+			//this gets out the namespace prefix.
+			//REVISIT: check to make sure it's the right namespace
+			if (prefixDelimPos > 0) {
+			    curPropName = curPropName.substring
+				(prefixDelimPos + 1, curPropName.length());
+			   
+			} 
+			//this strips out the leading featureName of .14 style.
+			//REVISIT: this is fine for postgis, as you can't 
+			//declare attributes of the feature.property style,
+			//but when we add support for oracle and others this
+			//wont work.  In other words, put this in postgis
+			//datasource.
+			int propDelimPos = curPropName.lastIndexOf(".");
+			if (propDelimPos > 0) {
+			    //for backwards compatibility.  Only works if all 
+			    //featureTypes have the same prefix.
+			    curPropName = curPropName.substring
+				(propDelimPos + 1, curPropName.length());
+			   
+			} 
 			properties[i] = 
-			    schema.getAttributeType(propertyNames.get(i).toString());
+			    schema.getAttributeType(curPropName);
+			if (properties[i] == null) {
+			    //TODO: iterate through schema to get the valid
+			    //names
+			    throw new WfsException("property name: " + 
+						   curPropName + " is "
+						   +"not a part of featureType"
+						   + ", try a DescribeFeatureType"
+						   + " request for this typename");
+			}
 		    }
 		    schema = FeatureTypeFactory.create(properties);	 
 		}  catch (SchemaException e) {
