@@ -271,6 +271,9 @@
         value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
   </plug-in>
   
+  <plug-in className="org.vfny.geoserver.config.ConfigurationState">
+  </plug-in>  
+  
   <plug-in className="org.vfny.geoserver.global.GeoServerPlugIn">
   </plug-in>  
   
