@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * null, as long as that test runner is not called by the client at all.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RequestTestCase.java,v 1.7 2004/02/13 01:07:08 dmzwiers Exp $
+ * @version $Id: RequestTestCase.java,v 1.8 2004/04/02 11:34:29 cholmesny Exp $
  */
 public abstract class RequestTestCase extends TestCase {
     //Initializes the logger. Uncomment to see log messages.
@@ -38,7 +38,7 @@ public abstract class RequestTestCase extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/requests";
+        + "/test/test-data/requests/";
 
     /** Holds mappings between HTTP and ASCII encodings */
     protected static FilterFactory factory = FilterFactory.createFilterFactory();
