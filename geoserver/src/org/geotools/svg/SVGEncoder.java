@@ -1,15 +1,28 @@
 package org.geotools.svg;
 
-import com.vividsolutions.jts.geom.*;
-import org.geotools.data.*;
-import org.geotools.feature.*;
-import org.geotools.filter.*;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import java.io.*;
-import java.net.*;
-import java.text.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geotools.data.DataSourceException;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+
 
 
 /**
@@ -17,7 +30,7 @@ import java.util.logging.Logger;
  * needs, so I will try, in the near future, to create a kind of sax writer
  * for svg feature sets export, wich will be more elegant than this
  *
- * @version $Id: SVGEncoder.java,v 1.1.2.2 2003/11/19 18:26:00 groldan Exp $
+ * @version $Id: SVGEncoder.java,v 1.1.2.3 2003/11/27 19:44:40 jive Exp $
  */
 public class SVGEncoder
 {
@@ -140,18 +153,26 @@ public class SVGEncoder
         encode(null, results, out);
     }
 
+    public void encode(FeatureTypeConfig[] layers,
+                       FeatureResults[] results,
+                       OutputStream out) throws IOException {
+       encode( layers, results, true, out );
+   }
+   
     /**
      * DOCUMENT ME!
      *
      * @param layers the outermost SVG<code>g</code> element id wich will group
      *        all the features in the collection
      * @param results the features to be encoded as SVG vectors
+     * @param writeHeader true if SVG header needs to be provided
      * @param writer SVG encoder output stream
      *
      * @throws IOException DOCUMENT ME!
      */
     public void encode(final FeatureTypeConfig[] layers,
                        final FeatureResults[] results,
+                       final boolean writeHeader,
                        final OutputStream out) throws IOException
     {
         this.writer = new SVGWriter(out);
@@ -160,13 +181,18 @@ public class SVGEncoder
 
         ensureSVGSpace(results);
 
-        writeHeader();
+        if( writeHeader ){
+            writeHeader();            
+        }
+        
 
         writeDefs(layers);
 
         writeLayers(layers, results);
 
-        writer.write(SVG_FOOTER);
+        if( writeHeader ){
+            writer.write(SVG_FOOTER);
+        }
         this.writer.flush();
         t = System.currentTimeMillis() - t;
         LOGGER.info("SVG generado en " + t + " ms");
@@ -623,6 +649,20 @@ public class SVGEncoder
     private double getX(double x)
     {
         return x;
+    }
+
+    /**
+     * Close writer when things go wrong.
+     * <p>
+     * </p>
+     * 
+     */
+    public void abort() {
+        try {
+            writer.close();
+        } catch (IOException e) {
+            LOGGER.log(Level.FINEST, e.getMessage(), e);
+        }
     }
 
 }
