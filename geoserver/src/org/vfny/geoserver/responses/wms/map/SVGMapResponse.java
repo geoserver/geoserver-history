@@ -14,7 +14,7 @@ import org.geotools.data.FeatureResults;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.GlobalFeatureType;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 
 
@@ -22,7 +22,7 @@ import org.vfny.geoserver.requests.wms.GetMapRequest;
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.3.2.3 2004/01/03 00:20:16 dmzwiers Exp $
+ * @version $Id: SVGMapResponse.java,v 1.3.2.4 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
     private static final Logger LOGGER = Logger.getLogger(
@@ -31,7 +31,7 @@ public class SVGMapResponse extends GetMapDelegate {
     /** DOCUMENT ME! */
     private static final String MIME_TYPE = "image/svg+xml";
     private SVGEncoder svgEncoder;
-    private GlobalFeatureType[] requestedLayers;
+    private FeatureTypeInfo[] requestedLayers;
     private FeatureResults[] resultLayers;
     private Style[] styles;
 
@@ -78,7 +78,7 @@ public class SVGMapResponse extends GetMapDelegate {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    protected void execute(GlobalFeatureType[] requestedLayers,
+    protected void execute(FeatureTypeInfo[] requestedLayers,
         FeatureResults[] resultLayers, Style[] styles)
         throws WmsException {
         GetMapRequest request = getRequest();

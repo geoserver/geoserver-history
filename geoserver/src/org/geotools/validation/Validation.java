@@ -18,7 +18,7 @@ package org.geotools.validation;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: Validation.java,v 1.2.2.2 2004/01/03 00:20:14 dmzwiers Exp $
+ * @version $Id: Validation.java,v 1.2.2.3 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public interface Validation
 {
@@ -80,18 +80,18 @@ public interface Validation
 	/**
 	 * setTypeNames
 	 * <p>
-	 * Sets the GlobalFeatureType names that this validation test is run against.
+	 * Sets the FeatureTypeInfo names that this validation test is run against.
 	 * </p>
-	 * @param names GlobalFeatureType names that this validation test is run against.
+	 * @param names FeatureTypeInfo names that this validation test is run against.
 	 */
 	void 	setTypeNames(String[] names);
 	
 	/**
 	 * getTypeNames
 	 * <p>
-	 * Returns the GlobalFeatureType names that this validation test is run against.
+	 * Returns the FeatureTypeInfo names that this validation test is run against.
 	 * </p>
-	 * @return the GlobalFeatureType names that this validation test is run against.
+	 * @return the FeatureTypeInfo names that this validation test is run against.
 	 */
 	String[] getTypeNames();
 }

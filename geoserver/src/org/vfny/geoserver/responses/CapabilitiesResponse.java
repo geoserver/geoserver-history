@@ -32,7 +32,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.21.2.3 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.21.2.4 2004/01/05 22:14:43 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -76,7 +76,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
      * @return DOCUMENT ME!
      */
     public String getContentType() {
-        return GlobalServer.getInstance().getGlobalData().getMimeType();
+        return GeoServer.getInstance().getMimeType();
     }
 
     /**
@@ -95,8 +95,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
             // don't know what this should be, or if its even important
             InputSource inputSource = new InputSource("XXX");
             SAXSource source = new SAXSource(this, inputSource);
-            Charset charset = GlobalServer.getInstance().getGlobalData()
-                                         .getCharSet();
+            Charset charset = GeoServer.getInstance().getCharSet();
             Writer writer = new OutputStreamWriter(out, charset);
             StreamResult result = new StreamResult(writer);
 
@@ -150,7 +149,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
     protected void walk() throws SAXException {
         contentHandler.startDocument();
 
-        GlobalService service = getGlobalService();
+        Service service = getGlobalService();
         ResponseHandler handler = getResponseHandler(contentHandler);
         handler.handleDocument(service);
         handler.endDocument(service);
@@ -162,7 +161,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
      *
      * @return DOCUMENT ME!
      */
-    protected abstract GlobalService getGlobalService();
+    protected abstract Service getGlobalService();
 
     /**
      * DOCUMENT ME!

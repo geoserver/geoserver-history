@@ -16,13 +16,13 @@ import org.vfny.geoserver.servlets.WFService;
 
 
 /**
- * Implements the GlobalWFS Transaction interface, which performs insert, update and
+ * Implements the WFS Transaction interface, which performs insert, update and
  * delete functions on the dataset. This servlet accepts a Transaction request
  * and returns a TransactionResponse xml element.
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: Transaction.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: Transaction.java,v 1.2.2.4 2004/01/05 22:14:42 dmzwiers Exp $
  */
 public class Transaction extends WFService {
     /**

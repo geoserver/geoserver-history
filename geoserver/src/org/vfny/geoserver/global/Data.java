@@ -22,23 +22,23 @@ import org.geotools.data.Transaction;
 import org.geotools.styling.SLDStyle;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.vfny.geoserver.config.data.*;
+import org.vfny.geoserver.global.dto.data.*;
 
 /**
  * Holds the featureTypes.  Replaced TypeRepository.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GlobalCatalog.java,v 1.1.2.2 2004/01/03 00:20:14 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  */
-public class GlobalCatalog extends GlobalAbstract
+public class Data extends Abstract
 /**
- * implements GlobalCatalog
+ * implements Data
  */
  {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.config");
+            "org.vfny.geoserver.global");
 
     /** Default name of feature type information */
 	private static final String INFO_FILE = "info.xml";
@@ -46,10 +46,10 @@ public class GlobalCatalog extends GlobalAbstract
 	private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
 
     /** The holds the mappings between prefixes and uri's */
-    private Map nameSpaces;
+    private Map NameSpaces;
 
     /** DOCUMENT ME! */
-    private GlobalNameSpace defaultNameSpace;
+    private NameSpace defaultNameSpace;
 
     /** DOCUMENT ME! */
     private Map dataStores;
@@ -58,35 +58,35 @@ public class GlobalCatalog extends GlobalAbstract
     private Map styles;
 
     /**
-     * Map of <code>GlobalFeatureType</code>'s stored by full qualified name
-     * (namespace prefix + PREFIX_DELIMITER + typeName)
+     * Map of <code>FeatureTypeInfo</code>'s stored by full qualified name
+     * (NameSpace prefix + PREFIX_DELIMITER + typeName)
      */
     private Map featureTypes;
 
     
-    private CatalogConfig catalog;
+    private DataDTO catalog;
     
     // we create instances of everything at the start to support the datastore connections
-    public GlobalCatalog(CatalogConfig config) throws ConfigurationException {
+    public Data(DataDTO config) throws ConfigurationException {
     	catalog = config;
 
     	Iterator i = config.getDataStores().keySet().iterator();
     	while(i.hasNext()){
     		Object key = i.next();
-    		dataStores.put(key,new GlobalDataStore((org.vfny.geoserver.config.data.DataStoreConfig)config.getDataStores().get(key)));
+    		dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key)));
     	}
 
 		i = config.getFeaturesTypes().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			featureTypes.put(key,new GlobalFeatureType((org.vfny.geoserver.config.data.FeatureTypeConfig)config.getFeaturesTypes().get(key)));
+			featureTypes.put(key,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key)));
 		}
-    	defaultNameSpace = new GlobalNameSpace(config.getDefaultNameSpace());
+    	defaultNameSpace = new NameSpace(config.getDefaultNameSpace());
 
 		i = config.getNameSpaces().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			nameSpaces.put(key,new GlobalNameSpace((org.vfny.geoserver.config.data.NameSpaceConfig)config.getNameSpaces().get(key)));
+			NameSpaces.put(key,new NameSpace((NameSpace)config.getNameSpaces().get(key)));
 		}
 
 		i = config.getStyles().keySet().iterator();
@@ -94,7 +94,7 @@ public class GlobalCatalog extends GlobalAbstract
 			Object key = i.next();
 			// should be re-worked
 			try{
-				styles.put(key,loadStyle(((org.vfny.geoserver.config.data.StyleConfig)config.getStyles().get(key)).getFilename()));
+				styles.put(key,loadStyle(((StyleDTO)config.getStyles().get(key)).getFilename()));
 			}catch(IOException e){
 				LOGGER.fine("Error loading style:"+key.toString());
 			}
@@ -106,39 +106,43 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @return DOCUMENT ME!
      */
-    public GlobalDataStore[] getDataStores() {
+    public DataStoreInfo[] getDataStores() {
         List dslist = new ArrayList(dataStores.values());
-        GlobalDataStore[] dStores = new GlobalDataStore[dslist.size()];
-        dStores = (GlobalDataStore[]) dslist.toArray(dStores);
+        DataStoreInfo[] dStores = new DataStoreInfo[dslist.size()];
+        dStores = (DataStoreInfo[]) dslist.toArray(dStores);
 
         return dStores;
     }
-
-    /**
-     * searches a GlobalDataStore by its id attribute
-     *
-     * @param id the GlobalDataStore id looked for
-     *
-     * @return the GlobalDataStore with id attribute equals to <code>id</code>
-     *         or null if there no exists
-     */
-    public GlobalDataStore getDataStore(String id) {
-        return (GlobalDataStore) dataStores.get(id);
+    
+    Object getDTO(){
+    	return catalog;
     }
 
     /**
-     * returns the list of GlobalDataStore's of the given namespace
+     * searches a DataStoreInfo by its id attribute
+     *
+     * @param id the DataStoreInfo id looked for
+     *
+     * @return the DataStoreInfo with id attribute equals to <code>id</code>
+     *         or null if there no exists
+     */
+    public DataStoreInfo getDataStore(String id) {
+        return (DataStoreInfo) dataStores.get(id);
+    }
+
+    /**
+     * returns the list of DataStoreInfo's of the given NameSpace
      *
      * @param ns DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public List getDataStores(GlobalNameSpace ns) {
+    public List getDataStores(NameSpace ns) {
         List dataStoresNs = new ArrayList();
-        GlobalDataStore dsc;
+        DataStoreInfo dsc;
 
         for (Iterator it = dataStores.values().iterator(); it.hasNext();) {
-            dsc = (GlobalDataStore) it.next();
+            dsc = (DataStoreInfo) it.next();
 
             if (dsc.getNameSpace().equals(ns)) {
                 dataStoresNs.add(dsc);
@@ -153,10 +157,10 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @return DOCUMENT ME!
      */
-    public GlobalNameSpace[] getNameSpaces() {
-        GlobalNameSpace[] ns = new GlobalNameSpace[nameSpaces.values().size()];
+    public NameSpace[] getNameSpaces() {
+        NameSpace[] ns = new NameSpace[NameSpaces.values().size()];
 
-        return (GlobalNameSpace[]) new ArrayList(nameSpaces.values()).toArray(ns);
+        return (NameSpace[]) new ArrayList(NameSpaces.values()).toArray(ns);
     }
 
     /**
@@ -166,8 +170,8 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @return DOCUMENT ME!
      */
-    public GlobalNameSpace getNameSpace(String prefix) {
-        GlobalNameSpace retNS = (GlobalNameSpace) nameSpaces.get(prefix);
+    public NameSpace getNameSpace(String prefix) {
+        NameSpace retNS = (NameSpace) NameSpaces.get(prefix);
 
         return retNS;
     }
@@ -177,7 +181,7 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @return DOCUMENT ME!
      */
-    public GlobalNameSpace getDefaultNameSpace() {
+    public NameSpace getDefaultNameSpace() {
         return defaultNameSpace;
     }
 
@@ -203,20 +207,20 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @throws NoSuchElementException DOCUMENT ME!
      */
-    public GlobalFeatureType getFeatureType(String typeName)
+    public FeatureTypeInfo getFeatureType(String typeName)
         throws NoSuchElementException {
-        int prefixDelimPos = typeName.lastIndexOf(GlobalNameSpace.PREFIX_DELIMITER);
+        int prefixDelimPos = typeName.lastIndexOf(NameSpace.PREFIX_DELIMITER);
 
         if (prefixDelimPos < 0) {
             //for backwards compatibility.  Only works if all
             //featureTypes have the same prefix.
             typeName = getDefaultNameSpace().getPrefix()
-                + GlobalNameSpace.PREFIX_DELIMITER + typeName;
+                + NameSpace.PREFIX_DELIMITER + typeName;
         }
 
         LOGGER.finest("getting type " + typeName);
 
-        GlobalFeatureType ftype = (GlobalFeatureType) featureTypes.get(typeName);
+        FeatureTypeInfo ftype = (FeatureTypeInfo) featureTypes.get(typeName);
 
         if (ftype == null) {
             throw new NoSuchElementException("there is no FeatureTypeConfig named "
@@ -227,7 +231,7 @@ public class GlobalCatalog extends GlobalAbstract
     }
 
     /**
-     * Gets a GlobalFeatureType from a local type name (ie unprefixed), and a
+     * Gets a FeatureTypeInfo from a local type name (ie unprefixed), and a
      * uri.  This method is slow, use getFeatureType(String typeName), where
      * possible.  For not he only user should be TransactionFeatureHandler.
      *
@@ -236,9 +240,9 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @return DOCUMENT ME!
      */
-    public GlobalFeatureType getFeatureType(String localName, String uri) {
+    public FeatureTypeInfo getFeatureType(String localName, String uri) {
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
-            GlobalFeatureType fType = (GlobalFeatureType) it.next();
+            FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
 
             if (fType.isEnabled()) {
                 if (fType.getShortName().equals(localName)
@@ -268,13 +272,13 @@ public class GlobalCatalog extends GlobalAbstract
      * @throws ConfigurationException DOCUMENT ME!
      */
    /* private void loadNameSpaces(Element nsRoot) throws ConfigurationException {
-        NodeList nsList = nsRoot.getElementsByTagName("namespace");
+        NodeList nsList = nsRoot.getElementsByTagName("NameSpace");
         Element elem;
         String uri;
         String prefix;
         boolean defaultNS;
         int nsCount = nsList.getLength();
-        nameSpaces = new HashMap(nsCount);
+        NameSpaces = new HashMap(nsCount);
 
         for (int i = 0; i < nsCount; i++) {
             elem = (Element) nsList.item(i);
@@ -283,9 +287,9 @@ public class GlobalCatalog extends GlobalAbstract
             defaultNS = getBooleanAttribute(elem, "default", false);
             defaultNS = (defaultNS || (nsCount == 1));
 
-            GlobalNameSpace ns = new GlobalNameSpace(prefix, uri, defaultNS);
-            LOGGER.config("added namespace " + ns);
-            nameSpaces.put(prefix, ns);
+            NameSpace ns = new NameSpace(prefix, uri, defaultNS);
+            LOGGER.config("added NameSpace " + ns);
+            NameSpaces.put(prefix, ns);
 
             if (defaultNS) {
                 defaultNameSpace = ns;
@@ -305,12 +309,12 @@ public class GlobalCatalog extends GlobalAbstract
 
         NodeList dsElements = dsRoot.getElementsByTagName("datastore");
         int dsCnt = dsElements.getLength();
-        GlobalDataStore dsConfig;
+        DataStoreInfo dsConfig;
         Element dsElem;
 
         for (int i = 0; i < dsCnt; i++) {
             dsElem = (Element) dsElements.item(i);
-            dsConfig = new GlobalDataStore(dsElem, this);
+            dsConfig = new DataStoreInfo(dsElem, this);
 
             if (dataStores.containsKey(dsConfig.getId())) {
                 throw new ConfigurationException("duplicated datastore id: "
@@ -383,7 +387,7 @@ public class GlobalCatalog extends GlobalAbstract
         throws IOException {
         URL url;
 
-        //HACK: but I'm not sure if we can get the GlobalServer instance.  This is one thing
+        //HACK: but I'm not sure if we can get the GeoServer instance.  This is one thing
         //that will benefit from splitting up of config loading from representation.
         url = new File(base + fileName).toURL();
 
@@ -396,7 +400,7 @@ public class GlobalCatalog extends GlobalAbstract
 		throws IOException {
 		URL url;
 
-		//HACK: but I'm not sure if we can get the GlobalServer instance.  This is one thing
+		//HACK: but I'm not sure if we can get the GeoServer instance.  This is one thing
 		//that will benefit from splitting up of config loading from representation.
 		url = fileName.toURL();
 
@@ -432,12 +436,12 @@ public class GlobalCatalog extends GlobalAbstract
             }
         } else if (isInfoFile(currentFile)) {
             String curPath = currentFile.getAbsolutePath();
-            Element featureElem = GlobalServer.loadConfig(currentFile.toString());
-            GlobalFeatureType ft = null;
+            Element featureElem = GeoServer.loadConfig(currentFile.toString());
+            FeatureTypeInfo ft = null;
 
             try {
                 File parentDir = currentFile.getParentFile();
-                ft = new GlobalFeatureType(this, featureElem);
+                ft = new FeatureTypeInfo(this, featureElem);
 
                 String pathToSchemaFile = new File(parentDir, "schema.xml")
                     .toString();
@@ -448,7 +452,7 @@ public class GlobalCatalog extends GlobalAbstract
             } catch (ConfigurationException cfge) {
                 //HACK: should use a logger.
                 cfge.printStackTrace(System.out);
-                LOGGER.warning("could not add GlobalFeatureType at " + currentFile
+                LOGGER.warning("could not add FeatureTypeInfo at " + currentFile
                     + " due to " + cfge);
             }
         }
@@ -456,7 +460,7 @@ public class GlobalCatalog extends GlobalAbstract
 
     /*  private void loadType(String filePath) throws ConfigurationException {
        try {
-           Element featureElem = GlobalServer.loadConfig(configFile);
+           Element featureElem = GeoServer.loadConfig(configFile);
            String featureTag = featureElem.getTagName();
            if (!featureTag.equals(rootTag) && !featureTag.equals(OLD_ROOT_TAG)) {
                featureElem = (Element) featureElem.getElementsByTagName(rootTag)
@@ -471,9 +475,9 @@ public class GlobalCatalog extends GlobalAbstract
        NodeList ftlist = fTypesElem.getElementsByTagName("featureType");
        Element ftypeElem;
        int ftCount = ftlist.getLength();
-       GlobalFeatureType ft = null;
+       FeatureTypeInfo ft = null;
        for (int i = 0; i < ftCount; i++) {
-           ft = new GlobalFeatureType(this, (Element) ftlist.item(i));
+           ft = new FeatureTypeInfo(this, (Element) ftlist.item(i));
            featureTypes.put(ft.getName(), ft);
        }
        }*/
@@ -502,7 +506,7 @@ public class GlobalCatalog extends GlobalAbstract
         boolean refresh = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            GlobalDataStore meta = (GlobalDataStore) i.next();
+            DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
@@ -561,7 +565,7 @@ public class GlobalCatalog extends GlobalAbstract
         boolean refresh = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            GlobalDataStore meta = (GlobalDataStore) i.next();
+            DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
@@ -617,7 +621,7 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @throws IOException
      *
-     * @see org.geotools.data.GlobalCatalog#lockRefresh(java.lang.String,
+     * @see org.geotools.data.Data#lockRefresh(java.lang.String,
      *      org.geotools.data.Transaction)
      */
     public boolean lockRefresh(String lockID, Transaction t)
@@ -625,7 +629,7 @@ public class GlobalCatalog extends GlobalAbstract
         boolean refresh = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            GlobalDataStore meta = (GlobalDataStore) i.next();
+            DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
@@ -663,7 +667,7 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @throws IOException
      *
-     * @see org.geotools.data.GlobalCatalog#lockRelease(java.lang.String,
+     * @see org.geotools.data.Data#lockRelease(java.lang.String,
      *      org.geotools.data.Transaction)
      */
     public boolean lockRelease(String lockID, Transaction t)
@@ -671,7 +675,7 @@ public class GlobalCatalog extends GlobalAbstract
         boolean release = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            GlobalDataStore meta = (GlobalDataStore) i.next();
+            DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
@@ -706,11 +710,11 @@ public class GlobalCatalog extends GlobalAbstract
      *
      * @return true if lockID exists
      *
-     * @see org.geotools.data.GlobalCatalog#lockExists(java.lang.String)
+     * @see org.geotools.data.Data#lockExists(java.lang.String)
      */
     public boolean lockExists(String lockID) {
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            GlobalDataStore meta = (GlobalDataStore) i.next();
+            DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled

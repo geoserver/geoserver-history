@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.global.GlobalServer;
-import org.vfny.geoserver.global.GlobalService;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.responses.CapabilitiesResponse;
 import org.vfny.geoserver.responses.ResponseHandler;
 import org.xml.sax.ContentHandler;
@@ -15,11 +15,11 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.2.2.3 2004/01/03 00:20:16 dmzwiers Exp $
+ * @version $Id: Capabilities.java,v 1.2.2.4 2004/01/05 22:14:42 dmzwiers Exp $
  */
 public class Capabilities extends CapabilitiesResponse {
-    protected GlobalService getGlobalService() {
-        return GlobalServer.getInstance().getWMS();
+    protected Service getGlobalService() {
+        return GeoServer.getInstance().getWMS();
     }
 
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {

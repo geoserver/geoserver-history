@@ -22,13 +22,13 @@ import java.util.Map;
 import org.vfny.geoserver.config.CloneLibrary;
 import org.vfny.geoserver.config.DataStructure;
 /**
- * GlobalDataStore purpose.
+ * DataStoreInfo purpose.
  * <p>
  * Used to describe a datastore, typically one specified in the catalog.xml config file. 
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.1.2.2 2004/01/03 00:19:20 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.3 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class DataStoreConfig implements DataStructure{
 
@@ -47,13 +47,13 @@ public class DataStoreConfig implements DataStructure{
 	  /** a short description about this data store */
 	  private String _abstract;
 
-	  /** connection parameters to create the GlobalDataStore */
+	  /** connection parameters to create the DataStoreInfo */
 	  private Map connectionParams;
 	  
 	/**
-	 * GlobalDataStore constructor.
+	 * DataStoreInfo constructor.
 	 * <p>
-	 * Creates a GlobalDataStore to represent an instance with default data.
+	 * Creates a DataStoreInfo to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
@@ -78,9 +78,9 @@ public class DataStoreConfig implements DataStructure{
 	  }
 	
 	/**
-	 * GlobalDataStore constructor.
+	 * DataStoreInfo constructor.
 	 * <p>
-	 * Creates a copy of the GlobalDataStore provided. If the GlobalDataStore provided 
+	 * Creates a copy of the DataStoreInfo provided. If the DataStoreInfo provided 
 	 * is null then default values are used. All the datastructures are cloned. 
 	 * </p>
 	 * @param ds The datastore to copy.
@@ -108,7 +108,7 @@ public class DataStoreConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this GlobalDataStore
+	 * @return A copy of this DataStoreInfo
 	 */
 	  public Object clone(){
 	  	return new DataStoreConfig(this);
@@ -121,7 +121,7 @@ public class DataStoreConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The GlobalDataStore object to test.
+	 * @param obj The DataStoreInfo object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	  public boolean equals(Object obj){

@@ -4,23 +4,23 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.config.*;
+import org.vfny.geoserver.global.dto.*;
 import java.util.*;
 /**
  * default configuration for services
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GlobalService.java,v 1.1.2.1 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  */
-public abstract class GlobalService{
+public abstract class Service extends Abstract{
 	
-	private ServiceConfig config;
+	private ServiceDTO config;
 
     /** DOCUMENT ME! */
     protected String URL;
     
-    public GlobalService(ServiceConfig config){
+    public Service(ServiceDTO config){
     	this.config = config;
     	URL = "";
     }
@@ -66,7 +66,7 @@ public abstract class GlobalService{
      * @deprecated Use GlobalData.getSchemaBaseUrl()
      */
     public String getSchemaBaseUrl() {
-        return GlobalServer.getInstance().getGlobalData().getSchemaBaseUrl();
+        return GeoServer.getInstance().getSchemaBaseUrl();
     }
     
 	/**

@@ -9,14 +9,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.GlobalFeatureType;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.WMSRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
- * represents a GlobalWMS GetMap request. as a extension to the GlobalWMS spec 1.1, we
+ * represents a WMS GetMap request. as a extension to the WMS spec 1.1, we
  * provide the posibility to pass xml encoded Filters in the
  * <code>FILTERS</code>  parameters. This list of filters attachs to the same
  * constraints as the parameters <code>LAYERS</code> and <code>STYLES</code>.
@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.3.2.5 2004/01/03 00:20:18 dmzwiers Exp $
+ * @version $Id: GetMapRequest.java,v 1.3.2.6 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
@@ -124,7 +124,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public GlobalFeatureType[] getLayers() {
+    public FeatureTypeInfo[] getLayers() {
         return mandatorys.layers;
     }
 
@@ -249,7 +249,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param layers DOCUMENT ME!
      */
-    public void setLayers(GlobalFeatureType[] layers) {
+    public void setLayers(FeatureTypeInfo[] layers) {
         mandatorys.layers = layers;
     }
 
@@ -294,7 +294,7 @@ public class GetMapRequest extends WMSRequest {
 
     private class MandatoryParameters {
         /** ordered list of requested layers */
-        GlobalFeatureType[] layers;
+        FeatureTypeInfo[] layers;
 
         /**
          * ordered list of requested layers' styles, in a one to one
@@ -328,7 +328,7 @@ public class GetMapRequest extends WMSRequest {
         boolean writeSvgHeader = true;
 
         /**
-         * as a extension to the GlobalWMS spec 1.1, we provide the posibility to
+         * as a extension to the WMS spec 1.1, we provide the posibility to
          * pass xml encoded Filters in the <code>FILTERS</code>  parameters.
          * This list of filters attachs to the same constraints as the
          * parameters <code>LAYERS</code> and <code>STYLES</code>

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.GlobalNameSpace;
-import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.oldconfig.TypeInfo;
 import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.oldconfig.VersionBean;
@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.5 2004/01/03 00:20:17 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.6 2004/01/05 22:14:42 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */
@@ -39,7 +39,7 @@ public class OldCapabilitiesResponse {
             "org.vfny.geoserver.requests");
 
     /** Configuration information for the server. */
-    private static GlobalServer config = GlobalServer.getInstance();
+    private static GeoServer config = GeoServer.getInstance();
 
     /** XML Tag Type: start */
     private static final int TAG_START = 1;
@@ -154,7 +154,7 @@ public class OldCapabilitiesResponse {
 
         String retString = xmlOutFinal.toString();
 
-        if (!config.getGlobalData().isVerbose()) {
+        if (!config.isVerbose()) {
             //REVISIT: this is not as fast as doing all the formatting
             //ourselves, but I'm not sure if it's worth the effort and
             //code complication, as these return strings will never be
@@ -173,7 +173,7 @@ public class OldCapabilitiesResponse {
      */
     private void addHeaderInfo(String version) {
         String spaces = "   ";
-        String encoding = "<?xml version=\"1.0\" encoding=\"" + config.getGlobalData().getCharSet().displayName()+ "\"?>";
+        String encoding = "<?xml version=\"1.0\" encoding=\"" + config.getCharSet().displayName()+ "\"?>";
         String firstTag = "<WFS_Capabilities version=\"" + version + "\"";
 
         if (version.equals("0.0.15")) {
@@ -183,7 +183,7 @@ public class OldCapabilitiesResponse {
         } else if (version.equals("1.0.0")) {
             firstTag += addNameSpace("", WFS_XMLNS_URL);
 
-            GlobalNameSpace[] namespaces = config.getCatalog().getNameSpaces();
+            NameSpace[] namespaces = config.getData().getNameSpaces();
 
             for (int i = 0; i < namespaces.length; i++) {
                 firstTag += ("\n" + spaces + namespaces[i].toString());
@@ -328,7 +328,7 @@ public class OldCapabilitiesResponse {
     /**
      * Adds feature type metadata to the XML output stream.
      *
-     * @param responseVersion The expected version of the GlobalWFS response.
+     * @param responseVersion The expected version of the WFS response.
      *
      * @throws WfsException For IO problems.
      */

@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.responses.ResponseUtils;
 
 
@@ -64,7 +64,7 @@ import org.vfny.geoserver.responses.ResponseUtils;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.3.2.5 2004/01/03 00:20:18 dmzwiers Exp $
+ * @version $Id: ServiceException.java,v 1.3.2.6 2004/01/05 22:14:44 dmzwiers Exp $
  *
  * @task TODO: print directly to an output stream for getXmlResponse.
  */
@@ -228,7 +228,7 @@ public class ServiceException extends Exception {
      *
      * @return The ServiceExceptionReport of this error.
      *
-     * @task REVISIT: adapt it to handle GlobalWMS too
+     * @task REVISIT: adapt it to handle WMS too
      */
     public String getXmlResponse(boolean printStackTrace) {
         String indent = "   ";
@@ -249,7 +249,7 @@ public class ServiceException extends Exception {
 
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
 
-        returnXml.append(GlobalServer.getInstance().getWFS()
+        returnXml.append(GeoServer.getInstance().getWFS()
                                      .getSchemaBaseUrl());
 
         returnXml.append("wfs/1.0.0/OGC-exception.xsd\">\n");

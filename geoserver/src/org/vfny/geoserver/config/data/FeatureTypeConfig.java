@@ -26,13 +26,13 @@ import org.vfny.geoserver.config.EqualsLibrary;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
- * GlobalFeatureType purpose.
+ * FeatureTypeInfo purpose.
  * <p>
- * Description of GlobalFeatureType ...
+ * Description of FeatureTypeInfo ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.2 2004/01/03 00:19:20 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.3 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class FeatureTypeConfig implements DataStructure{
 	
@@ -47,7 +47,7 @@ public class FeatureTypeConfig implements DataStructure{
 	private Envelope latLongBBox;
 	
 	/**
-	 * native wich EPGS code for the GlobalFeatureType
+	 * native wich EPGS code for the FeatureTypeInfo
 	 */
 	private int SRS;
 	
@@ -92,7 +92,7 @@ public class FeatureTypeConfig implements DataStructure{
 	
 	/**
 	 * the list of exposed attributes. If the list is empty or not present
-	 * at all, all the GlobalFeatureType's attributes are exposed, if is present,
+	 * at all, all the FeatureTypeInfo's attributes are exposed, if is present,
 	 * only those oattributes in this list will be exposed by the services
 	 */
 	private Filter definitionQuery = null;
@@ -103,9 +103,9 @@ public class FeatureTypeConfig implements DataStructure{
 	private String defaultStyle;
 
 	/**
-	 * GlobalFeatureType constructor.
+	 * FeatureTypeInfo constructor.
 	 * <p>
-	 * Creates a GlobalFeatureType to represent an instance with default data.
+	 * Creates a FeatureTypeInfo to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
@@ -136,9 +136,9 @@ public class FeatureTypeConfig implements DataStructure{
 	}
 
 	/**
-	 * GlobalFeatureType constructor.
+	 * FeatureTypeInfo constructor.
 	 * <p>
-	 * Creates a copy of the GlobalFeatureType provided. If the GlobalFeatureType provided 
+	 * Creates a copy of the FeatureTypeInfo provided. If the FeatureTypeInfo provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
 	 * @param f The featuretype to copy.
@@ -173,7 +173,7 @@ public class FeatureTypeConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this GlobalFeatureType
+	 * @return A copy of this FeatureTypeInfo
 	 */
 	public Object clone(){
 		return new FeatureTypeConfig(this);
@@ -186,7 +186,7 @@ public class FeatureTypeConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The GlobalFeatureType object to test.
+	 * @param obj The FeatureTypeInfo object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){

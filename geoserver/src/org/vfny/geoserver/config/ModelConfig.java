@@ -28,13 +28,13 @@ import org.vfny.geoserver.config.wms.WMSConfig;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ModelConfig.java,v 1.1.2.3 2004/01/03 00:19:20 dmzwiers Exp $
+ * @version $Id: ModelConfig.java,v 1.1.2.4 2004/01/05 22:14:42 dmzwiers Exp $
  */
 public class ModelConfig implements DataStructure {
 	
 	/**
 	 * The catalog configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.data.GlobalCatalog
+	 * @see org.vfny.geoserver.config.data.Data
 	 */
 	private CatalogConfig catalog;
 	
@@ -46,13 +46,13 @@ public class ModelConfig implements DataStructure {
 	
 	/**
 	 * The wfs configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.wfs.GlobalWFS
+	 * @see org.vfny.geoserver.config.wfs.WFS
 	 */
 	private WFSConfig wfs;
 	
 	/**
 	 * The wms configuration data structure represented in memory.
-	 * @see org.vfny.geoserver.config.wms.GlobalWMS
+	 * @see org.vfny.geoserver.config.wms.WMS
 	 */
 	private WMSConfig wms;
 	
@@ -110,9 +110,9 @@ public class ModelConfig implements DataStructure {
 	 * @see java.lang.Object#clone()
 	 * @return A clone of this object.
 	 * @see org.vfny.geoserver.config.GlobalData#clone()
-	 * @see org.vfny.geoserver.config.data.GlobalCatalog#clone()
-	 * @see org.vfny.geoserver.config.wfs.GlobalWFS#clone()
-	 * @see org.vfny.geoserver.config.wms.GlobalWMS#clone()
+	 * @see org.vfny.geoserver.config.data.Data#clone()
+	 * @see org.vfny.geoserver.config.wfs.WFS#clone()
+	 * @see org.vfny.geoserver.config.wms.WMS#clone()
 	 */
 	public Object clone(){
 		return new ModelConfig(this);
@@ -128,9 +128,9 @@ public class ModelConfig implements DataStructure {
 	 * @param obj An instance of a ModelConfig Object to be tested for equality.
 	 * @return true when the two objects are recursively equal.
 	 * @see org.vfny.geoserver.config.GlobalData#equals()
-	 * @see org.vfny.geoserver.config.data.GlobalCatalog#equals()
-	 * @see org.vfny.geoserver.config.wfs.GlobalWFS#equals()
-	 * @see org.vfny.geoserver.config.wms.GlobalWMS#equals()
+	 * @see org.vfny.geoserver.config.data.Data#equals()
+	 * @see org.vfny.geoserver.config.wfs.WFS#equals()
+	 * @see org.vfny.geoserver.config.wms.WMS#equals()
 	 */
 	public boolean equals(Object obj){
 		if(obj == null || !(obj instanceof ModelConfig))

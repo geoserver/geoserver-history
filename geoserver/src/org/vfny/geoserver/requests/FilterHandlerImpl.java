@@ -16,7 +16,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * Minimal class to implement the FilterHandler interface.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FilterHandlerImpl.java,v 1.3.2.3 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: FilterHandlerImpl.java,v 1.3.2.4 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler,
     FilterHandler {
@@ -37,7 +37,7 @@ public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler,
     /**
      * Recieves the filter from the filter parsing children.
      *
-     * @param filter (OGC GlobalWFS) Filter from (SAX) filter..
+     * @param filter (OGC WFS) Filter from (SAX) filter..
      */
     public void filter(Filter filter) {
         LOGGER.finest("found filter: " + filter.toString());
@@ -47,7 +47,7 @@ public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler,
     /**
      * Gives filter to whoever wants it.
      *
-     * @return (OGC GlobalWFS) Filter from (SAX) filter..
+     * @return (OGC WFS) Filter from (SAX) filter..
      */
     public Filter getFilter() {
         return currentFilter;

@@ -15,8 +15,8 @@ import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.GlobalFeatureType;
-import org.vfny.geoserver.global.GlobalCatalog;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.2.2.5 2004/01/03 00:20:17 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.2.2.6 2004/01/05 22:14:42 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -57,7 +57,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String version = getRequestVersion();
         request.setVersion(version);
 
-        GlobalFeatureType[] layers = parseMandatoryParameters(request);
+        FeatureTypeInfo[] layers = parseMandatoryParameters(request);
         parseOptionalParameters(request);
         parseCustomParameters(request, layers);
 
@@ -129,9 +129,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private GlobalFeatureType[] parseMandatoryParameters(GetMapRequest request)
+    private FeatureTypeInfo[] parseMandatoryParameters(GetMapRequest request)
         throws WmsException {
-        GlobalFeatureType[] layers = parseLayers();
+        FeatureTypeInfo[] layers = parseLayers();
         request.setLayers(layers);
 
         List styles = parseStyles(layers.length);
@@ -167,7 +167,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * <li>
      * FILTERS if present, must contain a list of filters, exactly one per
      * feature type requested, in the same format as for the <i>FILTER</i>
-     * parameter in GlobalWFS's GetFeature request.
+     * parameter in WFS's GetFeature request.
      * </li>
      * <li>
      * ATTRIBUTES wich attributes of each layer will be sent as XML attributes
@@ -191,7 +191,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * @throws ServiceException DOCUMENT ME!
      */
     private void parseCustomParameters(GetMapRequest request,
-        GlobalFeatureType[] layers) throws ServiceException {
+        FeatureTypeInfo[] layers) throws ServiceException {
         Filter[] filters = parseFilters(layers.length);
         request.setFilters(filters);
 
@@ -205,7 +205,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         request.setWriteSvgHeader(writeSvgHeader);
     }
 
-    private List parseAttributes(GlobalFeatureType[] layers)
+    private List parseAttributes(FeatureTypeInfo[] layers)
         throws WmsException {
         String rawAtts = getValue("ATTRIBUTES");
         LOGGER.finer("parsing attributes " + rawAtts);
@@ -313,7 +313,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             throw new WmsException(msg, getClass().getName());
         }
 
-        Map configuredStyles = config.getCatalog().getStyles();
+        Map configuredStyles = config.getData().getStyles();
         String st;
 
         for (Iterator it = styles.iterator(); it.hasNext();) {
@@ -360,7 +360,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private GlobalFeatureType[] parseLayers() throws WmsException {
+    private FeatureTypeInfo[] parseLayers() throws WmsException {
         List layers = layers = readFlat(getValue("LAYERS"), INNER_DELIMETER);
         int layerCount = layers.size();
 
@@ -369,10 +369,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 getClass().getName());
         }
 
-        GlobalFeatureType[] featureTypes = new GlobalFeatureType[layerCount];
-        GlobalCatalog catalog = config.getCatalog();
+        FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
+        Data catalog = config.getData();
         String layerName = null;
-        GlobalFeatureType ftype = null;
+        FeatureTypeInfo ftype = null;
 
         try {
             for (int i = 0; i < layerCount; i++) {

@@ -35,12 +35,12 @@ import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
- * Support FeatureSource decorator for GlobalFeatureType that takes care of
- * mapping the GlobalFeatureType's FeatureSource with the schema and
+ * Support FeatureSource decorator for FeatureTypeInfo that takes care of
+ * mapping the FeatureTypeInfo's FeatureSource with the schema and
  * definition query configured for it.
  *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.3 2004/01/03 00:20:14 dmzwiers Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.4 2004/01/05 22:14:40 dmzwiers Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
     /** DOCUMENT ME!  */
@@ -103,13 +103,13 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
     }
 
     /**
-     * creates a list of GlobalFeatureType's attribute names based on the attributes
+     * creates a list of FeatureTypeInfo's attribute names based on the attributes
      * requested by <code>query</code> and making sure they not contain any
      * non exposed attribute.
      *
      * <p>
      * Exposed attributes are those configured in the "attributes" element of
-     * the GlobalFeatureType's configuration
+     * the FeatureTypeInfo's configuration
      * </p>
      *
      * @param query DOCUMENT ME!
@@ -147,7 +147,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
     }
 
     /**
-     * If a definition query has been configured for the GlobalFeatureType, makes and
+     * If a definition query has been configured for the FeatureTypeInfo, makes and
      * return a new Filter that contains both the query's filter and the
      * layer's definition one, by logic AND'ing them.
      *

@@ -26,14 +26,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * This class represents a GlobalFeatureType element in a Capabilities document along
+ * This class represents a FeatureTypeInfo element in a Capabilities document along
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.2.2.4 $ $Date: 2004/01/03 00:20:15 $
+ * @version $Revision: 1.2.2.5 $ $Date: 2004/01/05 22:14:41 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
- *       castor generated GlobalFeatureType, but it is now unclear if we _really_
+ *       castor generated FeatureTypeInfo, but it is now unclear if we _really_
  *       need this internal class, or if a TypeInfo can just hold it all.
  */
 class FeatureType
@@ -140,12 +140,12 @@ class FeatureType
   }
 
   /**
-   * static factory, reads a GlobalFeatureType from an xml file, using the default
+   * static factory, reads a FeatureTypeInfo from an xml file, using the default
    * root tag.
    *
    * @param featureTypeFile the path to the configuration file.
    *
-   * @return the GlobalFeatureType object constructed from the xml elements of the
+   * @return the FeatureTypeInfo object constructed from the xml elements of the
    *         file.
    *
    * @throws ConfigurationException If anything goes wrong reading the xml.
@@ -157,14 +157,14 @@ class FeatureType
   }
 
   /**
-   * static factory, reads a GlobalFeatureType from an xml file, using the passed
+   * static factory, reads a FeatureTypeInfo from an xml file, using the passed
    * in root tag.
    *
    * @param featureTypeFile the path to the configuration file.
    * @param rootTag the tag of the element whose children are the appropriate
    *        configuration elements.
    *
-   * @return the GlobalFeatureType object constructed from the xml elements of the
+   * @return the FeatureTypeInfo object constructed from the xml elements of the
    *         file.
    *
    * @throws ConfigurationException if there are any problems.

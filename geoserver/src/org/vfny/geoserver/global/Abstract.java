@@ -17,13 +17,26 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalAbstract.java,v 1.1.2.1 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: Abstract.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  */
-public abstract class GlobalAbstract {
+public abstract class Abstract {
     /** DOCUMENT ME! */
     protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.config");
+            "org.vfny.geoserver.global");
 
+	/**
+	 * 
+	 * getDTO purpose.
+	 * <p>
+	 * A hook to get the DTO object of all subclasses. 
+	 * This method is dangerous as it return the original. 
+	 * It is not intended to be public, and should only be accessed 
+	 * without a clone being created inside the package.
+	 * </p>
+	 * @return A DTO object to be casted as appropriate. 
+	 */
+	abstract Object getDTO();
+	
     /**
      * checks <code>s</code> for nullity and if so, returns an empty String,
      * else just returns <code>s</code>

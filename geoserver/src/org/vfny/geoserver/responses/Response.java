@@ -71,7 +71,7 @@ import org.vfny.geoserver.requests.Request;
  * </p>
  * <p>
  * This is specially usefull for streamed responses such as wfs GetFeature or
- * GlobalWMS GetMap, where the execution process can be used to parse
+ * WMS GetMap, where the execution process can be used to parse
  * parameters, execute queries upon the corresponding data sources and leave
  * things ready to generate a streamed response when the consumer calls writeTo.
  * </p>
@@ -79,7 +79,7 @@ import org.vfny.geoserver.requests.Request;
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.2.2.5 2004/01/04 05:13:23 jive Exp $
+ * @version $Id: Response.java,v 1.2.2.6 2004/01/05 22:14:43 dmzwiers Exp $
  */
 public interface Response {
     /**
@@ -101,7 +101,7 @@ public interface Response {
      *        Request will be created by either a KVP or XML request reader;
      *        resulting in a Request object more usefull than a set of raw
      *        parameters, as can be the list of feature types requested as a
-     *        set of GlobalFeatureType objects rather than just a list of
+     *        set of FeatureTypeInfo objects rather than just a list of
      *        String type names
      *
      * @throws ServiceException
@@ -123,7 +123,7 @@ public interface Response {
      * that an inconsistence in the work flow that may result in an
      * inconsistence between the response content and the content type
      * declared for it, if such an implementation can return different
-     * contents based on the request that has originated it. i.e. a GlobalWMS GetMap
+     * contents based on the request that has originated it. i.e. a WMS GetMap
      * response will return different content encodings based on the FORMAT
      * requested, so it would be impossible to it knowing the exact MIME
      * response type if it has not processed the request yet.
@@ -170,7 +170,7 @@ public interface Response {
      * ByteArrayOutputStream
      * </p>
      * JG: Consider using a Writer here? GR: I don't think so, because not all
-     * responses will be char sequences, such as an image in a GlobalWMS GetImage
+     * responses will be char sequences, such as an image in a WMS GetImage
      * response.
      *
      * @param out

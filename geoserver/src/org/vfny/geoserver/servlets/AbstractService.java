@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
@@ -49,7 +49,7 @@ import org.vfny.geoserver.responses.Response;
  * <li>
  * ask the Request Reader for the Request object - t this time, request
  * parameters should be fully checked<br>
- * i.e. the Request objects contains the list of GlobalFeatureType's rather
+ * i.e. the Request objects contains the list of FeatureTypeInfo's rather
  * than just the type names.
  * </li>
  * <li>
@@ -78,7 +78,7 @@ import org.vfny.geoserver.responses.Response;
  * specific content type; and that Response.getContentType is called AFTER
  * Response.execute, since the MIME type can depend on any request parameter
  * or another kind of desission making during the execute process. (i.e.
- * FORMAT in GlobalWMS GetMap)
+ * FORMAT in WMS GetMap)
  * </p>
  * 
  * <p>
@@ -89,7 +89,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.3.2.5 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.3.2.6 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -97,11 +97,10 @@ public abstract class AbstractService extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
-    protected static final GlobalServer config = GlobalServer.getInstance();
+    protected static final GeoServer config = GeoServer.getInstance();
 
     /** Specifies mime type */
-    protected static final String MIME_TYPE = config.getGlobalData()
-                                                    .getMimeType();
+    protected static final String MIME_TYPE = config.getMimeType();
     private static Map context;
 
     /**
@@ -449,7 +448,7 @@ public abstract class AbstractService extends HttpServlet {
      * @return DOCUMENT ME!
      */
     protected String getMimeType() {
-        return config.getGlobalData().getMimeType();
+        return config.getMimeType();
     }
 
     /**
@@ -744,7 +743,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.3.2.5 $
+ * @version $Revision: 1.3.2.6 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

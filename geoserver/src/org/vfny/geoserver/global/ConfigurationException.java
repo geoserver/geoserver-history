@@ -8,7 +8,7 @@ package org.vfny.geoserver.global;
  * Thrown when there is an error in configuration.
  *
  * @author Chris Holmes
- * @version $Id: ConfigurationException.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: ConfigurationException.java,v 1.1.2.2 2004/01/05 22:14:40 dmzwiers Exp $
  */
 public class ConfigurationException extends Exception {
     /**
@@ -29,4 +29,13 @@ public class ConfigurationException extends Exception {
     public ConfigurationException(String msg, Throwable exp) {
         super(msg, exp);
     }
+
+	/**
+	 * Constructs a new instance of ConfigurationException
+	 *
+	 * @param exp the throwable object which caused this exception
+	 */
+	public ConfigurationException(Throwable exp) {
+		super(exp);
+	}
 }

@@ -25,7 +25,7 @@ import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.GlobalFeatureType;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.4.2.3 2004/01/03 00:20:16 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.4.2.4 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -167,7 +167,7 @@ public class JAIMapResponse extends GetMapDelegate {
      * @task TODO: Update to feature streaming and latest api, Map is
      *       deprecated.
      */
-    protected void execute(GlobalFeatureType[] requestedLayers,
+    protected void execute(FeatureTypeInfo[] requestedLayers,
         FeatureResults[] resultLayers, Style[] styles)
         throws WmsException {
         GetMapRequest request = getRequest();

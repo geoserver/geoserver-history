@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 
@@ -35,9 +35,9 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.7.2.5 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: Dispatcher.java,v 1.7.2.6 2004/01/05 22:14:41 dmzwiers Exp $
  *
- * @task TODO: rework to work too for GlobalWMS servlets, and to get the servlets
+ * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
  */
 public class Dispatcher extends HttpServlet {
@@ -46,11 +46,10 @@ public class Dispatcher extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
-    private static final GlobalServer config = GlobalServer.getInstance();
+    private static final GeoServer config = GeoServer.getInstance();
 
     /** Specifies MIME type */
-    protected static final String MIME_TYPE = config.getGlobalData()
-                                                    .getMimeType();
+    protected static final String MIME_TYPE = config.getMimeType();
 
     /** Map metadata request type */
     public static String META_REQUEST = "GetMeta";

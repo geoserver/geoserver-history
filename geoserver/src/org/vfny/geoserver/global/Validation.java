@@ -18,12 +18,8 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.validation.Validation;
-import org.geotools.validation.ValidationProcessor;
-import org.vfny.geoserver.config.ModelConfig;
-
 /**
- * GlobalValidation sets up the Tests used for the VWFS.
+ * Validation sets up the Tests used for the VWFS.
  * 
  * <p>
  * The ValidationProcess stores test in two data structures according to test
@@ -51,11 +47,11 @@ import org.vfny.geoserver.config.ModelConfig;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GlobalValidation.java,v 1.1.2.2 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: Validation.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
-public class GlobalValidation extends GlobalAbstract {
+public class Validation extends Abstract {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");    
     /** This is the validation processor we are configuring.
@@ -66,13 +62,13 @@ public class GlobalValidation extends GlobalAbstract {
      * </p>
      * But not today.
      */
-    ValidationProcessor processor = new ValidationProcessor();
+	org.geotools.validation.ValidationProcessor processor = new org.geotools.validation.ValidationProcessor();
     
     /** Lookup of PlugInInfo */
     Map plugIns;
     
     /**
-     * Configure based on gt2 GlobalCatalog.
+     * Configure based on gt2 Data.
      * <p>
      * Configuration based on the following:
      * <ul>
@@ -87,7 +83,7 @@ public class GlobalValidation extends GlobalAbstract {
      * @param config DOCUMENT ME!
      * @param catalog
      */
-  /*  public GlobalValidation(Map config ) throws ConfigurationException {
+  /*  public Validation(Map config ) throws ConfigurationException {
         LOGGER.info("loading validation configuration");
 
         List tests = get( config, "validation", Collections.EMPTY_LIST );
@@ -127,13 +123,13 @@ public class GlobalValidation extends GlobalAbstract {
         }                
     }*/
     /**
-     * GlobalValidation constructor.
+     * Validation constructor.
      * <p>
      * Description
      * </p>
      * @param dir Validation Directory
      */
-   /* public GlobalValidation(File dir) {
+   /* public Validation(File dir) {
         if( dir.exists() ){
             LOGGER.info("Default isValidALL and uniqueFID enabled");
             // XML not supported yet - lets use a couple Validations
@@ -155,7 +151,7 @@ public class GlobalValidation extends GlobalAbstract {
         }        
     }*/
     
-    public GlobalValidation(ModelConfig config){
+    public Validation(){
     	// do nothing yet.
     }
     
@@ -166,8 +162,12 @@ public class GlobalValidation extends GlobalAbstract {
      * </p>
      * @return
      */
-    public ValidationProcessor getProcessor() {
+    public org.geotools.validation.ValidationProcessor getProcessor() {
         return processor;
+    }
+    
+    Object getDTO(){
+    	return null;
     }
 
 }
@@ -180,7 +180,7 @@ public class GlobalValidation extends GlobalAbstract {
  * 
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf 
  */
-class PlugIn extends GlobalAbstract {
+class PlugIn extends Abstract {
     Map defaults;
     String plugInName;
     String plugInDescription;
@@ -295,4 +295,8 @@ class PlugIn extends GlobalAbstract {
             }
         }
     }
+    
+	Object getDTO(){
+		return null;
+	}
 }

@@ -34,9 +34,9 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.1.2.3 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: WmsDispatcher.java,v 1.1.2.4 2004/01/05 22:14:43 dmzwiers Exp $
  *
- * @task TODO: rework to work too for GlobalWMS servlets, and to get the servlets
+ * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
  */
 public class WmsDispatcher extends Dispatcher {

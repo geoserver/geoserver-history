@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Simple tester for GlobalWFS post requests. Can be called two ways. If
+/** Simple tester for WFS post requests. Can be called two ways. If
  *  called with no parameters, it displays the form, otherwise it displays
  *  the result page.
  *

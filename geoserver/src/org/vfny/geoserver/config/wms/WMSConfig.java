@@ -21,21 +21,21 @@ import java.util.Date;
 import org.vfny.geoserver.config.DataStructure;
 import org.vfny.geoserver.config.ServiceConfig;
 /**
- * GlobalWMS purpose.
+ * WMS purpose.
  * <p>
- * Description of GlobalWMS 
- * Used to store GlobalWMS data. 
+ * Description of WMS 
+ * Used to store WMS data. 
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.1.2.3 2004/01/03 00:19:20 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.1.2.4 2004/01/05 22:14:43 dmzwiers Exp $
  */
 public class WMSConfig implements DataStructure{
 
 	private static final String WMS_VERSION = "1.1.1";
 
-	/** GlobalWMS spec specifies this fixed service name */
-	//private static final String FIXED_SERVICE_NAME = "OGC:GlobalWMS";
+	/** WMS spec specifies this fixed service name */
+	//private static final String FIXED_SERVICE_NAME = "OGC:WMS";
 	//private static final String[] EXCEPTION_FORMATS = {
 	//	"application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
 	//	"application/vnd.ogc.se_blank"
@@ -57,9 +57,9 @@ public class WMSConfig implements DataStructure{
 	private ServiceConfig service;
 
 	/**
-	 * GlobalWMS constructor.
+	 * WMS constructor.
 	 * <p>
-	 * Creates a GlobalWMS to represent an instance with default data.
+	 * Creates a WMS to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
@@ -70,12 +70,12 @@ public class WMSConfig implements DataStructure{
 	}
 
 	/**
-	 * GlobalWMS constructor.
+	 * WMS constructor.
 	 * <p>
-	 * Creates a copy of the GlobalWMS provided. If the GlobalWMS provided 
+	 * Creates a copy of the WMS provided. If the WMS provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
-	 * @param f The GlobalWMS to copy.
+	 * @param f The WMS to copy.
 	 */
 	public WMSConfig(WMSConfig w){
 		if(w == null){
@@ -94,7 +94,7 @@ public class WMSConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this GlobalWMS
+	 * @return A copy of this WMS
 	 */
 	public Object clone(){
 		return new WMSConfig(this);
@@ -107,7 +107,7 @@ public class WMSConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The GlobalWMS object to test.
+	 * @param obj The WMS object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){

@@ -16,7 +16,7 @@ import org.vfny.geoserver.WfsException;
  * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: SubTransactionRequest.java,v 1.2.2.3 2004/01/03 00:20:16 dmzwiers Exp $
+ * @version $Id: SubTransactionRequest.java,v 1.2.2.4 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public abstract class SubTransactionRequest {
     public static final short UPDATE = 0;
@@ -56,7 +56,7 @@ public abstract class SubTransactionRequest {
     public void setFilter(Filter filter) throws WfsException {
     }
 
-    /** Name of GlobalFeatureType being modified */
+    /** Name of FeatureTypeInfo being modified */
     public String getTypeName() {
         return typeName;
     }

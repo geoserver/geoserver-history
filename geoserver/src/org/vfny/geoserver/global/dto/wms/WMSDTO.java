@@ -24,14 +24,14 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: WMSDTO.java,v 1.1.2.2 2004/01/05 22:14:43 dmzwiers Exp $
  */
 public final class WMSDTO implements DataStructure {
     private static final String WMS_VERSION = "1.1.1";
 
-    /** GlobalWMS spec specifies this fixed service name */
+    /** WMS spec specifies this fixed service name */
 
-    //private static final String FIXED_SERVICE_NAME = "OGC:GlobalWMS";
+    //private static final String FIXED_SERVICE_NAME = "OGC:WMS";
     //private static final String[] EXCEPTION_FORMATS = {
     //	"application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
     //	"application/vnd.ogc.se_blank"
@@ -39,7 +39,7 @@ public final class WMSDTO implements DataStructure {
 
     /** when the configuration was loaded. */
     private Date updateTime = new Date();
-
+	private boolean gmlPrefixing = false;
     /**
      * Constant when loaded. Describes where to find the service on the server.
      */
@@ -49,10 +49,10 @@ public final class WMSDTO implements DataStructure {
     private ServiceDTO service;
 
     /**
-     * GlobalWMS constructor.
+     * WMS constructor.
      * 
      * <p>
-     * Creates a GlobalWMS to represent an instance with default data.
+     * Creates a WMS to represent an instance with default data.
      * </p>
      *
      * @see defaultSettings()
@@ -64,14 +64,14 @@ public final class WMSDTO implements DataStructure {
     }
 
     /**
-     * GlobalWMS constructor.
+     * WMS constructor.
      * 
      * <p>
-     * Creates a copy of the GlobalWMS provided. If the GlobalWMS provided  is
+     * Creates a copy of the WMS provided. If the WMS provided  is
      * null then default values are used. All the data structures are cloned.
      * </p>
      *
-     * @param w The GlobalWMS to copy.
+     * @param w The WMS to copy.
      */
     public WMSDTO(WMSDTO w) {
         if (w == null) {
@@ -83,6 +83,7 @@ public final class WMSDTO implements DataStructure {
         updateTime = (Date) w.getUpdateTime().clone();
         describeUrl = w.getDescribeUrl();
         service = (ServiceDTO) w.getService().clone();
+		gmlPrefixing = w.isGmlPrefixing();
     }
 
     /**
@@ -92,7 +93,7 @@ public final class WMSDTO implements DataStructure {
      * creates a clone of this object
      * </p>
      *
-     * @return A copy of this GlobalWMS
+     * @return A copy of this WMS
      *
      * @see java.lang.Object#clone()
      */
@@ -108,7 +109,7 @@ public final class WMSDTO implements DataStructure {
      * object.
      * </p>
      *
-     * @param obj The GlobalWMS object to test.
+     * @param obj The WMS object to test.
      *
      * @return true when the object passed is the same as this object.
      *
@@ -207,4 +208,26 @@ public final class WMSDTO implements DataStructure {
     public void setDescribeUrl(String string) {
         describeUrl = string;
     }
+	/**
+	 * isGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public boolean isGmlPrefixing() {
+		return gmlPrefixing;
+	}
+
+	/**
+	 * setGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param b
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
+
 }

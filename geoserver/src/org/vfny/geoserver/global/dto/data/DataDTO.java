@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.global.dto.data;
 
-import org.vfny.geoserver.config.CloneLibrary;
-import org.vfny.geoserver.config.DataStructure;
-import org.vfny.geoserver.config.EqualsLibrary;
+import org.vfny.geoserver.global.dto.CloneLibrary;
+import org.vfny.geoserver.global.dto.DataStructure;
+import org.vfny.geoserver.global.dto.EqualsLibrary;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,17 +26,17 @@ import java.util.Map;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: DataDTO.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  *
  * @see DataSource
- * @see GlobalFeatureType
+ * @see FeatureTypeInfo
  * @see StyleConfig
  */
-public final class CatalogDTO implements DataStructure {
+public final class DataDTO implements DataStructure {
     /**
      * A set of datastores and their names.
      *
-     * @see org.vfny.geoserver.config.data.GlobalDataStore
+     * @see org.vfny.geoserver.config.data.DataStoreInfo
      */
     private Map dataStores;
 
@@ -50,7 +50,7 @@ public final class CatalogDTO implements DataStructure {
     /**
      * A set of featuretypes and their names.
      *
-     * @see org.vfny.geoserver.config.data.GlobalFeatureType
+     * @see org.vfny.geoserver.config.data.FeatureTypeInfo
      */
     private Map featuresTypes;
 
@@ -69,30 +69,30 @@ public final class CatalogDTO implements DataStructure {
     private NameSpaceDTO defaultNameSpace;
 
     /**
-     * GlobalCatalog constructor.
+     * Data constructor.
      * 
      * <p>
-     * Creates a GlobalCatalog to represent an instance with default data.
+     * Creates a Data to represent an instance with default data.
      * </p>
      *
      * @see defaultSettings()
      */
-    public CatalogDTO() {
+    public DataDTO() {
         defaultSettings();
     }
 
     /**
-     * GlobalCatalog constructor.
+     * Data constructor.
      * 
      * <p>
-     * Creates a copy of the GlobalCatalog provided. If the GlobalCatalog
+     * Creates a copy of the Data provided. If the Data
      * provided  is null then default values are used. All the datastructures
      * are cloned.
      * </p>
      *
      * @param c The catalog to copy.
      */
-    public CatalogDTO(CatalogDTO c) {
+    public DataDTO(DataDTO c) {
         try {
             dataStores = CloneLibrary.clone(c.getDataStores());
         } catch (Exception e) {
@@ -143,12 +143,12 @@ public final class CatalogDTO implements DataStructure {
      * creates a clone of this object
      * </p>
      *
-     * @return A copy of this GlobalCatalog
+     * @return A copy of this Data
      *
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new CatalogDTO(this);
+        return new DataDTO(this);
     }
 
     /**
@@ -159,18 +159,18 @@ public final class CatalogDTO implements DataStructure {
      * object.
      * </p>
      *
-     * @param obj The GlobalCatalog object to test.
+     * @param obj The Data object to test.
      *
      * @return true when the object passed is the same as this object.
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof CatalogDTO)) {
+        if ((obj == null) || !(obj instanceof DataDTO)) {
             return false;
         }
 
-        CatalogDTO c = (CatalogDTO) obj;
+        DataDTO c = (DataDTO) obj;
         boolean r = true;
 
         if (dataStores != null) {
@@ -224,8 +224,8 @@ public final class CatalogDTO implements DataStructure {
      *
      * @return
      */
-    public DataStoreDTO getDataStore(String key) {
-        return (DataStoreDTO) dataStores.get(key);
+    public DataStoreInfoDTO getDataStore(String key) {
+        return (DataStoreInfoDTO) dataStores.get(key);
     }
 
     /**
@@ -350,7 +350,7 @@ public final class CatalogDTO implements DataStructure {
      * @param key
      * @param ds DOCUMENT ME!
      */
-    public void addDataStore(String key, DataStoreDTO ds) {
+    public void addDataStore(String key, DataStoreInfoDTO ds) {
         if (dataStores == null) {
             dataStores = new HashMap();
         }
@@ -371,12 +371,12 @@ public final class CatalogDTO implements DataStructure {
      *
      * @return DOCUMENT ME!
      */
-    public DataStoreDTO removeDataStore(String key) {
+    public DataStoreInfoDTO removeDataStore(String key) {
         if (dataStores == null) {
             dataStores = new HashMap();
         }
 
-        return (DataStoreDTO) dataStores.remove(key);
+        return (DataStoreInfoDTO) dataStores.remove(key);
     }
 
     /**

@@ -46,7 +46,7 @@ import org.geotools.validation.ValidationResults;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NullZeroFeatureValidation.java,v 1.2.2.2 2004/01/03 00:20:16 dmzwiers Exp $
+ * @version $Id: NullZeroFeatureValidation.java,v 1.2.2.3 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class NullZeroFeatureValidation implements FeatureValidation {
     private String path;
@@ -70,7 +70,7 @@ public class NullZeroFeatureValidation implements FeatureValidation {
      * @throws Exception
      *
      * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature,
-     *      org.geotools.feature.GlobalFeatureType,
+     *      org.geotools.feature.FeatureTypeInfo,
      *      org.geotools.validation.ValidationResults)
      */
     public boolean validate(Feature feature, FeatureType type,
@@ -188,7 +188,7 @@ public class NullZeroFeatureValidation implements FeatureValidation {
      * @param string the path which would be used if the validation method was executed.
      * 
      * @see org.geotools.validation.NullZeroFeatureValidation#validate(org.geotools.feature.Feature,
-     *      org.geotools.feature.GlobalFeatureType,
+     *      org.geotools.feature.FeatureTypeInfo,
      *      org.geotools.validation.ValidationResults)
      */
     public void setPath(String string) {

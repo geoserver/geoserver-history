@@ -10,12 +10,12 @@ import org.geotools.filter.Filter;
 
 
 /**
- * Defines a GlobalWFS Delete request, an element of TransactionRequest.
+ * Defines a WFS Delete request, an element of TransactionRequest.
  * <p>
- * Defines a GlobalWFS delete request, which is a type transaction request.  Full
+ * Defines a WFS delete request, which is a type transaction request.  Full
  * transaction requests may contain one or more delete requests.  Note that
  * this delete request object is slightly different than it is defined in the
- * GlobalWFS 1.0 specification.  In the specification, the delete request may
+ * WFS 1.0 specification.  In the specification, the delete request may
  * contain one or more filters and feature types for deletion.  In this
  * construction - for consistency - each delete request may contain only a
  * single feature type delete operation and filter.  This rationalizes the
@@ -33,7 +33,7 @@ import org.geotools.filter.Filter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteRequest.java,v 1.2.2.4 2004/01/03 00:20:16 dmzwiers Exp $
+ * @version $Id: DeleteRequest.java,v 1.2.2.5 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */
@@ -55,7 +55,7 @@ public class DeleteRequest extends SubTransactionRequest {
     }
 
     /**
-     * Gets the Name of the GlobalFeatureType for this request.
+     * Gets the Name of the FeatureTypeInfo for this request.
      *
      * @return The feature type name.
      */

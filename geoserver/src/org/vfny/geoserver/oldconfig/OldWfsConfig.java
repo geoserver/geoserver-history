@@ -27,10 +27,10 @@ import org.xml.sax.SAXException;
  * not part of the ServiceConfig element of a capabilities response.  They are
  * currently part of the same config file, but making a seperate class allows
  * us to easily seperate the elements out to different configuration files in
- * the future, such as for a GlobalWMS or WCS.
+ * the future, such as for a WMS or WCS.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: OldWfsConfig.java,v 1.2.2.4 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: OldWfsConfig.java,v 1.2.2.5 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class OldWfsConfig
     implements java.io.Serializable

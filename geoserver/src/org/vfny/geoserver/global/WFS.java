@@ -4,28 +4,33 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.config.wfs.*;
+import org.vfny.geoserver.global.dto.wfs.*;
 
 /**
- * Represents a configuration of the GlobalWFS service.  Inherits most everything
+ * Represents a configuration of the WFS service.  Inherits most everything
  * from ServiceConfig.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GlobalWFS.java,v 1.1.2.2 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  */
-public class GlobalWFS extends GlobalService {
+public class WFS extends Service {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
     public static final String WFS_BASIC_LOC = WFS_FOLDER + "GlobalWFS-basic.xsd";
     public static final String WFS_CAP_LOC = WFS_FOLDER
         + "GlobalWFS-capabilities.xsd";
-    private WFSConfig config;
+    private WFSDTO config;
 
-    public GlobalWFS(WFSConfig config){
+    public WFS(WFSDTO config){
     	super(config.getService());
-		URL = GlobalServer.getInstance().getGlobalData().getBaseUrl() + "wfs/";
+		URL = GeoServer.getInstance().getBaseUrl() + "wfs/";
 		this.config = config;
     }
+
+    Object getDTO(){
+		return config;
+	}
+	
     /**
      * Gets the base url of a describe request.
      *
@@ -49,10 +54,10 @@ public class GlobalWFS extends GlobalService {
     }
 
     public String getWfsBasicLocation() {
-        return GlobalServer.getInstance().getGlobalData().getSchemaBaseUrl() + WFS_BASIC_LOC;
+        return GeoServer.getInstance().getSchemaBaseUrl() + WFS_BASIC_LOC;
     }
 
     public String getWfsCapLocation() {
-        return GlobalServer.getInstance().getGlobalData().getSchemaBaseUrl() + WFS_CAP_LOC;
+        return GeoServer.getInstance().getSchemaBaseUrl() + WFS_CAP_LOC;
     }
 }

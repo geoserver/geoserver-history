@@ -26,10 +26,10 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.GlobalFeatureType;
-import org.vfny.geoserver.global.GlobalCatalog;
-import org.vfny.geoserver.global.GlobalNameSpace;
-import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.LockRequest;
@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.5 2004/01/03 00:20:17 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.6 2004/01/05 22:14:42 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -55,8 +55,7 @@ public class LockResponse implements Response {
     private static TypeRepository repository = TypeRepository.getInstance();
 
     /** indicates whether the output should be formatted. */
-    private static boolean verbose = GlobalServer.getInstance().getGlobalData()
-                                                 .isVerbose();
+    private static boolean verbose = GeoServer.getInstance().isVerbose();
 
     /** the new line character to use in the response. */
     private static String nl = verbose ? "\n" : "";
@@ -85,7 +84,7 @@ public class LockResponse implements Response {
     }
 
     public String getContentType() {
-        return GlobalServer.getInstance().getGlobalData().getMimeType();
+        return GeoServer.getInstance().getMimeType();
     }
 
     public void writeTo(OutputStream out) throws ServiceException {
@@ -131,8 +130,8 @@ public class LockResponse implements Response {
         FeatureLock featureLock = request.toFeatureLock();
         Set lockedFids = new HashSet();
         Set lockFailedFids = new HashSet();
-        GlobalServer config = GlobalServer.getInstance();
-        GlobalCatalog catalog = config.getCatalog();
+        GeoServer config = GeoServer.getInstance();
+        Data catalog = config.getData();
         FilterFactory filterFactory = FilterFactory.createFilterFactory();
         LOGGER.info("locks size is " + locks.size());
 
@@ -149,8 +148,8 @@ public class LockResponse implements Response {
             Filter curFilter = curLock.getFilter();
 
             //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
-            GlobalFeatureType meta = catalog.getFeatureType(curTypeName);
-            GlobalNameSpace namespace = meta.getDataStore().getNameSpace();
+            FeatureTypeInfo meta = catalog.getFeatureType(curTypeName);
+            NameSpace namespace = meta.getDataStore().getNameSpace();
             FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
             FeatureResults features = source.getFeatures(curFilter);
             source.setFeatureLock(featureLock);
@@ -189,9 +188,9 @@ public class LockResponse implements Response {
             } catch (IllegalAttributeException e) {
                 // TODO: JG - I really dont like this
                 // reader says it will throw this if the attribtues do not match
-                // the GlobalFeatureType
+                // the FeatureTypeInfo
                 // I figure if this is thrown we are poorly configured or
-                // the GlobalDataStore needs some quality control
+                // the DataStoreInfo needs some quality control
                 //
                 // should rollback the lock as well :-(
                 throw new WfsException("Lock request " + curFilter
@@ -264,7 +263,7 @@ public class LockResponse implements Response {
     private static String generateXml(String lockId, boolean lockAll,
         Set lockedFeatures, Set notLockedFeatures) {
         String indent = verbose ? "   " : "";
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + GlobalServer.getInstance().getGlobalData().getCharSet().displayName()+ "\"?>";
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + GeoServer.getInstance().getCharSet().displayName()+ "\"?>";
         StringBuffer returnXml = new StringBuffer(xmlHeader);
         returnXml.append(nl + "<WFS_LockFeatureResponse " + nl);
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
@@ -282,7 +281,7 @@ public class LockResponse implements Response {
             + "XMLSchema-instance\" " + nl);
         returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis");
         returnXml.append(".net/wfs ");
-        returnXml.append(GlobalServer.getInstance().getWFS()
+        returnXml.append(GeoServer.getInstance().getWFS()
                                      .getSchemaBaseUrl());
         returnXml.append("wfs/1.0.0/GlobalWFS-transaction.xsd\">");
         returnXml.append(nl);
@@ -333,19 +332,19 @@ public class LockResponse implements Response {
             return; // we have no locks
         }
 
-        GlobalCatalog catalog = GlobalServer.getInstance().getCatalog();
+        Data catalog = GeoServer.getInstance().getData();
 
         // I think we need to release and fail when lockAll fails
         //
         try {
-            GlobalServer config = GlobalServer.getInstance();
+            GeoServer config = GeoServer.getInstance();
 
             for (Iterator i = request.getLocks().iterator(); i.hasNext();) {
                 LockRequest.Lock curLock = (LockRequest.Lock) i.next();
 
                 String curTypeName = curLock.getFeatureType();
 
-                GlobalFeatureType meta = catalog.getFeatureType(curTypeName);
+                FeatureTypeInfo meta = catalog.getFeatureType(curTypeName);
                 FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
 
                 Transaction t = new DefaultTransaction();

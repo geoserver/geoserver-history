@@ -6,19 +6,19 @@ package org.vfny.geoserver.global;
 
 import java.util.*;
 import java.text.*;
-import org.vfny.geoserver.config.wms.*;
+import org.vfny.geoserver.global.dto.wms.*;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalWMS.java,v 1.1.2.2 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  */
-public class GlobalWMS extends GlobalService {
-    /** GlobalWMS version spec implemented */
+public class WMS extends Service {
+    /** WMS version spec implemented */
     private static final String WMS_VERSION = "1.1.1";
 
-    /** GlobalWMS spec specifies this fixed service name */
+    /** WMS spec specifies this fixed service name */
     private static final String FIXED_SERVICE_NAME = "OGC:GlobalWMS";
 
     /** DOCUMENT ME!  */
@@ -27,13 +27,18 @@ public class GlobalWMS extends GlobalService {
         "application/vnd.ogc.se_blank"
     };
 
-	private WMSConfig config = null;
+	private WMSDTO config = null;
 
-    public GlobalWMS(WMSConfig config){
+    public WMS(WMSDTO config){
     	super(config.getService());
     	this.config = config;
-    	URL = GlobalServer.getInstance().getGlobalData().getBaseUrl() + "/wms";
+    	URL = GeoServer.getInstance().getBaseUrl() + "/wms";
     }
+
+	Object getDTO(){
+		return config;
+	}
+	
     /**
      * DOCUMENT ME!
      *
@@ -45,7 +50,7 @@ public class GlobalWMS extends GlobalService {
 
     /**
      * overrides getName() to return the fixed service name as specified by OGC
-     * GlobalWMS 1.1 spec
+     * WMS 1.1 spec
      *
      * @return DOCUMENT ME!
      */
@@ -55,7 +60,7 @@ public class GlobalWMS extends GlobalService {
 
     /**
      * returns a GMT time string that represents the last modification time of
-     * the capabilities aspects of the GlobalWMS service
+     * the capabilities aspects of the WMS service
      *
      * @return DOCUMENT ME!
      */

@@ -22,9 +22,9 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: GeoServerDTO.java,v 1.1.2.1 2004/01/05 22:14:41 dmzwiers Exp $
  */
-public final class GlobalDTO implements DataStructure {
+public final class GeoServerDTO implements DataStructure {
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = 20000;
 
@@ -51,7 +51,7 @@ public final class GlobalDTO implements DataStructure {
      * Sets the max number of decimal places past the zero returned in a
      * GetFeature response.  Default is 4.
      * </p>
-     * DZ - should it be moved to GlobalFeatureType level? JG - no WMS also has
+     * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has
      * a getFeature response
      */
     private int numDecimals = 8;
@@ -62,9 +62,9 @@ public final class GlobalDTO implements DataStructure {
      * <p>
      * This could use some more testing from international users. What it does
      * is sets the encoding globally for all postgis database connections (the
-     * charset tag in GlobalFeatureType), as well as specifying the encoding
+     * charset tag in FeatureTypeInfo), as well as specifying the encoding
      * in the return
-     * <code>org.vfny.geoserver.config.org.vfny.geoserver.config.xml</code>
+     * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
      * header and mime type.
      * </p>
      * 
@@ -150,7 +150,7 @@ public final class GlobalDTO implements DataStructure {
      *
      * @see defaultSettings()
      */
-    public GlobalDTO() {
+    public GeoServerDTO() {
         defaultSettings();
     }
 
@@ -165,7 +165,7 @@ public final class GlobalDTO implements DataStructure {
      *
      * @param g
      */
-    public GlobalDTO(GlobalDTO g) {
+    public GeoServerDTO(GeoServerDTO g) {
         if (g == null) {
             defaultSettings();
 
@@ -217,7 +217,7 @@ public final class GlobalDTO implements DataStructure {
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new GlobalDTO(this);
+        return new GeoServerDTO(this);
     }
 
     /**
@@ -234,11 +234,11 @@ public final class GlobalDTO implements DataStructure {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof GlobalDTO)) {
+        if ((obj == null) || !(obj instanceof GeoServerDTO)) {
             return false;
         }
 
-        GlobalDTO g = (GlobalDTO) obj;
+        GeoServerDTO g = (GeoServerDTO) obj;
         boolean r = true;
         r = r && (maxFeatures == g.getMaxFeatures());
         r = r && (verbose == g.isVerbose());

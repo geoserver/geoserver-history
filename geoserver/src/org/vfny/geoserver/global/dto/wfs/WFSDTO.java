@@ -24,13 +24,13 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: WFSDTO.java,v 1.1.2.2 2004/01/05 22:14:42 dmzwiers Exp $
  */
 public final class WFSDTO implements DataStructure {
     //public static final String WFS_FOLDER = "wfs/1.0.0/";
-    //public static final String WFS_BASIC_LOC = WFS_FOLDER + "GlobalWFS-basic.xsd";
+    //public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFS-basic.xsd";
     //public static final String WFS_CAP_LOC = WFS_FOLDER
-    //	+ "GlobalWFS-capabilities.xsd";
+    //	+ "WFS-capabilities.xsd";
 
     /**
      * Constant when loaded. Describes where to find the service on the server.
@@ -41,10 +41,10 @@ public final class WFSDTO implements DataStructure {
     private ServiceDTO service;
 
     /**
-     * GlobalWFS constructor.
+     * WFS constructor.
      * 
      * <p>
-     * Creates a GlobalWFS to represent an instance with default data.
+     * Creates a WFS to represent an instance with default data.
      * </p>
      *
      * @see defaultSettings()
@@ -55,14 +55,14 @@ public final class WFSDTO implements DataStructure {
     }
 
     /**
-     * GlobalWFS constructor.
+     * WFS constructor.
      * 
      * <p>
-     * Creates a copy of the GlobalWFS provided. If the GlobalWFS provided  is
+     * Creates a copy of the WFS provided. If the WFS provided  is
      * null then default values are used. All the data structures are cloned.
      * </p>
      *
-     * @param w The GlobalWFS to copy.
+     * @param w The WFS to copy.
      */
     public WFSDTO(WFSDTO w) {
         if (w == null) {
@@ -83,7 +83,7 @@ public final class WFSDTO implements DataStructure {
      * creates a clone of this object
      * </p>
      *
-     * @return A copy of this GlobalWFS
+     * @return A copy of this WFS
      *
      * @see java.lang.Object#clone()
      */
@@ -99,7 +99,7 @@ public final class WFSDTO implements DataStructure {
      * object.
      * </p>
      *
-     * @param obj The GlobalWFS object to test.
+     * @param obj The WFS object to test.
      *
      * @return true when the object passed is the same as this object.
      *

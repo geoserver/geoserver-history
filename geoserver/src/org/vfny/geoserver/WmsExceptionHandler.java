@@ -5,9 +5,9 @@
 package org.vfny.geoserver;
 
 /**
- * ServiceConfig exception handler for GlobalWMS services
+ * ServiceConfig exception handler for WMS services
  * @author Gabriel Roldán
- * @version $Id: WmsExceptionHandler.java,v 1.2.2.2 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: WmsExceptionHandler.java,v 1.2.2.3 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class WmsExceptionHandler implements ExceptionHandler {
     /** DOCUMENT ME!  */

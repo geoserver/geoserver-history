@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.GeoServer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
  * used to configure the zserver module.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ZServerConfig.java,v 1.2.2.3 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: ZServerConfig.java,v 1.2.2.4 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class ZServerConfig
     implements java.io.Serializable
@@ -49,7 +49,7 @@ public class ZServerConfig
       "org.vfny.geoserver.config");
 
   /** The configuration singleton. */
-  private static GlobalServer cfgInfo = GlobalServer.getInstance();
+  private static GeoServer cfgInfo = GeoServer.getInstance();
 
   /** The port to run zserver on.  Default is 5210 */
   private String port = "5210";

@@ -19,11 +19,11 @@ import org.vfny.geoserver.responses.wms.GetMapResponse;
 import org.vfny.geoserver.servlets.WMService;
 
 /**
- * GlobalWMS service wich returns request and response handlers to manage a GetMap
+ * WMS service wich returns request and response handlers to manage a GetMap
  * request
  *
  * @author Gabriel Roldán
- * @version $Id: GetMap.java,v 1.2.2.3 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: GetMap.java,v 1.2.2.4 2004/01/05 22:14:43 dmzwiers Exp $
  */
 public class GetMap extends WMService {
     /**

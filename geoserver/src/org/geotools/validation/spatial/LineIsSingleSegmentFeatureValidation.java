@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.LineString;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: LineIsSingleSegmentFeatureValidation.java,v 1.2.2.2 2004/01/03 00:20:18 dmzwiers Exp $
+ * @version $Id: LineIsSingleSegmentFeatureValidation.java,v 1.2.2.3 2004/01/05 22:14:43 dmzwiers Exp $
  */
 public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
@@ -186,10 +186,10 @@ public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
 	 * Tests to see if a LineString is made of only one segment, meaning it only has
 	 * two points. If the LineString has more than two points, the test fails.
 	 * </p>
-	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.GlobalFeatureType, org.geotools.validation.ValidationResults)
+	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureTypeInfo, org.geotools.validation.ValidationResults)
 	 * 
  	 * @param feature The Feature to be validated
-	 * @param type The GlobalFeatureType of the feature
+	 * @param type The FeatureTypeInfo of the feature
 	 * @param results The storage for error messages.
 	 * @return True if the feature is simple (one segment).
 	 */

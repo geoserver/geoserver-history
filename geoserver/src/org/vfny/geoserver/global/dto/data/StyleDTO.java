@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.global.dto.data;
 
-import org.vfny.geoserver.config.DataStructure;
+import org.vfny.geoserver.global.dto.DataStructure;
 import java.io.File;
 
 
@@ -21,7 +21,7 @@ import java.io.File;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: StyleDTO.java,v 1.1.2.2 2004/01/05 22:14:40 dmzwiers Exp $
  */
 public final class StyleDTO implements DataStructure {
     /** The syle id. */

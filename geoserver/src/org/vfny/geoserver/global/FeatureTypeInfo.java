@@ -25,29 +25,31 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.vfny.geoserver.config.data.*;
+import org.vfny.geoserver.global.dto.data.*;
 import com.vividsolutions.jts.geom.Envelope;
 import java.util.List;
 
 
 /**
- * Represents a GlobalFeatureType, its user config and autodefined information.
+ * Represents a FeatureTypeInfo, its user config and autodefined information.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GlobalFeatureType.java,v 1.1.2.1 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  */
-public class GlobalFeatureType extends GlobalAbstract {
+public class FeatureTypeInfo extends Abstract {
     /** DOCUMENT ME! */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
-	private FeatureTypeConfig ftc;
+	private FeatureTypeInfoDTO ftc;
 
-    public GlobalFeatureType(FeatureTypeConfig config)throws ConfigurationException{
+    public FeatureTypeInfo(FeatureTypeInfoDTO config)throws ConfigurationException{
     	ftc = config;
     }
 
-
+	Object getDTO(){
+		return ftc;
+	}
 
     /**
      * DOCUMENT ME!
@@ -98,15 +100,15 @@ public class GlobalFeatureType extends GlobalAbstract {
      *
      * @return DOCUMENT ME!
      */
-    public GlobalDataStore getDataStore() {
-        return GlobalServer.getInstance().getCatalog().getDataStore(ftc.getDataStoreId());
+    public DataStoreInfo getDataStore() {
+        return GeoServer.getInstance().getData().getDataStore(ftc.getDataStoreId());
     }
 
     /**
-     * Indicates if this GlobalFeatureType is enabled.  For now just gets whether the
+     * Indicates if this FeatureTypeInfo is enabled.  For now just gets whether the
      * backing datastore is enabled.
      *
-     * @return <tt>true</tt> if this GlobalFeatureType is enabled.
+     * @return <tt>true</tt> if this FeatureTypeInfo is enabled.
      *
      * @task REVISIT: Consider adding more fine grained control to config
      *       files, so users can indicate specifically if they want the
@@ -137,7 +139,7 @@ public class GlobalFeatureType extends GlobalAbstract {
      *
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public GlobalNameSpace getNameSpace() {
+    public NameSpace getNameSpace() {
         if (!isEnabled()) {
             throw new IllegalStateException("This featureType is not "
                 + "enabled");
@@ -152,7 +154,7 @@ public class GlobalFeatureType extends GlobalAbstract {
      * @return DOCUMENT ME!
      */
     public String getName() {
-        return GlobalNameSpace.PREFIX_DELIMITER+ftc.getName();
+        return NameSpace.PREFIX_DELIMITER+ftc.getName();
     }
 
     /**
@@ -255,7 +257,7 @@ public class GlobalFeatureType extends GlobalAbstract {
 
 
     /**
-     * creates a GlobalFeatureType schema from the list of defined exposed
+     * creates a FeatureTypeInfo schema from the list of defined exposed
      * attributes, or the full schema if no exposed attributes were defined
      *
      * @param attsElem DOCUMENT ME!

@@ -2,11 +2,11 @@ package org.vfny.geoserver.requests.readers;
 
 import java.util.Map;
 
-import org.vfny.geoserver.global.GlobalServer;
+import org.vfny.geoserver.global.GeoServer;
 
 
 /**
- * Base class for all GlobalWMS KvpRequestReaders, wich just adds the
+ * Base class for all WMS KvpRequestReaders, wich just adds the
  * getRequestVersion() method wich returns the spec version a client
  * has requested or the default implementation version of this server
  * if no version has been requested, either by the "VERSION" parameter
@@ -14,12 +14,12 @@ import org.vfny.geoserver.global.GlobalServer;
  * to recognize it
  *
  * @author Gabriel Roldán
- * @version $Id: WmsKvpRequestReader.java,v 1.2.2.5 2004/01/03 00:20:18 dmzwiers Exp $
+ * @version $Id: WmsKvpRequestReader.java,v 1.2.2.6 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader
 {
     /** DOCUMENT ME! */
-    protected static final GlobalServer config = GlobalServer.getInstance();
+    protected static final GeoServer config = GeoServer.getInstance();
 
     /**
      * Creates a new WmsKvpRequestReader object.

@@ -23,7 +23,7 @@ import org.vfny.geoserver.config.CloneLibrary;
 import org.vfny.geoserver.config.DataStructure;
 import org.vfny.geoserver.config.EqualsLibrary;
 /**
- * GlobalCatalog purpose.
+ * Data purpose.
  * <p>
  * Represents an instance of the catalog.xml file in the configuration of the 
  * server, along with associated configuration files for the feature types.
@@ -31,15 +31,15 @@ import org.vfny.geoserver.config.EqualsLibrary;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @see DataSource
- * @see GlobalFeatureType
+ * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: CatalogConfig.java,v 1.1.2.3 2004/01/03 00:19:20 dmzwiers Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.4 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class CatalogConfig implements DataStructure{
 	
 	/**
 	 * A set of datastores and their names.
-	 * @see org.vfny.geoserver.config.data.GlobalDataStore
+	 * @see org.vfny.geoserver.config.data.DataStoreInfo
 	 */
 	private Map dataStores;
 	
@@ -51,7 +51,7 @@ public class CatalogConfig implements DataStructure{
 	
 	/**
 	 * A set of featuretypes and their names.
-	 * @see org.vfny.geoserver.config.data.GlobalFeatureType
+	 * @see org.vfny.geoserver.config.data.FeatureTypeInfo
 	 */
 	private Map featuresTypes;
 	
@@ -68,9 +68,9 @@ public class CatalogConfig implements DataStructure{
 	private NameSpaceConfig defaultNameSpace;
 	
 	/**
-	 * GlobalCatalog constructor.
+	 * Data constructor.
 	 * <p>
-	 * Creates a GlobalCatalog to represent an instance with default data.
+	 * Creates a Data to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
@@ -94,9 +94,9 @@ public class CatalogConfig implements DataStructure{
 	}
 	
 	/**
-	 * GlobalCatalog constructor.
+	 * Data constructor.
 	 * <p>
-	 * Creates a copy of the GlobalCatalog provided. If the GlobalCatalog provided 
+	 * Creates a copy of the Data provided. If the Data provided 
 	 * is null then default values are used. All the datastructures are cloned. 
 	 * </p>
 	 * @param c The catalog to copy.
@@ -132,7 +132,7 @@ public class CatalogConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this GlobalCatalog
+	 * @return A copy of this Data
 	 */
 	public Object clone(){
 		return new CatalogConfig(this);
@@ -145,7 +145,7 @@ public class CatalogConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The GlobalCatalog object to test.
+	 * @param obj The Data object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){

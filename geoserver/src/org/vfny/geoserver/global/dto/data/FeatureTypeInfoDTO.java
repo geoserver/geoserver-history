@@ -6,9 +6,9 @@ package org.vfny.geoserver.global.dto.data;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.config.CloneLibrary;
-import org.vfny.geoserver.config.DataStructure;
-import org.vfny.geoserver.config.EqualsLibrary;
+import org.vfny.geoserver.global.dto.CloneLibrary;
+import org.vfny.geoserver.global.dto.DataStructure;
+import org.vfny.geoserver.global.dto.EqualsLibrary;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ import java.util.List;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.2 2004/01/05 22:14:40 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataStructure {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -37,7 +37,7 @@ public final class FeatureTypeInfoDTO implements DataStructure {
     /** A bounding box for this featuretype */
     private Envelope latLongBBox;
 
-    /** native wich EPGS code for the GlobalFeatureType */
+    /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
 
     /**
@@ -75,7 +75,7 @@ public final class FeatureTypeInfoDTO implements DataStructure {
 
     /**
      * the list of exposed attributes. If the list is empty or not present at
-     * all, all the GlobalFeatureType's attributes are exposed, if is present,
+     * all, all the FeatureTypeInfo's attributes are exposed, if is present,
      * only those oattributes in this list will be exposed by the services
      */
     private Filter definitionQuery = null;
@@ -84,10 +84,10 @@ public final class FeatureTypeInfoDTO implements DataStructure {
     private String defaultStyle;
 
     /**
-     * GlobalFeatureType constructor.
+     * FeatureTypeInfo constructor.
      * 
      * <p>
-     * Creates a GlobalFeatureType to represent an instance with default data.
+     * Creates a FeatureTypeInfo to represent an instance with default data.
      * </p>
      *
      * @see defaultSettings()
@@ -97,11 +97,11 @@ public final class FeatureTypeInfoDTO implements DataStructure {
     }
 
     /**
-     * GlobalFeatureType constructor.
+     * FeatureTypeInfo constructor.
      * 
      * <p>
-     * Creates a copy of the GlobalFeatureType provided. If the
-     * GlobalFeatureType provided  is null then default values are used. All
+     * Creates a copy of the FeatureTypeInfo provided. If the
+     * FeatureTypeInfo provided  is null then default values are used. All
      * the data structures are cloned.
      * </p>
      *
@@ -164,7 +164,7 @@ public final class FeatureTypeInfoDTO implements DataStructure {
      * creates a clone of this object
      * </p>
      *
-     * @return A copy of this GlobalFeatureType
+     * @return A copy of this FeatureTypeInfo
      *
      * @see java.lang.Object#clone()
      */
@@ -180,7 +180,7 @@ public final class FeatureTypeInfoDTO implements DataStructure {
      * object.
      * </p>
      *
-     * @param obj The GlobalFeatureType object to test.
+     * @param obj The FeatureTypeInfo object to test.
      *
      * @return true when the object passed is the same as this object.
      *

@@ -15,7 +15,7 @@ import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**
- * Implements the GlobalWFS GetFeature interface, which responds to requests for GML.
+ * Implements the WFS GetFeature interface, which responds to requests for GML.
  * This servlet accepts a getFeatures request and returns GML2.0 structured
  * XML docs.  It is made up of the standard request params, plus one or  more
  * {@link Query} objects, plus a user-assigned handle.  There are also params
@@ -23,7 +23,7 @@ import org.vfny.geoserver.requests.WFSRequest;
  * support those.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureRequest.java,v 1.3.2.4 2004/01/03 00:20:16 dmzwiers Exp $
+ * @version $Id: FeatureRequest.java,v 1.3.2.5 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class FeatureRequest extends WFSRequest {
     /** Standard logging instance for class */
@@ -34,7 +34,7 @@ public class FeatureRequest extends WFSRequest {
      * The maximum returned if the user requests no limit of features at all,
      * but the other request parameters don't restrict to below 500.
      */
-    //protected static final int SOFT_MAX_FEATURES = GlobalServer.getInstance()
+    //protected static final int SOFT_MAX_FEATURES = GeoServer.getInstance()
     //                                                           .getGlobalConfig()
     //                                                           .getMaxFeatures();
 

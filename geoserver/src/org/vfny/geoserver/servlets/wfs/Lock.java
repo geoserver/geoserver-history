@@ -16,12 +16,12 @@ import org.vfny.geoserver.servlets.WFService;
 
 
 /**
- * Implements the GlobalWFS Lock interface, which performs insert, update and delete
+ * Implements the WFS Lock interface, which performs insert, update and delete
  * functions on the dataset. This servlet accepts a Lock request and returns a
  * LockResponse xml element.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: Lock.java,v 1.2.2.3 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: Lock.java,v 1.2.2.4 2004/01/05 22:14:42 dmzwiers Exp $
  */
 public class Lock extends WFService {
     /**

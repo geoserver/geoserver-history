@@ -42,7 +42,7 @@ public class VersionBean
     return WFS_VERSION;
   }
 
-  /** Returns GlobalWFS update sequence number */
+  /** Returns WFS update sequence number */
   public String getWfsUpdateSequence()
   {
     return WFS_UPDATE_SEQUENCE;

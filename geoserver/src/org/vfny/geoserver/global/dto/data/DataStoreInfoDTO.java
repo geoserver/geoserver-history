@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.global.dto.data;
 
-import org.vfny.geoserver.config.CloneLibrary;
-import org.vfny.geoserver.config.DataStructure;
+import org.vfny.geoserver.global.dto.CloneLibrary;
+import org.vfny.geoserver.global.dto.DataStructure;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +25,9 @@ import java.util.Map;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.1.2.1 2004/01/05 22:14:40 dmzwiers Exp $
  */
-public final class DataStoreDTO implements DataStructure {
+public final class DataStoreInfoDTO implements DataStructure {
     /** unique datasore identifier */
     private String id;
 
@@ -43,34 +43,34 @@ public final class DataStoreDTO implements DataStructure {
     /** a short description about this data store */
     private String _abstract;
 
-    /** connection parameters to create the GlobalDataStore */
+    /** connection parameters to create the DataStoreInfo */
     private Map connectionParams;
 
     /**
-     * GlobalDataStore constructor.
+     * DataStoreInfo constructor.
      * 
      * <p>
-     * Creates a GlobalDataStore to represent an instance with default data.
+     * Creates a DataStoreInfo to represent an instance with default data.
      * </p>
      *
      * @see defaultSettings()
      */
-    public DataStoreDTO() {
+    public DataStoreInfoDTO() {
         defaultSettings();
     }
 
     /**
-     * GlobalDataStore constructor.
+     * DataStoreInfo constructor.
      * 
      * <p>
-     * Creates a copy of the GlobalDataStore provided. If the GlobalDataStore
+     * Creates a copy of the DataStoreInfo provided. If the DataStoreInfo
      * provided  is null then default values are used. All the datastructures
      * are cloned.
      * </p>
      *
      * @param ds The datastore to copy.
      */
-    public DataStoreDTO(DataStoreDTO ds) {
+    public DataStoreInfoDTO(DataStoreInfoDTO ds) {
         if (ds == null) {
             defaultSettings();
 
@@ -113,12 +113,12 @@ public final class DataStoreDTO implements DataStructure {
      * creates a clone of this object
      * </p>
      *
-     * @return A copy of this GlobalDataStore
+     * @return A copy of this DataStoreInfo
      *
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new DataStoreDTO(this);
+        return new DataStoreInfoDTO(this);
     }
 
     /**
@@ -129,14 +129,14 @@ public final class DataStoreDTO implements DataStructure {
      * object.
      * </p>
      *
-     * @param obj The GlobalDataStore object to test.
+     * @param obj The DataStoreInfo object to test.
      *
      * @return true when the object passed is the same as this object.
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        DataStoreDTO ds = (DataStoreDTO) obj;
+        DataStoreInfoDTO ds = (DataStoreInfoDTO) obj;
         boolean r = true;
         r = r && (id == ds.getId());
         r = r && nameSpaceId.equals(ds.getNameSpaceId());

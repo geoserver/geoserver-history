@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.global.GlobalServer;
-import org.vfny.geoserver.global.GlobalService;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.responses.CapabilitiesResponse;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.vfny.geoserver.responses.ResponseHandler;
@@ -16,7 +16,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WFSCapabilitiesResponse.java,v 1.2.2.3 2004/01/03 00:20:17 dmzwiers Exp $
+ * @version $Id: WFSCapabilitiesResponse.java,v 1.2.2.4 2004/01/05 22:14:42 dmzwiers Exp $
  */
 public class WFSCapabilitiesResponse extends CapabilitiesResponse {
     /**
@@ -24,8 +24,8 @@ public class WFSCapabilitiesResponse extends CapabilitiesResponse {
      *
      * @return DOCUMENT ME!
      */
-    protected GlobalService getGlobalService() {
-        return GlobalServer.getInstance().getWFS();
+    protected Service getGlobalService() {
+        return GeoServer.getInstance().getWFS();
     }
 
     /**
@@ -38,7 +38,7 @@ public class WFSCapabilitiesResponse extends CapabilitiesResponse {
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
         CapabilitiesResponseHandler cr = new WfsCapabilitiesResponseHandler(contentHandler);
         cr.setPrettyPrint(true,
-            GlobalServer.getInstance().getGlobalData().isVerbose());
+            GeoServer.getInstance().isVerbose());
 
         return cr;
     }

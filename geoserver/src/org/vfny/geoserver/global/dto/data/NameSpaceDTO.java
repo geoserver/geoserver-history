@@ -4,11 +4,11 @@
  */
 package org.vfny.geoserver.global.dto.data;
 
-import org.vfny.geoserver.config.DataStructure;
+import org.vfny.geoserver.global.dto.DataStructure;
 
 
 /**
- * Data Transfer Object for GeoServer Namespace information.
+ * Data Transfer Object for GeoServer NameSpace information.
  * 
  * <p>
  * Represents the portion of a namespace required for the configuration of
@@ -26,7 +26,7 @@ import org.vfny.geoserver.config.DataStructure;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceDTO.java,v 1.1.2.1 2004/01/04 06:21:33 jive Exp $
+ * @version $Id: NameSpaceDTO.java,v 1.1.2.2 2004/01/05 22:14:40 dmzwiers Exp $
  */
 public final class NameSpaceDTO implements DataStructure {
     //public static final String PREFIX_DELIMITER = ":";

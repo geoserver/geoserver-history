@@ -18,14 +18,14 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.5 2004/01/03 00:20:15 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.6 2004/01/05 22:14:43 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
 
     /** DOCUMENT ME! */
-    protected static final GlobalServer server = GlobalServer.getInstance();
-    protected static final GlobalCatalog catalog = server.getCatalog();
+    protected static final GeoServer server = GeoServer.getInstance();
+    protected static final Data catalog = server.getData();
 
     /**
      * Creates a new CapabilitiesResponseHandler object.
@@ -43,7 +43,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void handleDocument(GlobalService config) throws SAXException {
+    public void handleDocument(Service config) throws SAXException {
         startDocument(config);
         indent();
         handleService(config);
@@ -58,7 +58,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleService(GlobalService config)
+    protected void handleService(Service config)
         throws SAXException {
         startElement("ServiceConfig");
 		indent();
@@ -101,7 +101,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleOnlineResouce(GlobalService config)
+    protected void handleOnlineResouce(Service config)
         throws SAXException {
         handleSingleElem("OnlineResource", config.getOnlineResource());
     }
@@ -113,7 +113,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected abstract void startDocument(GlobalService config)
+    protected abstract void startDocument(Service config)
         throws SAXException;
 
     /**
@@ -123,7 +123,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void endService(GlobalService config) throws SAXException {
+    protected void endService(Service config) throws SAXException {
         endElement("ServiceConfig");
     }
 
@@ -134,11 +134,11 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected abstract void handleCapabilities(GlobalService config)
+    protected abstract void handleCapabilities(Service config)
         throws SAXException;
 
     /**
-     * Default handle of a GlobalFeatureType content that writes the latLongBBox as
+     * Default handle of a FeatureTypeInfo content that writes the latLongBBox as
      * well as the GlobalBasic's parameters
      *
      * @param ftype DOCUMENT ME!
@@ -146,7 +146,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      * @throws SAXException DOCUMENT ME!
      * @throws IllegalArgumentException if a non-enabled ftype is passed in.
      */
-    protected void handleFeatureType(GlobalFeatureType ftype)
+    protected void handleFeatureType(FeatureTypeInfo ftype)
         throws SAXException {
         if (!ftype.isEnabled()) {
             throw new IllegalArgumentException("FeatureTypeConfig " + ftype
@@ -205,7 +205,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
 	 *
 	 * @task REVISIT: I don't think this is currently right for wms or wfs
 	 *       service elements.  I'm just subclassing for WfsCapabilities
-	 *       response. It should be Keywords instead of Keyword.  For GlobalWMS I
+	 *       response. It should be Keywords instead of Keyword.  For WMS I
 	 *       think it should be KeywordList or something to that effect, with
 	 *       individual keywords delimited by keyword elements.  So I'm not
 	 *       sure what should go here by default, perhaps should just remain
