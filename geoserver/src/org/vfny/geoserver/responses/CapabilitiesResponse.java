@@ -22,7 +22,7 @@ import javax.xml.transform.stream.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.22 2004/01/02 21:06:32 cholmesny Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.23 2004/01/02 21:14:42 cholmesny Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -108,7 +108,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
                 String declaration = "<?xml version='1.0' encoding=\"UTF-8\" "
                     + "standalone=\"no\" ?>  "
                     + "<!DOCTYPE WMT_MS_Capabilities SYSTEM "
-                    + +"\"http://www.digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\">";
+                    + "\"http://www.digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\">";
 
                 writer.write(declaration, 0, declaration.length());
             }
