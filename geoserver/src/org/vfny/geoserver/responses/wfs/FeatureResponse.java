@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.8 2003/11/14 02:58:51 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.9 2003/11/14 03:00:31 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -286,6 +286,9 @@ public class FeatureResponse implements Response {
                             request.getHandle());
         }                     
     }
+    public void execute(Request req) throws ServiceException {
+        execute( (FeatureRequest) req );
+    }    
     /**
      * DOCUMENT ME!
      *
@@ -302,7 +305,7 @@ public class FeatureResponse implements Response {
      *       able to, we just need to get the reporting right, use the
      *       AllSameType function as  Describe does.
      */
-    public void execute(Request req) throws ServiceException {
+    public void executeBackup(Request req) throws ServiceException {
         FeatureRequest request = (FeatureRequest) req;
         LOGGER.finest("write xml response. called request is: " + request);
 
