@@ -45,6 +45,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DeleteRequest;
 import org.vfny.geoserver.requests.wfs.InsertRequest;
@@ -60,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.10 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.11 2004/02/19 08:58:19 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -88,7 +89,9 @@ public class TransactionResponse implements Response {
             throw new WfsException(
                 "bad request, expected TransactionRequest, but got " + request);
         }
-
+        if( (request.getWFS().getServiceLevel() | WFSDTO.TRANSACTIONAL ) == 0 ){
+        	throw new WfsException("Transaction support is not enabled");
+        }
         //REVISIT: this should maybe integrate with the other exception 
         //handlers better - but things that go wrong here should cause 
         //transaction exceptions.
