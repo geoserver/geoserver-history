@@ -29,7 +29,7 @@
 
   <!-- If you don't have your own conf directory then define one of -->
   <!-- these test.type's in your build.properties file-->
-  <property name="test.type" value="UserBasic"/>
+  <!--<property name="test.type" value="UserBasic"/>-->
   <!--property name="test.type" value="DemoPostGIS"/-->
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>--> 
@@ -245,7 +245,7 @@
            destdir="${dir.build}" 
            includes="**/*.java" 
            classpathref="path.build" 
-           deprecation="on"
+           deprecation="off"
               debug="on"/>
     <antcall target="all"/>
     <junit fork="false"
@@ -276,7 +276,7 @@
            destdir="${dir.build}" 
            includes="**/*.java" 
            classpathref="path.build" 
-           deprecation="on"
+           deprecation="off"
               debug="on"/>
     <antcall target="all"/>
     <junit fork="false"
