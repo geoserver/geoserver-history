@@ -12,6 +12,7 @@ import java.util.logging.Logger;
  * Defines a describe feature type request.
  * 
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  * @version $VERSION$
  */
 public class DescribeRequest 
@@ -43,7 +44,7 @@ public class DescribeRequest
         this.allRequested = false;
     }
     
-    /** Set requested feature types. */
+    /** Adds a requested feature types to the list. */
     public void addFeatureType(String featureTypes) {
         this.featureTypes.add(featureTypes);
         this.allRequested = false;
@@ -75,24 +76,26 @@ public class DescribeRequest
     }   
 
     public boolean equals(DescribeRequest request) {
-        boolean isEqual = true;
+	boolean isEqual = true;
         Iterator internal = featureTypes.listIterator();
         Iterator compare = request.getFeatureTypes().listIterator();
-
-        if( request.allRequested() &&
-            this.allRequested()) {
+        if( request.allRequested()) {
+	    isEqual = this.allRequested() && isEqual;
             return isEqual;
         } else {
             while( internal.hasNext()) {
                 if( compare.hasNext()) {
                     isEqual = internal.next().equals( compare.next()) && 
                         isEqual;
-                }
+                } else {
+		    internal.next();
+		    isEqual = false;
+		}
             }
             if( compare.hasNext()) {
-                return false; 
+		return false; 
             } else {
-                return isEqual;
+		return isEqual;
             }
         }
     }
