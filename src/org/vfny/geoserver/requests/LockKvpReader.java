@@ -65,14 +65,20 @@ public class LockKvpReader
         }
 
         // declare tokenizers for repeating elements
-        LOGGER.finest("setting query request parameters");
+        LOGGER.finer("setting query request parameters");
         List typeList = readFlat((String)kvpPairs.get("TYPENAME"), 
                                  INNER_DELIMETER);
-        LOGGER.finest("type list size: " + typeList.size());
-        LOGGER.finest("type list element: " + typeList.get(0));
+        LOGGER.finer("type list size: " + typeList.size());      
         List filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
                                       (String) kvpPairs.get("FILTER"),
                                       (String) kvpPairs.get("BBOX"));
+	if (typeList.size() == 0) {
+	    typeList = getTypesFromFids((String) kvpPairs.get("FEATUREID"));
+	    if (typeList.size() == 0) {
+		throw new WfsException("The typename element is mandatory if "
+				       + "no FEATUREID is present");
+	    }
+	}
         int featureSize = typeList.size();
         int filterSize = filterList.size();
         
@@ -84,8 +90,6 @@ public class LockKvpReader
                                    filterSize + " Feature size: "+featureSize);
         } else {
 	    currentRequest.setLocks(typeList, filterList);
-            //currentRequest.setFeatureTypes(typeList);
-            //currentRequest.setFilters(filterList);
             return currentRequest;
         }
     }
