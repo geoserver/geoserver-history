@@ -32,14 +32,43 @@ public class DescribeResponse {
     /** Bean that holds global server configuration information. */
     private static ConfigInfo config = ConfigInfo.getInstance();
     
+    /** Bean that holds global featureType information */
+    private static TypeRepository typeRepo = TypeRepository.getInstance();
+
     // Initialize some generic GML information
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE
     
+    private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema\"";
+
+    private static final String DEFAULT_NAMESPACE = "\n  xmlns=" + SCHEMA_URI;
+    
+    private static final String XS_NAMESPACE = "\n  xmlns:xs=" + SCHEMA_URI;
+
+    private static final String GML_NAMESPACE = 
+	"\n  xmlns:gml=\"http://www.opengis.net/gml\"";
+
+    private static final String HEADER = 
+	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema ";
+
+    private static final String ELEMENT_FORM_DEFAULT = 
+	"\n  elementFormDefault=\"qualified\"";
+
+    private static final String ATTR_FORM_DEFAULT =  
+	"\n  attributeFormDefault=\"unqualified\" version=\"1.0\">";
+
+    private static final String TARGETNS_PREFIX = "\n  targetNamespace=\"";
+    
+    private static final String TARGETNS_SUFFIX = "\" ";
+
+    private static final String GML_IMPORT =  
+	"\n\n<xs:import namespace=\"http://www.opengis.net/gml\""
+       + " schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/\n\n";
+
     /** Fixed return header information */
-    private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"" + config.getUrl() + "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:myns=\"" + config.getUrl() + "\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/>\n\n";
+    //private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"" + config.getUrl() + "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:myns=\"" + config.getUrl() + "\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/>\n\n";
     
     /** Fixed return footer information */
-    private static final String FOOTER = "</xs:schema>";
+    private static final String FOOTER = "\n</xs:schema>";
     
     
     /**
@@ -76,42 +105,99 @@ public class DescribeResponse {
     private String generateTypes(DescribeRequest wfsRequest) 
 	throws WfsException {
         
-        List requestedTables = wfsRequest.getFeatureTypes();
-        //_log.info("these are the reqeusted feature types: " + requestedTables.toString() ); 
-        //_log.info("is this null: " + (requestedTables.isEmpty()) ); 
+        List requestedTypes = wfsRequest.getFeatureTypes();
 
         // Initialize database connection information
         String getDescribeFeatureResponse = new String();
         
         // Initialize return information and intermediate return objects
-        String tempResponse = new String();
-        ComplexType table = new ComplexType();
+        StringBuffer tempResponse = new StringBuffer();
+        //ComplexType table = new ComplexType();
 
-        // Initialize generic header information
-        tempResponse = HEADER;
+	if (requestedTypes.size() == 0){
+	    //if there are no specific requested types then get all.
+	    requestedTypes = typeRepo.getAllTypeNames();
+	}
+	tempResponse.append(HEADER);
+	//allSameType will throw WfsException if there are types that are not found. 
+	if (typeRepo.allSameType(requestedTypes)){
+	    //all the requested have the same namespace prefix, so return their
+	    //schemas.
+	    TypeInfo nsInfoType = typeRepo.getType((String)requestedTypes.get(0));
+	    //all types have same prefix, so just use the first.
+	    String nsPrefix = nsInfoType.getPrefix();
+	    String targetNs = nsInfoType.getXmlns();
+	    tempResponse.append(TARGETNS_PREFIX + targetNs + TARGETNS_SUFFIX);
+	    tempResponse.append("\n  xmlns:" + nsPrefix + 
+				"=\"" + targetNs +"\"");
+	    tempResponse.append(XS_NAMESPACE + DEFAULT_NAMESPACE);
+	    tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
+	    tempResponse.append(generateSpecifiedTypes(requestedTypes));
+	} else {
+	    //the featureTypes do not have all the same prefixes.
+	    tempResponse.append(DEFAULT_NAMESPACE);
+	    tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
+	    Set prefixes = new HashSet();
+	    Iterator nameIter = requestedTypes.iterator();
+	    //iterate through the types, and make a set of their prefixes.
+	    while (nameIter.hasNext()){
+		String typeName = nameIter.next().toString();
+		String typePrefix = typeRepo.getType(typeName).getPrefix();
+		prefixes.add(typePrefix);
+	    }
+	    Iterator prefixIter = prefixes.iterator();
+	    while (prefixIter.hasNext()){
+		//iterate through prefixes, and add the types that have that prefix.
+		String prefix = prefixIter.next().toString();
+		tempResponse.append(getNSImport(prefix, requestedTypes));
+	    }
+	}
+
+        tempResponse.append(FOOTER);
         
-        // call appropriate subfunction
-        if(requestedTables.isEmpty()) {
-            tempResponse = tempResponse + 
-                generateAllTypes(config.getTypeDir());
-        } else {
-            tempResponse = tempResponse + 
-                generateSpecifiedTypes(requestedTables);
-        }
-        // Initialize generic footer information
-        tempResponse = tempResponse + FOOTER;
-        
-        //_log.info("output: " + tempResponse);
-        return tempResponse;
+        return tempResponse.toString();
     }
 
-    
+
+    /**
+     * Creates a import namespace element, for cases when requests contain multiple
+     * namespaces, as you can not have more than one target namespace.  See wfs spec.
+     * 8.3.1.  All the typeNames that have the correct prefix are added to the
+     * import statement.
+     *
+     * @param prefix the namespace prefix, which must be mapped in the main ConfigInfo,
+     * for this import statement.
+     * @param typeNames a list of all requested typeNames, only those that match the
+     * prefix will be a part of this import statement.
+     */
+    private StringBuffer getNSImport(String prefix, List typeNames){
+	LOGGER.finer("prefix is " + prefix);
+	StringBuffer retBuffer = new StringBuffer("\n  <import namespace=\"");
+	retBuffer.append(config.getNSUri(prefix) + "\"");
+	retBuffer.append("\n        schemaLocation=\"" + config.getUrl() + 
+			 "/DescribeFeatureType?" //HACK: bad hard code here.
+			 + "request=DescribeFeatureType&typeName=");
+	 Iterator nameIter = typeNames.iterator();
+	 boolean first = true;
+	    while (nameIter.hasNext()){
+		String typeName = nameIter.next().toString();
+		if (typeName.startsWith(prefix) || ((typeName.indexOf(':') == -1) && 
+ 			                  prefix.equals(config.getDefaultNSPrefix()))){
+		    retBuffer.append(typeName + ",");
+		}
+	    }
+	    retBuffer.deleteCharAt(retBuffer.length() - 1);
+	    retBuffer.append("\"/>");
+	return retBuffer;
+    }
+	    
+
     /**
      * Internal method to print just the requested types.
      *
-     * @param requestedTables The requested table names.
+     * @param requestedTypes The requested table names.
      */ 
-    private String generateSpecifiedTypes(List requestedTables) 
+    private String generateSpecifiedTypes(List requestedTypes) 
 	throws WfsException{
         TypeRepository repository = TypeRepository.getInstance();
         String tempResponse = new String();             
@@ -121,22 +207,20 @@ public class DescribeResponse {
 	ArrayList validTypes = new ArrayList();
         
         // Loop through requested tables to add element types
-        for (int i = 0; i < requestedTables.size(); i++ ) {
+        for (int i = 0; i < requestedTypes.size(); i++ ) {
             
             // set the current file
             // print type data for the table object
-            curTypeName = requestedTables.get(i).toString();
+            curTypeName = requestedTypes.get(i).toString();
 	    TypeInfo meta = repository.getType(curTypeName);
 	    if (meta == null) {
 		throw new WfsException("Feature Type " + curTypeName + " does "
 				       + "not exist on this server");
 	    }
-	    currentFile = config.getTypeDir() + curTypeName + 
-		"/" + config.SCHEMA_FILE;
+	    currentFile = meta.getSchemaFile();
 	    generatedType = writeFile(currentFile);
 	    if (!generatedType.equals("")) {
 		tempResponse = tempResponse + writeFile( currentFile );
-		//_log.info("current file: " + currentFile);
 		validTypes.add(curTypeName);
 	    } 
        }
@@ -158,64 +242,12 @@ public class DescribeResponse {
     
 
     /**
-     * Add feature type info. 
-     * @param targetDirectoryName The directory in which to search for files.
-     */
-    private String generateAllTypes(String targetDirectoryName) 
-	throws WfsException {
-        
-        // holds final response variable
-        StringBuffer tempResponse = new StringBuffer();
-        
-        // iterated convenience variables
-        File currentDirectory = new File( targetDirectoryName );
-        String currentFeatureType = new String();
-        String currentFileName = new String();
-        String generatedType = new String();
-	ArrayList validTypes = new ArrayList();
-
-        // keeps master list of files within the directory
-        String[] files = currentDirectory.list();
-        File[] file = currentDirectory.listFiles();
-        
-        // Loop through all files in the directory
-        for (int i = 0; i < files.length; i++) {
-            
-            // assign temp variables; convenience/confusion lesseners only
-            currentFeatureType = file[i].getName();
-            currentFileName = targetDirectoryName + currentFeatureType + "/" +
-                config.SCHEMA_FILE;
-            
-	     generatedType = writeFile(currentFileName);
-	    if (!generatedType.equals("")) {
-		tempResponse.append(generatedType + "\n");
-		//_log.info("current file: " + currentFile);
-		validTypes.add(currentFeatureType);
-	    } 
-
-        }
-        
-        
-        // Loop through requested files again to add elements
-        // NOT VERY EFFICIENT - PERHAPS THE MYSQL ABSTRACTION CAN FIX THIS; 
-        //  STORE IN HASH?
-        for (int i = 0, n =  validTypes.size(); i < n; i++) {            
-            // assign convenience variable
-            currentFeatureType = validTypes.get(i).toString();
-            // Print element representation of table
-            tempResponse.append(printElement( currentFeatureType ));
-        }
-        tempResponse.append("\n\n");
-        return tempResponse.toString();
-    }
-    
-    
-    /**
      * Internal method to print XML element information for table.
      * @param table The table name.
      */ 
     private static String printElement(String table) {
-        return "\n  <xs:element name='" + table + "' type='myns:" + table + "_Type' substitutionGroup='gml:_Feature'/>";
+        return "\n  <xs:element name='" + table + "' type='" + table + 
+	    "_Type' substitutionGroup='gml:_Feature'/>";
     }
     
     
