@@ -21,17 +21,22 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.4 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: Service.java,v 1.5 2004/02/09 18:02:20 dmzwiers Exp $
  *
  * @see WMS
  * @see WFS
  */
 public abstract class Service extends GlobalLayerSupertype {
-    /**
-     * The DTO for this instance. When Sub-classes are using config they should
-     * use Caution.
-     */
-    protected ServiceDTO config;
+
+	private boolean enabled;
+	private URL onlineResource;
+	private String name;
+	private String title;
+	private String serverAbstract;
+	private String[] keywords = new String[0];
+	private String fees;
+	private String accessConstraints;
+	private String maintainer;
 
     /**
      * Service constructor.
@@ -44,12 +49,20 @@ public abstract class Service extends GlobalLayerSupertype {
      *
      * @throws NullPointerException when the param is null
      */
-    public Service(ServiceDTO config) {
-        if (config == null) {
+    public Service(ServiceDTO dto) {
+        if (dto == null) {
             throw new NullPointerException();
         }
 
-        this.config = config;
+        enabled = dto.isEnabled();
+        name = dto.getName();
+        title = dto.getTitle();
+        serverAbstract = dto.getAbstract();
+        keywords = dto.getKeywords();
+        fees = dto.getFees();
+        accessConstraints = dto.getAccessConstraints();
+        maintainer = dto.getMaintainer();
+        onlineResource = dto.getOnlineResource();
     }
 
     /**
@@ -62,7 +75,7 @@ public abstract class Service extends GlobalLayerSupertype {
      * @return true when enabled.
      */
     public boolean isEnabled() {
-        return config.isEnabled();
+        return enabled;
     }
 
     /**
@@ -75,7 +88,7 @@ public abstract class Service extends GlobalLayerSupertype {
      * @return URL The Online resource.
      */
     public URL getOnlineResource() {
-        return config.getOnlineResource();
+        return onlineResource;
     }
 
     /**
@@ -88,7 +101,7 @@ public abstract class Service extends GlobalLayerSupertype {
      * @return String This Service's abstract.
      */
     public String getAbstract() {
-        return config.getAbstract();
+        return serverAbstract;
     }
 
     /**
@@ -101,7 +114,7 @@ public abstract class Service extends GlobalLayerSupertype {
      * @return String This service's access constraints.
      */
     public String getAccessConstraints() {
-        return config.getAccessConstraints();
+        return accessConstraints;
     }
 
     /**
@@ -114,7 +127,7 @@ public abstract class Service extends GlobalLayerSupertype {
      * @return String the fees for this service.
      */
     public String getFees() {
-        return config.getFees();
+        return fees;
     }
 
     /**
@@ -128,7 +141,7 @@ public abstract class Service extends GlobalLayerSupertype {
      */
     public List getKeywords() {
         LinkedList ll = new LinkedList();
-        String[] s = config.getKeywords();
+        String[] s = keywords;
 
         for (int i = 0; i < s.length; i++)
             ll.add(s[i]);
@@ -146,7 +159,7 @@ public abstract class Service extends GlobalLayerSupertype {
      * @return String maintainer for this service.
      */
     public String getMaintainer() {
-        return config.getMaintainer();
+        return maintainer;
     }
 
     /**
@@ -159,7 +172,7 @@ public abstract class Service extends GlobalLayerSupertype {
      * @return String the service's name.
      */
     public String getName() {
-        return config.getName();
+        return name;
     }
 
     /**
@@ -172,6 +185,20 @@ public abstract class Service extends GlobalLayerSupertype {
      * @return String the service's title.
      */
     public String getTitle() {
-        return config.getTitle();
+        return title;
+    }
+    
+    Object toDTO(){
+    	ServiceDTO dto = new ServiceDTO();
+    	dto.setAccessConstraints(accessConstraints);
+    	dto.setEnabled(enabled);
+    	dto.setFees(fees);
+    	dto.setKeywords(keywords);
+    	dto.setMaintainer(maintainer);
+    	dto.setName(name);
+    	dto.setOnlineResource(onlineResource);
+    	dto.setAbstract(serverAbstract);
+    	dto.setTitle(title);
+    	return dto;
     }
 }

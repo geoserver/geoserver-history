@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.9 2004/02/02 09:34:31 jive Exp $
+ * @version $Id: DataStoreInfo.java,v 1.10 2004/02/09 18:02:20 dmzwiers Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype
     implements DataStoreMetaData {
@@ -39,8 +39,12 @@ public class DataStoreInfo extends GlobalLayerSupertype
     /** ref to the parent class's collection */
     private Data data;
 
-    /** The dataStore information for this object */
-    private DataStoreInfoDTO dsc;
+    private String id;
+    private String nameSpaceId;
+    private boolean enabled;
+    private String title;
+    private String _abstract;
+    private Map connectionParams;
 
     /** Storage for metadata */
     private Map meta;
@@ -71,9 +75,15 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * @param data Data a ref to use later to look up related informtion
      */
     public DataStoreInfo(DataStoreInfoDTO config, Data data) {
-        dsc = config;
         this.data = data;
         meta = new HashMap();
+        
+        connectionParams = config.getConnectionParams();
+        enabled = config.isEnabled();
+        id = config.getId();
+        nameSpaceId = config.getNameSpaceId();
+        title = config.getTitle();
+        _abstract = config.getAbstract();
     }
 
     /**
@@ -88,7 +98,15 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * @return DataStoreInfoDTO the generated object
      */
     Object toDTO() {
-        return dsc;
+    	DataStoreInfoDTO dto = new DataStoreInfoDTO();
+    	dto.setAbstract(_abstract);
+    	dto.setConnectionParams(connectionParams);
+    	dto.setEnabled(enabled);
+    	dto.setId(id);
+    	dto.setNameSpaceId(nameSpaceId);
+    	dto.setTitle(title);
+
+        return dto;
     }
 
     /**
@@ -101,7 +119,7 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * @return String the id.
      */
     public String getId() {
-        return dsc.getId();
+        return id;
     }
     /**
      * Get Connect params.
@@ -112,7 +130,7 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * </p>
      */
     protected Map getParams(){
-    	Map params = new HashMap( dsc.getConnectionParams() );
+    	Map params = new HashMap( connectionParams );
     	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
     		Map.Entry entry = (Map.Entry) i.next();
     		String key = (String) entry.getKey();
@@ -195,7 +213,7 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * @return String the title.
      */
     public String getTitle() {
-        return dsc.getTitle();
+        return title;
     }
 
     /**
@@ -208,7 +226,7 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * @return String the abstract.
      */
     public String getAbstract() {
-        return dsc.getAbstract();
+        return _abstract;
     }
 
     /**
@@ -221,7 +239,7 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * @return true when the data store is enabled.
      */
     public boolean isEnabled() {
-        return dsc.isEnabled();
+        return enabled;
     }
 
     /**
@@ -243,7 +261,7 @@ public class DataStoreInfo extends GlobalLayerSupertype
      * @return DOCUMENT ME!
      */
     public String getNamesSpacePrefix() {
-        return dsc.getNameSpaceId();
+        return nameSpaceId;
     }
 
     /**
@@ -261,8 +279,7 @@ public class DataStoreInfo extends GlobalLayerSupertype
                                                              .append(", abstract=")
                                                              .append(getAbstract())
                                                              .append(", connection parameters=")
-                                                             .append(dsc
-            .getConnectionParams()).append("]").toString();
+                                                             .append(connectionParams).append("]").toString();
     }
 
     /**

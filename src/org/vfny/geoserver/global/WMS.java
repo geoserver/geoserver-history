@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.4 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: WMS.java,v 1.5 2004/02/09 18:02:20 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -84,7 +84,7 @@ public class WMS extends Service {
      */
     Object toDTO() {
         WMSDTO w = new WMSDTO();
-        w.setService(config);
+        w.setService((ServiceDTO)super.toDTO());
 
         return w;
     }

@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.29 2004/02/06 19:58:03 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.30 2004/02/09 18:00:02 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -1165,6 +1165,7 @@ public class XMLConfigReader {
                 NameSpaceElement nse = nst1.getElement(ref);
                 if(nse == null)
                 	nse = nst2.getElement(ref);
+                
                 String tmp = nse.getTypeRefName();
                 //tmp = Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
                 ati.setType(tmp);

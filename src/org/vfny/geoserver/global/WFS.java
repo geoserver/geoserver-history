@@ -26,7 +26,7 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.4 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: WFS.java,v 1.5 2004/02/09 18:02:20 dmzwiers Exp $
  */
 public class WFS extends Service {
     private boolean gmlPrefixing;
@@ -76,7 +76,7 @@ public class WFS extends Service {
      */
     Object toDTO() {
         WFSDTO dto = new WFSDTO();
-        dto.setService(config);
+        dto.setService((ServiceDTO)super.toDTO());
         dto.setGmlPrefixing(gmlPrefixing);
 
         return dto;

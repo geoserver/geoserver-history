@@ -46,7 +46,7 @@ import java.util.NoSuchElementException;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: DataDTO.java,v 1.5 2004/02/09 18:02:23 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -76,7 +76,7 @@ public final class DataDTO implements DataTransferObject {
     private Map featuresTypes;
 
     /**
-     * StyleDTO referenced by key "<code>something?</code>"
+     * StyleDTO referenced by key "<code>id</code>"
      *
      * @see org.vfny.geoserver.global.dto.StyleDTO
      */

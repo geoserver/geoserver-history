@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.28 2004/02/02 23:33:13 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.29 2004/02/09 18:02:20 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -77,6 +77,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
     /** holds the mapping of Styles and style names */
     private Map styles;
+    private Map stFiles;
     
     /**
      * Map of <code>FeatureTypeInfo</code>'s stored by full qualified name
@@ -84,9 +85,6 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      */
     private Map featureTypes;
 
-    /** The DTO for this object */
-    private DataDTO catalog;
-    
     /** Base directory for use with file based relative paths */
     private File baseDir;
     
@@ -136,8 +134,6 @@ public class Data extends GlobalLayerSupertype implements Catalog {
     void load(DataDTO config, File dir) {
     	baseDir = dir;
     	
-        catalog = config;
-
         if (config == null) {
             throw new NullPointerException("Non null DataDTO required for load");
         }
@@ -152,6 +148,10 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
         // Step 3: load featureTypes
         featureTypes = loadFeatureTypes(config);
+    }
+    
+    public Set getDataStores(){
+    	return new HashSet(dataStores.values());
     }
 
     /**
@@ -188,12 +188,10 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             DataStoreInfoDTO dataStoreDTO = (DataStoreInfoDTO) i.next();
             String id = dataStoreDTO.getId();
 
+            DataStoreInfo dataStoreInfo = new DataStoreInfo(dataStoreDTO,this);
+            map.put(id, dataStoreInfo);
             if (dataStoreDTO.isEnabled()) {
-                DataStoreInfo dataStoreInfo = new DataStoreInfo(dataStoreDTO,
-                        this);
-
                 LOGGER.fine("Register DataStore '" + id + "'");
-                map.put(id, dataStoreInfo);
             } else {
                 LOGGER.finer("Did not Register DataStore '" + id
                     + "' as it was not enabled");
@@ -454,6 +452,7 @@ SCHEMA:
      */
     private final Map loadStyles(DataDTO dto) {
         Map map = new HashMap();
+        stFiles = new HashMap();
 
         if ((dto == null) || (dto.getStyles() == null)) {
             throw new NullPointerException("List of styles is required");
@@ -472,7 +471,7 @@ SCHEMA:
 
                 continue;
             }
-
+            stFiles.put(style.getName(),styleDTO.getFilename());
             map.put(id, style);
         }
 
@@ -541,9 +540,9 @@ SCHEMA:
     	while(i.hasNext()){
     		Map.Entry e = (Map.Entry)i.next();
     		FeatureTypeInfoDTO ftdto = (FeatureTypeInfoDTO)e.getKey();
-    		DataStoreInfoDTO dsdto = (DataStoreInfoDTO)catalog.getDataStores().get(ftdto.getDataStoreId());
+    		DataStoreInfo dsdto = (DataStoreInfo)dataStores.get(ftdto.getDataStoreId());
     		if(dsdto != null){
-    			m.put(dsdto.getNameSpaceId()+":"+ftdto.getName(),e.getValue());
+    			m.put(dsdto.getNamesSpacePrefix()+":"+ftdto.getName(),e.getValue());
     		}
     	}
     	return m;
@@ -769,7 +768,50 @@ SCHEMA:
      * @return DataDTO the generated object
      */
     Object toDTO() {
-        return catalog;
+    	DataDTO dto = new DataDTO();
+    	
+    	HashMap tmp;
+    	Iterator i;
+    	tmp = new HashMap();
+    	i = nameSpaces.keySet().iterator();
+    	while(i.hasNext()){
+    		NameSpaceInfo nsi = (NameSpaceInfo)nameSpaces.get(i.next());
+    		tmp.put(nsi.getPrefix(),nsi.toDTO());
+    	}
+    	dto.setNameSpaces(tmp);
+    	if(defaultNameSpace!=null)
+    		dto.setDefaultNameSpacePrefix(defaultNameSpace.getPrefix());
+
+    	tmp = new HashMap();
+    	i = styles.keySet().iterator();
+    	while(i.hasNext()){
+    		String id = (String)i.next();
+    		Style st = (Style)styles.get(id);
+    		StyleDTO sdto = new StyleDTO();
+    		sdto.setDefault(st.isDefault());
+    		sdto.setFilename((File)stFiles.get(st.getName()));
+    		sdto.setId(id);
+    		tmp.put(id,sdto);
+    	}
+    	dto.setStyles(tmp);
+
+    	tmp = new HashMap();
+    	i = dataStores.keySet().iterator();
+    	while(i.hasNext()){
+    		DataStoreInfo dsi = (DataStoreInfo)dataStores.get(i.next());
+    		tmp.put(dsi.getId(),dsi.toDTO());
+    	}
+    	dto.setDataStores(tmp);
+
+    	tmp = new HashMap();
+    	i = errors.keySet().iterator();
+    	while(i.hasNext()){
+    		FeatureTypeInfoDTO fti = (FeatureTypeInfoDTO)i.next();
+    		tmp.put(fti.getName(),fti.clone());
+    	}
+    	dto.setFeaturesTypes(tmp);
+    	
+        return dto;
     }
 
     /**
@@ -781,7 +823,10 @@ SCHEMA:
      *         null if there no exists
      */
     public DataStoreInfo getDataStoreInfo(String id) {
-        return (DataStoreInfo) dataStores.get(id);
+    	DataStoreInfo dsi = (DataStoreInfo) dataStores.get(id);
+    	if(dsi!=null && dsi.isEnabled())
+    		return dsi;
+        return null;
     }
 
     /**
@@ -1301,21 +1346,6 @@ SCHEMA:
      */
     public void registerDataStore(DataStore dataStore)
         throws IOException {
-    }
-
-    /**
-     * Access to the set of DataStores in use by GeoServer.
-     * 
-     * <p>
-     * The provided Set may not be modified :-)
-     * </p>
-     *
-     * @return
-     *
-     * @see org.geotools.data.Catalog#getDataStores(java.lang.String)
-     */
-    public Set getDataStores() {
-        return Collections.unmodifiableSet(new HashSet(dataStores.values()));
     }
 
     /**

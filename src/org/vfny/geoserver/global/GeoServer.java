@@ -7,6 +7,7 @@ package org.vfny.geoserver.global;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
+import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
@@ -27,9 +28,27 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.9 2004/02/03 00:38:55 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.10 2004/02/09 18:02:20 dmzwiers Exp $
  */
-public class GeoServer extends GlobalLayerSupertype { // implements org.apache.struts.action.PlugIn{
+public class GeoServer extends GlobalLayerSupertype {
+
+	private int maxFeatures = Integer.MAX_VALUE;
+	private boolean verbose = true;
+	private int numDecimals = 4;
+	private Charset charSet = Charset.forName("UTF-8");
+	private String schemaBaseUrl;
+	private String contactPerson;
+	private String contactOrganization;
+	private String contactPosition;
+	private String addressType;
+	private String address;
+	private String addressCity;
+	private String addressState;
+	private String addressPostalCode;
+	private String addressCountry;
+	private String contactVoice;
+	private String contactFacsimile;
+	private String contactEmail;
 
     /** For debugging */
     private static final Logger LOGGER = Logger.getLogger(
@@ -48,9 +67,6 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
     /** Default Logging level */
     private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
                                        .getLevel();
-
-    /** The DTO for this geoserver instance, holds the instance data. */
-    private GeoServerDTO geoServer;
 
     /** The reference to the wms configuration for this instance */
     private WMS wms;
@@ -77,7 +93,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Address.
      */
     public String getAddress() {
-        return notNull(geoServer.getContact().getAddress());
+        return notNull(address);
     }
 
     /**
@@ -90,7 +106,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact City.
      */
     public String getAddressCity() {
-        return notNull(geoServer.getContact().getAddressCity());
+        return notNull(addressCity);
     }
 
     /**
@@ -103,7 +119,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Country.
      */
     public String getAddressCountry() {
-        return notNull(geoServer.getContact().getAddressCountry());
+        return notNull(addressCountry);
     }
 
     /**
@@ -116,7 +132,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact PostalCode.
      */
     public String getAddressPostalCode() {
-        return notNull(geoServer.getContact().getAddressPostalCode());
+        return notNull(addressPostalCode);
     }
 
     /**
@@ -129,7 +145,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact State.
      */
     public String getAddressState() {
-        return notNull(geoServer.getContact().getAddressState());
+        return notNull(addressState);
     }
 
     /**
@@ -142,7 +158,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Address Type.
      */
     public String getAddressType() {
-        return notNull(geoServer.getContact().getAddressType());
+        return notNull(addressType);
     }
 
     /**
@@ -155,7 +171,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return Charset the default charset for this server instance.
      */
     public Charset getCharSet() {
-        return geoServer.getCharSet();
+        return charSet;
     }
 
     /**
@@ -168,7 +184,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Email.
      */
     public String getContactEmail() {
-        return notNull(geoServer.getContact().getContactEmail());
+        return notNull(contactEmail);
     }
 
     /**
@@ -181,7 +197,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Facsimile.
      */
     public String getContactFacsimile() {
-        return notNull(geoServer.getContact().getContactFacsimile());
+        return notNull(contactFacsimile);
     }
 
     /**
@@ -194,7 +210,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Organization.
      */
     public String getContactOrganization() {
-        return notNull(geoServer.getContact().getContactOrganization());
+        return notNull(contactOrganization);
     }
 
     /**
@@ -207,7 +223,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Person.
      */
     public String getContactPerson() {
-        return notNull(geoServer.getContact().getContactPerson());
+        return notNull(contactPerson);
     }
 
     /**
@@ -220,7 +236,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Position.
      */
     public String getContactPosition() {
-        return notNull(geoServer.getContact().getContactPosition());
+        return notNull(contactPosition);
     }
 
     /**
@@ -233,7 +249,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the contact Phone.
      */
     public String getContactVoice() {
-        return notNull(geoServer.getContact().getContactVoice());
+        return notNull(contactVoice);
     }
 
     /**
@@ -259,7 +275,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the max number of features supported.
      */
     public int getMaxFeatures() {
-        return geoServer.getMaxFeatures();
+        return maxFeatures;
     }
 
     /**
@@ -285,7 +301,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return int the default number of decimals allowed in the data.
      */
     public int getNumDecimals() {
-        return geoServer.getNumDecimals();
+        return numDecimals;
     }
 
     /**
@@ -298,7 +314,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return String the Schema Base URL for this instance.
      */
     public String getSchemaBaseUrl() {
-        return geoServer.getSchemaBaseUrl();
+        return schemaBaseUrl;
     }
 
     /**
@@ -307,7 +323,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return true when verbose
      */
     public boolean isVerbose() {
-        return geoServer.isVerbose();
+        return verbose;
     }
 
     /**
@@ -447,9 +463,26 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      *
      * @throws ConfigurationException If an error occurs
      */
-    public void load(GeoServerDTO geoServer) throws ConfigurationException {
-        if (geoServer != null) {
-            this.geoServer = (GeoServerDTO) geoServer.clone();
+    public void load(GeoServerDTO dto) throws ConfigurationException {
+        if (dto != null) {
+        	address = dto.getContact().getAddress();
+        	addressCity = dto.getContact().getAddressCity();
+        	addressCountry = dto.getContact().getAddressCountry();
+        	addressPostalCode = dto.getContact().getAddressPostalCode();
+        	addressState = dto.getContact().getAddressState();
+        	addressType = dto.getContact().getAddressType();
+        	charSet = dto.getCharSet();
+        	contactEmail = dto.getContact().getContactEmail();
+        	contactFacsimile = dto.getContact().getContactFacsimile();
+        	contactOrganization = dto.getContact().getContactOrganization();
+        	contactPerson = dto.getContact().getContactPerson();
+        	contactPosition = dto.getContact().getContactPosition();
+        	contactVoice = dto.getContact().getContactVoice();
+        	loggingLevel = dto.getLoggingLevel();
+        	maxFeatures = dto.getMaxFeatures();
+        	numDecimals = dto.getNumDecimals();
+        	schemaBaseUrl = dto.getSchemaBaseUrl();
+        	verbose = dto.isVerbose();
         } else {
             throw new ConfigurationException(
                 "load(GeoServerDTO) expected a non-null value");
@@ -576,7 +609,7 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @return GeoServerDTO the generated object
      */
     public GeoServerDTO toGeoServerDTO() {
-        return (GeoServerDTO) geoServer.clone();
+        return (GeoServerDTO) toDTO();
     }
 
     /**
@@ -601,10 +634,34 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * extreme caution.
      * </p>
      *
-     * @return WMSDTO the generated object
+     * @return DTO the generated object
      */
     Object toDTO() {
-        return geoServer;
+    	GeoServerDTO dto = new GeoServerDTO();
+    	dto.setCharSet(charSet);
+    	dto.setLoggingLevel(loggingLevel);
+    	dto.setMaxFeatures(maxFeatures);
+    	dto.setNumDecimals(numDecimals);
+    	dto.setSchemaBaseUrl(schemaBaseUrl);
+    	dto.setVerbose(verbose);
+    	
+    	ContactDTO cdto = new ContactDTO();
+    	dto.setContact(cdto);
+    	
+    	cdto.setAddress(address);
+    	cdto.setAddressCity(addressCity);
+    	cdto.setAddressCountry(addressCountry);
+    	cdto.setAddressPostalCode(addressPostalCode);
+    	cdto.setAddressState(addressState);
+    	cdto.setAddressType(addressType);
+    	cdto.setContactEmail(contactEmail);
+    	cdto.setContactFacsimile(contactFacsimile);
+    	cdto.setContactOrganization(contactOrganization);
+    	cdto.setContactPerson(contactPerson);
+    	cdto.setContactPosition(contactPosition);
+    	cdto.setContactVoice(contactVoice);
+    	
+        return dto;
     }
 	/**
 	 * Access processor property.

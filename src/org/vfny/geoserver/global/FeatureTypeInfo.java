@@ -32,6 +32,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -44,15 +45,27 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.21 2004/02/06 19:58:05 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.22 2004/02/09 18:02:20 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
-    /** The DTO instane which hold this instance's data */
-    private FeatureTypeInfoDTO ftc;
+    private String dataStoreId;
+    private Envelope latLongBBox;
+    private int SRS;
+    private List schema;
+    private String schemaName;
+    private String schemaBase;
+    private String name;
+    private String dirName;
+    private String _abstract;
+    private List keywords;
+    private int numDecimals;
+    private Filter definitionQuery = null;
+    private String defaultStyle;
+    private String title;
 
     /** ref to parent set of datastores. */
     private Data data;
@@ -65,7 +78,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * This will be null unless populated by schema or DTO.
      * </p>
      */
-    private Map attributeInfo; //kill me pls
 
     /** will be lazily generated */
     private String xmlSchemaFrag;
@@ -88,9 +100,21 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      */
     public FeatureTypeInfo(FeatureTypeInfoDTO dto, Data data)
         throws ConfigurationException {
-        ftc = dto;
         this.data = data;
-        attributeInfo = null; // will need to generate later               
+        _abstract = dto.getAbstract();
+        dataStoreId = dto.getDataStoreId();
+        defaultStyle = dto.getDefaultStyle();
+        definitionQuery = dto.getDefinitionQuery();
+        dirName = dto.getDirName();
+        keywords = dto.getKeywords();
+        latLongBBox = dto.getLatLongBBox();
+        name = dto.getName();
+        numDecimals = dto.getNumDecimals();
+        schema = dto.getSchemaAttributes();
+        schemaBase = dto.getSchemaBase();
+        schemaName = dto.getSchemaName();
+        SRS = dto.getSRS();
+        title = dto.getTitle();
     }
 
     /**
@@ -105,7 +129,27 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return FeatureTypeInfoDTO the generated object
      */
     Object toDTO() {
-        return ftc;
+    	FeatureTypeInfoDTO dto= new FeatureTypeInfoDTO();
+    	dto.setAbstract(_abstract);
+    	dto.setDataStoreId(dataStoreId);
+    	dto.setDefaultStyle(defaultStyle);
+    	dto.setDefinitionQuery(definitionQuery);
+    	dto.setDirName(dirName);
+    	dto.setKeywords(keywords);
+    	dto.setLatLongBBox(latLongBBox);
+    	dto.setName(name);
+    	dto.setNumDecimals(numDecimals);
+    	List tmp = new LinkedList();
+    	Iterator i = schema.iterator();
+    	while(i.hasNext()){
+    		tmp.add(((AttributeTypeInfo)i.next()).toDTO());
+    	}
+    	dto.setSchemaAttributes(tmp);
+    	dto.setSchemaBase(schemaBase);
+    	dto.setSchemaName(schemaName);
+    	dto.setSRS(SRS);
+    	dto.setTitle(title);
+        return dto;
     }
 
     /**
@@ -118,7 +162,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return int the default number of decimals allowed in the data.
      */
     public int getNumDecimals() {
-        return ftc.getNumDecimals();
+        return numDecimals;
     }
 
     /**
@@ -137,7 +181,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see Data#getDataStoreInfo(String)
      */
     public DataStoreInfo getDataStoreInfo() {
-        return data.getDataStoreInfo(ftc.getDataStoreId());
+        return data.getDataStoreInfo(dataStoreId);
     }
 
     /**
@@ -198,8 +242,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      *         parent Data instance.
      */
     public String getName() {
-        return ((DataStoreInfo) data.getDataStoreInfo(ftc.getDataStoreId())).getNameSpace()
-                .getPrefix() + ":" + ftc.getName();
+        return ((DataStoreInfo) data.getDataStoreInfo(dataStoreId)).getNameSpace()
+                .getPrefix() + ":" + name;
     }
 
     /**
@@ -231,7 +275,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see getName()
      */
     public String getShortName() {
-        return ftc.getName();
+        return name;
     }
 
     /**
@@ -253,19 +297,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         }
 
         if (fs == null) {
-            DataStore dataStore = data.getDataStoreInfo(ftc.getDataStoreId())
+            DataStore dataStore = data.getDataStoreInfo(dataStoreId)
                                       .getDataStore();
-            String typeName = ftc.getName();
+            String typeName = name;
             FeatureSource realSource = dataStore.getFeatureSource(typeName);
 
-            if (((ftc.getSchemaAttributes() == null)
-                    || ftc.getSchemaAttributes().isEmpty())) { // && 
+            if (((schema == null)
+                    || schema.isEmpty())) { // && 
 
                 //(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
                 fs = realSource;
             } else {
                 try {
-                    fs = reTypeSource(realSource, ftc);
+                    fs = reTypeSource(realSource, (FeatureTypeInfoDTO)toDTO());
                 } catch (SchemaException e) {
                     throw new DataSourceException("Could not make FeatureSource attributes don't match",
                         e);
@@ -317,9 +361,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
-        DataStore dataStore = data.getDataStoreInfo(ftc.getDataStoreId())
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId)
                                   .getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(ftc.getName());
+        FeatureSource realSource = dataStore.getFeatureSource(name);
 
         return realSource.getBounds();
     }
@@ -334,7 +378,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return Filter the definition query
      */
     public Filter getDefinitionQuery() {
-        return ftc.getDefinitionQuery();
+        return definitionQuery;
     }
 
     /**
@@ -349,11 +393,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @throws IOException when an error occurs
      */
     public Envelope getLatLongBoundingBox() throws IOException {
-        if (ftc.getLatLongBBox() == null) {
+        if (latLongBBox == null) {
             return getBoundingBox();
         }
 
-        return ftc.getLatLongBBox();
+        return latLongBBox;
     }
 
     /**
@@ -366,7 +410,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return int the SRS number.
      */
     public String getSRS() {
-        return ftc.getSRS() + "";
+        return SRS + "";
     }
 
     /**
@@ -422,7 +466,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      */
     private synchronized FeatureTypeInfoDTO getGeneratedDTO()
         throws IOException {
-        FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO(ftc);
+        FeatureTypeInfoDTO dto = (FeatureTypeInfoDTO)toDTO();
 
         if ((dto.getSchemaAttributes() == null)
                 || (dto.getSchemaAttributes().size() == 0)) {
@@ -559,7 +603,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return Short description of FeatureType
      */
     public String getAbstract() {
-        return ftc.getAbstract();
+        return _abstract;
     }
 
     /**
@@ -572,7 +616,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return List the FeatureTypeInfo keywords
      */
     public List getKeywords() {
-        return ftc.getKeywords();
+        return keywords;
     }
 
     /**
@@ -585,7 +629,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return String the FeatureTypeInfo title
      */
     public String getTitle() {
-        return ftc.getTitle();
+        return title;
     }
 
     /**
@@ -598,7 +642,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return
      */
     public String getSchemaName() {
-        return ftc.getSchemaName();
+        return schemaName;
     }
 
     /**
@@ -611,7 +655,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @param string
      */
     public void setSchemaName(String string) {
-        ftc.setSchemaName(string);
+        schemaName = string;
     }
 
     /**
@@ -624,7 +668,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return
      */
     public String getSchemaBase() {
-        return ftc.getSchemaBase();
+        return schemaBase;
     }
 
     /**
@@ -637,7 +681,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @param string
      */
     public void setSchemaBase(String string) {
-        ftc.setSchemaBase(string);
+        schemaBase=string;
     }
 
     //
@@ -652,7 +696,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
      */
     public String getTypeName() {
-        return ftc.getDataStoreId();
+        return dataStoreId;
     }
 
     /**
@@ -676,7 +720,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see org.geotools.data.FeatureTypeMetaData#getDataStoreMetaData()
      */
     public DataStoreMetaData getDataStoreMetaData() {
-        return (DataStoreMetaData) data.getDataStoreInfo(ftc.getDataStoreId());
+        return (DataStoreMetaData) data.getDataStoreInfo(dataStoreId);
     }
 
     /**
@@ -693,7 +737,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see org.geotools.data.FeatureTypeMetaData#getAttributeNames()
      */
     public List getAttributeNames() {
-        List attribs = ftc.getSchemaAttributes();
+        List attribs = schema;
 
         if (attribs.size() != 0) {
             List list = new ArrayList(attribs.size());
@@ -736,46 +780,36 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
      */
     public synchronized AttributeTypeMetaData AttributeTypeMetaData(
-        String attributeName) {
-        if (attributeInfo == null) {
-            attributeInfo = new HashMap();
-        }
-
-        if (attributeInfo.containsKey(attributeName)) {
-            return (AttributeTypeMetaData) attributeInfo.get(attributeName);
-        }
-
+        String attributeName) {    
         AttributeTypeInfo info = null;
 
-        if (ftc.getSchemaAttributes() != null) {
-            for (Iterator i = ftc.getSchemaAttributes().iterator();
+        if (schema != null) {
+            for (Iterator i = schema.iterator();
                     i.hasNext();) {
                 AttributeTypeInfoDTO dto = (AttributeTypeInfoDTO) i.next();
                 info = new AttributeTypeInfo(dto);
             }
 
-            DataStore dataStore = data.getDataStoreInfo(ftc.getDataStoreId())
+            DataStore dataStore = data.getDataStoreInfo(dataStoreId)
                                       .getDataStore();
 
             try {
-                FeatureType schema = dataStore.getSchema(ftc.getName());
+                FeatureType schema = dataStore.getSchema(name);
                 info.sync(schema.getAttributeType(attributeName));
             } catch (IOException e) {
             }
         } else {
             // will need to generate from Schema 
-            DataStore dataStore = data.getDataStoreInfo(ftc.getDataStoreId())
+            DataStore dataStore = data.getDataStoreInfo(dataStoreId)
                                       .getDataStore();
 
             try {
-                FeatureType schema = dataStore.getSchema(ftc.getName());
+                FeatureType schema = dataStore.getSchema(name);
                 info = new AttributeTypeInfo(schema.getAttributeType(
                             attributeName));
             } catch (IOException e) {
             }
         }
-
-        attributeInfo.put(attributeName, info);
 
         return info;
     }
