@@ -24,7 +24,7 @@ import java.util.logging.*;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.1.2.3 2003/11/12 04:19:00 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.1.2.4 2003/11/14 21:50:31 jive Exp $
  */
 public class TransactionResponse implements Response {
     
@@ -40,14 +40,16 @@ public class TransactionResponse implements Response {
     //private static String transHandle;
     
     private static ServerConfig config = ServerConfig.getInstance();
-
+    
     /** temporal, remove it when response streaming be implemented */
     private String xmlResponse;
 
+    Transaction transaction;
     /**
      * Constructor
      */
     public TransactionResponse() {
+        transaction = null;
     }
 
     public void execute(Request request) throws WfsException {
@@ -379,4 +381,21 @@ public class TransactionResponse implements Response {
                 + e.getCause(), delete.getHandle());
         }
     }
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.responses.Response#abort()
+     */
+    public void abort() {
+        if( transaction == null ){
+            return; // no transaction to rollback
+        }
+        try {
+            transaction.rollback();
+            //transaction.close();            
+        }
+        catch( IOException ioException ){
+            // nothing we can do here
+            LOGGER.warning("Abort failed trying to rollback transaction:"+ioException);   
+        }        
+    }
+
 }

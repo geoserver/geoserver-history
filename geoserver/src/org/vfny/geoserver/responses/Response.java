@@ -32,7 +32,7 @@ import java.io.*;
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.1.2.4 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: Response.java,v 1.1.2.5 2003/11/14 21:50:56 jive Exp $
  */
 public interface Response {
     /**
@@ -137,4 +137,18 @@ public interface Response {
      * many times)
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException;
+    
+    /**
+     * Called when things go horriably wrong.
+     * <p>
+     * Used try and restore application state when things go wrong.
+     * This is called by AbstractAction to try and recover when
+     * sending out a ServiceException.
+     * </p>
+     * <p>
+     * Allows a Response a chance to clean up after its self when
+     * AbstractionAction is error handling.
+     * </p>
+     */
+    public void abort();
 }

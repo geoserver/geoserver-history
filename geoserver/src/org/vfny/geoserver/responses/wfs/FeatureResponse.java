@@ -28,25 +28,66 @@ import javax.xml.transform.TransformerException;
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.12 2003/11/14 18:25:14 jive Exp $
+ * @author Jody Garnett, Refractions Research
+ * @version $Id: FeatureResponse.java,v 1.1.2.13 2003/11/14 21:50:31 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
-
-    /** DOCUMENT ME! */
-    private static final ServerConfig config = ServerConfig.getInstance();        
-
-    // set by execute, used by write
-    private FeatureTransformer transformer;    
-    private FeatureRequest request;
-    private List resultList;
     
+    // set by execute, used by write
+    /**
+     * This is a "magic" class provided by Geotools that writes out
+     * GML for an array of FeatureResults.
+     * <p>
+     * This class seems to do all the work, if you have a problem with GML
+     * you will need to hunt it down. We supply all of the header information
+     * in the execute method, and work through the featureList in the writeTo
+     * method. 
+     * </p>
+     * <p>
+     * This value will be <code>null</code> until execute is called.
+     * </p>
+     */
+    private FeatureTransformer transformer;
+    /**
+     * This is the request provided to the execute( Request ) method.
+     * <p>
+     * We save it so we can access the handle provided by the user for
+     * error reporting during the writeTo( OutputStream ) opperation.
+     * </p>
+     * <p>
+     * This value will be <code>null</code> until execute is called.
+     * </p>
+     */    
+    private FeatureRequest request;
+    /**
+     * This is the resultList provided to the execute( Request ) method.
+     * <p>
+     * We save it so we can access the handle provided by the user for
+     * error reporting during the writeTo( OutputStream ) opperation.
+     * </p>
+     * <p>
+     * This value will be <code>null</code> until execute is called.
+     * </p>
+     */    
+    private List resultList;
+    /**
+     * This is the FeatureLock provided by execute( Request ) method.
+     * <p>
+     * This will only be non null if RequestFeatureWithLock.
+     * </p>
+     */
+    FeatureLock featureLock;    
     /**
      * Empty constructor
      */
     public FeatureResponse() {
+        request = null;
+        resultList = null;
+        transformer = null;
+        featureLock = null;        
     }
 
     /**
@@ -55,7 +96,7 @@ public class FeatureResponse implements Response {
      * @return DOCUMENT ME!
      */
     public String getContentType() {
-        return config.getGlobalConfig().getMimeType();
+        return ServerConfig.getInstance().getGlobalConfig().getMimeType();
     }
 
     /**
@@ -70,12 +111,6 @@ public class FeatureResponse implements Response {
      * - sets up the header
      */
     public void writeTo(OutputStream out) throws ServiceException {
-        // to do a single pass we would 
-        // have to perform the execution here
-        //
-        // This should probably be done, since FeatureResults are "live"
-        // and may change between the locking and the writing
-        
         if( request == null || resultList == null){
             throw new IllegalStateException(
                 "execute has not been called prior to writeTo" );            
@@ -100,7 +135,10 @@ public class FeatureResponse implements Response {
     }
     
     /**
-     * Executes FeatureRequest
+     * Executes FeatureRequest.
+     * <p>
+     * Willing to execute a FetureRequest, or FeatureRequestWith Lock.
+     * </p>
      */
     public void execute(Request req) throws ServiceException {
         execute( (FeatureRequest) req );
@@ -108,15 +146,10 @@ public class FeatureResponse implements Response {
 
     
     /**
-     * Jody here with a replacement for execute that make use
-     * of geotools2 locking.
+     * Performs a getFeatures, or getFeaturesWithLock (using gt2 locking ).
      * <p>
-     * This code is a discussion point, when everyone has had there input
-     * we will try and set things up properly.
-     * </p>
-     * <p>
-     * The idea is to grab the FeatureSources during execute, and use them
-     * during writeTo
+     * The idea is to grab the FeatureResulsts during execute, and use them
+     * during writeTo.
      * </p>
      * @task TODO: split this up a bit more?  Also get the proper namespace
      *       declrations and schema locations.  Right now we're back up to
@@ -129,17 +162,32 @@ public class FeatureResponse implements Response {
      * @throws ServiceException
      */
     public void execute( FeatureRequest request ) throws ServiceException {
-        LOGGER.finest("write xml response. called request is: " + request);
-        
-        FeatureLock featureLock = null;
+        LOGGER.finest("execute FeatureRequest response. Called request is: " + request);
+               
         if( request instanceof FeatureWithLockRequest){
-            featureLock = ((FeatureWithLockRequest)request).toFeatureLock();                        
+            featureLock = ((FeatureWithLockRequest)request).toFeatureLock();
+            String authorization = featureLock.getAuthorization();        
+            LOGGER.finest("FeatureWithLock using Lock:"+authorization );
         }
-        String authorization = featureLock.getAuthorization();
         
-        LOGGER.finest("We will lock using:"+authorization );
-
-        CatalogConfig catalog = config.getCatalog();        
+        //
+        // Optimization Idea
+        //
+        // We should be able to reduce this to a two pass opperations.
+        //
+        // Pass #1 execute
+        // - Attempt to Locks Fids during the first pass
+        // - Also collect Bounds information during the first pass
+        //
+        // Pass #2 writeTo
+        // - Using the Bounds to describe our FeatureCollections
+        // - Iterate through FeatureResults producing GML
+        //
+        // And allways remember to release locks if we are failing:
+        // - if we fail to aquire all the locks we will need to fail and
+        //   itterate through the the FeatureSources to release the locks 
+        //
+        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();        
         FeatureTypeConfig meta = null;
         NameSpace namespace;       
         Query query;
@@ -225,26 +273,12 @@ public class FeatureResponse implements Response {
             if( featureLock != null && !lockFailedFids.isEmpty() ){
                 // I think we need to release and fail when lockAll fails
                 //
-                for (Iterator it = request.getQueries().iterator();
-                       it.hasNext() && (maxFeatures > 0);) {
-                      
-                    query = (Query) it.next();                                                                   
-                    meta = catalog.getFeatureType( query.getTypeName() );
-                    namespace = meta.getDataStore().getNameSpace();                
-                    source = (FeatureLocking) meta.getFeatureSource();
-                    
-                    Transaction t = new DefaultTransaction();
-                    source.setTransaction( t );
-                    t.addAuthorization( featureLock.getAuthorization() );
-                    source.releaseLock( featureLock.getAuthorization() );
-                    t.commit();
-                    source.setTransaction( Transaction.AUTO_COMMIT );
-                }
+                // abort will take care of releasing the locks
                 throw new WfsException(
                     "Could not aquire locks for:" + lockFailedFids
                 );
             }
-            
+            // Can someone tell me what this does?
             System.setProperty("javax.xml.transform.TransformerFactory",
                 "org.apache.xalan.processor.TransformerFactoryImpl");
 
@@ -258,6 +292,11 @@ public class FeatureResponse implements Response {
             namespace = meta.getDataStore().getNameSpace();
             transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
             transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
+            if( featureLock != null){
+                // TODO: chris needs to add the lock authorization to
+                //       the transformer header info
+                //transformer.setLockID( featureLock.getAuthorization() );
+            }
         }
         catch (IOException e){
             throw new ServiceException(e, "problem with FeatureResults",
@@ -337,4 +376,41 @@ public class FeatureResponse implements Response {
 
         return features;
     }
+    
+    /**
+     * Release locks if we are into that sort of thing.
+     * 
+     * @see org.vfny.geoserver.responses.Response#abort()
+     */
+    public void abort() {
+        if( request == null ){
+            return; // request was not attempted
+        }
+        if( featureLock == null ){
+            return; // we have no locks
+        }
+        
+        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();            
+        // I think we need to release and fail when lockAll fails
+        //
+        try {
+            for (Iterator it = request.getQueries().iterator(); it.hasNext();) {
+                  
+                Query query = (Query) it.next();                                                                   
+                FeatureTypeConfig meta = catalog.getFeatureType( query.getTypeName() );
+                FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
+                
+                Transaction t = new DefaultTransaction();
+                source.setTransaction( t );
+                t.addAuthorization( featureLock.getAuthorization() );
+                source.releaseLock( featureLock.getAuthorization() );
+                t.commit();
+                source.setTransaction( Transaction.AUTO_COMMIT );
+            }            
+        }
+        catch( IOException ioException ){
+            LOGGER.warning("Abort not complete:"+ioException);            
+        }
+    }
+
 }

@@ -23,7 +23,7 @@ import javax.servlet.http.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: AbstractService.java,v 1.1.2.6 2003/11/14 20:39:15 groldan Exp $
+ * @version $Id: AbstractService.java,v 1.1.2.7 2003/11/14 21:50:56 jive Exp $
  *
  * @task TODO: I changed this so it automatically buffers responses, so  as to
  *       better handle errors, not serving up nasty servlet errors if
@@ -125,44 +125,7 @@ public abstract class AbstractService extends HttpServlet {
     protected void doService(HttpServletRequest request,
                              HttpServletResponse response,
                              Request serviceRequest) {
-        if( saftyMode != null ){
-            saftyMode.doService( this, request, response, serviceRequest );
-        }
-        else {
-
-                saftyMode.doService( this, request, response, serviceRequest );
-            try {
-                Response serviceResponse = getResponseHandler();
-
-
-                serviceResponse.execute(serviceRequest);
-
-                // set content type and return response, whatever it is
-                String contentType = serviceResponse.getContentType();
-                response.setContentType(contentType);
-
-                /*
-                   boolean gzipIt = requestSupportsGzip(request);
-                   if (gzipIt)
-                   {
-                       LOGGER.finer("GZIPPING RESPONSE...");
-                       response.setHeader("content-encoding", "gzip");
-                       out = new GZIPOutputStream(out, 2048);
-                   }
-                 */
-
-                //TODO: make this user configurable.  For now it's better
-                //to pick up errors correctly, as we've got quite a few of them.
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                serviceResponse.writeTo(buffer);
-                OutputStream out = response.getOutputStream();
-                out = new BufferedOutputStream(out, 2 * 1024 * 1024);
-    	    buffer.writeTo(out);
-                out.flush();
-            } catch (Throwable e) {
-                sendError(response, e);
-            }
-        }
+        saftyMode.doService( this, request, response, serviceRequest );
     }
 
     /**
@@ -348,11 +311,13 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
 //            }
         } catch ( ServiceException serviceException){
             // we have not written anything, use sendError
+            serviceResponse.abort();
             service.sendError(response, serviceException);
             return;
 
         } catch (IOException ioException){
             // we have not written anything, use sendError
+            serviceResponse.abort();            
             service.sendError(response, ioException);
             return;
         }
@@ -365,12 +330,14 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
             // we cannot recover
             // this is the worst case scenario we warned you about
             // when using the SpeedStratagy
+            serviceResponse.abort();            
             IllegalStateException stateException = new IllegalStateException("Speed Optimization Failed, cannot report error to user");
             stateException.initCause( failed );
             throw stateException;
         }
         catch( IOException ioException){
             // we could not communicate with the user
+            serviceResponse.abort();            
             IllegalStateException stateException = new IllegalStateException("Communication to user failed");
             stateException.initCause( ioException );
             throw stateException;
@@ -395,9 +362,8 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
                           Request serviceRequest) {
 
         ByteArrayOutputStream buffer = null;
+        Response serviceResponse = service.getResponseHandler();        
         try {
-            Response serviceResponse = service.getResponseHandler();
-
             // execute request
             serviceResponse.execute(serviceRequest);
 
@@ -407,8 +373,11 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
             // gather response
             serviceResponse.writeTo(buffer);
           }catch(IOException ioe){
+            serviceResponse.abort();              
             //user just closed the socket stream, do nothing
+            return;
           }catch( ServiceException serviceException ){
+            serviceResponse.abort();              
             service.sendError( response, serviceException );
             return;
         }
@@ -421,6 +390,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
             out.flush();
         } catch (IOException ioException) {
             // something went wrong reporting to the user
+            serviceResponse.abort();
             IllegalStateException stateException = new IllegalStateException("Communication to user failed");
             stateException.initCause( ioException );
             throw stateException;
@@ -435,8 +405,9 @@ class FileStratagy implements AbstractService.ServiceStratagy {
                           HttpServletResponse response,
                           Request serviceRequest) {
         File temp = null;
+        Response serviceResponse = service.getResponseHandler();        
         try {
-            Response serviceResponse = service.getResponseHandler();
+            
             // execute request
             serviceResponse.execute(serviceRequest);
 
@@ -449,15 +420,16 @@ class FileStratagy implements AbstractService.ServiceStratagy {
             serviceResponse.writeTo( safe );
             safe.close();
         } catch (IOException ioException) {
+            serviceResponse.abort();            
             service.sendError(response, ioException);
             return;
         } catch( ServiceException serviceException ){
+            serviceResponse.abort();            
             service.sendError( response, serviceException );
             return;
         }
-
-
         // service succeeded in producing a response!
+        
         // copy the result to out
         try {
             // copy result to the real output stream
@@ -474,6 +446,7 @@ class FileStratagy implements AbstractService.ServiceStratagy {
             }
             copy.close();
         } catch (IOException ioException) {
+            serviceResponse.abort();            
             // something went wrong reporting to the user
             IllegalStateException stateException = new IllegalStateException("Communication to user failed");
             stateException.initCause( ioException );

@@ -22,7 +22,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.1.2.3 2003/11/12 02:17:58 cholmesny Exp $
+ * @version $Id: DescribeResponse.java,v 1.1.2.4 2003/11/14 21:50:31 jive Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -419,4 +419,11 @@ public class DescribeResponse implements Response {
 
         return ftConf.getPrefix();
     }
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.responses.Response#abort()
+     */
+    public void abort() {
+        // nothing to undo
+    }
+
 }

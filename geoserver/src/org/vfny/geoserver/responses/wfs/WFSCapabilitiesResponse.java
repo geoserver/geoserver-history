@@ -13,7 +13,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WFSCapabilitiesResponse.java,v 1.1.2.2 2003/11/14 20:39:15 groldan Exp $
+ * @version $Id: WFSCapabilitiesResponse.java,v 1.1.2.3 2003/11/14 21:50:31 jive Exp $
  */
 public class WFSCapabilitiesResponse extends CapabilitiesResponse {
     /**
@@ -39,4 +39,11 @@ public class WFSCapabilitiesResponse extends CapabilitiesResponse {
 
         return cr;
     }
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.responses.Response#abort()
+     */
+    public void abort() {
+        // nothing to undo
+    }
+
 }

@@ -25,7 +25,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.1.2.2 2003/11/14 03:57:10 jive Exp $
+ * @version $Id: LockResponse.java,v 1.1.2.3 2003/11/14 21:50:30 jive Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -48,20 +48,23 @@ public class LockResponse implements Response {
     /** temporal, it will disappear when the response streaming be implemented */
     private String xmlResponse = null;
 
+    FeatureLock featureLock;
+    LockRequest request;
     /**
      * Constructor
      */
     public LockResponse() {
+        featureLock = null;
+        request = null;        
     }
 
-    public void execute(Request request) throws WfsException {
-        if (!(request instanceof LockRequest)) {
+    public void execute(Request req) throws WfsException {
+        if (!(req instanceof LockRequest)) {
             throw new WfsException("bad request, expected LockRequest, got "
-                + request);
+                + req);
         }
-
-        LockRequest lockRequest = (LockRequest) request;
-        xmlResponse = getXmlResponse(lockRequest);
+        request = (LockRequest) req;
+        xmlResponse = getXmlResponse(request);
     }
 
     public String getContentType() {
@@ -163,25 +166,7 @@ public class LockResponse implements Response {
         if( lockAll && !lockFailedFids.isEmpty() ){
             // I think we need to release and fail when lockAll fails
             //
-            for (int i = 1, n = locks.size(); i < n; i++) {
-                curLock = (LockRequest.Lock) locks.get(i);
-    
-                String curTypeName = curLock.getFeatureType();
-                Filter curFilter = curLock.getFilter();
-                //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
-    
-                FeatureTypeConfig meta = catalog.getFeatureType( curTypeName );
-                NameSpace namespace = meta.getDataStore().getNameSpace();                
-                FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
-                FeatureResults features = source.getFeatures( curFilter );
-                            
-                Transaction t = new DefaultTransaction();
-                source.setTransaction( t );
-                t.addAuthorization( featureLock.getAuthorization() );
-                source.releaseLock( featureLock.getAuthorization() );
-                t.commit();
-                source.setTransaction( Transaction.AUTO_COMMIT );
-            }
+            // abort will release the locks
             throw new WfsException(
                 "Could not aquire locks for:" + lockFailedFids
             );
@@ -292,4 +277,45 @@ public class LockResponse implements Response {
 
         return returnXml.toString();
     }
+    /**
+     * Release locks if lockAll failed.
+     * 
+     * @see org.vfny.geoserver.responses.Response#abort()
+     */
+    public void abort() {
+        if( request == null ){
+            return; // request was not attempted
+        }
+        if( featureLock == null ){
+            return; // we have no locks
+        }
+        
+        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();            
+        // I think we need to release and fail when lockAll fails
+        //
+        try {
+            
+        
+            ServerConfig config = ServerConfig.getInstance();
+                            
+            for( Iterator i=request.getLocks().iterator(); i.hasNext(); ) {
+                LockRequest.Lock curLock = (LockRequest.Lock) i.next();
+            
+                String curTypeName = curLock.getFeatureType();
+                  
+                FeatureTypeConfig meta = catalog.getFeatureType( curTypeName );
+                FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
+                
+                Transaction t = new DefaultTransaction();
+                source.setTransaction( t );
+                t.addAuthorization( featureLock.getAuthorization() );
+                source.releaseLock( featureLock.getAuthorization() );
+                t.commit();
+                source.setTransaction( Transaction.AUTO_COMMIT );
+            }            
+        }
+        catch( IOException ioException ){
+            LOGGER.warning("Abort not complete:"+ioException);            
+        }
+    }    
 }

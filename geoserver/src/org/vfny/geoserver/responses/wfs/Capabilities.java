@@ -14,7 +14,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
+ * @version $Id: Capabilities.java,v 1.1.2.3 2003/11/14 21:50:31 jive Exp $
  */
 public class Capabilities extends CapabilitiesResponse {
     protected ServiceConfig getServiceConfig() {
@@ -24,4 +24,7 @@ public class Capabilities extends CapabilitiesResponse {
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
         return new WfsCapabilitiesResponseHandler(contentHandler);
     }
+    public void abort() {        
+    }
+
 }
