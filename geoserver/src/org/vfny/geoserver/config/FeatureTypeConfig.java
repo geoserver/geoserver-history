@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * User interface FeatureType staging area.
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.17 2004/03/02 02:36:00 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.18 2004/03/02 10:07:33 jive Exp $
  */
 public class FeatureTypeConfig {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -39,7 +39,7 @@ public class FeatureTypeConfig {
     private int SRS;
 
     /**
-     * This is an ordered list of AttributeTypeInfoConfig
+     * This is an ordered list of AttributeTypeInfoConfig.
      * <p>
      * These attribtue have been defined by the user (or schema.xml file).
      * Additional attribute may be assumed based on the schemaBase
@@ -52,10 +52,15 @@ public class FeatureTypeConfig {
      */
     private List schemaAttributes;
 
-    /** The featuretype name. */
+    /** Name (must match DataStore typeName). */
     private String name;
 
-    /** The schema name */
+    /**
+     * The schema name.
+     * <p>
+     * Usually  name + "_Type"                
+     * </p>
+     */
     private String schemaName;
 
     /**
@@ -63,6 +68,9 @@ public class FeatureTypeConfig {
      * <p>
      * The schema base is used to indicate additional attribtues, not defined
      * by the user. These attribute are fixed -not be edited by the user.
+     * </p>
+     * <p>
+     * This easiest is "AbstractFeatureType"
      * </p>
      */
     private String schemaBase;
@@ -80,7 +88,11 @@ public class FeatureTypeConfig {
      */
     private String dirName;
 
-    /** The featuretype title */
+    /**
+     * The featuretype title.
+     * <p>
+     * Not sure what this is used for - usually name+"_Type"
+     */
     private String title;
 
     /** The feature type abstract, short explanation of this featuretype. */
@@ -95,17 +107,23 @@ public class FeatureTypeConfig {
      */
     private Set keywords;
 
-    /** configuration information. */
+    /** Configuration information used to specify numeric percision */
     private int numDecimals;
 
     /**
-     * the list of exposed attributes. If the list is empty or not present at
+     * Filter used to limit query.
+     * <p>
+     * TODO: Check the following comment - I don't belive it.
+     * The list of exposed attributes. If the list is empty or not present at
      * all, all the FeatureTypeInfo's attributes are exposed, if is present,
      * only those oattributes in this list will be exposed by the services
+     * </p>
      */
     private Filter definitionQuery = null;
 
-    /** The default style name. */
+    /**
+     * The default style name.
+     */
     private String defaultStyle;
 
     /**
