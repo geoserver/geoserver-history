@@ -28,8 +28,8 @@ import com.vividsolutions.jts.geom.Polygon;
  * Utility class defining GML constants, and utility functions.
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: GMLUtils.java,v 1.4 2004/01/14 19:15:11 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: GMLUtils.java,v 1.5 2004/01/17 01:00:20 dmzwiers Exp $
  */
 public class GMLUtils {
     /** Mappings by schema */
@@ -61,7 +61,6 @@ public class GMLUtils {
             definitions.put( type, mapping );
         }
         if( schema.endsWith("PropertyType")){
-            System.out.println("property "+mapping.schema+" defined as "+mapping ); 
             properties.put( mapping.schema, mapping );
         }
         return mapping;
@@ -191,12 +190,33 @@ public class GMLUtils {
         return null;
     }    
     /**
-     * Mapping for xmlSchema or null.
-     * @param xmlSchema xmlSchema 
-     * @return Mapping for xmlSchema
+     * Mapping for ref or null if not found.
+     * <p>
+     * ref is of the form prefix:typeName
+     * </p>
+     * @param ref prefix:typeName used to locate Mapping
+     * @return Mapping for ref
      */
-    public Mapping type( String xmlSchema ){
-       return  (Mapping) schemas.get( xmlSchema );        
+    public static Mapping type( String ref ){
+    	Mapping r = null;
+    	r = (Mapping) schemas.get( ref );
+    	if (r!=null) return r;
+    	int x = ref.indexOf(':')+1;
+    	char y = ref.charAt(x);
+    	r =  (Mapping) schemas.get( ref.substring(0,x)+Character.toUpperCase(y)+ref.substring(x+1) );
+    	if (r!=null) return r;
+    	r =  (Mapping) schemas.get( ref.substring(0,x)+Character.toUpperCase(y)+ref.substring(x+1)+"Type" );
+    	if (r!=null) return r;
+    	r =  (Mapping) schemas.get( ref.substring(0,x)+Character.toLowerCase(y)+ref.substring(x+1) );
+    	if (r!=null) return r;
+    	r =  (Mapping) schemas.get( ref.substring(0,x)+Character.toLowerCase(y)+ref.substring(x+1)+"Type" );
+    	if (r!=null) return r;
+    	return null;
+    }  
+    
+    /** Locate property by complete "gml:*PropertyType" reference */
+    public static Mapping property( String reference ){
+    	return (Mapping) properties.get( reference );
     }
     /**
      * Mapping for type or null
@@ -225,36 +245,31 @@ public class GMLUtils {
         }        
         if( properties.containsKey( name )){
             mapping = (Mapping) properties.get( name );
-            if( type == mapping.type ){
-                System.out.println( "property "+name+":"+type+" is "+mapping );                
+            if( type == mapping.type ){                
                 return mapping;
             }                                    
         }
         
         mapping = (Mapping) definitions.get( type );
         if( mapping != null ) {
-            System.out.println( type+" defined as "+mapping );
             return mapping;
         }        
         
         for( Iterator i=definitions.values().iterator(); i.hasNext();){
             mapping = (Mapping) i.next();
-            if( mapping.type.isAssignableFrom( type )){
-                System.out.println( type+" matches definition "+mapping );                
+            if( mapping.type.isAssignableFrom( type )){               
                 return mapping;
             }
         }
         for( Iterator i=schemas.values().iterator(); i.hasNext();){
             mapping = (Mapping) i.next();
-            if( mapping.type == type ){
-                System.out.println( type+" mapped as "+mapping );                
+            if( mapping.type == type ){               
                 return mapping;
             }
         }        
         for( Iterator i=schemas.values().iterator(); i.hasNext();){
             mapping = (Mapping) i.next();
-            if( mapping.type.isAssignableFrom( type )){
-                System.out.println( type+" mapped to "+mapping );                
+            if( mapping.type.isAssignableFrom( type )){              
                 return mapping;
             }
         }
@@ -328,13 +343,15 @@ public class GMLUtils {
      * GMLUtils.
      * 
      * @author jgarnett, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.4 2004/01/14 19:15:11 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: GMLUtils.java,v 1.5 2004/01/17 01:00:20 dmzwiers Exp $
      */
     public static class Mapping {
-        public final String prefix;
-        public final String schema;
-        public final Class type;
+        public final String prefix; // gml or xs
+        public final String schema; // int or PointPropertyType 
+        public final String name; // pointProperty - onlyed used by PropertyType
+        public final Class type;    // Java class that best represents this
+        
         public Mapping( String xmlSchema ){
             this( xmlSchema, Object.class );           
         }
@@ -342,6 +359,9 @@ public class GMLUtils {
             String split[] = xmlSchema.split(":");
             this.prefix = split[0];
             this.schema = split[1];
+            if(schema.endsWith("Type"))
+            	name = schema.substring(0,schema.length()-4);
+            else name = "";
             this.type = type;
         }
         public String toString() {

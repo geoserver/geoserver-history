@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.15 2004/01/16 00:31:56 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.16 2004/01/17 01:00:20 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -876,14 +876,13 @@ public class XMLConfigReader {
             //
             LOGGER.finest("process schema file " + infoFile);
             try {
-                attributeList = loadSchema(schemaFile, dto);
+                loadSchema(schemaFile, dto);
             } catch (Exception badDog ){
-                System.out.println("IGNORING PROBLEM WITH Schema File:"+schemaFile);
                 badDog.printStackTrace();
                 attributeList = Collections.EMPTY_LIST;
             }
         } else {
-            attributeList = Collections.EMPTY_LIST;
+            dto.setSchema(Collections.EMPTY_LIST);
         }
 
         LOGGER.finer("added featureType " + dto.getName());
@@ -1074,7 +1073,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException
      */
-    protected List loadSchema(File schemaFile, FeatureTypeInfoDTO dto)
+    protected void loadSchema(File schemaFile, FeatureTypeInfoDTO dto)
         throws ConfigurationException {
         schemaFile = ReaderUtils.checkFile(schemaFile, false);
 
@@ -1094,7 +1093,7 @@ public class XMLConfigReader {
             throw new ConfigurationException("Could not parse schema file:"
                     + schemaFile, erk);
         }
-        return processSchema(elem, dto);
+        processSchema(elem, dto);
     }
 
     /**
@@ -1111,7 +1110,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException
      */
-    public static List processSchema(Element elem,
+    public static void processSchema(Element elem,
         FeatureTypeInfoDTO featureTypeInfoDTO) throws ConfigurationException {
         ArrayList list = new ArrayList();
 
@@ -1137,7 +1136,12 @@ public class XMLConfigReader {
 
             if ((ref != null) && (ref != "")) {
                 ati.setComplex(false);
-                ati.setType(ref);
+                String tmp = GMLUtils.type(ref).schema;
+                tmp = Character.toLowerCase(tmp.charAt(0))+tmp.substring(1);
+                ati.setType(tmp);
+                tmp = GMLUtils.type(ref).name;
+                tmp = Character.toLowerCase(tmp.charAt(0))+tmp.substring(1);
+                ati.setName(tmp);
             } else {
                 ati.setName(name);
 
@@ -1175,8 +1179,7 @@ public class XMLConfigReader {
                     false, 0));
             list.add(ati);
         }
-
-        return list;
+        featureTypeInfoDTO.setSchema(list);
     }
 
     /**
