@@ -10,9 +10,10 @@ A styling layer used for the unit tests of sldstyler
 <!-- with in a layer you have Named Styles -->
 <UserStyle>
     <!-- again they have names, titles and abstracts -->
-  <Name>polyshp</Name>
-    <!-- FeatureTypeStyles describe how to render different features -->
-    <!-- a feature type for polygons -->
+  <Name>population</Name>
+  <Title>Population in the United States</Title>
+  <Abstract>A sample filter that filters the United States into three 
+            categories of population, drawn in different colors</Abstract>
     <FeatureTypeStyle>
       <FeatureTypeName>feature</FeatureTypeName>
       <Rule>
