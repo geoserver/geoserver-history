@@ -27,7 +27,7 @@ import java.io.File;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: StyleDTO.java,v 1.5 2004/05/22 05:07:59 cholmesny Exp $
  */
 public final class StyleDTO implements DataTransferObject {
     /** The syle id. */
@@ -216,5 +216,10 @@ public final class StyleDTO implements DataTransferObject {
      */
     public void setId(String string) {
         id = string;
+    }
+    
+    public String toString() {
+    	return "Style: " + id + " at " + filename + (_default ? "default" :
+    		"");
     }
 }
