@@ -21,4 +21,3 @@
   </logic:notEmpty>
   <bean:message key="<%= request.getAttribute("key")+".label" %>"/>
 </span>
-	

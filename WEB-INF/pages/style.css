@@ -66,7 +66,23 @@ table.actions {
  -moz-border-radius: 5px;
  padding: .5ex;  
 }
+table.actions a:visited,
+table.actions a:link {
+ color: #000;
+ text-decoration: none;
+}
+table.actions a:hover {
+ color: #000;
+ text-decoration: underline;
+}
 
+td.locator {
+ white-space: nowrap; 
+ padding: 0.5ex 0 0.5ex 1ex; 
+ border-width: 0 0 1px 0;
+ border-style: solid;
+ border-color: black;
+}
 table.main {
  text-align: left;
  width: 100%;

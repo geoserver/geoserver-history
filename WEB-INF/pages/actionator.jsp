@@ -4,25 +4,26 @@
 <%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
 <%@ page import="org.apache.struts.action.*" %>
 
-<table class="actions">
-  <tbody>
-<%  String forwards = (String) request.getAttribute("actionForwards");
+<logic:notEmpty name="actionForwards">
+  <table class="actions">
+    <tbody>
+<%  // Access actionForwards - could not figure out how to with tags
+    String forwards = (String) request.getAttribute("actionForwards");
     String[] array = forwards.split(":"); 
 	
     System.out.println("ACTIONATOR");
     for (int index = 0; index < array.length; index ++) {
-      System.out.println( index+":"+array[index] );
-      %>
-    <tr>
-      <td>
-        <html:form action="<%= array[index] %>">
-          <html:submit>
-            <%= array[index] %>
-          </html:submit>
-        </html:form>
-      </td>
-    </tr>
+%>
+      <tr>
+        <td>
+          <html:link style="action"
+                     forward="<%= array[index] %>"
+                     titleKey="<%= array[ index ]+".short" %>">
+            <bean:message key="<%= array[ index ]+".label" %>"/>
+          </html:link>
+        </td>
+      </tr>
 <%  } %>
-    </tr>
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</logic:notEmpty>

@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:html locale="true">
+<html:html locale="true" xhtml="true">
 
 <bean:define id="key">
 	<tiles:getAsString name='key'/>
