@@ -1,4 +1,4 @@
-/* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
+ /* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root 
  * application directory.
  */
@@ -16,6 +16,8 @@ import java.io.Writer;
 import java.io.FileInputStream;  
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.FileReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -66,7 +68,12 @@ public class WfsConfig implements java.io.Serializable {
     public static final String DEFAULT_PREFIX = "myns";
 
     public static final String LOG_TAG = "LoggingLevel";
+    
+    public static final String DELIMIT_TAG = "PrefixDelimiter";
 
+    public static final String DEFAULT_PREFIX_DELIMITER = "--";
+
+	
         /** Standard logging in stance for class */
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.config");
@@ -77,6 +84,8 @@ public class WfsConfig implements java.io.Serializable {
 
     private String defaultPrefix;
 
+    private String prefixDelimiter = DEFAULT_PREFIX_DELIMITER;
+    
     private String baseUrl;
     
     /** The holds the mappings between prefixes and uri's*/
@@ -120,10 +129,13 @@ public class WfsConfig implements java.io.Serializable {
 	throws ConfigurationException{
 	WfsConfig wfsConfig = new WfsConfig();
 	try {
-	    FileInputStream fis = new FileInputStream(configFile);
+	    //FileInputStream fis = new FileInputStream(configFile);
+	    FileReader fis = new FileReader(configFile);
+	    LOGGER.info("got input reader, about to make input source");
 	    InputSource in = new InputSource(fis);
-	    DocumentBuilderFactory dfactory = 
-		DocumentBuilderFactory.newInstance();
+	     DocumentBuilderFactory dfactory = new org.apache.xerces.jaxp.DocumentBuilderFactoryImpl();
+	     //DocumentBuilderFactory dfactory = 
+	     //DocumentBuilderFactory.newInstance();
 	    dfactory.setNamespaceAware(true);
 	    Document wfsDoc = dfactory.newDocumentBuilder().parse(in);
 	    Element configElem = wfsDoc.getDocumentElement();
@@ -165,7 +177,10 @@ public class WfsConfig implements java.io.Serializable {
 	    wfsConfig.setBaseUrl(baseUrl);
 
 	    wfsConfig.setMaxFeatures(findTextFromTag(configElem, MAX_TAG));
-				     
+	    String delimiter = findTextFromTag(configElem, DELIMIT_TAG);
+	    LOGGER.info("delimiter is " + delimiter);
+	    wfsConfig.setFilePrefixDelimiter(delimiter);
+
 	    HashMap namespaces = new HashMap();
 	    NodeList namespaceElems = 
 		configElem.getElementsByTagName(NAMESPACE_TAG);
@@ -231,6 +246,17 @@ public class WfsConfig implements java.io.Serializable {
     //it's a bit confusing getting the ServiceConfig log messages.
     private static String findTextFromTag(Element root, String tag){
 	return ServiceConfig.findTextFromTag(root, tag);
+    }
+
+    void setFilePrefixDelimiter(String delimiter){
+	if (!delimiter.equals("")) {
+	    LOGGER.config("Setting new file prefix delimiter: " + delimiter);
+	    this.prefixDelimiter = delimiter;
+	}
+    }
+
+    public String getFilePrefixDelimiter() {
+	return this.prefixDelimiter;
     }
 
     /**
