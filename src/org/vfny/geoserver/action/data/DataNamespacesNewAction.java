@@ -30,7 +30,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataNamespacesNewAction.java,v 1.2 2004/02/25 00:38:53 dmzwiers Exp $
+ * @version $Id: DataNamespacesNewAction.java,v 1.3 2004/02/26 00:17:29 dmzwiers Exp $
  */
 public class DataNamespacesNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -45,6 +45,6 @@ public class DataNamespacesNewAction extends ConfigAction {
         
         getUserContainer(request).setNamespaceConfig(config);
         
-        return mapping.findForward("config.data.namespaces.editor");
+        return mapping.findForward("config.data.namespace.editor");
     }
 }
