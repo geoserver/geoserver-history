@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.25 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: Data.java,v 1.26 2004/02/01 09:11:36 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -373,11 +373,19 @@ SCHEMA:
                 continue;
             } catch (IOException ioException) {
                 LOGGER.log(Level.SEVERE,
-                    "FeatureTypeInfo " + key + " ignored - ad DataStore "
-                    + dataStoreId + " is broken", ioException);
+                    "FeatureTypeInfo " + key + " ignored - as DataStore "
+                    + dataStoreId + " is unavailable", ioException);
 
                 errors.put(featureTypeDTO,ioException);
                 continue;
+            }
+            catch (Throwable unExpected){
+            	LOGGER.log(Level.SEVERE,
+                        "FeatureTypeInfo " + key + " ignored - as DataStore "
+                        + dataStoreId + " is broken", unExpected);
+
+                    errors.put(featureTypeDTO,unExpected);
+                    continue;
             }
 
             String prefix = dataStoreInfo.getNamesSpacePrefix();
