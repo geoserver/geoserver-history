@@ -133,6 +133,7 @@ public class TypeRepository {
      *
      * @param typeName the name of the featureType to lock.
      * @return  the id string of the lock, if successful, null otherwise.
+     */
     public synchronized String lock(String typeName){
 	return lock(typeName, -1);
     }
