@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -34,7 +36,7 @@ import org.xml.sax.SAXException;
  * This class represents a FeatureType element in a Capabilities document
  * along with additional information about the datasource backend.  
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.1 $ $Date: 2003/03/19 20:31:02 $
+ * @version $Revision: 1.2 $ $Date: 2003/04/23 21:44:17 $
  * @tasks REVISIT: consider merging this into TypeInfo.  This class replaces
  * the castor generated FeatureType, but it is now unclear if we _really_ 
  * need this internal class, or if a TypeInfo can just hold it all.
@@ -87,7 +89,8 @@ class FeatureType {
 
     /** Holds the parameters for the datasource backend holding this feature*/
     //put in different place?
-    private Properties dsParams;
+    //change to map?
+    private Map dsParams;
 
 
     /** 
@@ -108,7 +111,8 @@ class FeatureType {
 	throws ConfigurationException{
 	FeatureType featureType = null;
 	try {
-	    FileInputStream fis = new FileInputStream(featureTypeFile);
+	    //FileInputStream fis = new FileInputStream(featureTypeFile);
+	    FileReader fis = new FileReader(featureTypeFile);
 	    InputSource in = new InputSource(fis);
 	    DocumentBuilderFactory dfactory = 
 		DocumentBuilderFactory.newInstance();
@@ -185,18 +189,18 @@ class FeatureType {
      * just having the filename as a config item and constructing the full
      * filename ourselves.
      */
-     private static Properties getDataParams(Element root){
-	Properties params = new Properties();
+     private static Map getDataParams(Element root){
+	Map params = new HashMap();
 	//try to get text in Keywords element.
 	Element paramElem = (Element)root.getElementsByTagName(PARAMS_TAG).item(0);
 	if (paramElem == null) { //keywords are comma delimited in one field,
-	    params.setProperty("host", findTextFromTag(root, "Host"));
-	    params.setProperty("port", findTextFromTag(root, "Port"));
-	    params.setProperty("passwd", findTextFromTag(root, "Password"));
-	    params.setProperty("user", findTextFromTag(root, "User"));
-	    params.setProperty("database", findTextFromTag(root, "DatabaseName"));
-	    params.setProperty("table", findTextFromTag(root, "Name"));
-	    params.setProperty("dbtype", "postgis");
+	    params.put("host", findTextFromTag(root, "Host"));
+	    params.put("port", findTextFromTag(root, "Port"));
+	    params.put("passwd", findTextFromTag(root, "Password"));
+	    params.put("user", findTextFromTag(root, "User"));
+	    params.put("database", findTextFromTag(root, "DatabaseName"));
+	    params.put("table", findTextFromTag(root, "Name"));
+	    params.put("dbtype", "postgis");
 	} else { 
 	    NodeList paramNodes = paramElem.getChildNodes();
 	    LOGGER.finer("there are nodes: " + paramNodes.getLength());
@@ -207,7 +211,7 @@ class FeatureType {
 		Node text = param.getFirstChild();
 		if (text instanceof org.w3c.dom.Text){
 		    LOGGER.finer("setting property with " + ((Text)text).getData());
-		    params.setProperty(name.toLowerCase(), ((Text)text).getData());
+		    params.put(name.toLowerCase(), ((Text)text).getData());
 		}
 	    }
 	}
@@ -228,14 +232,14 @@ class FeatureType {
     **/
     public String getDatabaseName()
     {
-        return dsParams.getProperty("database");
+        return (String) dsParams.get("database");
     } 
 
     /**
     **/
     public String getHost()
     {
-	return dsParams.getProperty("host");
+	return dsParams.get("host").toString();
     } 
 
     /**
@@ -271,14 +275,14 @@ class FeatureType {
     **/
     public String getPassword()
     {
-	return dsParams.getProperty("passwd");
+	return (String) dsParams.get("passwd");
     } 
 
     /**
     **/
     public String getPort()
     {
-        return dsParams.getProperty("port");
+        return (String) dsParams.get("port");
     } 
 
     /**
@@ -299,14 +303,14 @@ class FeatureType {
     **/
     public String getUser()
     {
-	return dsParams.getProperty("user");
+	return (String) dsParams.get("user");
     } 
 
-    public Properties getDataParams() {
+    public Map getDataParams() {
 	return this.dsParams;
     }
 
-    public void setDataParams(Properties dsParams){
+    public void setDataParams(Map dsParams){
 	this.dsParams = dsParams;
     }
 
