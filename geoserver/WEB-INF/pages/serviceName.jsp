@@ -3,5 +3,6 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <span class="serviceTitle">
-	<bean:write name="Config.WFS" property="title"/> | <bean:write name="Config.WMS" property="title"/>
+	<bean:write name="Config.WFS" property="title"/> |
+	<bean:write name="Config.WMS" property="title"/>
 </span>

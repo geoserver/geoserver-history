@@ -9,7 +9,9 @@
 </bean:define>
 
 <head>
-<title><bean:message key="<%= titleKey %>"/></title>
+  <title>
+    <bean:message key="<%= titleKey %>"/>
+  </title>
 
   <meta content="text/html; charset=iso-8859-1" http-equiv="content-type">
   <meta content="text/css" http-equiv="content-style-type">
@@ -29,64 +31,55 @@
 <html:base/>
 </head>
 
-<body bgcolor="white">
-<table class="main">
-	<tr>
-		<td>
+<body>
+<table class="page">
+  <tbody>
+	<tr class="header">
+        <td class="gutter">
 			<tiles:insert attribute="logo"/>
 		</td>
-		<td>
+		<td style="vertical-align: bottom; white-space: nowrap;">
 			<tiles:insert attribute="serviceName"/>
 		</td>	
-		<td>
+		<td style="vertical-align: bottom; white-space: nowrap; text-align: right;">
 			<tiles:insert attribute="contact"/>
         </td>
 	</tr>
-	<tr>
-		<td class="sidebar">
-			<table class="sidebar">
-				<tr>
-					<td>
-						<tiles:insert attribute="status"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<tiles:insert attribute="buttons"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<tiles:insert attribute="actions"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<tiles:insert attribute="messages"/>
-					</td>
-				</tr>
-			</table>
-		</td>
-		<td>
-			<table class="body">
-				<tbody>	
-				<tr>
-            		<td class="location">
-            			<tiles:insert attribute="location"/>
-            		</td>
-            		<td class="login">
-            			<tiles:insert attribute="loginStatus"/>
-            		</td>
-          		</tr>
-          		<tr>
-            		<td>
-            			<tiles:insert attribute="body"/>
-            		</td>
-	          </tr>
-    		  </tbody>
-	      </table>
-		</td>
+	
+    <tr style="vertical-align: top;">
+      <td class="sidebar">
+        <tiles:insert attribute="status"/>		
+        <tiles:insert attribute="buttons"/>          
+		<tiles:insert attribute="actions"/>
+		<tiles:insert attribute="messages"/>
+      </td>
+      <td style="vertical-align: top;"
+          rowspan="1" colspan="2">
+            
+        <table cellpadding="0" cellspacing="0" border="0"
+               style="text-align: left; width: 100%;">
+          <tbody>
+            <tr class="bar">
+              <td class="locator">                        
+                <tiles:insert attribute="location"/>
+              </td>
+              <td class="login">
+                <tiles:insert attribute="loginStatus"/>
+              </td>
+            </tr>
+          	<tr>
+              <td class="content"
+                  rowspan="1" colspan="2">
+                  
+                <tiles:insert attribute="body"/>
+                
+              </td>
+	        </tr>
+          </tbody>
+	    </table>
+      </td>
 	</tr>
+  </tbody>
 </table>
 
 </body>
