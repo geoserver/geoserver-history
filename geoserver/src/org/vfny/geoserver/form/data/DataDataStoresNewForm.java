@@ -25,8 +25,8 @@ import org.vfny.geoserver.action.data.DataStoreUtils;
  * is simply to make writing the JSP easier.
  * </p>
  * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.1.2.5 2004/01/12 05:00:00 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresNewForm.java,v 1.1.2.6 2004/01/12 07:17:56 jive Exp $
  */
 public class DataDataStoresNewForm extends ActionForm {
     /** Description provided by selected Datastore Factory */
@@ -64,12 +64,12 @@ public class DataDataStoresNewForm extends ActionForm {
                     
         if( !getDescriptions().contains( getSelectedDescription() ) ){
             errors.add( "selectedDescription",            
-                new ActionError("errors.requiredFactory", getSelectedDescription() )
+                new ActionError("error.dataStoreFactory.invalid", getSelectedDescription() )
             );
         }
         if( Pattern.matches("^\\w*$", getDataStoreID() )){
             errors.add( "dataStoreID",            
-                new ActionError("errors.requireDataStoreID", getDataStoreID() )
+                new ActionError("error.dataStoreId.invalid", getDataStoreID() )
             );            
         }
         return errors;
