@@ -18,6 +18,7 @@ import org.vfny.geoserver.responses.WfsException;
  *
  * @version $VERSION$
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  */
 public class TransactionHandler 
     extends XMLFilterImpl  
@@ -54,7 +55,8 @@ public class TransactionHandler
     public TransactionRequest getRequest() {
         return request;
     }
-
+    
+    
     private static short setState(String stateName) {
         if(stateName.equals("Insert")) {
             return INSERT;
@@ -110,9 +112,17 @@ public class TransactionHandler
                 } else if(name.equals("handle")) {
                     subRequest.setHandle(value);
                 }
-            }
-        }
+	    }
+	} else if(localName.equals("Transaction")) {
+	    for(int i = 0; i < atts.getLength(); i++) {
+		if( atts.getLocalName(i).equals("handle") ) {
+		    LOGGER.finest("found handle: " + atts.getValue(i));
+		    request.setHandle(atts.getValue(i));
+		}
+	    }
+	}
     }
+    
     
     /**
      * Notes the end of the element exists query or bounding box.
