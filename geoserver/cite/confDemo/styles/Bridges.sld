@@ -34,9 +34,7 @@
                                 </sld:CssParameter>
                             </sld:Fill>
                             <sld:Stroke>
-                                <sld:CssParameter name="stroke">
-                                    <ogc:Literal>#000000</ogc:Literal>
-                                </sld:CssParameter>
+                                <sld:CssParameter name="stroke"><ogc:Literal>#000000</ogc:Literal></sld:CssParameter>
                                 <sld:CssParameter name="stroke-linecap">
                                     <ogc:Literal>butt</ogc:Literal>
                                 </sld:CssParameter>

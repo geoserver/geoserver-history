@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/commons-validator.jar"/>
 	<classpathentry kind="lib" path="lib/geoapi-20050213.jar"/>
-	<classpathentry kind="lib" path="lib/geoserver.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-arcsde.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-epsg.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-experiment.jar"/>
