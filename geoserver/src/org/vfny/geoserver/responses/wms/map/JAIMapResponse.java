@@ -43,7 +43,7 @@ import javax.imageio.stream.ImageOutputStream;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.22 2004/04/19 03:03:02 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.23 2004/04/20 17:23:45 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -147,6 +147,8 @@ public class JAIMapResponse extends GetMapDelegate {
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {
         formatImageOutputStream(format, image, out);
+		graphic.dispose(); //I think this may have been causing problems,
+		//getting rid of it too soon.
     }
 
     /**
@@ -290,7 +292,7 @@ public class JAIMapResponse extends GetMapDelegate {
 
             //renderer.paint((Graphics2D) image.getGraphics(), paintArea, at);
             renderer.paint(graphic, paintArea, at);
-            graphic.dispose();
+
             LOGGER.fine("called renderer");
 
             map = null;
