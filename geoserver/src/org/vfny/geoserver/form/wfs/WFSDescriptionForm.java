@@ -11,16 +11,12 @@
 package org.vfny.geoserver.form.wfs;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionServlet;
-import org.apache.struts.action.PlugIn;
-import org.apache.struts.config.ModuleConfig;
 import org.vfny.geoserver.config.WFSConfig;
 
 
@@ -36,7 +32,7 @@ import org.vfny.geoserver.config.WFSConfig;
  * @author User To change the template for this generated type comment go to
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WFSDescriptionForm extends ActionForm{
+public final class WFSDescriptionForm extends ActionForm {
     private String name;
     private String title;
     private String accessConstraints;
@@ -154,37 +150,30 @@ public final class WFSDescriptionForm extends ActionForm{
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
+	 * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
 	 */
-
-/* (non-Javadoc)
- * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
- */
-public void reset(ActionMapping arg0, HttpServletRequest arg1) {
-	super.reset(arg0, arg1);
-	ServletContext context = getServlet().getServletContext();
-	WFSConfig config =
-		(WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
-		
-	name = config.getName();
-	this._abstract = config.getAbstract();
-	this.fees = config.getFees();
+	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
+		super.reset(arg0, arg1);
+		ServletContext context = getServlet().getServletContext();
+		WFSConfig config =
+			(WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
 			
-}
-/* (non-Javadoc)
- * @see org.apache.struts.action.PlugIn#destroy()
- */
-/*public void destroy() {
-	// TODO Auto-generated method stub
-	
-}*/
-/* (non-Javadoc)
- * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet, org.apache.struts.config.ModuleConfig)
- */
-/*public void init(ActionServlet actionServlet, ModuleConfig moduleConfig ) throws ServletException {
-	WFSConfig config = new WFSConfig();
-	config = (WFSConfig)actionServlet.getServletContext().getAttribute(WFSConfig.CONFIG_KEY);
-}*/
+		this.maintainer = config.getMaintainer();
+		this.title = config.getTitle();
+		this.accessConstraints = config.getAccessConstraints();
+		this.name = config.getName();
+		this._abstract = config.getAbstract();
+		this.fees = config.getFees();
+
+		String out = "";
+		for (int i = 0; i < config.getKeywords().length; i++) {
+			out = out + config.getKeywords()[i];// + System.getProperty("line.separator");
+		}
+
+		this.keywords = out;
+		
+		System.out.println("WFS DESCRIPKTION FORM RESET--------------------------");		
+	}
 
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
 		ActionErrors errors = new ActionErrors();

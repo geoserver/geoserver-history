@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package org.vfny.geoserver.form.wfs;
+package org.vfny.geoserver.form.wms;
 
 import java.net.URL;
 import java.util.Iterator;
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.config.WFSConfig;
+import org.vfny.geoserver.config.WMSConfig;
 
 /**
  * @author User
@@ -24,14 +24,14 @@ import org.vfny.geoserver.config.WFSConfig;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class WFSContentForm extends ActionForm {
+public class WMSContentForm extends ActionForm {
 	
 	private boolean enabled;
 	private String onlineResource;
-	private String describeURL;
+	private String updateTime;
 	private String[] selectedFeatures;
-	private String[] features;
-	
+	private String[] features; 
+
 	/*
 	 * Because of the way that STRUTS works, if the user does not check the enabled box,
 	 * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
@@ -43,19 +43,11 @@ public class WFSContentForm extends ActionForm {
 	 * -rgould
 	 */
 	private boolean enabledChecked = false; 
-
-	/**
-	 * @return
-	 */
-	public String getDescribeURL() {
-		return describeURL;
-	}
-
+	
 	/**
 	 * @return
 	 */
 	public boolean isEnabled() {
-		System.out.println("isEnabled: returning " + enabled);
 		return enabled;
 	}
 
@@ -64,13 +56,6 @@ public class WFSContentForm extends ActionForm {
 	 */
 	public String getOnlineResource() {
 		return onlineResource;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setDescribeURL(String string) {
-		describeURL = string;
 	}
 
 	/**
@@ -122,14 +107,12 @@ public class WFSContentForm extends ActionForm {
 		
 		super.reset(arg0, arg1);
 		
-		System.out.println("reset: setting Enabled Check = false");
-		enabledChecked = false;
+		enabledChecked = false;		
 		
 		ServletContext context = getServlet().getServletContext();
-		WFSConfig config =
-			(WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
-
-		System.out.println("reset: setting Enabled from config = " + config.isEnabled());			
+		WMSConfig config =
+			(WMSConfig) context.getAttribute(WMSConfig.CONFIG_KEY);
+			
 		this.enabled = config.isEnabled();
 		
 		URL url = config.getOnlineResource();
@@ -139,12 +122,7 @@ public class WFSContentForm extends ActionForm {
 			this.onlineResource = "";
 		}
 
-		url = config.getDescribeURL();
-		if (url != null) {
-			this.describeURL = url.toString();
-		} else {
-			this.describeURL = "";
-		}
+		this.updateTime = config.getUpdateTime();
 	
 		Set featureSet = config.getEnabledFeatures();
 		this.features = new String[featureSet.size()];
@@ -162,6 +140,20 @@ public class WFSContentForm extends ActionForm {
 		ActionErrors errors = new ActionErrors();
 		return errors;
 	}	
+	/**
+	 * @return
+	 */
+	public String getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setUpdateTime(String string) {
+		updateTime = string;
+	}
+
 	/**
 	 * @return
 	 */
