@@ -11,44 +11,75 @@
 
 
 <project name="wfs" default="help" basedir=".">
-
 <!-- =============================================== -->
 <!-- PROPERTIES                                      -->
 <!-- =============================================== -->
 
-  <!-- directories -->
-  <!-- you may modify this for your machine, or you may explicitly set it while running -->
-  <property name="dir.test" value="/usr/local/resin-2.0.1/webapps"/>
-
-  <!-- don't modify anything below here -->
-  <property name="dir.main" value="."/>           
-  <property name="dir.classes" value="${dir.main}/classes"/>
-  <property name="dir.documentation" value="${dir.main}/documentation"/>
-  <property name="dir.jsp" value="${dir.main}/jsp"/>
-  <property name="dir.libraries" value="${dir.main}/libraries"/>
+  <!-- primary directories -->
+  <property name="dir.main" value="."/>
+  <property name="dir.bin" value="${dir.main}/bin"/>
+  <property name="dir.build" value="${dir.main}/build"/>
+  <property name="dir.doc" value="${dir.main}/doc"/>
+  <property name="dir.lib" value="${dir.main}/lib"/>
   <property name="dir.misc" value="${dir.main}/misc"/>
+  <property name="dir.server" value="${dir.main}/server"/>
+  <property name="dir.src" value="${dir.main}/src"/>
+  <property name="dir.tests" value="/usr/local/resin-2.1.4/webapps"/>
+
+  <!-- secondary directories -->
+  <property name="dir.jsp" value="${dir.misc}/jsp"/>
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
   <property name="dir.data" value="${dir.misc}/testData"/>
   <property name="dir.nightly" value="${dir.main}/release/nightly"/>
   <property name="dir.release" value="${dir.main}/release/stable"/>
-  <property name="dir.source" value="${dir.main}/source"/>
+  <property name="dir.testsJar" value="${dir.main}/webapps/ROOT/WEB-INF/lib"/>
+  <property name="dir.catalina" value="${dir.lib}/catalina"/>
 
   <!-- jars -->
-  <property name="jar.geoserver" value="${dir.libraries}/geoserver.jar"/>
-  <property name="jar.log" value="${dir.libraries}/log4j.jar"/>
-  <property name="jar.servlet" value="${dir.libraries}/servlet.jar"/>
-  <property name="jar.xerces" value="${dir.libraries}/xerces.jar"/>
-  <property name="jar.jdbcPostgres" value="${dir.libraries}/jdbcPostgres.jar"/>
-  <property name="jar.castor" value="${dir.libraries}/castor.jar"/>
-  <property name="jar.jts" value="${dir.libraries}/jts-1.0.0.jar"/>
+  <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
+  <property name="jar.geoserver" value="${dir.lib}/geoserver.jar"/>
+  <property name="jar.log" value="${dir.lib}/log4j-1.2.5.jar"/>
+  <property name="jar.servlet" value="${dir.lib}/servlet.jar"/>
+  <property name="jar.xerces" value="${dir.lib}/xerces.jar"/>
+  <property name="jar.jdbcPostgres" value="${dir.lib}/jdbcPostgres.jar"/>
+  <property name="jar.castor" value="${dir.lib}/castor.jar"/>
+  <property name="jar.jts" value="${dir.lib}/jts-1.0.0.jar"/>
 
   <!-- paths -->
-  <path id="path.responses" path="${dir.classes}:${jar.xerces}:${jar.servlet}:${jar.log}:${jar.jaxb}"/>
-  <path id="path.requests" path="${dir.classes}:${jar.jaxb}:${jar.xerces}:${jar.servlet}:${jar.log}"/>
-  <path id="path.config" path="${dir.classes}:${jar.log}:${jar.castor}"/>
-  <path id="path.db" path="${dir.classes}:${jar.xerces}:${jar.jaxb}:${jar.log}:${jar.jts}"/>
-  <path id="path.servlets" path="${dir.classes}:${jar.jaxb}:${jar.servlet}:${jar.xerces}:${jar.log}:${jar.jdbcPostgres}"/>
+  <path id="path.libraries">
+    <fileset dir="${dir.lib}" includes="**/*.jar"/>
+  </path>
+  <path id="path.requests" path="${dir.build}:${jar.jaxb}:${jar.xerces}:${jar.servlet}:${jar.log}"/>
+  <path id="path.config" path="${dir.build}:${jar.log}:${jar.castor}"/>
+  <path id="path.db" path="${dir.build}:${jar.xerces}:${jar.jaxb}:${jar.log}:${jar.jts}"/>
+  <path id="path.servlets" path="${dir.build}:${jar.jaxb}:${jar.servlet}:${jar.xerces}:${jar.log}:${jar.jdbcPostgres}"/>
   <path id="path.all" path="${jar.geoserver}:${jar.xerces}:${jar.servlet}:${jar.log}:${jar.jdbcPostgres}:${jar.castor}:${jar.jts}"/>
+  <path id="path.test" path="${jar.geoserver}:${jar.xerces}:${jar.servlet}:${jar.log}:${jar.jdbcPostgres}:${jar.castor}:${jar.jts}:${dir.build}"/>
+  <path id="path.catalina">
+    <fileset dir="${dir.catalina}" includes="embedded.jar"/>
+    <fileset dir="${dir.catalina}/bin" includes="bootstrap.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="catalina.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="servlets-cgi.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="servlets-common.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="servlets-default.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="servlets-invoker.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="servlets-manager.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="servlets-snoop.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="servlets-ssi.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="servlets.webdav.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="jakarta-regexp-1.2.jar"/>
+    <fileset dir="${dir.catalina}/lib" includes="naming-factory.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="crimson.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="jasper-compiler.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="jasper-runtime.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="jaxp.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="jndi.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="naming-common.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="naming-resources.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="servlet.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="tools.jar"/>
+    <fileset dir="${dir.catalina}/common/lib" includes="log4j.jar"/>
+  </path>
 
   <!-- names -->
   <property name="name.release" value="0.9.00"/>
@@ -68,6 +99,7 @@
     <echo message=" BASIC TARGETS"/>
     <echo message="    config:       compiles configuration package"/>
     <echo message="    db:           compiles all database packages"/>
+    <echo message="    embedded:     compiles embedded server classes"/>
     <echo message="    requests:     generates and compiles all request classes"/>
     <echo message="    responses:    generates and compiles all response classes"/>
     <echo message="    servlets:     compiles servlet package"/>
@@ -78,17 +110,20 @@
     <echo message="    delete:       deletes all class files"/>
     <echo message="    document:     generates all javadocs for project"/>
     <echo message="    jar:          builds jar file and puts in deploy directory"/>
-    <echo message="    jarDelete:    deletes jar file"/>
+    <echo message="    jarGeotools:  builds the GeoTools jar file and puts in deploy directory"/>
     <echo message=""/>
-    <echo message=" TEST/BUILD TARGETS"/>
-    <echo message="    jarTest:      builds and copies geoserver.jar to the test server (specified with -Ddir.test=X, where X is full server path)"/>
+    <echo message=" TEST TARGETS"/>
+    <echo message="    test:         stops the server, builds the entire app and copies to server, starts server "/>
+    <echo message="    jarTest:      builds and copies geoserver.jar to the test server (specified with -Ddir.tests=X, where X is full server path)"/>
+    <echo message="    warTest:      builds a test version of the geoserver.war to the test server (specified with -Ddir.tests=X, where X is full server path)"/>
+    <echo message=""/>
+    <echo message=" BUILD TARGETS"/>
     <echo message="    nightly:      puts up the nightly build"/>
-    <echo message="    release:      makes a full release build"/>
-    <echo message="    warTest:      builds a test version of the geoserver.war to the test server (specified with -Ddir.test=X, where X is full server path)"/>
     <echo message="    war:          builds production version of the war file"/>
+    <echo message="    release:      makes a full release build"/>
     <echo message=""/>
     <echo message=" Examples..."/>
-    <echo message="    ant warTest -Ddir.test=/usr/local/resin-2.0.4/webapps (copy war to specified test directory)"/>
+    <echo message="    ant warTest -Ddir.tests=/usr/local/resin-2.0.4/webapps (copy war to specified test directory)"/>
     <echo message="    ant setup (setup initial directories)"/>
     <echo message="    ant release"/>
   </target>
@@ -97,8 +132,6 @@
 <!-- ADMIN TARGETS                                   -->
 <!-- =============================================== -->
 
-<!-- INITIALIZE -->
-
 
 <!-- =============================================== -->
 <!-- BASIC TARGETS                                   -->
@@ -106,34 +139,60 @@
 
 <!-- INITIALIZE -->
   <target name="init">
-
     <!-- time/date -->
     <tstamp><format property="date.current" pattern="MM.dd.yyyy"/></tstamp>
   </target>
 
+<!-- EMBEDDED -->
+  <target name="embedded" depends="init">
+    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/EmbeddedTomcat.java" classpathref="path.libraries"/>
+  </target>
+
+
 <!-- RESPONSES -->
   <target name="responses" depends="init">
-    <javac srcdir="${dir.source}" destdir="${dir.classes}" includes="org/vfny/geoserver/responses/**" classpathref="path.responses"/>
+    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/responses/**" classpathref="path.libraries"/>
   </target>
 
 <!-- REQUESTS -->
   <target name="requests" depends="init">
-    <javac srcdir="${dir.source}" destdir="${dir.classes}" includes="org/vfny/geoserver/requests/**" classpathref="path.requests"/>
+    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/requests/**" classpathref="path.libraries"/>
   </target>
 
 <!-- CONFIGURATION -->
   <target name="config" depends="init">
-    <javac srcdir="${dir.source}" destdir="${dir.classes}" includes="org/vfny/geoserver/config/**" classpathref="path.config"/>
+    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/config/**" classpathref="path.libraries"/>
   </target>
     
 <!-- DATABASE -->
   <target name="db" depends="init">
-    <javac srcdir="${dir.source}" destdir="${dir.classes}" includes="org/vfny/geoserver/db/**" classpathref="path.db"/>
+    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/db/**" deprecation="on" classpathref="path.libraries"/>
   </target>
 
 <!-- SERVLETS -->
   <target name="servlets" depends="init">
-    <javac srcdir="${dir.source}" destdir="${dir.classes}" includes="org/vfny/geoserver/servlets/**" classpathref="path.servlets" deprecation="on"/>
+    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/servlets/**" classpathref="path.libraries" deprecation="on"/>
+  </target>
+
+<!-- RUN UNIT TESTS -->
+  <target name="tests" depends="init">
+    <javac srcdir="${dir.main}/tests" destdir="${dir.build}" includes="org/vfny/geoserver/**" classpathref="path.libraries" deprecation="on"/>
+    <junit fork="true" printsummary="withOutAndErr">
+      <formatter type="plain" usefile="false"/>
+      <sysproperty key="dataFolder" value="${basedir}/tests/unit/testData"/>
+      <classpath>
+        <pathelement path="${dir.build}"/>
+        <pathelement path="${jar.log}"/>
+        <pathelement path="${jar.geotools}"/>
+        <pathelement path="${jar.geoserver}"/>
+        <pathelement path="${jar.servlet}"/>
+        <pathelement path="${jar.xerces}"/>
+        <pathelement path="${jar.jdbcPostgres}"/>
+        <pathelement path="${jar.castor}"/>
+        <pathelement path="${jar.jts}"/>
+      </classpath>
+      <test fork="false" name="org.vfny.geoserver.requests.GetFeatureRequestXmlSuite"/>
+    </junit>
   </target>
 
 
@@ -143,10 +202,42 @@
 
 <!-- JAR -->
 <!-- builds geoserver jar -->
+  <target name="jarGeotools" depends="init">
+    <delete file="${dir.lib}/geotools.jar" failonerror="true"/>
+    <jar jarfile="${dir.lib}/geotools.jar"
+         whenempty="fail">
+      <fileset dir="${dir.main}/../geotools/geotools2/geotools-src/core/src/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.main}/../geotools/geotools2/geotools-src/defaultcore/src/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.main}/../geotools/geotools2/geotools-src/filter/src/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.main}/../geotools/geotools2/geotools-src/postgis/src/"
+               includes="**/*.class"/>
+    </jar>
+  </target>
+
+
+
+<!-- JAR -->
+<!-- builds geoserver jar -->
   <target name="jar" depends="init">
-    <jar jarfile="${dir.libraries}/geoserver.jar">
-      <fileset dir="${dir.classes}">
+    <jar jarfile="${dir.lib}/geoserver.jar">
+      <fileset dir="${dir.build}">
         <exclude name="**/servlets/*" />
+        <exclude name="**/EmbeddedTomcat.class" />
+      </fileset>
+    </jar>
+  </target>
+
+<!-- Embedded Server JAR -->
+<!-- builds geoserver jar -->
+  <target name="embeddedJar" depends="init, embedded">
+    <jar jarfile="${dir.catalina}/embedded.jar">
+      <fileset dir="${dir.build}">
+        <exclude name="**/org/*" />
+        <include name="**/Geoserver.class" />
+        <include name="**/EmbeddedTomcat.class" />
       </fileset>
     </jar>
   </target>
@@ -154,18 +245,18 @@
 <!-- DELETE JAR -->
 <!-- deletes geoserver jar; use with caution due to dependencies -->
   <target name="deleteJar" depends="init">
-    <delete file="${dir.libraries}/geoserver.jar" failonerror="true"/>
+    <delete file="${dir.lib}/geoserver.jar" failonerror="true"/>
   </target>
 
 <!-- DOCUMENTATION -->
 <!-- generates all project documentation -->
   <target name="document" depends="init">
     <javadoc sourcepath="${dir.main}/source"
-						 destdir="${dir.documentation}/api"
-						 private="true"
-						 windowtitle="GeoServer Documentation"
-						 classpath="${jar.jaxb}:${jar.servlet}:${jar.xerces}:${jar.log}:${jar.jdbcPostgres}:${jar.castor}:${jar.jts}"
-						 stylesheetfile="${dir.misc}/documents/stylesheet.css">
+        destdir="${dir.doc}/api"
+        private="true"
+        windowtitle="GeoServer Documentation"
+        classpath="${jar.jaxb}:${jar.servlet}:${jar.xerces}:${jar.log}:${jar.jdbcPostgres}:${jar.castor}:${jar.jts}"
+        stylesheetfile="${dir.misc}/documents/stylesheet.css">
       <package name="org.vfny.geoserver.*"/>
       <doctitle><![CDATA[<h1>GeoServer Documentation</h1>]]></doctitle>
       <bottom><![CDATA[<i>Copyright &#169; 2002 Vision for New York. All Rights Reserved.</i>]]></bottom>
@@ -182,20 +273,20 @@
 
 <!-- ALL -->
 <!-- compiles all packages -->
-  <target name="all" depends="config, db, requests, responses, servlets"/>
+  <target name="all" depends="config, db, requests, responses, servlets, embedded"/>
 
 <!-- DELETE -->
 <!-- deletes all packages -->
   <target name="delete" depends="init">
     <delete includeEmptyDirs="false" >
-      <fileset dir="${dir.classes}" />
+      <fileset dir="${dir.build}" />
     </delete>
   </target>
 
 <!-- CLEAN -->
 <!-- cleans, then compiles all packages -->
   <target name="cleanBuild" depends="delete">
-    <javac srcdir="${dir.source}" destdir="${dir.classes}" includes="**" classpathref="path.all"/>
+    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="**" classpathref="path.libraries"/>
   </target>
 
   <target name="clean" depends="cleanBuild, deleteJar, jar"/>
@@ -205,11 +296,50 @@
 <!-- TEST TARGETS -->
 <!-- =============================================== -->
 
+<!-- deploys application to test server -->
+  <target name="start" depends="init">
+    <java classname="org.vfny.geoserver.EmbeddedTomcat" classpathref="path.catalina" fork="true">
+      <arg value="start"/>
+      <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
+      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
+    </java>
+  </target>
+
+<!-- TEST SERVER -->
+<!-- deploys application to test server -->
+  <target name="stop" depends="init">
+    <java classname="org.vfny.geoserver.EmbeddedTomcat" classpathref="path.catalina" fork="true">
+      <arg value="stop"/>
+      <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
+      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
+    </java>
+  </target>
+
+<!-- TEST SERVER -->
+<!-- deploys application to test server -->
+  <target name="test" depends="init">
+    <antcall target="stop"/>
+    <antcall target="testPrep"/>
+    <antcall target="start"/>
+  </target>
+
+<!-- TEST SERVER -->
+<!-- deploys application to test server -->
+  <target name="testPrep" depends="init, all, jar, embeddedJar">
+    <delete dir="${dir.main}/server/webapps/ROOT/WEB-INF/classes/org" failonerror="false"/>
+    <copy todir="${dir.main}/server/webapps/ROOT/WEB-INF/classes" >
+      <fileset dir="${dir.build}">
+        <include name="**/servlets/**.class"/>
+      </fileset>
+    </copy>
+  </target>
+
+
 <!-- TEST JAR -->
 <!-- deploys application to test server -->
   <target name="jarTest" depends="init, all, jar">
-    <delete file="${dir.test}/geoserver/WEB-INF/lib/geoserver.jar" failonerror="false"/>
-    <copy file="${dir.libraries}/geoserver.jar" tofile="${dir.test}/geoserver/WEB-INF/lib/geoserver.jar"/>
+    <delete file="${dir.tests}/geoserver/WEB-INF/lib/geoserver.jar" failonerror="false"/>
+    <copy file="${dir.lib}/geoserver.jar" tofile="${dir.main}/server/webapps/ROOT/WEB-INF/lib/geoserver.jar"/>
   </target>
 
 <!-- TEST WAR -->
@@ -244,21 +374,36 @@
       </fileset>
     </copy>
 
+
     <mkdir dir="${dir.main}/data/featureTypes"/>
     <copy todir="${dir.main}/data">
       <fileset dir="${dir.data}"/>
     </copy>
 
+    <copy todir="${dir.build}">
+      <fileset dir="${dir.misc}/documents">
+        <include name="log4j.properties"/>
+      </fileset>
+    </copy>
+
+
     <!-- war file -->
     <war warfile="${dir.main}/geoserver.war" webxml="${dir.misc}/documents/web.xml" update="true">
 
       <!-- classes -->
-      <classes dir="${dir.classes}">
+      <classes dir="${dir.build}">
         <include name="**/servlets/**" />
+        <include name="**/log4j.properties" />
         <exclude name="**/servlets/utilities/**" />
+        <exclude name="**/EmbeddedTomcat.class" />
       </classes>
+
       <classes dir="${dir.jsp}"/>
-      <lib dir="${dir.libraries}"/>
+
+      <lib dir="${dir.lib}">
+        <exclude name="**/junit.jar" />
+        <exclude name="**/servlet.jar" />
+      </lib>
 
       <!-- directories -->
       <fileset dir="${dir.main}">
@@ -269,16 +414,17 @@
 
     <!-- copy to test server -->
     <delete includeEmptyDirs="true" failonerror="false">
-      <fileset dir="${dir.test}/geoserver"/>
+      <fileset dir="${dir.tests}/geoserver"/>
     </delete>
-    <delete file="${dir.test}/geoserver.war"  failonerror="false"/>
-    <copy todir="${dir.test}/" flatten="yes">
+    <delete file="${dir.tests}/geoserver.war"  failonerror="false"/>
+    <copy todir="${dir.tests}/" flatten="yes">
       <fileset dir="${dir.main}">
         <include name="geoserver.war"/>
       </fileset>
     </copy>
 
     <!-- clean-up -->
+    <delete file="${dir.build}/log4j.properties" failonerror="true"/>
     <delete file="${dir.main}/geoserver.war" failonerror="true"/>
     <delete dir="${dir.main}/data" failonerror="true"/>
   </target>
@@ -330,12 +476,12 @@
     <war warfile="${dir.main}/geoserver.war" webxml="${dir.misc}/documents/web.xml" update="true">
 
       <!-- classes -->
-      <classes dir="${dir.classes}">
+      <classes dir="${dir.build}">
         <include name="**/servlets/**" />
         <exclude name="**/servlets/utilities/**" />
       </classes>
       <classes dir="${dir.jsp}"/>
-      <lib dir="${dir.libraries}"/>
+      <lib dir="${dir.lib}"/>
 
       <!-- directories -->
       <fileset dir="${dir.main}">
