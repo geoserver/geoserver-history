@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.21 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.22 2004/01/21 01:59:20 jive Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -1151,7 +1151,7 @@ public class XMLConfigReader {
             if ((ref != null) && (ref != "")) {
                 ati.setComplex(false);
 
-                String tmp = GMLUtils.type(ref).schema;
+                String tmp = GMLUtils.type(ref).reference;
                 tmp = Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
                 ati.setType(tmp);
                 tmp = GMLUtils.type(ref).name;
