@@ -4,14 +4,16 @@
  */
 package org.vfny.geoserver.zserver;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.lucene.document.Document;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.apache.lucene.document.Document;
 
 
 /**

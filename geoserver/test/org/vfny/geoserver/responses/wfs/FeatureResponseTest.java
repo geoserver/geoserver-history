@@ -4,13 +4,15 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.data.Repository;
-import org.geotools.data.DataTestCase;
-import org.geotools.data.DefaultRepository;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.geotools.data.DataTestCase;
+import org.geotools.data.DefaultRepository;
+import org.geotools.data.Repository;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.wfs.requests.FeatureRequest;
+import org.vfny.geoserver.wfs.responses.FeatureResponse;
 
 
 /**

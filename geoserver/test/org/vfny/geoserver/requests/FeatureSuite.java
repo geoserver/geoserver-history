@@ -4,12 +4,9 @@
  */
 package org.vfny.geoserver.requests;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.Map;
+import java.util.logging.Logger;
 
-import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
@@ -20,11 +17,14 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.LiteralExpression;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.readers.wfs.GetFeatureKvpReader;
-import org.vfny.geoserver.requests.readers.wfs.GetFeatureXmlReader;
-import org.vfny.geoserver.requests.wfs.FeatureRequest;
-import java.util.Map;
-import java.util.logging.Logger;
+import org.vfny.geoserver.wfs.requests.FeatureRequest;
+import org.vfny.geoserver.wfs.requests.readers.GetFeatureKvpReader;
+import org.vfny.geoserver.wfs.requests.readers.GetFeatureXmlReader;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 
 /**

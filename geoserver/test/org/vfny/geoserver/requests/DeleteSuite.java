@@ -4,10 +4,9 @@
  */
 package org.vfny.geoserver.requests;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -18,11 +17,14 @@ import org.geotools.filter.FidFilter;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.LiteralExpression;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
-import org.vfny.geoserver.requests.wfs.DeleteRequest;
-import org.vfny.geoserver.requests.wfs.TransactionRequest;
-import java.util.Map;
-import java.util.logging.Logger;
+import org.vfny.geoserver.wfs.requests.DeleteRequest;
+import org.vfny.geoserver.wfs.requests.TransactionRequest;
+import org.vfny.geoserver.wfs.requests.readers.DeleteKvpReader;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 
 /**

@@ -4,12 +4,14 @@
  */
 package org.vfny.geoserver.global.xml;
 
+import java.io.File;
+
 import junit.framework.TestCase;
+
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-import java.io.File;
 
 
 /**

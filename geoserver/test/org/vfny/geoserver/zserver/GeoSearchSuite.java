@@ -4,19 +4,21 @@
  */
 package org.vfny.geoserver.zserver;
 
-import com.k_int.IR.IRQuery;
-import com.k_int.IR.InformationFragment;
-import com.k_int.IR.QueryModels.RPNTree;
-import com.k_int.IR.RecordFormatSpecification;
-import com.k_int.IR.SearchException;
-import com.k_int.IR.SearchTask;
-import com.k_int.util.RPNQueryRep.AttrPlusTermNode;
-import com.k_int.util.RPNQueryRep.RootNode;
+import java.util.Properties;
+import java.util.logging.Logger;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import java.util.Properties;
-import java.util.logging.Logger;
+
+import com.k_int.IR.IRQuery;
+import com.k_int.IR.InformationFragment;
+import com.k_int.IR.RecordFormatSpecification;
+import com.k_int.IR.SearchException;
+import com.k_int.IR.SearchTask;
+import com.k_int.IR.QueryModels.RPNTree;
+import com.k_int.util.RPNQueryRep.AttrPlusTermNode;
+import com.k_int.util.RPNQueryRep.RootNode;
 
 
 /**
