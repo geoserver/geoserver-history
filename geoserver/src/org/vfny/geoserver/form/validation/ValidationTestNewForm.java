@@ -7,20 +7,13 @@
 package org.vfny.geoserver.form.validation;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.config.validation.PlugInConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 
 /**

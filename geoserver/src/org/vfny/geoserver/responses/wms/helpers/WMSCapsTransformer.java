@@ -4,7 +4,17 @@
  */
 package org.vfny.geoserver.responses.wms.helpers;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -18,15 +28,8 @@ import org.vfny.geoserver.responses.wms.GetFeatureInfoResponse;
 import org.vfny.geoserver.responses.wms.GetMapResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

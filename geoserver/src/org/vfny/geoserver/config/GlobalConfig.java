@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
+
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
 /**

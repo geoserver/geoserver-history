@@ -5,7 +5,11 @@
 
 package org.vfny.geoserver.form.data;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.Iterator;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -15,9 +19,8 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.requests.Requests;
-import java.util.Iterator;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

@@ -6,12 +6,9 @@
  */
 package org.vfny.geoserver.config;
 
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.util.Locale;
 
 import org.geotools.validation.attributes.GazetteerNameValidation;
-import org.geotools.validation.spatial.PolygonBoundaryCoveredByPolygonValidation;
 import org.vfny.geoserver.config.validation.ArgumentConfig;
 import org.vfny.geoserver.config.validation.PlugInConfig;
 import org.vfny.geoserver.config.validation.TestConfig;

@@ -4,20 +4,7 @@
  */
 package org.vfny.geoserver.action.data;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.DataSourceException;
-import org.geotools.data.DataStoreFactorySpi.Param;
-import org.geotools.data.DataStoreFinder;
-import org.vfny.geoserver.global.DataStoreInfo;
-import com.vividsolutions.jts.geom.Envelope;
-
-
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
+
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.DataStoreFactorySpi.Param;
+import org.vfny.geoserver.global.DataStoreInfo;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

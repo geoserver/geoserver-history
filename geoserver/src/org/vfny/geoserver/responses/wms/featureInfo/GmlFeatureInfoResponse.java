@@ -4,6 +4,12 @@
  */
 package org.vfny.geoserver.responses.wms.featureInfo;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.geotools.data.FeatureResults;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -11,11 +17,6 @@ import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.responses.wfs.GML2FeatureResponseDelegate;
 import org.vfny.geoserver.responses.wfs.GetFeatureResults;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 
 /**

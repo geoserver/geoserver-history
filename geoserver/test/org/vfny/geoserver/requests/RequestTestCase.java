@@ -4,16 +4,17 @@
  */
 package org.vfny.geoserver.requests;
 
-import junit.framework.TestCase;
-import org.geotools.filter.FilterFactory;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import junit.framework.TestCase;
+
+import org.geotools.filter.FilterFactory;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
 
 
 /**

@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.GeoServer;
 
 
 /**
@@ -26,7 +27,7 @@ import java.io.OutputStream;
  * <code>encode(OutputStream)</code>
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: FeatureResponseDelegate.java,v 1.2 2004/03/12 10:19:44 cholmesny Exp $
  */
 public interface FeatureResponseDelegate {

@@ -4,12 +4,14 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.config.DataConfig;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.io.File;
+
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.config.DataConfig;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Data Transfer Object used for GeoServer FeatureTypeInfo information.

@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.responses.wms.featureInfo;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
@@ -23,9 +25,8 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.responses.Response;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

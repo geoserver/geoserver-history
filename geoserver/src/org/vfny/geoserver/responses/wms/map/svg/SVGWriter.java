@@ -4,20 +4,6 @@
  */
 package org.vfny.geoserver.responses.wms.map.svg;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import org.geotools.data.DataSourceException;
-import org.geotools.data.FeatureReader;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -28,11 +14,27 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
+import org.geotools.data.DataSourceException;
+import org.geotools.data.FeatureReader;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 
 /**
  * DOCUMENT ME!
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: SVGWriter.java,v 1.5 2004/09/05 17:16:53 cholmesny Exp $
  */
 public class SVGWriter extends OutputStreamWriter {
@@ -640,7 +642,7 @@ public class SVGWriter extends OutputStreamWriter {
         /**
          * returns the xml unicode escape sequence for the character
          * <code>c</code>, such as <code>"&#x00d1;"</code> for the character
-         * <code>'Ñ'</code>
+         * <code>'?'</code>
          *
          * @param c DOCUMENT ME!
          *

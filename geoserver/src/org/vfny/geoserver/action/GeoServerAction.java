@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.action;
 
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.Action;
@@ -12,7 +14,6 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Requests;
-import java.util.logging.Logger;
 
 /**
  * GeoServerAction is a common super class used by STRUTS Actions.

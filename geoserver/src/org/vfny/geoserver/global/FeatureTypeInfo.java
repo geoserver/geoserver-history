@@ -4,7 +4,15 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.FactoryConfigurationError;
@@ -17,19 +25,11 @@ import org.geotools.styling.Style;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-// Modif C. Kolbowicz - 07/10/2004
 import org.vfny.geoserver.global.dto.LegendURLDTO;
-//-- Modif C. Kolbowicz - 07/10/2004
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import java.io.IOException;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.net.URI;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Represents a FeatureTypeInfo, its user config and autodefined information.

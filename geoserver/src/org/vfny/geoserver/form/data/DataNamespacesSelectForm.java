@@ -6,7 +6,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.Iterator;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;

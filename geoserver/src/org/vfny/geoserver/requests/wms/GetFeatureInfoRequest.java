@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.requests.wms;
 
-import java.util.List;
-
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.WMSRequest;
 

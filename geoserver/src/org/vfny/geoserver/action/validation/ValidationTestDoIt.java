@@ -7,7 +7,6 @@
 package org.vfny.geoserver.action.validation;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -19,19 +18,10 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.geotools.data.DataStore;
-import org.geotools.data.FeatureSource;
-import org.geotools.validation.ValidationProcessor;
-import org.geotools.validation.ValidationResults;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.validation.TestSuiteConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
-import org.vfny.geoserver.global.GeoValidator;
 import org.vfny.geoserver.global.UserContainer;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * ValidationTestDoIt purpose.

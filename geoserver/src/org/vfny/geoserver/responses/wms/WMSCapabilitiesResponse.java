@@ -4,6 +4,13 @@
  */
 package org.vfny.geoserver.responses.wms;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.GeoServer;
@@ -12,11 +19,6 @@ import org.vfny.geoserver.requests.CapabilitiesRequest;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.helpers.WMSCapsTransformer;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
 
 
 /**

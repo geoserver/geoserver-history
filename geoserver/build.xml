@@ -22,10 +22,10 @@
   <property file="build.properties"/>  
   <!--These should be defined in the build.properties file, which will -->
   <!-- override these values -->      
-  <property name="dir.container" value="C:\java\tomcat4\webapps"/>
-  <property name="dir.geotools" value="C:\java\geotools\gt"/>
-  <property name="version.geotools" value="2.0-B6-DEV"/>		
-  <property name="dir.maven" value="C:\Documents and Settings\jgarnett\.maven\repository"/>
+  <property name="dir.container" value="/usr/local/development/tomcat/webapps"/>
+  <property name="dir.geotools" value="/home/gabriel/workspace/gt"/>
+  <property name="version.geotools" value="2.1.x"/>		
+  <property name="dir.maven" value="/home/gabriel/.maven/repository"/>
 
   <!-- If you don't have your own conf directory then define one of -->
   <!-- these test.type's in your build.properties file-->
@@ -59,13 +59,15 @@
   <property name="dir.jetty" value="${dir.lib}/jetty"/>   
     
  <!-- jars -->
+  <!--
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
+  -->
   <property name="jar.geoserver" value="${dir.lib}/geoserver.jar"/>
   <property name="jar.servlet" value="${dir.lib}/servlet.jar"/>
   <property name="jar.xercesImpl" value="${dir.lib}/xercesImpl.jar"/>
   <property name="jar.xml" value="${dir.lib}/xml-apis.jar"/>
   <property name="jar.jdbcPostgres" value="${dir.lib}/jdbcPostgres.jar"/>
-  <property name="jar.jts" value="${dir.lib}/jts-1.4.0.jar"/>
+  <property name="jar.jts" value="${dir.lib}/jts-1.6-SNAPSHOT.jar"/>
   <property name="jar.lucene" value="${dir.lib}/lucene.jar"/>
   <property name="jar.xalan" value="${dir.lib}/xalan.jar"/>
   <property name="jar.a2j" value="${dir.lib}/a2jruntime.jar"/>
@@ -924,8 +926,8 @@ failonerror="true"/>
   <target name="geotools" depends="init"
       description="Generate geotools2 jars for quick testing (use maven for jars you commit)">    
   	<copy failonerror="false"
-  	  toFile="${dir.lib}/geoapi-SNAPSHOT.jar"
-  	  file="${dir.maven}/geoapi/jars/geoapi-SNAPSHOT.jar"/>
+  	  toFile="${dir.lib}/geoapi-20050213.jar"
+  	  file="${dir.maven}/geoapi/jars/geoapi-20050213.jar"/>
   	<copy failonerror="false"
   	  toFile="${dir.lib}/opengis-css-0.1.jar"
   	  file="${dir.maven}/opengis/jars/opengis-css-0.1.jar"/>
@@ -935,6 +937,15 @@ failonerror="true"/>
   	<copy failonerror="false"
   	  toFile="${dir.lib}/units-0.01.jar"
   	  file="${dir.maven}/units/jars/units-0.01.jar"/>
+  	<copy failonerror="false"
+  	  toFile="${dir.lib}/jsde_sdk-9.0.jar"
+  	  file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar"/>
+  	<copy failonerror="false"
+  	  toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar"
+  	  file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar"/>
+  	<copy failonerror="false"
+  	  toFile="${dir.lib}/jsde_concurrent-9.0.jar"
+  	  file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar"/>
   	  	
   	<copy failonerror="false"
 	  toFile="${dir.lib}/gt2-arcsde.jar"
@@ -957,6 +968,12 @@ failonerror="true"/>
   	<copy failonerror="false"
   		file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar"
   		toFile="${dir.lib}/gt2-validation.jar"/> 	  	                              
+  	<copy failonerror="false"
+  		file="${dir.geotools}/plugin/epsg/target/epsg-${version.geotools}.jar"
+  		toFile="${dir.lib}/gt2-epsg.jar"/> 	  	                              
+  	<copy failonerror="false"
+  		file="${dir.geotools}/demo/property/target/property-${version.geotools}.jar"
+  		toFile="${dir.lib}/gt2-property.jar"/> 	  	                              
   </target>
 
   <target name="gt2-validation" depends="init"

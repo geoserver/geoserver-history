@@ -6,7 +6,6 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

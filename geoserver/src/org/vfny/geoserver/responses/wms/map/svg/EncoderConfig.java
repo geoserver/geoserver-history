@@ -4,20 +4,22 @@
  */
 package org.vfny.geoserver.responses.wms.map.svg;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 import org.geotools.data.FeatureResults;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
  * DOCUMENT ME!
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: EncoderConfig.java,v 1.3 2004/04/06 12:12:18 cholmesny Exp $
  */
 public class EncoderConfig {

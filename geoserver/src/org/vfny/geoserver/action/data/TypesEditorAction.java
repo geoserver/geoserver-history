@@ -4,7 +4,18 @@
  */
 package org.vfny.geoserver.action.data;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -24,17 +35,8 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.AttributeForm;
 import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.UserContainer;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.Iterator;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

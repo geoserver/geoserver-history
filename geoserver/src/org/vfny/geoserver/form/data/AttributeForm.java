@@ -1,11 +1,10 @@
 package org.vfny.geoserver.form.data;
 
-import org.geotools.feature.AttributeType;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.geotools.feature.AttributeType;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;

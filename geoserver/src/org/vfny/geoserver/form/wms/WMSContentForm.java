@@ -7,8 +7,6 @@ package org.vfny.geoserver.form.wms;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +15,6 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
 import org.vfny.geoserver.config.WMSConfig;
 
 

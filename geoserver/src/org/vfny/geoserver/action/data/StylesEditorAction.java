@@ -6,11 +6,10 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.File;
-import java.io.InputStreamReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
