@@ -603,7 +603,6 @@
     </style>
     
     <copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
-    <copy todir="${dir.doc}/developer" file="${dir.doc}/../developer/*.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
@@ -618,7 +617,9 @@
     </style>
     
     <copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
-    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/*.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/DataStoreUserGuide.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/ValidationUserGuide.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/FeatureTypeUserGuide.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
@@ -772,7 +773,11 @@
 	    <include name="**/*"/>
 	  </fileset>
     </copy>
-    <zip destfile="${basedir}/geoserver-${name.release}-docs.zip" basedir="${basedir}/docs/"/>
+    <zip destfile="${basedir}/geoserver-${name.release}-docs.zip">
+	  <zipfileset dir="${basedir}/docs/" prefix="geoserver-docs">
+	    <include name="**/*"/>
+	  </zipfileset>
+	</zip>
     <tar destfile="${basedir}/geoserver-${name.release}-docs.tar" basedir="${basedir}/docs/"/>
     <gzip src="${basedir}/geoserver-${name.release}-docs.tar" zipfile="${basedir}/geoserver-${name.release}-docs.tar.gz"/>
     <copy file="${basedir}/geoserver-${name.release}-docs.zip" todir="${dir.release}"/>
