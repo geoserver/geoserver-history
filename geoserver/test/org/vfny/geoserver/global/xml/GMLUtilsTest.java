@@ -6,6 +6,9 @@ package org.vfny.geoserver.global.xml;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.*;
 
@@ -16,7 +19,7 @@ import junit.framework.TestCase;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: GMLUtilsTest.java,v 1.1 2004/01/14 19:15:11 jive Exp $
+ * @version $Id: GMLUtilsTest.java,v 1.2 2004/01/20 23:26:06 jive Exp $
  */
 public class GMLUtilsTest extends TestCase {
     
@@ -25,6 +28,16 @@ public class GMLUtilsTest extends TestCase {
     }
     protected void assertString( String expected, Object value ){
         assertEquals( expected, String.valueOf( value) );
+    }
+    public void testPointPropertyTypeMappings(){
+        Set expected = new HashSet();
+        expected.add( GMLUtils.POINTPROPERTYTYPE );
+        expected.add( GMLUtils.POINTTYPE );
+        expected.add( GMLUtils.ABSTRACTGEOMETRYTYPE );
+        expected.add( GMLUtils.STRING );
+        
+        List mappings = GMLUtils.mappingList("PointPropertyType", Point.class);        
+        assertEquals( expected, new HashSet( mappings) );
     }
     public void testSimpleTypes(){
         assertString( "xs:string", GMLUtils.schema( "x", String.class ) );
@@ -65,9 +78,6 @@ public class GMLUtilsTest extends TestCase {
         assertString( "gml:CoordinatesType", GMLUtils.schema( "x", CoordinateList.class ));        
     }
     public void testGMLPropertyTypes(){
-        
-        
-                
         //assertString( "gml:AbstractGeometryPropertyType", GMLUtils.schema( "AbstractGeometry", Geometry.class ) );        
         assertString( "gml:PointPropertyType", GMLUtils.schema( "PointPropertyType", Point.class ) );
         assertString( "gml:LineStringPropertyType", GMLUtils.schema( "LineStringPropertyType", LineString.class ) );
