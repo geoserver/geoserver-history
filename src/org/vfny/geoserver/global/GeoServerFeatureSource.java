@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureSource.java,v 1.7 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id: GeoServerFeatureSource.java,v 1.8 2004/02/13 18:45:50 dmzwiers Exp $
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */
@@ -427,7 +427,8 @@ public class GeoServerFeatureSource implements FeatureSource {
         } catch (IOException ex) {
             return -1;
         }
-
-        return source.getCount(query);
+        try{
+        	return source.getCount(query);
+        }catch(IOException e){return 0;}
     }
 }
