@@ -4,16 +4,6 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.vfny.geoserver.global.ConfigurationException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -22,6 +12,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 
 /**
@@ -35,7 +33,7 @@ import org.xml.sax.SAXException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.8 2004/02/16 22:56:20 dmzwiers Exp $
+ * @version $Id: ReaderUtils.java,v 1.9 2004/04/06 11:32:34 cholmesny Exp $
  *
  * @see XMLConfigReader
  */
@@ -271,14 +269,18 @@ public class ReaderUtils {
      *
      * @throws ConfigurationException When a child attribute is required and
      *         not found.
+     * @throws NullPointerException DOCUMENT ME!
      */
     public static String getAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
-    	if(elem == null){
-    		if(mandatory)
-    			throw new NullPointerException();
-    		return "";
-    	}
+        if (elem == null) {
+            if (mandatory) {
+                throw new NullPointerException();
+            }
+
+            return "";
+        }
+
         Attr att = elem.getAttributeNode(attName);
 
         String value = null;
@@ -314,6 +316,8 @@ public class ReaderUtils {
      * @param attName The name of the attribute to look for.
      * @param mandatory true when an exception should be thrown if the
      *        attribute element does not exist.
+     * @param defaultValue what to return for a non-mandatory that is not
+     *        found.
      *
      * @return The value if the attribute was found, the false otherwise.
      *
@@ -321,10 +325,13 @@ public class ReaderUtils {
      *         not found.
      */
     public static boolean getBooleanAttribute(Element elem, String attName,
-        boolean mandatory) throws ConfigurationException {
+        boolean mandatory, boolean defaultValue) throws ConfigurationException {
         String value = getAttribute(elem, attName, mandatory);
-        if(value == null || value == "")
-        	return true;
+
+        if ((value == null) || (value == "")) {
+            return defaultValue;
+        }
+
         return Boolean.valueOf(value).booleanValue();
     }
 
@@ -552,8 +559,10 @@ public class ReaderUtils {
     public static double getDoubleAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
         String value = getAttribute(elem, attName, mandatory);
-        if(value==null || value=="")
-        	return 0.0;
+
+        if ((value == null) || (value == "")) {
+            return 0.0;
+        }
 
         double d = Double.NaN;
 
