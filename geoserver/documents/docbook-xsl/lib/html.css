@@ -1,10 +1,15 @@
 body { 
-    background: #FFFFFF; 
+    background: #F2F2FF; 
 }
 
-h1, h2, h3, h4, h5 { 
+h1, h2 { 
     color: #800000; 
-    font-family: sans-serif; 
+    font-family: Verdana, Helvetica, Arial, sans-serif; 
+}
+
+h3, h4, h5 {
+    color: #000000; 
+    font-family: Verdana, Helvetica, Arial, sans-serif; 
 }
 
 span.term { 
@@ -16,6 +21,18 @@ div.sidebar {
     border: 1px solid gray; 
     padding: 5px; 
     margin: 20px; 
+}
+
+body, th, td, input, select {
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+}
+
+
+body, h3, td, th  {
+    font-size: x-small;
+    voice-family: "\"}\"";
+    voice-family: inherit;
+    font-size: small;
 }
 
 pre.programlisting { 
