@@ -66,7 +66,10 @@ public class Query {
     
     /** Adds a requested property name to the query. */ 
     public void addPropertyName(String propertyName) { 
-        propertyNames.add(propertyName);
+	//Don't repeat propertyNames.
+	if (!propertyNames.contains(propertyName)) {
+	    propertyNames.add(propertyName);
+	}
 	 this.allRequested = false;
     }
 
