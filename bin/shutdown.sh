@@ -2,10 +2,10 @@
 # -----------------------------------------------------------------------------
 # Start Script for GEOSERVER
 #
-# $Id: shutdown.sh,v 1.4 2003/09/19 15:11:35 cholmesny Exp $
+# $Id: shutdown.sh,v 1.5 2003/09/19 15:13:22 cholmesny Exp $
 # -----------------------------------------------------------------------------
 
-# Make sure prerequisite environment variables are set
+# Makes sure prerequisite environment variables are set
 if [ -z "$JAVA_HOME" ]; then
   echo "The JAVA_HOME environment variable is not defined"
   echo "This environment variable is needed to run this program"
@@ -16,7 +16,7 @@ if [ ! -r "$JAVA_HOME"/bin/java ]; then
   echo "This environment variable is needed to run this program"
   exit 1
 fi
-# Set standard commands for invoking Java.
+# Sets standard commands for invoking Java.
 _RUNJAVA="$JAVA_HOME"/bin/java
 
 
