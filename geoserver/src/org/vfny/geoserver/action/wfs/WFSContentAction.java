@@ -40,18 +40,25 @@ public final class WFSContentAction extends ConfigAction {
         if (contentForm.isEnabledChecked() == false) {
             enabled = false;
         }
+        
+		boolean srsXmlStyle = contentForm.isSrsXmlStyle();
+
+		if (contentForm.isSrsXmlStyleChecked() == false) {
+			srsXmlStyle = false;
+		}
 
         String onlineResource = contentForm.getOnlineResource();
         String[] selectedFeatures = contentForm.getSelectedFeatures();
         String[] features = contentForm.getFeatures();
 
         WFSConfig config = getWFSConfig();
+        config.setSrsXmlStyle(srsXmlStyle);
         config.setEnabled(enabled);
         config.setOnlineResource(new URL(onlineResource));
         config.setServiceLevel(contentForm.getServiceLevel());
 
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("wfsConfigContent");
+        return mapping.findForward("config");
     }
 }

@@ -46,7 +46,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.7 2004/07/29 15:35:49 cholmesny Exp $
+ * @version $Id: GeoServerConfigurationSubmit.java,v 1.8 2004/09/09 17:07:44 cholmesny Exp $
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -58,7 +58,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         
         boolean verbose = form.isVerbose();
         if (form.isVerboseChecked() == false) {
-            verbose = false;
+             verbose = false;
         }
         
         int numDecimals = form.getNumDecimals();
@@ -79,7 +79,10 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         Level loggingLevel = Level.parse(stringLevel);
         String adminUserName = form.getAdminUserName();
         String adminPassword = form.getAdminPassword();
-        
+        boolean verboseExceptions = form.isVerboseExceptions();
+		if (form.isVerboseExceptionsChecked() == false) {
+			verboseExceptions = false;
+		}
         GlobalConfig globalConfig = getGlobalConfig();
         globalConfig.setMaxFeatures(maxFeatures);
         globalConfig.setVerbose(verbose);
@@ -90,6 +93,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setAdminUserName(adminUserName);
         globalConfig.setAdminPassword(adminPassword);
         globalConfig.setLoggingLevel(loggingLevel);
+        globalConfig.setVerboseExceptions(verboseExceptions);
         ContactConfig contactConfig = globalConfig.getContact();
         contactConfig.setContactPerson( form.getContactPerson() );
         contactConfig.setContactOrganization( form.getContactOrganization() );

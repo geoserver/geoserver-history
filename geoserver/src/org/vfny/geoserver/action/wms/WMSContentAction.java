@@ -50,6 +50,6 @@ public final class WMSContentAction extends ConfigAction {
 
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("wmsConfigContent");
+        return mapping.findForward("config");
     }
 }
