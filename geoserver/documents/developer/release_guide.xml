@@ -142,8 +142,6 @@
     cite is running, and checking up on the documentation and readmes. This
     ensures that the release actually built is exactly as it should
     be.</action></para>
-
-    <para><action></action></para>
   </sect1>
 
   <sect1>
@@ -201,6 +199,28 @@
     was released. Our convention is to call a release rel followed by the
     version number, delimited by underscores, as decimals are not allowed in
     cvs. To tag a release simply type:<programlisting>cvs tag rel_1_2_0</programlisting></para>
+  </sect1>
+
+  <sect1>
+    <title>Updating the Website</title>
+
+    <para>Various places on the web need to be updated to reflect the fact
+    that we released. The first of these is the documentation, both the
+    javadocs and the user docs. All the documents needed will be in the
+    release directory (they are generated for the release). The zipped up docs
+    should be uploaded to shell.sourceforge.net - scp is the best way to
+    accomplish this. Once there they can be unzipped and then transfered to
+    the appropriate directories under
+    /home/groups/g/ge/geoserver/htdocs/documentation/. Note that the api
+    directory is renamed javadocs in the web space. (Do we want to change this
+    to versioning on the website? Put them in the 1.2.0 directory, ect.?). The
+    other website that needs updating is JIRA. Check the roadmap for the
+    release. It should already have all bugs for the release closed, but if
+    they are not then close the ones that were done at the last moment or that
+    should be closed, and move the rest to a future release. Click on the
+    administration tab (will only appear if you have admin privelages on
+    jira), and then click on release under versions. Then release the version
+    that you just put out. </para>
   </sect1>
 
   <sect1>
