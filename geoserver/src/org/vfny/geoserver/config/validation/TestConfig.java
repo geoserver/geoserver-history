@@ -34,7 +34,7 @@ import org.geotools.validation.xml.ValidationException;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestConfig.java,v 1.3 2004/02/03 20:09:15 dmzwiers Exp $
+ * @version $Id: TestConfig.java,v 1.4 2004/04/08 21:58:26 dmzwiers Exp $
  */
 public class TestConfig{
     
@@ -352,7 +352,8 @@ public class TestConfig{
 		ArgumentConfig ac = new ArgumentConfig();
 		ac.setName(name);
 		try {
-			ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(cl),value));
+			String argType = ArgHelper.getArgumentType(cl);
+			ac.setValue(ArgHelper.getArgumentInstance(argType,value));
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
