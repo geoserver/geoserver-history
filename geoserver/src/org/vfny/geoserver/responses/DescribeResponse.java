@@ -207,6 +207,13 @@ public class DescribeResponse {
      *
      * @param requestedTypes The requested table names.
      */ 
+    //REVISIT: We need a way to make sure the extension bases are correct.
+    //should likely add a field to the info.xml in the featureTypes folder,
+    //that optionally references an extension base (should it be same namespace?
+    // we could also probably just do an import on the extension base).  This
+    //function then would see if the typeInfo has an extension base, and would
+    //add or import the file appropriately, and put the correct substitution
+    //group in this function.
     private String generateSpecifiedTypes(List requestedTypes) 
 	throws WfsException{
         TypeRepository repository = TypeRepository.getInstance();
@@ -214,7 +221,7 @@ public class DescribeResponse {
         String currentFile = new String();
 	String curTypeName = new String();
 	String generatedType = new String();
-	ArrayList validTypes = new ArrayList();
+	Set validTypes = new HashSet();
         
         // Loop through requested tables to add element types
         for (int i = 0; i < requestedTypes.size(); i++ ) {
@@ -223,27 +230,29 @@ public class DescribeResponse {
             // print type data for the table object
             curTypeName = requestedTypes.get(i).toString();
 	    TypeInfo meta = repository.getType(curTypeName);
+	    curTypeName = meta.getFullName();
 	    if (meta == null) {
 		throw new WfsException("Feature Type " + curTypeName + " does "
 				       + "not exist on this server");
 	    }
-	    currentFile = meta.getSchemaFile();
-	    generatedType = writeFile(currentFile);
-	    if (!generatedType.equals("")) {
-		tempResponse = tempResponse + writeFile( currentFile );
-		validTypes.add(curTypeName);
-	    } 
-       }
+	    if (!validTypes.contains(curTypeName)) {
+		currentFile = meta.getSchemaFile();
+		generatedType = writeFile(currentFile);
+		if (!generatedType.equals("")) {
+		    tempResponse = tempResponse + writeFile( currentFile );
+		    validTypes.add(curTypeName);
+		}
+	    }
+	} 
 
         
         // Loop through requested tables again to add elements
         // NOT VERY EFFICIENT - PERHAPS THE MYSQL ABSTRACTION CAN FIX THIS; 
         //  STORE IN HASH?
-        for (int i = 0; i < validTypes.size(); i++ ) {
-
-            // Print element representation of table
+	for (Iterator i = validTypes.iterator(); i.hasNext();) {
+	    // Print element representation of table
             tempResponse = tempResponse + 
-                printElement(validTypes.get(i).toString());
+                printElement(i.next().toString());
         }
         
         tempResponse = tempResponse + "\n\n";
