@@ -46,7 +46,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.1.2.2 2003/11/25 22:36:32 sploreg Exp $
+ * @version $Id: ValidationProcessor.java,v 1.1.2.3 2003/11/26 04:46:34 sploreg Exp $
  */
 public class ValidationProcessor {
 
@@ -194,39 +194,6 @@ public class ValidationProcessor {
 			}
 		}
 	}
-
-
-	/**
-	 * addPlugin NOT IMPLEMENTED!
-	 * <p>
-	 * NOT IMPLEMENTED!
-	 * </p>
-	 * @param bean
-	 * @param config configuration for the plugIn. Defined in plugin.xml
-	 */
-	public void addPlugIn( String bean, Map config)
-	{
-		//PlugIn plugin = new PlugIn( name, bean, text, config);
-		//plugIns.put(name, plugin)
-		
-	}
-
-
-	/**
-	 * addPlugIn NOT IMPLEMENTED!
-	 * <p>
-	 * NOT IMPLEMENTED!
-	 * </p>
-	 * @param name
-	 * @param bean
-	 * @param text
-	 * @param config
-	 */
-	public void addPlugIn( String name, String bean, String text, Map config)
-	{
-		//PlugIn plugin = new PlugIn( name, bean, text, config);
-		//plugIns.put(name, plugin)
-	}
 	
 	
 	/**
@@ -240,7 +207,7 @@ public class ValidationProcessor {
 	 * @param validation Either a FeatureValidation or an IntegrityValidation to be added to the processor.
 	 * @throws Exception Invalid Validation type
 	 */
-	public void addPlugIn(Validation validation) throws Exception
+	public void addValidation(Validation validation) throws Exception
 	{
 		if (validation instanceof FeatureValidation)
 		{
