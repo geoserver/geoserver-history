@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <datastores>
+
+    <datastore id="geoserver-demo"
+               enabled="true"
+               namespace="gd">
+               <!-- enabled is optional, defaults to true -->
+      <description>Data taken from the USGS Digital Line Graph for Auburn, Washington</description>
+      <connectionParams>
+        <parameter name="dbtype" value="postgis"/>
+        <parameter name="host" value="localhost"/>
+        <parameter name="port" value="5432"/>
+        <parameter name="database" value="demo-geoserver"/>
+        <parameter name="user" value="rgould"/>
+        <parameter name="passwd" value="rich2004"/>
+      </connectionParams>
+    </datastore>
+    	
+  </datastores>
+
+  <!-- Defines the namespaces to be used.  All dataStores must refer to a   -->
+  <!-- namespace.  If two namespaces are required for the same database then-->
+  <!-- it is possible to just define two datastores with different ids but  -->
+  <!-- the same connection parameters.                                      -->
+  <namespaces>
+  	<namespace uri="http://www.refractions.net" 
+  			   prefix="gd"/>
+  </namespaces>
+
+  <!-- Style definitions - maps a style name to a file.  The style files  -->
+  <!-- be contained in the styles folder                                  --> 
+  <styles>
+      <style id="normal" filename="normal.sld" default="true"/>
+  </styles>
+
+</catalog>
+ 
