@@ -30,7 +30,7 @@ import org.vfny.geoserver.config.TypeRepository;
 public class FeatureResponse {
 
     /** Standard logging instance for class */
-    private static final Logger LOGGER = 
+    private static final Logger LOG = 
         Logger.getLogger("org.vfny.geoserver.responses");
     
     /** Constructor, which is required to take a request object. */ 
@@ -50,7 +50,7 @@ public class FeatureResponse {
         //  generate GML for heander for each table requested
         for(int i = 0, n = request.getQueryCount(); i < n; i++) {            
             result.append(getQuery(request.getQuery(i), repository));
-            LOGGER.finest("ended feature");
+            LOG.finest("ended feature");
         }        
 
         // return final string
@@ -79,7 +79,7 @@ public class FeatureResponse {
             throw new WfsException(e.getMessage());
         }
 
-        //LOGGER.finest("successfully retrieved collection");
+        LOG.finest("successfully retrieved collection");
         Feature[] features = collection.getFeatures();
         FeatureType schema = features[0].getSchema();
         AttributeType[] attributeTypes = schema.getAttributeTypes();
@@ -87,8 +87,8 @@ public class FeatureResponse {
 
         GMLBuilder gml = new GMLBuilder(true);
 
-        //LOGGER.finest("about to create gml");
-        //LOGGER.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
+        LOG.finest("about to create gml");
+        LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
         gml.initializeGeometry(attributeTypes[schema.attributeTotal() - 1].
                                getType(), 
                                meta.getName(), 
@@ -97,31 +97,31 @@ public class FeatureResponse {
                                getName());
         gml.startFeatureType(meta.getName(), meta.getSrs());
 
-        //LOGGER.finest("started feature type");
+        LOG.finest("started feature type");
         for(int i = 0, m = features.length; i < m; i++) {
 
-            LOGGER.finest("fid: " + features[i].getId());
+            LOG.finest("fid: " + features[i].getId());
             gml.startFeature(features[i].getId());
             attributes = features[i].getAttributes();
-            LOGGER.finest("feature: " + features[i].toString());
-            LOGGER.finest("att total: " + schema.attributeTotal());
+            LOG.finest("feature: " + features[i].toString());
+            LOG.finest("att total: " + schema.attributeTotal());
             for(int j = 0, n = schema.attributeTotal() - 1; j < n; j++) {
-                //LOGGER.finest("sent attribute: " + attributes[j].toString());
+                LOG.finest("sent attribute: " + attributes[j].toString());
                 gml.addAttribute(attributeTypes[j].getName(), 
                                  attributes[j].toString());
             }
-            //LOGGER.finest("geometry att: " + attributes[schema.attributeTotal() - 1].getClass());
-            //LOGGER.finest("att name: " + attributeTypes[schema.attributeTotal() - 1].getName());
+            LOG.finest("geometry att: " + attributes[schema.attributeTotal() - 1].getClass());
+            LOG.finest("att name: " + attributeTypes[schema.attributeTotal() - 1].getName());
             gml.addGeometry((Geometry) attributes[schema.attributeTotal() - 1],
                             attributeTypes[schema.attributeTotal() - 1].
                             getName());
-            //LOGGER.finest("added geometry: " + ((Geometry) attributes[schema.attributeTotal() - 1]).toString());
+            LOG.finest("added geometry: " + ((Geometry) attributes[schema.attributeTotal() - 1]).toString());
             gml.endFeature();
-            //LOGGER.finest("ended feature");
+            LOG.finest("ended feature");
         }
         gml.endFeatureType();        
-        //LOGGER.finest("ended feature type");
-        //LOGGER.finest("GML is: " + gml.getGML());
+        LOG.finest("ended feature type");
+        LOG.finest("GML is: " + gml.getGML());
 
         return gml.getGML();
     }

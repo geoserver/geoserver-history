@@ -26,24 +26,19 @@ public class TypeRepository {
     /** Castor-specified type to hold all the  */
     private static TypeRepository repository = null;
 
-    /** Castor-specified type to hold all the  */
+    private static ConfigInfo config = ConfigInfo.getInstance();
+
     private Random keyMaster = null;
 
-    /** Castor-specified type to hold all the  */
     private Map types = new HashMap();
 
-    /** Castor-specified type to hold all the  */
     private Map locks = new HashMap();
 
     
     /** Initializes the database and request handler. */ 
     private TypeRepository() {
-        ConfigInfo config = ConfigInfo.getInstance();
-        File startDir = new File(config.getTypeDir());
-        repository.readTypes(startDir, config);
-
         Date seed = new Date();
-        lockMaker = new Random(seed.getTime());
+        keyMaster = new Random(seed.getTime());
     }
     
     /**
@@ -52,7 +47,9 @@ public class TypeRepository {
      */ 
     public static TypeRepository getInstance() {
         if(repository == null) {
+            File startDir = new File(config.getTypeDir());
             repository = new TypeRepository();
+            repository.readTypes(startDir, config);
         }
         return repository;
     }
@@ -75,9 +72,8 @@ public class TypeRepository {
 
     /**
      * Returns a capabilities XML fragment for a specific feature type.
-     * @param version The version of the request (0.0.14 or 0.0.15)
-     */ 
-    private int typeCount() {        
+     */
+    public int typeCount() {        
         return types.size();
     }
 
@@ -86,24 +82,40 @@ public class TypeRepository {
      * Returns a capabilities XML fragment for a specific feature type.
      * @param typeName The version of the request (0.0.14 or 0.0.15)
      */ 
+    public boolean isLocked(String typeName) {        
+        return locks.containsKey(typeName);
+    }
+
+    /**
+     * Returns a capabilities XML fragment for a specific feature type.
+     * @param typeName The version of the request (0.0.14 or 0.0.15)
+     */ 
     public synchronized String lock(String typeName) {        
-        if(locks.containsValue(typeName)) {
+        if(locks.containsKey(typeName)) {
+            LOG.finest("no lock on: " + typeName);
             return null;
         } else {
-            String key = new String(String.valueOf(keyMaster.nextInt()));
-            types.put(typeName, typeName + key);
-            return typeName + key;
+            String lock = String.valueOf(keyMaster.nextInt(Integer.MAX_VALUE));
+            locks.put(typeName, lock);
+            LOG.finest("locked " + typeName + " with: " + lock);
+            return lock;
         }
     }
 
     /**
      * Returns a capabilities XML fragment for a specific feature type.
-     * @param version The version of the request (0.0.14 or 0.0.15)
+     * @param typeName The version of the request (0.0.14 or 0.0.15)
+     * @param key The version of the request (0.0.14 or 0.0.15)
      */ 
-    public synchronized boolean unlock(String typeName, String key) {        
-        if(locks.containsKey(typeName + key)) {
-            types.remove(typeName + key);
-            return true;
+    public synchronized boolean unlock(String typeName, String lock) {        
+        if(locks.containsKey(typeName)) {
+            String targetLock = (String) locks.get(typeName);
+            if(targetLock.equals(lock)) {
+                locks.remove(typeName);
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -119,21 +131,38 @@ public class TypeRepository {
      * reading files.
      */
     private void readTypes(File currentFile, ConfigInfo config) {
+        LOG.finest("examining: " + currentFile.getAbsolutePath());
+        LOG.finest("is dir: " + currentFile.isDirectory());
         if(currentFile.isDirectory()) {
             File[] file = currentFile.listFiles();
             for(int i = 0, n = file.length; i < n; i++) {
                 readTypes(file[i], config);
             } 
         } else if(isInfoFile(currentFile, config)) {
+            LOG.finest("adding: " + currentFile.getAbsolutePath());
             addType(new TypeInfo(currentFile.getAbsolutePath()));
         }
     }
 
     private static boolean isInfoFile(File testFile, ConfigInfo config){
         String testName = testFile.getAbsolutePath();
-        int start = testName.length() - 8;
-        int end = testName.length() - 4;
-        return testName.substring(start, end).equals(config.TYPE_INFO);
+        int start = testName.length() - 9;
+        int end = testName.length();
+        return testName.substring(start, end).equals(config.INFO_FILE);
+    }
+
+    public String toString() {
+        StringBuffer returnString = new StringBuffer("\n  TypeRepository:");
+        Collection typeList = types.values();
+        Iterator i = typeList.iterator();
+        while(i.hasNext()) {
+            TypeInfo type = (TypeInfo) i.next();
+            returnString.append("\n   " + type.getName());
+            if(locks.containsValue(type.getName())) {
+                returnString.append(" (" + type.getName() + ")");
+            }
+        }
+        return returnString.toString();
     }
 
 }

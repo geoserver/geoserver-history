@@ -25,6 +25,8 @@ import org.geotools.filter.DefaultExpression;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.LiteralExpression;
 import org.geotools.resources.Geotools;
+import org.vfny.geoserver.config.TypeRepository;
+import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.Query;
 
@@ -46,11 +48,19 @@ public class FeatureSuite extends TestCase {
         Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Unit test data directory */
-    private static final String DATA_DIRECTORY = 
-        System.getProperty("user.dir") + "/misc/testData/unit/requests";
+    private static final String CONFIG_DIR = 
+        System.getProperty("user.dir") + "/misc/documents/configuration.xml";
+
+    /** Unit test data directory */
+    private static final String TYPE_DIR = 
+        System.getProperty("user.dir") + "/misc/data/featureTypes";
+
 
     /** Holds mappings between HTTP and ASCII encodings */
     private static FilterFactory factory = FilterFactory.createFilterFactory();
+
+    private ConfigInfo config;
+    private TypeRepository repo;
 
 
     /** Constructor with super. */
@@ -58,8 +68,11 @@ public class FeatureSuite extends TestCase {
 
 
     /** Handles test set up details. */
-    public void setUp() {}
-    
+    public void setUp() {
+        config = ConfigInfo.getInstance(CONFIG_DIR);
+        config.setTypeDir(TYPE_DIR);
+        repo = TypeRepository.getInstance();
+    }
 
     /*************************************************************************
      * XML TESTS                                                             *
@@ -72,12 +85,11 @@ public class FeatureSuite extends TestCase {
     public void test1() throws Exception {        
         // make base comparison objects
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         FeatureRequest request = new FeatureRequest();
         request.addQuery(query);       
 
-        FeatureTypeBean info = new FeatureTypeBean(query.getFeatureTypeName());
-        String gml = FeatureResponse.getXmlResponse(request, info);
+        String gml = FeatureResponse.getXmlResponse(request);
         LOGGER.finest(gml);
         // run test
         //assertTrue(runXmlTest(baseRequest, "10", true));

@@ -45,7 +45,7 @@ public class FeatureSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = 
-        System.getProperty("user.dir") + "/misc/testData/unit/requests";
+        System.getProperty("user.dir") + "/misc/unit/requests";
 
     /** Holds mappings between HTTP and ASCII encodings */
     private static FilterFactory factory = FilterFactory.createFilterFactory();
@@ -135,7 +135,7 @@ public class FeatureSuite extends TestCase {
     public void test1() throws Exception {        
         // make base comparison objects
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.addQuery(query);       
         // run test
@@ -145,7 +145,7 @@ public class FeatureSuite extends TestCase {
     public void test2() throws Exception { 
         // make base comparison objects        
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(factory.createFidFilter("123"));
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.addQuery(query);
@@ -157,7 +157,7 @@ public class FeatureSuite extends TestCase {
         // make base comparison objects                
         FeatureRequest baseRequest = new FeatureRequest();
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(factory.createFidFilter("123"));
         query.addPropertyName("name");
         query.addPropertyName("tracks");
@@ -173,7 +173,7 @@ public class FeatureSuite extends TestCase {
         tempFilter.addFid("456");
         tempFilter.addFid("789");
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(tempFilter);
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.addQuery(query);
@@ -187,7 +187,7 @@ public class FeatureSuite extends TestCase {
         tempFilter.addFid("456");
         tempFilter.addFid("789");
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(tempFilter);
         query.addPropertyName("name");
         query.addPropertyName("tracks");
@@ -220,7 +220,7 @@ public class FeatureSuite extends TestCase {
         tempFilter.addLeftGeometry(tempLeftExp);
         tempFilter.addRightGeometry(tempRightExp);
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(tempFilter.not());
         query.addPropertyName("name");
         query.addPropertyName("id");
@@ -255,13 +255,13 @@ public class FeatureSuite extends TestCase {
         tempFilter.addRightGeometry(tempRightExp);
         FeatureRequest baseRequest = new FeatureRequest();
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(tempFilter);
         query.addPropertyName("name");
         query.addPropertyName("id");
         baseRequest.addQuery(query);
         query = new Query();
-        query.setFeatureTypeName("roads");
+        query.setTypeName("roads");
         query.addFilter(tempFilter);
         query.addPropertyName("length");
         query.addPropertyName("id");
@@ -346,7 +346,7 @@ public class FeatureSuite extends TestCase {
         LOGGER.fine("filter: " + finalFilter);
         FeatureRequest baseRequest = new FeatureRequest();
         Query query = new Query();
-        query.setFeatureTypeName("Person");
+        query.setTypeName("Person");
         query.addFilter(finalFilter);
         query.addPropertyName("Person/LastName");
         baseRequest.addQuery(query);
@@ -372,7 +372,7 @@ public class FeatureSuite extends TestCase {
 
         // make base comparison objects        
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.addQuery(query);
         baseRequest.setVersion("0.0.14");
@@ -390,7 +390,7 @@ public class FeatureSuite extends TestCase {
 
         // make base comparison objects        
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addPropertyName("location");
         query.addPropertyName("id");
         FeatureRequest baseRequest = new FeatureRequest();
@@ -411,7 +411,7 @@ public class FeatureSuite extends TestCase {
 
         // make base comparison objects        
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(factory.createFidFilter("123"));
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.addQuery(query);
@@ -433,7 +433,7 @@ public class FeatureSuite extends TestCase {
         filter.addFid("456");
         filter.addFid("789");
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(filter);
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.addQuery(query);
@@ -459,19 +459,19 @@ public class FeatureSuite extends TestCase {
         filter.addFid("456");
         filter.addFid("789");
         Query query = new Query();
-        query.setFeatureTypeName("rail1");
+        query.setTypeName("rail1");
         query.addFilter(filter);
         query.addPropertyName("loc1");
         query.addPropertyName("id1");
         baseRequest.addQuery(query);
         query = new Query();
-        query.setFeatureTypeName("rail2");
+        query.setTypeName("rail2");
         query.addFilter(filter);
         query.addPropertyName("loc2");
         query.addPropertyName("id2");
         baseRequest.addQuery(query);
         query = new Query();
-        query.setFeatureTypeName("rail3");
+        query.setTypeName("rail3");
         query.addFilter(filter);
         query.addPropertyName("loc3");
         query.addPropertyName("id3");
@@ -509,7 +509,7 @@ public class FeatureSuite extends TestCase {
         filter.addRightGeometry(rightExpression);
 
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(filter);
 
         FeatureRequest baseRequest = new FeatureRequest();
@@ -530,11 +530,11 @@ public class FeatureSuite extends TestCase {
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest();
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         baseRequest.addQuery(query);
 
         query = new Query();
-        query.setFeatureTypeName("roads");
+        query.setTypeName("roads");
         baseRequest.addQuery(query);
 
         baseRequest.setVersion("1.0.0");
@@ -553,13 +553,13 @@ public class FeatureSuite extends TestCase {
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest();
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addPropertyName("loc1");
         query.addPropertyName("id1");
         baseRequest.addQuery(query);
 
         query = new Query();
-        query.setFeatureTypeName("roads");
+        query.setTypeName("roads");
         baseRequest.addQuery(query);
 
         baseRequest.setVersion("1.0.0");
@@ -582,7 +582,7 @@ public class FeatureSuite extends TestCase {
         FidFilter filter = factory.createFidFilter("123");
         filter.addFid("456");
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(filter);
         baseRequest.addQuery(query);
         // run test       
@@ -605,13 +605,13 @@ public class FeatureSuite extends TestCase {
         FidFilter filter = factory.createFidFilter("123");
         filter.addFid("456");
         Query query = new Query();
-        query.setFeatureTypeName("rail1");
+        query.setTypeName("rail1");
         query.addFilter(filter);
         query.addPropertyName("loc1");
         query.addPropertyName("id1");
         baseRequest.addQuery(query);
         query = new Query();
-        query.setFeatureTypeName("rail2");
+        query.setTypeName("rail2");
         query.addFilter(filter);
         query.addPropertyName("loc2");
         baseRequest.addQuery(query);
@@ -652,12 +652,12 @@ public class FeatureSuite extends TestCase {
         filter.addRightGeometry(rightExpression);
 
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(filter);
         baseRequest.addQuery(query);
 
         query = new Query();
-        query.setFeatureTypeName("roads");
+        query.setTypeName("roads");
         query.addFilter(filter);
         baseRequest.addQuery(query);
 
@@ -698,7 +698,7 @@ public class FeatureSuite extends TestCase {
         filter.addRightGeometry(rightExpression);
 
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(filter);
         query.addPropertyName("loc1");
         query.addPropertyName("id1");
@@ -706,7 +706,7 @@ public class FeatureSuite extends TestCase {
         baseRequest.addQuery(query);
 
         query = new Query();
-        query.setFeatureTypeName("roads");
+        query.setTypeName("roads");
         query.addPropertyName("loc2");
         query.addFilter(filter);
         baseRequest.addQuery(query);
@@ -747,7 +747,7 @@ public class FeatureSuite extends TestCase {
         filter.addRightGeometry(rightExpression);
 
         Query query = new Query();
-        query.setFeatureTypeName("rail");
+        query.setTypeName("rail");
         query.addFilter(filter);
         baseRequest.addQuery(query);
 
