@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.1.2.3 2004/01/07 23:50:07 dmzwiers Exp $
+ * @version $Id: GeoServerDTO.java,v 1.1.2.4 2004/01/08 00:41:04 dmzwiers Exp $
  */
 public final class GeoServerDTO implements DataStructure {
     /** Sets the max number of Features returned by GetFeature */
@@ -97,7 +97,7 @@ public final class GeoServerDTO implements DataStructure {
      * JG - can we figure this out at runtime?
      * </p>
      */
-    private String baseUrl;
+    private String baseUrl = "";
 
     /**
      * Define a base url for the location of the wfs schemas.

@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.11 2004/01/07 23:27:58 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.12 2004/01/08 00:41:04 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -118,9 +118,10 @@ public class Data extends Abstract
 			}
 		}
 		// s contains all the unchecked values.
-		i = s.iterator();
-		while(i.hasNext())
-			dataStores.remove(i.next());
+		/*i = s.iterator();
+		while(i.hasNext()){
+			i.remove();
+		}*/
 			
 		if(featureTypes == null)
 			featureTypes = new HashMap();
@@ -135,9 +136,10 @@ public class Data extends Abstract
 				featureTypes.put(key,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), this));
 		}
 		// s contains all the unchecked values.
-		i = s.iterator();
-		while(i.hasNext())
-			featureTypes.remove(i.next());
+		/*i = s.iterator();
+		while(i.hasNext()){
+			i.remove();
+		}*/
 
 		if(nameSpaces == null)
 			nameSpaces = new HashMap();
@@ -155,9 +157,10 @@ public class Data extends Abstract
 			}
 		}
 		// s contains all the unchecked values.
-		i = s.iterator();
-		while(i.hasNext())
-			nameSpaces.remove(i.next());
+		/*i = s.iterator();
+		while(i.hasNext()){
+			i.remove();
+		}*/
 
 		if(styles == null)
 			styles = new HashMap();
@@ -176,9 +179,10 @@ public class Data extends Abstract
 				}
 		}
 		// s contains all the unchecked values.
-		i = s.iterator();
-		while(i.hasNext())
-			styles.remove(i.next());
+		/*i = s.iterator();
+		while(i.hasNext()){
+			i.remove();
+		}*/
 	}
 
     /**

@@ -276,5 +276,8 @@
   
   <plug-in className="org.vfny.geoserver.form.wfs.WFSContentForm">
   </plug-in>  
+  
+  <plug-in className="org.vfny.geoserver.global.GeoServerPlugIn">
+  </plug-in>  
 </struts-config>
 

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,7 +69,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.9 2004/01/07 23:50:06 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.10 2004/01/08 00:41:04 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -183,7 +184,7 @@ public class XMLConfigReader {
 		int nServices = configuredServices.getLength();
 
 		for (int i = 0; i < nServices; i++) {
-			elem = (Element) configuredServices.item(i);
+			elem = (Element)configuredServices.item(i);
 
 			String serviceType = elem.getAttribute("type");
 
@@ -704,10 +705,9 @@ public class XMLConfigReader {
 	protected List getKeyWords(Element keywordsElem) {
 		NodeList klist = keywordsElem.getElementsByTagName("keyword");
 		int kCount = klist.getLength();
-		List keywords = new ArrayList(kCount);
+		List keywords = new LinkedList();
 		String kword;
 		Element kelem;
-
 		for (int i = 0; i < kCount; i++) {
 			kelem = (Element) klist.item(i);
 			kword = ReaderUtils.getElementText(kelem);
@@ -910,7 +910,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.9 2004/01/07 23:50:06 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.10 2004/01/08 00:41:04 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**
@@ -1273,10 +1273,13 @@ class ReaderUtils{
 				keywords.add(kword);
 			}
 		}
-		String[] s = (String [])keywords.toArray();
+		Object[] s = (Object [])keywords.toArray();
 		if(s==null)
 			return new String[0];
-		return s;
+		String[] ss = new String[s.length];
+		for(int i=0;i<ss.length;i++)
+			ss[i] = s[i].toString();
+		return ss;
 	}
 
 	/**
