@@ -21,7 +21,7 @@ import org.vfny.geoserver.config.DataConfig;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataFeatureTypesNewForm.java,v 1.5 2004/02/09 23:29:45 dmzwiers Exp $
+ * @version $Id: DataFeatureTypesNewForm.java,v 1.6 2004/03/09 01:37:39 dmzwiers Exp $
  */
 public class DataFeatureTypesNewForm extends ActionForm {
     String selectedNewFeatureType;
@@ -32,7 +32,7 @@ public class DataFeatureTypesNewForm extends ActionForm {
                                                     .getServletContext()
                                                     .getAttribute(DataConfig.CONFIG_KEY);
 
-        TreeSet out = new TreeSet(dataConfig.getFeatureTypeIdentifiers());
+        TreeSet out = new TreeSet(dataConfig.getFeatureTypeIdentifiers(getServlet().getServletContext()));
         out.removeAll(dataConfig.getFeaturesTypes().keySet());
 
         return out;

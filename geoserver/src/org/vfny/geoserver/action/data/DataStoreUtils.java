@@ -13,25 +13,68 @@ import org.geotools.data.DataStoreFinder;
 import com.vividsolutions.jts.geom.Envelope;
 
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 
 /**
  * A collecitno of utilties for dealing with GeotTools DataStore.
  *
  * @author Richard Gould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.7 2004/02/10 00:35:28 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataStoreUtils.java,v 1.8 2004/03/09 01:37:40 dmzwiers Exp $
  */
 public abstract class DataStoreUtils {
-    public static DataStore aquireDataStore(Map params)
+    public static DataStore aquireDataStore(Map params, ServletContext sc)
         throws IOException {
-        return DataStoreFinder.getDataStore(params);
+    	String baseDir = sc.getRealPath("/");
+        return DataStoreFinder.getDataStore(getParams(params,baseDir));
+    }
+
+    /**
+     * Get Connect params.
+     * <p>
+     * This is used to smooth any relative path kind of issues for any
+     * file URLS. This code should be expanded to deal with any other context
+     * sensitve isses dataStores tend to have.
+     * </p>
+     */
+    protected static Map getParams(Map m, String baseDir){
+    	Map params = new HashMap( m );
+    	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
+    		Map.Entry entry = (Map.Entry) i.next();
+    		String key = (String) entry.getKey();
+    		Object value = entry.getValue();
+    		try {
+	    		if( "url".equals( key ) && value instanceof String ){
+	    			String path = (String) value;
+	    			if( path.startsWith("file:") ){
+	    				path = path.substring( 5 ); // remove 'file:' prefix
+	    				File file = new File( baseDir, path );
+	    				entry.setValue( file.toURL().toExternalForm() );
+	    			}	    			
+	    		}
+	    		else if (value instanceof URL && ((URL)value).getProtocol().equals("file")){
+	    			URL url = (URL) value;
+	    			String path = url.getPath();
+	    			File file = new File( baseDir, path );
+    				entry.setValue( file.toURL() );
+	    		}	    	
+    		}
+    		catch( MalformedURLException ignore ){
+    			// ignore attempt to fix relative paths
+    		}
+    	}
+    	return params;
     }
 
     /**

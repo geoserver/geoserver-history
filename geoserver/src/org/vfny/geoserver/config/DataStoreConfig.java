@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
@@ -26,7 +28,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.7 2004/02/09 23:30:05 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.8 2004/03/09 01:37:40 dmzwiers Exp $
  */
 public class DataStoreConfig {
     /** unique datasore identifier */
@@ -327,8 +329,8 @@ public class DataStoreConfig {
      *
      * @throws IOException If DataStore could not be aquired
      */
-    public DataStore findDataStore() throws IOException {
-        return DataStoreFinder.getDataStore(connectionParams);
+    public DataStore findDataStore(ServletContext sc) throws IOException {
+        return DataStoreUtils.aquireDataStore(connectionParams,sc);
     }
 
     /**

@@ -50,8 +50,8 @@ import javax.servlet.http.HttpServletResponse;
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.12 2004/03/02 02:36:00 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.13 2004/03/09 01:37:40 dmzwiers Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
@@ -71,7 +71,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
                 + DataConfig.SEPARATOR.length());
 
         DataStoreConfig dsConfig = dataConfig.getDataStore(dataStoreID);
-        DataStore dataStore = dsConfig.findDataStore();
+        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
 
         FeatureType featureType = dataStore.getSchema(featureTypeName);
 

@@ -34,8 +34,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.4 2004/03/02 21:53:03 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.5 2004/03/09 01:37:39 dmzwiers Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -143,7 +143,7 @@ public class TypesEditorForm extends ActionForm {
             //
             DataStoreConfig dataStoreConfig = config.getDataStore( dataStoreId );
             try {
-				DataStore dataStore = dataStoreConfig.findDataStore();
+				DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
                 FeatureType featureType = dataStore.getSchema( name );                
                 List generated = DataTransferObjectFactory.generateAttributes( featureType );
                 this.attributes = attribtuesDisplayList( generated );
