@@ -38,10 +38,10 @@ abstract public class Request {
     protected String service;
 
     /** Request type */
-    protected String request = new String();
+    protected String request = "";
 
     /** Request version */
-    protected String version = new String();
+    protected String version = "";
 
     /**
      * ServiceConfig indentifying constructor.
