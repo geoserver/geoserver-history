@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.struts.action.Action;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.config.data.CatalogConfig;
@@ -49,7 +52,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ConfigAction.java,v 1.1.2.1 2004/01/02 19:14:21 jive Exp $
+ * @version $Id: ConfigAction.java,v 1.1.2.2 2004/01/03 22:49:47 jive Exp $
  */
 public class ConfigAction extends Action {
     
@@ -57,7 +60,15 @@ public class ConfigAction extends Action {
         return false;
     }
 
-    public UserContainer getUser( HttpServletRequest request ){
+    /**
+     * Aquire type safe session information in a UserContainer.  
+     * <p>
+     * Please note that the UserContainer may be lazyly created.
+     * </p>
+     * @param request Http Request used to aquire session reference
+     * @return UserContainer containing typesafe session information.
+     */
+    public synchronized UserContainer getUserContainer( HttpServletRequest request ){
         HttpSession session = request.getSession();
         UserContainer user = (UserContainer) request.getAttribute( UserContainer.SESSION_KEY );
         if( user == null ){
@@ -94,8 +105,27 @@ public class ConfigAction extends Action {
      */
     protected WFSConfig getWFSConfig() {
         ServletContext context = getServlet().getServletContext();
-
-        return (WFSConfig) context.getAttribute("GeoServer.WFSConfig");
+        WFSConfig config =
+            (WFSConfig) context.getAttribute("GeoServer.WFSConfig");
+        if( config == null ){
+            config = new WFSConfig();
+            config.setDescribeUrl("http://localhost:8080/wfs");
+            config.getService().setAbstract("Hello Richard? Testing? 1 2 3 Testing?");
+            config.getService().setAccessConstraints("none");
+            config.getService().setEnabled( true );
+            config.getService().setFees("A small fish");
+            List keywords = new ArrayList();
+            keywords.add("GeoServer");
+            keywords.add("Configuration");
+            keywords.add("STRUTS");
+            keywords.add("test");
+            config.getService().setKeywords( keywords );
+            config.getService().setMaintainer("Refractions Research");
+            config.getService().setName("WFS");
+            config.getService().setOnlineResource("http://vwfs.refractions.net/");
+            config.getService().setTitle("Sample WFS Configuration");                        
+        }
+        return config; 
     }
 
     /**

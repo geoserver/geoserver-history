@@ -10,20 +10,20 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
 /**
- * Represents a UserContainer for GeoServer.
+ * Represents a User for GeoServer.
  * <p>
  * Used as a typesafe Session container. This is an alternative
  * to using calls to request.getAttributes( key ) and casting.
  * </p>
  * <p>
- * The User object is saved in session scope by GeoServer: 
+ * The User object is saved in session scope by ConfigAction: 
  * </p>
  * <pre><code>
  * HttpSession session = request.getSession();
- * User user = request.getAttributes( User.SESSION_KEY );
+ * User user = request.getAttributes( UserContainer.SESSION_KEY );
  * if( user == null ){
- *     user = new User( request.getLocal() );
- *     session.setAttributes( User.SESSION_KEY, user );
+ *     user = new UserContainer( request.getLocal() );
+ *     session.setAttributes( UserContainer.SESSION_KEY, user );
  * }
  * </code></pre>
  * 
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpSessionBindingListener;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: UserContainer.java,v 1.1.2.1 2004/01/02 19:14:21 jive Exp $
+ * @version $Id: UserContainer.java,v 1.1.2.2 2004/01/03 22:49:47 jive Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";
