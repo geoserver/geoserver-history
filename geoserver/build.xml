@@ -616,9 +616,25 @@
     
     
     <!-- Copy docbook XSL images into the release docs directory -->
-    <copy todir="${dir.doc}/developer/images">
+    <!--<copy todir="${dir.doc}/developer/images">
         <fileset dir="${dir.doc}/../docbook-xsl/images"/>
-    </copy>
+    </copy>-->
+    
+    <copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
+    <copy todir="${dir.doc}/" file="${dir.doc}/../index.html"/>
+
+    <!-- Convert docbook to html -->
+    <style
+        basedir="${dir.doc}/../"
+        destdir="${dir.doc}/"
+        extension=".html"
+        style="${dir.doc}/../docbook-xsl/html/docbook.xsl"
+        includes="*.xml"
+        processor="trax">
+        <param name="section.autolabel" expression="1"/>
+        <param name="toc.section.depth" expression="4"/>
+    </style>
+    
     <copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
 
     <!-- Convert docbook to html -->
@@ -633,9 +649,9 @@
         <param name="toc.section.depth" expression="4"/>
     </style>
     
-    <copy todir="${dir.doc}/user/images">
+    <!--<copy todir="${dir.doc}/user/images">
         <fileset dir="${dir.doc}/../docbook-xsl/images"/>
-    </copy>
+    </copy>-->
     <copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
 
     <!-- Convert docbook to html -->
@@ -665,10 +681,8 @@
     
     <mkdir dir="${dir.build}"/>
     
-    
-    <unzip src="${basedir}/cite/confUserBasic.zip" dest="${basedir}"/>
     <copy todir="${dir.build}/conf">
-	  <fileset dir="${basedir}/data">
+	  <fileset dir="${basedir}/cite/confUserBasic">
 	    <include name="**/*"/>
 	  </fileset>
     </copy>
@@ -777,7 +791,7 @@
   
   <target name="release-binary" depends="clean">
     <antcall target="build-war">
-      <param name="conf.path" value="${basedir}/cite/confUserBasic.zip"/>
+      <param name="conf.path" value="${basedir}/cite/confUserBasic"/>
     </antcall>
     <copy file="${basedir}/geoserver.war" 
           todir="${dir.release}"/>
