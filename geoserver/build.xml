@@ -111,8 +111,9 @@
     <echo message="    clean:        removes, re-compiles all packages"/>
     <echo message=""/>
     <echo message=" TEST TARGETS"/>
-    <echo message="    unit:         compiles, runs unit tests"/>
+    <echo message="    unit:         compiles, runs unit 1 test"/>
     <echo message="                    -param: test.name=[package.class]"/>
+    <echo message="    unit-all:     compiles and runs all unit tests"/>
     <echo message="    test:         builds and runs the built-in server"/>
     <echo message="    test-clean:   builds clean to built-in server"/>
     <echo message="    test-ext:     builds war to external server"/>
@@ -205,6 +206,24 @@
     </junit>
   </target>
 
+   <target name="unit-all" depends="unit-requests, unit-zserver">
+    <junit fork="false"
+           printsummary="on">
+      <formatter type="plain" usefile="false"/>
+      <sysproperty key="dataFolder" value="${basedir}/tests/unit/testData"/>
+
+      <classpath>
+        <fileset dir="${dir.lib}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+      <test fork="true" 
+            name="org.vfny.geoserver.config.ConfigSuite"/>
+      <test fork="true" 
+            name="org.vfny.geoserver.config.TypeSuite"/>
+    </junit>
+  </target>    
+
   <target name="unit-requests" depends="init, all">
     <javac srcdir="${dir.test}" 
            destdir="${dir.build}" 
@@ -227,13 +246,11 @@
       <test fork="true" 
             name="org.vfny.geoserver.requests.DescribeSuite"/>
   <test fork="true" 
-            name="org.vfny.geoserver.requests.UpdateSuite"/>
+            name="org.vfny.geoserver.requests.TransactionSuite"/>
 <test fork="true" 
             name="org.vfny.geoserver.requests.LockSuite"/>
 <test fork="true" 
             name="org.vfny.geoserver.requests.FeatureSuite"/>
-<test fork="true" 
-            name="org.vfny.geoserver.requests.DeleteSuite"/>
     </junit>
   </target>
 
