@@ -128,20 +128,20 @@
         <action
             path="/Welcome"
             type="org.apache.struts.actions.ForwardAction"
-            parameter="/pages/Welcome.jsp"/>
+            parameter="/WEB-INF/pages/Welcome.jsp"/>
             
         <action
         	path ="/MainMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="/pages/MainMenu.jsp"/>
+        	parameter="/WEB-INF/pages/MainMenu.jsp"/>
         <action
         	path="/SystemConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="/pages/SystemConfigMenu.jsp"/>
+        	parameter="/WEB-INF/pages/SystemConfigMenu.jsp"/>
         <action
         	path="/WFSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="/pages/WFSConfigDescription.jsp"/>
+        	parameter="/WEB-INF/pages/tiletest.jsp"/>
         <action
         	path="/WFSConfigDescriptionSubmit"
         	type="org.vfny.geoserver.action.wfs.WFSDescriptionAction"
@@ -174,7 +174,7 @@
 
 <!-- ================================ Message Resources Definitions -->
 
-    <message-resources parameter="resources.application"/>
+    <message-resources parameter="ApplicationResources"/>
 
 
 <!-- ======================================= Plug Ins Configuration -->

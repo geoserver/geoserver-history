@@ -8,8 +8,8 @@
 		<html:img page="/images/geoserver.gif" alt="GeoServer" width="192"/>
 	</td>
 	<td>
-		<bean:message key="link.wfsConfig"/>
+		<bean:message key="label.wfsConfig"/>
 	</td>
 	<td align="right">
-		<bean:message key="text.login"/> <bean:message key="text.logout"/> <bean:message key="text.help"/>	
+		<bean:message key="label.login"/> <bean:message key="label.logout"/> <bean:message key="label.help"/>	
 	</td>

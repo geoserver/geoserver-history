@@ -11,11 +11,11 @@
 <body bgcolor="white">
 
 <BR>
-	<html:link forward="wfsConfigMenu"><bean:message key="link.wfsConfig"/><BR></html:link>
+	<html:link forward="wfsConfigMenu"><bean:message key="label.wfsConfig"/><BR></html:link>
 <BR>
-	<bean:message key="link.wmsConfig"/><BR>
+	<bean:message key="label.wmsConfig"/><BR>
 <BR>
-	<bean:message key="link.catalogConfig"/><BR>
+	<bean:message key="label.catalogConfig"/><BR>
 
 </body>
 

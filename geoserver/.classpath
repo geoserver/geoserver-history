@@ -51,5 +51,15 @@
     <classpathentry kind="lib" path="lib/catalina/server/lib/warp.jar"/>
     <classpathentry kind="lib" path="lib/catalina/lib/naming-factory.jar"/>
     <classpathentry kind="lib" path="lib/geotools.jar"/>
+    <classpathentry kind="lib" path="lib/commons-beanutils.jar"/>
+    <classpathentry kind="lib" path="lib/commons-collections.jar"/>
+    <classpathentry kind="lib" path="lib/commons-digester.jar"/>
+    <classpathentry kind="lib" path="lib/commons-fileupload.jar"/>
+    <classpathentry kind="lib" path="lib/commons-lang.jar"/>
+    <classpathentry kind="lib" path="lib/commons-logging.jar"/>
+    <classpathentry kind="lib" path="lib/commons-validator.jar"/>
+    <classpathentry kind="lib" path="lib/geoserver.jar"/>
+    <classpathentry kind="lib" path="lib/jakarta-oro.jar"/>
+    <classpathentry kind="lib" path="lib/struts.jar"/>
     <classpathentry kind="output" path="build"/>
 </classpath>
