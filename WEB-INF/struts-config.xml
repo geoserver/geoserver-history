@@ -183,38 +183,38 @@
        		path="/config/data/index.do"/>
        		
        	<forward
-       		name="stores"
+       		name="config.data.stores"
        		path="/config/data/store.do"/>
        	<forward
-       		name="dataConfigDataStoresNewPage"
+       		name="config.data.stores.new"
        		path="/config/data/storesNewPage.do"/>
        	<forward
-       		name="dataConfigDataStoresEditor"
+       		name="config.data.stores.editor"
        		path="/config/data/storesEditor.do"/>
        		
        	<forward
-       		name="namespaces"
+       		name="config.data.namespaces"
        		path="/config/data/namespace.do"/>
        	<forward
-       		name="dataConfigNamespacesSelect"
+       		name="config.data.namespaces.select"
        		path="/config/data/namespacesSelectPage.do"/>
        	<forward
-       		name="dataConfigNamespacesEditorPage"
+       		name="config.data.namespaces.editor"
        		path="/config/data/namespacesEditorPage.do"/>
        	<forward
-       		name="dataConfigNamespacesNewPage"
+       		name="config.data.namespaces.new"
        		path="/config/data/namespacesNewPage.do"/>
       		       		
        	<forward
-       		name="styles"
+       		name="config.data.styles"
        		path="/config/data/style.do"/>
        		
        	<forward
-       		name="types"
+       		name="config.data.types"
        		path="/config/data/featureType.do"/>   
        		
        	<forward
-       		name="calculateBoundingBox"
+       		name="config.data.calculateBoundingBox"
        		path="/config/data/calculateBoundingBox.do"/>      	       		
        		
        	<forward
@@ -244,12 +244,12 @@
             parameter="welcome.contact"/>
                               	       	
 		<action
-			path ="/login"
+			path ="/admin/login"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="welcome.login"/>
+        	parameter="admin.login"/>
 
 		<action        	
-			path ="/logout"
+			path ="/admin/logout"
         	type="org.vfny.geoserver.action.LogoutAction"
         	parameter=""/>
 
@@ -407,7 +407,7 @@
 <!-- Submit Actions -->    
 
 		<action
-			path="/loginSubmit"
+			path="/admin/loginSubmit"
 			type="org.vfny.geoserver.action.LoginAction"
 			name="loginForm"
 			scope="request"
@@ -454,7 +454,7 @@
         	input="config.wms.content"/>
 
         <action
-        	path="/config/data/dataStoresSubmit"
+        	path="/config/data/storesSubmit"
         	type="org.vfny.geoserver.action.data.DataDataStoresEditorAction"
         	name="dataDataStoresEditorForm"
         	scope="request"
@@ -462,7 +462,7 @@
         	input="config.data.dataStores.editor"/>
         	
         <action
-        	path="/config/data/dataStoresSelect"
+        	path="/config/data/storesSelect"
         	type="org.vfny.geoserver.action.data.DataDataStoresSelectAction"
         	name="dataDataStoresSelectForm"
         	scope="request"
@@ -470,7 +470,7 @@
         	input="config.data.dataStores.select"/>
 
         <action
-        	path="/config/data/dataStoresNew"
+        	path="/config/data/storesNew"
         	type="org.vfny.geoserver.action.data.DataDataStoresNewAction"
         	name="dataDataStoresNewForm"
         	scope="request"
