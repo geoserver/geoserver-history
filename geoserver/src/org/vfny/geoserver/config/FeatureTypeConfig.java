@@ -62,7 +62,7 @@ public class FeatureTypeConfig extends BasicConfig {
         NameSpace dsNs = catalog.getNameSpace(dataStoreNS);
 
         if (dsNs == null) {
-            msg = "a feature type named " + getName()
+            msg = "a feature type named " + fTypeRoot //getName()
                 + " has been configured for datastore " + dataStoreNS
                 + " for wich there are no configured namespace";
             throw new ConfigurationException(msg);
@@ -79,15 +79,19 @@ public class FeatureTypeConfig extends BasicConfig {
 
         this.SRS = getChildText(fTypeRoot, "SRS", true);
 
-        try {
-            this.schema = getSchema(getChildElement(fTypeRoot, "attributes"));
-        } catch (IOException ex) {
-            throw new ConfigurationException("Error obtaining schema for "
-                + getName() + ": " + ex.getMessage(), ex);
-        }
+        if (dataStore.isEnabled()) {
+            try {
+                this.schema = getSchema(getChildElement(fTypeRoot, "attributes"));
+            } catch (IOException ex) {
+                throw new ConfigurationException("Error obtaining schema for "
+                    + getName() + ": " + ex.getMessage(), ex);
+            }
 
-        loadStyles(getChildElement(fTypeRoot, "styles"));
-        loadLatLongBBox(getChildElement(fTypeRoot, "latLonBoundingBox"));
+            loadStyles(getChildElement(fTypeRoot, "styles"));
+            loadLatLongBBox(getChildElement(fTypeRoot, "latLonBoundingBox"));
+        } else {
+            LOGGER.info("featureType " + getName() + " is not enabled");
+        }
     }
 
     public FeatureType getSchema() {
@@ -104,6 +108,9 @@ public class FeatureTypeConfig extends BasicConfig {
      * @return DOCUMENT ME!
      */
     public String getName() {
+        //getDataStore().getNameSpace().getPrefix() is causing too many null
+        //pointers on unitialized stuff.  figure out a more elegant way to 
+        //handle this.
         return new StringBuffer(getDataStore().getNameSpace().getPrefix()).append(NameSpace.PREFIX_DELIMITER)
                                                                           .append(super
             .getName()).toString();
@@ -117,6 +124,11 @@ public class FeatureTypeConfig extends BasicConfig {
      * @throws IOException DOCUMENT ME!
      */
     public FeatureSource getFeatureSource() throws IOException {
+        if ((dataStore == null) || (dataStore.getDataStore() == null)) {
+            throw new IOException("featureType: " + super.getName()
+                + " does not have a properly configured " + "datastore");
+        }
+
         return dataStore.getDataStore().getFeatureSource(super.getName());
     }
 
