@@ -40,7 +40,7 @@ import org.vfny.geoserver.responses.Response;
  * response and exception handlers as appropriate.
  * 
  * <p>
- * It is really important to ensure the following workflow:
+ * It is <b>really</b> important to ensure the following workflow:
  * 
  * <ol>
  * <li>
@@ -53,6 +53,9 @@ import org.vfny.geoserver.responses.Response;
  * than just the type names.
  * </li>
  * <li>
+ * Provide the resulting Request with the ServletRequest that generated it 
+ * </li>
+ * <li>
  * get the appropiate ResponseHandler
  * </li>
  * <li>
@@ -63,6 +66,9 @@ import org.vfny.geoserver.responses.Response;
  * </li>
  * <li>
  * write to the http response's output stream
+ * </li>
+ * <li>
+ * pending - call Response cleanup
  * </li>
  * </ol>
  * </p>
@@ -89,7 +95,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.3.2.6 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.3.2.7 2004/01/06 09:59:16 jive Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -288,7 +294,9 @@ public abstract class AbstractService extends HttpServlet {
 
             return;
         }
-
+		LOGGER.finer("serviceRequest provided with HttpServletRequest: " + request);
+		serviceRequest.setHttpServletRequest( request );
+		
         try {
             LOGGER.finer("response handler is: " + serviceResponse);
 
@@ -743,7 +751,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.3.2.6 $
+ * @version $Revision: 1.3.2.7 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

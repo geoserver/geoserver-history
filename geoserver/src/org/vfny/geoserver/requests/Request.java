@@ -21,16 +21,13 @@ import org.vfny.geoserver.global.GeoServer;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.5.2.4 2004/01/06 09:49:29 jive Exp $
+ * @version $Id: Request.java,v 1.5.2.5 2004/01/06 09:59:17 jive Exp $
  */
 abstract public class Request {
 	/**
-	 * Servlet Request responsible for generating this GeoServer Request.
-	 * <p>
-	 * For all current GeoServer requests this may be safely cast to an HttpServletRequest. 
-	 * </p>
+	 * HttpServletRequest responsible for generating this GeoServer Request.
 	 */
-	protected ServletRequest servletRequest;
+	protected HttpServletRequest httpServletRequest;
 	
     /**
      * Request service
@@ -170,19 +167,10 @@ abstract public class Request {
 	 * <p>
 	 * This method is called by AbstractServlet during the processing of a Request.
 	 * </p>
-	 * @return Returns the servletRequest.
-	 */
-	public ServletRequest getServletRequest() {
-		return servletRequest;
-	}
-	/**
-	 * Convience method casting getServletRequest() into a HttpServletRequest.
-	 *  
-	 * @return Returns the servletRequest as an HttpServletRequest
-	 * @throws ClassCastException If the servletRequest is not an HttpServletRequest
+	 * @return The HttpServletRequest responsible for generating this SerivceRequest
 	 */
 	public HttpServletRequest getHttpServletRequest() throws ClassCastException {
-		return (HttpServletRequest) getServletRequest();
+		return httpServletRequest;
 	}
 	/**
 	 * Convience method for accessing GeoServer from the Web Container.
@@ -216,8 +204,8 @@ abstract public class Request {
 	 * </p>
 	 * @param servletRequest The servletRequest to set.
 	 */
-	public void setServletRequest(ServletRequest servletRequest) {
-		this.servletRequest = servletRequest;
+	public void setHttpServletRequest(HttpServletRequest servletRequest) {
+		httpServletRequest = servletRequest;
 	}
 
 }
