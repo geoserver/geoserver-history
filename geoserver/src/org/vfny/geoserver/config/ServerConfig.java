@@ -50,13 +50,14 @@ public class ServerConfig {
     private ServerConfig(String rootDir) throws ConfigurationException {
         this.rootDir = rootDir;
 
+	//TODO: change these to META-INF.
         String configFile = rootDir + "services.xml";
         String catalogFile = rootDir + "catalog.xml";
-
+	
         Element configElem = loadConfig(configFile);
         Element catalogElem = loadConfig(catalogFile);
-
-        load(configElem, catalogElem);
+	String featureTypeDir = rootDir + "featureTypes";
+        load(configElem, catalogElem, featureTypeDir);
     }
 
     /**
@@ -131,7 +132,7 @@ public class ServerConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private static Element loadConfig(String configFile)
+    public static Element loadConfig(String configFile)
         throws ConfigurationException {
         try {
             LOGGER.fine("loading configuration file " + configFile);
@@ -172,7 +173,8 @@ public class ServerConfig {
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private void load(Element configElem, Element catalogElement)
+    private void load(Element configElem, Element catalogElement, 
+		      String featureTypeDir)
         throws ConfigurationException {
         LOGGER.fine("parsing configuration documents");
 
@@ -199,7 +201,7 @@ public class ServerConfig {
             }
         }
 
-        catalog = new CatalogConfig(catalogElement);
+        catalog = new CatalogConfig(catalogElement, featureTypeDir);
     }
 
     /**
