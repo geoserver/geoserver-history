@@ -5,11 +5,16 @@
 package org.vfny.geoserver.global.xml;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateList;
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -24,44 +29,80 @@ import com.vividsolutions.jts.geom.Polygon;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: GMLUtils.java,v 1.2 2004/01/14 09:59:51 jive Exp $
+ * @version $Id: GMLUtils.java,v 1.3 2004/01/14 11:34:04 jive Exp $
  */
 public class GMLUtils {
-    public static final Mapping DECIMAL = new Mapping("xs:decimal",BigDecimal.class );
-    public static final Mapping INTEGER = new Mapping("xs:integer",Integer.class );    
-    public static final Mapping NEGATIVEINTERGER = new Mapping("xs:negativeInteger",Integer.class );
-    public static final Mapping POSTIVEINTEGER = new Mapping("xs:positiveInteger", Integer.class );
-    public static final Mapping LONG = new Mapping("xs:long", Long.TYPE );
-    public static final Mapping INT = new Mapping("xs:int", Integer.TYPE );    
-    public static final Mapping SHORT = new Mapping("xs:short", Short.TYPE);
-    public static final Mapping BYTE = new Mapping("xs:byte", Byte.TYPE );
-    public static final Mapping UNSIGNEDLONG = new Mapping("xs:unsignedLong", Long.TYPE );
-    public static final Mapping UNSIGNEDSHORT = new Mapping("xs:unsignedShort", Short.TYPE );    
-    public static final Mapping UNSIGNEDINT = new Mapping("xs:unsignedInt", Integer.TYPE );
-    public static final Mapping UNSIGNEDBYTE = new Mapping("xs:unsginedByte", Byte.TYPE );    
-    public static final Mapping FLOAT = new Mapping("xs:float", Float.TYPE );    
-    public static final Mapping DOUBLE = new Mapping("xs:double", Double.TYPE );
-    public static final Mapping DATE = new Mapping("xs:date", Date.class );    
-    public static final Mapping DATETIME = new Mapping("xs:dateTime" );
-    public static final Mapping DURATION = new Mapping("xs:duration" );
-    public static final Mapping GTYPE = new Mapping("xs:gDay" );
-    public static final Mapping GMONTH = new Mapping("xs:gMonth" );
-    public static final Mapping GMONTHDAY = new Mapping("xs:gMonthData" );
-    public static final Mapping GYEAR = new Mapping("xs:gYear" );
-    public static final Mapping GYEARMONTH = new Mapping("xs:gYearMonth" );
-    public static final Mapping TIME = new Mapping("xs:time" );
-    public static final Mapping ID = new Mapping("xs:ID" );
-    public static final Mapping IDREF = new Mapping("xs:IDREF" );
-    public static final Mapping ENTITY = new Mapping("xs:ENTITY" );
-    public static final Mapping ENTITIES = new Mapping("xs:ENTITIES" );
-    public static final Mapping NMTOKEN = new Mapping("xs:NMTOKENS" );
-    public static final Mapping NOTATION = new Mapping("xs:NOTATION" );
-    public static final Mapping STRING = new Mapping("xs:string" );
-    public static final Mapping NORMALIZEDSTRING = new Mapping("xs:normalizedString" );
-    public static final Mapping TOKEN = new Mapping("xs:token" );    
-    public static final Mapping QNAME = new Mapping("xs:QName" );
-    public static final Mapping NAME = new Mapping("xs:Name" );
-    public static final Mapping NCNAME = new Mapping("xs:NCName" );
+    /** Mapping by schema */
+    static private Map mapSchema = new HashMap();
+    
+    /** Mapping by type */
+    static private Map mapType = new HashMap();
+    
+    /** Mapping by propertyName */
+    static private Map mapPropertyTypes = new HashMap();
+    
+    /** Create a new maping */
+    static Mapping map( String schema ){
+        return map( schema, String.class, false );
+    }
+    /** Create a new maping */
+    static Mapping map( String schema, Class type ){
+        return map( schema, String.class, false );
+    }    
+    /** Create a new maping */
+    static Mapping define( String schema, Class type ){
+        return map( schema, String.class, true );
+    }    
+    /** Create new mapping */
+    static Mapping map( String schema, Class type, boolean define ){
+        Mapping mapping = new Mapping( schema, type );
+        mapSchema.put( schema, mapping );
+        if( define ){
+            mapType.put( type, mapping );
+        }
+        if( schema.endsWith("PropertyType")){
+            String property =
+                schema.substring(0, schema.length()-12);
+            mapPropertyTypes.put( property, mapping );
+        }
+        return mapping;
+    }
+    public static final Mapping DECIMAL = define("xs:decimal",BigDecimal.class );
+    public static final Mapping INTEGER = define("xs:integer",BigInteger.class );    
+    public static final Mapping NEGATIVEINTERGER = map("xs:negativeInteger",Integer.class );
+    public static final Mapping POSTIVEINTEGER = map("xs:positiveInteger", Integer.class );
+    public static final Mapping LONG = define("xs:long", Long.class );
+    public static final Mapping INT = define("xs:int", Integer.class );    
+    public static final Mapping SHORT = define("xs:short", Short.class);
+    public static final Mapping BYTE = define("xs:byte", Byte.class );
+    public static final Mapping UNSIGNEDLONG = map("xs:unsignedLong", Long.class );
+    public static final Mapping UNSIGNEDSHORT = map("xs:unsignedShort", Short.class );    
+    public static final Mapping UNSIGNEDINT = map("xs:unsignedInt", Integer.class );
+    public static final Mapping UNSIGNEDBYTE = map("xs:unsginedByte", Byte.class );    
+    public static final Mapping FLOAT = define("xs:float", Float.class );    
+    public static final Mapping DOUBLE = define("xs:double", Double.class );
+    public static final Mapping DATE = map("xs:date", Date.class );    
+    public static final Mapping DATETIME = map("xs:dateTime" );
+    public static final Mapping DURATION = map("xs:duration" );
+    public static final Mapping GTYPE = map("xs:gDay" );
+    public static final Mapping GMONTH = map("xs:gMonth" );
+    public static final Mapping GMONTHDAY = map("xs:gMonthData" );
+    public static final Mapping GYEAR = map("xs:gYear" );
+    public static final Mapping GYEARMONTH = map("xs:gYearMonth" );
+    public static final Mapping TIME = map("xs:time" );
+    public static final Mapping ID = map("xs:ID" );
+    public static final Mapping IDREF = map("xs:IDREF" );
+    public static final Mapping ENTITY = map("xs:ENTITY" );
+    public static final Mapping ENTITIES = map("xs:ENTITIES" );
+    public static final Mapping NMTOKEN = map("xs:NMTOKENS" );
+    public static final Mapping NOTATION = map("xs:NOTATION" );
+    public static final Mapping STRING = define("xs:string", String.class );
+    public static final Mapping NORMALIZEDSTRING = map("xs:normalizedString" );
+    public static final Mapping TOKEN = map("xs:token" );    
+    public static final Mapping QNAME = map("xs:QName" );
+    public static final Mapping NAME = map("xs:Name" );
+    public static final Mapping NCNAME = map("xs:NCName" );
+    
     
     private static final String[] xmlSchemaTypes = {
         "decimal","integer","negativeInteger","nonNegativeInteger",
@@ -73,27 +114,25 @@ public class GMLUtils {
         "NOTATION", "string", "normalizedString", "token", "QName", "Name",
         "NCName"
     };
-    public static final Mapping TYPE = new Mapping("gml:type" );
-    
-    public static final Mapping POINTTYPE = new Mapping("gml:PointType", Point.class );
-    public static final Mapping LINESTRINGTYPE = new Mapping("xs:LineStringType", LineString.class );
-    public static final Mapping LINEARRINGTYPE = new Mapping("gml:LinearRingType", LinearRing.class );    
-    public static final Mapping BOXTYPE = new Mapping("gml:BoxType", Envelope.class );
-    public static final Mapping POLYGONTYPE = new Mapping("gml:PolygonType", Polygon.class );
-    public static final Mapping GEOMETRYCOLLECTIONTYPE = new Mapping("gml:GeometryCollectionType", GeometryCollection.class );    
-    public static final Mapping MULTIPOINTTYPE= new Mapping("gml:MultiPointType", MultiPoint.class );
-    public static final Mapping MULTILINESTRINGTYPE = new Mapping("gml:MultiLineString", MultiLineString.class );
-    public static final Mapping MULTIPOLYGONTYPE = new Mapping("gml:MultiPolygonType", MultiPolygon.class );
-    public static final Mapping COORDTYPE = new Mapping("gml:CoordType", Coordinate.class );
-    public static final Mapping COORDINATESTYPE = new Mapping("gml:CoordinatesType", CoordinateList.class );
-    public static final Mapping POINTPROPERTYTYPE = new Mapping("gml:PointPropertyType", Point.class ); // named
-    public static final Mapping POLYGONPROPERTYTYPE = new Mapping( "gml:PolygonPropertyType", Polygon.class ); // named
-    public static final Mapping LINESTRINGPROPERTYTYPE = new Mapping("gml:LineStringPropertyType", LineString.class ); // named
-    public static final Mapping MULTIPOINTPROPERTYTYPE = new Mapping("gml:MultiPointPropertyType", MultiPoint.class ); // named
-    public static final Mapping MULTILINESTRING = new Mapping("gml:type" );
-    
-    
-    
+    public static final Mapping POINTTYPE = define("gml:PointType", Point.class );
+    public static final Mapping LINESTRINGTYPE = define("xs:LineStringType", LineString.class );
+    public static final Mapping LINEARRINGTYPE = define("gml:LinearRingType", LinearRing.class );    
+    public static final Mapping BOXTYPE = define("gml:BoxType", Envelope.class );
+    public static final Mapping POLYGONTYPE = define("gml:PolygonType", Polygon.class );
+    public static final Mapping GEOMETRYCOLLECTIONTYPE = define("gml:GeometryCollectionType", GeometryCollection.class );    
+    public static final Mapping MULTIPOINTTYPE= define("gml:MultiPointType", MultiPoint.class );
+    public static final Mapping MULTILINESTRINGTYPE = define("gml:MultiLineString", MultiLineString.class );
+    public static final Mapping MULTIPOLYGONTYPE = define("gml:MultiPolygonType", MultiPolygon.class );
+    public static final Mapping COORDTYPE = define("gml:CoordType", Coordinate.class );
+    public static final Mapping COORDINATESTYPE = define("gml:CoordinatesType", CoordinateList.class );
+    public static final Mapping POINTPROPERTYTYPE = map("gml:PointPropertyType", Point.class ); // named
+    public static final Mapping POLYGONPROPERTYTYPE = map( "gml:PolygonPropertyType", Polygon.class ); // named
+    public static final Mapping LINESTRINGPROPERTYTYPE = map("gml:LineStringPropertyType", LineString.class ); // named
+    public static final Mapping MULTIPOINTPROPERTYTYPE = map("gml:MultiPointPropertyType", MultiPoint.class ); // named
+    public static final Mapping MULTILINESTRINGPROPERTYTYPE = map("gml:MultiLineStringPropertyType", MultiLineString.class ); // named
+    public static final Mapping MULTIPOLYGONPROPERTYTYPE = map("gml:MultiPolygonPropertyType", MultiPolygon.class );
+    public static final Mapping MULTIGEOMETRYPROPERTYTYPE = map("gml:MultiGeometryPropertyType", GeometryCollection.class );
+    public static final Mapping NULLTYPE = map("gml:NullType", Void.TYPE );
     
     private static final String[] gmlTypes = {
         "PointType", "LineStringType", "LinearRingType", "BoxType",
@@ -104,6 +143,23 @@ public class GMLUtils {
         "MultiLineStringPropertyType", "MultiPolygonPropertyType",
         "MultiGeometryPropertyType", "NullType"
     };
+    public static final Mapping ABSTRACT = map("gml:Abstract" );
+    
+    public static final Mapping ABSTRACTFEATURETYPE = map("gml:AbstractFeatureType" );
+    public static final Mapping ABSTRACTFEATURECOLLECTION = map("gml:AbstractFeatureCollectionBaseType" );
+    public static final Mapping ABSTRACTFEATURECOLLECTIONTYPE = map("gml:AbstractFeatureCollectionType" );
+    public static final Mapping GEOMETRYPROPERTYTYPE = map("gml:GeometryPropertyType" );
+    public static final Mapping FEATUREASSOCIATIONTYPE = map("gml:FeatureAssociationType" );
+    public static final Mapping BOUNDINGSHAPETYPE = map("gml:BoundingShapeType" );
+    public static final Mapping ABSTRACTGEOMETRYTYPE = define("gml:AbstractGeometryType", Geometry.class );    
+    public static final Mapping ABSTRACTGEOMETRYCOLLECTIONBASETYPE = map("gml:AbstractGeometryCollectionBaseType" );    
+    public static final Mapping ASSOCIATIONATTRIBUTEGROUP = map("gml:AssociationAttributeGroup" );
+    public static final Mapping GEOMETRYASSOCIATIONTYPE = map("gml:GeometryAssociationType" );    
+    public static final Mapping POINTMEMBERTYPE = map("gml:PointMemberType" );
+    public static final Mapping LINESTRINGMEMBERTYPE = map("gml:LineStringMemberType" );    
+    public static final Mapping POLYGONMEMBERTYPE = map("gml:PolygonMemberType" );
+    public static final Mapping LINEARRINGMEMBERTYPE = map("gml:LinearRingMemberType" );    
+    
     private static final String[] baseGmlTypes = {
         "AbstractFeatureType", "AbstractFeatureCollectionBaseType",
         "AbstractFeatureCollectionType", "GeometryPropertyType",
@@ -114,8 +170,67 @@ public class GMLUtils {
     };
 
     private GMLUtils() {
+        
     }
-
+    /**
+     * Mapping for xmlSchema or null.
+     * @param xmlSchema xmlSchema 
+     * @return Mapping for xmlSchema
+     */
+    public Mapping type( String xmlSchema ){
+       return  (Mapping) mapSchema.get( xmlSchema );        
+    }
+    /**
+     * Mapping for type or null
+     * <p>
+     * May make use of property types if name and exact type match
+     * the one of the gml properties.
+     * </p>
+     * <p>
+     * If not one of the schema for defined types are checked.
+     * </p>
+     * <p>
+     * If not a linear seach of the defined types is made
+     * making use of isAssignable.
+     * </p>
+     * <p>
+     * Finally all mappings are consulted using using a linear search
+     * </p>
+     * 
+     * @param type Type to look up schema for
+     * @return Mapping for type or null
+     */
+    public static Mapping schema( String name, Class type ){
+        Mapping mapping;        
+        if( mapPropertyTypes.containsKey( name )){
+            mapping = (Mapping) mapPropertyTypes.get( name );
+            if( mapping.type == type ){
+                return mapping;
+            }            
+        }
+        mapping = (Mapping) mapType.get( type );
+        if( mapping != null ) return mapping;
+        for( Iterator i=mapType.values().iterator(); i.hasNext();){
+            mapping = (Mapping) i.next();
+            if( mapping.type.isAssignableFrom( type )){
+                return mapping;
+            }
+        }
+        for( Iterator i=mapSchema.values().iterator(); i.hasNext();){
+            mapping = (Mapping) i.next();
+            if( mapping.type == type ){
+                return mapping;
+            }
+        }        
+        for( Iterator i=mapSchema.values().iterator(); i.hasNext();){
+            mapping = (Mapping) i.next();
+            if( mapping.type.isAssignableFrom( type )){
+                return mapping;
+            }
+        }
+        return null;
+    }
+    
     public static boolean isXMLSchemaElement(String s) {
         return search(xmlSchemaTypes, s);
     }
@@ -184,7 +299,7 @@ public class GMLUtils {
      * 
      * @author jgarnett, Refractions Research, Inc.
      * @author $Author: jive $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.2 2004/01/14 09:59:51 jive Exp $
+     * @version $Id: GMLUtils.java,v 1.3 2004/01/14 11:34:04 jive Exp $
      */
     public static class Mapping {
         public final String prefix;
@@ -198,6 +313,9 @@ public class GMLUtils {
             this.prefix = split[0];
             this.schema = split[1];
             this.type = type;
+        }
+        public String toString() {
+            return prefix+":"+schema;
         }
     }
     
