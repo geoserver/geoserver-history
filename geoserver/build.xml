@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- ====================================================================== -->
+<!-- GeoServer BUILD FILE                                                   -->
+<!-- Copyright TOPP 2002                                                    -->
+<!-- This build file is licensed under the GPL v2.0                         -->
+<!-- You do not need to modify any values for this build file to work.      -->
+<!-- For convenience, you may modify the 'external directories' variables   -->
+<!-- under the PROPERTIES section.                                          -->
+<!-- ====================================================================== -->
 
-<!-- =============================================== -->
-<!-- GeoServer BUILD FILE  -->
-<!-- Copyright VFNY 2002 -->
-<!-- This build file is licensed under the GPL v2.0 -->
-<!-- If you are would like to build this project on your machine, you must: -->
-<!-- (1) Modify ${dir.test}, ${dir.release} and ${dir.nightly} for your machine -->
-<!-- (2) Install a servlet container, if you would like to test your changes -->
-<!-- =============================================== -->
-
-
-<project name="wfs" default="help" basedir=".">
-<!-- =============================================== -->
-<!-- PROPERTIES                                      -->
-<!-- =============================================== -->
-
+<project name="geoserver" default="help" basedir=".">
+<!-- ====================================================================== -->
+<!-- PROPERTIES                                                             -->
+<!-- ====================================================================== -->
   <!-- primary directories -->
-  <property name="dir.main" value="."/>
-  <property name="dir.bin" value="${dir.main}/bin"/>
-  <property name="dir.build" value="${dir.main}/build"/>
-  <property name="dir.doc" value="${dir.main}/doc"/>
-  <property name="dir.lib" value="${dir.main}/lib"/>
-  <property name="dir.misc" value="${dir.main}/misc"/>
-  <property name="dir.server" value="${dir.main}/server"/>
-  <property name="dir.src" value="${dir.main}/src"/>
-  <property name="dir.tests" value="/usr/local/resin-2.1.4/webapps"/>
+  <property name="dir.bin" value="${basedir}/bin"/>
+  <property name="dir.build" value="${basedir}/build"/>
+  <property name="dir.doc" value="${basedir}/doc"/>
+  <property name="dir.lib" value="${basedir}/lib"/>
+  <property name="dir.misc" value="${basedir}/misc"/>
+  <property name="dir.server" value="${basedir}/server"/>
+  <property name="dir.src" value="${basedir}/src"/>
+  <property name="dir.test" value="${basedir}/test"/>
 
   <!-- secondary directories -->
   <property name="dir.jsp" value="${dir.misc}/jsp"/>
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
   <property name="dir.data" value="${dir.misc}/testData"/>
-  <property name="dir.nightly" value="${dir.main}/release/nightly"/>
-  <property name="dir.release" value="${dir.main}/release/stable"/>
-  <property name="dir.testsJar" value="${dir.main}/webapps/ROOT/WEB-INF/lib"/>
+  <property name="dir.testsJar" 
+  value="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
+  <property name="dir.testApp" value="${dir.server}/webapps/ROOT/WEB-INF"/>
   <property name="dir.catalina" value="${dir.lib}/catalina"/>
+
+  <!-- external directories -->
+  <property name="dir.container" value="/usr/local/resin-2.1.4/webapps"/>
+  <property name="dir.geotools" 
+            value="/home/rob/wfs/geotools/geotools2/geotools-src"/>
 
   <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
@@ -46,15 +47,12 @@
   <property name="jar.jts" value="${dir.lib}/jts-1.0.0.jar"/>
 
   <!-- paths -->
-  <path id="path.libraries">
-    <fileset dir="${dir.lib}" includes="**/*.jar"/>
+  <path id="path.lib">
+    <fileset dir="${dir.lib}">
+      <include name="*.jar"/>
+      <exclude name="geoserver.jar"/>
+    </fileset>
   </path>
-  <path id="path.requests" path="${dir.build}:${jar.jaxb}:${jar.xerces}:${jar.servlet}:${jar.log}"/>
-  <path id="path.config" path="${dir.build}:${jar.log}:${jar.castor}"/>
-  <path id="path.db" path="${dir.build}:${jar.xerces}:${jar.jaxb}:${jar.log}:${jar.jts}"/>
-  <path id="path.servlets" path="${dir.build}:${jar.jaxb}:${jar.servlet}:${jar.xerces}:${jar.log}:${jar.jdbcPostgres}"/>
-  <path id="path.all" path="${jar.geoserver}:${jar.xerces}:${jar.servlet}:${jar.log}:${jar.jdbcPostgres}:${jar.castor}:${jar.jts}"/>
-  <path id="path.test" path="${jar.geoserver}:${jar.xerces}:${jar.servlet}:${jar.log}:${jar.jdbcPostgres}:${jar.castor}:${jar.jts}:${dir.build}"/>
   <path id="path.catalina">
     <fileset dir="${dir.catalina}" includes="embedded.jar"/>
     <fileset dir="${dir.catalina}/bin" includes="bootstrap.jar"/>
@@ -67,7 +65,8 @@
     <fileset dir="${dir.catalina}/server/lib" includes="servlets-snoop.jar"/>
     <fileset dir="${dir.catalina}/server/lib" includes="servlets-ssi.jar"/>
     <fileset dir="${dir.catalina}/server/lib" includes="servlets.webdav.jar"/>
-    <fileset dir="${dir.catalina}/server/lib" includes="jakarta-regexp-1.2.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" 
+             includes="jakarta-regexp-1.2.jar"/>
     <fileset dir="${dir.catalina}/server/lib" includes="tomcat-ajp.jar"/>
     <fileset dir="${dir.catalina}/server/lib" includes="tomcat-util.jar"/>
     <fileset dir="${dir.catalina}/lib" includes="naming-factory.jar"/>
@@ -82,148 +81,72 @@
     <fileset dir="${dir.catalina}/common/lib" includes="tools.jar"/>
     <fileset dir="${dir.catalina}/common/lib" includes="log4j.jar"/>
   </path>
+  <path id="path.build">
+    <path refid="path.lib"/>
+    <path refid="path.catalina"/>
+    <fileset dir="${dir.build}">
+      <include name="**"/>
+    </fileset>
+    <fileset dir="${dir.build}">
+      <include name="org/vfny/geoserver/requests/GetCapabilitiesSuite.class"/>
+    </fileset>
+  </path>
 
-  <!-- names -->
-  <property name="name.release" value="0.9.00"/>
-
-<!-- =============================================== -->
-<!-- HELP / INDEX OF TARGETS                         -->
-<!-- =============================================== -->
+<!-- ====================================================================== -->
+<!-- HELP / INDEX OF TARGETS                                                -->
+<!-- ====================================================================== -->
   <target name="help">
     <echo message="GeoServer Build File..."/>
-    <echo message="Copyright Vision For New York (www.vfny.org), 2002"/>
-    <echo message="Licensed under the GPL v2.0"/>
     <echo message=""/>
-    <echo message=" ADMIN TARGETS"/>
-    <echo message="    startup:      makes sure that all tasks are "/>
-    <echo message="    commit:       commits all changes"/>
-    <echo message=""/>
-    <echo message=" BASIC TARGETS"/>
-    <echo message="    config:       compiles configuration package"/>
-    <echo message="    db:           compiles all database packages"/>
-    <echo message="    embedded:     compiles embedded server classes"/>
-    <echo message="    requests:     generates and compiles all request classes"/>
-    <echo message="    responses:    generates and compiles all response classes"/>
-    <echo message="    servlets:     compiles servlet package"/>
-    <echo message=""/>
-    <echo message=" INTERMEDIATE TARGETS"/>
-    <echo message="    all:          compiles all application packages"/>
-    <echo message="    clean:        removes, then re-compiles all application packages"/>
-    <echo message="    delete:       deletes all class files"/>
-    <echo message="    document:     generates all javadocs for project"/>
-    <echo message="    jar:          builds jar file and puts in deploy directory"/>
-    <echo message="    jarGeotools:  builds the GeoTools jar file and puts in deploy directory"/>
+    <echo message=" COMPILATION TARGETS"/>
+    <echo message="    init:         initializes build process"/>
+    <echo message="    all:          compiles all packages"/>
+    <echo message="    clean:        removes, re-compiles all packages"/>
     <echo message=""/>
     <echo message=" TEST TARGETS"/>
-    <echo message="    test:         stops the server, builds the entire app and copies to server, starts server "/>
-    <echo message="    jarTest:      builds and copies geoserver.jar to the test server (specified with -Ddir.tests=X, where X is full server path)"/>
-    <echo message="    warTest:      builds a test version of the geoserver.war to the test server (specified with -Ddir.tests=X, where X is full server path)"/>
+    <echo message="    unit:         compiles, runs unit tests"/>
+    <echo message="    unit-req:     compiles, runs request unit tests"/>
+    <echo message="    unit-res:     compiles, runs response unit tests"/>
+    <echo message="    test:         builds all classes to server, runs"/>
+    <echo message="    test-clean:   builds clean to server, runs server"/>
+    <echo message="    test-ext:     builds war to external server"/>
+    <echo message="                    -param: dir.container=[server_path]"/>
     <echo message=""/>
     <echo message=" BUILD TARGETS"/>
+    <echo message="    war:          builds geoserver war file"/>
+    <echo message="    document:     generates all javadocs for project"/>
     <echo message="    nightly:      puts up the nightly build"/>
-    <echo message="    war:          builds production version of the war file"/>
     <echo message="    release:      makes a full release build"/>
+    <echo message="                    -param: name.release=[release]"/>
+    <echo message=""/>
+    <echo message=" ADMIN TARGETS"/>
+    <echo message="    fix-tabs:     turns all tabs into 4 spaces"/>
+    <echo message="    cvs-checkout: checks out source from server, refresh"/>
+    <echo message="    cvs-commit:   commits all changes"/>
+    <echo message="    geotools:     builds, deploys the geotools jar"/>
+    <echo message="                    -param: dir.geotools=[geotools_path]"/>
     <echo message=""/>
     <echo message=" Examples..."/>
-    <echo message="    ant warTest -Ddir.tests=/usr/local/resin-2.0.4/webapps (copy war to specified test directory)"/>
-    <echo message="    ant setup (setup initial directories)"/>
-    <echo message="    ant release"/>
+    <echo message="    ant test-ext -Ddir.container=/usr/local/resin/webapps"/>
+    <echo message="    ant all"/>
   </target>
 
-<!-- =============================================== -->
-<!-- ADMIN TARGETS                                   -->
-<!-- =============================================== -->
+<!-- ====================================================================== -->
+<!-- COMPILATION TARGETS                                                    -->
+<!-- ====================================================================== -->
 
-
-<!-- =============================================== -->
-<!-- BASIC TARGETS                                   -->
-<!-- =============================================== -->
-
-<!-- INITIALIZE -->
+<!-- INITIALIZE                                                             -->
   <target name="init">
-    <!-- time/date -->
     <tstamp><format property="date.current" pattern="MM.dd.yyyy"/></tstamp>
   </target>
 
-<!-- EMBEDDED -->
-  <target name="embedded" depends="init">
-    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/EmbeddedTomcat.java" classpathref="path.libraries"/>
-  </target>
-
-
-<!-- RESPONSES -->
-  <target name="responses" depends="init">
-    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/responses/**" classpathref="path.libraries"/>
-  </target>
-
-<!-- REQUESTS -->
-  <target name="requests" depends="init">
-    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/requests/**" classpathref="path.libraries"/>
-  </target>
-
-<!-- CONFIGURATION -->
-  <target name="config" depends="init">
-    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/config/**" classpathref="path.libraries"/>
-  </target>
-    
-<!-- DATABASE -->
-  <target name="db" depends="init">
-    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/db/**" deprecation="on" classpathref="path.libraries"/>
-  </target>
-
-<!-- SERVLETS -->
-  <target name="servlets" depends="init">
-    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="org/vfny/geoserver/servlets/**" classpathref="path.libraries" deprecation="on"/>
-  </target>
-
-<!-- RUN UNIT TESTS -->
-  <target name="tests" depends="init">
-    <javac srcdir="${dir.main}/tests" destdir="${dir.build}" includes="org/vfny/geoserver/**" classpathref="path.libraries" deprecation="on"/>
-    <junit fork="true" printsummary="withOutAndErr">
-      <formatter type="plain" usefile="false"/>
-      <sysproperty key="dataFolder" value="${basedir}/tests/unit/testData"/>
-      <classpath>
-        <pathelement path="${dir.build}"/>
-        <pathelement path="${jar.log}"/>
-        <pathelement path="${jar.geotools}"/>
-        <pathelement path="${jar.geoserver}"/>
-        <pathelement path="${jar.servlet}"/>
-        <pathelement path="${jar.xerces}"/>
-        <pathelement path="${jar.jdbcPostgres}"/>
-        <pathelement path="${jar.castor}"/>
-        <pathelement path="${jar.jts}"/>
-      </classpath>
-      <test fork="false" name="org.vfny.geoserver.requests.GetFeatureRequestXmlSuite"/>
-    </junit>
-  </target>
-
-
-<!-- =============================================== -->
-<!-- INTERMEDIATE TARGETS                            -->
-<!-- =============================================== -->
-
-<!-- JAR -->
-<!-- builds geoserver jar -->
-  <target name="jarGeotools" depends="init">
-    <delete file="${dir.lib}/geotools.jar" failonerror="true"/>
-    <jar jarfile="${dir.lib}/geotools.jar"
-         whenempty="fail">
-      <fileset dir="${dir.main}/../geotools/geotools2/geotools-src/core/src/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.main}/../geotools/geotools2/geotools-src/defaultcore/src/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.main}/../geotools/geotools2/geotools-src/filter/src/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.main}/../geotools/geotools2/geotools-src/postgis/src/"
-               includes="**/*.class"/>
-    </jar>
-  </target>
-
-
-
-<!-- JAR -->
-<!-- builds geoserver jar -->
-  <target name="jar" depends="init">
+<!-- ALL                                                                    -->
+  <target name="all" depends="init">
+    <javac srcdir="${dir.src}" 
+           destdir="${dir.build}" 
+           includes="**" 
+           classpathref="path.build"
+           deprecation="off"/>
     <jar jarfile="${dir.lib}/geoserver.jar">
       <fileset dir="${dir.build}">
         <exclude name="**/servlets/*" />
@@ -232,128 +155,136 @@
     </jar>
   </target>
 
-<!-- Embedded Server JAR -->
-<!-- builds geoserver jar -->
-  <target name="embeddedJar" depends="init, embedded">
-    <jar jarfile="${dir.catalina}/embedded.jar">
-      <fileset dir="${dir.build}">
-        <exclude name="**/org/*" />
-        <include name="**/Geoserver.class" />
-        <include name="**/EmbeddedTomcat.class" />
-      </fileset>
-    </jar>
-  </target>
-
-<!-- DELETE JAR -->
-<!-- deletes geoserver jar; use with caution due to dependencies -->
-  <target name="deleteJar" depends="init">
-    <delete file="${dir.lib}/geoserver.jar" failonerror="true"/>
-  </target>
-
-<!-- DOCUMENTATION -->
-<!-- generates all project documentation -->
-  <target name="document" depends="init">
-    <javadoc sourcepath="${dir.main}/source"
-        destdir="${dir.doc}/api"
-        private="true"
-        windowtitle="GeoServer Documentation"
-        classpath="${jar.jaxb}:${jar.servlet}:${jar.xerces}:${jar.log}:${jar.jdbcPostgres}:${jar.castor}:${jar.jts}"
-        stylesheetfile="${dir.misc}/documents/stylesheet.css">
-      <package name="org.vfny.geoserver.*"/>
-      <doctitle><![CDATA[<h1>GeoServer Documentation</h1>]]></doctitle>
-      <bottom><![CDATA[<i>Copyright &#169; 2002 Vision for New York. All Rights Reserved.</i>]]></bottom>
-
-      <!-- link documents -->
-      <link offline="true" href="http://java.sun.com/xml/jaxb" packagelistLoc="${dir.misc}/packageLists/jax-b"/>
-      <link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api/" packagelistLoc="${dir.misc}/packageLists/jdk"/>
-      <link offline="true" href="http://java.sun.com/j2ee/sdk_1.2.1/techdocs/api/" packagelistLoc="${dir.misc}/packageLists/servlet"/>
-      <link offline="true" href="http://java.sun.com/xml/sax" packagelistLoc="${dir.misc}/packageLists/xerces"/>
-      <link offline="true" href="http://jakarta.apache.org/log4j/docs/api/" packagelistLoc="${dir.misc}/packageLists/log4j"/>
-
-    </javadoc>
-  </target>
-
-<!-- ALL -->
-<!-- compiles all packages -->
-  <target name="all" depends="config, db, requests, responses, servlets, embedded"/>
-
-<!-- DELETE -->
-<!-- deletes all packages -->
-  <target name="delete" depends="init">
+<!-- CLEAN -->
+  <target name="clean" depends="init">
     <delete includeEmptyDirs="false" >
       <fileset dir="${dir.build}" />
     </delete>
+    <delete file="${dir.lib}/geoserver.jar" failonerror="true"/>
+    <delete file="${dir.lib}/test.jar" failonerror="true"/>
+    <antcall target="all"/>
   </target>
 
-<!-- CLEAN -->
-<!-- cleans, then compiles all packages -->
-  <target name="cleanBuild" depends="delete">
-    <javac srcdir="${dir.src}" destdir="${dir.build}" includes="**" classpathref="path.libraries"/>
+<!-- ====================================================================== -->
+<!-- TEST TARGETS                                                           -->
+<!-- ====================================================================== -->
+
+<!-- UNIT -->
+  <target name="unit" depends="init, all">
+    <javac srcdir="${dir.test}" 
+           destdir="${dir.build}" 
+           includes="**/*.java" 
+           classpathref="path.build" 
+           deprecation="on"/>
+    <antcall target="all"/>
+    <junit fork="false"
+           printsummary="on">
+      <formatter type="plain" usefile="false"/>
+      <sysproperty key="dataFolder" value="${basedir}/tests/unit/testData"/>
+
+      <classpath>
+        <fileset dir="${dir.lib}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+      <test fork="true" 
+            name="org.vfny.geoserver.requests.FeatureSuite"/>
+    </junit>
   </target>
 
-  <target name="clean" depends="cleanBuild, deleteJar, jar"/>
-
-
-<!-- =============================================== -->
-<!-- TEST TARGETS -->
-<!-- =============================================== -->
-
+<!-- TEST -->
 <!-- deploys application to test server -->
-  <target name="start" depends="init">
-    <java classname="org.vfny.geoserver.EmbeddedTomcat" classpathref="path.catalina" fork="true">
+  <target name="test" depends="init, all">
+    <!-- stops a running server -->
+    <java classname="org.vfny.geoserver.EmbeddedTomcat" 
+          classpathref="path.catalina" 
+          fork="true">
+      <arg value="stop"/>
+      <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
+      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
+    </java>
+    <!-- builds servlets to test server -->
+    <javac srcdir="${dir.src}" 
+           destdir="${dir.testApp}/classes" 
+           includes="**/servlets/*.java" 
+           classpathref="path.build"/>
+    <!-- builds embedded jar -->
+    <jar jarfile="${dir.lib}/embedded.jar">
+      <fileset dir="${dir.build}">
+        <exclude name="**/org/*" />
+        <include name="**/EmbeddedTomcat.class" />
+      </fileset>
+    </jar>
+    <!-- builds geoserver jar to test server -->
+    <jar jarfile="${dir.testApp}/lib/geoserver.jar">
+      <fileset dir="${dir.build}">
+        <exclude name="**/servlets/*" />
+        <exclude name="**/EmbeddedTomcat.class" />
+      </fileset>
+    </jar>
+    <!-- starts the test server -->
+    <java classname="org.vfny.geoserver.EmbeddedTomcat" 
+          classpathref="path.catalina" 
+          fork="true">
       <arg value="start"/>
       <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
       <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
     </java>
   </target>
 
-<!-- TEST SERVER -->
+<!-- STOP SERVER -->
 <!-- deploys application to test server -->
-  <target name="stop" depends="init">
-    <java classname="org.vfny.geoserver.EmbeddedTomcat" classpathref="path.catalina" fork="true">
+  <target name="stop" depends="init, all">
+    <!-- stops a running server -->
+    <java classname="org.vfny.geoserver.EmbeddedTomcat" 
+          classpathref="path.catalina" 
+          fork="true">
       <arg value="stop"/>
       <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
       <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
     </java>
   </target>
 
-<!-- TEST SERVER -->
+<!-- TEST CLEAN -->
 <!-- deploys application to test server -->
-  <target name="test" depends="init">
-    <antcall target="stop"/>
-    <antcall target="testPrep"/>
-    <antcall target="start"/>
-  </target>
-
-<!-- TEST SERVER -->
-<!-- deploys application to test server -->
-  <target name="testPrep" depends="init, all, jar, embeddedJar">
-    <delete dir="${dir.main}/server/webapps/ROOT/WEB-INF/classes/org" failonerror="false"/>
-    <copy todir="${dir.main}/server/webapps/ROOT/WEB-INF/classes" >
+  <target name="test-clean" depends="init, all">
+    <delete dir="${basedir}/server/webapps/ROOT/WEB-INF/classes/org" 
+            failonerror="false"/>
+    <copy todir="${basedir}/server/webapps/ROOT/WEB-INF/classes" >
       <fileset dir="${dir.build}">
         <include name="**/servlets/**.class"/>
       </fileset>
     </copy>
   </target>
 
-
-<!-- TEST JAR -->
+<!-- EXTERNAL TEST -->
 <!-- deploys application to test server -->
-  <target name="jarTest" depends="init, all, jar">
-    <delete file="${dir.tests}/geoserver/WEB-INF/lib/geoserver.jar" failonerror="false"/>
-    <copy file="${dir.lib}/geoserver.jar" tofile="${dir.main}/server/webapps/ROOT/WEB-INF/lib/geoserver.jar"/>
+  <target name="test-ext" depends="init, all">
+    <!-- copy to test server -->
+    <delete includeEmptyDirs="true" failonerror="false">
+      <fileset dir="${dir.container}/geoserver"/>
+    </delete>
+    <delete file="${dir.container}/geoserver.war"  failonerror="false"/>
+    <copy todir="${dir.container}/" flatten="yes">
+      <fileset dir="${basedir}">
+        <include name="geoserver.war"/>
+      </fileset>
+    </copy>
   </target>
 
-<!-- TEST WAR -->
-<!-- compiles application to the 'deploy' directory -->
-  <target name="warTest" depends="init, all, jar">
+<!-- ====================================================================== -->
+<!-- BUILD TARGETS                                                          -->
+<!-- ====================================================================== -->
 
+<!-- WAR -->
+  <target name="war" depends="init, all">
     <!-- preparation -->
-    <delete file="${dir.main}/geoserver.war" failonerror="false"/>
-    <delete dir="${dir.main}/data" failonerror="false"/>
-
-    <mkdir dir="${dir.main}/data"/>
-    <copy todir="${dir.main}/data" >
+    <delete file="${basedir}/geoserver.war" 
+            failonerror="false"/>
+    <delete dir="${basedir}/data" 
+            failonerror="false"/>
+    <mkdir dir="${basedir}/data"/>
+    <copy todir="${basedir}/data" >
       <fileset dir="${dir.misc}/documents">
         <include name="license.txt"/>
         <include name="geoserver.log"/>
@@ -361,8 +292,9 @@
       </fileset>
     </copy>
 
-    <mkdir dir="${dir.main}/data/capabilities"/>
-    <copy todir="${dir.main}/data/capabilities">
+    <!-- populate base directory -->
+    <mkdir dir="${basedir}/data/capabilities"/>
+    <copy todir="${basedir}/data/capabilities">
       <fileset dir="${dir.misc}/documents">
         <include name="filter.xml"/>
         <include name="operations.xml"/>
@@ -376,21 +308,21 @@
       </fileset>
     </copy>
 
-
-    <mkdir dir="${dir.main}/data/featureTypes"/>
-    <copy todir="${dir.main}/data">
+    <!-- make feature types directory and populate -->
+    <mkdir dir="${basedir}/data/featureTypes"/>
+    <copy todir="${basedir}/data">
       <fileset dir="${dir.data}"/>
     </copy>
-
     <copy todir="${dir.build}">
       <fileset dir="${dir.misc}/documents">
         <include name="log4j.properties"/>
       </fileset>
     </copy>
 
-
     <!-- war file -->
-    <war warfile="${dir.main}/geoserver.war" webxml="${dir.misc}/documents/web.xml" update="true">
+    <war warfile="${basedir}/geoserver.war" 
+         webxml="${dir.misc}/documents/web.xml" 
+         update="true">
 
       <!-- classes -->
       <classes dir="${dir.build}">
@@ -399,140 +331,148 @@
         <exclude name="**/servlets/utilities/**" />
         <exclude name="**/EmbeddedTomcat.class" />
       </classes>
-
       <classes dir="${dir.jsp}"/>
 
+      <!-- libraries -->
       <lib dir="${dir.lib}">
         <exclude name="**/junit.jar" />
         <exclude name="**/servlet.jar" />
       </lib>
 
       <!-- directories -->
-      <fileset dir="${dir.main}">
+      <fileset dir="${basedir}">
         <include name="data/**"/>
         <include name="documentation/**"/>
       </fileset>
     </war>
-
-    <!-- copy to test server -->
-    <delete includeEmptyDirs="true" failonerror="false">
-      <fileset dir="${dir.tests}/geoserver"/>
-    </delete>
-    <delete file="${dir.tests}/geoserver.war"  failonerror="false"/>
-    <copy todir="${dir.tests}/" flatten="yes">
-      <fileset dir="${dir.main}">
-        <include name="geoserver.war"/>
-      </fileset>
-    </copy>
 
     <!-- clean-up -->
     <delete file="${dir.build}/log4j.properties" failonerror="true"/>
-    <delete file="${dir.main}/geoserver.war" failonerror="true"/>
-    <delete dir="${dir.main}/data" failonerror="true"/>
+    <delete file="${basedir}/geoserver.war" failonerror="true"/>
+    <delete dir="${basedir}/data" failonerror="true"/>
+  </target>
+
+<!-- DOCUMENTATION -->
+<!-- generates all project documentation -->
+  <target name="document" depends="init">
+    <javadoc sourcepath="${basedir}/source"
+             destdir="${dir.doc}/api"
+             private="true"
+             windowtitle="GeoServer Documentation"
+             classpathref="${path.build}"
+             stylesheetfile="${dir.misc}/documents/stylesheet.css">
+      <package name="org.vfny.geoserver.*"/>
+      <doctitle>
+        <![CDATA[<h1>GeoServer Documentation</h1>]]>
+      </doctitle>
+      <bottom>
+        <![CDATA[<i>Copyright &#169; 2002 The Open Planning Project.</i>]]>
+      </bottom>
+
+      <!-- link documents -->
+      <link offline="true" 
+            href="http://java.sun.com/xml/jaxb" 
+            packagelistLoc="${dir.misc}/packageLists/jax-b"/>
+      <link offline="true" 
+            href="http://java.sun.com/products/jdk/1.2/docs/api/" 
+            packagelistLoc="${dir.misc}/packageLists/jdk"/>
+      <link offline="true" 
+            href="http://java.sun.com/j2ee/sdk_1.2.1/techdocs/api/" 
+            packagelistLoc="${dir.misc}/packageLists/servlet"/>
+      <link offline="true" 
+            href="http://java.sun.com/xml/sax" 
+            packagelistLoc="${dir.misc}/packageLists/xerces"/>
+      <link offline="true" 
+            href="http://jakarta.apache.org/log4j/docs/api/" 
+            packagelistLoc="${dir.misc}/packageLists/log4j"/>
+    </javadoc>
   </target>
 
 
-<!-- =============================================== -->
-<!-- BUILD TARGETS -->
-<!-- =============================================== -->
-
-<!-- BUILD PRODUCTION WAR -->
-<!-- creates a production version of the WAR at application root -->
-<!-- identical to test war, except web.xml is slightly different -->
-  <target name="war" depends="init, jar">
-
-    <!-- preparation -->
-    <delete file="${dir.main}/geoserver.war" failonerror="false"/>
-    <delete dir="${dir.main}/data" failonerror="false"/>
-
-    <mkdir dir="${dir.main}/data"/>
-    <copy todir="${dir.main}/data" >
-      <fileset dir="${dir.misc}/documents">
-        <include name="license.txt"/>
-        <include name="geoserver.log"/>
-        <include name="configuration.xml"/>
-      </fileset>
-    </copy>
-
-    <mkdir dir="${dir.main}/data/capabilities"/>
-    <copy todir="${dir.main}/data/capabilities">
-      <fileset dir="${dir.misc}/documents">
-        <include name="filter.xml"/>
-        <include name="operations.xml"/>
-        <include name="serviceMetadata.xml"/>
-        <include name="additionalCapabilities.xml"/>
-        <include name="operationsSignatures.xml"/>
-        <include name="vfnyWfsWsdl.xml"/>
-        <include name="OGC_Capabilities.xsd"/>
-        <include name="feature.xsd"/>
-        <include name="geometry.xsd"/>
-      </fileset>
-    </copy>
-
-    <mkdir dir="${dir.main}/data/featureTypes"/>
-    <copy todir="${dir.main}/data">
-      <fileset dir="${dir.data}"/>
-    </copy>
-
-    <!-- war file -->
-    <war warfile="${dir.main}/geoserver.war" webxml="${dir.misc}/documents/web.xml" update="true">
-
-      <!-- classes -->
-      <classes dir="${dir.build}">
-        <include name="**/servlets/**" />
-        <exclude name="**/servlets/utilities/**" />
-      </classes>
-      <classes dir="${dir.jsp}"/>
-      <lib dir="${dir.lib}"/>
-
-      <!-- directories -->
-      <fileset dir="${dir.main}">
-        <include name="data/**"/>
-        <include name="documentation/**"/>
-      </fileset>
-    </war>
-
-    <!-- clean-up -->
-    <delete dir="${dir.main}/data" failonerror="true"/>
-  </target>
-
-
-<!-- BUILD RELEASE -->
+<!-- RELEASE -->
 <!-- builds a release version of the application -->
   <target name="release" depends="init, war">
-    <delete file="${dir.main}/geoserver-${name.release}.tar.gz" failonerror="false"/>
-    <delete file="${dir.main}/geoserver-${name.release}.tar" failonerror="false"/>
+    <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
+            failonerror="false"/>
+    <delete file="${basedir}/geoserver-${name.release}.tar" 
+            failonerror="false"/>
 
-    <copy file="${dir.misc}/documents/license.txt" todir="${dir.main}"/>
+    <copy file="${dir.misc}/documents/license.txt" todir="${basedir}"/>
     <tar longfile="gnu"
-         basedir="${dir.main}"
-				 tarfile="geoserver-${name.release}.tar"/>
+         basedir="${basedir}"
+         tarfile="geoserver-${name.release}.tar"/>
 
-    <delete file="${dir.main}/geoserver-${name.release}.tar.gz" failonerror="false"/>
-    <gzip src="geoserver-${name.release}.tar" zipfile="geoserver-${name.release}.tar.gz"/>
-    <copy file="${dir.main}/geoserver-${name.release}.tar.gz" todir="${dir.release}"/>
+    <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
+            failonerror="false"/>
+    <gzip src="geoserver-${name.release}.tar" 
+          zipfile="geoserver-${name.release}.tar.gz"/>
+    <copy file="${basedir}/geoserver-${name.release}.tar.gz" 
+          todir="${dir.release}"/>
 
-    <delete file="${dir.main}/geoserver-${name.release}.tar.gz" failonerror="true"/>
-    <delete file="${dir.main}/geoserver-${name.release}.tar" failonerror="true"/>
-    <delete file="${dir.main}/geoserver.war" failonerror="true"/>
-    <delete file="${dir.main}/license.txt" failonerror="true"/>
+    <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
+            failonerror="true"/>
+    <delete file="${basedir}/geoserver-${name.release}.tar" 
+            failonerror="true"/>
+    <delete file="${basedir}/geoserver.war" failonerror="true"/>
+    <delete file="${basedir}/license.txt" failonerror="true"/>
   </target>
 
 
-<!-- CREATE NIGHTLY BUILD -->
+<!-- NIGHTLY -->
 <!-- archives the current version of the project -->
   <target name="nightly" depends="init, war">
-    <delete file="${dir.main}/changelog-${date.current}.txt" failonerror="false"/>
-    <copy file="${dir.changelog}/changelog-${date.current}.txt" todir="${dir.main}"/>
+    <delete file="${basedir}/changelog-${date.current}.txt" 
+            failonerror="false"/>
+    <copy file="${dir.changelog}/changelog-${date.current}.txt" 
+          todir="${basedir}"/>
+    <delete file="${basedir}/geoserver-${date.current}.tar" 
+            failonerror="false"/>
+    <delete file="${dir.nightly}/geoserver-${date.current}.tar.gz" 
+            failonerror="false"/>
+    <tar tarfile="${basedir}/geoserver-${date.current}.tar" 
+         basedir="${basedir}" 
+         longfile="gnu"/>
+    <gzip src="${basedir}/geoserver-${date.current}.tar" 
+          zipfile="${dir.nightly}/geoserver-${date.current}.tar.gz"/>
 
-    <delete file="${dir.main}/geoserver-${date.current}.tar" failonerror="false"/>
-    <delete file="${dir.nightly}/geoserver-${date.current}.tar.gz" failonerror="false"/>
-    <tar tarfile="${dir.main}/geoserver-${date.current}.tar" basedir="${dir.main}" longfile="gnu"/>
-    <gzip src="${dir.main}/geoserver-${date.current}.tar" zipfile="${dir.nightly}/geoserver-${date.current}.tar.gz"/>
-
-    <delete file="${dir.main}/geoserver.war"  failonerror="false"/>
-    <delete file="${dir.main}/geoserver-${date.current}.tar" failonerror="false"/>
-    <delete file="${dir.main}/changelog-${date.current}.txt" failonerror="false"/>
+    <delete file="${basedir}/geoserver.war"  failonerror="false"/>
+    <delete file="${basedir}/geoserver-${date.current}.tar" 
+            failonerror="false"/>
+    <delete file="${basedir}/changelog-${date.current}.txt" 
+            failonerror="false"/>
   </target>
 
+<!-- ====================================================================== -->
+<!-- ADMIN TARGETS                                                          -->
+<!-- ====================================================================== -->
+<!-- TABS -->
+<!-- turns all tabs into 4 spaces -->
+  <target name="fix-tabs" depends="init">
+    <fixcrlf srcdir="${dir.src}" 
+             tab="remove" 
+             tablength="4"
+             javafiles="true"
+             includes="**/*.java"/>
+  </target>
+
+<!-- GEOTOOLS JAR -->
+<!-- builds geotools jar -->
+  <target name="geotools" depends="init">
+    <delete file="${dir.lib}/geotools.jar" failonerror="true"/>
+    <jar jarfile="${dir.lib}/geotools.jar"
+         whenempty="fail">
+      <fileset dir="${dir.geotools}/filter/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/defaultcore/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/postgis/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/resources/target/classes/"
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/core/target/classes/"
+               includes="**/*.class"/>
+    </jar>
+  </target>
 </project>
