@@ -6,9 +6,7 @@
  */
 package org.geotools.validation.attributes;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.util.ResourceBundle;
 
 import org.geotools.validation.DefaultFeatureValidationBeanInfo;
 
@@ -20,7 +18,7 @@ import org.geotools.validation.DefaultFeatureValidationBeanInfo;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DomainValidationBeanInfo.java,v 1.1 2004/02/10 18:29:03 dmzwiers Exp $
+ * @version $Id: DomainValidationBeanInfo.java,v 1.2 2004/02/10 18:30:08 dmzwiers Exp $
  */
 public class DomainValidationBeanInfo extends DefaultFeatureValidationBeanInfo {
 	
