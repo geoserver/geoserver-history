@@ -62,7 +62,7 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
-  <property name="test.type" value="CitePostGis"/>
+  <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
   <!-- paths -->
@@ -628,6 +628,15 @@
     <delete dir="${dir.build}" failonerror="false"/>
     
     <mkdir dir="${dir.build}"/>
+    
+    
+    <unzip src="${basedir}/cite/confUserBasic.zip" dest="${basedir}"/>
+    <copy todir="${dir.build}/conf">
+	  <fileset dir="${basedir}/data">
+	    <include name="**/*"/>
+	  </fileset>
+    </copy>
+    <delete dir="${basedir}/data" failonerror="false"/>
     
     <copy todir="${dir.build}">
 	  <fileset dir="${basedir}">
