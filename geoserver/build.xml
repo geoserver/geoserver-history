@@ -37,7 +37,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
+  <property name="dir.container" value="C:\resin-3.0.6\webapps"/>
   <property name="dir.geotools" 
             value="c:\java\workspace\geotools2\geotools-src"/>
             
@@ -46,12 +46,14 @@
   <property name="dir.geotools" 
             value="/home/rob/wfs/geotools/geotools2/geotools-src"/>
    -->
-  <!-- jars -->
+
+ <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
   <property name="jar.geoserver" value="${dir.lib}/geoserver.jar"/>
   <property name="jar.log" value="${dir.lib}/log4j-1.2.5.jar"/>
   <property name="jar.servlet" value="${dir.lib}/servlet.jar"/>
-  <property name="jar.xerces" value="${dir.lib}/xerces.jar"/>
+  <property name="jar.xercesImpl" value="${dir.lib}/xercesImpl.jar"/>
+  <property name="jar.xml" value="${dir.lib}/xml-apis.jar"/>
   <property name="jar.jdbcPostgres" value="${dir.lib}/jdbcPostgres.jar"/>
   <property name="jar.castor" value="${dir.lib}/castor.jar"/>
   <property name="jar.jts" value="${dir.lib}/jts-1.0.0.jar"/>
@@ -62,9 +64,14 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
+
+ <property name="jetty.run"  value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml"/>
+
+  <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}" />
+
   <!-- If you don't have your own conf directory uncomment on of the following -->
   <!--<property name="test.type" value="UserBasic"/>-->
-  <property name="test.type" value="CitePostGis"/>
+  <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
   <!-- paths -->
@@ -74,7 +81,15 @@
       <exclude name="geoserver.jar"/>
     </fileset>
   </path>
-  <path id="path.catalina">
+  <path id="path.jetty">
+    <fileset dir="${dir.lib}/jetty">
+      <include name="*.jar"/>
+    </fileset>
+  <pathelement location="${jar.servlet}" />
+    <pathelement location="${jar.xercesImpl}" />
+    <pathelement location="${jar.xml}" />
+   </path>
+  <!--path id="path.catalina">
     <fileset dir="${dir.catalina}" includes="embedded.jar"/>
     <fileset dir="${dir.catalina}/bin" includes="bootstrap.jar"/>
     <fileset dir="${dir.catalina}/server/lib" includes="catalina.jar"/>
@@ -101,10 +116,10 @@
     <fileset dir="${dir.catalina}/common/lib" includes="servlet.jar"/>
     <fileset dir="${dir.catalina}/common/lib" includes="tools.jar"/>
     <fileset dir="${dir.catalina}/common/lib" includes="log4j.jar"/>
-  </path>
+  </path-->
   <path id="path.build">
     <path refid="path.lib"/>
-    <path refid="path.catalina"/>
+    <!--path refid="path.catalina"/-->
     <fileset dir="${dir.build}">
       <include name="**"/>
     </fileset>
@@ -128,9 +143,8 @@
     <echo message="    unit:         compiles, runs unit 1 test"/>
     <echo message="                    -param: test.name=[package.class]"/>
     <echo message="    unit-all:     compiles and runs all unit tests"/>
-    <echo message="    test-start:   builds and runs the built-in server"/>
-    <echo message="    test-stop:   stops the built-in server"/>
-    <echo message="    test-clean:   builds clean to built-in server"/>
+    <echo message="    test:         builds and runs the built-in server"/>
+    <echo message="    run:          runs the built-in server"/>
     <echo message="    test-ext:     builds war to external server"/>
     <echo message="                    -param: dir.container=[server_path]"/>
     <echo message="                    -param: test.type=CitePostGis"/>
@@ -314,8 +328,8 @@
 
 <!-- TEST -->
 <!-- deploys application to test server -->
-  <target name="test-start" depends="init, all">
-    <mkdir dir="${dir.server}/webapps/ROOT"/>
+  <target name="test" depends="init, all">
+    <mkdir dir="${dir.server}"/>
 
     <!-- This will now build with the users directory, which I think is
          appropriate for testing of this sort, as you'll want to configure
@@ -325,83 +339,43 @@
       <!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
     </antcall>
     
-    <unwar src="${basedir}/geoserver.war" dest="${dir.server}/webapps/ROOT/"/>
+    <unwar src="${basedir}/geoserver.war" dest="${dir.server}/geoserver/"/>
+    <antcall target="run"/>
 
-    <path id="path.test">
-      <path refid="path.catalina"/>
-      <fileset dir="${dir.server}/webapps/ROOT/WEB-INF/lib">
-        <include name="*.jar"/>
-      </fileset>
-	</path>
-    <!-- stops a running server -->
-    <java classname="org.vfny.geoserver.EmbeddedTomcat" 
-          classpathref="path.test" 
-          fork="true">
-      <arg value="stop"/>
-      <!--<jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
-      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>-->
-    </java>
-    <!-- remove the classes forcing the server to build new class,
-         so changes to the code actually are reflected in test server. -->
-     <delete  failonerror="false">
-       <fileset dir="${dir.testApp}/classes/org"> 
-         <exclude name="**/servlets/*"/>
-       </fileset>
-    </delete>
-    <!-- builds servlets to test server -->
-    
-    <javac srcdir="${dir.src}" 
-           destdir="${dir.testApp}/classes/" 
-           includes="**/servlets/*.java" 
-           classpathref="path.build"
-              debug="on"/>
-    <!-- builds embedded jar -->
-    <jar jarfile="${dir.testApp}/lib/embedded.jar">
-      <fileset dir="${dir.build}">
-        <exclude name="**/org/*" />
-        <include name="**/EmbeddedTomcat.class" />
-      </fileset>
-    </jar>
-    <!-- builds geoserver jar to test server -->
-    <jar jarfile="${dir.testApp}/lib/geoserver.jar">
-      <fileset dir="${dir.build}">
-        <exclude name="**/servlets/*" />
-        <exclude name="**/EmbeddedTomcat.class" />
-      </fileset>
-    </jar>
-    <!-- starts the test server -->
-    <java classname="org.vfny.geoserver.EmbeddedTomcat" 
-          classpathref="path.test" 
-          fork="true">
-      <arg value="start"/>
-      <!--<jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
-      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>-->
-    </java>
   </target>
 
 <!-- STOP SERVER -->
-<!-- deploys application to test server -->
+<!-- TODO: implement this somehow... 
   <target name="test-stop" depends="init">
-    <!-- stops a running server -->
-    <java classname="org.vfny.geoserver.EmbeddedTomcat" 
-          classpathref="path.build" 
-          fork="true">
-      <arg value="stop"/>
-      <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
-      <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
+    <java classname="org.mortbay.jetty.Server"
+          dir="${basedir}"
+          fork="yes"
+          failonerror="yes"
+          >
+       <classpath>
+         <pathelement path="${env.CLASSPATH}" />
+         <path refid="path.jetty" />
+       </classpath>
+       <jvmarg line="${jetty.jvmarg}" />
+       <arg line="${jetty.run}" />
     </java>
-  </target>
+  </target-->
 
-<!-- TEST CLEAN -->
-<!-- deploys application to test server -->
-  <target name="test-clean" depends="init, all">
-    <delete dir="${basedir}/server/webapps/ROOT/WEB-INF/classes/org" 
-            failonerror="false"/>
-    <copy todir="${basedir}/server/webapps/ROOT/WEB-INF/classes" >
-      <fileset dir="${dir.build}">
-        <include name="**/servlets/**.class"/>
-      </fileset>
-    </copy>
+
+  <target name="run" depends="init"
+   description="Run Jetty with configuration set by the jetty.run property">
+    <java classname="org.mortbay.jetty.Server"
+          dir="${basedir}"
+          fork="yes"
+          failonerror="yes"
+          >
+       <classpath>
+         <pathelement path="${env.CLASSPATH}" />
+         <path refid="path.jetty" />
+       </classpath>
+       <jvmarg line="${jetty.jvmarg}" />
+       <arg line="${jetty.run}" />
+    </java>
   </target>
 
 <!-- EXTERNAL TEST -->
@@ -550,7 +524,7 @@
         <exclude name="**/log4j-1.2.5.jar" />
         <exclude name="**/lucene.jar" />
         <exclude name="**/xml-apis.jar" />
-        <exclude name="*catalina*/**/*" />
+        <exclude name="*jetty*/**/*" />
       </lib>
       
       <!-- directories -->
