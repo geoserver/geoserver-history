@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.9 2004/03/14 16:15:22 groldan Exp $
+ * @version $Id: SVGMapResponse.java,v 1.10 2004/04/13 03:16:39 groldan Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
 
@@ -57,17 +57,24 @@ public class SVGMapResponse extends GetMapDelegate {
     /**
      * evaluates if this Map producer can generate the map format specified
      * by <code>mapFormat</code>
+     * <p>
+     * In this case, true if <code>mapFormat</code> starts with "image/svg", 
+     * as both <code>"image/svg"</code> and <code>"image/svg+xml"</code> are 
+     * commonly passed.
+     * </p>
      *
      * @param mapFormat the mime type of the output map format requiered
      *
-     * @return true if class can produce a map in the passed format
+     * @return true if class can produce a map in the passed format. 
      */
     public boolean canProduce(String mapFormat)
     {
-      return mapFormat.startsWith("image/svg");
+      return mapFormat.startsWith(MIME_TYPE);
     }
 
-
+    /**
+     * aborts the encoding.
+     */
     public void abort()
     {
       LOGGER.fine("aborting SVG map response");
@@ -88,10 +95,23 @@ public class SVGMapResponse extends GetMapDelegate {
      * @throws WmsException DOCUMENT ME!
      */
     protected void execute(FeatureTypeInfo[] requestedLayers,
-        FeatureResults[] resultLayers, Style[] styles)
+        Query[] queries, Style[] styles)
         throws WmsException {
         GetMapRequest request = getRequest();
 
+        int nLayers = requestedLayers.length;
+        FeatureResults[] resultLayers = new FeatureResults[nLayers];
+        try {
+			for(int i = 0; i < nLayers; i++)
+			{
+				FeatureSource fSource = requestedLayers[i].getFeatureSource();
+				resultLayers[i] = fSource.getFeatures(queries[i]);
+			}
+		} catch (IOException e) {
+			throw new WmsException(e, "Executing requests: " +
+					e.getMessage(), getClass().getName() + 
+					"::execute(FeatureTypeInfo[], Query[], Style[])");
+		}
         EncoderConfig encoderData = new EncoderConfig(request,
                                                       requestedLayers,
                                                       resultLayers,

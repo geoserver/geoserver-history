@@ -72,7 +72,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.11 2004/03/14 16:15:22 groldan Exp $
+ * @version $Id: GetMapDelegate.java,v 1.12 2004/04/13 03:16:39 groldan Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -111,6 +111,9 @@ public abstract class GetMapDelegate implements Response {
         Filter[] filters = request.getFilters();
         List attributes = request.getAttributes();
         Query[] queries = buildQueries(layers, filters, attributes);
+
+/*
+ GR: commented out since getFeatures() will be done in execute(FeatureTypeInfo[], Query[], Style[]) 
         int nLayers = layers.length;
         FeatureResults[] resultLayers = new FeatureResults[nLayers];
         FeatureTypeInfo ftype = null;
@@ -127,8 +130,9 @@ public abstract class GetMapDelegate implements Response {
             throw new WmsException(ex, "Error getting features",
                 getClass().getName() + ".execute()");
         }
+*/
 
-        execute(layers, resultLayers, styles);
+        execute(layers, queries, styles);
     }
 
     /**
@@ -145,18 +149,26 @@ public abstract class GetMapDelegate implements Response {
      *
      * @param requestedLayers Array of config information of the FeatureTypes
      *        to be processed.
-     * @param resultLayers Matching array of results from the queries of the
-     *        requested layers.
+     * @param queries Matching array of queries from the queries of the
+     *        requested layers, already setted up with the bbox filter from
+	 *		  the BBOX parameter of the GetMap request and to retrieve the
+	 *		  specified attributes in the ATTRIBUTES request parameter.
      * @param styles Matching array of the styles to process the results with.
      *
      * @throws WmsException For any problems executing.
      */
     protected abstract void execute(FeatureTypeInfo[] requestedLayers,
-        FeatureResults[] resultLayers, Style[] styles)
+        Query[] queries, Style[] styles)
         throws WmsException;
 
     /**
      * Creates the array of queries to be executed for the request.
+	 * <p>
+	 *  Each query is setted up to retrieve the features that matches the
+	 *  BBOX specified in the GetMap request, as well as to retrieve the
+	 *  needed attributes as requested by the custom ATTRIBUTES request
+	 *  parameter
+	 * </p>
      *
      * @param layers The layers to request against.
      * @param filters The matching filters to process with.
