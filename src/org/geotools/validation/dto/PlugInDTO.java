@@ -16,32 +16,15 @@ import java.util.Map;
 
 
 /**
- * PlugInDTO purpose.
+ * PlugInConfig purpose.
  * 
  * <p>
- * Description of PlugInDTO ...
+ * Description of PlugInConfig ...
  * </p>
  * 
- * <p>
- * Capabilities:
- * </p>
- * 
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * 
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * PlugInDTO x = new PlugInDTO(...);
- * </code></pre>
- *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: PlugInDTO.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: PlugInDTO.java,v 1.5 2004/01/22 23:22:47 dmzwiers Exp $
  */
 public class PlugInDTO {
     /** the plug-in name */
@@ -57,7 +40,7 @@ public class PlugInDTO {
     private Map args;
 
     /**
-     * PlugInDTO constructor.
+     * PlugInConfig constructor.
      * 
      * <p>
      * Does nothing.
@@ -67,7 +50,7 @@ public class PlugInDTO {
     }
 
     /**
-     * PlugInDTO constructor.
+     * PlugInConfig constructor.
      * 
      * <p>
      * Creates a copy of the DTO passed in in this object.

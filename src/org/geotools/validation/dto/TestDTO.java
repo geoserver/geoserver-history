@@ -16,32 +16,15 @@ import java.util.Map;
 
 
 /**
- * TestDTO purpose.
+ * TestConfig purpose.
  * 
  * <p>
- * Description of TestDTO ...
+ * Description of TestConfig ...
  * </p>
- * 
- * <p>
- * Capabilities:
- * </p>
- * 
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * 
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * TestDTO x = new TestDTO(...);
- * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestDTO.java,v 1.5 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: TestDTO.java,v 1.6 2004/01/22 23:22:49 dmzwiers Exp $
  */
 public class TestDTO {
     /** the test name */
@@ -63,7 +46,7 @@ public class TestDTO {
     private Map args;
 
     /**
-     * TestDTO constructor.
+     * TestConfig constructor.
      * 
      * <p>
      * Does nothing
@@ -73,10 +56,10 @@ public class TestDTO {
     }
 
     /**
-     * TestDTO constructor.
+     * TestConfig constructor.
      * 
      * <p>
-     * Creates a copy from the TestDTO specified.
+     * Creates a copy from the TestConfig specified.
      * </p>
      *
      * @param t the data to copy
@@ -102,7 +85,7 @@ public class TestDTO {
     /**
      * Implementation of clone.
      *
-     * @return A copy of this TestDTO
+     * @return A copy of this TestConfig
      *
      * @see java.lang.Object#clone()
      */
