@@ -60,7 +60,7 @@ public class FeatureResponse {
 	int maxFeatures = request.getMaxFeatures();
 
 	GMLBuilder gml = new GMLBuilder(configInfo.formatOutput());
-        for(int i = 0, n = request.getQueryCount(); i < n; i++) {            
+        for(int i = 0, n = request.getQueryCount(); i < n && maxFeatures > 0; i++) {            
 	    Query curQuery = request.getQuery(i);
 	    TypeInfo meta = repository.getType(curQuery.getTypeName());
 	    if (meta == null) {
@@ -71,9 +71,10 @@ public class FeatureResponse {
 	    }
 	    String srid = meta.getSrs();
 	    if (i == 0){ //HACK: different srids can go in same collection.
-		gml.startFeatureCollection(srid, meta.getXmlns());
+		gml.startFeatureCollection(srid, meta);
 	    } //we only make the bbox for the first one.
 	    Feature[] curFeatures = getQuery(curQuery, meta, maxFeatures);
+	    maxFeatures = maxFeatures - curFeatures.length;
 	    addFeatures(curFeatures, gml, meta);
             LOG.finest("ended feature");
         }        
