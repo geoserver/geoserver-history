@@ -40,8 +40,8 @@ package org.vfny.geoserver.action;
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: HTMLEncoder.java,v 1.1 2004/02/02 23:27:27 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: HTMLEncoder.java,v 1.2 2004/02/18 00:52:57 dmzwiers Exp $
  */
 public class HTMLEncoder {
     private static java.util.Hashtable chars = null;
@@ -155,7 +155,9 @@ public class HTMLEncoder {
 
                     break;
 
-                case 'á':
+                    // This shows up lower in the other numbered cases.
+                    
+                /*case 'á':
                 case 'é':
                 case 'í':
                 case 'ó':
@@ -167,7 +169,7 @@ public class HTMLEncoder {
                 case 'Ú':
                     buf.append(c + "&acute;");
 
-                    break;
+                    break;*/
 
                 case 160:
                 case 161:
