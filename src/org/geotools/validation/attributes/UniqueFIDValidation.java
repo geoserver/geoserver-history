@@ -11,6 +11,7 @@ import java.util.Map;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
+import org.geotools.validation.DefaultIntegrityValidation;
 import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.ValidationResults;
 
@@ -36,15 +37,12 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: UniqueFIDValidation.java,v 1.1 2004/01/31 00:24:06 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: UniqueFIDValidation.java,v 1.2 2004/02/10 18:29:03 dmzwiers Exp $
  */
-public class UniqueFIDValidation implements IntegrityValidation {
+public class UniqueFIDValidation extends DefaultIntegrityValidation {
 
 
-	private String name;			// name of the validation
-	private String description;		// description of the validation
-	private String[] typeNames;		// TypeNames that this validation tests
 	private String uniqueID;		// the column name that this validation checks
 									//   to see if they are all unique.
 		
@@ -69,65 +67,12 @@ public class UniqueFIDValidation implements IntegrityValidation {
 	 * @param typeNames The TypeNames that this validation is tested on.
 	 * @param uniqueID The column name that this validation checks to see if it is unique. 
 	 */
-	public UniqueFIDValidation(String name, String description, String[] typeNames, String uniqueID) {
+	/*public UniqueFIDValidation(String name, String description, String[] typeNames, String uniqueID) {
 		this.name = name;
 		this.description = description;
 		this.typeNames = typeNames;
 		this.uniqueID = uniqueID;
-	}
-
-	/**
-	 * Override setName.
-	 * <p>
-	 * Sets the name of this validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#setName(java.lang.String)
-	 * 
-	 * @param name The name of this validation.
-	 * @return returns the name of this validation.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Override getName.
-	 * <p>
-	 * Returns the name of this particular validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#getName()
-	 * 
-	 * @return The name of this particular validation.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Override setDescription.
-	 * <p>
-	 * Sets the description of this validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#setDescription(java.lang.String)
-	 * 
-	 * @param description The description of the validation.
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * Override getDescription.
-	 * <p>
-	 * Returns the description of this validation as a string.
-	 * </p>
-	 * @see org.geotools.validation.Validation#getDescription()
-	 * 
-	 * @return The description of this validation.
-	 */
-	public String getDescription() {
-		return description;
-	}
+	}*/
 
 	/**
 	 * Override getPriority.
@@ -141,33 +86,6 @@ public class UniqueFIDValidation implements IntegrityValidation {
 	public int getPriority() {
 		return 10;
 	}
-
-	/**
-	 * Override setTypeNames.
-	 * <p>
-	 * Sets the TypeNames of the FeatureTypes used in this particular validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#setTypeNames(java.lang.String[])
-	 * 
-	 * @param names The TypeNames of the FeatureTypes used in this particular validation.
-	 */
-	public void setTypeNames(String[] names) {
-		this.typeNames = names;
-	}
-
-	/**
-	 * Override getTypeNames.
-	 * <p>
-	 * Returns the TypeNames of the FeatureTypes used in this particular validation.
-	 * </p>
-	 * @see org.geotools.validation.Validation#getTypeRefs()
-	 * 
-	 * @return An array of TypeNames
-	 */
-	public String[] getTypeRefs() {
-		return typeNames;
-	}
-
 
 	/**
 	 * Override validate.
