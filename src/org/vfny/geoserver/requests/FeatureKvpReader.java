@@ -127,7 +127,7 @@ public class FeatureKvpReader
         throws WfsException {
         Query currentQuery = new Query();
 
-        currentQuery.setFeatureTypeName(featureType);
+        currentQuery.setTypeName(featureType);
         if(propertyNames != null) {
             for(int i=0; i < propertyNames.size(); i++) {
                 currentQuery.addPropertyName((String) propertyNames.get(i));

@@ -27,14 +27,23 @@ public class TypeRepository {
     private static TypeRepository repository = null;
 
     /** Castor-specified type to hold all the  */
+    private Random keyMaster = null;
+
+    /** Castor-specified type to hold all the  */
     private Map types = new HashMap();
+
+    /** Castor-specified type to hold all the  */
+    private Map locks = new HashMap();
 
     
     /** Initializes the database and request handler. */ 
     private TypeRepository() {
-        ConfigurationBean config = ConfigurationBean.getInstance();
+        ConfigInfo config = ConfigInfo.getInstance();
         File startDir = new File(config.getTypeDir());
         repository.readTypes(startDir, config);
+
+        Date seed = new Date();
+        lockMaker = new Random(seed.getTime());
     }
     
     /**
@@ -52,15 +61,15 @@ public class TypeRepository {
      * Returns a capabilities XML fragment for a specific feature type.
      * @param version The version of the request (0.0.14 or 0.0.15)
      */ 
-    public FeatureTypeBean getType(String name) {        
-        return (FeatureTypeBean) types.get(name);
+    public TypeInfo getType(String typeName) { 
+        return (TypeInfo) types.get(typeName);
     }
 
     /**
      * Returns a capabilities XML fragment for a specific feature type.
-     * @param version The version of the request (0.0.14 or 0.0.15)
+     * @param type The version of the request (0.0.14 or 0.0.15)
      */ 
-    private void addType(FeatureTypeBean type) {        
+    private void addType(TypeInfo type) { 
         types.put(type.getName(), type);
     }
 
@@ -72,6 +81,35 @@ public class TypeRepository {
         return types.size();
     }
 
+
+    /**
+     * Returns a capabilities XML fragment for a specific feature type.
+     * @param typeName The version of the request (0.0.14 or 0.0.15)
+     */ 
+    public synchronized String lock(String typeName) {        
+        if(locks.containsValue(typeName)) {
+            return null;
+        } else {
+            String key = new String(String.valueOf(keyMaster.nextInt()));
+            types.put(typeName, typeName + key);
+            return typeName + key;
+        }
+    }
+
+    /**
+     * Returns a capabilities XML fragment for a specific feature type.
+     * @param version The version of the request (0.0.14 or 0.0.15)
+     */ 
+    public synchronized boolean unlock(String typeName, String key) {        
+        if(locks.containsKey(typeName + key)) {
+            types.remove(typeName + key);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     /**
      * This function lists all files in HTML for the meta-data pages.
      * 
@@ -80,18 +118,18 @@ public class TypeRepository {
      * @param currentFile The top directory from which to start 
      * reading files.
      */
-    private void readTypes(File currentFile, ConfigurationBean config) {
+    private void readTypes(File currentFile, ConfigInfo config) {
         if(currentFile.isDirectory()) {
             File[] file = currentFile.listFiles();
             for(int i = 0, n = file.length; i < n; i++) {
                 readTypes(file[i], config);
             } 
         } else if(isInfoFile(currentFile, config)) {
-            addType(new FeatureTypeBean(currentFile.getAbsolutePath()));
+            addType(new TypeInfo(currentFile.getAbsolutePath()));
         }
     }
 
-    private static boolean isInfoFile(File testFile, ConfigurationBean config){
+    private static boolean isInfoFile(File testFile, ConfigInfo config){
         String testName = testFile.getAbsolutePath();
         int start = testName.length() - 8;
         int end = testName.length() - 4;

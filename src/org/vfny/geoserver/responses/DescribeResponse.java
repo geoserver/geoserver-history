@@ -8,9 +8,8 @@ import java.io.*;
 import java.util.*;
 import java.sql.*;
 import java.util.logging.Logger;
-import org.vfny.geoserver.config.*;
+import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.responses.*;
 
 /**
  * Handles a DescribeFeatureType request and creates a DescribeFeatureType 
@@ -29,7 +28,7 @@ public class DescribeResponse {
     private String xmlResponse = new String();
     
     /** Bean that holds global server configuration information. */
-    private static ConfigurationBean config = ConfigurationBean.getInstance();
+    private static ConfigInfo config = ConfigInfo.getInstance();
     
     // Initialize some generic GML information
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE

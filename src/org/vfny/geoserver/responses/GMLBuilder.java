@@ -16,7 +16,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
-import org.vfny.geoserver.config.ConfigurationBean;
+import org.vfny.geoserver.config.ConfigInfo;
 
 /**
  * Builds the GML response using standard, simple public methods.
@@ -50,7 +50,7 @@ public class GMLBuilder {
         Logger.getLogger("org.vfny.geoserver.responses");
 
     /** Gets global server configuration information **/
-    private ConfigurationBean configInfo = ConfigurationBean.getInstance();
+    private ConfigInfo configInfo = ConfigInfo.getInstance();
     
     /** Spatial reference system for this response **/
     private String srs;

@@ -7,7 +7,6 @@ package org.vfny.geoserver.requests;
 import java.util.*;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.config.FeatureTypeBean;
 
 /**
  * Provides an internal, generic representation of a query component to a 
@@ -34,7 +33,7 @@ public class Query {
     protected String version = new String();
     
     /** The feature type name requested. */
-    protected String featureTypeName = new String();
+    protected String typeName = new String();
     
     /** The property names requested */
     protected List propertyNames = new ArrayList();
@@ -42,41 +41,19 @@ public class Query {
     /** The filter for the query */
     protected Filter filter = null;
     
-    /** Stores datbase configuration meta data for the query  */
-    protected FeatureTypeBean featureType = null;
-        
 
     /** Empty constructor. */ 
     public Query() {}
     
     
-    /**
-     * This method sets the configuration data for the query, based on the
-     * feature type name.
-     *
-     */ 
-    public void setDatastoreConfiguration() {
-        this.featureType = new FeatureTypeBean(featureTypeName);
-    }
-
-    
-    /** Returns the configuration data for the query datastore. */ 
-    public FeatureTypeBean getDatastoreConfiguration() { return featureType; }
-        
     /** Gets the requested property names as a vector. */ 
     public List getPropertyNames() { return propertyNames; }
     
-    /**
-     * Sets the feature type name requested by the query.
-     * @param featureTypeName The feature type name of the query.
-     */ 
-    public void setFeatureTypeName(String featureTypeName) {
-        this.featureTypeName = featureTypeName;
-    }
-    
+    /** Gets the feature type name for this query. */ 
+    public void setTypeName(String typeName) { this.typeName = typeName; }
     
     /** Gets the feature type name for this query. */ 
-    public String getFeatureTypeName() { return this.featureTypeName; }
+    public String getTypeName() { return this.typeName; }
     
     /** Adds a requested property name to the query. */ 
     public void addPropertyName(String propertyName) { 
@@ -106,17 +83,13 @@ public class Query {
     /** Passes the Post method to the Get method, with no modifications. */ 
     public int getDatastoreType() { return 1; }
     
-    /** Returns the bounding box for this request. */ 
-    public FeatureTypeBean getMetadata() { return this.featureType; }
-    
-
     /*************************************************************************
      * OVERRIDES OF toString AND equals METHODS.                             *
      *************************************************************************/
     public String toString() {
         StringBuffer returnString = new StringBuffer("\n  Query");
         returnString.append(" [" + handle + "]");
-        returnString.append("\n   feature type: " + featureTypeName);
+        returnString.append("\n   feature type: " + typeName);
         if(filter != null) {
             returnString.append("\n   filter: " + filter.toString());
         }
@@ -140,11 +113,11 @@ public class Query {
         isEqual = query.getHandle().equals(handle) ?
             true && isEqual : false;
         LOGGER.finest("checked handle: " + isEqual);
-        isEqual = query.getFeatureTypeName().equals(featureTypeName) ?
+        isEqual = query.getTypeName().equals(typeName) ?
             true && isEqual : false;
         LOGGER.finest("checked feature type: " + isEqual + 
-                      "; internal: " + query.getFeatureTypeName() +
-                      "; external: " + featureTypeName);
+                      "; internal: " + query.getTypeName() +
+                      "; external: " + typeName);
         isEqual = query.getVersion().equals(version) ?
             true && isEqual : false;
         LOGGER.finest("checked version: " + isEqual);

@@ -41,7 +41,7 @@ public class CapabilitiesResponse {
     private VersionBean versionInfo = new VersionBean();
     
     /** Configuration information for the server. */
-    private static ConfigurationBean config = ConfigurationBean.getInstance();
+    private static ConfigInfo config = ConfigInfo.getInstance();
     
     /** XML Tag Type: start */
     private static final int TAG_START = 1;
@@ -273,7 +273,7 @@ public class CapabilitiesResponse {
     private void addFeatureType(String featureTypeName, String responseVersion) 
         throws WfsException {
         
-        FeatureTypeBean responseFeatureType = new FeatureTypeBean( featureTypeName );
+        TypeInfo responseFeatureType = new TypeInfo( featureTypeName );
         String tempResponse = responseFeatureType.getCapabilitiesXml( responseVersion );
         
         try {

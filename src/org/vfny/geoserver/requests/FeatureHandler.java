@@ -87,7 +87,7 @@ public class FeatureHandler
                 String value = atts.getValue(i);
                 LOGGER.finest("found attribute '" + name + "'=" + value);
                 if(name.equals("typeName")) {
-                    currentQuery.setFeatureTypeName(value);
+                    currentQuery.setTypeName(value);
                 } else if(name.equals("handle")) {
                     currentQuery.setHandle(value);
                 }
