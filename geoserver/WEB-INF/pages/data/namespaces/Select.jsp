@@ -2,32 +2,28 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table border=0 width=100%>
-	<html:form action="/config/data/namespaceSelect">
-		<tr><td>
-			<bean:message key="label.namespaces"/>:
-		</td><td>
-			<html:select property="selectedNamespace">
-				<html:options property="namespaces"/>
-			</html:select>
-		</td></tr>
-		<tr><td>&nbsp;</td>
-		<td>
-			<html:submit property="action">
-				<bean:message key="label.edit"/>
-			</html:submit>
-			<html:submit property="action">
-				<bean:message key="label.delete"/>
-			</html:submit>
-		</td></tr>
-		
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<html:link forward="config.data.namespace.new">
-					<bean:message key="label.createNewNamespace"/>
-				</html:link>
-			</td>	
-		</tr>		
-	</html:form>
+<html:form action="/config/data/namespaceSelect">
+<table class="info">
+  <tr>
+    <td class="label">
+      <bean:message key="label.namespaces"/>:
+    </td
+    <td class="datum">
+      <html:select property="selectedNamespace">
+        <html:options property="namespaces"/>
+      </html:select>
+    </td>
+  </tr>
+  <tr>
+    <td class="label">&nbsp;</td>
+	<td>
+       <html:submit property="action">
+         <bean:message key="label.edit"/>
+       </html:submit>
+       <html:submit property="action">
+         <bean:message key="label.delete"/>
+       </html:submit>
+    </td>
+  </tr>			
 </table>
+</html:form>
