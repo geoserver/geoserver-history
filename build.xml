@@ -24,7 +24,6 @@
   <property name="dir.release" value="${basedir}/release"/>
 
   <!-- secondary directories -->
-  <property name="dir.jsp" value="${dir.misc}/jsp"/>
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
   <property name="dir.data" value="${dir.misc}/data"/>
   <property name="dir.testsJar" 
@@ -440,6 +439,35 @@
       </fileset>
     </copy>
 
+     <mkdir dir="${basedir}/data/capabilities/wfs"/>
+    <mkdir dir="${basedir}/data/capabilities/wfs/1.0.0"/>
+    <copy todir="${basedir}/data/capabilities/wfs/1.0.0">
+      <fileset dir="${dir.misc}/documents/schemas">
+        <include name="WFS-capabilities.xsd"/>
+        <include name="WFS-transaction.xsd"/>
+        <include name="WFS-basic.xsd"/>
+      </fileset>
+    </copy>
+
+    <mkdir dir="${basedir}/data/capabilities/filter/1.0.0"/>
+    <copy todir="${basedir}/data/capabilities/filter/1.0.0">
+      <fileset dir="${dir.misc}/documents/schemas">
+        <include name="expr.xsd"/>
+        <include name="filter.xsd"/>
+        <include name="filterCapabilities.xsd"/>
+      </fileset>
+    </copy>
+ 
+    
+    <mkdir dir="${basedir}/data/capabilities/gml/2.1.2"/>
+    <copy todir="${basedir}/data/capabilities/gml/2.1.2">
+      <fileset dir="${dir.misc}/documents/schemas">
+        <include name="feature.xsd"/>
+        <include name="geometry.xsd"/>
+        <include name="xlinks.xsd"/>
+      </fileset>
+    </copy>
+
     <!-- make feature types directory and populate -->
     <mkdir dir="${basedir}/data/featureTypes"/>
     <copy todir="${basedir}/data">
@@ -463,8 +491,7 @@
         <exclude name="**/servlets/utilities/**" />
         <exclude name="**/EmbeddedTomcat.class" />
       </classes>
-      <classes dir="${dir.jsp}"/>
-
+      
       <!-- libraries -->
       <lib dir="${dir.lib}">
         <exclude name="**/junit.jar" />
