@@ -140,16 +140,16 @@
         <action
             path="/Welcome"
             type="org.apache.struts.actions.ForwardAction"
-            parameter="/WEB-INF/pages/Welcome.jsp"/>
+            parameter="main.welcome"/>
             
         <action
         	path ="/MainMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="/WEB-INF/pages/MainMenu.jsp"/>
+        	parameter="main.menu"/>
         <action
         	path="/SystemConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="/WEB-INF/pages/SystemConfigMenu.jsp"/>
+        	parameter="main.system.config.menu"/>
         <action
         	path="/WFSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
