@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.1.2.1 2003/11/29 08:48:47 groldan Exp $
+ * @version $Id: SVGEncoder.java,v 1.1.2.2 2003/11/29 10:03:08 groldan Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -69,6 +69,7 @@ public class SVGEncoder {
      * graphics is needed for a single layer
      */
     private boolean collectGeometries = false;
+
     private boolean abortProcess = false;
 
     /**
@@ -467,12 +468,12 @@ public class SVGEncoder {
      * @throws IOException DOCUMENT ME!
      */
     private void writeClosedPath(Coordinate[] coords) throws IOException {
-        ////writer.write("<path ");
-        ////writer.write("d=\"");
+        writer.write("<path ");
+        writer.write("d=\"");
         writePathContent(coords);
         writer.write("Z");
 
-        ////writer.write("\"/>\n");
+        writer.write("\"/>\n");
     }
 
     /**
@@ -680,16 +681,16 @@ public class SVGEncoder {
         int n = mpoly.getNumGeometries();
         com.vividsolutions.jts.geom.Polygon poly;
 
-        ////writer.write("<path ");
-        ////writeId();
-        ////writeAttributes();
-        ////writer.write("d=\"");
+        writer.write("<path ");
+        writeId();
+        writeAttributes();
+        writer.write("d=\"");
         for (int i = 0; i < n; i++) {
             poly = (com.vividsolutions.jts.geom.Polygon) mpoly.getGeometryN(i);
             writePolyContent(poly);
         }
 
-        ////writer.write("\"/>");
+        writer.write("\"/>");
         writer.newline();
     }
 
@@ -773,7 +774,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(
