@@ -82,8 +82,8 @@ import java.util.Set;
  * </p>
  *
  * @author bowens, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.6 2004/01/31 00:24:05 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationProcessor.java,v 1.7 2004/02/03 18:39:38 dmzwiers Exp $
  */
 public class ValidationProcessor {
     // These are no longer used for Integrity Validation tests
@@ -97,6 +97,8 @@ public class ValidationProcessor {
     //	of integrity validation tests
     ArrayList modifiedFeatureTypes; // a list of feature types that have been modified
 
+    private HashMap errors;
+    
     /**
      * ValidationProcessor constructor.
      * 
@@ -107,6 +109,7 @@ public class ValidationProcessor {
     public ValidationProcessor() {
         featureLookup = new HashMap();
         integrityLookup = new HashMap();
+        errors = new HashMap();
     }
 
     /**
@@ -122,6 +125,7 @@ public class ValidationProcessor {
     public ValidationProcessor(Map testSuites, Map plugIns) {
         featureLookup = new HashMap();
         integrityLookup = new HashMap();
+        errors = new HashMap();
 
         // TODO this method body
         // step 1 make a list required plug-ins
@@ -131,13 +135,16 @@ public class ValidationProcessor {
         while (i.hasNext()) {
             TestSuiteDTO dto = (TestSuiteDTO) testSuites.get(i.next());
             Iterator j = dto.getTests().keySet().iterator();
-
             while (j.hasNext()) {
                 TestDTO tdto = (TestDTO) dto.getTests().get(j.next());
                 plugInNames.add(tdto.getPlugIn().getName());
             }
         }
 
+        i = plugIns.values().iterator();
+        while(i.hasNext())
+        	errors.put(i.next(),Boolean.FALSE);
+        
         // step 2 configure plug-ins with defaults
         Map defaultPlugIns = new HashMap(plugInNames.size());
         i = plugInNames.iterator();
@@ -151,6 +158,7 @@ public class ValidationProcessor {
                 plugInClass = Class.forName(dto.getClassName());
             } catch (ClassNotFoundException e) {
                 //Error, using default.
+            	errors.put(dto,e);
             	e.printStackTrace();
             }
 
@@ -170,10 +178,11 @@ public class ValidationProcessor {
                 defaultPlugIns.put(plugInName, plugIn);
             } catch (ValidationException e) {
                 e.printStackTrace();
-
+                errors.put(dto,e);
                 //error should log here
                 continue;
             }
+            errors.put(dto,Boolean.TRUE);
         }
 
         // step 3 configure plug-ins with tests + add to processor
@@ -216,49 +225,15 @@ public class ValidationProcessor {
                     }
                 } catch (ValidationException e) {
                     e.printStackTrace();
-
+                    errors.put(dto,e);
                     //error should log here
                     continue;
                 }
+                errors.put(dto,Boolean.TRUE);
             }
+            errors.put(tdto,Boolean.TRUE);
         }
     }
-
-    /**
-     * testInit
-     * 
-     * <p>
-     * Sets up several Feature and Integrity tests. This method is called if
-     * the user passes TRUE into the ValidationProcessor constructor. The
-     * purpose of this method is to set up test examples.
-     * </p>
-     */
-    /*private void testInit() {
-        // create a feature validation tests
-        IsValidGeometryValidation isValidFV = new IsValidGeometryValidation("isValidALL",
-                "Tests to see if a geometry is valid");
-        IsValidGeometryValidation isValidFV_roads = new IsValidGeometryValidation("isValidRoads",
-                "Tests to see if a geometry is valid");
-
-        // add them to the featureLookup map
-        addToFVLookup(isValidFV);
-        addToFVLookup(isValidFV_roads);
-
-        // create integrity validation tests
-        UniqueFIDValidation uniqueFID = new UniqueFIDValidation("uniqueFID",
-                "Checks if each feature has a unique ID", Validation.ALL, "FID");
-        UniqueFIDValidation uniqueFID_rivers = new UniqueFIDValidation("uniqueFID_rivers",
-                "Checks if each feature has a unique ID",
-                new String[] { "river" }, "FID");
-        UniqueFIDValidation uniqueFID_road = new UniqueFIDValidation("uniqueFID_road",
-                "Checks if each feature has a unique ID",
-                new String[] { "road" }, "FID");
-
-        // add them to the integrityLookup map
-        addToIVLookup(uniqueFID);
-        addToIVLookup(uniqueFID_rivers);
-        addToIVLookup(uniqueFID_road);
-    }*/
 
     /**
      * addToLookup
@@ -533,4 +508,13 @@ public class ValidationProcessor {
 
         // end for each modified featureType
     }
+	/**
+	 * Access errors property.
+	 * 
+	 * @return Returns the errors.
+	 */
+	public HashMap getErrors() {
+		return errors;
+	}
+
 }
