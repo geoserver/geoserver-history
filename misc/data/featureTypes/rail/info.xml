@@ -1,20 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?> 
 <featureType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<Name>rail</Name>
-	<Title>NYC Rail Centerlines</Title>
-	<Abstract>This is a simple rail coverage from the New York City basemap.</Abstract>
-	<Keywords>OWS1, rail, railroad, World Trade Center, New York City</Keywords>
-	<SRS>-1</SRS>
-	<Operations/>
-	<LatLonBoundingBox minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
-	<MetadataURL>
-    <url>http://www.openplans.org/geoserver/data/rail/metadata.html</url>
-    <format>HTML</format>
-    <type>FGDC</type>
-  </MetadataURL>
-	<Host>localhost</Host>
-	<Port>5432</Port>
-	<DatabaseName>test</DatabaseName>
-	<User>test</User>
-	<Password>test</Password>
-</featureType>
+     <Name>rail</Name> 
+    <Title>NYC Rail Centerlines</Title> 
+    <Abstract>This is a simple rail coverage from the New York City basemap.</Abstract> 
+    <Keywords>OWS1, rail, railroad, New York City</Keywords> 
+    <SRS>32118</SRS> 
+    <LatLonBoundingBox minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000" /> 
+    <DatasourceParams>
+       <host>localhost</host> 
+       <port>5432</port> 
+       <database>testdb</database> 
+       <user>test</user> 
+       <passwd>test</passwd> 
+       <table>road</table> 
+       <dbtype>postgis</dbtype> 
+    </DatasourceParams>
+ </featureType>
