@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.7 2004/02/09 23:29:49 dmzwiers Exp $
+ * @version $Id: ReaderUtils.java,v 1.8 2004/02/16 22:56:20 dmzwiers Exp $
  *
  * @see XMLConfigReader
  */
@@ -274,6 +274,11 @@ public class ReaderUtils {
      */
     public static String getAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
+    	if(elem == null){
+    		if(mandatory)
+    			throw new NullPointerException();
+    		return "";
+    	}
         Attr att = elem.getAttributeNode(attName);
 
         String value = null;
@@ -318,7 +323,8 @@ public class ReaderUtils {
     public static boolean getBooleanAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
         String value = getAttribute(elem, attName, mandatory);
-
+        if(value == null || value == "")
+        	return true;
         return Boolean.valueOf(value).booleanValue();
     }
 
@@ -546,6 +552,8 @@ public class ReaderUtils {
     public static double getDoubleAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
         String value = getAttribute(elem, attName, mandatory);
+        if(value==null || value=="")
+        	return 0.0;
 
         double d = Double.NaN;
 

@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.27 2004/02/16 21:42:11 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.28 2004/02/16 22:56:21 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -714,9 +714,25 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     		ft = fs.getSchema();
     		String[] baseNames = getRequiredBaseAttributes();
     		AttributeType[] attributes = new AttributeType[schema.size()+baseNames.length];
+    		int errors = 0;
     		for(;count<baseNames.length;count++){
-    			attributes[count] = ft.getAttributeType(baseNames[count]);
+    			attributes[count-errors] = ft.getAttributeType(baseNames[count]);
+    			if (attributes[count-errors] == null) {
+    				// desired base attr is not availiable
+    				errors++;
+    			}
     		}
+    		
+    		if(errors!=0){
+    		  //resize array;
+    			AttributeType[] tmp = new AttributeType[attributes.length-errors];
+    			count = count-errors;
+    			for(int i=0;i<count;i++){
+    				tmp[i] = attributes[i];
+    			}
+    			attributes = tmp;
+    		}
+    		
             for (Iterator i = schema.iterator(); i.hasNext();) {
             	AttributeTypeInfo ati = (AttributeTypeInfo)i.next();
             	String attName = ati.getName();
@@ -741,10 +757,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     
     private String[] getRequiredBaseAttributes(){
     	if("AbstractFeatureType".equals(schemaBase)){
-    		return new String[] {"description","name"};
+    		return new String[] {"description","name","boundedBy"};
     	}
     	if("AbstractFeatureCollectionBaseType".equals(schemaBase)){
-    		return new String[] {"description","name"};
+    		return new String[] {"description","name","boundedBy"};
     	}
     	if("GeometryPropertyType".equals(schemaBase)){
     		return new String[] {"geometry"};

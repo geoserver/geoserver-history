@@ -63,7 +63,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.33 2004/02/16 21:42:09 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.34 2004/02/16 22:56:03 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -932,13 +932,15 @@ public class XMLConfigReader {
         ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
 
         String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
-        List l = new LinkedList();
-        String[] ss = keywords.split(",");
+        if(keywords!=null){
+        	List l = new LinkedList();
+        	String[] ss = keywords.split(",");
 
-        for (int i = 0; i < ss.length; i++)
-            l.add(ss[i].trim());
+        	for (int i = 0; i < ss.length; i++)
+            	l.add(ss[i].trim());
 
-        ft.setKeywords(l);
+        	ft.setKeywords(l);
+        }
         ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
         ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
                     true)));
