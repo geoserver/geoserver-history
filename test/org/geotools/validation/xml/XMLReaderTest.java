@@ -9,6 +9,7 @@ package org.geotools.validation.xml;
 import junit.framework.TestCase;
 import java.io.*;
 import java.net.*;
+import java.util.*;
 import org.geotools.validation.dto.*;
 /**
  * XMLReaderTest purpose.
@@ -33,7 +34,7 @@ import org.geotools.validation.dto.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLReaderTest.java,v 1.1 2004/01/20 00:52:30 dmzwiers Exp $
+ * @version $Id: XMLReaderTest.java,v 1.2 2004/01/20 19:50:23 dmzwiers Exp $
  */
 public class XMLReaderTest extends TestCase {
 	public XMLReaderTest(){
@@ -45,7 +46,7 @@ public class XMLReaderTest extends TestCase {
 	
 	public void testReadPlugIn(){
 		try{
-			FileReader fr = new FileReader("C:/Java/workspace/geoserver/conf/plugins/Constraint.xml");;
+			FileReader fr = new FileReader("C:/Java/workspace/geoserver/conf/plugins/Constraint.xml");
 			PlugInDTO dto = XMLReader.readPlugIn(fr);
 			assertNotNull("Error if null",dto);
 			assertTrue("Name read","Constraint".equals(dto.getName()));
@@ -56,6 +57,52 @@ public class XMLReaderTest extends TestCase {
 			assertTrue("Arg. name",dto.getArgs().containsKey("tempDirectory"));
 			assertTrue("Arg. value : "+dto.getArgs().get("tempDirectory"),dto.getArgs().containsValue(new URI("file:///c:/temp")));
 		}catch(Exception e){
+			fail(e.toString());
+		}
+	}
+	
+	public void testReadTestSuite(){
+		try{
+			//set-up
+			FileReader fr = new FileReader("C:/Java/workspace/geoserver/conf/plugins/Constraint.xml");
+			Map m = new HashMap();
+			PlugInDTO dto = XMLReader.readPlugIn(fr);
+			m.put(dto.getName(),dto);
+			fr = new FileReader("C:/Java/workspace/geoserver/conf/plugins/NameInList.xml");
+			dto = XMLReader.readPlugIn(fr);
+			m.put(dto.getName(),dto);
+			
+			
+			fr = new FileReader("C:/Java/workspace/geoserver/conf/validation/RoadTestSuite.xml");
+			TestSuiteDTO testsuite = XMLReader.readTestSuiteDTO(fr,m);
+			assertTrue("TestSuite Name read","RoadTestSuite".equals(testsuite.getName()));
+			// multi line so cannot effectively test
+			/*assertTrue("TestSuite Description read",("This test suite checks each road name to see \n"+
+					"that they are of appropriate length and checks to \n"+
+					"see if they are on the list of possible road names.\n"+
+					"It also checks to see if any roads are contained in\n"+
+					"a specified box.").equals(testsuite.getDescription()));*/
+			
+			TestDTO test = (TestDTO)testsuite.getTests().get(0);
+			//cannot assure order, nor is it important
+			
+			if(!("NameLookup".equals(test.getName()))){
+				test = (TestDTO)testsuite.getTests().get(1);
+			}
+			assertTrue("Test Name read","NameLookup".equals(test.getName()));
+			// multi line so cannot effectively test
+			// assertTrue("Test Description read","Checks to see if the road name is in the list of possible names.".equals(test.getDescription()));
+			assertNotNull("Should not be null",test.getPlugIn());
+			assertTrue("Test plugInName read","NameInList".equals(test.getPlugIn().getName()));
+			
+			assertNotNull("Should be one arg.",test.getArgs());
+			assertTrue("Should be one arg.",test.getArgs().size()==2);
+			assertTrue("Arg. name",test.getArgs().containsKey("LUTName"));
+			// multi line so cannot effectively test
+			//assertTrue("Arg. value : "+test.getArgs().get("LUTName"),test.getArgs().containsValue("RoadNameLUT.xls"));
+			
+		}catch(Exception e){
+			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
