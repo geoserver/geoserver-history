@@ -81,7 +81,15 @@ data.
       <fees>NONE</fees>
       <accessConstraints>NONE</accessConstraints>
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
-      <gmlPrefixing value="true"/>
+      <!-- Sets whether name, description and boundedBy elements should   -->
+      <!-- have a gml: prefix instead of the standard one for the feature -->
+      <!-- It is a bit of a hack, and should generally only be used with  -->
+      <!-- the cite tests for now.  In the future it should all be done   -->
+      <!-- automatically -->
+      <gmlPrefixing value="false"/>
+      <!-- Sets the service level ie whether transaction operations are   -->
+      <!-- enabled or not.  -->
+      <serviceLevel>Complete</serviceLevel>
     </service>
 
     <service type="WMS" enabled="true">
