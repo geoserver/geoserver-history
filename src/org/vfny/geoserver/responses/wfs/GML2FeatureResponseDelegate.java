@@ -4,22 +4,26 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.data.*;
-import org.geotools.gml.producer.*;
-import org.geotools.gml.producer.FeatureTransformer.*;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.global.*;
-import org.vfny.geoserver.requests.wfs.*;
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import javax.xml.transform.*;
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureResults;
+import org.geotools.gml.producer.FeatureTransformer;
+import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.requests.wfs.FeatureRequest;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
+import javax.xml.transform.TransformerException;
 
 
 /**
  * handles the encoding the results of a GetFeature or GetFeatureWithLock
  * request's results to GML2 and GML2.gz formats.
- *
+ * 
  * <p>
  * GML2.gz format is just GML2 with gzip compression. If GML2.gz format was
  * requested, <code>getContentEncoding()</code> will retutn
@@ -27,30 +31,30 @@ import javax.xml.transform.*;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.1 2004/03/10 23:39:06 groldan Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.2 2004/03/12 10:19:44 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     /**
      * This is a "magic" class provided by Geotools that writes out GML for an
      * array of FeatureResults.
-     *
+     * 
      * <p>
      * This class seems to do all the work, if you have a problem with GML you
      * will need to hunt it down. We supply all of the header information in
      * the execute method, and work through the featureList in the writeTo
      * method.
      * </p>
-     *
+     * 
      * <p>
      * This value will be <code>null</code> until execute is called.
      * </p>
      */
     private FeatureTransformer transformer;
 
-    /**will be true if GML2.gz output format was requested*/
+    /** will be true if GML2.gz output format was requested */
     private boolean compressOutput = false;
 
-    /**the results of a getfeature request wich this object will encode as GML2*/
+    /** the results of a getfeature request wich this object will encode as GML2 */
     private GetFeatureResults results;
 
     /**
@@ -199,13 +203,13 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
 
         try {
             transformer.transform(featureResults, output);
+
             //we need to "finish" here because if not,it is possible that the gzipped
             //content do not gets completely written
-            if(gzipOut != null){
-              gzipOut.finish();
-              gzipOut.flush();
+            if (gzipOut != null) {
+                gzipOut.finish();
+                gzipOut.flush();
             }
-
         } catch (TransformerException gmlException) {
             ServiceException serviceException = new ServiceException(results.getRequest()
                                                                             .getHandle()
