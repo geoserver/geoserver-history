@@ -33,7 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.9 2004/04/06 11:32:34 cholmesny Exp $
+ * @version $Id: ReaderUtils.java,v 1.10 2004/09/13 16:04:26 cholmesny Exp $
  *
  * @see XMLConfigReader
  */
@@ -68,7 +68,7 @@ public class ReaderUtils {
     public static Element loadConfig(Reader configFile)
         throws ConfigurationException {
         try {
-            LOGGER.fine("loading configuration file " + configFile);
+            LOGGER.finer("loading configuration file " + configFile);
 
             InputSource in = new InputSource(configFile);
             DocumentBuilderFactory dfactory = DocumentBuilderFactory
@@ -138,7 +138,7 @@ public class ReaderUtils {
             throw new ConfigurationException("File is not valid:" + file);
         }
 
-        LOGGER.fine("File is valid: " + file);
+        LOGGER.finer("File is valid: " + file);
 
         return file;
     }
