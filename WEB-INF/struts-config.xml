@@ -480,7 +480,7 @@
         	input="/config/data/storeSelect"/>
 
         <action
-        	path="/config/data/storeNew"
+        	path="/config/data/storeNewSubmit"
         	type="org.vfny.geoserver.action.data.DataDataStoresNewAction"
         	name="dataDataStoresNewForm"
         	scope="request"
@@ -532,7 +532,7 @@
         	validate="true"
         	input="config/data/featureType"/>   
          <action
-        	path="/config/data/featureTypeNew"
+        	path="/config/data/featureTypeNewSubmit"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesNewAction"
         	name="dataFeatureTypesNewForm"
         	scope="request"

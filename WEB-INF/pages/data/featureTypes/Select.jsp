@@ -5,7 +5,7 @@
 <table border=1 width=100%>
 <tr><td>
 <table border=0 width=100%>
-	<html:form action="/config/data/featureTypesSelect">
+	<html:form action="/config/data/featureTypeSelect">
 
 	<tr><td align="right" valign="top">
 		<bean:message key="label.featureTypes"/>:
