@@ -324,3 +324,17 @@ td.datum text {
 td.datum password {
  font-family: serif;
 }
+
+td.greyedout  {
+font-family: serif;
+text-align: right;
+color:rgb(150,150,150)
+}
+
+td.greyedout2  {
+font-family: serif;
+color:rgb(150,150,150)
+}
+
+
+
