@@ -47,10 +47,10 @@ public class WmsException extends ServiceException {
      * @param message The message for the .
      * @param locator The message for the .
      */
-    public WmsException(String message, String locator) {
+    public WmsException(String message, String code) {
         super(message);
 
-        this.locator = locator;
+        this.code = code;
     }
 
     /**
