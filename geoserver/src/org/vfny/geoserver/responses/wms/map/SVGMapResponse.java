@@ -19,7 +19,7 @@ import java.util.*;
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.1.2.2 2003/11/16 19:29:39 groldan Exp $
+ * @version $Id: SVGMapResponse.java,v 1.1.2.3 2003/11/19 18:23:00 groldan Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
     /** DOCUMENT ME!  */
@@ -37,6 +37,25 @@ public class SVGMapResponse extends GetMapDelegate {
     public String getContentType() {
         return MIME_TYPE;
     }
+
+    public List getSupportedFormats()
+    {
+      return Collections.singletonList(MIME_TYPE);
+    }
+
+    /**
+     * evaluates if this Map producer can generate the map format specified
+     * by <code>mapFormat</code>
+     *
+     * @param mapFormat the mime type of the output map format requiered
+     *
+     * @return true if class can produce a map in the passed format
+     */
+    public boolean canProduce(String mapFormat)
+    {
+      return mapFormat.startsWith("image/svg");
+    }
+
 
     public void abort()
     {
@@ -62,7 +81,7 @@ public class SVGMapResponse extends GetMapDelegate {
 
         //fast an easy way of configuring the SVG coordinates traslation
         //I assume that feature results are almost accurate with the bbox requested
-        //svgEncoder.setReferenceSpace(getRequest().getBbox());
+        svgEncoder.setReferenceSpace(getRequest().getBbox());
         svgEncoder.setWidth(String.valueOf(request.getWidth()));
         svgEncoder.setHeight(String.valueOf(request.getHeight()));
     }
@@ -79,10 +98,9 @@ public class SVGMapResponse extends GetMapDelegate {
         FeatureResults layer;
 
         try {
-            Writer writer = new OutputStreamWriter(out);
-            svgEncoder.encode(requestedLayers, resultLayers, writer);
+            svgEncoder.encode(requestedLayers, resultLayers, out);
         } catch (IOException ex) {
-            throw new WmsException(ex, "Error writing SVG",
+            throw new WmsException(ex, "Error writing SVG: " + ex.getMessage(),
                 getClass().getName() + "::writeTo()");
         }
     }

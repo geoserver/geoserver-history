@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.responses.wms.map;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -20,15 +24,13 @@ import java.util.*;
  * @author Gabriel Roldán
  * @version $revision$
  */
-public abstract class GetMapDelegate implements Response
-{
+public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
 
     /**
      * Creates a new GetMapDelegate object.
      */
-    public GetMapDelegate()
-    {
+    public GetMapDelegate() {
     }
 
     /**
@@ -38,8 +40,7 @@ public abstract class GetMapDelegate implements Response
      *
      * @throws ServiceException DOCUMENT ME!
      */
-    public void execute(Request request) throws ServiceException
-    {
+    public void execute(Request request) throws ServiceException {
         execute((GetMapRequest) request);
     }
 
@@ -51,34 +52,25 @@ public abstract class GetMapDelegate implements Response
      * @throws ServiceException DOCUMENT ME!
      * @throws WmsException DOCUMENT ME!
      */
-    protected void execute(GetMapRequest request) throws ServiceException
-    {
+    protected void execute(GetMapRequest request) throws ServiceException {
         this.request = request;
 
         FeatureTypeConfig[] layers = request.getLayers();
-
         List styles = request.getStyles();
-
         Query[] queries = buildQueries(layers, request.getFilters());
-
         int nLayers = layers.length;
-
         FeatureResults[] resultLayers = new FeatureResults[nLayers];
         FeatureTypeConfig ftype = null;
         Filter filter = null;
         FeatureResults features = null;
 
-        try
-        {
-            for (int i = 0; i < nLayers; i++)
-            {
+        try {
+            for (int i = 0; i < nLayers; i++) {
                 ftype = layers[i];
                 features = ftype.getFeatureSource().getFeatures(queries[i]);
                 resultLayers[i] = features;
             }
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             throw new WmsException(ex, "Error getting features",
                 getClass().getName() + ".execute()");
         }
@@ -108,24 +100,21 @@ public abstract class GetMapDelegate implements Response
      * @throws WmsException DOCUMENT ME!
      */
     private Query[] buildQueries(FeatureTypeConfig[] layers, Filter[] filters)
-        throws WmsException
-    {
+        throws WmsException {
         int nLayers = layers.length;
         Query[] queries = new Query[nLayers];
         GetMapRequest request = getRequest();
         Envelope requestExtent = request.getBbox();
         FilterFactory ffactory = FilterFactory.createFilterFactory();
 
-        try
-        {
+        try {
             GeometryFilter bboxFilter;
             Filter requestLayerFilter;
             Filter finalLayerFilter;
             int numFilters = (filters == null) ? 0 : filters.length;
             Query layerQuery;
 
-            for (int i = 0; i < nLayers; i++)
-            {
+            for (int i = 0; i < nLayers; i++) {
                 FeatureType schema = layers[i].getSchema();
                 bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
 
@@ -134,16 +123,12 @@ public abstract class GetMapDelegate implements Response
                         schema.getDefaultGeometry().getName());
                 bboxFilter.addLeftGeometry(geomAttExpr);
                 bboxFilter.addRightGeometry(bboxExpr);
-
                 requestLayerFilter = (numFilters == nLayers) ? filters[i] : null;
 
                 if ((requestLayerFilter == null)
-                        || (requestLayerFilter == Filter.NONE))
-                {
+                        || (requestLayerFilter == Filter.NONE)) {
                     finalLayerFilter = bboxFilter;
-                }
-                else
-                {
+                } else {
                     finalLayerFilter = ffactory.createLogicFilter(AbstractFilter.LOGIC_AND);
                     ((LogicFilter) finalLayerFilter).addFilter(bboxFilter);
                     ((LogicFilter) finalLayerFilter).addFilter(requestLayerFilter);
@@ -153,9 +138,7 @@ public abstract class GetMapDelegate implements Response
                 layerQuery = new DefaultQuery(finalLayerFilter, props);
                 queries[i] = layerQuery;
             }
-        }
-        catch (IllegalFilterException ex)
-        {
+        } catch (IllegalFilterException ex) {
             throw new WmsException(ex,
                 "Can't build layer queries: " + ex.getMessage(),
                 getClass().getName() + "::parseFilters");
@@ -193,8 +176,7 @@ public abstract class GetMapDelegate implements Response
      *       AttributeExpression's?). I think that the style should be taken
      *       in count too.
      */
-    private String[] guessProperties(FeatureTypeConfig layer, Filter filter)
-    {
+    private String[] guessProperties(FeatureTypeConfig layer, Filter filter) {
         FeatureType type = layer.getSchema();
         String[] properties = new String[1];
         properties[0] = type.getDefaultGeometry().getName();
@@ -207,8 +189,19 @@ public abstract class GetMapDelegate implements Response
      *
      * @return DOCUMENT ME!
      */
-    protected GetMapRequest getRequest()
-    {
+    protected GetMapRequest getRequest() {
         return this.request;
     }
+
+    /**
+     * evaluates if this Map producer can generate the map format specified
+     * by <code>mapFormat</code>
+     *
+     * @param mapFormat the mime type of the output map format requiered
+     *
+     * @return true if class can produce a map in the passed format
+     */
+    public abstract boolean canProduce(String mapFormat);
+
+    public abstract List getSupportedFormats();
 }
