@@ -12,19 +12,20 @@ package org.vfny.geoserver.global.dto;
  * we have three types of information to store, Schema defined types, 
  * references and extentions on types. If the type represented is either 
  * a reference or a Schema defined type  then isRef should be true. 
- * 
- * If isRef is true then we have one of two situations. If the name is 
- * not specified then the type represents a "ref='gml:xyz'", otherwise 
- * it's of the form "name='foo'" and "type='bar'". 
- * 
- * The third case isRef is false, "name='foo'" and type contains an XML 
- * fragment defining the type.
- * 
- * minOccurs, maxOccurs and nillable are all attributes for all cases.
  * <p>
+ * If isRef is true then we have one of two situations. If the name is 
+ * not specified then the type represents a "<code>ref='gml:xyz'</code>", otherwise 
+ * it's of the form "<code>name='foo'</code>" and "<code>type='bar'</code>".<br> 
+ * The third case isRef is false, "<code>name='foo'</code>" and type contains an XML 
+ * fragment defining the type.
+ * </p>
+ * <p>
+ * minOccurs, maxOccurs and nillable are all attributes for all cases. There is
+ * more stuff in the XMLSchema spec but we don't care.
+ * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.1.2.1 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.1.2.2 2004/01/09 21:50:27 jive Exp $
  */
 public class AttributeTypeInfoDTO  implements DataTransferObject {
 	/** attribute name*/
