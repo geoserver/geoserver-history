@@ -19,7 +19,7 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  * appropriate internal CapabilitiesRequest object, upon request.
  *
  * @author Rob Hranac, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n, Axios Engineering
  * @version $Id: CapabilitiesKvpReader.java,v 1.7 2004/02/09 23:29:47 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {

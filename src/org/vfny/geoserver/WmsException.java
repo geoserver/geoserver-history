@@ -5,6 +5,8 @@
 package org.vfny.geoserver;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Requests;
 
 /**
@@ -12,10 +14,16 @@ import org.vfny.geoserver.requests.Requests;
  * exception that wms clients will expect.  All errors should be wrapped in
  * this before returning to clients.
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: WmsException.java,v 1.7 2004/09/08 17:34:04 cholmesny Exp $
  */
 public class WmsException extends ServiceException {
+	
+	/**
+	 * The fixed MIME type of a WMS exception.
+	 */
+	private static final String SE_XML = "application/vnd.ogc.se_xml";
+	
     /**
      * Empty constructor.
      */
@@ -92,4 +100,14 @@ public class WmsException extends ServiceException {
 
         return returnXml.toString();
     }
+    
+    /**
+     * Returns the MIME type of a WMS exception.
+     * 
+     * @return <code>"application/vnd.ogc.se_xml"</code>
+     */
+    public String getMimeType(GeoServer geoserver){
+    	return SE_XML;
+    }
+    
 }
