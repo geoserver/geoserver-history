@@ -1,0 +1,67 @@
+<web-app>
+  <welcome-file-list>default.jsp</welcome-file-list>
+  <classpath id='WEB-INF/classes/org/vfny/geoserver/servlets' source='/home/rob/wfs/geoserver/source/org/vfny/geoserver/servlets'/>
+  <classpath id='WEB-INF/classes'/>
+
+  <servlet>
+    <servlet-name>FreefsLog</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.FreefsLog</servlet-class>
+    <init-param>
+      <param-name>log4j-init-file</param-name>
+      <param-value>geoserver.log</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>FreefsLog*</url-pattern>
+    <servlet-name>FreefsLog</servlet-name>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>GetCapabilities</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.GetCapabilities</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>GetCapabilities*</url-pattern>
+    <servlet-name>GetCapabilities</servlet-name>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DescribeFeatureType</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.DescribeFeatureType</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>DescribeFeatureType*</url-pattern>
+    <servlet-name>DescribeFeatureType</servlet-name>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>GetFeature</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.GetFeature</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>GetFeature*</url-pattern>
+    <servlet-name>GetFeature</servlet-name>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>TestAuthentication</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.TestAuthentication</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>TestAuthentication*</url-pattern>
+    <servlet-name>TestAuthentication</servlet-name>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Dispatcher</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.Dispatcher</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>wfs*</url-pattern>
+    <servlet-name>Dispatcher</servlet-name>
+  </servlet-mapping>
+
+  <servlet servlet-name='jsp' servlet-class='com.caucho.jsp.JspServlet'/>
+
+</web-app>

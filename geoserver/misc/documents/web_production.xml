@@ -1,0 +1,53 @@
+<web-app>
+  <welcome-file-list>metadata/default.jsp</welcome-file-list>
+  <classpath id='WEB-INF/classes/org/vfny/geoserver/servlets'/>
+
+  <servlet>
+    <servlet-name>FreefsLog</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.FreefsLog</servlet-class>
+    <init-param>
+      <param-name>log4j-init-file</param-name>
+      <param-value>geoserver.log</param-value>
+    </init-param>
+  <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>GetCapabilities</servlet-name>
+    <servlet-class>GetCapabilities</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>GetCapabilities*</url-pattern>
+    <servlet-name>GetCapabilities</servlet-name>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DescribeFeatureType</servlet-name>
+    <servlet-class>DescribeFeatureType</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>DescribeFeatureType*</url-pattern>
+    <servlet-name>DescribeFeatureType</servlet-name>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>GetFeature</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.GetFeature</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>GetFeature*</url-pattern>
+    <servlet-name>GetFeature</servlet-name>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Dispatcher</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.Dispatcher</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <url-pattern>wfs*</url-pattern>
+    <servlet-name>Dispatcher</servlet-name>
+  </servlet-mapping>
+
+  <servlet servlet-name='jsp' servlet-class='com.caucho.jsp.JspServlet'/>
+
+</web-app>

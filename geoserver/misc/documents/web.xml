@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE web-app
+  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+  "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+  <servlet>
+    <servlet-name>FreefsLog</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.FreefsLog</servlet-class>
+    <init-param>
+      <param-name>log4j-init-file</param-name>
+      <param-value>geoserver.log</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>HelloWorld</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.HelloWorld</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HelloWorld</servlet-name>
+    <url-pattern>/HelloWorld/*</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>GetCapabilities</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.GetCapabilities</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>GetFeature</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.GetFeature</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>TestAuthentication</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.TestAuthentication</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>Dispatcher</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.Dispatcher</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FreefsLog</servlet-name>
+    <url-pattern>/FreefsLog</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>GetCapabilities</servlet-name>
+    <url-pattern>/GetCapabilities/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DescribeFeatureType</servlet-name>
+    <url-pattern>/DescribeFeatureType/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>DescribeFeatureType</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.DescribeFeatureType</servlet-class>
+  </servlet>
+
+
+  <servlet-mapping>
+    <servlet-name>GetFeature</servlet-name>
+    <url-pattern>/GetFeature/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>TestAuthentication</servlet-name>
+    <url-pattern>/TestAuthenticationDontUse</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Dispatcher</servlet-name>
+    <url-pattern>/DispatcherDontUse</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list><welcome-file>default.jsp</welcome-file></welcome-file-list>
+
+</web-app>

@@ -1,0 +1,10 @@
+  <Filter_Capabilities>
+    <Spatial_Capabilities>
+      <Spatial_Operators>
+        <BBOX/>
+      </Spatial_Operators>
+    </Spatial_Capabilities>
+    <Scalar_Capabilities>
+      <Logical_Operators/>
+    </Scalar_Capabilities>
+  </Filter_Capabilities>
