@@ -148,6 +148,20 @@ public abstract class NameSpaceElement{
 	 * @return Class instance of the Class object which would best represent this element.
 	 */
 	public abstract Class getJavaClass();
+
+    /**
+     * This is a bit of a hack, so that GeoServer can generate with the best
+     * (default) xml mappings for each Java class.  This should be implemented
+     * the other way around, with a nice lookup table to get the one and only
+     * default.  But this is far easier to implement, as we just add this 
+     * method set to true for the namespace element classes we like best.  If
+     * for some reason we set two NSE's that map to the same java class to true
+     * then things will behave randomly, which is why this is a bit of a hack.
+     * Apologies, it's late, and I need to finish my docs.
+     */
+    public boolean isDefault(){
+	return false;
+    }
     
     /* (non-Javadoc)
 	 * @see java.lang.Object#toString()
