@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.26 2004/04/21 18:16:46 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.27 2004/04/22 03:58:18 emperorkefka Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -160,8 +160,16 @@ public class TransactionResponse implements Response {
         WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS,
                 transactionRequest.getGeoServer().isVerbose());
 
+        //
+        // We are going to preprocess our elements,
+        // gathering all the FeatureSources we need
+        //
         // Map of required FeatureStores by typeName
         Map stores = new HashMap();
+        
+        // Map of required FeatureStores by typeRef (dataStoreId:typeName)
+        // (This will be added to the contents are harmed)
+        Map stores2= new HashMap();
 
         // Gather FeatureStores required by Transaction Elements
         // and configure them with our transaction
@@ -171,50 +179,75 @@ public class TransactionResponse implements Response {
         for (int i = 0; i < request.getSubRequestSize(); i++) {
             SubTransactionRequest element = request.getSubRequest(i);
 
-            //HACK: The insert request does not get the correct typename,
-            //as we can no longer hack in the prefix since we are using the
-            //real featureType.  So this is the only good place to do the
-            //look-up for the internal typename to use.  We should probably
-            //rethink our use of prefixed internal typenames (cdf:bc_roads),
-            //and have our requests actually use a type uri and type name.
-            //Internally we can keep the prefixes, but if we do that then
-            //this will be less hacky and we'll also be able to read in xml
-            //for real, since the prefix should refer to the uri.
+
+            String typeRef = null;
+            String elementName = null;
+            FeatureTypeInfo meta = null;
+            
             if (element instanceof InsertRequest) {
+                
                 Feature feature = ((InsertRequest) element).getFeatures()
                                    .features().next();
 
                 if (feature != null) {
                     String name = feature.getFeatureType().getTypeName();
                     String uri = feature.getFeatureType().getNamespace();
-                    FeatureTypeInfo fti = catalog.getFeatureTypeInfo(name, uri);
-                    String typeName = fti.getDataStoreInfo().getId()+":"+fti.getTypeName();
-                    element.setTypeName(typeName);
+                    
+                    LOGGER.fine("Locating FeatureSource uri:'"+uri+"' name:'"+name+"'");                                       
+                    meta = catalog.getFeatureTypeInfo(name, uri); 
+                
+                    //HACK: The insert request does not get the correct typename,
+                    //as we can no longer hack in the prefix since we are using the
+                    //real featureType.  So this is the only good place to do the
+                    //look-up for the internal typename to use.  We should probably
+                    //rethink our use of prefixed internal typenames (cdf:bc_roads),
+                    //and have our requests actually use a type uri and type name.
+                    //Internally we can keep the prefixes, but if we do that then
+                    //this will be less hacky and we'll also be able to read in xml
+                    //for real, since the prefix should refer to the uri.
+                    //
+                    // JG:
+                    // Transalation Insert does not have a clue about prefix - this provides the clue
+                    element.setTypeName( meta.getNameSpace().getPrefix()+":"+meta.getTypeName() );
+                }
+                else {
+                    LOGGER.finer("Insert was empty - does not need a FeatuerSoruce");
+                	continue; // insert is actually empty
                 }
             }
-
-            String typeName = element.getTypeName();
-
-            if (!stores.containsKey(typeName)) {
-                FeatureTypeInfo meta = catalog.getFeatureTypeInfo(typeName);
-
-                try {
-                    FeatureSource source = meta.getFeatureSource();
-
-                    if (source instanceof FeatureStore) {
-                        FeatureStore store = (FeatureStore) source;
-                        store.setTransaction(transaction);
-                        stores.put(typeName, source);
-                    } else {
-                        throw new WfsTransactionException(typeName
-                            + " is read-only", element.getHandle(),
-                            request.getHandle());
-                    }
-                } catch (IOException ioException) {
-                    throw new WfsTransactionException(typeName
-                        + " is not available:" + ioException,
-                        element.getHandle(), request.getHandle());
+            else {
+                typeRef = null; // unknown at this time
+                elementName = element.getTypeName();
+                if( stores.containsKey( elementName )) {
+                    // already loaded
+                    continue;
                 }
+                LOGGER.fine("Locating FeatureSource '"+elementName+"'...");
+                meta = catalog.getFeatureTypeInfo(elementName);
+            }            
+            typeRef = meta.getDataStoreInfo().getId()+":"+meta.getTypeName();
+            elementName = meta.getNameSpace().getPrefix()+":"+meta.getTypeName();
+            LOGGER.fine("located FeatureType w/ typeRef '"+typeRef+"' and elementName '"+elementName+"'" );                          
+            if (stores.containsKey(elementName)) {
+                // typeName already loaded
+                continue;
+            }
+            try {
+                FeatureSource source = meta.getFeatureSource();
+                if (source instanceof FeatureStore) {
+                    FeatureStore store = (FeatureStore) source;
+                    store.setTransaction(transaction);
+                    stores.put( elementName, source );
+                    stores2.put( typeRef, source );
+                } else {
+                    throw new WfsTransactionException(elementName
+                        + " is read-only", element.getHandle(),
+                        request.getHandle());
+                }
+            } catch (IOException ioException) {
+                throw new WfsTransactionException(elementName
+                    + " is not available:" + ioException,
+                    element.getHandle(), request.getHandle());
             }
         }
 
@@ -365,12 +398,11 @@ public class TransactionResponse implements Response {
                     // we can do something like this:
                     // FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(schema.getTypeName(), schema.getNamespace());
                     // until then (when geos-144 is resolved) we're stuck with:
-                    FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element
-                            .getTypeName());
+                    FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element.getTypeName() );
 
                     // this is possible with the insert hack above.
                     LOGGER.finer("Use featureValidation to check contents of insert" );                    
-                    featureValidation(typeInfo.getDataStoreInfo().getId(), schema, collection);
+                    featureValidation( typeInfo.getDataStoreInfo().getId(), schema, collection );
 
                     Set fids = store.addFeatures(reader);
                     build.addInsertResult(element.getHandle(), fids);
@@ -466,7 +498,7 @@ public class TransactionResponse implements Response {
         // Time for some global Validation Checks against envelope
         //
         try {
-            integrityValidation(stores, envelope);
+            integrityValidation(stores2, envelope);
         } catch (Exception invalid) {
             throw new WfsTransactionException(invalid);
         }
@@ -480,7 +512,7 @@ public class TransactionResponse implements Response {
         FeatureCollection collection)
         throws IOException, WfsTransactionException {
         
-        LOGGER.finer("FeatureValidation called on "+type.getTypeName() ); 
+        LOGGER.finer("FeatureValidation called on "+dsid+":"+type.getTypeName() ); 
         
         ValidationProcessor validation = request.getValidationProcessor();
 		if (validation == null){
@@ -520,7 +552,6 @@ public class TransactionResponse implements Response {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
         }
-		
 
         if (failed.isEmpty()) {
             return; // everything worked out
