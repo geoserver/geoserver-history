@@ -21,7 +21,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.11 2004/02/09 23:29:44 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.12 2004/02/19 18:38:34 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -59,7 +59,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      * @throws SAXException DOCUMENT ME!
      */
     protected void handleService(Service config) throws SAXException {
-        startElement("Service");
+        startService(config);
         indent();
         handleSingleElem("Name", config.getName());
         cReturn();
@@ -89,7 +89,11 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
 
         handleSingleElem("AccessConstraints", accessConstraints);
 
-        endElement("Service");
+        endService(config);
+    }
+    
+    protected void startService(Service config) throws SAXException {
+    	startElement("Service");
     }
 
     /**
