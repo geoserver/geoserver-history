@@ -5,9 +5,14 @@
 package org.vfny.geoserver.zserver;
 
 import java.util.logging.Logger;
+import java.util.Properties;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
- * Helper class that for various parts of the GeoProfile
+ * Helper class for various parts of the GeoProfile.  
  *
  *@author Chris Holmes, TOPP
  *@version $VERSION$
@@ -18,10 +23,13 @@ public class GeoProfile {
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.zserver");
 
+    /** Contains the mappings of use attribute numbers to xpaths */
+    private static Properties useAttributeMap;
+
+
     //maybe make non-static, initialize with props files?
     //then this will hold all the property maps, like for the 
     //conversions from use attribute numbers to xml fields.
-
     public static final int LESS_THAN = 1;
     public static final int LESS_THAN_EQUAL = 2;
     public static final int EQUALS = 3;
@@ -58,7 +66,73 @@ public class GeoProfile {
     
     public static final String BOUNDING_MATCH = MATCH_PREFIX + "bounding";
  
+    //This is so a few of the more important use attributes have default
+    //values, in case the useAttributeMap file is not properly passed in.
+    //REVISIT: put in a full complement of default geoprofile values, and
+    //figure out a way to make this a bit more elegant.  For now these
+    //default values should not be relyed on at all (use setUseAttrMap),
+    //but it would be nice in time to have at least the default use values 
+    //not in a property file.
+    static {
+	if (useAttributeMap == null) {
+	    Properties defaultMap = new Properties();
+	    defaultMap.setProperty
+		("4","//metadata/idinfo/citation/citeinfo/title");
+	    defaultMap.setProperty
+		("31","//metadata/idinfo/citation/citeinfo/pubdate");
+	    defaultMap.setProperty("62","//metadata/idinfo/descript/abstract");
+	    defaultMap.setProperty("1016","/");
+	    defaultMap.setProperty("2060", "bounding");
+	    defaultMap.setProperty("3148", "extent");
+	    useAttributeMap = defaultMap;
+	}
+    }
 
+    /**
+     * Sets the property object that contains the mappings of Use Attribute
+     * numbers to xpaths (and keywords).
+     *
+     * @param useAttributeMape the attribute mapping to use.
+     */
+    public static void setUseAttrMap(Properties useAttrMap){
+	useAttributeMap = useAttrMap;
+    }
+
+    /**
+     * Gets the mappings of the Use Attribute numbers to xpaths.
+     *
+     * @return the current mapping of use attributes.
+     */
+    public static Properties getUseAttrMap(){
+	return useAttributeMap;
+    }
+    
+    /**
+     * Opens the file at pathToPropFile and turns it into a properties object,
+     * using the newly created properties object as the mappings of use
+     * attributes numbers to xpaths and keywords.
+     *
+     * @param pathToPropFile the full path to the file containing the use 
+     * mappings.
+     */
+    public static void setUseAttrMap(String pathToPropFile){
+	File propFile = new File(pathToPropFile);
+	//add defaults for any field?
+	LOGGER.info("setting use map from " + pathToPropFile + " -");
+	Properties propertyList = null;
+	try {
+	    FileInputStream fis = new FileInputStream(propFile);
+	    propertyList = new Properties();
+	    propertyList.load(fis);
+	} catch (FileNotFoundException e) {
+	    LOGGER.warning("File not found: " + e.getMessage());
+	} catch (IOException e) {
+	    LOGGER.warning("IO exception: " + e.getMessage());
+	}
+	if (propertyList != null) {
+	    useAttributeMap = propertyList;
+	}
+    }
 
     /**
      * Returns true if the relation is one of BEFORE,
