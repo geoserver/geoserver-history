@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGWriter.java,v 1.4 2004/04/06 12:12:18 cholmesny Exp $
+ * @version $Id: SVGWriter.java,v 1.5 2004/09/05 17:16:53 cholmesny Exp $
  */
 public class SVGWriter extends OutputStreamWriter {
     private static final Logger LOGGER = Logger.getLogger(SVGWriter.class.getPackage()
@@ -368,7 +368,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      */
     public class SVGFeatureWriterHandler {
         /**
@@ -441,7 +441,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      */
     public class CollectSVGHandler extends SVGFeatureWriterHandler {
         /** DOCUMENT ME! */
@@ -665,7 +665,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      */
     private abstract class SVGFeatureWriter {
         /**
@@ -847,6 +847,8 @@ public class SVGWriter extends OutputStreamWriter {
                 write(getX(p.getX()));
                 write("\" y=\"");
                 write(getY(p.getY()));
+		//Issue GEOS-193, from John Steining.
+                //write(" xlink:href=\"#point\"");
             }
         }
     }
