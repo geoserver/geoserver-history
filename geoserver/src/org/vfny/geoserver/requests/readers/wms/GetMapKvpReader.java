@@ -4,14 +4,7 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
+import com.vividsolutions.jts.geom.Envelope;
 
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
@@ -23,20 +16,121 @@ import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * DOCUMENT ME!
+ * <p>
+ * Mandatory parameters:
+ *
+ * <ul>
+ * <li>
+ * LAYERS
+ * </li>
+ * <li>
+ * STYLES
+ * </li>
+ * <li>
+ * BBOX
+ * </li>
+ * <li>
+ * FORMAT
+ * </li>
+ * <li>
+ * WIDTH
+ * </li>
+ * <li>
+ * HEIGHT
+ * </li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * Optional parameters:
+ *
+ * <ul>
+ * <li>
+ * SRS
+ * </li>
+ * <li>
+ * TRANSPARENT
+ * </li>
+ * <li>
+ * EXCEPTIONS
+ * </li>
+ * <li>
+ * BGCOLOR
+ * </li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * Customized parameters:
+ *
+ * <ul>
+ * <li>
+ * FILTER if present, must contain a list of filters, exactly one per feature
+ * type requested, in the same format as for the <i>FILTER</i> parameter in
+ * WFS's GetFeature request.
+ * </li>
+ * <li>
+ * ATTRIBUTES wich attributes of each layer will be sent as XML attributes in a
+ * SVG map response. The format of this parameter is:
+ * <code>ATTRIBUTES=attName1,attName2,...,attNameN|attName1,
+ * attName2,...,attNameN</code>. Wich means that if it is pressent, a list of
+ * attributes for each layer requested must be specified, separated by "|"
+ * (pipe), and each attribute separated by "," (comma). The following special
+ * attributes are allowed to be queried:
+ *
+ * <ul>
+ * <li>
+ * <b>#FID</b>: a map producer capable of handling attributes will write the
+ * feature id of each feature. For example, SVGMapResponse will write a
+ * polygon by this way: <code>&lt;path id="&lt;featureId&gt;"
+ * d="..."/&gt;</code>
+ * </li>
+ * <li>
+ * <b>#BOUNDS</b>: a map producer capable of handling attributes will write the
+ * bounding box of each feature. For example, SVGMapResponse will write a
+ * polygon by this way: <code>&lt;path bounds="minx miny maxx maxy"
+ * d="..."/&gt;</code>
+ * </li>
+ * </ul>
+ *
+ * </li>
+ * <li>
+ * SVGHEADER expected <code>"true"</code> or <code>"false"</code>, tells wether
+ * the xml header and SVG element must be printed when generating a SVG map
+ * </li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * <strong>NOTE:</strong> if you want to request one of the special attributes
+ * (#FID or #BOUNDS), and you're making the request through HTTP GET method
+ * (such as writing the request in the address text box of your web browser),
+ * be sure to no write the <code>'#'</code> character in it's URL encoded
+ * format, wich is the <code>"<b>%23</b>"</code> literal. For example, instead
+ * of writting <code>ATTRIBUTES=<b>#</b>FID,<b>#</b>BOUNDS</code> you should
+ * write <code>ATTRIBUTES=<b>%23</b>FID,<b>%23</b>BOUNDS</code>
+ * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.8 2004/02/09 23:29:46 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.9 2004/03/14 16:01:32 groldan Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
+    /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers.wms");
 
-    /**the request wich will be built by getRequest method*/
+    /** the request wich will be built by getRequest method */
     private GetMapRequest request;
 
     /**
@@ -52,17 +146,19 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * Produces a <code>GetMapRequest</code> instance by parsing the GetMap
      * mandatory, optional and custom parameters.
      *
-     * @param httpRequest the servlet request who's application object holds the
-     * server configuration
+     * @param httpRequest the servlet request who's application object holds
+     *        the server configuration
      *
      * @return a <code>GetMapRequest</code> completely setted up upon the
      *         parameters passed to this reader
      *
      * @throws ServiceException DOCUMENT ME!
      */
-    public Request getRequest(HttpServletRequest httpRequest) throws ServiceException {
+    public Request getRequest(HttpServletRequest httpRequest)
+        throws ServiceException {
         request = new GetMapRequest();
         request.setHttpServletRequest(httpRequest);
+
         String version = getRequestVersion();
         request.setVersion(version);
 
@@ -174,7 +270,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * <ul>
      * <li>
-     * FILTERS if present, must contain a list of filters, exactly one per
+     * FILTER if present, must contain a list of filters, exactly one per
      * feature type requested, in the same format as for the <i>FILTER</i>
      * parameter in WFS's GetFeature request.
      * </li>
@@ -212,8 +308,61 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                                                      : Boolean.valueOf(svgHeader)
                                                               .booleanValue();
         request.setWriteSvgHeader(writeSvgHeader);
+
+        String collectParam = super.getValue("COLLECT");
+
+        if (collectParam != null) {
+            boolean collect = Boolean.valueOf(collectParam).booleanValue();
+            LOGGER.finer("Request sets collect geometries to: " + collect);
+            request.setCollectGeometries(collect);
+        }
+
+        String genFactorParam = super.getValue("GENERALIZATIONFACTOR");
+
+        if (genFactorParam != null) {
+            double gfactor = 0;
+            LOGGER.finest("Requested generalization factor: " + genFactorParam);
+
+            try {
+                gfactor = Double.parseDouble(genFactorParam);
+                request.setGeneralizationFactor(gfactor);
+            } catch (NumberFormatException ex) {
+                LOGGER.warning(
+                    "parameter GENERALIZATIONFACTOR mus be parseable "
+                    + "as double, got " + genFactorParam);
+            }
+        }
     }
 
+    /**
+     * creates a list of requested attributes, wich must be a valid attribute
+     * name or one of the following special attributes:
+     *
+     * <ul>
+     * <li>
+     * <b>#FID</b>: a map producer capable of handling attributes (such as
+     * SVGMapResponse), will write the feature id of each feature
+     * </li>
+     * <li>
+     * <b>#BOUNDS</b>: a map producer capable of handling attributes (such as
+     * SVGMapResponse), will write the bounding box of each feature
+     * </li>
+     * </ul>
+     *
+     *
+     * @param layers info about the requested map layers
+     *
+     * @return an empty list if no attributes was requested, or a
+     *         <code>List&lt;List&lt;String&gt;&gt;</code> with an entry for
+     *         each requested layer, where each of them consists of a List of
+     *         the attribute names requested
+     *
+     * @throws WmsException if: <ul><li>the number of attribute sets requested
+     *         is not equal to the number of layers requested.</li> <li>an
+     *         illegal attribute name was requested</li> <li>an IOException
+     *         occurs while fetching a FeatureType schema to ask it for
+     *         propper attribute names</li> </ul>
+     */
     private List parseAttributes(FeatureTypeInfo[] layers)
         throws WmsException {
         String rawAtts = getValue("ATTRIBUTES");
@@ -223,6 +372,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             return Collections.EMPTY_LIST;
         }
 
+        //raw list of attributes for each feature type requested
         List byFeatureTypes = super.readFlat(rawAtts, "|");
         int nLayers = layers.length;
 
@@ -232,6 +382,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 getClass().getName() + "::parseAttributes()");
         }
 
+        //fill byFeatureTypes with the split of its raw attributes requested
+        //separated by commas, and check for the validity of each att name
         for (int i = 0; i < nLayers; i++) {
             rawAtts = (String) byFeatureTypes.get(i);
 
@@ -247,7 +399,15 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                     String attName = (String) attIt.next();
 
                     if (attName.length() > 0) {
-                        LOGGER.finer("checking that " + attName + " exists");
+                        LOGGER.finer("checking that " + attName + " is valid");
+
+                        if ("#FID".equalsIgnoreCase(attName)
+                                || "#BOUNDS".equalsIgnoreCase(attName)) {
+                            LOGGER.finer("special attribute name requested: "
+                                + attName);
+
+                            continue;
+                        }
 
                         if (schema.getAttributeType(attName) == null) {
                             throw new WmsException("Attribute '" + attName
@@ -328,7 +488,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         Map configuredStyles = null;
-
         configuredStyles = request.getWMS().getData().getStyles();
 
         String st;
@@ -348,14 +507,20 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         return styles;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param numLayers DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws ServiceException DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
+     */
     private Filter[] parseFilters(int numLayers) throws ServiceException {
         List filtersList = Collections.EMPTY_LIST;
-        String rawFilters = getValue("FILTERS");
+        String rawFilters = getValue("FILTER");
 
-        //String filter = "<Filter><PropertyIsEqualTo><PropertyName>COD_MUNI</PropertyName><Literal>20</Literal></PropertyIsEqualTo></Filter>";
-        //filter = java.net.URLEncoder.encode(filter);
-        //System.out.println("\n'" + filter + "'\n");
-        //encoded = "%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3ECOD_MUNI%3C%2FPropertyName%3E%3CLiteral%3E20%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E"
         if (rawFilters != null) {
             filtersList = super.readFilters(null, rawFilters, null);
 
@@ -388,7 +553,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
         Data catalog = null;
-
         catalog = request.getWMS().getData();
 
         String layerName = null;
