@@ -41,7 +41,7 @@ import javax.servlet.http.HttpSession;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.7 2004/04/22 20:31:34 emperorkefka Exp $
+ * @version $Id: WfsDispatcher.java,v 1.8 2004/09/08 17:35:15 cholmesny Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */
@@ -112,7 +112,7 @@ public class WfsDispatcher extends Dispatcher {
             HttpSession session = request.getSession();
             ServletContext context = session.getServletContext();
             GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-            String tempResponse = wfs.getXmlResponse(geoServer.isVerboseExceptions());
+            String tempResponse = wfs.getXmlResponse(geoServer.isVerboseExceptions(), request);
 
             response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);
@@ -238,7 +238,7 @@ public class WfsDispatcher extends Dispatcher {
             GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
             
             WfsException wfse = new WfsException(message);
-            String tempResponse = wfse.getXmlResponse(geoServer.isVerboseExceptions());
+            String tempResponse = wfse.getXmlResponse(geoServer.isVerboseExceptions(), request);
 
             response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);
