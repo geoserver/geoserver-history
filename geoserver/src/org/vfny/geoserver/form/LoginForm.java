@@ -29,7 +29,8 @@ import org.apache.struts.util.MessageResources;
 public class LoginForm extends ActionForm {
 	private String username;
     private String password;
-    
+    private String confirm;
+
     /**
      * 
      * sets username and password to empty strings
@@ -44,6 +45,7 @@ public class LoginForm extends ActionForm {
         
         username = "";
         password = "";
+        confirm = "";
     }
 
     /**
@@ -64,11 +66,30 @@ public class LoginForm extends ActionForm {
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
         String usernameLabel = messages.getMessage(locale, "label.username");
+        String passwordLabel = messages.getMessage(locale, "label.password");
         
-        if (username == null || username.equals("") || username.length() == 0) {
+        if (username == null || username.equals("")) {
         	errors.add("username", new ActionError("errors.required", usernameLabel));
         }
+
+        if (password == null || password.equals("")) {
+        	errors.add("password", new ActionError("errors.required", passwordLabel));
+        }
+
+        //failed experiment, as it looks like Login and LoginEdit use the same
+        //form, which means that confirm will always be null on the normal.
+	//I think the best course of action would be to have a LoginEditForm,
+	//which extends this class, just adding the confirm stuff, and does the
+	//validate with the confirm.  We don't want the normal login using
+	//the validate, which is why this experiment failed.  Shouldn't be
+	//too hard, it's just getting late and I've spent too much time on this
+	//already.
         
+        //if (confirm == null || !confirm.equals(password)) {
+	//    errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.password.mismatch"));
+	//}
+        
+
         return errors;
     }
 	/**
@@ -103,8 +124,15 @@ public class LoginForm extends ActionForm {
 	 *
 	 * @param username The username to set.
 	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+	this.username = username;
+    }
 
+    public String getConfirm() {
+	return confirm;
+    }
+
+    public void setConfirm() {
+	this.confirm = confirm;
+    }
 }
