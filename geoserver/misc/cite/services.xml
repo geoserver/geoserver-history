@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Service level configuration
+-->
+<serverConfiguration>
+  <global>
+    <!-- Defines the logging level.  Common options are SEVERE,
+          WARNING, INFO, CONFIG, FINER, FINEST, in order of
+          Increasing statements logged.
+      -->
+     <loggingLevel>FINER</loggingLevel>
+
+      <!-- The base URL where this servlet will run.  If running locally
+           then http://localhost:8080 (or whatever port you're running on)
+           should work.  If you are serving to the world then this must be
+           the location where the geoserver servlets appear-->
+      <URL>http://beta.openplans.org/geoserver/</URL>
+
+     <!-- Whether newlines and indents should be returned in -->
+     <!-- XML responses.  Default is false -->
+     <verbose value="true"/>
+
+     <!-- Define a base url for the location of the wfs schemas.
+          By default GeoServer loads and references its own at
+          <URL>/data/capabilities. Uncomment to enable.  The
+          standalone Tomcat server needs SchemaBaseUrl defined
+          for validation.
+      -->
+     <!--
+     <SchemaBaseUrl>http://schemas.opengis.net</SchemaBaseUrl>
+      -->
+
+  </global>
+  <services>
+    <service type="WFS" enabled="true">
+      <!-- Service elements, needed for the capabilities document -->
+      <!-- Title and OnlineResource are the two required -->
+      <name>FreeFS</name>
+      <title>The Open Planning Project Basemap Server</title>
+      <abstract>This is a test server.  It contains some basemap data 
+from New York City.</abstract>
+      <keywords>
+        <keyword>WFS</keyword>
+        <keyword>TEST</keyword>
+        <keyword>NY</keyword>
+        <keyword>New York</keyword>
+      </keywords>
+      <onlineResource>http://www.openplans.org/</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
+      <maintainer>The Open Planning Project</maintainer>
+      <gmlPrefixing value="true"/>
+      <!-- Define mappings of namespaces to featureType directory
+           prefixes.  If only one namespace is present in this file it
+           becomes the default, if more than one namespace is present
+           then one must have its 'default' attribute set to true.
+           The default namespace is that which is assigned to featureTypes
+           that have no prefix (for example, "featureTypes/rail")
+           * This field is highly recommended.  If not present
+           then a namespace will be constructed for you.
+       -->
+      <namespace default="true"
+                 uri="http://www.openplans.org/topp"
+                 prefix="topp"/>
+      <namespace uri="http://www.opengis.net/cite/data"
+                 prefix="cdf"/>
+      <namespace uri="http://www.opengis.net/cite/geometry"
+                 prefix="cgf"/>
+    </service>
+
+    <service type="WMS" enabled="true">
+      <!-- Service elements, needed for the capabilities document -->
+      <!-- Title and OnlineResource are the two required -->
+      <name>FreeWMS</name>
+      <title>The Open Planning Project Basemap Server</title>
+      <abstract>This is a test server.  It contains some basemap data 
+from New York City.</abstract>
+      <keywords>
+        <keyword>WMS</keyword>
+        <keyword>TEST</keyword>
+        <keyword>NY</keyword>
+        <keyword>New York</keyword>
+      </keywords>
+      <onlineResource>http://www.openplans.org/</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
+      <maintainer>The Open Planning Project</maintainer>
+      <!-- The base URL where this servlet will run.  If running locally
+           then http://localhost:8080 (or whatever port you're running 
+on)
+           should work.  If you are serving to the world then this must 
+be
+           the location where the geoserver servlets appear-->
+      <URL>http://www.openplans.org:8081/geoserver/wms</URL>
+    </service>
+
+     <!-- This tag is to run the zserver module. -->
+     <!-- Set the run attribute to false or comment the tag -->
+     <!-- If you don't want the module to run. -->
+     <!-- The Port tag specifies which port to run on. -->
+     <service type="Z39.50" enabled="false">
+      <port>3210</port>
+     </service>
+  </services>
+</serverConfiguration>
