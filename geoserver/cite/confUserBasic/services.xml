@@ -9,7 +9,7 @@ Service level configuration
            WARNING, INFO, CONFIG, FINE, FINER, FINEST, in order of
            Increasing statements logged.
        -->
-     <loggingLevel>WARNING</loggingLevel>
+     <loggingLevel>FINE</loggingLevel>
 
 
      <!-- Sets the maximum features returned by GeoServer.  This used to
@@ -18,14 +18,14 @@ Service level configuration
           data returned, so naive clients don't ask for megabytes.
        -->
      <!--     
-     <maxFeatures value="10000"/>
+     <maxFeatures value="1000000"/>
      -->
 
      <!-- Sets if the xml returned should have line feeds and indents. 
           The default is true.  Setting it to false will cut down on
           the amount of blank spaces returned to clients, and is recommended
           if humans will not read the output -->
-     <verbose value="true"/>
+     <verbose value="false"/>
 
      <!-- Sets the max number of decimal places past the zero returned in
           the gml coordinates of a GetFeature response.  Default is 4 -->
