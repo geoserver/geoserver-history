@@ -67,22 +67,39 @@ public class FeatureKvpReader
         LOGGER.finest("setting query request parameters");
         List typeList = readFlat((String)kvpPairs.get("TYPENAME"), 
                                  INNER_DELIMETER);
-	if (typeList.size() == 0) {
-	    throw new WfsException("GeoServer does not support requests without"
-				   + " typenames, even for featureID requests ("
-				   + "yes, we know this is not spec compliant " 
-				   + "and we are working on it.  Until then " +
-				   " just add the typename and it should be "
-				   + "fine.)");
-	}
-	
         List propertyList = readNested((String) kvpPairs.get("PROPERTYNAME"));
         List filterList = readFilters((String) kvpPairs.get("FEATUREID"), 
                                       (String) kvpPairs.get("FILTER"),
                                       (String) kvpPairs.get("BBOX"));
-        int featureSize = typeList.size();
+       
         int propertySize = propertyList.size();
         int filterSize = filterList.size();
+
+	//TODO: PUT THIS CODE IN REQUEST, SO THAT LOCK AND TRANSACTION CAN USE IT
+	if (typeList.size() == 0) {
+	    // for (Iterator i = filterSize.iterator(); i.hasNext();){
+	    //Filter curFilter = (Filter) i.next();
+	    List unparsed = readNested((String)kvpPairs.get("FEATUREID"));
+	    Iterator i = unparsed.listIterator();
+	    while(i.hasNext()) {
+                List ids = (List) i.next();
+                ListIterator innerIterator = ids.listIterator();
+		while(innerIterator.hasNext()) {
+		    String fid = innerIterator.next().toString();
+		    LOGGER.finer("looking at featureId" + fid);
+		    int pos = fid.indexOf(".");
+		    String typeName = fid.substring(0, fid.indexOf("."));
+		    LOGGER.finer("adding typename: " + typeName + " from fid");
+                    typeList.add(typeName);
+                }
+            }
+	    if (typeList.size() == 0) {
+		throw new WfsException("The typename element is mandatory if no"
+				       + " FEATUREID is present");
+	    }
+	}
+	
+	int featureSize = typeList.size();
         
         // check for errors in the request
         if((propertySize != featureSize) && (propertySize > 1) || 

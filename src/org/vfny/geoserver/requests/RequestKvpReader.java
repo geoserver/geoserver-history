@@ -257,12 +257,13 @@ abstract public class RequestKvpReader {
             while(i.hasNext()) {
                 List ids = (List) i.next();
                 ListIterator innerIterator = ids.listIterator();
-                FidFilter fidFilter = factory.createFidFilter();
-                while(innerIterator.hasNext()) {
-                    fidFilter.addFid((String) innerIterator.next());
-                }
-                filters.add(fidFilter);
-                LOGGER.finest("added fid filter: " + fidFilter);
+		while(innerIterator.hasNext()) {
+		    FidFilter fidFilter = factory.createFidFilter();
+		    fidFilter.addFid((String) innerIterator.next());
+		    filters.add(fidFilter);
+		    LOGGER.finest("added fid filter: " + fidFilter);
+		}
+              
             }
             return filters;
 
