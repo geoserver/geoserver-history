@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+import java.net.URI;
 
 /**
  * Represents a FeatureTypeInfo, its user config and autodefined information.
@@ -771,6 +771,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         if (ft == null) {
             int count = 0;
             ft = fs.getSchema();
+	    URI namespace = ft.getNamespaceURI();
 
             String[] baseNames = DataTransferObjectFactory
                 .getRequiredBaseAttributes(schemaBase);
@@ -817,7 +818,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 }
 
                 try {
-                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName);
+                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
                 } catch (SchemaException ex) {
                 } catch (FactoryConfigurationError ex) {
                 }
