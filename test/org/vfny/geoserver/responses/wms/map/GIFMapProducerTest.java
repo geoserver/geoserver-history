@@ -11,10 +11,13 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
+import org.vfny.geoserver.responses.wms.DefaultRasterMapProducer;
+import org.vfny.geoserver.responses.wms.DefaultRasterMapProducerTest;
+
 
 
 /**
- * Loads a sample image and checks that GIFMapProducer correctly encodes it.
+ * @task TODO: do some decent testing
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -49,7 +52,7 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
 			tmpGif = new File("/tmp/" + testName + ".gif");
 			//tmpGif.deleteOnExit();
 			OutputStream out = new FileOutputStream(tmpGif);
-			producer.formatImageOutputStream("image/gif", image, out);
+			producer.writeTo(out);
 			out.flush();
 			out.close();
 			

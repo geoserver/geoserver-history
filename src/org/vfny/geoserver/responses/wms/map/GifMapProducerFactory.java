@@ -7,6 +7,7 @@ package org.vfny.geoserver.responses.wms.map;
 import java.util.Collections;
 import java.util.Set;
 
+import org.vfny.geoserver.responses.wms.GetMapProducer;
 import org.vfny.geoserver.responses.wms.GetMapProducerFactorySpi;
 
 

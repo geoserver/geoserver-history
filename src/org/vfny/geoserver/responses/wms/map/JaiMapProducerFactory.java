@@ -5,6 +5,7 @@
 package org.vfny.geoserver.responses.wms.map;
 
 import org.geotools.renderer.lite.LiteRenderer2;
+import org.vfny.geoserver.responses.wms.GetMapProducer;
 import org.vfny.geoserver.responses.wms.GetMapProducerFactorySpi;
 import java.util.Arrays;
 import java.util.Collections;

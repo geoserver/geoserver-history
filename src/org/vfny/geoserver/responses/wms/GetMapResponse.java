@@ -33,7 +33,6 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wms.map.GetMapProducer;
 
 
 /**

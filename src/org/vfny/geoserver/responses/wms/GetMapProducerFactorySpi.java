@@ -7,7 +7,6 @@ package org.vfny.geoserver.responses.wms;
 import java.util.Set;
 
 import org.geotools.factory.Factory;
-import org.vfny.geoserver.responses.wms.map.GetMapProducer;
 
 
 /**

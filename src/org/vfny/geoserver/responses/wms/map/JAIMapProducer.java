@@ -15,6 +15,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.responses.wms.DefaultRasterMapProducer;
 
 
 /**
@@ -28,7 +29,7 @@ import org.vfny.geoserver.WmsException;
  * @author Chris Holmes, TOPP
  * @version $Id: JAIMapResponse.java,v 1.29 2004/09/16 21:44:28 cholmesny Exp $
  */
-public class JAIMapProducer extends DefaultRasterMapProducer {
+class JAIMapProducer extends DefaultRasterMapProducer {
     /** A logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map");

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.responses.wms.GetMapProducer;
 import org.vfny.geoserver.responses.wms.WMSMapContext;
 import org.vfny.geoserver.responses.wms.map.svg.EncodeSVG;
 
@@ -21,7 +22,7 @@ import org.vfny.geoserver.responses.wms.map.svg.EncodeSVG;
  * @author Gabriel Rold?n
  * @version $Id: SVGMapResponse.java,v 1.11 2004/04/16 18:36:49 cholmesny Exp $
  */
-public class SVGMapProducer implements GetMapProducer {
+class SVGMapProducer implements GetMapProducer {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map");
