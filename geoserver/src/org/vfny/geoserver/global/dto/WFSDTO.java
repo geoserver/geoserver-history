@@ -14,7 +14,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.1.2.5 2004/01/09 18:27:30 dmzwiers Exp $
+ * @version $Id: WFSDTO.java,v 1.1.2.6 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class WFSDTO implements DataTransferObject {
 
@@ -24,10 +24,10 @@ public final class WFSDTO implements DataTransferObject {
 
     /**
      * WFS Data Transfer Object constructor.
+     * 
+     * does nothing
      */
-    public WFSDTO() {
-        service = new ServiceDTO();
-    }
+    public WFSDTO() {}
 
     /**
      * WFS constructor.

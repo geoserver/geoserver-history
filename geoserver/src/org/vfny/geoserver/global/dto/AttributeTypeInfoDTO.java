@@ -25,7 +25,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.1.2.2 2004/01/09 21:50:27 jive Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.1.2.3 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public class AttributeTypeInfoDTO  implements DataTransferObject {
 	/** attribute name*/
@@ -44,15 +44,11 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 	/**
 	 * AttributeTypeInfoDTO constructor.
 	 * <p>
-	 * Default constructor, initializes with empty data.
+	 * Default constructor, does nothing
 	 * </p>
 	 *
 	 */
-	public AttributeTypeInfoDTO(){
-		name = type = "";
-		minOccurs = 0;maxOccurs = 1;
-		nillable = isRef = false;
-	}
+	public AttributeTypeInfoDTO(){}
 	
 	/**
 	 * AttributeTypeInfoDTO constructor.

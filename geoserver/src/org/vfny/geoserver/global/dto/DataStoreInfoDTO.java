@@ -33,7 +33,7 @@ import java.util.Map;
  * </code></prefix>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.1.2.5 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.1.2.6 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class DataStoreInfoDTO implements DataTransferObject {
     /** unique datasore identifier */
@@ -62,19 +62,11 @@ public final class DataStoreInfoDTO implements DataTransferObject {
      * DataStoreInfo constructor.
      * 
      * <p>
-     * Creates a DataStoreInfo to represent an instance with default data.
+     * does nothing
      * </p>
      *
-     * @see defaultSettings()
      */
-    public DataStoreInfoDTO() {
-		id = "";
-		nameSpaceId = "";
-		enabled = false;
-		title = "";
-		_abstract = "";
-		connectionParams = new HashMap();
-    }
+    public DataStoreInfoDTO() {}
 
     /**
      * DataStoreInfo constructor.

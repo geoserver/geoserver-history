@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.1.2.5 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: GeoServerDTO.java,v 1.1.2.6 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
     /** Sets the max number of Features returned by GetFeature */
@@ -145,20 +145,10 @@ public final class GeoServerDTO implements DataTransferObject {
      * GlobalConfig constructor.
      * 
      * <p>
-     * Creates an instance of GlobalConfig and initializes to default settings.
+     * does nothing
      * </p>
-     *
-     * @see defaultSettings()
      */
-    public GeoServerDTO() {
-		maxFeatures = 20000;
-		verbose = true;
-		numDecimals = 8;
-		charSet = Charset.forName("ISO-8859-1");
-		baseUrl = null;
-		schemaBaseUrl = null;
-		contact = null;
-    }
+    public GeoServerDTO() {}
 
     /**
      * GlobalConfig constructor.

@@ -20,7 +20,7 @@ import org.vfny.geoserver.global.GeoServer;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.5.2.8 2004/01/07 23:27:58 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.5.2.9 2004/01/09 23:44:55 dmzwiers Exp $
  */
 abstract public class Request {
 	/**
@@ -180,8 +180,9 @@ abstract public class Request {
 	 */
 	public GeoServer getGeoServer(){
 		GeoServer gs = Requests.getGeoServer( getHttpServletRequest() );
-		if(gs == null)
-			return new GeoServer();
+		// was a work around for wrong loading order
+		//if(gs == null)
+		//	return new GeoServer();
 		return gs;
 	}
 	

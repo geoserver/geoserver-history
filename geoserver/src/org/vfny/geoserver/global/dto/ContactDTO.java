@@ -36,7 +36,7 @@ package org.vfny.geoserver.global.dto;
  * </code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactDTO.java,v 1.1.2.5 2004/01/09 17:34:18 dmzwiers Exp $
+ * @version $Id: ContactDTO.java,v 1.1.2.6 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class ContactDTO implements DataTransferObject {
     /** The name of the contact person */
@@ -79,30 +79,10 @@ public final class ContactDTO implements DataTransferObject {
      * ContactConfig constructor.
      * 
      * <p>
-     * Creates an empty ContactDTO object which is intended to represent  the
-     * data required for a human contact.
+     * does nothing
      * </p>
-     *
-     * <p>
-     * The empty strings are used to avoid null pointer exceptions during the 
-     * load phase, as we do not control the init order of the servlets.
-     * </p>
-     * @see defaultSettings()
      */
-    public ContactDTO() {
-		contactPerson = "";
-		contactOrganization = "";
-		contactPosition = "";
-		addressType = "";
-		address = "";
-		addressCity = "";
-		addressState = "";
-		addressPostalCode = "";
-		addressCountry = "";
-		contactVoice = "";
-		contactFacsimile = "";
-		contactEmail = "";
-    }
+    public ContactDTO() {}
 
     /**
      * Contact Data Transfer Object constructor.

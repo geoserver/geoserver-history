@@ -41,7 +41,7 @@ import java.util.NoSuchElementException;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataDTO.java,v 1.1.2.6 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: DataDTO.java,v 1.1.2.7 2004/01/09 23:44:55 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -93,19 +93,11 @@ public final class DataDTO implements DataTransferObject {
      * Data constructor.
      * 
      * <p>
-     * Creates a Data to represent an instance with default data.
+     * does nothing
      * </p>
      * 
-     * @see defaultSettings()
      */
-    public DataDTO() {
-		dataStores = new HashMap();
-		nameSpaces = new HashMap();
-		styles = new HashMap();
-		featuresTypes = new HashMap();
-			
-		defaultNameSpacePrefix = "";			
-    }
+    public DataDTO() {}
 
     /**
      * Creates a duplicate of the provided DataDTO using deep copy.

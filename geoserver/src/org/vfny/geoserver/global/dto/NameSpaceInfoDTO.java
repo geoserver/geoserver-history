@@ -32,7 +32,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfoDTO.java,v 1.1.2.1 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: NameSpaceInfoDTO.java,v 1.1.2.2 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class NameSpaceInfoDTO implements DataTransferObject {
     //public static final String PREFIX_DELIMITER = ":";
@@ -50,13 +50,10 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
      * NameSpaceConfig constructor.
      * 
      * <p>
-     * Creates a NameSpaceConfig to represent an instance with default data.
+     * does nothing
      * </p>
-     *
-     * @see defaultSettings()
      */
     public NameSpaceInfoDTO() {
-        defaultSettings();
     }
 
     /**
@@ -72,28 +69,12 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
      */
     public NameSpaceInfoDTO(NameSpaceInfoDTO ns) {
         if (ns == null) {
-            defaultSettings();
-
-            return;
+			throw new NullPointerException();
         }
 
         prefix = ns.getPrefix();
         uri = ns.getUri();
         _default = ns.isDefault();
-    }
-
-    /**
-     * defaultSettings purpose.
-     * 
-     * <p>
-     * This method creates default values for the class. This method  should
-     * noly be called by class constructors.
-     * </p>
-     */
-    private void defaultSettings() {
-        prefix = "";
-        uri = "";
-        _default = false;
     }
 
     /**

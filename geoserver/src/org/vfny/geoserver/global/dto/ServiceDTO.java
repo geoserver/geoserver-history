@@ -30,7 +30,7 @@ import java.util.Arrays;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceDTO.java,v 1.1.2.6 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: ServiceDTO.java,v 1.1.2.7 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class ServiceDTO implements DataTransferObject {
     /**
@@ -134,14 +134,12 @@ public final class ServiceDTO implements DataTransferObject {
      * ServiceConfig constructor.
      * 
      * <p>
-     * Creates an empty ServiceConfig representation values will need to  be
-     * supplied.
+     * does nothing
      * </p>
      *
      * @see defaultSettings()
      */
-    public ServiceDTO() {
-    }
+    public ServiceDTO() {}
 
     /**
      * ServiceConfig constructor.

@@ -36,7 +36,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.6 2004/01/09 23:10:12 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.7 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -99,25 +99,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * FeatureTypeInfo constructor.
      * 
      * <p>
-     * Creates a FeatureTypeInfo to represent an instance with default data.
+     * does nothing
      * </p>
-     *
-     * @see defaultSettings()
      */
-    public FeatureTypeInfoDTO() {
-		dataStoreId = "";
-		latLongBBox = new Envelope();
-		SRS = 0;
-		schema = new ArrayList();
-		defaultStyle = "";
-		name = "";
-		title = "";
-		_abstract = "";
-		keywords = new LinkedList();
-		numDecimals = 8;
-		definitionQuery = null;
-		dirName = schemaName = schemaBase = "";
-    }
+    public FeatureTypeInfoDTO() {}
 
     /**
      * FeatureTypeInfo constructor.

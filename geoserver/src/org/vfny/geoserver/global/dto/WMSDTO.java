@@ -21,7 +21,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: WMSDTO.java,v 1.1.2.5 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class WMSDTO implements DataTransferObject {
     
@@ -37,12 +37,10 @@ public final class WMSDTO implements DataTransferObject {
 
     /**
      * WMS constructor.
-     * @see defaultSettings()
+     * 
+     * does nothing
      */
-    public WMSDTO() {
-        service = null;
-        gmlPrefixing = false;
-    }
+    public WMSDTO() {}
 
     /**
      * WMS constructor.

@@ -25,30 +25,27 @@ import java.io.File;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleDTO.java,v 1.1.2.3 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: StyleDTO.java,v 1.1.2.4 2004/01/09 23:44:55 dmzwiers Exp $
  */
 public final class StyleDTO implements DataTransferObject {
     /** The syle id. */
-    private String id = "";
+    private String id;
 
     /** The file which contains more information about the style. */
-    private File filename = null;
+    private File filename;
 
     /** whether this is the system's default style. */
-    private boolean _default = false;
+    private boolean _default;
 
     /**
      * StyleConfig constructor.
      * 
      * <p>
-     * Creates a StyleConfig to represent an instance with default data.
+     * does nothing
      * </p>
      *
-     * @see defaultSettings()
      */
-    public StyleDTO() {
-        defaultSettings();
-    }
+    public StyleDTO() {}
 
     /**
      * StyleConfig constructor.
@@ -63,28 +60,12 @@ public final class StyleDTO implements DataTransferObject {
      */
     public StyleDTO(StyleDTO style) {
         if (style == null) {
-            defaultSettings();
-
-            return;
+			throw new NullPointerException();
         }
 
         id = style.getId();
         filename = new File(style.getFilename().toString());
         _default = style.isDefault();
-    }
-
-    /**
-     * defaultSettings purpose.
-     * 
-     * <p>
-     * This method creates default values for the class. This method  should
-     * noly be called by class constructors.
-     * </p>
-     */
-    private void defaultSettings() {
-        id = "";
-        filename = null;
-        _default = false;
     }
 
     /**
