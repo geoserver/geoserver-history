@@ -50,7 +50,10 @@
         installation simply download junit.jar and place it in $ANT_HOME/lib.
         (Document this elsewhere? Not really appropriate to this doc, but it's
         not contained anywhere else afaik. Also maybe say where to get
-        junit.jar?). </action></para>
+        junit.jar?). For eclipse users, ant does not come pre-installed with junit -
+        you must add the junit jar to ant.  Go to 
+        Window → Preferences → Ant → Runtime. Then click the "Add JARs" button and 
+        select junit.jar from the geoserver/lib directory.   </action></para>
       </listitem>
 
       <listitem>
