@@ -31,9 +31,18 @@
   collide.
 - GetCapabilities should not choke if datastores are not enabled.
 - Use IanS's new gml producer.
+
 - Evaluate using cactus (http://jakarta.apache.org/cactus) to make server-side unit tests
 - update all that empty javadoc comments, at least in the services hierarchy, wich seems
 	to be pretty good
 - figure out how to configure hierarchy layers for wms
 - create wms services, and isolate wms map creation from request processing, allowing
+
+- FeatureTransformer handle null atts.
+- Put namespace prefix stripper in common utility.  Have kvpRequestReader 
+  and query use it.
+- Make option to buffer the output stream responses so that we can properly
+  report errors.  Users can then choose compliance or speed, as to be 
+  compliant we must report all errors, but that kills the speed gains
+  of not holding the whole response string in memory.
 	for content type extensions
