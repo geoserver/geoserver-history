@@ -55,7 +55,7 @@ System.out.println("lalalala DataStoresAction.exexcute!");
 		
 		DataConfig dataConfig = (DataConfig) getDataConfig();
 		DataStoreConfig config = null;
-		
+		System.out.println("[DataStoresAction]: action: "+action+", selectedDS: "+dataStoresForm.getSelectedDataStore());		
 		if (action.equals("edit") || action.equals("submit")) {
 			config = (DataStoreConfig) dataConfig.getDataStore(dataStoresForm.getSelectedDataStore());
 		} else if (action.equals("new")) {

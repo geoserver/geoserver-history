@@ -8,7 +8,7 @@
 	<html:form action="DataConfigNamespacesSubmit">
 	
 	<tr><td>
-		<beam:message key="label.namespaces"/>:
+		<bean:message key="label.namespaces"/>:
 		</td><td>
 		<html:select property="selectedNamespace">
 			<html:options property="namespaces"/>
@@ -40,7 +40,7 @@
 	<tr><td align="right">
 		<bean:message key="label.default"/>:
 	</td><td colspan=2 align="left">
-		<html:checkbox property="default"/>
+		<html:checkbox property="_default"/>
 	</td></tr>
 	
 	<tr><td align="right">
@@ -55,7 +55,7 @@
 		<html:text property="prefix" size="60"/>
 	</td></tr>
 	
-	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit/><html:reset/></td></tr>						
+	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit property="action" value="submit"/><html:reset/></td></tr>						
 	
 	</html:form>
 </table>

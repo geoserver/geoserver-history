@@ -54,13 +54,13 @@ public class DataNamespacesAction extends ConfigAction {
 		} else if (action.equals("new")) {
 			config = new NameSpaceConfig();
 		}
-		
+		System.out.println("[NamespacesAction]: action: "+action+", selectedNamespace: "+namespacesForm.getSelectedNamespace());		
 		//If they push edit, simply forward them back so the information is repopulated.
 		if (action.equals("edit")) {
 			namespacesForm.reset(mapping, request);
 			return mapping.findForward("dataConfigNamespaces");
 		}
-		
+
 		if (action.equals("delete")) {
 			dataConfig.removeDataStore(namespacesForm.getSelectedNamespace());
 		} else {

@@ -5,10 +5,10 @@
 <table border=0 width=100%>
 	<html:errors/><BR>
 	
-	<html:form action="DataConfigNamespacesSubmit">
+	<html:form action="DataConfigStylesSubmit">
 	
 	<tr><td>
-		<beam:message key="label.styles"/>:
+		<bean:message key="label.styles"/>:
 		</td><td>
 		<html:select property="selectedStyle">
 			<html:options property="styles"/>
@@ -40,7 +40,7 @@
 	<tr><td align="right">
 		<bean:message key="label.default"/>:
 	</td><td colspan=2 align="left">
-		<html:checkbox property="default"/>
+		<html:checkbox property="_default"/>
 	</td></tr>
 
 	<tr><td align="right">
@@ -49,7 +49,7 @@
 		<html:text property="filename" size="60"/>
 	</td></tr>
 	
-	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit/><html:reset/></td></tr>						
+	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit property="action" value="submit"/><html:reset/></td></tr>						
 	
 	</html:form>
 </table>

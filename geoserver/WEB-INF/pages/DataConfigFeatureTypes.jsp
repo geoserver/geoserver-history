@@ -5,10 +5,10 @@
 <table border=0 width=100%>
 	<html:errors/><BR>
 	
-	<html:form action="DataConfigNamespacesSubmit">
+	<html:form action="DataConfigFeatureTypesSubmit">
 	
 	<tr><td>
-		<beam:message key="label.featureTypes"/>:
+		<bean:message key="label.featureTypes"/>:
 	</td><td>
 		<html:select property="selectedFeatureType">
 			<html:options property="featureTypes"/>
@@ -52,17 +52,11 @@
 	<tr><td align="right">
 		<bean:message key="label.latLonBoundingBox"/>:
 	</td><td colspan=2 align="left">
-		<html:text property="latLonBoundingBox" size="60"/>
+		<html:text property="latlonBoundingBox" size="60"/>
 	</td></tr>
 
 	<tr><td align="right">
-		<bean:message key="label.styleID"/>:
-	</td><td colspan=2 align="left">
-		<html:text property="styleID" size="60"/>
-	</td></tr>
-
-	<tr><td align="right">
-		<span class="help" title="<bean:message key="help.catalogFeatureTypeKeywords"/>">
+		<span class="help" title="<bean:message key="help.dataFeatureTypeKeywords"/>">
 			<bean:message key="label.keywords"/>:
 		</span>
 	</td><td>
@@ -70,14 +64,14 @@
 	</td></tr>
 
 	<tr><td align="right">
-		<span class="help" title="<bean:message key="help.catalogFeatureTypeAbstract"/>">
+		<span class="help" title="<bean:message key="help.dataFeatureTypeAbstract"/>">
 			<bean:message key="label.abstract"/>:
 		</span>
 	</td><td>
 		<html:textarea property="_abstract" cols="60" rows="6"/>
 	</td></tr>
 
-	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit/><html:reset/></td></tr>						
+	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit property="action" value="submit"/><html:reset/></td></tr>						
 	
 	</html:form>
 </table>

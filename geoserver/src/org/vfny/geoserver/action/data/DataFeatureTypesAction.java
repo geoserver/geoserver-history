@@ -7,6 +7,8 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -63,10 +65,23 @@ public class DataFeatureTypesAction extends ConfigAction {
 			dataConfig.removeDataStore(featureTypesForm.getSelectedFeatureType());
 		} else {
 			
+			config.setAbstract(_abstract);
+			config.setName(name);
+			config.setSRS(Integer.parseInt(SRS));
+			config.setTitle(title);
+			// Errrrrrrrrrrrr config.setLatLongBBox(new Envelope());
 			
-			//Do configuration parameters here.
+			List list = new ArrayList();
+			String[] array = keywords != null ? keywords.split("\n") : new String[0];
+			
+			for (int i = 0; i < array.length;i++) {
+				list.add(array[i]);
+			}
 		
-			//dataConfig.addFeature()
+			config.setKeywords(list);
+			
+			//config.setKeywords()			
+			dataConfig.addFeatureType(name, config);
 		}
 			
 		featureTypesForm.reset(mapping, request);

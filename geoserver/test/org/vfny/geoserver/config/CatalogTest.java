@@ -26,7 +26,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogTest.java,v 1.1.2.3 2004/01/08 18:44:29 dmzwiers Exp $
+ * @version $Id: CatalogTest.java,v 1.1.2.4 2004/01/10 03:48:30 emperorkefka Exp $
  */
 public class CatalogTest extends TestCase {
 
@@ -44,9 +44,9 @@ public class CatalogTest extends TestCase {
 		a.addDataStore("b",new DataStoreConfig());
 		a.addDataStore("c",new DataStoreConfig());
 		
-		a.addFeature("a",new FeatureTypeConfig());
-		a.addFeature("b",new FeatureTypeConfig());
-		a.addFeature("c",new FeatureTypeConfig());
+		a.addFeatureType("a",new FeatureTypeConfig());
+		a.addFeatureType("b",new FeatureTypeConfig());
+		a.addFeatureType("c",new FeatureTypeConfig());
 		
 		a.addNameSpace("a",new NameSpaceConfig());
 		a.addNameSpace("b",new NameSpaceConfig());

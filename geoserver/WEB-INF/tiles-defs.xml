@@ -164,7 +164,7 @@
    				link="/geoserver/DataConfigNamespaces.do"
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    			<item value="Styles"
-   				link="/WEB-INF/pages/DataConfigNamespaces.jsp"
+   				link="/WEB-INF/pages/DataConfigStyles.jsp"
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    			<item value="FeatureTypes"
    				link="/geoserver/DataConfigFeatureTypes.do"
