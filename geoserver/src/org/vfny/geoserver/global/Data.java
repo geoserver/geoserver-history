@@ -53,7 +53,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.14 2004/01/17 21:08:08 jive Exp $
+ * @version $Id: Data.java,v 1.15 2004/01/17 21:20:22 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -109,12 +109,12 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * package only constructor for GeoServer to call.
      * </p>
      */
-    Data() {
+    /*Data() {
         nameSpaces = new HashMap();
         styles = new HashMap();
         featureTypes = new HashMap();
         dataStores = new HashMap();
-    }
+    }*/
 
     /**
      * load purpose. Places the data in this container and innitializes it.
@@ -170,7 +170,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         while (i.hasNext()) {
             FeatureTypeInfoDTO featureTypeDTO = (FeatureTypeInfoDTO) i.next();
             if( featureTypeDTO == null ){
-                System.err.println("Ignore null FeatureTypeInfo DTO!");
+                System.out.println("Ignore null FeatureTypeInfo DTO!");
                 continue;
             }
             String key = featureTypeDTO.getKey(); // dataStoreId:typeName
@@ -180,8 +180,9 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             System.out.println( key+" looking up :"+dataStoreId );
             DataStoreInfo dataStoreInfo = (DataStoreInfo) dataStores.get( dataStoreId);
             
+            System.out.println( key+" datastore found :"+dataStoreInfo );
             if( dataStoreInfo == null ){
-                System.err.println( key + " IGNORE FeatureTypeInfo as DataStore '"+dataStoreId+"' could not be found!");
+                System.out.println( key + " IGNORE FeatureTypeInfo as DataStore is missing!");
                 continue;
             }
             else {
@@ -189,22 +190,22 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             }
             String prefix = dataStoreInfo.getNamesSpacePrefix();
             String typeName = featureTypeDTO.getName();
-            
+            System.out.println( key + " creating FeatureTypeInfo for "+prefix+":"+typeName );            
+            FeatureTypeInfo featureTypeInfo = new FeatureTypeInfo( featureTypeDTO, this );
             String key2 = prefix + ":" + typeName;
             if( featureTypes.containsKey( key2 )){
                 System.err.println( key + " FeatureTypeInfo '"+key2+"' is already registerd! IGNORE new "+typeName);
             }
             else {
                 System.out.println( key + " FeatureTypeInfo '"+key2+"' is created..." );
-                
-                FeatureTypeInfo featureTypeInfo = new FeatureTypeInfo( featureTypeDTO, this );                                
+                                               
                 featureTypes.put( key2, featureTypeInfo);
                 System.out.println( key+" FeatureTypeInfo '"+key2+"' registered :"+dataStoreInfo );                
                                 
             }
         }
         
-        styles = new HashMap();
+            styles = new HashMap();
 
         if (config.getStyles() == null) {
             throw new NullPointerException("");
@@ -215,14 +216,15 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         while (i.hasNext()) {
             Object key = i.next();
 
-            try {
-                styles.put(key,
-                    loadStyle(
-                        ((StyleDTO) config.getStyles().get(key))
-                        .getFilename()));
-            } catch (IOException e) {
-                LOGGER.fine("Error loading style:" + key.toString());
-            }
+                try {
+                    styles.put(key,
+                        loadStyle(
+                            ((StyleDTO) config.getStyles().get(key))
+                            .getFilename()));
+                } catch (IOException e) {
+                    LOGGER.fine("Error loading style:" + key.toString());
+                }
+
         }
         //
         // Devel Sanity Checks!
@@ -483,13 +485,13 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      *
      * @return DataStoreInfo[] list of the posible DataStoreInfo
      */
-    public DataStoreInfo[] getDataStoreInfos() {
+    /*public DataStoreInfo[] getDataStoreInfos() {
         List dslist = new ArrayList(dataStores.values());
         DataStoreInfo[] dStores = new DataStoreInfo[dslist.size()];
         dStores = (DataStoreInfo[]) dslist.toArray(dStores);
 
         return dStores;
-    }
+    }*/
 
     /**
      * toDTO purpose.

@@ -19,7 +19,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.4 2004/01/17 21:20:32 dmzwiers Exp $
  */
 public class GeoServer extends GlobalLayerSupertype { // implements org.apache.struts.action.PlugIn{
 
@@ -66,13 +66,13 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * To be called by the Struts ActionServlet
      * </p>
      */
-    public GeoServer() {
+    /*public GeoServer() {
         wms = new WMS();
         wfs = new WFS();
         data = new Data();
         validation = new Validation();
         geoServer = new GeoServerDTO();
-    }
+    }*/
 
     /**
      * getAddress purpose.
