@@ -122,7 +122,7 @@ import javax.servlet.http.HttpServletRequest;
  * write <code>ATTRIBUTES=<b>%23</b>FID,<b>%23</b>BOUNDS</code>
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetMapKvpReader.java,v 1.12 2004/09/16 22:20:54 cholmesny Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
@@ -132,6 +132,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /** the request wich will be built by getRequest method */
     private GetMapRequest request;
+    
+    /**
+     * Indicates wether STYLES parameter must be parsed. Defaults to 
+     * <code>true</code>, but can be set to false, for example, when
+     * parsing a GetFeatureInfo request
+     */
+    private boolean stylesRequired = true;
 
     /**
      * Creates a new GetMapKvpReader object.
@@ -140,6 +147,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     public GetMapKvpReader(Map kvpPairs) {
         super(kvpPairs);
+    }
+    
+    /**
+     * Sets wether the STYLES parameter must be parsed
+     * @param parseStyles
+     */
+    public void setStylesRequired(boolean parseStyles){
+    	this.stylesRequired = parseStyles;
+    }
+    
+    public boolean isStylesRquired(){
+    	return this.stylesRequired;
     }
 
     /**
@@ -245,9 +264,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         FeatureTypeInfo[] layers = parseLayers();
         request.setLayers(layers);
 
-        List styleNames = parseStyles(layers);
-        request.setStyles(styleNames);
-
+        if(isStylesRquired()){
+	        List styleNames = parseStyles(layers);
+	        request.setStyles(styleNames);
+        }
         try {
             int width = Integer.parseInt(getValue("WIDTH"));
             int height = Integer.parseInt(getValue("HEIGHT"));

@@ -29,7 +29,7 @@ import java.util.List;
  * and written to the output stream (ie sent to the client).
  *
  * @author dzwiers
- * @author Gabriel Roldán
+ * @author Gabriel Roldan, Axios Engineering
  * @author Chris Holmes
  * @author Charles Kolbowicz
  * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.20 2004/07/21 18:43:39 jmacgill Exp $
@@ -245,7 +245,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
     /**
      * Handles the layers portion of the document.  Prints a root layer that
-     * all others descend from, as it appears that only one layer element is
+     * all others descend from, as only one root layer element is
      * allowed.  For now just calls handle config, which prints out the
      * server's title, abstract and keywords, which are all valid elements.
      *
@@ -275,7 +275,10 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
             if (layer.isEnabled()) {
                 cReturn();
-                startElement("Layer");
+                //HACK: find a way to define queryable and non queryable layers
+                AttributesImpl atts = new AttributesImpl();
+                atts.addAttribute("", "queryable", "queryable", "", "1");
+                startElement("Layer", atts);
                 indent();
                 handleFeatureType(layer);
                 unIndent();
