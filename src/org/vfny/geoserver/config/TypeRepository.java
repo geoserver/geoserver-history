@@ -5,9 +5,9 @@
 package org.vfny.geoserver.config;
 
 import org.geotools.data.DataSource;
-import org.geotools.data.jdbc.ConnectionPools;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
+import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.Filter;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeRepository.java,v 1.19 2003/09/16 20:45:32 cholmesny Exp $
+ * @version $Id: TypeRepository.java,v 1.20 2003/09/17 15:55:25 cholmesny Exp $
  *
  * @task TODO: Rethink synchronization.  Just wanted to get things with locks
  *       working for this version, but obviously we need to examine
@@ -238,11 +238,11 @@ public class TypeRepository {
     }
 
     /**
-     * Calls close from the Connection Pool manager.  Yes, this is
-     * slightly misnamed, but it is doing a better job than before.
+     * Calls close from the Connection Pool manager.  Yes, this is slightly
+     * misnamed, but it is doing a better job than before.
      */
     public void closeTypeResources() {
-        ConnectionPools.closeAllPools();
+        ConnectionPoolManager.getInstance().closeAll();
     }
 
     /**
@@ -251,7 +251,7 @@ public class TypeRepository {
      * files with the name 'info.XXX' to the repository.
      *
      * @param currentFile The top directory from which to start  reading files.
-     * @param config 
+     * @param config
      */
     private void readTypes(File currentFile, ConfigInfo config) {
         LOG.finest("examining: " + currentFile.getAbsolutePath());
