@@ -1,0 +1,17 @@
+<featureType datastore = "cgf" >
+<name>MLines</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>32615</SRS>
+<title>MLines_Type</title>
+<abstract>Generated from cgf</abstract>
+<numDecimals value = "8" />
+<keywords>MLines cgf</keywords>
+<latLonBoundingBox dynamic = "false" miny = "4.523788741875462" maxy = "4.524241076772059" maxx = "-92.9957180414562" minx = "-92.99616877631108"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "dotty"  />
+</featureType>
