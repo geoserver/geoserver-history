@@ -25,10 +25,11 @@ import org.geotools.filter.LiteralExpression;
 import org.geotools.resources.Geotools;
 
 /**
- * Tests the get feature request handling.
+ * Tests the Delete request handling.
  *
  * @version $VERSION$
  * @author Rob Hranac, TOPP
+  * @author Chris Holmes, TOPP
  */
 public class DeleteSuite extends TestCase {
 
@@ -62,27 +63,28 @@ public class DeleteSuite extends TestCase {
      * @param match Whether or not base request and parse request should match.
      * @throws Exception If there is any problem running the test.
      */
-    /*    private static boolean runXmlTest(DeleteRequest baseRequest,
-                                      String fileName, 
-                                      boolean match)
-        throws Exception {
-        // Read the file and parse it
-        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
-        Reader inputStream = new FileReader(inputFile);
-        DeleteRequest request = XmlRequestReader.
-            readGetFeature(new BufferedReader(inputStream));
-        LOGGER.fine("base request: " + baseRequest);
-        LOGGER.fine("read request: " + request);
-        LOGGER.info("XML " + fileName +" test passed: " +  
-                    baseRequest.equals(request));
+    private static boolean runXmlTest(TransactionRequest baseRequest,
+				       String fileName, 
+                                       boolean match)
+	throws Exception {
+	// Read the file and parse it
+	File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
+	Reader inputStream = new FileReader(inputFile);
+        TransactionRequest request = XmlRequestReader.
+            readTransaction(new BufferedReader(inputStream));
+	LOGGER.fine("base request: " + baseRequest);
+	LOGGER.fine("read request: " + request);
+	LOGGER.info("XML " + fileName +" test passed: " +  
+		    baseRequest.equals(request));
 
         // Compare parsed request to base request
-        if(match) {
-            return baseRequest.equals(request);
-        } else {
-            return !baseRequest.equals(request);
-        }
-        }*/
+        if(match) { 
+            //return baseRequest.equals(request);
+	    return baseRequest.toString().equals(request.toString());
+        } else { 
+	    return !baseRequest.equals(request);
+        } 
+	}
 
     /**
      * Handles actual XML test running details.
@@ -107,7 +109,8 @@ public class DeleteSuite extends TestCase {
 
         // Compare parsed request to base request
         if(match) {
-            return baseRequest.equals(request);
+            //return baseRequest.equals(request);
+	    return baseRequest.toString().equals(request.toString());
         } else {
             return !baseRequest.equals(request);
         }
@@ -233,4 +236,51 @@ public class DeleteSuite extends TestCase {
         // run test       
         assertTrue(runKvpTest(baseRequest, testRequest, true));
     }
+
+    public void testXml1() throws Exception { 
+        // make base comparison objects        
+        DeleteRequest delete = new DeleteRequest();
+	delete.setFilter(factory.createFidFilter("123"));
+        TransactionRequest baseRequest = new TransactionRequest();
+        baseRequest.addSubRequest(delete);
+        // run test       
+        assertTrue(runXmlTest( baseRequest, "22", true));
+    }
+
+    public void testXml2() throws Exception { 
+        // make base comparison objects        
+        DeleteRequest delete = new DeleteRequest();
+	FidFilter tempFilter = factory.createFidFilter("123");
+	tempFilter.addFid("124");
+        tempFilter.addFid("1023");
+	tempFilter.addFid("16");
+	tempFilter.addFid("5001");
+	delete.setFilter(tempFilter);
+        TransactionRequest baseRequest = new TransactionRequest();
+        baseRequest.addSubRequest(delete);
+        // run test       
+        assertTrue(runXmlTest( baseRequest, "23", true));
+    }
+
+    public void testXml3() throws Exception { 
+        // make base comparison objects        
+        DeleteRequest delete1 = new DeleteRequest();
+	FidFilter temp1 = factory.createFidFilter("123");
+	temp1.addFid("124");
+	delete1.setFilter(temp1);
+	DeleteRequest delete2 = new DeleteRequest();
+	FidFilter temp2 = factory.createFidFilter("1023");
+	temp2.addFid("16");
+	delete2.setFilter(temp2);
+	DeleteRequest delete3 = new DeleteRequest();
+	delete3.setFilter(factory.createFidFilter("5001"));
+	TransactionRequest baseRequest = new TransactionRequest();
+        baseRequest.addSubRequest(delete1);
+	baseRequest.addSubRequest(delete2);
+	baseRequest.addSubRequest(delete3);
+        // run test       
+        assertTrue(runXmlTest( baseRequest, "24", true));
+    }
+
+
 }
