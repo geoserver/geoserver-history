@@ -7,9 +7,13 @@ package org.vfny.geoserver.servlets;
 import java.io.PrintWriter;
 import java.io.IOException;
 import javax.servlet.http.*;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
+//import javax.servlet.*;
+import org.geotools.resources.Geotools;
+import org.vfny.geoserver.config.ConfigInfo;
+
+//Logging system
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 /**
@@ -21,17 +25,32 @@ import org.apache.log4j.Category;
  */
 public class FreefsLog extends HttpServlet {
  
-    /** Holds mappings between HTTP and ASCII encodings */
-    private static Category _log = Category.getInstance(FreefsLog.class.getName());
+   
+    /** Default name for feature type schemas */
+    private static final String CONFIG_FILE =  "configuration.xml";
+    /** Default name for feature type schemas */
+    private static final String CONFIG_DIR =  "data/";
+
+    /**
+     * The logger for the filter module.
+     */
+    private static final Logger LOG = Logger.getLogger("org.vfny.geoserver.servlets");
+   
 
     /**
      * Initializes logging.
      *
      */ 
     public void init() {
-        BasicConfigurator.configure();
-        _log.info("Logger (log4j) initialized correctly.");
-        //this.getServletContext().log("you are an idiot");
+	Geotools.init("Log4JFormatter", Level.FINEST);
+	String root = this.getServletContext().getRealPath("/");
+	String path = root + CONFIG_DIR;
+	LOG.info("init with path" + path);
+	ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
+
+
+	
+	//this.getServletContext().log("you are an idiot");
         /*
         String prefix =  getServletContext().getRealPath("/");
         String file = getInitParameter("log4j-init-file");
