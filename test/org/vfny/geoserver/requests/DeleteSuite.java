@@ -15,6 +15,11 @@ import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.LiteralExpression;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
+import org.vfny.geoserver.requests.wfs.DeleteRequest;
+import org.vfny.geoserver.requests.wfs.TransactionRequest;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -23,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteSuite.java,v 1.9 2003/09/16 03:33:31 cholmesny Exp $
+ * @version $Id: DeleteSuite.java,v 1.10 2003/12/23 20:30:27 cholmesny Exp $
  */
 public class DeleteSuite extends TransactionSuite {
     // Initializes the logger. Uncomment to see log messages.
@@ -45,42 +50,40 @@ public class DeleteSuite extends TransactionSuite {
     }
 
     public static Test suite() {
-	TestSuite suite = new TestSuite("Delete tests");
+        TestSuite suite = new TestSuite("Delete tests");
         suite.addTestSuite(DeleteSuite.class);
-	return suite;
+
+        return suite;
     }
 
     /**
      * Handles actual KVP test running details.
      *
-     * @param baseRequest Base request, for comparison.
-     * @param requestString File name to parse.
-     * @param match Whether or not base request and parse request should match.
+     * @param kvps Base request, for comparison.
      *
      * @return <tt>true</tt> if the test passed.
-     *
-     * @throws Exception If there is any problem running the test.
      */
-    private static boolean runKvpTest(TransactionRequest baseRequest,
-        String requestString, boolean match) throws Exception {
-        // Read the file and parse it
-        DeleteKvpReader reader = new DeleteKvpReader(requestString);
-        TransactionRequest request = reader.getRequest();
 
-        LOGGER.finer("base request: " + baseRequest);
-        LOGGER.finer("read request: " + request);
-        LOGGER.fine("KVP test passed: " + baseRequest.equals(request));
-
-        // Compare parsed request to base request
-        if (match) {
-            //return baseRequest.equals(request);
-            return baseRequest.equals(request);
-        } else {
-            return !baseRequest.equals(request);
-        }
+    /*    private static boolean runKvpTest(TransactionRequest baseRequest,
+       String requestString, boolean match) throws Exception {
+       // Read the file and parse it
+       DeleteKvpReader reader = new DeleteKvpReader(requestString);
+       TransactionRequest request = reader.getRequest();
+       LOGGER.finer("base request: " + baseRequest);
+       LOGGER.finer("read request: " + request);
+       LOGGER.fine("KVP test passed: " + baseRequest.equals(request));
+       // Compare parsed request to base request
+       if (match) {
+           //return baseRequest.equals(request);
+           return baseRequest.equals(request);
+       } else {
+           return !baseRequest.equals(request);
+       }
+       }*/
+    protected KvpRequestReader getKvpReader(Map kvps) {
+        return new DeleteKvpReader(kvps);
     }
 
-    
     /* ********************************************************************
      * KVP TESTS
      * KVP GetFeature parsing tests.  Each test reads from a specific KVP
