@@ -8,8 +8,6 @@ package org.geotools.validation;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.util.Enumeration;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -20,7 +18,7 @@ import java.util.ResourceBundle;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DefaultFeatureValidationBeanInfo.java,v 1.1 2004/01/31 00:24:05 jive Exp $
+ * @version $Id: DefaultFeatureValidationBeanInfo.java,v 1.2 2004/02/07 01:00:26 jive Exp $
  */
 public class DefaultFeatureValidationBeanInfo extends ValidationBeanInfo {
 
