@@ -5,13 +5,14 @@
 <!-- This build file is licensed under the GPL v2.0                         -->
 <!-- You do not need to modify any values for this build file to work.      -->
 <!-- For convenience, you may modify the 'external directories' variables   -->
-<!-- under the PROPERTIES section.                                          -->
+<!-- under the LOCAL PROPERTIES section. You may also wish to change the    -->
+<!-- test.type directory to be something other than UserBasic.              -->
 <!-- ====================================================================== -->
 
 <project name="geoserver" default="help" basedir=".">
     
 <!-- ====================================================================== -->
-<!-- LOCALIZE PROPERTIES                                                    -->
+<!-- LOCAL PROPERTIES                                                       -->
 <!-- ====================================================================== -->
         
   <!-- external directories -->
