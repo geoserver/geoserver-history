@@ -18,15 +18,15 @@
     <para>Before you can use GeoServer, you must successfully install <ulink
     url="http://java.sun.com">Java</ulink>, a Java Servlet container such as
     <ulink url="http://www.caucho.com">Resin</ulink> or <ulink
-    url="http://jakarta.apache.org">Tomcat</ulink>, and <ulink
+    url="http://jetty.mortbay.com">Jetty</ulink>, and <ulink
     url="http://postgis.refractions.net">PostGIS</ulink>. This is by far the
     hardest part of the installation process, but the documentation to install
     these three components is quite good. Our testing has occurred on JDK
-    1.4.1, Resin 3.0.6, and PostGIS 0.7.5 on top of Postgresql 7.4. To
-    actually build GeoServer you must use <ulink
-    url="http://ant.apache.org">Ant</ulink>, an excellent build tool from
-    apache. The latest stable versions of these components should work
-    fine.</para>
+    1.4.1 or 1.4.2, Tomcat 5.0.19, Resin 2.1.13 or Jetty 4.1.27, and PostGIS
+    0.8.1 with GEOS on top of Postgresql 7.4. To actually build GeoServer you
+    must use <ulink url="http://ant.apache.org">Ant</ulink>, an excellent
+    build tool from apache. The latest stable versions of these components
+    should work fine.</para>
 
     <para>GeoServer has an active user community that you can engage by
     joining the GeoServer <ulink
@@ -60,7 +60,7 @@
 
     <para>Several good open source, free servlet containers and a bevy of
     commercial ones exist on the market. We recommend <ulink
-    url="http://www.caucho.com">Resin</ulink> (open source, free to
+    url="http://www.caucho.com">Jetty</ulink> (open source, free to
     non-commercial users) or <ulink
     url="http://jakarta.apache.org/tomcat/index.html">Tomcat</ulink> (open
     source, free). Most GeoServer testing has occurred on Tomcat, which is
@@ -72,10 +72,10 @@
   <sect1 id="database">
     <title>Installing a Database</title>
 
-    <para>The GeoServer project currently supports the Oracle and Shapefile
-    data formats, but unless you already have a running Oracle installation we
-    recommend PostGIS, an excellent extension of the venerable Postgresql
-    relational database. <ulink
+    <para>The GeoServer project currently supports the Oracle, ArcSDE and
+    Shapefile data formats, but unless you already have a running Oracle or
+    ArcSDE installation we recommend PostGIS, an excellent extension of the
+    venerable Postgresql relational database. <ulink
     url="http://postgis.refractions.net">PostGIS</ulink> and <ulink
     url="http://www.postgresql.org/">Postgresql</ulink> are open source
     databases that are free to all users. Postgresql was developed at <ulink
@@ -549,37 +549,39 @@ gmake install</programlisting>Configuring with java is no longer required, as
     utility for XML post requests. It is available at
     <emphasis>http://<emphasis
     role="bold">SERVER_ADDRESS:SERVER_PORT</emphasis>/geoserver/wfs/TestWfsPost</emphasis>.
-    To use it just make sure that the request is going to the right location
-    (it defaults to GetFeature), and write the XML request just as the WFS
-    specification does it. Included is a set of links for the default dataset
-    distributed with GeoServer.</para>
+    There are also a number of samples in the Demo section of the web
+    administration tool. To use of the TestWfsPost servlet just make sure that
+    the request is going to the right location (it defaults to GetFeature),
+    and write the XML request just as the WFS specification does it. Included
+    is a set of links for the default dataset distributed with
+    GeoServer.</para>
 
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="http://localhost:8081/GeoServer/wfs/getCapabilities">http://localhost:8080/geoserver/wfs/GetCapabilities</ulink></para>
+        url="http://localhost:8080/geoserver/wfs/GetCapabilities">http://localhost:8080/geoserver/wfs/GetCapabilities</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="http://localhost:8081/geoserver/wfs/DescribeFeatureType?">http://localhost:8080/geoserver/wfs/DescribeFeatureType?</ulink></para>
+        url="http://localhost:8080/geoserver/wfs/DescribeFeatureType?typename=topp:bc_roads">http://localhost:8080/geoserver/wfs/DescribeFeatureType?typename=topp:bc_roads</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="http://localhost:8081/geoserver/wfs/GetFeature?typeName=topp:bc_roads">http://localhost:8080/geoserver/wfs/GetFeature?typeName=topp:bc_roads</ulink></para>
+        url="http://localhost:8080/geoserver/wfs/GetFeature?typeName=topp:bc_roads">http://localhost:8080/geoserver/wfs/GetFeature?typeName=topp:bc_roads</ulink></para>
       </listitem>
     </itemizedlist>
 
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="http://localhost:8080/geoserver/wms/GetCapabilities">http://localhost:8080/geoserver/wms/g\GetCapabilities</ulink></para>
+        url="http://localhost:8080/geoserver/wms/GetCapabilities">http://localhost:8080/geoserver/wms/GetCapabilities</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="http://localhost:8080/geoserver/wms?request=GetMap&amp;amp;layers=cdf:bc_roads&amp;amp;bbox=489153,5433000,529000,5460816&amp;amp;width=400&amp;amp;height=200&amp;amp;srs=EPSG:27354&amp;amp;styles=normal&amp;amp;Format=image/svg-xml">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=cdf:bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/svg-xml</ulink></para>
+        url="http://localhost:8080/geoserver/wms?request=GetMap&amp;amp;layers=topp:bc_roads&amp;amp;bbox=489153,5433000,529000,5460816&amp;amp;width=400&amp;amp;height=200&amp;amp;srs=EPSG:27354&amp;amp;styles=normal&amp;amp;Format=image/png">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=topp:bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/svg-xml</ulink></para>
       </listitem>
     </itemizedlist>
   </sect1>
