@@ -18,7 +18,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.11 2004/09/08 17:39:02 cholmesny Exp $
+ * @version $Id: GeoServerDTO.java,v 1.12 2004/09/09 16:51:58 cholmesny Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
 	
@@ -57,11 +57,6 @@ public final class GeoServerDTO implements DataTransferObject {
 		 * service exceptions don't look like someone 'kacked'.
 		 */
 		public static final boolean VerboseExceptions = false;
-
-		/**
-		 * Default for srs report style is to not use the xml referenced style
-		 */
-		public static final boolean SrsXmlStyle = false;
 	}
 	
     /** Sets the max number of Features returned by GetFeature */
@@ -158,8 +153,9 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /** The password for the administrator log-in to perform configuration */
     private String adminPassword = Defaults.AdminPassword;
+    
+    /** Whether the exceptions returned to the client should contain full stack traces */
     private boolean verboseExceptions = Defaults.VerboseExceptions;
-    private boolean srsXmlStyle = Defaults.SrsXmlStyle;
 
     /**
      * GlobalConfig constructor.
@@ -196,7 +192,6 @@ public final class GeoServerDTO implements DataTransferObject {
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
         verboseExceptions = g.isVerboseExceptions();
-        srsXmlStyle = g.isSrsXmlStyle();
 
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
@@ -541,28 +536,6 @@ public final class GeoServerDTO implements DataTransferObject {
      */
     public void setVerboseExceptions(boolean showStackTraces) {
         this.verboseExceptions = showStackTraces;
-    }
-
-    /**
-     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-     * style.  
-     *
-     * @return <tt>true</tt> if the srs is reported with the xml style
-     */
-    public boolean isSrsXmlStyle() {
-        return srsXmlStyle;
-    }
-
-    /**
-     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-     * style.  
-     *
-     * @param doXmlStyle whether the srs style should be xml or not.
-     */
-    public void setSrsXmlStyle(boolean doXmlStyle) {
-        this.srsXmlStyle = doXmlStyle;
     }
 
     public String toString() {
