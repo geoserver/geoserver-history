@@ -2,7 +2,7 @@
 REM -----------------------------------------------------------------------------
 REM Start Script for GEOSERVER
 REM
-REM $Id: startup.bat,v 1.5 2004/08/23 13:42:48 cholmesny Exp $
+REM $Id: startup.bat,v 1.6 2004/08/24 17:37:53 cholmesny Exp $
 REM -----------------------------------------------------------------------------
 
 if "%JAVA_HOME%" == "" goto noJava1
@@ -17,9 +17,7 @@ REM -------------
 REM OK, we're ready to try actually runnning it.
 REM -------------
 
-java -jar "%GEOSERVER_HOME%\bin\start.jar"
-
-goto end
+goto run
 
 :noJava1
   echo The JAVA_HOME environment variable is not defined.
@@ -40,8 +38,7 @@ goto end
 :doGeo1
 echo GEOSERVER_HOME environment variable not found.  Using current
 echo directory.  Please set GEOSERVER_HOME for future uses.
- java -jar start.jar
- goto end
+ goto run
 
 :noGeo2
   if exist start.jar goto doGeo2
@@ -53,8 +50,26 @@ goto end
   echo GEOSERVER_HOME environment variable not properly set.  Using parent
   echo directory of this script.  Please set GEOSERVER_HOME correctly for 
   echo future uses.
-  java -jar start.jar
+goto run
+
+:run
+  if not exist "%GEOSERVER_HOME%/server/geoserver" goto noServer
+  goto execJava
+
+:noServer
+  if "%ANT_HOME%" == "" goto noAnt
+  %ANT_HOME%/bin/ant -f %GEOSERVER_HOME%/build.xml prepareEmbedded
+  goto execJava
+
+:noAnt
+  echo ANT_HOME not found, Ant is needed to run the embedded server
+  echo in the source download.  Please install ant or download the 
+  echo binary release of GeoServer
 goto end
+
+:execJava
+  java -jar start.jar
+  goto end  
 
 :end
  pause

@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # Start Script for GEOSERVER
 #
-# $Id: startup.sh,v 1.6 2004/08/23 13:42:48 cholmesny Exp $
+# $Id: startup.sh,v 1.7 2004/08/24 17:37:53 cholmesny Exp $
 # -----------------------------------------------------------------------------
 
 # Make sure prerequisite environment variables are set
@@ -51,5 +51,19 @@ if [ ! -r "$GEOSERVER_HOME"/bin/startup.sh ]; then
   exit 1
 fi
 
-cd "$GEOSERVER_HOME"/bin
-exec "$_RUNJAVA" -jar start.jar
+
+
+cd "$GEOSERVER_HOME"
+if [ ! -r server/ ]; then
+     #if there is no server then we are in a source install that has not
+     #been built.
+     if [ -z "$ANT_HOME"]; then
+        echo "ANT_HOME not found, Ant is needed to run the embedded server "
+        echo "in the source download.  Please install Ant or download "
+        echo "the binary release of GeoServer."
+	exit 1
+     else
+        "$ANT_HOME"/bin/ant prepareEmbedded
+     fi
+fi
+exec "$_RUNJAVA" -jar bin/start.jar
