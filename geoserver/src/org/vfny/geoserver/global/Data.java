@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.26 2004/02/01 09:11:36 jive Exp $
+ * @version $Id: Data.java,v 1.27 2004/02/02 08:56:45 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -77,7 +77,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
     /** holds the mapping of Styles and style names */
     private Map styles;
-
+    
     /**
      * Map of <code>FeatureTypeInfo</code>'s stored by full qualified name
      * (NameSpaceInfo prefix + PREFIX_DELIMITER + typeName)
@@ -86,7 +86,10 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
     /** The DTO for this object */
     private DataDTO catalog;
-
+    
+    /** Base directory for use with file based relative paths */
+    private File baseDir;
+    
     /**
      * Data constructor.
      * 
@@ -98,8 +101,8 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      *
      * @throws ConfigurationException
      */
-    public Data(DataDTO config) throws ConfigurationException {
-        load(config);
+    public Data(DataDTO config, File dir ) throws ConfigurationException {
+        load(config, dir);
     }
 
     /**
@@ -130,7 +133,9 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      *
      * @throws NullPointerException
      */
-    void load(DataDTO config) {
+    void load(DataDTO config, File dir) {
+    	baseDir = dir;
+    	
         catalog = config;
 
         if (config == null) {
@@ -365,27 +370,28 @@ SCHEMA:
                         continue SCHEMA;
                     }
                 }
-            } catch (IllegalStateException e) {
+            } catch (IllegalStateException illegalState) {
                 LOGGER.severe("FeatureTypeInfo " + key
                     + " ignored - as DataStore " + dataStoreId
-                    + " is disabled!");
+                    + " is disabled!");                
                 errors.put(featureTypeDTO,Boolean.FALSE);
                 continue;
             } catch (IOException ioException) {
                 LOGGER.log(Level.SEVERE,
                     "FeatureTypeInfo " + key + " ignored - as DataStore "
-                    + dataStoreId + " is unavailable", ioException);
-
+                    + dataStoreId + " is unavailable:"+ ioException);
+                LOGGER.log( Level.FINEST, key + " unavailable", ioException );                
                 errors.put(featureTypeDTO,ioException);
                 continue;
             }
             catch (Throwable unExpected){
             	LOGGER.log(Level.SEVERE,
                         "FeatureTypeInfo " + key + " ignored - as DataStore "
-                        + dataStoreId + " is broken", unExpected);
+                        + dataStoreId + " is broken:"+ unExpected);
+            	LOGGER.log( Level.FINEST, key + " unavailable", unExpected );
 
-                    errors.put(featureTypeDTO,unExpected);
-                    continue;
+                errors.put(featureTypeDTO, unExpected);
+                continue;
             }
 
             String prefix = dataStoreInfo.getNamesSpacePrefix();
@@ -400,9 +406,9 @@ SCHEMA:
             } catch (ConfigurationException configException) {
                 LOGGER.log(Level.SEVERE,
                     "FeatureTypeInfo " + key
-                    + " ignored - due to a configuration problem",
+                    + " ignored - configuration problem:"+
                     configException);
-
+                LOGGER.log( Level.FINEST, key + " unavailable", configException );
                 errors.put(featureTypeDTO,configException);
                 continue;
             }
@@ -1332,4 +1338,12 @@ SCHEMA:
 
         return dataStore.getDataStore().getFeatureSource(typeName);
     }
+	/**
+	 * Returns the baseDir for use with relative paths.
+	 * 
+	 * @return Returns the baseDir.
+	 */
+	public File getBaseDir() {
+		return baseDir;
+	}
 }

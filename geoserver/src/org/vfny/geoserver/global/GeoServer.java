@@ -9,6 +9,10 @@ import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
+
+import sun.security.action.GetBooleanAction;
+
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.logging.Level;
@@ -20,7 +24,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.7 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: GeoServer.java,v 1.8 2004/02/02 08:56:45 jive Exp $
  */
 public class GeoServer extends GlobalLayerSupertype { // implements org.apache.struts.action.PlugIn{
 
@@ -345,11 +349,11 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      * @throws ConfigurationException If an error occurs.
      */
     public void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
-        DataDTO data) throws ConfigurationException {
+        DataDTO data, File baseDir ) throws ConfigurationException {
         load(geoServer);
         load(wms);
         load(wfs);
-        load(data);
+        load(data, baseDir );
     }
     
     private Map testSuites;
@@ -446,22 +450,18 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
     }
 
     /**
-     * load purpose.
-     * 
-     * <p>
      * Loads the DataDTO into the current instance as a Data object
-     * </p>
-     *
+     * 
      * @param data DataDTO
      *
      * @throws ConfigurationException If an error occurs
      */
-    public void load(DataDTO data) throws ConfigurationException {
+    public void load(DataDTO data, File baseDir ) throws ConfigurationException {
         if (data != null) {
-            if (this.data == null) {
-                this.data = new Data((DataDTO) data.clone());
+        	if (this.data == null) {
+            	this.data = new Data((DataDTO) data.clone(), baseDir );
             } else {
-                this.data.load((DataDTO) data.clone());
+                this.data.load((DataDTO) data.clone(), baseDir );
             }
         } else {
             throw new ConfigurationException(

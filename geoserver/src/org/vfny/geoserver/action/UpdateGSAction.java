@@ -24,6 +24,8 @@ import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
+
+import java.io.File;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -32,33 +34,40 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * DOCUMENT ME!
+ * Update GeoServer with the current configuration.
+ * <p>
+ * This is a real ConfigAction - you need to be logged in to use it.
+ * </p>
  *
  * @author User To change the template for this generated type comment go to
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class UpdateGSAction extends Action {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
+public class UpdateGSAction extends ConfigAction {
+    public ActionForward execute(ActionMapping mapping,
+    							 ActionForm form,
+								 // UserContainer user,
+								 HttpServletRequest request,
+								 HttpServletResponse response)
         throws IOException, ServletException {
-        GeoServer gs = null;
+        GeoServer gs;
         ServletContext sc = request.getSession().getServletContext();
         gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
 
         try {
-            gs.load((WMSDTO) (((WMSConfig) sc.getAttribute(WMSConfig.CONFIG_KEY))
-                .toDTO()),
-                (WFSDTO) ((WFSConfig) sc.getAttribute(WFSConfig.CONFIG_KEY))
-                .toDTO(),
-                (GeoServerDTO) ((GlobalConfig) sc.getAttribute(
-                    GlobalConfig.CONFIG_KEY)).toDTO(),
-                (DataDTO) ((DataConfig) sc.getAttribute(DataConfig.CONFIG_KEY))
-                .toDTO());
+        	WMSDTO wmsDTO = getWMSConfig().toDTO();
+        	WFSDTO wfsDTO = getWFSConfig().toDTO();
+        	GeoServerDTO geoserverDTO = getGlobalConfig().toDTO();
+        	DataDTO dataDTO = getDataConfig().toDTO();
+        	// Use baseDir from initial load
+        	//
+        	File baseDir = gs.getData().getBaseDir();  
+            gs.load( wmsDTO,wfsDTO,geoserverDTO,dataDTO, baseDir );
         } catch (ConfigurationException e) {
             throw new ServletException(e);
         }
 
-        //HACK
+        // We need to stay on the same page!
+        
         return mapping.findForward("welcome");
     }
 }
