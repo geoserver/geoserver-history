@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.31 2004/04/22 10:35:14 emperorkefka Exp $
+ * @version $Id: TransactionResponse.java,v 1.32 2004/06/29 11:27:54 sploreg Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -412,7 +412,7 @@ public class TransactionResponse implements Response {
                     FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element.getTypeName() );
 
                     // this is possible with the insert hack above.
-                    LOGGER.finer("Use featureValidation to check contents of insert" );                    
+                    LOGGER.finer("Use featureValidation to check contents of insert" );
                     featureValidation( typeInfo.getDataStoreInfo().getId(), schema, collection );
 
                     Set fids = store.addFeatures(reader);
@@ -558,7 +558,9 @@ public class TransactionResponse implements Response {
             };
 
         try {
-            validation.runFeatureTests(dsid, type, collection, results);
+			// HACK: turned the collection into a feature reader for the validation processor
+			FeatureReader fr = DataUtilities.reader(collection);
+            validation.runFeatureTests(dsid, type, fr, results);
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
