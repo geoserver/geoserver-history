@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.3 2003/12/17 22:15:15 cholmesny Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.4 2003/12/18 00:18:28 dmzwiers Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -49,8 +49,13 @@ public class FeatureTypeConfig extends BasicConfig {
     private Map styles;
     private CatalogConfig catalog;
 
-    /** DOCUMENT ME! */
+    /** 
+     * defaultStyle is not currently written to, and there are not any subclasses.
+     * 12/17/03 dz 
+     */
     private String defaultStyle;
+    
+	/** DOCUMENT ME! */
     private String pathToSchemaFile;
     private String prefix;
     private int numDecimals = DEFAULT_NUM_DECIMALS;
@@ -425,9 +430,10 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
-     * DOCUMENT ME!
+     * defaultStyle is not currently written to, and there are not any subclasses.
+     * 12/17/03 dz 
      *
-     * @return DOCUMENT ME!
+     * @return String defaultStyle
      */
     public String getDefaultStyle() {
         return this.defaultStyle;
@@ -542,6 +548,8 @@ public class FeatureTypeConfig extends BasicConfig {
 
     /**
      * DOCUMENT ME!
+     * 
+     * does not appear to have any affect except to create an empty hashmap (dz)
      *
      * @param styles DOCUMENT ME!
      * @param catalog DOCUMENT ME!
