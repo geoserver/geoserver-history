@@ -14,38 +14,37 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.7 2004/03/31 05:06:33 cholmesny Exp $
+ * @version $Id: WFSDTO.java,v 1.8 2004/04/05 11:49:58 cholmesny Exp $
  */
 public final class WFSDTO implements DataTransferObject {
-	/** ServiceLevel bit used to indicate Basic support */
-	public static final int SERVICE_BASIC = 1;
+    /** ServiceLevel bit used to indicate Basic support */
+    public static final int SERVICE_BASIC = 1;
 
-	/** ServiceLevel bit used to indicate Transaction Insert support */
-	public static final int SERVICE_INSERT = 2;
+    /** ServiceLevel bit used to indicate Transaction Insert support */
+    public static final int SERVICE_INSERT = 2;
 
-	/** ServiceLevel bit used to indicate Transaction Update support */
-	public static final int SERVICE_UPDATE = 4;
+    /** ServiceLevel bit used to indicate Transaction Update support */
+    public static final int SERVICE_UPDATE = 4;
 
-	/** ServiceLevel bit used to indicate Transaction Delete support */
-	public static final int SERVICE_DELETE = 8;
+    /** ServiceLevel bit used to indicate Transaction Delete support */
+    public static final int SERVICE_DELETE = 8;
 
-	/** ServiceLevel bit used to indicate Locking support */
-	public static final int SERVICE_LOCKING = 16;
+    /** ServiceLevel bit used to indicate Locking support */
+    public static final int SERVICE_LOCKING = 16;
 
-	/** ServiceLevel mask equivilent to basic WFS conformance */
-	public static final int BASIC = 1;
+    /** ServiceLevel mask equivilent to basic WFS conformance */
+    public static final int BASIC = 1;
 
-	/** ServiceLevel mask for transactional WFS conformance. */
-	public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT
-	        | SERVICE_UPDATE | SERVICE_DELETE;
+    /** ServiceLevel mask for transactional WFS conformance. */
+    public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT
+        | SERVICE_UPDATE | SERVICE_DELETE;
 
-	/** ServiceLevel mask equivilent to complete WFS conformance */
-	public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
+    /** ServiceLevel mask equivilent to complete WFS conformance */
+    public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
 
-	
     /** The service parameters for this instance. */
     private ServiceDTO service;
-    private boolean gmlPrefixing;
+    private boolean gmlPrefixing = false;
     private int serviceLevel = COMPLETE; //if not set then it should be complete.   
 
     /**
@@ -103,8 +102,8 @@ public final class WFSDTO implements DataTransferObject {
 
         WFSDTO dto = (WFSDTO) other;
 
-        return (serviceLevel == dto.getServiceLevel() &&(service == null) ? (dto.getService() == null)
-                                 : service.equals(dto.getService()));
+        return (((serviceLevel == dto.getServiceLevel()) && (service == null))
+        ? (dto.getService() == null) : service.equals(dto.getService()));
     }
 
     /**
@@ -177,22 +176,22 @@ public final class WFSDTO implements DataTransferObject {
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
     }
-	/**
-	 * Access serviceLevel property.
-	 * 
-	 * @return Returns the serviceLevel.
-	 */
-	public int getServiceLevel() {
-		return serviceLevel;
-	}
 
-	/**
-	 * Set serviceLevel to serviceLevel.
-	 *
-	 * @param serviceLevel The serviceLevel to set.
-	 */
-	public void setServiceLevel(int serviceLevel) {
-		this.serviceLevel = serviceLevel;
-	}
+    /**
+     * Access serviceLevel property.
+     *
+     * @return Returns the serviceLevel.
+     */
+    public int getServiceLevel() {
+        return serviceLevel;
+    }
 
+    /**
+     * Set serviceLevel to serviceLevel.
+     *
+     * @param serviceLevel The serviceLevel to set.
+     */
+    public void setServiceLevel(int serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
 }
