@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -19,6 +15,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 
 /**
  * Handler methods to print out a valid wms capabilities document from the WMS
@@ -29,12 +29,19 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.15 2004/02/20 22:23:45 jive Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.16 2004/03/14 16:09:21 groldan Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
+    /** DOCUMENT ME!  */
     private static final String CAP_VERSION = WMS.getVersion();
+
+    /** DOCUMENT ME!  */
     private GeoServer server = null;
+
+    /** DOCUMENT ME!  */
     private String baseUrl = "";
+
+    /** DOCUMENT ME!  */
     protected String BBOX_ELEM_NAME = "LatLonBoundingBox";
 
     /**
@@ -63,12 +70,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      */
     protected void startDocument(Service config) throws SAXException {
         WMS WMS = (WMS) config;
-
         AttributesImpl atts = new AttributesImpl();
-
         startElement("!DOCTYPE WMT_MS_Capabilities SYSTEM \"http://www"
             + ".digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\"");
-
         atts.addAttribute("", "version", "version", "", CAP_VERSION);
 
         // atts.addAttribute("", "", "updateSequence", "updateSequence",
@@ -96,75 +100,104 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException For any problems.
      */
     protected void endService(Service config) throws SAXException {
-    	handleContact(config);
-    	super.endService(config);
+        handleContact(config);
+        super.endService(config);
     }
 
     /**
      * handleContact purpose.
+     *
      * <p>
      * Description ...
      * </p>
+     *
      * @param config
+     *
      * @throws SAXException
      */
     private void handleContact(Service config) throws SAXException {
         String tmp = "";
-    	tmp = config.getGeoServer().getContactPerson();
-    	if(tmp!=null && tmp!=""){
-    		startElement("Contact");
-        	handleSingleElem("ContactPerson",tmp);
-        	
-        	tmp = config.getGeoServer().getContactOrganization();
-        	if(tmp!=null && tmp!="")
-        		handleSingleElem("ContactOrganization",tmp);
-        	
-        	tmp = config.getGeoServer().getContactPosition();
-        	if(tmp!=null && tmp!="")
-        		handleSingleElem("ContactPosition",tmp);
-        		
-        	tmp = config.getGeoServer().getAddress();
-        	if(tmp!=null && tmp!=""){
-        		startElement("ContactAddress");
-        		
-        		tmp = config.getGeoServer().getAddressType();
-        		if(tmp!=null && tmp!="")
-        			handleSingleElem("AddressType",tmp);;
-        		
-        		tmp = config.getGeoServer().getAddress();
-        		handleSingleElem("Address",tmp);;
-        		
-        		tmp = config.getGeoServer().getAddressCity();
-        		if(tmp!=null && tmp!="")
-        			handleSingleElem("City",tmp);;
-        		
-        		tmp = config.getGeoServer().getAddressState();
-        		if(tmp!=null && tmp!="")
-        			handleSingleElem("StateOrProvince",tmp);;
-        		
-        		tmp = config.getGeoServer().getAddressPostalCode();
-        		if(tmp!=null && tmp!="")
-        			handleSingleElem("PostCode",tmp);;
-        		
-        		tmp = config.getGeoServer().getAddressCountry();
-        		if(tmp!=null && tmp!="")
-        			handleSingleElem("Country",tmp);
-        		
-        		endElement("ContactAddress");
-        	}
-        	tmp = config.getGeoServer().getContactVoice();
-        	if(tmp!=null && tmp!="")
-        		handleSingleElem("ContactVoiceTelephone",tmp);
-        	
-        	tmp = config.getGeoServer().getContactFacsimile();
-        	if(tmp!=null && tmp!="")
-        		handleSingleElem("ContactFacsimileTelephone",tmp);
-        	
-        	tmp = config.getGeoServer().getContactEmail();
-        	if(tmp!=null && tmp!="")
-        		handleSingleElem("ContactElectronicMailAddress",tmp);
-        	endElement("Contact");
-    	}
+        tmp = config.getGeoServer().getContactPerson();
+
+        if ((tmp != null) && (tmp != "")) {
+            startElement("Contact");
+            handleSingleElem("ContactPerson", tmp);
+            tmp = config.getGeoServer().getContactOrganization();
+
+            if ((tmp != null) && (tmp != "")) {
+                handleSingleElem("ContactOrganization", tmp);
+            }
+
+            tmp = config.getGeoServer().getContactPosition();
+
+            if ((tmp != null) && (tmp != "")) {
+                handleSingleElem("ContactPosition", tmp);
+            }
+
+            tmp = config.getGeoServer().getAddress();
+
+            if ((tmp != null) && (tmp != "")) {
+                startElement("ContactAddress");
+                tmp = config.getGeoServer().getAddressType();
+
+                if ((tmp != null) && (tmp != "")) {
+                    handleSingleElem("AddressType", tmp);
+                }
+
+                ;
+                tmp = config.getGeoServer().getAddress();
+                handleSingleElem("Address", tmp);
+                ;
+                tmp = config.getGeoServer().getAddressCity();
+
+                if ((tmp != null) && (tmp != "")) {
+                    handleSingleElem("City", tmp);
+                }
+
+                ;
+                tmp = config.getGeoServer().getAddressState();
+
+                if ((tmp != null) && (tmp != "")) {
+                    handleSingleElem("StateOrProvince", tmp);
+                }
+
+                ;
+                tmp = config.getGeoServer().getAddressPostalCode();
+
+                if ((tmp != null) && (tmp != "")) {
+                    handleSingleElem("PostCode", tmp);
+                }
+
+                ;
+                tmp = config.getGeoServer().getAddressCountry();
+
+                if ((tmp != null) && (tmp != "")) {
+                    handleSingleElem("Country", tmp);
+                }
+
+                endElement("ContactAddress");
+            }
+
+            tmp = config.getGeoServer().getContactVoice();
+
+            if ((tmp != null) && (tmp != "")) {
+                handleSingleElem("ContactVoiceTelephone", tmp);
+            }
+
+            tmp = config.getGeoServer().getContactFacsimile();
+
+            if ((tmp != null) && (tmp != "")) {
+                handleSingleElem("ContactFacsimileTelephone", tmp);
+            }
+
+            tmp = config.getGeoServer().getContactEmail();
+
+            if ((tmp != null) && (tmp != "")) {
+                handleSingleElem("ContactElectronicMailAddress", tmp);
+            }
+
+            endElement("Contact");
+        }
     }
 
     /**
@@ -190,9 +223,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     protected void handleCapabilities(Service Service)
         throws SAXException {
         WMS config = (WMS) Service;
-
         cReturn();
-
         startElement("Capability");
         indent();
         handleRequest(config);
@@ -224,7 +255,12 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         FeatureTypeInfo layer;
         cReturn();
         startElement("Layer");
-        handleService((Service) config);
+        cReturn();
+        handleSingleElem("Title", config.getTitle());
+        cReturn();
+        handleSingleElem("Abstract", config.getAbstract());
+        cReturn();
+        unIndent();
 
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             layer = (FeatureTypeInfo) it.next();
@@ -259,6 +295,19 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     }
 
     /**
+     * DOCUMENT ME!
+     *
+     * @param bboxAtts DOCUMENT ME!
+     *
+     * @throws SAXException DOCUMENT ME!
+     */
+    protected void handleLatLongBbox(AttributesImpl bboxAtts)
+        throws SAXException {
+        startElement("LatLonBoundingBox", bboxAtts);
+        endElement("LatLonBoundingBox");
+    }
+
+    /**
      * Handles the sld styling support provided by the server.
      *
      * @param config The WMS config to get sld info from.
@@ -271,7 +320,6 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         String supportsUserLayer = config.supportsUserLayer() ? "1" : "0";
         String supportsUserStyle = config.supportsUserStyle() ? "1" : "0";
         String supportsRemoteWFS = config.supportsRemoteWFS() ? "1" : "0";
-
         sldAtts.addAttribute("", "SupportSLD", "SupportSLD", "", supportsSLD);
         sldAtts.addAttribute("", "UserLayer", "UserLayer", "", supportsUserLayer);
         sldAtts.addAttribute("", "UserStyle", "UserStyle", "", supportsUserStyle);
@@ -412,7 +460,6 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleSingleElem("ContactOrganization", server.getContactOrganization());
         unIndent();
         endElement("ContactPersonPrimary");
-
         startElement("ContactAddress");
         indent();
         handleSingleElem("AddressType", server.getAddressType());
@@ -423,13 +470,11 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleSingleElem("Country", server.getAddressCountry());
         unIndent();
         endElement("ContactAddress");
-
         handleSingleElem("ContactVoiceTelephone", server.getContactVoice());
         handleSingleElem("ContactFacsimileTelephone",
             server.getContactFacsimile());
         handleSingleElem("ContactElectronicMailAddress",
             server.getContactEmail());
-
         unIndent();
         endElement("ContactInformation");
     }
@@ -460,7 +505,6 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             }
 
             unIndent();
-
             endElement("KeywordList");
         }
     }
@@ -475,7 +519,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      */
     protected void handleOnlineResource(Service config)
         throws SAXException {
-        String url = config.getOnlineResource().toString();
+        //String url = config.getOnlineResource().toString();
+        String url = baseUrl + "wms?";
         handleOnlineResource(url);
     }
 
@@ -493,7 +538,6 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             "http://www.w3.org/1999/xlink");
         attributes.addAttribute("", "xlink:type", "xlink:type", "", "simple");
         attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
-
         indent();
         startElement("OnlineResource", attributes);
         endElement("OnlineResource");
