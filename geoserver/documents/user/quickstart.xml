@@ -4,8 +4,8 @@
 <article>
   <title>Quickstart</title>
 
-  <para>The GeoServer 1.2.0-rc1 WFS server ships with a minimal configuration
-  of two shapefiles and a couple of validation tests.</para>
+  <para>The GeoServer 1.2.0-rc2 WFS server ships with a minimal configuration
+  of one shapefile and a couple of validation tests.</para>
 
   <para>The steps are:</para>
 
@@ -29,7 +29,7 @@
       directory.</para>
 
       <para>If you are updating an existing installation remember to back up
-      your geoserver/conf directory.</para>
+      your webapps/geoserver directory.</para>
     </listitem>
 
     <listitem>
