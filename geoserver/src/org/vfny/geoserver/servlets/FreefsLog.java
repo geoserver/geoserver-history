@@ -4,15 +4,15 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.vfny.geoserver.config.ConfigInfo;
-import org.vfny.geoserver.config.TypeRepository;
-import org.vfny.geoserver.zserver.GeoZServer;
+import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.vfny.geoserver.config.*;
+import org.vfny.geoserver.oldconfig.*;
 
 //Logging system
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.vfny.geoserver.zserver.*;
+import java.util.Iterator;
+import java.util.logging.*;
+import javax.servlet.http.*;
 
 
 /**
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.13 2003/09/16 01:05:57 cholmesny Exp $
+ * @version $Id: FreefsLog.java,v 1.13.4.5 2003/12/04 19:30:36 cholmesny Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -29,32 +29,39 @@ public class FreefsLog extends HttpServlet {
 
     /** Default name for configuration directory */
     private static final String CONFIG_DIR = "data/";
-
     private GeoZServer server;
 
     /**
      * Initializes logging and config.
      */
     public void init() {
-        //HACK: java.util.prefs are awful.  See 
-        //http://www.allaboutbalance.com/disableprefs.  When the site comes 
+        //HACK: java.util.prefs are awful.  See
+        //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
 
         String root = this.getServletContext().getRealPath("/");
-        String path = root + CONFIG_DIR;
-        LOGGER.finer("init with path: " + path);
+        String path = root; // + CONFIG_DIR;
+        LOGGER.fine("init with path: " + path);
 
-        ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
-
-        if (cfgInfo.runZServer()) {
-            try {
-                server = new GeoZServer(cfgInfo.getZServerProps());
-                server.start();
-            } catch (java.io.IOException e) {
-                LOGGER.info("zserver module could not start: " + e.getMessage());
-            }
+        try {
+            ServerConfig.load(path);
+        } catch (ConfigurationException ex) {
+            LOGGER.severe("Can't initialize server: " + ex.getMessage());
+            ex.printStackTrace();
         }
+
+        /*
+           ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
+                   if (cfgInfo.runZServer()) {
+              try {
+                  server = new GeoZServer(cfgInfo.getZServerProps());
+                  server.start();
+              } catch (java.io.IOException e) {
+                  LOGGER.info("zserver module could not start: " + e.getMessage());
+              }
+                   }
+         */
     }
 
     /**
@@ -72,7 +79,35 @@ public class FreefsLog extends HttpServlet {
      */
     public void destroy() {
         super.destroy();
-        TypeRepository.getInstance().closeTypeResources();
+        ConnectionPoolManager.getInstance().closeAll();
+
+        /*
+           HACK: we must get a standard API way for releasing resources...
+         */
+        try {
+            Class sdepfClass = Class.forName(
+                    "org.geotools.data.sde.SdeConnectionPoolFactory");
+
+            LOGGER.info("SDE datasource found, releasing resources");
+
+            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance",
+                    new Class[0]);
+            Object pfInstance = m.invoke(sdepfClass, new Object[0]);
+
+            LOGGER.info("got sde connection pool factory instance: "
+                + pfInstance);
+
+            java.lang.reflect.Method closeMethod = pfInstance.getClass()
+                                                             .getMethod("closeAll",
+                    new Class[0]);
+
+            closeMethod.invoke(pfInstance, new Object[0]);
+            LOGGER.info("just asked SDE datasource to release connections");
+        } catch (ClassNotFoundException cnfe) {
+            LOGGER.fine("No SDE datasource found");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         LOGGER.finer("shutting down zserver");
 

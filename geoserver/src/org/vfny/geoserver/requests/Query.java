@@ -4,12 +4,10 @@
  */
 package org.vfny.geoserver.requests;
 
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.*;
 import org.geotools.filter.Filter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
 
 /**
@@ -20,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Query.java,v 1.10 2003/09/15 16:34:54 cholmesny Exp $
+ * @version $Id: Query.java,v 1.10.4.4 2003/12/03 21:26:41 cholmesny Exp $
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?
@@ -86,6 +84,25 @@ public class Query {
         return this.typeName;
     }
 
+    private String getName() {
+        if (typeName.indexOf(":") == -1) {
+            return typeName;
+        } else {
+            //HACK: Request kvp reader does the same thing.
+            //put in common utility, and do more efficiently (indexOf?)
+            String[] splitName = typeName.split("[:]");
+            String name = typeName;
+
+            if (splitName.length == 1) {
+                name = splitName[0];
+            } else {
+                name = splitName[splitName.length - 1];
+            }
+
+            return name;
+        }
+    }
+
     /**
      * Adds a requested property name to the query.
      *
@@ -103,7 +120,7 @@ public class Query {
         } else {
             //REVISIT: move this code to geotools?
             //REVISIT: not sure what to do if there are multiple
-            //delimiters.  
+            //delimiters.
             //REVISIT: should we examine the first value?  See
             //if the namespace or typename matches up right?
             //this is currently very permissive, just grabs
@@ -196,8 +213,46 @@ public class Query {
             props = (String[]) propertyNames.toArray(new String[0]);
         }
 
-        DefaultQuery query = new DefaultQuery(null, this.filter, maxFeatures,
-                props, this.handle);
+        DefaultQuery query = new DefaultQuery(getName(), this.filter,
+                maxFeatures, props, this.handle);
+
+        return query;
+    }
+
+    /**
+     * Get this query as a geotools Query.
+     * 
+     * <p>
+     * if maxFeatures is a not positive value DefaultQuery.DEFAULT_MAX will be
+     * used.
+     * </p>
+     * 
+     * <p>
+     * The method name is changed to toDataStoreQuery since this is a one way
+     * conversion.
+     * </p>
+     *
+     * @param maxFeatures number of features, or 0 for DefaultQuery.DEFAULT_MAX
+     *
+     * @return A Query for use with the FeatureSource interface
+     */
+    public org.geotools.data.Query toDataQuery(int maxFeatures) {
+        if (maxFeatures <= 0) {
+            maxFeatures = DefaultQuery.DEFAULT_MAX;
+        }
+
+        String[] props = null;
+
+        if ((propertyNames != null) && (propertyNames.size() > 0)) {
+            props = (String[]) propertyNames.toArray(new String[0]);
+        }
+
+        if (filter == null) {
+            filter = Filter.NONE;
+        }
+
+        DefaultQuery query = new DefaultQuery(getName(), this.filter,
+                maxFeatures, props, this.handle);
 
         return query;
     }

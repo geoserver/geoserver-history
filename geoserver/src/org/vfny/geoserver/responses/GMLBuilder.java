@@ -4,24 +4,12 @@
  */
 package org.vfny.geoserver.responses;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import org.vfny.geoserver.config.ConfigInfo;
-import org.vfny.geoserver.config.TypeInfo;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.logging.Logger;
+import com.vividsolutions.jts.geom.*;
+import org.vfny.geoserver.oldconfig.*;
+import java.io.*;
+import java.text.*;
+import java.util.*;
+import java.util.logging.*;
 
 
 /**
@@ -79,7 +67,6 @@ public class GMLBuilder {
     private static final String XMLNS_GML = "xmlns:gml=\"http://www.opengis.net/gml\"";
     private static final String WFS_URI = "http://www.opengis.net/wfs";
     private static final String XMLNS_WFS = "xmlns:wfs=\"" + WFS_URI + "\"";
-
     private static final String WFS_LOC = configInfo.getSchemaBaseUrl()
         + "wfs/1.0.0/WFS-basic.xsd";
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
@@ -110,9 +97,6 @@ public class GMLBuilder {
     /** Configures and writes geometry information */
     private GeometryWriter geometryWriter = new GeometryWriter();
 
-    /** Final output buffer for this response */
-    private StringBuffer finalResult = new StringBuffer(20000);
-
     /** Running total of maximum features allowed for this response */
     private int maxFeatures = 1000;
 
@@ -120,14 +104,24 @@ public class GMLBuilder {
     private boolean verbose;
     private NumberFormat coordFormatter = NumberFormat.getInstance(Locale.US);
 
+    /** Final output buffer for this response */
+    private StringBuffer finalResult = new StringBuffer(20000);
+
+    //private Writer finalResult;
+    public GMLBuilder(boolean verbose) {
+        this(verbose, new StringWriter(20000));
+    }
+
     /**
      * Constructor to set verbosity
      *
      * @param verbose Sets level of indendation and documentation for response
+     * @param writer DOCUMENT ME!
      */
-    public GMLBuilder(boolean verbose) {
+    public GMLBuilder(boolean verbose, Writer writer) {
         this.verbose = verbose;
 
+        //this.finalResult = writer;
         StringBuffer decimalPattern = new StringBuffer();
 
         for (int i = 0; i < configInfo.getNumDecimals(); i++) {
@@ -141,10 +135,10 @@ public class GMLBuilder {
             ((DecimalFormat) coordFormatter).applyPattern(numPattern);
         }
 
-        finalResult.append(XML_HEADER);
+        writeString(XML_HEADER);
 
         if (verbose) {
-            finalResult.append("\n");
+            writeString("\n");
         }
     }
 
@@ -260,21 +254,21 @@ public class GMLBuilder {
         return finalResult.toString();
     }
 
-    //J-
-    /**
-     * Parses the passed string, and encodes the special characters (used in
-     * xml for special purposes) with the appropriate codes. e.g. '<' is
-     * changed to '&lt;'
-     *
-     * @param inData The string to encode into xml.
-     *
-     * @return the encoded string. Returns null, if null is passed as argument
-     *
-     * @task REVISIT: Once we write directly to out, as we should, this  method
-     *       should be simpler, as we can just write strings with escapes
-     *       directly to out, replacing as we iterate of chars to write them.
-     */
-    //J+
+  //J-
+  /**
+   * Parses the passed string, and encodes the special characters (used in
+   * xml for special purposes) with the appropriate codes. e.g. '<' is
+   * changed to '&lt;'
+   *
+   * @param inData The string to encode into xml.
+   *
+   * @return the encoded string. Returns null, if null is passed as argument
+   *
+   * @task REVISIT: Once we write directly to out, as we should, this  method
+   *       should be simpler, as we can just write strings with escapes
+   *       directly to out, replacing as we iterate of chars to write them.
+   */
+  //J+
     public static String encodeXML(String inData) {
         //return null, if null is passed as argument
         if (inData == null) {
@@ -325,15 +319,24 @@ public class GMLBuilder {
         return buffer.toString();
     }
 
+    private void writeString(String s) {
+        finalResult.append(s);
+
+        /**
+         * try { finalResult.write(s); }catch (IOException ex) {}
+         */
+    }
+
     /**
      * Handles the feature type writing tasks for the main class.
      */
     private class FeatureTypeWriter {
-        private int boxInsertPos; //= FEATURE_COLL_INIT.length() + 
+        private int boxInsertPos; //= FEATURE_COLL_INIT.length() +
 
         //XML_HEADER.length();
         private int describeInsertPos;
         private String srs;
+        private StringBuffer sb = new StringBuffer();
 
         /**
          * No argument contructor.
@@ -355,27 +358,28 @@ public class GMLBuilder {
 
             String indent = ((verbose) ? "\n   " : " ");
             String schIndent = indent + (verbose ? "                " : "");
-            finalResult.append(FEATURE_COLL_HEAD);
+            writeString(FEATURE_COLL_HEAD);
 
             if (lockId != null) {
-                finalResult.append(indent + "lockId=\"" + lockId + "\"");
+                writeString(indent + "lockId=\"" + lockId + "\"");
             }
 
-            finalResult.append(indent + "xmlns=\"" + xmlns + "\"");
-            finalResult.append(indent + XMLNS_GML);
-            finalResult.append(indent + XMLNS_WFS);
-            finalResult.append(indent + XS_NAMESPACE);
-            finalResult.append(indent + "xs:schemaLocation=\"" + xmlns + " ");
+            writeString(indent + "xmlns=\"" + xmlns + "\"");
+            writeString(indent + XMLNS_GML);
+            writeString(indent + XMLNS_WFS);
+            writeString(indent + XS_NAMESPACE);
+            writeString(indent + "xs:schemaLocation=\"" + xmlns + " ");
 
             //REVISIT: describe request for all types in namespace?  That
             //would fix the extension problem, like when there is an abstract
             //type defined that all derive from.
-            finalResult.append(schIndent + configInfo.getUrl()
+            writeString(schIndent + configInfo.getUrl()
                 + "/DescribeFeatureType?" //HACK: bad hard code here.
                 + "typeName=" + typeInfo.getFullName());
+
             describeInsertPos = finalResult.length();
-            finalResult.append(schIndent + WFS_URI + schIndent + WFS_LOC
-                + "\">");
+
+            writeString(schIndent + WFS_URI + schIndent + WFS_LOC + "\">");
             boxInsertPos = finalResult.length();
         }
 
@@ -432,10 +436,10 @@ public class GMLBuilder {
             finalResult.insert(boxInsertPos, bbox.toString());
 
             if (verbose) {
-                finalResult.append("\n");
+                writeString("\n");
             }
 
-            finalResult.append("</wfs:FeatureCollection>");
+            writeString("</wfs:FeatureCollection>");
         }
     }
 
@@ -484,14 +488,16 @@ public class GMLBuilder {
          * @param fid Feature ID (optional in GML specification)
          */
         public void start(String fid) {
-            finalResult.append(featureMemberStart1).append(fid).append(featureMemberStart2);
+            writeString(featureMemberStart1);
+            writeString(fid);
+            writeString(featureMemberStart2);
         }
 
         /**
          * Writes the end tag for the feature member
          */
         public void end() {
-            finalResult.append(featureMemberEnd);
+            writeString(featureMemberEnd);
             maxFeatures--;
         }
     }
@@ -537,7 +543,7 @@ public class GMLBuilder {
             //I guess it is possible for them to have an apostrophe
             name = encodeXML(name);
 
-            //should check if mandatory here, 
+            //should check if mandatory here,
             if ((value != null) && !value.equals("")) {
                 //Would be nice if we could figure out what position this
                 //is in to figure out if it makes sense to transform
@@ -548,17 +554,21 @@ public class GMLBuilder {
                     name = gmlName;
                 }
 
-                finalResult.append(attribute1).append(name);
+                writeString(attribute1);
+                writeString(name);
 
                 //If null and mandatory should prepend nil.
                 //TODO: figure out minOccurs/nillable.
                 if (value.equals("")) {
                     //should check attributeType for nillable.
-                    finalResult.append(" xs:nil=\"true\"");
+                    writeString(" xs:nil=\"true\"");
                 }
 
-                finalResult.append(attribute2).append(value).append(attribute3)
-                           .append(name).append(attribute4);
+                writeString(attribute2);
+                writeString(value);
+                writeString(attribute3);
+                writeString(name);
+                writeString(attribute4);
             }
 
             //if null don't write anything.
@@ -724,7 +734,7 @@ public class GMLBuilder {
             return envelope;
         }
 
-        //call this automatically in init geometry?  
+        //call this automatically in init geometry?
         public void resetEnvelope() {
             envelope.init();
         }
@@ -805,10 +815,9 @@ public class GMLBuilder {
          *       make an envelope for each item.
          */
         private void writeBox(Geometry geometry, String gid) {
-            finalResult.append(abstractGeometryStart1 + gid
-                + abstractGeometryStart2);
+            writeString(abstractGeometryStart1 + gid + abstractGeometryStart2);
             writeCoordinates(geometry);
-            finalResult.append(abstractGeometryEnd);
+            writeString(abstractGeometryEnd);
         }
 
         /**
@@ -818,10 +827,9 @@ public class GMLBuilder {
          * @param gid Geometric ID
          */
         private void writePoint(Point geometry, String gid) {
-            finalResult.append(abstractGeometryStart1 + gid
-                + abstractGeometryStart2);
+            writeString(abstractGeometryStart1 + gid + abstractGeometryStart2);
             writeCoordinates(geometry);
-            finalResult.append(abstractGeometryEnd);
+            writeString(abstractGeometryEnd);
         }
 
         /**
@@ -831,17 +839,17 @@ public class GMLBuilder {
          */
         private void writePoint(Point geometry) {
             if (verbose) {
-                finalResult.append(GEOM_OFFSET);
+                writeString(GEOM_OFFSET);
             }
 
-            finalResult.append("<gml:" + geometry.getGeometryType() + ">");
+            writeString("<gml:" + geometry.getGeometryType() + ">");
             writeCoordinates(geometry);
 
             if (verbose) {
-                finalResult.append(GEOM_OFFSET);
+                writeString(GEOM_OFFSET);
             }
 
-            finalResult.append("</gml:" + geometry.getGeometryType() + ">");
+            writeString("</gml:" + geometry.getGeometryType() + ">");
         }
 
         /**
@@ -851,25 +859,24 @@ public class GMLBuilder {
          * @param gid Geometric ID
          */
         private void writeMultiPoint(GeometryCollection geometry, String gid) {
-            finalResult.append(abstractGeometryStart1 + gid
-                + abstractGeometryStart2);
+            writeString(abstractGeometryStart1 + gid + abstractGeometryStart2);
 
             for (int i = 0; i < geometry.getNumGeometries(); i++) {
                 if (verbose) {
-                    finalResult.append(GEOM_OFFSET);
+                    writeString(GEOM_OFFSET);
                 }
 
-                finalResult.append("<gml:pointMember>");
+                writeString("<gml:pointMember>");
                 writePoint((Point) geometry.getGeometryN(i));
 
                 if (verbose) {
-                    finalResult.append(GEOM_OFFSET);
+                    writeString(GEOM_OFFSET);
                 }
 
-                finalResult.append("</gml:pointMember>");
+                writeString("</gml:pointMember>");
             }
 
-            finalResult.append(abstractGeometryEnd);
+            writeString(abstractGeometryEnd);
         }
 
         /**
@@ -879,10 +886,9 @@ public class GMLBuilder {
          * @param gid Geometric ID
          */
         private void writeLineString(LineString geometry, String gid) {
-            finalResult.append(abstractGeometryStart1 + gid
-                + abstractGeometryStart2);
+            writeString(abstractGeometryStart1 + gid + abstractGeometryStart2);
             writeCoordinates(geometry);
-            finalResult.append(abstractGeometryEnd);
+            writeString(abstractGeometryEnd);
         }
 
         /**
@@ -892,17 +898,17 @@ public class GMLBuilder {
          */
         private void writeLineString(LineString geometry) {
             if (verbose) {
-                finalResult.append(GEOM_OFFSET);
+                writeString(GEOM_OFFSET);
             }
 
-            finalResult.append("<gml:" + geometry.getGeometryType() + ">");
+            writeString("<gml:" + geometry.getGeometryType() + ">");
             writeCoordinates(geometry);
 
             if (verbose) {
-                finalResult.append(GEOM_OFFSET);
+                writeString(GEOM_OFFSET);
             }
 
-            finalResult.append("</gml:" + geometry.getGeometryType() + ">");
+            writeString("</gml:" + geometry.getGeometryType() + ">");
         }
 
         /**
@@ -913,25 +919,24 @@ public class GMLBuilder {
          */
         private void writeMultiLineString(GeometryCollection geometry,
             String gid) {
-            finalResult.append(abstractGeometryStart1 + gid
-                + abstractGeometryStart2);
+            writeString(abstractGeometryStart1 + gid + abstractGeometryStart2);
 
             for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
                 if (verbose) {
-                    finalResult.append(GEOM_OFFSET);
+                    writeString(GEOM_OFFSET);
                 }
 
-                finalResult.append("<gml:lineStringMember>");
+                writeString("<gml:lineStringMember>");
                 writeLineString((LineString) geometry.getGeometryN(i));
 
                 if (verbose) {
-                    finalResult.append(GEOM_OFFSET);
+                    writeString(GEOM_OFFSET);
                 }
 
-                finalResult.append("</gml:lineStringMember>");
+                writeString("</gml:lineStringMember>");
             }
 
-            finalResult.append(abstractGeometryEnd);
+            writeString(abstractGeometryEnd);
         }
 
         /**
@@ -942,44 +947,43 @@ public class GMLBuilder {
          */
         private void writePolygon(Polygon geometry, String gid) {
             if (verbose) {
-                finalResult.append(abstractGeometryStart1 + gid
+                writeString(abstractGeometryStart1 + gid
                     + abstractGeometryStart2);
-                finalResult.append(GEOM_OFFSET + "<gml:outerBoundaryIs>"
-                    + GEOM_OFFSET + " <gml:LinearRing>");
+                writeString(GEOM_OFFSET + "<gml:outerBoundaryIs>" + GEOM_OFFSET
+                    + " <gml:LinearRing>");
                 writeCoordinates(geometry.getExteriorRing());
-                finalResult.append(GEOM_OFFSET + " </gml:LinearRing>"
-                    + GEOM_OFFSET + "</gml:outerBoundaryIs>");
+                writeString(GEOM_OFFSET + " </gml:LinearRing>" + GEOM_OFFSET
+                    + "</gml:outerBoundaryIs>");
 
                 if (geometry.getNumInteriorRing() > 0) {
                     for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
-                        finalResult.append("\n         <gml:innerBoundaryIs>");
-                        finalResult.append("\n          <gml:LinearRing>");
+                        writeString("\n         <gml:innerBoundaryIs>");
+                        writeString("\n          <gml:LinearRing>");
                         writeCoordinates(geometry.getInteriorRingN(i));
-                        finalResult.append("\n          </gml:LinearRing>");
-                        finalResult.append("\n        </gml:innerBoundaryIs>");
+                        writeString("\n          </gml:LinearRing>");
+                        writeString("\n        </gml:innerBoundaryIs>");
                     }
                 }
 
-                finalResult.append(abstractGeometryEnd);
+                writeString(abstractGeometryEnd);
             } else {
-                finalResult.append(abstractGeometryStart1 + gid
+                writeString(abstractGeometryStart1 + gid
                     + abstractGeometryStart2);
-                finalResult.append("<gml:outerBoundaryIs><gml:LinearRing" + ">");
+                writeString("<gml:outerBoundaryIs><gml:LinearRing" + ">");
                 writeCoordinates(geometry.getExteriorRing());
-                finalResult.append("</gml:LinearRing></gml:"
-                    + "outerBoundaryIs>");
+                writeString("</gml:LinearRing></gml:" + "outerBoundaryIs>");
 
                 if (geometry.getNumInteriorRing() > 0) {
                     for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
-                        finalResult.append("<gml:innerBoundaryIs>");
-                        finalResult.append("<gml:LinearRing>");
+                        writeString("<gml:innerBoundaryIs>");
+                        writeString("<gml:LinearRing>");
                         writeCoordinates(geometry.getInteriorRingN(i));
-                        finalResult.append("</gml:LinearRing>");
-                        finalResult.append("</gml:innerBoundaryIs>");
+                        writeString("</gml:LinearRing>");
+                        writeString("</gml:innerBoundaryIs>");
                     }
                 }
 
-                finalResult.append(abstractGeometryEnd);
+                writeString(abstractGeometryEnd);
             }
         }
 
@@ -989,24 +993,24 @@ public class GMLBuilder {
          * @param geometry OGC SF Polygon type
          */
         private void writePolygon(Polygon geometry) {
-            finalResult.append("<gml:" + geometry.getGeometryType() + ">");
-            finalResult.append("<gml:outerBoundaryIs><gml:" + "LinearRing>");
+            writeString("<gml:" + geometry.getGeometryType() + ">");
+            writeString("<gml:outerBoundaryIs><gml:" + "LinearRing>");
             writeCoordinates(geometry.getExteriorRing());
-            finalResult.append("</gml:LinearRing></gml:" + "outerBoundaryIs>");
+            writeString("</gml:LinearRing></gml:" + "outerBoundaryIs>");
 
             if (geometry.getNumInteriorRing() > 0) {
-                finalResult.append("<gml:innerBoundaryIs>");
+                writeString("<gml:innerBoundaryIs>");
 
                 for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
-                    finalResult.append("<gml:LinearRing>");
+                    writeString("<gml:LinearRing>");
                     writeCoordinates(geometry.getInteriorRingN(i));
-                    finalResult.append("</gml:LinearRing>");
+                    writeString("</gml:LinearRing>");
                 }
 
-                finalResult.append("</gml:innerBoundaryIs>");
+                writeString("</gml:innerBoundaryIs>");
             }
 
-            finalResult.append("</gml:" + geometry.getGeometryType() + ">");
+            writeString("</gml:" + geometry.getGeometryType() + ">");
         }
 
         /**
@@ -1016,25 +1020,24 @@ public class GMLBuilder {
          * @param gid Geometric ID
          */
         private void writeMultiPolygon(GeometryCollection geometry, String gid) {
-            finalResult.append(abstractGeometryStart1 + gid
-                + abstractGeometryStart2);
+            writeString(abstractGeometryStart1 + gid + abstractGeometryStart2);
 
             for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
                 if (verbose) {
-                    finalResult.append(GEOM_OFFSET);
+                    writeString(GEOM_OFFSET);
                 }
 
-                finalResult.append("<gml:polygonMember>");
+                writeString("<gml:polygonMember>");
                 writePolygon((Polygon) geometry.getGeometryN(i));
 
                 if (verbose) {
-                    finalResult.append(GEOM_OFFSET);
+                    writeString(GEOM_OFFSET);
                 }
 
-                finalResult.append("</gml:polygonMember>");
+                writeString("</gml:polygonMember>");
             }
 
-            finalResult.append(abstractGeometryEnd);
+            writeString(abstractGeometryEnd);
         }
 
         /**
@@ -1044,57 +1047,56 @@ public class GMLBuilder {
          * @param gid Geometric ID
          */
         private void writeMultiGeometry(GeometryCollection geometry, String gid) {
-            finalResult.append(abstractGeometryStart1 + gid
-                + abstractGeometryStart2);
+            writeString(abstractGeometryStart1 + gid + abstractGeometryStart2);
 
             for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
                 if (geometry.getGeometryType().equals("Point")) {
                     if (verbose) {
-                        finalResult.append(GEOM_OFFSET);
+                        writeString(GEOM_OFFSET);
                     }
 
-                    finalResult.append("<gml:pointMember>");
+                    writeString("<gml:pointMember>");
                     writePoint((Point) geometry.getGeometryN(i));
 
                     if (verbose) {
-                        finalResult.append(GEOM_OFFSET);
+                        writeString(GEOM_OFFSET);
                     }
 
-                    finalResult.append("</gml:pointMember>");
+                    writeString("</gml:pointMember>");
                 }
 
                 if (geometry.getGeometryType().equals("LineString")) {
                     if (verbose) {
-                        finalResult.append(GEOM_OFFSET);
+                        writeString(GEOM_OFFSET);
                     }
 
-                    finalResult.append("<gml:lineStringMember>");
+                    writeString("<gml:lineStringMember>");
                     writeLineString((LineString) geometry.getGeometryN(i));
 
                     if (verbose) {
-                        finalResult.append(GEOM_OFFSET);
+                        writeString(GEOM_OFFSET);
                     }
 
-                    finalResult.append("</gml:lineStringMember>");
+                    writeString("</gml:lineStringMember>");
                 }
 
                 if (geometry.getGeometryType().equals("Polygon")) {
                     if (verbose) {
-                        finalResult.append(GEOM_OFFSET);
+                        writeString(GEOM_OFFSET);
                     }
 
-                    finalResult.append("<gml:polygonMember>");
+                    writeString("<gml:polygonMember>");
                     writePolygon((Polygon) geometry.getGeometryN(i));
 
                     if (verbose) {
-                        finalResult.append(GEOM_OFFSET);
+                        writeString(GEOM_OFFSET);
                     }
 
-                    finalResult.append("</gml:polygonMember>");
+                    writeString("</gml:polygonMember>");
                 }
             }
 
-            finalResult.append(abstractGeometryEnd);
+            writeString(abstractGeometryEnd);
         }
 
         /**
@@ -1105,17 +1107,22 @@ public class GMLBuilder {
         private void writeCoordinates(Geometry geometry) {
             //int dimension = geometry.getDimension();
             Coordinate[] tempCoordinates = geometry.getCoordinates();
-            finalResult.append(coordinatesStart);
+            writeString(coordinatesStart);
 
             for (int i = 0, n = geometry.getNumPoints(); i < n; i++) {
                 String xCoord = coordFormatter.format(tempCoordinates[i].x);
                 String yCoord = coordFormatter.format(tempCoordinates[i].y);
-                finalResult.append(xCoord + coordinateDelimeter + yCoord
-                    + tupleDelimeter);
+                writeString(xCoord);
+                writeString(coordinateDelimeter);
+                writeString(yCoord);
+
+                if (i < (n - 1)) {
+                    writeString(tupleDelimeter);
+                }
             }
 
-            finalResult.deleteCharAt(finalResult.length() - 1);
-            finalResult.append(coordinatesEnd);
+            //finalResult.deleteCharAt(finalResult.length() - 1);
+            writeString(coordinatesEnd);
         }
     }
 }
