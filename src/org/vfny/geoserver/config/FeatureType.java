@@ -1,3 +1,19 @@
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2002, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -28,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.9 $ $Date: 2003/10/03 17:49:31 $
+ * @version $Revision: 1.10 $ $Date: 2003/10/06 16:37:21 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
  *       castor generated FeatureType, but it is now unclear if we _really_
@@ -75,7 +91,7 @@ class FeatureType {
     /** indicates which spatial reference system should be used */
     private String srs;
     private Map styles = new HashMap();
-    private String defaultStyle;
+    private String defaultStyle = "normal";
 
     /**
      * Indicates the edges of the enclosing rectangle in latitude/longitude
@@ -182,8 +198,9 @@ class FeatureType {
                     MANDATORY_TAG));
 
             NodeList styleNodes = featureElem.getElementsByTagName(STYLE_TAG);
+            int j;
 
-            for (int j = 0; j < styleNodes.getLength(); j++) {
+            for (j = 0; j < styleNodes.getLength(); j++) {
                 Node curNode = styleNodes.item(j);
 
                 if (curNode instanceof org.w3c.dom.Element) {
@@ -199,6 +216,8 @@ class FeatureType {
                         LOGGER.warning(mesg);
                     } else {
                         featureType.addStyle(id, file);
+                        LOGGER.finer("adding style " + id + ", for file "
+                            + file);
 
                         String defaultA = style.getAttribute(STYLE_DEFAULT_ATTR);
 
@@ -207,6 +226,13 @@ class FeatureType {
                         }
                     }
                 }
+            }
+
+            //this is kinda hacky, it's just so that something will render
+            //if no styles are added.  It'll break if people remove normal.sld
+            if (j == 0) {
+                LOGGER.finer("no styles added, putting default in");
+                featureType.addStyle("normal", "normal.sld");
             }
 
             fis.close();
