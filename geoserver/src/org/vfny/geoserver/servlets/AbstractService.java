@@ -23,7 +23,7 @@ import javax.servlet.http.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: AbstractService.java,v 1.1.2.3 2003/11/12 00:59:11 cholmesny Exp $
+ * @version $Id: AbstractService.java,v 1.1.2.4 2003/11/13 23:57:46 jive Exp $
  *
  * @task TODO: I changed this so it automatically buffers responses, so  as to
  *       better handle errors, not serving up nasty servlet errors if
@@ -52,6 +52,15 @@ public abstract class AbstractService extends HttpServlet {
                                                     .getMimeType();
     private static Map context;
 
+    public static final ServiceStratagy SPEED = new SpeedStratagy();
+    public static final ServiceStratagy FILE = new FileStratagy();    
+    public static final ServiceStratagy BUFFER = new BufferStratagy();
+    
+    /**
+     * Controls the Safty Mode used when using execute/writeTo.
+     */
+    private static ServiceStratagy saftyMode = BUFFER;
+     
     /**
      * DOCUMENT ME!
      *
@@ -281,4 +290,182 @@ public abstract class AbstractService extends HttpServlet {
 
         return supportsGzip;
     }
+    /**
+     * Interface used for ServiceMode stratagy objects.
+     * <p>
+     * While this interface resembles the Enum idiom in that only
+     * three instances are available SPEED, BUFFER and FILE, we are
+     * using this class to plug-in the implementation for our
+     * doService request in the manner of the Stratagy pattern.
+     * </p>
+     * @author Jody Garnett, Refractions Research
+     */
+    static public interface ServiceStratagy {
+        public void doService(AbstractService service,
+                              HttpServletRequest request,
+                              HttpServletResponse response,
+                              Request serviceRequest);        
+    }
 }
+/**
+ * Fast and Dangeroud service stratagy.
+ * <p>
+ * Will fail when a ServiceException is encountered on writeTo, and will
+ * not tell the user about it! This is the worst case scenario, you are trading
+ * speed for danger by using this ServiceStratagy.
+ * </p>
+ * @throws IllegalStateException When encountering an error during writeTo
+ * @author jgarnett
+ */
+class SpeedStratagy implements AbstractService.ServiceStratagy {
+    public void doService(AbstractService service,
+                          HttpServletRequest request,
+                          HttpServletResponse response,
+                          Request serviceRequest) {
+        
+        Response serviceResponse = service.getResponseHandler();
+        OutputStream out = null;        
+        try {
+            serviceResponse.execute(serviceRequest);                    
+            out = response.getOutputStream();
+            out = new BufferedOutputStream( out );
+            
+//            if (service.requestSupportsGzip(request))
+//            {
+//                response.setHeader("content-encoding", "gzip");
+//                out = new GZIPOutputStream(out, 2048);
+//            }                        
+        } catch ( ServiceException serviceException){
+            // we have not written anything, use sendError
+            service.sendError(response, serviceException);
+            return;            
+        
+        } catch (IOException ioException){
+            // we have not written anything, use sendError
+            service.sendError(response, ioException);
+            return;
+        }        
+        try {
+            serviceResponse.writeTo( out );            
+            out.flush();            
+        }
+        catch( ServiceException failed){
+            // we have written something out
+            // we cannot recover
+            // this is the worst case scenario we warned you about
+            // when using the SpeedStratagy
+            IllegalStateException stateException = new IllegalStateException("Speed Optimization Failed, cannot report error to user");
+            stateException.initCause( failed );
+            throw stateException;            
+        }
+        catch( IOException ioException){
+            // we could not communicate with the user
+            IllegalStateException stateException = new IllegalStateException("Communication to user failed");
+            stateException.initCause( ioException );
+            throw stateException;            
+        }
+    }
+};
+/**
+ * A safe Service stratagy that buffers output until writeTo completes.
+ * <p>
+ * This stratagy wastes memory, for saftey. It represents a middle ground
+ * between SpeedStratagy and FileStratagy
+ * </p>
+ * @author jgarnett
+ *
+ * To change the template for this generated type comment go to
+ * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ */
+class BufferStratagy implements AbstractService.ServiceStratagy {
+    public void doService(AbstractService service,
+                          HttpServletRequest request,
+                          HttpServletResponse response,
+                          Request serviceRequest) {
+        
+        ByteArrayOutputStream buffer = null;
+        try {
+            Response serviceResponse = service.getResponseHandler();
+
+            // execute request
+            serviceResponse.execute(serviceRequest);
+
+            // create buffer                        
+            buffer = new ByteArrayOutputStream();
+            
+            // gather response
+            serviceResponse.writeTo(buffer);
+        }
+        catch( ServiceException serviceException ){
+            service.sendError( response, serviceException );
+            return;                        
+        }
+        // service succeeded in producing a response!        
+        try {
+            // (copy the result to out
+            OutputStream out = response.getOutputStream();
+            out = new BufferedOutputStream(out, 2 * 1024 * 1024);
+            buffer.writeTo(out);
+            out.flush();            
+        } catch (IOException ioException) {
+            // something went wrong reporting to the user
+            IllegalStateException stateException = new IllegalStateException("Communication to user failed");
+            stateException.initCause( ioException );
+            throw stateException;
+        }
+    }
+};
+
+class FileStratagy implements AbstractService.ServiceStratagy {
+    static int sequence = 0;
+    public void doService(AbstractService service,
+                          HttpServletRequest request,
+                          HttpServletResponse response,
+                          Request serviceRequest) {
+        File temp = null;                              
+        try {
+            Response serviceResponse = service.getResponseHandler();
+            // execute request
+            serviceResponse.execute(serviceRequest);
+            
+            sequence++;
+            temp = File.createTempFile( "wfs"+sequence,"tmp" );
+            
+            FileOutputStream safe = new FileOutputStream( temp );
+            
+            // accept response to temporary file
+            serviceResponse.writeTo( safe );
+            safe.close();
+        } catch (IOException ioException) {
+            service.sendError(response, ioException);
+            return;
+        } catch( ServiceException serviceException ){
+            service.sendError( response, serviceException );
+            return;                        
+        }
+        
+        
+        // service succeeded in producing a response!
+        // copy the result to out        
+        try {
+            // copy result to the real output stream
+            InputStream copy = new BufferedInputStream( new FileInputStream( temp ) );
+            OutputStream out = response.getOutputStream();
+                        
+            // need to buffer this for performance
+            // not sure if it has been done already
+            int b;
+            b = copy.read();
+            while( b != -1 ){
+                out.write( b );
+                b = copy.read();                    
+            }
+            copy.close();            
+        } catch (IOException ioException) {
+            // something went wrong reporting to the user
+            IllegalStateException stateException = new IllegalStateException("Communication to user failed");
+            stateException.initCause( ioException );
+            throw stateException;
+        }        
+    }
+};
