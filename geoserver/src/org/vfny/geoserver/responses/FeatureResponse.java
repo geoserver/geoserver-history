@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.24 2003/09/05 22:29:34 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.25 2003/09/12 23:55:09 cholmesny Exp $
  */
 public class FeatureResponse {
     /** Standard logging instance for class */
@@ -46,11 +46,11 @@ public class FeatureResponse {
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
      *
-     * @param request DOCUMENT ME!
+     * @param request The object representing the GetFeature request.
      *
      * @return XML response to send to client
      *
-     * @throws WfsException DOCUMENT ME!
+     * @throws WfsException For bad requests.
      */
     public static String getXmlResponse(FeatureRequest request)
         throws WfsException {
@@ -199,7 +199,7 @@ public class FeatureResponse {
      *
      * @param query the query to get the handle from.
      *
-     * @return DOCUMENT ME!
+     * @return A string to report more information where things went wrong.
      */
     private static String getLocator(Query query) {
         String locator = query.getHandle();
@@ -214,13 +214,13 @@ public class FeatureResponse {
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
      *
-     * @param query DOCUMENT ME!
-     * @param meta DOCUMENT ME!
-     * @param maxFeatures DOCUMENT ME!
+     * @param query The geoserver representation of the query.
+     * @param meta The info on the featureType.
+     * @param maxFeatures The max number of features to get with this query.
      *
      * @return XML response to send to client
      *
-     * @throws WfsException DOCUMENT ME!
+     * @throws WfsException For any problems with the DataSource.
      */
     private static Feature[] getQuery(Query query, TypeInfo meta,
         int maxFeatures) throws WfsException {
@@ -247,8 +247,8 @@ public class FeatureResponse {
             }
 
             //query.addPropertyName("mandatoryString");
-            org.geotools.data.Query dsQuery = query.getDataSourceQuery(data
-                    .getSchema(), maxFeatures);
+            org.geotools.data.Query dsQuery = 
+		query.getDataSourceQuery(maxFeatures);
             collection = data.getFeatures(dsQuery);
         } catch (DataSourceException e) {
             throw new WfsException(e, "While getting features from datasource",
