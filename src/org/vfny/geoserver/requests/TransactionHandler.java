@@ -165,7 +165,7 @@ public class TransactionHandler
         // set insideQuery flag as we leave the query and add the query to the 
         //  return list
         if(state == DELETE || state == UPDATE || state == INSERT) {
-	    if (state == INSERT) {
+	    if (subRequest.getClass().equals(InsertRequest.class)) {
 		try {
 		((InsertRequest) subRequest).addFeatures
 		    ((Feature [])curFeatures.toArray(new Feature[0])) ;
