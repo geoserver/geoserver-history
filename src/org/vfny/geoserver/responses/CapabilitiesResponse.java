@@ -167,7 +167,7 @@ public class CapabilitiesResponse {
      */
     private void addHeaderInfo(String version) {
 	String spaces = "   ";
-        String encoding = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        String encoding = config.getXmlHeader();
         String firstTag = "<WFS_Capabilities version=\"" + version + "\"";
         if (version.equals("0.0.15")) {
 	    //I don\"t have 0.0.15 spec right now, but this element is not in .14 or 1.0
