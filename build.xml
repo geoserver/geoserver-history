@@ -8,7 +8,7 @@
 <!-- under the PROPERTIES section.                                          -->
 <!-- ====================================================================== -->
 
-<project name="geoserver" default="help" basedir=".">
+<project name="geoserver" default="all" basedir=".">
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
@@ -137,6 +137,8 @@
 
 <!-- INITIALIZE                                                             -->
   <target name="init">
+    <mkdir dir="${dir.build}"/>
+    <mkdir dir="${dir.server}"/>
     <tstamp><format property="date.current" pattern="MM.dd.yyyy"/></tstamp>
   </target>
 
@@ -195,6 +197,12 @@
 <!-- TEST -->
 <!-- deploys application to test server -->
   <target name="test" depends="init, all">
+    <mkdir dir="${dir.server}/webapps"/>
+    <mkdir dir="${dir.server}/webapps/ROOT"/>
+    <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF"/>
+    <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
+    <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF/classes"/>
+
     <!-- stops a running server -->
     <java classname="org.vfny.geoserver.EmbeddedTomcat" 
           classpathref="path.catalina" 
@@ -355,11 +363,11 @@
 <!-- DOCUMENTATION -->
 <!-- generates all project documentation -->
   <target name="document" depends="init">
-    <javadoc sourcepath="${basedir}/source"
+    <javadoc sourcepath="${dir.src}"
              destdir="${dir.doc}/api"
              private="true"
              windowtitle="GeoServer Documentation"
-             classpathref="${path.build}"
+             classpathref="path.build"
              stylesheetfile="${dir.misc}/documents/stylesheet.css">
       <package name="org.vfny.geoserver.*"/>
       <doctitle>
