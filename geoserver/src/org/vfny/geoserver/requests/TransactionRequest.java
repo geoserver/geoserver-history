@@ -83,39 +83,56 @@ public class TransactionRequest
     public String toString() {
 	StringBuffer tRequest = new StringBuffer("Lock Id: " + lockId + "\n");
 	tRequest.append("release all: " + releaseAll + "\n");
+	tRequest.append("\nhandle: " + handle + "\n");
 	for (int i = 0; i < subRequests.size(); i++) {
 	    tRequest.append(subRequests.get(i).toString() + "\n");
 	}
 	return tRequest.toString();
     }    
 
+     /**
+     * helper function for equals.  Checks for nulls, as
+     * this class can hold nulls, and will be equal if
+     * two of the fields are both null.
+     *
+     * @param mine The field of this object.
+     * @param test the field of to test.
+     *
+     * @return true if mine equals test, including if they
+     * are both null.
+     */
+    private boolean testField(Object mine, Object test) {
+	if (mine != null) {
+	    return mine.equals(test);
+	} else {
+	    return test == null;
+	}
+    }
+
     public boolean equals(Object obj) {
-	    if (obj != null && 
-		obj.getClass() == this.getClass()){
-		TransactionRequest testTrans = (TransactionRequest)obj;
-		boolean isEqual = true;
-		if(this.releaseAll == testTrans.getReleaseAll()) {
-		    if (this.lockId != null) {
-			isEqual = this.lockId.equals(testTrans.getLockId());
-		    } else {
-			isEqual = (testTrans.getLockId() == null);
-		    }
-		    if(this.subRequests.size() == testTrans.getSubRequestSize()){
-			for(int i = 0; i < subRequests.size(); i++) {
-			    isEqual = isEqual && subRequests.contains
+	if (obj != null && obj.getClass() == this.getClass()){
+	    TransactionRequest testTrans = (TransactionRequest)obj;
+	    boolean isEqual = true;
+	    if(this.releaseAll == testTrans.getReleaseAll()) {
+		isEqual = testField(this.lockId, testTrans.getLockId());
+		isEqual = testField(this.handle, testTrans.getHandle()) && isEqual;
+		//isEqual = testField(this.version, testTrans.version) && isEqual;
+		if(this.subRequests.size() == testTrans.subRequests.size()){
+		    for(int i = 0; i < subRequests.size(); i++) {
+			isEqual = isEqual && subRequests.contains
 			    (testTrans.getSubRequest(i));
-			}
-		    } else {
-			isEqual = false;
 		    }
 		} else {
 		    isEqual = false;
 		}
-		return isEqual;
 	    } else {
-		return false;
+		isEqual = false;
 	    }
+	    return isEqual;
+	} else {
+	    return false;
+	}
     }
-
-
+    
+    
 }
