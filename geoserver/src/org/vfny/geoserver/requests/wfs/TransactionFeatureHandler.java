@@ -9,6 +9,9 @@ import org.geotools.feature.*;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.*;
 import org.vfny.geoserver.*;
+import org.vfny.geoserver.config.CatalogConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.ServerConfig;
 import org.vfny.geoserver.oldconfig.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -19,7 +22,7 @@ import java.util.logging.*;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.1.2.1 2003/11/04 22:48:26 cholmesny Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.1.2.2 2003/11/19 19:14:28 cholmesny Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -46,7 +49,9 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     //private FeatureSchema metadata = new FeatureSchema();
     private String typeName = "GenericFeature";
     private TransactionFilterHandler parent;
-    private TypeRepository typeRepo = TypeRepository.getInstance();
+
+    //private TypeRepository typeRepo = TypeRepository.getInstance();
+    private CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.
@@ -82,24 +87,33 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
         // if it ends with Member we'll assume it's a feature for the time being
         if (insideInsert && !(localName.equals("Insert"))) {
-            String internalTypeName = typeRepo.getInternalTypeName(localName,
+            //REVISIT: more filtering here?  So we don't have to check as many
+            //featureTypes?  Like add a 
+            //!namespaceURI.equals("http://www.opengis.net/gml"); 
+            //(not sure if that'd work, but something to that effect
+            FeatureTypeConfig fType = catalog.getFeatureType(localName,
                     namespaceURI);
+            String internalTypeName = null;
+
+            if (fType != null) {
+                internalTypeName = fType.getName();
+            }
 
             if (!insideFeature) {
-                if (internalTypeName != null) {
-                    typeName = internalTypeName;
-                    attributes = new Vector();
-                    attributeNames = new Vector();
-
-                    //currentFeature = new FeatureFlat();
-                    insideFeature = true;
-                    tempValue = null;
-                    LOGGER.finer("Starting a feature " + typeName);
-                } else {
+                if (internalTypeName == null) {
                     throw new SAXException(
                         "Could not find featureType with name " + localName
                         + ", and uri: " + namespaceURI);
                 }
+
+                typeName = internalTypeName;
+                attributes = new Vector();
+                attributeNames = new Vector();
+
+                //currentFeature = new FeatureFlat();
+                insideFeature = true;
+                tempValue = null;
+                LOGGER.finer("Starting a feature " + typeName);
             }
 
             //HACK: the local name stuff should be handled in geotools.
@@ -192,8 +206,12 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             insideInsert = false;
         }
 
-        String internalTypeName = typeRepo.getInternalTypeName(localName,
-                namespaceURI);
+        FeatureTypeConfig fType = catalog.getFeatureType(localName, namespaceURI);
+        String internalTypeName = null;
+
+        if (fType != null) {
+            internalTypeName = fType.getName();
+        }
 
         if (typeName.equals(internalTypeName)) {
             AttributeType[] attDef = new AttributeType[attributes.size()];
