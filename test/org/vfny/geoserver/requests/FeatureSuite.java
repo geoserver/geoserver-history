@@ -17,11 +17,16 @@ import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.LiteralExpression;
-import org.vfny.geoserver.config.ConfigInfo;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.readers.wfs.GetFeatureKvpReader;
+import org.vfny.geoserver.requests.readers.wfs.GetFeatureXmlReader;
+import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -29,9 +34,10 @@ import java.util.logging.Logger;
  * Tests the get feature request handling.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureSuite.java,v 1.6 2003/09/16 03:33:31 cholmesny Exp $
+ * @author Chris Holmes, TOPP
+ * @version $Id: FeatureSuite.java,v 1.7 2003/12/19 02:58:48 cholmesny Exp $
  */
-public class FeatureSuite extends TestCase {
+public class FeatureSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -42,22 +48,6 @@ public class FeatureSuite extends TestCase {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Unit test data directory */
-    private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/requests";
-
-    /** Holds mappings between HTTP and ASCII encodings */
-    private static FilterFactory factory = FilterFactory.createFilterFactory();
-
-    /** Unit test data directory */
-    private static final String CONFIG_DIR = System.getProperty("user.dir")
-        + "/misc/unit/config/";
-
-    //classes complain if we don't set up a valid config info.
-    static {
-        ConfigInfo.getInstance(CONFIG_DIR);
-    }
-
     /**
      * Constructor with super.
      *
@@ -67,70 +57,12 @@ public class FeatureSuite extends TestCase {
         super(testName);
     }
 
-    /**
-     * Handles actual XML test running details.
-     *
-     * @param baseRequest Base request, for comparison.
-     * @param fileName File name to parse.
-     * @param match Whether or not base request and parse request should match.
-     *
-     * @return <tt>true</tt> if the test passed.
-     *
-     * @throws Exception If there is any problem running the test.
-     */
-    private static boolean runXmlTest(FeatureRequest baseRequest,
-        String fileName, boolean match) throws Exception {
-        // Read the file and parse it
-        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
-        Reader inputStream = new FileReader(inputFile);
-        FeatureRequest request = XmlRequestReader.readGetFeature(new BufferedReader(
-                    inputStream));
-        LOGGER.finer("base request: " + baseRequest);
-        LOGGER.finer("read request: " + request);
-        LOGGER.fine("XML " + fileName + " test passed: "
-            + baseRequest.equals(request));
-
-        // Compare parsed request to base request
-        if (match) {
-            return baseRequest.equals(request);
-        } else {
-            return !baseRequest.equals(request);
-        }
+    protected XmlRequestReader getXmlReader() {
+        return new GetFeatureXmlReader();
     }
 
-    /**
-     * Handles actual XML test running details.
-     *
-     * @param baseRequest Base request, for comparison.
-     * @param requestString File name to parse.
-     * @param match Whether or not base request and parse request should match.
-     *
-     * @return  <tt>true</tt> if the test passed.
-     *
-     * @throws Exception If there is any problem running the test.
-     */
-    private static boolean runKvpTest(FeatureRequest baseRequest,
-        String requestString, boolean match) throws Exception {
-        // Read the file and parse it
-        FeatureKvpReader reader = new FeatureKvpReader(requestString);
-        FeatureRequest request = reader.getRequest();
-
-        LOGGER.finer("base request: " + baseRequest);
-        LOGGER.finer("read request: " + request);
-        LOGGER.fine("KVP test passed: " + baseRequest.equals(request));
-
-        // Compare parsed request to base request
-        if (match) {
-            return baseRequest.equals(request);
-        } else {
-            return !baseRequest.equals(request);
-        }
-    }
-
-    /**
-     * Handles test set up details.
-     */
-    public void setUp() {
+    protected KvpRequestReader getKvpReader(Map kvps) {
+        return new GetFeatureKvpReader(kvps);
     }
 
     /* ***********************************************************************
