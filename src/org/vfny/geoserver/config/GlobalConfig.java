@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver.config;
 
-import java.nio.charset.Charset;
-import java.util.logging.Level;
-
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
 
 
 /**
@@ -20,7 +19,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.10 2004/04/16 16:07:20 cholmesny Exp $
+ * @version $Id: GlobalConfig.java,v 1.11 2004/04/20 18:56:47 cholmesny Exp $
  */
 public class GlobalConfig {
     public static final String CONFIG_KEY = "Config.Global";
@@ -129,9 +128,7 @@ public class GlobalConfig {
      * </p>
      */
     private Level loggingLevel = null;
-
     private String adminUserName;
-    
     private String adminPassword;
 
     /** The Server contact person and their contact information. */
@@ -213,7 +210,7 @@ public class GlobalConfig {
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
-		loggingLevel = g.getLoggingLevel();
+        loggingLevel = g.getLoggingLevel();
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -237,6 +234,8 @@ public class GlobalConfig {
         GeoServerDTO g = new GeoServerDTO();
         g.setMaxFeatures(maxFeatures);
         g.setVerbose(verbose);
+        g.setAdminPassword(adminPassword);
+        g.setAdminUserName(adminUserName);
         g.setNumDecimals(numDecimals);
         g.setLoggingLevel(loggingLevel);
         g.setCharSet(charSet);
@@ -475,40 +474,41 @@ public class GlobalConfig {
     public void setLoggingLevel(Level level) {
         loggingLevel = level;
     }
-    
-    /**
-     * Gets the user name of the administrator. 
-     * @return The user name to be checked for on login. 
-     */
-    public String getAdminUserName(){
-    	return adminUserName;
-    }
-    
-	/**
-	  * Gets the password of the administrator. 
-	  * @return The password to be checked for on login. 
-	  */
-    public String getAdminPassword(){
-    	return adminPassword;
-    }
-    
-	/**
-	 * Sets the user name of the administrator of GeoServer, for login
-	 * purposes.
-	 *
-	 * @param username the String to set as the admin username.
-	 */
-	public void setAdminUserName(String username) {
-		this.adminUserName = username;
-	}
 
-    
-	/**
-	 * Sets the password of the administrator of GeoServer, for login purposes.
-	 *
-	 * @param password The password to set as the login password.
-	 */
-	public void setAdminPassword(String password) {
-		this.adminPassword = password;
-	}
+    /**
+     * Gets the user name of the administrator.
+     *
+     * @return The user name to be checked for on login.
+     */
+    public String getAdminUserName() {
+        return adminUserName;
+    }
+
+    /**
+     * Gets the password of the administrator.
+     *
+     * @return The password to be checked for on login.
+     */
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    /**
+     * Sets the user name of the administrator of GeoServer, for login
+     * purposes.
+     *
+     * @param username the String to set as the admin username.
+     */
+    public void setAdminUserName(String username) {
+        this.adminUserName = username;
+    }
+
+    /**
+     * Sets the password of the administrator of GeoServer, for login purposes.
+     *
+     * @param password The password to set as the login password.
+     */
+    public void setAdminPassword(String password) {
+        this.adminPassword = password;
+    }
 }
