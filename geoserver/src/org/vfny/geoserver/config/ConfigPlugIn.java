@@ -22,7 +22,7 @@ import org.vfny.geoserver.global.*;
  * <p>
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.1.2.1 2004/01/08 01:31:59 dmzwiers Exp $
+ * @version $Id: ConfigPlugIn.java,v 1.1.2.2 2004/01/08 01:35:42 dmzwiers Exp $
  */
 public class ConfigPlugIn implements PlugIn {
 
@@ -61,10 +61,10 @@ public class ConfigPlugIn implements PlugIn {
 				if(gs == null)
 					throw new ServletException("GeoServerPlugIn Failed. Thus ConfigPlugIn cannot run.");
 			}
-			sc.setAttribute(WMSConfig.CONFIG_KEY,gs.toWMSDTO());
-			sc.setAttribute(WFSConfig.CONFIG_KEY,gs.toWFSDTO());
-			sc.setAttribute(GlobalConfig.CONFIG_KEY,gs.toGeoServerDTO());
-			sc.setAttribute(DataConfig.CONFIG_KEY,gs.toDataDTO());
+			sc.setAttribute(WMSConfig.CONFIG_KEY,new WMSConfig(gs.toWMSDTO()));
+			sc.setAttribute(WFSConfig.CONFIG_KEY,new WFSConfig(gs.toWFSDTO()));
+			sc.setAttribute(GlobalConfig.CONFIG_KEY,new GlobalConfig(gs.toGeoServerDTO()));
+			sc.setAttribute(DataConfig.CONFIG_KEY,new DataConfig(gs.toDataDTO()));
 	}
 
 }
