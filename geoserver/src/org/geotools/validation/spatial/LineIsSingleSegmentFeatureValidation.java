@@ -16,7 +16,7 @@
 */ 
 package org.geotools.validation.spatial;
 
-import java.io.IOException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,17 +25,16 @@ import org.geotools.feature.FeatureType;
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.ValidationResults;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Point;
 
 
 /**
- * LineNoSelfIntersectFeatureValidation purpose.
+ * LineIsSingleSegmentFeatureValidation purpose.
  * <p>
- * Tests to see if a geometry 
+ * Tests to see if a LineString is made of only one segment, meaning it only has
+ * two points. If the LineString has more than two points, the test fails.
  * <p>
  * Capabilities:
  * <ul>
@@ -43,13 +42,13 @@ import com.vividsolutions.jts.geom.Point;
  * </ul>
  * Example Use:
  * <pre><code>
- * LineNoSelfIntersectFeatureValidation x = new IsValidGeometryFeatureValidation("noSelfIntersectRoads", "Tests to see if a 
+ * LineIsSingleSegmentFeatureValidation x = new LineIsSingleSegmentFeatureValidation("noSelfIntersectRoads", "Tests to see if a 
  * geometry intersects itself", new String[] {"road"});
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: LineIsSingleSegmentFeatureValidation.java,v 1.1.2.1 2003/11/26 07:01:28 sploreg Exp $
+ * @version $Id: LineIsSingleSegmentFeatureValidation.java,v 1.1.2.2 2003/11/26 08:02:53 sploreg Exp $
  */
 public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
@@ -63,7 +62,7 @@ public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
 	
 
 	/**
-	 * IsValidGeometryFeatureValidation constructor.
+	 * LineIsSingleSegmentFeatureValidation constructor.
 	 * <p>
 	 * Description
 	 * </p>
@@ -73,7 +72,7 @@ public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
 	}
 	
 	/**
-	 * IsValidGeometryFeatureValidation constructor.
+	 * LineIsSingleSegmentFeatureValidation constructor.
 	 * <p>
 	 * Initializes allinformation needed to perform the validation.
 	 * </p>
@@ -184,16 +183,15 @@ public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
 	/**
 	 * Override validate.
 	 * <p>
-	 * Tests to see if a geometry is valid by calling Geometry.isValid().
-	 * The geometry is first tested to see if it is null, and if it is null, 
-	 * then it is tested to see if it is allowed to be null by calling isNillable().
+	 * Tests to see if a LineString is made of only one segment, meaning it only has
+	 * two points. If the LineString has more than two points, the test fails.
 	 * </p>
 	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureType, org.geotools.validation.ValidationResults)
 	 * 
  	 * @param feature The Feature to be validated
 	 * @param type The FeatureType of the feature
 	 * @param results The storage for error messages.
-	 * @return True if the feature is a valid geometry.
+	 * @return True if the feature is simple (one segment).
 	 */
 	public boolean validate(
 		Feature feature,

@@ -16,7 +16,6 @@
 */ 
 package org.geotools.validation.spatial;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,9 +32,14 @@ import com.vividsolutions.jts.geom.Point;
 
 
 /**
- * LineNoSelfIntersectFeatureValidation purpose.
+ * LineNoSelfOverlappingFeatureValidation
  * <p>
- * Tests to see if a geometry 
+ * Tests to see if a LineString overlaps itself. It does this by breaking up
+ * the LineString into two point segments then intersects them all. If a
+ * segment has both of its points on another segment, then they overlap.
+ * This is not true in all cases and this method has to be rewritten. If a
+ * segment spans two segments, this method will say that they do not overlap
+ * when clearly they do.
  * <p>
  * Capabilities:
  * <ul>
@@ -43,13 +47,13 @@ import com.vividsolutions.jts.geom.Point;
  * </ul>
  * Example Use:
  * <pre><code>
- * LineNoSelfIntersectFeatureValidation x = new IsValidGeometryFeatureValidation("noSelfIntersectRoads", "Tests to see if a 
+ * LineNoSelfOverlappingFeatureValidation x = new LineNoSelfOverlappingFeatureValidation("noSelfIntersectRoads", "Tests to see if a 
  * geometry intersects itself", new String[] {"road"});
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: LineNoSelfOverlappingFeatureValidation.java,v 1.1.2.1 2003/11/26 07:01:28 sploreg Exp $
+ * @version $Id: LineNoSelfOverlappingFeatureValidation.java,v 1.1.2.2 2003/11/26 08:02:53 sploreg Exp $
  */
 public class LineNoSelfOverlappingFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
@@ -63,7 +67,7 @@ public class LineNoSelfOverlappingFeatureValidation implements FeatureValidation
 	
 
 	/**
-	 * IsValidGeometryFeatureValidation constructor.
+	 * LineNoSelfOverlappingFeatureValidation constructor.
 	 * <p>
 	 * Description
 	 * </p>
@@ -73,7 +77,7 @@ public class LineNoSelfOverlappingFeatureValidation implements FeatureValidation
 	}
 	
 	/**
-	 * IsValidGeometryFeatureValidation constructor.
+	 * LineNoSelfOverlappingFeatureValidation constructor.
 	 * <p>
 	 * Initializes allinformation needed to perform the validation.
 	 * </p>
@@ -184,22 +188,26 @@ public class LineNoSelfOverlappingFeatureValidation implements FeatureValidation
 	/**
 	 * Override validate.
 	 * <p>
-	 * Tests to see if a geometry is valid by calling Geometry.isValid().
-	 * The geometry is first tested to see if it is null, and if it is null, 
-	 * then it is tested to see if it is allowed to be null by calling isNillable().
+	 * Tests to see if a LineString overlaps itself. It does this by breaking up
+	 * the LineString into two point segments then intersects them all. If a
+	 * segment has both of its points on another segment, then they overlap.
+	 * This is not true in all cases and this method has to be rewritten. If a
+	 * segment spans two segments, this method will say that they do not overlap
+	 * when clearly they do.
+	 * 
 	 * </p>
 	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureType, org.geotools.validation.ValidationResults)
 	 * 
  	 * @param feature The Feature to be validated
 	 * @param type The FeatureType of the feature
 	 * @param results The storage for error messages.
-	 * @return True if the feature is a valid geometry.
+	 * @return True if the feature does not overlap itself.
 	 */
 	public boolean validate(
 		Feature feature,
 		FeatureType type,
 		ValidationResults results){
-		
+		//BUG: refer to comments above.
 		LOGGER.setLevel(Level.ALL);   
 		
 		Geometry geom =  feature.getDefaultGeometry();

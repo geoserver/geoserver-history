@@ -16,17 +16,13 @@
  */
 package org.geotools.validation.spatial;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
-import org.geotools.feature.IllegalAttributeException;
 import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.ValidationResults;
 
@@ -34,12 +30,10 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * UniqueFIDIntegrityValidation purpose.
+ * LinesNotIntersectIntegrityValidation purpose.
  * <p>
- * This validation plugIn checks to see if every feature has a 
- * unique ID (column) specified by uniqueID. The FeatureTypes it checks against
- * are defined by typeNames[]. If a duplicate ID is detected, an error message 
- * returned via a ValidationResult used as a visitor in the validation() method.
+ * This validation plugIn checks to see if any features intersect. If they do then
+ * the validation failed.
  * <p>
  * Capabilities:
  * <ul>
@@ -47,13 +41,13 @@ import com.vividsolutions.jts.geom.Geometry;
  * </ul>
  * Example Use:
  * <pre><code>
- * UniqueFIDIntegrityValidation x = new UniqueFIDIntegrityValidation("uniqueFID_road", "Checks if each feature has a unique ID", new String[] {"road", "river"}, "FID");
+ * LinesNotIntersectIntegrityValidation x = new LinesNotIntersectIntegrityValidation("uniqueFID_road", "Checks if each feature has a unique ID", new String[] {"road", "river"}, "FID");
  * x.validate();
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: LinesNotIntersectIntegrityValidation.java,v 1.1.2.1 2003/11/26 07:01:28 sploreg Exp $
+ * @version $Id: LinesNotIntersectIntegrityValidation.java,v 1.1.2.2 2003/11/26 08:02:53 sploreg Exp $
  */
 public class LinesNotIntersectIntegrityValidation implements IntegrityValidation {
 
@@ -65,7 +59,7 @@ public class LinesNotIntersectIntegrityValidation implements IntegrityValidation
 		
 		
 	/**
-	 * UniqueFIDIntegrityValidation constructor.
+	 * LinesNotIntersectIntegrityValidation constructor.
 	 * <p>
 	 * An empty constructor placed here for Java Beans
 	 * </p>
@@ -75,7 +69,7 @@ public class LinesNotIntersectIntegrityValidation implements IntegrityValidation
 	}
 
 	/**
-	 * UniqueFIDIntegrityValidation constructor.
+	 * LinesNotIntersectIntegrityValidation constructor.
 	 * <p>
 	 * Initializes allinformation needed to perform the validation.
 	 * </p>
@@ -196,7 +190,7 @@ public class LinesNotIntersectIntegrityValidation implements IntegrityValidation
 	 * @param layers a HashMap of key="TypeName" value="FeatureSource"
 	 * @param envelope The bounding box of modified features
 	 * @param results Storage for the error and warning messages
-	 * @return True if there were no errors. False if there were errors.
+	 * @return True if no features intersect. If they do then the validation failed.
 	 */
 	public boolean validate(Map layers, Envelope envelope, ValidationResults results) throws Exception{
 		

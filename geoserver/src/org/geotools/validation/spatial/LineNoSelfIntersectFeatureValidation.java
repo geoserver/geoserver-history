@@ -16,7 +16,6 @@
 */ 
 package org.geotools.validation.spatial;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +33,9 @@ import com.vividsolutions.jts.geom.LineString;
 /**
  * LineNoSelfIntersectFeatureValidation purpose.
  * <p>
- * Tests to see if a geometry 
+ * Tests to see if a geometry intersects itself. It does not detect if a segment
+ * of a LineString doubles back on itself for one segment, then terminates. A
+ * different validation is needed to test overlapping. Uses JTS' intersect routine.
  * <p>
  * Capabilities:
  * <ul>
@@ -42,13 +43,13 @@ import com.vividsolutions.jts.geom.LineString;
  * </ul>
  * Example Use:
  * <pre><code>
- * LineNoSelfIntersectFeatureValidation x = new IsValidGeometryFeatureValidation("noSelfIntersectRoads", "Tests to see if a 
+ * LineNoSelfIntersectFeatureValidation x = new LineNoSelfIntersectFeatureValidation("noSelfIntersectRoads", "Tests to see if a 
  * geometry intersects itself", new String[] {"road"});
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: LineNoSelfIntersectFeatureValidation.java,v 1.1.2.1 2003/11/26 07:01:28 sploreg Exp $
+ * @version $Id: LineNoSelfIntersectFeatureValidation.java,v 1.1.2.2 2003/11/26 08:02:53 sploreg Exp $
  */
 public class LineNoSelfIntersectFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
@@ -62,7 +63,7 @@ public class LineNoSelfIntersectFeatureValidation implements FeatureValidation {
 	
 
 	/**
-	 * IsValidGeometryFeatureValidation constructor.
+	 * LineNoSelfIntersectFeatureValidation constructor.
 	 * <p>
 	 * Description
 	 * </p>
@@ -72,7 +73,7 @@ public class LineNoSelfIntersectFeatureValidation implements FeatureValidation {
 	}
 	
 	/**
-	 * IsValidGeometryFeatureValidation constructor.
+	 * LineNoSelfIntersectFeatureValidation constructor.
 	 * <p>
 	 * Initializes allinformation needed to perform the validation.
 	 * </p>
@@ -184,16 +185,16 @@ public class LineNoSelfIntersectFeatureValidation implements FeatureValidation {
 	/**
 	 * Override validate.
 	 * <p>
-	 * Tests to see if a geometry is valid by calling Geometry.isValid().
-	 * The geometry is first tested to see if it is null, and if it is null, 
-	 * then it is tested to see if it is allowed to be null by calling isNillable().
+	 * Tests to see if a geometry intersects itself. It does not detect if a segment
+	 * of a LineString doubles back on itself for one segment, then terminates. A
+	 * different validation is needed to test overlapping. Uses JTS' intersect routine.
 	 * </p>
 	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureType, org.geotools.validation.ValidationResults)
 	 * 
- 	 * @param feature The Feature to be validated
-	 * @param type The FeatureType of the feature
+ 	 * @param feature The Feature to be validated.
+	 * @param type The FeatureType of the feature.
 	 * @param results The storage for error messages.
-	 * @return True if the feature is a valid geometry.
+	 * @return True if the feature does not self intersect.
 	 */
 	public boolean validate(
 		Feature feature,
