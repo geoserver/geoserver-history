@@ -4,7 +4,7 @@ xmlns:gml="http://www.opengis.net/gml"
 xmlns:ogc="http://www.opengis.net/ogc" 
 xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
 xs:schemaLocation="pluginSchema /data/capabilities/validate/pluginSchema.xsd">
-  <name>Polygon Not Overlapping Line</name>
+  <name>Polygon Not Covered By Polygon</name>
   <description>One polygon not covered by the other polygon.</description>
   <class>org.geotools.validation.spatial.PolygonNotCoveredByPolygonValidation</class>
 </plugin>
