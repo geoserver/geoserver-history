@@ -4,22 +4,26 @@
  */
 package org.vfny.geoserver.servlets.wfs;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.requests.readers.DispatcherXmlReader;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.servlets.Dispatcher;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Map;
+import java.util.logging.Logger;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -37,55 +41,81 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.5 2004/02/09 23:29:46 dmzwiers Exp $
+ * @version $Id: WfsDispatcher.java,v 1.6 2004/03/30 04:42:18 cholmesny Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets.wfs");
+    private static int sequence = 123;
+
+    /** Temporary file used to store the request */
+    private File temp;
 
     /**
-     * Passes the Post method to the Get method, with no modifications.
+     * This figures out a dispatched post request.  It writes the request to a
+     * temp file, and then reads it in twice from there.  I found no other way
+     * to do this, but this solution doesn't seem to bad.  Obviously it is
+     * better to use the servlets directly, without having to go through this
+     * random file writing and reading.  If our xml handlers were written more
+     * dynamically this probably wouldn't be necessary, but it is.  Hopefully
+     * this should help GeoServer's interoperability with clients, since most
+     * of them are kinda stupid, and can't handle different url locations for
+     * the different requests.
      *
      * @param request The servlet request object.
      * @param response The servlet response object.
      *
      * @throws ServletException For any servlet problems.
      * @throws IOException For any io problems.
-     *
-     * @task REVISIT: This is not working yet, as we can't seem to figure out
-     *       how to read the reader twice.  It must be read once to see what
-     *       the request type is,  and again to actually analyze it.  But we
-     *       haven't yet found the way  to read it twice.  There should be
-     *       some way to do this, but it doesn't seem that important, as users
-     *       who use post should be able to figure out which servlet to send
-     *       it to. I'm removing DispatcherReaderXml and DispatcherHandler
-     *       from cvs, so that they don't get in the 1.0 release.  If anyone
-     *       attempts to implement this there are deleted versions in cvs.
-     *       Check the attic on the webcvs, or just do a checkout with the
-     *       rel_0_98 tag.
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-        //BufferedReader tempReader = request.getReader();
-        //String tempResponse = new String();
         int targetRequest = 0;
-        LOGGER.finer("got to post request");
 
-        //request.getReader().mark(10000);
-        /*    try {
-           if ( request.getReader() != null ) {
-           DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
-           targetRequest = requestTypeAnalyzer.getRequestType();
+        try {
+            BufferedReader tempReader = new BufferedReader(request.getReader());
+
+            // REVISIT: Should do more than sequence here
+            // (In case we are running two GeoServers at once)
+            // - Could we use response.getHandle() in the filename?
+            // - ProcessID is traditional, I don't know how to find that in Java
+            sequence++;
+            temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
+
+            FileWriter out = new FileWriter(temp);
+            int c;
+
+            while ((c = tempReader.read()) != -1) {
+                out.write(c);
+            }
+
+            tempReader.close();
+            out.close();
+
+            BufferedReader disReader = new BufferedReader(new FileReader(temp));
+            BufferedReader requestReader = new BufferedReader(new FileReader(
+                        temp));
+
+            if (disReader != null) {
+                DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
+                requestTypeAnalyzer.read(disReader, request);
+                targetRequest = requestTypeAnalyzer.getRequestType();
             } else {
-             targetRequest = UNKNOWN;
-             }
-            } catch (WfsException wfs) {
-                        targetRequest = ERROR;
-                        tempResponse = wfs.getXmlResponse();
-            }*/
-        //request.getReader().reset();
-        doResponse(false, request, response, targetRequest);
+                targetRequest = UNKNOWN;
+            }
+
+            LOGGER.fine("post got request " + targetRequest);
+
+            doResponse(requestReader, request, response, targetRequest);
+        } catch (WfsException wfs) {
+            String tempResponse = wfs.getXmlResponse(false);
+            HttpSession session = request.getSession();
+            ServletContext context = session.getServletContext();
+            response.setContentType(((GeoServer) context.getAttribute(
+                    GeoServer.WEB_CONTAINER_KEY)).getCharSet().toString());
+            response.getWriter().write(tempResponse);
+        }
     }
 
     /**
@@ -114,14 +144,37 @@ public class WfsDispatcher extends Dispatcher {
             //throw exception
         }
 
-        doResponse(false, request, response, targetRequest);
+        doResponse(null, request, response, targetRequest);
     }
 
-    protected void doResponse(boolean isPost, HttpServletRequest request,
+    /**
+     * Does the actual response, creates the appropriate servlet to handle the
+     * detected request.  Note that the requestReader is a bit of a hack, if
+     * it is null then it is from a get Request, if not then that means the
+     * request is being stored as a file, and needs to be read with this
+     * particular reader.
+     * 
+     * <p>
+     * This does have the downside of forcing us to have doGet and doPost
+     * methods of AbstractService be public, perhaps there is a good pattern
+     * for handling  this.  Or we could try to re-write Dispatcher to extend
+     * AbstractService, but it may be tricky.
+     * </p>
+     *
+     * @param requestReader The reader of a file that contains the request,
+     *        null if from a get request.
+     * @param request The http request that was made.
+     * @param response The response to be returned.
+     * @param req_type The request type.
+     *
+     * @throws ServletException for any problems.
+     * @throws IOException If anything goes wrong reading or writing.
+     */
+    protected void doResponse(Reader requestReader, HttpServletRequest request,
         HttpServletResponse response, int req_type)
         throws ServletException, IOException {
-        HttpServlet dispatched;
-        LOGGER.finer("req_type is " + req_type);
+        AbstractService dispatched;
+        LOGGER.info("req_type is " + req_type);
 
         switch (req_type) {
         case GET_CAPABILITIES_REQUEST:
@@ -158,23 +211,26 @@ public class WfsDispatcher extends Dispatcher {
             dispatched = null;
         }
 
-        //TODO: catch the servlet exceptions from the other servlets.
-        if ((dispatched != null) && !isPost) {
+        if ((dispatched != null)) {
             dispatched.init(servletConfig); //only really needed for init 
 
-            //hack, see Dispatcher.init()
-            dispatched.service(request, response);
+            if (requestReader == null) {
+                dispatched.doGet(request, response);
+            } else {
+                dispatched.doPost(request, response, requestReader);
+            }
         } else {
             String message;
 
-            if (isPost) {
-                message = "Post requests are not supported with the dispatcher "
-                    + "servlet.  Please try the request using the appropriate "
-                    + "request servlet, such as GetCapabilities or GetFeature";
-            } else {
-                message = "No wfs kvp request recognized.  The REQUEST parameter"
-                    + " must be one of GetFeature, GetFeatureWIthLock, "
+            if (requestReader == null) {
+                message = "No request recognized.  The REQUEST parameter"
+                    + " must be one of GetFeature, GetFeatureWithLock, "
                     + "DescribeFeatureType, LockFeature, or Transaction.";
+            } else {
+                message = "The proper request could not be extracted from the"
+                    + "the xml posted.  Make sure the case is correct.  The "
+                    + "request must be one of GetFeature, GetFeatureWithLock, "
+                    + "DescribeFeatureType, LockFeature, or Transaction";
             }
 
             WfsException wfse = new WfsException(message);
