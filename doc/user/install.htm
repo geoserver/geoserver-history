@@ -199,14 +199,15 @@
                 instructions. &nbsp;It should go something like this:</p>
               <blockquote> 
                 <p>./configure --with-java<br>
-                  make<br>
-                  make install</p>
+                  gmake<br>
+                  gmake install</p>
               </blockquote>
               <p>Make sure that you configure it with Java. &nbsp; Be sure that it 
                  is up and running, it's best to create a database and test it using
 		 psql from the command line.  &nbsp;Then, download 
                 PostGIS. &nbsp;You should place PostGIS in your Postgresql 'contrib' 
-                directory and follow the directions for installation there.</p>
+                directory, change to the postgresql root directory 
+		and follow the directions for installation there.</p>
               <p>You should, of course, check to make sure that Postgresql and 
                 PostGIS are functioning correctly before you attempt to connect 
                 with then using GeoServer.&nbsp;&nbsp;After installing postgis attempt
@@ -224,15 +225,15 @@
             <blockquote> 
               <p>If you have an existing GeoServer installation on your machine, 
                 you should backup your <i>geoserver/data/featureTypes</i> directory 
-                before placing the new <i>.war</i> file. Once you have placed 
-                the <i>.war</i>, you should put all of your backed up configuration 
-                data into the new <i>geoserver/data/featureTypes</i> directory.</p>
+                before placing the new <i>.war</i> file. To create the <i>.war</i>
+		file you must run <i>ant war</i> from the geoserver root directory.
+		This creates the <i>geoserver.war</i> in the same directory.
               <p>Move 'geoserver.war' from the GeoServer root directory to the 
                 war file directory of your Java Servlet container (i.e. 'webapps' 
-                in Resin). You may run a simple test on it from your browser by 
-                entering this address:</p>
+                in Resin). You may run a simple test by by starting your container
+		and entering this address:</p>
               <blockquote>
-                <p><i>http://<b>SERVER_ADDRESS</b>:</i><i><b>SERVER_PORT</b>/geoserver/GetCapabilities?version=0.0.14&amp;request=GetCapabilities</i></p>
+                <p><i>http://<b>SERVER_ADDRESS</b>:</i><i><b>SERVER_PORT</b>/geoserver/GetCapabilities</i></p>
               </blockquote>
               <p>Note that <i><b>SERVER_ADDRESS</b></i> and <i><b>SERVER_PORT</b></i> 
                 should be replaced by your server's address and port. If GeoServer 
@@ -257,12 +258,15 @@
               </blockquote>
               <p>This section assumes at least passing familiarity with XML files. 
                 &nbsp;However, if you simply follow the test file example exactly, 
-                you should be able to create a working configuration file. &nbsp;You 
-                should go to your root web application directory and edit the 
+                you should be able to create a working configuration file. &nbsp;A sample
+		configuration.xml file resides at <i>geoserver/misc/documents/</i> You
+		may edit this file, and changes will be picked up when you run <i>ant war</i>
+		Or you may go to your root web application (webapps in tomcat or resin) 
+		directory and edit the 
                 following file: <i>geoserver/data/configuration.xml</i>. &nbsp;This 
                 sets the global configuration options for your server and is defined 
                 by a schema that exists in the root geoserver directory ast the 
-                file: <i>schema/configuration.xsd</i>. &nbsp;An example <i>configuration.xml</i> 
+                file: <i>misc/schema/configuration.xsd</i>. &nbsp;An example <i>configuration.xml</i> 
                 is shown here:</p>
               <blockquote> 
                 <blockquote> 
@@ -323,13 +327,15 @@
                 </tr>
                 <tr align="left" valign="top"> 
                   <td width="12%">OnlineResource</td>
-                  <td width="74%">Must be the exact base URL of the server or 
-                    client connections will fail.</td>
+                  <td width="74%">A unique url where information for this server
+		  resides.  Even if you have no real online source it is important
+		  to put something here, for default namespace surfaces.  It is
+		  fine to use the same url as the URL element.</td>
                 </tr>
                 <tr align="left" valign="top"> 
                   <td width="12%">URL</td>
                   <td width="74%">Must be the exact base URL of the server or 
-                    client connections will fail. &nbsp;(Identical to OnlineResource.)</td>
+                    client connections will fail.</td>
                 </tr>
                 <tr align="left" valign="top"> 
                   <td width="12%" height="17"> 
@@ -502,6 +508,7 @@
           </td>
         </tr>
       </table>
+     
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
         <tr> 
           <td bgcolor="#333366" class="title">Testing GeoServer</td>

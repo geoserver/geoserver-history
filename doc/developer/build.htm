@@ -159,8 +159,7 @@
                 or <a href="http://www.caucho.com">Resin</a>. &nbsp;This requirement 
                 is explained further in the Testing section.&nbsp;&nbsp;GeoServer 
                 also makes use of several free, open source libraries and tools 
-                such as <a href="http://jakarta.apache.org/struts/index.html">Struts</a>, 
-                <a href="http://jakarta.apache.org/log4j/docs/index.html">Log4J</a>, 
+                such as 
                 <a href="http://jakarta.apache.org/ant/index.html">Ant</a>, and 
                 <a href="http://xml.apache.org/xerces-j/index.html">Xerces</a>. 
                 &nbsp;The function of these libraries within GeoServer is explained 
@@ -170,7 +169,7 @@
                 is an extension of the popular open source Postgres database system 
                 and is detailed in the Data section. &nbsp;To get started working 
                 with the GeoServer code, you should consult the Download section 
-                and the read about Building.</p>
+                and the read about Building.  </p>
               <p>GeoServer has an active developer community that you can engage 
                 by joining the GeoServer mailing list and asking questions or 
                 making suggestions.&nbsp;&nbsp;If you create a user account at 
@@ -198,8 +197,8 @@
                 fact, we encourage you to do so and send us documentation!&nbsp;&nbsp;However, 
                 we have not done so, so keep this bias in mind as you are reading 
                 the documentation that follows.</p>
-              <p>GeoServer is built against the <a href="http://java.sun.com/j2se/">JDK1.3.1</a>.&nbsp;&nbsp;If 
-                you do not have the JDK1.3.1 installed on your machine, you should 
+              <p>GeoServer is built against the <a href="http://java.sun.com/j2se/">JDK1.4.1</a>.&nbsp;&nbsp;If 
+                you do not have the JDK1.4.1 installed on your machine, you should 
                 download it from Sun and put it in your JAVA_HOME path.</p>
               <p>GeoServer is built using <a href="http://jakarta.apache.org/ant/index.html">Ant</a>.&nbsp;&nbsp;If 
                 you are not yet familiar with the magical and wonderful Ant build 
@@ -260,7 +259,7 @@
               </blockquote>
               <p>Make sure that you configure it with Java. &nbsp;Then, download 
                 PostGIS. &nbsp;You should place PostGIS in your Postgresql 'contrib' 
-                directory and follow the directions for installation there.</p>
+                directory and follow the directions for installation in the postgis dir.</p>
               <p>You should, of course, check to make sure that Postgresql and 
                 PostGIS are functioning correctly before you attempt to connect 
                 with then using GeoServer.&nbsp;&nbsp;You may use the command 
@@ -435,17 +434,11 @@
                   <tr align="left" valign="top"> 
                     <td width="12%"><a href="http://www.vividsolutions.com/jts/main.htm">JTS</a><br>
                       (<a href="http://www.vividsolutions.com">Vivid</a>)</td>
-                    <td width="14%">jts-1.0.0.jar</td>
+                    <td width="14%">jTS-1.3.jar</td>
                     <td width="74%">The Java Topology Suite, which is used as 
                       base types for all geometries, as well as for filtering.</td>
                   </tr>
-                  <tr align="left" valign="top"> 
-                    <td width="12%"><a href="http://jakarta.apache.org/log4j/docs/index.html">Log4J</a><br>
-                      (<a href="http://jakarta.apache.org">Jakarta</a>) </td>
-                    <td width="14%">log4j.jar</td>
-                    <td width="74%">Log4j contains all of the logging capabilities 
-                      - both for debugging and production use.</td>
-                  </tr>
+                  
                   <tr align="left" valign="top"> 
                     <td width="12%"><a href="http://java.sun.com/products/servlet/index.html">Servlet</a><br>
                       (<a href="http://java.sun.com">Sun</a>) </td>
@@ -488,7 +481,7 @@
                 <a href="http://www.caucho.com">Resin</a> (open source, free to 
                 non-commercial users) or <a href="http://jakarta.apache.org/tomcat/index.html">Tomcat</a> 
                 (open source, free). &nbsp;Most GeoServer testing has occured 
-                on Resin, which is remarkably simple to set up and administer. 
+                on Tomcat, which is remarkably simple to set up and administer. 
                 &nbsp;We reccomend using the stand-alone server installation over 
                 the integrated Apache install. &nbsp;Given the maturity of these 
                 projects, we will say nothing further about installation.</p>
@@ -534,6 +527,35 @@
               <p>That is it!&nbsp;&nbsp;You should now be ready to build and test 
                 GeoServer.</p>
             </blockquote>
+          </td>
+        </tr>
+      </table>
+       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Plug-in Datasources</td>
+        </tr>
+        <tr> 
+          <td height="45"> 
+            <blockquote>
+	    Geoserver 0.96 introduces new support for plug-in datasources.
+	    Shapefiles are the first instance of the new plug-in style, but 
+	    the work done for them will make new geotools datasource much 
+	    easier to add to geoserver.  If you find a datasource in geotools
+	    that you would like to try out with geoserver then it can be
+	    used with hopefully a fairly minimal amount of tweaking.  If 
+	    implemented exactly right then the jar should be able to be
+	    added directly to the lib directory of geoserver.  The geotools
+	    datasource must implement the DataSourceFactorySpi interface for
+	    the plugin jar to work, and the jar must include a META-INF 
+	    entry for the factory implementing class.  If everything is 
+	    correct on the datasource side then the only thing to be done
+	    is to edit the info.xml file for the correct DatasourceParams, 
+	    which are the params that the DataSourceFactorySpi will look for.
+	    If there are developers interested in new datasources for geoserver,
+	    please don't hesitate to contact us, we've been working to make 
+	    the process relatively painless, with plug-in mechanisms and a new
+	    AbstractDataSource in geotools to handle much of the messy work.
+	     </blockquote>
           </td>
         </tr>
       </table>
