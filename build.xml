@@ -14,7 +14,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2-alpha"/>
+  <property name="name.release" value="1.2-beta1"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
@@ -40,7 +40,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
+  <property name="dir.container" value="C:\resin-3.0.6\webapps"/>
   <property name="dir.geotools" 
             value="e:\workspace\geotools2\geotools-src"/>
             
@@ -130,7 +130,7 @@
     <echo message="                    -param: test.name=[package.class]"/>
     <echo message="    unit-all:     compiles and runs all unit tests"/>
     <echo message="    test-start:   builds and runs the built-in server"/>
-    <echo message="    test-start:   stops the built-in server"/>
+    <echo message="    test-stop:   stops the built-in server"/>
     <echo message="    test-clean:   builds clean to built-in server"/>
     <echo message="    test-ext:     builds war to external server"/>
     <echo message="                    -param: dir.container=[server_path]"/>
@@ -315,8 +315,12 @@
   <target name="test-start" depends="init, all">
     <mkdir dir="${dir.server}/webapps/ROOT"/>
 
+    <!-- This will now build with the users directory, which I think is
+         appropriate for testing of this sort, as you'll want to configure
+         in the conf directory, since whenever you start with this it blows
+         away changes the ui might have done. -->
     <antcall target="war">
-      <param name="conf.path" value="${basedir}/misc/cite/confCite${test.type}.zip"/>
+      <!--param name="conf.path" value="${basedir}/misc/cite/confCite${test.type}.zip"/-->
     </antcall>
     
     <unwar src="${basedir}/geoserver.war" dest="${dir.server}/webapps/ROOT/"/>
@@ -400,10 +404,8 @@
 
 <!-- EXTERNAL TEST -->
 <!-- deploys application to test server -->
-  <target name="test-ext" depends="init">
-    <!-- only one of the two will execute -->
-    <antcall target="user_conf"/>
-    <antcall target="misc_conf"/>
+  <target name="test-ext" depends="init, war">
+
   
     <!-- copy to test server -->
     <delete includeEmptyDirs="true" failonerror="false">
@@ -421,7 +423,7 @@
   </target>
   
   <target name="misc_conf" depends="init" if="test.type">
-    <antcall target="war">
+    <antcall target="build-war">
       <param name="conf.path" value="${basedir}/misc/cite/conf${test.type}.zip"/>
     </antcall>
   </target>
@@ -440,7 +442,7 @@
     </zip>
     <delete dir="${basedir}/data" failonerror="false"/>
     
-    <antcall target="war">
+    <antcall target="build-war">
       <param name="conf.path" value="${basedir}/misc/cite/confUser.zip"/>
     </antcall>
     
@@ -451,8 +453,13 @@
 <!-- BUILD TARGETS                                                          -->
 <!-- ====================================================================== -->
 
-<!-- WAR -->
-  <target name="war" depends="init, all" if="conf.path">
+  <target name="war" depends="init, all">
+    <!-- only one of the two will execute -->
+    <antcall target="user_conf"/>
+    <antcall target="misc_conf"/>
+  </target>  
+ <!-- BUILD WAR -->
+  <target name="build-war" depends="init, all" if="conf.path">
     <!-- preparation -->
     <delete file="${basedir}/geoserver.war" 
             failonerror="false"/>
@@ -735,7 +742,7 @@
   </target>
   
   <target name="release-binary" depends="clean">
-    <antcall target="war">
+    <antcall target="build-war">
       <param name="conf.path" value="${basedir}/misc/cite/confUserBasic.zip"/>
     </antcall>
     <copy file="${basedir}/geoserver.war" 
