@@ -16,32 +16,15 @@ import java.util.List;
 
 
 /**
- * TestSuiteDTO purpose.
+ * TestSuiteConfig purpose.
  * 
  * <p>
- * Description of TestSuiteDTO ...
+ * Description of TestSuiteConfig ...
  * </p>
- * 
- * <p>
- * Capabilities:
- * </p>
- * 
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * 
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * TestSuiteDTO x = new TestSuiteDTO(...);
- * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestSuiteDTO.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: TestSuiteDTO.java,v 1.5 2004/01/22 23:22:48 dmzwiers Exp $
  */
 public class TestSuiteDTO {
     /** the test suite name */
@@ -54,7 +37,7 @@ public class TestSuiteDTO {
     private List tests;
 
     /**
-     * TestSuiteDTO constructor.
+     * TestSuiteConfig constructor.
      * 
      * <p>
      * Does nothing
@@ -64,10 +47,10 @@ public class TestSuiteDTO {
     }
 
     /**
-     * TestSuiteDTO constructor.
+     * TestSuiteConfig constructor.
      * 
      * <p>
-     * Creates a copy of the TestSuiteDTO passed in.
+     * Creates a copy of the TestSuiteConfig passed in.
      * </p>
      *
      * @param ts The Test Suite to copy
@@ -88,7 +71,7 @@ public class TestSuiteDTO {
     /**
      * Implementation of clone.
      *
-     * @return An instance of TestSuiteDTO.
+     * @return An instance of TestSuiteConfig.
      *
      * @see java.lang.Object#clone()
      */
