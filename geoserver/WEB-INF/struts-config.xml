@@ -60,13 +60,13 @@
     		
 		<!-- DATA Styles -->
     	<form-bean
-    		name="stylesSelectForm"
+    		name="dataStylesSelectForm"
     		type="org.vfny.geoserver.form.data.StylesSelectForm"/>
     	<form-bean
-    		name="stylesNewForm"
+    		name="dataStylesNewForm"
     		type="org.vfny.geoserver.form.data.StylesNewForm"/>
     	<form-bean
-    		name="stylesEditorForm"
+    		name="dataStylesEditorForm"
     		type="org.vfny.geoserver.form.data.StylesEditorForm"/>
     		
 
@@ -262,7 +262,10 @@
         <!-- CONFIG data style -->
        	<forward
        		name="config.data.style"
-       		path="/config/data/styleSelect.do"/>
+       		path="/config/data/style.do"/>
+       	<forward
+       		name="config.data.style.select"
+       		path="/config/data/styleSelect.do"/>       		
        	<forward
        		name="config.data.style.new"
        		path="/config/data/styleNew.do"/>
@@ -581,13 +584,27 @@
         	
 		<!-- DATA Styles Actions -->        	
         <action
-        	path="/config/data/styleSelect"
+        	path="/config/data/styleSelectSubmit"
         	type="org.vfny.geoserver.action.data.StylesSelectAction"
-        	name="stylesSelectForm"
+        	name="dataStylesSelectForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/style.do"/>
-        	
+        	input="/config/data/styleSelect.do"/>
+        <action
+        	path="/config/data/styleNewSubmit"
+        	type="org.vfny.geoserver.action.data.StylesNewAction"
+        	name="dataStylesNewForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/styleNew.do"/>
+        <action
+        	path="/config/data/styleEditorSubmit"
+        	type="org.vfny.geoserver.action.data.StylesEditorAction"
+        	name="dataStylesEditorForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/styleEditor.do"/>
+        	        	        	
 		<!-- DATA FeatureType Actions -->
         <action
         	path="/config/data/featureTypeSubmit"

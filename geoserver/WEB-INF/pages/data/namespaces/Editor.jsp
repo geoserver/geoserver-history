@@ -17,7 +17,7 @@
     <tr>
       <td class="label">
         <span class="help" title="<bean:message key="help.namespace.uri"/>">
-          <bean:message key="label.URI"/>
+          <bean:message key="label.URI"/>:
         </span>
       </td>
       <td class="datum">
@@ -27,7 +27,7 @@
     <tr>
       <td class="label">
         <span class="help" title="<bean:message key="help.namespace.prefix"/>">
-		  <bean:message key="label.prefix"/>
+		  <bean:message key="label.prefix"/>:
         </span>
       </td>
       <td class="datum">

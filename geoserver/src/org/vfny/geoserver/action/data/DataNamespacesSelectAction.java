@@ -12,6 +12,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.Globals;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -29,7 +32,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataNamespacesSelectAction.java,v 1.5 2004/02/28 07:45:13 jive Exp $
+ * @version $Id: DataNamespacesSelectAction.java,v 1.6 2004/03/01 09:39:08 jive Exp $
  */
 public class DataNamespacesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -62,7 +65,14 @@ public class DataNamespacesSelectAction extends ConfigAction {
             namespacesForm.reset(mapping, request);
             return mapping.findForward("config.data.namespace");
         }
-        getUserContainer(request).setNamespaceConfig(config);
-        return mapping.findForward("config.data.namespace.editor");
+        if( action.equals(edit)){
+            getUserContainer(request).setNamespaceConfig(config);
+            return mapping.findForward("config.data.namespace.editor");
+        }
+        ActionErrors errors = new ActionErrors();
+        errors.add("submit",
+            new ActionError("error.action.invalid", action ));            
+        request.setAttribute(Globals.ERROR_KEY, errors);        
+        return mapping.findForward("config.data.style");        
     }
 }

@@ -5,7 +5,6 @@
 
 package org.vfny.geoserver.action.data;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -19,15 +18,14 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
-import org.vfny.geoserver.form.data.StylesEditorForm;
 import org.vfny.geoserver.form.data.StylesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.requests.Requests;
 
 
 /**
@@ -35,9 +33,9 @@ import org.vfny.geoserver.requests.Requests;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: StylesSelect.java,v 1.1 2004/02/28 07:45:13 jive Exp $
+ * @version $Id: StylesSelectAction.java,v 1.1 2004/03/01 09:39:08 jive Exp $
  */
-public class StylesSelect extends ConfigAction {
+public class StylesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request, HttpServletResponse response)    
         throws IOException, ServletException {
@@ -48,8 +46,7 @@ public class StylesSelect extends ConfigAction {
         Locale locale = (Locale) request.getLocale();
         
         DataConfig config = getDataConfig();
-        MessageResources messages = servlet.getResources();
-        
+        MessageResources messages = servlet.getResources();        
         // Need locale wording for edit and delete
         final String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
         final String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
@@ -65,14 +62,19 @@ public class StylesSelect extends ConfigAction {
         // Something is selected lets do the requested action
         //
         if (action.equals(DELETE)) {
-            config.removeStyle( styleId ); 
+            config.removeStyle( styleId );
             getApplicationState().notifyConfigChanged();
+            selectForm.setSelectedStyle(null);
             return mapping.findForward("config.data.style");
         }
         if( action.equals(EDIT)){
             user.setStyle( new StyleConfig( style ) );
-            return mapping.findForward("config.data.style.edit");            
+            return mapping.findForward("config.data.style.editor");            
         }
+        ActionErrors errors = new ActionErrors();
+        errors.add("submit",
+            new ActionError("error.action.invalid", action ));            
+        request.setAttribute(Globals.ERROR_KEY, errors);        
         return mapping.findForward("config.data.style");
     }
 }
