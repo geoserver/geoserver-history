@@ -1,0 +1,74 @@
+<?config.xml version="1.0" encoding="UTF-8"?>
+<catalog>
+<datastores>
+<!--
+a datastore configuration element serves as a common data source connection
+parameters repository for all featuretypes it holds.
+-->
+<datastore namespace = "cdf" enabled = "true" id = "cdf" >
+<connectionParams>
+<parameter value = "cdf" name = "namespace"  />
+<parameter value = "false" name = "loose bbox"  />
+<parameter value = "cite" name = "user"  />
+<parameter value = "cite" name = "passwd"  />
+<parameter value = "true" name = "wkb enabled"  />
+<parameter value = "localhost" name = "host"  />
+<parameter value = "5432" name = "port"  />
+<parameter value = "cite" name = "database"  />
+<parameter value = "postgis" name = "dbtype"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cgf" enabled = "true" id = "cgf" >
+<connectionParams>
+<parameter value = "cgf" name = "namespace"  />
+<parameter value = "false" name = "loose bbox"  />
+<parameter value = "cite" name = "user"  />
+<parameter value = "cite" name = "passwd"  />
+<parameter value = "true" name = "wkb enabled"  />
+<parameter value = "localhost" name = "host"  />
+<parameter value = "5432" name = "port"  />
+<parameter value = "cite" name = "database"  />
+<parameter value = "postgis" name = "dbtype"  />
+</connectionParams>
+</datastore>
+</datastores>
+	<!-- Defines the Coverage Formats -->
+  <formats>
+    <!-- a format configuration element serves as a common source -->
+    <!-- repository for all coverages it holds.  -->
+    <format id="arcGridSample" enabled="true">
+    	<type>ArcGrid</type>
+		<description>A test ArcGrid Coverage</description>
+		<url>file:data/coverages/arc_sample/a.asc.gz</url>
+		<parameters>
+			<parameter name="Compressed" value="true"/>
+			<parameter name="GRASS" value="false"/>
+		</parameters>
+    </format>
+    
+    <format enabled="true" id="worldImageSample" >
+			<type>World Image</type>
+			<url>file:data/coverages/img_sample/usa.png</url>
+		</format>
+  </formats>
+Defines namespaces to be used by the datastores.
+-->
+<namespaces>
+<namespace uri = "http://www.opengis.net/cite/data" prefix = "cdf" default = "true"  />
+<namespace uri = "http://www.opengis.net/cite/geometry" prefix = "cgf"  />
+<namespace uri = "http://www.opengis.net/cite/bluelake" prefix = "cblf"  />
+</namespaces>
+<!--
+Defines the style ids to be used by the wms.  The files must be
+contained in geoserver/misc/wms/styles.  We're working on finding
+a better place for them, but for now that's where you must put them
+if you want them on the server.
+-->
+<styles>
+<style filename = "green.sld" id = "green"  />
+<style filename = "normal.sld" id = "normal"  />
+<style filename = "funkypolyshp.sld" id = "dotty"  />
+<style filename = "usa_ratio.sld" id = "maleVsFemale"  />
+		<style id="raster" filename="raster.sld" />
+</styles>
+</catalog>

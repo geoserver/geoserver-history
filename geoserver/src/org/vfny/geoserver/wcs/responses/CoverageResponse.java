@@ -3,7 +3,7 @@
  * application directory.
  */
 package org.vfny.geoserver.wcs.responses;
-
+ 
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;

@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.form.data;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

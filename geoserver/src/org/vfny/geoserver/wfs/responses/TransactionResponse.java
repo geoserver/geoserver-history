@@ -3,7 +3,7 @@
  * application directory.
  */
 package org.vfny.geoserver.wfs.responses;
-
+ 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;

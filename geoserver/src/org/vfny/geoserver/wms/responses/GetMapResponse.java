@@ -3,7 +3,7 @@
  * application directory.
  */
 package org.vfny.geoserver.wms.responses;
-
+ 
 import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
