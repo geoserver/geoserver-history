@@ -33,7 +33,7 @@
    	<definition name=".sidebarLayout" page="/WEB-INF/pages/layouts/sidebarLayout.jsp">
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
    		<put name="buttons" value="/WEB-INF/pages/buttons.jsp"/>
-   		<put name="actions" value="/WEB-INF/pages/actions.jsp"/>
+   		<put name="messages" value="/WEB-INF/pages/messages.jsp"/>
    	</definition>
    	
    	<definition name=".bodyLayout" page="/WEB-INF/pages/layouts/bodyLayout.jsp">
