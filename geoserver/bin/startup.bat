@@ -38,6 +38,7 @@ goto end
 :doGeo1
 echo GEOSERVER_HOME environment variable not found.  Using current
 echo directory.  Please set GEOSERVER_HOME for future uses.
+set GEOSERVER_HOME=..
  goto run
 
 :noGeo2
