@@ -88,12 +88,14 @@ public class GetMapResponse implements Response {
         // @task TODO: replace by setAreaOfInterest(Envelope,
         // CoordinateReferenceSystem)
         // with the user supplied SRS parameter
+        // @task TODO: handle map transparency requests by RasterSymbolizer
         map.setAreaOfInterest(request.getBbox());
         map.setMapWidth(request.getWidth());
         map.setMapHeight(request.getHeight());
         map.setBgColor(request.getBgColor());
-        map.setTransparent(request.isTransparent());
-
+        //map.setTransparent(request.isTransparent());
+        map.setTransparent(false);
+        
         LOGGER.fine("setting up map");
 
         MapLayer layer;
@@ -135,6 +137,7 @@ public class GetMapResponse implements Response {
 					throw new ServiceException(e.getMessage(), e);
 				}
 				layer = new DefaultMapLayer(fcDem, style);
+				layer.setVisible(true);
 				map.addLayer(layer);    			
             }
         }

@@ -524,6 +524,7 @@ public class WMSCapsTransformer extends TransformerBase {
             //only featuretypes managed by this server
             AttributesImpl qatts = new AttributesImpl();
             qatts.addAttribute("", "queryable", "queryable", "", "0");
+//            qatts.addAttribute("", "opaque", "opaque", "", "1");
 //            qatts.addAttribute("", "cascaded", "cascaded", "", "1");
             start("Layer", qatts);
             element("Name", coverage.getName());
