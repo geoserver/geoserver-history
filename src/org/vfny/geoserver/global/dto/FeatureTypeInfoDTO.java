@@ -9,7 +9,7 @@ import org.geotools.filter.Filter;
 import org.vfny.geoserver.config.DataConfig;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.io.File;
 
 /**
  * Data Transfer Object used for GeoServer FeatureTypeInfo information.
@@ -104,6 +104,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private LegendURLDTO legendURL;
 
     //-- Modif C. Kolbowicz - 06/10/2004 
+
+    /** Holds the location of the file that contains schema information.*/
+    private File schemaFile;
 
     /**
      * FeatureTypeInfo constructor.
@@ -701,6 +704,26 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public void setLegendURL(LegendURLDTO legendURL) {
         this.legendURL = legendURL;
+    }
+
+    /**
+     * Gets the schema.xml file associated with this FeatureType.  This is set
+     * during the reading of configuration, it is not persisted as an element
+     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
+     * was persisted, and its location.  If there is no schema.xml file then
+     * this method will return a File object with the location where the schema
+     * file would be located, but the file will return false for exists().
+     */
+    public File getSchemaFile() {
+	return this.schemaFile;
+    }
+
+    /**
+     * Sets the schema file.  Note that a non-exisiting file can be set here,
+     * to indicate that no schema.xml file is present.
+     */
+    public void setSchemaFile(File schemaFile) {
+        this.schemaFile = schemaFile;
     }
 
     //-- Modif C. Kolbowicz - 06/10/2004

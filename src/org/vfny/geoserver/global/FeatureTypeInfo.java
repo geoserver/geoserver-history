@@ -23,6 +23,7 @@ import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -152,6 +153,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     private LegendURL legendURL;
     //-- Modif C. Kolbowicz - 07/10/2004
+
+    /** Holds the location of the file that contains schema information. */
+    private File schemaFile;
     
     /**
      * FeatureTypeInfo constructor.
@@ -184,7 +188,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
         numDecimals = dto.getNumDecimals();
-
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
 
@@ -198,6 +201,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         schemaBase = dto.getSchemaBase();
         schemaName = dto.getSchemaName();
+        schemaFile = dto.getSchemaFile();
         SRS = dto.getSRS();
         title = dto.getTitle();
     }
@@ -994,5 +998,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return this.legendURL;
     }        
     //-- Modif C. Kolbowicz - 07/10/2004
-    
+
+    /**
+     * Gets the schema.xml file associated with this FeatureType.  This is set
+     * during the reading of configuration, it is not persisted as an element
+     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
+     * was persisted, and its location.  If there is no schema.xml file then
+     * this method will return a File object with the location where the schema
+     * file would be located, but the file will return false for exists().
+     */
+    public File getSchemaFile() {
+	return this.schemaFile;
+    }
+
 }
+ 
