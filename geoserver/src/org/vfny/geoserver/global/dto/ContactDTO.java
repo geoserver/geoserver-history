@@ -1,8 +1,4 @@
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
@@ -40,7 +36,7 @@ package org.vfny.geoserver.global.dto;
  * </code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactDTO.java,v 1.1.2.2 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: ContactDTO.java,v 1.1.2.3 2004/01/09 09:21:42 jive Exp $
  */
 public final class ContactDTO implements DataStructure {
     /** The name of the contact person */
@@ -87,6 +83,9 @@ public final class ContactDTO implements DataStructure {
      * data required for a human contact.
      * </p>
      *
+     * <p>
+     * TODO: Do we really want to supply empty Strings here?
+     * </p>
      * @see defaultSettings()
      */
     public ContactDTO() {
@@ -115,9 +114,8 @@ public final class ContactDTO implements DataStructure {
      */
     public ContactDTO(ContactDTO c) {
         if (c == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("Requires a non null ContactDTO");
         }
-
         contactPerson = c.getContactPerson();
         contactOrganization = c.getContactOrganization();
         contactPosition = c.getContactPosition();

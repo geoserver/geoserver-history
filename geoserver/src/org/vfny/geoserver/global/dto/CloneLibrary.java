@@ -1,18 +1,6 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2003, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
  */
 package org.vfny.geoserver.global.dto;
 
@@ -23,15 +11,22 @@ import java.util.Map;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
- * CloneLibrary purpose.
+ * CloneLibrary purpose is used to try and Set up a Deep Copy for DTO objets.
  * <p>
- * Description of CloneLibrary 
- * 
- * Static Library class for cloning complex structures independant of their contents.
+ * Static Library class for cloning complex structures independant of their
+ * contents.
  * <p>
- * 
+ * Jody here - this is much more accessable when presented to the user as
+ * new Type( Type ) idiom. Java clone is messed up, I have seen several projects
+ * move to a copy() method or the above idom.
+ * </p>
+ * <p>
+ * For the here and now we can use the above Idom. This will even work with
+ * all of our lists and Maps since we are only ever using Strings (imutable)
+ * in them.
+ * </p>
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.1.2.3 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: CloneLibrary.java,v 1.1.2.4 2004/01/09 09:21:42 jive Exp $
  */
 public final class CloneLibrary {
 	
