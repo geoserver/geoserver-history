@@ -10,7 +10,7 @@
 
 <head>
   <title>
-    <bean:message key="<%= titleKey %>"/>
+    GeoServer - <bean:message key="<%= titleKey %>"/>
   </title>
 
   <meta content="text/html; charset=iso-8859-1" http-equiv="content-type">
@@ -68,9 +68,9 @@
               </td>
             </tr>
           	<tr>
-              <td class="content"
+              <td class="<tiles:getAsString name='layer'/>"
                   rowspan="1" colspan="2">
-                  
+                <div class="title"><tiles:getAsString name='title'/></div>  
                 <tiles:insert attribute="body"/>
                 
               </td>
