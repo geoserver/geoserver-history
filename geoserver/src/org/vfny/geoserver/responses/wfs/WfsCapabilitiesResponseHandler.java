@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
@@ -18,6 +14,9 @@ import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -25,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.20 2004/03/16 22:51:44 groldan Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.21 2004/03/30 04:45:05 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -58,8 +57,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         attributes.addAttribute("", "version", "version", "", CUR_VERSION);
         attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
 
-        NameSpaceInfo[] namespaces = request.getWFS().getData()
-                                            .getNameSpaces();
+        NameSpaceInfo[] namespaces = request.getWFS().getData().getNameSpaces();
 
         for (int i = 0; i < namespaces.length; i++) {
             String prefixDef = "xmlns:" + namespaces[i].getPrefix();
@@ -113,13 +111,16 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleCapability(config, "GetCapabilities");
         handleCapability(config, "DescribeFeatureType");
         handleCapability(config, "GetFeature");
-        if((config.getServiceLevel() | WFSDTO.TRANSACTIONAL) != 0){
+
+        if ((config.getServiceLevel() | WFSDTO.TRANSACTIONAL) != 0) {
             handleCapability(config, "Transaction");
         }
-        if((config.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0){
+
+        if ((config.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0) {
             handleCapability(config, "LockFeature");
             handleCapability(config, "GetFeatureWithLock");
         }
+
         endElement("Request");
         unIndent();
         endElement("Capability");
@@ -147,7 +148,14 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             String resultFormat = "ResultFormat";
             startElement(resultFormat);
             handleSingleElem("GML2", "");
-            handleSingleElem("GML2-GZIP", "");
+            //So cite does not even like this.  Which is really lame, since it
+            //validates according to our definition for now, and because the cite
+            //tests have a bunch of other valid types (perhaps from galdos?). 
+            //So I think perhaps we should just have it as a capability that 
+            //is not advertised in the capabilities section for now.  And we 
+            //should try to get the cite team to add it to their section. ch
+            
+            //handleSingleElem("GML2-GZIP", "");
             endElement(resultFormat);
             cReturn();
         }
@@ -156,12 +164,14 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         startElement("HTTP");
 
         String url = "";
-        String baseUrl = request.getBaseUrl() + "wfs/";
-        if(request.isCGIRequest()){
-        	url = request.getBaseUrl() + "wfs?";
-        }else{
-        	url = request.getBaseUrl() + "wfs/" + capabilityName + "?";
+        String baseUrl = request.getBaseUrl() + "wfs";
+
+        if (request.isDispatchedRequest()) {
+            url = baseUrl + "?";
+        } else {
+            url = baseUrl + "/" + capabilityName + "?";
         }
+
         attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
 
         startElement("Get", attributes);
@@ -171,18 +181,21 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         cReturn();
 
-        //if(!request.isCGIRequest()){ Even if it's a cgi request we can
-        //still say that we can do post, just not in the way they like...
-        	attributes = new AttributesImpl();
-        	url = baseUrl + capabilityName;
-        	attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
-        	startElement("DCPType");
-        	startElement("HTTP");
-        	startElement("Post", attributes);
-        	endElement("Post");
-        	endElement("HTTP");
-        	endElement("DCPType");
-        //}
+        attributes = new AttributesImpl();
+
+        if (request.isDispatchedRequest()) {
+            url = baseUrl;
+        } else {
+            url = baseUrl + "/" + capabilityName;
+        }
+
+        attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
+        startElement("DCPType");
+        startElement("HTTP");
+        startElement("Post", attributes);
+        endElement("Post");
+        endElement("HTTP");
+        endElement("DCPType");
         unIndent();
         endElement(capabilityName);
         unIndent();
@@ -192,34 +205,41 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         throws SAXException {
         WFS config = (WFS) serviceConfig;
 
-        if( !config.isEnabled() ){
+        if (!config.isEnabled()) {
             // should we return anything if we are disabled?
         }
+
         startElement("FeatureTypeList");
 
         indent();
         startElement("Operations");
         indent();
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_BASIC ) != 0 ){
-          startElement("Query");
-          endElement("Query");
+
+        if ((config.getServiceLevel() | WFSDTO.SERVICE_BASIC) != 0) {
+            startElement("Query");
+            endElement("Query");
         }
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_INSERT ) != 0 ){
-          startElement("Insert");
-          endElement("Insert");
+
+        if ((config.getServiceLevel() | WFSDTO.SERVICE_INSERT) != 0) {
+            startElement("Insert");
+            endElement("Insert");
         }
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_UPDATE ) != 0 ){
-          startElement("Update");
-          endElement("Update");
+
+        if ((config.getServiceLevel() | WFSDTO.SERVICE_UPDATE) != 0) {
+            startElement("Update");
+            endElement("Update");
         }
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_DELETE ) != 0 ){
-          startElement("Delete");
-          endElement("Delete");
+
+        if ((config.getServiceLevel() | WFSDTO.SERVICE_DELETE) != 0) {
+            startElement("Delete");
+            endElement("Delete");
         }
-        if(( config.getServiceLevel() | WFSDTO.SERVICE_LOCKING ) != 0 ){
-          startElement("Lock");
-          endElement("Lock");
+
+        if ((config.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0) {
+            startElement("Lock");
+            endElement("Lock");
         }
+
         unIndent();
         endElement("Operations");
 
