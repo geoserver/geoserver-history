@@ -8,6 +8,7 @@ package org.vfny.geoserver.action.data;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,14 +70,21 @@ public class TypesEditorAction extends ConfigAction {
         if( action.equals("Submit")){
             return executeSubmit(mapping, typeForm, user, request);
         }
-        if( action.startsWith("Up")){
-            // TODO: implement Attribute Up
+        
+        LinkedList attributes = (LinkedList) typeForm.getAttributes();
+        if( action.startsWith("up_")){
+            int index = Integer.parseInt(action.substring(3));
+            Object attribute = attributes.remove(index);
+            attributes.add(index-1, attribute);
         }
-        if( action.startsWith("Down")){
-            // TODO: implement Attribute Down        
+        if( action.startsWith("down_")){
+            int index = Integer.parseInt(action.substring(5));
+            Object attribute = attributes.remove(index);
+            attributes.add(index+1, attribute);
         }
-        if( action.startsWith("remove")){
-            // TODO: implement Attribute Remove            
+        if( action.startsWith("delete_")){
+            int index = Integer.parseInt(action.substring(7));
+            attributes.remove(index);
         }
         
         // Update, Up, Down, All need to resync

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -40,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.11 2004/04/06 18:19:06 emperorkefka Exp $
+ * @version $Id: TypesEditorForm.java,v 1.12 2004/04/07 21:52:42 emperorkefka Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -103,6 +104,11 @@ public class TypesEditorForm extends ActionForm {
 
     /** Sorted Set of available styles */
     private SortedSet styles;
+    
+    /** Stores the name of the new attribute they wish to create */
+    private String newAttribute;
+    
+    
     
     /**
      * Set up FeatureTypeEditor from from Web Container.
@@ -168,7 +174,7 @@ public class TypesEditorForm extends ActionForm {
             //We are using the generated attributes
             
             this.schemaBase = "--";
-            this.attributes = new ArrayList();
+            this.attributes = new LinkedList();
             
             // Generate ReadOnly list of Attribtues
             //
@@ -177,7 +183,7 @@ public class TypesEditorForm extends ActionForm {
         }
         else {
         	this.schemaBase = type.getSchemaBase();
-            this.attributes = new ArrayList();
+            this.attributes = new LinkedList();
             //
             // Need to add read only AttributeDisplay for each required attribute
             // defined by schemaBase
@@ -554,4 +560,26 @@ public class TypesEditorForm extends ActionForm {
     public void setAttribute(int index, Object attribute) {
     	attributes.set(index, attribute);
     }
+	/**
+	 * Access newAttribute property.
+	 * 
+	 * @return Returns the newAttribute.
+	 */
+	public String getNewAttribute() {
+		return newAttribute;
+	}
+
+	/**
+	 * Set newAttribute to newAttribute.
+	 *
+	 * @param newAttribute The newAttribute to set.
+	 */
+	public void setNewAttribute(String newAttribute) {
+		this.newAttribute = newAttribute;
+	}
+    
+    public List getCreateableAttributes() {
+    	return null;
+    }
+
 }
