@@ -4,25 +4,25 @@
  */
 package org.vfny.geoserver.responses.wms;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.IllegalFilterException;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.geotools.styling.FeatureTypeStyle;
-import org.geotools.styling.Fill;
-import org.geotools.styling.PolygonSymbolizer;
-import org.geotools.styling.Rule;
-import org.geotools.styling.Stroke;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleAttributeExtractor;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.Data;
@@ -34,20 +34,6 @@ import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.map.GetMapProducer;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**

@@ -62,8 +62,8 @@ public class GifMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * Returns wether this map producer can create maps in the passed output
-     * format.
+     * Returns wether the map producers created by this factory can create maps
+     * in the passed output format.
      *
      * @param mapFormat a MIME type string to check if this producer is able to
      *        handle.
