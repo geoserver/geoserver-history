@@ -7,8 +7,7 @@
 	<SRS>-1</SRS>
 	<Operations/>
 	<LatLongBoundingBox minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
-        <NamespacePrefix>rail</NamespacePrefix>
-	<MetadataURL>
+ 	<MetadataURL>
     <url>http://www.openplans.org/geoserver/data/rail/metadata.html</url>
     <format>HTML</format>
     <type>FGDC</type>
