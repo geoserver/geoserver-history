@@ -4,19 +4,27 @@
  */
 package org.vfny.geoserver.responses.wms.map.svg;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
-
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
-import org.geotools.feature.GeometryAttributeType;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
+import org.geotools.filter.Expression;
+import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterType;
+import org.geotools.filter.GeometryFilter;
+import org.geotools.map.MapLayer;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.responses.wms.WMSMapContext;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
 
 
 /**
@@ -29,12 +37,32 @@ public class EncodeSVG {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map");
-    private EncoderConfig config;
+
+    /** the XML and SVG header */
+    private static final String SVG_HEADER =
+        "<?xml version=\"1.0\" standalone=\"no\"?>\n\t"
+        + "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n"
+        + "<svg xmlns=\"http://www.w3.org/2000/svg\" \n\tstroke=\"green\" \n\tfill=\"none\" \n\tstroke-width=\"0.001%\" \n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
+
+    /** the SVG closing element */
+    private static final String SVG_FOOTER = "</svg>\n";
+
+    /** DOCUMENT ME! */
+    private WMSMapContext mapContext;
+
+    /** DOCUMENT ME! */
     private SVGWriter writer;
+
+    /** DOCUMENT ME! */
     private boolean abortProcess;
 
-    public EncodeSVG(EncoderConfig encoderConfig) {
-        config = encoderConfig;
+    /**
+     * Creates a new EncodeSVG object.
+     *
+     * @param mapContext DOCUMENT ME!
+     */
+    public EncodeSVG(WMSMapContext mapContext) {
+        this.mapContext = mapContext;
     }
 
     /**
@@ -44,10 +72,17 @@ public class EncodeSVG {
         abortProcess = true;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param out DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
     public void encode(final OutputStream out) throws IOException {
-        Envelope env = config.getReferenceSpace();
-        this.writer = new SVGWriter(out, config);
-        writer.setMinCoordDistance(config.getMinCoordDistance());
+        Envelope env = this.mapContext.getAreaOfInterest();
+        this.writer = new SVGWriter(out, mapContext);
+        writer.setMinCoordDistance(env.getWidth() / 1000);
 
         abortProcess = false;
 
@@ -58,9 +93,7 @@ public class EncodeSVG {
 
             writeLayers();
 
-            if (config.isWriteHeader()) {
-                writer.write(EncoderConfig.SVG_FOOTER);
-            }
+            writer.write(SVG_FOOTER);
 
             this.writer.flush();
             t = System.currentTimeMillis() - t;
@@ -78,32 +111,46 @@ public class EncodeSVG {
         }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String createViewBox() {
-        Envelope referenceSpace = config.getReferenceSpace();
-        String viewBox = (long) writer.getX(referenceSpace.getMinX()) + " "
-            + (long) (writer.getY(referenceSpace.getMinY())
+        Envelope referenceSpace = mapContext.getAreaOfInterest();
+        String viewBox = writer.getX(referenceSpace.getMinX()) + " "
+            + (writer.getY(referenceSpace.getMinY())
             - referenceSpace.getHeight()) + " "
-            + (long) referenceSpace.getWidth() + " "
-            + (long) referenceSpace.getHeight();
+            + referenceSpace.getWidth() + " "
+            + referenceSpace.getHeight();
 
         return viewBox;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
     private void writeHeader() throws IOException {
-        if (config.isWriteHeader()) {
-            String viewBox = createViewBox();
-            String header = EncoderConfig.SVG_HEADER.replaceAll("_viewBox_",
-                    viewBox);
-            header = header.replaceAll("_width_",
-                    String.valueOf(config.getMapWidth()));
-            header = header.replaceAll("_height_",
-                    String.valueOf(config.getMapHeight()));
-            writer.write(header);
-        }
+        String viewBox = createViewBox();
+        String header = SVG_HEADER.replaceAll("_viewBox_", viewBox);
+        header = header.replaceAll("_width_",
+                String.valueOf(mapContext.getMapWidth()));
+        header = header.replaceAll("_height_",
+                String.valueOf(mapContext.getMapHeight()));
+        writer.write(header);
     }
 
-    private void writeDefs(FeatureTypeInfo layer) throws IOException {
-        GeometryAttributeType gtype = layer.getFeatureType().getDefaultGeometry();
+    /**
+     * DOCUMENT ME!
+     *
+     * @param layer DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    private void writeDefs(FeatureType layer) throws IOException {
+        GeometryAttributeType gtype = layer.getDefaultGeometry();
         Class geometryClass = gtype.getType();
 
         if ((geometryClass == MultiPoint.class)
@@ -122,34 +169,50 @@ public class EncodeSVG {
             "<defs>\n\t<circle id='point' cx='0' cy='0' r='0.02%' fill='blue'/>\n</defs>\n");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws AbortedException DOCUMENT ME!
+     *
+     * @task TODO: respect layer filtering given by their Styles
+     */
     private void writeLayers() throws IOException, AbortedException {
-        FeatureTypeInfo[] layers = config.getLayers();
-        FeatureResults[] results = config.getResults();
-        Style[] styles = config.getStyles();
-
-        int nLayers = results.length;
-        FeatureTypeInfo layerInfo = null;
+        MapLayer[] layers = mapContext.getLayers();
+        int nLayers = layers.length;
+        //FeatureTypeInfo layerInfo = null;
         int defMaxDecimals = writer.getMaximunFractionDigits();
 
-        for (int i = 0; i < nLayers; i++) {
-            layerInfo = layers[i];
-            writer.setMaximunFractionDigits(layerInfo.getNumDecimals());
+        FilterFactory fFac = FilterFactory.createFilterFactory();
 
+        for (int i = 0; i < nLayers; i++) {
+            MapLayer layer = layers[i];
             FeatureReader featureReader = null;
+            FeatureSource fSource = layer.getFeatureSource();
+            FeatureType schema = fSource.getSchema();
 
             try {
-                LOGGER.fine("obtaining FeatureReader for "+ layerInfo.getTypeName());
-                featureReader = results[i].reader();
+                Expression bboxExpression = fFac.createBBoxExpression(mapContext
+                        .getAreaOfInterest());
+                GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_BBOX);
+                bboxFilter.addLeftGeometry(bboxExpression);
+                bboxFilter.addRightGeometry(fFac.createAttributeExpression(
+                        schema, schema.getDefaultGeometry().getName()));
+
+                Query bboxQuery = new DefaultQuery(schema.getTypeName(),
+                        bboxFilter);
+
+                LOGGER.fine("obtaining FeatureReader for "
+                    + schema.getTypeName());
+                featureReader = fSource.getFeatures(bboxQuery).reader();
                 LOGGER.fine("got FeatureReader, now writing");
 
                 String groupId = null;
                 String styleName = null;
 
-                groupId = layerInfo.getName();
+                groupId = schema.getTypeName();
 
-                if (styles != null) {
-                    styleName = styles[i].getName();
-                }
+                styleName = layer.getStyle().getName();
 
                 writer.write("<g id=\"" + groupId + "\"");
 
@@ -159,9 +222,7 @@ public class EncodeSVG {
 
                 writer.write(">\n");
 
-                if (config.isWriteHeader()) {
-                    writeDefs(layerInfo);
-                }
+                writeDefs(schema);
 
                 writer.writeFeatures(featureReader, styleName);
                 writer.write("</g>\n");

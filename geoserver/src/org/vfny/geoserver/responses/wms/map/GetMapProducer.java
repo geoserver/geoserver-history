@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.responses.wms.WMSMapContext;
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**
@@ -24,12 +23,10 @@ public interface GetMapProducer {
      * format.
      *
      * @param map
-     * @param format DOCUMENT ME!
      *
      * @throws WmsException
      */
-    void produceMap(WMSMapContext map)
-        throws WmsException;
+    void produceMap(WMSMapContext map) throws WmsException;
 
     /**
      * DOCUMENT ME!
@@ -39,25 +36,19 @@ public interface GetMapProducer {
      * @throws ServiceException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
      */
-    void writeTo(OutputStream out)
-        throws ServiceException, IOException;
+    void writeTo(OutputStream out) throws ServiceException, IOException;
 
     /**
      * DOCUMENT ME!
-     *
-     * @param gs DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
      * @throws java.lang.IllegalStateException DOCUMENT ME!
      */
-    String getContentType()
-        throws java.lang.IllegalStateException;
+    String getContentType() throws java.lang.IllegalStateException;
 
     /**
      * DOCUMENT ME!
-     *
-     * @param gs DOCUMENT ME!
      */
     void abort();
 }

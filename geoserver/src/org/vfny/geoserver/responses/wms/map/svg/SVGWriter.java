@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -19,6 +20,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
+import org.vfny.geoserver.responses.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -96,7 +98,7 @@ public class SVGWriter extends OutputStreamWriter {
     private boolean pointsAsCircles;
 
     /** DOCUMENT ME! */
-    private EncoderConfig config;
+    private WMSMapContext mapContext;
 
     /**
      * Creates a new SVGWriter object.
@@ -104,11 +106,11 @@ public class SVGWriter extends OutputStreamWriter {
      * @param out DOCUMENT ME!
      * @param config DOCUMENT ME!
      */
-    public SVGWriter(OutputStream out, EncoderConfig config) {
+    public SVGWriter(OutputStream out, WMSMapContext mapContext) {
         super(out);
-        this.config = config;
+        this.mapContext = mapContext;
 
-        Envelope space = config.getReferenceSpace();
+        Envelope space = mapContext.getAreaOfInterest();
         this.minY = space.getMinY();
         this.maxY = space.getMaxY();
     }
@@ -280,9 +282,11 @@ public class SVGWriter extends OutputStreamWriter {
             FeatureType featureType = reader.getFeatureType();
             Class gtype = featureType.getDefaultGeometry().getType();
 
+            boolean doCollect = false;
+            /*
             boolean doCollect = config.isCollectGeometries()
                 && (gtype != Point.class) && (gtype != MultiPoint.class);
-
+            */
             setGeometryType(gtype);
 
             setPointsAsCircles("#circle".equals(style));
@@ -330,7 +334,12 @@ public class SVGWriter extends OutputStreamWriter {
             this.writerHandler = new SVGFeatureWriterHandler();
 
             String typeName = featureType.getTypeName();
-            List atts = config.getAttributes(typeName);
+            /*
+             * REVISIT: get rid of all this attribute stuff, since if attributes are 
+             * needed it fits better to have SVG with gml attributes as another output
+             * format for WFS's getFeature.
+             */
+            List atts = new ArrayList(0);// config.getAttributes(typeName);
 
             if (atts.contains("#FID")) {
                 this.writerHandler = new FIDSVGHandler(this.writerHandler);

@@ -6,17 +6,13 @@ package org.vfny.geoserver.responses.wms.map;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.responses.wms.WMSMapContext;
 import org.vfny.geoserver.responses.wms.map.svg.EncodeSVG;
-import org.vfny.geoserver.responses.wms.map.svg.EncoderConfig;
 
 
 /**
@@ -25,16 +21,10 @@ import org.vfny.geoserver.responses.wms.map.svg.EncoderConfig;
  * @author Gabriel Rold?n
  * @version $Id: SVGMapResponse.java,v 1.11 2004/04/16 18:36:49 cholmesny Exp $
  */
-public class SVGMapResponse implements GetMapProducer {
+public class SVGMapProducer implements GetMapProducer {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map");
-
-    /** DOCUMENT ME! */
-    private static final String PRODUCE_TYPE = "image/svg";
-
-    /** DOCUMENT ME! */
-    private static final String MIME_TYPE = "image/svg+xml";
 
     /** DOCUMENT ME! */
     private EncodeSVG svgEncoder;
@@ -56,7 +46,7 @@ public class SVGMapResponse implements GetMapProducer {
      * @return DOCUMENT ME!
      */
     public String getContentType() {
-        return MIME_TYPE;
+        return SvgMapProducerFactory.MIME_TYPE;
     }
 
     /**
@@ -68,35 +58,6 @@ public class SVGMapResponse implements GetMapProducer {
         return null;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Set getSupportedFormats() {
-        return Collections.singleton(MIME_TYPE);
-    }
-
-    /**
-     * evaluates if this Map producer can generate the map format specified by
-     * <code>mapFormat</code>
-     * 
-     * <p>
-     * In this case, true if <code>mapFormat</code> starts with "image/svg", as
-     * both <code>"image/svg"</code> and <code>"image/svg+xml"</code> are
-     * commonly passed.
-     * </p>
-     *
-     * @param mapFormat the mime type of the output map format requiered
-     *
-     * @return true if class can produce a map in the passed format.
-     */
-    public boolean canProduce(String mapFormat) {
-        LOGGER.fine("checking if can producer " + mapFormat + ", returning"
-            + mapFormat.startsWith(PRODUCE_TYPE));
-
-        return mapFormat.startsWith(PRODUCE_TYPE);
-    }
 
     /**
      * aborts the encoding.
@@ -120,8 +81,7 @@ public class SVGMapResponse implements GetMapProducer {
      */
     public void produceMap(WMSMapContext map)
         throws WmsException {
-        EncoderConfig encoderData = new EncoderConfig(map);
-        this.svgEncoder = new EncodeSVG(encoderData);
+        this.svgEncoder = new EncodeSVG(map);
     }
 
     /**
