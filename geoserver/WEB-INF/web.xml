@@ -168,5 +168,5 @@
     <taglib-uri>/tags/struts-tiles</taglib-uri>
     <taglib-location>/WEB-INF/struts-tiles.tld</taglib-location>
   </taglib>  
-
+  
 </web-app>
