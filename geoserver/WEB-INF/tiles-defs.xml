@@ -49,14 +49,7 @@
    		<put name="body" value="/WEB-INF/pages/Login.jsp"/>   		
    		<put name="layer" value="application"/>
         <put name="locationForwards" value="welcome"/>        
-   	</definition>
-   	
-   	<definition name="admin.loginEdit" extends=".mainLayout">
-   		<put name="key" value="admin.loginEdit"/>
-   		<put name="body" value="/WEB-INF/pages/loginEditor.jsp"/>   		
-   		<put name="layer" value="administration"/>
-        <put name="locationForwards" value="welcome"/>        
-   	</definition>
+   	</definition>  	
 
    	<definition name="welcome.demo" extends=".mainLayout">
    		<put name="key" value="welcome.demo"/>
@@ -93,9 +86,18 @@
    		<put name="layer" value="configuration"/>
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
         <put name="locationForwards" value="welcome:config"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>   		
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="menuForwards"
+             value="config.server.login"/>   		   		
    	</definition>
    	
+   	<definition name="config.server.login" extends=".mainLayout">
+   		<put name="key" value="config.server.login"/>
+   		<put name="body" value="/WEB-INF/pages/loginEditor.jsp"/>   		
+   		<put name="layer" value="configuration"/>
+        <put name="locationForwards" value="welcome:config:config.server"/>        
+   	</definition>
+   	   	
 	<!-- CONFIG VALIDATION -->   	
    	<definition name="config.validation" extends=".mainLayout">
    		<put name="key" value="config.validation"/>

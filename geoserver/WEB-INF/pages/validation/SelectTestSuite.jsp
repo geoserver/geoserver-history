@@ -57,10 +57,11 @@ if(tvr!=null && tvr.getErrors().size()>0){
 }
 java.util.Iterator i = tvr.getErrors().entrySet().iterator();
 while(i.hasNext()){
-  java.util.Map.Entry m = (java.util.Map.Entry)i.next();
-  String s = ((org.geotools.feature.Feature)m.getKey()).getID()+" "+m.getValue().toString(); // should be a string anyways
+  java.util.Map.Entry m = (java.util.Map.Entry)i.next();  
+  String fid = ((org.geotools.feature.Feature)m.getKey()).getID();
+  String message = m.getValue().toString(); // should be a string anyways
   %>
-<tr><td><%=s%></td></tr>
+<tr><td><%=fid%></td><td><pre><code><%=message%></code></pre></td></tr>
   <%
 } // while
 %>

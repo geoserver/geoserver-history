@@ -19,14 +19,14 @@
     	<form-bean
     		name="loginForm"
     		type="org.vfny.geoserver.form.LoginForm"/>
-    		
-    	<form-bean
-    		name="loginEditForm"
-    		type="org.vfny.geoserver.form.LoginForm"/>
-    		  		
+    		    		  		
     	<form-bean
     		name="demoForm"
     		type="org.vfny.geoserver.form.DemoForm"/>    		
+
+    	<form-bean
+    		name="loginEditForm"
+    		type="org.vfny.geoserver.form.LoginForm"/>
     
     	<form-bean
     		name="geoServerConfigurationForm"
@@ -156,11 +156,7 @@
         	
         <forward 
         	name="login"
-        	path="/admin/login.do"/>
-        
-        <forward 
-        	name="loginEdit"
-        	path="/admin/loginEdit.do"/>
+        	path="/admin/login.do"/>        
         	        	
         <forward 
        		name="logout"
@@ -179,6 +175,10 @@
        		name="config.server"
        		path="/config/server.do"/>
 
+        <forward 
+        	name="config.server.login"
+        	path="/config/loginEdit.do"/>
+        	
         <!-- CONFIG validation -->
         <forward
         	name="config.validation"
@@ -356,12 +356,7 @@
 			path ="/admin/login"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin.login"/>
-        
-        <action
-        	path="/admin/loginEdit"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="admin.loginEdit"/>
-        	
+                	
 		<action        	
 			path ="/admin/logout"
         	type="org.vfny.geoserver.action.LogoutAction"
@@ -383,6 +378,12 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.server"
         	name="blankBean"/>
+
+        <action
+        	path="/config/loginEdit"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.server.login"/>
+
 
         <!-- CONFIG WFS -->        	
         <action
@@ -526,12 +527,12 @@
 			input="/admin/login.do"/>
 			
 		<action
-			path="/admin/loginEditSubmit"
+			path="/config/loginEditSubmit"
 			type="org.vfny.geoserver.action.LoginEditAction"
 			name="loginEditForm"
 			scope="request"
 			validate="true"
-			input="/admin/loginEdit.do"/>
+			input="/config/loginEdit.do"/>
 
 		<action
 			path="/demoSubmit"
