@@ -30,8 +30,8 @@ import javax.servlet.ServletContext;
  * A collecitno of utilties for dealing with GeotTools DataStore.
  *
  * @author Richard Gould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.9 2004/04/20 04:59:00 jive Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: DataStoreUtils.java,v 1.10 2004/09/05 17:19:46 cholmesny Exp $
  */
 public abstract class DataStoreUtils {
     public static DataStore aquireDataStore(Map params, ServletContext sc)
@@ -204,7 +204,7 @@ public abstract class DataStoreUtils {
             String key = param.key;
             String value = null;
 
-            if (param.required ) {
+            //if (param.required ) {
                 if( param.sample != null){
                     // Required params may have nice sample values
                     //
@@ -214,7 +214,7 @@ public abstract class DataStoreUtils {
                     // or not
                     value = "";
                 }
-            }
+		//}
             if (value != null) {
                 defaults.put(key, value);
             }
