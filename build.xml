@@ -40,7 +40,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\java\resin\webapps"/>
+  <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
   <property name="dir.geotools" 
             value="C:\java\workspace\geotools2\geotools-src"/>
             
@@ -154,7 +154,7 @@
     <echo message="                    -param: dir.geotools=[geotools_path]"/>
     <echo message=""/>
     <echo message=" Examples..."/>
-    <echo message="    ant test-ext -Ddir.container=/usr/local/resin/webapps"/>
+    <echo message="    ant test-ext -Ddir.container=/usr/local/resin-3.0.4/webapps"/>
     <echo message="    ant unit -Dtest.name=requests.DeleteSuite"/>
     <echo message="    ant all"/>
   </target>
@@ -179,6 +179,11 @@
            classpathref="path.build"
            deprecation="off"
            debug="on"/>
+    <copy todir="${dir.build}">
+      <fileset dir="${dir.src}">
+        <include name="**/*.properties"/>
+      </fileset>
+    </copy>
     <jar jarfile="${dir.lib}/geoserver.jar">
       <fileset dir="${dir.build}">
         <exclude name="**/servlets/*" />
@@ -567,7 +572,7 @@
       <!-- classes -->
       <classes dir="${dir.build}">
         <include name="**/servlets/**" />
-        <include name="**/log4j.properties" />
+        <include name="**/*.properties" />
         <exclude name="**/servlets/utilities/**" />
         <exclude name="**/EmbeddedTomcat.class" />
       </classes>
