@@ -4,9 +4,6 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 
@@ -21,13 +18,15 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.9 2004/04/02 18:59:49 emperorkefka Exp $
+ * @version $Id: WFSConfig.java,v 1.10 2004/09/09 17:05:10 cholmesny Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
     private boolean gmlPrefixing;
     
     private int serviceLevel;
+    
+    private boolean srsXmlStyle = true;
 
     /**
      * WFS constructor.
@@ -40,6 +39,7 @@ public class WFSConfig extends ServiceConfig {
      */
     public WFSConfig() {
         super();
+        srsXmlStyle = true;
     }
 
     /**
@@ -56,6 +56,7 @@ public class WFSConfig extends ServiceConfig {
         super(w.getService());
         gmlPrefixing = w.isGmlPrefixing();
         serviceLevel = w.getServiceLevel();
+        srsXmlStyle = w.isSrsXmlStyle();
     }
 
     /**
@@ -78,6 +79,7 @@ public class WFSConfig extends ServiceConfig {
 
         super.update(dto.getService());
         gmlPrefixing = dto.isGmlPrefixing();
+        srsXmlStyle = dto.isSrsXmlStyle();
         serviceLevel = dto.getServiceLevel();
     }
 
@@ -97,7 +99,7 @@ public class WFSConfig extends ServiceConfig {
         wfsDto.setService((ServiceDTO) super.toServDTO());
         wfsDto.setGmlPrefixing(gmlPrefixing);
         wfsDto.setServiceLevel(serviceLevel);
-
+        wfsDto.setSrsXmlStyle(srsXmlStyle);
         return wfsDto;
     }
 
@@ -142,6 +144,28 @@ public class WFSConfig extends ServiceConfig {
 	 */
 	public void setServiceLevel(int serviceLevel) {
 		this.serviceLevel = serviceLevel;
+	}
+
+	/**
+	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+	 * style.  
+	 *
+	 * @return <tt>true</tt> if the srs is reported with the xml style
+	 */
+	public boolean isSrsXmlStyle() {
+		return srsXmlStyle;
+	}
+
+	/**
+	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+	 * style.  
+	 *
+	 * @param doXmlStyle whether the srs style should be xml or not.
+	 */
+	public void setSrsXmlStyle(boolean doXmlStyle) {
+		this.srsXmlStyle = doXmlStyle;
 	}
 
 }
