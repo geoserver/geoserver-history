@@ -40,8 +40,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.18 2004/04/05 23:12:21 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.19 2004/04/15 19:28:45 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -66,9 +66,13 @@ public class DataTransferObjectFactory {
         NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
         NameSpaceElement element;
         
-        element = xs.getElement( attributeType.getName() );                
-        if(element == null) element = gml.getElement( attributeType.getName() );
+        element = xs.getElement( attributeType.getType(), attributeType.getName() );                
+        if(element == null) element = gml.getElement( attributeType.getType(), attributeType.getName() );
         if(element == null) element = xs.getElement( "string" );
+        
+//		element = xs.getElement( attributeType.getName() );                
+//		if(element == null) element = gml.getElement( attributeType.getName() );
+//		if(element == null) element = xs.getElement( "string" );
                 
         dto.setComplex(false);
         dto.setType( element.getTypeRefName() );

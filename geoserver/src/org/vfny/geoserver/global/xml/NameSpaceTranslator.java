@@ -33,8 +33,8 @@ import java.util.Set;
  * </code>
  * </p>
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: NameSpaceTranslator.java,v 1.5 2004/03/14 05:26:55 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: NameSpaceTranslator.java,v 1.6 2004/04/15 19:28:46 dmzwiers Exp $
  */
 public abstract class NameSpaceTranslator{
 	/** the prefix for this translator instance*/
@@ -225,6 +225,44 @@ public abstract class NameSpaceTranslator{
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Gets an element definition by name.
+	 * 
+	 * @param name The name of the element definition
+	 * @return NameSpaceElement
+	 */
+	public NameSpaceElement getElement(Class type, String name){
+		if(type == null)
+			return null;
+				
+		Set posibilities = getElements(type);
+		
+		if(posibilities.size() == 0)
+			return null;
+		if(posibilities.size() == 1)
+			return (NameSpaceElement)posibilities.toArray()[0];
+		
+		if(name == null)
+			return (NameSpaceElement)posibilities.toArray()[0];
+		
+		Iterator i = posibilities.iterator();
+		while(i.hasNext()){
+			NameSpaceElement nse = (NameSpaceElement)i.next();
+			if(nse!=null){
+				if(name.equals(nse.getTypeRefName()))
+					return nse;
+				if(name.equals(nse.getTypeDefName()))
+					return nse;
+				if(name.equals(nse.getQualifiedTypeRefName()))
+					return nse;
+				if(name.equals(nse.getQualifiedTypeDefName()))
+					return nse;
+			}
+		}	
+		return (NameSpaceElement)posibilities.toArray()[0];
+		
 	}
 	
 	/**
