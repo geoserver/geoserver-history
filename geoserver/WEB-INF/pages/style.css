@@ -310,8 +310,17 @@ table.info {
 table.info td.label {
  vertical-align: top;
  text-align: right;
- width: 14ex;
+ width: 12ex;
 }
 table.info td.datum {
  vertical-align: top;
+}
+td.datum textarea {
+ font-family: serif;
+}
+td.datum text {
+ font-family: serif;
+}
+td.datum password {
+ font-family: serif;
 }
