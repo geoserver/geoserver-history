@@ -39,7 +39,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2.0-rc3"/>
+  <property name="name.release" value="1.2.0"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
@@ -603,7 +603,7 @@
     </style>
     
     <copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
-    <copy todir="${dir.doc}/developer" file="${dir.doc}/../developer/**/*.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/developer" file="${dir.doc}/../developer/*.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
@@ -618,7 +618,7 @@
     </style>
     
     <copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
-    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/**/*.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/*.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
