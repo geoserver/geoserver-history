@@ -21,7 +21,7 @@ import org.geotools.factory.*;
  * definition query configured for it.
  *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.3 2003/11/26 16:55:14 cholmesny Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.4 2003/11/27 21:34:14 jive Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
     /** DOCUMENT ME!  */
@@ -282,81 +282,6 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           throw new DataSourceException(
               "FeatureType does not supports locking");
       }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param authID DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
-     */
-    public void releaseLock(String authID) throws IOException {
-        // TODO: chris this requires a authorized transaction
-        // I am not sure what you actually intended here?
-        
-        // I saw not evidence of source.setTransaction()
-        // and it won't work on Transaction.AUTO_COMMIT ...
-        
-        // I will just make a transaction and assume you know what you
-        // are doing.
-        
-        // CatalogConfig knows how to do this for every datastore...
-
-	// Wasn't me, gabriel put these in.  I don't ever use these, I 
-	// think we can just lose them.  I'll check with gabriel.  Everything
-	// compiles if they aren't present, and catalog is the better place
-	// to handle this. ch. 
-        
-        LockingManager lockManager = source.getDataStore().getLockingManager();
-        if( lockManager == null ){
-            throw new DataSourceException(
-                "FeatureType does not supports locking");
-        }
-        Transaction t = new DefaultTransaction( source.getSchema().getTypeName() );
-        try {
-            lockManager.release( authID, t );
-        }
-        finally {
-            t.close();
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param authID DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
-     */
-    public void refreshLock(String authID) throws IOException {
-        // TODO: chris this requires a authorized transaction
-        // I am not sure what you actually intended here?
-        
-        // I saw not evidence of source.setTransaction()
-        // and it won't work on Transaction.AUTO_COMMIT ...
-        
-        // I will just make a transaction and assume you know what you
-        // are doing.
-        
-        // CatalogConfig knows how to do this for every datastore...
-     
-	//see above
-   
-        LockingManager lockManager = source.getDataStore().getLockingManager();
-        if( lockManager == null ){
-            throw new DataSourceException(
-                "FeatureType does not supports locking");
-        }
-        //Transaction t = new DefaultTransaction( source.getSchema().getTypeName() );
-        try {
-            lockManager.release( authID, t );
-        }
-        finally {
-            t.close();
-        }
     }
 
     /**
