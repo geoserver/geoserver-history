@@ -115,9 +115,9 @@
     maintained by Sean Geoghegan. It includes support of all OGC filters,
     connection pooling, and transactional capabilities.</para>
 
-    <para>We are not sure if Oracle works with GeoServer 1.2.0-rc1, as Sean is
-    away from the project, and the rest of the core developers do not have
-    convenient oracle dbs to hit. Please check the <ulink
+    <para>We are not quite sure if Oracle works with GeoServer 1.2.0-rc2, as
+    Sean is away from the project, and the rest of the core developers do not
+    have convenient oracle dbs to hit. Please check the <ulink
     url="???">wiki</ulink> for the latest information on oracle. And if you
     have success with installing oracle let us know. We apologize greatly for
     not having oracle ready for this release, as we know it is a popular
@@ -127,8 +127,9 @@
     _possible_, just might be a bit difficult). The GeoServer Project
     personally recommends switching to PostGIS, as it is a very solid database
     with excellent spatial support, and is much easier for us to debug. And it
-    will save you on licensing costs. But we will try to support Oracle,
-    because we are all about interoperability.</para>
+    will save you on licensing costs. But we will do our best to support
+    Oracle, even though they spend way too much time trying to sell us
+    application servers. </para>
 
     <para>To use the Oracle Datastore the <emphasis>catalog.xml</emphasis>
     file must have the following values for the connectionParams:</para>
@@ -205,7 +206,13 @@
     uncaught exception - NoClassDefFoundError, then you probably have the jar
     in the wrong place or the wrong jars. Users have had the best luck with
     the jars distributed with their oracle installations, others seem to be
-    more prone to errors.</para>
+    more prone to errors. Unfortunately it is no longer possible to get the
+    sdoapi jars that work with GeoTools and GeoServer from the Oracle
+    Technology Network, at least not anywhere we found. They updated
+    everything for 10g, and we are trying to catch up. Refractions wrote a
+    replacement for sdoapi.jar, included in 1.2.0-rc2; we would love feedback
+    on successes. Indeed, we very much value feedback from oracle, as it is
+    very hard for us to test. </para>
 
     <para>A few other little notes from users: The oracle spatial table you
     are using must have a correct entry in USER_SDO_GEOM_METADATA view. And
@@ -360,10 +367,11 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
     <programlisting>&lt;charSet&gt;iso-8859-1&lt;/charSet&gt;</programlisting>
 
     <para>This will set the mime encoding and the xml header encoding to that
-    charset. The 1.1.0 does not yet support individual datastores inheiriting
-    the global charset, so it must be set as a connectionParam for each
-    datastore. If no CharSet element is found then the default is UTF-8 for
-    the return xml, and no charset property for postgis.</para>
+    charset. Past releases would use the charSet for PostGIS connection
+    parameters, but that is no longer supported, as Postgresql as of version
+    7.2 does not need a charSet specified, as the language support is built
+    in. If no CharSet element is found then the default is UTF-8 for the
+    return xml.</para>
   </sect1>
 
   <sect1 id="dispatcher">
@@ -387,9 +395,9 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
 http://openplans.org:8080/geoserver/wfs?request=DescribeFeatureType&amp;typename=topp:rail
 http://openplans.org:8080/geoserver/wfs?request=GetFeature&amp;typename=topp:rail</programlisting></para>
 
-    <para>The wms has similar capabilities. Version 1.2.0-rc1 also includes a
-    dispatcher for post requests. It can be accessed by sending all post
-    requests to the same location:<programlisting>http://openplans.org:8080/geoserver/wfs</programlisting></para>
+    <para>Version 1.2.0-rc1 also includes a dispatcher for post requests. It
+    can be accessed by sending all post requests to the same
+    location:<programlisting>http://openplans.org:8080/geoserver/wfs</programlisting></para>
 
     <para>This should hopefully help GeoServer be accessible to more client
     apps, as they often naively assume that all requests should go to the same
