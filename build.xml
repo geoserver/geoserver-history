@@ -63,9 +63,10 @@
 
  <property name="jetty.run"  value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml"/>
 
-  <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}" />
+  <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}/server" />
 
   <available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
+  <available file="${basedir}/server/geoserver" type="dir" property="server.built"/>
 
   <!-- If you don't have your own conf directory uncomment on of the following -->
   <!--<property name="test.type" value="UserBasic"/>-->
@@ -298,7 +299,7 @@
 <!-- TEST -->
 <!-- deploys application to test server -->
   <target name="test" depends="init, all">
-    <mkdir dir="${dir.server}"/>
+    <mkdir dir="${dir.server}/work"/>
 
     <!-- This will now build with the users directory, which I think is
          appropriate for testing of this sort, as you'll want to configure
@@ -308,10 +309,34 @@
       <!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
     </antcall>
     
-    <unwar src="${basedir}/geoserver.war" dest="${dir.server}/geoserver/"/>
+    <unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/"/>
     <antcall target="run"/>
 
   </target>
+
+  <target name="prepareEmbedded" depends="init" unless="server.built">
+     <mkdir dir="${dir.server}/work"/>
+     <unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/"/>
+  </target> 
+
+  <!-- runs the server -->
+  <target name="run" depends="init, prepareEmbedded"
+   description="Run the embedded geoserver">
+    
+    <java classname="org.mortbay.jetty.Server"
+          dir="${basedir}"
+          fork="yes"
+          failonerror="yes"
+          >
+       <classpath>
+         <pathelement path="${env.CLASSPATH}" />
+         <path refid="path.jetty" />
+       </classpath>
+       <jvmarg line="${jetty.jvmarg}" />
+       <arg line="${jetty.run}" />
+    </java>
+  </target>
+
 
 <!-- STOP SERVER -->
 <!-- TODO: implement this somehow... 
@@ -331,21 +356,6 @@
   </target-->
 
 
-  <target name="run" depends="init"
-   description="Run Jetty with configuration set by the jetty.run property">
-    <java classname="org.mortbay.jetty.Server"
-          dir="${basedir}"
-          fork="yes"
-          failonerror="yes"
-          >
-       <classpath>
-         <pathelement path="${env.CLASSPATH}" />
-         <path refid="path.jetty" />
-       </classpath>
-       <jvmarg line="${jetty.jvmarg}" />
-       <arg line="${jetty.run}" />
-    </java>
-  </target>
 
 <!-- EXTERNAL TEST -->
 <!-- deploys application to test server -->
@@ -361,7 +371,7 @@
     <delete file="${dir.container}/../logs/stderr.log" failonerror="false"/>
     <delete file="${dir.container}/../logs/*.log.*" failonerror="false"/>
     <copy todir="${dir.container}/" flatten="yes">
-      <fileset dir="${basedir}">
+      <fileset dir="${dir.build}">
         <include name="geoserver.war"/>
       </fileset>
     </copy>
@@ -400,7 +410,7 @@
  <!-- BUILD WAR -->
   <target name="build-war" if="conf.path">
     <!-- preparation -->
-    <delete file="${basedir}/geoserver.war" 
+    <delete file="${dir.build}/geoserver.war" 
             failonerror="false"/>
     <delete dir="${basedir}/data" 
             failonerror="false"/>
@@ -466,7 +476,7 @@
     </copy>
 
     <!-- war file -->
-    <war warfile="${basedir}/geoserver.war" 
+    <war warfile="${dir.build}/geoserver.war" 
          webxml="${dir.webinf}/web.xml" 
          update="true">
 
@@ -752,7 +762,7 @@
     <antcall target="build-war">
       <param name="conf.path" value="${basedir}/cite/confUserBasic"/>
     </antcall>
-    <copy file="${basedir}/geoserver.war" 
+    <copy file="${dir.build}/geoserver.war" 
           todir="${dir.release}"/>
   </target>
   
