@@ -20,7 +20,7 @@ import org.vfny.geoserver.zserver.GeoZServer;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.21 2004/03/10 23:39:07 groldan Exp $
+ * @version $Id: FreefsLog.java,v 1.22 2004/03/14 15:57:32 groldan Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -87,7 +87,7 @@ public class FreefsLog extends HttpServlet {
          */
         try {
             Class sdepfClass = Class.forName(
-                    "org.geotools.data.arcsde.ArcSDEConnectionPoolFactory");
+                    "org.geotools.data.arcsde.ConnectionPoolFactory");
 
             LOGGER.fine("SDE datasource found, releasing resources");
 
