@@ -4,13 +4,14 @@
  */
 package org.vfny.geoserver.config;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
-import javax.servlet.*;
-import org.vfny.geoserver.global.*;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.GeoServerPlugIn;
 
 /**
  * ConfigPlugIn purpose.
@@ -22,7 +23,7 @@ import org.vfny.geoserver.global.*;
  * <p>
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.1.2.3 2004/01/08 23:44:48 dmzwiers Exp $
+ * @version $Id: ConfigPlugIn.java,v 1.1.2.4 2004/01/12 21:01:32 dmzwiers Exp $
  */
 public class ConfigPlugIn implements PlugIn {
 

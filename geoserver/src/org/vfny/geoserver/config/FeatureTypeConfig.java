@@ -21,7 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -31,7 +32,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.4.2.7 2004/01/10 06:13:31 emperorkefka Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.4.2.8 2004/01/12 21:01:32 dmzwiers Exp $
  */
 public class FeatureTypeConfig{
 	

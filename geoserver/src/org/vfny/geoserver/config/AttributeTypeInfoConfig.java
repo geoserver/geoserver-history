@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 /*
  * Represent configuration of an AttributeType.
  * <p>
@@ -65,7 +65,7 @@ import org.vfny.geoserver.global.dto.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.1.2.2 2004/01/10 06:13:31 emperorkefka Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.1.2.3 2004/01/12 21:01:32 dmzwiers Exp $
  */
 public class AttributeTypeInfoConfig {
 	/** attribute name*/

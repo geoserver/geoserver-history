@@ -4,11 +4,11 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.ServiceDTO;
-import org.vfny.geoserver.global.dto.WFSDTO;
-
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
 
 
 /**
@@ -21,7 +21,7 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.2.2.9 2004/01/09 18:27:29 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.2.2.10 2004/01/12 21:01:32 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";

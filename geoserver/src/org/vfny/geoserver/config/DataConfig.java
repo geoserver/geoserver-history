@@ -4,17 +4,18 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
-import org.vfny.geoserver.global.dto.StyleDTO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
 
 
 /**
@@ -28,7 +29,7 @@ import java.util.NoSuchElementException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.1.2.15 2004/01/12 08:51:37 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.16 2004/01/12 21:01:32 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
