@@ -64,16 +64,19 @@
 	           prefix="cgf"/>
   </namespaces>
 
+  <!-- Defines the style ids to be used by the wms.  The files must be
+       contained in geoserver/misc/wms/styles.  We're working on finding
+       a better place for them, but for now that's where you must put them
+       if you want them on the server.
+   -->
   <styles>
-                <style id="thick outline" filename="styles/polyshp.sld"/>
-                <style id="dotty" filename="styles/funkypolyshp.sld"/>
-                <style id="green" filename="styles/green.sld"/>
-                <style id="population" filename="styles/popshade.sld"/>
-                <style id="highlight" filename="styles/usa_penn.sld"/>
-                <style id="bbox" filename="styles/usa_central.sld"/>
-                <style id="maleVsFemale" filename="styles/usa_ratio.sld"/>
-                <style id="normal" filename="styles/normal.sld" default="true"/>
-                <style id="manualVsWorkers" filename="styles/usa_math.sld"/>
+                <style id="thick outline" filename="polyshp.sld"/>
+                <style id="dotty" filename="funkypolyshp.sld"/>
+                <style id="green" filename="green.sld"/>
+                <style id="population" filename="popshade.sld"/>
+                <style id="highlight" filename="usa_penn.sld"/>
+                <style id="maleVsFemale" filename="usa_ratio.sld"/>
+                <style id="normal" filename="normal.sld" default="true"/>
   </styles>
 
 </catalog>
