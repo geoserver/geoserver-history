@@ -132,6 +132,11 @@ public class WmsDispatcher extends Dispatcher {
             dispatched = new DescribeLayer();
 
             break;   
+
+        case GET_LEGEND_GRAPHIC_REQUEST:
+            dispatched = new GetLegendGraphic();
+
+            break;   
         default:
             dispatched = null;
         }

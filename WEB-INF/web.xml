@@ -85,6 +85,10 @@
     <servlet-class>org.vfny.geoserver.servlets.wms.Capabilities</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>GetLegendGraphic</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wms.GetLegendGraphic</servlet-class>
+  </servlet>
+  <servlet>
    <servlet-name>TestWfsPost</servlet-name>
    <servlet-class>org.vfny.geoserver.servlets.wfs.TestWfsPost</servlet-class>
   </servlet>
@@ -148,6 +152,10 @@
   <servlet-mapping>
     <servlet-name>GetFeatureInfo</servlet-name>
     <url-pattern>/wms/GetFeatureInfo</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>GetLegendGraphic</servlet-name>
+    <url-pattern>/wms/GetLegendGraphic</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
    <servlet-name>TestWfsPost</servlet-name>
