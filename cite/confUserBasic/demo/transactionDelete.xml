@@ -6,6 +6,7 @@
   xmlns:cdf="http://www.opengis.net/cite/data"
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:wfs="http://www.opengis.net/wfs">
+  xmlns:topp="http://www.openplans.org/topp">
   <wfs:Delete typeName="topp:bc_roads">
     <ogc:Filter>
       <ogc:PropertyIsEqualTo>
