@@ -16,8 +16,11 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.responses.wms.featureInfo.GetFeatureInfoDelegate;
+import org.vfny.geoserver.responses.wms.featureInfo.TextFeatureInfoResponse;
 import org.vfny.geoserver.responses.wms.map.GetMapDelegate;
 import org.vfny.geoserver.responses.wms.map.JAIMapResponse;
 import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
@@ -29,7 +32,7 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetFeatureInfoResponse.java,v 1.1 2004/07/15 21:13:13 jmacgill Exp $
+ * @version $Id: GetFeatureInfoResponse.java,v 1.2 2004/07/16 17:38:06 jmacgill Exp $
  */
 public class GetFeatureInfoResponse implements Response {
 
@@ -41,18 +44,15 @@ public class GetFeatureInfoResponse implements Response {
     private static final List supportedMimeTypes = new LinkedList();
 
     static {
-        GetMapDelegate producer;
+        GetFeatureInfoDelegate producer;
 
-        producer = new SVGMapResponse();
+        producer = new TextFeatureInfoResponse();
         supportedMimeTypes.addAll(producer.getSupportedFormats());
         delegates.add(producer);
 
-        producer = new JAIMapResponse();
-        supportedMimeTypes.addAll(producer.getSupportedFormats());
-        delegates.add(producer);
     }
 
-    private GetMapDelegate delegate;
+    private GetFeatureInfoDelegate delegate;
 
     /**
      * Creates a new GetMapResponse object.
@@ -68,8 +68,8 @@ public class GetFeatureInfoResponse implements Response {
      * @throws ServiceException DOCUMENT ME!
      */
     public void execute(Request request) throws ServiceException {
-        GetMapRequest getMapReq = (GetMapRequest) request;
-        this.delegate = getDelegate(getMapReq);
+        GetFeatureInfoRequest getFeatureInfoReq = (GetFeatureInfoRequest) request;
+        this.delegate = getDelegate(getFeatureInfoReq);
         delegate.execute(request);
         LOGGER.entering(getClass().getName(), "execute", new Object[]{request});
     }
@@ -148,19 +148,19 @@ public class GetFeatureInfoResponse implements Response {
      *         format specified in <code>request</code> or if it can't be
      *         instantiated
      */
-    private static GetMapDelegate getDelegate(GetMapRequest request)
+    private static GetFeatureInfoDelegate getDelegate(GetFeatureInfoRequest request)
         throws WmsException {
         String requestFormat = request.getFormat();
         LOGGER.finer("request format is " + requestFormat);
-        GetMapDelegate delegate = null;
+        GetFeatureInfoDelegate delegate = null;
         Class delegateClass = null;
 
         for (Iterator it = delegates.iterator(); it.hasNext();) {
-            delegate = (GetMapDelegate) it.next();
+            delegate = (GetFeatureInfoDelegate) it.next();
 
             if (delegate.canProduce(requestFormat)) {
                 delegateClass = delegate.getClass();
-                LOGGER.finer("found GetMapDelegate " + delegateClass);
+                LOGGER.finer("found GetFeatureInfoDelegate " + delegateClass);
                 break;
             }
         }
@@ -173,7 +173,7 @@ public class GetFeatureInfoResponse implements Response {
         }
 
         try {
-            delegate = (GetMapDelegate) delegateClass.newInstance();
+            delegate = (GetFeatureInfoDelegate) delegateClass.newInstance();
         } catch (Exception ex) {
             throw new WmsException(ex,
                 "Cannot obtain the map generator for the requested format",
