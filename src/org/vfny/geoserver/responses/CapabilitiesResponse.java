@@ -91,7 +91,7 @@ public class CapabilitiesResponse {
         version = request.getVersion();
         service = request.getService();
 	if (version == null) {
-	    version = ""; //so we don't get a null pointer exception
+	    version = ""; //so we don\"t get a null pointer exception
 	}
     }
     
@@ -122,6 +122,7 @@ public class CapabilitiesResponse {
             addTag("ContentMetadata", TAG_END, 3 );
             
             xmlOutFinal.writeFile( ADDITIONAL_CAPABILITIES_FILE );
+            addTag("WFS_Capabilities", TAG_END, 0 );
 
         } else { //0.0.14 or 1.0.0
 	    if (!version.equals("0.0.14")) {
@@ -154,17 +155,17 @@ public class CapabilitiesResponse {
      */
     private void addHeaderInfo(String version) {
 
-        String encoding = "<?xml version='1.0' encoding='UTF-8'?>\n";
-        String firstTag = "<WFS_Capabilities version='" + version + "'";
+        String encoding = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        String firstTag = "<WFS_Capabilities version=\"" + version + "\"";
         if (version.equals("0.0.15")) {
-	    //I don't have 0.0.15 spec right now, but this element is not in .14 or 1.0
-	    firstTag += " sequence='" + versionInfo.getWfsUpdateSequence();
+	    //I don\"t have 0.0.15 spec right now, but this element is not in .14 or 1.0
+	    firstTag += " sequence=\"" + versionInfo.getWfsUpdateSequence() + "\"";
 	} else if (version.equals("1.0.0")) {
 	    firstTag += addNameSpace("", WFS_XMLNS_URL) + 
 		addNameSpace(":myns", config.getUrl())
 		+ addNameSpace(":ogc", OGC_XMLNS_URL);
 	}
-	firstTag += "/>\n";	   
+	firstTag += ">";	   
         xmlOutFinal.write( encoding.getBytes(), 0, encoding.length() );
         xmlOutFinal.write( firstTag.getBytes(), 0, firstTag.length() );
     }
@@ -180,7 +181,7 @@ public class CapabilitiesResponse {
      */
     private String addNameSpace(String qName, String url){
 	String spaces = "   ";
-	return "\n" + spaces + "xmlns" + qName + "='" + url + "'";
+	return "" + spaces + "xmlns" + qName + "=\"" + url + "\"";
     }
     
     
@@ -202,7 +203,7 @@ public class CapabilitiesResponse {
         if ( tagType == TAG_ONLY )
             tag = tag.concat("/");
         tag = tempSpaces + "<" + tag;
-        tag = tag.concat(">\n");
+        tag = tag.concat(">");
         
         xmlOutFinal.write(tag.getBytes(), 0, tag.length() );
     }
@@ -233,12 +234,12 @@ public class CapabilitiesResponse {
         
         StringBuffer tempCapabilityInfo = new StringBuffer();
         
-        tempCapabilityInfo.append("\n  <Capability>\n    <Request>");
+        tempCapabilityInfo.append("  <Capability>    <Request>");
         tempCapabilityInfo.append(tempReturnCapability("GetCapabilities"));
         tempCapabilityInfo.append(tempReturnCapability("DescribeFeatureType"));
         tempCapabilityInfo.append(tempReturnCapability("GetFeature"));
 	tempCapabilityInfo.append(tempReturnCapability("Transaction"));
-        tempCapabilityInfo.append("\n    </Request>\n  </Capability>\n");
+        tempCapabilityInfo.append("    </Request>  </Capability>");
         
         try {
             xmlOutFinal.write(tempCapabilityInfo.toString().getBytes());
@@ -257,13 +258,13 @@ public class CapabilitiesResponse {
         String url = config.getUrl();
         String tempCapability = new String();
         
-        tempCapability = "\n      <" + request + ">";
+        tempCapability = "      <" + request + ">";
         if (request.equals("DescribeFeatureType") )
-            tempCapability = tempCapability + "\n        <SchemaDescriptionLanguage><XMLSCHEMA/></SchemaDescriptionLanguage>";
+            tempCapability = tempCapability + "        <SchemaDescriptionLanguage><XMLSCHEMA/></SchemaDescriptionLanguage>";
         if (request.equals("GetFeature") )
-            tempCapability = tempCapability + "\n        <ResultFormat><GML2/></ResultFormat>";
-        tempCapability = tempCapability + "\n        <DCPType><HTTP><Get onlineResource='" + url + "/" + request + "?'/></HTTP></DCPType>";
-        tempCapability = tempCapability + "\n        <DCPType><HTTP><Post onlineResource='" + url + "/" + request + "'/></HTTP></DCPType>\n      </" + request + ">";
+            tempCapability = tempCapability + "        <ResultFormat><GML2/></ResultFormat>";
+        tempCapability = tempCapability + "        <DCPType><HTTP><Get onlineResource=\"" + url + "/" + request + "?\"/></HTTP></DCPType>";
+        tempCapability = tempCapability + "        <DCPType><HTTP><Post onlineResource=\"" + url + "/" + request + "\"/></HTTP></DCPType>      </" + request + ">";
         
         return tempCapability;
     }
