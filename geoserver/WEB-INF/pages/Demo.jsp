@@ -28,13 +28,13 @@
       <tr>
         <td class="label">body:</td>
         <td class="datum">
-          <textarea rows=25 cols=90 name="body"><bean:write name="demoForm" property="body"/></textarea>
+          <textarea rows="10" cols="90" name="body"><bean:write name="demoForm" property="body"/></textarea>
         </td>
       </tr>    
       <tr>
         <td class="label"></td>
         <td class="datum">
-          <input type="submit">
+          <html:submit><bean:message key="label.submit"/></html:submit>
         </td>
       </tr>
     </form>      
