@@ -19,9 +19,11 @@ public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
+    private static GlobalConfig globalConfig = null;
 
     /** DOCUMENT ME! */
-    private Level loggingLevel = Level.FINE;
+    private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
+                                       .getLevel();
 
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = 20000;
@@ -49,6 +51,8 @@ public class GlobalConfig extends AbstractConfig {
      * miserably if a bad charset is used.
      */
     private Charset charSet;
+    private String baseUrl;
+    private String schemaBaseUrl;
     private ContactConfig contactConfig;
 
     /**
@@ -67,6 +71,12 @@ public class GlobalConfig extends AbstractConfig {
         this.contactConfig = new ContactConfig(elem);
 
         Level loggingLevel = getLoggingLevel(globalConfigElem);
+
+        //init this now so the rest of the config has correct log levels.
+        Log4JFormatter.init("org.geotools", loggingLevel);
+        Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
+        LOGGER.config("logging level is " + loggingLevel);
+
         elem = getChildElement(globalConfigElem, "verbose", false);
 
         if (elem != null) {
@@ -80,11 +90,15 @@ public class GlobalConfig extends AbstractConfig {
             this.maxFeatures = getIntAttribute(elem, "value", true, maxFeatures);
         }
 
+        LOGGER.config("maxFeatures is " + maxFeatures);
+
         elem = getChildElement(globalConfigElem, "numDecimals");
 
         if (elem != null) {
             this.numDecimals = getIntAttribute(elem, "value", true, numDecimals);
         }
+
+        LOGGER.config("numDecimals returning is " + numDecimals);
 
         elem = getChildElement(globalConfigElem, "charSet");
         charSet = Charset.forName("ISO-8859-1");
@@ -95,11 +109,36 @@ public class GlobalConfig extends AbstractConfig {
             try {
                 Charset cs = Charset.forName(chSet);
                 this.charSet = cs;
-                LOGGER.fine("charSet: " + cs.displayName());
+                LOGGER.finer("charSet: " + cs.displayName());
             } catch (Exception ex) {
                 LOGGER.info(ex.getMessage());
             }
         }
+
+        LOGGER.config("charSet is " + charSet);
+
+        //TODO: better checking.
+        this.baseUrl = getChildText(globalConfigElem, "URL", true);
+
+        String schemaBaseUrl = getChildText(globalConfigElem, "SchemaBaseUrl");
+
+        if (schemaBaseUrl != null) {
+            this.schemaBaseUrl = schemaBaseUrl;
+        } else {
+            this.schemaBaseUrl = baseUrl + "/data/capabilities/";
+        }
+
+        globalConfig = this;
+    }
+
+    public static GlobalConfig getInstance() {
+        if (globalConfig == null) {
+            String mesg = "ServerConfig must be initialized before calling "
+                + " getInstance on globalConfig";
+            throw new java.lang.IllegalStateException(mesg);
+        }
+
+        return globalConfig;
     }
 
     public ContactConfig getContactInformation() {
@@ -114,7 +153,7 @@ public class GlobalConfig extends AbstractConfig {
      * @return DOCUMENT ME!
      */
     private Level getLoggingLevel(Element globalConfigElem) {
-        Level level = null;
+        Level level = this.loggingLevel;
         Element levelElem = getChildElement(globalConfigElem, "loggingLevel");
 
         if (levelElem != null) {
@@ -123,8 +162,11 @@ public class GlobalConfig extends AbstractConfig {
             try {
                 level = Level.parse(levelName);
             } catch (IllegalArgumentException ex) {
-                LOGGER.info("illegal loggingLevel name: " + levelName);
+                LOGGER.warning("illegal loggingLevel name: " + levelName);
             }
+        } else {
+            LOGGER.config("No loggingLevel found, using default "
+                + "logging.properties setting");
         }
 
         return level;
@@ -173,6 +215,14 @@ public class GlobalConfig extends AbstractConfig {
      */
     public boolean isVerbose() {
         return verbose;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public String getSchemaBaseUrl() {
+        return schemaBaseUrl;
     }
 
     public String getMimeType() {
