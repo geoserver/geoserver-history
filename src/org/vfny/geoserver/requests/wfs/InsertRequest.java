@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
+import java.net.URI;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -76,7 +77,7 @@ public class InsertRequest extends SubTransactionRequest {
         if (typeName == null) {
             features.add(feature);
             String name = feature.getFeatureType().getTypeName();
-            String uri = feature.getFeatureType().getNamespace();
+            URI uri = feature.getFeatureType().getNamespace();  //DJB:: type changed to uri due to api change
             LOGGER.info("got type " + name +"," + uri);
             setTypeName(feature.getFeatureType().getTypeName());
         } else {

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -189,13 +190,13 @@ public class TransactionResponse implements Response {
                 //
                 Feature feature = ((InsertRequest) element).getFeatures()
                                    .features().next();
-
+ 
                 if (feature != null) {
                     String name = feature.getFeatureType().getTypeName();
-                    String uri = feature.getFeatureType().getNamespace();
-                    
+                    URI uri = feature.getFeatureType().getNamespace();
+                     
                     LOGGER.fine("Locating FeatureSource uri:'"+uri+"' name:'"+name+"'");                                       
-                    meta = catalog.getFeatureTypeInfo(name, uri); 
+                    meta = catalog.getFeatureTypeInfo(name, uri==null?null:uri.toString());  //change suggested by DZweirs
                 
                     //HACK: The insert request does not get the correct typename,
                     //as we can no longer hack in the prefix since we are using the

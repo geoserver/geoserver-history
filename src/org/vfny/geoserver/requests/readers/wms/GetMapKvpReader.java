@@ -3,7 +3,7 @@
  * application directory.
  */
 package org.vfny.geoserver.requests.readers.wms;
-
+ 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.feature.FeatureType;
 import org.geotools.styling.NamedLayer;

@@ -771,7 +771,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         if (ft == null) {
             int count = 0;
             ft = fs.getSchema();
-	    URI namespace = ft.getNamespaceURI();
+	    URI namespace = ft.getNamespace();  //DJB:: change to #getNamespace() due to API change
 
             String[] baseNames = DataTransferObjectFactory
                 .getRequiredBaseAttributes(schemaBase);
