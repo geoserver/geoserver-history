@@ -6,7 +6,9 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +20,6 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
@@ -32,8 +33,8 @@ import org.vfny.geoserver.global.UserContainer;
  * Edit selected style
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: StylesSelectAction.java,v 1.1 2004/03/01 09:39:08 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: StylesSelectAction.java,v 1.2 2004/03/01 19:35:11 dmzwiers Exp $
  */
 public class StylesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -50,6 +51,7 @@ public class StylesSelectAction extends ConfigAction {
         // Need locale wording for edit and delete
         final String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
         final String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        final String DEFAULT = HTMLEncoder.decode(messages.getMessage(locale, "label.default"));
         
         StyleConfig style = config.getStyle( styleId );
         if( style == null ){
@@ -65,6 +67,28 @@ public class StylesSelectAction extends ConfigAction {
             config.removeStyle( styleId );
             getApplicationState().notifyConfigChanged();
             selectForm.setSelectedStyle(null);
+            selectForm.reset(mapping, request);
+            return mapping.findForward("config.data.style");
+        }
+        if (action.equals(DEFAULT)) {
+        	Map m = config.getStyles();
+        	Iterator i = m.values().iterator();
+        	while(i.hasNext()){
+        		StyleConfig sc = (StyleConfig)i.next();
+        		if(sc.isDefault()){
+        			if(sc.getId()!=null && !sc.getId().equals(styleId)){
+        				sc.setDefault(false);
+        	            getApplicationState().notifyConfigChanged();
+        			}
+        		}else{
+        			if(sc.getId()!=null && sc.getId().equals(styleId)){
+        				sc.setDefault(true);
+        	            getApplicationState().notifyConfigChanged();
+        			}
+        		}
+        	}
+            selectForm.setSelectedStyle(null);
+            selectForm.reset(mapping, request);
             return mapping.findForward("config.data.style");
         }
         if( action.equals(EDIT)){
