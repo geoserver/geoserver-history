@@ -4,7 +4,9 @@
 <article>
   <title>Installation</title>
 
-  <para>This document describes?</para>
+  <para>This document describes what you need to run GeoServer, where to
+  obtain GeoServer, and the process of installing and starting up the various
+  GeoServer distributions.</para>
 
   <section>
     <title>Requirements</title>
@@ -200,7 +202,7 @@ startup                 </programlisting>
         <para>To stop GeoServer use the same techniques as startup, but use
         the shutdown file, in the same location (shutdown.sh or shutdown.bat).
         To remove GeoServer simply delete the directory where it was unzipped.
-        Be sure GeoServer is not running. </para>
+        Be sure GeoServer is not running.</para>
 
         <para>We have isolated Configuration Information, from the GeoServer
         Application Information currently being used. Configuration
@@ -228,7 +230,7 @@ startup                 </programlisting>
             <para>Restart GeoServer and you're in business. Be sure that you
             replace the "8080" in the URL you're using to access GeoServer.
             For example, if you change the port to 1977, you would request the
-            URL to </para>
+            URL to</para>
 
             <programlisting>http://localhost:1977/geoserver</programlisting>
           </listitem>
@@ -259,7 +261,7 @@ startup                 </programlisting>
         it will warn you. You should first install Java before using the
         installer, so that the links to run the application work correctly.
         Pick the location to install GeoServer, and on completion short cuts
-        will appear in the windows start menu. </para>
+        will appear in the windows start menu.</para>
       </section>
 
       <section>
@@ -275,7 +277,7 @@ startup                 </programlisting>
         <programlisting><ulink url="http://localhost:8080/geoserver">http://localhost:8080/geoserver</ulink></programlisting>
 
         <para>It should also be available through the 'GeoServer
-        Administration' link in the start menu. </para>
+        Administration' link in the start menu.</para>
 
         <para>To remove GeoServer just double click on the Uninstall link on
         the GeoServer start menu. Make sure that GeoServer has been shut down.
@@ -341,8 +343,8 @@ startup                 </programlisting>
         like to upgrade software and install new software at your every whim.
         And it's good to keep those guys happy, they do a lot of great, and
         under appreciated, work. So with the war installation you can keep
-        them happy, as they'll have a servlet container all ready for you.
-        </para>
+        them happy, as they'll have a servlet container all ready for
+        you.</para>
 
         <para>To install GeoServer, simply place the war in your application
         directory, generally webapps/. Most modern containers will
@@ -392,8 +394,8 @@ startup                 </programlisting>
           substitute your_container/webapps/geoserver, as server/geoserver is
           just where the embedded servlet container expands its war. In 1.3 we
           hope to have a real GEOSERVER_HOME directory where configuration is
-          stored, for now it just takes place within the servlet container.
-          </para>
+          stored, for now it just takes place within the servlet
+          container.</para>
         </orderedlist>
       </section>
     </section>
@@ -403,12 +405,12 @@ startup                 </programlisting>
     <title>Testing GeoServer</title>
 
     <para>Once you have your version of GeoServer running, we recommend a
-    simple test, going to: </para>
+    simple test, going to:</para>
 
     <programlisting><ulink
         url="http://localhost:8080/geoserver/wfs/GetCapabilities">http://localhost:8080/geoserver/wfs/GetCapabilities</ulink></programlisting>
 
-    <para> You should see an XML WFS Capabilities file. If you do not then go
+    <para>You should see an XML WFS Capabilities file. If you do not then go
     back and read your section again, as something went wrong. You can also go
     to:</para>
 
@@ -417,7 +419,7 @@ startup                 </programlisting>
     <para>and the web administration tool should load. You can start to play
     with it, it will be discussed in length in the next sections. Note that it
     takes a little while to load the first time, this is a one time only load,
-    after that it should start up right away. </para>
+    after that it should start up right away.</para>
 
     <para>You can also go to the demo section, from the main welcome page, or
     directly at:</para>
