@@ -15,8 +15,8 @@ package org.vfny.geoserver.global.xml;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: NameSpaceElement.java,v 1.4 2004/04/06 18:37:45 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: NameSpaceElement.java,v 1.5 2004/04/06 18:45:02 dmzwiers Exp $
  */
 public abstract class NameSpaceElement{
 	/** the namespace prefix to use for qualification*/
@@ -156,8 +156,5 @@ public abstract class NameSpaceElement{
 		return getQualifiedTypeDefName( prefix );
 	}
     
-    //@TODO dzwiers fix me
-    public boolean isAbstract() {
-    	return false;
-    }
+    public abstract boolean isAbstract();
 }

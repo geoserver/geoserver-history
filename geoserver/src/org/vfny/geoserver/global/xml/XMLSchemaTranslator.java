@@ -22,7 +22,7 @@ import java.util.Set;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLSchemaTranslator.java,v 1.2 2004/02/09 18:00:02 dmzwiers Exp $
+ * @version $Id: XMLSchemaTranslator.java,v 1.3 2004/04/06 18:45:02 dmzwiers Exp $
  */
 public class XMLSchemaTranslator extends NameSpaceTranslator {
 
@@ -122,6 +122,7 @@ class BooleanElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Boolean.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class DecimalElement extends NameSpaceElement{
@@ -145,6 +146,7 @@ class DecimalElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Double.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class IntegerElement extends NameSpaceElement{
@@ -168,6 +170,7 @@ class IntegerElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Integer.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NegativeIntegerElement extends NameSpaceElement{
@@ -191,6 +194,7 @@ class NegativeIntegerElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Integer.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NonNegativeIntegerElement extends NameSpaceElement{
@@ -214,6 +218,7 @@ class NonNegativeIntegerElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Integer.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class PositiveIntegerElement extends NameSpaceElement{
@@ -237,6 +242,7 @@ class PositiveIntegerElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Integer.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class LongElement extends NameSpaceElement{
@@ -260,6 +266,7 @@ class LongElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Long.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class IntElement extends NameSpaceElement{
@@ -283,6 +290,7 @@ class IntElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Integer.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class ShortElement extends NameSpaceElement{
@@ -306,6 +314,7 @@ class ShortElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Short.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class ByteElement extends NameSpaceElement{
@@ -329,6 +338,7 @@ class ByteElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Byte.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class UnsignedLongElement extends NameSpaceElement{
@@ -352,6 +362,7 @@ class UnsignedLongElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Long.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class UnsignedShortElement extends NameSpaceElement{
@@ -375,6 +386,7 @@ class UnsignedShortElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Short.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class UnsignedIntElement extends NameSpaceElement{
@@ -398,6 +410,7 @@ class UnsignedIntElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Integer.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class UnsignedByteElement extends NameSpaceElement{
@@ -421,6 +434,7 @@ class UnsignedByteElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Byte.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class FloatElement extends NameSpaceElement{
@@ -444,6 +458,7 @@ class FloatElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Float.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class DoubleElement extends NameSpaceElement{
@@ -467,6 +482,7 @@ class DoubleElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Double.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class DateElement extends NameSpaceElement{
@@ -490,6 +506,7 @@ class DateElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Date.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class DateTimeElement extends NameSpaceElement{
@@ -513,6 +530,7 @@ class DateTimeElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Date.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class DurationElement extends NameSpaceElement{
@@ -536,6 +554,7 @@ class DurationElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Long.class;}
+	public boolean isAbstract(){return false;}
 }
 
 
@@ -560,6 +579,7 @@ class GDayElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Date.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class GMonthElement extends NameSpaceElement{
@@ -583,6 +603,7 @@ class GMonthElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Date.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class GMonthDayElement extends NameSpaceElement{
@@ -606,6 +627,7 @@ class GMonthDayElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Date.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class GYearElement extends NameSpaceElement{
@@ -629,6 +651,7 @@ class GYearElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Date.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class GYearMonthElement extends NameSpaceElement{
@@ -652,6 +675,7 @@ class GYearMonthElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Date.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class TimeElement extends NameSpaceElement{
@@ -675,6 +699,7 @@ class TimeElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Date.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class IDElement extends NameSpaceElement{
@@ -698,6 +723,7 @@ class IDElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class IDREFElement extends NameSpaceElement{
@@ -721,6 +747,7 @@ class IDREFElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class IDREFSElement extends NameSpaceElement{
@@ -744,6 +771,7 @@ class IDREFSElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class ENTITYElement extends NameSpaceElement{
@@ -767,6 +795,7 @@ class ENTITYElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class ENTITIESElement extends NameSpaceElement{
@@ -790,6 +819,7 @@ class ENTITIESElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NMTOKENElement extends NameSpaceElement{
@@ -813,6 +843,7 @@ class NMTOKENElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NMTOKENSElement extends NameSpaceElement{
@@ -836,6 +867,7 @@ class NMTOKENSElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NOTATIONElement extends NameSpaceElement{
@@ -859,6 +891,7 @@ class NOTATIONElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class StringElement extends NameSpaceElement{
@@ -882,6 +915,7 @@ class StringElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return String.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NormalizedStringElement extends NameSpaceElement{
@@ -905,6 +939,7 @@ class NormalizedStringElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return String.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class TokenElement extends NameSpaceElement{
@@ -928,6 +963,7 @@ class TokenElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class QNameElement extends NameSpaceElement{
@@ -951,6 +987,7 @@ class QNameElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NameElement extends NameSpaceElement{
@@ -974,6 +1011,7 @@ class NameElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
 
 class NCNameElement extends NameSpaceElement{
@@ -997,4 +1035,5 @@ class NCNameElement extends NameSpaceElement{
 		return null;
 	}
 	public Class getJavaClass(){return Object.class;}
+	public boolean isAbstract(){return false;}
 }
