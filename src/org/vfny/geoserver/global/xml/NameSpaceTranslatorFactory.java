@@ -18,7 +18,7 @@ import java.util.Map;
  * @see NameSpaceTranslator
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceTranslatorFactory.java,v 1.1 2004/02/06 00:31:39 dmzwiers Exp $
+ * @version $Id: NameSpaceTranslatorFactory.java,v 1.2 2004/02/06 19:10:50 dmzwiers Exp $
  */
 public class NameSpaceTranslatorFactory {
 	
@@ -42,11 +42,12 @@ public class NameSpaceTranslatorFactory {
 		namespaceTranslators = new HashMap();
 		
 		//TODO replace null for these default namespaces.
-		namespaceTranslators.put("xmlSchema",null);
-		namespaceTranslators.put("gmlSchema",null);
+		namespaceTranslators.put("http://www.w3.org/2001/XMLSchema",XMLSchemaTranslator.class);
+		namespaceTranslators.put("http://www.opengis.net/gml",GMLSchemaTranslator.class);
 		
-		addNameSpaceTranslator("xs","xmlSchema");
-		addNameSpaceTranslator("gml","gmlSchema");
+		addNameSpaceTranslator("xs","http://www.w3.org/2001/XMLSchema");
+		addNameSpaceTranslator("xsd","http://www.w3.org/2001/XMLSchema");
+		addNameSpaceTranslator("gml","http://www.opengis.net/gml");
 	}
 	
 	/**
