@@ -21,7 +21,7 @@ import org.geotools.factory.*;
  * definition query configured for it.
  *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.4 2003/11/27 21:34:14 jive Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.5 2003/12/02 21:17:56 cholmesny Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
     /** DOCUMENT ME!  */
@@ -519,7 +519,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      *
      * @return DOCUMENT ME!
      */
-    public Envelope getBounds(Query query)
+    public Envelope getBounds(Query query) throws IOException
     {
       try {
         query = makeDefinitionQuery(query);
