@@ -259,6 +259,9 @@
        		name="config.data.type"
        		path="/config/data/featureType.do"/>
        	<forward
+       		name="config.data.type.new"
+       		path="/config/data/featureTypeNew.do"/>
+       	<forward
        		name="config.data.type.editor"
        		path="/config/data/featureTypeEditor.do"/>
        		
