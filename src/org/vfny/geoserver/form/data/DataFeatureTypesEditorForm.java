@@ -6,14 +6,22 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.Iterator;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.requests.Requests;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * @author rgould
@@ -26,47 +34,91 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 	private String name;
 	private String SRS;
 	private String title;
-	private String latlonBoundingBox;
+    private String bBox;
 	private String keywords;
 	private String _abstract;
 	
-	public void reset(ActionMapping arg0, HttpServletRequest request) {
-		super.reset(arg0, request);
-        System.out.println("SKAG RESET 0");
-
-		ServletContext context = getServlet().getServletContext();
-        System.out.println("SKAG RESET 1");
-		DataConfig config =
-			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
-        System.out.println("SKAG RESET 2");
-
-		System.out.println("0");
-        request.getSession();
-        System.out.println(request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE).getClass());
-        System.out.println("1");
+    /**
+     * Set up FeatureTypeEditor from from Web Container.
+     * <p>
+     * The key DataConfig.SELECTED_FEATURE_TYPE is used to look up the
+     * selected from the web container.
+     * </p>
+     * @param mapping
+     * @param request
+     */
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		super.reset( mapping, request);
         
-		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
-        System.out.println("2");
-        System.out.println(ftConfig);
+		ServletContext context = getServlet().getServletContext();
+        DataConfig config = ConfigRequests.getDataConfig(request);
+
+        
+		UserContainer user = Requests.getUserContainer(request);
+        
+		// Richard can we please use this to store stuff?
+        FeatureTypeConfig ftConfig; //= user.getFeatureTypeConfig();
+        
+        ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
         
 		_abstract = ftConfig.getAbstract();
-		latlonBoundingBox = ftConfig.getLatLongBBox().toString();
+        Envelope bounds = ftConfig.getLatLongBBox();
+        if( bounds.isNull()){
+            bBox = "";
+        }
+        else {
+            bBox =  bounds.getMinX()+" "+bounds.getMinY()+" "+
+                    bounds.getMaxX()+" "+bounds.getMaxY();
+        }		
 		name = ftConfig.getName();
 		SRS = Integer.toString(ftConfig.getSRS());
 		title = ftConfig.getTitle();
 		
-		String out = "";
-		for (int i = 0; i < ftConfig.getKeywords().size(); i++) {
-			out = out + ftConfig.getKeywords().get(i);// + System.getProperty("line.separator");
+        StringBuffer buf = new StringBuffer();
+        for( Iterator i=ftConfig.getKeywords().iterator(); i.hasNext();){
+            String keyword = (String) i.next();
+            buf.append( keyword );
+            if( i.hasNext() ){
+                buf.append( " " );    
+            }
 		}
-System.out.println("SKAGGGGG");
-		this.keywords = out;
+		this.keywords = buf.toString();
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
 		ActionErrors errors = new ActionErrors();
 		
-		return errors;
+		DataConfig data = ConfigRequests.getDataConfig(request);
+        
+		// check name exists in current DataStore?
+        
+        if( "".equals( bBox ) ){
+            errors.add( "latlongBoundingBox",
+                    new ActionError("Lat Long Bounding box required")
+            );
+        }
+        else {
+            String parse[] = bBox.trim().split("\\w");
+            if( parse.length != 4){
+                errors.add( "latlongBoundingBox",
+                    new ActionError("Invalid Lat Long Bounding required format: minx miny maxx maxy")
+                );
+            }
+            else {
+                try {
+                    double minX = Double.parseDouble( parse[0] );
+                    double minY = Double.parseDouble( parse[1] );
+                    double maxX = Double.parseDouble( parse[2] );
+                    double maxY = Double.parseDouble( parse[3] );
+                }
+                catch( NumberFormatException badNumber){
+                    errors.add( "latlongBoundingBox",
+                            new ActionError("Invliad Lat Long Bounding box", badNumber)
+                    );                    
+                }
+            }
+        }        
+        return errors;
 	}
 	/**
 	 * @return
@@ -86,7 +138,7 @@ System.out.println("SKAGGGGG");
 	 * @return
 	 */
 	public String getLatlonBoundingBox() {
-		return latlonBoundingBox;
+        return bBox;       
 	}
 
 	/**
@@ -127,8 +179,8 @@ System.out.println("SKAGGGGG");
 	/**
 	 * @param string
 	 */
-	public void setLatlonBoundingBox(String string) {
-		latlonBoundingBox = string;
+	public void setLatlonBoundingBox(String text) {
+        bBox = text;        
 	}
 
 	/**
