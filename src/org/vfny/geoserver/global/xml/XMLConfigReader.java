@@ -4,6 +4,26 @@
  */
 package org.vfny.geoserver.global.xml;
 
+import com.vividsolutions.jts.geom.Envelope;
+import org.apache.xml.serialize.LineSeparator;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.geotools.filter.FilterDOMParser;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.Log4JFormatter;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -24,28 +44,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.xml.serialize.LineSeparator;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.geotools.filter.FilterDOMParser;
-import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.Log4JFormatter;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
-import org.vfny.geoserver.global.dto.ServiceDTO;
-import org.vfny.geoserver.global.dto.StyleDTO;
-import org.vfny.geoserver.global.dto.WFSDTO;
-import org.vfny.geoserver.global.dto.WMSDTO;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import com.vividsolutions.jts.geom.Envelope;
-
 
 /**
  * XMLConfigReader purpose.
@@ -63,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.35 2004/04/03 13:10:49 cholmesny Exp $
+ * @version $Id: XMLConfigReader.java,v 1.36 2004/04/05 11:43:48 cholmesny Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -186,13 +184,13 @@ public class XMLConfigReader {
         Element configElem = null;
 
         try {
-        	FileReader fr = new FileReader(configFile);
+            FileReader fr = new FileReader(configFile);
             configElem = ReaderUtils.loadConfig(fr);
             fr.close();
         } catch (FileNotFoundException e) {
             throw new ConfigurationException(e);
         } catch (IOException e) {
-        	throw new ConfigurationException(e);
+            throw new ConfigurationException(e);
         }
 
         LOGGER.fine("parsing configuration documents");
@@ -242,13 +240,13 @@ public class XMLConfigReader {
         Element catalogElem = null;
 
         try {
-        	FileReader fr = new FileReader(catalogFile);
+            FileReader fr = new FileReader(catalogFile);
             catalogElem = ReaderUtils.loadConfig(fr);
             fr.close();
         } catch (FileNotFoundException e) {
             throw new ConfigurationException(e);
         } catch (IOException e) {
-        	throw new ConfigurationException(e);
+            throw new ConfigurationException(e);
         }
 
         LOGGER.info("loading catalog configuration");
@@ -391,24 +389,34 @@ public class XMLConfigReader {
 
         LOGGER.config("charSet is " + geoServer.getCharSet());
 
-        //geoServer.setBaseUrl(ReaderUtils.getChildText(globalElem, "URL", true));
+        //Schema base doesn't work - this root thing is wrong.  So for 1.2.0 I'm 
+        //just going to leave it out.  The GeoServer.getSchemaBaseUrl is never 
+        //called, Request.getSchemaBaseUrl is used, and it always returns the
+        //relative local one.  This field was a hack anyways, so I don't think
+        //anyone is going to miss it much - though I could be proved wrong. ch
         String schemaBaseUrl = ReaderUtils.getChildText(globalElem,
                 "SchemaBaseUrl");
 
         if (schemaBaseUrl != null) {
             geoServer.setSchemaBaseUrl(schemaBaseUrl);
         } else {
+            //This is wrong - need some key to tell the method to return based
+            //on the url passed in.
             geoServer.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
         }
-        
-        String adminUserName = ReaderUtils.getChildText(globalElem, "adminUserName");
-        if (adminUserName != null){
-        	geoServer.setAdminUserName(adminUserName);
+
+        String adminUserName = ReaderUtils.getChildText(globalElem,
+                "adminUserName");
+
+        if (adminUserName != null) {
+            geoServer.setAdminUserName(adminUserName);
         }
-        
-        String adminPassword = ReaderUtils.getChildText(globalElem, "adminPassword");
-        if (adminPassword != null){
-        	geoServer.setAdminPassword(adminPassword);
+
+        String adminPassword = ReaderUtils.getChildText(globalElem,
+                "adminPassword");
+
+        if (adminPassword != null) {
+            geoServer.setAdminPassword(adminPassword);
         }
     }
 
@@ -483,15 +491,45 @@ public class XMLConfigReader {
     protected void loadWFS(Element wfsElement) throws ConfigurationException {
         wfs = new WFSDTO();
 
-        try {
+        //try {
             wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(
                     ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
                     "value", false));
-            wfs.setServiceLevel(ReaderUtils.getIntAttribute(
-            		ReaderUtils.getChildElement(wfsElement, "serviceLevel"),
-					"value", false,WFSDTO.BASIC));
-        } catch (Exception e) {
-        }
+
+            String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
+                    "serviceLevel");
+            int serviceLevel = WFSDTO.COMPLETE;
+
+            if ((serviceLevelValue != null) && !serviceLevelValue.equals("")) {
+				LOGGER.finer("reading serviceLevel: " + serviceLevelValue);
+                if (serviceLevelValue.equalsIgnoreCase("basic")) {
+                    serviceLevel = WFSDTO.BASIC;
+                } else if (serviceLevelValue.equalsIgnoreCase("complete")) {
+                    serviceLevel = WFSDTO.COMPLETE;
+                } else if (serviceLevelValue.equalsIgnoreCase("transactional")) {
+                    serviceLevel = WFSDTO.TRANSACTIONAL;
+                } else {
+                    try {
+                        serviceLevel = Integer.parseInt(serviceLevelValue);
+                    } catch (NumberFormatException nfe) {
+                        String mesg = "Could not parse serviceLevel.  It "
+                            + "should be one of Basic, Complete, or Transactional"
+                            + " or else an integer value";
+                        throw new ConfigurationException(mesg, nfe);
+                    }
+                }
+            } else { //TODO: this should probably parse the strings as well,
+            	//but I'm really just leaving this in so as to not break 
+            	//people's current configs, it should be done the other way
+            	//as that's how 1.1 was. ch
+                serviceLevel = ReaderUtils.getIntAttribute(ReaderUtils
+                        .getChildElement(wfsElement, "serviceLevel"), "value",
+                        false, WFSDTO.COMPLETE);
+            }
+			LOGGER.finer("setting service level to " + serviceLevel);
+            wfs.setServiceLevel(serviceLevel);
+        //} catch (Exception e) {
+        //}
 
         ServiceDTO s = loadService(wfsElement);
         wfs.setService(s);
@@ -876,15 +914,14 @@ public class XMLConfigReader {
 
         Element featureElem = null;
 
-
         try {
-        	Reader reader = null;
-        	reader = new FileReader(infoFile);
+            Reader reader = null;
+            reader = new FileReader(infoFile);
             featureElem = ReaderUtils.loadConfig(reader);
             reader.close();
         } catch (FileNotFoundException fileNotFound) {
-        	throw new ConfigurationException("Could not read info file:"
-        			+ infoFile, fileNotFound);
+            throw new ConfigurationException("Could not read info file:"
+                + infoFile, fileNotFound);
         } catch (Exception erk) {
             throw new ConfigurationException("Could not parse info file:"
                 + infoFile, erk);
@@ -942,15 +979,17 @@ public class XMLConfigReader {
         ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
 
         String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
-        if(keywords!=null){
-        	List l = new LinkedList();
-        	String[] ss = keywords.split(",");
 
-        	for (int i = 0; i < ss.length; i++)
-            	l.add(ss[i].trim());
+        if (keywords != null) {
+            List l = new LinkedList();
+            String[] ss = keywords.split(",");
 
-        	ft.setKeywords(l);
+            for (int i = 0; i < ss.length; i++)
+                l.add(ss[i].trim());
+
+            ft.setKeywords(l);
         }
+
         ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
         ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
                     true)));
@@ -1115,27 +1154,34 @@ public class XMLConfigReader {
         schemaFile = ReaderUtils.checkFile(schemaFile, false);
 
         Element elem = null;
-        if(schemaFile == null || (!schemaFile.exists() || !schemaFile.canRead())){
-        	System.err.println("File does not exist for schema for "+dto.getName());
-        	return;
+
+        if ((schemaFile == null)
+                || (!schemaFile.exists() || !schemaFile.canRead())) {
+            System.err.println("File does not exist for schema for "
+                + dto.getName());
+
+            return;
         }
+
         try {
-        	Reader reader;
-        	reader = new FileReader(schemaFile);
+            Reader reader;
+            reader = new FileReader(schemaFile);
             elem = ReaderUtils.loadConfig(reader);
             reader.close();
         } catch (FileNotFoundException e) {
-        	LOGGER.log(Level.FINEST, e.getMessage(), e);
-        	throw new ConfigurationException("Could not open schema file:"
-        			+ schemaFile, e);
+            LOGGER.log(Level.FINEST, e.getMessage(), e);
+            throw new ConfigurationException("Could not open schema file:"
+                + schemaFile, e);
         } catch (Exception erk) {
             throw new ConfigurationException("Could not parse schema file:"
                 + schemaFile, erk);
         }
-        try{
-        	processSchema(elem, dto);
-        }catch(ConfigurationException e){
-        	throw new ConfigurationException("Error occured in "+schemaFile+"\n"+e.getMessage(),e);
+
+        try {
+            processSchema(elem, dto);
+        } catch (ConfigurationException e) {
+            throw new ConfigurationException("Error occured in " + schemaFile
+                + "\n" + e.getMessage(), e);
         }
     }
 
@@ -1160,8 +1206,11 @@ public class XMLConfigReader {
 
         elem = ReaderUtils.getChildElement(elem, "xs:complexContent");
         elem = ReaderUtils.getChildElement(elem, "xs:extension");
-        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
-        NameSpaceElement nse = gml.getElement(ReaderUtils.getAttribute(elem, "base",true));
+
+        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
+                                                            .getNameSpaceTranslator("gml");
+        NameSpaceElement nse = gml.getElement(ReaderUtils.getAttribute(elem,
+                    "base", true));
         featureTypeInfoDTO.setSchemaBase(nse.getTypeDefName());
         elem = ReaderUtils.getChildElement(elem, "xs:sequence");
 
@@ -1176,15 +1225,21 @@ public class XMLConfigReader {
             String ref = ReaderUtils.getAttribute(elem, "ref", false);
             String type = ReaderUtils.getAttribute(elem, "type", false);
 
-            NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
-            NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+            NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance()
+                                                                 .getNameSpaceTranslator("xs");
+            NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance()
+                                                                 .getNameSpaceTranslator("gml");
+
             if ((ref != null) && (ref != "")) {
                 ati.setComplex(false);
                 nse = nst1.getElement(ref);
-                if(nse == null)
-                	nse = nst2.getElement(ref);
-                
+
+                if (nse == null) {
+                    nse = nst2.getElement(ref);
+                }
+
                 String tmp = nse.getTypeRefName();
+
                 //tmp = Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
                 ati.setType(tmp);
                 ati.setName(tmp);
@@ -1192,13 +1247,14 @@ public class XMLConfigReader {
                 ati.setName(name);
 
                 if ((type != null) && (type != "")) {
+                    nse = nst1.getElement(type);
 
-                	nse = nst1.getElement(type);
-                	if(nse == null)
-                		nse = nst2.getElement(type);
-                	
-                	String tmp = nse.getTypeRefName();
-                	
+                    if (nse == null) {
+                        nse = nst2.getElement(type);
+                    }
+
+                    String tmp = nse.getTypeRefName();
+
                     ati.setType(tmp);
                     ati.setComplex(false);
                 } else {
