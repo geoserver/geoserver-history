@@ -16,7 +16,7 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3 2003/12/26 22:00:08 cholmesny Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -138,8 +138,8 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
     protected void handleFeatureType(FeatureTypeConfig ftype)
         throws SAXException {
         if (!ftype.isEnabled()) {
-            throw new IllegalArgumentException("FeatureType " + ftype + " is not "
-                + "enabled, check config.");
+            throw new IllegalArgumentException("FeatureType " + ftype
+                + " is not " + "enabled, check config.");
         }
 
         Envelope bbox = null;
@@ -152,7 +152,8 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         }
 
         handleConfig((BasicConfig) ftype);
-        indent();
+
+        //indent();
 
         /**
          * @task REVISIT: should getSRS() return the full URL?
