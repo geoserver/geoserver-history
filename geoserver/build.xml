@@ -21,6 +21,7 @@
   <property name="dir.server" value="${basedir}/server"/>
   <property name="dir.src" value="${basedir}/src"/>
   <property name="dir.test" value="${basedir}/test"/>
+  <property name="dir.conf" value="${basedir}/conf"/>
   <property name="dir.release" value="${basedir}/release"/>
 
   <!-- secondary directories -->
@@ -315,6 +316,13 @@
       </fileset>
     </copy>
 
+     <copy todir="${dir.server}/webapps/ROOT/data">
+      <fileset dir="${dir.conf}">
+        <include name="services.xml"/>
+        <include name="catalog.xml"/>
+      </fileset>
+    </copy>
+
     <!-- populate base directory -->
     <mkdir dir="${dir.server}/webapps/ROOT/data/capabilities"/>
     <copy todir="${dir.server}/webapps/ROOT/data/capabilities">
@@ -439,6 +447,13 @@
         <include name="geoserver.log"/>
         <include name="configuration.xml"/>
         <include name="z3950-geo.map"/>
+      </fileset>
+    </copy>
+
+     <copy todir="${basedir}/data" >
+      <fileset dir="${dir.conf}">
+        <include name="services.xml"/>
+        <include name="catalog.xml"/>
       </fileset>
     </copy>
 
