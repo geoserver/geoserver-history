@@ -12,6 +12,19 @@
 		<plugin>Null Zero</plugin>
 		<argument >
 			<name>attributeName</name>
+			<string>id</string>
+		</argument>
+		<argument >
+			<name>typeRef</name>
+			<string>*</string>
+		</argument>
+	</test>
+	<test>
+		<name>Attr Check</name>
+		<description>Attr Desc.</description>
+		<plugin>Null Zero</plugin>
+		<argument >
+			<name>attributeName</name>
 			<string>pointProperty</string>
 		</argument>
 		<argument >
