@@ -1,226 +1,265 @@
-/* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root 
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.responses;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.Logger;
-import java.sql.Connection;
 import com.vividsolutions.jts.geom.Geometry;
+import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceException;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.SchemaException;
-import org.geotools.data.DataSource;
-import org.geotools.data.DataSourceException;
+import org.vfny.geoserver.config.ConfigInfo;
+import org.vfny.geoserver.config.TypeInfo;
+import org.vfny.geoserver.config.TypeRepository;
 //import org.geotools.data.Query;
 import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.FeatureWithLockRequest;
 import org.vfny.geoserver.requests.LockRequest;
 import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.config.TypeInfo;
-import org.vfny.geoserver.config.TypeRepository;
-import org.vfny.geoserver.config.ConfigInfo;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.logging.Logger;
+
 
 /**
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.23 2003/08/06 23:56:39 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.24 2003/09/05 22:29:34 cholmesny Exp $
  */
 public class FeatureResponse {
-
     /** Standard logging instance for class */
-    private static final Logger LOG = 
-        Logger.getLogger("org.vfny.geoserver.responses");
-    
-    /** Constructor, which is required to take a request object. */ 
-    private FeatureResponse () {}
+    private static final Logger LOG = Logger.getLogger(
+            "org.vfny.geoserver.responses");
+
+    /**
+     * Constructor, which is required to take a request object.
+     */
+    private FeatureResponse() {
+    }
 
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
+     *
+     * @param request DOCUMENT ME!
+     *
      * @return XML response to send to client
-     */ 
-    public static String getXmlResponse(FeatureRequest request) 
+     *
+     * @throws WfsException DOCUMENT ME!
+     */
+    public static String getXmlResponse(FeatureRequest request)
         throws WfsException {
-	LOG.finest("get xml response called request is: " + request);
-	String outputFormat = request.getOutputFormat();
+        LOG.finest("get xml response called request is: " + request);
+
+        String outputFormat = request.getOutputFormat();
+
         if (!outputFormat.equalsIgnoreCase("GML2")) {
-	    throw new WfsException("output format: " + outputFormat + " not " +
-				   "supported by geoserver");
-	}
-	String lockId = null;
+            throw new WfsException("output format: " + outputFormat + " not "
+                + "supported by geoserver");
+        }
+
+        String lockId = null;
+
         //REVISIT: this could probably be done more efficiently, with maybe
-	//just one run through, and may need to be with the next spec version
-	//but this should work for now, do locking, and then do getting.
-	if (request instanceof FeatureWithLockRequest) {
-	    LockRequest lock = ((FeatureWithLockRequest)request).asLockRequest();
-	    lockId = LockResponse.performLock(lock, false);
-	}
+        //just one run through, and may need to be with the next spec version
+        //but this should work for now, do locking, and then do getting.
+        if (request instanceof FeatureWithLockRequest) {
+            LockRequest lock = ((FeatureWithLockRequest) request).asLockRequest();
+            lockId = LockResponse.performLock(lock, false);
+        }
 
-	TypeRepository repository = TypeRepository.getInstance();
-	ConfigInfo configInfo = ConfigInfo.getInstance();
-        StringBuffer result = new StringBuffer();
-	int maxFeatures = request.getMaxFeatures();
+        TypeRepository repository = TypeRepository.getInstance();
+        ConfigInfo configInfo = ConfigInfo.getInstance();
+        int maxFeatures = request.getMaxFeatures();
 
-	GMLBuilder gml = new GMLBuilder(configInfo.formatOutput());
+        GMLBuilder gml = new GMLBuilder(configInfo.formatOutput());
         Set featureTypes = new HashSet();
-	for(int i = 0, n = request.getQueryCount(); i < n && maxFeatures > 0; i++) {            
-	    Query curQuery = request.getQuery(i);
-	    TypeInfo meta = repository.getType(curQuery.getTypeName());
-	    if (meta == null) {
-		throw new WfsException("Could not find Feature Type named: " +
-				       curQuery.getTypeName() + ", feature information"
-				       + " is not in the data folder.", 
-				       getLocator(curQuery));
-	    }
-	    String srid = meta.getSrs();
-	    String typeName = meta.getFullName();
-	    if (i == 0){ //HACK: different srids can go in same collection.
-		gml.startFeatureCollection(srid, meta, lockId);
-		featureTypes.add(typeName);
-	    } else {
-		//HACK: Yet another hack.  I hereby nominate GMLBuilder as
-		//the most hacked class ever.  We need the geotools gml
-		//writer, along with typed featureCollections.  Right now
-		//this just adds the typename to the xmlns describe schema
-		//call.  Does not handle prefixes, or correct srid handling.
-		if (!featureTypes.contains(typeName)){
-		    gml.addFeatureType(typeName);
-		    featureTypes.add(typeName);
-		}
-	    }
-	    Feature[] curFeatures = getQuery(curQuery, meta, maxFeatures);
-	    maxFeatures = maxFeatures - curFeatures.length;
-	    addFeatures(curFeatures, gml, meta);
-            LOG.finest("ended feature");
-        }        
-	gml.endFeatureCollection();
 
-	LOG.finest("GML is: " + gml.getGML());
-	
+        for (int i = 0, n = request.getQueryCount();
+                (i < n) && (maxFeatures > 0); i++) {
+            Query curQuery = request.getQuery(i);
+            TypeInfo meta = repository.getType(curQuery.getTypeName());
+
+            if (meta == null) {
+                throw new WfsException("Could not find Feature Type named: "
+                    + curQuery.getTypeName() + ", feature information"
+                    + " is not in the data folder.", getLocator(curQuery));
+            }
+
+            String srid = meta.getSrs();
+            String typeName = meta.getFullName();
+
+            if (i == 0) { //HACK: different srids can go in same collection.
+                gml.startFeatureCollection(srid, meta, lockId);
+                featureTypes.add(typeName);
+            } else {
+                //HACK: Yet another hack.  I hereby nominate GMLBuilder as
+                //the most hacked class ever.  We need the geotools gml
+                //writer, along with typed featureCollections.  Right now
+                //this just adds the typename to the xmlns describe schema
+                //call.  Does not handle prefixes, or correct srid handling.
+                if (!featureTypes.contains(typeName)) {
+                    gml.addFeatureType(typeName);
+                    featureTypes.add(typeName);
+                }
+            }
+
+            Feature[] curFeatures = getQuery(curQuery, meta, maxFeatures);
+            maxFeatures = maxFeatures - curFeatures.length;
+            addFeatures(curFeatures, gml, meta);
+            LOG.finest("ended feature");
+        }
+
+        gml.endFeatureCollection();
+
+        LOG.finest("GML is: " + gml.getGML());
+
         // return final string
-        return gml.getGML();//result.toString();
+        return gml.getGML(); //result.toString();
     }
 
-
     /**
-     * Adds an array of features to the gml to be returned.  All should
-     * be of the same featureType (same schemas).
+     * Adds an array of features to the gml to be returned.  All should be of
+     * the same featureType (same schemas).
      *
      * @param features the features to add.
      * @param gml the object building the GML to return.
      * @param meta contains information about the features.
-     * @tasks TODO: check to make sure schemas of each feature match.
+     *
+     * @task TODO: check to make sure schemas of each feature match.
      */
-    private static void addFeatures(Feature[] features, GMLBuilder gml, TypeInfo meta){
-	if (features.length > 0) {
-	FeatureType schema = features[0].getFeatureType();
-	String typeName = meta.getName();
-        AttributeType[] attributeTypes = schema.getAttributeTypes();
-        Object[] attributes = new Object[attributeTypes.length];
-		
-        LOG.finest("about to create gml");
-        //LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
-	gml.initializeFeatureType(typeName);
-        for(int i = 0, m = features.length; i < m; i++) {
-	    String fid = features[i].getID();
-            LOG.finest("fid: " + fid);
-            gml.startFeature(fid);
-            attributes = features[i].getAttributes(attributes);
-            LOG.finer("feature: " + features[i].toString());
-            LOG.finest("att total: " + schema.getAttributeCount());
-            for(int j = 0, n = schema.getAttributeCount(); j < n; j++) {
-                //LOG.finest("sent attribute: " + attributes[j].toString());
-		//TODO: use attributeType.isGeometry() - get working with
-		//multiple geometries (in GMLBuilder).
-		LOG.finest("att name: " + attributeTypes[j].getName());
-		if (attributeTypes[j].isGeometry()) {
-		    Object curAtt = attributes[j];
-		    if (curAtt == null) {
-			gml.addAttribute(attributeTypes[j].getName(), "");
-		    } else {
-			gml.initializeGeometry(attributes[j].getClass(), 
-					   typeName, 
-					   meta.getSrs(),  
-					   attributeTypes[j].
-					   getName());
-			gml.addGeometry((Geometry) attributes[j], 
-					fid + "." + attributeTypes[j].getName());
-		    }
-	    //LOG.finest("added geometry: " + ((Geometry) attributes[j]).toString());
-		} else {
-		    String attrString;
-		    if (attributes[j] == null) {
-			LOG.finest ("null feature");
-			attrString = "";
-		    } else {
-			attrString = attributes[j].toString();
-		    }
-		    LOG.finest("attribute is " + attrString);
-		    gml.addAttribute(attributeTypes[j].getName(), 
-				 attrString);
-		}
-	    }
-            
-            
-            gml.endFeature();
-	}
-	}
+    private static void addFeatures(Feature[] features, GMLBuilder gml,
+        TypeInfo meta) {
+        if (features.length > 0) {
+            FeatureType schema = features[0].getFeatureType();
+            String typeName = meta.getName();
+            AttributeType[] attributeTypes = schema.getAttributeTypes();
+            Object[] attributes = new Object[attributeTypes.length];
+
+            LOG.finest("about to create gml");
+
+            //LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
+            gml.initializeFeatureType(typeName);
+
+            for (int i = 0, m = features.length; i < m; i++) {
+                String fid = features[i].getID();
+                LOG.finest("fid: " + fid);
+                gml.startFeature(fid);
+                attributes = features[i].getAttributes(attributes);
+                LOG.finer("feature: " + features[i].toString());
+                LOG.finest("att total: " + schema.getAttributeCount());
+
+                for (int j = 0, n = schema.getAttributeCount(); j < n; j++) {
+                    //LOG.finest("sent attribute: " + attributes[j].toString());
+                    //TODO: use attributeType.isGeometry() - get working with
+                    //multiple geometries (in GMLBuilder).
+                    LOG.finest("att name: " + attributeTypes[j].getName());
+
+                    if (attributeTypes[j].isGeometry()) {
+                        Object curAtt = attributes[j];
+
+                        if (curAtt == null) {
+                            gml.addAttribute(attributeTypes[j].getName(), "");
+                        } else {
+                            gml.initializeGeometry(attributes[j].getClass(),
+                                meta.getSrs(), attributeTypes[j].getName());
+                            gml.addGeometry((Geometry) attributes[j],
+                                fid + "." + attributeTypes[j].getName());
+                        }
+
+                        //LOG.finest("added geometry: " + ((Geometry) attributes[j]).toString());
+                    } else {
+                        String attrString;
+
+                        if (attributes[j] == null) {
+                            LOG.finest("null feature");
+                            attrString = "";
+                        } else {
+                            attrString = attributes[j].toString();
+                        }
+
+                        LOG.finest("attribute is " + attrString);
+                        gml.addAttribute(attributeTypes[j].getName(), attrString);
+                    }
+                }
+
+                gml.endFeature();
+            }
+        }
     }
 
     /**
-     * Convenience method to get the handle information
-     * from a query, if it exists.
+     * Convenience method to get the handle information from a query, if it
+     * exists.
+     *
      * @param query the query to get the handle from.
+     *
+     * @return DOCUMENT ME!
      */
-    private static String getLocator(Query query){
-	String locator = query.getHandle();
-	if (locator == null  || locator.equals("")) {
-	    locator = "Class FeatureResponse, in method getQuery";
-	}
-	return locator;
+    private static String getLocator(Query query) {
+        String locator = query.getHandle();
+
+        if ((locator == null) || locator.equals("")) {
+            locator = "Class FeatureResponse, in method getQuery";
+        }
+
+        return locator;
     }
 
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
+     *
+     * @param query DOCUMENT ME!
+     * @param meta DOCUMENT ME!
+     * @param maxFeatures DOCUMENT ME!
+     *
      * @return XML response to send to client
-     */ 
-    private static Feature[] getQuery(Query query, TypeInfo meta, 
-				   int maxFeatures) throws WfsException {
-        
-	LOG.finest("about to get query: " + query);
-	List propertyNames = null;
-	if (!query.allRequested()) {
-	    propertyNames = query.getPropertyNames();
-	}
-	FeatureCollection collection = null;
-	try {
-	DataSource data = meta.getDataSource();
-	LOG.finest("filter is " + query.getFilter());
-	if (!query.allRequested()) {
-	    String[] mandatoryProps = meta.getMandatoryProps();
-	    for (int i = 0; i < mandatoryProps.length; i++) {
-		query.addPropertyName(mandatoryProps[i]);
-	    }
-	}
-	//query.addPropertyName("mandatoryString");
-	org.geotools.data.Query dsQuery = 
-	    query.getDataSourceQuery(data.getSchema(), maxFeatures);
-	collection = data.getFeatures(dsQuery);
-	} catch(DataSourceException e) {
-	    throw new WfsException(e, "While getting features from datasource",
-				 getLocator(query));
-	} 	
+     *
+     * @throws WfsException DOCUMENT ME!
+     */
+    private static Feature[] getQuery(Query query, TypeInfo meta,
+        int maxFeatures) throws WfsException {
+        LOG.finest("about to get query: " + query);
+
+        List propertyNames = null;
+
+        if (!query.allRequested()) {
+            propertyNames = query.getPropertyNames();
+        }
+
+        FeatureCollection collection = null;
+
+        try {
+            DataSource data = meta.getDataSource();
+            LOG.finest("filter is " + query.getFilter());
+
+            if (!query.allRequested()) {
+                String[] mandatoryProps = meta.getMandatoryProps();
+
+                for (int i = 0; i < mandatoryProps.length; i++) {
+                    query.addPropertyName(mandatoryProps[i]);
+                }
+            }
+
+            //query.addPropertyName("mandatoryString");
+            org.geotools.data.Query dsQuery = query.getDataSourceQuery(data
+                    .getSchema(), maxFeatures);
+            collection = data.getFeatures(dsQuery);
+        } catch (DataSourceException e) {
+            throw new WfsException(e, "While getting features from datasource",
+                getLocator(query));
+        }
+
         LOG.finest("successfully retrieved collection");
-	//TODO: no more Feature [], just use collections.
-        Feature[] features = (Feature [])collection.toArray(new Feature[0]);
-	return features;
+
+        //TODO: no more Feature [], just use collections.
+        Feature[] features = (Feature[]) collection.toArray(new Feature[0]);
+
+        return features;
     }
-    
 }
