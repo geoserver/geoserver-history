@@ -47,8 +47,16 @@
     		type="org.vfny.geoserver.form.data.DataDataStoresEditorForm"/>
     		
     	<form-bean
-    		name="dataNamespacesForm"
-    		type="org.vfny.geoserver.form.data.DataNamespacesForm"/>
+    		name="dataNamespacesSelectForm"
+    		type="org.vfny.geoserver.form.data.DataNamespacesSelectForm"/>
+    	<form-bean
+    		name="dataNamespacesNewForm"
+    		type="org.vfny.geoserver.form.data.DataNamespacesNewForm"/>
+    	<form-bean
+    		name="dataNamespacesEditorForm"
+    		type="org.vfny.geoserver.form.data.DataNamespacesEditorForm"/>
+    	
+    		
 
     	<form-bean
     		name="dataStylesForm"
@@ -177,9 +185,22 @@
        	<forward
        		name="dataConfigDataStoresEditor"
        		path="/DataConfigDataStoresEditor.do"/>
+       		
+       		
        	<forward
        		name="dataConfigNamespaces"
-       		path="/DataConfigNamespaces.do"/>
+       		path="/DataConfigNamespacesSelectPage.do"/>
+       	<forward
+       		name="dataConfigNamespacesSelect"
+       		path="/DataConfigNamespacesSelectPage.do"/>
+       	<forward
+       		name="dataConfigNamespacesEditorPage"
+       		path="/DataConfigNamespacesEditorPage.do"/>
+       	<forward
+       		name="dataConfigNamespacesNewPage"
+       		path="/DataConfigNamespacesNewPage.do"/>
+      		
+       		
        	<forward
        		name="dataConfigStyles"
        		path="/DataConfigStyles.do"/>
@@ -203,7 +224,7 @@
             parameter="main.welcome"/>
 
         <action
-            path="/ContactInformation"
+            path="/Contact"
             type="org.apache.struts.actions.ForwardAction"
             parameter="main.contact"/>
                         
@@ -273,10 +294,25 @@
         	path="/DataConfigDataStoresEditor"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="data.dataStores.editor"/>        	
+        	
+        	
         <action
         	path="/DataConfigNamespaces"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.namespaces"/>
+        	parameter="data.namespaces.select"/>
+        <action
+        	path="/DataConfigNamespacesSelectPage"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.namespaces.select"/>
+        <action
+        	path="/DataConfigNamespacesNewPage"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.namespaces.new"/> 
+        <action
+        	path="/DataConfigNamespacesEditorPage"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.namespaces.editor"/>        	        	
+        	
         <action
         	path="/DataConfigStyles"
         	type="org.apache.struts.actions.ForwardAction"
@@ -374,12 +410,28 @@
         	input="data.dataStores.new"/>        	
         	        	
         <action
-        	path="/DataConfigNamespacesSubmit"
-        	type="org.vfny.geoserver.action.data.DataNamespacesAction"
-        	name="dataNamespacesForm"
+        	path="/DataConfigNamespacesSelect"
+        	type="org.vfny.geoserver.action.data.DataNamespacesSelectAction"
+        	name="dataNamespacesSelectForm"
         	scope="request"
         	validate="true"
-        	input="data.namespaces"/>
+        	input="data.namespaces.select"/>
+        <action
+        	path="/DataConfigNamespacesNew"
+        	type="org.vfny.geoserver.action.data.DataNamespacesNewAction"
+        	name="dataNamespacesNewForm"
+        	scope="request"
+        	validate="true"
+        	input="data.namespaces.new"/>
+        <action
+        	path="/DataConfigNamespacesSubmit"
+        	type="org.vfny.geoserver.action.data.DataNamespacesEditorAction"
+        	name="dataNamespacesEditorForm"
+        	scope="request"
+        	validate="true"
+        	input="data.namespaces.editor"/>
+        	
+        	
         <action
         	path="/DataConfigStylesSubmit"
         	type="org.vfny.geoserver.action.data.DataStylesAction"

@@ -150,8 +150,23 @@
    		<put name="layer" value="data"/>   				   		
    	</definition>   	
    	
-   	<definition name="data.namespaces" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/data/DataConfigNamespaces.jsp"/>
+   	<definition name="data.namespaces.select" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/data/namespaces/Select.jsp"/>
+		<put name="title" value="title.data.namespaces"/>
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
+   		<put name="layer" value="data"/>   						
+   	</definition>   	
+
+   	<definition name="data.namespaces.new" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/data/namespaces/New.jsp"/>
+		<put name="title" value="title.data.namespaces"/>
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
+   		<put name="layer" value="data"/>   						
+   	</definition>   	
+   	
+   	
+   	<definition name="data.namespaces.editor" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/data/namespaces/Editor.jsp"/>
 		<put name="title" value="title.data.namespaces"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   						
