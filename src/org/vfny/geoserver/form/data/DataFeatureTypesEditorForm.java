@@ -6,8 +6,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.TreeSet;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,26 +29,15 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 	private String latlonBoundingBox;
 	private String keywords;
 	private String _abstract;
-
-	private TreeSet featureTypes;
-	
-	private String action;	
 	
 	public void reset(ActionMapping arg0, HttpServletRequest request) {
 		super.reset(arg0, request);
 
-		action="";
-		
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-		featureTypes = new TreeSet( config.getFeaturesTypes().keySet());
-				
-		FeatureTypeConfig ftConfig;
-		
-	
-		ftConfig = config.getFeatureTypeConfig((String) request.getSession().getAttribute("selectedFeatureType"));		
+		FeatureTypeConfig ftConfig = config.getFeatureTypeConfig((String) request.getSession().getAttribute("selectedFeatureType"));		
 		
 		_abstract = ftConfig.getAbstract();
 		latlonBoundingBox = ftConfig.getLatLongBBox().toString();
@@ -153,28 +140,6 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 	 */
 	public void setTitle(String string) {
 		title = string;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getAction() {
-		return action;
-	}
-
-
-	/**
-	 * @param string
-	 */
-	public void setAction(String string) {
-		action = string;
-	}
-
-	/**
-	 * @return
-	 */
-	public TreeSet getFeatureTypes() {
-		return featureTypes;
 	}
 
 }

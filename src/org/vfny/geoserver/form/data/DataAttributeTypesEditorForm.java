@@ -6,12 +6,15 @@
  */
 package org.vfny.geoserver.form.data;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 /**
  * @author User
  *
@@ -33,8 +36,25 @@ public class DataAttributeTypesEditorForm extends ActionForm {
 		super.reset(arg0, request);
 		
 		String selectedAttributeType = (String) request.getSession().getAttribute("selectedAttributeType");
+		String selectedFeatureType = (String)request.getSession().getAttribute("selectedFeatureType");
 		
-		AttributeTypeInfoConfig config = null;
+		ServletContext context = getServlet().getServletContext();
+		DataConfig dataConfig = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+		FeatureTypeConfig ftConfig = dataConfig.getFeatureTypeConfig(selectedFeatureType);
+		AttributeTypeInfoConfig config = ftConfig.getAttributeFromSchema(selectedAttributeType);
+		
+		nillible = config.isNillable();
+		minOccurs = Integer.toString(config.getMinOccurs());
+		maxOccurs = Integer.toString(config.getMaxOccurs());
+		name = config.getName();
+		selectedType = config.getType();
+		fragment = config.getFragment();
+		
+		if (selectedType.equals(AttributeTypeInfoConfig.TYPE_FRAGMENT)) {
+			ref = false;
+		} else {
+			ref = true;
+		}
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {

@@ -10,8 +10,8 @@
 	<tr><td>
 		<bean:message key="label.featureTypes"/>:
 	</td><td>
-		<html:select property="selectedFeatureType">
-			<html:options property="featureTypes"/>
+		<html:select property="selectedFeatureTypeName">
+			<html:options name="Config.Data" property="featureTypeKeySet"/>
 		</html:select>
 		
 	</td></tr>
