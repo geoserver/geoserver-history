@@ -47,7 +47,12 @@ public class DescribeResponse {
      * @param wfsRequest The DescribeFeatureType reqeuset object.
      */      
     public DescribeResponse(DescribeRequest wfsRequest) throws WfsException {
-        
+	LOGGER.finer("processing describe request" + wfsRequest);
+	String outputFormat = wfsRequest.getOutputFormat();
+        if (!outputFormat.equalsIgnoreCase("XMLSCHEMA")) {
+	    throw new WfsException("output format: " + outputFormat + " not " +
+				   "supported by geoserver");
+	}
         // generates response, using general function 
         xmlResponse  = generateTypes( wfsRequest );
     }
