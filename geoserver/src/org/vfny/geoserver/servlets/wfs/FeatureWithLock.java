@@ -6,8 +6,8 @@ package org.vfny.geoserver.servlets.wfs;
 
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.readers.wfs.LockKvpReader;
-import org.vfny.geoserver.requests.readers.wfs.LockXmlReader;
+import org.vfny.geoserver.requests.readers.wfs.GetFeatureKvpReader;
+import org.vfny.geoserver.requests.readers.wfs.GetFeatureXmlReader;
 import org.vfny.geoserver.responses.*;
 import org.vfny.geoserver.responses.wfs.*;
 import org.vfny.geoserver.servlets.*;
@@ -20,27 +20,31 @@ import java.util.*;
  * getFeatureWithLock request and returns GML2.1 structured XML docs.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureWithLock.java,v 1.1.2.1 2003/11/04 23:31:11 cholmesny Exp $
+ * @version $Id: FeatureWithLock.java,v 1.1.2.2 2003/11/17 23:45:39 cholmesny Exp $
  */
 public class FeatureWithLock extends WFService {
     /**
-     * DOCUMENT ME!
+     * Gets the response handler.  FeatureResponse handles GetFeatureWithLock.
      *
-     * @return DOCUMENT ME!
+     * @return A new FeatureResponse object.
      */
     protected Response getResponseHandler() {
-        return new LockResponse();
+        return new FeatureResponse();
     }
 
     /**
-     * DOCUMENT ME!
+     * Gets a FeatureKvpReader guaranteed to have a GETFEAUTREWITHLOCK request.
      *
-     * @param params DOCUMENT ME!
+     * @param params the kvp pairs to turn into the request object.
      *
-     * @return DOCUMENT ME!
+     * @return The kvp request reader.
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new LockKvpReader(params);
+        //if it comes through this servlet then it should be a featurewithlock,
+        //add it on if the client forgot it.
+        params.put("REQUEST", "GETFEATUREWITHLOCK");
+
+        return new GetFeatureKvpReader(params);
     }
 
     /**
@@ -49,6 +53,6 @@ public class FeatureWithLock extends WFService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new LockXmlReader();
+        return new GetFeatureXmlReader();
     }
 }
