@@ -1,0 +1,136 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
+package org.vfny.geoserver.responses.wms;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.wms.DescribeLayerRequest;
+import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.responses.wms.helpers.DescribeLayerTransformer;
+
+
+/**
+ * Executes a <code>DescribeLayer</code> WMS request.
+ * 
+ * <p>
+ * Recieves a <code>DescribeLayerRequest</code> object holding the references to
+ * the requested layers and utilizes a transformer based on the org.geotools.xml.transform
+ * framework to encode the response. 
+ * </p>
+ *
+ * @author Gabriel Roldan, Axios Engineering
+ * @version $Id$
+ */
+public class DescribeLayerResponse implements Response {
+    /** DOCUMENT ME! */
+    private static final Logger LOGGER = Logger.getLogger(DescribeLayerResponse.class.getPackage()
+                                                                                     .getName());
+
+    /** the request holding the required FeatureTypeInfo's */
+    private DescribeLayerRequest request;
+
+    /** the transformer wich takes care of xmlencoding the
+     * DescribeLayer response
+     */
+    private DescribeLayerTransformer transformer;
+
+    /** the raw XML content ready to be sent to the client */
+    private byte[] content;
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param request DOCUMENT ME!
+     *
+     * @throws ServiceException DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
+     */
+    public void execute(Request request) throws ServiceException {
+        this.request = (DescribeLayerRequest) request;
+
+        LOGGER.fine("executing request " + request);
+
+        this.transformer = new DescribeLayerTransformer(this.request
+                .getSchemaBaseUrl());
+        this.transformer.setNamespaceDeclarationEnabled(false);
+        this.transformer.setEncoding(this.request.getGeoServer().getCharSet());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            transformer.transform(this.request, out);
+        } catch (TransformerException e) {
+            throw new WmsException(e);
+        }
+
+        this.content = out.toByteArray();
+    }
+
+    /**
+     * Writes this respone to the provided output stream.
+     *
+     * @param out DOCUMENT ME!
+     *
+     * @throws ServiceException never.
+     * @throws IOException if it is thrown while writing the response content
+     *         to <code>out</code>.
+     * @throws IllegalStateException if <code>execute()</code> has not been
+     *         called or  does not succeed (i.e.: <code>this.content ==
+     *         null</code>).
+     */
+    public void writeTo(OutputStream out) throws ServiceException, IOException {
+        if (this.content == null) {
+            throw new IllegalStateException(
+                "execute() has not been called or does not succeed.");
+        }
+
+        out.write(this.content);
+    }
+
+    /**
+     * Do nothing, since <code>execute()</code> took care of obtaining the
+     * response, and after that nothing remains to be done but sending the
+     * response content to the client.
+     *
+     * @param gs
+     */
+    public void abort(Service gs) {
+    }
+
+    /**
+     * Returns the fixed <code>"application/vnd.ogc.wms_xml"</code> MIME type
+     * of this response, as specified in SLD 1.0 spec, section 6.7.
+     *
+     * @param gs the geoserver instance config. Not used here.
+     *
+     * @return <code>"application/vnd.ogc.wms_xml"</code> as the response MIME
+     *         type
+     *
+     * @throws IllegalStateException DOCUMENT ME!
+     */
+    public String getContentType(GeoServer gs) throws IllegalStateException {
+        return "application/vnd.ogc.wms_xml";
+    }
+
+    /**
+     * Returns <code>null</code> since no special encoding is applyed to the
+     * response content.
+     *
+     * @return <code>null</code>
+     */
+    public String getContentEncoding() {
+        return null;
+    }
+}

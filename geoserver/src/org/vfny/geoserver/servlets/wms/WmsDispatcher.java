@@ -128,6 +128,10 @@ public class WmsDispatcher extends Dispatcher {
 
             break;   
 
+        case DESCRIBE_LAYER_REQUEST:
+            dispatched = new DescribeLayer();
+
+            break;   
         default:
             dispatched = null;
         }

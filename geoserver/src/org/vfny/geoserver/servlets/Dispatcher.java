@@ -68,6 +68,10 @@ public class Dispatcher extends HttpServlet {
 
     /** Map get capabilities request type */
     public static final int GET_MAP_REQUEST = 7;
+    
+    /** WMS DescribeLayer request type */
+    public static final int DESCRIBE_LAYER_REQUEST = 8;
+    
     public static final short WMS_SERVICE = 101;
     public static final short WFS_SERVICE = 102;
 
