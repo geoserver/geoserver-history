@@ -1,7 +1,7 @@
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 
-<html:form action="/admin/loginEditSubmit">
+<html:form action="/admin/loginSubmit">
   <table class="info">
     <tbody>
       <tr>
