@@ -36,7 +36,7 @@ public class Describe
         Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Stores global MIME type */
-    private static final String MIME_TYPE = "text/xml";
+    private static final String MIME_TYPE = "text/xml; charset=UTF-8";
 
     /**
      * Handles XML request objects and returns appropriate response.

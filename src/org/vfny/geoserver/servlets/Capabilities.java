@@ -32,7 +32,7 @@ public class Capabilities
         Logger.getLogger("org.vfny.geoserver.servlets");
     
     /** Specifies mime type */
-    private static final String MIME_TYPE = "text/xml";
+    private static final String MIME_TYPE = "text/xml; charset=UTF-8";
     
     
     /**
@@ -62,6 +62,7 @@ public class Capabilities
         
         // set content type and return response, whatever it is 
         response.setContentType(MIME_TYPE);
+	LOGGER.finest("response encoding is " + response.getCharacterEncoding());
         response.getWriter().write(tempResponse);
     }
     
@@ -91,9 +92,10 @@ public class Capabilities
         catch (WfsException wfs) {
             tempResponse = wfs.getXmlResponse();
         }
-        
+        LOGGER.finer("response is " + tempResponse);
         // set content type and return response, whatever it is 
         response.setContentType(MIME_TYPE);
+	LOGGER.finer("response encoding is " + response.getCharacterEncoding());
         response.getWriter().write(tempResponse);        
     }
 }
