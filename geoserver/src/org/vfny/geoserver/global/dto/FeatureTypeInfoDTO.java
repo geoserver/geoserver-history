@@ -36,7 +36,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.5 2004/01/19 18:31:30 emperorkefka Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.6 2004/01/20 00:30:44 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -123,7 +123,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         dataStoreId = dto.getDataStoreId();
         latLongBBox = CloneLibrary.clone(dto.getLatLongBBox());
         SRS = dto.getSRS();
-        schema = dto.getSchema();
+        schema = dto.getSchemaAttributes();
         name = dto.getName();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
@@ -185,8 +185,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (SRS == f.getSRS());
 
         if (schema != null) {
-            r = r && schema.equals(f.getSchema());
-        } else if (f.getSchema() != null) {
+            r = r && schema.equals(f.getSchemaAttributes());
+        } else if (f.getSchemaAttributes() != null) {
             return false;
         }
 
@@ -535,7 +535,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      *
      * @return An ordered list of AttributeTypeInfoDTOs
      */
-    public List getSchema() {
+    public List getSchemaAttributes() {
         return schema;
     }
 
@@ -548,7 +548,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      *
      * @param schemaElements An ordered list of AttributeTypeInfoDTOs
      */
-    public void setSchema(List schemaElements) {
+    public void setSchemaAttributes(List schemaElements) {
         this.schema = schemaElements;
     }
 

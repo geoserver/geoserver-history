@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.15 2004/01/18 01:08:13 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.16 2004/01/20 00:30:44 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -256,7 +256,7 @@ e.printStackTrace();
         	String typeName = ftc.getName();
         	FeatureSource realSource = dataStore.getFeatureSource(typeName);
         	
-        	if( (ftc.getSchema() == null || ftc.getSchema().isEmpty())){// && 
+        	if( (ftc.getSchemaAttributes() == null || ftc.getSchemaAttributes().isEmpty())){// && 
         			//(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
         		fs = realSource;
         	}
@@ -272,14 +272,14 @@ e.printStackTrace();
     }
     
     public static FeatureSource reTypeSource( FeatureSource source, FeatureTypeInfoDTO ftc ) throws SchemaException {
-    	AttributeType attributes[] = new AttributeType[ ftc.getSchema().size() ];
+    	AttributeType attributes[] = new AttributeType[ ftc.getSchemaAttributes().size() ];
     	
-    	List attributeDefinitions = ftc.getSchema();
+    	List attributeDefinitions = ftc.getSchemaAttributes();
     	int index=0;
     	FeatureType ft = source.getSchema();
     	
     	for(int i = 0;i<attributes.length;i++){
-    		AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO)ftc.getSchema().get( i ); 
+    		AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO)ftc.getSchemaAttributes().get( i ); 
     		String xpath = attributeDTO.getName();
     		attributes[i] = ft.getAttributeType(xpath);   	
     		if(attributes[i]==null)
@@ -498,12 +498,12 @@ e.printStackTrace();
 	 */
 	private synchronized FeatureTypeInfoDTO getGeneratedDTO() throws IOException{
 		FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO(ftc);
-		if( dto.getSchema() == null || dto.getSchema().size() == 0){
+		if( dto.getSchemaAttributes() == null || dto.getSchemaAttributes().size() == 0){
 			// generate stuff
 			FeatureType schema = getFeatureType();
 			dto.setSchemaBase( GMLUtils.ABSTRACTFEATURETYPE.toString() );
 			dto.setSchemaName(schema.getTypeName());//.toUpperCase()+"_TYPE" );
-			dto.setSchema( DataTransferObjectFactory.generateAttributes( schema ) );
+			dto.setSchemaAttributes( DataTransferObjectFactory.generateAttributes( schema ) );
 		}
 		return dto;
 	}
@@ -736,7 +736,7 @@ e.printStackTrace();
      * @return List of attribute names
      */
     public List getAttributeNames() {
-        List attribs = ftc.getSchema();
+        List attribs = ftc.getSchemaAttributes();
         
         if( attribs.size() != 0 ){
             List list = new ArrayList( attribs.size() );
@@ -778,8 +778,8 @@ e.printStackTrace();
             return (AttributeTypeMetaData) attributeInfo.get( attributeName );
         }
         AttributeTypeInfo info = null;
-        if( ftc.getSchema() != null ){
-            for( Iterator i=ftc.getSchema().iterator(); i.hasNext(); ){
+        if( ftc.getSchemaAttributes() != null ){
+            for( Iterator i=ftc.getSchemaAttributes().iterator(); i.hasNext(); ){
                 AttributeTypeInfoDTO dto = (AttributeTypeInfoDTO) i.next();
                 info = new AttributeTypeInfo( dto ); 
             }

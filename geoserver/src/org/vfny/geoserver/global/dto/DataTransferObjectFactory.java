@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.4 2004/01/18 00:37:23 dmzwiers Exp $
+ * @version $Id: DataTransferObjectFactory.java,v 1.5 2004/01/20 00:30:43 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -85,7 +85,7 @@ public class DataTransferObjectFactory {
         dto.setLatLongBBox( new Envelope() );
         dto.setName( schema.getTypeName() );
         dto.setNumDecimals( 8 );
-        dto.setSchema( generateAttributes( schema ));
+        dto.setSchemaAttributes( generateAttributes( schema ));
         dto.setSchemaBase( GMLUtils.ABSTRACTFEATURETYPE.toString() );
         dto.setSchemaName( dataStoreId.toUpperCase()+"_"+schema.getTypeName().toUpperCase()+"_TYPE" );
         dto.setSRS( schema.getDefaultGeometry().getGeometryFactory().getSRID() );

@@ -49,7 +49,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.14 2004/01/19 23:45:25 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.15 2004/01/20 00:30:44 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -373,7 +373,7 @@ public class FeatureResponse implements Response {
             //FeatureType schema = meta.getSchema();
             //bad hardcode - 2 is to indent 2 spaces, -1 is to do no indenting.
             transformer.setIndentation(config.isVerbose() ? 2 : (-1));
-            transformer.setNumDecimals(config.getNumDecimals());
+            //transformer.setNumDecimals(config.getNumDecimals());
 
             WFS wfsConfig = config.getWFS();
             String wfsSchemaLoc = request.getBaseUrl() + "wfs/1.0.0/"
