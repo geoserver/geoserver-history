@@ -63,10 +63,22 @@ These attribute must be passed to the tile.
 	selectedBody = tab.getLink();
 	color = selectedColor;
 	} // enf if
-  index++;
+
 %>
   <td bgcolor="<%=color%>">
-  <a href="<%=href%>" ><%=tab.getValue()%></a>
+  
+  <% if (index != selectedIndex) { %>
+  <a href="<%=href%>" >
+  <% } %>
+  
+  <%=tab.getValue()%>
+  
+  <% if (index != selectedIndex) { %>
+  </a>
+  <% } 
+    index++;
+  %>
+  
   </td>
   <td width="1" ></td>
   
