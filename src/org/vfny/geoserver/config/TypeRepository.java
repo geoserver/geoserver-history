@@ -5,6 +5,7 @@
 package org.vfny.geoserver.config;
 
 import org.geotools.data.DataSource;
+import org.geotools.data.jdbc.ConnectionPools;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.feature.FeatureCollection;
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeRepository.java,v 1.18 2003/09/05 22:04:52 cholmesny Exp $
+ * @version $Id: TypeRepository.java,v 1.19 2003/09/16 20:45:32 cholmesny Exp $
  *
  * @task TODO: Rethink synchronization.  Just wanted to get things with locks
  *       working for this version, but obviously we need to examine
@@ -237,17 +238,11 @@ public class TypeRepository {
     }
 
     /**
-     * Frees the resources of all the types held by the repository.
-     *
-     * @task REVISIT: this does nothing now, as we no longer control
-     *       connections We need some connection control from datasource
-     *       interface, or else a connection manager.
+     * Calls close from the Connection Pool manager.  Yes, this is
+     * slightly misnamed, but it is doing a better job than before.
      */
     public void closeTypeResources() {
-        for (Iterator i = getAllTypeNames().iterator(); i.hasNext();) {
-            String curType = i.next().toString();
-            getType(curType).close();
-        }
+        ConnectionPools.closeAllPools();
     }
 
     /**
@@ -256,7 +251,7 @@ public class TypeRepository {
      * files with the name 'info.XXX' to the repository.
      *
      * @param currentFile The top directory from which to start  reading files.
-     * @param config DOCUMENT ME!
+     * @param config 
      */
     private void readTypes(File currentFile, ConfigInfo config) {
         LOG.finest("examining: " + currentFile.getAbsolutePath());
