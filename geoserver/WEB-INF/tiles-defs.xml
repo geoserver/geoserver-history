@@ -9,13 +9,14 @@
    	<definition name=".mainLayout"
    	            page="/WEB-INF/pages/layouts/mainLayout.jsp">
 		<put name="key" value="GeoServer"/>
-		
+   		
 		<!-- SIDEBAR -->
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
    		<put name="messages" value="/WEB-INF/pages/messages.jsp"/>
    		<put name="actionator"	value="/WEB-INF/pages/actionator.jsp"/>
    		<put name="menuator"	value="/WEB-INF/pages/menuator.jsp"/>   		
    		<put name="configActions" value="/WEB-INF/pages/blank.jsp"/>
+   		
 		<!-- BODY -->
    		<put name="locator" value="/WEB-INF/pages/locator.jsp"/>
 		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
@@ -35,13 +36,6 @@
         <put name="locationForwards" value=""/>
         <put name="menuForwards" value="admin:config"/>
    	</definition>
-
-   	<definition name="admin.login" extends=".mainLayout">
-   		<put name="key" value="admin.login"/>
-   		<put name="body" value="/WEB-INF/pages/Login.jsp"/>   		
-   		<put name="layer" value="application"/>
-        <put name="locationForwards" value=""/>        
-   	</definition>
    	
    	<definition name="welcome.contact" extends=".mainLayout">
         <put name="key" value="welcome.contact"/>
@@ -50,6 +44,13 @@
         <put name="locationForwards" value="welcome"/>   		
    	</definition>
    	
+   	<definition name="admin.login" extends=".mainLayout">
+   		<put name="key" value="admin.login"/>
+   		<put name="body" value="/WEB-INF/pages/Login.jsp"/>   		
+   		<put name="layer" value="application"/>
+        <put name="locationForwards" value="welcome"/>        
+   	</definition>
+   	   	
    	<!-- ADMIN -->
    	<definition name="admin" extends=".mainLayout">
    		<put name="key" value="admin"/>
@@ -58,8 +59,8 @@
         <put name="locationForwards" value="welcome"/>
         <put name="menuForwards" value="config"/>
         <put name="actionForwards" value="admin.freeLocks"/>                
-   	</definition>
-   	
+   	</definition>   	
+   	   	
    	<!-- CONFIG -->
    	<definition name="config" extends=".mainLayout">
    		<put name="key" value="config"/>
