@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.geotools.filter.Filter;
+import org.vfny.geoserver.config.DataConfig;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -35,7 +36,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.4 2004/01/15 23:04:15 jive Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.5 2004/01/19 18:31:30 emperorkefka Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -276,7 +277,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * @return dataStoreId.typeName
      */
     public String getKey(){
-        return getDataStoreId()+":"+getName();
+        return getDataStoreId()+DataConfig.SEPARATOR+getName();
     }
     /**
      * The extent of this FeatureType.
