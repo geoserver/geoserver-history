@@ -34,7 +34,7 @@ public class DescribeResponse {
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE
     
     /** Fixed return header information */
-    private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"" + config.getUrl() + "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:vfny=\"" + config.getUrl() + "\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/>\n\n";
+    private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"" + config.getUrl() + "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:myns=\"" + config.getUrl() + "\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/>\n\n";
     
     /** Fixed return footer information */
     private static final String FOOTER = "</xs:schema>";
@@ -149,13 +149,15 @@ public class DescribeResponse {
     private String generateAllTypes(String targetDirectoryName) {
         
         // holds final response variable
-        String tempResponse = new String();
+        StringBuffer tempResponse = new StringBuffer();
         
         // iterated convenience variables
         File currentDirectory = new File( targetDirectoryName );
         String currentFeatureType = new String();
         String currentFileName = new String();
-        
+        String generatedType = new String();
+	ArrayList validTypes = new ArrayList();
+
         // keeps master list of files within the directory
         String[] files = currentDirectory.list();
         File[] file = currentDirectory.listFiles();
@@ -168,23 +170,27 @@ public class DescribeResponse {
             currentFileName = targetDirectoryName + currentFeatureType + "/" +
                 config.SCHEMA_FILE;
             
-            // actual work of writing out file is delegated to private function
-            tempResponse = tempResponse + writeFile(currentFileName);
-            tempResponse = tempResponse + "\n";
+	     generatedType = writeFile(currentFileName);
+	    if (!generatedType.equals("")) {
+		tempResponse.append(generatedType + "\n");
+		//_log.info("current file: " + currentFile);
+		validTypes.add(currentFeatureType);
+	    } 
+
         }
         
         
         // Loop through requested files again to add elements
         // NOT VERY EFFICIENT - PERHAPS THE MYSQL ABSTRACTION CAN FIX THIS; 
         //  STORE IN HASH?
-        for (int i = 0, n = files.length; i < n; i++) {            
+        for (int i = 0, n =  validTypes.size(); i < n; i++) {            
             // assign convenience variable
-            currentFeatureType = file[i].getName();
+            currentFeatureType = validTypes.get(i).toString();
             // Print element representation of table
-            tempResponse = tempResponse + printElement( currentFeatureType );
+            tempResponse.append(printElement( currentFeatureType ));
         }
-        tempResponse = tempResponse + "\n\n";
-        return tempResponse;
+        tempResponse.append("\n\n");
+        return tempResponse.toString();
     }
     
     
@@ -193,7 +199,7 @@ public class DescribeResponse {
      * @param table The table name.
      */ 
     private static String printElement(String table) {
-        return "\n  <xs:element name='" + table + "' type='vfny:" + table + "_Type' substitutionGroup='gml:_Feature'/>";
+        return "\n  <xs:element name='" + table + "' type='myns:" + table + "_Type' substitutionGroup='gml:_Feature'/>";
     }
     
     
