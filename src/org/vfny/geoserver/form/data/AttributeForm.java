@@ -1,10 +1,15 @@
 package org.vfny.geoserver.form.data;
 
+import org.geotools.feature.AttributeType;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
+import org.vfny.geoserver.global.xml.NameSpaceElement;
 
 /**
  * Present Attribute information for user input.
@@ -18,7 +23,9 @@ public class AttributeForm {
     private String type;
     private String fragment;
     
-    public AttributeForm( AttributeTypeInfoConfig config ){
+    private AttributeType attributeType;
+    
+    public AttributeForm( AttributeTypeInfoConfig config, AttributeType attribute ){
         name = config.getName();
         nillable = config.isNillable();
         
@@ -26,7 +33,10 @@ public class AttributeForm {
         maxOccurs = String.valueOf( config.getMaxOccurs() );
         type = config.getType();
         fragment = config.getFragment();
+        
+        attributeType = attribute;
     }
+    
     public AttributeTypeInfoDTO toDTO(){
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
         dto.setName( name );
@@ -119,9 +129,27 @@ public class AttributeForm {
     public void setType(String selectedType) {
         this.type = selectedType;
     }
-    
+    /**
+     * AttributeType used to limit getType.
+     * 
+     * @return AttributeType
+     */
+    public AttributeType getAttributeType() {
+        return attributeType;
+    }
+    /**
+     * List of Types available for this attribtue.
+     * <p>
+     * The names are returned as references (like xs:string).
+     * </p>
+     */
     public List getTypes() {
-    	List list = DataTransferObjectFactory.getElements(name, getClass());
+    	List elements = DataTransferObjectFactory.getElements(name, attributeType.getType());
+        List list = new ArrayList( elements.size() );
+        for( Iterator i=elements.iterator(); i.hasNext(); ){
+            NameSpaceElement element = (NameSpaceElement) i.next();;
+            list.add( element.getTypeRefName() );      
+        }
         return list;
     }
 }
