@@ -11,7 +11,11 @@
 <!-- ======================================== Form Bean Definitions -->
 
     <form-beans>
-    
+        <!--
+          form-bean: maps ActionForm instances
+          name: name of of form bean
+          type: class of form bean
+        -->
     	<form-bean
     		name="loginForm"
     		type="org.vfny.geoserver.form.LoginForm"/>
