@@ -32,27 +32,27 @@ import org.xml.sax.SAXException;
 **/
 public class ServiceConfig implements java.io.Serializable {
 
-    public static String NAME_TAG = "Name";
+    public static final String NAME_TAG = "Name";
     
-    public static String TITLE_TAG = "Title";
+    public static final String TITLE_TAG = "Title";
     
-    public static String ABSTRACT_TAG = "Abstract";
+    public static final String ABSTRACT_TAG = "Abstract";
 
-    public static String KEYWORDS_TAG = "Keywords";
+    public static final String KEYWORDS_TAG = "Keywords";
 
-    public static String KEYWORD_TAG = "Keyword";
+    public static final String KEYWORD_TAG = "Keyword";
 
-    public static String URL_TAG = "OnlineResource";
+    public static final String URL_TAG = "OnlineResource";
 
-    public static String FEES_TAG = "Fees";
+    public static final String FEES_TAG = "Fees";
 
-    public static String ACCESS_TAG = "AccessConstraints";
+    public static final String ACCESS_TAG = "AccessConstraints";
 
-    public static String ROOT_TAG = "ServiceConfiguration";
+    public static final String ROOT_TAG = "ServiceConfiguration";
 
-    public static String CAPABILITIES_TAG = "Service";
+    public static final String CAPABILITIES_TAG = "Service";
 
-    public static String OLD_ROOT_TAG = "GlobalConfiguration";
+    public static final String OLD_ROOT_TAG = "GlobalConfiguration";
 
     /** Regular Expression to split values from spaces or commas */
     public static final String WHITE_SPACE_OR_COMMA = "[\\s,]+";
@@ -165,7 +165,7 @@ public class ServiceConfig implements java.io.Serializable {
 	return servConfig;
     }
 
-    private static List getKeywords(Element root) {
+    static List getKeywords(Element root) {
 	List keywords = new ArrayList();
 	//try to get text in Keywords element.
 	String keywordsText = findTextFromTag(root, KEYWORDS_TAG);
@@ -193,7 +193,7 @@ public class ServiceConfig implements java.io.Serializable {
      * @param root the node whose descendants should be searched.
      * @param tag the tag to match.
      */
-    private static String findTextFromTag(Element root, String tag){
+    static String findTextFromTag(Element root, String tag){
 	String retString = null;
 	Node firstElement = root.getElementsByTagName(tag).item(0);
 	if (firstElement != null) {
