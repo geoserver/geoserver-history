@@ -111,6 +111,9 @@ public class DataDataStoresEditorForm extends ActionForm {
         description = dsConfig.getAbstract();
         enabled = dsConfig.isEnabled();
         namespaceId = dsConfig.getNameSpaceId();
+        if (namespaceId.equals("")) {
+        	namespaceId = config.getDefaultNameSpace().getPrefix();
+        }
 
         //Retrieve connection params
         DataStoreFactorySpi factory = dsConfig.getFactory();
