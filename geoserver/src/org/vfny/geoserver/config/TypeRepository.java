@@ -7,10 +7,7 @@ package org.vfny.geoserver.config;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.vfny.geoserver.config.featureType.FeatureType;
+import org.vfny.geoserver.responses.WfsException;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
@@ -21,6 +18,8 @@ import org.vfny.geoserver.config.featureType.FeatureType;
  */
 public class TypeRepository {
         
+    private static final String PREFIX_DELIMITER = ":";
+    
     /** Class logger */
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
 
@@ -67,6 +66,14 @@ public class TypeRepository {
      * @param version The version of the request (0.0.14 or 0.0.15)
      */ 
     public TypeInfo getType(String typeName) {
+	int prefixDelimPos = typeName.lastIndexOf(PREFIX_DELIMITER);
+	if (prefixDelimPos < 0) {
+	    //for backwards compatibility.  Only works if all 
+	    //featureTypes have the same prefix.
+	    typeName = config.getDefaultNSPrefix() + 
+		PREFIX_DELIMITER + typeName;
+	} 
+	LOG.finest("getting type " + typeName);
         return (TypeInfo) types.get(typeName);
     }
 
@@ -77,13 +84,60 @@ public class TypeRepository {
     private void addType(String pathToTypeInfo) { 
 	TypeInfo type = new TypeInfo(pathToTypeInfo);
 	if (type.getName() != null) {
-	    types.put(type.getName(), type);
+	    types.put(type.getFullName(), type);
 	} else {
 	    LOG.warning("Geoserver did not successfull read the feature" +
 			" info.xml file at " + pathToTypeInfo + ".  Please " + 
 			"make sure all elements are in info.xml");
 	}
     }
+
+    /**
+     * Checks that the collection of featureTypeNames all have the same prefix.
+     * Used to determine if their schemas are all in the same namespace or if
+     * imports need to be done.
+     *
+     * @param featureTypeNames list of featureTypes, generally from a 
+     * DescribeFeatureType request.
+     * @return true if all the typenames in the collection have the same prefix.
+     */ 
+    public boolean allSameType(Collection featureTypeNames) 
+	throws WfsException {
+	Iterator nameIter = featureTypeNames.iterator();
+	boolean sameType = true;
+	if (!nameIter.hasNext()) {
+	    return false;
+	}
+	String firstPrefix = getPrefix(nameIter.next().toString());
+	while (nameIter.hasNext()){
+	    if (!firstPrefix.equals
+		(getPrefix(nameIter.next().toString()))) {
+		return false;
+	    }
+	}
+	return sameType;
+    }
+
+    /**
+     * gets the prefix for the featureType */
+    private String getPrefix(String featureTypeName) throws WfsException {
+	TypeInfo typeInfo = getType(featureTypeName);
+	if (typeInfo == null) {
+	    throw new WfsException("Feature Type " + featureTypeName + " does "
+				   + "not exist on this server");
+	}
+	return typeInfo.getPrefix();
+    }
+
+    /**
+     * Gets a list of all the typeNames held by this repository.
+     *
+     * @return Strings of all typenames.
+     */
+    public List getAllTypeNames(){
+	return new ArrayList(types.keySet());
+    }
+
 
     /**
      * Returns a capabilities XML fragment for a specific feature type.

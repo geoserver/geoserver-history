@@ -4,18 +4,16 @@
  */
 package org.vfny.geoserver.config;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Iterator;
 import java.util.logging.Logger;
-//import org.exolab.castor.xml.Unmarshaller;
-//import org.exolab.castor.xml.MarshalException;
-//import org.exolab.castor.xml.ValidationException;
 import org.vfny.geoserver.config.FeatureType;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
  * 
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  * @version $VERSION$
  */
 public class TypeInfo {
@@ -23,10 +21,19 @@ public class TypeInfo {
     /** Class logger */
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
 
+    public static final String PREFIX_DELIMITER = ":";
+
     /** Castor-specified type to hold all the  */
     private FeatureType internalType;
 
+    private ConfigInfo config = ConfigInfo.getInstance();
     
+    /** The namespace prefix used internally for this featureType.*/
+    private String prefix;
+
+    /** the string of where the schema file should be located.*/
+    private String pathToSchemaFile;
+
     /** Initializes the database and request handler. */ 
     public TypeInfo() {}
     
@@ -40,10 +47,50 @@ public class TypeInfo {
         readTypeInfo(typeName);
 	
     }
+
+    /**
+     * gets the Namespace prefix used internally for this featureType.*/
+    public String getPrefix(){
+	return this.prefix;
+    }
+    
+    /** Sets the prefix.  The prefix should generally be set during feature
+     * type reading, based on the name of the folder in which it is stored,
+     * such as ns01:rail, where rail is the name and ns01 is the prefix.
+     */
+    void setPrefix(String prefix){ 
+	this.prefix = prefix;
+    }
+
+    /**
+     * gets the string of the path to the schema file.  This is set during
+     * feature reading, the schema file should be in the same folder as the
+     * feature type info, with the name schema.xml.  This function does not
+     * guarantee that the schema file actually exists, it just gives the
+     * location where it _should_ be located.
+     */
+    public String getSchemaFile(){
+	return pathToSchemaFile;
+    }
+
+    /**
+     * gets the namespace uri of this type.  The mappings must be set right
+     * in ConfigInfo for this to work right.
+     */
+    public String getXmlns(){
+	return config.getNSUri(this.prefix);
+    }
     
     /** Fetches the feature type name (also the table name)  */
+    //REVISIT: name getTableName()?  It should only be used for that purpose.
     public String getName() { 
-	return (internalType == null) ? null : internalType.getName(); 
+	LOG.finer("returning name " + internalType.getName());
+	return internalType.getName(); 
+    }
+    
+    /** Fetches the featureType name with its proper namespace prefix*/
+    public String getFullName() {
+	return prefix + ":" + internalType.getName();
     }
     
     /** Fetches the feature type abstract */
@@ -121,32 +168,34 @@ public class TypeInfo {
     private void readTypeInfo(String typeName) {
         
 	try {
+	    
+	    File featureTypeFile = new File(typeName);
+	    File parentDir = featureTypeFile.getParentFile();
+	    String parentDirName =  parentDir.getName();
+	    int prefixDelimPos = parentDirName.lastIndexOf(PREFIX_DELIMITER);
+	    if (prefixDelimPos > 0) {
+		prefix = parentDirName.substring(0, prefixDelimPos);
+	    } else {
+		prefix = config.getDefaultNSPrefix();
+	    }
+	    pathToSchemaFile = 
+		new File(parentDir, config.SCHEMA_FILE).toString();
+	    LOG.finer("pathToSchema is " + pathToSchemaFile);
+	    //LOG.finer("prefix is " + prefix);
+	    
 	    internalType = FeatureType.getInstance(typeName);
-
-	    /*           FileReader featureTypeDocument = 
-                new FileReader(typeName);
-            internalType = 
-                (FeatureType) Unmarshaller.unmarshal(FeatureType.class, 
-                                                     featureTypeDocument);
-	    LOG.finer("finished reading type " + typeName + "internal is " + internalType);
-        }
-        catch( FileNotFoundException e ) {
-            LOG.info("Feature type file does not exist: "+typeName);
-        }
-        catch( MarshalException e ) {
-            LOG.info("Castor could not unmarshal feature type file: " + 
-                      typeName);
-            LOG.info("Castor says: " + e.toString() );
-	    */ }
-        catch( ConfigurationException e ) {
+	    
+	} catch( ConfigurationException e ) {
             LOG.info("Trouble reading featureType info at " + typeName + 
 		     ": " + e.getMessage());
-        }    
+	}
     }
     
 
     /**
      * Generates v0.0.14 capabilities document fragment for a feature type.
+     * Also used for v1.0.0, as they are practically identical, except
+     * LatLonBoundingBox has a Long instead of a Lon, and it uses the prefix.
      *
      */ 
     private String getCapabilitiesXmlv14(String version) {
@@ -157,7 +206,7 @@ public class TypeInfo {
 	if (!version.startsWith("0.0.1")) {
 	    //REVISIT: get this elsewhere?  Make sure that myns is
 	    //declared in the capabilities document returned.
-	    //name = "myns:" + name;
+	    name = prefix + ":" + name;
 	    latLonName = "LatLongBoundingBox";
 	}
 	tempResponse.append("      <Name>" + name + "</Name>\n");
