@@ -2,27 +2,25 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:form action="/config/data/styleNewSubmit">
+<html:form action="/config/data/styleNewSubmit" focus="styleID">
 
 <table class="info">
   <tr>
     <td class="label">
-        <span class="help" title="<bean:message key="help.styleID"/>">
-          <bean:message key="label.styleID"/>:
-        </span>      
-	</td>
+      <span class="help" title="<bean:message key="help.styleID"/>">
+        <bean:message key="label.styleID"/>:
+      </span>      
+    </td>
     <td class="datum">
-	  <html:text property="styleID" size="60"/>
+      <html:text property="styleID" size="60"/>
     </td>
   </tr>
-    <tr>
+  <tr>
     <td class="label">&nbsp;</td>
     <td class="datum">
-	  <html:submit property="action" value="new">
-		<bean:message key="label.new"/>
-	  </html:submit>			
-	</td>
+      <html:submit property="action"><bean:message key="label.new"/></html:submit>
+    </td>
   </tr>
-</table>	
+</table>
 
 </html:form>
