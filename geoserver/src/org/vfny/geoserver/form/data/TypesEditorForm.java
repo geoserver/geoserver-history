@@ -43,8 +43,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.16 2004/04/13 23:15:38 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.17 2004/04/15 19:42:42 dmzwiers Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -260,7 +260,7 @@ public class TypesEditorForm extends ActionForm {
         for( Iterator i=dtoList.iterator(); i.hasNext(); index++){
             Object next = i.next();
             System.out.println( index+" attribute: "+next);
-            list.add( new AttributeDisplay( (AttributeTypeInfoDTO) next ) );
+            list.add( new AttributeDisplay( new AttributeTypeInfoConfig((AttributeTypeInfoDTO) next ) ));
         }
         return list;
     }
