@@ -13,7 +13,7 @@ import java.util.logging.*;
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: GlobalConfig.java,v 1.1.2.4 2003/11/14 20:39:14 groldan Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -66,7 +66,6 @@ public class GlobalConfig extends AbstractConfig {
         LOGGER.fine("parsing global configuration parameters");
 
         Element elem = null;
-
         elem = getChildElement(globalConfigElem, "ContactInformation");
         this.contactConfig = new ContactConfig(elem);
 
@@ -76,7 +75,6 @@ public class GlobalConfig extends AbstractConfig {
         Log4JFormatter.init("org.geotools", loggingLevel);
         Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
         LOGGER.config("logging level is " + loggingLevel);
-
         elem = getChildElement(globalConfigElem, "verbose", false);
 
         if (elem != null) {
@@ -91,7 +89,6 @@ public class GlobalConfig extends AbstractConfig {
         }
 
         LOGGER.config("maxFeatures is " + maxFeatures);
-
         elem = getChildElement(globalConfigElem, "numDecimals");
 
         if (elem != null) {
@@ -99,7 +96,6 @@ public class GlobalConfig extends AbstractConfig {
         }
 
         LOGGER.config("numDecimals returning is " + numDecimals);
-
         elem = getChildElement(globalConfigElem, "charSet");
         charSet = Charset.forName("ISO-8859-1");
 
@@ -118,27 +114,24 @@ public class GlobalConfig extends AbstractConfig {
         LOGGER.config("charSet is " + charSet);
 
         //TODO: better checking.
-        this.baseUrl = getChildText(globalConfigElem, "URL", true);
-
-        if (!baseUrl.endsWith("/")) {
-            baseUrl += "/";
-        }
+        this.baseUrl = getChildText(globalConfigElem, "URL", false);
 
         String schemaBaseUrl = getChildText(globalConfigElem, "SchemaBaseUrl");
 
         if (schemaBaseUrl != null) {
             this.schemaBaseUrl = schemaBaseUrl;
-
-            if (!schemaBaseUrl.endsWith("/")) {
-                schemaBaseUrl += "/";
-            }
         } else {
-            this.schemaBaseUrl = baseUrl + "data/capabilities/";
+            this.schemaBaseUrl = baseUrl + "/data/capabilities/";
         }
 
         globalConfig = this;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public static GlobalConfig getInstance() {
         if (globalConfig == null) {
             String mesg = "ServerConfig must be initialized before calling "
@@ -149,6 +142,11 @@ public class GlobalConfig extends AbstractConfig {
         return globalConfig;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public ContactConfig getContactInformation() {
         return contactConfig;
     }
@@ -225,14 +223,29 @@ public class GlobalConfig extends AbstractConfig {
         return verbose;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String getBaseUrl() {
         return baseUrl;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String getSchemaBaseUrl() {
         return schemaBaseUrl;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String getMimeType() {
         return "text/xml; charset=" + getCharSet().displayName();
     }

@@ -8,15 +8,46 @@ package org.vfny.geoserver;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $revision$
  */
 public interface ExceptionHandler {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param message DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public ServiceException newServiceException(String message);
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param message DOCUMENT ME!
+     * @param locator DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public ServiceException newServiceException(String message, String locator);
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param e DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public ServiceException newServiceException(Throwable e);
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param e DOCUMENT ME!
+     * @param preMessage DOCUMENT ME!
+     * @param locator DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public ServiceException newServiceException(Throwable e, String preMessage,
         String locator);
 

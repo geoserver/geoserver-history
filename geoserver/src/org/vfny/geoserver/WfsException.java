@@ -11,16 +11,18 @@ package org.vfny.geoserver;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: WfsException.java,v 1.1.2.1 2003/11/04 22:32:23 cholmesny Exp $
+ * @version $Id: WfsException.java,v 1.1.2.2 2003/11/14 20:39:04 groldan Exp $
  *
  * @task REVISIT: refactor this to be named ServiceException?  To reflect the
  *       1.0 spec better?  Backwards compatible exceptions for .14 and .15
  */
-public class WfsException extends ServiceException {
+public class WfsException extends ServiceException
+{
     /**
      * Empty constructor.
      */
-    public WfsException() {
+    public WfsException()
+    {
         super();
     }
 
@@ -29,7 +31,8 @@ public class WfsException extends ServiceException {
      *
      * @param message The message for the .
      */
-    public WfsException(String message) {
+    public WfsException(String message)
+    {
         super(message);
     }
 
@@ -38,7 +41,8 @@ public class WfsException extends ServiceException {
      *
      * @param e The message for the .
      */
-    public WfsException(Throwable e) {
+    public WfsException(Throwable e)
+    {
         super(e);
     }
 
@@ -48,7 +52,8 @@ public class WfsException extends ServiceException {
      * @param message The message for the .
      * @param locator The message for the .
      */
-    public WfsException(String message, String locator) {
+    public WfsException(String message, String locator)
+    {
         super(message);
         this.locator = locator;
     }
@@ -60,7 +65,8 @@ public class WfsException extends ServiceException {
      * @param preMessage The message to tack on the front.
      * @param locator The message for the .
      */
-    public WfsException(Throwable e, String preMessage, String locator) {
+    public WfsException(Throwable e, String preMessage, String locator)
+    {
         super(e, preMessage, locator);
     }
 }

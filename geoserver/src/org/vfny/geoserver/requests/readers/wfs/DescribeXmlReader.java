@@ -19,7 +19,6 @@ import javax.xml.parsers.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
  * @version 0.1
  */
 public class DescribeXmlReader extends XmlRequestReader {

@@ -22,7 +22,7 @@ import javax.xml.transform.stream.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: CapabilitiesResponse.java,v 1.20.4.2 2003/11/14 20:39:14 groldan Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -63,13 +63,10 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
 
             // don't know what this should be, or if its even important
             InputSource inputSource = new InputSource("XXX");
-
             SAXSource source = new SAXSource(this, inputSource);
-
             Charset charset = ServerConfig.getInstance().getGlobalConfig()
-                                          .getCharSet();
+                                         .getCharSet();
             Writer writer = new OutputStreamWriter(out, charset);
-
             StreamResult result = new StreamResult(writer);
 
             transformer.transform(source, result);

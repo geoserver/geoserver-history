@@ -13,7 +13,7 @@ import org.xml.sax.helpers.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: XmlResponseHandler.java,v 1.1.2.3 2003/11/14 20:39:14 groldan Exp $
  */
 public abstract class XmlResponseHandler implements ResponseHandler {
     /** blank attributes to be used when none are needed. */

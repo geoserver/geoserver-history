@@ -8,9 +8,10 @@ package org.vfny.geoserver.config;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: NameSpace.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
  */
 public class NameSpace {
+    /** DOCUMENT ME!  */
     public static final String PREFIX_DELIMITER = ":";
 
     /** DOCUMENT ME! */
@@ -72,10 +73,22 @@ public class NameSpace {
         return uri;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String toString() {
         return "xmlns:" + getPrefix() + "=\"" + getUri() + "\"";
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param o DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public boolean equals(Object o) {
         if (!(o instanceof NameSpace)) {
             return false;
@@ -87,6 +100,11 @@ public class NameSpace {
         && getUri().equals(ns.getUri());
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public int hashCode() {
         return (17 * getPrefix().hashCode()) + (21 * getUri().hashCode());
     }

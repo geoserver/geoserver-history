@@ -11,14 +11,15 @@ import java.util.logging.*;
 
 
 /**
- * Represents a standard OGC service exception.  Able to turn itself into
- * the proper xml response.
+ * Represents a standard OGC service exception.  Able to turn itself into the
+ * proper xml response.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.1.2.2 2003/11/07 23:07:57 cholmesny Exp $
+ * @version $Id: ServiceException.java,v 1.1.2.3 2003/11/14 20:39:04 groldan Exp $
  */
-public class ServiceException extends Exception {
+public class ServiceException extends Exception
+{
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
@@ -31,12 +32,15 @@ public class ServiceException extends Exception {
 
     /** the standard exception that was thrown */
     protected Exception standardException = new Exception();
+
+    /** DOCUMENT ME!  */
     protected String code = new String();
 
     /**
      * Empty constructor.
      */
-    public ServiceException() {
+    public ServiceException()
+    {
         super();
     }
 
@@ -45,8 +49,10 @@ public class ServiceException extends Exception {
      *
      * @param message The message for the .
      */
-    public ServiceException(String message) {
+    public ServiceException(String message)
+    {
         super(message);
+
         LOGGER.fine(this.getMessage());
     }
 
@@ -55,8 +61,10 @@ public class ServiceException extends Exception {
      *
      * @param e The message for the .
      */
-    public ServiceException(Throwable e) {
+    public ServiceException(Throwable e)
+    {
         super(e);
+
         LOGGER.fine(this.getMessage());
     }
 
@@ -66,9 +74,12 @@ public class ServiceException extends Exception {
      * @param message The message for the .
      * @param locator The message for the .
      */
-    public ServiceException(String message, String locator) {
+    public ServiceException(String message, String locator)
+    {
         super(message);
+
         this.locator = locator;
+
         LOGGER.fine("> [" + this.locator + "]:\n  " + this.getMessage());
     }
 
@@ -79,9 +90,12 @@ public class ServiceException extends Exception {
      * @param preMessage The message to tack on the front.
      * @param locator The message for the .
      */
-    public ServiceException(Throwable e, String preMessage, String locator) {
+    public ServiceException(Throwable e, String preMessage, String locator)
+    {
         super(e);
+
         this.preMessage = preMessage;
+
         this.locator = locator;
     }
 
@@ -90,15 +104,30 @@ public class ServiceException extends Exception {
      *
      * @param code The diagnostic code.
      */
-    public void setCode(String code) {
+    public void setCode(String code)
+    {
         this.code = code;
     }
 
-    protected boolean isEmpty(String testString) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param testString DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    protected boolean isEmpty(String testString)
+    {
         return (testString == null) || testString.equals("");
     }
 
-    public String getXmlResponse() {
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getXmlResponse()
+    {
         return getXmlResponse(true);
     }
 
@@ -111,55 +140,74 @@ public class ServiceException extends Exception {
      *
      * @task REVISIT: adapt it to handle WMS too
      */
-    public String getXmlResponse(boolean printStackTrace) {
+    public String getXmlResponse(boolean printStackTrace)
+    {
         String indent = "   ";
+
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>\n");
+
         returnXml.append("<ServiceExceptionReport\n");
+
         returnXml.append(indent + "version=\"1.2.0\"\n");
+
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
+
         returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
             + "XMLSchema-instance\"\n");
 
         //REVISIT: this probably isn't right, need to learn about xml schemas
         returnXml.append(indent);
+
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
+
         returnXml.append(ServerConfig.getInstance().getWFSConfig()
                                      .getSchemaBaseUrl());
+
         returnXml.append("wfs/1.0.0/OGC-exception.xsd\">\n");
 
         //REVISIT: handle multiple service exceptions?  must refactor class.
         returnXml.append(indent + "<ServiceException");
 
-        if (!isEmpty(this.code)) {
+        if (!isEmpty(this.code))
+        {
             returnXml.append(" code=\"" + this.code + "\"");
         }
 
-        if (!isEmpty(this.locator)) {
+        if (!isEmpty(this.locator))
+        {
             returnXml.append(" locator=\"" + this.locator + "\"");
         }
 
         returnXml.append(">\n" + indent + indent);
 
-        if (!isEmpty(this.preMessage)) {
+        if (!isEmpty(this.preMessage))
+        {
             returnXml.append(this.preMessage + ": ");
         }
 
         returnXml.append(this.getMessage() + "\n");
 
-        if (printStackTrace) {
+        if (printStackTrace)
+        {
             Throwable cause = getCause();
+
             StackTraceElement[] trace = (cause == null) ? getStackTrace()
                                                         : cause.getStackTrace();
 
-            for (int i = 0; i < trace.length; i++) {
+            for (int i = 0; i < trace.length; i++)
+            {
                 String line = indent + indent + "at " + trace[i].toString();
+
                 returnXml.append(line + "\n");
-		returnXml.append(ResponseUtils.encodeXML(line) + "\n");
+
+                returnXml.append(ResponseUtils.encodeXML(line) + "\n");
             }
         }
 
         returnXml.append(indent + "</ServiceException>\n");
+
         returnXml.append("</ServiceExceptionReport>");
+
         LOGGER.fine("return wfs exception is " + returnXml);
 
         return returnXml.toString();

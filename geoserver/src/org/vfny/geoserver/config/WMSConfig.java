@@ -12,7 +12,7 @@ import java.util.Date;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: WMSConfig.java,v 1.1.2.4 2003/11/14 20:39:14 groldan Exp $
  */
 public class WMSConfig extends ServiceConfig {
     /** WMS version spec implemented */
@@ -20,17 +20,31 @@ public class WMSConfig extends ServiceConfig {
 
     /** WMS spec specifies this fixed service name */
     private static final String FIXED_SERVICE_NAME = "OGC:WMS";
+
+    /** DOCUMENT ME!  */
     private static final String[] EXCEPTION_FORMATS = {
         "application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
         "application/vnd.ogc.se_blank"
     };
     private Date updateTime = new Date();
 
+    /**
+     * Creates a new WMSConfig object.
+     *
+     * @param wmsRoot DOCUMENT ME!
+     *
+     * @throws ConfigurationException DOCUMENT ME!
+     */
     public WMSConfig(Element wmsRoot) throws ConfigurationException {
         super(wmsRoot);
         URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String[] getExceptionFormats() {
         return EXCEPTION_FORMATS;
     }
@@ -55,22 +69,47 @@ public class WMSConfig extends ServiceConfig {
         return updateTime.toGMTString();
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String getVersion() {
         return WMS_VERSION;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public boolean supportsSLD() {
         return true;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public boolean supportsUserLayer() {
         return true;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public boolean supportsUserStyle() {
         return true;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public boolean supportsRemoteWFS() {
         return true;
     }

@@ -25,7 +25,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.1.2.1 2003/11/04 23:31:11 cholmesny Exp $
+ * @version $Id: Capabilities.java,v 1.1.2.2 2003/11/14 20:39:15 groldan Exp $
  */
 public class Capabilities extends WFService {
     /**

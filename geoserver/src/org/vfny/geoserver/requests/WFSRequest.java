@@ -8,7 +8,7 @@ package org.vfny.geoserver.requests;
  * Defines a general WFS Request type
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: WFSRequest.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
  */
 abstract public class WFSRequest extends Request {
     public WFSRequest() {

@@ -15,7 +15,7 @@ import javax.xml.parsers.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: ServerConfig.java,v 1.1.2.4 2003/11/14 20:39:14 groldan Exp $
  */
 public class ServerConfig {
     /** DOCUMENT ME! */
@@ -53,7 +53,6 @@ public class ServerConfig {
         //TODO: change these to META-INF.
         String configFile = rootDir + "services.xml";
         String catalogFile = rootDir + "catalog.xml";
-
         Element configElem = loadConfig(configFile);
         Element catalogElem = loadConfig(catalogFile);
         String featureTypeDir = rootDir + "featureTypes";
@@ -231,6 +230,11 @@ public class ServerConfig {
         + getGlobalConfig().getCharSet().displayName() + "\"?>";
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String getRootDir() {
         return rootDir;
     }

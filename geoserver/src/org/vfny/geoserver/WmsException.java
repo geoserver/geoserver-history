@@ -10,7 +10,7 @@ package org.vfny.geoserver;
  * this before returning to clients.
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: WmsException.java,v 1.1.2.2 2003/11/14 20:39:04 groldan Exp $
  */
 public class WmsException extends ServiceException {
     /**
@@ -21,9 +21,9 @@ public class WmsException extends ServiceException {
     }
 
     /**
-     * Empty constructor.
+     *  constructor with exception message
      *
-     * @param message The message for the .
+     * @param message The message for the exception
      */
     public WmsException(String message) {
         super(message);
@@ -46,6 +46,7 @@ public class WmsException extends ServiceException {
      */
     public WmsException(String message, String locator) {
         super(message);
+
         this.locator = locator;
     }
 

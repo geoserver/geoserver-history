@@ -27,7 +27,7 @@ import org.w3c.dom.*;
  * &lt;/ContactInformation&gt;<br></code>
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: ContactConfig.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
  *
  * @task REVISIT: may be it will be necessary to create a real contact
  *       hierarchy if we plan to add Catalog service.
@@ -58,7 +58,6 @@ public class ContactConfig extends AbstractConfig {
 
         Element elem;
         NodeList nodeList;
-
         elem = getChildElement(contactInfoElement, "ContactPersonPrimary");
 
         if (elem != null) {
@@ -68,7 +67,6 @@ public class ContactConfig extends AbstractConfig {
 
         this.contactPosition = getChildText(contactInfoElement,
                 "ContactPosition");
-
         elem = getChildElement(contactInfoElement, "ContactAddress");
 
         if (elem != null) {

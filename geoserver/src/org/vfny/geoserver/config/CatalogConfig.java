@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.2 2003/11/11 02:45:40 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.3 2003/11/14 20:39:14 groldan Exp $
  */
 public class CatalogConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -84,6 +84,19 @@ public class CatalogConfig extends AbstractConfig {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param typeName DOCUMENT ME!
+     * @param filter DOCUMENT ME!
+     * @param lockAll DOCUMENT ME!
+     * @param expiry DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws WfsException DOCUMENT ME!
+     * @throws UnsupportedOperationException DOCUMENT ME!
+     */
     public synchronized String lock(String typeName, Filter filter,
         boolean lockAll, int expiry) throws WfsException {
         throw new UnsupportedOperationException("not implemented yet");
@@ -103,6 +116,15 @@ public class CatalogConfig extends AbstractConfig {
         return lock(typeName, null, true, -1);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param lockId DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws UnsupportedOperationException DOCUMENT ME!
+     */
     public boolean lockIdExists(String lockId) {
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -126,6 +148,11 @@ public class CatalogConfig extends AbstractConfig {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public DataStoreConfig[] getDataStores() {
         List dslist = new ArrayList(dataStores.values());
         DataStoreConfig[] dStores = new DataStoreConfig[dslist.size()];
@@ -135,14 +162,34 @@ public class CatalogConfig extends AbstractConfig {
     }
 
     /**
-     * DOCUMENT ME!
+     * searches a DataStoreConfig by its id attribute
+     *
+     * @param id the DataStore id looked for
+     *
+     * @return the DataStoreConfig with id attribute equals to <code>id</code>
+     * or null if there no exists
+     */
+    public DataStoreConfig getDataStore(String id) {
+        return (DataStoreConfig) dataStores.get(id);
+    }
+
+    /**
+     * returns the list of DataStoreConfig's of the given namespace
      *
      * @param ns DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public DataStoreConfig getDataStore(NameSpace ns) {
-        return (DataStoreConfig) dataStores.get(ns.getPrefix());
+    public List getDataStores(NameSpace ns) {
+        List dataStoresNs = new ArrayList();
+        DataStoreConfig dsc;
+        for(Iterator it = dataStores.values().iterator(); it.hasNext();)
+        {
+          dsc = (DataStoreConfig)it.next();
+          if(dsc.getNameSpace().equals(ns))
+            dataStoresNs.add(dsc);
+        }
+        return dataStoresNs;
     }
 
     /**
@@ -276,7 +323,6 @@ public class CatalogConfig extends AbstractConfig {
         String prefix;
         boolean defaultNS;
         int nsCount = nsList.getLength();
-
         nameSpaces = new HashMap(nsCount);
 
         for (int i = 0; i < nsCount; i++) {
@@ -308,7 +354,6 @@ public class CatalogConfig extends AbstractConfig {
 
         NodeList dsElements = dsRoot.getElementsByTagName("datastore");
         int dsCnt = dsElements.getLength();
-
         DataStoreConfig dsConfig;
         Element dsElem;
 
@@ -316,12 +361,12 @@ public class CatalogConfig extends AbstractConfig {
             dsElem = (Element) dsElements.item(i);
             dsConfig = new DataStoreConfig(dsElem, this);
 
-            if (dataStores.containsKey(dsConfig.getNameSpace().getPrefix())) {
+            if (dataStores.containsKey(dsConfig.getId())) {
                 throw new ConfigurationException("duplicated datastore id: "
                     + dsConfig.getNameSpace());
             }
 
-            dataStores.put(dsConfig.getNameSpace().getPrefix(), dsConfig);
+            dataStores.put(dsConfig.getId(), dsConfig);
         }
     }
 
@@ -405,7 +450,6 @@ public class CatalogConfig extends AbstractConfig {
     /*  private void loadType(String filePath) throws ConfigurationException {
        try {
            Element featureElem = ServerConfig.loadConfig(configFile);
-    
            String featureTag = featureElem.getTagName();
            if (!featureTag.equals(rootTag) && !featureTag.equals(OLD_ROOT_TAG)) {
                featureElem = (Element) featureElem.getElementsByTagName(rootTag)
@@ -417,7 +461,6 @@ public class CatalogConfig extends AbstractConfig {
                    throw new ConfigurationException(message);
                }
            }
-    
        NodeList ftlist = fTypesElem.getElementsByTagName("featureType");
        Element ftypeElem;
        int ftCount = ftlist.getLength();

@@ -12,7 +12,7 @@ import org.xml.sax.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: ResponseHandler.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
  */
 public interface ResponseHandler {
     void handleDocument(ServiceConfig config) throws SAXException;

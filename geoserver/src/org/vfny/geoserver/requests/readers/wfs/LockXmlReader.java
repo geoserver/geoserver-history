@@ -21,8 +21,7 @@ import javax.xml.parsers.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: LockXmlReader.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
  */
 public class LockXmlReader extends XmlRequestReader {
     /**

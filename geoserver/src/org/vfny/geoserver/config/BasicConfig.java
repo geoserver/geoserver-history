@@ -12,7 +12,7 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: BasicConfig.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
  */
 public class BasicConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -45,11 +45,17 @@ public class BasicConfig extends AbstractConfig {
      */
     public BasicConfig(Element serviceRoot) throws ConfigurationException {
         this.name = getChildText(serviceRoot, "name", true);
+
         this.title = getChildText(serviceRoot, "title", true);
+
         this._abstract = getChildText(serviceRoot, "abstract");
+
         this.keywords = getKeyWords(getChildElement(serviceRoot, "keywords"));
+
         this.fees = getChildText(serviceRoot, "fees");
+
         this.accessConstraints = getChildText(serviceRoot, "accessConstraints");
+
         this.maintainer = getChildText(serviceRoot, "maintainer");
     }
 
@@ -62,13 +68,18 @@ public class BasicConfig extends AbstractConfig {
      */
     private List getKeyWords(Element keywordsElem) {
         NodeList klist = keywordsElem.getElementsByTagName("keyword");
+
         int kCount = klist.getLength();
+
         List keywords = new ArrayList(kCount);
+
         String kword;
+
         Element kelem;
 
         for (int i = 0; i < kCount; i++) {
             kelem = (Element) klist.item(i);
+
             kword = getElementText(kelem);
 
             if (kword != null) {

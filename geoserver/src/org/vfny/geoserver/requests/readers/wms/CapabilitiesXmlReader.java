@@ -17,7 +17,7 @@ import javax.xml.parsers.*;
  * reads a WMS GetCapabilities request from an XML stream
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: CapabilitiesXmlReader.java,v 1.1.2.2 2003/11/14 20:39:14 groldan Exp $
  *
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */
@@ -42,7 +42,6 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
             ParserAdapter adapter = new ParserAdapter(parser.getParser());
-
             adapter.setContentHandler(currentRequest);
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);

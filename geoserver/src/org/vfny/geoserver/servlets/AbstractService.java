@@ -23,7 +23,7 @@ import javax.servlet.http.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: AbstractService.java,v 1.1.2.5 2003/11/14 00:04:10 jive Exp $
+ * @version $Id: AbstractService.java,v 1.1.2.6 2003/11/14 20:39:15 groldan Exp $
  *
  * @task TODO: I changed this so it automatically buffers responses, so  as to
  *       better handle errors, not serving up nasty servlet errors if
@@ -53,14 +53,14 @@ public abstract class AbstractService extends HttpServlet {
     private static Map context;
 
     public static final ServiceStratagy SPEED = new SpeedStratagy();
-    public static final ServiceStratagy FILE = new FileStratagy();    
+    public static final ServiceStratagy FILE = new FileStratagy();
     public static final ServiceStratagy BUFFER = new BufferStratagy();
-    
+
     /**
      * Controls the Safty Mode used when using execute/writeTo.
      */
     private static ServiceStratagy saftyMode = BUFFER;
-     
+
     /**
      * DOCUMENT ME!
      *
@@ -124,23 +124,23 @@ public abstract class AbstractService extends HttpServlet {
      */
     protected void doService(HttpServletRequest request,
                              HttpServletResponse response,
-                             Request serviceRequest) {    
+                             Request serviceRequest) {
         if( saftyMode != null ){
-            saftyMode.doService( this, request, response, serviceRequest );            
+            saftyMode.doService( this, request, response, serviceRequest );
         }
-        else {                
-            
+        else {
+
                 saftyMode.doService( this, request, response, serviceRequest );
             try {
                 Response serviceResponse = getResponseHandler();
-    
-    	    
+
+
                 serviceResponse.execute(serviceRequest);
-    
+
                 // set content type and return response, whatever it is
                 String contentType = serviceResponse.getContentType();
                 response.setContentType(contentType);
-    
+
                 /*
                    boolean gzipIt = requestSupportsGzip(request);
                    if (gzipIt)
@@ -150,8 +150,8 @@ public abstract class AbstractService extends HttpServlet {
                        out = new GZIPOutputStream(out, 2048);
                    }
                  */
-    
-                //TODO: make this user configurable.  For now it's better 
+
+                //TODO: make this user configurable.  For now it's better
                 //to pick up errors correctly, as we've got quite a few of them.
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 serviceResponse.writeTo(buffer);
@@ -274,6 +274,9 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             result.writeTo(out);
+        }catch(IOException ioe){
+          //user just closed the socket stream, do nothing
+          LOGGER.fine("connection closed by user: " + ioe.getMessage());
         } catch (ServiceException ex) {
             sendError(response, ex);
         }
@@ -312,7 +315,7 @@ public abstract class AbstractService extends HttpServlet {
         public void doService(AbstractService service,
                               HttpServletRequest request,
                               HttpServletResponse response,
-                              Request serviceRequest);        
+                              Request serviceRequest);
     }
 }
 /**
@@ -330,32 +333,32 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
                           HttpServletRequest request,
                           HttpServletResponse response,
                           Request serviceRequest) {
-        
+
         Response serviceResponse = service.getResponseHandler();
-        OutputStream out = null;        
+        OutputStream out = null;
         try {
-            serviceResponse.execute(serviceRequest);                    
+            serviceResponse.execute(serviceRequest);
             out = response.getOutputStream();
             out = new BufferedOutputStream( out );
-            
+
 //            if (service.requestSupportsGzip(request))
 //            {
 //                response.setHeader("content-encoding", "gzip");
 //                out = new GZIPOutputStream(out, 2048);
-//            }                        
+//            }
         } catch ( ServiceException serviceException){
             // we have not written anything, use sendError
             service.sendError(response, serviceException);
-            return;            
-        
+            return;
+
         } catch (IOException ioException){
             // we have not written anything, use sendError
             service.sendError(response, ioException);
             return;
-        }        
+        }
         try {
-            serviceResponse.writeTo( out );            
-            out.flush();            
+            serviceResponse.writeTo( out );
+            out.flush();
         }
         catch( ServiceException failed){
             // we have written something out
@@ -364,13 +367,13 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
             // when using the SpeedStratagy
             IllegalStateException stateException = new IllegalStateException("Speed Optimization Failed, cannot report error to user");
             stateException.initCause( failed );
-            throw stateException;            
+            throw stateException;
         }
         catch( IOException ioException){
             // we could not communicate with the user
             IllegalStateException stateException = new IllegalStateException("Communication to user failed");
             stateException.initCause( ioException );
-            throw stateException;            
+            throw stateException;
         }
     }
 };
@@ -390,7 +393,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
                           HttpServletRequest request,
                           HttpServletResponse response,
                           Request serviceRequest) {
-        
+
         ByteArrayOutputStream buffer = null;
         try {
             Response serviceResponse = service.getResponseHandler();
@@ -398,23 +401,24 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
             // execute request
             serviceResponse.execute(serviceRequest);
 
-            // create buffer                        
+            // create buffer
             buffer = new ByteArrayOutputStream();
-            
+
             // gather response
             serviceResponse.writeTo(buffer);
-        }
-        catch( ServiceException serviceException ){
+          }catch(IOException ioe){
+            //user just closed the socket stream, do nothing
+          }catch( ServiceException serviceException ){
             service.sendError( response, serviceException );
-            return;                        
+            return;
         }
-        // service succeeded in producing a response!        
+        // service succeeded in producing a response!
         try {
             // (copy the result to out
             OutputStream out = response.getOutputStream();
             out = new BufferedOutputStream(out, 2 * 1024 * 1024);
             buffer.writeTo(out);
-            out.flush();            
+            out.flush();
         } catch (IOException ioException) {
             // something went wrong reporting to the user
             IllegalStateException stateException = new IllegalStateException("Communication to user failed");
@@ -430,17 +434,17 @@ class FileStratagy implements AbstractService.ServiceStratagy {
                           HttpServletRequest request,
                           HttpServletResponse response,
                           Request serviceRequest) {
-        File temp = null;                              
+        File temp = null;
         try {
             Response serviceResponse = service.getResponseHandler();
             // execute request
             serviceResponse.execute(serviceRequest);
-            
+
             sequence++;
             temp = File.createTempFile( "wfs"+sequence,"tmp" );
-            
+
             FileOutputStream safe = new FileOutputStream( temp );
-            
+
             // accept response to temporary file
             serviceResponse.writeTo( safe );
             safe.close();
@@ -449,31 +453,32 @@ class FileStratagy implements AbstractService.ServiceStratagy {
             return;
         } catch( ServiceException serviceException ){
             service.sendError( response, serviceException );
-            return;                        
+            return;
         }
-        
-        
+
+
         // service succeeded in producing a response!
-        // copy the result to out        
+        // copy the result to out
         try {
             // copy result to the real output stream
             InputStream copy = new BufferedInputStream( new FileInputStream( temp ) );
             OutputStream out = response.getOutputStream();
-                        
+
             // need to buffer this for performance
             // not sure if it has been done already
             int b;
             b = copy.read();
             while( b != -1 ){
                 out.write( b );
-                b = copy.read();                    
+                b = copy.read();
             }
-            copy.close();            
+            copy.close();
         } catch (IOException ioException) {
             // something went wrong reporting to the user
             IllegalStateException stateException = new IllegalStateException("Communication to user failed");
             stateException.initCause( ioException );
             throw stateException;
-        }        
+        }
     }
-};
+}
+

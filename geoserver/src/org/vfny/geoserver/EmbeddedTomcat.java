@@ -22,9 +22,10 @@ import java.util.logging.Logger;
  * and path variables are in place before it begins.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: EmbeddedTomcat.java,v 1.6.4.1 2003/11/04 22:32:23 cholmesny Exp $
+ * @version $Id: EmbeddedTomcat.java,v 1.6.4.2 2003/11/14 20:39:03 groldan Exp $
  */
-public class EmbeddedTomcat {
+public class EmbeddedTomcat
+{
     /** The logger for the filter module. */
     private static final Logger LOG = Logger.getLogger(
             "org.vfny.geoserver.EmbeddedTomcat");
@@ -55,7 +56,8 @@ public class EmbeddedTomcat {
     /**
      * Default Constructor
      */
-    public EmbeddedTomcat() {
+    public EmbeddedTomcat()
+    {
     }
 
     /**
@@ -63,7 +65,8 @@ public class EmbeddedTomcat {
      *
      * @param path The catalina server path.
      */
-    public void setPath(String path) {
+    public void setPath(String path)
+    {
         this.path = path + SERVER_DIR;
     }
 
@@ -72,7 +75,8 @@ public class EmbeddedTomcat {
      *
      * @return path The catalina server path.
      */
-    public String getPath() {
+    public String getPath()
+    {
         return path;
     }
 
@@ -81,7 +85,8 @@ public class EmbeddedTomcat {
      *
      * @throws Exception for any problems
      */
-    public void startTomcat() throws Exception {
+    public void startTomcat() throws Exception
+    {
         Engine engine = null;
 
         // Set the home directory
@@ -98,6 +103,7 @@ public class EmbeddedTomcat {
 
         // Create an engine
         engine = embedded.createEngine();
+
         engine.setDefaultHost("localhost");
 
         // Create a default virtual host
@@ -106,6 +112,7 @@ public class EmbeddedTomcat {
         // Create the ROOT context
         Context context = embedded.createContext("", getPath()
                 + "/webapps/ROOT");
+
         context.setLogger(embedded.getLogger());
 
         //context.setDebug(5);
@@ -117,6 +124,7 @@ public class EmbeddedTomcat {
 
         // Assemble and install a default HTTP connector
         Connector connector = embedded.createConnector(null, 8081, false);
+
         embedded.addConnector(connector);
 
         // Start the embedded server
@@ -128,7 +136,8 @@ public class EmbeddedTomcat {
      *
      * @throws Exception if anything goes wrong.
      */
-    public void stopTomcat() throws Exception {
+    public void stopTomcat() throws Exception
+    {
         // Stop the embedded server
         embedded.stop();
     }
@@ -142,29 +151,36 @@ public class EmbeddedTomcat {
      * @throws Exception if anything goes wrong.
      */
     public void registerWAR(String contextPath, URL warFile)
-        throws Exception {
+        throws Exception
+    {
         LOG.info("registered war: " + contextPath);
 
-        if (contextPath == null) {
+        if (contextPath == null)
+        {
             throw new Exception("Invalid Path : " + contextPath);
         }
 
-        if (contextPath.equals("/")) {
+        if (contextPath.equals("/"))
+        {
             contextPath = "";
         }
 
-        if (warFile == null) {
+        if (warFile == null)
+        {
             throw new Exception("Invalid WAR : " + warFile);
         }
 
         Deployer deployer = (Deployer) host;
+
         Context context = deployer.findDeployedApp(contextPath);
 
-        if (context != null) {
+        if (context != null)
+        {
             throw new Exception("Context " + contextPath + " Already Exists!");
         }
 
         deployer.install(contextPath, warFile);
+
         deployer.setLogger(new SystemOutLogger());
     }
 
@@ -175,12 +191,16 @@ public class EmbeddedTomcat {
      *
      * @throws Exception if anything goes wrong.
      */
-    public void unregisterWAR(String contextPath) throws Exception {
+    public void unregisterWAR(String contextPath) throws Exception
+    {
         Context context = host.map(contextPath);
 
-        if (context != null) {
+        if (context != null)
+        {
             embedded.removeContext(context);
-        } else {
+        }
+        else
+        {
             throw new Exception("Context does not exist for named path : "
                 + contextPath);
         }
@@ -191,37 +211,56 @@ public class EmbeddedTomcat {
      *
      * @param args Arguments from the user (must be 'stop' or 'start').
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         EmbeddedTomcat tomcat = new EmbeddedTomcat();
 
         // if geoserver home is not defined, make a guess that it is the current
         //  user directory.  check to make sure this is the case.  if this is not
         //  the case, then bail out with appropriate error message.
         // also, set path to the shut down file.
-        if (System.getProperty("GEOSERVER_HOME") != null) {
+        if (System.getProperty("GEOSERVER_HOME") != null)
+        {
             File testHome = new File(System.getProperty("GEOSERVER_HOME")
                     + TEST_FILE);
 
-            if (testHome.exists()) {
+            if (testHome.exists())
+            {
                 tomcat.setPath(System.getProperty("GEOSERVER_HOME"));
-            } else {
+            }
+            else
+            {
                 System.out.println("Startup/Shutdown command unsucessful...");
+
                 System.out.println("You appear to have specified the ");
+
                 System.out.println("GEOSERVER_HOME environmental variable");
+
                 System.out.println("incorrectly.");
+
                 System.exit(1);
             }
-        } else {
+        }
+        else
+        {
             File testHome = new File(System.getProperty("user.dir") + TEST_FILE);
 
-            if (testHome.exists()) {
+            if (testHome.exists())
+            {
                 tomcat.setPath(System.getProperty("user.dir"));
-            } else {
+            }
+            else
+            {
                 System.out.println("Startup/Shutdown command unsucessful...");
+
                 System.out.println("You have not specified the GEOSERVER_HOME ");
+
                 System.out.println("environmental variable and you are not");
+
                 System.out.println("starting GeoServer from the root GeoServer");
+
                 System.out.println("directory.");
+
                 System.exit(1);
             }
         }
@@ -229,43 +268,62 @@ public class EmbeddedTomcat {
         // handle start conditions
         File shutDown = new File(tomcat.getPath() + STOP_FILE);
 
-        if (args[0].equals("start")) {
-            try {
+        if (args[0].equals("start"))
+        {
+            try
+            {
                 // make sure to delete shut down signal file
                 shutDown.delete();
 
                 // start tomcat server and notify user
                 System.out.println("Starting GeoServer.....");
+
                 LOG.info("about to start tomcat");
+
                 tomcat.startTomcat();
 
                 // check for shutdown file at specified frequency
-                while (!shutDown.exists()) {
+                while (!shutDown.exists())
+                {
                     Thread.sleep(STOP_CHECK_FREQUENCEY);
                 }
 
                 // stop server on termination
                 System.out.println("stopping server...");
+
                 tomcat.stopTomcat();
+
                 System.exit(0);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
         }
+
         // handle stop conditions
-        else if (args[0].equals("stop")) {
+        else if (args[0].equals("stop"))
+        {
             System.out.println("stopping server...");
 
-            try {
+            try
+            {
                 shutDown.createNewFile();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 e.printStackTrace();
             }
-        } else {
+        }
+        else
+        {
             System.out.println("Usage: ");
+
             System.out.println(
                 " java -cp $CLASSPATH org.vfny.geoserver.EmbeddedTomcat [command]");
+
             System.out.println(" where [command]: start (starts the server)");
+
             System.out.println("                  stop (stops the server)");
         }
     }

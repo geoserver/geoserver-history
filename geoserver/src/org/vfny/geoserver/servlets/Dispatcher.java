@@ -32,12 +32,14 @@ import javax.servlet.http.*;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.5.4.1 2003/11/04 23:29:19 cholmesny Exp $
+ * @version $Id: Dispatcher.java,v 1.5.4.2 2003/11/14 20:39:15 groldan Exp $
  */
 public class Dispatcher extends HttpServlet {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
+
+    /** DOCUMENT ME!  */
     private static final ServerConfig config = ServerConfig.getInstance();
 
     /** Specifies MIME type */
@@ -97,21 +99,32 @@ public class Dispatcher extends HttpServlet {
         //BufferedReader tempReader = request.getReader();
         //String tempResponse = new String();
         int targetRequest = 0;
-
         LOGGER.finer("got to post request");
 
         //request.getReader().mark(10000);
+
         /*    try {
-           if ( request.getReader() != null ) {
-           DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
-           targetRequest = requestTypeAnalyzer.getRequestType();
-            } else {
-             targetRequest = UNKNOWN;
-             }
-            } catch (WfsException wfs) {
-                        targetRequest = ERROR;
-                        tempResponse = wfs.getXmlResponse();
-            }*/
+
+                      if ( request.getReader() != null ) {
+
+                      DispatcherReaderXml requestTypeAnalyzer = new DispatcherReaderXml( request.getReader());
+
+                      targetRequest = requestTypeAnalyzer.getRequestType();
+
+                       } else {
+
+                        targetRequest = UNKNOWN;
+
+                        }
+
+                       } catch (WfsException wfs) {
+
+                                   targetRequest = ERROR;
+
+                                   tempResponse = wfs.getXmlResponse();
+
+                       }*/
+
         //request.getReader().reset();
         doResponse(false, request, response, targetRequest);
     }
@@ -138,7 +151,6 @@ public class Dispatcher extends HttpServlet {
             targetRequest = DispatcherKvpReader.getRequestType(kvPairs);
         } else {
             targetRequest = UNKNOWN;
-
             //throw exception
         }
 

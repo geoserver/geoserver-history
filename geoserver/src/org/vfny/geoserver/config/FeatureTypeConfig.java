@@ -19,9 +19,12 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.4 2003/11/11 02:44:44 cholmesny Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.5 2003/11/14 20:39:14 groldan Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
+
+    private static final int DEFAULT_NUM_DECIMALS = 8;
+
     /** DOCUMENT ME! */
     private DataStoreConfig dataStore;
 
@@ -45,10 +48,10 @@ public class FeatureTypeConfig extends BasicConfig {
 
     /** DOCUMENT ME! */
     private String defaultStyle;
-
     private String pathToSchemaFile;
-
     private String prefix;
+
+    private int numDecimals = DEFAULT_NUM_DECIMALS;
 
     /**
      * Creates a new FeatureTypeConfig object.
@@ -61,23 +64,16 @@ public class FeatureTypeConfig extends BasicConfig {
     public FeatureTypeConfig(CatalogConfig catalog, Element fTypeRoot)
         throws ConfigurationException {
         super(fTypeRoot);
-	
+
         String msg = null;
-        String dataStoreNS = getAttribute(fTypeRoot, "datastore", true);
-        NameSpace dsNs = catalog.getNameSpace(dataStoreNS);
 
-        if (dsNs == null) {
-            msg = "a feature type named " + getName(true)
-                + " has been configured for datastore " + dataStoreNS
-                + " for wich there are no configured namespace";
-            throw new ConfigurationException(msg);
-        }
+        String dataStoreId = getAttribute(fTypeRoot, "datastore", true);
 
-        this.dataStore = catalog.getDataStore(dsNs);
+        this.dataStore = catalog.getDataStore(dataStoreId);
 
         if (dataStore == null) {
             msg = "FeatureType " + getName(true)
-                + " is congfigured from a datastore named " + dsNs.getPrefix()
+                + " is congfigured from a datastore named " + dataStoreId
                 + " wich was not found. Check your config files.";
             throw new ConfigurationException(msg);
         }
@@ -97,13 +93,35 @@ public class FeatureTypeConfig extends BasicConfig {
         } else {
             LOGGER.info("featureType " + getName() + " is not enabled");
         }
+        Element numDecimalsElem = getChildElement(fTypeRoot, "numDecimals",
+                false);
+
+        if (numDecimalsElem != null)
+        {
+            this.numDecimals = getIntAttribute(numDecimalsElem, "value", false,
+                    DEFAULT_NUM_DECIMALS);
+        }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public int getNumDecimals()
+    {
+        return numDecimals;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public FeatureType getSchema() {
         return schema;
     }
 
-    
     /**
      * gets the string of the path to the schema file.  This is set during
      * feature reading, the schema file should be in the same folder as the
@@ -117,10 +135,20 @@ public class FeatureTypeConfig extends BasicConfig {
         return pathToSchemaFile;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param pathToSchema DOCUMENT ME!
+     */
     public void setSchemaFile(String pathToSchema) {
-	this.pathToSchemaFile = pathToSchema;
+        this.pathToSchemaFile = pathToSchema;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public DataStoreConfig getDataStore() {
         return this.dataStore;
     }
@@ -140,11 +168,17 @@ public class FeatureTypeConfig extends BasicConfig {
         return (this.dataStore != null) && (this.dataStore.isEnabled());
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String getPrefix() {
-	if (this.prefix == null) {
-	    this.prefix = getDataStore().getNameSpace().getPrefix();
-	}
-	return prefix;
+        if (this.prefix == null) {
+            this.prefix = getDataStore().getNameSpace().getPrefix();
+        }
+
+        return prefix;
     }
 
     /**
@@ -154,11 +188,10 @@ public class FeatureTypeConfig extends BasicConfig {
      */
     public String getName() {
         //getDataStore().getNameSpace().getPrefix() is causing too many null
-        //pointers on unitialized stuff.  figure out a more elegant way to 
+        //pointers on unitialized stuff.  figure out a more elegant way to
         //handle this.
         return new StringBuffer(getPrefix()).append(NameSpace.PREFIX_DELIMITER)
-                                                                          .append(super
-            .getName()).toString();
+                                            .append(super.getName()).toString();
     }
 
     /**
@@ -180,8 +213,13 @@ public class FeatureTypeConfig extends BasicConfig {
         }
     }
 
-    public String getShortName(){
-	return super.getName();
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getShortName() {
+        return super.getName();
     }
 
     /**
@@ -240,6 +278,7 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
+
      **/
     public String getOperations() {
         //get this from the datasource?
@@ -344,8 +383,8 @@ public class FeatureTypeConfig extends BasicConfig {
      * don't know.  Ask martin or geotools devel.  This will be better when
      * our geometries actually have their srs objects.  And I think that we
      * may need some MS Access database, not sure, but I saw some stuff about
-     * that on the list.  Hopefully they'll do it all in java soon.  I'm
-     * sorta tempted to just have users define for now.
+     * that on the list.  Hopefully they'll do it all in java soon.  I'm sorta
+     * tempted to just have users define for now.
      *
      * @param fromSrId DOCUMENT ME!
      * @param bbox DOCUMENT ME!

@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: AbstractConfig.java,v 1.1.2.3 2003/11/11 02:46:16 cholmesny Exp $
+ * @version $Id: AbstractConfig.java,v 1.1.2.4 2003/11/14 20:39:13 groldan Exp $
  */
 public abstract class AbstractConfig {
     /** DOCUMENT ME! */
@@ -33,6 +33,7 @@ public abstract class AbstractConfig {
     protected String getAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
         Attr att = elem.getAttributeNode(attName);
+
         String value = null;
 
         if (att != null) {
@@ -102,6 +103,7 @@ public abstract class AbstractConfig {
     protected double getDoubleAttribute(Element elem, String attName,
         boolean mandatory) throws ConfigurationException {
         String value = getAttribute(elem, attName, mandatory);
+
         double d = Double.NaN;
 
         if (value != null) {
@@ -237,6 +239,7 @@ public abstract class AbstractConfig {
             if (mandatory) {
                 String msg = "Mandatory child " + childName + "not found in "
                     + " element: " + root;
+
                 throw new ConfigurationException(msg);
             }
 
@@ -272,11 +275,14 @@ public abstract class AbstractConfig {
     protected String getElementText(Element elem, boolean mandatory)
         throws ConfigurationException {
         String value = null;
+
         LOGGER.finer("getting element text for " + elem);
 
         if (elem != null) {
             Node child;
+
             NodeList childs = elem.getChildNodes();
+
             int nChilds = childs.getLength();
 
             for (int i = 0; i < nChilds; i++) {

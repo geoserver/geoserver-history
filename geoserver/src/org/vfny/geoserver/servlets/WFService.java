@@ -12,7 +12,7 @@ import org.vfny.geoserver.WfsExceptionHandler;
  * base servlet class for all WFS requests
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: WFService.java,v 1.1.2.2 2003/11/14 20:39:15 groldan Exp $
  */
 abstract public class WFService extends AbstractService {
     /**

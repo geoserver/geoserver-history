@@ -13,7 +13,7 @@ import java.util.*;
  * Streams out a BasicConfig element
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: ConfigResponseHandler.java,v 1.1.2.3 2003/11/14 20:39:14 groldan Exp $
  */
 public abstract class ConfigResponseHandler extends XmlResponseHandler {
     /**

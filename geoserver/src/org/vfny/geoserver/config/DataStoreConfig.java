@@ -15,12 +15,15 @@ import java.util.logging.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: DataStoreConfig.java,v 1.1.2.3 2003/11/14 20:39:14 groldan Exp $
  */
 public class DataStoreConfig extends AbstractConfig {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
+
+    /** unique datasore identifier */
+    private String id;
 
     /** unique namespace to refer to this datastore */
     private NameSpace nameSpace;
@@ -48,6 +51,7 @@ public class DataStoreConfig extends AbstractConfig {
     public DataStoreConfig(Element dsElem, CatalogConfig catalog)
         throws ConfigurationException {
         LOGGER.finer("creating a new DataStore configuration");
+        this.id = getAttribute(dsElem, "id", true);
 
         String namespacePrefix = getAttribute(dsElem, "namespace", true);
         this.nameSpace = catalog.getNameSpace(namespacePrefix);
@@ -65,6 +69,15 @@ public class DataStoreConfig extends AbstractConfig {
         this._abstract = getChildText(dsElem, "abstract", false);
         loadConnectionParams(getChildElement(dsElem, "connectionParams", true));
         LOGGER.info("created DataStore " + toString());
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getId() {
+        return this.id;
     }
 
     /**
@@ -107,22 +120,42 @@ public class DataStoreConfig extends AbstractConfig {
      *
      * @throws IOException if a datastore is found but can not be created for
      *         the passed parameters
-     * @throws NullPointerException if no DataStore is found
      * @throws IllegalStateException if this DataStoreConfig is disabled by
      *         configuration
+     * @throws NoSuchElementException if no DataStore is found
+     * @throws DataSourceException DOCUMENT ME!
      */
     public DataStore getDataStore()
-        throws IOException, NullPointerException, IllegalStateException {
+        throws IOException, IllegalStateException, NoSuchElementException {
         if (!isEnabled()) {
             throw new IllegalStateException(
                 "this datastore is not enabled, check your configuration files");
         }
 
-        DataStore dataStore = DataStoreFinder.getDataStore(connectionParams);
+        DataStore dataStore = null;
+
+        try {
+            dataStore = DataStoreFinder.getDataStore(connectionParams);
+        } catch (Throwable ex) {
+            throw new DataSourceException("can't create the datastore " +
+                                          getId() + ": " +
+                                          ex.getClass().getName() + ": " +
+                                          ex.getMessage(), ex);
+        }
+
+        if (dataStore == null) {
+            throw new NoSuchElementException(
+                "No datastore found capable of manage " + toString());
+        }
 
         return dataStore;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public String getTitle() {
         return title;
     }
