@@ -17,6 +17,7 @@ import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
@@ -1016,6 +1017,25 @@ public class XMLConfigReader {
         if (tmp != null) {
             ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
         }
+
+        // Modif C. Kolbowicz - 06/10/2004
+        Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
+        if (legendURL != null) {
+            LegendURLDTO legend = new LegendURLDTO();
+            legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "width", true)));
+            legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "height", true)));            
+            legend.setFormat(ReaderUtils.getChildText(legendURL, "Format", true));
+            legend.setOnlineResource(
+                ReaderUtils.getAttribute(
+                    ReaderUtils.getChildElement(legendURL, "OnlineResource", true), 
+                    "xlink:href", 
+                    true
+                )
+            );
+            ft.setLegendURL(legend);           
+        }
+        //-- Modif C. Kolbowicz - 06/10/2004
+
 
         ft.setLatLongBBox(loadLatLongBBox(ReaderUtils.getChildElement(
                     fTypeRoot, "latLonBoundingBox")));
