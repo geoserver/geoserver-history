@@ -3,6 +3,7 @@ package org.vfny.geoserver.global;
 import java.util.List;
 import java.util.Map;
 
+import org.geotools.styling.Style;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -48,6 +49,11 @@ public class CoverageInfo extends GlobalLayerSupertype {
 
     private Map meta;
 
+    /**
+     * Default style used to render this Coverage with WMS
+     */
+    private String defaultStyle;
+    
     public CoverageInfo(CoverageInfoDTO dto, Data data)
         throws ConfigurationException {
         this.data = data;
@@ -66,7 +72,8 @@ public class CoverageInfo extends GlobalLayerSupertype {
         nativeFormat = dto.getNativeFormat();
         supportedFormats = dto.getSupportedFormats();
         defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
-        interpolationMethods = dto.getInterpolationMethods();        
+        interpolationMethods = dto.getInterpolationMethods();
+        defaultStyle = dto.getDefaultStyle();
     }
 
     Object toDTO() {
@@ -86,7 +93,8 @@ public class CoverageInfo extends GlobalLayerSupertype {
         dto.setNativeFormat(nativeFormat);
         dto.setSupportedFormats(supportedFormats);
         dto.setDefaultInterpolationMethod(defaultInterpolationMethod);
-        dto.setInterpolationMethods(interpolationMethods);        
+        dto.setInterpolationMethods(interpolationMethods);
+        dto.setDefaultStyle(defaultStyle);
 
         return dto;
     }
@@ -287,5 +295,16 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	public List getSupportedFormats() {
 		return supportedFormats;
 	}
+	
+	/**
+     * By now just return the default style to be able to declare it in
+     * WMS capabilities, but all this stuff needs to be revisited since it seems
+     * currently there is no way of retrieving all the styles declared for
+     * a given FeatureType.
+     * 
+     * @return the default Style for the FeatureType
+     */
+    public Style getDefaultStyle(){
+    	return data.getStyle(defaultStyle);
+    }
 }
- 

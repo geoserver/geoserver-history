@@ -18,6 +18,7 @@ import javax.xml.transform.TransformerException;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
@@ -371,7 +372,9 @@ public class WMSCapsTransformer extends TransformerBase {
 
             Data catalog = wms.getData();
             Collection ftypes = catalog.getFeatureTypeInfos().values();
-            FeatureTypeInfo layer;
+            Collection coverages = catalog.getCoverageInfos().values();
+            FeatureTypeInfo fLayer;
+            CoverageInfo cLayer;
 
             element("Title", wms.getTitle());
             element("Abstract", wms.getAbstract());
@@ -380,10 +383,18 @@ public class WMSCapsTransformer extends TransformerBase {
 
             //now encode each layer individually
             for (Iterator it = ftypes.iterator(); it.hasNext();) {
-                layer = (FeatureTypeInfo) it.next();
+            	fLayer = (FeatureTypeInfo) it.next();
 
-                if (layer.isEnabled()) {
-                    handleFeatureType(layer);
+                if (fLayer.isEnabled()) {
+                    handleFeatureType(fLayer);
+                }
+            }
+
+            for (Iterator it = coverages.iterator(); it.hasNext();) {
+            	cLayer = (CoverageInfo) it.next();
+
+                if (cLayer.isEnabled()) {
+                    handleCoverage(cLayer);
                 }
             }
 
@@ -501,6 +512,40 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Title", ftStyle.getTitle());
             element("Abstract", ftStyle.getAbstract());
             handleLegendURL(ftype);
+            end("Style");
+
+            end("Layer");
+        }
+
+        protected void handleCoverage(CoverageInfo coverage) {
+            //HACK: by now all our layers are queryable, since they reference
+            //only featuretypes managed by this server
+            AttributesImpl qatts = new AttributesImpl();
+            qatts.addAttribute("", "queryable", "queryable", "", "1");
+            start("Layer", qatts);
+            element("Name", coverage.getName());
+            element("Title", coverage.getLabel());
+            element("Abstract", coverage.getDescription());
+
+            handleKeywordList(coverage.getKeywords());
+
+            /**
+             * @task REVISIT: should getSRS() return the full URL?
+             */
+            element("SRS", EPSG + "4326");
+
+            Envelope bbox = coverage.getEnvelope();
+
+            handleLatLonBBox(bbox);
+
+            //add the layer style
+            start("Style");
+
+            Style ftStyle = coverage.getDefaultStyle();
+            element("Name", ftStyle.getName());
+            element("Title", ftStyle.getTitle());
+            element("Abstract", ftStyle.getAbstract());
+            //handleLegendURL(coverage);
             end("Style");
 
             end("Layer");

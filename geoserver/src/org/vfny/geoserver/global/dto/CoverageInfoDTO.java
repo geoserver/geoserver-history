@@ -46,6 +46,12 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private String defaultInterpolationMethod;
     
     private List interpolationMethods;
+    
+    /**
+     * Default style used to render this Coverage with WMS
+     */
+    private String defaultStyle;
+
 
     public CoverageInfoDTO() {
     }
@@ -91,6 +97,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		} catch (CloneNotSupportedException e4) {
 			interpolationMethods = new LinkedList();
 		}
+		
+		defaultStyle = dto.getDefaultStyle();
     }
 
     public Object clone() {
@@ -121,6 +129,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         } else if (f.getKeywords() != null) {
             return false;
         }
+        r = r && (defaultStyle == f.getDefaultStyle());
         r = r && (dirName == f.getDirName());
         r = r && (envelope == f.getEnvelope());
 
@@ -419,4 +428,42 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	public void setSupportedFormats(List supportedFormats) {
 		this.supportedFormats = supportedFormats;
 	}
+	
+	/**
+     * getDefaultStyle purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getDefaultStyle() {
+        //HACK: So our UI doesn't seem to allow the setting of styles or 
+        //default styles or anything, despite the fact that shit chokes when none
+        //is present.  This is making it so the beta release can not have any data
+        //stores added to it.  This is a hacky ass way to get around it, just 
+        //write out a normal style if it is null.  This can obviously be done 
+        //better, and I have no idea why this default style shit is required - wfs
+        //does not care about a style.  Should be able to seamlessly at least do
+        //something for wms.
+        if ((defaultStyle == null) || defaultStyle.equals("")) {
+            defaultStyle = "normal";
+        }
+
+        return defaultStyle;
+    }
+
+    /**
+     * setDefaultStyle purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setDefaultStyle(String string) {
+        defaultStyle = string;
+    }
 }
