@@ -15,14 +15,24 @@
         <parameter name="user" value="sde"/>
         <parameter name="password" value="carto"/>
       </connectionParams>
-    </datastore>
+    </datastore> 
 
-    <datastore id="bc.shp" enabled="true" namespace="cdf">
+    <datastore id="bc.shp" enabled="true" namespace="topp">
       <description>British Columbia sample road shapefiles</description>
       <connectionParams>
-        <!-- change the file to the location where geoserver puts the file.  We're working on 
-             making this easier to configure, automatically detect it for you.  -->
-        <parameter name="url" value="file:/tmp/2/geoserver/conf/featureTypes/bc_roads/bc_roads.shp"/>
+        <!-- The filename parameter can be used for shapefiles if they are
+             in the conf/featureTypes directory.  The value should be given
+             relative to conf/featureTypes, so for the sample file located
+             in geoserver/conf/featureTypes/bc_roads the following works:
+          -->
+        <parameter name="filename" value="/bc_roads/bc_roads.shp"/>
+        
+         <!-- The parameter can also be given as an absolute url, to a file
+              or even an http location.  It can be tricky getting the
+              exact string correct, but it allows more flexibility. -->
+         <!--
+         <parameter name="url" value="file:/tmp/geoserver/conf/featureTypes/bc_roads/bc_roads.shp"/>
+         -->
       </connectionParams>
     </datastore>
   <datastore id="local.postgis" enabled="false" namespace="topp"><!-- enabled is optional, defaults to true -->
@@ -73,8 +83,7 @@
                 <style id="thick outline" filename="polyshp.sld"/>
                 <style id="dotty" filename="funkypolyshp.sld"/>
                 <style id="green" filename="green.sld"/>
-                <style id="population" filename="popshade.sld"/>
-                <style id="highlight" filename="usa_penn.sld"/>
+                <style id="blue" filename="blue.sld"/>
                 <style id="maleVsFemale" filename="usa_ratio.sld"/>
                 <style id="normal" filename="normal.sld" default="true"/>
   </styles>
