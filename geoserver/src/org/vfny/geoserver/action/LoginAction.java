@@ -27,7 +27,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: LoginAction.java,v 1.4 2004/02/24 10:03:21 jive Exp $
+ * @version $Id: LoginAction.java,v 1.5 2004/03/15 08:16:10 jive Exp $
  */
 public class LoginAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping,
@@ -55,6 +55,7 @@ public class LoginAction extends GeoServerAction {
         
         ActionErrors errors = new ActionErrors();
         errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.invalidCombo"));
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.login.hint"));        
         request.setAttribute(Globals.ERROR_KEY, errors);
         
         return mapping.findForward("login");

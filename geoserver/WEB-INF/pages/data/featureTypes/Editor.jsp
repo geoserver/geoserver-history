@@ -17,6 +17,18 @@
     </tr>
 	<tr>
       <td class="label">
+		<span class="help" title="<bean:message key="help.type.style"/>">
+          <bean:message key="label.style"/>:
+        </span>
+      </td>
+      <td class="datum">
+        <html:select property="styleId">
+          <html:options property="styles"/>
+        </html:select>
+      </td>
+    </tr>    
+	<tr>
+      <td class="label">
 		<span class="help" title="<bean:message key="help.type.srs"/>">
           <bean:message key="label.SRS"/>:
         </span>

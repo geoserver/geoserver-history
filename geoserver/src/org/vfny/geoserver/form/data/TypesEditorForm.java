@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
@@ -37,20 +40,23 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.7 2004/03/09 10:59:56 jive Exp $
+ * @version $Id: TypesEditorForm.java,v 1.8 2004/03/15 08:16:11 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
     /** Identiy DataStore responsible for this FeatureType */
     private String dataStoreId;
-    
+
+    /** Identify Style used to render this feature type */
+    private String styleId;
     /**
      * Name of featureType.
      * <p>
-     * Usually an exact match for typeName provided by a DataStore.
+     * An exact match for typeName provided by a DataStore.
      * </p> 
      */
     private String name;
+    
     /**
      * Representation of the Spatial Reference System.
      * <p>
@@ -94,6 +100,10 @@ public class TypesEditorForm extends ActionForm {
 
     /** Action requested by user */
     private String action;
+
+    /** Sorted Set of available styles */
+    private SortedSet styles;
+    
     /**
      * Set up FeatureTypeEditor from from Web Container.
      * <p>
@@ -121,7 +131,7 @@ public class TypesEditorForm extends ActionForm {
             return; // Action should redirect to Select screen?
         }
         this.dataStoreId = type.getDataStoreId()      ;  
-        
+        this.styleId = type.getDefaultStyle();
         
         description = type.getAbstract();
         
@@ -181,6 +191,17 @@ public class TypesEditorForm extends ActionForm {
             }
         }
         this.keywords = buf.toString();
+        
+        styles = new TreeSet();
+        for( Iterator i = config.getStyles().values().iterator(); i.hasNext();){ 
+            StyleConfig sc = (StyleConfig)i.next();
+            styles.add(sc.getId());            
+            if(sc.isDefault()){
+                if( styleId == null || styleId.equals("") ){
+                    styleId.equals( sc.getId() );
+                }
+            }
+        }
     }
     
     /**
@@ -250,14 +271,17 @@ public class TypesEditorForm extends ActionForm {
             action.startsWith("Remove")){
             return errors;            
         }
+        // Check selected style exists
         DataConfig data = ConfigRequests.getDataConfig(request);
-
+        if( !(data.getStyles().containsKey( styleId ) || "".equals(styleId))){
+            errors.add("styleId",
+                new ActionError("error.styleId.notFound",styleId));
+        }
         // check name exists in current DataStore?
         if ("".equals(minX)
          || "".equals(minY)
          || "".equals(maxY)
-         || "".equals(maxX)) {
-           
+         || "".equals(maxX)) {           
             errors.add("latlongBoundingBox",
                 new ActionError("error.latLonBoundingBox.required"));
         } else {
@@ -486,4 +510,28 @@ public class TypesEditorForm extends ActionForm {
 	public void setMinY(String minY) {
 		this.minY = minY;
 	}
+    /**
+     * @return Returns the styleId.
+     */
+    public String getStyleId() {
+        return styleId;
+    }
+    /**
+     * @param styleId The styleId to set.
+     */
+    public void setStyleId(String styleId) {
+        this.styleId = styleId;
+    }
+    /**
+     * @return Returns the styles.
+     */
+    public SortedSet getStyles() {
+        return styles;
+    }
+    /**
+     * @param styles The styles to set.
+     */
+    public void setStyles(SortedSet styles) {
+        this.styles = styles;
+    }
 }

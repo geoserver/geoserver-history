@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <logic:empty name="GeoServer.ApplicationState" property="dataStoreErrorKeys">
-<bean:message key="message.dataOkay"/>
+  <bean:message key="message.dataOkay"/>
 </logic:empty>
 
 <logic:notEmpty name="GeoServer.ApplicationState" property="dataStoreErrorKeys">

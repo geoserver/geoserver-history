@@ -22,8 +22,8 @@ import org.vfny.geoserver.requests.Requests;
  * DataNamespacesSelectForm
  * <p>
  * @author rgould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataNamespacesSelectForm.java,v 1.3 2004/03/01 19:28:55 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataNamespacesSelectForm.java,v 1.4 2004/03/15 08:16:11 jive Exp $
  */
 public class DataNamespacesSelectForm extends ActionForm {
     /** namespace the user selected (value is a prefix) */
@@ -39,6 +39,9 @@ public class DataNamespacesSelectForm extends ActionForm {
         action = "";
 
         UserContainer user = Requests.getUserContainer( request );
+        if( user == null){
+            return; // User not logged in, probably the JSPCompiler
+        }
         selectedNamespace=user.getPrefix();
         
         // populate and sort available namespaces

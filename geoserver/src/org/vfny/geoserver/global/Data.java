@@ -10,6 +10,7 @@ import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureTypeMetaData;
+import org.geotools.data.InProcessLockingManager;
 import org.geotools.data.LockingManager;
 import org.geotools.data.NamespaceMetaData;
 import org.geotools.data.Transaction;
@@ -47,7 +48,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.35 2004/03/14 05:23:02 cholmesny Exp $
+ * @version $Id: Data.java,v 1.36 2004/03/15 08:16:13 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -1092,6 +1093,106 @@ SCHEMA:
         return testName.substring(start, end).equals(INFO_FILE);
     }
 
+    /**
+     * The number of connections currently held.
+     * <p>
+     * We will need to modify DataStore to provide access to the current
+     * count of its connection pool (if appropriate). Right now we are
+     * asumming a one DataStore equals One "Connection".
+     * </p>
+     * <p>
+     * This is a good compromize since I just want to indicate the amount
+     * of resources currently tied up by GeoServer.
+     * </p>
+     * @return Number of available connections.
+     */
+    public int getConnectionCount(){
+        int count = 0;
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
+            DataStoreInfo meta = (DataStoreInfo) i.next();
+
+            if (!meta.isEnabled()) {
+                continue; // disabled
+            }            
+            DataStore dataStore;            
+            try {
+                dataStore = meta.getDataStore();
+            } catch (Throwable notAvailable) {
+                continue; // not available
+            }
+            // TODO: All DataStore to indicate number of connections
+            count += 1;
+        }
+        return count;
+    }
+    /**
+     * Count locks currently held.
+     * <p>
+     * Not sure if this should be the number of features locked, or the number
+     * of FeatureLocks in existence (a FeatureLock may lock several features.
+     * </p>
+     * @return number of locks currently held
+     * 
+     */
+    public int getLockCount(){
+        int count = 0;
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
+            DataStoreInfo meta = (DataStoreInfo) i.next();
+
+            if (!meta.isEnabled()) {
+                continue; // disabled
+            }
+
+            DataStore dataStore;
+            try {
+                dataStore = meta.getDataStore();
+            } catch (IllegalStateException notAvailable) {
+                continue; // not available
+            } catch (Throwable huh){
+                continue; // not even working
+            }
+            LockingManager lockingManager = dataStore.getLockingManager();
+            if (lockingManager == null) {
+                continue; // locks not supported
+            }
+            // TODO: implement LockingManger.getLockSet()
+            // count += lockingManager.getLockSet();             
+        }
+        return count;
+    }
+    /**
+     * Release all feature locks currently held.
+     * <p>
+     * This is the implementation for the Admin "free lock" action, transaction
+     * locks are not released.
+     * </p>
+     * @return Number of locks released
+     */
+    public int lockReleaseAll(){
+        int count = 0;
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
+            DataStoreInfo meta = (DataStoreInfo) i.next();
+
+            if (!meta.isEnabled()) {
+                continue; // disabled
+            }                
+            DataStore dataStore;
+            try {
+                dataStore = meta.getDataStore();
+            } catch (IllegalStateException notAvailable) {
+                continue; // not available
+            } catch (Throwable huh){
+                continue; // not even working
+            }            
+            LockingManager lockingManager = dataStore.getLockingManager();
+            if (lockingManager == null) {
+                continue; // locks not supported
+            }
+            // TODO: implement LockingManger.releaseAll()
+            //count += lockingManager.releaseAll();            
+        }
+        return count;
+    }
     /**
      * Release lock by authorization
      *
