@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalConfiguration version="0.0.13" updateSequence="0">
+		<Name>FreeFS</Name>
+		<Title>TOPP GeoServer</Title>
+		<Abstract>This is a test server.</Abstract>
+                <Fees>none</Fees>
+		<Keywords>WFS, OGC</Keywords>
+		<OnlineResource>http://beta.openplans.org/geoserver</OnlineResource>           <AccessConstraints>none</AccessConstraints>
+		<URL>http://beta.openplans.org/geoserver</URL>
+		<Maintainer>Vision for New York</Maintainer>
+</GlobalConfiguration>
+

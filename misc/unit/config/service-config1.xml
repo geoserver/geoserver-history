@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<random-tag>
+ <ServiceConfiguration>
+  <Name>FreeFS</Name>
+  <Title>TOPP GeoServer</Title>
+  <Abstract>This is a test server.</Abstract>
+  <Fees>none</Fees>
+  <KeywordList>
+   <Keyword>WFS</Keyword>
+   <Keyword>OGC</Keyword>
+  </KeywordList>
+  <OnlineResource>http://beta.openplans.org/geoserver</OnlineResource>   
+  <AccessConstraints>none</AccessConstraints>
+ </ServiceConfiguration>
+</random-tag>
