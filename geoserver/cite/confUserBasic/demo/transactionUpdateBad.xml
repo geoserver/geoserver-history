@@ -1,10 +1,13 @@
-<wfs:Transaction
-  service="WFS"
-  version="1.0.0"
+<!-- This is an example of a transaction that is caught by the validation  -->
+<!-- processor, not allowing an insert of length zero.  This is defined in -->
+<!-- validation directory, in FeatureCheck, which references plug-ins in   -->
+<!-- plugIns directory.  You can define your own checks and even extend the-->
+<!-- plugIns for more complex validation checks.  This will work even with -->
+<!-- shapefiles, as the validation fails before the shapefile is affected. -->
+<wfs:Transaction service="WFS" version="1.0.0"
   xmlns:topp="http://www.openplans.org"
   xmlns:ogc="http://www.opengis.net/ogc"
-  xmlns:wfs="http://www.opengis.net/wfs"
->
+  xmlns:wfs="http://www.opengis.net/wfs">
   <wfs:Update typeName="topp:bc_roads">
     <wfs:Property>
       <wfs:Name>LENGTH</wfs:Name>
