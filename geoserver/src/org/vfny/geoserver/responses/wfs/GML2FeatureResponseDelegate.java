@@ -31,7 +31,7 @@ import javax.xml.transform.TransformerException;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.4 2004/03/16 22:51:44 groldan Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.5 2004/03/16 23:33:34 groldan Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
@@ -136,8 +136,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
 
-        String wfsSchemaLoc = request.getBaseUrl() + "wfs/1.0.0/"
-            + "WFS-basic.xsd";
+        String wfsSchemaLoc = request.getBaseUrl() + 
+        "data/capabilities/wfs/1.0.0/WFS-basic.xsd";
         String fSchemaLoc = request.getBaseUrl() + "wfs/"
             + "DescribeFeatureType?typeName=" + typeNames.toString();
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
