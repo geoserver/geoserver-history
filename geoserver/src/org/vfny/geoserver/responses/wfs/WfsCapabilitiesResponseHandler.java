@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.21 2004/03/30 04:45:05 cholmesny Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.22 2004/03/31 05:08:02 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -72,8 +72,8 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         attributes.addAttribute("", prefixDef, prefixDef, "", XSI_URI);
 
         String locationAtt = XSI_PREFIX + ":schemaLocation";
-        String locationDef = WFS_URI + " " + request.getBaseUrl()
-            + "data/capabilities/wfs/1.0.0/" + "WFS-capabilities.xsd";
+        String locationDef = WFS_URI + " " + request.getSchemaBaseUrl()
+            + "wfs/1.0.0/" + "WFS-capabilities.xsd";
         attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
         startElement("WFS_Capabilities", attributes);
     }
@@ -263,6 +263,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         endElement("FeatureTypeList");
     }
+    
 
     /**
      * DOCUMENT ME!
