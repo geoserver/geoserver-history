@@ -1,115 +1,100 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?config.xml version="1.0" encoding="UTF-8"?>
 <!--
 Service level configuration
 -->
 <serverConfiguration>
-  <global>
-
-      <!-- Defines the logging level.  Common options are SEVERE,
-           WARNING, INFO, CONFIG, FINE, FINER, FINEST, in order of
-           Increasing statements logged.
-       -->
-     <loggingLevel>WARNING</loggingLevel>
-
-
-     <!-- Sets the maximum features returned by GeoServer.  This used to
-          be necessary, due to out of memory errors.  The server is much
-          more scalable now, but admins may use it to limit the amount of
-          data returned, so naive clients don't ask for megabytes.
-       -->
-     <!--     
-     <maxFeatures value="10000"/>
-     -->
-
-     <!-- Sets if the xml returned should have line feeds and indents. 
-          The default is true.  Setting it to false will cut down on
-          the amount of blank spaces returned to clients, and is recommended
-          if humans will not read the output -->
-     <verbose value="true"/>
-
-     <!-- Sets the max number of decimal places past the zero returned in
-          the gml coordinates of a GetFeature response.  Default is 4 -->
-     <numDecimals value="8"/>
-     
-     <!-- The user name of the administrator of this machine.  Used for   -->
-     <!-- logging in to the web administration tool.                      -->
-     <adminUserName>admin</adminUserName>
-       
-     <!-- The user name of the administrator of this machine.  Used for   -->
-     <!-- logging in to the web administration tool.                      -->
-     <adminPassword>geoserver</adminPassword>
-
-     <!-- Please supply contact information -->
-     <ContactInformation>
-       <ContactPersonPrimary>
-         <ContactPerson></ContactPerson>
-         <ContactOrganization></ContactOrganization>
-       </ContactPersonPrimary>
-       <ContactPosition></ContactPosition>
-       <ContactAddress>
-         <AddressType></AddressType>
-         <Address></Address>
-         <City></City>
-         <StateOrProvince></StateOrProvince>
-         <PostCode></PostCode>
-         <Country></Country>
-       </ContactAddress>
-       <ContactVoiceTelephone></ContactVoiceTelephone>
-       <ContactFacsimileTelephone></ContactFacsimileTelephone>
-       <ContactElectronicMailAddress></ContactElectronicMailAddress>
-     </ContactInformation>
-  </global>
-  <services>
-    <service type="WFS" enabled="true">
-      <!-- Service elements, needed for the capabilities document -->
-      <!-- Title and OnlineResource are the two required -->
-      <name>My GeoServer WFS</name>
-      <title>My GeoServer WFS</title>
-      <abstract>
-This is a description of your Web Feature Server.
-
-The GeoServer is a full transactional Web Feature Server, you may wish to limit
-GeoServer to a Basic service level to prevent modificaiton of your geographic
-data.
-     </abstract>
-      <keywords>
-        <keyword>WFS</keyword>
-        <keyword>WMS</keyword>
-        <keyword>GEOSERVER</keyword>
-      </keywords>
-      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
-      <fees>NONE</fees>
-      <accessConstraints>NONE</accessConstraints>
-      <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
-      <!-- Sets whether name, description and boundedBy elements should   -->
-      <!-- have a gml: prefix instead of the standard one for the feature -->
-      <!-- It is a bit of a hack, and should generally only be used with  -->
-      <!-- the cite tests for now.  In the future it should all be done   -->
-      <!-- automatically -->
-      <gmlPrefixing value="false"/>
-      <!-- Sets the service level ie whether transaction operations are   -->
-      <!-- enabled or not.  -->
-      <serviceLevel>Complete</serviceLevel>
-    </service>
-
-    <service type="WMS" enabled="true">
-      <!-- Service elements, needed for the capabilities document -->
-      <!-- Title and OnlineResource are the two required -->
-      <name>My GeoServer WMS</name>
-      <title>My GeoServer WMS</title>
-      <abstract>
-This is a description of your Web Map Server.
-     </abstract>
-      <keywords>
-        <keyword>WFS</keyword>
-        <keyword>WMS</keyword>
-        <keyword>GEOSERVER</keyword>
-      </keywords>
-      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
-      <fees>NONE</fees>
-      <accessConstraints>NONE</accessConstraints>
-      <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
-    </service>
-
-  </services>
+<global>
+<!--
+Defines the logging level.  Common options are SEVERE,
+WARNING, INFO, CONFIG, FINER, FINEST, in order of
+Increasing statements logged.
+-->
+<loggingLevel>INFO</loggingLevel>
+<!--
+Sets the max number of Features returned by GetFeature
+-->
+<maxFeatures value = "10000" />
+<!--
+Whether newlines and indents should be returned in 
+XML responses.  Default is false
+-->
+<verbose value = "true" />
+<!--
+Sets the max number of decimal places past the zero returned in
+a GetFeature response.  Default is 4
+-->
+<numDecimals value = "8" />
+<!--
+Sets the global character set.  This could use some more testing
+from international users, but what it does is sets the encoding
+globally for all postgis database connections (the charset tag
+in FeatureTypeConfig), as well as specifying the encoding in the return
+config.xml header and mime type.  The default is UTF-8.  Also be warned
+that GeoServer does not check if the CharSet is valid before
+attempting to use it, so it will fail miserably if a bad charset
+is used.
+-->
+<charSet value = "UTF-8" />
+<!--
+Define a base url for the location of the wfs schemas.
+By default GeoServer loads and references its own at
+<URL>/data/capabilities. Uncomment to enable.  The
+standalone Tomcat server needs SchemaBaseUrl defined
+for validation.
+-->
+<SchemaBaseUrl>C:\java\jakarta-tomcat-5.0.16\webapps\geoserver/data/capabilities/</SchemaBaseUrl>
+<!--
+Defines the user name of the administrator for log in
+to the web based administration tool.
+-->
+<adminUserName>admin</adminUserName>
+<!--
+Defines the password of the administrator for log in
+to the web based administration tool.
+-->
+<adminPassword>geoserver</adminPassword>
+</global>
+<services>
+<service type = "WFS" enabled = "true" >
+<!--
+ServiceDTO elements, needed for the capabilities document
+Title and OnlineResource are the two required
+-->
+<name>TOPP GeoServer</name>
+<title>The Open Planning Project Basemap Server</title>
+<abstract>This is a test server.  It contains some basemap data 
+from New York City.</abstract>
+<keywords>
+<keyword>WFS</keyword>
+<keyword>TEST</keyword>
+<keyword>NY</keyword>
+<keyword>New York</keyword>
+</keywords>
+<onlineResource>http://www.openplans.org/</onlineResource>
+<fees>NONE</fees>
+<accessConstraints>NONE</accessConstraints>
+<gmlPrefixing value = "true" />
+<maintainer>The Open Planning Project</maintainer>
+</service>
+<service type = "WMS" enabled = "true" >
+<!--
+ServiceDTO elements, needed for the capabilities document
+Title and OnlineResource are the two required
+-->
+<name>FreeWMS</name>
+<title>The Open Planning Project Basemap Server</title>
+<abstract>This is a test server.  It contains some basemap data 
+from New York City.</abstract>
+<keywords>
+<keyword>WMS</keyword>
+<keyword>TEST</keyword>
+<keyword>NY</keyword>
+<keyword>New York</keyword>
+</keywords>
+<onlineResource>http://www.openplans.org/</onlineResource>
+<fees>NONE</fees>
+<accessConstraints>NONE</accessConstraints>
+<maintainer>The Open Planning Project</maintainer>
+</service>
+</services>
 </serverConfiguration>

@@ -1,0 +1,17 @@
+<featureType datastore = "roads" >
+<name>roads</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>0</SRS>
+<title>roads_Type</title>
+<abstract>Generated from roads</abstract>
+<numDecimals value = "8" />
+<keywords>roads</keywords>
+<latLonBoundingBox dynamic = "false" miny = "566208.16" maxy = "5246984.76" maxx = "5233002.61" minx = "556627.87"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "normal"  />
+</featureType>
