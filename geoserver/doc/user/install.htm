@@ -112,6 +112,7 @@
       </table>
       <!-- #BeginEditable "main" --> 
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="welcome"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Welcome</td>
         </tr>
@@ -142,6 +143,7 @@
         </tr>
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0" height="90">
+       <a name="java"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Installing Java</td>
         </tr>
@@ -154,6 +156,7 @@
         </tr>
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="servlet"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Installing a Servlet Container</td>
         </tr>
@@ -172,25 +175,37 @@
         </tr>
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="database"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Installing a Database</td>
         </tr>
         <tr> 
           <td height="33"> 
             <blockquote> 
-              <p>Although it is a primary goal of the GeoServer project to support 
-                several data storage formats, good support exists now only for 
-                PostGIS, an excellent extension of the venerable Postgresql relational 
+              <p>The GeoServer project currently supports the Oracle and 
+	      Shapefile data formats, but unless you already have a running
+	      Oracle installation we recommend PostGIS, an excellent extension
+	       of the venerable Postgresql relational 
                 database. &nbsp;<a href="/Templates/http;//postgis.refractions.net/%20">PostGIS</a> 
                 and <a href="http://www.postgresql.org/">Postgresql</a> are open 
                 source databases that are free to all users. Postgresql was developed 
                 at <a href="http://www.berkeley.edu">Berkeley</a> several years 
                 ago and PostGIS is a recent extension developed by the clever 
                 programmers at <a href="http://www.refractions.net/">Refractions 
-                Research</a>. Installing Postgresql and PostGIS is the most complicated 
+                Research</a>. </p>
+              <p>If you'd just like to get an installation up and running
+	      quickly, and don't care so much about advanced features and speed,
+	      then we recommend the Shapefile format, with installation information
+	      <a href="advanced.htm#shapefile">here</a>.  If you have an existing Oracle
+	      spatial installation, and would like to use GeoServer to serve that data as
+	      gml, then check out the install information <a href="advanced.htm#oracle">
+	      here</a>.  Be sure to fully read this installation document before trying
+	      out Oracle or Shapefile Datasources, even if you are not going to use
+	      Postgis.</p>
+              <p>Installing Postgresql and PostGIS is the most complicated 
                 part of setting up a GeoServer site and for this reason, we will 
-                supplement the documentation to do so a little here.</p>
-              <p>First, you should download the full source of Postgresql.&nbsp;&nbsp;Binaries, 
+                supplement the documentation to do so a little here.
+		First, you should download the full source of Postgresql.&nbsp;&nbsp;Binaries, 
                 RPMs, and other packaged builds will generally not suffice because 
                 you will need to compile the PostGIS extension and JDBC bindings 
                 into Postgresql in order for it to correctly speak with GeoServer.</p>
@@ -198,11 +213,12 @@
                 7.2.3. &nbsp;You should configure and install it, per the installation 
                 instructions. &nbsp;It should go something like this:</p>
               <blockquote> 
-                <p>./configure --with-java<br>
+                <p>./configure<br>
                   gmake<br>
                   gmake install</p>
               </blockquote>
-              <p>Make sure that you configure it with Java. &nbsp; Be sure that it 
+              <p>Configuring with java is no longer required, as we supply the jdbc
+	      jar with the installation.   &nbsp; Be sure that it 
                  is up and running, it's best to create a database and test it using
 		 psql from the command line.  &nbsp;Then, download 
                 PostGIS. &nbsp;You should place PostGIS in your Postgresql 'contrib' 
@@ -217,6 +233,7 @@
         </tr>
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="geoserver"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Installing GeoServer</td>
         </tr>
@@ -247,6 +264,7 @@
         </tr>
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="configuration"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Configuring GeoServer</td>
         </tr>
@@ -356,6 +374,7 @@
         </tr>
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="data"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Adding Data to GeoServer</td>
         </tr>
@@ -509,6 +528,7 @@
         </tr>
       </table>
        <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="testdata"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Obtaining test data</td>
         </tr>
@@ -531,6 +551,7 @@
         </tr>
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="testing"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Testing GeoServer</td>
         </tr>
