@@ -10,6 +10,11 @@ import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.postgis.PostgisConnection;
 import org.geotools.data.postgis.PostgisDataSource;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.SchemaException;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureCollectionDefault;
 import org.vfny.geoserver.requests.TransactionRequest;
 import org.vfny.geoserver.requests.SubTransactionRequest;
 import org.vfny.geoserver.requests.DeleteRequest;
@@ -85,20 +90,24 @@ public class TransactionResponse {
                                                       meta.getDatabaseName()); 
         db.setLogin(meta.getUser(), meta.getPassword());
         DataSource data = null;
-	//try {  //TODO: add when geotools gets updated.
+	try {  //TODO: add when geotools gets updated.
 	data = new PostgisDataSource(db, meta.getName());
-	//} catch (DataSourceException e) {
-	//    String message = "Problem creating datasource " 
-	//		+ e.getCause();
-	//    LOG.warning(message);
-	//    throw new WfsTransactionException(message, sub.getHandle());
-	//}
+	} catch (DataSourceException e) {
+	    String message = "Problem creating datasource " 
+			+ e.getCause();
+	    LOG.warning(message);
+	    throw new WfsTransactionException(message, sub.getHandle());
+	}
 	
 	switch (sub.getOpType()) {
 	case SubTransactionRequest.UPDATE: 
 	    UpdateRequest update = (UpdateRequest)sub;
+	    doUpdate(update, data);
 	    break;
-	case SubTransactionRequest.INSERT: break;
+	case SubTransactionRequest.INSERT:
+	    InsertRequest insert = (InsertRequest)sub;
+	    doInsert(insert, data);
+	    break;
 	case SubTransactionRequest.DELETE:
 	    LOG.finer("about to perform delete: " + sub);
 	    doDelete((DeleteRequest)sub, data);
@@ -106,6 +115,53 @@ public class TransactionResponse {
 	default: break;
 	}
 	return null;
+    }
+
+    /**
+     * Performs the insert operation.
+     * @param insert the request to perform.
+     * @param data the datasource to remove features from.
+     */
+    private static void doInsert(InsertRequest insert, DataSource data) 
+	throws WfsTransactionException {
+	String handle = insert.getHandle();
+	try {
+	    FeatureCollection features = new FeatureCollectionDefault();
+	    features.addFeatures(insert.getFeatures());
+	    data.addFeatures(features);
+	} catch (DataSourceException e) {
+	    LOG.warning("Problem with datasource " + e + " cause: " 
+			+ e.getCause());
+	    throw new WfsTransactionException("Problem updating features: " 
+					      +e.toString() + " cause: " + 
+					      e.getCause(), handle);
+	} 
+    }
+
+     /**
+     * Performs the update operation.
+     * @param update the request to perform.
+     * @param data the datasource to remove features from.
+     */
+    private static void doUpdate(UpdateRequest update, DataSource data) 
+	throws WfsTransactionException {
+	String handle = update.getHandle();
+	try {
+	    FeatureType schema = ((PostgisDataSource)data).getSchema();
+	    //schema = schema.setTypeName("dude");
+	    AttributeType[] types = update.getTypes(schema);
+	    LOG.fine("attribut type is " + types[0] + ", values is " + 
+		     update.getValues()[0]);
+	    data.modifyFeatures(types, update.getValues(), update.getFilter());
+	} catch (DataSourceException e) {
+	    LOG.warning("Problem with datasource " + e + " cause: " 
+			+ e.getCause());
+	    throw new WfsTransactionException("Problem updating features: " 
+					      +e.toString() + " cause: " + 
+					      e.getCause(), handle);
+	} catch (SchemaException e) {
+	     throw new WfsTransactionException(e.toString(), handle);
+	}
     }
 
     /**
