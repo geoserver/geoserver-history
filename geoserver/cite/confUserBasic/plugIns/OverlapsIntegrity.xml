@@ -1,7 +1,0 @@
-<plugin xs:schemaLocation="pluginSchema /data/capabilities/validate/pluginSchema.xsd">
-	<name>Geometry Overlaps Geometry</name>
-	<description> A Geometry Overlaps another Geometry.</description>
-	<class>
-		org.geotools.validation.spatial.relate.OverlapsIntegrity
-	</class>
-</plugin>
