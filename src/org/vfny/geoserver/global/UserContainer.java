@@ -9,6 +9,13 @@ import java.util.Locale;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
+import org.geotools.data.DataStore;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+
 
 /**
  * Represents a User for GeoServer.
@@ -36,30 +43,87 @@ import javax.servlet.http.HttpSessionBindingListener;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UserContainer.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: UserContainer.java,v 1.3 2004/01/20 07:59:24 jive Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";
 
+    /** User name for this user */
+    public String username;
+    
     /** User's locale */
     private Locale locale;
     
+    /** Selected dataStoreId */
     private String dataStoreID;
-
-    /** User name for this user */
-    public String username;
-
+    
+    /**
+     * Selected DataStoreConfig held in session for creation.
+     * <p>
+     * Pending: Make the change over to UserContainer.
+     * </p>
+     */
+    private DataStoreConfig dataStoreConfig;
+    
+    /**
+     * Cached DataStore being worked on.
+     * <p>
+     * This should agree with the value of dataStoreConfig.
+     * </p>
+     */
+    private DataStore dataStore;
+    
+    /**
+     * Selected FeatureType Config held in session for editing/creation.
+     * <p>
+     * Pending: Make change over to UserContainer.
+     * </p>
+     */
+    private FeatureTypeConfig featureTypeConfig;
+    
+    /**
+     * Cached FeatureType being worked on.
+     * <p>
+     * This should agree with the value of featureTypeConfig.
+     * <p>
+     */
+    private FeatureType featureType;
+    
+    /**
+     * Selected AttributeType being worked on.
+     * <p>
+     * Pending: Make change over to User Container.
+     * <p>
+     */
+    private AttributeTypeInfoConfig attributeTypeConfig;
+    
+    /**
+     * Cached AttributeType being worked on.
+     * <p>
+     * This should agree with the value of attributeTypeConfig.
+     * <p>
+     */
+    private AttributeType attributeType;
+    /**
+     * New DataStore info before it is added to DataConfig.
+     * <p>
+     * Unlike the DataStores in DataConfig this one does not yet
+     * have to work.
+     * </p>
+     */
+    public DataStoreConfig newDataStore;
+    
+    /** Create User Container for the current locale */
     public UserContainer() {
         this(Locale.getDefault());
     }
-
+    /** Create User Container for the provided locale */
     public UserContainer(Locale local) {
     }
 
     /**
      * User's Locale.
-     * 
      * <p>
      * Used to format messages. Should be used in conjunction with
      * internatalization support.
@@ -107,27 +171,169 @@ public class UserContainer implements HttpSessionBindingListener {
      */
     private void cleanUp() {
         locale = null;
+        dataStoreID = null;        
     }
-	/**
-	 * getDataStoreID purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @return
-	 */
-	public String getDataStoreID() {
-		return dataStoreID;
-	}
 
-	/**
-	 * setDataStoreID purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param string
-	 */
-	public void setDataStoreID(String string) {
-		dataStoreID = string;
-	}
+    /**
+     * Access attributeType property.
+     * 
+     * @return Returns the attributeType.
+     */
+    public AttributeType getAttributeType() {
+        return attributeType;
+    }
+
+    /**
+     * Set attributeType to attributeType.
+     *
+     * @param attributeType The attributeType to set.
+     */
+    public void setAttributeType(AttributeType attributeType) {
+        this.attributeType = attributeType;
+    }
+
+    /**
+     * Access attributeTypeConfig property.
+     * 
+     * @return Returns the attributeTypeConfig.
+     */
+    public AttributeTypeInfoConfig getAttributeTypeConfig() {
+        return attributeTypeConfig;
+    }
+
+    /**
+     * Set attributeTypeConfig to attributeTypeConfig.
+     *
+     * @param attributeTypeConfig The attributeTypeConfig to set.
+     */
+    public void setAttributeTypeConfig(AttributeTypeInfoConfig attributeTypeConfig) {
+        this.attributeTypeConfig = attributeTypeConfig;
+    }
+
+    /**
+     * Access dataStore property.
+     * 
+     * @return Returns the dataStore.
+     */
+    public DataStore getDataStore() {
+        return dataStore;
+    }
+
+    /**
+     * Set dataStore to dataStore.
+     *
+     * @param dataStore The dataStore to set.
+     */
+    public void setDataStore(DataStore dataStore) {
+        this.dataStore = dataStore;
+    }
+
+    /**
+     * Access dataStoreConfig property.
+     * 
+     * @return Returns the dataStoreConfig.
+     */
+    public DataStoreConfig getDataStoreConfig() {
+        return dataStoreConfig;
+    }
+
+    /**
+     * Set dataStoreConfig to dataStoreConfig.
+     *
+     * @param dataStoreConfig The dataStoreConfig to set.
+     */
+    public void setDataStoreConfig(DataStoreConfig dataStoreConfig) {
+        this.dataStoreConfig = dataStoreConfig;
+    }
+
+    /**
+     * Access dataStoreID property.
+     * 
+     * @return Returns the dataStoreID.
+     */
+    public String getDataStoreID() {
+        return dataStoreConfig.getId();        
+    }
+
+    /**
+     * Access featureType property.
+     * 
+     * @return Returns the featureType.
+     */
+    public FeatureType getFeatureType() {
+        return featureType;
+    }
+    
+    /**
+     * Access featureTypeConfig property.
+     * 
+     * @return Returns the featureTypeConfig.
+     */
+    public FeatureTypeConfig getFeatureTypeConfig() {
+        return featureTypeConfig;
+    }
+
+    /**
+     * Access newDataStore property.
+     * 
+     * @return Returns the newDataStore.
+     */
+    public DataStoreConfig getNewDataStore() {
+        return newDataStore;
+    }
+
+    /**
+     * Set newDataStore to newDataStore.
+     *
+     * @param newDataStore The newDataStore to set.
+     */
+    public void setNewDataStore(DataStoreConfig newDataStore) {
+        this.newDataStore = newDataStore;
+    }
+
+    /**
+     * Access username property.
+     * 
+     * @return Returns the username.
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Set username to username.
+     *
+     * @param username The username to set.
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Set dataStoreID to dataStoreID.
+     *
+     * @param dataStoreID The dataStoreID to set.
+     */
+    public void setDataStoreID(String dataStoreID) {
+        this.dataStoreID = dataStoreID;
+    }
+
+    /**
+     * Set featureType to featureType.
+     *
+     * @param featureType The featureType to set.
+     */
+    public void setFeatureType(FeatureType featureType) {
+        this.featureType = featureType;
+    }
+
+    /**
+     * Set featureTypeConfig to featureTypeConfig.
+     *
+     * @param featureTypeConfig The featureTypeConfig to set.
+     */
+    public void setFeatureTypeConfig(FeatureTypeConfig featureTypeConfig) {
+        this.featureTypeConfig = featureTypeConfig;
+    }
 
 }
