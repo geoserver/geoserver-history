@@ -163,7 +163,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 				pbConvert.addSource(surrogateImage);  
 				pbConvert.add(DataBuffer.TYPE_BYTE);  
 				surrogateImage = JAI.create("format", pbConvert);
-				surrogateImage = JAI.create("invert", surrogateImage);
+				//surrogateImage = JAI.create("invert", surrogateImage);
 			} else {
 				surrogateImage = PlanarImage.wrapRenderedImage(image);
 			}
