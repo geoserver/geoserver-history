@@ -50,8 +50,8 @@ import javax.servlet.http.HttpServletResponse;
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.14 2004/03/10 18:16:15 jive Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.15 2004/09/17 16:34:47 cholmesny Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
@@ -95,7 +95,10 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
                 
         // TODO translate to lat long, pending
-        ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));
+        //This should not be done by default, as it is an expensive operation.
+        //especially for very large tables.  User may know it, if not he
+        //can hit the generate button (which is why it's there).
+        //ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));
         
         //Extent ex = featureType.getDefaultGeometry().getCoordinateSystem().getValidArea();
         //ftConfig.setLatLongBBox(ex);
