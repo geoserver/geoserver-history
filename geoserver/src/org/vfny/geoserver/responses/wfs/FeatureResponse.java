@@ -4,22 +4,45 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.data.*;
-import org.geotools.feature.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLocking;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Transaction;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.gml.producer.*;
+import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.config.CatalogConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.GlobalConfig;
+import org.vfny.geoserver.config.NameSpace;
+import org.vfny.geoserver.config.ServerConfig;
+import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.requests.wfs.*;
-import org.vfny.geoserver.responses.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.xml.transform.TransformerException;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.wfs.FeatureRequest;
+import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
+import org.vfny.geoserver.responses.Response;
 
 
 /**
@@ -27,12 +50,16 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.4 2004/01/05 22:54:49 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.4.2.1 2004/02/02 22:46:54 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
+
+	private static final int NO_FORMATTING = -1;
+	
+	private static final int INDENT_SIZE = 2;
 
     // set by execute, used by write
 
@@ -223,6 +250,7 @@ public class FeatureResponse implements Response {
         //   itterate through the the FeatureSources to release the locks 
         //
         CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+		GlobalConfig globalConfig = ServerConfig.getInstance().getGlobalConfig();
         FeatureTypeConfig meta = null;
         NameSpace namespace;
         Query query;
@@ -329,18 +357,18 @@ public class FeatureResponse implements Response {
                     + lockFailedFids);
             }
 
-            // Can someone tell me what this does?
-            //Um, I'm not sure if it's needed, but it makes sure that xalan is
-            //used to perform the transformation.  If it's not set than it 
-            //could juse use whatever the user has on their classpath.  We 
-            //should check with IanS, he might have some particular reason
-            //for wanting xalan.
+			//Tells the jvm to use xalan.  We include xalan in our lib, so it 
+			//should be there for clients.  If this is not set many servlet
+			//containers will just use their own transformer implementations.
+			//Unfortunately they don't all perform the same - we've seen errors
+			//with the resin one when attempting to generate a dtd declaration.
             System.setProperty("javax.xml.transform.TransformerFactory",
                 "org.apache.xalan.processor.TransformerFactoryImpl");
 
             FeatureType schema = meta.getSchema();
-            transformer.setIndentation(2);
 
+			transformer.setIndentation(globalConfig.isVerbose() ? INDENT_SIZE : 
+				(NO_FORMATTING));
             ServerConfig config = ServerConfig.getInstance();
             WFSConfig wfsConfig = config.getWFSConfig();
             String wfsSchemaLoc = wfsConfig.getWfsBasicLocation();
