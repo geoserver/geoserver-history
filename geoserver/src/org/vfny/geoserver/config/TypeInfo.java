@@ -199,12 +199,20 @@ public class TypeInfo {
      * used instead, or else the getFeature calls risk returning modified 
      * features that have not yet been committed and could roll back.
      */
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() throws WfsException {
 	LOG.finer("getting connection for type: " + getName());
-	if (dbConnection == null || dbConnection.isClosed()) {
-	    
-	    this.dbConnection = getNewConnection();
-	}	
+	try {   
+	    if (dbConnection == null || dbConnection.isClosed()) {
+		this.dbConnection = getNewConnection();
+	    }
+	} catch (SQLException e) {
+	    String preMessage = "Problem getting Connection to db";
+	    String message = preMessage + ": " + e.getMessage();
+	    LOG.warning(message);
+	    throw new WfsException(e, preMessage, 
+				   "typeInfo for: " + getFullName());
+	}
+    	
 	return dbConnection;
     }
 
@@ -247,24 +255,11 @@ public class TypeInfo {
      * @throws WfsException if there were problems creating the datasource
      * or the schema.
      */
-    public DataSource getDataSource(List propertyNames, int maxFeatures, 
-				    boolean createNewConnection) 
+    public DataSource getDataSource(List propertyNames, int maxFeatures) 
 	throws WfsException {
 	LOG.finer("about to get datasource for " + getName());
-	Connection connection = null;
-	try {
-	    if (createNewConnection) {  
-		connection = getNewConnection();
-	    } else {
-		connection = getConnection();
-	    }
-	} catch (SQLException e) {
-	    String preMessage = "Problem getting Connection to db";
-	    String message = preMessage + ": " + e.getMessage();
-	    LOG.warning(message);
-	    throw new WfsException(e, preMessage, 
-				   "typeInfo for: " + getFullName());
-	}
+	Connection connection = getConnection();
+	
 	DataSource data = null;
 	try {
 	    data = new PostgisDataSource(connection, getName(), maxFeatures);
