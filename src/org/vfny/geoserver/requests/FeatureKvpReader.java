@@ -41,8 +41,17 @@ public class FeatureKvpReader
      */
     public FeatureRequest getRequest()
         throws WfsException {
-        
-        FeatureRequest currentRequest = new FeatureRequest();       
+	
+	boolean withLock = false;
+	FeatureRequest currentRequest = new FeatureRequest();
+	if( kvpPairs.containsKey("REQUEST")) {
+	    String request = (String) kvpPairs.get("REQUEST");
+	    if (request.equalsIgnoreCase("GETFEATUREWITHLOCK")) {
+		withLock = true;
+		currentRequest = new FeatureWithLockRequest();
+	    }
+            currentRequest.setRequest(request);
+        }
 
         // set global request parameters
         LOGGER.finest("setting global request parameters");
@@ -63,7 +72,10 @@ public class FeatureKvpReader
             currentRequest.
 		setOutputFormat((String) kvpPairs.get("OUTPUTFORMAT"));
         }
-
+	if (withLock && kvpPairs.containsKey("EXPIRY")){
+	    ((FeatureWithLockRequest)currentRequest).
+		setExpiry(Integer.parseInt((String) kvpPairs.get("EXPIRY")));
+	}
         // declare tokenizers for repeating elements
         LOGGER.finest("setting query request parameters");
         List typeList = readFlat((String)kvpPairs.get("TYPENAME"), 

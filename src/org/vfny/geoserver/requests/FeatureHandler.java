@@ -92,16 +92,31 @@ public class FeatureHandler
                     currentQuery.setHandle(value);
                 }
             }
-        } else if(insideTag.equals("GetFeature")) {
-            for(int i = 0; i < atts.getLength(); i++) {
-                if( atts.getLocalName(i).equals("maxFeatures") ) {
-                    LOGGER.finest("found max features: " + atts.getValue(i));
-                    request.setMaxFeatures(atts.getValue(i));
-                }
-		if( atts.getLocalName(i).equals("outputFormat") ) {
+        } else if(insideTag.startsWith("GetFeature")) {
+	    if(insideTag.equals("GetFeatureWithLock")){
+		request = new FeatureWithLockRequest();
+	    } else {
+		request = new FeatureRequest();
+	    }
+	    for(int i = 0; i < atts.getLength(); i++) {
+		String curAtt = atts.getLocalName(i);
+		if( curAtt.equals("maxFeatures") ) {
+		    LOGGER.finest("found max features: " + atts.getValue(i));
+		    request.setMaxFeatures(atts.getValue(i));
+		} else if( curAtt.equals("outputFormat") ) {
                     LOGGER.finest("found outputFormat: " + atts.getValue(i));
                     request.setOutputFormat(atts.getValue(i));
-                }
+                } else if( curAtt.equals("expiry") && 
+			   request instanceof FeatureWithLockRequest){
+		    int expiry = -1;
+		    try {
+			expiry = Integer.parseInt(atts.getValue(i));
+		    } catch (NumberFormatException e) {
+			throw new SAXException("expiry should parse to an " +
+					       "integer", e);
+		    }
+		    ((FeatureWithLockRequest)request).setExpiry(expiry);
+		}
             }
         }
     }
