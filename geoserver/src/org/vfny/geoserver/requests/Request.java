@@ -21,7 +21,7 @@ import org.vfny.geoserver.global.WMS;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.14 2004/03/30 04:40:42 cholmesny Exp $
+ * @version $Id: Request.java,v 1.15 2004/03/31 05:04:39 cholmesny Exp $
  */
 abstract public class Request {
 	/**
@@ -199,6 +199,18 @@ abstract public class Request {
     */
 	public String getBaseUrl(){
 		return Requests.getBaseUrl( getHttpServletRequest() );
+	}
+	
+	/**
+	 * Gets the url that schemas should be referenced from.  For now this will
+	 * always be local, if we bring back schemaBaseUrl as a param then that will
+	 * be possible too.  So it is just baseUrl plus data/capabilities, which
+	 * is where we store the schemas now.  
+	 * 
+	 * @return the base url of the schemas.  Will be getBaseUrl() + data/capabilities.
+	 */
+	public String getSchemaBaseUrl(){
+		return getBaseUrl() + "data/capabilities/";
 	}
 	
 	/**
