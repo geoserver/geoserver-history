@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.40 2004/04/15 19:08:02 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.41 2004/09/08 17:39:03 cholmesny Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -349,12 +349,12 @@ public class XMLConfigReader {
         elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
         geoServer.setContact(loadContact(elem));
 
-        elem = ReaderUtils.getChildElement(globalElem, "verbose", false);
+		elem = ReaderUtils.getChildElement(globalElem, "verbose", false);
 
-        if (elem != null) {
-            geoServer.setVerbose(ReaderUtils.getBooleanAttribute(elem, "value",
-                    false, true));
-        }
+				if (elem != null) {
+					geoServer.setVerbose(ReaderUtils.getBooleanAttribute(elem, "value",
+							false, true));
+				}
 
         elem = ReaderUtils.getChildElement(globalElem, "maxFeatures");
 
@@ -418,6 +418,22 @@ public class XMLConfigReader {
         if (adminPassword != null) {
             geoServer.setAdminPassword(adminPassword);
         }
+        
+
+		elem = ReaderUtils.getChildElement(globalElem, "verboseExceptions", false);
+
+				if (elem != null) {
+					geoServer.setVerboseExceptions(ReaderUtils.getBooleanAttribute(elem, "value",
+							false, true));
+				}
+				
+
+		elem = ReaderUtils.getChildElement(globalElem, "srsXmlStyle", false);
+
+				if (elem != null) {
+					geoServer.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
+							false, true));
+				}
     }
 
     /**

@@ -18,7 +18,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.10 2004/04/07 13:42:48 cholmesny Exp $
+ * @version $Id: GeoServerDTO.java,v 1.11 2004/09/08 17:39:02 cholmesny Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
 	
@@ -45,11 +45,24 @@ public final class GeoServerDTO implements DataTransferObject {
 
 		/** The default logging level is info. */
 		public static final Level LoggingLevel = Level.INFO;
+
+		/** The default Administrator's user name (admin) */
 		public static final String AdminUserName = "admin";
+
+		/** The default Administrator's password (geoserver) */
 		public static final String AdminPassword = "geoserver";
+
+		/**
+		 * The default verboseExceptions is false, so that by default the
+		 * service exceptions don't look like someone 'kacked'.
+		 */
+		public static final boolean VerboseExceptions = false;
+
+		/**
+		 * Default for srs report style is to not use the xml referenced style
+		 */
+		public static final boolean SrsXmlStyle = false;
 	}
-	
-	
 	
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = Defaults.MaxFeatures;
@@ -139,8 +152,14 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /** The Server contact person and their contact information. */
     private ContactDTO contact = null;
+
+    /** The username for the administrator log-in to perform configuration */
     private String adminUserName = Defaults.AdminUserName;
+
+    /** The password for the administrator log-in to perform configuration */
     private String adminPassword = Defaults.AdminPassword;
+    private boolean verboseExceptions = Defaults.VerboseExceptions;
+    private boolean srsXmlStyle = Defaults.SrsXmlStyle;
 
     /**
      * GlobalConfig constructor.
@@ -176,6 +195,8 @@ public final class GeoServerDTO implements DataTransferObject {
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
+        verboseExceptions = g.isVerboseExceptions();
+        srsXmlStyle = g.isSrsXmlStyle();
 
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
@@ -183,8 +204,6 @@ public final class GeoServerDTO implements DataTransferObject {
             contact = new ContactDTO();
         }
     }
-
-
 
     /**
      * Implement clone.
@@ -503,18 +522,61 @@ public final class GeoServerDTO implements DataTransferObject {
     public void setAdminPassword(String password) {
         this.adminPassword = password;
     }
-	
-	public String toString() {
-		StringBuffer dto = new StringBuffer("[GeoServerDTO: \n");
-		dto.append("   maxFeatures - " + maxFeatures);
-		dto.append("\n   verbose - " + verbose);
-		dto.append("\n   numDecimals - " + numDecimals);
-		dto.append("\n   charSet - " + charSet);
-		dto.append("\n   loggingLevel - " + loggingLevel);
-		dto.append("\n   adminUserName - " + adminUserName);
-		dto.append("\n   adminPassword - " + adminPassword);
-		dto.append("\n   contact - " + contact);
-		return dto.toString();
-	}
+
+    /**
+     * Should we display stackTraces or not? (And give them a nice little
+     * message instead?)
+     *
+     * @return Returns the showStackTraces.
+     */
+    public boolean isVerboseExceptions() {
+        return verboseExceptions;
+    }
+
+    /**
+     * If set to true, response exceptions will throw their stack trace back to
+     * the end user.
+     *
+     * @param showStackTraces The showStackTraces to set.
+     */
+    public void setVerboseExceptions(boolean showStackTraces) {
+        this.verboseExceptions = showStackTraces;
+    }
+
+    /**
+     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+     * style.  
+     *
+     * @return <tt>true</tt> if the srs is reported with the xml style
+     */
+    public boolean isSrsXmlStyle() {
+        return srsXmlStyle;
+    }
+
+    /**
+     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+     * style.  
+     *
+     * @param doXmlStyle whether the srs style should be xml or not.
+     */
+    public void setSrsXmlStyle(boolean doXmlStyle) {
+        this.srsXmlStyle = doXmlStyle;
+    }
+
+    public String toString() {
+        StringBuffer dto = new StringBuffer("[GeoServerDTO: \n");
+        dto.append("   maxFeatures - " + maxFeatures);
+        dto.append("\n   verbose - " + verbose);
+        dto.append("\n   numDecimals - " + numDecimals);
+        dto.append("\n   charSet - " + charSet);
+        dto.append("\n   loggingLevel - " + loggingLevel);
+        dto.append("\n   adminUserName - " + adminUserName);
+        dto.append("\n   adminPassword - " + adminPassword);
+        dto.append("\n   contact - " + contact);
+
+        return dto.toString();
+    }
 
 }
