@@ -66,9 +66,22 @@ public class Query {
     
     /** Adds a requested property name to the query. */ 
     public void addPropertyName(String propertyName) { 
-	//Don't repeat propertyNames.
-	if (!propertyNames.contains(propertyName)) {
-	    propertyNames.add(propertyName);
+	 String[] splitName = propertyName.split("[.:/]");
+	 String newPropName = propertyName;
+	 if (splitName.length == 1) {
+	     newPropName = splitName[0];
+	 } else {
+	     //REVISIT: move this code to geotools?
+	     //REVISIT: not sure what to do if there are multiple
+	     //delimiters.  
+	     //REVISIT: should we examine the first value?  See
+	     //if the namespace or typename matches up right?
+	     //this is currently very permissive, just grabs
+	     //the value of the end.
+	     newPropName = splitName[splitName.length - 1];
+	 }
+	if (!propertyNames.contains(newPropName)) {
+	    propertyNames.add(newPropName);
 	}
 	 this.allRequested = false;
     }
@@ -106,7 +119,7 @@ public class Query {
 	List strippedNames = new ArrayList();
 	if (propertyNames != null) {
 	    
-	    for(int i = 0; i < propertyNames.size(); i++) {
+	    /*for(int i = 0; i < propertyNames.size(); i++) {
 		String curPropName = propertyNames.get(i).toString();
 		String[] splitName = curPropName.split("[.:/]");
 		String newPropName = curPropName;
@@ -123,9 +136,9 @@ public class Query {
 		    newPropName = splitName[splitName.length - 1];
 		}
 		strippedNames.add(newPropName);
-	    }
+		}*/
 	    try {
-		props = QueryImpl.getValidProperties(schema, strippedNames);
+		props = QueryImpl.getValidProperties(schema, propertyNames);
 	    } catch (SchemaException e) {
 		throw new WfsException(e, "problem with properties", handle);
 	    }
