@@ -64,7 +64,7 @@
   <property name="test.name" value="config.ConfigSuite"/>
   <!-- If you don't have your own conf directory uncomment on of the following -->
   <!--<property name="test.type" value="UserBasic"/>-->
-  <!--<property name="test.type" value="CitePostGis"/>-->
+  <property name="test.type" value="CitePostGis"/>
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
   <!-- paths -->
