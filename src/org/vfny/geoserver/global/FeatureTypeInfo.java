@@ -38,7 +38,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.34 2004/03/09 16:45:13 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.35 2004/03/09 18:59:58 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -695,54 +695,60 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     	return getFeatureType(getFeatureSource());
     }
 
+    /**
+     *
+     */
     private FeatureType getFeatureType(FeatureSource fs) throws IOException {
     	if(ft == null){
-    		if(schemaBase==null || schemaBase==""){
-    			// means there is not a schema file
-    			ft = fs.getSchema();
-    		}else{
-    			int count = 0;
-    			ft = fs.getSchema();
-    			String[] baseNames = DataTransferObjectFactory.getRequiredBaseAttributes( schemaBase );
-    			AttributeType[] attributes = new AttributeType[schema.size()+baseNames.length];
-    			int errors = 0;
-    			for(;count<baseNames.length;count++){
-    				attributes[count-errors] = ft.getAttributeType(baseNames[count]);
-    				if (attributes[count-errors] == null) {
-    					// desired base attr is not availiable
-    					errors++;
-    				}
-    			}
-    		
-    			if(errors!=0){
-    				//	resize array;
-    				AttributeType[] tmp = new AttributeType[attributes.length-errors];
-    				count = count-errors;
-    				for(int i=0;i<count;i++){
-    					tmp[i] = attributes[i];
-    				}
-    				attributes = tmp;
-    			}
-    		
-            	for (Iterator i = schema.iterator(); i.hasNext();) {
-            		AttributeTypeInfo ati = (AttributeTypeInfo)i.next();
-            		String attName = ati.getName();
-            		attributes[count] = ft.getAttributeType(attName);
-            		if (attributes[count] == null) {
-            			throw new IOException("the FeatureType " + getName()
-            					+ " does not contains the configured attribute " + attName
-								+ ". Check your schema configuration");
-            		}
-            		count++;
-            	}
-            	try {
-            		ft = FeatureTypeFactory.newFeatureType(attributes,name);
-        		} catch (SchemaException ex) {
-        		} catch (FactoryConfigurationError ex) {
-        		}
-    		}
-    		
-    	}
+        int count = 0;
+        ft = fs.getSchema();
+        String[] baseNames = DataTransferObjectFactory.getRequiredBaseAttributes(
+            schemaBase);
+        AttributeType[] attributes = new AttributeType[schema.size() +
+            baseNames.length];
+        if (attributes.length > 0) {
+          int errors = 0;
+          for (; count < baseNames.length; count++) {
+            attributes[count - errors] = ft.getAttributeType(baseNames[count]);
+            if (attributes[count - errors] == null) {
+              // desired base attr is not availiable
+              errors++;
+            }
+          }
+
+          if (errors != 0) {
+            //resize array;
+            AttributeType[] tmp = new AttributeType[attributes.length - errors];
+            count = count - errors;
+            for (int i = 0; i < count; i++) {
+              tmp[i] = attributes[i];
+            }
+            attributes = tmp;
+          }
+
+          for (Iterator i = schema.iterator(); i.hasNext(); ) {
+            AttributeTypeInfo ati = (AttributeTypeInfo) i.next();
+            String attName = ati.getName();
+            attributes[count] = ft.getAttributeType(attName);
+            if (attributes[count] == null) {
+              throw new IOException("the FeatureType " + getName()
+                                    +
+                  " does not contains the configured attribute " + attName
+                                    + ". Check your schema configuration");
+            }
+            count++;
+          }
+          try {
+            ft = FeatureTypeFactory.newFeatureType(attributes,
+                                                   name);
+          }
+          catch (SchemaException ex) {
+          }
+          catch (FactoryConfigurationError ex) {
+          }
+
+        }
+      }
     	return ft;
     }
 

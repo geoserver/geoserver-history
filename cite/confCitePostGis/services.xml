@@ -82,7 +82,7 @@ from New York City.</abstract>
       <accessConstraints>NONE</accessConstraints>
       <maintainer>The Open Planning Project</maintainer>
       <gmlPrefixing value="true"/>
-      <serviceLevel value="2"/>
+      <serviceLevel value="31"/>
       <!-- Define mappings of namespaces to featureType directory
            prefixes.  If only one namespace is present in this file it
            becomes the default, if more than one namespace is present
