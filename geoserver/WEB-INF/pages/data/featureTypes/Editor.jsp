@@ -128,10 +128,18 @@
 			<html:options property="allYourBase"/>
 		</html:select>
 		<html:submit property="action">
-			Change
+			<bean:message key="label.change"/>
 		</html:submit>
       </td>
     </tr>
+
+          <% boolean first = true;
+             
+             org.vfny.geoserver.form.data.TypesEditorForm form = 
+                     (org.vfny.geoserver.form.data.TypesEditorForm) request.getAttribute("typesEditorForm");
+             java.util.List attributes = (java.util.List) form.getAttributes();
+             int attributesSize = attributes.size(); %>
+
 <logic:iterate id="attribute" indexId="index" name="typesEditorForm" property="attributes">
 	<tr>
       <td class="label">
@@ -139,25 +147,47 @@
 	  </td>
 	  <td class="datum">
         <table border=0 width="100%">
-		<% if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) { %>
           <tr style="white-space: nowrap;">
+            
+		  <% if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) { %>
             <td width="70%"><bean:write name="attribute" property="type"/></td>
             <td>nillable:<bean:write name="attribute" property="nillable"/></td>
             <td>min:<bean:write name="attribute" property="minOccurs"/></td>
             <td>max:<bean:write name="attribute" property="maxOccurs"/></td>
-          </tr>
-        <% } else { %>
-          <tr style="white-space: nowrap;">
+          <% } else { %>
             <td width="70%">
             	<html:select property='<%= "attributes[" + index + "].type"%>'>
           			<html:options property='<%= "attributes[" + index + "].types"%>'/>
         		</html:select>
             </td>
-            <td>nillable:<html:checkbox property='<%= "attributes[" + index + "].nillable" %>'/></td>
-            <td>min:<html:text size="2" property='<%= "attributes[" + index + "].minOccurs"%>'/></td>
-            <td>max:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
+            <td><bean:message key="nillable"/>:<html:checkbox property='<%= "attributes[" + index + "].nillable" %>'/></td>
+            <td><bean:message key="min"/>:<html:text size="2" property='<%= "attributes[" + index + "].minOccurs"%>'/></td>
+            <td><bean:message key="max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
+            <td>
+              <% if (first == false) { %>
+          	  <html:image src="../../../images/up.png" 
+          	  	          titleKey="type.title.up" 
+          	  	          property="action" 
+          	  	          value="<%= "up_"+ index%>"/>
+          	  <% } 
+          	     first = false; %>
+          	</td>
+          	<td> 
+          	  <% if (attributesSize-1 != index.intValue()) { %>
+          	  <html:image src="../../../images/down.png" 
+          	              titleKey="type.title.down" 
+          	              property="action" 
+          	              value="<%= "down_"+ index%>"/>
+          	  <% } %>
+          	</td> 
+          	<td>
+          	  <html:image src="../../../images/delete.png" 
+          	  	          titleKey="type.title.delete" 
+          	  	          property="action" 
+          	  	          value="<%= "delete_"+ index%>"/>
+		    </td>
+          <% } %>
           </tr>
-        <% } %>
           <tr>
             <td>
               <pre><code><bean:write name="attribute" property="fragment"/></code></pre>
@@ -167,6 +197,19 @@
       </td>
     </tr>
 </logic:iterate>
+    
+    <tr>
+    	<td>
+  			<html:select property="newAttribute">
+				<html:options property="createableAttributes"/>
+			</html:select>
+		</td>
+		<td>
+			<html:submit property="action">
+				<bean:message key="label.add"/>
+			</html:submit>    	
+		</td>
+    </tr>
     
     <tr>
       <td class="label">
