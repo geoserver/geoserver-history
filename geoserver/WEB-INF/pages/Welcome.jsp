@@ -15,13 +15,35 @@
 <bean:message key="text.welcome1"/>
 </p>
 
-<p>
+<!--p>
 <bean:message key="text.welcome2"/>
-</p>
+</p-->
+
+<!--p>
+<bean:message key="text.welcome3"/>
+</p-->
 
 <p>
-<bean:message key="text.welcome3"/>
+<bean:message key="text.welcome5"/>
 </p>
+
+<ul>
+  <li>
+    <a href="http://geoserver.sourceforge.net/documentation/1.2.0-rc1">
+      Documentation
+    </a>
+  </li>
+  <li>
+    <a href="http://docs.codehause.org/display/GEOS/Home">
+      Wiki
+    </a>
+  </li>
+    <li>
+    <a href="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">
+      Task Tracker
+    </a>
+  </li>
+</ul>
 
 <h2>
   <bean:write name="WFS" property="title"/>
@@ -58,3 +80,5 @@
 <p>
 <bean:message key="text.welcome4"/>
 </p>
+
+
