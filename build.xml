@@ -9,12 +9,31 @@
 <!-- ====================================================================== -->
 
 <project name="geoserver" default="help" basedir=".">
+    
+<!-- ====================================================================== -->
+<!-- LOCALIZE PROPERTIES                                                    -->
+<!-- ====================================================================== -->
+        
+  <!-- external directories -->
+  <!-- pc example -->
+  <property name="dir.container" value="C:\java\tomcat5\webapps"/>
+  <property name="dir.geotools" 
+            value="..\geotools-src"/>
+
+  <!-- If you don't have your own conf directory uncomment on of the following -->
+  <property name="test.type" value="UserBasic"/>
+  <!--<property name="test.type" value="Demo"/>-->
+  <!--property name="test.type" value="Demo"/-->
+  <!--<property name="test.type" value="DemoPostGIS"/>-->
+  <!--<property name="test.type" value="CitePostGis"/>-->
+  <!--<property name="test.type" value="CiteShapeFiles"/>--> 
+        
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2-beta1"/>
+  <property name="name.release" value="1.2.0-rc2"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
@@ -31,14 +50,8 @@
   <!-- secondary directories -->
   <property name="dir.data" value="${dir.conf}"/>
   <property name="dir.testApp" value="${dir.server}/geoserver"/>
-  <property name="dir.jetty" value="${dir.lib}/jetty"/>
-
-  <!-- external directories -->
-  <!-- pc example -->
-  <property name="dir.container" value="C:\java\tomcat4\webapps"/>
-  <property name="dir.geotools" 
-            value="C:\cygwin\home\Chris\geotools2\geotools-src"/>
-
+  <property name="dir.jetty" value="${dir.lib}/jetty"/>   
+    
  <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
   <property name="jar.geoserver" value="${dir.lib}/geoserver.jar"/>
@@ -60,15 +73,6 @@
   <!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
   <!--<available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
   <available file="${basedir}/server/geoserver" type="dir" property="server.built"/>-->
-
-
-  <!-- If you don't have your own conf directory uncomment on of the following -->
-  <!--<property name="test.type" value="UserBasic"/>-->
-  <!--<property name="test.type" value="Demo"/>-->
-  <!--property name="test.type" value="Demo"/-->
-  <!--<property name="test.type" value="DemoPostGIS"/>-->
-  <!--<property name="test.type" value="CitePostGis"/>-->
-  <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
   <!-- paths -->
   <path id="path.lib">
