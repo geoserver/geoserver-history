@@ -19,7 +19,9 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.validation.ArgumentConfig;
+import org.vfny.geoserver.config.validation.PlugInConfig;
 import org.vfny.geoserver.config.validation.TestConfig;
+import org.vfny.geoserver.config.validation.ValidationConfig;
 
 /**
  * ValidationTestEditorForm purpose.
@@ -28,8 +30,8 @@ import org.vfny.geoserver.config.validation.TestConfig;
  * </p>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestEditorForm.java,v 1.4 2004/02/25 19:42:11 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: ValidationTestEditorForm.java,v 1.5 2004/04/21 21:30:51 emperorkefka Exp $
  */
 public class ValidationTestEditorForm extends ActionForm {
     
@@ -206,5 +208,11 @@ public class ValidationTestEditorForm extends ActionForm {
 	public String getPlugInName() {
 		return plugInName;
 	}
+    
+    public String getPlugInDescription() {
+        ValidationConfig validationConfig = (ValidationConfig) this.getServlet().getServletContext().getAttribute(ValidationConfig.CONFIG_KEY);
+        PlugInConfig config = validationConfig.getPlugIn(plugInName);
+        return config.getDescription();
+    }
 
 }
