@@ -171,7 +171,7 @@ public class WFSDescriptionActionTest extends TestCase {
 		action.setServlet( actionServlet );
 		
 		form = new WFSDescriptionForm();					
-		form.init( actionServlet, null );
+		//form.init( actionServlet, null );
 		form.setServlet( actionServlet );
 		form.reset(null,null);
 		

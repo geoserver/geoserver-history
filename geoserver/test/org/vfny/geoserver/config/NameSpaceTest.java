@@ -24,7 +24,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceTest.java,v 1.1.2.1 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: NameSpaceTest.java,v 1.1.2.2 2004/01/08 18:44:29 dmzwiers Exp $
  */
 public class NameSpaceTest extends TestCase {
 
@@ -43,20 +43,20 @@ public class NameSpaceTest extends TestCase {
 	/*
 	 * Test for void NameSpaceConfig(NameSpaceConfig)
 	 */
-	public void testNameSpaceNameSpace() {
+	/*public void testNameSpaceNameSpace() {
 		//test requires equals.
 		b = new NameSpaceConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
-	}
+	}*/
 
 	/*
 	 * Test for Object clone()
 	 */
-	public void testClone() {
+	/*public void testClone() {
 		//test requires equals.
 		b =(NameSpaceConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
-	}
+	}*/
 
 	/*
 	 * Test for boolean equals(Object)

@@ -26,7 +26,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GlobalTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: GlobalTest.java,v 1.1.2.3 2004/01/08 18:44:29 dmzwiers Exp $
  */
 public class GlobalTest extends TestCase {
 
@@ -48,20 +48,20 @@ public class GlobalTest extends TestCase {
 	/*
 	 * Test for void ContactConfig(ContactConfig)
 	 */
-	public void testDataStoreDataStore() {
+	/*public void testDataStoreDataStore() {
 		//test requires equals.
 		b = new GlobalConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
-	}
+	}*/
 
 	/*
 	 * Test for Object clone()
 	 */
-	public void testClone() {
+	/*public void testClone() {
 		//test requires equals.
 		b =(GlobalConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
-	}
+	}*/
 
 	/*
 	 * Test for boolean equals(Object)

@@ -25,7 +25,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ContactTest.java,v 1.1.2.2 2004/01/02 17:13:26 dmzwiers Exp $
+ * @version $Id: ContactTest.java,v 1.1.2.3 2004/01/08 18:44:29 dmzwiers Exp $
  */
 public class ContactTest extends TestCase {
 
@@ -54,20 +54,20 @@ public class ContactTest extends TestCase {
 	/*
 	 * Test for void ContactConfig(ContactConfig)
 	 */
-	public void testContactContact() {
+	/*public void testContactContact() {
 		//test requires equals.
 		b = new ContactConfig(a);
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
-	}
+	}*/
 
 	/*
 	 * Test for Object clone()
 	 */
-	public void testClone() {
+	/*public void testClone() {
 		//test requires equals.
 		b =(ContactConfig)a.clone();
 		assertTrue("Testing ContactConfig(ContactConfig)\nRelies on ContactConfig.equals.",a.equals(b));
-	}
+	}*/
 
 	/*
 	 * Test for boolean equals(Object)

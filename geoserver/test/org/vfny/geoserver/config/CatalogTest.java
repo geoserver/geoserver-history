@@ -26,7 +26,7 @@ import junit.framework.TestCase;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogTest.java,v 1.1.2.2 2004/01/07 22:54:05 emperorkefka Exp $
+ * @version $Id: CatalogTest.java,v 1.1.2.3 2004/01/08 18:44:29 dmzwiers Exp $
  */
 public class CatalogTest extends TestCase {
 
@@ -63,17 +63,17 @@ public class CatalogTest extends TestCase {
 	/*
 	 * Test for void Data(Data)
 	 */
-	public void testCatalogCatalog() {
+	/*public void testCatalogCatalog() {
 		b = new DataConfig(a);
 		assertTrue("Testing GlobalCatalog(GlobalCatalog)\nRelies on GlobalCatalog.equals.",a.equals(b));
-	}
+	}*/
 
 	/*
 	 * Test for Object clone()
 	 */
-	public void testClone() {
+	/*public void testClone() {
 		b = (DataConfig)a.clone();
 		assertTrue("Testing clone()\nRelies on GlobalCatalog.equals.",a.equals(b));
-	}
+	}*/
 
 }
