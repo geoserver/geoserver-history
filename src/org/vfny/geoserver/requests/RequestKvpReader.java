@@ -70,13 +70,13 @@ abstract public class RequestKvpReader {
     private static FilterFactory factory = FilterFactory.createFilterFactory();
 
     // sets up some of the HTML encoding translations
-    static {
-        translator.put("%3C","<");
-        translator.put("%3E",">");
-        translator.put("%22","'");
-        translator.put("%20"," ");
-        translator.put("%27","'");
-    }
+    //static {
+    //  translator.put("%3C","<");
+    //  translator.put("%3E",">");
+    //  translator.put("%22","'");
+    //  translator.put("%20"," ");
+    //  translator.put("%27","'");
+    //}
 
     /**
      * Constructor with raw request string.  This constructor  parses the
@@ -88,7 +88,7 @@ abstract public class RequestKvpReader {
 
         // uses the request cleaner to remove HTTP junk
         String cleanRequest = clean(rawRequest);
-        
+        LOGGER.finer("clean request is " + cleanRequest);
         // parses initial request sream into KVPs
         StringTokenizer requestKeywords = 
             new StringTokenizer(cleanRequest.trim(), KEYWORD_DELIMITER);
@@ -103,8 +103,12 @@ abstract public class RequestKvpReader {
             //  delimeters, which may appear in XML (such as '=' for 
             //  attributes.  unavoidable and illustrates the problems with
             //  mixing nasty KVP Get syntax and pure XML syntax!
-            if(kvpPair.startsWith("FILTER")) {
-                kvpPairs.put( "FILTER", kvpPair.substring(7));
+            if(kvpPair.toUpperCase().startsWith("FILTER")) {
+		String filterVal = kvpPair.substring(7); 
+		int index = filterVal.lastIndexOf("</Filter>");
+		//String filt2 = kvpPair.subString
+		LOGGER.finest("putting filter value " + filterVal); 
+                kvpPairs.put( "FILTER", filterVal);
 
             } else {
                 // handles all other standard cases by looking for the correct
@@ -119,7 +123,8 @@ abstract public class RequestKvpReader {
                     if( requestValues.hasMoreTokens() ) {
                         // assign value and store in hash with key
                         value = requestValues.nextToken();
-                        kvpPairs.put(key, value);
+			LOGGER.finest("putting kvp pair: " + key + ": " + value); 
+			kvpPairs.put(key, value);
                     }
                 }
             }            
@@ -141,17 +146,22 @@ abstract public class RequestKvpReader {
      */ 
     public static String clean(String raw) {        
         LOGGER.finest("raw request: " + raw);
-        Set keys = translator.keySet();
-        Iterator i = keys.iterator();
-        while(i.hasNext()) {
-            String encoding = (String) i.next();
-	    if (raw != null) {
-            raw = raw.replaceAll(encoding, (String) translator.get(encoding));
+        //Set keys = translator.keySet();
+        //Iterator i = keys.iterator();
+        //while(i.hasNext()) {
+	//String encoding = (String) i.next();
+	  if (raw != null) {
+	      try {
+		raw = java.net.URLDecoder.decode(raw, "UTF-8");
+		//raw = raw.replaceAll(encoding, (String) translator.get(encoding));
+		} catch (java.io.UnsupportedEncodingException e) {
+		    LOGGER.finer("Bad encoding for decoder " + e);
+		}
 	    } else {
 		return "";
 	    }
-        }
-        LOGGER.finest("cleaned request: " + raw);
+	  //}
+	  LOGGER.finest("cleaned request: " + raw);
         return raw;
     }
 
