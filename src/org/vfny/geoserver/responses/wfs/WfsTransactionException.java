@@ -103,12 +103,14 @@ public class WfsTransactionException extends WfsException {
 
     /**
      * Returns a WFS_TransactionResponse xml string indicating the failure.
-     *
-     * @param gs DOCUMENT ME!
+     * Please don't change the method signature, unless you are refactoring all
+     * serviceExceptions - I had a lame bug with these not printed correctly
+     * because someone changed the method signature, as it no longer did the 
+     * proper override.
      *
      * @return DOCUMENT ME!
      */
-    public String getXmlResponse(Request gs) {
+    public String getXmlResponse() {
         WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,
                 handle, true);
         response.setLocator(locator);
@@ -117,6 +119,6 @@ public class WfsTransactionException extends WfsException {
         //production release.
         response.setMessage(this.getXmlMessage(true));
 
-        return response.getXmlResponse(gs);
+        return response.getXmlResponse(null);
     }
 }
