@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.ServiceDTO;
-import org.vfny.geoserver.global.dto.WMSDTO;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 
 
 /**
@@ -20,7 +21,7 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.6 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: WMSConfig.java,v 1.7 2004/02/09 23:30:04 dmzwiers Exp $
  */
 public class WMSConfig extends ServiceConfig {
     private static final String WMS_VERSION = "1.1.1";

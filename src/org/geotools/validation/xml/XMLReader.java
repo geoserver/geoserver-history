@@ -4,23 +4,30 @@
  */
 package org.geotools.validation.xml;
 
-import org.geotools.validation.dto.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.geotools.validation.dto.ArgumentDTO;
+import org.geotools.validation.dto.PlugInDTO;
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import java.io.IOException;
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Load validation configuration from XML.
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLReader.java,v 1.9 2004/02/02 18:51:45 dmzwiers Exp $
+ * @version $Id: XMLReader.java,v 1.10 2004/02/09 23:29:47 dmzwiers Exp $
  */
 public class XMLReader {
     /**

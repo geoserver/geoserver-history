@@ -4,6 +4,13 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
+import java.io.IOException;
+import java.io.Reader;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
@@ -14,11 +21,6 @@ import org.vfny.geoserver.requests.wfs.FeatureHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
-import java.io.IOException;
-import java.io.Reader;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -26,7 +28,7 @@ import javax.xml.parsers.SAXParserFactory;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: GetFeatureXmlReader.java,v 1.5 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: GetFeatureXmlReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class GetFeatureXmlReader extends XmlRequestReader {
     /**

@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
+
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
 /**
@@ -19,7 +20,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.7 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: GlobalConfig.java,v 1.8 2004/02/09 23:30:04 dmzwiers Exp $
  */
 public class GlobalConfig {
     public static final String CONFIG_KEY = "Config.Global";

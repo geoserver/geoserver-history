@@ -4,17 +4,19 @@
  */
 package org.vfny.geoserver.servlets.wms;
 
+import java.io.IOException;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wms.GetMapKvpReader;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.GetMapResponse;
 import org.vfny.geoserver.servlets.WMService;
-import java.io.IOException;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -22,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  * request
  *
  * @author Gabriel Roldán
- * @version $Id: GetMap.java,v 1.5 2004/01/31 00:27:29 jive Exp $
+ * @version $Id: GetMap.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class GetMap extends WMService {
     /**

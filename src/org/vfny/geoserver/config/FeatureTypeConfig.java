@@ -4,17 +4,19 @@
  */
 package org.vfny.geoserver.config;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 
 /**
@@ -27,7 +29,7 @@ import java.util.List;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.14 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.15 2004/02/09 23:30:05 dmzwiers Exp $
  */
 public class FeatureTypeConfig {
     /** The Id of the datastore which should be used to get this featuretype. */

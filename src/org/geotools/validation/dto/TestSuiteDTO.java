@@ -10,8 +10,9 @@
  */
 package org.geotools.validation.dto;
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.*;
+import java.util.Map;
 
 
 /**
@@ -22,8 +23,8 @@ import java.util.*;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: TestSuiteDTO.java,v 1.6 2004/01/31 00:24:08 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: TestSuiteDTO.java,v 1.7 2004/02/09 23:29:43 dmzwiers Exp $
  */
 public class TestSuiteDTO {
     /** the test suite name */

@@ -8,11 +8,13 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.config.DataConfig;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.config.DataConfig;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -37,7 +39,7 @@ import java.util.List;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.8 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.9 2004/02/09 23:29:47 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */

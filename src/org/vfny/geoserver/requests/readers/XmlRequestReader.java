@@ -4,6 +4,14 @@
  */
 package org.vfny.geoserver.requests.readers;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
@@ -15,12 +23,6 @@ import org.vfny.geoserver.requests.Request;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.logging.Logger;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -30,7 +32,7 @@ import javax.xml.parsers.SAXParserFactory;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: XmlRequestReader.java,v 1.5 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: XmlRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
  */
 public abstract class XmlRequestReader {
     /** Class logger */

@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.requests.readers;
 
-import org.vfny.geoserver.servlets.Dispatcher;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.servlets.Dispatcher;
 
 
 /**
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DispatcherKvpReader.java,v 1.6 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: DispatcherKvpReader.java,v 1.7 2004/02/09 23:29:47 dmzwiers Exp $
  */
 public class DispatcherKvpReader {
     /** Class logger */

@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.geotools.filter.Filter;
 import java.util.logging.Logger;
+
+import org.geotools.filter.Filter;
 
 
 /**
@@ -33,7 +34,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteRequest.java,v 1.5 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: DeleteRequest.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */

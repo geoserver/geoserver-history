@@ -5,15 +5,17 @@
 
 package org.vfny.geoserver.form.wms;
 
+import java.net.URL;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WMSConfig;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.Set;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**

@@ -4,13 +4,14 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.requests.WFSRequest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
  * support those.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureRequest.java,v 1.6 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: FeatureRequest.java,v 1.7 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class FeatureRequest extends WFSRequest {
     /** Standard logging instance for class */

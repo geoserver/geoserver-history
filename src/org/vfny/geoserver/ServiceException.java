@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver;
 
-import org.vfny.geoserver.responses.ResponseUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.responses.ResponseUtils;
 
 
 /**

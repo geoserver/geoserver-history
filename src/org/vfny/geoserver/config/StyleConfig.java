@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.StyleDTO;
 import java.io.File;
+
+import org.vfny.geoserver.global.dto.StyleDTO;
 
 
 /**
@@ -21,7 +22,7 @@ import java.io.File;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleConfig.java,v 1.5 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: StyleConfig.java,v 1.6 2004/02/09 23:30:04 dmzwiers Exp $
  */
 public class StyleConfig {
     /** The syle id. */

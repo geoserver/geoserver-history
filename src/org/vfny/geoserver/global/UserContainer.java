@@ -4,15 +4,17 @@
  */
 package org.vfny.geoserver.global;
 
+import java.util.Locale;
+
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+
 import org.geotools.data.DataStore;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
-import java.util.Locale;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
 
 
 /**
@@ -41,8 +43,8 @@ import javax.servlet.http.HttpSessionBindingListener;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: UserContainer.java,v 1.6 2004/02/04 22:05:46 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: UserContainer.java,v 1.7 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";

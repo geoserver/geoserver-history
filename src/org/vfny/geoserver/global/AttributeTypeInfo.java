@@ -8,11 +8,12 @@
  */
 package org.vfny.geoserver.global;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.geotools.data.AttributeTypeMetaData;
 import org.geotools.feature.AttributeType;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -24,7 +25,7 @@ import java.util.Map;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.8 2004/02/09 18:06:26 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfo.java,v 1.9 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class AttributeTypeInfo implements AttributeTypeMetaData {
 	private String name;

@@ -14,7 +14,17 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.Filter;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * XMLSchemaTranslator purpose.
@@ -28,7 +38,7 @@ import com.vividsolutions.jts.geom.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GMLSchemaTranslator.java,v 1.2 2004/02/09 18:00:02 dmzwiers Exp $
+ * @version $Id: GMLSchemaTranslator.java,v 1.3 2004/02/09 23:29:49 dmzwiers Exp $
  */
 public class GMLSchemaTranslator extends NameSpaceTranslator {
 

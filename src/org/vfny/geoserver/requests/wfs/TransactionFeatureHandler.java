@@ -4,7 +4,10 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
+
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
@@ -16,16 +19,15 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.9 2004/02/09 23:11:36 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.10 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {

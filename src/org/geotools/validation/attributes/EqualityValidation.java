@@ -4,13 +4,13 @@
  */
 package org.geotools.validation.attributes;
 
+import java.util.logging.Logger;
+
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.geotools.validation.DefaultFeatureValidation;
-import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.ValidationResults;
-import java.util.logging.Logger;
 
 
 /**
@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: EqualityValidation.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
+ * @version $Id: EqualityValidation.java,v 1.3 2004/02/09 23:29:49 dmzwiers Exp $
  */
 public class EqualityValidation extends DefaultFeatureValidation {
     /** The logger for the validation module. */

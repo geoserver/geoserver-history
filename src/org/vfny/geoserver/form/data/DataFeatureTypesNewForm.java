@@ -5,21 +5,23 @@
 
 package org.vfny.geoserver.form.data;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * DataFeatureTypesNewForm purpose.
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataFeatureTypesNewForm.java,v 1.4 2004/01/31 00:27:25 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataFeatureTypesNewForm.java,v 1.5 2004/02/09 23:29:45 dmzwiers Exp $
  */
 public class DataFeatureTypesNewForm extends ActionForm {
     String selectedNewFeatureType;

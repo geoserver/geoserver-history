@@ -4,20 +4,22 @@
  */
 package org.vfny.geoserver.servlets.wfs;
 
-import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.servlets.Dispatcher;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.servlets.Dispatcher;
 
 
 /**
@@ -35,7 +37,7 @@ import javax.servlet.http.HttpSession;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: WfsDispatcher.java,v 1.5 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */

@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.global.dto.ServiceDTO;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
 /**
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.7 2004/02/09 23:29:42 dmzwiers Exp $
  *
  * @see WMS
  * @see WFS

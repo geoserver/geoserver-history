@@ -6,8 +6,6 @@ package org.vfny.geoserver.requests;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.geotools.validation.ValidationProcessor;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 
@@ -23,7 +21,7 @@ import org.vfny.geoserver.global.WMS;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.12 2004/02/09 23:11:33 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.13 2004/02/09 23:29:44 dmzwiers Exp $
  */
 abstract public class Request {
 	/**

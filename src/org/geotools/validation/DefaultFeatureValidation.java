@@ -4,11 +4,10 @@
  */
 package org.geotools.validation;
 
+import java.util.logging.Logger;
+
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.validation.FeatureValidation;
-import org.geotools.validation.ValidationResults;
-import java.util.logging.Logger;
 
 
 /**
@@ -20,8 +19,8 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DefaultFeatureValidation.java,v 1.1 2004/01/31 00:24:05 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DefaultFeatureValidation.java,v 1.2 2004/02/09 23:29:43 dmzwiers Exp $
  */
 public class DefaultFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */

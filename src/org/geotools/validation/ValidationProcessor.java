@@ -15,11 +15,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.validation.dto.ArgumentDTO;
-import org.geotools.validation.dto.PlugInDTO;
-import org.geotools.validation.dto.TestDTO;
-import org.geotools.validation.dto.TestSuiteDTO;
-import org.geotools.validation.xml.ValidationException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -86,7 +81,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.9 2004/02/09 22:19:23 dmzwiers Exp $
+ * @version $Id: ValidationProcessor.java,v 1.10 2004/02/09 23:29:43 dmzwiers Exp $
  */
 public class ValidationProcessor {
     // These are no longer used for Integrity Validation tests

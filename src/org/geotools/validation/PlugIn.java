@@ -4,11 +4,8 @@
  */
 package org.geotools.validation;
 
-import org.geotools.validation.dto.ArgumentDTO;
-import org.geotools.validation.xml.ValidationException;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
@@ -16,6 +13,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.geotools.validation.dto.ArgumentDTO;
+import org.geotools.validation.xml.ValidationException;
 
 
 /**

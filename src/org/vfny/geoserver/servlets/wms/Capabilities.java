@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.servlets.wms;
 
+import java.util.Map;
+
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wms.CapabilitiesKvpReader;
@@ -11,14 +13,13 @@ import org.vfny.geoserver.requests.readers.wms.CapabilitiesXmlReader;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.WMSCapabilitiesResponse;
 import org.vfny.geoserver.servlets.WMService;
-import java.util.Map;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.5 2004/01/31 00:27:29 jive Exp $
+ * @version $Id: Capabilities.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Capabilities extends WMService {
     /**

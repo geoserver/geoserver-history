@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.responses.ResponseUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -17,6 +13,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.responses.ResponseUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 
 /**
  * Java representation of a WFS_TransactionResponse xml element. The status and
@@ -25,7 +26,7 @@ import java.util.logging.Logger;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.8 2004/02/09 23:11:36 dmzwiers Exp $
+ * @version $Id: WfsTransResponse.java,v 1.9 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */

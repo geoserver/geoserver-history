@@ -4,14 +4,14 @@
  */
 package org.vfny.geoserver.action;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.Action;
 import org.vfny.geoserver.global.ApplicationState;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Requests;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GeoServerAction.java,v 1.5 2004/02/09 23:11:34 dmzwiers Exp $
+ * @version $Id: GeoServerAction.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class GeoServerAction extends Action {
     /**

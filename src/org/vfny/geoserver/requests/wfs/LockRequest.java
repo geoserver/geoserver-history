@@ -4,15 +4,16 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureLockFactory;
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.requests.WFSRequest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
+
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLockFactory;
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP <br>
  * @author Chris Holmes, TOPP
- * @version $Id: LockRequest.java,v 1.5 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: LockRequest.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class LockRequest extends WFSRequest {
     /** Standard logging instance for class */

@@ -4,6 +4,10 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
@@ -13,9 +17,6 @@ import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.12 2004/02/09 23:11:36 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.13 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";

@@ -4,7 +4,11 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -19,10 +23,8 @@ import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.LogicFilter;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -41,7 +43,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureSource.java,v 1.6 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: GeoServerFeatureSource.java,v 1.7 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */

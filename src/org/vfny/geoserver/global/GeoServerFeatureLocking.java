@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.IOException;
+
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -12,7 +14,6 @@ import org.geotools.data.postgis.PostgisFeatureLocking;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
-import java.io.IOException;
 
 
 /**
@@ -31,7 +32,7 @@ import java.io.IOException;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureLocking.java,v 1.4 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: GeoServerFeatureLocking.java,v 1.5 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class GeoServerFeatureLocking extends GeoServerFeatureStore
     implements FeatureLocking {

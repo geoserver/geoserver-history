@@ -8,15 +8,17 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.File;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
 import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
-import java.io.File;
-import java.util.*;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 
 /**
@@ -30,7 +32,7 @@ import javax.servlet.ServletException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.7 2004/02/09 23:29:41 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
  */

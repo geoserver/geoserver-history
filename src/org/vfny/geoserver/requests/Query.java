@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver.requests;
 
-import org.geotools.data.DefaultQuery;
-import org.geotools.filter.Filter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.geotools.data.DefaultQuery;
+import org.geotools.filter.Filter;
 
 
 /**
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Query.java,v 1.14 2004/01/31 00:27:25 jive Exp $
+ * @version $Id: Query.java,v 1.15 2004/02/09 23:29:44 dmzwiers Exp $
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?

@@ -4,17 +4,15 @@
  */
 package org.vfny.geoserver.requests;
 
-import org.geotools.validation.ValidationProcessor;
-import org.vfny.geoserver.global.ApplicationState;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.global.WFS;
-import org.vfny.geoserver.global.WMS;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.vfny.geoserver.global.ApplicationState;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.global.WMS;
 
 
 /**

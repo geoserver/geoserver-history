@@ -4,8 +4,13 @@
  */
 package org.geotools.validation;
 
-import java.beans.*;
-import java.net.*;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditorManager;
+import java.beans.PropertyEditorSupport;
+import java.beans.SimpleBeanInfo;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -15,8 +20,8 @@ import java.util.ResourceBundle;
  * Utility class extending SimpleBeanInfo with our own helper functions.
  * 
  * @author David Zwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationBeanInfo.java,v 1.1 2004/01/31 00:24:05 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationBeanInfo.java,v 1.2 2004/02/09 23:29:43 dmzwiers Exp $
  */
 public class ValidationBeanInfo extends SimpleBeanInfo {
     /**
@@ -92,8 +97,8 @@ public class ValidationBeanInfo extends SimpleBeanInfo {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ValidationBeanInfo.java,v 1.1 2004/01/31 00:24:05 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ValidationBeanInfo.java,v 1.2 2004/02/09 23:29:43 dmzwiers Exp $
      */
     class URLPropertyEditor extends PropertyEditorSupport {
         /** the editor's data */

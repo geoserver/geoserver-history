@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.global.UserContainer;
 
 /**
  * Remove UserContainter from session (and reset session) and return to welcome.
@@ -20,8 +19,8 @@ import org.vfny.geoserver.global.UserContainer;
  * This is a propert ConfigAction - you need to be logged in for this to work.
  * </p>
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: LogoutAction.java,v 1.3 2004/02/05 00:01:50 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: LogoutAction.java,v 1.4 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class LogoutAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping,

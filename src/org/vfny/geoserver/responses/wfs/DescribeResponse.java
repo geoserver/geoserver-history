@@ -4,17 +4,6 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.feature.FeatureType;
-import org.geotools.gml.producer.FeatureTypeTransformer;
-import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpaceInfo;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WFS;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wfs.DescribeRequest;
-import org.vfny.geoserver.responses.Response;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,7 +16,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+
 import javax.xml.transform.TransformerException;
+
+import org.geotools.feature.FeatureType;
+import org.geotools.gml.producer.FeatureTypeTransformer;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.wfs.DescribeRequest;
+import org.vfny.geoserver.responses.Response;
 
 
 /**
@@ -36,7 +38,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.14 2004/02/09 23:11:36 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.15 2004/02/09 23:29:42 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation

@@ -4,31 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.data.Catalog;
-import org.geotools.data.DataSourceException;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreMetaData;
-import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureTypeMetaData;
-import org.geotools.data.LockingManager;
-import org.geotools.data.NamespaceMetaData;
-import org.geotools.data.Query;
-import org.geotools.data.Transaction;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
-import org.geotools.styling.SLDStyle;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
-import org.vfny.geoserver.global.dto.StyleDTO;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -40,10 +15,29 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geotools.data.Catalog;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreMetaData;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureTypeMetaData;
+import org.geotools.data.LockingManager;
+import org.geotools.data.NamespaceMetaData;
+import org.geotools.data.Transaction;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.geotools.styling.SLDStyle;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
 
 
 /**
@@ -53,7 +47,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.30 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.31 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
 	public static final String WEB_CONTAINER_KEY = "DATA";

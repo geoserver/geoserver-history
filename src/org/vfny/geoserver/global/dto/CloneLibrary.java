@@ -4,11 +4,12 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import com.vividsolutions.jts.geom.Envelope;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -32,7 +33,7 @@ import java.util.Map;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: CloneLibrary.java,v 1.5 2004/02/09 23:29:48 dmzwiers Exp $
  */
 public final class CloneLibrary {
     /**
