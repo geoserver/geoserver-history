@@ -14,7 +14,6 @@ import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -29,19 +28,19 @@ import java.util.List;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.16 2004/03/14 16:09:21 groldan Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.17 2004/04/16 10:56:46 cholmesny Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private static final String CAP_VERSION = WMS.getVersion();
 
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private GeoServer server = null;
 
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private String baseUrl = "";
 
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     protected String BBOX_ELEM_NAME = "LatLonBoundingBox";
 
     /**
@@ -100,13 +99,13 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException For any problems.
      */
     protected void endService(Service config) throws SAXException {
-        handleContact(config);
+        //handleContact(config);
         super.endService(config);
     }
 
     /**
      * handleContact purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
@@ -115,12 +114,13 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException
      */
-    private void handleContact(Service config) throws SAXException {
+    protected void handleContact(Service config) throws SAXException {
         String tmp = "";
         tmp = config.getGeoServer().getContactPerson();
 
         if ((tmp != null) && (tmp != "")) {
-            startElement("Contact");
+            startElement("ContactInformation");
+            startElement("ContactPersonPrimary");
             handleSingleElem("ContactPerson", tmp);
             tmp = config.getGeoServer().getContactOrganization();
 
@@ -128,6 +128,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
                 handleSingleElem("ContactOrganization", tmp);
             }
 
+            endElement("ContactPersonPrimary");
             tmp = config.getGeoServer().getContactPosition();
 
             if ((tmp != null) && (tmp != "")) {
@@ -196,7 +197,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
                 handleSingleElem("ContactElectronicMailAddress", tmp);
             }
 
-            endElement("Contact");
+            endElement("ContactInformation");
         }
     }
 
