@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.9 2004/04/05 11:40:06 cholmesny Exp $
+ * @version $Id: DataStoreConfig.java,v 1.10 2004/04/20 05:00:15 jive Exp $
  */
 public class DataStoreConfig {
     /** unique datasore identifier */
@@ -53,7 +53,7 @@ public class DataStoreConfig {
     private DataStoreFactorySpi factory;
 
     /**
-     * Create a new DataStoreConfig
+     * Create a new DataStoreConfig from a dataStoreId and factoryDescription
      * 
      * <p>
      * Creates a DataStoreInfo to represent an instance with default data.
@@ -68,6 +68,7 @@ public class DataStoreConfig {
         this(dataStoreId, DataStoreUtils.aquireFactory(factoryDescription));
     }
 
+    /** Creates a new DataStoreConfig for the provided factory. */
     public DataStoreConfig(String dataStoreId, DataStoreFactorySpi factory) {
         this.factory = factory;
         id = dataStoreId;
