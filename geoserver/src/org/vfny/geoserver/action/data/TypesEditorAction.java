@@ -122,7 +122,7 @@ public class TypesEditorAction extends ConfigAction {
         DataConfig dataConfig = getDataConfig();
         DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
         DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
-        FeatureType featureType = dataStore.getSchema(typeForm.getName());
+        FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
 
         Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
@@ -144,10 +144,10 @@ public class TypesEditorAction extends ConfigAction {
      * @return
      */
     private void sync(TypesEditorForm form, FeatureTypeConfig config ) {
-        config.setName(form.getName());
+        config.setName(form.getTypeName());
         config.setAbstract(form.getAbstract());
         config.setDefaultStyle( form.getStyleId() );        
-        config.setSRS(Integer.parseInt(form.getSRS()));
+        config.setSRS(Integer.parseInt(form.getSRS()));        
         config.setTitle(form.getTitle());
         config.setLatLongBBox(getBoundingBox(form));        
         config.setKeywords(keyWords(form));
@@ -155,10 +155,17 @@ public class TypesEditorAction extends ConfigAction {
         String schemaBase = form.getSchemaBase();        
         if( schemaBase == null || schemaBase.equals("") || schemaBase.equals("--")){
             config.setSchemaBase( null );
+            config.setSchemaName( null );
             config.setSchemaAttributes( null );
         }
         else {
             config.setSchemaBase( schemaBase );
+            
+            String schemaName = form.getSchemaName();
+            if( schemaName == null || schemaName.trim().length() == 0){
+                schemaName = form.getTypeName() + "_Type";
+            }
+            config.setSchemaName( schemaName );
             config.setSchemaAttributes( form.toSchemaAttributes() );
         }        
         config.setSchemaAttributes( form.toSchemaAttributes() );                
@@ -170,7 +177,7 @@ public class TypesEditorAction extends ConfigAction {
             DataConfig config = ConfigRequests.getDataConfig(request);                
             DataStoreConfig dataStoreConfig = config.getDataStore( form.getDataStoreId() );                
             DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
-            featureType = dataStore.getSchema( form.getName() );                            
+            featureType = dataStore.getSchema( form.getTypeName() );                            
         } catch (IOException e) {
             // DataStore unavailable!
         } 

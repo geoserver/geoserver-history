@@ -35,7 +35,7 @@ import java.util.Map;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.38 2004/04/16 06:28:56 jive Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.39 2004/04/16 07:06:20 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -220,7 +220,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
         dto.setSchemaAttributes(tmp);
         dto.setSchemaBase(schemaBase);
-        dto.setSchemaName(schemaName);
+        dto.setSchemaName( getSchemaName() );        
         dto.setSRS(SRS);
         dto.setTitle(title);
 
