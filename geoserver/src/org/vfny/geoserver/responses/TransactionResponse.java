@@ -13,8 +13,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
-import org.geotools.data.postgis.PostgisConnectionFactory;
-import org.geotools.data.postgis.PostgisDataSource;
+//import org.geotools.data.postgis.PostgisConnectionFactory;
+//import org.geotools.data.postgis.PostgisDataSource;
 import org.geotools.filter.Filter;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -47,6 +47,8 @@ public class TransactionResponse {
     
     /** The handle of the transaction */
     //HACK: this is not safe, this class should probably not be static.
+    //TODO: just get rid of this, it should always be set in Transaction
+    //anyways.
     private static String transHandle;
 
     private static TypeRepository repository = TypeRepository.getInstance();
@@ -54,14 +56,12 @@ public class TransactionResponse {
     /** Constructor, which is required to take a request object. */ 
     private TransactionResponse () {}
 
-    
-
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
      * @return XML response to send to client
      */ 
     public static String getXmlResponse(TransactionRequest request) 
-	throws WfsTransactionException {
+	throws WfsTransactionException, WfsException {
 	
 	LOGGER.finer("doing transaction response");
 	//        TypeRepository repository = TypeRepository.getInstance();
@@ -71,17 +71,11 @@ public class TransactionResponse {
 	WfsTransResponse response = new WfsTransResponse
 	    (WfsTransResponse.SUCCESS, request.getHandle());
 	SubTransactionRequest subRequest = request.getSubRequest(0);
-	Connection con = getConnection(subRequest);
+	//Connection con = getConnection(subRequest);
 	//HACK: fails if types are in different databases
 	
 	String lockId = request.getLockId();
 	LOGGER.finer("got lockId: " + lockId);
-	//if (!request.getReleaseAll()){
-	//   String message = "release action SOME not supported yet by " +
-	//	"geoserver"; 
-	//   throw new WfsTransactionException(message, request.getHandle(), 
-	//				      request.getHandle());
-	//}
 	for(int i = 0, n = request.getSubRequestSize(); i < n; i++) {  
 	    subRequest = request.getSubRequest(i);
 	    String typeName = subRequest.getTypeName(); 
@@ -92,41 +86,57 @@ public class TransactionResponse {
 		filter = ((UpdateRequest)subRequest).getFilter();
 	    } //REVISIT: should inserts detect if the whole featureType is 
 	    //locked?  Hard to check right now.
-	    try {
 	    if (repository.isLocked(typeName, filter, lockId)) {
 		LOGGER.finer("it's locked, should throw exception");
 		String message = ("Feature Type: " + typeName + " is locked," +
 				  " and the lockId of the request - " + lockId +
 				  " - is not the proper lock");
-		throw new WfsTransactionException(message, 
-						  subRequest.getHandle(), 
-						  transHandle);
+		//should this be transaction exception?  Spec says this, but
+		//seems like transaction exception would give user more info.
+		throw new WfsException(message, subRequest.getHandle()); 
 	    } 
-	    } catch (WfsException e){
-		throw new WfsTransactionException(e, subRequest.getHandle(),
-						  transHandle);
-	    }
-	    Collection addedFids = getSub(subRequest, con);
+	     
+	    Collection addedFids = getSub(subRequest);
 	    if (addedFids != null) {
 		response.addInsertResult(subRequest.getHandle(), addedFids);
 	    }
 	}
-	
+	commitAll(request);
 	repository.unlock(request);
-	try {
-	    con.commit();
-	    con.close();
-	} catch (SQLException e) {
-	    String message = "Problem with transactions " 
-		+ e.getMessage();
-	    LOGGER.warning(message);
-	    throw new WfsTransactionException(message, subRequest.getHandle());
-	}  //TODO: catch WfsTransactionExceptions and close the connection.
 	return response.getXmlResponse();
     }
 
+    /**
+     * Commits all the sub transactions.
+     * 
+     * @param request holds the subTransactions that were just completed.
+     * @throws WfsException if there was problems with the datasource.
+     * @tasks REVISIT: This leaves a bunch of connections open with postgis.
+     * Should have a close() method in the datasource interface.
+     */
+    private static void commitAll(TransactionRequest request) 
+	throws WfsTransactionException {
+	SubTransactionRequest subRequest = request.getSubRequest(0);
+	try {
+	    for(int i = 0, n = request.getSubRequestSize(); i < n; i++) {  
+		subRequest = request.getSubRequest(i);
+		String typeName = subRequest.getTypeName(); 
+		TypeInfo typeInfo = repository.getType(typeName);
+		typeInfo.getTransactionDataSource().endMultiTransaction();
+	    }
+	} catch (DataSourceException e) {
+	    String message = "Problem accessing datasource: " 
+		+ e.getMessage() +", " + e.getCause();
+	    LOGGER.info(message);
+	    throw new WfsTransactionException(message, subRequest.getHandle());
+	} catch (WfsException e){
+	    throw new WfsTransactionException(e, subRequest.getHandle(),
+					      transHandle);
+	}
+    }
 
-    private static Connection getConnection(SubTransactionRequest subRequest) 
+    //this is all done in TypeInfo now.
+    /*    private static Connection getConnection(SubTransactionRequest subRequest) 
 	throws WfsTransactionException{
 	String typeName = subRequest.getTypeName();
 	
@@ -136,7 +146,7 @@ public class TransactionResponse {
         if (meta == null) {
 	    String errorMsg = "Could not find Feature Type: -" + typeName +
 		"-, feature information is not in the data folder.";
-	    LOGGER.warning(errorMsg);
+	    LOGGER.info(errorMsg);
 	    throw new WfsTransactionException(errorMsg, subRequest.getHandle(),
 					      transHandle);
 	}
@@ -151,102 +161,77 @@ public class TransactionResponse {
 	} catch (SQLException e) {
 	      String message = "Problem with transactions " 
 			+ e.getMessage();
-	    LOGGER.warning(message);
+	    LOGGER.info(message);
 	    throw new WfsTransactionException(message, subRequest.getHandle());
 	}
 	return connection;
-    }
+	}*/
 
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
      * @return XML response to send to client
      */ 
-    private static Collection getSub(SubTransactionRequest sub, 
-			       java.sql.Connection con)
+    private static Collection getSub(SubTransactionRequest sub)
 	throws WfsTransactionException {
 
         String result = new String();
 	LOGGER.finer("sub request is " + sub);
-        DataSource data = null;
-	try {  
-	
-
-	    //this hasn't been tested with more than 15,000 features...not sure
-	    //if things will mess up with more, and this means 100,000 is the limit 
-	    //TODO: although this will never be null since connection already 
-	    //checked it this code should be made clearer...use typeInfo 
-	    //connection and getNewDatasource.
-	    String typeName = sub.getTypeName();
-	    typeName = repository.getType(typeName).getName();
-	    if (sub.getOpType() == SubTransactionRequest.INSERT) {
-		//this is for our insert fid hack...we only want the fid from data
-		FeatureType schema = 
-		    FeatureTypeFactory.create(new AttributeType[0]);
-		// int srid = ((PostgisDataSource)data).querySRID(con, typeName);
-		 //HACK: this should be fixed in the datasource...
-		// ((FeatureTypeFlat)schema).setSRID(srid);
-		data = new PostgisDataSource(con, typeName, schema, 100000);
-	    } else {
-		data = new PostgisDataSource(con, typeName);
-		//if (sub.getOpType() == SubTransactionRequest.INSERT) {
-		//this is for our insert fid hack...we only want the fid from data
-		//FeatureType schema = 
-		//    FeatureTypeFactory.create(new AttributeType[0]);
-		//data.setSchema(schema);
+	String typeName = sub.getTypeName();
+	try {
+	    DataSource data = repository.getType(typeName).getTransactionDataSource();
+	    data.startMultiTransaction();
+	    switch (sub.getOpType()) {
+	    case SubTransactionRequest.UPDATE: 
+		UpdateRequest update = (UpdateRequest)sub;
+		doUpdate(update, data);
+		break;
+	    case SubTransactionRequest.INSERT:
+		InsertRequest insert = (InsertRequest)sub;
+		return doInsert(insert, data);
+	    case SubTransactionRequest.DELETE:
+		LOGGER.finer("about to perform delete: " + sub);
+		doDelete((DeleteRequest)sub, data);
+		break;
+	    default: break;
 	    }
-	
 	} catch (DataSourceException e) {
-	    String message = "Problem creating datasource: " 
-			+ e.getMessage() +", " + e.getCause();
-	    LOGGER.warning(message);
-	    throw new WfsTransactionException(message, sub.getHandle());
-	} catch (org.geotools.feature.SchemaException e) {
-	     String message = "Problem creating schema for datasource: " 
-			+ e.getMessage();
-	    LOGGER.warning(message);
-	    throw new WfsTransactionException(message, sub.getHandle());
-	}
-
-	switch (sub.getOpType()) {
-	case SubTransactionRequest.UPDATE: 
-	    UpdateRequest update = (UpdateRequest)sub;
-	    doUpdate(update, data);
-	    break;
-	case SubTransactionRequest.INSERT:
-	    InsertRequest insert = (InsertRequest)sub;
-	    return doInsert(insert, data);
-	case SubTransactionRequest.DELETE:
-	    LOGGER.finer("about to perform delete: " + sub);
-	    doDelete((DeleteRequest)sub, data);
-	    break;
-	default: break;
-	}
+	  String message = "Problem creating datasource: " 
+		+ e.getMessage() +", " + e.getCause();
+	  LOGGER.info(message);
+	  throw new WfsTransactionException(message, sub.getHandle());
+	} catch (WfsException e){
+		throw new WfsTransactionException(e, sub.getHandle(),
+						  transHandle);
+	} 
 	return null;
     }
 
     /**
      * Performs the insert operation.
      * @param insert the request to perform.
-     * @param data the datasource to remove features from.
+     * @param data the datasource to add features to.
      */
     private static Collection doInsert(InsertRequest insert, DataSource data) 
 	throws WfsTransactionException {
 	String handle = insert.getHandle();
 	try {
+	    /*This is now done in the datasource, as it should be.*/
 	    //ArrayList committed = new ArrayList();
-	    Feature[] oldFeatures = data.getFeatures(null).getFeatures();
-	    LOGGER.finer("insert old feature is " + oldFeatures[0]);
-	    HashSet oldFids = new HashSet(oldFeatures.length);
-	    int i;
-	    for (i = 0; i < oldFeatures.length; i++) {
-		oldFids.add(oldFeatures[i].getId());
-	    }
-	    LOGGER.finer("added " + i + "features to oldFid set");
+	    //Feature[] oldFeatures = data.getFeatures(null).getFeatures();
+	    //LOGGER.finer("insert old feature is " + oldFeatures[0]);
+	    //HashSet oldFids = new HashSet(oldFeatures.length);
+	    //int i;
+	    //for (i = 0; i < oldFeatures.length; i++) {
+	    //oldFids.add(oldFeatures[i].getId());
+	    //}
+	    //LOGGER.finer("added " + i + "features to oldFid set");
 	    FeatureCollection newFeatures = new FeatureCollectionDefault();
+	    //TODO: allow different features types (need to change in request),
+	    //maybe then divide up by type, get the right datasources.
 	    Feature[] featureArr = insert.getFeatures();
 	    newFeatures.addFeatures(featureArr);
-	    data.addFeatures(newFeatures);
-	    LOGGER.finer("inserted features");
+	    return data.addFeatures(newFeatures);
+	    /*LOGGER.finer("inserted features");
 	    //the fids should really be returned from the datasource.
 	    //String[] fids addFeatures(Feature features[]);
 	    Feature[] allFeatures = data.getFeatures(null).getFeatures();
@@ -264,10 +249,10 @@ public class TransactionResponse {
 	    	    LOGGER.finer("adding feature " + curFid);
 	    	    insertedIds.add(curFid);
 	    	}
-	    }
-	    return insertedIds;
+		}*/
+	    //return insertedIds;
 	} catch (DataSourceException e) {
-	    LOGGER.warning("Problem with datasource " + e + " cause: " 
+	    LOGGER.info("Problem with datasource " + e + " cause: " 
 			+ e.getCause());
 	    throw new WfsTransactionException("Problem updating features: " 
 					      +e.toString() + " cause: " + 
@@ -284,14 +269,14 @@ public class TransactionResponse {
 	throws WfsTransactionException {
 	String handle = update.getHandle();
 	try {
-	    FeatureType schema = ((PostgisDataSource)data).getSchema();
+	    FeatureType schema = data.getSchema();
 	    //schema = schema.setTypeName("dude");
 	    AttributeType[] types = update.getTypes(schema);
 	    LOGGER.fine("attribut type is " + types[0] + ", values is " + 
 		     update.getValues()[0]);
 	    data.modifyFeatures(types, update.getValues(), update.getFilter());
 	} catch (DataSourceException e) {
-	    LOGGER.warning("Problem with datasource " + e + " cause: " 
+	    LOGGER.info("Problem with datasource " + e + " cause: " 
 			+ e.getCause());
 	    throw new WfsTransactionException("Problem updating features: " 
 					      +e.toString() + " cause: " + 
@@ -313,7 +298,7 @@ public class TransactionResponse {
 	try {
 	    data.removeFeatures(delete.getFilter());
 	} catch (DataSourceException e) {
-	    LOGGER.warning("Problem with datasource " + e + " cause: " 
+	    LOGGER.info("Problem with datasource " + e + " cause: " 
 			+ e.getCause());
 	    throw new WfsTransactionException("Problem removing features: " 
 					      + e.getCause(),
