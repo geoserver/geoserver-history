@@ -197,6 +197,9 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
                     } catch (WfsTransactionException e) {
                         throw new SAXException(e);
                     }
+                } else if (atts.getLocalName(i).equals("LockId")) {
+                    LOGGER.finest("found LockId: " + atts.getValue(i));
+                    request.setLockId(atts.getValue(i));
                 }
             }
         } else if (state == PROPERTY) {
