@@ -30,7 +30,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
-import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.LockRequest;
 import org.vfny.geoserver.responses.Response;
@@ -41,7 +40,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.6 2004/01/16 17:58:29 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.7 2004/01/20 19:52:28 groldan Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -50,9 +49,6 @@ public class LockResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
-
-    /** The store of types, which also holds their locking information. */
-    private static TypeRepository repository = TypeRepository.getInstance();
 
     /** indicates whether the output should be formatted. */
     private static boolean verbose = false;
@@ -122,7 +118,7 @@ public class LockResponse implements Response {
      * rework it before 1.1.0.  But there should be a single performLock that
      * both can use, or else really move _all_ the functionality to geotools.
      * I do understand that getFeatureWithLock does need to be sure that there
-     * are no time differences between lock acquiring and reporting, but 
+     * are no time differences between lock acquiring and reporting, but
      * something needs to be done.
      */
     public static String performLock(LockRequest request, boolean getXml)
@@ -159,7 +155,6 @@ public class LockResponse implements Response {
             String curTypeName = curLock.getFeatureType();
             Filter curFilter = curLock.getFilter();
 
-            //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(curTypeName);
             NameSpaceInfo namespace = meta.getDataStoreInfo().getNameSpace();
             FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
@@ -227,10 +222,6 @@ public class LockResponse implements Response {
         if (getXml) {
             return generateXml(featureLock.getAuthorization(), lockAll,
                 lockedFids, lockFailedFids,request);
-
-            //            return generateXml(lockId, lockAll,
-            //                repository.getLockedFeatures(lockId),
-            //                repository.getNotLockedFeatures(lockId));
         } else {
             return featureLock.getAuthorization();
         }
