@@ -12,6 +12,7 @@ import org.vfny.geoserver.config.WMSConfig;
 
 /**
  * GeoConfigAction is a common super class used by STRUTS Actions.
+ * 
  * <p>
  * ConfigAction is used to store shared services, such as looking up the
  * Configuration Model.
@@ -38,11 +39,10 @@ import org.vfny.geoserver.config.WMSConfig;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ConfigAction.java,v 1.1.2.8 2004/01/07 23:10:54 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: ConfigAction.java,v 1.1.2.9 2004/01/08 23:50:52 jive Exp $
  */
 public class ConfigAction extends GeoServerAction {
-    
     /**
      * Access Web Map Server Configuration Model from the WebContainer.
      * 
@@ -68,30 +68,7 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration information for Web Feature Server
      */
     protected WFSConfig getWFSConfig() {
-      /*  ServletContext context = getServlet().getServletContext();
-        WFSConfig config =
-            (WFSConfig) context.getAttribute("GeoServer.WFSConfig");
-        if( config == null ){
-        	// need to grab from global as soon as we have the api
-        	// to do so!
-            config = new WFSConfig();
-            //config.setDescribeUrl("http://localhost:8080/wfs");
-            config.setAbstract("Hello Richard? Testing? 1 2 3 Testing?");
-            config.setAccessConstraints("none");
-            config.setEnabled( true );
-            config.setFees("A small fish");
-            String [] keywords = {"GeoServer","Configuration","STRUTS","test"};
-            config.setKeywords( keywords );
-            config.setMaintainer("Refractions Research");
-            config.setName("WFS");
-            try{
-	            config.setOnlineResource(new URL("http://vwfs.refractions.net/"));
-            }catch(Exception e){}
-            config.setTitle("Sample WFS Configuration");                        
-        }
-        return config; */
-
-		return (WFSConfig) getServlet().getServletContext().getAttribute(WFSConfig.CONFIG_KEY);
+        return (WFSConfig) getServlet().getServletContext().getAttribute(WFSConfig.CONFIG_KEY);
     }
 
     /**
@@ -100,15 +77,15 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration model for Global information.
      */
     protected GlobalConfig getGlobalConfig() {
-		return (GlobalConfig) getServlet().getServletContext().getAttribute(GlobalConfig.CONFIG_KEY);
+        return (GlobalConfig) getServlet().getServletContext().getAttribute(GlobalConfig.CONFIG_KEY);
     }
-    
+
     /**
      * Access Catalog Configuration Model from the WebContainer.
      *
      * @return Configuration model for Catalog information.
      */
     protected DataConfig getDataConfig() {
-		return (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
-    }    
+        return (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+    }
 }

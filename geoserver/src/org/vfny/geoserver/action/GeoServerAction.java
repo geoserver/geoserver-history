@@ -7,6 +7,7 @@ package org.vfny.geoserver.action;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.Action;
+import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.requests.Requests;
@@ -49,8 +50,8 @@ import org.vfny.geoserver.requests.Requests;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GeoServerAction.java,v 1.1.2.2 2004/01/06 23:03:12 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: GeoServerAction.java,v 1.1.2.3 2004/01/08 23:50:52 jive Exp $
  */
 public class GeoServerAction extends Action {
 
@@ -87,5 +88,14 @@ public class GeoServerAction extends Action {
 	 */
     public GeoServer getGeoServer(  HttpServletRequest request ){
     	return Requests.getGeoServer( request );
+    }
+    
+    /**
+     * Access GeoServer Application State from the WebContainer.
+     * 
+     * @return Configuration model for Catalog information.
+     */
+    protected ApplicationState getApplicationState( HttpServletRequest request ) {
+        return Requests.getApplicationState( request ); 
     }
 }

@@ -9,6 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 
@@ -99,6 +100,15 @@ public final class Requests {
 	 */
 	public static void logOut( HttpServletRequest request ){
 		HttpSession session = request.getSession();
-		session.removeValue( UserContainer.SESSION_KEY );
+		session.removeAttribute( UserContainer.SESSION_KEY );
 	}
+
+    /**
+     * Access GeoServer Application State from the WebContainer.
+     * 
+     * @return Configuration model for Catalog information.
+     */
+    public static ApplicationState getApplicationState( HttpServletRequest request ) {
+        return Requests.getApplicationState( request ); 
+    }    
 }
