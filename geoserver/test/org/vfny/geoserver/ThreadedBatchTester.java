@@ -24,7 +24,7 @@ import java.util.Date;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ThreadedBatchTester.java,v 1.5 2004/03/04 20:53:59 dmzwiers Exp $
+ * @version $Id: ThreadedBatchTester.java,v 1.6 2004/03/09 19:51:37 dmzwiers Exp $
  */
 public class ThreadedBatchTester {
 	private static int runs = 100;
@@ -52,7 +52,8 @@ public class ThreadedBatchTester {
 				threads[i].run();
 
 			PrintStream os = System.out;
-			if(log!=null && log.canWrite()){
+			log = log.getAbsoluteFile();
+			if(log!=null){
 				os = new PrintStream(new FileOutputStream(log));
 			}
 			
