@@ -41,13 +41,15 @@
   </namespaces>
 
   <styles>
-	    <style id="thick outline" filename="webapps/geoserver/data/styles/polyshp.sld"/>
-	    <style id="dotty" filename="webapps/geoserver/data/styles/funkypolyshp.sld"/>
-	    <style id="green" filename="webapps/geoserver/data/styles/green.sld"/>
-	    <style id="population" filename="webapps/geoserver/data/styles/popshade.sld"/>
-	    <style id="highlight" filename="webapps/geoserver/data/styles/usa_penn.sld"/>
-	    <style id="maleVsFemale" filename="webapps/geoserver/data/styles/usa_ratio.sld"/>
-	    <style id="normal" filename="webapps/geoserver/data/styles/normal.sld" default="true"/>
+      <!--<style id="thick outline" filename="styles/polyshp.sld"/>-->
+      <style id="dotty" filename="styles/funkypolyshp.sld"/>
+      <style id="green" filename="styles/green.sld"/>
+      <!--<style id="population" filename="styles/popshade.sld"/>-->
+      <!--<style id="highlight" filename="styles/usa_penn.sld"/>-->
+      <!--<style id="bbox" filename="styles/usa_central.sld"/>-->
+      <style id="maleVsFemale" filename="styles/usa_ratio.sld"/>
+      <style id="normal" filename="styles/normal.sld" default="true"/>
+      <!--<style id="manualVsWorkers" filename="styles/usa_math.sld"/>-->
   </styles>
 
 </catalog>
