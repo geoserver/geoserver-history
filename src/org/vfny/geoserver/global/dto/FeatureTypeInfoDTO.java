@@ -2,10 +2,6 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.vfny.geoserver.global.dto;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -37,7 +33,7 @@ import java.util.List;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.10 2004/03/12 10:02:05 cholmesny Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.11 2004/03/14 05:20:50 cholmesny Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -649,5 +645,13 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public void setSchemaBase(String string) {
         schemaBase = string;
+    }
+
+    public String toString() {
+        return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId
+        + ", latLongBBOX: " + latLongBBox + "\n  SRS: " + SRS + ", schema:"
+        + schema + ", schemaName: " + schemaName + ", dirName: " + dirName
+        + ", title: " + title + "\n  definitionQuery: " + definitionQuery
+        + ", defaultStyle: " + defaultStyle;
     }
 }

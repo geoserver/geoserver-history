@@ -4,15 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.AttributeTypeMetaData;
-import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.FeatureSource;
@@ -28,8 +21,12 @@ import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -38,13 +35,12 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.35 2004/03/09 18:59:58 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.36 2004/03/14 05:23:11 cholmesny Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
-
     private String dataStoreId;
     private Envelope latLongBBox;
     private int SRS;
@@ -66,12 +62,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * AttributeTypeInfo by attribute name.
-     *
+     * 
      * <p>
      * This will be null unless populated by schema or DTO.
      * </p>
      */
-
     /** will be lazily generated */
     private String xmlSchemaFrag;
 
@@ -80,7 +75,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * FeatureTypeInfo constructor.
-     *
+     * 
      * <p>
      * Generates a new object from the data provided.
      * </p>
@@ -103,13 +98,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         latLongBBox = dto.getLatLongBBox();
         name = dto.getName();
         numDecimals = dto.getNumDecimals();
+
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
-        if(tmp!=null && !tmp.isEmpty()){
-        	Iterator i = tmp.iterator();
-        	while(i.hasNext())
-        		schema.add(new AttributeTypeInfo((AttributeTypeInfoDTO)i.next()));
+
+        if ((tmp != null) && !tmp.isEmpty()) {
+            Iterator i = tmp.iterator();
+
+            while (i.hasNext())
+                schema.add(new AttributeTypeInfo(
+                        (AttributeTypeInfoDTO) i.next()));
         }
+
         schemaBase = dto.getSchemaBase();
         schemaName = dto.getSchemaName();
         SRS = dto.getSRS();
@@ -118,7 +118,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * toDTO purpose.
-     *
+     * 
      * <p>
      * This method is package visible only, and returns a reference to the
      * GeoServerDTO. This method is unsafe, and should only be used with
@@ -128,32 +128,36 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return FeatureTypeInfoDTO the generated object
      */
     Object toDTO() {
-    	FeatureTypeInfoDTO dto= new FeatureTypeInfoDTO();
-    	dto.setAbstract(_abstract);
-    	dto.setDataStoreId(dataStoreId);
-    	dto.setDefaultStyle(defaultStyle);
-    	dto.setDefinitionQuery(definitionQuery);
-    	dto.setDirName(dirName);
-    	dto.setKeywords(keywords);
-    	dto.setLatLongBBox(latLongBBox);
-    	dto.setName(name);
-    	dto.setNumDecimals(numDecimals);
-    	List tmp = new LinkedList();
-    	Iterator i = schema.iterator();
-    	while(i.hasNext()){
-    		tmp.add(((AttributeTypeInfo)i.next()).toDTO());
-    	}
-    	dto.setSchemaAttributes(tmp);
-    	dto.setSchemaBase(schemaBase);
-    	dto.setSchemaName(schemaName);
-    	dto.setSRS(SRS);
-    	dto.setTitle(title);
+        FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO();
+        dto.setAbstract(_abstract);
+        dto.setDataStoreId(dataStoreId);
+        dto.setDefaultStyle(defaultStyle);
+        dto.setDefinitionQuery(definitionQuery);
+        dto.setDirName(dirName);
+        dto.setKeywords(keywords);
+        dto.setLatLongBBox(latLongBBox);
+        dto.setName(name);
+        dto.setNumDecimals(numDecimals);
+
+        List tmp = new LinkedList();
+        Iterator i = schema.iterator();
+
+        while (i.hasNext()) {
+            tmp.add(((AttributeTypeInfo) i.next()).toDTO());
+        }
+
+        dto.setSchemaAttributes(tmp);
+        dto.setSchemaBase(schemaBase);
+        dto.setSchemaName(schemaName);
+        dto.setSRS(SRS);
+        dto.setTitle(title);
+
         return dto;
     }
 
     /**
      * getNumDecimals purpose.
-     *
+     * 
      * <p>
      * The default number of decimals allowed in the data.
      * </p>
@@ -166,7 +170,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * getDataStore purpose.
-     *
+     * 
      * <p>
      * gets the string of the path to the schema file.  This is set during
      * feature reading, the schema file should be in the same folder as the
@@ -201,7 +205,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * Returns the XML prefix used for GML output of this FeatureType.
-     *
+     * 
      * <p>
      * Returns the namespace prefix for this FeatureTypeInfo. This prefix also
      * seems to be used as a "ID" for looking up GeoServer Namespace.
@@ -279,7 +283,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * getFeatureSource purpose.
-     *
+     * 
      * <p>
      * Returns a real FeatureSource.
      * </p>
@@ -287,7 +291,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @return FeatureSource the feature source represented by this info class
      *
      * @throws IOException when an error occurs.
-     * @throws DataSourceException DOCUMENT ME!
      */
     public FeatureSource getFeatureSource() throws IOException {
         if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
@@ -295,8 +298,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
                 + " does not have a properly configured " + "datastore");
         }
 
-        DataStore dataStore = data.getDataStoreInfo(dataStoreId)
-                                      .getDataStore();
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         String typeName = name;
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
 
@@ -305,43 +307,38 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
             //(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
             return realSource;
         } else {
-             return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
-                		getDefinitionQuery());
+            return GeoServerFeatureLocking.create(realSource,
+                getFeatureType(realSource), getDefinitionQuery());
         }
     }
 
     /*public static FeatureSource reTypeSource(FeatureSource source,
-        FeatureTypeInfoDTO ftc) throws SchemaException {
-        AttributeType[] attributes = new AttributeType[ftc.getSchemaAttributes()
-                                                          .size()];
-
-        List attributeDefinitions = ftc.getSchemaAttributes();
-        int index = 0;
-        FeatureType ft = source.getSchema();
-
-        for (int i = 0; i < attributes.length; i++) {
-            AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO) ftc.getSchemaAttributes()
-                                                                          .get(i);
-            String xpath = attributeDTO.getName();
-            attributes[i] = ft.getAttributeType(xpath);
-
-            if (attributes[i] == null) {
-                throw new NullPointerException("Error finding " + xpath
-                    + " specified in you schema.xml file for " + ftc.getName()
-                    + "FeatureType.");
-            }
-        }
-
-        FeatureType myType = FeatureTypeFactory.newFeatureType(attributes,
-                ftc.getName());
-
-        return GeoServerFeatureLocking.create(source, myType,
-            ftc.getDefinitionQuery());
-    }*/
+       FeatureTypeInfoDTO ftc) throws SchemaException {
+       AttributeType[] attributes = new AttributeType[ftc.getSchemaAttributes()
+                                                         .size()];
+       List attributeDefinitions = ftc.getSchemaAttributes();
+       int index = 0;
+       FeatureType ft = source.getSchema();
+       for (int i = 0; i < attributes.length; i++) {
+           AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO) ftc.getSchemaAttributes()
+                                                                         .get(i);
+           String xpath = attributeDTO.getName();
+           attributes[i] = ft.getAttributeType(xpath);
+           if (attributes[i] == null) {
+               throw new NullPointerException("Error finding " + xpath
+                   + " specified in you schema.xml file for " + ftc.getName()
+                   + "FeatureType.");
+           }
+       }
+       FeatureType myType = FeatureTypeFactory.newFeatureType(attributes,
+               ftc.getName());
+       return GeoServerFeatureLocking.create(source, myType,
+           ftc.getDefinitionQuery());
+       }*/
 
     /**
      * getBoundingBox purpose.
-     *
+     * 
      * <p>
      * The feature source bounds.
      * </p>
@@ -351,8 +348,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
-        DataStore dataStore = data.getDataStoreInfo(dataStoreId)
-                                  .getDataStore();
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(name);
 
         return realSource.getBounds();
@@ -360,7 +356,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * getDefinitionQuery purpose.
-     *
+     * 
      * <p>
      * Returns the definition query for this feature source
      * </p>
@@ -373,7 +369,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * getLatLongBoundingBox purpose.
-     *
+     * 
      * <p>
      * The feature source lat/long bounds.
      * </p>
@@ -392,7 +388,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * getSRS purpose.
-     *
+     * 
      * <p>
      * Proprietary identifier number
      * </p>
@@ -405,12 +401,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * Get XMLSchema for this FeatureType.
-     *
+     * 
      * <p>
      * Note this may require connection to the real geotools2 DataStore and as
      * such is subject to IOExceptions.
      * </p>
-     *
+     * 
      * <p>
      * You have been warned.
      * </p>
@@ -419,37 +415,36 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      *
      * @throws IOException DOCUMENT ME!
      */
-   /* public synchronized String getXMLSchema(){
-        if (xmlSchemaFrag == null) {
-            StringWriter sw = new StringWriter();
 
-            try {
-                FeatureTypeInfoDTO dto = getGeneratedDTO();
-                XMLConfigWriter.storeFeatureSchema(dto, sw);
-            } catch (ConfigurationException e) {
-            	e.printStackTrace();
-            } catch (IOException e) {
-            	e.printStackTrace();
-            	xmlSchemaFrag = null;
-            }
-            xmlSchemaFrag = sw.toString();
-            try{
-            sw.close();
-            }catch(IOException e){}
-        }
-
-        return xmlSchemaFrag;
-    }*/
+    /* public synchronized String getXMLSchema(){
+       if (xmlSchemaFrag == null) {
+           StringWriter sw = new StringWriter();
+           try {
+               FeatureTypeInfoDTO dto = getGeneratedDTO();
+               XMLConfigWriter.storeFeatureSchema(dto, sw);
+           } catch (ConfigurationException e) {
+                   e.printStackTrace();
+           } catch (IOException e) {
+                   e.printStackTrace();
+                   xmlSchemaFrag = null;
+           }
+           xmlSchemaFrag = sw.toString();
+           try{
+           sw.close();
+           }catch(IOException e){}
+       }
+       return xmlSchemaFrag;
+       }*/
 
     /**
      * Will return our delegate with all information filled out
-     *
+     * 
      * <p>
      * This is a hack because we cache our DTO delegate, this method combines
      * or ftc delegate with possibly generated schema information for use by
      * XMLConfigWriter among others.
      * </p>
-     *
+     * 
      * <p>
      * Call this method to receive a complete featureTypeInfoDTO that incldues
      * all schema information.
@@ -461,12 +456,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      */
     private synchronized FeatureTypeInfoDTO getGeneratedDTO()
         throws IOException {
-        return DataTransferObjectFactory.create( dataStoreId, getFeatureType() );
+        return DataTransferObjectFactory.create(dataStoreId, getFeatureType());
     }
 
     /**
      * getAttribute purpose.
-     *
+     * 
      * <p>
      * XLM helper method.
      * </p>
@@ -514,54 +509,51 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * loadConfig purpose.
-     *
+     * 
      * <p>
      * Parses the specified file into a DOM tree.
      * </p>
      *
-     * @param fis The file to parse int a DOM tree.
+     * @param fromSrId The file to parse int a DOM tree.
+     * @param bbox DOCUMENT ME!
      *
      * @return the resulting DOM tree
-     *
-     * @throws ConfigurationException
      */
+
     /*public static Element loadConfig(Reader fis) throws ConfigurationException {
-        try {
-            InputSource in = new InputSource(fis);
-            DocumentBuilderFactory dfactory = DocumentBuilderFactory
-                .newInstance();
-
-            /*set as optimizations and hacks for geoserver schema config files
-             * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
-             * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.
-             */
-     /*       dfactory.setNamespaceAware(false);
-            dfactory.setValidating(false);
-            dfactory.setIgnoringComments(true);
-            dfactory.setCoalescing(true);
-            dfactory.setIgnoringElementContentWhitespace(true);
-
-            Document serviceDoc = dfactory.newDocumentBuilder().parse(in);
-            Element configElem = serviceDoc.getDocumentElement();
-
-            return configElem;
-        } catch (IOException ioe) {
-            String message = "problem reading file " + "due to: "
-                + ioe.getMessage();
-            LOGGER.warning(message);
-            throw new ConfigurationException(message, ioe);
-        } catch (ParserConfigurationException pce) {
-            String message =
-                "trouble with parser to read org.vfny.geoserver.config.org.vfny.geoserver.config.xml, make sure class"
-                + "path is correct, reading file ";
-            LOGGER.warning(message);
-            throw new ConfigurationException(message, pce);
-        } catch (SAXException saxe) {
-            String message = "trouble parsing XML " + ": " + saxe.getMessage();
-            LOGGER.warning(message);
-            throw new ConfigurationException(message, saxe);
-        }
-    }*/
+       try {
+           InputSource in = new InputSource(fis);
+           DocumentBuilderFactory dfactory = DocumentBuilderFactory
+               .newInstance();
+           /*set as optimizations and hacks for geoserver schema config files
+     * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
+     * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.
+     */
+    /*       dfactory.setNamespaceAware(false);
+       dfactory.setValidating(false);
+       dfactory.setIgnoringComments(true);
+       dfactory.setCoalescing(true);
+       dfactory.setIgnoringElementContentWhitespace(true);
+       Document serviceDoc = dfactory.newDocumentBuilder().parse(in);
+       Element configElem = serviceDoc.getDocumentElement();
+       return configElem;
+       } catch (IOException ioe) {
+           String message = "problem reading file " + "due to: "
+               + ioe.getMessage();
+           LOGGER.warning(message);
+           throw new ConfigurationException(message, ioe);
+       } catch (ParserConfigurationException pce) {
+           String message =
+               "trouble with parser to read org.vfny.geoserver.config.org.vfny.geoserver.config.xml, make sure class"
+               + "path is correct, reading file ";
+           LOGGER.warning(message);
+           throw new ConfigurationException(message, pce);
+       } catch (SAXException saxe) {
+           String message = "trouble parsing XML " + ": " + saxe.getMessage();
+           LOGGER.warning(message);
+           throw new ConfigurationException(message, saxe);
+       }
+       }*/
 
     /**
      * here we must make the transformation. Crhis: do you know how to do it? I
@@ -591,7 +583,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * Keywords describing content of FeatureType.
-     *
+     * 
      * <p>
      * Keywords are often used by Search engines or Catalog services.
      * </p>
@@ -604,7 +596,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * getTitle purpose.
-     *
+     * 
      * <p>
      * returns the FeatureTypeInfo title
      * </p>
@@ -617,7 +609,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * getSchemaName purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
@@ -630,7 +622,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * setSchemaName purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
@@ -643,7 +635,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * getSchemaName purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
@@ -656,7 +648,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * setSchemaName purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
@@ -664,7 +656,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @param string
      */
     public void setSchemaBase(String string) {
-        schemaBase=string;
+        schemaBase = string;
     }
 
     //
@@ -692,67 +684,72 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
      */
     public FeatureType getFeatureType() throws IOException {
-    	return getFeatureType(getFeatureSource());
+        return getFeatureType(getFeatureSource());
     }
 
     /**
      *
      */
-    private FeatureType getFeatureType(FeatureSource fs) throws IOException {
-    	if(ft == null){
-        int count = 0;
-        ft = fs.getSchema();
-        String[] baseNames = DataTransferObjectFactory.getRequiredBaseAttributes(
-            schemaBase);
-        AttributeType[] attributes = new AttributeType[schema.size() +
-            baseNames.length];
-        if (attributes.length > 0) {
-          int errors = 0;
-          for (; count < baseNames.length; count++) {
-            attributes[count - errors] = ft.getAttributeType(baseNames[count]);
-            if (attributes[count - errors] == null) {
-              // desired base attr is not availiable
-              errors++;
-            }
-          }
+    private FeatureType getFeatureType(FeatureSource fs)
+        throws IOException {
+        if (ft == null) {
+            int count = 0;
+            ft = fs.getSchema();
 
-          if (errors != 0) {
-            //resize array;
-            AttributeType[] tmp = new AttributeType[attributes.length - errors];
-            count = count - errors;
-            for (int i = 0; i < count; i++) {
-              tmp[i] = attributes[i];
-            }
-            attributes = tmp;
-          }
+            String[] baseNames = DataTransferObjectFactory
+                .getRequiredBaseAttributes(schemaBase);
+            AttributeType[] attributes = new AttributeType[schema.size()
+                + baseNames.length];
 
-          for (Iterator i = schema.iterator(); i.hasNext(); ) {
-            AttributeTypeInfo ati = (AttributeTypeInfo) i.next();
-            String attName = ati.getName();
-            attributes[count] = ft.getAttributeType(attName);
-            if (attributes[count] == null) {
-              throw new IOException("the FeatureType " + getName()
-                                    +
-                  " does not contains the configured attribute " + attName
-                                    + ". Check your schema configuration");
-            }
-            count++;
-          }
-          try {
-            ft = FeatureTypeFactory.newFeatureType(attributes,
-                                                   name);
-          }
-          catch (SchemaException ex) {
-          }
-          catch (FactoryConfigurationError ex) {
-          }
+            if (attributes.length > 0) {
+                int errors = 0;
 
+                for (; count < baseNames.length; count++) {
+                    attributes[count - errors] = ft.getAttributeType(baseNames[count]);
+
+                    if (attributes[count - errors] == null) {
+                        // desired base attr is not availiable
+                        errors++;
+                    }
+                }
+
+                if (errors != 0) {
+                    //resize array;
+                    AttributeType[] tmp = new AttributeType[attributes.length
+                        - errors];
+                    count = count - errors;
+
+                    for (int i = 0; i < count; i++) {
+                        tmp[i] = attributes[i];
+                    }
+
+                    attributes = tmp;
+                }
+
+                for (Iterator i = schema.iterator(); i.hasNext();) {
+                    AttributeTypeInfo ati = (AttributeTypeInfo) i.next();
+                    String attName = ati.getName();
+                    attributes[count] = ft.getAttributeType(attName);
+
+                    if (attributes[count] == null) {
+                        throw new IOException("the FeatureType " + getName()
+                            + " does not contains the configured attribute "
+                            + attName + ". Check your schema configuration");
+                    }
+
+                    count++;
+                }
+
+                try {
+                    ft = FeatureTypeFactory.newFeatureType(attributes, name);
+                } catch (SchemaException ex) {
+                } catch (FactoryConfigurationError ex) {
+                }
+            }
         }
-      }
-    	return ft;
+
+        return ft;
     }
-
-
 
     /**
      * Implement getDataStoreMetaData.
@@ -767,7 +764,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
     /**
      * FeatureType attributes names as a List.
-     *
+     * 
      * <p>
      * Convience method for accessing attribute names as a Collection. You may
      * use the names for AttributeTypeMetaData lookup or with the schema for
@@ -775,6 +772,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * </p>
      *
      * @return List of attribute names
+     *
+     * @task REVISIT: This method sucks.  It didn't do the same thing as
+     *       getAttributes, which it should have.  I fixed the root problem of
+     *       why attribs.size() would equal 0.  So the second half of this
+     *       method should probably be eliminated, as it should never be
+     *       called. But I don't want to break code right before a release -
+     *       ch.
      *
      * @see org.geotools.data.FeatureTypeMetaData#getAttributeNames()
      */
@@ -785,7 +789,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
             List list = new ArrayList(attribs.size());
 
             for (Iterator i = attribs.iterator(); i.hasNext();) {
-                AttributeTypeInfoDTO at = (AttributeTypeInfoDTO) i.next();
+                AttributeTypeInfo at = (AttributeTypeInfo) i.next();
                 list.add(at.getName());
             }
 
@@ -808,13 +812,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         return list;
     }
 
-    public List getAttributes(){
-    	return schema;
+    /**
+     * Returns a list of the attributeTypeInfo objects that make up this
+     * FeatureType.
+     *
+     * @return list of attributeTypeInfo objects.
+     */
+    public List getAttributes() {
+        return schema;
     }
 
     /**
      * Implement AttributeTypeMetaData.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
