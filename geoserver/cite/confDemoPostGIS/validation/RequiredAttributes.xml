@@ -33,7 +33,7 @@
 		<plugin>Null Zero</plugin>
 		<argument >
 			<name>attributeName</name>
-			<string>LABEL</string>
+			<string>label</string>
 		</argument>
 		<argument >
 			<name>typeRef</name>
