@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.11 2003/12/04 23:30:13 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.12 2003/12/05 23:14:28 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
     /** DOCUMENT ME! */
@@ -478,7 +478,9 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
                 featureTypes.put(ft.getName(), ft);
                 LOGGER.finer("added featureType " + ft.getName());
             } catch (ConfigurationException cfge) {
-                LOGGER.warning("could not add FeatureType at " + currentFile
+		//HACK: should use a logger.
+		cfge.printStackTrace(System.out);
+		LOGGER.warning("could not add FeatureType at " + currentFile
                     + " due to " + cfge);
             }
         }
