@@ -17,7 +17,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.14 2004/02/20 17:02:18 jive Exp $
+ * @version $Id: GeoServer.java,v 1.15 2004/03/27 10:51:06 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -299,8 +299,21 @@ public class GeoServer extends GlobalLayerSupertype {
      * getSchemaBaseUrl purpose.
      * 
      * <p>
-     * The Schema Base URL for this instance.
+     * The Schema Base URL for this instance.  This should generally be a 
+     * local reference, as GeoServer by default puts up the schemas that it needs
+     * and references them.  It could be used to specify an alternate site for
+     * the schemas, however, for example if a user didn't want their servlet
+     * container hit every time someone did a validation, they could instead store
+     * it on another machine.  I don't really know if this is useful to anyone...
      * </p>
+     * @task TODO: Right now this is broken, and I'm not quite sure
+     * if there's an elegant way to have this return the local schemas.  Perhaps
+     * we should just have it return 'local', and then the users of this method
+     * can do the local referencing themselves.  For now no one is using this 
+     * method, perhaps we should just leave it out for 1.2.0, as it's very 
+     * obscure.  I think I only added it originally because I didn't want to 
+     * go through the busy work of cleaning up and figuring out how to copy over
+     * the ogc schemas.  
      *
      * @return String the Schema Base URL for this instance.
      */
