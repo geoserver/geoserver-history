@@ -1,7 +1,10 @@
 package org.vfny.geoserver.form.data;
 
+import java.util.List;
+
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 
 /**
  * Present Attribute information for user input.
@@ -115,5 +118,10 @@ public class AttributeForm {
      */
     public void setType(String selectedType) {
         this.type = selectedType;
+    }
+    
+    public List getTypes() {
+    	List list = DataTransferObjectFactory.getElements(name, getClass());
+        return list;
     }
 }

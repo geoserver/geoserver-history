@@ -39,8 +39,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.8 2004/03/15 08:16:11 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.9 2004/04/05 23:39:25 emperorkefka Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -94,7 +94,7 @@ public class TypesEditorForm extends ActionForm {
     private String schemaBase;
     
     /**
-     * List of AttributesEditorForm.
+     * List of AttributeDisplay and AttributeForm
      */
     private List attributes;
 
@@ -127,10 +127,10 @@ public class TypesEditorForm extends ActionForm {
         FeatureTypeConfig type = user.getFeatureTypeConfig();        
         if( type == null ){
             System.out.println("Type is not there");
-            // Not sure what to do, user must of bookmarked?
+            // Not sure what to do, user must have bookmarked?
             return; // Action should redirect to Select screen?
         }
-        this.dataStoreId = type.getDataStoreId()      ;  
+        this.dataStoreId = type.getDataStoreId();  
         this.styleId = type.getDefaultStyle();
         
         description = type.getAbstract();
@@ -153,8 +153,11 @@ public class TypesEditorForm extends ActionForm {
         
         System.out.println("rest based on schemaBase: "+type.getSchemaBase());
         
+
         if( (type.getSchemaBase() == null || "--".equals(type.getSchemaBase())) 
                 || type.getSchemaAttributes() == null ){
+            //We are using the generated attributes
+            
             this.schemaBase = "--";
             this.attributes = new ArrayList();
             
@@ -174,7 +177,7 @@ public class TypesEditorForm extends ActionForm {
         	this.schemaBase = type.getSchemaBase();
             this.attributes = new ArrayList();
             //
-            // Need to add read only AttributeDisplay for each attribute
+            // Need to add read only AttributeDisplay for each required attribute
             // defined by schemaBase
             //
             List schemaAttribtues = DataTransferObjectFactory.generateRequiredAttribtues(schemaBase);
@@ -202,6 +205,12 @@ public class TypesEditorForm extends ActionForm {
                 }
             }
         }
+        
+        Object attribute = styles;
+        if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
+            ;
+        }
+        
     }
     
     /**
@@ -229,7 +238,7 @@ public class TypesEditorForm extends ActionForm {
     private List attribtuesFormList( List dtoList ){
         List list = new ArrayList();
         for( Iterator i=dtoList.iterator(); i.hasNext();){            
-            list.add( new AttributeDisplay( (AttributeTypeInfoConfig) i.next() ) );
+            list.add( new AttributeForm( (AttributeTypeInfoConfig) i.next() ) );
         }
         return list;
     }
