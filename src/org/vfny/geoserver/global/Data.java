@@ -54,7 +54,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.18 2004/01/20 00:58:33 jive Exp $
+ * @version $Id: Data.java,v 1.19 2004/01/20 01:04:20 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -298,10 +298,10 @@ public class Data extends GlobalLayerSupertype implements Catalog {
                     attributeNames.add( attrib.getName() );
                     ATTRIBUTENames.add( attrib.getName().toUpperCase() );                    
                 }
-                for( Iterator a = featureTypeDTO.getSchema().iterator(); a.hasNext();){
+                for( Iterator a = featureTypeDTO.getSchemaAttributes().iterator(); a.hasNext();){
                     AttributeTypeInfoDTO attribDTO = (AttributeTypeInfoDTO) a.next();
                     String attributeName = attribDTO.getName();
-                    if( !attributeNames.contains( attributeName ){                        
+                    if( !attributeNames.contains( attributeName )){                        
                         if( ATTRIBUTENames.contains( attributeName.toUpperCase())){
                             LOGGER.severe("FeatureTypeInfo "+key+" ignored - attribute '"+attributeName+"' not found - please check captialization");                            
                         }
