@@ -5,8 +5,12 @@
 package org.vfny.geoserver.wms.responses.helpers;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DirectColorModel;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,11 +20,19 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.geotools.renderer.lite.LiteRenderer2;
+
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 
 /**
@@ -31,6 +43,23 @@ public final class JAISupport {
     private static final Logger LOGGER = Logger.getLogger(JAISupport.class.getPackage()
                                                                           .getName());
 
+    
+    /**
+     *  Array of mime types that have been tested to work.
+     *  Many of the mime types that JAI says it supports does not actually work.
+     *  These are mostly because of colour problems (ie. only supports grey scale, and we're giving it a ARGB).
+     *  Update this list as the supported formats are handled better!
+     *  If you dont do this, clients might request an non-functional format (cite does this).
+     * 
+     *  The getSupportedFormats() will return a sub-set of these formats.
+     */
+    
+    static ArrayList testedFormats = new ArrayList();
+    static {
+    	testedFormats.add("image/jpeg");
+    	testedFormats.add("image/png");
+    };
+    
     /**
      * Set&lt;String&gt; of the MIME types the available JAI library supports,
      * or the empty set if it is not available.
@@ -73,8 +102,11 @@ public final class JAISupport {
                 for (Iterator it = formatsList.iterator(); it.hasNext();) {
                     String curFormat = it.next().toString();
 
-                    if (!curFormat.equals("")) {
-                        supportedFormats.add(curFormat);
+                    if (!curFormat.equals("")) 
+                    {
+                    	//DJB: check to see if the JAI format has been tested to work!
+                    	if (testedFormats.contains(curFormat))
+                    		supportedFormats.add(curFormat);
                     }
                 }
 
@@ -142,11 +174,44 @@ public final class JAISupport {
 
         ImageWriter writer = (ImageWriter) it.next();
         ImageOutputStream ioutstream = null;
-
+        
+        IIOMetadata meta = writer.getDefaultStreamMetadata(writer.getDefaultWriteParam());
+        ImageWriteParam param = writer.getDefaultWriteParam();
+  
+        
+        // DJB: jpeg does not support ARGB (alpha) colour
+        //      this converts the image from ARGB to RGB
+        // TODO: make this more abstract - it should be smarter for more image
+        //       writer types (Ie. ask the writer what it supports)
+        //       Alternately, make a jpeg writer and png writer, as these are
+        //       mostly what we get from jai!
+        if (format.equalsIgnoreCase("image/jpeg"))
+        {
+            param.setCompressionQuality(0.9f);  // DJB: only do this for jpegs - png freak when you do this!
+            
+            
+            WritableRaster raster = image.getRaster();
+            WritableRaster newRaster = raster.createWritableChild(0, 0, image.getWidth(), image.getHeight(), 0, 0, new int[] {0, 1, 2});
+//             create a ColorModel that represents the one of the ARGB except the alpha channel:
+            DirectColorModel cm = (DirectColorModel)image.getColorModel();
+            DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(), cm.getRedMask(), cm.getGreenMask(), cm.getBlueMask());
+//             now create the new buffer that is used ot write the image:
+            BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false, null);
+            
+            
+        	//BufferedImage i2 = new BufferedImage(image.getHeight(),image.getWidth(),BufferedImage.TYPE_INT_RGB);  
+        	
+        	//int[] data = new int[image.getWidth()*image.getHeight()];
+        	//image.getRGB(0,0,image.getWidth(),image.getHeight(), data  ,0, image.getHeight());
+        	//i2.setRGB(0,0,image.getWidth(),image.getHeight(),data,0,image.getHeight());
+        	
+        	image = rgbBuffer;
+        }
+        
         ioutstream = ImageIO.createImageOutputStream(outStream);
         writer.setOutput(ioutstream);
-        writer.write(image);
-        writer.dispose();
+        writer.write(meta, new IIOImage(image, null, meta)  ,param);
         ioutstream.close();
-    }
+        writer.dispose();
+     }
 }
