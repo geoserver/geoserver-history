@@ -22,7 +22,7 @@ import java.util.logging.*;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.3 2004/01/03 00:03:17 cholmesny Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.4 2004/01/03 00:09:08 cholmesny Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -125,19 +125,22 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                     || (localName.equals("pointMember")))) {
                 LOGGER.finest("inside feature " + internalTypeName);
 
-                //REVISIT: Is it possible to have attributes be feature
-                //attributes?  We certainly don't return any, and I've never 
-                //seen it happen.  This loop has only caused greif, perhaps
-                //we should get rid of it.
-                for (int i = 0; i < atts.getLength(); i++) {
-                    String name = atts.getLocalName(i);
+                //REVISIT: I'm taking out this loop, as it's only caused greif.
+                //Though I think it's possible I've never heard of xml 
+                //attributes being used for gml.  Even if we did read them
+                //in correctly our datastores will squash them into elements,
+                //and thus won't conform to the stated schemas.  If this 
+                //actually is an issue then the geotools feature model should
+                //deal with it and have an attribute flag for certain attribute
+                //types, to indicate they should not be printed as elements.
 
-                    if (!name.equals("fid") && !name.equals("schemaLocation")) {
-                        attributes.add(atts.getValue(i));
-                        attributeNames.add(name);
-                    }
-                }
-
+                /*for (int i = 0; i < atts.getLength(); i++) {
+                   String name = atts.getLocalName(i);
+                   if (!name.equals("fid") && !name.equals("schemaLocation")) {
+                       attributes.add(atts.getValue(i));
+                       attributeNames.add(name);
+                   }
+                   }*/
                 if (!typeName.equalsIgnoreCase(internalTypeName)) {
                     if (attName.equals("")) {
                         LOGGER.finest("setting attName to " + localName);
