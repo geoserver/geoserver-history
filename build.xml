@@ -35,7 +35,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\resin-3.0.7\webapps"/>
+  <property name="dir.container" value="C:\java\Tomcat5\webapps"/>
   <property name="dir.geotools" 
             value="..\geotools2\geotools-src"/>
 
@@ -294,8 +294,8 @@
   </target>
 
 <!-- TEST -->
-<!-- deploys application to test server -->
-  <target name="test" depends="init, all">
+  <target name="test" depends="init, all"
+    description="Depolys application to the test server">
     <mkdir dir="${dir.server}/work"/>
 
     <!-- This will now build with the users directory, which I think is
@@ -310,15 +310,14 @@
     <antcall target="run"/>
 
   </target>
-
+    
   <target name="prepareEmbedded" depends="init" unless="server.built">
      <mkdir dir="${dir.server}/work"/>
      <unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/"/>
   </target> 
 
   <!-- runs the server -->
-  <target name="run" depends="init, prepareEmbedded"
-   description="Run the embedded geoserver">
+  <target name="run" depends="init, prepareEmbedded">
     
     <java classname="org.mortbay.jetty.Server"
           dir="${basedir}"
@@ -335,10 +334,8 @@
   </target>
 
 <!-- EXTERNAL TEST -->
-<!-- deploys application to test server -->
-  <target name="test-ext" depends="init, war">
-
-  
+  <target name="test-ext" depends="init, war"
+      description="deploys application to the test server located at dir.container">  
     <!-- copy to test server -->
     <delete includeEmptyDirs="true" failonerror="false">
       <fileset dir="${dir.container}/geoserver"/>
@@ -517,8 +514,8 @@
   </target>
 
 <!-- DOCUMENTATION -->
-<!-- generates all project documentation -->
-  <target name="document" depends="init">
+  <target name="document" depends="init"
+      description="generate all project documentation">
     <mkdir dir="${dir.doc}"/>
     <javadoc sourcepath="${dir.src}"
              destdir="${dir.doc}/api"
@@ -759,8 +756,8 @@ failonerror="true"/>
 <!-- ADMIN TARGETS                                                          -->
 <!-- ====================================================================== -->
 
-<!-- creates a conf directory -->
-  <target name="conf" if="test.type">
+  <target name="conf" if="test.type"
+      description="create a conf firectory based test.type">
     <!-- empty old conf -->
     <delete dir="${basedir}/conf" />
     <mkdir dir="${basedir}/conf" />
@@ -796,7 +793,8 @@ failonerror="true"/>
      library, building with maven is required before commit changed jar
      files.
 -->
-  <target name="geotools" depends="init">
+  <target name="geotools" depends="init"
+      description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
     <delete file="${dir.lib}/gt2-main.jar" failonerror="true"/>
     <jar jarfile="${dir.lib}/gt2-main.jar"
          whenempty="fail">
