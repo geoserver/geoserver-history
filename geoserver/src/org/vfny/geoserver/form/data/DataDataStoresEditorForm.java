@@ -7,6 +7,7 @@ package org.vfny.geoserver.form.data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -161,7 +162,7 @@ public class DataDataStoresEditorForm extends ActionForm {
         DataStoreFactorySpi factory = dsConfig.getFactory();
         Param[] info = factory.getParametersInfo();
 
-        Map params = new HashMap();
+        Map connectionParams = new HashMap();
 
         // Convert Params into the kind of Map we actually need
         //
@@ -198,29 +199,57 @@ public class DataDataStoresEditorForm extends ActionForm {
             }
 
             if (value != null) {
-                params.put(key, value);
+                connectionParams.put(key, value);
             }
         }
 
         // put magic namespace into the mix
         //
-        params.put("namespace", getNamespaceId());
+        //connectionParams.put("namespace", getNamespaceId());
 
+        dump("form", connectionParams );
         // Factory will provide even more stringent checking
         //
-        if (!factory.canProcess(getParams())) {
+        if (!factory.canProcess( connectionParams )) {
             errors.add("paramValue",
                 new ActionError("error.datastoreEditor.validation"));
         }
 
         return errors;
     }
-
+    /** Used to debug connection parameters */
+    public void dump( String msg, Map params ){
+    	if( msg != null ){
+    		System.out.print( msg + " ");
+    	}
+    	System.out.print( " connection params { " );
+    	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
+    		Map.Entry entry = (Map.Entry) i.next();
+    		System.out.print( entry.getKey() );
+    		System.out.print("=");
+    		if( entry.getValue()==null){
+    			System.out.print("null");
+    		}
+    		else if ( entry.getValue() instanceof String){
+    			System.out.print("\"");
+    			System.out.print( entry.getValue() );
+    			System.out.print("\"");
+    		}
+    		else {
+    			System.out.print( entry.getValue() );
+    		}
+    		if( i.hasNext() ){
+    			System.out.print( ", " );
+    		}
+    	}
+    	System.out.println( "}" );
+    }
     public Map getParams() {
         Map map = new HashMap();
 
         for (int i = 0; i < paramKeys.size(); i++) {
             map.put(paramKeys.get(i), paramValues.get(i));
+            
         }
 
         return map;

@@ -56,8 +56,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
         }
         
         // After extracting params into a map
-        Map paramValues = new HashMap();
-        Map paramTexts = new HashMap();
+        Map connectionParams = new HashMap(); // values used for connection
+        Map paramTexts = new HashMap(); // values as stored
 
         Map params = dataStoresForm.getParams();
 
@@ -96,7 +96,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
             }
 
             if (value != null) {
-                paramValues.put(key, value);
+                connectionParams.put(key, value);
 
                 String text = param.text(value);
                 paramTexts.put(key, text);
@@ -105,13 +105,14 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         // put magic namespace into the mix
         //
-        paramValues.put("namespace", dataStoresForm.getNamespaceId());
+        connectionParams.put("namespace", dataStoresForm.getNamespaceId());
         paramTexts.put("namespace", dataStoresForm.getNamespaceId());
 
-        if (!factory.canProcess(paramValues)) {
+        //dump("editor", connectionParams );
+        //dump("texts ",paramTexts );        
+        if (!factory.canProcess(connectionParams)) {
             // We could not use these params!
             //
-
             ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
                 new ActionError("error.cannotProcessConnectionParams"));
@@ -121,8 +122,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
         }
 
         try {
-            DataStore victim = factory.createDataStore(paramValues);
-            //System.out.println("temporary datastore:" + victim);
+            DataStore victim = factory.createDataStore(connectionParams);
+            System.out.println("temporary datastore:" + victim);
 
             if (victim == null) {
                 // We *really* could not use these params!
@@ -135,6 +136,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
                 return mapping.findForward("config.data.store.editor");
             }
+            String typeNames[] = victim.getTypeNames();
+            dump( "typeNames", typeNames );
         } catch (Throwable throwable) {
             throwable.printStackTrace();
 
@@ -164,5 +167,54 @@ public class DataDataStoresEditorAction extends ConfigAction {
         getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("config.data.store");
+    }
+    /** Used to debug connection parameters */
+    public void dump( String msg, Map params ){
+    	if( msg != null ){
+    		System.out.print( msg + " ");
+    	}
+    	System.out.print( ": { " );
+    	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
+    		Map.Entry entry = (Map.Entry) i.next();
+    		System.out.print( entry.getKey() );
+    		System.out.print("=");
+    		dump( entry.getValue() );
+    		if( i.hasNext() ){
+    			System.out.print( ", " );
+    		}	
+    	}
+    	System.out.println( "}" );
+    }
+    public void dump( Object obj ){
+    	if( obj==null){
+			System.out.print("null");
+		}
+		else if ( obj instanceof String){
+			System.out.print("\"");
+			System.out.print( obj );
+			System.out.print("\"");
+		}
+		else {
+			System.out.print( obj );
+		}
+		
+    }
+    public void dump( String msg, Object array[] ){
+    	if( msg != null ){
+    		System.out.print( msg + " ");
+    	}
+    	System.out.print( ": " );
+    	if( array == null){
+    		System.out.print( "null" );
+    		return;
+    	}
+    	System.out.print( "(" );
+    	for( int i=0; i<array.length; i++){
+    		dump( array[i] );    	
+    		if( i<array.length-1 ){
+    			System.out.print( ", " );
+    		}
+		}	
+    	System.out.println( ")" );
     }
 }
