@@ -6,15 +6,25 @@
  */
 package org.geotools.validation.attributes;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.validation.DefaultFeatureValidation;
 import org.geotools.validation.ValidationResults;
-import java.net.*;
-import java.io.*;
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import org.xml.sax.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * GazetteerNameValidation purpose.
@@ -39,7 +49,7 @@ import org.xml.sax.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GazetteerNameValidation.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
+ * @version $Id: GazetteerNameValidation.java,v 1.3 2004/02/09 23:29:49 dmzwiers Exp $
  */
 public class GazetteerNameValidation extends DefaultFeatureValidation {
 	

@@ -10,15 +10,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 
 /**
@@ -36,7 +36,7 @@ import javax.servlet.ServletException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.10 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: ApplicationState.java,v 1.11 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */

@@ -4,12 +4,14 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.requests.CapabilitiesRequest;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an
@@ -17,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.6 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.7 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**

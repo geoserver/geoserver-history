@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.ServiceDTO;
 import java.net.URL;
+
+import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
 /**
@@ -19,7 +20,7 @@ import java.net.URL;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceConfig.java,v 1.15 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: ServiceConfig.java,v 1.16 2004/02/09 23:30:05 dmzwiers Exp $
  */
 public class ServiceConfig {
     /**

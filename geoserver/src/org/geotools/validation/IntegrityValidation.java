@@ -4,8 +4,9 @@
  */
 package org.geotools.validation;
 
-import com.vividsolutions.jts.geom.Envelope;
 import java.util.Map;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

@@ -8,9 +8,10 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import java.util.logging.Logger;
+
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.Request;
-import java.util.logging.Logger;
 
 
 /**

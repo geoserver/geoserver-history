@@ -4,15 +4,17 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.wfs.LockRequest;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -21,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockKvpReader.java,v 1.5 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: LockKvpReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class LockKvpReader extends KvpRequestReader {
     /** Class logger */

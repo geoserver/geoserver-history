@@ -4,14 +4,15 @@
  */
 package org.vfny.geoserver.config;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
 import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -25,7 +26,7 @@ import java.util.Map;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.6 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: DataStoreConfig.java,v 1.7 2004/02/09 23:30:05 dmzwiers Exp $
  */
 public class DataStoreConfig {
     /** unique datasore identifier */

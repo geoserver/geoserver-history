@@ -19,7 +19,6 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.DataDTO;

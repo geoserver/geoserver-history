@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.requests.readers;
 
-import org.vfny.geoserver.global.WMS;
 import java.util.Map;
+
+import org.vfny.geoserver.global.WMS;
 
 
 /**
@@ -16,7 +17,7 @@ import java.util.Map;
  * "WMTVER" parameter, wich is deprecated but it is recomended to recognize it
  *
  * @author Gabriel Roldán
- * @version $Id: WmsKvpRequestReader.java,v 1.5 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: WmsKvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader {
     /**

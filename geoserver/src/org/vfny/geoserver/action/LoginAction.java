@@ -8,7 +8,6 @@ package org.vfny.geoserver.action;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.Action;
 
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
@@ -16,8 +15,6 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
 import org.vfny.geoserver.form.LoginForm;
 import org.vfny.geoserver.global.UserContainer;
 
@@ -29,8 +26,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </p>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: LoginAction.java,v 1.1 2004/02/05 00:01:50 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: LoginAction.java,v 1.2 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class LoginAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping,

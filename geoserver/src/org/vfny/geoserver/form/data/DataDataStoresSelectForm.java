@@ -5,6 +5,11 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -12,11 +17,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -24,12 +24,12 @@ import javax.servlet.http.HttpServletResponse;
  *
 <<<<<<< DataDataStoresSelectForm.java
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.6 2004/02/02 23:27:26 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.7 2004/02/09 23:29:45 dmzwiers Exp $
 =======
  * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.6 2004/02/02 23:27:26 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.7 2004/02/09 23:29:45 dmzwiers Exp $
 >>>>>>> 1.4
  */
 public class DataDataStoresSelectForm extends ActionForm {

@@ -4,23 +4,12 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.validation.ValidationProcessor;
-import org.geotools.validation.dto.TestDTO;
-import org.geotools.validation.dto.TestSuiteDTO;
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.WFSDTO;
-import org.vfny.geoserver.global.dto.WMSDTO;
-
-import sun.security.action.GetBooleanAction;
-
-import java.io.File;
 import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
 /**
@@ -28,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.11 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.12 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
 

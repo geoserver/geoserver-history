@@ -4,20 +4,6 @@
  */
 package org.vfny.geoserver.requests.readers;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.FidFilter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.IllegalFilterException;
-import org.geotools.filter.LiteralExpression;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.requests.Request;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -30,7 +16,24 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.geotools.filter.AbstractFilter;
+import org.geotools.filter.FidFilter;
+import org.geotools.filter.FilterFactory;
+import org.geotools.filter.GeometryFilter;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.LiteralExpression;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.requests.Request;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 /**
  * Base class for all KVP readers, with some generalized convenience methods.
@@ -51,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: KvpRequestReader.java,v 1.5 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: KvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
  */
 abstract public class KvpRequestReader {
     /** Class logger */

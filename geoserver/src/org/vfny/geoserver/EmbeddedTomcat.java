@@ -4,6 +4,11 @@
  */
 package org.vfny.geoserver;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Logger;
+
 import org.apache.catalina.Connector;
 import org.apache.catalina.Context;
 import org.apache.catalina.Deployer;
@@ -11,10 +16,6 @@ import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
 import org.apache.catalina.logger.SystemOutLogger;
 import org.apache.catalina.startup.Embedded;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Logger;
 
 
 /**
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
  * and path variables are in place before it begins.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: EmbeddedTomcat.java,v 1.10 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: EmbeddedTomcat.java,v 1.11 2004/02/09 23:30:06 dmzwiers Exp $
  */
 public class EmbeddedTomcat {
     /** The logger for the filter module. */

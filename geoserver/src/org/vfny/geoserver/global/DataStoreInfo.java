@@ -4,11 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DataStoreMetaData;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,6 +13,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.DataStoreMetaData;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+
 
 /**
  * This is the configuration iformation for one DataStore. This class can also
@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.10 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.11 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype
     implements DataStoreMetaData {

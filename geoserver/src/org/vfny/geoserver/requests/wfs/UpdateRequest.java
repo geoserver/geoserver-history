@@ -4,13 +4,14 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 
 /**
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  * added to the property list by calling add Property.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: UpdateRequest.java,v 1.5 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: UpdateRequest.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class UpdateRequest extends SubTransactionRequest {
     /** Class logger */

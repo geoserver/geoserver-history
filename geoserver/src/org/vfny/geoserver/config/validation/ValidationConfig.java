@@ -6,8 +6,13 @@
  */
 package org.vfny.geoserver.config.validation;
 
-import java.util.*;
-import org.geotools.validation.dto.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.geotools.validation.dto.PlugInDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
 /**
  * ValidationConfig purpose.
  * <p>
@@ -16,7 +21,7 @@ import org.geotools.validation.dto.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.3 2004/02/03 20:09:15 dmzwiers Exp $
+ * @version $Id: ValidationConfig.java,v 1.4 2004/02/09 23:29:48 dmzwiers Exp $
  */
 public class ValidationConfig {
 	

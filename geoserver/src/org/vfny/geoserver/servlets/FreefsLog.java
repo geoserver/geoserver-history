@@ -4,13 +4,15 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.geotools.data.jdbc.ConnectionPoolManager;
-import org.vfny.geoserver.zserver.GeoZServer;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.vfny.geoserver.zserver.GeoZServer;
 
 
 /**
@@ -18,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.19 2004/01/31 00:27:29 jive Exp $
+ * @version $Id: FreefsLog.java,v 1.20 2004/02/09 23:29:43 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */

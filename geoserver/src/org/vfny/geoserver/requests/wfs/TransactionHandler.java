@@ -4,7 +4,10 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.geotools.feature.Feature;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
@@ -15,9 +18,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -25,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.6 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: TransactionHandler.java,v 1.7 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {

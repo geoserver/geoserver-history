@@ -4,6 +4,10 @@
  */
 package org.vfny.geoserver.responses.wms;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -14,9 +18,6 @@ import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.11 2004/02/09 23:11:36 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.12 2004/02/09 23:29:49 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();

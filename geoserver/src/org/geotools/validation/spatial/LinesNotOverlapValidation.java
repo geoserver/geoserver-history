@@ -14,7 +14,6 @@ import org.geotools.validation.ValidationResults;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
 
 /**
  * LinesNotOverlapValidation purpose.
@@ -23,8 +22,8 @@ import com.vividsolutions.jts.geom.LineString;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: LinesNotOverlapValidation.java,v 1.1 2004/01/31 00:24:05 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: LinesNotOverlapValidation.java,v 1.2 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class LinesNotOverlapValidation extends LineLineAbstractValidation {
 

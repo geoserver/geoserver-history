@@ -10,13 +10,14 @@
  */
 package org.vfny.geoserver.form.wfs;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WFSConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**

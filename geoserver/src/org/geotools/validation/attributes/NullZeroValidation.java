@@ -7,7 +7,6 @@ package org.geotools.validation.attributes;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.validation.DefaultFeatureValidation;
-import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.ValidationResults;
 
 
@@ -35,7 +34,7 @@ import org.geotools.validation.ValidationResults;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NullZeroValidation.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
+ * @version $Id: NullZeroValidation.java,v 1.3 2004/02/09 23:29:49 dmzwiers Exp $
  */
 public class NullZeroValidation extends DefaultFeatureValidation {
     private String attributeName;

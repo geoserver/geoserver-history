@@ -4,17 +4,18 @@
  */
 package org.vfny.geoserver.zserver;
 
+import java.io.Reader;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharTokenizer;
 import org.apache.lucene.analysis.TokenStream;
-import java.io.Reader;
 
 
 /**
  * A lucene Analyzer that filters LetterTokenizer with LowerCaseFilter.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ZServAnalyzer.java,v 1.6 2004/01/31 00:27:24 jive Exp $
+ * @version $Id: ZServAnalyzer.java,v 1.7 2004/02/09 23:29:45 dmzwiers Exp $
  */
 public final class ZServAnalyzer extends Analyzer {
     /**

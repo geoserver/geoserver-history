@@ -4,7 +4,14 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.geotools.data.AttributeTypeMetaData;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
@@ -22,21 +29,9 @@ import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -45,7 +40,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.23 2004/02/09 19:10:45 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.24 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {

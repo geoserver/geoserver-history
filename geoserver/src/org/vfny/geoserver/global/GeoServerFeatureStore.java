@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.IOException;
+import java.util.Set;
+
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
@@ -11,8 +14,6 @@ import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
-import java.io.IOException;
-import java.util.Set;
 
 
 /**
@@ -31,7 +32,7 @@ import java.util.Set;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureStore.java,v 1.4 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: GeoServerFeatureStore.java,v 1.5 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class GeoServerFeatureStore extends GeoServerFeatureSource
     implements FeatureSource {

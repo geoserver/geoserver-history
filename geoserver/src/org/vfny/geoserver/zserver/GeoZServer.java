@@ -20,8 +20,6 @@
 //
 package org.vfny.geoserver.zserver;
 
-import com.k_int.codec.util.OIDRegister;
-import org.geotools.resources.Geotools;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +28,10 @@ import java.net.Socket;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geotools.resources.Geotools;
+
+import com.k_int.codec.util.OIDRegister;
 
 
 /**
@@ -42,7 +44,7 @@ import java.util.logging.Logger;
  *         Searchable class.  The ZServerAssociation talks with the abstract
  *         Searchable interface  and uses that service to resolve Z39.50
  *         services.
- * @version $Id: GeoZServer.java,v 1.9 2004/02/07 00:56:18 jive Exp $ Made by slightly modifying ZServer.java to start up with a properties file, so it can be invoked by another class.  Most code by:
+ * @version $Id: GeoZServer.java,v 1.10 2004/02/09 23:29:45 dmzwiers Exp $ Made by slightly modifying ZServer.java to start up with a properties file, so it can be invoked by another class.  Most code by:
  */
 public class GeoZServer extends Thread {
     /* Initializes the logger. */

@@ -6,9 +6,6 @@
  */
 package org.geotools.validation.network;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.geotools.data.FeatureResults;
@@ -16,15 +13,12 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.GeometryFilter;
 import org.geotools.graph.Graph;
 import org.geotools.graph.GraphComponent;
 import org.geotools.graph.build.LineGraphBuilder;
 import org.geotools.graph.traverse.BasicGraphTraversal;
 import org.geotools.graph.traverse.GraphTraversal;
 import org.geotools.graph.traverse.GraphVisitor;
-import org.geotools.graph.traverse.GraphWalker;
 import org.geotools.graph.traverse.SimpleGraphWalker;
 import org.geotools.validation.DefaultIntegrityValidation;
 import org.geotools.validation.ValidationResults;
@@ -38,8 +32,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: OrphanNodeValidation.java,v 1.1 2004/01/31 00:24:08 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: OrphanNodeValidation.java,v 1.2 2004/02/09 23:29:48 dmzwiers Exp $
  */
 public class OrphanNodeValidation extends DefaultIntegrityValidation {
 

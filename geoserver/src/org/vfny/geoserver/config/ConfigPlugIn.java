@@ -17,7 +17,6 @@ import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoServerPlugIn;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
@@ -38,7 +37,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: ConfigPlugIn.java,v 1.7 2004/02/09 23:30:04 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  */

@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import org.vfny.geoserver.global.ConfigurationException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.global.ConfigurationException;
 
 
 /**
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterHelper.java,v 1.8 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: WriterHelper.java,v 1.9 2004/02/09 23:29:49 dmzwiers Exp $
  */
 public class WriterHelper {
     /** Used internally to create log information to detect errors. */

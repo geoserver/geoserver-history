@@ -14,7 +14,6 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
 import org.apache.struts.util.MessageResources;
 
 /**
@@ -24,8 +23,8 @@ import org.apache.struts.util.MessageResources;
  * </p>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: LoginForm.java,v 1.1 2004/02/05 00:01:49 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: LoginForm.java,v 1.2 2004/02/09 23:30:06 dmzwiers Exp $
  */
 public class LoginForm extends ActionForm {
 	private String username;

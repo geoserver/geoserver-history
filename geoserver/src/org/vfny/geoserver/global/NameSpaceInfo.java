@@ -8,13 +8,14 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.data.FeatureTypeMetaData;
-import org.geotools.data.NamespaceMetaData;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.geotools.data.FeatureTypeMetaData;
+import org.geotools.data.NamespaceMetaData;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 
 
 /**
@@ -32,7 +33,7 @@ import java.util.Set;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.8 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.9 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class NameSpaceInfo extends GlobalLayerSupertype
     implements NamespaceMetaData {

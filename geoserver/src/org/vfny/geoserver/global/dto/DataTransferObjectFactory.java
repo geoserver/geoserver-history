@@ -8,16 +8,17 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.global.xml.NameSpaceElement;
 import org.vfny.geoserver.global.xml.NameSpaceTranslator;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -35,7 +36,7 @@ import java.util.List;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.8 2004/02/06 19:58:04 dmzwiers Exp $
+ * @version $Id: DataTransferObjectFactory.java,v 1.9 2004/02/09 23:29:48 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**

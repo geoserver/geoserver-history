@@ -4,13 +4,14 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
+import java.util.logging.Logger;
+
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
-import java.util.logging.Logger;
 
 
 /**
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Chris Holmes, TOPP
- * @version $Id: LockHandler.java,v 1.5 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: LockHandler.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class LockHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler {

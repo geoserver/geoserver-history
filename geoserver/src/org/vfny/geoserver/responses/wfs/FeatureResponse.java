@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -31,16 +43,6 @@ import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
 import org.vfny.geoserver.responses.Response;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -48,7 +50,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.18 2004/02/09 23:11:36 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.19 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */

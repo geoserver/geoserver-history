@@ -10,11 +10,12 @@
  */
 package org.vfny.geoserver.config.validation;
 
-import org.geotools.validation.dto.TestSuiteDTO;
-
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.*;
-import org.geotools.validation.dto.*;
+import java.util.Map;
+
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
 
 /**
  * TestSuiteConfig purpose.
@@ -25,7 +26,7 @@ import org.geotools.validation.dto.*;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestSuiteConfig.java,v 1.2 2004/02/03 00:38:54 dmzwiers Exp $
+ * @version $Id: TestSuiteConfig.java,v 1.3 2004/02/09 23:29:48 dmzwiers Exp $
  */
 public class TestSuiteConfig{
 

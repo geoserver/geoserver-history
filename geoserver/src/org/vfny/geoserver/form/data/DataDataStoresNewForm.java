@@ -5,17 +5,19 @@
  */
 package org.vfny.geoserver.form.data;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.action.data.DataStoreUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.action.data.DataStoreUtils;
 
 
 /**
@@ -27,8 +29,8 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.4 2004/01/31 00:27:25 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataDataStoresNewForm.java,v 1.5 2004/02/09 23:29:45 dmzwiers Exp $
  */
 public class DataDataStoresNewForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
