@@ -62,6 +62,7 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
+  <!--<property name="test.type" value="UserBasic"/>-->
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
@@ -139,13 +140,16 @@
     <echo message="    clean:        rebuilds all classes"/>
     <echo message="    release-all:      makes a full release build"/>
     <echo message="                    -param: name.release=[release]"/>
-    <echo message="    release-binary:   makes a full release build"/>
-    <echo message="    release-src:      makes a full release build"/>
+    <echo message="    release-binary:   makes a release of the binary files"/>
+    <echo message="    release-src:      makes a release of the source code"/>
+    <echo message="    release-docs:     makes a release of the documents"/>
     <echo message=""/>
     <echo message=" ADMIN TARGETS"/>
     <echo message="    help | ?:     displays this message"/>
     <echo message="    geotools:     builds, deploys the geotools jar"/>
     <echo message="                    -param: dir.geotools=[geotools_path]"/>
+    <echo message="    conf:         builds a default configuration to edit"/>
+    <echo message="                    -param: test.type=CitePostGis"/>
     <echo message=""/>
     <echo message=" Examples..."/>
     <echo message="    ant test-ext -Ddir.container=/usr/local/resin-3.0.4/webapps"/>
@@ -655,7 +659,7 @@
 
 <!-- RELEASE -->
 <!-- builds a release version of the application -->
-  <target name="release-all" depends="release-binary, release-src"/>
+  <target name="release-all" depends="release-binary, release-src, release-docs"/>
   
   <target name="release-src" depends="clean">
     <delete file="${basedir}/geoserver-${name.release}-src.tar.gz" 
@@ -709,7 +713,7 @@
 	  </fileset>
     </copy>
     <copy todir="${dir.build}/documents">
-	  <fileset dir="${dir.build}/documents">
+	  <fileset dir="${basedir}/documents">
 	    <include name="**/*"/>
 	    <exclude name="*generated*/*"/>
 	    <exclude name="*generated*/**/*"/>
@@ -783,10 +787,44 @@
     <copy file="${basedir}/geoserver.war" 
           todir="${dir.release}"/>
   </target>
+  
+  <target name="release-docs" depends="document">
+    <mkdir dir="${basedir}/docs"/>
+    <copy todir="${basedir}/docs/">
+	  <fileset dir="${dir.doc}">
+	    <include name="**/*"/>
+	  </fileset>
+    </copy>
+    <zip destfile="${basedir}/geoserver-${name.release}-docs.zip" basedir="${basedir}/docs/"/>
+    <tar destfile="${basedir}/geoserver-${name.release}-docs.tar" basedir="${basedir}/docs/"/>
+    <gzip src="${basedir}/geoserver-${name.release}-docs.tar" zipfile="${basedir}/geoserver-${name.release}-docs.tar.gz"/>
+    <copy file="${basedir}/geoserver-${name.release}-docs.zip" todir="${dir.release}"/>
+    <copy file="${basedir}/geoserver-${name.release}-docs.tar.gz" todir="${dir.release}"/>
+    
+    <delete file="${basedir}/geoserver-${name.release}-docs.zip" failonerror="true"/>
+    <delete file="${basedir}/geoserver-${name.release}-docs.tar" failonerror="true"/>
+    <delete dir="${basedir}/docs" failonerror="true"/>
+  </target>
 
 <!-- ====================================================================== -->
 <!-- ADMIN TARGETS                                                          -->
 <!-- ====================================================================== -->
+
+<!-- creates a conf directory -->
+  <target name="conf" if="test.type">
+    <!-- empty old conf -->
+    <delete dir="${basedir}/conf" />
+    <mkdir dir="${basedir}/conf" />
+    
+    <!-- populate new conf -->
+    <unzip src="${basedir}/cite/conf${test.type}.zip" dest="${basedir}"/>
+    <copy todir="${basedir}/conf">
+	  <fileset dir="${basedir}/data">
+	    <include name="**/*"/>
+	  </fileset>
+    </copy>
+    <delete dir="${basedir}/data"/>
+  </target>
 
 <!-- GEOTOOLS JAR -->
 <!-- builds geotools jar -->
