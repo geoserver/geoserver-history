@@ -5,7 +5,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:src="http://nwalsh.com/xmlns/litprog/fragment" exclude-result-prefixes="src" version="1.0">
 
 <!-- ********************************************************************
-     $Id: param.xsl,v 1.1 2004/02/23 19:38:30 dmzwiers Exp $
+     $Id: param.xsl,v 1.2 2004/02/27 22:29:23 dmzwiers Exp $
      ********************************************************************
 
      This file is part of the XSL DocBook Stylesheet distribution.
@@ -305,7 +305,7 @@ set       toc
 
 <xsl:param name="toc.list.type">dl</xsl:param>
 <xsl:param name="toc.section.depth">2</xsl:param>
-<xsl:param name="ulink.target" select="'_top'"/>
+<xsl:param name="ulink.target" select="'main'"/>
 <xsl:param name="use.extensions" select="'0'"/>
 <xsl:param name="use.id.as.filename" select="'0'"/>
 <xsl:param name="using.chunker" select="0"/>
