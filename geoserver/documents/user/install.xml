@@ -6,6 +6,10 @@
 
   <sect1 id="welcome">
     <title>Welcome</title>
+    
+     <para>There is more help available at the <ulink url="http://docs.codehaus.org/display/GEOS/Home">Geoserver WIKI</ulink>. 
+   IT IS STRONGLY RECOMMENDED YOU VISIT HERE BECAUSE USERS UPDATE THESE PAGES! </para>
+    
 
     <para>The GeoServer project is a Java implementation of the 1.0 Web
     Feature Server specification from the <ulink
