@@ -83,7 +83,6 @@ function XslProcessor(xslUrl) {
 function postLoad(sUri, docToSend ) {
    var outDoc = Sarissa.getDomDocument();
    var xmlHttp = Sarissa.getXmlHttpRequest();
-   alert("about to post " + config.proxyUrl);
    if ( sUri.indexOf("http://")==0 ) {
      xmlHttp.open("POST", config.proxyUrl, false);
      xmlHttp.setRequestHeader("serverUrl",sUri);//escape(sUri).replace(/\+/g, '%2C').replace(/\"/g,'%22').replace(/\'/g, '%27'));
