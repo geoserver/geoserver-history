@@ -79,9 +79,9 @@ public class CapabilitiesResponse {
     /** Temporary XML output stream elements and configuration object */
     private static XmlOutputStream xmlOutTemp = new XmlOutputStream(60000);
     
-    private static final String WFS_XMLNS_URL = "http://www.opengis.org/wfs";
+    private static final String WFS_XMLNS_URL = "http://www.opengis.net/wfs";
  
-    private static final String OGC_XMLNS_URL =	"http://www.opengis.org/ogc";
+    private static final String OGC_XMLNS_URL =	"http://www.opengis.net/ogc";
     
     
     /**
