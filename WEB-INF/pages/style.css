@@ -117,7 +117,13 @@ table.progress td.disabled {
  background-color: gray;
 }
 /*
- * Locator
+ * Sidebar Config Actions
+ */
+table.control {
+ width: 100%;
+} 
+/*
+ * Header Locator
  */
 td.locator {
  white-space: nowrap; 
