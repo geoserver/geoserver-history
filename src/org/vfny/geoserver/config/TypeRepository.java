@@ -314,7 +314,7 @@ public class TypeRepository {
 	    getType(typeName).getDataSource();
 	Feature[] features = null;
 	try {
-	    QueryImpl query = new QueryImpl(null, new AttributeType[0]); 
+	    QueryImpl query = new QueryImpl(filter, new AttributeType[0]); 
 	    features = data.getFeatures(query).getFeatures();
 	} catch(DataSourceException e) {
 	    throw new WfsException(e, "DataSource problem checking lock: ",
