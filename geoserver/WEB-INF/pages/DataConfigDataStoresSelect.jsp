@@ -14,12 +14,12 @@
 			<html:options name="Config.Data" property="dataStoreIds"/>
 		</html:select>
 	</td></tr>
-	<tr><td valign="top" align="right" colspan=2>
+	<tr><td>&nbsp;</td><td valign="top" align="left">
 		<html:submit property="buttonAction" value="edit">
 			<bean:message key="label.edit"/>
 		</html:submit>
 	</td></tr>
-	<tr><td valign="top" align="right" colspan=2>
+	<tr><td>&nbsp;</td><td valign="top" align="left">
 		<html:submit property="buttonAction" value="delete">
 			<bean:message key="label.delete"/>
 		</html:submit>

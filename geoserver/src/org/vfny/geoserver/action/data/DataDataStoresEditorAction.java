@@ -21,6 +21,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.geotools.data.DataSourceException;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
 
 import org.vfny.geoserver.action.ConfigAction;
@@ -48,6 +50,12 @@ public class DataDataStoresEditorAction extends ConfigAction {
 		String namespace = dataStoresForm.getNamespaceId();
 		String description = dataStoresForm.getDescription();
 
+        DataConfig dataConfig = (DataConfig) getDataConfig();
+        DataStoreConfig config = null;
+        
+        config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);
+
+
 		// After extracting params into a map
 		Map aMap = new HashMap();
         
@@ -55,7 +63,37 @@ public class DataDataStoresEditorAction extends ConfigAction {
         		
 		// Test to see if they work. if not, send em back!
         try {
-            DataStoreFinder.getDataStore( aMap );
+            //Promote the connectionParameters to their actual classes
+            DataStoreFactorySpi factory = config.getFactory();
+            /* 
+            System.out.println( "before:"+aMap );
+            System.out.println( "canProcess"+factory.canProcess( aMap ));
+                        
+            aMap = DataStoreUtils.toConnectionParams( factory,aMap);
+            System.out.println( "after:"+aMap );
+            System.out.println( "canProcess"+factory.canProcess( aMap ));            
+            */
+     /*       if( !factory.canProcess( aMap )){
+                // We could not use these params!
+                //
+                ActionErrors errors = new ActionErrors();                
+                errors.add( ActionErrors.GLOBAL_ERROR,
+                    new ActionError("error.cannotProcessConnectionParams")) ;
+                saveErrors(request, errors);
+                return mapping.findForward("dataConfigDataStores");    
+            }
+       */     
+            DataStore victim = factory.createDataStore( aMap );
+            System.out.println( "victim:"+victim);            
+            if( victim == null ){
+                // We *really* could not use these params!
+                //
+                ActionErrors errors = new ActionErrors();
+                errors.add( ActionErrors.GLOBAL_ERROR,
+                    new ActionError("error.invalidConnectionParams")) ;
+                saveErrors(request, errors);
+                return mapping.findForward("dataConfigDataStores");                            
+            }
         } catch (Throwable throwable) {
             ActionErrors errors = new ActionErrors();
             errors.add( ActionErrors.GLOBAL_ERROR,
@@ -70,11 +108,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
 		if (dataStoresForm.isEnabledChecked() == false) {
 			enabled = false;
 		}
-		
-		DataConfig dataConfig = (DataConfig) getDataConfig();
-		DataStoreConfig config = null;
-		
-		config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);
 
 		config.setEnabled(enabled);
 		config.setNameSpaceId(namespace);

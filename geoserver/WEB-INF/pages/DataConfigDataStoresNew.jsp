@@ -22,7 +22,7 @@
 	<td align="left">
 		<html:text property="dataStoreID"/>
 	</td></tr>
-	<tr><td align="right" colspan=2>
+	<tr><td>&nbsp;</td><td align="left">
 		<html:submit property="action" value="new">
 			<bean:message key="label.new"/>
 		</html:submit>

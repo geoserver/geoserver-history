@@ -10,7 +10,7 @@
 			<bean:message key="label.dataStoreID"/>
 		</span>
 	</td><td colspan=2 align="left">
-		<html:text property="dataStoreId" size="60"/>
+		<bean:write name="dataDataStoresEditorForm" property="dataStoreId"/>
 	</td></tr>
 	
 	<tr><td align="right">
@@ -46,7 +46,9 @@
 <logic:iterate id="param" indexId="ctr" name="dataDataStoresEditorForm" property="paramKeys">
 	<logic:notEqual name="dataDataStoresEditorForm" property='<%= "paramKey[" + ctr + "]"%>' value="dbtype">
 	<tr><td align="right">
-		<bean:write name="dataDataStoresEditorForm" property='<%= "paramKey[" + ctr + "]"%>'/>
+		<span class="help" title="<bean:write name="dataDataStoresEditorForm" property='<%= "paramHelp[" + ctr + "]" %>'/>">
+			<bean:write name="dataDataStoresEditorForm" property='<%= "paramKey[" + ctr + "]"%>'/>
+		</span>
 	</td><td colspan=2 align="left">
 		<html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>
 	</td></tr>

@@ -157,9 +157,13 @@ public class DataDataStoresEditorForm extends ActionForm {
         }
         // Factory will provide even more stringent checking
         //
-        factory.canProcess( getParams() );
-     
-        
+        /*
+        if( !factory.canProcess( getParams() )){
+            errors.add( "paramValue",
+                new ActionError("error.datastore.validationfailed" )
+            );
+        }
+        */
 		return errors;
 	}
     
@@ -270,6 +274,7 @@ public class DataDataStoresEditorForm extends ActionForm {
      * @param b
      */
     public void setEnabled(boolean b) {
+        setEnabledChecked(true);
         enabled = b;
     }
 
