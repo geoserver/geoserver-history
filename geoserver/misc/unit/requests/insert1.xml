@@ -3,8 +3,8 @@
    xmlns="http://www.openplans.org"
    xmlns:gml="http://www.opengis.net/gml">
     <Insert handle="insert 1">
-   <geom_test fid="44">
-   <geom_test.geom>
+   <rail fid="44">
+   <geom>
     <gml:Polygon gid="geom" srsName="http://www.opengis.net/gml/srs/epsg.xml#2035">
      <gml:outerBoundaryIs>
       <gml:LinearRing>
@@ -13,9 +13,9 @@
       </gml:LinearRing>
      </gml:outerBoundaryIs>
     </gml:Polygon>
-   </geom_test.geom>
-   <geom_test.name>insert polygon</geom_test.name>
-  </geom_test>
+   </geom>
+   <name>insert polygon</name>
+  </rail>
    
 </Insert>
  </Transaction>
