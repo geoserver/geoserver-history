@@ -48,6 +48,7 @@ public class SaveXMLAction extends ConfigAction {
             XMLConfigWriter.store(gs.toWMSDTO(), gs.toWFSDTO(),
                 gs.toGeoServerDTO(), gs.toDataDTO(), rootDir);
         } catch (ConfigurationException e) {
+        	e.printStackTrace();
             throw new ServletException(e);
         }
         getApplicationState( request ).notifiySaveXML();	

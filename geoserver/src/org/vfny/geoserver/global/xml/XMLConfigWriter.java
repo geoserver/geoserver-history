@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.17 2004/02/02 18:51:46 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.18 2004/02/02 19:22:18 dmzwiers Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -615,7 +615,6 @@ public class XMLConfigWriter {
         try {
         	FileWriter fw = new FileWriter(f);
             WriterHelper cw = new WriterHelper(fw);
-            fw.close();
             Map m = new HashMap();
 
             if ((ft.getDataStoreId() != null) && (ft.getDataStoreId() != "")) {
@@ -699,6 +698,7 @@ public class XMLConfigWriter {
             }
 
             cw.closeTag("featureType");
+            fw.close();
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
@@ -813,7 +813,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.17 2004/02/02 18:51:46 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.18 2004/02/02 19:22:18 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */

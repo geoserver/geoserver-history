@@ -58,7 +58,7 @@ public class LoadXMLAction extends ConfigAction {
         if( geoServer == null ){
         	// lazy creation on load?
         	geoServer = new GeoServer();
-        	sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, null);        	
+        	sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, geoServer);        	
         }        
                         
         // geoServer = new GeoServer();
@@ -79,6 +79,7 @@ public class LoadXMLAction extends ConfigAction {
 		try {
 			configReader = new XMLConfigReader( rootDir );
 		} catch (ConfigurationException configException) {
+			configException.printStackTrace();
 			return mapping.findForward("welcome");
 			//throw new ServletException( configException );
 		}
@@ -91,6 +92,7 @@ public class LoadXMLAction extends ConfigAction {
             dataDTO = configReader.getData();
     	}
     	else {
+    		System.err.println("Config Reader not initialized for LoadXMLAction.execute().");
     		return mapping.findForward("welcome");    		
     		// throw new ServletException( new ConfigurationException( "An error occured loading the initial configuration" ));
     	}
@@ -99,6 +101,7 @@ public class LoadXMLAction extends ConfigAction {
         try {
         	geoServer.load( wmsDTO, wfsDTO, geoserverDTO, dataDTO, rootDir );
 		} catch (ConfigurationException configException) {
+			configException.printStackTrace();
 			return mapping.findForward("welcome");			
 //			throw new ServletException( configException );			
 		}
