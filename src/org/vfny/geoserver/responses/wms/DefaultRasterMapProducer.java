@@ -119,6 +119,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
      */
     public void abort() {
         this.abortRequested = true;
+        if(this.renderer != null)
         this.renderer.stopRendering();
     }
 
