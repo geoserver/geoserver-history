@@ -101,16 +101,17 @@ public class ApplyXPathSuite extends TestCase {
     }
 
 
-  public void testApply4() {
-      LOGGER.fine("testing xpath: " + xpath4);
+    public void testApply4() {
+      
 	String xpath4 = "//metadata/nadfme";
+	LOGGER.fine("testing xpath: " + xpath4);
 	try {
 	    results = ApplyXPath.apply(testPath, xpath4);
 	} catch (FileNotFoundException e) {
 	    fail("couldn't find file: " + e);
 	}	
 	assertTrue(results.length == 0);
-  } 
+    } 
 
     public void testFileNotFound() {
 	String xpath = "//";
