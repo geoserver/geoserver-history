@@ -31,12 +31,24 @@ Service level configuration
           the gml coordinates of a GetFeature response.  Default is 4 -->
      <numDecimals value="8"/>
 
-     <!-- Example Contact information -->
+     <!-- Please supply contact information -->
      <ContactInformation>
        <ContactPersonPrimary>
-         <ContactPerson>You</ContactPerson>
+         <ContactPerson></ContactPerson>
+         <ContactOrganization></ContactOrganization>
        </ContactPersonPrimary>
-       <ContactPosition>Geoserver Administrator</ContactPosition>
+       <ContactPosition></ContactPosition>
+       <ContactAddress>
+         <AddressType></AddressType>
+         <Address></Address>
+         <City></City>
+         <StateOrProvince></StateOrProvince>
+         <PostCode></PostCode>
+         <Country></Country>
+       </ContactAddress>
+       <ContactVoiceTelephone></ContactVoiceTelephone>
+       <ContactFacsimileTelephone></ContactFacsimileTelephone>
+       <ContactElectronicMailAddress></ContactElectronicMailAddress>
      </ContactInformation>
   </global>
   <services>
@@ -46,14 +58,11 @@ Service level configuration
       <name>My GeoServer WFS</name>
       <title>My GeoServer WFS</title>
       <abstract>
-The GeoServer project is a full transactional Java (J2EE) 
-implementation of the OpenGIS Consortium's Web Feature Server 
-specification, with an integrated WMS. It is free software, 
-available under the GPL 2.0 license.
+This is a description of your Web Feature Server.
 
-Users who would like to access and modify their geographic data over the
-Internet using flexible, industry-approved standards should take a look
-at GeoServer or one of the existing commercial Web Feature Servers.
+The GeoServer is a full transactional Web Feature Server, you may wish to limit
+GeoServer to a Basic service level to prevent modificaiton of your geographic
+data.
      </abstract>
       <keywords>
         <keyword>WFS</keyword>
@@ -73,12 +82,7 @@ at GeoServer or one of the existing commercial Web Feature Servers.
       <name>My GeoServer WMS</name>
       <title>My GeoServer WMS</title>
       <abstract>
-The GeoServer project is also an implementation of the OpenGIS
-Consortium's Web Map Server specification.
-
-If you are interested in a deeper examination of the importance 
-of the GeoServer Project, you should read our FAQ, where we have 
-more descriptive explanations.
+This is a description of your Web Map Server.
      </abstract>
       <keywords>
         <keyword>WFS</keyword>
