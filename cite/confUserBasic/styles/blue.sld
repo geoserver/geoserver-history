@@ -17,10 +17,16 @@ A styling layer used for the unit tests of sldstyler
       <FeatureTypeName>feature</FeatureTypeName>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
+        <Filter>
+           <PropertyIsGreaterThan>
+		<PropertyName>LENGTH</PropertyName>
+		<Literal>5000</Literal>
+	   </PropertyIsGreaterThan>
+        </Filter>
         <LineSymbolizer> 
            <Stroke> 
              <CssParameter name="stroke">#0000ff</CssParameter> 
-             <CssParameter name="stroke-width">1</CssParameter> 
+             <CssParameter name="stroke-width">2</CssParameter> 
            </Stroke> 
         </LineSymbolizer>
       </Rule>
