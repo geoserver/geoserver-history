@@ -4,33 +4,62 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import org.geotools.data.*;
-import org.geotools.feature.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.geotools.data.DataSourceException;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureLocking;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.FeatureWriter;
+import org.geotools.data.Transaction;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.oldconfig.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.wfs.*;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.config.CatalogConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.ServerConfig;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.wfs.DeleteRequest;
+import org.vfny.geoserver.requests.wfs.InsertRequest;
+import org.vfny.geoserver.requests.wfs.SubTransactionRequest;
+import org.vfny.geoserver.requests.wfs.TransactionRequest;
+import org.vfny.geoserver.requests.wfs.UpdateRequest;
 import org.vfny.geoserver.responses.Response;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.3 2003/12/31 00:57:16 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.3.2.1 2004/02/04 18:44:44 cholmesny Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -45,6 +74,7 @@ public class TransactionResponse implements Response {
 
     /** Geotools2 transaction used for this opperations */
     protected Transaction transaction;
+
 
     /**
      * Constructor
@@ -114,9 +144,12 @@ public class TransactionResponse implements Response {
         request = transactionRequest; // preserved toWrite() handle access 
         transaction = new DefaultTransaction();
         LOGGER.fine("request is " + request);
-
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
-
+		
+		ServerConfig serverConf = ServerConfig.getInstance();
+        CatalogConfig catalog = serverConf.getCatalog();
+		if (!serverConf.getWFSConfig().isTransactionsEnabled()) {
+			throw new WfsException("Transactions are not enabled for this server" +				", contact the maintainer to activate them.");
+		}
         WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS);
 
         // Map of required FeatureStores by typeName
