@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.36 2004/04/05 11:43:48 cholmesny Exp $
+ * @version $Id: XMLConfigReader.java,v 1.37 2004/04/06 11:32:34 cholmesny Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -252,6 +252,7 @@ public class XMLConfigReader {
         LOGGER.info("loading catalog configuration");
         data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(
                     catalogElem, "namespaces", true)));
+        LOGGER.info("calling set default ns");
         setDefaultNS();
         data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
                     catalogElem, "datastores", true)));
@@ -273,12 +274,15 @@ public class XMLConfigReader {
      */
     protected void setDefaultNS() {
         Iterator i = data.getNameSpaces().values().iterator();
+        LOGGER.info("iterating through namespaces " + i.hasNext());
 
         while (i.hasNext()) {
             NameSpaceInfoDTO ns = (NameSpaceInfoDTO) i.next();
+            LOGGER.info("iterating to find default ns: " + ns);
 
             if (ns.isDefault()) {
                 data.setDefaultNameSpacePrefix(ns.getPrefix());
+                LOGGER.info("set default namespace pre to " + ns.getPrefix());
 
                 return;
             }
@@ -353,7 +357,7 @@ public class XMLConfigReader {
 
         if (elem != null) {
             geoServer.setVerbose(ReaderUtils.getBooleanAttribute(elem, "value",
-                    false));
+                    false, true));
         }
 
         elem = ReaderUtils.getChildElement(globalElem, "maxFeatures");
@@ -492,45 +496,44 @@ public class XMLConfigReader {
         wfs = new WFSDTO();
 
         //try {
-            wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(
-                    ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
-                    "value", false));
+        wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(
+                ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
+                "value", false, false));
 
-            String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
-                    "serviceLevel");
-            int serviceLevel = WFSDTO.COMPLETE;
+        String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
+                "serviceLevel");
+        int serviceLevel = WFSDTO.COMPLETE;
 
-            if ((serviceLevelValue != null) && !serviceLevelValue.equals("")) {
-				LOGGER.finer("reading serviceLevel: " + serviceLevelValue);
-                if (serviceLevelValue.equalsIgnoreCase("basic")) {
-                    serviceLevel = WFSDTO.BASIC;
-                } else if (serviceLevelValue.equalsIgnoreCase("complete")) {
-                    serviceLevel = WFSDTO.COMPLETE;
-                } else if (serviceLevelValue.equalsIgnoreCase("transactional")) {
-                    serviceLevel = WFSDTO.TRANSACTIONAL;
-                } else {
-                    try {
-                        serviceLevel = Integer.parseInt(serviceLevelValue);
-                    } catch (NumberFormatException nfe) {
-                        String mesg = "Could not parse serviceLevel.  It "
-                            + "should be one of Basic, Complete, or Transactional"
-                            + " or else an integer value";
-                        throw new ConfigurationException(mesg, nfe);
-                    }
+        if ((serviceLevelValue != null) && !serviceLevelValue.equals("")) {
+            LOGGER.finer("reading serviceLevel: " + serviceLevelValue);
+
+            if (serviceLevelValue.equalsIgnoreCase("basic")) {
+                serviceLevel = WFSDTO.BASIC;
+            } else if (serviceLevelValue.equalsIgnoreCase("complete")) {
+                serviceLevel = WFSDTO.COMPLETE;
+            } else if (serviceLevelValue.equalsIgnoreCase("transactional")) {
+                serviceLevel = WFSDTO.TRANSACTIONAL;
+            } else {
+                try {
+                    serviceLevel = Integer.parseInt(serviceLevelValue);
+                } catch (NumberFormatException nfe) {
+                    String mesg = "Could not parse serviceLevel.  It "
+                        + "should be one of Basic, Complete, or Transactional"
+                        + " or else an integer value";
+                    throw new ConfigurationException(mesg, nfe);
                 }
-            } else { //TODO: this should probably parse the strings as well,
-            	//but I'm really just leaving this in so as to not break 
-            	//people's current configs, it should be done the other way
-            	//as that's how 1.1 was. ch
-                serviceLevel = ReaderUtils.getIntAttribute(ReaderUtils
-                        .getChildElement(wfsElement, "serviceLevel"), "value",
-                        false, WFSDTO.COMPLETE);
             }
-			LOGGER.finer("setting service level to " + serviceLevel);
-            wfs.setServiceLevel(serviceLevel);
+        } else { //TODO: this should probably parse the strings as well,
+            serviceLevel = ReaderUtils.getIntAttribute(ReaderUtils
+                    .getChildElement(wfsElement, "serviceLevel"), "value",
+                    false, WFSDTO.COMPLETE);
+        }
+
+        LOGGER.finer("setting service level to " + serviceLevel);
+        wfs.setServiceLevel(serviceLevel);
+
         //} catch (Exception e) {
         //}
-
         ServiceDTO s = loadService(wfsElement);
         wfs.setService(s);
     }
@@ -580,7 +583,7 @@ public class XMLConfigReader {
                 "accessConstraints"));
         s.setMaintainer(ReaderUtils.getChildText(serviceRoot, "maintainer"));
         s.setEnabled(ReaderUtils.getBooleanAttribute(serviceRoot, "enabled",
-                false));
+                false, true));
 
         try {
             s.setOnlineResource(new URL(ReaderUtils.getChildText(serviceRoot,
@@ -617,9 +620,9 @@ public class XMLConfigReader {
             NameSpaceInfoDTO ns = new NameSpaceInfoDTO();
             ns.setUri(ReaderUtils.getAttribute(elem, "uri", true));
             ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
-            ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default", false)
-                || (nsCount == 1));
-            LOGGER.config("added namespace " + ns);
+            ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default",
+                    false, false) || (nsCount == 1));
+            LOGGER.info("added namespace " + ns);
             nameSpaces.put(ns.getPrefix(), ns);
         }
 
@@ -670,7 +673,7 @@ public class XMLConfigReader {
             s.setFilename(new File(baseDir,
                     ReaderUtils.getAttribute(styleElem, "filename", true)));
             s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default",
-                    false));
+                    false, false));
             styles.put(s.getId(), s);
         }
 
@@ -745,7 +748,8 @@ public class XMLConfigReader {
             throw new ConfigurationException(msg);
         }
 
-        ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled", false));
+        ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled", false,
+                true));
         ds.setTitle(ReaderUtils.getChildText(dsElem, "title", false));
         ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
         LOGGER.fine("loading connection parameters for DataStoreDTO "
@@ -1064,7 +1068,7 @@ public class XMLConfigReader {
     protected Envelope loadLatLongBBox(Element bboxElem)
         throws ConfigurationException {
         boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem, "dynamic",
-                false);
+                false, false);
 
         if (!dynamic) {
             double minx = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
@@ -1281,7 +1285,7 @@ public class XMLConfigReader {
             }
 
             ati.setNillable(ReaderUtils.getBooleanAttribute(elem, "nillable",
-                    false));
+                    false, true));
             ati.setMaxOccurs(ReaderUtils.getIntAttribute(elem, "maxOccurs",
                     false, 1));
             ati.setMinOccurs(ReaderUtils.getIntAttribute(elem, "minOccurs",
