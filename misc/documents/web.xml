@@ -35,9 +35,14 @@
     <servlet-class>org.vfny.geoserver.servlets.Describe</servlet-class>
   </servlet>
 
-<servlet>
+  <servlet>
     <servlet-name>Transaction</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.Transaction</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>LockFeature</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.Lock</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -73,6 +78,11 @@
  <servlet-mapping>
     <servlet-name>Transaction</servlet-name>
     <url-pattern>/Transaction/*</url-pattern>
+  </servlet-mapping>
+
+ <servlet-mapping>
+    <servlet-name>LockFeature</servlet-name>
+    <url-pattern>/LockFeature/*</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list><welcome-file>default.jsp</welcome-file></welcome-file-list>
