@@ -19,6 +19,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import org.vfny.geoserver.config.ConfigInfo;
+import org.vfny.geoserver.config.TypeInfo;
 
 /**
  * Builds the GML response using standard, simple public methods.
@@ -90,13 +91,21 @@ public class GMLBuilder {
     private static final String XMLNS_GML = 
 	"xmlns:gml=\"http://www.opengis.net/gml\"";
 
-    private static final String XMLNS_WFS = 
-	"xmlns:wfs=\"http://www.opengis.net/wfs\"";
+    private static final String WFS_URI = "http://www.opengis.net/wfs";
 
-    private final String FEATURE_COLL_INIT_V = "<wfs:FeatureCollection\n " 
-	+ "  xmlns=\"" + configInfo.getUrl() + "/myns\"\n" + 
-	"   xmlns:gml=\"http://www.opengis.net/gml\"\n   xmlns:wfs=\"" +
-	"http://www.opengis.net/wfs\">"; 
+    private static final String XMLNS_WFS = "xmlns:wfs=\"" + WFS_URI + "\"";
+
+    private static final String WFS_LOC = 
+	"http://schemas.opengis.net/wfs/1.0/WFS-basic.xsd";
+
+      private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema\"";
+
+    private static final String XS_NAMESPACE = "xmlns:xs=" + SCHEMA_URI;
+
+    //    private final String FEATURE_COLL_INIT_V = "<wfs:FeatureCollection\n " 
+    //+ "  xmlns=\"" + configInfo.getUrl() + "/myns\"\n" + 
+    //"   xmlns:gml=\"http://www.opengis.net/gml\"\n   xmlns:wfs=\"" +
+    //"http://www.opengis.net/wfs\">"; 
     
     /**
      * Constructor to set verbosity
@@ -128,10 +137,10 @@ public class GMLBuilder {
     /**
      * Adds the xml namespaces and FeatureCollection tag.
      */
-    public void startFeatureCollection(String srs, String xmlns) {
+    public void startFeatureCollection(String srs, TypeInfo typeInfo) {
 	//hashmap of srs's, each holds its own string buffer, so we can
 	//have multiple fcs, then they all combine at the end?
-	featureTypeWriter.start(srs, xmlns);        
+	featureTypeWriter.start(srs, typeInfo);        
 	//for now we'll just hack - put all in the first srs.
     }
 
@@ -225,13 +234,21 @@ public class GMLBuilder {
          * verbosity.
          * @param srs Spactial reference system for the bounding box
          */ 
-        public void start(String srs, String xmlns) {
+        public void start(String srs, TypeInfo typeInfo) {
+	    String xmlns = typeInfo.getXmlns();
             this.srs = srs;
 	    String indent = ((verbose) ? "\n   " : " ");
+	    String schIndent = indent + (verbose ? "                " : "");
 	    finalResult.append(FEATURE_COLL_HEAD);
             finalResult.append(indent + "xmlns=\"" + xmlns + "\"");
 	    finalResult.append(indent + XMLNS_GML);
-	    finalResult.append(indent + XMLNS_WFS + ">");
+	    finalResult.append(indent + XMLNS_WFS);
+	    finalResult.append(indent + XS_NAMESPACE);
+	    finalResult.append(indent + "schemaLocation=\"" + xmlns + " " );
+	    finalResult.append(schIndent  + configInfo.getUrl() + 
+			 "/DescribeFeatureType?" //HACK: bad hard code here.
+			 + "typeName=" + typeInfo.getFullName() + schIndent +  
+			       WFS_URI + schIndent + WFS_LOC + "\">");
 	    boxInsertPos = finalResult.length();
 	}
     
