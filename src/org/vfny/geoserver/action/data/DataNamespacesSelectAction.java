@@ -31,7 +31,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataNamespacesSelectAction.java,v 1.7 2004/03/01 19:35:23 dmzwiers Exp $
+ * @version $Id: DataNamespacesSelectAction.java,v 1.8 2004/03/01 19:47:45 dmzwiers Exp $
  */
 public class DataNamespacesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -51,14 +51,18 @@ public class DataNamespacesSelectAction extends ConfigAction {
         String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
         String _default = HTMLEncoder.decode(messages.getMessage(locale, "label.default"));
 
-        config = (NameSpaceConfig) dataConfig.getNameSpace(namespacesForm.getSelectedNamespace());
+        String nsSelected = namespacesForm.getSelectedNamespace();
+        if(nsSelected.endsWith("*")){
+        	nsSelected = nsSelected.substring(0,nsSelected.lastIndexOf("*"));
+        }
+        config = (NameSpaceConfig) dataConfig.getNameSpace(nsSelected);
         if(config==null){
         	throw new NullPointerException();
         }
         getUserContainer(request).setNamespaceConfig(config);
-
+        
         if (action.equals(delete)) {
-            dataConfig.removeNameSpace(namespacesForm.getSelectedNamespace());
+            dataConfig.removeNameSpace(nsSelected);
             getApplicationState().notifyConfigChanged();
             
             getUserContainer(request).setNamespaceConfig(null);
@@ -66,9 +70,9 @@ public class DataNamespacesSelectAction extends ConfigAction {
             return mapping.findForward("config.data.namespace");
         }
         if (action.equals(_default)) {
-        	if(!namespacesForm.getSelectedNamespace()
+        	if(!nsSelected
         			.equals(dataConfig.getDefaultNameSpace().getPrefix())){
-        		dataConfig.setDefaultNameSpace(dataConfig.getNameSpace(namespacesForm.getSelectedNamespace()));
+        		dataConfig.setDefaultNameSpace(dataConfig.getNameSpace(nsSelected));
                 getApplicationState().notifyConfigChanged();
         	}
             

@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: StylesSelectAction.java,v 1.2 2004/03/01 19:35:11 dmzwiers Exp $
+ * @version $Id: StylesSelectAction.java,v 1.3 2004/03/01 19:47:45 dmzwiers Exp $
  */
 public class StylesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -43,7 +43,10 @@ public class StylesSelectAction extends ConfigAction {
         
         final StylesSelectForm selectForm = (StylesSelectForm) form;
         final String action = selectForm.getAction();
-        final String styleId = selectForm.getSelectedStyle();
+        String styleId = selectForm.getSelectedStyle();
+        if(styleId.endsWith("*")){
+        	styleId = styleId.substring(0,styleId.lastIndexOf("*"));
+        }
         Locale locale = (Locale) request.getLocale();
         
         DataConfig config = getDataConfig();

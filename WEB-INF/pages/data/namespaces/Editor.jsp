@@ -4,16 +4,6 @@
 
 <html:form action="/config/data/namespaceSubmit">
   <table class="info">
-	<tr>
-      <td class="label">
-        <span class="help" title="<bean:message key="help.namespace.default"/>">
-		  <bean:message key="label.default"/>:
-        </span>
-      </td>
-      <td class="datum">
-		<html:checkbox property="_default"/>
-      </td>
-    </tr>
     <tr>
       <td class="label">
         <span class="help" title="<bean:message key="help.namespace.uri"/>">

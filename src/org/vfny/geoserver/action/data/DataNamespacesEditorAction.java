@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.form.data.DataNamespacesEditorForm;
@@ -39,18 +37,11 @@ public class DataNamespacesEditorAction extends ConfigAction {
         String URI = namespacesForm.getURI();
         String prefix = namespacesForm.getPrefix();
 
-        boolean _default = namespacesForm.is_default();
-
-        if (namespacesForm.isDefaultChecked()) {
-            _default = false;
-        }
-
         DataConfig dataConfig = (DataConfig) getDataConfig();
         NameSpaceConfig config = null;
         
         config = getUserContainer(request).getNamespaceConfig();
         
-        config.setDefault(_default);
         config.setPrefix(prefix);
         config.setUri(URI);
 
