@@ -162,7 +162,11 @@
        	<forward
        		name="geoServer"
        		path="/config/geoServer.do"/>
-       		
+
+       	<forward
+       		name="config.server"
+       		path="/config/server.do"/>
+       		       		
        	<forward
        		name="config.wfs"
        		path="/config/wfs/index.do"/>
@@ -236,13 +240,11 @@
         <action
             path="/welcome"
             type="org.apache.struts.actions.ForwardAction"
-            parameter="welcome"
-            name="blankBean"/>
+            parameter="welcome"/>
         <action
             path="/"
             type="org.apache.struts.actions.ForwardAction"
-            parameter="welcome"
-            name="blankBean"/>
+            parameter="welcome"/>
 
         <action
             path="/contactInformation"
@@ -263,30 +265,26 @@
         <action
         	path ="/admin/index"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="admin"
-        	name="blankBean"/>        	
+        	parameter="admin"/>        	
         <action
         	path ="/admin"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="admin"
-        	name="blankBean"/>       
+        	parameter="admin"/>       
         	
         <!-- CONFIG -->
         <action
         	path="/config/index"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config"
-        	name="blankBean"/>
+        	parameter="config"/>
         <action
         	path="/config"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config"
-        	name="blankBean"/>
-        <!--<action
-        	path="/config/geoServer"
+        	parameter="config"/>
+        <action
+        	path="/config/server"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="geoServer"
-        	name="blankBean"/>-->
+        	parameter="config.server"
+        	name="geoServerConfigurationForm"/>
 
         <!-- CONFIG WFS -->        	
         <action
@@ -426,7 +424,7 @@
         	name="geoServerConfigurationForm"
         	scope="request"
         	validate="true"
-        	input="/config/index"/>
+        	input="/config/server"/>
         	
         <action
         	path="/config/wfs/descriptionSubmit"
