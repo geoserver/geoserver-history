@@ -65,8 +65,9 @@ public class ConfigInfo {
     private ConfigInfo(String rootDir) {
 	LOG.finer("constructor called with " + rootDir);
 	this.rootDir = rootDir;
-            setTypeDir(rootDir + TYPE_DIR);
-	    setCapabilitiesDir(rootDir + CAP_DIR);        
+	setTypeDir(rootDir + TYPE_DIR);
+	setCapabilitiesDir(rootDir + CAP_DIR);  
+	if (!rootDir.endsWith("/")) rootDir += "/";
 	serviceGlobal = readServiceTags(rootDir + CONFIG_FILE);
 	wfsGlobal = readWfsTags(rootDir + CONFIG_FILE);
     }
