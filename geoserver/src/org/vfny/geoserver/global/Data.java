@@ -53,7 +53,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.8 2004/01/16 03:04:11 jive Exp $
+ * @version $Id: Data.java,v 1.9 2004/01/16 20:10:54 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -207,13 +207,13 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * </p>
      * @return Map of Exception by dataStoreId:typeName
      */
-    public SortedMap getStatus(){
+    public SortedMap status(){
         SortedMap status = new TreeMap();
         DataStoreInfo info;        
         for( Iterator i=dataStores.values().iterator(); i.hasNext();){
             info = (DataStoreInfo) i.next();
             try {
-                status.putAll( getStatus( info ) );
+                status.putAll( status( info ) );
             }
             catch( Throwable t ){
                 status.put( info.getId(), t );
@@ -236,7 +236,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * 
      * @return Map of Exception by dataStoreId:typeName
      */
-    public SortedMap getStatus(DataStoreInfo info ){
+    public SortedMap status(DataStoreInfo info ){
         SortedMap status = new TreeMap();
         
         String id = info.getId();
@@ -249,59 +249,52 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         try {
             store = info.getDataStore();
         }
-        catch( Throwable t){
+        catch( Throwable couldNotConnect){
             System.out.println(id+": Could not connect to DataStore!" );
-            t.printStackTrace();
-            status.put( id, t );
+            couldNotConnect.printStackTrace();
+            status.put( id, couldNotConnect );
             return status;
         }
         String typeNames[] = store.getTypeNames();
         for( int t=0; t<typeNames.length; t++){
             String typeName = typeNames[t];
-            String id2 = id+":"+typeName;
-            System.out.println( id2+": check status of GeoTools2 FeatureType" );
             try {
-                FeatureType featureType = store.getSchema( typeName );
-                System.out.println( id2+": featureType '"+featureType+"'" );                
+                assertWorking( store, typeName );
             }
-            catch( Throwable badSchema ){
-                System.out.println(id2+": Could not getSchema(\""+typeName+"\")" );
-                badSchema.printStackTrace();
-                status.put( id2, badSchema );                
-                continue;
+            catch( Throwable didNotWork ){
+                System.out.println( id+":"+typeName+": geotools2 FeatureSource did not work!" );
+                didNotWork.printStackTrace();
+                status.put( id+":"+typeName, didNotWork );                
             }
-            FeatureSource source = null;
-            try {
-                source = store.getFeatureSource( typeName );
-                System.out.println( id2+": source aquired '"+source+"'" );                
-            }
-            catch( Throwable badSource ){
-                System.out.println(id2+": Could not getFeatureSource(\""+typeName+"\")" );
-                badSource.printStackTrace();
-                status.put( id2, badSource );                
-                continue;
-            }
-            try {
-                assertWorking(source, id2 );
-            }
-            catch( Throwable notWorking ){
-                System.out.println(id2+": FeatureSource '"+typeName+"' did not work" );                
-                notWorking.printStackTrace();
-                status.put( id2, notWorking );                
-                continue;
-            }            
+            FeatureTypeInfo featureTypeInfo = getFeatureTypeInfo(typeName);
         }
         return status;
+    }
+    /** Assert that GeoTools2 typeName exists and works for typeName */
+    public void assertWorking( DataStore datastore, String typeName ) throws IOException{
+        SortedMap status = new TreeMap();
+        
+        System.out.println( typeName+": check status of GeoTools2 FeatureType" );
+        
+        FeatureType featureType = datastore.getSchema( typeName );
+        System.out.println( typeName+": featureType '"+featureType+"'" );                
+        
+        FeatureSource source = null;
+        source = datastore.getFeatureSource( typeName );
+        System.out.println( typeName+": source aquired '"+source+"'" );                
+        assertWorking(source);        
     }
     /**
      * Test that the FeatureSource works.
      * <p>
      * A smattering of tests, used to check the status of a FeatureSource.
      * </p>
-     * @param source
-     * @return
+     * @param source FeatureSource being tested
+     * @throws IOException If the FeatureSource does not work
      */
-    public void assertWorking( FeatureSource source, String id ) throws IOException{
+    public void assertWorking( FeatureSource source ) throws IOException{
+        String id = source.getSchema().getTypeName();
+        
         // Test optimized getCount()
         //
         System.out.println( id+": source count optimized:'"+source.getCount( Query.ALL )+"'" );
@@ -331,6 +324,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         }
         System.out.println( id+": source aquired '"+source+"'" );      
     }
+    
     public SortedMap getStatus( FeatureTypeInfo info ){
         SortedMap status = new TreeMap();
         return status;
@@ -471,40 +465,42 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
     /**
      * Gets a FeatureTypeInfo from a local type name (ie unprefixed), and a
-     * uri.  This method is slow, use getFeatureType(String typeName), where
+     * uri.
+     * <p>
+     * This method is slow, use getFeatureType(String typeName), where
      * possible.  For not he only user should be TransactionFeatureHandler.
-     *
-     * @param localName NameSpaceInfo name
+     * </p>
+     * <p>
+     * TODO: Jody here - David is this still correct?
+     * </p>
+     * @param namespacePrefix Name NameSpaceInfo name
      * @param uri NameSpaceInfo uri
      *
      * @return FeatureTypeInfo
      */
-    public FeatureTypeInfo getFeatureTypeInfo(String localName, String uri) {
+    public FeatureTypeInfo getFeatureTypeInfo(String namespacePrefix, String uri) {
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
-
             if (fType.isEnabled()) {
-                if (fType.getShortName().equals(localName)
+                if (fType.getShortName().equals(namespacePrefix)
                         && fType.getNameSpace().getUri().equals(uri)) {
                     return fType;
                 }
             }
         }
-
         return null;
     }
 
     /**
-     * getFeatureTypeInfos purpose.
-     * 
+     * Retrieve map of FeatureTypeInfo by prefix:typeName.
      * <p>
      * Returns all the featuretype information objects
      * </p>
      *
-     * @return Map the Feature Type's inofrmation
+     * @return Map of FetureTypeInfo by prefix:typeName
      */
     public Map getFeatureTypeInfos() {
-        return this.featureTypes;
+        return Collections.unmodifiableMap( featureTypes );
     }
 
     //TODO: detect if a user put a full url, instead of just one to be resolved, and
