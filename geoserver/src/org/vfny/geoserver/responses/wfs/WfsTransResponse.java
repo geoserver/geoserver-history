@@ -5,9 +5,10 @@
 package org.vfny.geoserver.responses.wfs;
 
 import org.vfny.geoserver.config.*;
+import org.vfny.geoserver.responses.ResponseUtils;
 import org.w3c.dom.*;
-import java.util.*;
 import java.io.*;
+import java.util.*;
 import java.util.logging.*;
 
 
@@ -18,7 +19,7 @@ import java.util.logging.*;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.1.2.2 2003/11/16 07:38:48 jive Exp $
+ * @version $Id: WfsTransResponse.java,v 1.1.2.3 2003/11/19 02:42:18 cholmesny Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
@@ -147,13 +148,15 @@ public class WfsTransResponse {
     /**
      * Generates the xml represented by this object.
      *
-     * @return The xml response.
+     * @param writer DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
      */
-    public void writeXmlResponse( Writer writer ) throws IOException {
+    public void writeXmlResponse(Writer writer) throws IOException {
         //boolean verbose = ConfigInfo.getInstance().formatOutput();
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
         String xmlHeader = ServerConfig.getInstance().getXmlHeader();
-        
+
         if (verbose) {
             writer.write("\n");
         }
@@ -169,7 +172,7 @@ public class WfsTransResponse {
         writer.write(indent
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         writer.write(indent);
-        writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");        
+        writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
         writer.write(GlobalConfig.getInstance().getSchemaBaseUrl());
         writer.write("wfs/1.0.0/WFS-transaction.xsd\">");
 
@@ -180,7 +183,8 @@ public class WfsTransResponse {
             while (iter.hasNext()) {
                 ((InsertResult) iter.next()).writeXml(writer);
             }
-        }        
+        }
+
         writer.write(indent + "<wfs:TransactionResult");
 
         if (handle != null) {
@@ -217,7 +221,8 @@ public class WfsTransResponse {
 
         if (message != null) {
             writer.write(indent + offset + "<wfs:Message>");
-            writer.write(message + "</wfs:Message>");
+            ResponseUtils.writeEscapedString(writer, message);
+            writer.write("</wfs:Message>");
         }
 
         writer.write(indent + "</wfs:TransactionResult>");
@@ -226,19 +231,22 @@ public class WfsTransResponse {
             writer.write("\n");
         }
 
-        writer.write("</wfs:WFS_TransactionResponse>");              
+        writer.write("</wfs:WFS_TransactionResponse>");
     }
+
     // this may not be needed anymore
     public String getXmlResponse() {
         StringWriter writer = new StringWriter();
+
         try {
-            writeXmlResponse( writer );
+            writeXmlResponse(writer);
         } catch (IOException e) {
             return null;
         }
+
         return writer.toString();
     }
-    
+
     /**
      * Helper to determine if a string is not null and not an empty string.
      *
@@ -249,8 +257,6 @@ public class WfsTransResponse {
     private boolean isEmpty(String s) {
         return ((s == null) || s.equals(""));
     }
-
-    
 
     /**
      * Private class to reprent an InsertResult xml element.
@@ -290,7 +296,7 @@ public class WfsTransResponse {
                 writer.write(iter.next() + "\"/>");
             }
 
-            writer.write(indent + "</wfs:InsertResult>");            
+            writer.write(indent + "</wfs:InsertResult>");
         }
 
         public void getDOM(Element root, Document doc) {
