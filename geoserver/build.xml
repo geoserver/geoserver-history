@@ -408,14 +408,14 @@
 <!-- BUILD TARGETS                                                          -->
 <!-- ====================================================================== -->
 
-  <target name="war" depends="init, all"
+  <target name="war" depends="init"
       description="generate geoserver.war (with your choice of conf directory)">
     <!-- only one of the two will execute -->
     <antcall target="user_conf"/>
     <antcall target="misc_conf"/>
   </target>  
  <!-- BUILD WAR -->
-  <target name="build-war" if="conf.path">
+  <target name="build-war" depends="all" if="conf.path">
     <!-- preparation -->
     <delete file="${dir.build}/geoserver.war" 
             failonerror="false"/>
@@ -624,8 +624,11 @@
             href="http://jakarta.apache.org/log4j/docs/api/" 
             packagelistLoc="${dir.doc}/package-lists/log4j"/>
     </javadoc>
-        
-    <copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
+    <antcall target="generate-docbook"/>
+  </target>
+
+  <target name="generate-docbook" depends="init">
+     <copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
     <copy todir="${dir.doc}/" file="${dir.doc}/../index.html"/>
 
     <!-- Convert docbook to html -->
@@ -671,40 +674,57 @@
         <param name="section.autolabel" expression="1"/>
         <param name="toc.section.depth" expression="4"/>
     </style>
-  </target>
-
+  </target>   
 
 <!-- RELEASE -->
 <!-- builds a release version of the application -->
-  <target name="release-all" depends="release-binary, release-src, release-docs"/>
-  
-  <target name="release-src" depends="clean">
-    <delete file="${basedir}/geoserver-${name.release}-src.tar.gz" 
-            failonerror="false"/>
-    <delete file="${basedir}/geoserver-${name.release}-src.tar" 
-            failonerror="false"/>
-    <delete dir="${dir.build}" failonerror="false"/>
-    
-    <mkdir dir="${dir.build}"/>
-    
-    <copy todir="${dir.build}/conf">
-	  <fileset dir="${basedir}/cite/confUserBasic">
-	    <include name="**/*"/>
-	  </fileset>
-    </copy>
+  <target name="release-all" depends="release-war, release-src, release-docs"/>
+
+  <target name="release-common" depends="clean, all"
+   description="Performs the release operations common to binary and source">
     <delete dir="${basedir}/data" failonerror="false"/>
-    
-    <copy todir="${dir.build}">
-	  <fileset dir="${basedir}">
-	    <include name="license.txt"/>
-	    <include name="build.xml"/>
-	    <include name=".classpath"/>
-	  </fileset>
-    </copy>
     <copy todir="${dir.build}">
 	  <fileset dir="${basedir}/documents">
         <include name="license.txt"/>
         <include name="README.txt"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/lib">
+	  <fileset dir="${dir.lib}">
+	    <include name="**/jetty/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+            <include name="xml-apis.jar"/>
+            <include name="xercesImpl.jar"/>
+            <include name="servlet.jar"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/bin">
+	  <fileset dir="${dir.bin}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
+  </target>
+
+
+  
+  <target name="release-src" depends="release-common">
+    <delete file="${basedir}/geoserver-${name.release}-src.tar.gz" 
+            failonerror="false"/>
+    <delete file="${basedir}/geoserver-${name.release}-src.tar" 
+            failonerror="false"/>
+    
+    <copy todir="${dir.build}">
+	  <fileset dir="${basedir}">
+	    <include name="build.xml"/>
+	    <include name=".classpath"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/conf">
+	  <fileset dir="${basedir}/cite/confUserBasic">
+	    <include name="**/*"/>
 	  </fileset>
     </copy>
     <copy todir="${dir.build}/src">
@@ -737,13 +757,6 @@
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
     </copy>
-    <!--copy todir="${dir.build}/bin">
-	  <fileset dir="${dir.bin}">
-	    <include name="**/*"/>
-	    <exclude name="*CVS*/*"/>
-	    <exclude name="**/*CVS*/*"/>
-	  </fileset>
-    </copy-->
     <copy todir="${dir.build}/WEB-INF">
 	  <fileset dir="${dir.webinf}">
 	    <include name="**/*"/>
@@ -769,12 +782,16 @@
     <tar destfile="${basedir}/geoserver-${name.release}-src.tar">
 	  <tarfileset dir="${dir.build}" prefix="geoserver">
 	    <include name="**/*"/>
+            <exclude name="geoserver.war"/>
+            <exclude name="org/**"/>
 	  </tarfileset>
 	</tar>
 	 	 
 	<zip destfile="${basedir}/geoserver-${name.release}-src.zip">
 	  <zipfileset dir="${dir.build}" prefix="geoserver">
 	    <include name="**/*"/>
+            <exclude name="geoserver.war"/>
+            <exclude name="org/**"/>
 	  </zipfileset>
 	</zip>
 	
@@ -796,8 +813,8 @@
     <delete file="${basedir}/license.txt" failonerror="true"/>
   </target>
   
-  <target name="release-binary" depends="clean"
-    description="Genearte the Geoserver.war binary release (includes UserBasic)">
+  <target name="release-war" depends="clean, all"
+    description="Genearte the Geoserver.war war release (includes UserBasic)">
     <antcall target="build-war">
       <param name="conf.path" value="${basedir}/cite/confUserBasic"/>
     </antcall>
@@ -805,13 +822,48 @@
           todir="${dir.release}"/>
   </target>
   
+  <target name="release-binary" depends="release-common">
+      <!-- copy todir="${dir.build}/documents/">
+	  <fileset dir="${dir.doc}">
+	    <include name="**/*"/>
+	  </fileset>
+      </copy -->    
+    <copy todir="${dir.build}/documents">
+	  <fileset dir="${basedir}/documents">
+	    <include name="jetty.xml"/>
+	    <include name="admin.xml"/>
+	  </fileset>
+    </copy> 
+    <antcall target="build-war">
+       <param name="conf.path" value="${basedir}/cite/confUserBasic"/>
+    </antcall>
+    <copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/>
+    <!--unwar src="${dir.build}/geoserver.war" 
+          dest="${dir.build}/server/geoserver/"/-->
+
+  	<zip destfile="${basedir}/geoserver-${name.release}-bin.zip">
+	  <zipfileset dir="${dir.build}" prefix="geoserver">
+	    <include name="**/*"/>
+            <exclude name="geoserver.war"/>
+            <exclude name="org/**"/>
+	  </zipfileset>
+	</zip>
+	
+    <copy file="${basedir}/geoserver-${name.release}-bin.zip" 
+          todir="${dir.release}"/>
+    <delete dir="${dir.build}" failonerror="false"/>
+    <delete file="${basedir}/geoserver-${name.release}-bin.zip" 
+            failonerror="true"/>
+  
+ </target>
+
   <target name="release-docs" depends="document">
     <mkdir dir="${basedir}/docs"/>
     <copy todir="${basedir}/docs/">
 	  <fileset dir="${dir.doc}">
 	    <include name="**/*"/>
 	  </fileset>
-    </copy>
+    </copy>    
     <zip destfile="${basedir}/geoserver-${name.release}-docs.zip">
 	  <zipfileset dir="${basedir}/docs/" prefix="geoserver-docs">
 	    <include name="**/*"/>
