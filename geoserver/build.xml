@@ -799,7 +799,9 @@
       <fileset dir="${dir.geotools}/svgsupport/target/classes/"
                includes="**/*.class"/>   
       <fileset dir="${dir.geotools}/opengis/target/classes/"
-               includes="**/*.class"/> 
+               includes="**/*.class"/>
+      <fileset dir="${dir.geotools}/graph/target/classes/"
+               includes="**/*.class"/>                                         
     </jar>    
     
     <!-- I am not sure why this is not part of the geotools jar -->
