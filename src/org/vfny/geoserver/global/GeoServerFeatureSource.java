@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureSource.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: GeoServerFeatureSource.java,v 1.3 2004/01/18 02:15:37 cholmesny Exp $
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */
@@ -64,7 +64,7 @@ public class GeoServerFeatureSource implements FeatureSource {
     private FeatureType schema;
 
     /** Used to constrain the Feature made available to GeoServer. */
-    private Filter definitionQuery;
+    private Filter definitionQuery = Filter.NONE;
 
     /**
      * Factory that make the correct decorator for the provided featureSource.
@@ -98,6 +98,9 @@ public class GeoServerFeatureSource implements FeatureSource {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
+	if (this.definitionQuery == null) {
+	    this.definitionQuery = Filter.NONE;
+	}
     }
 
     /**
