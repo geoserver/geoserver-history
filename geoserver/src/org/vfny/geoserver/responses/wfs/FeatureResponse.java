@@ -40,12 +40,12 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 
-/**
+/** 
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.23 2004/03/14 05:17:59 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.24 2004/04/05 12:03:19 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
