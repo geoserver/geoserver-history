@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.13 2004/01/16 00:03:44 jive Exp $
+ * @version $Id: XMLConfigReader.java,v 1.14 2004/01/16 00:27:16 jive Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -866,7 +866,7 @@ public class XMLConfigReader {
 
         File parentDir = infoFile.getParentFile();
         dto.setDirName(parentDir.getName());
-
+        
         List attributeList;
 
         File schemaFile = new File(parentDir, "schema.xml");
@@ -877,7 +877,7 @@ public class XMLConfigReader {
             LOGGER.finest("process schema file " + infoFile);
             try {
                 attributeList = loadSchema(schemaFile, dto);
-            } catch (ConfigurationException badDog ){
+            } catch (NullPointerException badDog ){
                 System.out.println("IGNORING PROBLEM WITH Schema File:"+schemaFile);
                 badDog.printStackTrace();
                 attributeList = Collections.EMPTY_LIST;
@@ -918,7 +918,9 @@ public class XMLConfigReader {
         ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
         ft.setKeywords(getKeyWords(ReaderUtils.getChildElement(fTypeRoot,
                     "keywords")));
+        
         ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
+        
         ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
                     true)));
 
