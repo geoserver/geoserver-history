@@ -23,7 +23,7 @@ import java.util.*;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: GetMapRequest.java,v 1.3 2003/12/17 22:08:47 cholmesny Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
@@ -53,7 +53,8 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gets the list of attributes to use in the request.  This is a custom
+     * element, not part of the normal wms request.
      *
      * @return DOCUMENT ME!
      */
@@ -125,9 +126,9 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gets a list of the names of the styles to be returned by the server.
      *
-     * @return DOCUMENT ME!
+     * @return A list of Strings of the names of the styles.
      */
     public List getStyles() {
         return mandatorys.styles;
