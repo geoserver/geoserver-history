@@ -87,10 +87,13 @@ public class LockResponse {
     private static String generateXml(String lockId, boolean lockAll,
 				      Set lockedFeatures, Set notLockedFeatures){
 	String indent = verbose ? "   " : "";
-	StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>");
+	StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 	returnXml.append(nl + "<WFS_LockFeatureResponse " + nl);
 	returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
 	//this not needed yet, only when FeaturesLocked element used.
+	//TODO: get rid of this hardcoding, and make a common utility to get all
+	//these namespace imports, as everyone is using them, and changes should
+	//go through to all the operations.
 	if (!lockAll) {
 	  returnXml.append(indent + 
 			   "xmlns:ogc=\"http://www.opengis.net/ogc\" " + nl);
