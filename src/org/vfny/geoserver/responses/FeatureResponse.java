@@ -18,8 +18,10 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
-import org.geotools.data.postgis.PostgisConnectionFactory;
-import org.geotools.data.postgis.PostgisDataSource;
+//port org.geotools.data.Query;
+import org.geotools.data.QueryImpl;
+    //import org.geotools.data.postgis.PostgisConnectionFactory;
+    //import org.geotools.data.postgis.PostgisDataSource;
 import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.config.TypeInfo;
@@ -110,16 +112,17 @@ public class FeatureResponse {
         LOG.finest("about to create gml");
         LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
 	gml.initializeFeatureType(typeName);
-	if (geometryAttr != null) {
+	/*if (geometryAttr != null) {
 	    gml.initializeGeometry(attributeTypes[geometryPosition].
                                getType(), 
                                typeName, 
 			       meta.getSrs(),  
                                attributeTypes[geometryPosition].
                                getName());
-	}
+			       }*/
         for(int i = 0, m = features.length; i < m; i++) {
-
+	    //if (geometryAttr != null) {
+	    //}
             LOG.finest("fid: " + features[i].getId());
             gml.startFeature(features[i].getId());
             attributes = features[i].getAttributes();
@@ -129,7 +132,13 @@ public class FeatureResponse {
                 //LOG.finest("sent attribute: " + attributes[j].toString());
 		//TODO: use attributeType.isGeometry() - get working with
 		//multiple geometries (in GMLBuilder).
-		if (j == geometryPosition) {
+		if (attributeTypes[j].isGeometry()) {
+		    gml.initializeGeometry(attributes[j].getClass(), 
+					   typeName, 
+					   meta.getSrs(),  
+					   attributeTypes[geometryPosition].
+					   getName());
+		
 		    //LOG.finest("geometry att: " + attributes[j].getClass());
 		    //LOG.finest("att name: " + attributeTypes[j].getName());
             gml.addGeometry((Geometry) attributes[j], 
@@ -177,48 +186,6 @@ public class FeatureResponse {
         
 	LOG.finest("about to get query: " + query);
       
-	//this code is now in TypeInfo, to maximize code reuse, as other
-	//operations do the exact same thing.  Putting it there also
-	//allows us to pool the Connection objects, so each getFeatures
-	//does not have to make a new connection with the db.
-	/*Properties dbProps = new Properties();
-	  dbProps.put("user", meta.getUser());
-	  dbProps.put("password", meta.getPassword());
-	  //dbProps.put("charSet", "iso-8859-1");
-	  PostgisConnectionFactory db =
-	  new PostgisConnectionFactory (meta.getHost(), meta.getPort(),
-	  meta.getDatabaseName()); 
-	  LOG.finest("connecting to db " + meta.getHost() + " is host, port "
-	  + meta.getPort() + " name: " + meta.getDatabaseName());
-	  //db.setLogin(meta.getUser(), meta.getPassword());
-	  LOG.finest("setting user and pass " + meta.getUser() + meta.getPassword());
-	  FeatureCollection collection = null;
-	  FeatureType schema = null;
-	  String tableName = meta.getName();
-	  try {
-	  Connection dbConnection = db.getConnection(dbProps);
-	  schema = PostgisDataSource.makeSchema(tableName, dbConnection);
-	  if (!query.allRequested()) {
-	  List propertyNames = query.getPropertyNames();
-	  AttributeType[] properties = new AttributeType[propertyNames.size()];
-	  try {
-	  for(int i = 0; i < propertyNames.size(); i++) {
-	  properties[i] = 
-	  schema.getAttributeType(propertyNames.get(i).toString());
-	  
-	  }
-	  //HACK: we should not rely on schema being a featureTypeFlat.  And
-	  //get and set srid methods will go away soon (which should make it
-	  //so the datasource works without these hacks)
-	  int srid = ((FeatureTypeFlat)schema).getSRID();
-	  schema = FeatureTypeFactory.create(properties);	    
-	  ((FeatureTypeFlat)schema).setSRID(srid);
-	  } catch (SchemaException e) {
-	  throw new WfsException(e, "While trying to create schema for" +
-	  "return feature", getLocator(query));
-	  }
-	  }
-	*/
 	List propertyNames = null;
 	if (!query.allRequested()) {
 	    propertyNames = query.getPropertyNames();
@@ -226,12 +193,10 @@ public class FeatureResponse {
 	FeatureCollection collection = null;
 	try {
 	DataSource data = meta.getDataSource(propertyNames, maxFeatures);
-	//		new PostgisDataSource(dbConnection, tableName, 
-	//schema, maxFeatures);
-	
 	LOG.finest("filter is " + query.getFilter());
-	
-	collection = data.getFeatures(query.getFilter());
+	org.geotools.data.Query dsQuery = 
+	    query.getDataSourceQuery(data.getSchema(), maxFeatures);
+	collection = data.getFeatures(dsQuery);
 	} catch(DataSourceException e) {
 	    throw new WfsException(e, "While getting features from datasource",
 				 getLocator(query));
