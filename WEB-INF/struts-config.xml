@@ -11,6 +11,11 @@
 <!-- ======================================== Form Bean Definitions -->
 
     <form-beans>
+    
+    	<form-bean
+    		name="geoServerConfigurationForm"
+    		type="org.vfny.geoserver.form.global.GeoServerConfigurationForm"/>
+    
     	<form-bean
     		name="wfsDescriptionForm"
     		type="org.vfny.geoserver.form.wfs.WFSDescriptionForm"/>
@@ -65,6 +70,22 @@
     		name="dataAttributeTypesEditorForm"
     		type="org.vfny.geoserver.form.data.DataAttributeTypesEditorForm"/>    		
     		
+    	<form-bean
+    		name="validationTestSuiteSelectForm"
+    		type="org.vfny.geoserver.form.validation.ValidationTestSuiteSelectForm"/>
+    	<form-bean
+    		name="validationTestSelectForm"
+    		type="org.vfny.geoserver.form.validation.ValidationTestSelectForm"/>
+    	<form-bean
+    		name="validationTestNewForm"
+    		type="org.vfny.geoserver.form.validation.ValidationTestNewForm"/>
+    	<form-bean
+    		name="validationTestEditorForm"
+    		type="org.vfny.geoserver.form.validation.ValidationTestEditorForm"/>
+    	<form-bean
+    		name="validationTestSuiteNewForm"
+	   		type="org.vfny.geoserver.form.validation.ValidationTestSuiteNewForm"/>
+    		
 		<form-bean
 			name="blankBean"
 			type="org.apache.struts.action.DynaActionForm"/>
@@ -88,9 +109,31 @@
         <forward 
         	name="mainmenu"
         	path="/MainMenu.do"/>
+        	
+        <forward name="login"
+        	path="/Login.do"/>
+        	
+        <forward name="logout"
+        	path="/Logout.do"/>
+        	
+        <forward
+        	name="validation"
+        	path="/ValidationTestSuite.do"/>
+        <forward
+        	name="validationTestSuite"
+        	path="/ValidationTestSuite.do"/>
+        <forward
+        	name="validationTest"
+        	path="/ValidationTest.do"/>
+
+        <forward
+        	name="validationTestEditor"
+        	path="/ValidationTestEdit.do"/>
+        	
+        	
        	<forward
-       		name="systemConfigMenu"
-       		path="/SystemConfigMenu.do"/>
+       		name="geoServerConfiguration"
+       		path="/GeoServerConfiguration.do"/>
        	<forward
        		name="wfsConfigMenu"
        		path="/WFSConfigMenu.do"/>
@@ -149,10 +192,26 @@
         	path ="/MainMenu"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="main.menu"/>
-        <action
-        	path="/SystemConfigMenu"
+        	
+		<action
+			path ="/Login"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="main.system.config.menu"/>
+        	parameter="login"/>
+
+		<action        	
+			path ="/Logout"
+        	type="org.vfny.geoserver.action.LogoutAction"
+        	parameter=""/>
+
+        	
+        <action
+        	path="/ValidationMenu"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="main.validation.menu"/>
+        <action
+        	path="/GeoServerConfiguration"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="main.geoServer.configuration"/>
         <action
         	path="/WFSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
@@ -199,8 +258,30 @@
         	path="/DataConfigFeatureTypes"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="data.featureTypes"/>
+        	
+        <action
+        	path="/ValidationTestSuite"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="validation.testSuiteSelect"/>
+        <action
+        	path="/ValidationTest"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="validation.testSelect"/>
+        <action
+        	path="/ValidationTestEdit"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="validation.testEditor"/>
 
-<!-- Submit Actions -->        	
+
+<!-- Submit Actions -->    
+
+		<action    	
+        	path="/GeoServerConfigurationSubmit"
+        	type="org.vfny.geoserver.action.global.GeoServerConfigurationSubmit"
+        	name="geoServerConfigurationForm"
+        	scope="request"
+        	validate="true"
+        	input="main.geoServer.configuration"/>
         	
         <action
         	path="/WFSConfigDescriptionSubmit"
@@ -314,6 +395,48 @@
         	scope="request"
         	validate="true"
         	input="data.featureTypes"/>
+ 
+         <action
+        	path="/ValidationTestSuiteSelect"
+        	type="org.vfny.geoserver.action.validation.ValidationTestSuiteSelectAction"
+        	name="validationTestSuiteSelectForm"
+        	scope="request"
+        	validate="true"
+        	input="validation.testSuiteSelect"/>
+
+         <action
+        	path="/ValidationTestSuiteNew"
+        	type="org.vfny.geoserver.action.validation.ValidationTestSuiteNewAction"
+        	name="validationTestSuiteNewForm"
+        	scope="request"
+        	validate="true"
+        	input="validation.testSuiteSelect"/>
+
+         <action
+        	path="/ValidationTestSelect"
+        	type="org.vfny.geoserver.action.validation.ValidationTestSelectAction"
+        	name="validationTestSelectForm"
+        	scope="request"
+        	validate="true"
+        	input="validation.testSelect"/>
+        	
+         <action
+			path="/ValidationTestNew"
+        	type="org.vfny.geoserver.action.validation.ValidationTestNewAction"
+        	name="validationTestNewForm"
+        	scope="request"
+        	validate="true"
+        	input="validation.testSelect"/>
+        	        	
+         <action
+        	path="/ValidationTestEditor"
+        	type="org.vfny.geoserver.action.validation.ValidationTestEditorAction"
+        	name="validationTestEditorForm"
+        	scope="request"
+        	validate="true"
+        	input="validation.testEditor"/>
+
+
         	
         <action
         	path="/SaveToGeoServer"
@@ -394,9 +517,6 @@
   </plug-in>  
   
   <plug-in className="org.vfny.geoserver.config.ConfigPlugIn">
-  </plug-in>  
-  
-  <plug-in className="org.geotools.validation.xml.ValidationPlugIn">
   </plug-in>  
 
 </struts-config>

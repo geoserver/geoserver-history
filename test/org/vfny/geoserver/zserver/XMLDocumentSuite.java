@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * Tests the XMLDocument converter.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: XMLDocumentSuite.java,v 1.8 2004/01/21 19:13:06 dmzwiers Exp $
+ * @version $Id: XMLDocumentSuite.java,v 1.9 2004/01/31 00:17:51 jive Exp $
  */
 public class XMLDocumentSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/

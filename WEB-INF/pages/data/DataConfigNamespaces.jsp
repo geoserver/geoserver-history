@@ -15,15 +15,15 @@
 		
 		</td><td>
 		
-		<html:submit property="action" value="new">
+		<html:submit property="action">
 			<bean:message key="label.new"/>
 		</html:submit>
 		<BR>
-		<html:submit property="action" value="edit">
+		<html:submit property="action">
 			<bean:message key="label.edit"/>
 		</html:submit>
 		<BR>
-		<html:submit property="action" value="delete">
+		<html:submit property="action">
 			<bean:message key="label.delete"/>
 		</html:submit>
 		<BR>
@@ -48,7 +48,15 @@
 		<html:text property="prefix" size="60"/>
 	</td></tr>
 	
-	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit property="action" value="submit"/><html:reset/></td></tr>						
+	<tr><td align="right">&nbsp;</td><td colspan=2>
+		<html:submit property="action">
+			<bean:message key="label.submit"/>
+		</html:submit>
+		
+		<html:reset>
+			<bean:message key="label.reset"/>
+		</html:reset>
+	</td></tr>						
 	
 	</html:form>
 </table>

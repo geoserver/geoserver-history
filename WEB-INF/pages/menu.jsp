@@ -8,8 +8,8 @@
 		<html:link forward="mainmenu">
 			<bean:message key="label.mainMenu"/>
 		</html:link>
-		<bean:message key="label.login"/> 
-		<bean:message key="label.logout"/> 
-		<bean:message key="label.help"/>	
+		<html:link forward="logout">
+			<bean:message key="label.logout"/> 
+		</html:link>
 	</tr></td>
 </table>

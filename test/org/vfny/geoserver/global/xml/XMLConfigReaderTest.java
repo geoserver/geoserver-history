@@ -26,7 +26,7 @@ import java.util.Map;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReaderTest.java,v 1.4 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: XMLConfigReaderTest.java,v 1.5 2004/01/31 00:17:52 jive Exp $
  */
 public class XMLConfigReaderTest extends TestCase {
     private static final String testPath1 = "C:\\Java\\workspace\\Geoserver-ModelConfig\\tests\\test1\\";

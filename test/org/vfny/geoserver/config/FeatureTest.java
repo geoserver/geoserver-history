@@ -17,7 +17,7 @@ import junit.framework.TestCase;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTest.java,v 1.3 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: FeatureTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
  */
 public class FeatureTest extends TestCase {
     private FeatureTypeConfig a;

@@ -17,7 +17,7 @@
 	</td></tr>
 
 	<tr><td>&nbsp;</td><td align="left">
-		<html:submit property="buttonAction" value="new">
+		<html:submit>
 			<bean:message key="label.new"/>
 		</html:submit>
 	</td></tr>

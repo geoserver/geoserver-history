@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * Tests the GeoIndexer helper methods.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoIndexerSuite.java,v 1.6 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: GeoIndexerSuite.java,v 1.7 2004/01/31 00:17:51 jive Exp $
  */
 public class GeoIndexerSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/

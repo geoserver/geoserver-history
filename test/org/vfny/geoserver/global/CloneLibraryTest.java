@@ -24,7 +24,7 @@ import java.util.Map;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibraryTest.java,v 1.3 2004/01/21 18:42:27 jive Exp $
+ * @version $Id: CloneLibraryTest.java,v 1.4 2004/01/31 00:17:52 jive Exp $
  */
 public class CloneLibraryTest extends TestCase {
     /**

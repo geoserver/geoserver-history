@@ -12,9 +12,11 @@
 		<put name="header" value=".headLayout"/>
 		<put name="sidebar" value=".sidebarLayout"/>
 		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
-   	</definition>
-   	
-   	<definition name=".headLayout" page="/WEB-INF/pages/layouts/headerLayout.jsp">
+		
+		<!-- it would seem that tile-inheritance prevents one from over-riding
+		     parameters, so I will mash all layouts together here as one -->
+
+		<!-- HEADER -->		     
    		<put name="logo" value="/WEB-INF/pages/logo.jsp"/>
    		<!--  
    			Currently removed due to time constraints (it's incomplete)
@@ -23,36 +25,52 @@
    		-->
    		<put name="location" value="/WEB-INF/pages/blank.jsp"/>
    		<put name="menu" value="/WEB-INF/pages/menu.jsp"/>
-   	</definition>
-   	
-   	<definition name=".sidebarLayout" page="/WEB-INF/pages/layouts/sidebarLayout.jsp">
+
+		<!-- SIDEBAR -->
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
    		<put name="buttons" value="/WEB-INF/pages/buttons.jsp"/>
    		<put name="messages" value="/WEB-INF/pages/messages.jsp"/>
+
    	</definition>
    	
    	<definition name=".bodyLayout" page="/WEB-INF/pages/layouts/bodyLayout.jsp">
-   		<put name="tabs" value=".tabsLayout"/>
+   		<put name="tabs" value=".tabsLayout"/>		     
    	</definition>
    	
    	<definition name="main.welcome" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/Welcome.jsp"/>
-   		<put name="title" value="GeoServer Configuration"/>
+   		<put name="title" value="GeoServer"/>
    	</definition>
    	
    	<definition name="main.menu" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/MainMenu.jsp"/>
-   		<put name="title" value="GeoServer Configuration - Main Menu"/>
+   		<put name="title" value="GeoServer - Main Menu"/>
    	</definition>
    	
-   	<definition name="main.system.config.menu" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/SystemConfigMenu.jsp"/>
-   		<put name="title" value="GeoServer Configuration - System Configuration Menu"/>
+   	<definition name="main.geoServer.configuration" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/GeoServerConfiguration.jsp"/>
+   		<put name="title" value="GeoServer - GeoServer Configuration"/>
    	</definition>
    	
+   	<definition name="validation.testSuiteSelect" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/validation/SelectTestSuite.jsp"/>
+   		<put name="title" value="GeoServer - Select a Test Suite"/>
+   	</definition>   	
+
+   	<definition name="validation.testSelect" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/validation/SelectTest.jsp"/>
+   		<put name="title" value="GeoServer - Select a Test"/>
+   	</definition>     	
+
+   	<definition name="validation.testEditor" extends=".mainLayout">
+   		<put name="body" value="/WEB-INF/pages/validation/TestEditor.jsp"/>
+   		<put name="title" value="GeoServer - Test Editor"/>
+   	</definition>     	
+
    	<definition name="wfs.description" extends=".mainLayout">
    		<put name="body" value="wfs.description.tabLayout"/>
 		<put name="title" value="WFS Configuration - Description"/>
+		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
    	</definition>
    	
    	<definition name="wfs.description.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
@@ -71,6 +89,7 @@
    	<definition name="wfs.content" extends=".mainLayout">
    		<put name="body" value="wfs.content.tabLayout"/>
 		<put name="title" value="WFS Configuration - Content"/>   		
+		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
    	</definition>
 
    	<definition name="wfs.content.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
@@ -90,6 +109,7 @@
    	<definition name="wms.description" extends=".mainLayout">
    		<put name="body" value="wms.description.tabLayout"/>
 		<put name="title" value="WMS Configuration - Description"/>   		
+		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
    	</definition>
    	
    	<definition name="wms.description.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
@@ -108,6 +128,7 @@
    	<definition name="wms.content" extends=".mainLayout">
    		<put name="body" value="wms.content.tabLayout"/>
 		<put name="title" value="WMS Configuration - Content"/>   		
+		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>		
    	</definition>
 
    	<definition name="wms.content.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
@@ -125,7 +146,8 @@
 
    	<definition name="data.dataStores" extends=".mainLayout">
    		<put name="body" value="data.dataStores.tabLayout"/>
-		<put name="title" value="Data Configuration - DataStores"/>   		
+		<put name="title" value="Data Configuration - DataStores"/>
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    	</definition>
    	
    	<definition name="data.dataStores.main" page="/WEB-INF/pages/layouts/dataStoreLayout.jsp">
@@ -156,6 +178,7 @@
    	<definition name="data.namespaces" extends=".mainLayout">
    		<put name="body" value="data.namespaces.tabLayout"/>
 		<put name="title" value="Data Configuration - Namespaces"/>
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    	</definition>   	
 
    	<definition name="data.namespaces.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
@@ -179,7 +202,8 @@
 
    	<definition name="data.styles" extends=".mainLayout">
    		<put name="body" value="data.styles.tabLayout"/>
-		<put name="title" value="Data Configuration - Styles"/>   		
+		<put name="title" value="Data Configuration - Styles"/>   
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    	</definition>   	
 
    	<definition name="data.styles.tabLayout" page="/WEB-INF/pages/layouts/tabsLayout.jsp">
@@ -203,7 +227,8 @@
    	
    	<definition name="data.featureTypes" extends=".mainLayout">
    		<put name="body" value="data.featureTypes.tabLayout"/>
-		<put name="title" value="Data Configuration - Feature Types"/>   		
+		<put name="title" value="Data Configuration - Feature Types"/> 
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		  		
    	</definition>   	
    	
    	<definition name="data.featureTypes.main" page="/WEB-INF/pages/layouts/featureTypesLayout.jsp">

@@ -14,21 +14,21 @@
 			<html:options property="attributeTypes"/>
 		</html:select>
 	</td><td align="left" valign="top">
-		<html:submit property="buttonAction" value="moveUp">
+		<html:submit property="buttonAction">
 			<bean:message key="label.moveUp"/>
 		</html:submit>
 		<br>
-		<html:submit property="buttonAction" value="moveDown">
+		<html:submit property="buttonAction">
 			<bean:message key="label.moveDown"/>
 		</html:submit>
 	</td></tr>
 	<tr><td>&nbsp;</td><td valign="top" align="left" colspan=2>
-		<html:submit property="buttonAction" value="edit">
+		<html:submit property="buttonAction">
 			<bean:message key="label.edit"/>
 		</html:submit>
 	</td></tr>
 	<tr><td>&nbsp;</td><td valign="top" align="left" colspan=2>
-		<html:submit property="buttonAction" value="delete">
+		<html:submit property="buttonAction">
 			<bean:message key="label.delete"/>
 		</html:submit>
 	</td></tr>

@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteSuite.java,v 1.12 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: DeleteSuite.java,v 1.13 2004/01/31 00:17:52 jive Exp $
  */
 public class DeleteSuite extends TransactionSuite {
     // Initializes the logger. Uncomment to see log messages.

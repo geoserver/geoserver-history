@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  * Tests the NumericField number and string conversion.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: NumericFieldSuite.java,v 1.4 2004/01/21 18:42:26 jive Exp $
+ * @version $Id: NumericFieldSuite.java,v 1.5 2004/01/31 00:17:51 jive Exp $
  */
 public class NumericFieldSuite extends TestCase {
     // Initializes the logger. Uncomment to see log messages.

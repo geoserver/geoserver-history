@@ -7,7 +7,7 @@ package org.geotools.validation;
 import org.geotools.data.DataTestCase;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
+import org.geotools.validation.spatial.IsValidGeometryValidation;
 
 
 /**
@@ -21,7 +21,7 @@ import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: FeatureValidationTest.java,v 1.4 2004/01/21 18:42:25 jive Exp $
+ * @version $Id: FeatureValidationTest.java,v 1.5 2004/01/31 00:17:52 jive Exp $
  */
 public class FeatureValidationTest extends DataTestCase {
     MemoryDataStore store;
@@ -69,9 +69,10 @@ public class FeatureValidationTest extends DataTestCase {
         // the visitor
         RoadValidationResults validationResults = new RoadValidationResults();
 
-        IsValidGeometryFeatureValidation validator = new IsValidGeometryFeatureValidation("isValidRoad",
-                "Tests to see if a road is valid",
-                IsValidGeometryFeatureValidation.ALL);
+        IsValidGeometryValidation validator = new IsValidGeometryValidation();
+        validator.setName("isValidRoad");
+        validator.setDescription("Tests to see if a road is valid");
+        validator.setTypeRef( "*" );
         validationResults.setValidation(validator);
         assertTrue(validator.validate(this.newRoad, this.roadType,
                 validationResults));
@@ -99,17 +100,26 @@ public class FeatureValidationTest extends DataTestCase {
         RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
 
         // various FeatureType tests
-        IsValidGeometryFeatureValidation isValidValidator1 = new IsValidGeometryFeatureValidation("isValidRoad",
-                "Tests to see if a road is valid", new String[] { "roads" });
-        IsValidGeometryFeatureValidation isValidValidator2 = new IsValidGeometryFeatureValidation("isValidRail",
-                "Tests to see if a railway is valid",
-                new String[] { "roads", "rails" });
-        IsValidGeometryFeatureValidation isValidValidator3 = new IsValidGeometryFeatureValidation("isValidRiver",
-                "Tests to see if a river is valid", new String[] { "rivers" });
-        IsValidGeometryFeatureValidation isValidValidator4 = new IsValidGeometryFeatureValidation("isValidAll",
-                "Tests to see if all geometries are valid",
-                IsValidGeometryFeatureValidation.ALL);
-
+        IsValidGeometryValidation isValidValidator1 = new IsValidGeometryValidation();
+        isValidValidator1.setName("isValidRoad");
+        isValidValidator1.setDescription("Tests to see if a road is valid");
+        isValidValidator1.setTypeRef( "roads" );
+        
+        IsValidGeometryValidation isValidValidator2 = new IsValidGeometryValidation();
+        isValidValidator2.setName("isValidRail");
+        isValidValidator2.setDescription("Tests to see if a railway is valid");
+        isValidValidator2.setTypeRef( "rails" );
+        
+        IsValidGeometryValidation isValidValidator3 = new IsValidGeometryValidation();
+        isValidValidator3.setName("isValidRiver");
+        isValidValidator3.setDescription("Tests to see if a river is valid");
+        isValidValidator3.setTypeRef( "rivers" );
+        
+        IsValidGeometryValidation isValidValidator4 = new IsValidGeometryValidation();
+        isValidValidator4.setName("isValidAll");
+        isValidValidator4.setDescription("Tests to see if all geometries are valid");
+        isValidValidator4.setTypeRef( "*" );
+        
         // various Integrity tests
         //
         //

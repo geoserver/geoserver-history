@@ -35,7 +35,7 @@
 			<bean:message key="label.keywords"/>:
 		</span>
 	</td><td>
-		<html:textarea property="keywords" cols="60" rows="10"/>
+		<html:textarea property="keywords" cols="60" rows="2"/>
 	</td></tr>
 
 	<tr><td align="right">
@@ -43,7 +43,7 @@
 			<bean:message key="label.abstract"/>:
 		</span>
 	</td><td>
-		<html:textarea property="_abstract" cols="60" rows="6"/>
+		<html:textarea property="_abstract" cols="60" rows="3"/>
 	</td></tr>
 	<tr><td align="right" valign="top">
 		<bean:message key="label.default"/>:
@@ -51,7 +51,15 @@
 		<html:checkbox property="_default"/>
 	</td></tr>
 
-	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit property="action" value="submit"/><html:reset/></td></tr>						
+	<tr><td align="right">&nbsp;</td><td colspan=2>
+		<html:submit>
+			<bean:message key="label.submit"/>
+		</html:submit>
+		
+		<html:reset>
+			<bean:message key="label.reset"/>
+		</html:reset>
+	</td></tr>						
 	
 	</html:form>
 </table>
