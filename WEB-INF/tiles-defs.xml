@@ -18,11 +18,10 @@
    		<put name="contact" value="/WEB-INF/pages/contact.jsp"/>
 
 		<!-- SIDEBAR -->
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarApplication.jsp"/>		
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    		<put name="messages" value="/WEB-INF/pages/messages.jsp"/>
-   		<put name="actions"	value="/WEB-INF/pages/blank.jsp"/>
+   		<put name="actionator"	value="/WEB-INF/pages/actionator.jsp"/>
 
 		<!-- BODY -->
    		<put name="locator" value="/WEB-INF/pages/locator.jsp"/>
@@ -31,6 +30,7 @@
 
    		<put name="layer" value="application"/>
         <put name="locationForwards" value="welcome"/>   		
+        <put name="actionForwards" value="Administration:Administration"/>
    	</definition>
    	
    	<definition name="main.welcome" extends=".mainLayout">
@@ -41,7 +41,7 @@
    	</definition>
 
    	<definition name="main.login" extends=".mainLayout">
-   		<put name="body" value="/WEB-INF/pages/Welcome.jsp"/>
+   		<put name="body" value="/WEB-INF/pages/Login.jsp"/>
    		<put name="title" value="title.login"/>
    		<put name="layer" value="application"/>
         <put name="locationForwards" value="welcome:login"/>   		
@@ -64,28 +64,24 @@
    		<put name="body" value="/WEB-INF/pages/GeoServerConfiguration.jsp"/>
    		<put name="title" value="title.geoServer.configuration"/>
    		<put name="layer" value="administration"/>
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarAdmin.jsp"/>
    	</definition>
    	
    	<definition name="validation.testSuiteSelect" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/validation/SelectTestSuite.jsp"/>
    		<put name="title" value="title.testSuiteSelect"/>
    		<put name="layer" value="configuration"/>
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
 
    	<definition name="validation.testSelect" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/validation/SelectTest.jsp"/>
    		<put name="title" value="title.testSelect"/>
-   		<put name="layer" value="configuration"/>   		
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>   		
+   		<put name="layer" value="configuration"/>
    	</definition>     	
 
    	<definition name="validation.testEditor" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/validation/TestEditor.jsp"/>
    		<put name="title" value="title.testEditor"/>
    		<put name="layer" value="configuration"/>   		
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
     </definition>     	
    	
    	<definition name="wfs.menu" extends=".mainLayout">
@@ -94,7 +90,6 @@
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>
    		<put name="layer" value="configuration"/>
-        <put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
 
    	<definition name="wfs.description" extends=".mainLayout">
@@ -103,7 +98,6 @@
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>		
    		<put name="layer" value="configuration"/>   				
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
    	
    	<definition name="wfs.content" extends=".mainLayout">
@@ -112,7 +106,6 @@
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>		
    		<put name="layer" value="configuration"/>   				
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
    	
    	<definition name="wms.menu" extends=".mainLayout">
@@ -121,7 +114,6 @@
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>		
    		<put name="layer" value="configuration"/>   				
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
 
    	<definition name="wms.description" extends=".mainLayout">
@@ -130,7 +122,6 @@
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
 		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>			
    		<put name="layer" value="configuration"/>   				
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
    	   	
    	<definition name="wms.content" extends=".mainLayout">
@@ -139,7 +130,6 @@
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>		
 		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>			
    		<put name="layer" value="configuration"/>   				
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
 
    	<definition name="data.menu" extends=".mainLayout">
@@ -147,7 +137,6 @@
 		<put name="title" value="title.data.menu"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
 
    	<definition name="data.dataStores" extends=".mainLayout">
@@ -155,25 +144,21 @@
 		<put name="title" value="title.data.dataStores"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
    	
    	<definition name="data.dataStores.select" extends="data.dataStores">
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresSelect.jsp"/>
    		<put name="layer" value="data"/>   				   		
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
    	
    	<definition name="data.dataStores.new" extends="data.dataStores">
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresNew.jsp"/>
    		<put name="layer" value="data"/>   				   		
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
 
    	<definition name="data.dataStores.editor" extends="data.dataStores">
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
    		<put name="layer" value="data"/>   				   		
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
    	
    	<definition name="data.namespaces.select" extends=".mainLayout">
@@ -181,7 +166,6 @@
 		<put name="title" value="title.data.namespaces"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   						
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
 
    	<definition name="data.namespaces.new" extends=".mainLayout">
@@ -189,16 +173,13 @@
 		<put name="title" value="title.data.namespaces"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   						
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
-   	
    	
    	<definition name="data.namespaces.editor" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/data/namespaces/Editor.jsp"/>
 		<put name="title" value="title.data.namespaces"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   						
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
 
    	<definition name="data.styles" extends=".mainLayout">
@@ -206,16 +187,14 @@
 		<put name="title" value="title.data.styles"/>   
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   						
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
 
    	<definition name="data.featureTypes" extends=".mainLayout">
    		<put name="body" value="data.featureTypes.main"/>
 		<put name="title" value="title.data.featureTypes"/> 
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
-		<put name="actions" value="/WEB-INF/pages/data/featureTypes/featureTypeActions.jsp"/>	  		
+        <put name="actionForwards" value="Administration:CalculateBoundingBox"/>		
    		<put name="layer" value="data"/>   						
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>   	
    	
    	<definition name="data.featureTypes.main" page="/WEB-INF/pages/layouts/featureTypesLayout.jsp">
@@ -226,7 +205,5 @@
    		<put name="atNew"    value="/WEB-INF/pages/data/featureTypes/attributeTypes/New.jsp"/>
    		<put name="atEditor" value="/WEB-INF/pages/data/featureTypes/attributeTypes/Editor.jsp"/>
    		<put name="layer" value="data"/>   				   		
-   		<put name="sidebar" value="/WEB-INF/pages/sidebarConfig.jsp"/>
    	</definition>
-
 </tiles-definitions>

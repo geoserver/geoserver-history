@@ -25,4 +25,5 @@
       </tr>    
     </tbody>
   </table>
+  <bean:write name="forward"/>
 </html:form>
