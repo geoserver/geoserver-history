@@ -20,14 +20,14 @@
    -----------    --------
    2000 SEP 30    First released version.
    2001 MAR 18    Replaced byte-by-byte specification of 256-color table with
-				  a short code segment to generate the same table.
+                  a short code segment to generate the same table.
    2001 JUN 10    Added DITHERED_216_COLORS option.
    2001 AUG 21    Fixed a bug where single-color images would produce an
-				  invalid GIF stream when using ORIGINAL_COLOR mode. GIF color
-				  tables need to have at least two entries, so if the image only
-				  has one color, an unused entry of either black or white is
-				  added to the table to make it a valid length.
-				  
+                  invalid GIF stream when using ORIGINAL_COLOR mode. GIF color
+                  tables need to have at least two entries, so if the image only
+                  has one color, an unused entry of either black or white is
+                  added to the table to make it a valid length.
+                  
    2004 SEP 21    Changed some code for geoserver to work. Output will not be
                   flushed. See line 765
 */
@@ -41,6 +41,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.logging.Logger;
 
 public class GIFOutputStream extends FilterOutputStream
 {
@@ -62,616 +63,636 @@ public class GIFOutputStream extends FilterOutputStream
 
    protected static final int[] standard16 =
    {
-	  0x000000,
-	  0xFF0000, 0x00FF00, 0x0000FF,
-	  0x00FFFF, 0xFF00FF, 0xFFFF00,
-	  0x800000, 0x008000, 0x000080,
-	  0x008080, 0x800080, 0x808000,
-	  0x808080, 0xC0C0C0,
-	  0xFFFFFF
+      0x000000,
+      0xFF0000, 0x00FF00, 0x0000FF,
+      0x00FFFF, 0xFF00FF, 0xFFFF00,
+      0x800000, 0x008000, 0x000080,
+      0x008080, 0x800080, 0x808000,
+      0x808080, 0xC0C0C0,
+      0xFFFFFF
    };
 
    protected static final int[] standard256 = new int[256];
 
    protected static int ditherPattern[][] = {{  8, 184, 248, 216},
-											 {120,  56, 152,  88},
-											 { 40, 232,  24, 200},
-											 {168, 104, 136,  72}};
+                                             {120,  56, 152,  88},
+                                             { 40, 232,  24, 200},
+                                             {168, 104, 136,  72}};
 
    protected int     errorStatus = NO_ERROR;
 
+  /** DOCUMENT ME! */
+  private static final Logger LOGGER = Logger.getLogger(
+          "org.vfny.geoserver.responses.wms.map");
+
    static
    {
-	  // Set up a standard 256-color table.
+      // Set up a standard 256-color table.
 
-	  int   n, j, r, g, b;
+      int   n, j, r, g, b;
 
-	  standard256[0] = 0x000000;
+      standard256[0] = 0x000000;
 
-	  n = 40;
+      n = 40;
 
-	  // 0x33 multiples, starting at index 41 (black stored at index 40 gets replaced with 0xEE0000
-	  for (r = 0; r < 6; ++r)
-		 for (g = 0; g < 6; ++g)
-			for (b = 0; b < 6; ++b)
-			   standard256[n++] = 0x330000 * r | 0x003300 * g | 0x000033 * b;
+      // 0x33 multiples, starting at index 41 (black stored at index 40 gets replaced with 0xEE0000
+      for (r = 0; r < 6; ++r)
+         for (g = 0; g < 6; ++g)
+            for (b = 0; b < 6; ++b)
+               standard256[n++] = 0x330000 * r | 0x003300 * g | 0x000033 * b;
 
-	  n = 1;
+      n = 1;
 
-	  for (j = 0; j < 10; ++j) {
-		 // Shades of gray w/o 0x33 multiples, starting at index 1
-		 standard256[j +  1] = 0x111111 * n;
-		 // Shades of blue w/o 0x33 multiples, starting at index 11
-		 standard256[j + 11] = 0x000011 * n;
-		 // Shades of green w/o 0x33 multiples, starting at index 21
-		 standard256[j + 21] = 0x001100 * n;
-		 // Shades of red w/o 0x33 multiples, starting at index 31
-		 standard256[j + 31] = 0x110000 * n;
+      for (j = 0; j < 10; ++j) {
+         // Shades of gray w/o 0x33 multiples, starting at index 1
+         standard256[j +  1] = 0x111111 * n;
+         // Shades of blue w/o 0x33 multiples, starting at index 11
+         standard256[j + 11] = 0x000011 * n;
+         // Shades of green w/o 0x33 multiples, starting at index 21
+         standard256[j + 21] = 0x001100 * n;
+         // Shades of red w/o 0x33 multiples, starting at index 31
+         standard256[j + 31] = 0x110000 * n;
 
-		 ++n;
+         ++n;
 
-		 if (n % 3 == 0)
-			++n;
-	  }
+         if (n % 3 == 0)
+            ++n;
+      }
    }
 
    public static int writeGIF(OutputStream out, Image image) throws IOException
    {
-	  return writeGIF(out, image, ORIGINAL_COLOR, null);
+      return writeGIF(out, image, ORIGINAL_COLOR, null);
    }
 
    public static int writeGIF(OutputStream out, Image image, int colorMode) throws IOException
    {
-	  return writeGIF(out, image, colorMode, null);
+      return writeGIF(out, image, colorMode, null);
    }
 
    public static int writeGIF(OutputStream out, Image image, int colorMode, Color transparentColor) throws IOException
    {
-	  GIFOutputStream   gifOut = new GIFOutputStream(out);
+      GIFOutputStream   gifOut = new GIFOutputStream(out);
 
-	  gifOut.write(image, colorMode, transparentColor);
+      gifOut.write(image, colorMode, transparentColor);
 
-	  return gifOut.getErrorStatus();
+      return gifOut.getErrorStatus();
    }
 
    public GIFOutputStream(OutputStream out)
    {
-	  super(out);
+      super(out);
    }
 
    public int getErrorStatus() { return errorStatus; }
 
    public void write(Image image) throws IOException
    {
-	  write(image, ORIGINAL_COLOR, null);
+      write(image, ORIGINAL_COLOR, null);
    }
 
    public void write(Image image, int colorMode) throws IOException
    {
-	  write(image, colorMode, null);
+      write(image, colorMode, null);
    }
 
    public void write(Image image, Color transparentColor) throws IOException
    {
-	  write(image, ORIGINAL_COLOR, transparentColor);
+      write(image, ORIGINAL_COLOR, transparentColor);
    }
 
    public void write(Image image, int colorMode, Color transparentColor) throws IOException
    {
-	  errorStatus = NO_ERROR;
+      errorStatus = NO_ERROR;
 
-	  if (image == null)
-		 return;
+      if (image == null)
+         return;
 
-	  PixelGrabber   pg = new PixelGrabber(image, 0, 0, -1, -1, true);
+      PixelGrabber   pg = new PixelGrabber(image, 0, 0, -1, -1, true);
 
-	  try {
-		 pg.grabPixels();
-	  } catch (InterruptedException e) {
-		 errorStatus = IMAGE_LOAD_FAILED;
-		 return;
-	  }
+      try {
+         pg.grabPixels();
+      } catch (InterruptedException e) {
+         errorStatus = IMAGE_LOAD_FAILED;
+         return;
+      }
 
-	  if ((pg.status() & ImageObserver.ABORT) != 0) {
-		 errorStatus = IMAGE_LOAD_FAILED;
-		 return;
-	  }
+      if ((pg.status() & ImageObserver.ABORT) != 0) {
+         errorStatus = IMAGE_LOAD_FAILED;
+         return;
+      }
 
-	  int[]    pixels = (int[]) pg.getPixels();
-	  int      width = pg.getWidth();
-	  int      height = pg.getHeight();
-	  int      colorCount = 0;
-	  int[]    colorTable = null;
-	  byte[]   bytePixels = null;
+      int[]    pixels = (int[]) pg.getPixels();
+      int      width = pg.getWidth();
+      int      height = pg.getHeight();
+      int      colorCount = 0;
+      int[]    colorTable = null;
+      byte[]   bytePixels = null;
 
-	  switch (colorMode) {
-		 case ORIGINAL_COLOR:
-			Hashtable   colorSet = getColorSet(pixels);
-			colorCount = colorSet.size();
-			if (colorCount > 256) {
-			   errorStatus = TOO_MANY_COLORS;
-			   return;
-			}
-			colorTable = createColorTable(colorSet, colorCount);
-			bytePixels = createBytePixels(pixels, colorSet);
-			break;
+      LOGGER.fine( "writing "
+                  +(colorMode==ORIGINAL_COLOR? "ORIGINAL_COLOR":
+                    (colorMode==BLACK_AND_WHITE? "BLACK_AND_WHITE":
+                     (colorMode==GRAYSCALE_16? "GRAYSCALE_16":
+                      (colorMode==GRAYSCALE_256? "GRAYSCALE_256":
+                       (colorMode==STANDARD_16_COLORS? "STANDARD_16_COLORS":
+                        (colorMode==STANDARD_256_COLORS? "STANDARD_256_COLORS":
+                         (colorMode==DITHERED_216_COLORS? "DITHERED_216_COLORS":
+                          "INVALID_COLOR_MODE")))))))
+                  +" GIF image, transparency color = "
+                  +(transparentColor==null? "none":transparentColor.toString())
+                  +" dimension ["+width+"x"+height+"]");
 
-		 case BLACK_AND_WHITE:
-			colorCount = 2;
-			colorTable = createBWTable();
-			bytePixels = createBWBytePixels(pixels);
-			break;
+      switch (colorMode) {
+         case ORIGINAL_COLOR:
+            Hashtable   colorSet = getColorSet(pixels);
+            colorCount = colorSet.size();
+            if (colorCount > 256) {
+               errorStatus = TOO_MANY_COLORS;
+               return;
+            }
+            colorTable = createColorTable(colorSet, colorCount);
+            bytePixels = createBytePixels(pixels, colorSet);
+            break;
 
-		 case GRAYSCALE_16:
-			colorCount = 16;
-			colorTable = create16GrayTable();
-			bytePixels = create16GrayBytePixels(pixels);
-			break;
+         case BLACK_AND_WHITE:
+            colorCount = 2;
+            colorTable = createBWTable();
+            bytePixels = createBWBytePixels(pixels);
+            break;
 
-		 case GRAYSCALE_256:
-			colorCount = 256;
-			colorTable = create256GrayTable();
-			bytePixels = create256GrayBytePixels(pixels);
-			break;
+         case GRAYSCALE_16:
+            colorCount = 16;
+            colorTable = create16GrayTable();
+            bytePixels = create16GrayBytePixels(pixels);
+            break;
 
-		 case STANDARD_16_COLORS:
-			colorCount = 16;
-			colorTable = createStd16ColorTable();
-			bytePixels = createStd16ColorBytePixels(pixels);
-			break;
+         case GRAYSCALE_256:
+            colorCount = 256;
+            colorTable = create256GrayTable();
+            bytePixels = create256GrayBytePixels(pixels);
+            break;
 
-		 case STANDARD_256_COLORS:
-			colorCount = 256;
-			colorTable = createStd256ColorTable();
-			bytePixels = createStd256ColorBytePixels(pixels, width, false);
-			break;
+         case STANDARD_16_COLORS:
+            colorCount = 16;
+            colorTable = createStd16ColorTable();
+            bytePixels = createStd16ColorBytePixels(pixels);
+            break;
 
-		 case DITHERED_216_COLORS:
-			colorCount = 216;
-			colorTable = createStd216ColorTable();
-			bytePixels = createStd256ColorBytePixels(pixels, width, true);
-			break;
+         case STANDARD_256_COLORS:
+            colorCount = 256;
+            colorTable = createStd256ColorTable();
+            bytePixels = createStd256ColorBytePixels(pixels, width, false);
+            break;
 
-		 default:
-			errorStatus = INVALID_COLOR_MODE;
-			return;
-	  }
+         case DITHERED_216_COLORS:
+            colorCount = 216;
+            colorTable = createStd216ColorTable();
+            bytePixels = createStd256ColorBytePixels(pixels, width, true);
+            break;
 
-	  pixels = null;
+         default:
+            errorStatus = INVALID_COLOR_MODE;
+            return;
+      }
 
-	  int   cc1 = colorCount - 1;
-	  int   bitsPerPixel = 0;
+      pixels = null;
 
-	  while (cc1 != 0) {
-		 ++bitsPerPixel;
-		 cc1 >>= 1;
-	  }
+      int   cc1 = colorCount - 1;
+      int   bitsPerPixel = 0;
 
-	  writeGIFHeader(width, height, bitsPerPixel);
+      while (cc1 != 0) {
+         ++bitsPerPixel;
+         cc1 >>= 1;
+      }
 
-	  writeColorTable(colorTable, bitsPerPixel);
+      writeGIFHeader(width, height, bitsPerPixel);
 
-	  if (transparentColor != null)
-		 writeGraphicControlExtension(transparentColor, colorTable);
+      writeColorTable(colorTable, bitsPerPixel);
 
-	  writeImageDescriptor(width, height);
+      if (transparentColor != null)
+         writeGraphicControlExtension(transparentColor, colorTable);
 
-	  writeCompressedImageData(bytePixels, bitsPerPixel);
+      writeImageDescriptor(width, height);
 
-	  write(0x00); // Terminate picture data.
+      writeCompressedImageData(bytePixels, bitsPerPixel);
 
-	  write(0x3B); // GIF file terminator.
+      write(0x00); // Terminate picture data.
+
+      write(0x3B); // GIF file terminator.
    }
 
    protected Hashtable getColorSet(int[] pixels)
    {
-	  Hashtable   colorSet = new Hashtable();
-	  boolean[]   checked = new boolean[pixels.length];
-	  int         needsChecking = pixels.length;
-	  int         color;
-	  int         colorIndex = 0;
-	  Integer     key;
+      Hashtable   colorSet = new Hashtable();
+      boolean[]   checked = new boolean[pixels.length];
+      int         needsChecking = pixels.length;
+      int         color;
+      int         colorIndex = 0;
+      Integer     key;
 
-	  for (int j = 0; j < pixels.length && needsChecking > 0; ++j) {
-		 if (!checked[j]) {
-			color = pixels[j] & 0x00FFFFFF;
-			checked[j] = true;
-			--needsChecking;
+      for (int j = 0; j < pixels.length && needsChecking > 0; ++j) {
+         if (!checked[j]) {
+            color = pixels[j] & 0x00FFFFFF;
+            checked[j] = true;
+            --needsChecking;
 
-			key = new Integer(color);
-			colorSet.put(key, new Integer(colorIndex));
-			if (++colorIndex > 256)
-			   break;
+            key = new Integer(color);
+            colorSet.put(key, new Integer(colorIndex));
+            if (++colorIndex > 256)
+               break;
 
-			for (int j2 = j + 1; j2 < pixels.length; ++j2) {
-			   if ((pixels[j2] & 0x00FFFFFF) == color) {
-				  checked[j2] = true;
-				  --needsChecking;
-			   }
-			}
-		 }
-	  }
+            for (int j2 = j + 1; j2 < pixels.length; ++j2) {
+               if ((pixels[j2] & 0x00FFFFFF) == color) {
+                  checked[j2] = true;
+                  --needsChecking;
+               }
+            }
+         }
+      }
 
-	  if (colorIndex == 1) {
-		 if (colorSet.get(new Integer(0)) == null)
-			colorSet.put(new Integer(0), new Integer(1));
-		 else
-			colorSet.put(new Integer(0xFFFFFF), new Integer(1));
-	  }
+      if (colorIndex == 1) {
+         if (colorSet.get(new Integer(0)) == null)
+            colorSet.put(new Integer(0), new Integer(1));
+         else
+            colorSet.put(new Integer(0xFFFFFF), new Integer(1));
+      }
 
-	  return colorSet;
+      return colorSet;
    }
 
    protected int[] createColorTable(Hashtable colorSet, int colorCount)
    {
-	  int[]    colorTable = new int[colorCount];
-	  Integer  key;
+      int[]    colorTable = new int[colorCount];
+      Integer  key;
 
-	  for (Enumeration e = colorSet.keys(); e.hasMoreElements(); ) {
-		 key = (Integer) e.nextElement();
-		 colorTable[((Integer) colorSet.get(key)).intValue()] = key.intValue();
-	  }
+      for (Enumeration e = colorSet.keys(); e.hasMoreElements(); ) {
+         key = (Integer) e.nextElement();
+         colorTable[((Integer) colorSet.get(key)).intValue()] = key.intValue();
+      }
 
-	  return colorTable;
+      return colorTable;
    }
 
    protected byte[] createBytePixels(int[] pixels, Hashtable colorSet)
    {
-	  byte[]   bytePixels = new byte[pixels.length];
-	  Integer  key;
-	  int      colorIndex;
+      byte[]   bytePixels = new byte[pixels.length];
+      Integer  key;
+      int      colorIndex;
 
-	  for (int j = 0; j < pixels.length; ++j) {
-		 key = new Integer(pixels[j] & 0x00FFFFFF);
-		 colorIndex = ((Integer) colorSet.get(key)).intValue();
-		 bytePixels[j] = (byte) colorIndex;
-	  }
+      for (int j = 0; j < pixels.length; ++j) {
+         key = new Integer(pixels[j] & 0x00FFFFFF);
+         colorIndex = ((Integer) colorSet.get(key)).intValue();
+         bytePixels[j] = (byte) colorIndex;
+      }
 
-	  return bytePixels;
+      return bytePixels;
    }
 
    protected int[] createBWTable()
    {
-	  int[]    colorTable = new int[2];
+      int[]    colorTable = new int[2];
 
-	  colorTable[BLACK_INDEX] = 0x000000;
-	  colorTable[WHITE_INDEX] = 0xFFFFFF;
+      colorTable[BLACK_INDEX] = 0x000000;
+      colorTable[WHITE_INDEX] = 0xFFFFFF;
 
-	  return colorTable;
+      return colorTable;
    }
 
    protected byte[] createBWBytePixels(int[] pixels)
    {
-	  byte[]   bytePixels = new byte[pixels.length];
+      byte[]   bytePixels = new byte[pixels.length];
 
-	  for (int j = 0; j < pixels.length; ++j) {
-		 if (grayscaleValue(pixels[j]) < 0x80)
-			bytePixels[j] = (byte) BLACK_INDEX;
-		 else
-			bytePixels[j] = (byte) WHITE_INDEX;
-	  }
+      for (int j = 0; j < pixels.length; ++j) {
+         if (grayscaleValue(pixels[j]) < 0x80)
+            bytePixels[j] = (byte) BLACK_INDEX;
+         else
+            bytePixels[j] = (byte) WHITE_INDEX;
+      }
 
-	  return bytePixels;
+      return bytePixels;
    }
 
    protected int[] create16GrayTable()
    {
-	  int[]    colorTable = new int[16];
+      int[]    colorTable = new int[16];
 
-	  for (int j = 0; j < 16; ++j)
-		 colorTable[j] = 0x111111 * j;
+      for (int j = 0; j < 16; ++j)
+         colorTable[j] = 0x111111 * j;
 
-	  return colorTable;
+      return colorTable;
    }
 
    protected byte[] create16GrayBytePixels(int[] pixels)
    {
-	  byte[]   bytePixels = new byte[pixels.length];
+      byte[]   bytePixels = new byte[pixels.length];
 
-	  for (int j = 0; j < pixels.length; ++j) {
-		 bytePixels[j] = (byte) (grayscaleValue(pixels[j]) / 16);
-	  }
+      for (int j = 0; j < pixels.length; ++j) {
+         bytePixels[j] = (byte) (grayscaleValue(pixels[j]) / 16);
+      }
 
-	  return bytePixels;
+      return bytePixels;
    }
 
    protected int[] create256GrayTable()
    {
-	  int[]    colorTable = new int[256];
+      int[]    colorTable = new int[256];
 
-	  for (int j = 0; j < 256; ++j)
-		 colorTable[j] = 0x010101 * j;
+      for (int j = 0; j < 256; ++j)
+         colorTable[j] = 0x010101 * j;
 
-	  return colorTable;
+      return colorTable;
    }
 
    protected byte[] create256GrayBytePixels(int[] pixels)
    {
-	  byte[]   bytePixels = new byte[pixels.length];
+      byte[]   bytePixels = new byte[pixels.length];
 
-	  for (int j = 0; j < pixels.length; ++j) {
-		 bytePixels[j] = (byte) grayscaleValue(pixels[j]);
-	  }
+      for (int j = 0; j < pixels.length; ++j) {
+         bytePixels[j] = (byte) grayscaleValue(pixels[j]);
+      }
 
-	  return bytePixels;
+      return bytePixels;
    }
 
    protected int[] createStd16ColorTable()
    {
-	  int[]    colorTable = new int[16];
+      int[]    colorTable = new int[16];
 
-	  for (int j = 0; j < 16; ++j)
-		 colorTable[j] = standard16[j];
+      for (int j = 0; j < 16; ++j)
+         colorTable[j] = standard16[j];
 
-	  return colorTable;
+      return colorTable;
    }
 
    protected byte[] createStd16ColorBytePixels(int[] pixels)
    {
-	  byte[]   bytePixels = new byte[pixels.length];
-	  int      color;
-	  int      minError = 0;
-	  int      error;
-	  int      minIndex;
+      byte[]   bytePixels = new byte[pixels.length];
+      int      color;
+      int      minError = 0;
+      int      error;
+      int      minIndex;
 
-	  for (int j = 0; j < pixels.length; ++j) {
-		 color = pixels[j] & 0xFFFFFF;
-		 minIndex = -1;
+      for (int j = 0; j < pixels.length; ++j) {
+         color = pixels[j] & 0xFFFFFF;
+         minIndex = -1;
 
-		 for (int k = 0; k < 16; ++k) {
-			error = colorMatchError(color, standard16[k]);
-			if (error < minError || minIndex < 0) {
-			   minError = error;
-			   minIndex = k;
-			}
-		 }
+         for (int k = 0; k < 16; ++k) {
+            error = colorMatchError(color, standard16[k]);
+            if (error < minError || minIndex < 0) {
+               minError = error;
+               minIndex = k;
+            }
+         }
 
-		 bytePixels[j] = (byte) minIndex;
-	  }
+         bytePixels[j] = (byte) minIndex;
+      }
 
-	  return bytePixels;
+      return bytePixels;
    }
 
    protected int[] createStd256ColorTable()
    {
-	  int[]    colorTable = new int[256];
+      int[]    colorTable = new int[256];
 
-	  for (int j = 0; j < 256; ++j)
-		 colorTable[j] = standard256[j];
+      for (int j = 0; j < 256; ++j)
+         colorTable[j] = standard256[j];
 
-	  return colorTable;
+      return colorTable;
    }
 
    protected int[] createStd216ColorTable()
    {
-	  int[]    colorTable = new int[216];
+      int[]    colorTable = new int[216];
 
-	  colorTable[0] = 0x000000;
+      colorTable[0] = 0x000000;
 
-	  for (int j = 1; j < 216; ++j)
-		 colorTable[j] = standard256[j + 40];
+      for (int j = 1; j < 216; ++j)
+         colorTable[j] = standard256[j + 40];
 
-	  return colorTable;
+      return colorTable;
    }
 
    protected byte[] createStd256ColorBytePixels(int[] pixels, int width, boolean dither)
    {
-	  byte[]   bytePixels = new byte[pixels.length];
-	  int      color;
-	  int      minError = 0;
-	  int      error;
-	  int      minIndex;
-	  int      sampleIndex;
-	  int      r, g, b;
-	  int      r2, g2, b2;
-	  int      x, y;
-	  int      threshold;
+      byte[]   bytePixels = new byte[pixels.length];
+      int      color;
+      int      minError = 0;
+      int      error;
+      int      minIndex;
+      int      sampleIndex;
+      int      r, g, b;
+      int      r2, g2, b2;
+      int      x, y;
+      int      threshold;
 
-	  for (int j = 0; j < pixels.length; ++j) {
-		 color = pixels[j] & 0xFFFFFF;
-		 minIndex = -1;
+      for (int j = 0; j < pixels.length; ++j) {
+         color = pixels[j] & 0xFFFFFF;
+         minIndex = -1;
 
-		 r = (color & 0xFF0000) >> 16;
-		 g = (color & 0x00FF00) >> 8;
-		 b =  color & 0x0000FF;
+         r = (color & 0xFF0000) >> 16;
+         g = (color & 0x00FF00) >> 8;
+         b =  color & 0x0000FF;
 
-		 r2 = r / 0x33;
-		 g2 = g / 0x33;
-		 b2 = b / 0x33;
+         r2 = r / 0x33;
+         g2 = g / 0x33;
+         b2 = b / 0x33;
 
-		 if (dither) {
-			x = j % width;
-			y = j / width;
-			threshold = ditherPattern[x % 4][y % 4] / 5;
+         if (dither) {
+            x = j % width;
+            y = j / width;
+            threshold = ditherPattern[x % 4][y % 4] / 5;
 
-			if (r2 < 5 && r % 0x33 >= threshold)
-			   ++r2;
+            if (r2 < 5 && r % 0x33 >= threshold)
+               ++r2;
 
-			if (g2 < 5 && g % 0x33 >= threshold)
-			   ++g2;
+            if (g2 < 5 && g % 0x33 >= threshold)
+               ++g2;
 
-			if (b2 < 5 && b % 0x33 >= threshold)
-			   ++b2;
+            if (b2 < 5 && b % 0x33 >= threshold)
+               ++b2;
 
-			bytePixels[j] = (byte) (r2 * 36 + g2 * 6 + b2);
-		 }
-		 else {
-			// Try to match color to a 0x33-multiple color.
+            bytePixels[j] = (byte) (r2 * 36 + g2 * 6 + b2);
+         }
+         else {
+            // Try to match color to a 0x33-multiple color.
 
-			for (int r0 = r2; r0 <= r2 + 1 && r0 < 6; ++r0) {
-			   for (int g0 = g2; g0 <= g2 + 1 && g0 < 6; ++g0) {
-				  for (int b0 = b2; b0 <= b2 + 1 && b0 < 6; ++b0) {
-					 sampleIndex = 40 + r0 * 36 + g0 * 6 + b0;
-					 if (sampleIndex == 40)
-						sampleIndex = 0;
+            for (int r0 = r2; r0 <= r2 + 1 && r0 < 6; ++r0) {
+               for (int g0 = g2; g0 <= g2 + 1 && g0 < 6; ++g0) {
+                  for (int b0 = b2; b0 <= b2 + 1 && b0 < 6; ++b0) {
+                     sampleIndex = 40 + r0 * 36 + g0 * 6 + b0;
+                     if (sampleIndex == 40)
+                        sampleIndex = 0;
 
-					 error = colorMatchError(color, standard256[sampleIndex]);
-					 if (error < minError || minIndex < 0) {
-						minError = error;
-						minIndex = sampleIndex;
-					 }
-				  }
-			   }
-			}
+                     error = colorMatchError(color, standard256[sampleIndex]);
+                     if (error < minError || minIndex < 0) {
+                        minError = error;
+                        minIndex = sampleIndex;
+                     }
+                  }
+               }
+            }
 
-			int   shadeBase;
-			int   shadeIndex;
+            int   shadeBase;
+            int   shadeIndex;
 
-			// Try to match color to a 0x11-multiple pure primary shade.
+            // Try to match color to a 0x11-multiple pure primary shade.
 
-			if (r > g && r > b) {
-			   shadeBase = 30;
-			   shadeIndex = (r + 8) / 0x11;
-			}
-			else if (g > r && g > b) {
-			   shadeBase = 20;
-			   shadeIndex = (g + 8) / 0x11;
-			}
-			else {
-			   shadeBase = 10;
-			   shadeIndex = (b + 8) / 0x11;
-			}
+            if (r > g && r > b) {
+               shadeBase = 30;
+               shadeIndex = (r + 8) / 0x11;
+            }
+            else if (g > r && g > b) {
+               shadeBase = 20;
+               shadeIndex = (g + 8) / 0x11;
+            }
+            else {
+               shadeBase = 10;
+               shadeIndex = (b + 8) / 0x11;
+            }
 
-			if (shadeIndex > 0) {
-			   shadeIndex -= (shadeIndex / 3);
-			   sampleIndex = shadeBase + shadeIndex;
-			   error = colorMatchError(color, standard256[sampleIndex]);
-			   if (error < minError || minIndex < 0) {
-				  minError = error;
-				  minIndex = sampleIndex;
-			   }
-			}
+            if (shadeIndex > 0) {
+               shadeIndex -= (shadeIndex / 3);
+               sampleIndex = shadeBase + shadeIndex;
+               error = colorMatchError(color, standard256[sampleIndex]);
+               if (error < minError || minIndex < 0) {
+                  minError = error;
+                  minIndex = sampleIndex;
+               }
+            }
 
-			// Try to match color to a 0x11-multiple gray.
+            // Try to match color to a 0x11-multiple gray.
 
-			shadeIndex = (grayscaleValue(color) + 8) / 0x11;
-			if (shadeIndex > 0) {
-			   shadeIndex -= (shadeIndex / 3);
-			   sampleIndex = shadeIndex;
-			   error = colorMatchError(color, standard256[sampleIndex]);
-			   if (error < minError || minIndex < 0) {
-				  minError = error;
-				  minIndex = sampleIndex;
-			   }
-			}
+            shadeIndex = (grayscaleValue(color) + 8) / 0x11;
+            if (shadeIndex > 0) {
+               shadeIndex -= (shadeIndex / 3);
+               sampleIndex = shadeIndex;
+               error = colorMatchError(color, standard256[sampleIndex]);
+               if (error < minError || minIndex < 0) {
+                  minError = error;
+                  minIndex = sampleIndex;
+               }
+            }
 
-			bytePixels[j] = (byte) minIndex;
-		 }
-	  }
+            bytePixels[j] = (byte) minIndex;
+         }
+      }
 
-	  return bytePixels;
+      return bytePixels;
    }
 
    protected int grayscaleValue(int color)
    {
-	  int   r = (color & 0xFF0000) >> 16;
-	  int   g = (color & 0x00FF00) >> 8;
-	  int   b =  color & 0x0000FF;
+      int   r = (color & 0xFF0000) >> 16;
+      int   g = (color & 0x00FF00) >> 8;
+      int   b =  color & 0x0000FF;
 
-	  return (r * 30 + g * 59 + b * 11) / 100;
+      return (r * 30 + g * 59 + b * 11) / 100;
    }
 
    protected int colorMatchError(int color1, int color2)
    {
-	  int   r1 = (color1 & 0xFF0000) >> 16;
-	  int   g1 = (color1 & 0x00FF00) >> 8;
-	  int   b1 =  color1 & 0x0000FF;
-	  int   r2 = (color2 & 0xFF0000) >> 16;
-	  int   g2 = (color2 & 0x00FF00) >> 8;
-	  int   b2 =  color2 & 0x0000FF;
-	  int   dr = (r2 - r1) * 30;
-	  int   dg = (g2 - g1) * 59;
-	  int   db = (b2 - b1) * 11;
+      int   r1 = (color1 & 0xFF0000) >> 16;
+      int   g1 = (color1 & 0x00FF00) >> 8;
+      int   b1 =  color1 & 0x0000FF;
+      int   r2 = (color2 & 0xFF0000) >> 16;
+      int   g2 = (color2 & 0x00FF00) >> 8;
+      int   b2 =  color2 & 0x0000FF;
+      int   dr = (r2 - r1) * 30;
+      int   dg = (g2 - g1) * 59;
+      int   db = (b2 - b1) * 11;
 
-	  return (dr * dr + dg * dg + db * db) / 100;
+      return (dr * dr + dg * dg + db * db) / 100;
    }
 
    protected void writeGIFHeader(int width, int height, int bitsPerPixel) throws IOException
    {
-	  write((int) 'G');
-	  write((int) 'I');
-	  write((int) 'F');
-	  write((int) '8');
-	  write((int) '9');
-	  write((int) 'a');
+      write((int) 'G');
+      write((int) 'I');
+      write((int) 'F');
+      write((int) '8');
+      write((int) '9');
+      write((int) 'a');
 
-	  writeGIFWord(width);
-	  writeGIFWord(height);
+      writeGIFWord(width);
+      writeGIFWord(height);
 
-	  int   packedBits = 0x80; // Yes, there is a global color table, not ordered.
+      int   packedBits = 0x80; // Yes, there is a global color table, not ordered.
 
-	  packedBits |= ((bitsPerPixel - 1) << 4) | (bitsPerPixel - 1);
+      packedBits |= ((bitsPerPixel - 1) << 4) | (bitsPerPixel - 1);
 
-	  write(packedBits);
+      write(packedBits);
 
-	  write(0); // Background color index -- not used.
+      write(0); // Background color index -- not used.
 
-	  write(0); // Aspect ratio index -- not specified.
+      write(0); // Aspect ratio index -- not specified.
    }
 
    protected void writeColorTable(int[] colorTable, int bitsPerPixel) throws IOException
    {
-	  int   colorCount = 1 << bitsPerPixel;
+      int   colorCount = 1 << bitsPerPixel;
 
-	  for (int j = 0; j < colorCount; ++j) {
-		 if (j < colorTable.length)
-			writeGIFColor(colorTable[j]);
-		 else
-			writeGIFColor(0);
-	  }
+      for (int j = 0; j < colorCount; ++j) {
+         if (j < colorTable.length)
+            writeGIFColor(colorTable[j]);
+         else
+            writeGIFColor(0);
+      }
    }
 
    protected void writeGraphicControlExtension(Color transparentColor,
-	  int[] colorTable) throws IOException
+      int[] colorTable) throws IOException
    {
-	  for (int j = 0; j < colorTable.length; ++j) {
-		 if (colorTable[j] == (transparentColor.getRGB() & 0xFFFFFF)) {
-			write(0x21); // Extension identifier.
-			write(0xF9); // Graphic Control Extension identifier.
-			write(0x04); // Block size, always 4.
-			write(0x01); // Sets transparent color bit. Other bits in this
-						 //   packed field should be zero.
-			write(0x00); // Two bytes of delay time -- not used.
-			write(0x00);
-			write(j);    // Index of transparent color.
-			write(0x00); // Block terminator.
-		 }
-	  }
+      for (int j = 0; j < colorTable.length; ++j) {
+         if (colorTable[j] == (transparentColor.getRGB() & 0xFFFFFF)) {
+
+            LOGGER.fine(j+" index is transparent : "+colorTable[j]+" / "+(transparentColor.getRGB() & 0xFFFFFF));
+
+            write(0x21); // Extension identifier.
+            write(0xF9); // Graphic Control Extension identifier.
+            write(0x04); // Block size, always 4.
+            write(0x01); // Sets transparent color bit. Other bits in this
+                         //   packed field should be zero.
+            write(0x00); // Two bytes of delay time -- not used.
+            write(0x00);
+            write(j);    // Index of transparent color.
+            write(0x00); // Block terminator.
+         }
+      }
    }
 
    protected void writeImageDescriptor(int width, int height) throws IOException
    {
-	  write(0x2C); // Image descriptor identifier;
+      write(0x2C); // Image descriptor identifier;
 
-	  writeGIFWord(0); // left postion;
-	  writeGIFWord(0); // top postion;
-	  writeGIFWord(width);
-	  writeGIFWord(height);
+      writeGIFWord(0); // left postion;
+      writeGIFWord(0); // top postion;
+      writeGIFWord(width);
+      writeGIFWord(height);
 
-	  write(0); // No local color table, not interlaced.
+      write(0); // No local color table, not interlaced.
    }
 
    protected void writeGIFWord(short word) throws IOException
    {
-	  writeGIFWord((int) word);
+      writeGIFWord((int) word);
    }
 
    protected void writeGIFWord(int word) throws IOException
    {
-	  write(word & 0xFF);
-	  write((word & 0xFF00) >> 8);
+      write(word & 0xFF);
+      write((word & 0xFF00) >> 8);
    }
 
    protected void writeGIFColor(Color color) throws IOException
    {
-	  writeGIFColor(color.getRGB());
+      writeGIFColor(color.getRGB());
    }
 
    protected void writeGIFColor(int color) throws IOException
    {
-	  write((color & 0xFF0000) >> 16);
-	  write((color & 0xFF00) >> 8);
-	  write(color & 0xFF);
+      write((color & 0xFF0000) >> 16);
+      write((color & 0xFF00) >> 8);
+      write(color & 0xFF);
    }
 
 
@@ -714,290 +735,290 @@ public class GIFOutputStream extends FilterOutputStream
    protected final static int GIFBITS = 12;
 
    protected void writeCompressedImageData(byte[] bytePixels, int bitsPerPixel)
-	  throws IOException
+      throws IOException
    {
-	  int   init_bits = bitsPerPixel;
+      int   init_bits = bitsPerPixel;
 
-	  if (init_bits < 2)
-		 init_bits = 2;
+      if (init_bits < 2)
+         init_bits = 2;
 
-	  write(init_bits);
+      write(init_bits);
 
-	  int      c;
+      int      c;
 
-	  obuf = 0;
-	  obits = 0;
-	  oblen = 0;
-	  code_clear = 1 << init_bits;
-	  code_eof = code_clear + 1;
-	  rl_basecode = code_eof + 1;
-	  out_bump_init = (1 << init_bits) - 1;
-	  /* for images with a lot of runs, making out_clear_init larger will
-		 give better compression. */ 
-	  out_clear_init = (init_bits <= 2) ? 9 : (out_bump_init - 1);
-	  out_bits_init = init_bits + 1;
-	  max_ocodes = (1 << GIFBITS) - ((1 << (out_bits_init - 1)) + 3);
-	  did_clear();
-	  output(code_clear);
-	  rl_count = 0;
+      obuf = 0;
+      obits = 0;
+      oblen = 0;
+      code_clear = 1 << init_bits;
+      code_eof = code_clear + 1;
+      rl_basecode = code_eof + 1;
+      out_bump_init = (1 << init_bits) - 1;
+      /* for images with a lot of runs, making out_clear_init larger will
+         give better compression. */ 
+      out_clear_init = (init_bits <= 2) ? 9 : (out_bump_init - 1);
+      out_bits_init = init_bits + 1;
+      max_ocodes = (1 << GIFBITS) - ((1 << (out_bits_init - 1)) + 3);
+      did_clear();
+      output(code_clear);
+      rl_count = 0;
 
-	  for (int j = 0; j < bytePixels.length; ++j) {
-		 c = (int) bytePixels[j];
-		 if (c < 0)
-			c += 256;
+      for (int j = 0; j < bytePixels.length; ++j) {
+         c = (int) bytePixels[j];
+         if (c < 0)
+            c += 256;
 
-		 if ((rl_count > 0) && (c != rl_pixel))
-			rl_flush();
+         if ((rl_count > 0) && (c != rl_pixel))
+            rl_flush();
 
-		 if (rl_pixel == c) {
-			rl_count++;
-		 }
-		 else {
-			rl_pixel = c;
-			rl_count = 1;
-		 }
-	  }
+         if (rl_pixel == c) {
+            rl_count++;
+         }
+         else {
+            rl_pixel = c;
+            rl_count = 1;
+         }
+      }
 
-	  if (rl_count > 0)
-		 rl_flush();
+      if (rl_count > 0)
+         rl_flush();
 
-	  output(code_eof);
-	  // output_flush();
+      output(code_eof);
+      // output_flush();
    }
 
 
    protected void write_block() throws IOException
    {
-	  write(oblen);
-	  write(oblock, 0, oblen);
-	  oblen = 0;
+      write(oblen);
+      write(oblock, 0, oblen);
+      oblen = 0;
    }
 
    protected void block_out(int c) throws IOException
    {
-	  oblock[oblen++] = (byte) c;
-	  if (oblen >= 255)
-		 write_block();
+      oblock[oblen++] = (byte) c;
+      if (oblen >= 255)
+         write_block();
    }
 
    protected void block_flush() throws IOException
    {
-	  if (oblen > 0)
-		 write_block();
+      if (oblen > 0)
+         write_block();
    }
 
    protected void output(int val) throws IOException
    {
-	  obuf |= val << obits;
-	  obits += out_bits;
-	  while (obits >= 8) {
-		 block_out(obuf & 0xFF);
-		 obuf >>= 8;
-		 obits -= 8;
-	  }
+      obuf |= val << obits;
+      obits += out_bits;
+      while (obits >= 8) {
+         block_out(obuf & 0xFF);
+         obuf >>= 8;
+         obits -= 8;
+      }
    }
 
    protected void output_flush() throws IOException
    {
-	  if (obits > 0)
-		 block_out(obuf);
-	  block_flush();
+      if (obits > 0)
+         block_out(obuf);
+      block_flush();
    }
 
    protected void did_clear() throws IOException
    {
-	  out_bits = out_bits_init;
-	  out_bump = out_bump_init;
-	  out_clear = out_clear_init;
-	  out_count = 0;
-	  rl_table_max = 0;
-	  just_cleared = true;
+      out_bits = out_bits_init;
+      out_bump = out_bump_init;
+      out_clear = out_clear_init;
+      out_count = 0;
+      rl_table_max = 0;
+      just_cleared = true;
    }
 
    protected void output_plain(int c) throws IOException
    {
-	  just_cleared = false;
-	  output(c);
-	  out_count++;
-	  if (out_count >= out_bump) {
-		 out_bits++;
-		 out_bump += 1 << (out_bits - 1);
-	  }
-	  if (out_count >= out_clear) {
-		 output(code_clear);
-		 did_clear();
-	  }
+      just_cleared = false;
+      output(c);
+      out_count++;
+      if (out_count >= out_bump) {
+         out_bits++;
+         out_bump += 1 << (out_bits - 1);
+      }
+      if (out_count >= out_clear) {
+         output(code_clear);
+         did_clear();
+      }
    }
 
    protected int isqrt(int x)
    {
-	  int   r;
-	  int   v;
+      int   r;
+      int   v;
 
-	  if (x < 2)
-		 return x;
+      if (x < 2)
+         return x;
 
-	  for (v = x, r = 1; v != 0; v >>= 2, r <<= 1);
+      for (v = x, r = 1; v != 0; v >>= 2, r <<= 1);
 
-	  while (true) {
-		 v = ((x / r) + r) / 2;
-		 if ((v == r) || (v == r + 1))
-			return r;
-		 r = v;
-	  }
+      while (true) {
+         v = ((x / r) + r) / 2;
+         if ((v == r) || (v == r + 1))
+            return r;
+         r = v;
+      }
    }
 
    protected int compute_triangle_count(int count, int nrepcodes)
    {
-	  int   perrep;
-	  int   cost;
+      int   perrep;
+      int   cost;
 
-	  cost = 0;
-	  perrep = (nrepcodes * (nrepcodes +1 )) / 2;
-	  while (count >= perrep) {
-		 cost += nrepcodes;
-		 count -= perrep;
-	  }
-	  if (count > 0) {
-		 int      n = isqrt(count);
-		 while ((n * (n + 1)) >= 2 * count)
-			n--;
-		 while ((n * (n + 1)) < 2 * count)
-			n++;
-		 cost += n;
-	  }
+      cost = 0;
+      perrep = (nrepcodes * (nrepcodes +1 )) / 2;
+      while (count >= perrep) {
+         cost += nrepcodes;
+         count -= perrep;
+      }
+      if (count > 0) {
+         int      n = isqrt(count);
+         while ((n * (n + 1)) >= 2 * count)
+            n--;
+         while ((n * (n + 1)) < 2 * count)
+            n++;
+         cost += n;
+      }
 
-	  return cost;
+      return cost;
    }
    
    protected void max_out_clear()
    {
-	  out_clear = max_ocodes;
+      out_clear = max_ocodes;
    }
 
    protected void reset_out_clear() throws IOException
    {
-	  out_clear = out_clear_init;
-	  if (out_count >= out_clear) {
-		 output(code_clear);
-		 did_clear();
-	  }
+      out_clear = out_clear_init;
+      if (out_count >= out_clear) {
+         output(code_clear);
+         did_clear();
+      }
    }
 
    protected void rl_flush_fromclear(int count) throws IOException
    {
-	  int   n;
+      int   n;
 
-	  max_out_clear();
-	  rl_table_pixel = rl_pixel;
-	  n = 1;
-	  while (count > 0) {
-		 if (n == 1) {
-			rl_table_max = 1;
-			output_plain(rl_pixel);
-			count--;
-		 }
-		 else if (count >= n) {
-			rl_table_max = n;
-			output_plain(rl_basecode + n - 2);
-			count -= n;
-		 }
-		 else if (count == 1) {
-			rl_table_max++;
-			output_plain(rl_pixel);
-			count = 0;
-		 }
-		 else {
-			rl_table_max++;
-			output_plain(rl_basecode + count - 2);
-			count = 0;
-		 }
+      max_out_clear();
+      rl_table_pixel = rl_pixel;
+      n = 1;
+      while (count > 0) {
+         if (n == 1) {
+            rl_table_max = 1;
+            output_plain(rl_pixel);
+            count--;
+         }
+         else if (count >= n) {
+            rl_table_max = n;
+            output_plain(rl_basecode + n - 2);
+            count -= n;
+         }
+         else if (count == 1) {
+            rl_table_max++;
+            output_plain(rl_pixel);
+            count = 0;
+         }
+         else {
+            rl_table_max++;
+            output_plain(rl_basecode + count - 2);
+            count = 0;
+         }
 
-		 if (out_count == 0)
-			n = 1;
-		 else
-			n++;
-	  }
+         if (out_count == 0)
+            n = 1;
+         else
+            n++;
+      }
 
-	  reset_out_clear();
+      reset_out_clear();
    }
    
    protected void rl_flush_clearorrep(int count) throws IOException
    {
-	  int   withclr;
+      int   withclr;
 
-	  withclr = 1 + compute_triangle_count(count, max_ocodes);
-	  if (withclr < count) {
-		 output(code_clear);
-		 did_clear();
-		 rl_flush_fromclear(count);
-	  }
-	  else {
-		 for (; count > 0; count--)
-			output_plain(rl_pixel);
-	  }
+      withclr = 1 + compute_triangle_count(count, max_ocodes);
+      if (withclr < count) {
+         output(code_clear);
+         did_clear();
+         rl_flush_fromclear(count);
+      }
+      else {
+         for (; count > 0; count--)
+            output_plain(rl_pixel);
+      }
    }
 
    protected void rl_flush_withtable(int count) throws IOException
    {
-	  int   repmax;
-	  int   repleft;
-	  int   leftover;
+      int   repmax;
+      int   repleft;
+      int   leftover;
 
-	  repmax = count / rl_table_max;
-	  leftover = count % rl_table_max;
-	  repleft = (leftover != 0 ? 1 : 0);
-	  if (out_count + repmax + repleft > max_ocodes) {
-		 repmax = max_ocodes - out_count;
-		 leftover = count - (repmax * rl_table_max);
-		 repleft = 1 + compute_triangle_count(leftover, max_ocodes);
-	  }
+      repmax = count / rl_table_max;
+      leftover = count % rl_table_max;
+      repleft = (leftover != 0 ? 1 : 0);
+      if (out_count + repmax + repleft > max_ocodes) {
+         repmax = max_ocodes - out_count;
+         leftover = count - (repmax * rl_table_max);
+         repleft = 1 + compute_triangle_count(leftover, max_ocodes);
+      }
 
-	  if (1 + compute_triangle_count(count,max_ocodes) < repmax + repleft) {
-		 output(code_clear);
-		 did_clear();
-		 rl_flush_fromclear(count);
-		 return;
-	  }
+      if (1 + compute_triangle_count(count,max_ocodes) < repmax + repleft) {
+         output(code_clear);
+         did_clear();
+         rl_flush_fromclear(count);
+         return;
+      }
 
-	  max_out_clear();
-	  for (; repmax > 0; repmax--)
-		 output_plain(rl_basecode + rl_table_max - 2);
-	  if (leftover != 0) {
-		 if (just_cleared) {
-			rl_flush_fromclear(leftover);
-		 }
-		 else if (leftover == 1) {
-			output_plain(rl_pixel);
-		 }
-		 else {
-			output_plain(rl_basecode + leftover - 2);
-		 }
-	  }
-	  reset_out_clear();
+      max_out_clear();
+      for (; repmax > 0; repmax--)
+         output_plain(rl_basecode + rl_table_max - 2);
+      if (leftover != 0) {
+         if (just_cleared) {
+            rl_flush_fromclear(leftover);
+         }
+         else if (leftover == 1) {
+            output_plain(rl_pixel);
+         }
+         else {
+            output_plain(rl_basecode + leftover - 2);
+         }
+      }
+      reset_out_clear();
    }
 
    protected void rl_flush() throws IOException
    {
-	  int   table_reps;
-	  int   table_extra;
+      int   table_reps;
+      int   table_extra;
       
-	  if (rl_count == 1) {
-		 output_plain(rl_pixel);
-		 rl_count = 0;
-		 return;
-	  }
-	  if (just_cleared) {
-		 rl_flush_fromclear(rl_count);
-	  }
-	  else if ((rl_table_max < 2) || (rl_table_pixel != rl_pixel)) {
-		 rl_flush_clearorrep(rl_count);
-	  }
-	  else {
-		 rl_flush_withtable(rl_count);
-	  }
+      if (rl_count == 1) {
+         output_plain(rl_pixel);
+         rl_count = 0;
+         return;
+      }
+      if (just_cleared) {
+         rl_flush_fromclear(rl_count);
+      }
+      else if ((rl_table_max < 2) || (rl_table_pixel != rl_pixel)) {
+         rl_flush_clearorrep(rl_count);
+      }
+      else {
+         rl_flush_withtable(rl_count);
+      }
 
-	  rl_count = 0;
+      rl_count = 0;
    }
 
    /******** END OF IMPORTED GIF COMPRESSION CODE ********/
