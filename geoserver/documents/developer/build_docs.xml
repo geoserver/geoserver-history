@@ -71,11 +71,8 @@
     suggestions. If you create a user account at this site, you may
     participate in forums and vote in polls as well. However, first, you must
     download the GeoServer source; go to our download page. You may download
-    our latest stable release, or else download directly with cvs.</para>
-
-    <para>Note: This document is falling out of date, and we don't have time
-    to update for 1.2.0-rc2. We will get a revised version in time for 1.2.0.
-    Until then if there are questions just query the email list</para>
+    our latest stable release, or else check out the current working code from
+    cvs.</para>
   </sect1>
 
   <sect1>
@@ -117,43 +114,38 @@
     all necessary libraries are included in the GeoServer directory, you
     should now be able to build any needed target. Don't worry about classpath
     issues: Ant takes care of them for you.</para>
+
+    <para>When building geoserver a number of ant properties can be set to
+    ease configuration. These can be set a number of ways, in the build.xml
+    file, passing in with a -D, and with a build.properties file. For more
+    information see the ant documentation. But one important property that
+    most developers will make use of is the test.type property. This tells
+    geoserver where to get its configuration when building. Four
+    pre-configured geoservers are set up, in the cite/ directory. CitePostGis
+    is preconfigured for a postgis database, see cite/README.txt for more
+    information. The UserBasic test type is the one that release geoservers
+    use, it contains two small shapefiles. And the two Demo test types provide
+    a number of matching layers, which can make a nice looking map for demo
+    purposes. If no test.type property is set then geoserver will build from
+    the conf/ directory. We recommend developers set up their own conf/
+    directory, copying one of the cite/conf directories makes a good starting
+    point, but then it can be modified to the developers whims. Note that if
+    the web admin tool is used to configure and save changes those files must
+    be copied back into the conf/ directory for a fresh build. For the next
+    major release we are working on making the configuration more coherent,
+    likely by setting a geoserver home directory that geoserver instances run
+    from. </para>
   </sect1>
 
   <sect1>
     <title>Setting up your Data Environment</title>
 
-    <para>Although it is a primary goal of the GeoServer project to support
-    several data storage formats, good support exists now only for PostGIS, an
-    excellent extension of the venerable Postgresql relational database.
-    <ulink url="http://postgis.refractions.net/">PostGIS</ulink> and <ulink
-    url="http://www.postgresql.org/">Postgresql</ulink> are open source
-    databases that are free to all users. Postgresql was developed at Berkeley
-    several years ago and PostGIS is a recent extension developed by the
-    clever programmers at <ulink url="http://www.refractions.net/">Refractions
-    Research</ulink>. Installing Postgresql and PostGIS is the most
-    complicated part of setting up a GeoServer site and for this reason, we
-    will supplement the documentation to do so a little here.</para>
-
-    <para>First, you should download the full source of Postgresql. Binaries,
-    RPMs, and other packaged builds will generally not suffice because you
-    will need to compile the PostGIS extension and JDBC bindings into
-    Postgresql in order for it to correctly speak with GeoServer.</para>
-
-    <para>First, download Postgresql - we have had the best luck with version
-    7.1.2. You should configure and install it, per the installation
-    instructions. It should go something like this:</para>
-
-    <programlisting>./configure --with-java
-make
-make install</programlisting>
-
-    <para>Make sure that you configure it with Java. Then, download PostGIS.
-    You should place PostGIS in your Postgresql 'contrib' directory and follow
-    the directions for installation in the postgis dir.</para>
-
-    <para>You should, of course, check to make sure that Postgresql and
-    PostGIS are functioning correctly before you attempt to connect with then
-    using GeoServer. You may use the command line psql tool to do this.</para>
+    <para>As the user build documentation has sufficient information to set up
+    Shapefiles, PostGIS, ArcSDE and Oracle we will skip the procedure to get
+    one running. PostGIS is the best tested, but the other three have all
+    undergone a decent amount of testing as well, so any should work. Please
+    provide feedback on any that do not. We do recommend testing against a
+    variety of different datastores and geometry types.</para>
   </sect1>
 
   <sect1>
@@ -172,10 +164,11 @@ make install</programlisting>
 
         <tbody>
           <row>
-            <entry>bin</entry>
+            <entry>WEB-INF</entry>
 
-            <entry>This is used to store some platform dependant scripts for
-            testing.</entry>
+            <entry>This contains information for the struts based web admin
+            tool, such as jsps, tile definitions and application
+            resources</entry>
           </row>
 
           <row>
@@ -210,13 +203,14 @@ make install</programlisting>
             <entry>conf</entry>
 
             <entry>This is where the files to configure GeoServer are
-            contained.</entry>
+            contained (active when no test.type is set).</entry>
           </row>
 
           <row>
             <entry>documents</entry>
 
-            <entry>This section contains the documentation.</entry>
+            <entry>This section contains the documentation, as well as a few
+            definition files. </entry>
           </row>
 
           <row>
@@ -235,8 +229,8 @@ make install</programlisting>
           <row>
             <entry>server</entry>
 
-            <entry>This section contains the build-in test server
-            configuration. Does not work at present.</entry>
+            <entry>This section contains the built-in test server
+            configuration and working files.</entry>
           </row>
 
           <row>
@@ -249,7 +243,8 @@ make install</programlisting>
           <row>
             <entry>test</entry>
 
-            <entry>This section contains all the .java testing files.</entry>
+            <entry>This section contains all the .java testing files and test
+            data.</entry>
           </row>
         </tbody>
       </tgroup>
@@ -257,7 +252,32 @@ make install</programlisting>
   </sect1>
 
   <sect1>
-    <title>Geoserver Libraries</title>
+    <title>GeoTools2</title>
+
+    <para>GeoServer's primary library is the excellent <ulink
+    url="http://geotools.org">GeoTools2</ulink> gis toolkit. GeoServer
+    maintains a very close relationship with GeoTools, most every serious
+    GeoServer developer has commit rights on GeoTools. This is by design,
+    GeoServer does not want to reinvent the wheel with yet another feature
+    model, so instead we have worked extensively with GeoTools to improve
+    their feature model to handle the functionality GeoServer needs. GeoTools
+    does all the 'heavy lifting', the reading and writing to datastores, the
+    querying and filtering, the rendering and generation of GML. So many
+    GeoServer improvements and bug fixes actually fall into the GeoTools code
+    base. This has the nice effect of having even more eyes to find bugs, as
+    other projects make use of GeoTools, and there are more developers there
+    to put their minds on improvements. For any serious GeoServer development
+    work we highly recommend getting acquainted with GeoTools, the best place
+    to start is with the <ulink
+    url="http://geotools.codehaus.org/Developers+Guide">Developer's
+    Guide</ulink> . GeoServer follows most all the same conventions as
+    GeoTools, so any questions about coding style or unit testing should be
+    found there until we get that information in our Developer's Guide.
+    </para>
+  </sect1>
+
+  <sect1>
+    <title>Other Geoserver Libraries</title>
 
     <para>GeoServer is built on top of several excellent open source software
     libraries. We greatly appreciate and thank the authors for their hard work
@@ -289,8 +309,7 @@ make install</programlisting>
 
             <entry>jdbcPostgres.jar</entry>
 
-            <entry>This is the Postgres JDBC driver, used primarily in the
-            GetFeature interface.</entry>
+            <entry>This is the Postgres JDBC driver.</entry>
           </row>
 
           <row>
@@ -298,7 +317,7 @@ make install</programlisting>
             url="http://www.vividsolutions.com/jtc/main.html">JTS</ulink>
             (<ulink url="http://www.vividsolutions.com">Vivid</ulink>)</entry>
 
-            <entry>jTS-1.3.jar</entry>
+            <entry>jts-1.4.0.jar</entry>
 
             <entry>The Java Topology Suite, which is used as base types for
             all geometries, as well as for filtering.</entry>
@@ -320,7 +339,7 @@ make install</programlisting>
             url="http://jakarta.apache.org/struts/index.html">Struts</ulink>
             (<ulink url="http://jakarta.apache.org/">Jakarta</ulink>)</entry>
 
-            <entry>struts.jar</entry>
+            <entry>struts.jar, commons-*.jar</entry>
 
             <entry>The struts project implements an MVC design pattern that
             helps with the administrative interface.</entry>
@@ -331,7 +350,7 @@ make install</programlisting>
             url="http://xml.apache.org/xerces2-j/index.html">Xerces</ulink>
             (<ulink url="http://www.apache.org/">Apache</ulink>)</entry>
 
-            <entry>xerces.jar</entry>
+            <entry>xerces.jar, xml-apis.jar</entry>
 
             <entry>Xerces handles all of the SAX parsing for the request
             interfaces.</entry>
@@ -349,11 +368,9 @@ make install</programlisting>
     url="http://www.caucho.com/">Resin</ulink> (open source, free to
     non-commercial users) or <ulink
     url="http://jakarta.apache.org/tomcat/index.html">Tomcat</ulink> (open
-    source, free). Most GeoServer testing has occured on Tomcat, which is
-    remarkably simple to set up and administer. We reccomend using the
-    stand-alone server installation over the integrated Apache install. Given
-    the maturity of these projects, we will say nothing further about
-    installation.</para>
+    source, free). Most GeoServer testing has occured on Tomcat 5, which is
+    remarkably simple to set up and administer. Given the maturity of these
+    projects, we will say nothing further about installation.</para>
 
     <para>Once you have successfully installed a servlet container, you are
     ready to test GeoServer. If you have correctly configured your build file,
@@ -362,39 +379,30 @@ make install</programlisting>
     <programlisting>ant test-ext</programlisting>
 
     <para>Which will build a .WAR file and place it in the application
-    directory of your servlet container. A .WAR file is a Web Application
-    Archive file, which is essentially a .JAR file with extra information for
-    a servlet container. After you run warTest, your servlet container should
-    auto-expand it and run your servlets correctly. The easiest way to test
-    this is to browse the application URL, followed by GetCapabilities and see
-    if it returns a GetCapabilities XML document. For example, from a browser
-    on your server, if you were using port 81 you would type:</para>
+    directory of your servlet container (set using the dir.container
+    property). A .WAR file is a Web Application Archive file, which is
+    essentially a .JAR file with extra information for a servlet container.
+    After you run test-ext, your servlet container should auto-expand it and
+    run your servlets correctly. The easiest way to test this is to browse the
+    application URL, followed by GetCapabilities and see if it returns a
+    GetCapabilities XML document. For example, from a browser on your server,
+    if you were using port 8080 you would type:</para>
 
     <programlisting><ulink
-        url="http://localhost:81/geoserver/wfs/GetCapabilities">http://localhost:81/geoserver/wfs/GetCapabilities</ulink></programlisting>
+        url="http://localhost:81/geoserver/wfs/GetCapabilities">http://localhost:8080/geoserver/wfs/GetCapabilities</ulink></programlisting>
 
-    <para>Now, you should enter some data into your PostGIS database and
-    configure GeoServer to serve it. There are two configuration steps to do
-    this. First, you should go to your root web application directory and edit
-    the following file: data/configuration.xml. You should change the
-    database, username, password, and database port to your PostGIS
-    database.</para>
-
-    <para>Next, you should go to your root web application directory and
-    navigate to the following file: data/featureTypes/. For every table in
-    your PostGIS database, you should create a directory which matches the
-    table name exactly. This directory should contain two files: info.xml and
-    schema.xml. The schema.xml document is the feature type schema and its
-    structure is defined in the WFS specification. The info.xml file is used
-    by GeoServer and its fields are identical to those returned per feature
-    type by the GetCapabilities document defined by the WFS specification. The
-    SRS is currently the most important field and its value should correspond
-    to an approved <ulink url="http://www.epsg.org/">EPSG</ulink> code. The
-    'rail' directory is included as an example, but should be deleted before
-    you do any testing (unless you also have a table called 'rail').</para>
-
-    <para>That is it! You should now be ready to build and test
-    GeoServer.</para>
+    <para>You can start out testing with the provided shapefiles, but we
+    recommend setting up your own PostGIS, ArcSDE or Oracle database and
+    working against that. The web administration tool can be used to configure
+    these, but be sure to copy the changes back to the conf/ directory or else
+    the changes will be lost the next time you build geoserver. The changes
+    are primarily contained in the catalog.xml and services.xml files, which
+    are in the webapps/geoserver/WEB-INF/ of a running geoserver. They are
+    stored here so that users can not view these files, as they may contain
+    passwords and other sensitive configuration information. These should be
+    copied to the root of the conf/ directory after a save is done in the web
+    admin tool. Then the other directories in data/, such as featureTypes and
+    styles, should be copied to their equivalents in conf/. </para>
   </sect1>
 
   <sect1>
@@ -417,5 +425,29 @@ make install</programlisting>
     been working to make the process relatively painless, with plug-in
     mechanisms and a new AbstractDataSource in geotools to handle much of the
     messy work</para>
+  </sect1>
+
+  <sect1>
+    <title>Project Communications</title>
+
+    <para>A primary component for project communications is our JIRA task
+    tracker, available <ulink
+    url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">here</ulink>.
+    This keeps tracks of all bugs, feature requests, and improvments to be
+    made on GeoServer. Please report any issues directly to it. You must sign
+    up for an account, which is only used to notify you of changes to the
+    issue you reported. Reporting here will send an initial email to the
+    geotools-devel list, at which time other developers can view the issue and
+    choose to 'watch' it. This will send them emails whenever the issue has
+    been updated in any way. Submitting bugs here ensures that they will be
+    remembered, we try to keep as much communication as possible on the JIRA
+    itself, so that the history of the project is recorded in public, not on
+    private email exchanges. </para>
+
+    <para>The other primary entry point for communications is the development
+    list - geotools-devel@lists.sourceforge.net. This is where development of
+    GeoServer is discussed, and where the JIRA tasks are sent. We encourage
+    you to send to the public list rather than emailing core developers
+    directly, as others may be interested in your questions as well. </para>
   </sect1>
 </article>
