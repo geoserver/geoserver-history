@@ -22,9 +22,8 @@ import java.util.logging.*;
 /**
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
- * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.3 2003/11/11 02:49:37 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.4 2003/11/12 02:15:55 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -33,7 +32,7 @@ public class FeatureResponse implements Response {
 
     /** DOCUMENT ME! */
     private static final ServerConfig config = ServerConfig.getInstance();
-    private FeatureResults features;
+    private FeatureResults[] features;
     private FeatureTransformer transformer;
 
     /**
@@ -66,13 +65,14 @@ public class FeatureResponse implements Response {
                     "execute has not been called prior to writeTo");
             }
 
-            //FeatureCollection coll = features.collection();
+            //FeatureCollection coll = features[0].collection();
             //Feature firstF = coll.features().next();
             //LOGGER.info("first feature is " + firstF);
             //LOGGER.info("schema is " + firstF.getFeatureType());
-            transformer.transform(features.reader(), out);
+            transformer.transform(features, out);
         } catch (Exception ex) {
-            //ex.printStackTrace();
+            ex.printStackTrace();
+
             //REVISIT: This fails mightily if it fails here, since
             //get output stream is already called.
             //TODO: user config option to have better error reporting, at 
@@ -91,6 +91,13 @@ public class FeatureResponse implements Response {
      *
      * @throws WfsException DOCUMENT ME!
      * @throws WfsException DOCUMENT ME!
+     * @task TODO: split this up a bit more?  Also get the proper namespace
+     * declrations and schema locations.  Right now we're back up to where
+     * we were with 1.0.*, as we can return two FeatureTypes in the same
+     * namespace.  CITE didn't check for two in different namespaces, and
+     * gml builder just couldn't deal.  Now we should be able to, we just
+     * need to get the reporting right, use the AllSameType function as 
+     * Describe does.
      */
     public void execute(Request req) throws ServiceException {
         FeatureRequest request = (FeatureRequest) req;
@@ -116,39 +123,70 @@ public class FeatureResponse implements Response {
         int maxFeatures = request.getMaxFeatures();
         LOGGER.info("request is " + request);
 
-        /**
-         * @task TODO: request can have more than one query, so figure out how
-         *       to handle them. (make getFeatures return
-         *       FeatureCollection[]?)
-         */
-        Query curQuery = request.getQuery(0);
-
+        //Kinda hacky, might be better to put maxFeatures in FeatureTransformer
+        //for real.  Could consider having an easier one for just one Query.
+        //Query curQuery = request.getQuery(0);
+        ArrayList results = new ArrayList(request.getQueryCount());
         CatalogConfig catalog = config.getCatalog();
-        FeatureTypeConfig meta = catalog.getFeatureType(curQuery.getTypeName());
+        StringBuffer typeNames = new StringBuffer();
+        FeatureTypeConfig meta = null;
 
-        features = getFeatures(curQuery, meta, maxFeatures);
+        transformer = new FeatureTransformer();
+
+        FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
+
+        try {
+            for (Iterator it = request.getQueries().iterator();
+                    it.hasNext() && (maxFeatures > 0);) {
+                Query curQuery = (Query) it.next();
+                String typeName = curQuery.getTypeName();
+                meta = catalog.getFeatureType(curQuery.getTypeName());
+
+                FeatureResults curResult = getFeatures(curQuery, meta,
+                        maxFeatures);
+                results.add(curResult);
+                typeNames.append(typeName);
+                maxFeatures -= curResult.getCount();
+
+                if (it.hasNext() && (maxFeatures > 0)) {
+                    typeNames.append(",");
+                }
+
+                NameSpace namespace = meta.getDataStore().getNameSpace();
+
+                //This doesn't seem to be working.
+                ftNames.declareNamespace(curResult.reader().getFeatureType(),
+                    namespace.getPrefix(), namespace.getUri());
+
+                //ftNames.declareDefaultNamespace(namespace.getPrefix(),
+                //			     namespace.getUri());
+            }
+        } catch (IOException ioe) {
+            throw new ServiceException(ioe, "problem with FeatureResults",
+                request.getHandle());
+        }
+
+        //results.trimToSize();
+        features = (FeatureResults[]) results.toArray(new FeatureResults[results
+                .size()]);
 
         System.setProperty("javax.xml.transform.TransformerFactory",
             "org.apache.xalan.processor.TransformerFactoryImpl");
 
-        transformer = new FeatureTransformer();
-
+        //HACK! Should not just use the last meta.
         FeatureType schema = meta.getSchema();
-        NameSpace namespace = meta.getDataStore().getNameSpace();
+
         transformer.setIndentation(2);
-        transformer.setMaxFeatures(maxFeatures);
 
-        FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
-        ftNames.declareDefaultNamespace(namespace.getPrefix(),
-            namespace.getUri());
-
+        //transformer.setMaxFeatures(maxFeatures);
         ServerConfig config = ServerConfig.getInstance();
         WFSConfig wfsConfig = config.getWFSConfig();
         String wfsSchemaLoc = config.getGlobalConfig().getSchemaBaseUrl()
             + "wfs/1.0.0/WFS-basic.xsd";
         String fSchemaLoc = wfsConfig.getURL()
             + "?request=DescribeFeatureType&" //HACK: bad hard code here.
-            + "typeName=" + meta.getName();
+            + "typeName=" + typeNames;
+        NameSpace namespace = meta.getDataStore().getNameSpace();
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
         transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
 
@@ -215,6 +253,7 @@ public class FeatureResponse implements Response {
             }
 
             org.geotools.data.Query dsQuery = query.getDataSourceQuery(maxFeatures);
+
             features = data.getFeatures(dsQuery);
         } catch (IOException e) {
             throw new WfsException(e, "While getting features from datasource",
