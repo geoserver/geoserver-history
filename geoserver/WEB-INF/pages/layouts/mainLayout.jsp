@@ -69,6 +69,9 @@
           </span>			
 		</td>	
 		<td style="vertical-align: bottom; white-space: nowrap; text-align: right;">
+			<span class="contact">
+			   <a href="<bean:message key="label.credits.url"/>"><bean:message key="label.credits"/></a>
+			</span>
 <logic:notEmpty name="GeoServer" property="contactParty">
             <span class="contact">		
               <bean:message key="label.contact"/>: 	
