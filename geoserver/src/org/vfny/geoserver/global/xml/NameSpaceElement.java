@@ -16,7 +16,7 @@ package org.vfny.geoserver.global.xml;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceElement.java,v 1.1 2004/02/06 00:31:39 dmzwiers Exp $
+ * @version $Id: NameSpaceElement.java,v 1.2 2004/02/06 19:10:50 dmzwiers Exp $
  */
 public abstract class NameSpaceElement{
 	/** the namespace prefix to use for qualification*/
@@ -36,6 +36,20 @@ public abstract class NameSpaceElement{
 	 */
 	public NameSpaceElement(String prefix){
 		this.prefix=prefix;
+	}
+	
+	/**
+	 * NameSpaceElement constructor.
+	 * <p>
+	 * Creates an instance of this NameSpaceElement. 
+	 * </p>
+	 * <p>
+	 * The prefix is to be used for the qualification routines is set to null.
+	 * the qualified names of the elements will be null
+	 * </p>
+	 */
+	public NameSpaceElement(){
+		this.prefix=null;
 	}
 	
 	/**
