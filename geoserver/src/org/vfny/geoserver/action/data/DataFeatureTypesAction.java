@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesForm;
 
 /**
@@ -41,9 +42,36 @@ public class DataFeatureTypesAction extends ConfigAction {
 		String keywords = featureTypesForm.getKeywords();
 		String _abstract = featureTypesForm.get_abstract();
 		
-		DataConfig config = (DataConfig) getDataConfig();		
+		String action = featureTypesForm.getAction();
+		
+		DataConfig dataConfig = (DataConfig) getDataConfig();			
+		FeatureTypeConfig config = null;		
+		
+		if (action.equals("edit") || action.equals("submit")) {
+			//config = (FeatureTypeConfig) dataConfig.getFeatureTypeConfig(featureTypesForm.getSelectedFeatureType());
+		} else if (action.equals("new")) {
+			config = new FeatureTypeConfig();
+		}
+		
+		//If they push edit, simply forward them back so the information is repopulated.
+		if (action.equals("edit")) {
+			featureTypesForm.reset(mapping, request);
+			return mapping.findForward("dataConfigFeatureTypes");
+		}
+		
+		if (action.equals("delete")) {
+			dataConfig.removeDataStore(featureTypesForm.getSelectedFeatureType());
+		} else {
 			
-		return mapping.findForward("data.featureTypes");
+			
+			//Do configuration parameters here.
+		
+			//dataConfig.addFeature()
+		}
+			
+		featureTypesForm.reset(mapping, request);
+			
+		return mapping.findForward("dataConfigFeatureTypes");
 	}
 
 }

@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.form.data.DataNamespacesForm;
 
 /**
@@ -38,15 +39,43 @@ public class DataNamespacesAction extends ConfigAction {
 		String URI = namespacesForm.getURI();
 		String prefix = namespacesForm.getPrefix();
 
+		String action = namespacesForm.getAction();
+		
 		boolean _default = namespacesForm.is_default();
 		if (namespacesForm.isDefaultChecked()) {
 			_default = false;
 		}
 	
-		DataConfig config = (DataConfig) getDataConfig();			
+		DataConfig dataConfig = (DataConfig) getDataConfig();			
+		NameSpaceConfig config = null;		
 		
+		if (action.equals("edit") || action.equals("submit")) {
+			config = (NameSpaceConfig) dataConfig.getNameSpace(namespacesForm.getSelectedNamespace());
+		} else if (action.equals("new")) {
+			config = new NameSpaceConfig();
+		}
+		
+		//If they push edit, simply forward them back so the information is repopulated.
+		if (action.equals("edit")) {
+			namespacesForm.reset(mapping, request);
+			return mapping.findForward("dataConfigNamespaces");
+		}
+		
+		if (action.equals("delete")) {
+			dataConfig.removeDataStore(namespacesForm.getSelectedNamespace());
+		} else {
 			
-		return mapping.findForward("data.namespaces");
+			config.setDefault(_default);
+			config.setPrefix(prefix);
+			config.setUri(URI);
+			
+			//Do configuration parameters here.
+		
+			dataConfig.addNameSpace(namespaceID, config);
+		}
+			
+		namespacesForm.reset(mapping, request);				
+		return mapping.findForward("dataConfigNamespaces");
 	}
 
 }
