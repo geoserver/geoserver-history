@@ -52,6 +52,7 @@
 <%= (contact.getAddressCountry() != null) ? contact.getAddressCountry()+"<BR>" : "" %>
       </td>
     </tr>
+<logic:notEmpty name="Config.Global" property="contact.contactVoice">
     <tr>
       <td class="label">
         Voice:
@@ -60,6 +61,7 @@
 <%= (contact.getContactVoice() != null) ? "<bean:message key=\"label.phoneNumber\"/>: "+contact.getContactVoice() : "--" %>
       </td>
     </tr>
+</logic:notEmpty>
     <tr>
       <td class="label">
         Fax:
