@@ -6,7 +6,11 @@ package org.vfny.geoserver.form.data;
 
 import java.util.TreeSet;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
 
 /**
  * DataDataStoresNewForm purpose.
@@ -30,8 +34,8 @@ import org.apache.struts.action.ActionForm;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.1.2.1 2004/01/12 02:10:10 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresNewForm.java,v 1.1.2.2 2004/01/12 02:16:19 jive Exp $
  */
 public class DataDataStoresNewForm extends ActionForm {
     private TreeSet dataStoreTypes;
