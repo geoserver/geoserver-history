@@ -25,7 +25,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.15 2004/02/19 08:58:19 jive Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.16 2004/02/20 19:11:12 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -157,7 +157,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         String url = "";
         String baseUrl = "";
         if(request.isCGIRequest()){
-        	url = request.getBaseUrl() + "?REQUEST="+ capabilityName+"&";
+        	url = request.getBaseUrl() + "wfs?";
         }else{
         	baseUrl = request.getBaseUrl() + "wfs/";
         	url = request.getBaseUrl() + "wfs/" + capabilityName + "?";
@@ -171,7 +171,8 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         cReturn();
 
-        if(!request.isCGIRequest()){
+        //if(!request.isCGIRequest()){ Even if it's a cgi request we can 
+        //still say that we can do post, just not in the way they like...
         	attributes = new AttributesImpl();
         	url = baseUrl + capabilityName;
         	attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
@@ -181,7 +182,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         	endElement("Post");
         	endElement("HTTP");
         	endElement("DCPType");
-        }
+        //}
         unIndent();
         endElement(capabilityName);
         unIndent();
