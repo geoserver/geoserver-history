@@ -4,28 +4,45 @@
  */
 package org.vfny.geoserver.servlets;
 
-import java.io.*;
-import java.net.*;
-import java.nio.charset.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.global.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.responses.*;
+import org.vfny.geoserver.ExceptionHandler;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.responses.Response;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.SocketException;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
  * Represents a service that all others extend from.  Subclasses should provide
  * response and exception handlers as appropriate.
- *
+ * 
  * <p>
  * It is <b>really</b> important to adhere to the following workflow:
- *
+ * 
  * <ol>
  * <li>
  * get a Request reader
@@ -53,12 +70,12 @@ import org.vfny.geoserver.responses.*;
  * </li>
  * </ol>
  * </p>
- *
+ * 
  * <p>
  * If anything goes wrong a ServiceException can be thrown and will be written
  * to the output stream instead.
  * </p>
- *
+ * 
  * <p>
  * This is because we have to be sure that no exception have been produced
  * before setting the response's content type, so we can set the exception
@@ -67,7 +84,7 @@ import org.vfny.geoserver.responses.*;
  * or another kind of desission making during the execute process. (i.e.
  * FORMAT in WMS GetMap)
  * </p>
- *
+ * 
  * <p>
  * TODO: We need to call Response.abort() if anything goes wrong to allow the
  * Response a chance to cleanup after itself.
@@ -76,7 +93,7 @@ import org.vfny.geoserver.responses.*;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.17 2004/03/10 23:39:07 groldan Exp $
+ * @version $Id: AbstractService.java,v 1.18 2004/03/12 10:57:49 cholmesny Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -158,6 +175,7 @@ public abstract class AbstractService extends HttpServlet {
     }
 
     protected abstract boolean isServiceEnabled(HttpServletRequest req);
+
     /**
      * DOCUMENT ME!
      *
@@ -172,9 +190,10 @@ public abstract class AbstractService extends HttpServlet {
         // implements the main request/response logic
         Request serviceRequest = null;
 
-        if(!isServiceEnabled(request)){
-        	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        	return;
+        if (!isServiceEnabled(request)) {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+
+            return;
         }
 
         try {
@@ -197,6 +216,7 @@ public abstract class AbstractService extends HttpServlet {
             serviceRequest = requestReader.getRequest(request);
             LOGGER.finer("serviceRequest provided with HttpServletRequest: "
                 + request);
+
             //serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
             sendError(response, se);
@@ -224,16 +244,16 @@ public abstract class AbstractService extends HttpServlet {
         HttpServletResponse response) throws ServletException, IOException {
         Request serviceRequest = null;
 
+        if (!isServiceEnabled(request)) {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 
-        if(!isServiceEnabled(request)){
-        	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        	return;
+            return;
         }
 
         // implements the main request/response logic
         try {
             XmlRequestReader requestReader = getXmlRequestReader();
-            serviceRequest = requestReader.read(request.getReader(),request);
+            serviceRequest = requestReader.read(request.getReader(), request);
             serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
             sendError(response, se);
@@ -250,12 +270,12 @@ public abstract class AbstractService extends HttpServlet {
 
     /**
      * Peforms service according to ServiceStratagy.
-     *
+     * 
      * <p>
      * This method has very strict requirements, please see the class
      * description for the specifics.
      * </p>
-     *
+     * 
      * <p>
      * It has a lot of try/catch blocks, but they are fairly necessary to
      * handle things correctly and to avoid as many ugly servlet responses, so
@@ -274,14 +294,14 @@ public abstract class AbstractService extends HttpServlet {
         ServiceStratagy stratagy = null;
         LOGGER.finest("getting stratagy instance");
 
+        if (!isServiceEnabled(request)) {
+            try {
+                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            } catch (IOException e) {
+                // do nothing
+            }
 
-        if(!isServiceEnabled(request)){
-        	try{
-        		response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        	}catch(IOException e){
-        		// do nothing
-        	}
-        	return;
+            return;
         }
 
         try {
@@ -302,12 +322,15 @@ public abstract class AbstractService extends HttpServlet {
 
             return;
         }
+
         Service s = null;
-        if("WFS".equals(serviceRequest.getService())){
-        	s = serviceRequest.getWFS();
-        }else{
-        	s = serviceRequest.getWMS();
+
+        if ("WFS".equals(serviceRequest.getService())) {
+            s = serviceRequest.getWFS();
+        } else {
+            s = serviceRequest.getWMS();
         }
+
         try {
             // execute request
             LOGGER.fine("executing request");
@@ -335,16 +358,17 @@ public abstract class AbstractService extends HttpServlet {
             LOGGER.finest("getting stratagy output");
             stratagyOuput = stratagy.getDestination(response);
             LOGGER.finer("stratagy output is: "
-                         + stratagyOuput.getClass().getName());
+                + stratagyOuput.getClass().getName());
 
             String mimeType = serviceResponse.getContentType(s.getGeoServer());
             LOGGER.fine("mime type is: " + mimeType);
             response.setContentType(mimeType);
 
             String encoding = serviceResponse.getContentEncoding();
-            if(encoding != null){
-              LOGGER.fine("content encoding is: " + encoding);
-              response.setHeader("content-encoding", encoding);
+
+            if (encoding != null) {
+                LOGGER.fine("content encoding is: " + encoding);
+                response.setHeader("content-encoding", encoding);
             }
         } catch (SocketException socketException) {
             LOGGER.fine(
@@ -492,14 +516,14 @@ public abstract class AbstractService extends HttpServlet {
 
     /**
      * Send error produced during getService opperation.
-     *
+     * 
      * <p>
      * Some errors know how to write themselves out WfsTransactionException for
      * instance. It looks like this might be is handled by
      * getExceptionHandler().newServiceException( t, pre, null ). I still
      * would not mind seeing a check for ServiceConfig Exception here.
      * </p>
-     *
+     * 
      * <p>
      * This code says that it deals with UNCAUGHT EXCEPTIONS, so I think it
      * would be wise to explicitly catch ServiceExceptions.
@@ -587,18 +611,20 @@ public abstract class AbstractService extends HttpServlet {
         if ((header != null) && (header.indexOf("gzip") > -1)) {
             supportsGzip = true;
         }
-        if(LOGGER.isLoggable(Level.CONFIG))
-        {
-          LOGGER.config("user-agent=" + request.getHeader("user-agent"));
-          LOGGER.config("accept=" + request.getHeader("accept"));
-          LOGGER.config("accept-encoding=" + request.getHeader("accept-encoding"));
+
+        if (LOGGER.isLoggable(Level.CONFIG)) {
+            LOGGER.config("user-agent=" + request.getHeader("user-agent"));
+            LOGGER.config("accept=" + request.getHeader("accept"));
+            LOGGER.config("accept-encoding="
+                + request.getHeader("accept-encoding"));
         }
+
         return supportsGzip;
     }
 
     /**
      * Interface used for ServiceMode stratagy objects.
-     *
+     * 
      * <p>
      * While this interface resembles the Enum idiom in that only three
      * instances are available SPEED, BUFFER and FILE, we are using this class
@@ -611,7 +637,7 @@ public abstract class AbstractService extends HttpServlet {
     static public interface ServiceStratagy {
         /**
          * Get a OutputStream we can use to add content.
-         *
+         * 
          * <p>
          * JG - Can we replace this with a Writer?
          * </p>
@@ -627,7 +653,7 @@ public abstract class AbstractService extends HttpServlet {
 
         /**
          * Complete opperation in the positive.
-         *
+         * 
          * <p>
          * Gives service a chance to finish with destination, and clean up any
          * resources.
@@ -637,7 +663,7 @@ public abstract class AbstractService extends HttpServlet {
 
         /**
          * Complete opperation in the negative.
-         *
+         * 
          * <p>
          * Gives ServiceConfig a chance to clean up resources
          * </p>
@@ -649,12 +675,12 @@ public abstract class AbstractService extends HttpServlet {
 
 /**
  * Fast and Dangeroud service stratagy.
- *
+ * 
  * <p>
  * Will fail when a ServiceException is encountered on writeTo, and will not
  * tell the user about it!
  * </p>
- *
+ * 
  * <p>
  * This is the worst case scenario, you are trading speed for danger by using
  * this ServiceStratagy.
@@ -667,7 +693,7 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
 
     /**
      * Works against the real output stream provided by the response.
-     *
+     * 
      * <p>
      * This is dangerous of course, but fast and exciting.
      * </p>
@@ -708,7 +734,7 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
 
 /**
  * A safe Service stratagy that buffers output until writeTo completes.
- *
+ * 
  * <p>
  * This stratagy wastes memory, for saftey. It represents a middle ground
  * between SpeedStratagy and FileStratagy
@@ -773,7 +799,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
@@ -793,7 +819,7 @@ class FileStratagy implements AbstractService.ServiceStratagy {
 
     /**
      * Provides a outputs stream on a temporary file.
-     *
+     * 
      * <p>
      * I have changed this to use a BufferedWriter to agree with SpeedStratagy.
      * </p>
