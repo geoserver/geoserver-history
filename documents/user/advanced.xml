@@ -59,7 +59,7 @@
 
     <para>GeoServer 1.2.0 introduces greater control over attributes contained
     in a featureType. In an <emphasis>schema.xml</emphasis> file you may now
-    specify an attributes element as follows:<programlisting>&lt;xs:element name="id" type="xs:string"/&gt;
+    specify an attributes element as follows:<programlisting>&lt;xs:element name="id" type="xs:string" minOccurs="1"/&gt;
 &lt;xs:element ref="gml:lineStringProperty" minOccurs="0"/&gt;</programlisting></para>
 
     <para>This indicates that only the attributes id and lineStringProperty
@@ -321,7 +321,7 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
     same as in the services file
     (%(%(%systemRoot%\system32\drivers\etc\services in windows), it should
     contain a line like (if yours is different then change the port param of
-    your datastore definition:<programlisting>esri_sde        5151/tcp</programlisting></para>
+    your datastore definition):<programlisting>esri_sde        5151/tcp</programlisting></para>
   </sect1>
 
   <sect1 id="international">
@@ -362,7 +362,7 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
     role="bold">SERVER_PORT</emphasis>/GeoServer/wfs?</emphasis>, to look even
     more like a cgi script. If you'd like to change the base name from wfs you
     only need edit the <emphasis>web.xml</emphasis> file in
-    <emphasis>GeoServer/misc/documents</emphasis>. Using the dispatcher is as
+    <emphasis>geoserver/misc/documents</emphasis>. Using the dispatcher is as
     simple as the following series of requests:<programlisting>http://openplans.org:8080/GeoServer/wfs?request=GetCapabilities
 http://openplans.org:8080/GeoServer/wfs?request=DescribeFeatureType&amp;typename=topp:rail
 http://openplans.org:8080/GeoServer/wfs?request=GetFeature&amp;typename=topp:rail</programlisting></para>
