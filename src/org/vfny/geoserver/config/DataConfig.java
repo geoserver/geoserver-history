@@ -36,7 +36,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.15 2004/04/15 21:03:05 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.16 2004/06/18 08:37:24 jive Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -664,7 +664,7 @@ public class DataConfig {
     }
 
     /**
-     * DOCUMENT ME!
+     * This is the list of all feature types
      *
      * @return a set of all "DataStoreId.TypeName"
      */
@@ -676,7 +676,7 @@ public class DataConfig {
 
             try {
                 DataStore dataStore = dataStoreConfig.findDataStore(sc);
-
+                
                 String[] typeNames = dataStore.getTypeNames();
 
                 for (int i = 0; i < typeNames.length; i++) {
@@ -688,6 +688,8 @@ public class DataConfig {
 
                 set.addAll(typeNamesList);
             } catch (Throwable ignore) {
+            	System.out.println("Could not use "+dataStoreConfig.getId() + " datastore was unavailable!" );
+            	ignore.printStackTrace();
                 continue;
             }
         }
