@@ -36,6 +36,7 @@ public class TypeInfo {
      * @param featureTypeName The query from the request object.
      */ 
     public TypeInfo(String typeName) {
+	LOG.finest("reading typeinfo for " + typeName);
         readTypeInfo(typeName);
     }
     
@@ -91,8 +92,10 @@ public class TypeInfo {
      * @param version The version of the request (0.0.14 or 0.0.15)
      */ 
     public String getCapabilitiesXml(String version) {        
-        if(version.equals("0.0.14")) {
-            return getCapabilitiesXmlv14();
+	LOG.finest("getting capabilities " + version);
+        if(version.equals("0.0.14") || version.equals("1.0.0" )) {
+	    //1.0.0 is almost exactly like 0.0.14
+            return getCapabilitiesXmlv14(version);
         } else {
             return getCapabilitiesXmlv15();
         }        
@@ -109,6 +112,7 @@ public class TypeInfo {
             internalType = 
                 (FeatureType) Unmarshaller.unmarshal(FeatureType.class, 
                                                      featureTypeDocument);
+	    LOG.finer("finished reading type " + typeName + "internal is " + internalType);
         }
         catch( FileNotFoundException e ) {
             LOG.info("Feature type file does not exist: "+typeName);
@@ -130,43 +134,54 @@ public class TypeInfo {
      * Generates v0.0.14 capabilities document fragment for a feature type.
      *
      */ 
-    private String getCapabilitiesXmlv14() {
-        // SHOULD CHANGE TO STRING BUFFER
-        // ALSO MAKE TERSE VERSION CAPABILITY
-        String tempResponse = "    <FeatureType>\n";
-        tempResponse = tempResponse + "      <Name>" + 
-            internalType.getName() + "</Name>\n";
-        tempResponse = tempResponse + "      <Title>" + 
-            internalType.getTitle() + "</Title>\n";
-        tempResponse = tempResponse + "      <Abstract>" + 
-            internalType.getAbstract() + "</Abstract>\n";
-        tempResponse = tempResponse + "      <Keywords>" + 
-            internalType.getKeywords() + "</Keywords>\n";
-        tempResponse = tempResponse + 
+    private String getCapabilitiesXmlv14(String version) {
+	// MAKE TERSE VERSION CAPABILITY
+        StringBuffer tempResponse = new StringBuffer("    <FeatureType>\n");
+        String name = internalType.getName();
+	if (!version.startsWith("0.0.1")) {
+	    //REVISIT: get this elsewhere?  Make sure that myns is
+	    //declared in the capabilities document returned.
+	    name = "myns:" + name;
+	}
+	tempResponse.append("      <Name>" + name + "</Name>\n");
+        tempResponse.append("      <Title>" + 
+            internalType.getTitle() + "</Title>\n");
+        tempResponse.append("      <Abstract>" + 
+            internalType.getAbstract() + "</Abstract>\n");
+        tempResponse.append("      <Keywords>" + 
+            internalType.getKeywords() + "</Keywords>\n");
+        tempResponse.append(
             "      <SRS>http://www.opengis.net/gml/srs/epsg#" + 
-            internalType.getSRS() + "</SRS>\n";
-        tempResponse = tempResponse + "      <Operations>\n";
-        tempResponse = tempResponse + "        <Query/>\n";
-        tempResponse = tempResponse + "      </Operations>\n";
-        tempResponse = tempResponse + 
+            internalType.getSRS() + "</SRS>\n");
+	//TODO: Should we allow the admin to customize these?  He may
+	//not want to publicize to the world that it is transactional.
+        //but if we just use the internalType marshalling way then the
+	//admin could easily mess up the xml, putting the wrong terms in.
+        tempResponse.append("      <Operations>\n");
+        tempResponse.append("        <Query/>\n");
+	tempResponse.append("        <Insert/>\n");
+	tempResponse.append("        <Update/>\n");
+	tempResponse.append("        <Delete/>\n");
+        tempResponse.append("      </Operations>\n");
+        tempResponse.append(
             "      <LatLonBoundingBox minx=\"" + 
             internalType.getLatLonBoundingBox().getMinx() + 
-            "\" ";
-        tempResponse = tempResponse + "miny=\"" + 
+            "\" ");
+        tempResponse.append("miny=\"" + 
             internalType.getLatLonBoundingBox().getMiny() + 
-            "\" ";
-        tempResponse = tempResponse + "maxx=\"" + 
+            "\" ");
+        tempResponse.append("maxx=\"" + 
                     internalType.getLatLonBoundingBox().getMaxx() + 
-            "\" ";
-        tempResponse = tempResponse + "maxy=\"" + 
+            "\" ");
+        tempResponse.append("maxy=\"" + 
             internalType.getLatLonBoundingBox().getMaxy() + 
-            "\"/>\n";
-                //tempResponse = tempResponse + "      <MetaDataURL";
-                //tempResponse = tempResponse + " type=\"" + internalType.getMetadataURL().getType();
-                //tempResponse = tempResponse + "\" format=\"" + internalType.getMetadataURL().getFormat();
-                //tempResponse = tempResponse + "\">" + internalType.getMetadataURL().getUrl() + "</MetaDataURL>\n";
-        tempResponse = tempResponse + "    </FeatureType>\n";
-        return tempResponse;
+            "\"/>\n");
+                //tempResponse.append("      <MetaDataURL";
+                //tempResponse.append(" type=\"" + internalType.getMetadataURL().getType();
+                //tempResponse.append("\" format=\"" + internalType.getMetadataURL().getFormat();
+                //tempResponse.append("\">" + internalType.getMetadataURL().getUrl() + "</MetaDataURL>\n";
+        tempResponse.append("    </FeatureType>\n");
+	return tempResponse.toString();
     }
     
      /**
@@ -176,28 +191,29 @@ public class TypeInfo {
     private String getCapabilitiesXmlv15() {
         // SHOULD CHANGE TO STRING BUFFER
         // ALSO MAKE TERSE VERSION CAPABILITY
-        String tempResponse = "        <wfsfl:FeatureType>\n";
-        tempResponse = tempResponse + "            <wfsfl:Name>" + 
-            internalType.getName() + "</wfsfl:Name>\n";
-        tempResponse = tempResponse + 
+        StringBuffer tempResponse = 
+	    new StringBuffer("        <wfsfl:FeatureType>\n");
+        tempResponse.append("            <wfsfl:Name>" + 
+            internalType.getName() + "</wfsfl:Name>\n");
+        tempResponse.append(
             "            <wfsfl:SRS srsName=\""+
             "http://www.opengis.net/gml/srs/epsg#" + 
-            internalType.getSRS() + "\"/>\n";
-        tempResponse = tempResponse + 
+            internalType.getSRS() + "\"/>\n");
+        tempResponse.append(
             "            <wfsfl:LatLonBoundingBox minx=\"" + 
-            internalType.getLatLonBoundingBox().getMinx();
-        tempResponse = tempResponse + "\" miny=\"" + 
-            internalType.getLatLonBoundingBox().getMiny();
-        tempResponse = tempResponse + "\" maxx=\"" + 
-            internalType.getLatLonBoundingBox().getMaxx();
-        tempResponse = tempResponse + "\" maxy=\"" + 
+            internalType.getLatLonBoundingBox().getMinx());
+        tempResponse.append("\" miny=\"" + 
+            internalType.getLatLonBoundingBox().getMiny());
+        tempResponse.append("\" maxx=\"" + 
+            internalType.getLatLonBoundingBox().getMaxx());
+        tempResponse.append("\" maxy=\"" + 
             internalType.getLatLonBoundingBox().getMaxy() + 
-            "\"/>\n";
-        tempResponse = tempResponse + 
+            "\"/>\n");
+        tempResponse.append(
             "            <wfsfl:Operations><wfsfl:Query/></wfsfl:"
-            + "Operations>\n";
-        tempResponse = tempResponse + 
-            "        </wfsfl:FeatureType>\n";                
-        return tempResponse;
+            + "Operations>\n");
+        tempResponse.append(
+            "        </wfsfl:FeatureType>\n");                
+        return tempResponse.toString();
     }
 }
