@@ -27,7 +27,7 @@ import java.util.logging.*;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.1.2.7 2003/11/19 02:43:28 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.1.2.8 2003/11/19 22:16:14 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -360,10 +360,14 @@ public class TransactionResponse implements Response {
                     + feature.getFeatureType());
             }
 
-            if (type.getDefaultGeometry() != null) {
+            AttributeType gType = type.getDefaultGeometry(); 
+            if ( gType!= null) {
+                 
                 Geometry geom = feature.getDefaultGeometry();
-
-                if (!geom.isValid()) {
+                if( geom == null && !gType.isNillable() ){
+                    throw new IOException( feature.getID() +" requires a geometry");
+                }
+                if (geom != null && !geom.isValid()) {
                     throw new IOException(feature.getID()
                         + " geometry validation failed:" + geom);
                 }
