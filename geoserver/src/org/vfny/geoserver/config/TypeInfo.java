@@ -9,7 +9,6 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DataSourceFinder;
 import org.geotools.data.DataSourceMetaData;
 import org.vfny.geoserver.responses.WfsException;
-import org.vfny.geoserver.wms.gtserver.LayerEntry;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeInfo.java,v 1.23 2003/10/03 17:49:31 cholmesny Exp $
+ * @version $Id: TypeInfo.java,v 1.24 2003/11/25 20:59:34 cholmesny Exp $
  */
 public class TypeInfo {
     /** Class logger */
@@ -478,19 +477,4 @@ public class TypeInfo {
         transactionDS = null;
     }
 
-    public LayerEntry asWMSLayer() {
-        LOG.info("getting featureType as wms layer from " + internalType);
-
-        LayerEntry layer = new LayerEntry();
-        layer.id = getName();
-        layer.description = getAbstract();
-        layer.srs = "EPSG:" + getSrs();
-        layer.properties = internalType.getDataParams();
-        layer.styles = internalType.getStyles();
-        layer.defaultStyle = internalType.getDefaultStyle();
-
-        return layer;
-
-        //Do this later - layer.bbox[0] =
-    }
 }
