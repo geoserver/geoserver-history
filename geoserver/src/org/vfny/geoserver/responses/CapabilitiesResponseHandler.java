@@ -16,7 +16,7 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.4 2004/01/02 23:03:10 cholmesny Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.4.2.1 2004/02/02 21:24:33 cholmesny Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -35,6 +35,9 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      */
     public CapabilitiesResponseHandler(ContentHandler contentHandler) {
         super(contentHandler);
+        if (server.getGlobalConfig().isVerbose()) {
+        	setPrettyPrint(false, false);
+        }
     }
 
     /**
