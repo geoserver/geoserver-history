@@ -6,6 +6,7 @@ package org.vfny.geoserver.config;
 
 import com.vividsolutions.jts.geom.*;
 import org.geotools.data.*;
+import org.geotools.data.postgis.*;
 import org.geotools.feature.*;
 import org.geotools.filter.*;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import org.geotools.factory.*;
  * definition query configured for it.
  *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.2 2003/11/25 05:35:41 jive Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.3 2003/11/26 16:55:14 cholmesny Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
     /** DOCUMENT ME!  */
@@ -187,6 +188,14 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
         }
     }
 
+    public int lockFeature(Feature feature) throws IOException {
+	if (source instanceof PostgisFeatureLocking) {
+	    return ((PostgisFeatureLocking) source).lockFeature(feature);
+	} else {
+            throw new DataSourceException("FeatureType does not supports locking");
+        }
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -294,6 +303,11 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
         // are doing.
         
         // CatalogConfig knows how to do this for every datastore...
+
+	// Wasn't me, gabriel put these in.  I don't ever use these, I 
+	// think we can just lose them.  I'll check with gabriel.  Everything
+	// compiles if they aren't present, and catalog is the better place
+	// to handle this. ch. 
         
         LockingManager lockManager = source.getDataStore().getLockingManager();
         if( lockManager == null ){
@@ -328,13 +342,15 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
         // are doing.
         
         // CatalogConfig knows how to do this for every datastore...
-        
+     
+	//see above
+   
         LockingManager lockManager = source.getDataStore().getLockingManager();
         if( lockManager == null ){
             throw new DataSourceException(
                 "FeatureType does not supports locking");
         }
-        Transaction t = new DefaultTransaction( source.getSchema().getTypeName() );
+        //Transaction t = new DefaultTransaction( source.getSchema().getTypeName() );
         try {
             lockManager.release( authID, t );
         }
