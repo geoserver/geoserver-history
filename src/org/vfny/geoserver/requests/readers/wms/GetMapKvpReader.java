@@ -123,7 +123,7 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.11 2004/07/10 02:55:56 groldan Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.12 2004/09/16 22:20:54 cholmesny Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */
@@ -198,6 +198,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         if (crs != null) {
             request.setCrs(crs);
         }
+
+	String transparentValue = getValue("TRANSPARENT");
+        boolean transparent = (transparentValue == null) ? false
+	    : Boolean.valueOf(transparentValue).booleanValue();
+        request.setTransparent(transparent);
+	
     }
 
     /**
