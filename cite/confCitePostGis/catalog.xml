@@ -9,9 +9,9 @@
       <description>A sample postgis testing database</description>
       <connectionParams>
         <parameter name="dbtype" value="postgis"/>
-        <parameter name="host" value="hydra"/>
+        <parameter name="host" value="localhost"/>
         <parameter name="port" value="5432"/>
-        <parameter name="database" value="dzwiers"/>
+        <parameter name="database" value="cite"/>
         <parameter name="user" value="cite"/>
         <parameter name="passwd" value="cite"/>
       </connectionParams>
@@ -24,9 +24,9 @@
       <description>A sample postgis testing database</description>
       <connectionParams>
         <parameter name="dbtype" value="postgis"/>
-        <parameter name="host" value="hydra"/>
+        <parameter name="host" value="localhost"/>
         <parameter name="port" value="5432"/>
-        <parameter name="database" value="dzwiers"/>
+        <parameter name="database" value="cite"/>
         <parameter name="user" value="cite"/>
         <parameter name="passwd" value="cite"/>
       </connectionParams>
