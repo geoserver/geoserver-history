@@ -24,7 +24,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<html:link forward="dataConfigNamespacesNewPage">
+				<html:link forward="config.data.namespaces.new">
 					<bean:message key="label.createNewNamespace"/>
 				</html:link>
 			</td>	

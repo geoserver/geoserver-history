@@ -27,7 +27,7 @@
 
 	<tr><td colspan=2><HR></td></tr>
 
-	<html:form action="ValidationTestSuiteNew">	
+	<html:form action="/config/validation/testSuiteNew">	
 	<tr><td valign="top" align="right">
 			<bean:message key="label.newName"/>:
 		</td><td>
