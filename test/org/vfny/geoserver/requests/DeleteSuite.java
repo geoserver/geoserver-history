@@ -79,12 +79,11 @@ public class DeleteSuite extends TestCase {
 
         // Compare parsed request to base request
         if(match) { 
-            //return baseRequest.equals(request);
-	    return baseRequest.toString().equals(request.toString());
-        } else { 
+            return baseRequest.equals(request);
+	} else { 
 	    return !baseRequest.equals(request);
         } 
-	}
+    }
 
     /**
      * Handles actual XML test running details.
