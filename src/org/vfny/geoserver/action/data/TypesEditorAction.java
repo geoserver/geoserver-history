@@ -27,9 +27,11 @@ import org.vfny.geoserver.global.UserContainer;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -112,7 +114,7 @@ public class TypesEditorAction extends ConfigAction {
         }
 
         // Update, Up, Down, Add, Remove need to resync
-        sync(typeForm, user.getFeatureTypeConfig());
+        sync(typeForm, user.getFeatureTypeConfig(), request);
         form.reset(mapping, request);
 
         return mapping.findForward("config.data.type.editor");
@@ -159,7 +161,8 @@ public class TypesEditorAction extends ConfigAction {
      * @param form
      * @param config
      */
-    private void sync(TypesEditorForm form, FeatureTypeConfig config) {
+    private void sync(TypesEditorForm form, FeatureTypeConfig config, 
+		      HttpServletRequest request) {
         config.setName(form.getTypeName());
         config.setAbstract(form.getAbstract());
         config.setDefaultStyle(form.getStyleId());
@@ -177,24 +180,72 @@ public class TypesEditorAction extends ConfigAction {
             config.setSchemaAttributes(null);
         } else {
             config.setSchemaBase(schemaBase);
-
-            String schemaName = form.getSchemaName();
-
-            if ((schemaName == null) || (schemaName.trim().length() == 0)) {
+	    
+            String schemaName = config.getSchemaName();
+            List schemaAttributes = config.getSchemaAttributes();
+            System.out.println("in non null sb, sname: " + schemaName + 
+			       ", satts: " + schemaAttributes);
+	    if ((schemaName == null) || (schemaName.trim().length() == 0)) {
                 schemaName = form.getTypeName() + "_Type";
-            }
+                //HACK: For some reason only when editing an already exisitng
+		//featureType, on the first time of switching to the editor
+		//it gets a full schemaAttribute list, and I can't find where
+		//so for now we are just relying on schemaName being null or
+		
+                schemaAttributes = null;
+		//System.out.println("testing on schemaAtts: " + schemaAttributes);               
+		config.setSchemaName(schemaName);
+	    } else {
+		config.setSchemaName(form.getSchemaName());
+	    }
+	    if (schemaAttributes == null || schemaAttributes.isEmpty()) {
+		    schemaAttributes = new ArrayList();
+		    List createList = form.getCreateableAttributes();
+		    System.out.println("schemaAtts null, createList: " + createList);
+		    FeatureType fType = getFeatureType(form, request);
+		    for (int i = 0; i < fType.getAttributeCount(); i++) {
+			AttributeType attType = fType.getAttributeType(i);
+			AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
+	 		schemaAttributes.add(attributeConfig);
+		    //new ArrayList();
+		    //DataStoreConfig dsConfig = config.
+		    //FeatureType featureType = config.get
+		    }
+		    config.setSchemaAttributes(schemaAttributes);
+	    } else {
+		config.setSchemaAttributes(form.toSchemaAttributes());
+	    }
+	}
+		
 
-            config.setSchemaName(schemaName);
-            config.setSchemaAttributes(form.toSchemaAttributes());
-        }
 
-        config.setSchemaAttributes(form.toSchemaAttributes());
+	    //            config.setSchemaAttributes(form.toSchemaAttributes());
+    
+	    LOGGER.fine("config schema atts is " + config.getSchemaAttributes());
+	    //config.setSchemaAttributes(form.toSchemaAttributes());
     }
 
     private void executeAdd(ActionMapping mapping, TypesEditorForm form,
         UserContainer user, HttpServletRequest request) {
         String attributeName = form.getNewAttribute();
-        FeatureType featureType = null;
+        
+	FeatureType fType = getFeatureType(form, request);
+        AttributeForm newAttribute = newAttributeForm(attributeName, fType);
+        form.getAttributes().add(newAttribute);
+    }
+
+    private AttributeForm newAttributeForm(String attributeName, 
+					   FeatureType featureType) {
+	AttributeType attributeType = featureType.getAttributeType(attributeName);
+        AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attributeType);
+        AttributeForm newAttribute = new AttributeForm(attributeConfig,
+                attributeType);
+        return newAttribute;
+    }
+
+    private FeatureType getFeatureType(TypesEditorForm form, 
+				       HttpServletRequest request) {
+	FeatureType featureType = null;
 
         try {
             DataConfig config = ConfigRequests.getDataConfig(request);
@@ -206,12 +257,7 @@ public class TypesEditorAction extends ConfigAction {
         } catch (IOException e) {
             // DataStore unavailable!
         }
-
-        AttributeType attributeType = featureType.getAttributeType(attributeName);
-        AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attributeType);
-        AttributeForm newAttribute = new AttributeForm(attributeConfig,
-                attributeType);
-        form.getAttributes().add(newAttribute);
+	return featureType;
     }
 
     /**
@@ -227,7 +273,7 @@ public class TypesEditorAction extends ConfigAction {
     private ActionForward executeSubmit(ActionMapping mapping,
         TypesEditorForm form, UserContainer user, HttpServletRequest request) {
         FeatureTypeConfig config = user.getFeatureTypeConfig();
-        sync(form, config);
+        sync(form, config, request);
 
         DataConfig dataConfig = (DataConfig) getDataConfig();
         dataConfig.addFeatureType(config.getDataStoreId() + ":"

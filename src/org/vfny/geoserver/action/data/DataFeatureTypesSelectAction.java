@@ -56,6 +56,7 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
                 ftConfig);
             
             user.setFeatureTypeConfig( ftConfig );                       
+	    LOGGER.info("setting session and user ftConfig to : " + ftConfig);
             return mapping.findForward("config.data.type.editor");
         } else if (delete.equals(buttonAction)) {
             dataConfig.removeFeatureType(selectedFeatureType);

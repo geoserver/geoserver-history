@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -104,10 +105,11 @@ public class DataDataStoresEditorAction extends ConfigAction {
         }
 
         // put magic namespace into the mix
-        //
+        // not sure if we want to do this, as we want the full namespace, not
+	//the id.  But getParams in DataStore may override this - ch
         connectionParams.put("namespace", dataStoresForm.getNamespaceId());
         paramTexts.put("namespace", dataStoresForm.getNamespaceId());
-
+        
         //dump("editor", connectionParams );
         //dump("texts ",paramTexts );        
         if (!factory.canProcess(connectionParams)) {
@@ -122,8 +124,9 @@ public class DataDataStoresEditorAction extends ConfigAction {
         }
 
         try {
-            DataStore victim = factory.createDataStore(connectionParams);
-            System.out.println("temporary datastore:" + victim);
+	    ServletContext sc = request.getSession().getServletContext();
+	    Map niceParams = DataStoreUtils.getParams(connectionParams, sc);
+            DataStore victim = factory.createDataStore(niceParams);
 
             if (victim == null) {
                 // We *really* could not use these params!
