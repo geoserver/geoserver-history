@@ -201,6 +201,8 @@ public class ConfigInfo {
         this.capabilitiesDir = capabilitiesDir;
     }
 
+    public int getMaxFeatures() { return wfsGlobal.getMaxFeatures(); }
+
     public Level getLogLevel() { return wfsGlobal.getLogLevel(); }
     
     /**
