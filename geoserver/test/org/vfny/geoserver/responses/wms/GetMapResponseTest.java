@@ -6,7 +6,6 @@ package org.vfny.geoserver.responses.wms;
 
 import junit.framework.TestCase;
 
-import org.vfny.geoserver.responses.wms.map.GetMapProducer;
 
 
 /**

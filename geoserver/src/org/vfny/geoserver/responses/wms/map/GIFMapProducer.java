@@ -5,6 +5,7 @@
 package org.vfny.geoserver.responses.wms.map;
 
 import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.responses.wms.DefaultRasterMapProducer;
 import org.vfny.geoserver.responses.wms.WMSMapContext;
 import org.vfny.geoserver.responses.wms.map.gif.GIFOutputStream;
 import java.awt.Color;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  * @author Didier Richard
  * @version $Id
  */
-public class GIFMapProducer extends DefaultRasterMapProducer {
+class GIFMapProducer extends DefaultRasterMapProducer {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map");

@@ -2,11 +2,10 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map;
+package org.vfny.geoserver.responses.wms;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.responses.wms.WMSMapContext;
 import java.io.IOException;
 import java.io.OutputStream;
 

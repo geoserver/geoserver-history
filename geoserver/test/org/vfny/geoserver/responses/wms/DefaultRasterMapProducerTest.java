@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map;
+package org.vfny.geoserver.responses.wms;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -18,6 +18,7 @@ import org.geotools.filter.IllegalFilterException;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.responses.wms.DefaultRasterMapProducer;
 import org.vfny.geoserver.responses.wms.WMSMapContext;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 

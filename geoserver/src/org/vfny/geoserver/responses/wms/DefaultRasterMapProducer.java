@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map;
+package org.vfny.geoserver.responses.wms;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 
 import org.geotools.renderer.lite.LiteRenderer2;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.responses.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -242,7 +241,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
      *
      * @return DOCUMENT ME!
      */
-    BufferedImage getImage() {
+    public BufferedImage getImage() {
         return this.image;
     }
 
