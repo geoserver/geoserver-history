@@ -45,7 +45,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.9 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.10 2004/02/16 23:46:54 dmzwiers Exp $
  */
 public class AttributeTypeInfoDTO implements DataTransferObject {
     /** attribute name */
@@ -79,7 +79,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
      * baseGMLTypes can only be used in your XML fragment.
      * </p>
      */
-    private boolean isComplex;
+    private boolean isComplex = false;
 
     /**
      * AttributeTypeInfoDTO constructor.

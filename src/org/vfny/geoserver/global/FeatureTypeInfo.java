@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.28 2004/02/16 22:56:21 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.29 2004/02/16 23:46:55 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -108,9 +108,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         numDecimals = dto.getNumDecimals();
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
-        Iterator i = tmp.iterator();
-        while(i.hasNext())
-        	schema.add(new AttributeTypeInfo((AttributeTypeInfoDTO)i.next()));
+        if(tmp!=null){
+        	Iterator i = tmp.iterator();
+        	while(i.hasNext())
+        		schema.add(new AttributeTypeInfo((AttributeTypeInfoDTO)i.next()));
+        }
         schemaBase = dto.getSchemaBase();
         schemaName = dto.getSchemaName();
         SRS = dto.getSRS();

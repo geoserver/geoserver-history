@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.22 2004/02/12 00:43:20 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.23 2004/02/16 23:46:56 dmzwiers Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -647,7 +647,7 @@ public class XMLConfigWriter {
 
             cw.valueTag("numDecimals", ft.getNumDecimals() + "");
 
-            if (ft.getKeywords().size() != 0) {
+            if (ft.getKeywords()!=null && ft.getKeywords().size() != 0) {
                 String s = "";
                 Iterator i = ft.getKeywords().iterator();
 
@@ -807,7 +807,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.22 2004/02/12 00:43:20 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.23 2004/02/16 23:46:56 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
