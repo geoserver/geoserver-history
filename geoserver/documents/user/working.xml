@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+  <title>Working With GeoServer</title>
+
+  <para>This document is not going to be near the state we want it for 1.2.4,
+  but we are hoping to fill in a lot of information about what to do _after_
+  you have GeoServer set up. We will examine WFS and WMS requests, Filters,
+  and hopefully getting GeoServer configured with clients as well. For now we
+  are just going to copy a couple sections from the old documentation, that
+  has not yet found a home in the new docs. The visualizing your data section
+  is probably the most useful, as it shows how to actually request the right
+  parameters to return your new layer.</para>
+
+  <sect1 id="testdata">
+    <title>Obtaining Test Data</title>
+
+    <para>The easiest way to get some PostGIS data to work with is to acquire
+    shapefiles and use the shp2pgsql utility provided by PostGIS. It should be
+    in your pgsql installation directory, under the bin subdirectory. As for
+    acquiring shapefiles, the US census provides a lot of their data free of
+    cost in the shape format, available <ulink
+    url="http://www.esri.com/data/download/census2000_tigerline/index.html">here</ulink>.
+    The GeoServer also includes support for using shapefiles directly,
+    information about this option is available in the <ulink
+    url="advanced.html">advanced</ulink> section. Using the shapefiles
+    directly sacrifices a lot of speed and flexibility, so converting them to
+    PostGIS is the recommended way, but the option is available for easier set
+    up.</para>
+  </sect1>
+
+  <sect1>
+    <title>Testing GeoServer</title>
+
+    <para>Testing GeoServer can be done with any standard web browser. The
+    easiest way is to use URL encoded Key Value pairs. If GeoServer is running
+    on the same machine as the web browser, say on a tomcat instance running
+    on port 8080, then the Capabilities document can be tested by just typing
+    in the location:
+    <emphasis>http://localhost:8080/geoserver/wfs?request=GetCapabilities</emphasis>,
+    for example, or
+    <emphasis>http://localhost:8080/geoserver/wfs?request=GetFeature&amp;typename=topp:rail</emphasis>.
+    The WFS specification has more information on KVP encoding. It is good for
+    basic requests, but it falls short with more complex filters and
+    transactions. For that we recommend using XML encoding.</para>
+
+    <para>The latest release of GeoServer also includes a great testing
+    utility for XML post requests. It is available at
+    <emphasis>http://<emphasis
+    role="bold">SERVER_ADDRESS:SERVER_PORT</emphasis>/geoserver/wfs/TestWfsPost</emphasis>.
+    There are also a number of samples in the Demo section of the web
+    administration tool. To use of the TestWfsPost servlet just make sure that
+    the request is going to the right location (it defaults to GetFeature),
+    and write the XML request just as the WFS specification does it.</para>
+
+    <para>The web administration tool also now includes a 'Demo' section,
+    which has a number of sample requests. To issue one of the sample request
+    use the pull down request box, select one and hit the 'Change' button.
+    Unfortunately we haven't yet figured out javascript within jsps and
+    struts, or we would have it change automatically. After hitting change
+    then hit 'Submit', and GeoServer will return the request. You may modify
+    the requests to work with your server. And you may even put your own
+    requests in the geoserver/data/demo directory. These requests make a great
+    reference for how to make WFS and WMS requests. And please let us know if
+    you feel any important ones are missing, and we can easily add them for
+    the next release.</para>
+
+    <para>For those who do not wish to use the Demo web interface, included is
+    a set of links for the default dataset distributed with GeoServer.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink
+        url="http://localhost:8080/geoserver/wfs/GetCapabilities">http://localhost:8080/geoserver/wfs/GetCapabilities</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://localhost:8080/geoserver/wfs/DescribeFeatureType?typename=topp:bc_roads">http://localhost:8080/geoserver/wfs/DescribeFeatureType?typename=topp:bc_roads</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://localhost:8080/geoserver/wfs/GetFeature?typeName=topp:bc_roads">http://localhost:8080/geoserver/wfs/GetFeature?typeName=topp:bc_roads</ulink></para>
+      </listitem>
+    </itemizedlist>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink
+        url="http://localhost:8080/geoserver/wms/GetCapabilities">http://localhost:8080/geoserver/wms/GetCapabilities</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://localhost:8080/geoserver/wms?request=GetMap&amp;amp;layers=topp:bc_roads&amp;amp;bbox=489153,5433000,529000,5460816&amp;amp;width=400&amp;amp;height=200&amp;amp;srs=EPSG:27354&amp;amp;styles=normal&amp;amp;Format=image/png">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=topp:bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/svg-xml</ulink></para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1>
+    <title>Visualizing your Data</title>
+
+    <para>GeoServer includes an integrated Web Map Service (WMS). For more
+    information about setting it up see <ulink url="WMS.html">WMS</ulink>
+    section. But using the web administration interface should be pretty self
+    explanatory, just make sure that you have Java Advanced Imaging (JAI)
+    installed, it can be downloaded <ulink
+    url="http://java.sun.com/products/java-media/jai/downloads/download-1_1_2.html">here</ulink>
+    and the Image I/O extension <ulink
+    url="http://java.sun.com/products/java-media/jai/downloads/download-iio.html">here</ulink>.
+    The trickiest part is figuring out the correct GetMap request to issue to
+    the WMS. A sample request is as follows:<programlisting> <ulink
+          url="http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/png">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=topp:bc_roads&amp;bbox=489153,5433000,529000,5460816
+&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/png</ulink></programlisting>To
+    adapt it to your data the two parameters to change are 'layers' and
+    'bbox'. The layers param should be changed to the FeatureType that you
+    successfully added to GeoServer. Do a GetCapabilities
+    request:<programlisting> <ulink
+          url="http://localhost:8080/geoserver/wms?request=GetCapabilities">http://localhost:8080/geoserver/wms?request=GetCapabilities</ulink></programlisting></para>
+
+    <para>Your featureType should show up as one of the layers there. The name
+    there should be the one used to use in the layers param of the GetMap
+    request. If the Capabilities document does not contain it then try adding
+    it again. If it does the next thing to do is to obtain the bounding box
+    for the feature. The easiest way to do this is to issue a GetFeature
+    request to the wfs using your featureType, for example:</para>
+
+    <para><programlisting> <ulink
+          url=" http://localhost:8080/geoserver/wfs/GetFeature?typeName=topp:bc_roads">http://localhost:8080/geoserver/wfs/GetFeature?typename=topp:my_data</ulink></programlisting></para>
+
+    <para>The response is a FeatureCollection, which will include a boundedBy
+    element as follows:<programlisting> &lt;gml:boundedBy&gt;
+   &lt;gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#27354"&gt;
+    &lt;gml:coordinates decimal="." cs="," ts=" "&gt;
+        -73.933217,40.78587 -73.768722,40.914404
+    &lt;/gml:coordinates&gt;
+   &lt;/gml:Box&gt;
+&lt;/gml:boundedBy&gt;</programlisting>These values will be the boundingBox of
+    all data in the featureType. If you have a very large table then you may
+    want to not use the full bounding box, but this should give a good
+    guideline of where the features are actually contained. The coordinates
+    values can be used almost directly in the bbox param - you just need to
+    make sure to change the middle space to a comma. Currently the srs param
+    is ignored, GeoServer simply returns data as it is stored. Future versions
+    wil do coordinate transformation based on the srs parameter. You can also
+    change the other params to adjust the format, height and width of the
+    image returned, as well as the style, if you have properly added the SLD
+    files. So the final request for my_data will look like
+    this:<programlisting> <ulink
+          url="http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/png">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=topp:my_data&amp;bbox=-73.933217,40.78587,-73.768722,40.914404
+&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/png</ulink></programlisting></para>
+  </sect1>
+</article>
