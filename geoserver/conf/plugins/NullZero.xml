@@ -4,7 +4,7 @@ xmlns:gml="http://www.opengis.net/gml"
 xmlns:ogc="http://www.opengis.net/ogc" 
 xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
 xs:schemaLocation="pluginSchema /data/capabilities/validate/pluginSchema.xsd">
-  <name>UniqueFID</name>
-  <description>All features must pass the provided filter</description>
-  <class>org.geotools.validation.attributes.UniqueFIDValidation</class>
+  <name>Null Zero</name>
+  <description>Checks for non null or zero values.</description>
+  <class>org.geotools.validation.spatial.NullZeroValidation</class>
 </plugin>

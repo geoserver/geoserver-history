@@ -4,7 +4,7 @@ xmlns:gml="http://www.opengis.net/gml"
 xmlns:ogc="http://www.opengis.net/ogc" 
 xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
 xs:schemaLocation="pluginSchema /data/capabilities/validate/pluginSchema.xsd">
-  <name>UniqueFID</name>
-  <description>All features must pass the provided filter</description>
-  <class>org.geotools.validation.attributes.UniqueFIDValidation</class>
+  <name>Polygon Covers Polygon Boundary</name>
+  <description>One polygon boundary is covered by another polygon.</description>
+  <class>org.geotools.validation.spatial.PolygonBoundaryCoveredByPolygonValidation</class>
 </plugin>
