@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.6 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.7 2004/02/09 23:11:36 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -326,7 +326,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         Map configuredStyles = null;
 
-        configuredStyles = request.getGeoServer().getData().getStyles();
+        configuredStyles = request.getWMS().getData().getStyles();
 
         String st;
 
@@ -386,7 +386,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
         Data catalog = null;
 
-        catalog = request.getGeoServer().getData();
+        catalog = request.getWMS().getData();
 
         String layerName = null;
         FeatureTypeInfo ftype = null;

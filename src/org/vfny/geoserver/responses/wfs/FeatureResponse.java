@@ -24,6 +24,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.requests.Request;
@@ -47,7 +48,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.17 2004/01/31 00:27:25 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.18 2004/02/09 23:11:36 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -245,8 +246,8 @@ public class FeatureResponse implements Response {
         // - if we fail to aquire all the locks we will need to fail and
         //   itterate through the the FeatureSources to release the locks 
         //
-        GeoServer config = request.getGeoServer();
-        Data catalog = config.getData();
+        GeoServer config = request.getWFS().getGeoServer();
+        Data catalog = request.getWFS().getData();
         FeatureTypeInfo meta = null;
         NameSpaceInfo namespace;
         Query query;
@@ -380,7 +381,7 @@ public class FeatureResponse implements Response {
             transformer.setIndentation(config.isVerbose() ? 2 : (-1));
 
             //transformer.setNumDecimals(config.getNumDecimals());
-            WFS wfsConfig = config.getWFS();
+            WFS wfsConfig = request.getWFS();
             String wfsSchemaLoc = request.getBaseUrl() + "wfs/1.0.0/"
                 + "WFS-basic.xsd";
             String fSchemaLoc = request.getBaseUrl() + "wfs/"
@@ -485,7 +486,7 @@ public class FeatureResponse implements Response {
      *
      * @see org.vfny.geoserver.responses.Response#abort()
      */
-    public void abort(GeoServer gs) {
+    public void abort(Service gs) {
         if (request == null) {
             return; // request was not attempted
         }

@@ -7,6 +7,7 @@ package org.vfny.geoserver.servlets;
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
@@ -91,7 +92,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.11 2004/01/31 00:27:29 jive Exp $
+ * @version $Id: AbstractService.java,v 1.12 2004/02/09 23:11:34 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -297,7 +298,12 @@ public abstract class AbstractService extends HttpServlet {
 
             return;
         }
-
+        Service s = null;
+        if("WFS".equals(serviceRequest.getService())){
+        	s = serviceRequest.getWFS();
+        }else{
+        	s = serviceRequest.getWMS();
+        }
         try {
             // execute request
             LOGGER.fine("executing request");
@@ -305,13 +311,13 @@ public abstract class AbstractService extends HttpServlet {
         } catch (ServiceException serviceException) {
             LOGGER.warning("service exception while executing request: "
                 + serviceException.getMessage());
-            serviceResponse.abort(serviceRequest.getGeoServer());
+            serviceResponse.abort(s);
             sendError(response, serviceException);
 
             return;
         } catch (Throwable t) {
             //we can safelly send errors here, since we have not touched response yet
-            serviceResponse.abort(serviceRequest.getGeoServer());
+            serviceResponse.abort(s);
             sendError(response, t);
 
             return;
@@ -319,7 +325,7 @@ public abstract class AbstractService extends HttpServlet {
 
         try { //catch block to wrap exceptions properly.
 
-            String mimeType = serviceResponse.getContentType(serviceRequest
+            String mimeType = serviceResponse.getContentType(s
                     .getGeoServer());
             response.setContentType(mimeType);
             LOGGER.fine("execution succeed, mime type is: " + mimeType);
@@ -348,12 +354,12 @@ public abstract class AbstractService extends HttpServlet {
             // I will still give stratagy and serviceResponse
             // a chance to clean up
             //
-            serviceResponse.abort(serviceRequest.getGeoServer());
+            serviceResponse.abort(s);
             stratagy.abort();
 
             return;
         } catch (IOException ex) {
-            serviceResponse.abort(serviceRequest.getGeoServer());
+            serviceResponse.abort(s);
             stratagy.abort();
             sendError(response, ex);
 
@@ -366,24 +372,24 @@ public abstract class AbstractService extends HttpServlet {
             stratagyOuput.flush();
             stratagy.flush();
         } catch (java.net.SocketException sockEx) { // user cancel
-            serviceResponse.abort(serviceRequest.getGeoServer());
+            serviceResponse.abort(s);
             stratagy.abort();
 
             return;
         }catch (IOException ioException) { // stratagyOutput error
-            serviceResponse.abort(serviceRequest.getGeoServer());
+            serviceResponse.abort(s);
             stratagy.abort();
             sendError(response, ioException);
 
             return;
         }catch (ServiceException writeToFailure) { // writeTo Failure
-            serviceResponse.abort(serviceRequest.getGeoServer());
+            serviceResponse.abort(s);
             stratagy.abort();
             sendError(response, writeToFailure);
 
             return;
         }catch (Throwable help) { // This is an unexpected error(!)
-            serviceResponse.abort(serviceRequest.getGeoServer());
+            serviceResponse.abort(s);
             stratagy.abort();
             sendError(response, help);
 
@@ -764,7 +770,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

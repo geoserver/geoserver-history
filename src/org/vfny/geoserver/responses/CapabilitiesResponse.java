@@ -32,7 +32,7 @@ import javax.xml.transform.stream.StreamResult;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.28 2004/01/31 00:27:24 jive Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.29 2004/02/09 23:11:34 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -146,7 +146,12 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
             // don't know what this should be, or if its even important
             InputSource inputSource = new InputSource("XXX");
             SAXSource source = new SAXSource(this, inputSource);
-            Charset charset = request.getGeoServer().getCharSet();
+            Charset charset;
+            try{
+            	charset = request.getWFS().getGeoServer().getCharSet();
+            }catch(NullPointerException e){
+            	charset = request.getWMS().getGeoServer().getCharSet();
+            }
             Writer writer = new OutputStreamWriter(out, charset);
             StreamResult result = new StreamResult(writer);
 

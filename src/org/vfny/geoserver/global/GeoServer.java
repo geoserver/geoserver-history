@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.10 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.11 2004/02/09 23:11:35 dmzwiers Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
 
@@ -69,19 +69,19 @@ public class GeoServer extends GlobalLayerSupertype {
                                        .getLevel();
 
     /** The reference to the wms configuration for this instance */
-    private WMS wms;
+    //private WMS wms;
 
     /** The reference to the wfs configuration for this instance */
-    private WFS wfs;
+    //private WFS wfs;
     
     /** The validation processor */
-    ValidationProcessor processor;
+    //ValidationProcessor processor;
 
     /**
      * The reference to the data configuration for this instance (formerly
      * CatalogConfig)
      */
-    private Data data;
+    //private Data data;
 
     /**
      * getAddress purpose.
@@ -331,27 +331,27 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return WMS the wms object
      */
-    public WMS getWMS() {
+    /*public WMS getWMS() {
         return wms;
-    }
+    }*/
 
     /**
      * Gets the config for the WFS.
      *
      * @return WFS the wfs object
      */
-    public WFS getWFS() {
+    /*public WFS getWFS() {
         return wfs;
-    }
+    }*/
 
     /**
      * Gets the config for the Data.
      *
      * @return Data the data object
      */
-    public Data getData() {
+    /*public Data getData() {
         return data;
-    }
+    }*/
 
     /**
      * load purpose.
@@ -367,15 +367,15 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @throws ConfigurationException If an error occurs.
      */
-    public void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
+    /*public void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
         DataDTO data, File baseDir ) throws ConfigurationException {
         load(geoServer);
         load(wms);
         load(wfs);
         load(data, baseDir );
-    }
+    }*/
     
-    private Map testSuites;
+    /*private Map testSuites;
     private Map plugIns;
     
     public void load(Map testSuites, Map plugIns){
@@ -393,7 +393,7 @@ public class GeoServer extends GlobalLayerSupertype {
     
     public Map toTestSuiteDTO(){
     	return testSuites;
-    }
+    }*/
 
     /**
      * load purpose.
@@ -407,10 +407,10 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @throws ConfigurationException If an error occurs.
      */
-    public void load(WMSDTO wms, WFSDTO wfs) throws ConfigurationException {
+    /*public void load(WMSDTO wms, WFSDTO wfs) throws ConfigurationException {
         load(wms);
         load(wfs);
-    }
+    }*/
 
     /**
      * load purpose.
@@ -423,14 +423,14 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @throws ConfigurationException If an error occurs
      */
-    public void load(WMSDTO wms) throws ConfigurationException {
+    /*public void load(WMSDTO wms) throws ConfigurationException {
         if (wms != null) {
             this.wms = new WMS((WMSDTO) wms.clone());
         } else {
             throw new ConfigurationException(
                 "load(WMSDTO) expected a non-null value");
         }
-    }
+    }*/
 
     /**
      * load purpose.
@@ -443,14 +443,14 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @throws ConfigurationException If an error occurs
      */
-    public void load(WFSDTO wfs) throws ConfigurationException {
+    /*public void load(WFSDTO wfs) throws ConfigurationException {
         if (wfs != null) {
             this.wfs = new WFS((WFSDTO) wfs.clone());
         } else {
             throw new ConfigurationException(
                 "load(WFSDTO) expected a non-null value");
         }
-    }
+    }*/
 
     /**
      * load purpose.
@@ -496,18 +496,27 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @throws ConfigurationException If an error occurs
      */
-    public void load(DataDTO data, File baseDir ) throws ConfigurationException {
+    /*public void load(DataDTO data) throws ConfigurationException {
         if (data != null) {
-        	if (this.data == null) {
-            	this.data = new Data((DataDTO) data.clone(), baseDir );
-            } else {
-                this.data.load((DataDTO) data.clone(), baseDir );
-            }
+                this.data.load((DataDTO) data.clone());
         } else {
             throw new ConfigurationException(
                 "load(DataDTO) expected a non-null value");
         }
     }
+    
+    public void load(DataDTO data, File baseDir) throws ConfigurationException {
+    	if (data != null) {
+    		if (this.data == null) {
+    			this.data = new Data((DataDTO) data.clone(),baseDir);
+    		} else {
+    			this.data.load((DataDTO) data.clone());
+    		}
+    	} else {
+    		throw new ConfigurationException(
+    		"load(DataDTO) expected a non-null value");
+    	}
+    }*/
 
     /**
      * getDTO purpose.
@@ -520,9 +529,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return WMSDTO the generated object
      */
-    public static WMSDTO getDTO(WMS wms) {
+    /*public static WMSDTO getDTO(WMS wms) {
         return (WMSDTO) ((WMSDTO) wms.toDTO()).clone();
-    }
+    }*/
 
     /**
      * getDTO purpose.
@@ -535,12 +544,12 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return WFSDTO the generated object
      */
-    public static WFSDTO getDTO(WFS wfs) {
+    /*public static WFSDTO getDTO(WFS wfs) {
         WFSDTO w = (WFSDTO) wfs.toDTO();
         w = (WFSDTO) w.clone();
 
         return (w);
-    }
+    }*/
 
     /**
      * getDTO purpose.
@@ -553,9 +562,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return GeoServerDTO the generated object
      */
-    public static GeoServerDTO getDTO(GeoServer gs) {
+    /*public static GeoServerDTO getDTO(GeoServer gs) {
         return (GeoServerDTO) ((GeoServerDTO) gs.toDTO()).clone();
-    }
+    }*/
 
     /**
      * getDTO purpose.
@@ -568,9 +577,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return DataDTO the generated object
      */
-    public static DataDTO getDTO(Data dt) {
+    /*public static DataDTO getDTO(Data dt) {
         return (DataDTO) ((DataDTO) dt.toDTO()).clone();
-    }
+    }*/
 
     /**
      * toWMSDTO purpose.
@@ -581,9 +590,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return WMSDTO the generated object
      */
-    public WMSDTO toWMSDTO() {
+    /*public WMSDTO toWMSDTO() {
         return getDTO(wms);
-    }
+    }*/
 
     /**
      * toWFSDTO purpose.
@@ -594,9 +603,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return WFSDTO the generated object
      */
-    public WFSDTO toWFSDTO() {
+    /*public WFSDTO toWFSDTO() {
         return getDTO(wfs);
-    }
+    }*/
 
     /**
      * toGeoServerDTO purpose.
@@ -608,9 +617,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return GeoServerDTO the generated object
      */
-    public GeoServerDTO toGeoServerDTO() {
+    /*public GeoServerDTO toGeoServerDTO() {
         return (GeoServerDTO) toDTO();
-    }
+    }*/
 
     /**
      * toDataDTO purpose.
@@ -621,9 +630,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return DataDTO the generated object
      */
-    public DataDTO toDataDTO() {
+    /*public DataDTO toDataDTO() {
         return getDTO(data);
-    }
+    }*/
 
     /**
      * toDTO purpose.
@@ -636,7 +645,7 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return DTO the generated object
      */
-    Object toDTO() {
+    public Object toDTO() {
     	GeoServerDTO dto = new GeoServerDTO();
     	dto.setCharSet(charSet);
     	dto.setLoggingLevel(loggingLevel);
@@ -668,8 +677,8 @@ public class GeoServer extends GlobalLayerSupertype {
 	 * 
 	 * @return Returns the processor.
 	 */
-	public ValidationProcessor getProcessor() {
+	/*public ValidationProcessor getProcessor() {
 		return processor;
-	}
+	}*/
 
 }

@@ -8,6 +8,8 @@ import org.apache.struts.action.Action;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Requests;
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,8 +53,8 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: GeoServerAction.java,v 1.4 2004/01/31 00:27:27 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: GeoServerAction.java,v 1.5 2004/02/09 23:11:34 dmzwiers Exp $
  */
 public class GeoServerAction extends Action {
     /**
@@ -91,20 +93,37 @@ public class GeoServerAction extends Action {
     }
 
     /**
-     * Aquire GeoServer from Web Container.
+     * Aquire WMS from Web Container.
      * 
      * <p>
-     * The GeoServer instance is create by a STRUTS plug-in and is available
+     * The WMS instance is create by a STRUTS plug-in and is available
      * through the Web container. (Test cases may seed the request object with
-     * a Mock WebContainer and a Mock GeoServer)
+     * a Mock WebContainer and a Mock WMS)
      * </p>
      *
      * @param request HttpServletRequest used to aquire session reference
      *
-     * @return GeoServer instance for this Web Application
+     * @return WMS instance for this Web Application
      */
-    public GeoServer getGeoServer(HttpServletRequest request) {
-        return Requests.getGeoServer(request);
+    public WMS getWMS(HttpServletRequest request) {
+        return Requests.getWMS(request);
+    }
+
+    /**
+     * Aquire WFS from Web Container.
+     * 
+     * <p>
+     * The WFS instance is create by a STRUTS plug-in and is available
+     * through the Web container. (Test cases may seed the request object with
+     * a Mock WebContainer and a Mock WFS)
+     * </p>
+     *
+     * @param request HttpServletRequest used to aquire session reference
+     *
+     * @return WFS instance for this Web Application
+     */
+    public WFS getWFS(HttpServletRequest request) {
+    	return Requests.getWFS(request);
     }
 
     /**

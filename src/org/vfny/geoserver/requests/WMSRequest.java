@@ -4,14 +4,21 @@
  */
 package org.vfny.geoserver.requests;
 
+import org.vfny.geoserver.global.GeoServer;
+
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSRequest.java,v 1.5 2004/01/31 00:27:25 jive Exp $
+ * @version $Id: WMSRequest.java,v 1.6 2004/02/09 23:11:33 dmzwiers Exp $
  */
 public class WMSRequest extends Request {
     public WMSRequest() {
         super("WMS");
+    }
+
+    public GeoServer getGeoServer(){
+    	GeoServer gs = getWFS().getGeoServer();
+    	return gs;
     }
 }

@@ -21,6 +21,7 @@ import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
@@ -69,21 +70,6 @@ public class LoadXMLAction extends ConfigAction {
 	throws IOException, ServletException {
 		ServletContext sc = request.getSession().getServletContext();
 		
-		GeoServer geoServer = getGeoServer( request );
-		if( geoServer == null ){
-			// lazy creation on load?
-			geoServer = new GeoServer();
-			sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, geoServer);        	
-		}        
-		
-		// geoServer = new GeoServer();
-		// sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, geoServer);
-		//
-		// Um pardon? This appears to create a new GeoServer from scratch -
-		// we *really* need to conserve dataStores during the load process.
-		// That is - if the dataStore definition does not change - don't replace it.
-		// Asking dataStore authors to handle this sort of thing internally is
-		// too much
 		WMSDTO wmsDTO = null;
 		WFSDTO wfsDTO = null;
 		GeoServerDTO geoserverDTO = null;
@@ -114,7 +100,11 @@ public class LoadXMLAction extends ConfigAction {
 		// Update GeoServer
 		
 		try {
-			geoServer.load( wmsDTO, wfsDTO, geoserverDTO, dataDTO, rootDir );
+			getWFS(request).load(wfsDTO);
+			getWMS(request).load(wmsDTO);
+			getWFS(request).getGeoServer().load(geoserverDTO);
+			getWFS(request).getData().load(dataDTO);
+			
 		} catch (ConfigurationException configException) {
 			configException.printStackTrace();
 			return mapping.findForward("welcome");			
@@ -138,11 +128,9 @@ public class LoadXMLAction extends ConfigAction {
         throws IOException, ServletException {
     	ServletContext sc = request.getSession().getServletContext();
     	
-    	GeoServer geoServer = getGeoServer( request );
-        if( geoServer == null ){
+    	WFS wfs = getWFS(request);
+        if( wfs == null ){
         	// lazy creation on load?
-        	geoServer = new GeoServer();
-        	sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, geoServer);
         	loadGeoserver(mapping,form,request,response);
         }
         File rootDir = new File( sc.getRealPath("/") );

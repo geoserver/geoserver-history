@@ -8,6 +8,8 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.Map;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
@@ -17,6 +19,12 @@ import org.apache.struts.config.ModuleConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoServerPlugIn;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 
 
 /**
@@ -30,7 +38,7 @@ import org.vfny.geoserver.global.GeoServerPlugIn;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.5 2004/02/07 01:30:05 jive Exp $
+ * @version $Id: ConfigPlugIn.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  */
@@ -66,25 +74,27 @@ public class ConfigPlugIn implements PlugIn {
     public void init(ActionServlet arg0, ModuleConfig arg1)
         throws ServletException {
         ServletContext sc = arg0.getServletContext();
-        GeoServer gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+        WMS wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
+        WFS wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);
 
-        if (gs == null) {
+        if (wms == null || wfs == null) {
             GeoServerPlugIn gspi = new GeoServerPlugIn();
             gspi.init(arg0, arg1);
-            gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+            wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
+            wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);
 
-            if (gs == null) {
+            if (wms == null || wfs == null) {
                 throw new ServletException(
                     "GeoServerPlugIn Failed. Thus ConfigPlugIn cannot run.");
             }
         }
 
-        sc.setAttribute(WMSConfig.CONFIG_KEY, new WMSConfig(gs.toWMSDTO()));
-        sc.setAttribute(WFSConfig.CONFIG_KEY, new WFSConfig(gs.toWFSDTO()));
+        sc.setAttribute(WMSConfig.CONFIG_KEY, new WMSConfig((WMSDTO)wms.toDTO()));
+        sc.setAttribute(WFSConfig.CONFIG_KEY, new WFSConfig((WFSDTO)wfs.toDTO()));
         sc.setAttribute(GlobalConfig.CONFIG_KEY,
-            new GlobalConfig(gs.toGeoServerDTO()));
-        sc.setAttribute(DataConfig.CONFIG_KEY, new DataConfig(gs.toDataDTO()));
-        ValidationConfig vc = new ValidationConfig(gs.toPlugInDTO(), gs.toTestSuiteDTO());
+            new GlobalConfig((GeoServerDTO)wfs.getGeoServer().toDTO()));
+        sc.setAttribute(DataConfig.CONFIG_KEY, new DataConfig((DataDTO)wfs.getData().toDTO()));
+        ValidationConfig vc = new ValidationConfig((Map)wfs.getValidation().toPlugInDTO(), (Map)wfs.getValidation().toTestSuiteDTO());
         sc.setAttribute(ValidationConfig.CONFIG_KEY, vc);
     }
 }

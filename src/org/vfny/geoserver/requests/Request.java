@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.validation.ValidationProcessor;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.global.WMS;
 
 /**
  * Defines a general Request type and provides accessor methods for universal
@@ -21,7 +23,7 @@ import org.vfny.geoserver.global.GeoServer;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.11 2004/02/02 23:17:34 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.12 2004/02/09 23:11:33 dmzwiers Exp $
  */
 abstract public class Request {
 	/**
@@ -172,20 +174,14 @@ abstract public class Request {
 	public HttpServletRequest getHttpServletRequest() throws ClassCastException {
 		return httpServletRequest;
 	}
-	/**
-	 * Convience method for accessing GeoServer from the Web Container.
-	 * <p>
-	 * This method is used to replace calls to GeoServer.getInstnace().
-	 * </p>
-	 * @param servletRequest
-	 */
-	public GeoServer getGeoServer(){
-		GeoServer gs = Requests.getGeoServer( getHttpServletRequest() );
-		return gs;
+	
+	public WMS getWMS(){
+		WMS vp = Requests.getWMS( getHttpServletRequest() );
+		return vp;
 	}
 	
-	public ValidationProcessor getValidationProcessor(){
-		ValidationProcessor vp = Requests.getValidationProcessor( getHttpServletRequest() );
+	public WFS getWFS(){
+		WFS vp = Requests.getWFS( getHttpServletRequest() );
 		return vp;
 	}
 

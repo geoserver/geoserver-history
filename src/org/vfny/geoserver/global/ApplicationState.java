@@ -36,7 +36,7 @@ import javax.servlet.ServletException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.9 2004/02/05 18:56:06 dmzwiers Exp $
+ * @version $Id: ApplicationState.java,v 1.10 2004/02/09 23:11:35 dmzwiers Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
@@ -256,18 +256,19 @@ public class ApplicationState implements PlugIn {
     	//
     	// And all this madness is a cut and paste mistake?
     	geoserverStatus[0] = (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0);
-    	GeoServer gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-    	if (gs == null)
+    	Data dt = (Data) sc.getAttribute(Data.WEB_CONTAINER_KEY);
+    	GeoValidator gv = (GeoValidator) sc.getAttribute(GeoValidator.WEB_CONTAINER_KEY);
+    	if (dt == null || gv==null)
     		return;
     	
     	// setup geoserverNSErrors
-    	geoserverNSErrors = gs.getData().statusNamespaces();
+    	geoserverNSErrors = dt.statusNamespaces();
     	
     	// setup geoserverDSErrors
-    	geoserverDSErrors = gs.getData().statusDataStores();
+    	geoserverDSErrors = dt.statusDataStores();
 
     	// setup geoserverVPErrors
-    	Map tmpVP = gs.getProcessor().getErrors();
+    	Map tmpVP = gv.getErrors();
     	
     	int g = 0;
     	int b = 0;

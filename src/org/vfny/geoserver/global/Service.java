@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.5 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
  *
  * @see WMS
  * @see WFS
@@ -37,6 +37,9 @@ public abstract class Service extends GlobalLayerSupertype {
 	private String fees;
 	private String accessConstraints;
 	private String maintainer;
+	
+	private GeoServer gs;
+	private Data dt;
 
     /**
      * Service constructor.
@@ -63,6 +66,29 @@ public abstract class Service extends GlobalLayerSupertype {
         accessConstraints = dto.getAccessConstraints();
         maintainer = dto.getMaintainer();
         onlineResource = dto.getOnlineResource();
+    }
+    
+    /**
+     * load purpose.
+     * <p>
+     * loads a new copy of data into this object.
+     * </p>
+     * @param dto
+     */
+    public void load(ServiceDTO dto) {
+    	if (dto == null) {
+    		throw new NullPointerException();
+    	}
+
+    	enabled = dto.isEnabled();
+    	name = dto.getName();
+    	title = dto.getTitle();
+    	serverAbstract = dto.getAbstract();
+    	keywords = dto.getKeywords();
+    	fees = dto.getFees();
+    	accessConstraints = dto.getAccessConstraints();
+    	maintainer = dto.getMaintainer();
+    	onlineResource = dto.getOnlineResource();
     }
 
     /**
@@ -201,4 +227,40 @@ public abstract class Service extends GlobalLayerSupertype {
     	dto.setTitle(title);
     	return dto;
     }
+	/**
+	 * Access dt property.
+	 * 
+	 * @return Returns the dt.
+	 */
+	public Data getData() {
+		return dt;
+	}
+
+	/**
+	 * Set dt to dt.
+	 *
+	 * @param dt The dt to set.
+	 */
+	void setData(Data dt) {
+		this.dt = dt;
+	}
+
+	/**
+	 * Access gs property.
+	 * 
+	 * @return Returns the gs.
+	 */
+	public GeoServer getGeoServer() {
+		return gs;
+	}
+
+	/**
+	 * Set gs to gs.
+	 *
+	 * @param gs The gs to set.
+	 */
+	void setGeoServer(GeoServer gs) {
+		this.gs = gs;
+	}
+
 }

@@ -8,6 +8,9 @@ import org.geotools.validation.ValidationProcessor;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.global.WMS;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -51,12 +54,56 @@ public final class Requests {
      *
      * @return GeoServer instance for the current Web Application
      */
-    public static GeoServer getGeoServer(HttpServletRequest request) {
-        ServletRequest req = request;
-        HttpSession session = request.getSession();
-        ServletContext context = session.getServletContext();
+    /*public static GeoServer getGeoServer(HttpServletRequest request) {
+        return (GeoServer) getWFS(request).getGeoServer();
+    }*/
+    /**
+     * Aquire WFS from Web Container.
+     * 
+     * <p>
+     * In WFS is create by a STRUTS plug-in and is available through the
+     * Web container.
+     * </p>
+     * 
+     * <p>
+     * Test cases may seed the request object with a Mock WebContainer and a
+     * Mock GeoServer.
+     * </p>
+     *
+     * @param request HttpServletRequest used to aquire servlet context
+     *
+     * @return WFS instance for the current Web Application
+     */
+    public static WFS getWFS(HttpServletRequest request) {
+    	ServletRequest req = request;
+    	HttpSession session = request.getSession();
+    	ServletContext context = session.getServletContext();
 
-        return (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+    	return (WFS) context.getAttribute(WFS.WEB_CONTAINER_KEY);
+    }
+    /**
+     * Aquire WMS from Web Container.
+     * 
+     * <p>
+     * In WMS is create by a STRUTS plug-in and is available through the
+     * Web container.
+     * </p>
+     * 
+     * <p>
+     * Test cases may seed the request object with a Mock WebContainer and a
+     * Mock GeoServer.
+     * </p>
+     *
+     * @param request HttpServletRequest used to aquire servlet context
+     *
+     * @return WMS instance for the current Web Application
+     */
+    public static WMS getWMS(HttpServletRequest request) {
+    	ServletRequest req = request;
+    	HttpSession session = request.getSession();
+    	ServletContext context = session.getServletContext();
+
+    	return (WMS) context.getAttribute(WMS.WEB_CONTAINER_KEY);
     }
 
     /**
@@ -76,9 +123,9 @@ public final class Requests {
      *
      * @return ValidationProcessor instance for the current Web Application
      */
-    public static ValidationProcessor getValidationProcessor(HttpServletRequest request) {
-        return  getGeoServer(request).getProcessor();
-    }
+    /*public static ValidationProcessor getValidationProcessor(HttpServletRequest request) {
+        return  getWFS(request).getValidation();
+    }*/
 
     public static String getBaseUrl(HttpServletRequest httpServletRequest) {
         return "http://" + httpServletRequest.getServerName() + ":"

@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.11 2004/02/02 23:17:34 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.12 2004/02/09 23:11:36 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -56,7 +56,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         attributes.addAttribute("", "version", "version", "", CUR_VERSION);
         attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
 
-        NameSpaceInfo[] namespaces = request.getGeoServer().getData()
+        NameSpaceInfo[] namespaces = request.getWFS().getData()
                                             .getNameSpaces();
 
         for (int i = 0; i < namespaces.length; i++) {
@@ -204,7 +204,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
         endElement("Operations");
 
-        Collection featureTypes = request.getGeoServer().getData()
+        Collection featureTypes = request.getWFS().getData()
                                          .getFeatureTypeInfos().values();
         FeatureTypeInfo ftype;
 

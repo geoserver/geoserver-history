@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.8 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.9 2004/02/09 23:11:36 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -65,7 +65,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     public TransactionFeatureHandler(TransactionFilterHandler parent, Request r) {
         super(parent);
         this.parent = parent;
-        catalog = r.getGeoServer().getData();
+        catalog = r.getWFS().getData();
     }
 
     /**

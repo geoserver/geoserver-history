@@ -7,6 +7,7 @@ package org.vfny.geoserver.responses.wms;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
@@ -26,7 +27,7 @@ import java.util.List;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.6 2004/01/31 00:27:29 jive Exp $
+ * @version $Id: GetMapResponse.java,v 1.7 2004/02/09 23:11:36 dmzwiers Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
@@ -90,7 +91,7 @@ public class GetMapResponse implements Response {
      *
      * @param gs DOCUMENT ME!
      */
-    public void abort(GeoServer gs) {
+    public void abort(Service gs) {
         if (delegate != null) {
             delegate.abort(gs);
         }

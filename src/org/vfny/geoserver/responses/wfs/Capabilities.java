@@ -14,18 +14,16 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.5 2004/01/31 00:27:25 jive Exp $
+ * @version $Id: Capabilities.java,v 1.6 2004/02/09 23:11:36 dmzwiers Exp $
  */
-public class Capabilities extends CapabilitiesResponse {
+public abstract class Capabilities extends CapabilitiesResponse {
     protected Service getGlobalService() {
-        //return GeoServer.getInstance().getWMS();
-        // JG - that was a mistake right?
         if (request == null) {
             throw new IllegalStateException(
                 "Call execute before get getGlobalService!");
         }
 
-        return request.getGeoServer().getWFS();
+        return request.getWFS();
     }
 
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
