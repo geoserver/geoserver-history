@@ -4,19 +4,20 @@
  */
 package org.vfny.geoserver.global;
 
+import org.vfny.geoserver.global.Log4JFormatter;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.vfny.geoserver.global.Log4JFormatter;
+
 
 /**
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.19 2004/04/07 13:35:34 cholmesny Exp $
+ * @version $Id: GeoServer.java,v 1.20 2004/04/20 18:55:26 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -319,13 +320,13 @@ public class GeoServer extends GlobalLayerSupertype {
      * getSchemaBaseUrl purpose.
      * 
      * <p>
-     * The Schema Base URL for this instance.  This should generally be a
-     * local reference, as GeoServer by default puts up the schemas that it
-     * needs and references them.  It could be used to specify an alternate
-     * site for the schemas, however, for example if a user didn't want their
-     * servlet container hit every time someone did a validation, they could
-     * instead store it on another machine.  I don't really know if this is
-     * useful to anyone...
+     * The Schema Base URL for this instance.  This should generally be a local
+     * reference, as GeoServer by default puts up the schemas that it needs
+     * and references them.  It could be used to specify an alternate site for
+     * the schemas, however, for example if a user didn't want their servlet
+     * container hit every time someone did a validation, they could instead
+     * store it on another machine.  I don't really know if this is useful to
+     * anyone...
      * </p>
      *
      * @return String the Schema Base URL for this instance.
@@ -379,8 +380,8 @@ public class GeoServer extends GlobalLayerSupertype {
             contactPosition = dto.getContact().getContactPosition();
             contactVoice = dto.getContact().getContactVoice();
             loggingLevel = dto.getLoggingLevel();
-			Log4JFormatter.init("org.geotools", loggingLevel);
-			Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
+            Log4JFormatter.init("org.geotools", loggingLevel);
+            Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
             maxFeatures = dto.getMaxFeatures();
             numDecimals = dto.getNumDecimals();
             schemaBaseUrl = dto.getSchemaBaseUrl();
@@ -392,8 +393,6 @@ public class GeoServer extends GlobalLayerSupertype {
                 "load(GeoServerDTO) expected a non-null value");
         }
     }
-
-    
 
     /**
      * toDTO purpose.
@@ -432,6 +431,7 @@ public class GeoServer extends GlobalLayerSupertype {
         cdto.setContactPerson(contactPerson);
         cdto.setContactPosition(contactPosition);
         cdto.setContactVoice(contactVoice);
+
         return dto;
     }
 
@@ -481,16 +481,25 @@ public class GeoServer extends GlobalLayerSupertype {
 
         return null;
     }
-    
-	public String toString() {
-		StringBuffer geoserver = new StringBuffer("[GeoServer: \n");
-		geoserver.append("   maxFeatures - " + maxFeatures);
-		geoserver.append("\n   verbose - " + verbose);
-		geoserver.append("\n   numDecimals - " + numDecimals);
-		geoserver.append("\n   charSet - " + charSet);
-		geoserver.append("\n   loggingLevel - " + loggingLevel);
-		geoserver.append("\n   adminUserName - " + adminUserName);
-		geoserver.append("\n   adminPassword - " + adminPassword);
-		return geoserver.toString();
-	}
+
+    public String getAdminUserName() {
+        return adminUserName;
+    }
+
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    public String toString() {
+        StringBuffer geoserver = new StringBuffer("[GeoServer: \n");
+        geoserver.append("   maxFeatures - " + maxFeatures);
+        geoserver.append("\n   verbose - " + verbose);
+        geoserver.append("\n   numDecimals - " + numDecimals);
+        geoserver.append("\n   charSet - " + charSet);
+        geoserver.append("\n   loggingLevel - " + loggingLevel);
+        geoserver.append("\n   adminUserName - " + adminUserName);
+        geoserver.append("\n   adminPassword - " + adminPassword);
+
+        return geoserver.toString();
+    }
 }
