@@ -40,7 +40,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.5 2004/01/08 18:05:42 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.6 2004/01/09 00:19:05 emperorkefka Exp $
  */
 public class DataConfig{
 	public static final String CONFIG_KEY = "Config.Data";
@@ -506,5 +506,18 @@ public class DataConfig{
 			styles = new HashMap();
 		return (StyleConfig)styles.remove(key);
 	}
-
+	//
+	// Dynamic Methods
+	//
+	/**
+	 * TODO: Jody get me the real information!
+	 */
+	public List listDataStoreFactoryNames(){
+		List list = new ArrayList();
+		list.add("postgis");
+		list.add("shapefile");
+		
+		return list;
+	}
+	
 }
