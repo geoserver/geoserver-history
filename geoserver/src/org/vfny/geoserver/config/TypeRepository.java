@@ -66,16 +66,23 @@ public class TypeRepository {
      * Returns a capabilities XML fragment for a specific feature type.
      * @param version The version of the request (0.0.14 or 0.0.15)
      */ 
-    public TypeInfo getType(String typeName) { 
+    public TypeInfo getType(String typeName) {
         return (TypeInfo) types.get(typeName);
     }
 
     /**
-     * Returns a capabilities XML fragment for a specific feature type.
-     * @param type The version of the request (0.0.14 or 0.0.15)
+     * Adds a type to the repository, reading from the path given.
+     * @param pathToTypeInfo the path to an info.xml file.
      */ 
-    private void addType(TypeInfo type) { 
-        types.put(type.getName(), type);
+    private void addType(String pathToTypeInfo) { 
+	TypeInfo type = new TypeInfo(pathToTypeInfo);
+	if (type.getName() != null) {
+	    types.put(type.getName(), type);
+	} else {
+	    LOG.warning("Geoserver did not successfull read the feature" +
+			" info.xml file at " + pathToTypeInfo + ".  Please " + 
+			"make sure all elements are in info.xml");
+	}
     }
 
     /**
@@ -87,15 +94,15 @@ public class TypeRepository {
 
 
     /**
-     * Returns a capabilities XML fragment for a specific feature type.
-     * @param typeName The version of the request (0.0.14 or 0.0.15)
+     * Inidicates whether a featureType has been locked.
+     * @param typeName the name of the feature to check for a lock.
      */ 
     public boolean isLocked(String typeName) {        
         return lockedFeatures.containsKey(typeName);
     }
 
     /**
-     * Gets rid of all lockedFeatures held by this repository.  Used currently as a
+     * Gets rid of all lockedFeatures held by this repository.  Used as a
      * convenience method for unit tests, but should eventually be used by
      * an admin tool to clear unclosed lockedFeatures.
      */
@@ -104,6 +111,13 @@ public class TypeRepository {
 	locks = new HashMap();
     }
 
+    /**
+     * indicates whether the lockId is the one that currently locks the
+     * passed in typeName.
+     *
+     * @param typeName the featureType name to test the lockId against.
+     * @param lockId the string of the id of the lock.
+     */
     public boolean isCorrectLock(String typeName, String lockId){
 	if(lockedFeatures.containsKey(typeName)) { 
 	    String targetLockId = ((InternalLock)lockedFeatures.get(typeName)).getId();
@@ -113,13 +127,22 @@ public class TypeRepository {
 	}
     }
 
+    /**
+     * A convenience method to lock a typeName for the default expiry
+     * length of time.
+     *
+     * @param typeName the name of the featureType to lock.
+     * @return  the id string of the lock, if successful, null otherwise.
     public synchronized String lock(String typeName){
-	return lock(typeName, 200);
+	return lock(typeName, -1);
     }
 
     /**
-     * Returns a capabilities XML fragment for a specific feature type.
-     * @param typeName The version of the request (0.0.14 or 0.0.15)
+     * Locks the given typeName for a length of expiry minutes.
+     *
+     * @param typeName the name of the featureType to lock.
+     * @param expiry the length in minutes to lock the featureType for.
+     * @return the id string of the lock, if successful, null otherwise.
      */ 
     public synchronized String lock(String typeName, int expiry){        
         if(lockedFeatures.containsKey(typeName)) {
@@ -215,18 +238,29 @@ public class TypeRepository {
                 readTypes(file[i], config);
             } 
         } else if(isInfoFile(currentFile, config)) {
-            LOG.finest("adding: " + currentFile.getAbsolutePath());
-            addType(new TypeInfo(currentFile.getAbsolutePath()));
+	    String curPath = currentFile.getAbsolutePath();
+            LOG.finest("adding: " + curPath);
+	    addType(curPath);
+	    
+
         }
     }
 
+    /**
+     * tests whether a given file is a file containing type information.
+     *
+     * @param testFile the file to test.
+     * @param config holds information as to the info file format.
+     */
     private static boolean isInfoFile(File testFile, ConfigInfo config){
         String testName = testFile.getAbsolutePath();
         int start = testName.length() - config.INFO_FILE.length();
         int end = testName.length();
         return testName.substring(start, end).equals(config.INFO_FILE);
     }
-
+    
+    /**
+     * Override of toString method. */
     public String toString() {
         StringBuffer returnString = new StringBuffer("\n  TypeRepository:");
         Collection typeList = types.values();
@@ -260,12 +294,16 @@ public class TypeRepository {
 	/** If no expiry is set then default to a day.*/
 	public static final int DEFAULT_EXPIRY = 1440;
 	
+	/** to turn from expiry minutes to timer milliseconds */
 	private static final int MILLISECONDS_PER_MINUTE = 1000 * 60;
 
+	/** The Timer that keeps track of when to expire */
 	private Timer expiryTimer = new Timer(true);
 	
+	/** The task that performs the expire when the time is up*/
 	private ExpireTask expiry = new ExpireTask();
 
+	/** The length of the expiry*/
 	private int expiryTime;
 
 	/** The string used to access this lock. */
@@ -287,10 +325,18 @@ public class TypeRepository {
 	    expiryTimer.schedule(expiry, expiryTime);
 	}
 	
+	/** 
+	 * Gets the lockId string
+	 * @return the lockId */
 	public String getId(){
 	    return lockId;
 	}
-
+	
+	/**
+	 * Adds a feature type to this internal lock.
+	 * TODO: test with multiple featureTypes in one lock, with SOME 
+	 * release action.
+	 */
 	public void addFeatureType(String typeName){
 	    featureTypes.add(typeName); 
 	    lockedFeatures.put(typeName, this);
@@ -298,6 +344,9 @@ public class TypeRepository {
 
 	//public void getFeatureTypes
 
+	/**
+	 * clears this lock and everything that it holds.
+	 */
 	public void release(){
 	    Iterator featureIter = featureTypes.iterator();
 	    while(featureIter.hasNext()){
@@ -308,6 +357,15 @@ public class TypeRepository {
 	    
 	}
 
+	/**
+	 * unlocks based on the releaseAll action.  If true then everything
+	 * held by this lock is released, if not, then only the typeName
+	 * featureType is.
+	 *
+	 * @param typeName the name of the featureType to unlock.
+	 * @param releaseAll if true then get rid of this lock, if false then
+	 * this only unlocks the feature of typeName.
+	 */
 	public void unlock(String typeName, boolean releaseAll){
 	    if (releaseAll) {
 		this.release();

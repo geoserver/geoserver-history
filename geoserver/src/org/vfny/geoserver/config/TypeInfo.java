@@ -38,10 +38,13 @@ public class TypeInfo {
     public TypeInfo(String typeName) {
 	LOG.finest("reading typeinfo for " + typeName);
         readTypeInfo(typeName);
+	
     }
     
     /** Fetches the feature type name (also the table name)  */
-    public String getName() { return internalType.getName(); }
+    public String getName() { 
+	return (internalType == null) ? null : internalType.getName(); 
+    }
     
     /** Fetches the feature type abstract */
     public String getAbstract() { return internalType.getAbstract(); }
@@ -141,7 +144,7 @@ public class TypeInfo {
 	if (!version.startsWith("0.0.1")) {
 	    //REVISIT: get this elsewhere?  Make sure that myns is
 	    //declared in the capabilities document returned.
-	    name = "myns:" + name;
+	    //name = "myns:" + name;
 	}
 	tempResponse.append("      <Name>" + name + "</Name>\n");
         tempResponse.append("      <Title>" + 
