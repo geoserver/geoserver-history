@@ -9,8 +9,11 @@ import java.util.*;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
 import org.geotools.data.DataSource;
+import org.geotools.data.QueryImpl;
+import org.geotools.data.Query;
 import org.geotools.data.DataSourceException;
 import org.geotools.feature.Feature;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.vfny.geoserver.requests.TransactionRequest;
 import org.vfny.geoserver.requests.SubTransactionRequest;
@@ -308,7 +311,8 @@ public class TypeRepository {
 	    getType(typeName).getDataSource(new ArrayList(), 1000000);
 	Feature[] features = null;
 	try {
-	    features = data.getFeatures(filter).getFeatures();
+	    QueryImpl query = new QueryImpl(null, new AttributeType[0]); 
+	    features = data.getFeatures(query).getFeatures();
 	} catch(DataSourceException e) {
 	    throw new WfsException(e, "DataSource problem checking lock: ",
 				   "at featureType: " + typeName);
