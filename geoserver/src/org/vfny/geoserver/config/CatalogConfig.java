@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.10 2003/12/03 20:49:59 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.11 2003/12/04 23:30:13 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
     /** DOCUMENT ME! */
@@ -110,7 +110,7 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
         }
 
         LOGGER.info("loading DataStore configuration");
-	Iterator iter = DataStoreFinder.getAvailableDataSources();
+	Iterator iter = DataStoreFinder.getAvailableDataStores();
 
         while (iter.hasNext()) {
             LOGGER.fine(iter.next() + " is an available DataSource");

@@ -19,7 +19,7 @@ import javax.xml.parsers.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.9 2003/12/04 19:28:25 cholmesny Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.10 2003/12/04 23:30:14 cholmesny Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -73,7 +73,7 @@ public class ServerConfig extends AbstractConfig {
         String dataDir = rootDir + DATA_DIR;
         String featureTypeDir = dataDir + "featureTypes";
 
-        Iterator iter = DataStoreFinder.getAvailableDataSources();
+        Iterator iter = DataStoreFinder.getAvailableDataStores();
 
         while (iter.hasNext()) {
             LOGGER.config(iter.next() + " is an available DataSource");
