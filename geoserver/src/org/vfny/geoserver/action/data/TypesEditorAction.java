@@ -64,6 +64,9 @@ public class TypesEditorAction extends ConfigAction {
         TypesEditorForm typeForm = (TypesEditorForm) form;        
         String action = typeForm.getAction();
         System.out.println("TypesEditorAction is "+action );
+        if( action.equals("Submit")){
+            return executeSubmit(mapping, typeForm, user, request);
+        }
         if( action.startsWith("Up")){
             // TODO: implement Attribute Up
         }
@@ -73,25 +76,22 @@ public class TypesEditorAction extends ConfigAction {
         if( action.startsWith("remove")){
             // TODO: implement Attribute Remove            
         }
-        if( action.equals("Submit")){
-        	return executeSubmit(mapping, typeForm, user, request);
-        }        
+        
+        // Update, Up, Down, All need to resync
+        sync( typeForm, user.getFeatureTypeConfig() );
+        form.reset( mapping, request );
         return mapping.findForward("config.data.type.editor");        
     }    
-    
     /**
-     * Execute Submit Action.
-     * 
-	 * @param mapping
-	 * @param form
-	 * @param user
-	 * @param request
-	 * @return
-	 */
-	private ActionForward executeSubmit(ActionMapping mapping, TypesEditorForm form, UserContainer user, HttpServletRequest request) {
-        FeatureTypeConfig config = user.getFeatureTypeConfig();
-        //TODO - RETRIEVE featuretype config from user
-
+     * Sync generated attributes with schemaBase.
+     * @param mapping
+     * @param form
+     * @param user
+     * @param request
+     * @return
+     */
+    private void sync(TypesEditorForm form, FeatureTypeConfig config ) {
+        
         config.setAbstract(form.getAbstract());
         config.setName(form.getName());
         config.setSRS(Integer.parseInt(form.getSRS()));
@@ -118,8 +118,20 @@ public class TypesEditorAction extends ConfigAction {
             }
         }
         form.getAttributes();
-        
-        config.setSchemaAttributes( form.toSchemaAttributes() );
+        config.setSchemaAttributes( form.toSchemaAttributes() );                
+    }
+    /**
+     * Execute Submit Action.
+     * 
+	 * @param mapping
+	 * @param form
+	 * @param user
+	 * @param request
+	 * @return
+	 */
+	private ActionForward executeSubmit(ActionMapping mapping, TypesEditorForm form, UserContainer user, HttpServletRequest request) {
+        FeatureTypeConfig config = user.getFeatureTypeConfig();
+        sync( form, config );
 
         DataConfig dataConfig = (DataConfig) getDataConfig();        
         dataConfig.addFeatureType( config.getName(), config );
