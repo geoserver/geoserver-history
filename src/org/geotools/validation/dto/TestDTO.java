@@ -7,7 +7,9 @@
 package org.geotools.validation.dto;
 
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 /**
  * TestDTO purpose.
  * <p>
@@ -31,7 +33,7 @@ import java.util.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestDTO.java,v 1.1 2004/01/14 22:54:26 dmzwiers Exp $
+ * @version $Id: TestDTO.java,v 1.2 2004/01/15 01:14:44 dmzwiers Exp $
  */
 public class TestDTO {
 	

@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -46,7 +45,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.3 2004/01/14 22:54:26 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.4 2004/01/15 01:14:34 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
