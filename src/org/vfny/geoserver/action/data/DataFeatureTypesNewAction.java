@@ -9,12 +9,16 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
+import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesNewForm;
+
+import com.vividsolutions.jts.geom.Envelope;
+
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,8 +49,8 @@ import javax.servlet.http.HttpServletResponse;
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.4 2004/01/31 00:27:24 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataFeatureTypesNewAction.java,v 1.5 2004/02/02 21:21:06 dmzwiers Exp $
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
@@ -84,6 +88,21 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         // SRID number is?
         //
         ftConfig.setSRS(0);
+        FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+        Envelope ev = fs.getBounds();
+        if(ev == null || ev.isNull()){
+        	try{
+        		ev = fs.getFeatures().getBounds();
+        	}catch(Throwable t){
+        		ev = null;
+        	}
+        }
+        
+        // TODO translate to lat long, pending
+        ftConfig.setLatLongBBox(ev);
+        
+        //Extent ex = featureType.getDefaultGeometry().getCoordinateSystem().etValidArea();
+        //ftConfig.setLatLongBBox(ex);
 
         request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE,
             ftConfig);
