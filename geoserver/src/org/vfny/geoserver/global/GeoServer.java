@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServlet;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.3 2004/01/05 23:57:30 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.1.2.4 2004/01/06 00:51:11 emperorkefka Exp $
  */
 public class GeoServer extends Abstract implements org.apache.struts.action.PlugIn{
 	
@@ -444,7 +444,7 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
     	try{
 			File f = new File(rootDir);
 			XMLConfigReader cr = new XMLConfigReader(f);
-		
+			sc.setAttribute(NAME,this);
 			if(cr.isInitialized()){	
 				geoServer = cr.getGeoServer();
 				wfs = new WFS(cr.getWfs());
@@ -454,8 +454,9 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
 			}else
 				throw new ConfigurationException("An error occured loading the initial configuration.");
     	}catch(ConfigurationException e){
+			sc.setAttribute(NAME,null);
     		throw new ServletException(e);
     	}
-		sc.setAttribute(NAME,this);
+		//sc.setAttribute(NAME,this);
     }
 }

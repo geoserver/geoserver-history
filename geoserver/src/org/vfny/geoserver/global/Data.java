@@ -23,13 +23,14 @@ import org.geotools.styling.SLDStyle;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.global.dto.*;
+import java.util.HashMap;
 
 /**
  * Holds the featureTypes.  Replaced TypeRepository.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.3 2004/01/06 00:51:11 emperorkefka Exp $
  */
 public class Data extends Abstract
 /**
@@ -46,7 +47,7 @@ public class Data extends Abstract
 	private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
 
     /** The holds the mappings between prefixes and uri's */
-    private Map NameSpaces;
+    private Map nameSpaces;
 
     /** DOCUMENT ME! */
     private NameSpace defaultNameSpace;
@@ -70,6 +71,11 @@ public class Data extends Abstract
     public Data(DataDTO config) throws ConfigurationException {
     	catalog = config;
 
+		nameSpaces = new HashMap();
+		dataStores = new HashMap();
+		styles = new HashMap();
+		featureTypes = new HashMap();
+		
     	Iterator i = config.getDataStores().keySet().iterator();
     	while(i.hasNext()){
     		Object key = i.next();
@@ -86,7 +92,7 @@ public class Data extends Abstract
 		i = config.getNameSpaces().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			NameSpaces.put(key,new NameSpace((NameSpace)config.getNameSpaces().get(key)));
+			nameSpaces.put(key,new NameSpace((NameSpaceDTO)config.getNameSpaces().get(key)));
 		}
 
 		i = config.getStyles().keySet().iterator();
@@ -158,9 +164,9 @@ public class Data extends Abstract
      * @return DOCUMENT ME!
      */
     public NameSpace[] getNameSpaces() {
-        NameSpace[] ns = new NameSpace[NameSpaces.values().size()];
+        NameSpace[] ns = new NameSpace[nameSpaces.values().size()];
 
-        return (NameSpace[]) new ArrayList(NameSpaces.values()).toArray(ns);
+        return (NameSpace[]) new ArrayList(nameSpaces.values()).toArray(ns);
     }
 
     /**
@@ -171,7 +177,7 @@ public class Data extends Abstract
      * @return DOCUMENT ME!
      */
     public NameSpace getNameSpace(String prefix) {
-        NameSpace retNS = (NameSpace) NameSpaces.get(prefix);
+        NameSpace retNS = (NameSpace) nameSpaces.get(prefix);
 
         return retNS;
     }

@@ -57,7 +57,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.3 2004/01/06 00:21:25 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.4 2004/01/06 00:51:11 emperorkefka Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -606,7 +606,7 @@ public class XMLConfigReader {
 			File[] file = featureTypeDir.listFiles();
 			for (int i = 0, n = file.length; i < n; i++) {
 				LOGGER.fine("Info dir:"+file[i].toString());
-				FeatureTypeInfoDTO ft = loadFeature(new File(file[i],"config.xml"));
+				FeatureTypeInfoDTO ft = loadFeature(new File(file[i],"info.xml"));
 				featureTypes.put(ft.getName(), ft);
 			}
 		}
@@ -631,11 +631,14 @@ public class XMLConfigReader {
 			File parentDir = infoFile.getParentFile();
 			ft = loadFeaturePt2(featureElem);
 			ft.setDirName(parentDir.getName());
-
+try{
 			File pathToSchemaFile = new File(parentDir, "schema.xml");
 			LOGGER.finest("pathToSchema is " + pathToSchemaFile);
 			ft.setSchema(loadSchema(pathToSchemaFile));
 			LOGGER.finer("added featureType " + ft.getName());
+}catch(Exception e){
+	LOGGER.fine("error" + e);
+}
 			
 			return ft;
 		}
@@ -779,16 +782,17 @@ public class XMLConfigReader {
 	 * @throws ConfigurationException When an error occurs.
 	 */
 	protected String loadSchema(File path) throws ConfigurationException{
-		path = ReaderUtils.initFile(path, false);
 		StringBuffer sb = new StringBuffer();
 		try{
+			path = ReaderUtils.initFile(path, false);
 			FileReader fr = new FileReader(path);
 			BufferedReader br = new BufferedReader(fr);
 			while(br.ready()){
 				sb.append(br.readLine()+"\n");
 			}
 		}catch(IOException e){
-			throw new ConfigurationException(e);
+			//throw new ConfigurationException(e);
+			return "";
 		}
 		return sb.toString();
 	}
@@ -890,7 +894,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.3 2004/01/06 00:21:25 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.4 2004/01/06 00:51:11 emperorkefka Exp $
  */
 class ReaderUtils{
 	/**
