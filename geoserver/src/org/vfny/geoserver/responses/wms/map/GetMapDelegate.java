@@ -4,12 +4,7 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
@@ -32,17 +27,52 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * Base class for delegates who creates a map based on a GetMap request.
- * Subclasses should implement one or more output format
+ * Subclasses should implement one or more output formats, wich will be
+ * returned in a list of mime type strings in <code>getSupportedFormats</code>
+ *
+ * <p>
+ * this abstract class takes care of executing the request in the sense of
+ * taking the GetMap request parameters such as layers, bbox, styles and the
+ * optional parameter FILTER, create the gt2 query objects for each
+ * featuretype and executing it. This process leads to a set of FeatureResults
+ * objects and its metadata, wich will be given to the
+ * <code>execute(FeatureTypeInfo[] , FeatureResults[], Style[])</code> method,
+ * that a subclass should implement as a matter of setting up any
+ * resource/state it needs to later encoding.
+ * </p>
+ *
+ * <p>
+ * So, it should be enough to a subclass to implement the following methods in
+ * order to produce the requested output format:
+ *
+ * <ul>
+ * <li>
+ * execute(FeatureTypeInfo[], FeatureResults[], Style[])
+ * </li>
+ * <li>
+ * canProduce(String mapFormat)
+ * </li>
+ * <li>
+ * getSupportedFormats()
+ * </li>
+ * <li>
+ * writeTo(OutputStream)
+ * </li>
+ * </ul>
+ * </p>
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.10 2004/02/09 23:29:44 dmzwiers Exp $
+ * @version $Id: GetMapDelegate.java,v 1.11 2004/03/14 16:15:22 groldan Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -80,7 +110,6 @@ public abstract class GetMapDelegate implements Response {
         Style[] styles = buildStyles(request.getStyles(), request.getWMS());
         Filter[] filters = request.getFilters();
         List attributes = request.getAttributes();
-
         Query[] queries = buildQueries(layers, filters, attributes);
         int nLayers = layers.length;
         FeatureResults[] resultLayers = new FeatureResults[nLayers];
@@ -101,6 +130,12 @@ public abstract class GetMapDelegate implements Response {
 
         execute(layers, resultLayers, styles);
     }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param gs DOCUMENT ME!
+     */
     public void abort(Service gs) {
     }
 
@@ -136,7 +171,6 @@ public abstract class GetMapDelegate implements Response {
         int nLayers = layers.length;
         int numFilters = (filters == null) ? 0 : filters.length;
         int numAttributes = attributes.size();
-
         Query[] queries = new Query[nLayers];
         GetMapRequest request = getRequest();
         Envelope requestExtent = request.getBbox();
@@ -161,7 +195,6 @@ public abstract class GetMapDelegate implements Response {
 
                 List layerProperties = (numAttributes == nLayers)
                     ? (List) attributes.get(i) : Collections.EMPTY_LIST;
-
                 String[] props = guessProperties(layers[i], finalLayerFilter,
                         layerProperties);
                 layerQuery = new DefaultQuery(finalLayerFilter, props);
@@ -215,6 +248,16 @@ public abstract class GetMapDelegate implements Response {
         return finalLayerFilter;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param styleNames DOCUMENT ME!
+     * @param gs DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws WmsException DOCUMENT ME!
+     */
     protected Style[] buildStyles(List styleNames, WMS gs)
         throws WmsException {
         Style[] styles = new Style[styleNames.size()];
@@ -233,14 +276,14 @@ public abstract class GetMapDelegate implements Response {
      * given FeatureTypeInfo and the Filter that will be applied to it. By
      * this way, only the needed propertied will be queried to the underlying
      * FeatureSource in the hope that it will speed up the query
-     * 
+     *
      * <p>
      * Note that just the attributes exposed by the FeatureTypeInfo will be
      * taken in count. a FeatureTypeInfo exposes all it's attributes except if
      * the subset of desiref exposed attributes are specified in the catalog
      * configuration.
      * </p>
-     * 
+     *
      * <p>
      * This method guarantiees that at lest the default geometry attribute of
      * <code>layer</code> will be returned.

@@ -4,42 +4,40 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Logger;
+import org.geotools.data.*;
 
-import org.geotools.data.FeatureResults;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.*;
+import org.geotools.styling.*;
+import org.vfny.geoserver.responses.wms.map.svg.*;
+import org.vfny.geoserver.*;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-
+import org.vfny.geoserver.responses.Response;
+import java.io.*;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.8 2004/03/10 23:39:06 groldan Exp $
+ * @version $Id: SVGMapResponse.java,v 1.9 2004/03/14 16:15:22 groldan Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
 
-    /** DOCUMENT ME! */
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
+    /** DOCUMENT ME!  */
     private static final String MIME_TYPE = "image/svg+xml";
-    private SVGEncoder svgEncoder;
-    private FeatureTypeInfo[] requestedLayers;
-    private FeatureResults[] resultLayers;
-    private Style[] styles;
+
+    private EncodeSVG svgEncoder;
+
+    public SVGMapResponse(){
+
+    }
 
     /**
      * DOCUMENT ME!
-     *
-     * @param gs DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
@@ -47,34 +45,37 @@ public class SVGMapResponse extends GetMapDelegate {
         return MIME_TYPE;
     }
 
-    public String getContentEncoding()
-    {
+    public String getContentEncoding(){
       return null;
     }
 
-    public List getSupportedFormats() {
-        return Collections.singletonList(MIME_TYPE);
+    public List getSupportedFormats()
+    {
+      return Collections.singletonList(MIME_TYPE);
     }
 
     /**
-     * evaluates if this Map producer can generate the map format specified by
-     * <code>mapFormat</code>
+     * evaluates if this Map producer can generate the map format specified
+     * by <code>mapFormat</code>
      *
      * @param mapFormat the mime type of the output map format requiered
      *
      * @return true if class can produce a map in the passed format
      */
-    public boolean canProduce(String mapFormat) {
-        return mapFormat.startsWith("image/svg");
+    public boolean canProduce(String mapFormat)
+    {
+      return mapFormat.startsWith("image/svg");
     }
 
-    public void abort(GeoServer gs) {
-        LOGGER.fine("aborting SVG map response");
 
-        if (svgEncoder != null) {
-            LOGGER.info("aborting SVG encoder");
-            svgEncoder.abort();
-        }
+    public void abort()
+    {
+      LOGGER.fine("aborting SVG map response");
+      if(svgEncoder != null)
+      {
+        LOGGER.info("aborting SVG encoder");
+        svgEncoder.abort();
+      }
     }
 
     /**
@@ -90,17 +91,12 @@ public class SVGMapResponse extends GetMapDelegate {
         FeatureResults[] resultLayers, Style[] styles)
         throws WmsException {
         GetMapRequest request = getRequest();
-        this.requestedLayers = requestedLayers;
-        this.resultLayers = resultLayers;
-        this.styles = styles;
-        this.svgEncoder = new SVGEncoder();
 
-        //fast an easy way of configuring the SVG coordinates traslation
-        //I assume that feature results are almost accurate with the bbox requested
-        svgEncoder.setReferenceSpace(getRequest().getBbox());
-        svgEncoder.setWidth(String.valueOf(request.getWidth()));
-        svgEncoder.setHeight(String.valueOf(request.getHeight()));
-        svgEncoder.setWriteHeader(request.getWriteSvgHeader());
+        EncoderConfig encoderData = new EncoderConfig(request,
+                                                      requestedLayers,
+                                                      resultLayers,
+                                                      styles);
+        this.svgEncoder = new EncodeSVG(encoderData);
     }
 
     /**
@@ -109,9 +105,9 @@ public class SVGMapResponse extends GetMapDelegate {
      * @param out DOCUMENT ME!
      *
      * @throws ServiceException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        svgEncoder.encode(requestedLayers, resultLayers, styles, out);
+        svgEncoder.encode(out);
     }
 }
