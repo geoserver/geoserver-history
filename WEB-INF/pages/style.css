@@ -27,6 +27,8 @@ tr.header {
 }
 td.gutter {
  width: 12em;
+ min-width: 12em; 
+ white-space: nowrap; 
 }
 .project {
  font-size: 110%;
@@ -40,7 +42,7 @@ td.gutter {
  font-style: italic;
  color: rgb(102,102,153);
 }
-.service {
+.site {
  font-size: 110%;
  font-weight: bold;
  font-style: normal;
@@ -60,13 +62,13 @@ table.main {
  border-style: solid;
  border-color: black;
  border-spacing: 0;
- background: rgb(102,102,153); 
+ background: rgb(102,102,153);
+ -moz-border-radius: 5px;   
 }
 
 tr.bar {
  color: #ccc;
  vertical-align: center;    
- white-space: nowrap; 
 }
 .bar a:visited,
 .bar a:link {
@@ -78,6 +80,7 @@ tr.bar {
  text-decoration: underline;
 }
 td.locator {
+ white-space: nowrap; 
  padding: 0.5ex 0 0.5ex 1ex; 
  border-width: 0 0 1px 0;
  border-style: solid;
@@ -96,38 +99,58 @@ td.loginStatus {
 span.loginStatus {
  font-size: 90%;
 }
-tr.content {
- padding: 0; 
+td h1.title {
+ font-family: tahoma, verdana, sans, arial, helvetica, sans-serif;
+ font-size: 110%; 
+ white-space: nowrap; 
+ text-align: center;
+ padding: 0;
+ margin: 2px;  
 }
 td.application {
  vertical-align: top;
- background-color: rgb(250,250,250);
+ background-color: rgb(255,255,255);  
+ -moz-border-radius: 0px 0px 5px 5px;  
 }
 td.application h1.title {
- font-size: 110%; 
- white-space: nowrap; 
- text-align: center;
- background-color: rgb(240,240,240); 
- padding: 0;
- margin: 2px;  
+ background-color: rgb(245,245,245); 
 }
 td.maintenance {
  vertical-align: top;
- background-color: rgb(240,240,250);
+ background-color: rgb(240,240,240);
+ -moz-border-radius: 0px 0px 5px 5px;  
 }
 td.maintenance h1.title {
- font-size: 110%; 
- white-space: nowrap; 
- text-align: center;
- background-color: rgb(240,240,240); 
- padding: 0;
- margin: 2px;  
+ background-color: rgb(225,225,225);  
 }
 td.service {
  vertical-align: top;
- background-color: rgb(102, 102, 153);
+ background-color: rgb(220, 220, 220);
+ -moz-border-radius: 0px 0px 5px 5px;  
+}
+td.service h1.title {
+ background-color: rgb(205,205,205);  
 }
 td.data {
  vertical-align: top;
- background-color: rgb(153, 153, 153);
+ background-color: rgb(192, 192, 192);
+ -moz-border-radius: 0px 0px 5px 5px;  
+}
+td.data h1.title {
+ background-color: rgb(180,180,180);  
+}
+
+table.info {
+ text-align: left;
+ vertical-align: top;
+ width: 100%;
+ border: 0;
+}
+table.info td.label {
+ vertical-align: top;
+ text-align: right;
+ width: 14ex;
+}
+table.info td.datum {
+ vertical-align: top;
 }

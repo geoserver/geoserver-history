@@ -65,31 +65,53 @@
           <tr class="bar">
             <td class="locator">
               <span class="locator">
-                Home
+                <a class="menu" href="MainMenu.do">Home</a> |
+                <a class="menu" href="Service.do">Service</a> |
+                <a href="DataMenu.do">Data</a> |
+                <a href="featureTypeSelect.do">FeatureType</a> |
+                Editor
               </span>              
             </td>
             <td class="loginStatus">
               <span class="loginStatus">
-                <a href="logout">login</a>
+                <a href="logout">logout</a>
               </span>
             </td>
           </tr>
           <tr>
-            <td class="application"
+            <td class="data"
                 rowspan="1" colspan="2">
                 
               <h1 class="title">
-                 Welcome to GeoServer
+                 Feature Type Editor
               </h1>
-            
+              <form>
               <table class="info">
                 <tbody>
                   <tr>
                     <td class="label">
-                      Title:
+                      FeatureType:
                     </td>
                     <td class="datum">
-                      Cite Web Feature Server
+                      bc_roads
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">
+                      Enabled:
+                    </td>
+                    <td class="datum">
+                      <INPUT NAME="enabled" TYPE=checkbox>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">
+                      Namespace:
+                    </td>
+                    <td class="datum">
+                      <SELECT NAME="Namespace">
+                        <OPTION>cite</OPTION>
+                      </SELECT>
                     </td>
                   </tr>
                   <tr>
@@ -97,34 +119,23 @@
                       Description:
                     </td>
                     <td class="datum">
-                      This is a sample page for the look of the end user level
-                      "application". This page should communicate the status of
-                      the WFS and WMS services if they are enabled. Although
-                      if anything is actually wrong the best they can do is
-                      contact the admin listed on the contact page.
-                      <p>
-                      This description is provided by the user, for their
-                      end-user.
-                      </p>                      
+                      <TEXTAREA NAME="description" ROWS=2 COLS=60 WRAP=SOFT>
+Sample description of road feature type, this textarea makes use of line wrapping.
+                      </TEXTAREA>
                     </td>
                   </tr>
-                  <tr>
-                    <td class="label">
-                      Notes:
-                    </td>
+                  
+				  <tr>
+                    <td class="label"></td>
                     <td class="datum">
-                      This is a <b>page</b> of content used for communication.
-                      Not application workflow.
-                      <p>
-                      Where is the workflow? Login access is provided above
-                      (although the user will be asked to login if they try
-                       anything). What we do need are Configuration and Test Servlet links
-                      in a "Actions" menu on the left hand side.
-                      </p>
+                      <BUTTON TYPE="SUBMIT">Submit</BUTTON>
+                      <BUTTON TYPE="RESET">Reset</BUTTON>
+                      <BUTTON TYPE="CANCEL">Cancel</BUTTON>
                     </td>
                   </tr>                  
                 </tbody>
               </table>
+              </form>
             </td>
           </tr>
         </tbody>
