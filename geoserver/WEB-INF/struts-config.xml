@@ -326,11 +326,11 @@
         <action
         	path="/config/validation/index"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.validation"/>
+        	parameter="config.validation.suite"/>
         <action
         	path="/config/validation"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.validation"/>
+        	parameter="config.validation.suite"/>
 
         <action
         	path="/config/validation/suite"
