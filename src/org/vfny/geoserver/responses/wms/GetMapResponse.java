@@ -43,13 +43,14 @@ public class GetMapResponse implements Response {
     static {
         GetMapDelegate producer;
 
+        producer = new JAIMapResponse();
+        supportedMimeTypes.addAll(producer.getSupportedFormats());
+        delegates.add(producer);
+
         producer = new SVGMapResponse();
         supportedMimeTypes.addAll(producer.getSupportedFormats());
         delegates.add(producer);
 
-        producer = new JAIMapResponse();
-        supportedMimeTypes.addAll(producer.getSupportedFormats());
-        delegates.add(producer);
     }
 
     private GetMapDelegate delegate;
@@ -168,8 +169,7 @@ public class GetMapResponse implements Response {
         if (delegateClass == null) {
             throw new WmsException(requestFormat
                 + " is not recognized as an output format for this server. "
-                + "Please consult the Capabilities document",
-                "GetMapResponse.getDelegate");
+                + "Please consult the Capabilities document", "InvalidFormat");
         }
 
         try {
