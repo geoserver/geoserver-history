@@ -63,9 +63,23 @@
    	</definition>
    	
    	<definition name="bodyTest" page="/WEB-INF/pages/bodyLayout.jsp">
-   		<put name="tabs" value="/WEB-INF/pages/tabs.jsp"/>
-   		<put name="selector" value="/WEB-INF/pages/blank.jsp"/>
-   		<put name="editor" value="/WEB-INF/pages/WFSConfigDescription.jsp"/>
+   		<put name="tabs" value="tabTest"/>
+<!--   		<put name="selector" value="/WEB-INF/pages/blank.jsp"/>
+   		<put name="editor" value="/WEB-INF/pages/WFSConfigDescription.jsp"/> 
+   	-->
+   	</definition>
+   	
+   	<definition name="tabTest" page="/WEB-INF/pages/tabsLayout.jsp">
+   		<put name="selectedIndex" value="0"/>
+   		<put name="parameterName" value="selected"/>
+   		<putList name="tabList">
+   			<item value="Description"
+   				link="WFSConfigDescription.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Content"
+   				link="WFSConfigContent.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   		</putList>
    	</definition>
     
 </tiles-definitions>

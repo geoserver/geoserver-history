@@ -7,18 +7,19 @@
 <head>
 <title><tiles:getAsString name="title"/></title>
 <html:base/>
+<LINK rel="stylesheet" type="text/css" href="<html:rewrite forward='baseStyle'/>">
 </head>
 
 <body bgcolor="white">
 
-<table border=1 width=100%>
+<table border=0 width=1024 valign="top">
 	<tr>
 		<td colspan=2>
 			<tiles:insert attribute="header"/>
 		</td>
 	</tr>
 	<tr>
-		<td width=192>
+		<td width=192 valign="top">
 			<tiles:insert attribute="sidebar"/>
 		</td>
 		<td>

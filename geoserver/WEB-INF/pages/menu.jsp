@@ -1,4 +1,9 @@
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
-<bean:message key="label.login"/> 
-<bean:message key="label.logout"/> 
-<bean:message key="label.help"/>	
+<table>
+	<tr><td class="head"><font class="pn-title"> Menu</font></td></tr>
+	<tr><td class="main">
+		<bean:message key="label.login"/> 
+		<bean:message key="label.logout"/> 
+		<bean:message key="label.help"/>	
+	</tr></td>
+</table>
