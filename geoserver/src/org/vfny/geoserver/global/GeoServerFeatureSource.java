@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureSource.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: GeoServerFeatureSource.java,v 1.5 2004/01/21 00:58:29 jive Exp $
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */
@@ -362,7 +362,8 @@ public class GeoServerFeatureSource implements FeatureSource {
         if (definitionQuery == Filter.NONE) {
             return source.getBounds();
         } else {
-            Query query = new DefaultQuery(definitionQuery);
+            Query query = new DefaultQuery(getSchema().getTypeName(),
+                    definitionQuery);
 
             return source.getBounds(query);
         }
