@@ -9,6 +9,29 @@
 ;geoserver-devel@lists.sourceforge.net, and we can write up a better guide and/or
 ;get things working right in ant.
 
+;
+; 
+;
+;  Check the documentation/developer/release guide - but here's a quick howto:
+;1. modify documents/geoserver.nsi so that the info in it correct (ie. version numbers)
+;    + quickly read through the document and make any documentation changes
+;2. build a release (ant release-all) as above
+;3. make a new temporary directory
+;4. uncompress the release/geoserver-1.3.0-beta-src.tar.gz  (or whatever you released) to your temp directory
+;5. move documents/geoserver.nsi up one directory ("geoserver/")
+;6. move the "server/" directory from your development directory geoserver/
+;     + make sure you deployed the correct configuration!
+;7. move RUNNING.txt from the documentation/ directory up one level to the geoserver/ directory
+;8. download and install the nullsoft installer
+;9. run the installer and load the geoserver.nsi file
+;
+;In your temporary directory, you should see a "geoserver-1.3.0-beta.exe"!
+
+;You should install and test this!
+;
+;
+
+
 ;--------------------------------
 ;Include Modern UI
 
