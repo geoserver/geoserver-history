@@ -22,6 +22,7 @@ import com.vividsolutions.jts.geom.Envelope;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -77,7 +78,7 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
             list.add(array[i]);
         }
 
-        config.setKeywords(list);
+        config.setKeywords(new HashSet(list));
 
         if (_default) {
             config.setSchemaAttributes(null);
