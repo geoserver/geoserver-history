@@ -407,7 +407,7 @@ public class FeatureSuite extends TestCase {
         // run test        
         //assertTrue(runXmlTest( baseRequest, "13", true));
      }
-
+    
     /*************************************************************************
      * KVP TESTS                                                             *
      *************************************************************************
@@ -416,7 +416,7 @@ public class FeatureSuite extends TestCase {
      * Tests are run via the static methods in this suite.  The tests        *
      * themselves are quite generic, so documentation is minimal.            *
      *************************************************************************/
-     public void test9() 
+    public void test9() 
         throws Exception {
          String testRequest = "VERSION=0.0.14&" + 
              "REQUEST=GETFEATURE&" + 
@@ -478,18 +478,26 @@ public class FeatureSuite extends TestCase {
         String testRequest = "VERSION=1.0.0&" + 
             "SERVICE=WFS&" + 
             "REQUEST=GETFEATURE&" + 
-            "TYPENAME=rail&" +
-            "FEATUREID=123,456,789";
+	    //           "TYPENAME=rail&" +
+            "FEATUREID=rail.123,rail.456,rail.789";
         
         // make base comparison objects        
-        FidFilter filter = factory.createFidFilter("123");
-        filter.addFid("456");
-        filter.addFid("789");
+	FidFilter filter1 = factory.createFidFilter("rail.123");
+	FidFilter filter2 = factory.createFidFilter("rail.456");
+	FidFilter filter3 = factory.createFidFilter("rail.789");
         Query query = new Query();
         query.setTypeName("rail");
-        query.addFilter(filter);
+        query.addFilter(filter1);
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.addQuery(query);
+	query = new Query();
+        query.setTypeName("rail");
+        query.addFilter(filter2);
+        baseRequest.addQuery(query);
+        query = new Query();
+        query.setTypeName("rail");
+        query.addFilter(filter3);
+	baseRequest.addQuery(query);
         baseRequest.setVersion("1.0.0");
         // run test       
         assertTrue(runKvpTest( baseRequest, testRequest, true));
@@ -500,32 +508,32 @@ public class FeatureSuite extends TestCase {
         String testRequest = "VERSION=1.0.0&" + 
             "SERVICE=WFS&" + 
             "REQUEST=GETFEATURE&" + 
-            "TYPENAME=rail1,rail2,rail3&" +
+            //"TYPENAME=rail1,rail2,rail3&" +
             "PROPERTYNAME=(loc1,id1)(loc2,id2)(loc3,id3)&" +
-            "FEATUREID=123,456,789";
+            "FEATUREID=rail1.123,rail2.456,rail3.789";
         
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.setVersion("1.0.0");
 
-        FidFilter filter = factory.createFidFilter("123");
-        filter.addFid("456");
-        filter.addFid("789");
+        FidFilter filter1 = factory.createFidFilter("rail1.123");
+	FidFilter filter2 = factory.createFidFilter("rail2.456");
+	FidFilter filter3 = factory.createFidFilter("rail3.789");
         Query query = new Query();
         query.setTypeName("rail1");
-        query.addFilter(filter);
+        query.addFilter(filter1);
         query.addPropertyName("loc1");
         query.addPropertyName("id1");
         baseRequest.addQuery(query);
         query = new Query();
         query.setTypeName("rail2");
-        query.addFilter(filter);
+        query.addFilter(filter2);
         query.addPropertyName("loc2");
         query.addPropertyName("id2");
         baseRequest.addQuery(query);
         query = new Query();
         query.setTypeName("rail3");
-        query.addFilter(filter);
+        query.addFilter(filter3);
         query.addPropertyName("loc3");
         query.addPropertyName("id3");
         baseRequest.addQuery(query);
@@ -625,18 +633,22 @@ public class FeatureSuite extends TestCase {
         String testRequest = "VERSION=1.0.0&" + 
             "SERVICE=WFS&" + 
             "REQUEST=GETFEATURE&" + 
-            "TYPENAME=rail&" +
-            "FEATUREID=123,456";
+            //"TYPENAME=rail&" +
+            "FEATUREID=rail.123,rail.456";
         
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.setVersion("1.0.0");
 
-        FidFilter filter = factory.createFidFilter("123");
-        filter.addFid("456");
+        FidFilter filter = factory.createFidFilter("rail.123");
+        FidFilter filter2 = factory.createFidFilter("rail.456");
         Query query = new Query();
         query.setTypeName("rail");
         query.addFilter(filter);
+        baseRequest.addQuery(query);
+	query = new Query();
+	query.setTypeName("rail");
+	query.addFilter(filter2);
         baseRequest.addQuery(query);
         // run test       
         assertTrue(runKvpTest( baseRequest, testRequest, true));
@@ -647,16 +659,16 @@ public class FeatureSuite extends TestCase {
         String testRequest = "VERSION=1.0.0&" + 
             "SERVICE=WFS&" + 
             "REQUEST=GETFEATURE&" + 
-            "TYPENAME=rail1,rail2&" +
+	    //     "TYPENAME=rail1,rail2&" +
             "PROPERTYNAME=(loc1,id1)(loc2)&" +
-            "FEATUREID=123,456";
+            "FEATUREID=rail1.123,rail2.456";
         
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest();
         baseRequest.setVersion("1.0.0");
 
-        FidFilter filter = factory.createFidFilter("123");
-        filter.addFid("456");
+        FidFilter filter = factory.createFidFilter("rail1.123");
+	FidFilter filter2 = factory.createFidFilter("rail2.456");
         Query query = new Query();
         query.setTypeName("rail1");
         query.addFilter(filter);
@@ -665,7 +677,7 @@ public class FeatureSuite extends TestCase {
         baseRequest.addQuery(query);
         query = new Query();
         query.setTypeName("rail2");
-        query.addFilter(filter);
+        query.addFilter(filter2);
         query.addPropertyName("loc2");
         baseRequest.addQuery(query);
         query = new Query();
@@ -806,5 +818,5 @@ public class FeatureSuite extends TestCase {
 
         // run test       
         assertTrue(runKvpTest(baseRequest, testRequest, true));
-    }
+	}
 }
