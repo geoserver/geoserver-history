@@ -12,7 +12,7 @@
 		<plugin>Is Valid Geometry</plugin>
 		<argument >
 			<name>typeRef</name>
-			<string>lakes</string>
+			<string>lakes:lakes</string>
 		</argument>
 	</test>
 	<test>
@@ -21,7 +21,7 @@
 		<plugin>Polygon Gap Detection</plugin>
 		<argument >
 			<name>typeRef</name>
-			<string>lakes</string>
+			<string>lakes:lakes</string>
 		</argument>
 	</test>
 </suite>

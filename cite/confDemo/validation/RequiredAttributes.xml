@@ -12,7 +12,7 @@
 		<plugin>Attribute</plugin>
 		<argument >
 			<name>attributeComparisonType</name>
-			<string>0</string><!-- equals -->
+			<integer>0</integer><!-- equals -->
 		</argument>
 		<argument >
 			<name>attributeName</name>
@@ -24,7 +24,7 @@
 		</argument>
 		<argument >
 			<name>typeRef</name>
-			<string>swamps</string>
+			<string>swamps:swamps</string>
 		</argument>
 	</test>
 	<test>
@@ -37,7 +37,7 @@
 		</argument>
 		<argument >
 			<name>typeRef</name>
-			<string>buildings</string>
+			<string>buildings:buildings</string>
 		</argument>
 	</test>
 </suite>
