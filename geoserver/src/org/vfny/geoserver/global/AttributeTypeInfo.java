@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.7 2004/02/09 18:02:20 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfo.java,v 1.8 2004/02/09 18:06:26 dmzwiers Exp $
  */
 public class AttributeTypeInfo implements AttributeTypeMetaData {
 	private String name;
@@ -106,7 +106,7 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
      *
      * @return The element, or <code>TYPE_FRAGMENT</code>
      */    
-    String getType(){
+    public String getType(){
         if( isComplex ){
             return "(xml fragment)";
         }
@@ -128,7 +128,7 @@ public class AttributeTypeInfo implements AttributeTypeMetaData {
      *
      * @param fragment The fragment to set.
      */    
-    String getFragment(){
+    public String getFragment(){
         if( isComplex ){
             return typeName;
         }
