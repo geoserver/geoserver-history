@@ -7,7 +7,8 @@ package org.vfny.geoserver.servlets.wfs;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -185,10 +186,10 @@ public class TestWfsPost extends HttpServlet {
                 acon.setAllowUserInteraction(false);
 
                 if (!doGet) {
-                    System.out.println("set to post");
+                    //System.out.println("set to post");
                     acon.setRequestMethod("POST");
                 } else {
-                    System.out.println("set to get");
+                    //System.out.println("set to get");
                     acon.setRequestMethod("GET");
                 }
 
@@ -209,13 +210,13 @@ public class TestWfsPost extends HttpServlet {
                 //xmlIn = new BufferedReader(new InputStreamReader(
                 //            acon.getInputStream()));
                 String line;
-                System.out.println("got encoding from acon: "
-                    + acon.getContentType());
+                //System.out.println("got encoding from acon: "
+                //    + acon.getContentType());
                 response.setContentType(acon.getContentType());
 
-                java.io.OutputStream output = response.getOutputStream();
+                OutputStream output = response.getOutputStream();
                 int c;
-                java.io.InputStream in = acon.getInputStream();
+                InputStream in = acon.getInputStream();
 
                 while ((c = in.read()) != -1)
                     output.write(c);
