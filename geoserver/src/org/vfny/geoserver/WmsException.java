@@ -10,7 +10,7 @@ package org.vfny.geoserver;
  * this before returning to clients.
  *
  * @author Gabriel Roldán
- * @version $Id: WmsException.java,v 1.5 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: WmsException.java,v 1.6 2004/05/22 05:11:50 cholmesny Exp $
  */
 public class WmsException extends ServiceException {
     /**
@@ -74,8 +74,8 @@ public class WmsException extends ServiceException {
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\"");
         returnXml.append(" encoding=\"UTF-8\" standalone=\"no\" ?>");
         returnXml.append(
-            "<!DOCTYPE ServiceExceptionReport SYSTEM \"http://www.digitalearth.gov/wmt/xml/exception_1_1_0.dtd\"> ");
-        returnXml.append("<ServiceExceptionReport version=\"1.1.0\">");
+            "<!DOCTYPE ServiceExceptionReport SYSTEM \"http://schemas.opengis.net/wms/1.1.1/WMS_exception_1_1_1.dtd\"> ");
+        returnXml.append("<ServiceExceptionReport version=\"1.1.1\">");
 
         // Write exception code
         returnXml.append("    <ServiceException"

@@ -28,7 +28,7 @@ import java.util.List;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.17 2004/04/16 10:56:46 cholmesny Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.18 2004/05/22 05:12:48 cholmesny Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     /** DOCUMENT ME! */
@@ -39,6 +39,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
     /** DOCUMENT ME! */
     private String baseUrl = "";
+    
+    private String schemaBaseUrl = "";
 
     /** DOCUMENT ME! */
     protected String BBOX_ELEM_NAME = "LatLonBoundingBox";
@@ -53,6 +55,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         super(handler);
         server = r.getWMS().getGeoServer();
         baseUrl = r.getBaseUrl();
+        schemaBaseUrl = r.getSchemaBaseUrl();
     }
 
     /**
@@ -70,8 +73,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     protected void startDocument(Service config) throws SAXException {
         WMS WMS = (WMS) config;
         AttributesImpl atts = new AttributesImpl();
-        startElement("!DOCTYPE WMT_MS_Capabilities SYSTEM \"http://www"
-            + ".digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\"");
+        startElement("!DOCTYPE WMT_MS_Capabilities SYSTEM \"" + schemaBaseUrl +
+        "wms/1.1.1/WMS_MS_Capabilities.dtd\"");
         atts.addAttribute("", "version", "version", "", CAP_VERSION);
 
         // atts.addAttribute("", "", "updateSequence", "updateSequence",
