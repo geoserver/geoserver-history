@@ -260,6 +260,7 @@ public class CapabilitiesResponse {
         tempCapabilityInfo.append(tempReturnCapability("GetFeature"));
 	tempCapabilityInfo.append(tempReturnCapability("Transaction"));
 	tempCapabilityInfo.append(tempReturnCapability("LockFeature"));
+	tempCapabilityInfo.append(tempReturnCapability("GetFeatureWithLock"));
         tempCapabilityInfo.append("\n    </Request>\n  </Capability>\n");
         
         try {
@@ -282,8 +283,10 @@ public class CapabilitiesResponse {
         tempCapability = "\n      <" + request + ">";
         if (request.equals("DescribeFeatureType") )
             tempCapability = tempCapability + "\n        <SchemaDescriptionLanguage><XMLSCHEMA/></SchemaDescriptionLanguage>";
-        if (request.equals("GetFeature") )
-            tempCapability = tempCapability + "\n        <ResultFormat><GML2/></ResultFormat>";
+        if (request.startsWith("GetFeature") ) {
+            tempCapability = tempCapability + 
+		"\n        <ResultFormat><GML2/></ResultFormat>";
+	}
         tempCapability = tempCapability + "\n        <DCPType><HTTP><Get onlineResource=\"" + url + "/" + request + "?\"/></HTTP></DCPType>";
         tempCapability = tempCapability + "\n        <DCPType><HTTP><Post onlineResource=\"" + url + "/" + request + "\"/></HTTP></DCPType>\n      </" + request + ">";
         
