@@ -72,7 +72,7 @@
   	</a>
   </li>
   <li>
-  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?bbox=-130,24,-66,50&styles=normal,population&Format=image/png&request=GetMap&layers=Img_Sample,topp:states&width=550&height=250&srs=EPSG:4326">
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?bbox=-130,24,-66,50&styles=raster,population&Format=image/png&request=GetMap&layers=Img_Sample,topp:states&width=550&height=250&srs=EPSG:4326">
   	  getMap
   	</a>
   </li>

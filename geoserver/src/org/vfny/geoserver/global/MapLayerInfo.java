@@ -309,7 +309,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		FeatureCollection collection = FeatureCollections.newCollection();
 		// last step, wrap, add the the feature collection and return
 		try {
-			GridCoverage2D gridCoverage = (GridCoverage2D) getGridCoverage(request, this.coverage);
+			GridCoverage gridCoverage = getGridCoverage(request, this.coverage);
 			collection.add(wrapGcInFeature(gridCoverage));
 		} catch (Exception e) {
 			throw new DataSourceException("IO error", e);
