@@ -26,7 +26,7 @@ import org.vfny.geoserver.global.dto.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.1.2.6 2004/01/08 19:39:12 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.1.2.7 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class WFS extends Service {
 
@@ -59,7 +59,8 @@ public class WFS extends Service {
 	 * and does not clone, so extreme caution sould be used when traversing 
 	 * the results.
 	 * </p>
-	 * @see org.vfny.geoserver.global.Abstract#toDTO()
+	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+	 * @see WFSDTO
 	 * 
 	 * @return WFSDTO An instance of the data this class represents. Please see Caution Above.
 	 */

@@ -36,40 +36,62 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.6 2004/01/08 20:34:14 jive Exp $
+ * @author dzwiers
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.7 2004/01/08 23:44:48 dmzwiers Exp $
  */
-public class FeatureTypeInfo extends Abstract {
-    /** DOCUMENT ME! */
+public class FeatureTypeInfo extends GlobalLayerSupertype {
+    /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
+	/** The DTO instane which hold this instance's data */
 	private FeatureTypeInfoDTO ftc;
 	
-	// ref to parent set of datastores.
+	/** ref to parent set of datastores. */
 	private Data data;
 	
+	/**
+	 * FeatureTypeInfo constructor.
+	 * <p>
+	 * Generates a new object from the data provided.
+	 * </p>
+	 * @param config FeatureTypeInfoDTO The data to populate this class with.
+	 * @param data Data a reference for future use to get at DataStoreInfo instances
+	 * @throws ConfigurationException
+	 */
     public FeatureTypeInfo(FeatureTypeInfoDTO config, Data data)throws ConfigurationException{
     	ftc = config;
     	this.data = data;
     }
 
+	/**
+	 * toDTO purpose.
+	 * <p>
+	 * This method is package visible only, and returns a reference to the GeoServerDTO. This method is unsafe, and should only be used with extreme caution.
+	 * </p>
+	 * @return FeatureTypeInfoDTO the generated object
+	 */
 	Object toDTO(){
 		return ftc;
 	}
-
-    /**
-     * This returns the number of decimals used when writing GML.
-     * <p>
-     * DOCUMENT ME!
-     * </p>
-     * @return DOCUMENT ME!
-     */
+	
+	/**
+	 * getNumDecimals purpose.
+	 * <p>
+	 * The default number of decimals allowed in the data.
+	 * </p>
+	 * @return int the default number of decimals allowed in the data.
+	 */
     public int getNumDecimals() {
         return ftc.getNumDecimals();
     }
 
     /**
-     * Access geotools2 FeatureType.
-     * @return FeatureType 
+     * getSchema purpose.
+     * <p>
+     * Generates a real FeatureType and returns it!
+     * Access geotools2 FeatureType
+     * </p>
+     * @return FeatureType
      */
     public FeatureType getSchema() {
     	try{
@@ -80,31 +102,16 @@ public class FeatureTypeInfo extends Abstract {
     }
 
     /**
-     * gets the string of the path to the schema file.  This is set during
+     * getDataStore purpose.
+     * <p>
+	 * gets the string of the path to the schema file.  This is set during
      * feature reading, the schema file should be in the same folder as the
      * feature type info, with the name schema.xml.  This function does not
      * guarantee that the schema file actually exists, it just gives the
      * location where it _should_ be located.
-     *
-     * @return The path to the schema file.
-     */
-   /*public String getSchemaFile() {
-        return pathToSchemaFile;
-    }*/
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param pathToSchema DOCUMENT ME!
-     */
-    /*public void setSchemaFile(String pathToSchema) {
-        this.pathToSchemaFile = pathToSchema;
-    }*/
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * </p>
+     * @return DataStoreInfo the requested DataStoreInfo if it was found.
+     * @see Data#getDataStoreInfo(String)
      */
     public DataStoreInfo getDataStore() {
         return data.getDataStoreInfo(ftc.getDataStoreId());
@@ -126,9 +133,11 @@ public class FeatureTypeInfo extends Abstract {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getPrefix purpose.
+     * <p>
+     * returns the namespace prefix for this FeatureTypeInfo
+     * </p>
+     * @return String the namespace prefix.
      */
     public String getPrefix() {
 		return getDataStore().getNameSpace().getPrefix();
@@ -141,9 +150,9 @@ public class FeatureTypeInfo extends Abstract {
      * datasources.  This method will allow us to make that change more easily
      * in the future.
      *
-     * @return DOCUMENT ME!
+     * @return NameSpace the namespace specified for the specified DataStoreInfo (by ID)
      *
-     * @throws IllegalStateException DOCUMENT ME!
+     * @throws IllegalStateException THrown when disabled.
      */
     public NameSpace getNameSpace() {
         if (!isEnabled()) {
@@ -157,10 +166,10 @@ public class FeatureTypeInfo extends Abstract {
     /**
      * overrides getName to return full type name with namespace prefix
      *
-     * @return DOCUMENT ME!
+     * @return String the FeatureTypeInfo name - should be unique for the parent Data instance.
      */
     public String getName() {
-        return NameSpace.PREFIX_DELIMITER+ftc.getName();
+        return ":"+ftc.getName();
     }
 
     /**
@@ -170,9 +179,10 @@ public class FeatureTypeInfo extends Abstract {
      * returned if the dataStore is not enabled.  If allow short is false then
      * a full getName will be returned, with potentially bad results.
      *
-     * @param allowShort DOCUMENT ME!
+     * @param allowShort does nothing
      *
-     * @return DOCUMENT ME!
+     * @return String getName()
+     * @see getName()
      */
     public String getName(boolean allowShort) {
         if (allowShort && (!isEnabled() || (getDataStore() == null))) {
@@ -183,20 +193,22 @@ public class FeatureTypeInfo extends Abstract {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * Same as getName()
+     * 
+     * @return String getName()
+     * @see getName()
      */
     public String getShortName() {
         return ftc.getName();
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
+     * getFeatureSource purpose.
+     * <p>
+     * Returns a real FeatureSource.
+     * </p>
+     * @return FeatureSource the feature source represented by this info class
+     * @throws IOException when an error occurs.
      */
     public FeatureSource getFeatureSource() throws IOException {
         if (!isEnabled() || (getDataStore().getDataStore() == null)) {
@@ -211,6 +223,14 @@ public class FeatureTypeInfo extends Abstract {
         return mappedSource;
     }
 
+	/**
+	 * getRealFeatureSource purpose.
+	 * <p>
+	 * Returns a real FeatureSource. Used by getFeatureSource()
+	 * </p>
+	 * @return FeatureSource the feature source represented by this info class
+	 * @see getFeatureSource()
+	 */
     private FeatureSource getRealFeatureSource()
         throws NoSuchElementException, IllegalStateException, IOException {
         FeatureSource realSource = getDataStore().getDataStore().getFeatureSource(ftc.getName());
@@ -219,11 +239,12 @@ public class FeatureTypeInfo extends Abstract {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
+     * getBoundingBox purpose.
+     * <p>
+     * The feature source bounds.
+     * </p>
+     * @return Envelope the feature source bounds.
+     * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
 		FeatureSource source = getRealFeatureSource();
@@ -231,20 +252,23 @@ public class FeatureTypeInfo extends Abstract {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getDefinitionQuery purpose.
+     * <p>
+     * Returns the definition query for this feature source
+     * </p>
+     * @return Filter the definition query
      */
     public Filter getDefinitionQuery() {
         return ftc.getDefinitionQuery();
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
+     * getLatLongBoundingBox purpose.
+     * <p>
+     * The feature source lat/long bounds.
+     * </p>
+     * @return Envelope the feature source lat/long bounds.
+     * @throws IOException when an error occurs
      */
     public Envelope getLatLongBoundingBox() throws IOException {
 		if(ftc.getLatLongBBox() == null)
@@ -253,9 +277,11 @@ public class FeatureTypeInfo extends Abstract {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getSRS purpose.
+     * <p>
+     * Proprietary identifier number
+     * </p>
+     * @return int the SRS number.
      */
     public String getSRS() {
         return ftc.getSRS()+"";
@@ -266,12 +292,12 @@ public class FeatureTypeInfo extends Abstract {
      * creates a FeatureTypeInfo schema from the list of defined exposed
      * attributes, or the full schema if no exposed attributes were defined
      *
-     * @param attsElem DOCUMENT ME!
+     * @param attsElem a parsed DOM
      *
-     * @return DOCUMENT ME!
+     * @return A complete FeatureType
      *
-     * @throws ConfigurationException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
+     * @throws ConfigurationException For an invalid DOM tree
+     * @throws IOException When IO fails
      *
      * @task TODO: if the default geometry attribute was not declared as
      *       exposed should we expose it anyway? I think yes.
@@ -317,6 +343,17 @@ public class FeatureTypeInfo extends Abstract {
         return filteredSchema;
     }
     
+    /**
+     * getAttribute purpose.
+     * <p>
+     * XLM helper method.
+     * </p>
+     * @param elem The element to work on. 
+     * @param attName The attribute name to find
+     * @param mandatory true is an exception is be thrown when the attr is not found.
+     * @return String the Attr value
+     * @throws ConfigurationException thrown when an error occurs.
+     */
 	protected String getAttribute(Element elem, String attName,
 		boolean mandatory) throws ConfigurationException {
 		Attr att = elem.getAttributeNode(attName);
@@ -364,7 +401,6 @@ public class FeatureTypeInfo extends Abstract {
 			InputSource in = new InputSource(fis);
 			DocumentBuilderFactory dfactory = DocumentBuilderFactory
 				.newInstance();
-			//dfactory.setNamespaceAware(true);
 			/*set as optimizations and hacks for geoserver schema config files
 			 * @HACK should make documents ALL namespace friendly, and validated. Some documents are XML fragments.
 			 * @TODO change the following config for the parser and modify config files to avoid XML fragmentation.
@@ -405,39 +441,43 @@ public class FeatureTypeInfo extends Abstract {
      * that on the list.  Hopefully they'll do it all in java soon.  I'm sorta
      * tempted to just have users define for now.
      *
-     * @param fromSrId DOCUMENT ME!
-     * @param bbox DOCUMENT ME!
+     * @param fromSrId 
+     * @param bbox Envelope
      *
-     * @return DOCUMENT ME!
+     * @return Envelope
      */
     private static Envelope getLatLongBBox(String fromSrId, Envelope bbox) {
-        //Envelope latLongBBox = null;
-        //return latLongBBox;
         return bbox;
     }
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getAbstract purpose.
+	 * <p>
+	 * returns the FeatureTypeInfo abstract
+	 * </p>
+	 * @return String the FeatureTypeInfo abstract
 	 */
 	public String getAbstract() {
 		return ftc.getAbstract();
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getKeywords purpose.
+	 * <p>
+	 * returns the FeatureTypeInfo keywords
+	 * </p>
+	 * @return List the FeatureTypeInfo keywords
 	 */
 	public List getKeywords() {
 		return ftc.getKeywords();
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getTitle purpose.
+	 * <p>
+	 * returns the FeatureTypeInfo title
+	 * </p>
+	 * @return String the FeatureTypeInfo title
 	 */
 	public String getTitle() {
 		return ftc.getTitle();

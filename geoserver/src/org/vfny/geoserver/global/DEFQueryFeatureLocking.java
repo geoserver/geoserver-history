@@ -39,8 +39,12 @@ import com.vividsolutions.jts.geom.Envelope;
  * mapping the FeatureTypeInfo's FeatureSource with the schema and
  * definition query configured for it.
  *
+ *<p>
+ * dzwiers -- moved to this package but did not edit, only know that i use this class.
+ *</p>
+ *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.4 2004/01/05 22:14:40 dmzwiers Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.5 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
     /** DOCUMENT ME!  */

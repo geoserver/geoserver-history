@@ -20,10 +20,10 @@ import javax.servlet.http.HttpSessionBindingListener;
  * </p>
  * <pre><code>
  * HttpSession session = request.getSession();
- * User user = request.getAttributes( UserContainer.SESSION_KEY );
+ * User user = request.getAttributes( UserContainer.WEB_CONTAINER_KEY );
  * if( user == null ){
  *     user = new UserContainer( request.getLocal() );
- *     session.setAttributes( UserContainer.SESSION_KEY, user );
+ *     session.setAttributes( UserContainer.WEB_CONTAINER_KEY, user );
  * }
  * </code></pre>
  * 
@@ -33,8 +33,8 @@ import javax.servlet.http.HttpSessionBindingListener;
  * </p>
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: UserContainer.java,v 1.1.2.1 2004/01/06 08:39:55 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: UserContainer.java,v 1.1.2.2 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";

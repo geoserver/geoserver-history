@@ -23,7 +23,7 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
  * @see org.vfny.geoserver.config.ConfigPlugIn
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.1.2.3 2004/01/08 01:31:59 dmzwiers Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.1.2.4 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class GeoServerPlugIn implements PlugIn {
 	
@@ -33,8 +33,28 @@ public class GeoServerPlugIn implements PlugIn {
 	 */
 	private boolean started = false;
 	
+	/**
+	 * Implement destroy.
+	 * <p>
+	 * Does Nothing
+	 * </p>
+	 * @see org.apache.struts.action.PlugIn#destroy()
+	 * 
+	 *
+	 */
 	public void destroy(){}
 	
+	/**
+	 * Implement init.
+	 * <p>
+	 * This does the load of the config files for GeoServer. Check the struts configuration if this is not laoding correctly.
+	 * </p>
+	 * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet, org.apache.struts.config.ModuleConfig)
+	 * 
+	 * @param as Used to get ServletContext
+	 * @param mc Not used
+	 * @throws javax.servlet.ServletException
+	 */
 	public void init(ActionServlet as, ModuleConfig mc) throws javax.servlet.ServletException{
 		if(started)
 			return;
@@ -45,13 +65,13 @@ public class GeoServerPlugIn implements PlugIn {
 			File f = new File(rootDir);
 			XMLConfigReader cr = new XMLConfigReader(f);
 			GeoServer gs = new GeoServer();
-			sc.setAttribute(GeoServer.SESSION_KEY,gs);
+			sc.setAttribute(GeoServer.WEB_CONTAINER_KEY,gs);
 			if(cr.isInitialized()){
 				gs.load(cr.getWms(),cr.getWfs(),cr.getGeoServer(),cr.getData());
 			}else
 				throw new ConfigurationException("An error occured loading the initial configuration.");
 		}catch(ConfigurationException e){
-			sc.setAttribute(GeoServer.SESSION_KEY,null);
+			sc.setAttribute(GeoServer.WEB_CONTAINER_KEY,null);
 			throw new ServletException(e);
 		}
 		started = true;

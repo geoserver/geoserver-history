@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.*;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.1.2.6 2004/01/08 19:31:19 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.1.2.7 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -69,7 +69,8 @@ public class WMS extends Service {
 	 * and does not clone, so extreme caution sould be used when traversing 
 	 * the results.
 	 * </p>
-	 * @see org.vfny.geoserver.global.Abstract#toDTO()
+	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+	 * @see WMSDTO
 	 * 
 	 * @return WMSDTO An instance of the data this class represents. Please see Caution Above.
 	 */

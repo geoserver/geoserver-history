@@ -5,7 +5,6 @@
 package org.vfny.geoserver.global;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
@@ -15,38 +14,58 @@ import org.geotools.data.DataStoreFinder;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 /**
- * DOCUMENT ME!
+ * This is the configuration iformation for one DataStore. This class can also generate real datastores. 
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreInfo.java,v 1.1.2.4 2004/01/06 23:03:12 dmzwiers Exp $
+ * @author dzwiers
+ * @version $Id: DataStoreInfo.java,v 1.1.2.5 2004/01/08 23:44:48 dmzwiers Exp $
  */
-public class DataStoreInfo extends Abstract {
+public class DataStoreInfo extends GlobalLayerSupertype {
     
-    /** DOCUMENT ME! */
+    /** for logging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
 
 
     /** DataStoreInfo we are representing */
     private DataStore dataStore = null;
-    // ref to the parent class's collection
-    private Map nameSpaces;
+
+    /** ref to the parent class's collection */
+    private Data data;
     
+    /** The dataStore information for this object */
     private DataStoreInfoDTO dsc;
     
-    public DataStoreInfo(DataStoreInfoDTO config, Map nameSpaces){
+    /**
+     * DataStoreInfo constructor.
+     * <p>
+     * Stores the specified data for later use.
+     * </p>
+     * @param config DataStoreInfoDTO the current configuration to use.
+     * @param data Data a ref to use later to look up related informtion
+     */
+    public DataStoreInfo(DataStoreInfoDTO config, Data data){
     	dsc = config;
-    	this.nameSpaces = nameSpaces;
+    	this.data = data;
     }
-    
+
+	/**
+	 * toDTO purpose.
+	 * <p>
+	 * This method is package visible only, and returns a reference to the GeoServerDTO. This method is unsafe, and should only be used with extreme caution.
+	 * </p>
+	 * @return DataStoreInfoDTO the generated object
+	 */
     Object toDTO(){
     	return dsc;
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getId purpose.
+     * <p>
+     * Returns the dataStore's id.
+     * </p>
+     * @return String the id.
      */
     public String getId() {
         return dsc.getId();
@@ -64,14 +83,14 @@ public class DataStoreInfo extends Abstract {
      * transaction support to work. DataStoreInfo is expected
      * to be thread aware (that is why it has Transaction Support).
      * </p>
-     * @return DOCUMENT ME!
+     * @return DataStore 
      *
      * @throws IOException if a datastore is found but can not be created for
      *         the passed parameters
      * @throws IllegalStateException if this DataStoreInfo is disabled by
      *         configuration
      * @throws NoSuchElementException if no DataStoreInfo is found
-     * @throws DataSourceException DOCUMENT ME!
+     * @throws DataSourceException 
      */
     public synchronized DataStore getDataStore()
         throws IOException, IllegalStateException, NoSuchElementException {
@@ -98,46 +117,57 @@ public class DataStoreInfo extends Abstract {
         return dataStore;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+	/**
+	 * getTitle purpose.
+	 * <p>
+	 * Returns the dataStore's title.
+	 * </p>
+	 * @return String the title.
+	 */
     public String getTitle() {
         return dsc.getTitle();
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+	/**
+	 * getAbstract purpose.
+	 * <p>
+	 * Returns the dataStore's abstract.
+	 * </p>
+	 * @return String the abstract.
+	 */
     public String getAbstract() {
         return dsc.getAbstract();
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * isEnabled purpose.
+     * <p>
+     * Returns true when the data store is enabled.
+     * </p>
+     * @return true when the data store is enabled.
      */
     public boolean isEnabled() {
         return dsc.isEnabled();
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getNameSpace purpose.
+     * <p>
+     * Returns the namespace for this datastore.
+     * </p>
+     * @return NameSpace the namespace for this datastore.
      */
     public NameSpace getNameSpace() {
-    	return (NameSpace)nameSpaces.get(dsc.getNameSpaceId());
+    	return (NameSpace)data.getNameSpace(dsc.getNameSpaceId());
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * 
+     * Implement toString.
+     * 
+     * @see java.lang.Object#toString()
+     * 
+     * @return String
      */
     public String toString() {
         return new StringBuffer("DataStoreConfig[namespace=").append(getNameSpace()

@@ -6,9 +6,12 @@ package org.vfny.geoserver.global;
 
 /**
  * Thrown when there is an error in configuration.
+ * 
+ * Added a third constructor for ease of exception type changing.
  *
  * @author Chris Holmes
- * @version $Id: ConfigurationException.java,v 1.1.2.2 2004/01/05 22:14:40 dmzwiers Exp $
+ * @author dzwiers
+ * @version $Id: ConfigurationException.java,v 1.1.2.3 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class ConfigurationException extends Exception {
     /**

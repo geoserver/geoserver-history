@@ -17,196 +17,261 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.9 2004/01/07 23:27:58 dmzwiers Exp $
+ * @author dzwiers
+ * @version $Id: GeoServer.java,v 1.1.2.10 2004/01/08 23:44:48 dmzwiers Exp $
  */
-public class GeoServer extends Abstract{// implements org.apache.struts.action.PlugIn{
+public class GeoServer extends GlobalLayerSupertype{// implements org.apache.struts.action.PlugIn{
 	
-	/** DOCUMENT ME! */
+	/** Default Logging level */
 	private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
 	                                   .getLevel();
-	                                   
-	private GeoServerDTO geoServer;
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * The DTO for this geoserver instance, holds the instance data.
+	 */          
+	private GeoServerDTO geoServer;
+	
+	/**
+	 * getAddress purpose.
+	 * <p>
+	 * Returns the contact Address.
+	 * </p>
+	 * @return String the contact Address.
 	 */
 	public String getAddress() {
 		return notNull(geoServer.getContact().getAddress());
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getAddressCity purpose.
+	 * <p>
+	 * Returns the contact City.
+	 * </p>
+	 * @return String the contact City.
 	 */
 	public String getAddressCity() {
 		return notNull(geoServer.getContact().getAddressCity());
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getAddressCountry purpose.
+	 * <p>
+	 * Returns the contact Country.
+	 * </p>
+	 * @return String the contact Country.
 	 */
 	public String getAddressCountry() {
 		return notNull(geoServer.getContact().getAddressCountry());
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getAddressPostalCode purpose.
+	 * <p>
+	 * Returns the contact PostalCode.
+	 * </p>
+	 * @return String the contact PostalCode.
 	 */
 	public String getAddressPostalCode() {
 		return notNull(geoServer.getContact().getAddressPostalCode());
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getAddressState purpose.
+	 * <p>
+	 * Returns the contact State.
+	 * </p>
+	 * @return String the contact State.
 	 */
 	public String getAddressState() {
 		return notNull(geoServer.getContact().getAddressState());
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getAddressType purpose.
+	 * <p>
+	 * Returns the contact Address Type.
+	 * </p>
+	 * @return String the contact Address Type.
 	 */
 	public String getAddressType() {
 		return notNull(geoServer.getContact().getAddressType());
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getBaseUrl purpose.
+	 * <p>
+	 * Returns the server base rl.
+	 * </p>
+	 * @return String the server base rl.
 	 */
 	public String getBaseUrl() {
 	    return geoServer.getBaseUrl();
 	}
-	 
 	
-	    /**
-	     * DOCUMENT ME!
-	     *
-	     * @return DOCUMENT ME!
-	     */
+	/**
+	 * 
+	 * getCharSet purpose.
+	 * <p>
+	 * Returns the default charset for this server instance.
+	 * </p>
+	 * @return Charset the default charset for this server instance.
+	 */
 	    public Charset getCharSet() {
 	        return geoServer.getCharSet();
 	    }
+	    
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getContactEmail purpose.
+	 * <p>
+	 * Returns the contact Email.
+	 * </p>
+	 * @return String the contact Email.
 	 */
 	public String getContactEmail() {
 		return notNull(geoServer.getContact().getContactEmail());
 	}
+	    
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getContactFacsimile purpose.
+	 * <p>
+	 * Returns the contact Facsimile.
+	 * </p>
+	 * @return String the contact Facsimile.
 	 */
 	public String getContactFacsimile() {
 		return notNull(geoServer.getContact().getContactFacsimile());
 	}
+	    
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getContactOrganization purpose.
+	 * <p>
+	 * Returns the contact Organization.
+	 * </p>
+	 * @return String the contact Organization.
 	 */
 	public String getContactOrganization() {
 		return notNull(geoServer.getContact().getContactOrganization());
 	}
+	    
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getContactPerson purpose.
+	 * <p>
+	 * Returns the contact Person.
+	 * </p>
+	 * @return String the contact Person.
 	 */
 	public String getContactPerson() {
 		return notNull(geoServer.getContact().getContactPerson());
 	}
+	    
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getContactPosition purpose.
+	 * <p>
+	 * Returns the contact Position.
+	 * </p>
+	 * @return String the contact Position.
 	 */
 	public String getContactPosition() {
 		return notNull(geoServer.getContact().getContactPosition());
 	}
+	    
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getContactVoice purpose.
+	 * <p>
+	 * Returns the contact Phone.
+	 * </p>
+	 * @return String the contact Phone.
 	 */
 	public String getContactVoice() {
 		return notNull(geoServer.getContact().getContactVoice());
 	}
+	    
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getLoggingLevel purpose.
+	 * <p>
+	 * Returns the Logging Level.
+	 * </p>
+	 * @return String the Logging Level.
 	 */
 	public Level getLoggingLevel() {
 	    return loggingLevel;
 	}
+	    
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getMaxFeatures purpose.
+	 * <p>
+	 * Returns the max number of features supported.
+	 * </p>
+	 * @return String the max number of features supported.
 	 */
 	public int getMaxFeatures() {
 	    return geoServer.getMaxFeatures();
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getMimeType purpose.
+	 * <p>
+	 * Returns the server default mimetype.
+	 * </p>
+	 * @return String the server default mimetype.
 	 */
 	public String getMimeType() {
 	    return "text/xml; charset=" + getCharSet().displayName();
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getNumDecimals purpose.
+	 * <p>
+	 * The default number of decimals allowed in the data.
+	 * </p>
+	 * @return int the default number of decimals allowed in the data.
 	 */
 	public int getNumDecimals() {
 	    return geoServer.getNumDecimals();
 	}
+	
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * getSchemaBaseUrl purpose.
+	 * <p>
+	 * The Schema Base URL for this instance.
+	 * </p>
+	 * @return String the Schema Base URL for this instance.
 	 */
 	public String getSchemaBaseUrl() {
 	    return geoServer.getSchemaBaseUrl();
 	}
+	
 	/**
-	 * wether xml documents should be pretty formatted
+	 * whether xml documents should be pretty formatted
 	 *
-	 * @return DOCUMENT ME!
+	 * @return true when verbose
 	 */
 	public boolean isVerbose() {
 	    return geoServer.isVerbose();
 	}
-    /** DOCUMENT ME! */
+	
+    /** For debugging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
-            
-    public static final String SESSION_KEY = "GeoServer";
+    
+    /** 
+     * For finding the instance of this class to use from the web container
+     * <p>
+     * ServletContext sc = ...
+     * GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+     * </p>
+     */
+    public static final String WEB_CONTAINER_KEY = "GeoServer";
 
-    /** server configuration singleton */
-    //private static GeoServer serverConfig;
-
-    /** DOCUMENT ME! */
+    /** The reference to the wms configuration for this instance */
     private WMS wms;
 
-    /** DOCUMENT ME! */
+	/** The reference to the wfs configuration for this instance */
     private WFS wfs;
 
-    /** DOCUMENT ME! */
+	/** The reference to the data configuration for this instance (formerly CatalogConfig)*/
     private Data data;
 
-    /** Validation Configuration */
+    /** Validation Configuration  - not used yet*/
     private Validation validation;
 
 	/**
@@ -225,145 +290,84 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 	}
 
     /**
-     * Creates a new GeoServer object.
-     *
-     * @param rootDir The directory on the computer running geoserver where
-     *        geoserver is located.
-     *
-     * @throws ConfigurationException For any configuration problems.
-     */
-    /*private GeoServer(String rootDir) throws ConfigurationException {
-        File f = new File(rootDir);
-		XMLConfigReader cr = null;
-        cr = new XMLConfigReader(f);
-		this.rootDir = rootDir;
-		
-		if(cr.isInitialized()){	
-			geoServer = cr.getGeoServer();
-			wfs = new WFS(cr.getWfs());
-			wms = new WMS(cr.getWms());
-			data = new Data(cr.getData());
-			validation = new Validation();
-		}else
-			throw new ConfigurationException("An error occured loading the initial configuration.");
-    }*/
-
-    /**
-     * Creates a new GeoServer Object for JUnit testing.
-     * 
-     * <p>
-     * Configure based on provided Map, and Data.
-     * </p>
-     * 
-     * <p>
-     * GeoServer understands the followin entries in config map:
-     * 
-     * <ul>
-     * <li>
-     * dir: File (default to current directory
-     * </li>
-     * </ul>
-     * </p>
-     *
-     * @param config a map of the config params.
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-	/*private GeoServer(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, DataDTO data) throws ConfigurationException {
-		if(rootDir == null)
-			throw new ConfigurationException("RootDir not specified, server was not loaded initially from configuration files.");
-		this.geoServer = geoServer;
-		this.wfs = new WFS(wfs);
-		this.wms = new WMS(wms);
-		this.data = new Data(data);
-		this.validation = new Validation();
-	}*/
-
-    /**
      * Gets the config for the WMS.
      *
-     * @return DOCUMENT ME!
+     * @return WMS the wms object
      */
     public WMS getWMS() {
         return wms;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+	/**
+	 * Gets the config for the WFS.
+	 *
+	 * @return WFS the wfs object
+	 */
     public WFS getWFS() {
         return wfs;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+	/**
+	 * Gets the config for the Data.
+	 *
+	 * @return Data the data object
+	 */
     public Data getData() {
         return data;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+	/**
+	 * Gets the config for the Validation.
+	 *
+	 * @return Validation the validation object
+	 */
     public Validation getValidationConfig() {
         return validation;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalStateException DOCUMENT ME!
-     */
-    /*public static GeoServer getInstance() {
-        if (serverConfig == null) {
-            throw new IllegalStateException(
-                "The server configuration has not been loaded yet");
-        }
-
-        return serverConfig;
-    }*/
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param rootDir DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-    /*public static void load(String rootDir) throws ConfigurationException {
-        serverConfig = new GeoServer(rootDir);
-    }*/
-
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param config DOCUMENT ME!
-	 *
-	 * @throws ConfigurationException DOCUMENT ME!
+	 * load purpose.
+	 * <p>
+	 * Loads the specified DTOs.
+	 * </p>
+	 * @param wms WMSDTO The wms data.
+	 * @param wfs WFSDTO The wfs data
+	 * @param geoServer GeoServerDTO The geo server data
+	 * @param data DataDTO The data for a catalog.
+	 * @throws ConfigurationException If an error occurs.
 	 */
 	public void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, DataDTO data) throws ConfigurationException {
 		load(geoServer);
 		load(wms);
 		load(wfs);
 		load(data);
-		// HACK
+		// HACK In the next phase this should be replaced with an actual validation configuration.
 		if(validation==null)
 			this.validation = new Validation();
 	}
 	
+	/**
+	 * load purpose.
+	 * <p>
+	 * Loads the specified DTOs.
+	 * </p>
+	 * @param wms WMSDTO The wms data.
+	 * @param wfs WFSDTO The wfs data
+	 * @throws ConfigurationException If an error occurs.
+	 */
 	public void load(WMSDTO wms, WFSDTO wfs) throws ConfigurationException {
 		load(wms);
 		load(wfs);
 	}
 	
+	/**
+	 * load purpose.
+	 * <p>
+	 * Loads the WMSDTO into the current instance as a WMS object
+	 * </p>
+	 * @param wms WMSDTO
+	 * @throws ConfigurationException If an error occurs
+	 */
 	public void load(WMSDTO wms) throws ConfigurationException {
 		if(wms!=null)
 			this.wms = new WMS((WMSDTO)wms.clone());
@@ -371,6 +375,14 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 			throw new ConfigurationException("load(WMSDTO) expected a non-null value");
 	}
 	
+	/**
+	 * load purpose.
+	 * <p>
+	 * Loads the WFSDTO into the current instance as a WFS object
+	 * </p>
+	 * @param wfs WFSDTO
+	 * @throws ConfigurationException If an error occurs
+	 */
 	public void load(WFSDTO wfs) throws ConfigurationException {
 		if(wfs!=null)
 			this.wfs = new WFS((WFSDTO)wfs.clone());
@@ -378,6 +390,14 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 			throw new ConfigurationException("load(WFSDTO) expected a non-null value");
 	}
 	
+	/**
+	 * load purpose.
+	 * <p>
+	 * Loads the GeoServerDTO into the current instance as a GeoServer object
+	 * </p>
+	 * @param geoServer GeoServerDTO
+	 * @throws ConfigurationException If an error occurs
+	 */
 	public void load(GeoServerDTO geoServer) throws ConfigurationException {
 		if(geoServer!=null)
 			this.geoServer = (GeoServerDTO)geoServer.clone();
@@ -385,6 +405,14 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 			throw new ConfigurationException("load(GeoServerDTO) expected a non-null value");
 	}
 	
+	/**
+	 * load purpose.
+	 * <p>
+	 * Loads the DataDTO into the current instance as a Data object
+	 * </p>
+	 * @param geoServer DataDTO
+	 * @throws ConfigurationException If an error occurs
+	 */
 	public void load(DataDTO data) throws ConfigurationException {
 		if(data!=null)
 			if(this.data == null)
@@ -395,47 +423,113 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 			throw new ConfigurationException("load(DataDTO) expected a non-null value");
 	}
 	
+	/**
+	 * getDTO purpose.
+	 * <p>
+	 * Generates a WMSDTO for the WMS provided.
+	 * </p>
+	 * @param wms WMS the object to generate from
+	 * @return WMSDTO the generated object
+	 */
 	public static WMSDTO getDTO(WMS wms){
 		return (WMSDTO)((WMSDTO)wms.toDTO()).clone();
 	}
 
+	
+	/**
+	 * getDTO purpose.
+	 * <p>
+	 * Generates a WFSDTO for the WFS provided.
+	 * </p>
+	 * @param wms WFS the object to generate from
+	 * @return WFSDTO the generated object
+	 */
 	public static WFSDTO getDTO(WFS wfs){
 		return (WFSDTO)((WFSDTO)wfs.toDTO()).clone();
 	}
 
+	
+	/**
+	 * getDTO purpose.
+	 * <p>
+	 * Generates a GeoServerDTO for the GeoServer provided.
+	 * </p>
+	 * @param wms GeoServer the object to generate from
+	 * @return GeoServerDTO the generated object
+	 */
 	public static GeoServerDTO getDTO(GeoServer gs){
 		return (GeoServerDTO)((GeoServerDTO)gs.toDTO()).clone();
 	}
 
+	
+	/**
+	 * getDTO purpose.
+	 * <p>
+	 * Generates a DataDTO for the Data provided.
+	 * </p>
+	 * @param wms Data the object to generate from
+	 * @return DataDTO the generated object
+	 */
 	public static DataDTO getDTO(Data dt){
 		return (DataDTO)((DataDTO)dt.toDTO()).clone();
 	}
 
+	/**
+	 * toWMSDTO purpose.
+	 * <p>
+	 * Generates a WMSDTO object from the WMS object inside this instance.
+	 * </p>
+	 * @return WMSDTO the generated object
+	 */
 	public WMSDTO toWMSDTO(){
 		return getDTO(wms);
 	}
 
+
+	/**
+	 * toWFSDTO purpose.
+	 * <p>
+	 * Generates a WFSDTO object from the WFS object inside this instance.
+	 * </p>
+	 * @return WFSDTO the generated object
+	 */
 	public WFSDTO toWFSDTO(){
 		return getDTO(wfs);
 	}
 
+
+	/**
+	 * toGeoServerDTO purpose.
+	 * <p>
+	 * Generates a GeoServerDTO object from the GeoServer object inside this instance.
+	 * </p>
+	 * @return GeoServerDTO the generated object
+	 */
 	public GeoServerDTO toGeoServerDTO(){
 		return (GeoServerDTO)geoServer.clone();
 	}
 
+
+	/**
+	 * toDataDTO purpose.
+	 * <p>
+	 * Generates a DataDTO object from the Data object inside this instance.
+	 * </p>
+	 * @return DataDTO the generated object
+	 */
 	public DataDTO toDataDTO(){
 		return getDTO(data);
 	}
 
+
+	/**
+	 * toDTO purpose.
+	 * <p>
+	 * This method is package visible only, and returns a reference to the GeoServerDTO. This method is unsafe, and should only be used with extreme caution.
+	 * </p>
+	 * @return WMSDTO the generated object
+	 */
 	Object toDTO(){
 		return geoServer;
 	}
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    /*public String getRootDir() {
-        return rootDir;
-    }*/
 }

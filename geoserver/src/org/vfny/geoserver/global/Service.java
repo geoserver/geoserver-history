@@ -10,132 +10,142 @@ import java.util.List;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
 /**
- * default configuration for services
+ * Default configuration for services. This class represents all the 
+ * commonalities to the WFS and WMS services.
+ * 
+ * <p>
+ * WFS wfs = new WFS(dto);
+ * Service serv = (Service)WFS;
+ * System.out.println(serv.getName());
+ * </p>
+ * 
+ * @see WMS
+ * @see WFS
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.1.2.5 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: Service.java,v 1.1.2.6 2004/01/08 23:44:48 dmzwiers Exp $
  */
-public abstract class Service extends Abstract{
+public abstract class Service extends GlobalLayerSupertype{
 	
-	private ServiceDTO config;
+	/**
+	 * The DTO for this instance. When Sub-classes are using config they should use Caution.
+	 */
+	protected ServiceDTO config;
 
-    /** DOCUMENT ME! */
-    //protected String URL;
-    
-    public Service(ServiceDTO config){
-    	this.config = config;
-    	//URL = "";
-    }
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * Service constructor.
+     * <p>
+     * Stores the new ServiceDTO data for this service.
+     * </p>
+     * @param config
+     */
+    public Service(ServiceDTO config){
+    	if(config == null)
+    		throw new NullPointerException();
+    	this.config = config;
+    }
+    
+    /**
+     * isEnabled purpose.
+     * <p>
+     * Returns whether is service is enabled.
+     * </p>
+     * @return true when enabled.
      */
     public boolean isEnabled() {
         return config.isEnabled();
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getOnlineResource purpose.
+     * <p>
+     * Returns the Online Resource for this Service. 
+     * </p>
+     * @return URL The Online resource.
      */
     public URL getOnlineResource() {
         return config.getOnlineResource();
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getAbstract purpose.
+     * <p>
+     * A description of this service.
+     * </p>
+     * @return String This Service's abstract.
      */
-    //public abstract String getServiceType();
+	public String getAbstract() {
+		return config.getAbstract();
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    /*public String getURL() {
-        return URL;
-    }*/
-
-    /**
-     * Gets the base schema url.
-     *
-     * @return The url to use as the base for schema locations.
-     *
-     * @deprecated Use GlobalData.getSchemaBaseUrl()
-     */
-    /*public String getSchemaBaseUrl() {
-        return GeoServer.getInstance().getSchemaBaseUrl();
-    }*/
-    
 	/**
-		 * DOCUMENT ME!
-		 *
-		 * @return DOCUMENT ME!
-		 */
-		public String getAbstract() {
-			return config.getAbstract();
-		}
+	 * getAccessConstraints purpose.
+	 * <p>
+	 * A description of this service's access constraints.
+	 * </p>
+	 * @return String This service's access constraints.
+	 */
+	public String getAccessConstraints() {
+		return config.getAccessConstraints();
+	}
 
-		/**
-		 * DOCUMENT ME!
-		 *
-		 * @return DOCUMENT ME!
-		 */
-		public String getAccessConstraints() {
-			return config.getAccessConstraints();
-		}
+	/**
+	 * getFees purpose.
+	 * <p>
+	 * A description of the fees for this service.
+	 * </p>
+	 * @return String the fees for this service.
+	 */
+	public String getFees() {
+		return config.getFees();
+	}
 
-		/**
-		 * DOCUMENT ME!
-		 *
-		 * @return DOCUMENT ME!
-		 */
-		public String getFees() {
-			return config.getFees();
-		}
+	/**
+	 * getKeywords purpose.
+	 * <p>
+	 * A list of the keywords for this service.
+	 * </p>
+	 * @return List keywords for this service
+	 */
+	public List getKeywords() {
+		LinkedList ll = new LinkedList();
+		String [] s = config.getKeywords();
+		for(int i=0;i<s.length;i++)
+			ll.add(s[i]);
+		return ll;
+	}
 
-		/**
-		 * DOCUMENT ME!
-		 *
-		 * @return DOCUMENT ME!
-		 */
-		public List getKeywords() {
-			LinkedList ll = new LinkedList();
-			String [] s = config.getKeywords();
-			for(int i=0;i<s.length;i++)
-				ll.add(s[i]);
-			return ll;
-		}
+	/**
+	 * getMaintainer purpose.
+	 * <p>
+	 * The name of the maintainer for this service.
+	 * </p>
+	 * @return String maintainer for this service.
+	 */
+	public String getMaintainer() {
+		return config.getMaintainer();
+	}
 
-		/**
-		 * DOCUMENT ME!
-		 *
-		 * @return DOCUMENT ME!
-		 */
-		public String getMaintainer() {
-			return config.getMaintainer();
-		}
+	/**
+	 * getName purpose.
+	 * <p>
+	 * The name for this service.
+	 * </p>
+	 * @return String the service's name.
+	 */
+	public String getName() {
+		return config.getName();
+	}
 
-		/**
-		 * DOCUMENT ME!
-		 *
-		 * @return DOCUMENT ME!
-		 */
-		public String getName() {
-			return config.getName();
-		}
-
-		/**
-		 * DOCUMENT ME!
-		 *
-		 * @return DOCUMENT ME!
-		 */
-		public String getTitle() {
-			return config.getTitle();
-		}
+	/**
+	 * getTitle purpose.
+	 * <p>
+	 * The title for this service.
+	 * </p>
+	 * @return String the service's title.
+	 */
+	public String getTitle() {
+		return config.getTitle();
+	}
 }

@@ -47,11 +47,11 @@ import java.util.logging.Logger;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: Validation.java,v 1.1.2.2 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: Validation.java,v 1.1.2.3 2004/01/08 23:44:48 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
-public class Validation extends Abstract {
+public class Validation extends GlobalLayerSupertype {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");    
     /** This is the validation processor we are configuring.
@@ -67,7 +67,7 @@ public class Validation extends Abstract {
     /** Lookup of PlugInInfo */
     Map plugIns;
     
-    /**
+    /*
      * Configure based on gt2 Data.
      * <p>
      * Configuration based on the following:
@@ -80,7 +80,7 @@ public class Validation extends Abstract {
      * <li>validation.plugIn.defaults: (Map optional )</li> 
      * </ul>
      * </p>
-     * @param config DOCUMENT ME!
+     * @param config 
      * @param catalog
      */
   /*  public Validation(Map config ) throws ConfigurationException {
@@ -122,7 +122,7 @@ public class Validation extends Abstract {
             }                                     
         }                
     }*/
-    /**
+    /*
      * Validation constructor.
      * <p>
      * Description
@@ -151,6 +151,9 @@ public class Validation extends Abstract {
         }        
     }*/
     
+    /**
+     * Default constructor which does nothing at this time.
+     */
     public Validation(){
     	// do nothing yet.
     }
@@ -158,14 +161,23 @@ public class Validation extends Abstract {
     /**
      * getProcessor purpose.
      * <p>
-     * Description ...
+     * Gives a reference to the ValidationProcessor
      * </p>
-     * @return
+     * @return org.geotools.validation.ValidationProcessor
      */
     public org.geotools.validation.ValidationProcessor getProcessor() {
         return processor;
     }
     
+    /**
+     * Implement toDTO.
+     * <p>
+     * There currently is not a DTO representation.
+     * </p>
+     * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+     * 
+     * @return null
+     */
     Object toDTO(){
     	return null;
     }
@@ -180,7 +192,7 @@ public class Validation extends Abstract {
  * 
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf 
  */
-class PlugIn extends Abstract {
+class PlugIn extends GlobalLayerSupertype {
     Map defaults;
     String plugInName;
     String plugInDescription;

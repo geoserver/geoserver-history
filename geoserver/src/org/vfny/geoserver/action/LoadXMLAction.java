@@ -41,13 +41,13 @@ public class LoadXMLAction extends GeoServerAction {
 			File f = new File(rootDir);
 			XMLConfigReader cr = new XMLConfigReader(f);
 			GeoServer gs = new GeoServer();
-			sc.setAttribute(GeoServer.SESSION_KEY,gs);
+			sc.setAttribute(GeoServer.WEB_CONTAINER_KEY,gs);
 			if(cr.isInitialized()){
 				gs.load(cr.getWms(),cr.getWfs(),cr.getGeoServer(),cr.getData());
 			}else
 				throw new ConfigurationException("An error occured loading the initial configuration.");
 		}catch(ConfigurationException e){
-			sc.setAttribute(GeoServer.SESSION_KEY,null);
+			sc.setAttribute(GeoServer.WEB_CONTAINER_KEY,null);
 			throw new ServletException(e);
 		}
 

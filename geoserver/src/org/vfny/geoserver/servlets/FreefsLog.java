@@ -36,7 +36,7 @@ import org.vfny.geoserver.zserver.GeoZServer;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.15.2.7 2004/01/06 23:03:13 dmzwiers Exp $
+ * @version $Id: FreefsLog.java,v 1.15.2.8 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -62,7 +62,7 @@ public class FreefsLog extends HttpServlet {
 
         
            /*ServletContext sc = getServletContext();
-           GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.SESSION_KEY);
+           GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
            ConfigInfo cfgInfo = ConfigInfo.getInstance(path, gs);
                    if (cfgInfo.runZServer()) {
               try {

@@ -22,7 +22,7 @@ import org.vfny.geoserver.global.*;
  * <p>
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.1.2.2 2004/01/08 01:35:42 dmzwiers Exp $
+ * @version $Id: ConfigPlugIn.java,v 1.1.2.3 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class ConfigPlugIn implements PlugIn {
 
@@ -53,11 +53,11 @@ public class ConfigPlugIn implements PlugIn {
 	public void init(ActionServlet arg0, ModuleConfig arg1)
 		throws ServletException {
 			ServletContext sc = arg0.getServletContext();
-			GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.SESSION_KEY);
+			GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
 			if(gs == null){
 				GeoServerPlugIn gspi = new GeoServerPlugIn();
 				gspi.init(arg0,arg1);
-				gs = (GeoServer)sc.getAttribute(GeoServer.SESSION_KEY);
+				gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
 				if(gs == null)
 					throw new ServletException("GeoServerPlugIn Failed. Thus ConfigPlugIn cannot run.");
 			}

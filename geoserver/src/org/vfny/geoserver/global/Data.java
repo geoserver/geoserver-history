@@ -32,36 +32,34 @@ import org.vfny.geoserver.global.dto.NameSpaceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 
 /**
- * Holds the featureTypes.  Replaced TypeRepository.
+ * This class stores all the information that a catalog would (and CatalogConfig used to). 
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.14 2004/01/08 18:25:11 dmzwiers Exp $
+ * @author dzwiers
+ * @version $Id: Data.java,v 1.1.2.15 2004/01/08 23:44:48 dmzwiers Exp $
  */
-public class Data extends Abstract
-/**
- * implements Data
- */
- {
-    /** DOCUMENT ME! */
+public class Data extends GlobalLayerSupertype{
+    /** for debugging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
 
     /** Default name of feature type information */
 	private static final String INFO_FILE = "info.xml";
 	
+	/** used to create styles */
 	private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
 
-    /** The holds the mappings between prefixes and uri's */
+    /** holds the mappings between prefixes and NameSpace objects */
     private Map nameSpaces;
 
-    /** DOCUMENT ME! */
+    /** the default NameSpace */
     private NameSpace defaultNameSpace;
 
-    /** DOCUMENT ME! */
+    /** holds the mapping of datastores and data store id's */
     private Map dataStores;
 
-    /** DOCUMENT ME! */
+    /** holds the mapping of Styles and style names */
     private Map styles;
 
     /**
@@ -70,14 +68,28 @@ public class Data extends Abstract
      */
     private Map featureTypes;
 
-    
+    /** The DTO for this object */
     private DataDTO catalog;
     
-    // we create instances of everything at the start to support the datastore connections
+    /**
+     * Data constructor.
+     * <p>
+     * Creates a Data object from the data provided.
+     * </p>
+     * @param config DataDTO initial data.
+     * @throws ConfigurationException
+     */
     public Data(DataDTO config) throws ConfigurationException {
 		load(config);
     }
     
+    /**
+     * Data constructor.
+     * <p>
+     * package only constructor for GeoServer to call.
+     * </p>
+     *
+     */
     Data(){
     	nameSpaces = new HashMap();
     	styles = new HashMap();
@@ -110,11 +122,11 @@ public class Data extends Abstract
 			s.remove(key);
 			//find missing ones
 			if(!dataStores.containsKey(key)){
-				dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),nameSpaces));
+				dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),this));
 			}else{// check for small changes
 				DataStoreInfoDTO dsiDto = (DataStoreInfoDTO)((DataStoreInfo)dataStores.get(key)).toDTO();
 				if(dsiDto!=null && !(dsiDto.equals(config.getDataStores().get(key)))){
-					dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),nameSpaces));
+					dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),this));
 				}
 			}
 		}
@@ -211,9 +223,11 @@ public class Data extends Abstract
 	}
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getDataStoreInfos purpose.
+     * <p>
+     * A list of the posible DataStoreInfo
+     * </p>
+     * @return DataStoreInfo[] list of the posible DataStoreInfo
      */
     public DataStoreInfo[] getDataStoreInfos() {
         List dslist = new ArrayList(dataStores.values());
@@ -222,7 +236,15 @@ public class Data extends Abstract
 
         return dStores;
     }
-    
+
+
+	/**
+	 * toDTO purpose.
+	 * <p>
+	 * This method is package visible only, and returns a reference to the GeoServerDTO. This method is unsafe, and should only be used with extreme caution.
+	 * </p>
+	 * @return DataDTO the generated object
+	 */
     Object toDTO(){
     	return catalog;
     }
@@ -240,31 +262,11 @@ public class Data extends Abstract
     }
 
     /**
-     * returns the list of DataStoreInfo's of the given NameSpace
-     *
-     * @param ns DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    /*public List getDataStores(NameSpace ns) {
-        List dataStoresNs = new ArrayList();
-        DataStoreInfo dsc;
-
-        for (Iterator it = dataStores.values().iterator(); it.hasNext();) {
-            dsc = (DataStoreInfo) it.next();
-
-            if (dsc.getNameSpace().equals(ns)) {
-                dataStoresNs.add(dsc);
-            }
-        }
-
-        return dataStoresNs;
-    }*/
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getNameSpaces purpose.
+     * <p>
+     * List of all relevant namespaces
+     * </p>
+     * @return NameSpace[]
      */
     public NameSpace[] getNameSpaces() {
         NameSpace[] ns = new NameSpace[nameSpaces.values().size()];
@@ -273,11 +275,12 @@ public class Data extends Abstract
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param prefix DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getNameSpace purpose.
+     * <p>
+     * The NameSpace from the specified prefix
+     * </p>
+     * @param prefix
+     * @return NameSpace resulting from the specified prefix
      */
     public NameSpace getNameSpace(String prefix) {
         NameSpace retNS = (NameSpace) nameSpaces.get(prefix);
@@ -286,18 +289,22 @@ public class Data extends Abstract
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getDefaultNameSpace purpose.
+     * <p>
+     * Returns the default NameSpace for this Data object.
+     * </p>
+     * @return NameSpace the default name space
      */
     public NameSpace getDefaultNameSpace() {
         return defaultNameSpace;
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getStyles purpose.
+     * <p>
+     * A reference to the map of styles
+     * </p>
+     * @return Map A map containing the Styles.
      */
     public Map getStyles() {
         return this.styles;
@@ -308,23 +315,25 @@ public class Data extends Abstract
     }
 
     /**
-     * DOCUMENT ME!
+     * getFeatureTypeInfo purpose.
+     * <p>
+     * returns the FeatureTypeInfo for the specified unique name
+     * </p>
+     * @param typeName String The FeatureTypeInfo Name 
      *
-     * @param typeName DOCUMENT ME!
+     * @return FeatureTypeInfo
      *
-     * @return DOCUMENT ME!
-     *
-     * @throws NoSuchElementException DOCUMENT ME!
+     * @throws NoSuchElementException 
      */
     public FeatureTypeInfo getFeatureTypeInfo(String typeName)
         throws NoSuchElementException {
-        int prefixDelimPos = typeName.lastIndexOf(NameSpace.PREFIX_DELIMITER);
+        int prefixDelimPos = typeName.lastIndexOf(":");
 
         if (prefixDelimPos < 0) {
             //for backwards compatibility.  Only works if all
             //featureTypes have the same prefix.
             typeName = getDefaultNameSpace().getPrefix()
-                + NameSpace.PREFIX_DELIMITER + typeName;
+                + ":" + typeName;
         }
 
         LOGGER.finest("getting type " + typeName);
@@ -344,10 +353,10 @@ public class Data extends Abstract
      * uri.  This method is slow, use getFeatureType(String typeName), where
      * possible.  For not he only user should be TransactionFeatureHandler.
      *
-     * @param localName DOCUMENT ME!
-     * @param uri DOCUMENT ME!
+     * @param localName NameSpace name
+     * @param uri NameSpace uri
      *
-     * @return DOCUMENT ME!
+     * @return FeatureTypeInfo
      */
     public FeatureTypeInfo getFeatureTypeInfo(String localName, String uri) {
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
@@ -365,131 +374,16 @@ public class Data extends Abstract
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * 
+     * getFeatureTypeInfos purpose.
+     * <p>
+     * Returns all the featuretype information objects 
+     * </p>
+     * @return Map the Feature Type's inofrmation
      */
     public Map getFeatureTypeInfos() {
         return this.featureTypes;
     }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param nsRoot DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-   /* private void loadNameSpaces(Element nsRoot) throws ConfigurationException {
-        NodeList nsList = nsRoot.getElementsByTagName("NameSpace");
-        Element elem;
-        String uri;
-        String prefix;
-        boolean defaultNS;
-        int nsCount = nsList.getLength();
-        NameSpaces = new HashMap(nsCount);
-
-        for (int i = 0; i < nsCount; i++) {
-            elem = (Element) nsList.item(i);
-            uri = getAttribute(elem, "uri", true);
-            prefix = getAttribute(elem, "prefix", true);
-            defaultNS = getBooleanAttribute(elem, "default", false);
-            defaultNS = (defaultNS || (nsCount == 1));
-
-            NameSpace ns = new NameSpace(prefix, uri, defaultNS);
-            LOGGER.config("added NameSpace " + ns);
-            NameSpaces.put(prefix, ns);
-
-            if (defaultNS) {
-                defaultNameSpace = ns;
-            }
-        }
-    }*/
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param dsRoot DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-   /* private void loadDataStores(Element dsRoot) throws ConfigurationException {
-        dataStores = new HashMap();
-
-        NodeList dsElements = dsRoot.getElementsByTagName("datastore");
-        int dsCnt = dsElements.getLength();
-        DataStoreInfo dsConfig;
-        Element dsElem;
-
-        for (int i = 0; i < dsCnt; i++) {
-            dsElem = (Element) dsElements.item(i);
-            dsConfig = new DataStoreInfo(dsElem, this);
-
-            if (dataStores.containsKey(dsConfig.getId())) {
-                throw new ConfigurationException("duplicated datastore id: "
-                    + dsConfig.getNameSpace());
-            }
-
-            dataStores.put(dsConfig.getId(), dsConfig);
-        }
-    }*/
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param stylesElem DOCUMENT ME!
-     * @param styleDir DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     *
-     * @task TODO: load styles as SLD StyleConfig objects.
-     * @task REVISIT: Do we want to load all up front?  Or do them dynamicall?
-     *       What would be real nice for all these that we do up front now,
-     *       like datastores, that we we used to do dynamically, is to give
-     *       users the option of when they want to load them...
-     */
-    /*private void loadStyles(Element stylesElem, String styleDir)
-        throws ConfigurationException {
-        styles = new HashMap();
-
-        NodeList stylesList = null;
-
-        if (stylesElem != null) {
-            stylesList = stylesElem.getElementsByTagName("style");
-        }
-
-        if ((stylesList == null) || (stylesList.getLength() == 0)) {
-            //no styles where defined, just add a default one
-            styles.put("normal", "styles/normal.sld");
-
-            //return;
-        }
-
-        int styleCount = stylesList.getLength();
-        Element styleElem;
-
-        for (int i = 0; i < styleCount; i++) {
-            styleElem = (Element) stylesList.item(i);
-
-            String stId = getAttribute(styleElem, "id", true);
-            String stFile = getAttribute(styleElem, "filename", true);
-
-            //File file = new File(stFile);
-            try {
-                Style style = loadStyle(stFile, styleDir);
-                LOGGER.fine("loaded style, id: " + stId + ", style: " + style);
-                styles.put(stId, style);
-            } catch (java.io.IOException fnfe) {
-                LOGGER.warning("could not load style at " + stFile + ": "
-                    + fnfe.getMessage());
-
-                //throw new ConfigurationException(fnfe);
-            }
-
-            //styles.put(stId, stFile);
-        }
-    }*/
-
     //TODO: detect if a user put a full url, instead of just one to be resolved, and
     //use that instead.
     public Style loadStyle(String fileName, String base)
@@ -518,78 +412,6 @@ public class Data extends Abstract
 
 		return layerstyle[0];
 	}
-
-    //} else {
-    //url = file.toURL();
-    //}
-    //LOGGER.fine("pulling default style from "+url.toString());
-    //LOGGER.fine("loading sld from " + url);
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param currentFile DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-   /* private void loadFeatureTypes(File currentFile)
-        throws ConfigurationException {
-        LOGGER.finest("examining: " + currentFile.getAbsolutePath());
-        LOGGER.finest("is dir: " + currentFile.isDirectory());
-
-        if (currentFile.isDirectory()) {
-            File[] file = currentFile.listFiles();
-
-            for (int i = 0, n = file.length; i < n; i++) {
-                loadFeatureTypes(file[i]);
-            }
-        } else if (isInfoFile(currentFile)) {
-            String curPath = currentFile.getAbsolutePath();
-            Element featureElem = GeoServer.loadConfig(currentFile.toString());
-            FeatureTypeInfo ft = null;
-
-            try {
-                File parentDir = currentFile.getParentFile();
-                ft = new FeatureTypeInfo(this, featureElem);
-
-                String pathToSchemaFile = new File(parentDir, "schema.xml")
-                    .toString();
-                LOGGER.finest("pathToSchema is " + pathToSchemaFile);
-                ft.setSchemaFile(pathToSchemaFile);
-                featureTypes.put(ft.getName(), ft);
-                LOGGER.finer("added featureType " + ft.getName());
-            } catch (ConfigurationException cfge) {
-                //HACK: should use a logger.
-                cfge.printStackTrace(System.out);
-                LOGGER.warning("could not add FeatureTypeInfo at " + currentFile
-                    + " due to " + cfge);
-            }
-        }
-    }*/
-
-    /*  private void loadType(String filePath) throws ConfigurationException {
-       try {
-           Element featureElem = GeoServer.loadConfig(configFile);
-           String featureTag = featureElem.getTagName();
-           if (!featureTag.equals(rootTag) && !featureTag.equals(OLD_ROOT_TAG)) {
-               featureElem = (Element) featureElem.getElementsByTagName(rootTag)
-                                                  .item(0);
-               if (featureElem == null) {
-                   String message = "could not find root tag: " + rootTag
-                       + " in file: " + filePath;
-                   LOGGER.warning(message);
-                   throw new ConfigurationException(message);
-               }
-           }
-       NodeList ftlist = fTypesElem.getElementsByTagName("featureType");
-       Element ftypeElem;
-       int ftCount = ftlist.getLength();
-       FeatureTypeInfo ft = null;
-       for (int i = 0; i < ftCount; i++) {
-           ft = new FeatureTypeInfo(this, (Element) ftlist.item(i));
-           featureTypes.put(ft.getName(), ft);
-       }
-       }*/
 
     /**
      * tests whether a given file is a file containing type information.

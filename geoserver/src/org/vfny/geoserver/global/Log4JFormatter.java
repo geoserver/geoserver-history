@@ -125,7 +125,7 @@ public class Log4JFormatter extends Formatter {
      *
      * @return a formatted log record
      *
-     * @throws AssertionError DOCUMENT ME!
+     * @throws AssertionError Should never occur.
      */
     public synchronized String format(final LogRecord record) {
         String logger = record.getLoggerName();

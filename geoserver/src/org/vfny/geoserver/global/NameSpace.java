@@ -5,26 +5,35 @@
 package org.vfny.geoserver.global;
 
 import org.vfny.geoserver.global.dto.NameSpaceDTO;
+
 /**
  * NameSpace purpose.
  * <p>
- * Description of NameSpace ...
+ * A representation of a namespace for the Geoserver application. 
  * <p>
  * 
+ * <p>
+ * NameSpace ns = new NameSpace(dto);
+ * System.out.println(ns.getPrefix() + ns.getUri());
+ * </p>
+ * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpace.java,v 1.1.2.8 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: NameSpace.java,v 1.1.2.9 2004/01/08 23:44:48 dmzwiers Exp $
  */
-public class NameSpace extends Abstract{
+public class NameSpace extends GlobalLayerSupertype{
+	
+	/**
+	 * A copy of the NameSpaceDTO which contains the data for this class.
+	 * Editing the DTO should be completed with extreme caution.
+	 */
 	private NameSpaceDTO nsDTO;
-	public static final String PREFIX_DELIMITER = ":";
+		
 	/**
 	 * NameSpaceConfig constructor.
 	 * 
 	 * <p>
 	 * Creates a NameSpaceConfig to represent an instance with default data.
 	 * </p>
-	 *
-	 * @see defaultSettings()
 	 */
 	public NameSpace() {
 		nsDTO = new NameSpaceDTO();
@@ -34,8 +43,7 @@ public class NameSpace extends Abstract{
 	 * NameSpaceConfig constructor.
 	 * 
 	 * <p>
-	 * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
-	 * provided  is null then default values are used. All the data structures
+	 * Creates a NameSpaceConfig based on the data provided. All the data structures
 	 * are cloned.
 	 * </p>
 	 *
@@ -43,8 +51,7 @@ public class NameSpace extends Abstract{
 	 */
 	public NameSpace(NameSpaceDTO ns) {
 		if (ns == null) {
-			nsDTO = new NameSpaceDTO();
-			return;
+			throw new NullPointerException();
 		}
 		nsDTO = (NameSpaceDTO)ns.clone();
 	}
@@ -53,8 +60,7 @@ public class NameSpace extends Abstract{
 	 * NameSpaceConfig constructor.
 	 * 
 	 * <p>
-	 * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
-	 * provided  is null then default values are used. All the data structures
+	 * Creates a copy of the NameSpaceConfig provided. All the data structures
 	 * are cloned.
 	 * </p>
 	 *
@@ -62,15 +68,26 @@ public class NameSpace extends Abstract{
 	 */
 	public NameSpace(NameSpace ns) {
 		if (ns == null) {
-			nsDTO = new NameSpaceDTO();
-			return;
+			throw new NullPointerException();
 		}
 		nsDTO = new NameSpaceDTO();
 		nsDTO.setPrefix(ns.getPrefix());
 		nsDTO.setUri(ns.getUri());
 		nsDTO.setDefault(ns.isDefault());
 	}
-	
+
+	/**
+	 * Implement toDTO.
+	 * <p>
+	 * Package method used by GeoServer. This method may return references, 
+	 * and does not clone, so extreme caution sould be used when traversing 
+	 * the results.
+	 * </p>
+	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+	 * @see NameSpaceDTO
+	 * 
+	 * @return NameSpaceDTO An instance of the data this class represents. Please see Caution Above.
+	 */
 	Object toDTO(){
 		return nsDTO;
 	}
@@ -115,10 +132,10 @@ public class NameSpace extends Abstract{
 	 * isDefault purpose.
 	 * 
 	 * <p>
-	 * Description ...
+	 * Whether this is the default namespace.
 	 * </p>
 	 *
-	 * @return
+	 * @return true when this is the default namespace.
 	 */
 	public boolean isDefault() {
 		return nsDTO.isDefault();
@@ -128,10 +145,10 @@ public class NameSpace extends Abstract{
 	 * getPrefix purpose.
 	 * 
 	 * <p>
-	 * Description ...
+	 * returns the namespace's prefix.
 	 * </p>
 	 *
-	 * @return
+	 * @return String the namespace's prefix
 	 */
 	public String getPrefix() {
 		return nsDTO.getPrefix();
@@ -141,10 +158,10 @@ public class NameSpace extends Abstract{
 	 * getUri purpose.
 	 * 
 	 * <p>
-	 * Description ...
+	 * returns the namespace's uri.
 	 * </p>
 	 *
-	 * @return
+	 * @return String the namespace's uri.
 	 */
 	public String getUri() {
 		return nsDTO.getUri();
@@ -154,10 +171,10 @@ public class NameSpace extends Abstract{
 	 * setDdefault purpose.
 	 * 
 	 * <p>
-	 * Description ...
+	 * sets the default namespace.
 	 * </p>
 	 *
-	 * @param b
+	 * @param wherether this is the default namespace.
 	 */
 	public void setDefault(boolean b) {
 		nsDTO.setDefault(b);
@@ -167,10 +184,10 @@ public class NameSpace extends Abstract{
 	 * setPrefix purpose.
 	 * 
 	 * <p>
-	 * Description ...
+	 * stores the namespace's prefix.
 	 * </p>
 	 *
-	 * @param string
+	 * @param string the namespace's prefix.
 	 */
 	public void setPrefix(String string) {
 		nsDTO.setPrefix(string);
@@ -180,10 +197,10 @@ public class NameSpace extends Abstract{
 	 * setUri purpose.
 	 * 
 	 * <p>
-	 * Description ...
+	 * Stores the namespace's uri.
 	 * </p>
 	 *
-	 * @param string
+	 * @param string the namespace's uri.
 	 */
 	public void setUri(String string) {
 		nsDTO.setUri(string);

@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2.2.8 2004/01/07 22:44:05 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.9 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -326,7 +326,7 @@ public class FeatureResponse implements Response {
 
             GeoServer config = request.getGeoServer();
             WFS wfsConfig = config.getWFS();
-            String wfsSchemaLoc = config.getSchemaBaseUrl() + WFS.WFS_BASIC_LOC;
+            String wfsSchemaLoc = config.getSchemaBaseUrl() + "wfs/1.0.0/" + "GlobalWFS-basic.xsd";
             String fSchemaLoc = config.getBaseUrl() + "wfs/"+ "DescribeFeatureType?typeName="+typeNames.toString();
             namespace = meta.getDataStore().getNameSpace();
             transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);

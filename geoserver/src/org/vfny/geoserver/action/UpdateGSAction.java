@@ -42,7 +42,7 @@ public class UpdateGSAction extends Action {
 		throws IOException, ServletException {
 		GeoServer gs = null;
 		ServletContext sc = request.getSession().getServletContext();
-		gs = (GeoServer)sc.getAttribute(GeoServer.SESSION_KEY);
+		gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
 		try{
 			gs.load((WMSDTO)(((WMSConfig)sc.getAttribute(WMSConfig.CONFIG_KEY)).toDTO()),
 				(WFSDTO)((WFSConfig)sc.getAttribute(WFSConfig.CONFIG_KEY)).toDTO(),
