@@ -39,7 +39,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.9 2004/02/09 23:29:44 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.10 2004/03/10 23:39:06 groldan Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -175,6 +175,11 @@ public class JAIMapResponse extends GetMapDelegate {
         throws java.lang.IllegalStateException {
         //Return a default?  Format is not set until execute is called...
         return format;
+    }
+
+    public String getContentEncoding()
+    {
+      return null;
     }
 
     /**

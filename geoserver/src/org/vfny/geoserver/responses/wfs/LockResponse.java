@@ -42,7 +42,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.11 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.12 2004/03/10 23:39:06 groldan Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -87,6 +87,10 @@ public class LockResponse implements Response {
 
     public String getContentType(GeoServer gs) {
         return gs.getMimeType();
+    }
+
+    public String getContentEncoding(){
+        return null;
     }
 
     public void writeTo(OutputStream out) throws ServiceException {
@@ -164,8 +168,8 @@ public class LockResponse implements Response {
             NameSpaceInfo namespace = meta.getDataStoreInfo().getNameSpace();
             FeatureSource source = meta.getFeatureSource();
             FeatureResults features = source.getFeatures(curFilter);
-            
-            if( source instanceof FeatureLocking){            
+
+            if( source instanceof FeatureLocking){
                 ((FeatureLocking)source).setFeatureLock(featureLock);
             }
             FeatureReader reader = null;
@@ -178,11 +182,11 @@ public class LockResponse implements Response {
                         LOGGER.fine("Lock " + fid +
                                 " not supported by data store (authID:"
                                 + featureLock.getAuthorization() + ")");
-                        lockFailedFids.add(fid);                        
+                        lockFailedFids.add(fid);
                     }
                     else {
                         Filter fidFilter = filterFactory.createFidFilter(fid);
-                    
+
                         //DEFQuery is just some indirection, should be in the locking interface.
                         //int numberLocked = ((DEFQueryFeatureLocking)source).lockFeature(feature);
                         //HACK: Query.NO_NAMES isn't working in postgis right now,
@@ -192,7 +196,7 @@ public class LockResponse implements Response {
                                 Query.DEFAULT_MAX, Query.ALL_NAMES,
                                 curLock.getHandle());
                         int numberLocked = ((FeatureLocking)source).lockFeatures( query );
-    
+
                         if (numberLocked == 1) {
                             LOGGER.fine("Lock " + fid + " (authID:"
                                 + featureLock.getAuthorization() + ")");

@@ -23,7 +23,7 @@ import org.vfny.geoserver.requests.wms.GetMapRequest;
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.7 2004/02/09 23:29:44 dmzwiers Exp $
+ * @version $Id: SVGMapResponse.java,v 1.8 2004/03/10 23:39:06 groldan Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
     private static final Logger LOGGER = Logger.getLogger(
@@ -45,6 +45,11 @@ public class SVGMapResponse extends GetMapDelegate {
      */
     public String getContentType(GeoServer gs) {
         return MIME_TYPE;
+    }
+
+    public String getContentEncoding()
+    {
+      return null;
     }
 
     public List getSupportedFormats() {

@@ -61,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.16 2004/03/09 18:59:57 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.17 2004/03/10 23:39:06 groldan Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -547,6 +547,10 @@ public class TransactionResponse implements Response {
         return gs.getMimeType();
     }
 
+    public String getContentEncoding()
+    {
+      return null;
+    }
     /**
      * Writes generated xmlResponse.
      * 
