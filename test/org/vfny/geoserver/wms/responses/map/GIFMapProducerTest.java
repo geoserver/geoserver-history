@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map;
+package org.vfny.geoserver.wms.responses.map;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,8 +11,9 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-import org.vfny.geoserver.responses.wms.DefaultRasterMapProducer;
-import org.vfny.geoserver.responses.wms.DefaultRasterMapProducerTest;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
+import org.vfny.geoserver.wms.responses.map.GIFMapProducer;
 
 
 
