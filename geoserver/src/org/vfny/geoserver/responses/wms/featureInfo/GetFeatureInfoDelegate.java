@@ -177,8 +177,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
         int nLayers = layers.length;
         int numFilters = (filters == null) ? 0 : filters.length;
         Query[] queries = new Query[nLayers];
-        GetFeatureInfoRequest request = getRequest();
-        Envelope requestExtent = request.getGetMapRequest().getBbox();
+        GetFeatureInfoRequest infoRequest = getRequest();
+        Envelope requestExtent = infoRequest.getGetMapRequest().getBbox();
         FilterFactory ffactory = FilterFactory.createFilterFactory();
 
         try {

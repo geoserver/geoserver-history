@@ -153,14 +153,14 @@ public class GetMapResponse implements Response {
         throws WmsException {
         String requestFormat = request.getFormat();
         LOGGER.finer("request format is " + requestFormat);
-        GetMapDelegate delegate = null;
+        GetMapDelegate curDelegate = null;
         Class delegateClass = null;
 
         for (Iterator it = delegates.iterator(); it.hasNext();) {
-            delegate = (GetMapDelegate) it.next();
+            curDelegate = (GetMapDelegate) it.next();
 
-            if (delegate.canProduce(requestFormat)) {
-                delegateClass = delegate.getClass();
+            if (curDelegate.canProduce(requestFormat)) {
+                delegateClass = curDelegate.getClass();
                 LOGGER.finer("found GetMapDelegate " + delegateClass);
                 break;
             }
@@ -173,14 +173,14 @@ public class GetMapResponse implements Response {
         }
 
         try {
-            delegate = (GetMapDelegate) delegateClass.newInstance();
+            curDelegate = (GetMapDelegate) delegateClass.newInstance();
         } catch (Exception ex) {
             throw new WmsException(ex,
                 "Cannot obtain the map generator for the requested format",
                 "GetMapResponse::getDelegate()");
         }
 
-        return delegate;
+        return curDelegate;
     }
 
     /**

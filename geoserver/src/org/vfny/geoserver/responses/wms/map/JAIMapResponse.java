@@ -125,10 +125,10 @@ public class JAIMapResponse extends GetMapDelegate {
                 List formatsList = Arrays.asList(mimeTypes);
 
                 for (Iterator it = formatsList.iterator(); it.hasNext();) {
-                    String format = it.next().toString();
+                    String curFormat = it.next().toString();
 
-                    if (!format.equals("")) {
-                        supportedFormats.add(format);
+                    if (!curFormat.equals("")) {
+                        supportedFormats.add(curFormat);
                     }
                 }
 
@@ -310,12 +310,12 @@ public class JAIMapResponse extends GetMapDelegate {
 
             LOGGER.fine("map setup");
 
-            BufferedImage image = new BufferedImage(width, height,
+            BufferedImage curImage = new BufferedImage(width, height,
                     BufferedImage.TYPE_INT_ARGB);
 
             //LOGGER.fine("setting up renderer");
             //java.awt.Graphics g = image.getGraphics();
-            graphic = image.createGraphics();
+            graphic = curImage.createGraphics();
 
             if (!request.isTransparent()) {
                 graphic.setColor(request.getBgColor());
@@ -345,7 +345,7 @@ public class JAIMapResponse extends GetMapDelegate {
             LOGGER.fine("called renderer");
 
             map = null;
-            this.image = image;
+            this.image = curImage;
         } catch (IOException exp) {
             exp.printStackTrace();
 

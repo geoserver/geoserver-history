@@ -181,14 +181,14 @@ public class GetFeatureInfoResponse implements Response {
         String requestFormat = request.getInfoFormat();
         LOGGER.finer("request format is " + requestFormat);
 
-        GetFeatureInfoDelegate delegate = null;
+        GetFeatureInfoDelegate curDelegate = null;
         Class delegateClass = null;
 
         for (Iterator it = delegates.iterator(); it.hasNext();) {
-            delegate = (GetFeatureInfoDelegate) it.next();
+            curDelegate = (GetFeatureInfoDelegate) it.next();
 
-            if (delegate.canProduce(requestFormat)) {
-                delegateClass = delegate.getClass();
+            if (curDelegate.canProduce(requestFormat)) {
+                delegateClass = curDelegate.getClass();
                 LOGGER.finer("found GetFeatureInfoDelegate " + delegateClass);
 
                 break;
@@ -203,14 +203,14 @@ public class GetFeatureInfoResponse implements Response {
         }
 
         try {
-            delegate = (GetFeatureInfoDelegate) delegateClass.newInstance();
+            curDelegate = (GetFeatureInfoDelegate) delegateClass.newInstance();
         } catch (Exception ex) {
             throw new WmsException(ex,
                 "Cannot obtain the map generator for the requested format",
                 "GetMapResponse::getDelegate()");
         }
 
-        return delegate;
+        return curDelegate;
     }
 
     /**
