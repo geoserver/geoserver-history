@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
@@ -42,9 +43,31 @@ public class TransactionFilterHandler
 	
     }
 
-    //    public void feature(Feature feature) {
-    //parent.feature(feature);
-    //}
+    /**
+     * Recieves the geometry from a child, and either passes it on
+     * to FilterFilter to add to the filter, or if not in a filter
+     * then it goes to the transaction handler.
+     * 
+     * @param geometry called by a child filter when it can not deal
+     * with it.
+     * @task REVISIT: This whole transaction handling is quite messy
+     * with geometries possible in property, filter, or feature.  We
+     * may want to re-architect this, something with a more flexible
+     * dynamic handler, that creates subhandlers as it needs them, instead
+     * of each trying to figure out if it can deal with what the subhandler
+     * passes up.
+     */
+    public void geometry(Geometry geometry){
+	LOGGER.finest("filter handler got geometry");
+	if (insideFilter){
+	    LOGGER.finest("sending to filterfilter " + geometry);
+	    super.geometry(geometry);
+	} else {
+	    LOGGER.finest("sending to transaction " + geometry);
+	    parent.geometry(geometry);
+	}
+    }
+
 
     public void feature(Feature feature) {
 
