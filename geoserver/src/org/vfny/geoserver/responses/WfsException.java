@@ -42,7 +42,7 @@ public class WfsException extends Exception {
      * Assigns a diagnostic code to this exception.
      */
     public void setCode(String code){
-	this.code = code;
+    this.code = code;
     }
  
     /**
@@ -92,56 +92,56 @@ public class WfsException extends Exception {
     
     
     private boolean isEmpty(String testString){
-	return (testString == null) || testString.equals("");
+    return (testString == null) || testString.equals("");
     }
 
     public String getXmlResponse() {
-	return getXmlResponse(false);
+    return getXmlResponse(false);
     }
 
     /**
      * Return request type.
      */
     public String getXmlResponse (boolean printStackTrace) {
-	String indent = "   ";
+    String indent = "   ";
        StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>\n");
-	returnXml.append("<ServiceExceptionReport\n");
-	returnXml.append(indent + "version=\"1.2.0\"\n");
-	returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
-	returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + 
-			 "XMLSchema-instance\"\n");
-	//REVISIT: this probably isn't right, need to learn about xml schemas
-	returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis"
-			 + ".net/ogc ../wfs/1.0.0/OGC-exception.xsd\">\n");
-	//REVISIT: handle multiple service exceptions?  must refactor class.
-	returnXml.append(indent + "<ServiceException");	
-	if (!isEmpty(this.code)) {
-	    returnXml.append(" code=\"" + this.code + "\"");
-	}
-	if (!isEmpty(this.locator)) {
-	    returnXml.append(" locator=\"" + this.locator + "\"");
-	} 
-	returnXml.append(">\n" + indent + indent);
-	if (!isEmpty(this.preMessage)){
-	    returnXml.append(this.preMessage + ": ");
-	} 
-	returnXml.append(this.getMessage() + "\n");
-	if (printStackTrace  ) {
-	    Throwable cause = getCause();
-	    StackTraceElement[] trace = cause == null ? 
-		getStackTrace() : cause.getStackTrace();
-	    for (int i = 0; i < trace.length; i++){
-		String line = indent + indent + "at " + trace[i].toString();
-		returnXml.append(GMLBuilder.encodeXML(line) + "\n");
-	    }
-	}
-	returnXml.append(indent + "</ServiceException>\n");
-	returnXml.append("</ServiceExceptionReport>");
-	LOGGER.fine("return wfs exception is " + returnXml);
-	return returnXml.toString();
-	
-	//this is code from .14 and .15.  It can be reused if we need 
-	//backwards compatibility.
+    returnXml.append("<ServiceExceptionReport\n");
+    returnXml.append(indent + "version=\"1.2.0\"\n");
+    returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
+    returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + 
+             "XMLSchema-instance\"\n");
+    //REVISIT: this probably isn't right, need to learn about xml schemas
+    returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis"
+             + ".net/ogc ../wfs/1.0.0/OGC-exception.xsd\">\n");
+    //REVISIT: handle multiple service exceptions?  must refactor class.
+    returnXml.append(indent + "<ServiceException"); 
+    if (!isEmpty(this.code)) {
+        returnXml.append(" code=\"" + this.code + "\"");
+    }
+    if (!isEmpty(this.locator)) {
+        returnXml.append(" locator=\"" + this.locator + "\"");
+    } 
+    returnXml.append(">\n" + indent + indent);
+    if (!isEmpty(this.preMessage)){
+        returnXml.append(this.preMessage + ": ");
+    } 
+    returnXml.append(this.getMessage() + "\n");
+    if (printStackTrace  ) {
+        Throwable cause = getCause();
+        StackTraceElement[] trace = cause == null ? 
+        getStackTrace() : cause.getStackTrace();
+        for (int i = 0; i < trace.length; i++){
+        String line = indent + indent + "at " + trace[i].toString();
+        returnXml.append(GMLBuilder.encodeXML(line) + "\n");
+        }
+    }
+    returnXml.append(indent + "</ServiceException>\n");
+    returnXml.append("</ServiceExceptionReport>");
+    LOGGER.fine("return wfs exception is " + returnXml);
+    return returnXml.toString();
+    
+    //this is code from .14 and .15.  It can be reused if we need 
+    //backwards compatibility.
         /*String returnXml;
         returnXml = "<WFS_Exception>\n";
         returnXml = returnXml + "   <Exception>\n";
