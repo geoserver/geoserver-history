@@ -4,20 +4,7 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.DefaultMap;
@@ -29,8 +16,19 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 
 /**
@@ -39,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.10 2004/03/10 23:39:06 groldan Exp $
+ * @version $Id: JAIMapResponse.java,v 1.11 2004/03/13 05:37:42 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -57,9 +55,14 @@ public class JAIMapResponse extends GetMapDelegate {
     private String format;
 
     //    Java2DRenderer renderer = new Java2DRenderer();
-    Renderer renderer = new LiteRenderer();
+    Renderer renderer;
 
     public JAIMapResponse() {
+        try {
+            renderer = new LiteRenderer();
+        } catch (NoClassDefFoundError ncdfe) {
+            //no jai installed - do nothing.
+        }
     }
 
     /**
@@ -75,34 +78,43 @@ public class JAIMapResponse extends GetMapDelegate {
     }
 
     /**
-     * The formats this delegate supports.
-     * Includes those formats supported by the Java ImageIO extension,
-     * mostly: <i>png, x-portable-graymap,
-     * jpeg, jpeg2000, x-png, tiff, vnd.wap.wbmp, x-portable-pixmap,
-     * x-portable-bitmap, bmp and x-portable-anymap</i>, but the specific
-     * ones will depend on the platform and JAI version. At leas JPEG and PNG
-     * will generally work.
+     * The formats this delegate supports. Includes those formats supported by
+     * the Java ImageIO extension, mostly: <i>png, x-portable-graymap, jpeg,
+     * jpeg2000, x-png, tiff, vnd.wap.wbmp, x-portable-pixmap,
+     * x-portable-bitmap, bmp and x-portable-anymap</i>, but the specific ones
+     * will depend on the platform and JAI version. At leas JPEG and PNG will
+     * generally work.
      *
-     * @return The list of the supported formats, as returned by the
-     * Java ImageIO extension.
+     * @return The list of the supported formats, as returned by the Java
+     *         ImageIO extension.
      */
     public List getSupportedFormats() {
-        if(supportedFormats == null)
-        {
-          String []mimeTypes = ImageIO.getWriterMIMETypes();
-          supportedFormats = Arrays.asList(mimeTypes);
-          if(LOGGER.isLoggable(Level.CONFIG))
-          {
-            StringBuffer sb = new StringBuffer("Supported JAIMapResponse's MIME Types: [");
-            for (Iterator it = supportedFormats.iterator(); it.hasNext(); ) {
-              sb.append(it.next());
-              if(it.hasNext())
-                sb.append(", ");
+        if (supportedFormats == null) {
+            if (renderer == null) {
+                supportedFormats = Collections.EMPTY_LIST;
+            } else {
+                String[] mimeTypes = ImageIO.getWriterMIMETypes();
+                supportedFormats = Arrays.asList(mimeTypes);
+
+                if (LOGGER.isLoggable(Level.CONFIG)) {
+                    StringBuffer sb = new StringBuffer(
+                            "Supported JAIMapResponse's MIME Types: [");
+
+                    for (Iterator it = supportedFormats.iterator();
+                            it.hasNext();) {
+                        sb.append(it.next());
+
+                        if (it.hasNext()) {
+                            sb.append(", ");
+                        }
+                    }
+
+                    sb.append("]");
+                    LOGGER.config(sb.toString());
+                }
             }
-            sb.append("]");
-            LOGGER.config(sb.toString());
-          }
         }
+
         return supportedFormats;
     }
 
@@ -177,9 +189,8 @@ public class JAIMapResponse extends GetMapDelegate {
         return format;
     }
 
-    public String getContentEncoding()
-    {
-      return null;
+    public String getContentEncoding() {
+        return null;
     }
 
     /**
