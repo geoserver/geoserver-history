@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,7 +36,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.4 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.5 2004/01/07 22:46:02 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends Abstract {
     /** DOCUMENT ME! */
@@ -46,11 +45,11 @@ public class FeatureTypeInfo extends Abstract {
 	private FeatureTypeInfoDTO ftc;
 	
 	// ref to parent set of datastores.
-	private Map dataStores;
+	private Data data;
 	
-    public FeatureTypeInfo(FeatureTypeInfoDTO config, Map dataStores)throws ConfigurationException{
+    public FeatureTypeInfo(FeatureTypeInfoDTO config, Data data)throws ConfigurationException{
     	ftc = config;
-    	this.dataStores = dataStores;
+    	this.data = data;
     }
 
 	Object toDTO(){
@@ -107,7 +106,7 @@ public class FeatureTypeInfo extends Abstract {
      * @return DOCUMENT ME!
      */
     public DataStoreInfo getDataStore() {
-        return (DataStoreInfo)dataStores.get(ftc.getDataStoreId());
+        return data.getDataStoreInfo(ftc.getDataStoreId());
     }
 
     /**
