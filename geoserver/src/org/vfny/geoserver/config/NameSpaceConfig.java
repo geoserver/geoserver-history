@@ -16,7 +16,7 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 /**
  * NameSpaceConfig purpose.
  * <p>
@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.NameSpaceDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceConfig.java,v 1.1.2.3 2004/01/08 17:36:40 dmzwiers Exp $
+ * @version $Id: NameSpaceConfig.java,v 1.1.2.4 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class NameSpaceConfig{
 	//public static final String PREFIX_DELIMITER = ":";
@@ -66,7 +66,7 @@ public class NameSpaceConfig{
 	 * </p>
 	 * @param f The namespace to copy.
 	 */
-	public NameSpaceConfig(NameSpaceDTO ns){
+	public NameSpaceConfig(NameSpaceInfoDTO ns){
 		if(ns == null){
 			throw new NullPointerException("");
 		}
@@ -78,17 +78,17 @@ public class NameSpaceConfig{
 	/**
 	 * Implement loadDTO.
 	 * <p>
-	 * Imports the data contained in the NameSpaceDTO object provided.
+	 * Imports the data contained in the NameSpaceInfoDTO object provided.
 	 * </p>
 	 * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
 	 * 
-	 * @param dto An NameSpaceDTO object
+	 * @param dto An NameSpaceInfoDTO object
 	 * @return true when the instance provided is valid and stored.
 	 */
-	public void update(NameSpaceDTO dto){
+	public void update(NameSpaceInfoDTO dto){
 		if(dto == null)
 			throw new NullPointerException("NameSpace Data Transfer Object required");
-		NameSpaceDTO ns = (NameSpaceDTO)dto;
+		NameSpaceInfoDTO ns = (NameSpaceInfoDTO)dto;
 		prefix = ns.getPrefix();
 		uri = ns.getUri();
 		_default = ns.isDefault();
@@ -97,14 +97,14 @@ public class NameSpaceConfig{
 	/**
 	 * Implement toDTO.
 	 * <p>
-	 * Creates a DTO representation of this Object as a NameSpaceDTO
+	 * Creates a DTO representation of this Object as a NameSpaceInfoDTO
 	 * </p>
 	 * @see org.vfny.geoserver.config.DataStructure#toDTO()
 	 * 
-	 * @return a NameSpaceDTO which representts the data in this class.
+	 * @return a NameSpaceInfoDTO which representts the data in this class.
 	 */
-	public NameSpaceDTO toDTO(){
-		NameSpaceDTO nsDto = new NameSpaceDTO();
+	public NameSpaceInfoDTO toDTO(){
+		NameSpaceInfoDTO nsDto = new NameSpaceInfoDTO();
 		nsDto.setDefault(_default);
 		nsDto.setPrefix(prefix);
 		nsDto.setUri(uri);

@@ -7,7 +7,7 @@ package org.vfny.geoserver.global.dto;
 
 
 /**
- * Data Transfer Object for GeoServer NameSpace information.
+ * Data Transfer Object for GeoServer NameSpaceInfo information.
  * 
  * <p>
  * Represents the portion of a namespace required for the configuration of
@@ -25,16 +25,16 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * <p>
- * NameSpaceDTO nsDto = new NameSpaceDTO();
+ * NameSpaceInfoDTO nsDto = new NameSpaceInfoDTO();
  * nsDto.setDefault(false);
  * nsDto.setPrefix("me");
  * nsDto.setUri("dzwiers.refraction.net");
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceDTO.java,v 1.1.2.3 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: NameSpaceInfoDTO.java,v 1.1.2.1 2004/01/09 21:27:51 dmzwiers Exp $
  */
-public final class NameSpaceDTO implements DataTransferObject {
+public final class NameSpaceInfoDTO implements DataTransferObject {
     //public static final String PREFIX_DELIMITER = ":";
 
     /** The namespace prefix. */
@@ -55,7 +55,7 @@ public final class NameSpaceDTO implements DataTransferObject {
      *
      * @see defaultSettings()
      */
-    public NameSpaceDTO() {
+    public NameSpaceInfoDTO() {
         defaultSettings();
     }
 
@@ -70,7 +70,7 @@ public final class NameSpaceDTO implements DataTransferObject {
      *
      * @param ns The namespace to copy.
      */
-    public NameSpaceDTO(NameSpaceDTO ns) {
+    public NameSpaceInfoDTO(NameSpaceInfoDTO ns) {
         if (ns == null) {
             defaultSettings();
 
@@ -108,7 +108,7 @@ public final class NameSpaceDTO implements DataTransferObject {
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new NameSpaceDTO(this);
+        return new NameSpaceInfoDTO(this);
     }
 
     /**
@@ -126,10 +126,10 @@ public final class NameSpaceDTO implements DataTransferObject {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-    	if(obj == null ||!(obj instanceof NameSpaceDTO))
+    	if(obj == null ||!(obj instanceof NameSpaceInfoDTO))
     		return false;
     		
-        NameSpaceDTO ns = (NameSpaceDTO) obj;
+        NameSpaceInfoDTO ns = (NameSpaceInfoDTO) obj;
 
         return ((prefix == ns.getPrefix())
         && ((uri == ns.getUri()) && (_default == ns.isDefault())));

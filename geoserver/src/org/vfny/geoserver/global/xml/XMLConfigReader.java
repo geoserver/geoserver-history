@@ -43,7 +43,7 @@ import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
@@ -69,7 +69,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.13 2004/01/09 18:27:29 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.14 2004/01/09 21:27:51 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -232,7 +232,7 @@ public class XMLConfigReader {
 	protected void setDefaultNS(DataDTO c){
 		Iterator i = c.getNameSpaces().values().iterator();
 		while(i.hasNext()){
-			NameSpaceDTO ns = (NameSpaceDTO)i.next();
+			NameSpaceInfoDTO ns = (NameSpaceInfoDTO)i.next();
 			if(ns.isDefault()){
 				c.setDefaultNameSpacePrefix(ns.getPrefix());
 				return;
@@ -464,7 +464,7 @@ public class XMLConfigReader {
 
 		for (int i = 0; i < nsCount; i++) {
 			elem = (Element) nsList.item(i);
-			NameSpaceDTO ns = new NameSpaceDTO();
+			NameSpaceInfoDTO ns = new NameSpaceInfoDTO();
 			ns.setUri(ReaderUtils.getAttribute(elem, "uri", true));
 			ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
 			ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default", false) || (nsCount == 1));
@@ -736,7 +736,7 @@ public class XMLConfigReader {
 			double miny = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
 			double maxx = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
 			double maxy = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
-			return new Envelope(minx, miny, maxx, maxy);
+			return new Envelope(minx, maxx, miny, maxy);
 		}
 		return new Envelope();
 	}
@@ -866,7 +866,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.13 2004/01/09 18:27:29 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.14 2004/01/09 21:27:51 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

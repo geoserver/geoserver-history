@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.11 2004/01/09 17:22:27 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.12 2004/01/09 21:27:51 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
     /** Default constant */
@@ -152,11 +152,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * datasources.  This method will allow us to make that change more easily
      * in the future.
      *
-     * @return NameSpace the namespace specified for the specified DataStoreInfo (by ID)
+     * @return NameSpaceInfo the namespace specified for the specified DataStoreInfo (by ID)
      *
      * @throws IllegalStateException THrown when disabled.
      */
-    public NameSpace getNameSpace() {
+    public NameSpaceInfo getNameSpace() {
         if (!isEnabled()) {
             throw new IllegalStateException("This featureType is not "
                 + "enabled");

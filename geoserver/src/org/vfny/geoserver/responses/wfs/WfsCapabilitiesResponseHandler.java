@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.requests.Request;
@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.10 2004/01/08 23:44:48 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.11 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -55,7 +55,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         attributes.addAttribute("", "version", "version", "", CUR_VERSION);
         attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
 
-        NameSpace[] namespaces = request.getGeoServer().getData().getNameSpaces();
+        NameSpaceInfo[] namespaces = request.getGeoServer().getData().getNameSpaces();
 
         for (int i = 0; i < namespaces.length; i++) {
             String prefixDef = "xmlns:" + namespaces[i].getPrefix();

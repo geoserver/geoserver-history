@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 
 /**
@@ -40,7 +40,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.7 2004/01/09 17:39:50 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.8 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class DataConfig{
 	public static final String CONFIG_KEY = "Config.Data";
@@ -112,7 +112,7 @@ public class DataConfig{
 		nameSpaces = new HashMap();
 		while(i.hasNext()){
 			Object key = i.next();
-			nameSpaces.put(key,new NameSpaceConfig((NameSpaceDTO)data.getNameSpaces().get(key)));
+			nameSpaces.put(key,new NameSpaceConfig((NameSpaceInfoDTO)data.getNameSpaces().get(key)));
 			if(((NameSpaceConfig)nameSpaces.get(key)).isDefault())
 				defaultNameSpace = (NameSpaceConfig)nameSpaces.get(key);
 		}
@@ -160,7 +160,7 @@ public class DataConfig{
 		nameSpaces = new HashMap();
 		while(i.hasNext()){
 			Object key = i.next();
-			nameSpaces.put(key,new NameSpaceConfig((NameSpaceDTO)data.getNameSpaces().get(key)));
+			nameSpaces.put(key,new NameSpaceConfig((NameSpaceInfoDTO)data.getNameSpaces().get(key)));
 			if(((NameSpaceConfig)nameSpaces.get(key)).isDefault())
 				defaultNameSpace = (NameSpaceConfig)nameSpaces.get(key);
 		}
@@ -215,8 +215,8 @@ public class DataConfig{
 		while(i.hasNext()){
 			Object key = i.next();
 			tmp.put(key,((NameSpaceConfig)nameSpaces.get(key)).toDTO());
-			if(((NameSpaceDTO)tmp.get(key)).isDefault())
-				dt.setDefaultNameSpacePrefix(((NameSpaceDTO)tmp.get(key)).getPrefix());
+			if(((NameSpaceInfoDTO)tmp.get(key)).isDefault())
+				dt.setDefaultNameSpacePrefix(((NameSpaceInfoDTO)tmp.get(key)).getPrefix());
 		}
 		dt.setNameSpaces(tmp);
 		

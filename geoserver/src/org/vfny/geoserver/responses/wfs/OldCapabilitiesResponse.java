@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.oldconfig.TypeInfo;
 import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.oldconfig.VersionBean;
@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.8 2004/01/06 23:03:13 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.9 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */
@@ -183,7 +183,7 @@ public class OldCapabilitiesResponse {
         } else if (version.equals("1.0.0")) {
             firstTag += addNameSpace("", WFS_XMLNS_URL);
 
-            NameSpace[] namespaces = config.getData().getNameSpaces();
+            NameSpaceInfo[] namespaces = config.getData().getNameSpaces();
 
             for (int i = 0; i < namespaces.length; i++) {
                 firstTag += ("\n" + spaces + namespaces[i].toString());

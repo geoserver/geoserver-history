@@ -14,7 +14,7 @@ import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.1.2.16 2004/01/08 23:51:52 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.17 2004/01/09 21:27:51 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype {
     /** for debugging */
@@ -51,11 +51,11 @@ public class Data extends GlobalLayerSupertype {
     /** used to create styles */
     private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
 
-    /** holds the mappings between prefixes and NameSpace objects */
+    /** holds the mappings between prefixes and NameSpaceInfo objects */
     private Map nameSpaces;
 
-    /** the default NameSpace */
-    private NameSpace defaultNameSpace;
+    /** the default NameSpaceInfo */
+    private NameSpaceInfo defaultNameSpace;
 
     /** holds the mapping of datastores and data store id's */
     private Map dataStores;
@@ -65,7 +65,7 @@ public class Data extends GlobalLayerSupertype {
 
     /**
      * Map of <code>FeatureTypeInfo</code>'s stored by full qualified name
-     * (NameSpace prefix + PREFIX_DELIMITER + typeName)
+     * (NameSpaceInfo prefix + PREFIX_DELIMITER + typeName)
      */
     private Map featureTypes;
 
@@ -229,10 +229,10 @@ public class Data extends GlobalLayerSupertype {
 
             if (!nameSpaces.containsKey(key)) {
                 nameSpaces.put(key,
-                    new NameSpace((NameSpaceDTO) config.getNameSpaces().get(key)));
+                    new NameSpaceInfo((NameSpaceInfoDTO) config.getNameSpaces().get(key)));
 
-                if (((NameSpaceDTO) config.getNameSpaces().get(key)).isDefault()) {
-                    defaultNameSpace = (NameSpace) nameSpaces.get(key);
+                if (((NameSpaceInfoDTO) config.getNameSpaces().get(key)).isDefault()) {
+                    defaultNameSpace = (NameSpaceInfo) nameSpaces.get(key);
                 }
             }
         }
@@ -339,27 +339,27 @@ public class Data extends GlobalLayerSupertype {
      * List of all relevant namespaces
      * </p>
      *
-     * @return NameSpace[]
+     * @return NameSpaceInfo[]
      */
-    public NameSpace[] getNameSpaces() {
-        NameSpace[] ns = new NameSpace[nameSpaces.values().size()];
+    public NameSpaceInfo[] getNameSpaces() {
+        NameSpaceInfo[] ns = new NameSpaceInfo[nameSpaces.values().size()];
 
-        return (NameSpace[]) new ArrayList(nameSpaces.values()).toArray(ns);
+        return (NameSpaceInfo[]) new ArrayList(nameSpaces.values()).toArray(ns);
     }
 
     /**
      * getNameSpace purpose.
      * 
      * <p>
-     * The NameSpace from the specified prefix
+     * The NameSpaceInfo from the specified prefix
      * </p>
      *
      * @param prefix
      *
-     * @return NameSpace resulting from the specified prefix
+     * @return NameSpaceInfo resulting from the specified prefix
      */
-    public NameSpace getNameSpace(String prefix) {
-        NameSpace retNS = (NameSpace) nameSpaces.get(prefix);
+    public NameSpaceInfo getNameSpace(String prefix) {
+        NameSpaceInfo retNS = (NameSpaceInfo) nameSpaces.get(prefix);
 
         return retNS;
     }
@@ -368,12 +368,12 @@ public class Data extends GlobalLayerSupertype {
      * getDefaultNameSpace purpose.
      * 
      * <p>
-     * Returns the default NameSpace for this Data object.
+     * Returns the default NameSpaceInfo for this Data object.
      * </p>
      *
-     * @return NameSpace the default name space
+     * @return NameSpaceInfo the default name space
      */
-    public NameSpace getDefaultNameSpace() {
+    public NameSpaceInfo getDefaultNameSpace() {
         return defaultNameSpace;
     }
 
@@ -435,8 +435,8 @@ public class Data extends GlobalLayerSupertype {
      * uri.  This method is slow, use getFeatureType(String typeName), where
      * possible.  For not he only user should be TransactionFeatureHandler.
      *
-     * @param localName NameSpace name
-     * @param uri NameSpace uri
+     * @param localName NameSpaceInfo name
+     * @param uri NameSpaceInfo uri
      *
      * @return FeatureTypeInfo
      */

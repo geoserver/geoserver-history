@@ -28,11 +28,11 @@ import java.util.NoSuchElementException;
  * <pre><code>
  * DataDTO dDto = new DataDTO();
  * Map m = new HashMap();
- * NameSpaceDTO ns = new NameSpaceDTO();
+ * NameSpaceInfoDTO ns = new NameSpaceInfoDTO();
  * ns.setUri("dzwiers.refractions.net");
  * m.put("nsDave",ns);
  * dDto.setNameSpaces(m);
- * ns = new NameSpaceDTO();
+ * ns = new NameSpaceInfoDTO();
  * ns.setUri("jgarnett.refractions.net");
  * ns.setDefault(true);
  * dDto.addNameSpace("nsJody"ns);
@@ -41,7 +41,7 @@ import java.util.NoSuchElementException;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataDTO.java,v 1.1.2.5 2004/01/09 17:34:18 dmzwiers Exp $
+ * @version $Id: DataDTO.java,v 1.1.2.6 2004/01/09 21:27:51 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -58,7 +58,7 @@ public final class DataDTO implements DataTransferObject {
     /**
      * NamespaceDTO referenced by key "<code>prefix</code>".
      * 
-     * @see org.vfny.geoserver.global.dto.NameSpaceDTO
+     * @see org.vfny.geoserver.global.dto.NameSpaceInfoDTO
      */
     private Map nameSpaces;
 
@@ -85,7 +85,7 @@ public final class DataDTO implements DataTransferObject {
      * in a Map. For 99% of the time when no default has been provided it is
      * because there is only one Namespace for the application.
      * </p>
-     * @see org.vfny.geoserver.global.dto.NameSpace
+     * @see org.vfny.geoserver.global.dto.NameSpaceInfo
      */
     private String defaultNameSpacePrefix;
 
@@ -341,11 +341,11 @@ public final class DataDTO implements DataTransferObject {
     }
 
     /**
-     * Sets the NameSpaceDTO map.
+     * Sets the NameSpaceInfoDTO map.
      * <p>
      * The default prefix is not changed by this operation.
      * </p>
-     * @param Map of NameSpaceDTO by "prefix"
+     * @param Map of NameSpaceInfoDTO by "prefix"
      */
     public void setNameSpaces(Map map) {
 		if( map == null ){

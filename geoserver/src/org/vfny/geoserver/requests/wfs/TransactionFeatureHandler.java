@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.2.2.8 2004/01/07 22:44:05 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.2.2.9 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -216,7 +216,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * a coordinates (or coord) element, it uses internal methods to set the
      * current state of the coordinates reader appropriately.
      *
-     * @param namespaceURI NameSpace of the element.
+     * @param namespaceURI NameSpaceInfo of the element.
      * @param localName Local name of the element.
      * @param qName Full name of the element, including namespace prefix.
      *

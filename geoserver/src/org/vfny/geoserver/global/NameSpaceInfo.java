@@ -8,11 +8,11 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 
 
 /**
- * NameSpace purpose.
+ * NameSpaceInfo purpose.
  * 
  * <p>
  * A representation of a namespace for the Geoserver application.
@@ -21,19 +21,19 @@ import org.vfny.geoserver.global.dto.NameSpaceDTO;
  * <p></p>
  * 
  * <p>
- * NameSpace ns = new NameSpace(dto); System.out.println(ns.getPrefix() +
+ * NameSpaceInfo ns = new NameSpaceInfo(dto); System.out.println(ns.getPrefix() +
  * ns.getUri());
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpace.java,v 1.1.2.11 2004/01/09 17:36:59 dmzwiers Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.1.2.1 2004/01/09 21:27:51 dmzwiers Exp $
  */
-public class NameSpace extends GlobalLayerSupertype {
+public class NameSpaceInfo extends GlobalLayerSupertype {
     /**
-     * A copy of the NameSpaceDTO which contains the data for this class.
+     * A copy of the NameSpaceInfoDTO which contains the data for this class.
      * Editing the DTO should be completed with extreme caution.
      */
-    private NameSpaceDTO nsDTO;
+    private NameSpaceInfoDTO nsDTO;
 
     /**
      * NameSpaceConfig constructor.
@@ -42,8 +42,8 @@ public class NameSpace extends GlobalLayerSupertype {
      * Creates a NameSpaceConfig to represent an instance with default data.
      * </p>
      */
-    public NameSpace() {
-        nsDTO = new NameSpaceDTO();
+    public NameSpaceInfo() {
+        nsDTO = new NameSpaceInfoDTO();
     }
 
     /**
@@ -58,12 +58,12 @@ public class NameSpace extends GlobalLayerSupertype {
      *
      * @throws NullPointerException when the param is null
      */
-    public NameSpace(NameSpaceDTO ns) {
+    public NameSpaceInfo(NameSpaceInfoDTO ns) {
         if (ns == null) {
             throw new NullPointerException();
         }
 
-        nsDTO = (NameSpaceDTO) ns.clone();
+        nsDTO = (NameSpaceInfoDTO) ns.clone();
     }
 
     /**
@@ -78,12 +78,12 @@ public class NameSpace extends GlobalLayerSupertype {
      *
      * @throws NullPointerException when the param is null
      */
-    public NameSpace(NameSpace ns) {
+    public NameSpaceInfo(NameSpaceInfo ns) {
         if (ns == null) {
             throw new NullPointerException();
         }
 
-        nsDTO = new NameSpaceDTO();
+        nsDTO = new NameSpaceInfoDTO();
         nsDTO.setPrefix(ns.getPrefix());
         nsDTO.setUri(ns.getUri());
         nsDTO.setDefault(ns.isDefault());
@@ -98,11 +98,11 @@ public class NameSpace extends GlobalLayerSupertype {
      * results.
      * </p>
      *
-     * @return NameSpaceDTO An instance of the data this class represents.
+     * @return NameSpaceInfoDTO An instance of the data this class represents.
      *         Please see Caution Above.
      *
      * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
-     * @see NameSpaceDTO
+     * @see NameSpaceInfoDTO
      */
     Object toDTO() {
         return nsDTO;
@@ -120,7 +120,7 @@ public class NameSpace extends GlobalLayerSupertype {
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new NameSpace(this);
+        return new NameSpaceInfo(this);
     }
 
     /**
@@ -138,7 +138,7 @@ public class NameSpace extends GlobalLayerSupertype {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        NameSpace ns = (NameSpace) obj;
+        NameSpaceInfo ns = (NameSpaceInfo) obj;
 
         return ((nsDTO.getPrefix() == ns.getPrefix())
         && ((nsDTO.getUri() == ns.getUri())

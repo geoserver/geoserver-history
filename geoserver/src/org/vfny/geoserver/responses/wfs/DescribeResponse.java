@@ -24,7 +24,7 @@ import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.DescribeRequest;
 import org.vfny.geoserver.responses.Response;
@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.3.2.10 2004/01/09 08:22:33 jive Exp $
+ * @version $Id: DescribeResponse.java,v 1.3.2.11 2004/01/09 21:27:52 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -164,7 +164,7 @@ public class DescribeResponse implements Response {
                     .get(0));
 
             //all types have same prefix, so just use the first.
-            NameSpace namespace = nsInfoType.getDataStoreInfo().getNameSpace();
+            NameSpaceInfo namespace = nsInfoType.getDataStoreInfo().getNameSpace();
             String targetNs = namespace.getUri();
 
             //String targetNs = nsInfoType.getXmlns();

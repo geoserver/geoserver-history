@@ -29,7 +29,7 @@ import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.LockRequest;
@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.10 2004/01/09 08:22:33 jive Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.11 2004/01/09 21:27:52 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -151,7 +151,7 @@ public class LockResponse implements Response {
 
             //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(curTypeName);
-            NameSpace namespace = meta.getDataStoreInfo().getNameSpace();
+            NameSpaceInfo namespace = meta.getDataStoreInfo().getNameSpace();
             FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
             FeatureResults features = source.getFeatures(curFilter);
             source.setFeatureLock(featureLock);

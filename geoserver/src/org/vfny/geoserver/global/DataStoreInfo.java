@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.1.2.6 2004/01/09 17:15:30 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.1.2.7 2004/01/09 21:27:51 dmzwiers Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype {
     /** for logging */
@@ -176,10 +176,10 @@ public class DataStoreInfo extends GlobalLayerSupertype {
      * Returns the namespace for this datastore.
      * </p>
      *
-     * @return NameSpace the namespace for this datastore.
+     * @return NameSpaceInfo the namespace for this datastore.
      */
-    public NameSpace getNameSpace() {
-        return (NameSpace) data.getNameSpace(dsc.getNameSpaceId());
+    public NameSpaceInfo getNameSpace() {
+        return (NameSpaceInfo) data.getNameSpace(dsc.getNameSpaceId());
     }
 
     /**

@@ -33,7 +33,7 @@ import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.NameSpaceDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
@@ -47,7 +47,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.6 2004/01/09 18:27:29 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.7 2004/01/09 21:27:51 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -309,7 +309,7 @@ public class XMLConfigWriter {
 			Iterator i = data.getNameSpaces().keySet().iterator();
 			while(i.hasNext()){
 				String s = (String)i.next();
-				NameSpaceDTO ns = (NameSpaceDTO)data.getNameSpaces().get(s);
+				NameSpaceInfoDTO ns = (NameSpaceInfoDTO)data.getNameSpaces().get(s);
 				if(ns != null)
 					storeNameSpace(cw,ns);
 			}
@@ -375,13 +375,13 @@ public class XMLConfigWriter {
 	 * 
 	 * storeNameSpace purpose.
 	 * <p>
-	 * Writes a NameSpaceDTO into the WriterHelper provided.
+	 * Writes a NameSpaceInfoDTO into the WriterHelper provided.
 	 * </p>
 	 * @param cw The Configuration Writer
-	 * @param ns The NameSpace. 
+	 * @param ns The NameSpaceInfo. 
 	 * @throws ConfigurationException When an IO exception occurs.
 	 */
-	protected static void storeNameSpace(WriterHelper cw, NameSpaceDTO ns) throws ConfigurationException{
+	protected static void storeNameSpace(WriterHelper cw, NameSpaceInfoDTO ns) throws ConfigurationException{
 		LOGGER.fine("In method storeNameSpace");
 		Map attr = new HashMap();
 		if(ns.getUri()!=null && ns.getUri()!="")
@@ -534,7 +534,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.6 2004/01/09 18:27:29 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.7 2004/01/09 21:27:51 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -612,7 +612,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.6 2004/01/09 18:27:29 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.7 2004/01/09 21:27:51 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

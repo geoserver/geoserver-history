@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.ConfigurationException;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán, Dominion t.i.
- * @version $Id: TypeInfo.java,v 1.2.2.5 2004/01/05 22:14:41 dmzwiers Exp $
+ * @version $Id: TypeInfo.java,v 1.2.2.6 2004/01/09 21:27:51 dmzwiers Exp $
  */
 public class TypeInfo
 {
@@ -68,7 +68,7 @@ public class TypeInfo
   }
 
   /**
-   * gets the NameSpace prefix used internally for this featureType.
+   * gets the NameSpaceInfo prefix used internally for this featureType.
    *
    * @return The namespace prefix used internally.
    */

@@ -36,7 +36,7 @@ import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.requests.Request;
@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2.2.10 2004/01/09 08:22:33 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.11 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -218,7 +218,7 @@ public class FeatureResponse implements Response {
         //
         Data catalog = request.getGeoServer().getData();        
         FeatureTypeInfo meta = null;
-        NameSpace namespace;       
+        NameSpaceInfo namespace;       
         Query query;
         int maxFeatures = request.getMaxFeatures();
 
