@@ -84,6 +84,16 @@ public class DescribeResponse {
 	}
         // generates response, using general function 
         xmlResponse  = generateTypes( wfsRequest );
+	if(!config.formatOutput()){
+	    //strip out the formatting.  This is pretty much the only way we
+	    //can do this, as the user files are going to have newline
+	    //characters and whatnot, unless we can get rid of formatting
+	    //when we read the file, which could be worth looking into if
+	    //this slows things down.
+	    xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
+	    xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
+	}
+
     }
     
     

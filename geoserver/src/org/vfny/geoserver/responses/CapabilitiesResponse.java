@@ -80,7 +80,7 @@ public class CapabilitiesResponse {
     private static XmlOutputStream xmlOutTemp = new XmlOutputStream(60000);
     
     private static final String WFS_XMLNS_URL = "http://www.opengis.org/wfs";
-
+ 
     private static final String OGC_XMLNS_URL =	"http://www.opengis.org/ogc";
     
     
@@ -142,10 +142,16 @@ public class CapabilitiesResponse {
             xmlOutFinal.writeFile( FILTER_FILE );
             addTag("WFS_Capabilities", TAG_END, 0 );
         }
-
-	//if(config.formatOutput()){
-	String retString = xmlOutFinal.toString();//.replaceAll(">\n[ \\t\\n]*", ">");
-	    //}
+	
+	String retString = xmlOutFinal.toString();
+	if(!config.formatOutput()){
+	    //REVISIT: this is not as fast as doing all the formatting 
+	    //ourselves, but I'm not sure if it's worth the effort and
+	    //code complication, as these return strings will never be
+	    //all that large.  Should do some performance testing.
+	    retString = retString.replaceAll(">\n[ \\t\\n]*", ">");
+	    retString = retString.replaceAll("\n[ \\t\\n]*", " ");
+	}
         return retString;//xmlOutFinal.toString();
 
     }

@@ -14,6 +14,7 @@ import org.geotools.filter.Filter;
 import org.vfny.geoserver.requests.LockRequest;
 import org.vfny.geoserver.config.TypeInfo;
 import org.vfny.geoserver.config.TypeRepository;
+import org.vfny.geoserver.config.ConfigInfo;
 
 
 /**
@@ -29,6 +30,10 @@ public class LockResponse {
         Logger.getLogger("org.vfny.geoserver.responses");
     
     private static TypeRepository repository = TypeRepository.getInstance();
+
+    private static boolean verbose = ConfigInfo.getInstance().formatOutput();
+
+    private static String nl = verbose ? "\n" : "";
 
     /** Constructor, which is required to take a request object. */ 
     private LockResponse () {}
@@ -67,39 +72,39 @@ public class LockResponse {
 
     private static String generateXml(String lockId, boolean lockAll,
 				      Set lockedFeatures, Set notLockedFeatures){
-	String indent = "   ";
+	String indent = verbose ? "   " : "";
 	StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>");
-	returnXml.append("\n<WFS_LockFeatureResponse\n");
-	returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\"\n");
+	returnXml.append(nl + "<WFS_LockFeatureResponse " + nl);
+	returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
 	//this not needed yet, only when FeaturesLocked element used.
 	if (!lockAll) {
-	  returnXml.append(indent +"xmlns:ogc=\"http://www.opengis.net/ogc\"\n");
+	  returnXml.append(indent +"xmlns:ogc=\"http://www.opengis.net/ogc\" " + nl);
 	}
 	returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + 
-			 "XMLSchema-instance\"\n");
+			 "XMLSchema-instance\" " + nl);
 	//REVISIT: this probably isn't right, need to learn about xml schemas
 	returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis" +
-			 ".net/wfs ../wfs/1.0.0/WFS-transaction.xsd\">\n");
-	returnXml.append(indent + "<LockId>" + lockId + "</LockId>\n");
+			 ".net/wfs ../wfs/1.0.0/WFS-transaction.xsd\">" + nl);
+	returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);
 	if (!lockAll) {
-	    returnXml.append(indent + "<FeaturesLocked>\n"); 
+	    returnXml.append(indent + "<FeaturesLocked>" + nl); 
 		for (Iterator i = lockedFeatures.iterator();
 		     i.hasNext();) {
 		    returnXml.append(indent + indent);
-		    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + "\"/>\n");
+		    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + "\"/>" + nl);
 		}
-	    returnXml.append(indent + "</FeaturesLocked>\n");
+	    returnXml.append(indent + "</FeaturesLocked>" + nl);
 	    if (notLockedFeatures != null && notLockedFeatures.size() > 0){
-		returnXml.append("<FeaturesNotLocked>\n");
+		returnXml.append("<FeaturesNotLocked>" + nl);
 		for (Iterator i = notLockedFeatures.iterator();
 		     i.hasNext();) {
 		    returnXml.append(indent + indent);
-		    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + "\"/>\n");
+		    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + "\"/>" + nl);
 		}
-		returnXml.append("</FeaturesNotLocked>\n");
+		returnXml.append("</FeaturesNotLocked>" + nl);
 	    }
 	}
-	returnXml.append(indent + "</WFS_LockFeatureResponse>");
+	returnXml.append("</WFS_LockFeatureResponse>");
 
 	return returnXml.toString();
     }
