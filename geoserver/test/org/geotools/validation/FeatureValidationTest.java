@@ -8,27 +8,37 @@ import org.geotools.data.memory.*;
 
 import org.vfny.geoserver.requests.wfs.*;
 import org.vfny.geoserver.config.*;
+
 /**
- * Sample FeatureValidation Test.
+ * FeatureValidationTest purpose.
+ * <p>
+ * Description of FeatureValidationTest ...
+ * <p>
  * 
- * @author Jody Garnett, Refractions Research, Inc.
+ * @author jgarnett, Refractions Research, Inc.
+ * @author $Author: jive $ (last modification)
+ * @version $Id: FeatureValidationTest.java,v 1.1.2.2 2003/11/23 03:19:02 jive Exp $
  */
 public class FeatureValidationTest extends DataTestCase {
     MemoryDataStore store;
     
     /**
-     * Constructor for testName.
-     * 
-     * @param testName name of test (used in error reporting)
+     * FeatureValidationTest constructor.
+     * <p>
+     * Run test <code>testName</code>.
+     * </p>
+     * @param testName
      */
     public FeatureValidationTest(String testName) {
         super(testName);
     }
 
     /**
-     * Sets up a Simple DataStore for use.
+     * Construct data store for use.
      * 
-     * @see TestCase#setUp()
+     * @see junit.framework.TestCase#setUp()
+     * 
+     * @throws Exception
      */
     protected void setUp() throws Exception {
         super.setUp();
@@ -37,7 +47,11 @@ public class FeatureValidationTest extends DataTestCase {
         store.addFeatures( riverFeatures );     
     }
     /**
-     * Clean up after DataStore.
+     * Override tearDown.
+     *
+     * @see junit.framework.TestCase#tearDown()
+     * 
+     * @throws Exception
      */
     protected void tearDown() throws Exception {
         store = null;
