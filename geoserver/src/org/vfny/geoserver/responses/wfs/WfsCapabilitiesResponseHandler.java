@@ -25,7 +25,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.19 2004/03/10 23:39:06 groldan Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.20 2004/03/16 22:51:44 groldan Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -75,7 +75,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         String locationAtt = XSI_PREFIX + ":schemaLocation";
         String locationDef = WFS_URI + " " + request.getBaseUrl()
-            + "wfs/1.0.0/" + "WFS-capabilities.xsd";
+            + "data/capabilities/wfs/1.0.0/" + "WFS-capabilities.xsd";
         attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
         startElement("WFS_Capabilities", attributes);
     }
@@ -147,7 +147,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             String resultFormat = "ResultFormat";
             startElement(resultFormat);
             handleSingleElem("GML2", "");
-            handleSingleElem("GML2.gz", "");
+            handleSingleElem("GML2-GZIP", "");
             endElement(resultFormat);
             cReturn();
         }
