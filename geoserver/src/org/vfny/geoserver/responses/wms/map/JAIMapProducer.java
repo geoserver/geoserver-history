@@ -4,18 +4,17 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
+import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.responses.wms.DefaultRasterMapProducer;
+import org.vfny.geoserver.responses.wms.helpers.JAISupport;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.logging.Logger;
-
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-
-import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.responses.wms.DefaultRasterMapProducer;
 
 
 /**
@@ -38,6 +37,8 @@ class JAIMapProducer extends DefaultRasterMapProducer {
     private static final String DEFAULT_MAP_FORMAT = "image/png";
 
     /**
+     * Creates a map producer that relies on JAI to encode the BufferedImage
+     * generated the default (image/png) image format.
      *
      */
     public JAIMapProducer() {
@@ -45,7 +46,10 @@ class JAIMapProducer extends DefaultRasterMapProducer {
     }
 
     /**
+     * Creates a map producer that relies on JAI to encode the BufferedImage
+     * generated in <code>outputFormat</code> format.
      *
+     * @param outputFormat the output format MIME type.
      */
     public JAIMapProducer(String outputFormat) {
         setOutputFormat(outputFormat);
@@ -59,29 +63,11 @@ class JAIMapProducer extends DefaultRasterMapProducer {
      * @param image The image to be formatted.
      * @param outStream The stream to write to.
      *
-     * @throws WmsException
-     * @throws IOException DOCUMENT ME!
+     * @throws WmsException not really.
+     * @throws IOException if the image writing fails.
      */
     protected void formatImageOutputStream(String format, BufferedImage image,
         OutputStream outStream) throws WmsException, IOException {
-        if (format.equalsIgnoreCase("jpeg")) {
-            format = "image/jpeg";
-        }
-
-        Iterator it = ImageIO.getImageWritersByMIMEType(format);
-
-        if (!it.hasNext()) {
-            throw new WmsException( //WMSException.WMSCODE_INVALIDFORMAT,
-                "Format not supported: " + format);
-        }
-
-        ImageWriter writer = (ImageWriter) it.next();
-        ImageOutputStream ioutstream = null;
-
-        ioutstream = ImageIO.createImageOutputStream(outStream);
-        writer.setOutput(ioutstream);
-        writer.write(image);
-        writer.dispose();
-        ioutstream.close();
+        JAISupport.encode(format, image, outStream);
     }
 }
