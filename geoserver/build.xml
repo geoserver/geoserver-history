@@ -111,6 +111,12 @@
       <include name="org/vfny/geoserver/requests/GetCapabilitiesSuite.class"/>
     </fileset>
   </path>
+  <path id="path.test">
+    <path refid="path.build"/>
+    <fileset dir="${dir.build}">
+      <include name="**/*.class"/>
+    </fileset>
+  </path>
 
 <!-- ====================================================================== -->
 <!-- HELP / INDEX OF TARGETS                                                -->
@@ -226,6 +232,7 @@
       <sysproperty key="dataFolder" value="${basedir}/tests/unit/testData"/>
 
       <classpath>
+    <path refid="path.test"/>
         <fileset dir="${dir.lib}">
           <include name="*.jar"/>
         </fileset>
@@ -454,7 +461,7 @@
 <!-- ====================================================================== -->
 
 <!-- WAR -->
-  <target name="war" depends="init, all">
+  <target name="war" depends="init, all ,unit-all">
     <!-- preparation -->
     <delete file="${basedir}/geoserver.war" 
             failonerror="false"/>
