@@ -20,7 +20,9 @@ import java.util.logging.Logger;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultRepository;
+import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Repository;
 
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
@@ -52,31 +54,22 @@ public class ValidationRunnable implements Runnable {
 	private ServletContext context;
 	private HttpServletRequest request;
 	Validator validator;
+	ValidationProcessor gv;
 	public TestValidationResults results;	// I get filled up with goodies
+	Repository repository;
 	
 	public final static String KEY = "validationTestDoItThread.key";
-
-	public ValidationRunnable(TestValidationResults vr, Map ts, Map plugins, DataConfig dataConfig, ServletContext context, HttpServletRequest request) throws Exception 
-	{
-		this(ts, plugins, dataConfig, context, request);
-		results = vr;
-	}
 	
-	public ValidationRunnable(Map ts, Map plugins, DataConfig dataConfig, ServletContext context, HttpServletRequest request) throws Exception 
+	//public ValidationRunnable(Map ts, Map plugins, DataConfig dataConfig, ServletContext context, HttpServletRequest request) throws Exception
+	public ValidationRunnable(HttpServletRequest request)
 	{
-		this.testSuites = ts;		// what tests we are actually running
-		this.plugins = plugins;		// every possible plugin
-		this.dataConfig = dataConfig;
-		this.context = context;
+//		this.testSuites = ts;		// what tests we are actually running
+//		this.plugins = plugins;		// every possible plugin
+//		this.dataConfig = dataConfig;
+//		this.context = context;
 		this.request = request;
 		
-		if (results == null)
-			results = new TestValidationResults();
-		
-		ValidationProcessor gv = new ValidationProcessor();
-
-		gv.load(plugins, testSuites);
-
+/*
 		LOGGER.finer("testSuites.size() = " + testSuites.size());
 		LOGGER.finer("plugins.size() = " + plugins.size());
 		LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
@@ -86,7 +79,7 @@ public class ValidationRunnable implements Runnable {
 		DefaultRepository dataRepository = new DefaultRepository();
 		Iterator it = dataStoreConfigs.keySet().iterator();
 		
-		/** get all the data stores and build up our dataRepository */
+		// get all the data stores and build up our dataRepository
 		while (it.hasNext())
 		{
 			String dsKey = it.next().toString();
@@ -102,6 +95,17 @@ public class ValidationRunnable implements Runnable {
 		}
 		
 		validator = new Validator(dataRepository, gv);
+		*/
+	}
+	
+	public void setup(TestValidationResults vr, Repository repo, Map plugins, Map testSuites) throws Exception
+	{
+		gv = new ValidationProcessor();
+		gv.load(plugins, testSuites);
+		results = vr;
+		repository = repo;
+		validator = new Validator(repository, gv);
+		
 	}
 	
 	/* (non-Javadoc)
@@ -109,41 +113,36 @@ public class ValidationRunnable implements Runnable {
 	 */
 	public void run() {
 		//GeoValidator gv = new GeoValidator(testSuites,plugins);
-        Map dataStores = dataConfig.getDataStores();
+        //Map dataStores = dataConfig.getDataStores();
 		//TestValidationResults vr = runTransactions(dataStores,gv,context);
 
 		request.getSession().setAttribute(TestValidationResults.CURRENTLY_SELECTED_KEY,results);        
-        
-		/** run FEATURE validations */
-		Iterator it = dataStores.keySet().iterator();
+		
+		Map dataStores = repository.getFeatureSources();
+		Iterator it = dataStores.entrySet().iterator();
+		// Go through each data store and run the featureValidation test on
+		//  each feature type
 		while (it.hasNext())
 		{
-			String key = (String) it.next();
-			LOGGER.finer("=========================================");
-			LOGGER.finer("key = " + key);
-			LOGGER.finer("=========================================");
-			DataStoreConfig ds = (DataStoreConfig) dataStores.get(key);
-			String dsID = ds.getId();
-			LOGGER.finer("dsID = " + dsID);
-			DataStore store = null;
-			String[] typeNames = null;
+			Map.Entry entry = (Map.Entry) it.next();
+			String typeRef = (String) entry.getKey();
+			FeatureSource featureSource =(FeatureSource) entry.getValue();
+			String dataStoreId = typeRef.split(":")[0];
 			try {
-				store = ds.findDataStore(context);
-				typeNames = store.getTypeNames();
-			} catch (IOException e1) {
+				LOGGER.finer(dataStoreId + ": feature validation, "+featureSource );
+				FeatureReader reader = featureSource.getFeatures().reader();
+				try {
+					validator.featureValidation( dataStoreId, reader , results);
+				}
+				finally {
+					reader.close();
+				}				
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 			
-			for (int i=0; i<typeNames.length; i++)
-			{
-				try {
-					LOGGER.finer("feature validation, typeName[" + i + "] = " + typeNames[i]);
-					validator.featureValidation(dsID, store.getFeatureSource(typeNames[i]).getFeatures().reader(), results);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
+	
 		
 		/** ------------------------------------------------------------------ */
 		
@@ -151,10 +150,13 @@ public class ValidationRunnable implements Runnable {
 		
 		// this is stupid
 		Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE,
-									Integer.MAX_VALUE, Integer.MAX_VALUE);
+									Integer.MAX_VALUE, Integer.MAX_VALUE);		
+		// a map of typeref -> DataSource
 		
 		try {
-			validator.integrityValidation(dataStores, env, results);
+			Map featureSources = repository.getFeatureSources();
+			LOGGER.finer("integrity tests entry for " + featureSources.size() + " dataSources.");
+			validator.integrityValidation( featureSources, env, results);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
