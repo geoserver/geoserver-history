@@ -24,6 +24,9 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.feature.FeatureType;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.ConfigRequests;
@@ -79,6 +82,14 @@ public class TypesEditorForm extends ActionForm {
      * </p>
      */
     private String SRS;
+    
+    /**
+     *  WKT representation of the SRS
+     *  This is read-only since it gets generated from the SRS id.
+     *  Everytime SRS is updates (#setSRS()), this will also be re-set.
+     *  If there's a problem with the SRS, this will try to give some info about the error.
+     */
+    private String SRSWKT; 
 
     /** Title of this FeatureType */
     private String title;
@@ -140,6 +151,15 @@ public class TypesEditorForm extends ActionForm {
     /** Stores the name of the new attribute they wish to create */
     private String newAttribute;
 
+    	/** these store the bounding box of DATASET - in it coordinate system.
+    	 *  normally, you'll have these set to "" or null.
+    	 *  They're only for information purposes (presentation), they are never persisted or used in any calculations.
+    	 */
+    private String dataMinX;
+    private String dataMinY;
+    private String dataMaxX;
+    private String dataMaxY;
+    
     /**
      * Set up FeatureTypeEditor from from Web Container.
      * 
@@ -153,6 +173,12 @@ public class TypesEditorForm extends ActionForm {
      */
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
+
+
+dataMinX="";
+dataMinY="";
+dataMaxX="";
+dataMaxY="";
 
         action = "";
 
@@ -190,7 +216,9 @@ public class TypesEditorForm extends ActionForm {
         }
 
         typeName = type.getName();
-        SRS = Integer.toString(type.getSRS());
+        setSRS(Integer.toString(type.getSRS())); // doing it this way also sets SRSWKT
+
+        
         title = type.getTitle();
 
         System.out.println("rest based on schemaBase: " + type.getSchemaBase());
@@ -550,14 +578,42 @@ public class TypesEditorForm extends ActionForm {
     public String getSRS() {
         return SRS;
     }
+    
+    /**
+     * Access SRSWKT property.  There is no setSRSWKT() because its derived from the SRS id.
+     *
+     * @return Returns the sRS.
+     */
+    public String getSRSWKT() {
+        return SRSWKT;
+    }
+    
 
     /**
-     * Set sRS to srs.
+     * Set sRS to srs. 
+     * 
+     *  Also sets WKTSRS.  
+     *  srs should be an Integer (in string form) - according to FeatureTypeConfig
      *
      * @param srs The sRS to set.
      */
-    public void setSRS(String srs) {
+    public void setSRS(String srs) 
+    {
         SRS = srs;
+        try{
+        	   // srs should be an Integer - according to FeatureTypeConfig
+        	CoordinateReferenceSystem crsTheirData = CRS.decode("EPSG:"+srs);
+        	SRSWKT = crsTheirData.toWKT();
+        }
+        catch (Exception e)  // couldnt decode their code
+		{
+        	// DJB:
+        	// dont know how to internationize this inside a set() method!!!
+        	// I think I need the request to get the local, then I can get MessageResources
+        	// from the servlet and call an appropriate method.  
+        	// Unforutunately, I dont know how to get the local!  
+        	SRSWKT = "Could not find a definition for: EPSG:"+srs;
+		}
     }
 
     /**
@@ -755,5 +811,39 @@ public class TypesEditorForm extends ActionForm {
      */
     public void setSchemaName(String schemaName) {
         this.schemaName = schemaName;
+    }
+    
+    public void setDataMinX(String x)
+    {
+    	dataMinX = x;
+    }
+    public void setDataMinY(String x)
+    {
+    	dataMinY = x;
+    }
+    public void setDataMaxX(String x)
+    {
+    	dataMaxX = x;
+    }
+    public void setDataMaxY(String x)
+    {
+    	dataMaxY = x;
+    }
+    
+    public String getDataMinX()
+    {
+    	return dataMinX;
+    }
+    public String getDataMinY()
+    {
+    	return dataMinY;
+    }
+    public String getDataMaxX()
+    {
+    	return dataMaxX;
+    }
+    public String getDataMaxY()
+    {
+    	return dataMaxY;
     }
 }
