@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -18,7 +19,7 @@ import org.vfny.geoserver.config.ConfigRequests;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.5 2004/01/12 05:24:17 jive Exp $
+ * @version $Id: DataDataStoresSelectForm.java,v 1.1.2.6 2004/01/12 05:28:56 jive Exp $
  */
 public class DataDataStoresSelectForm extends ActionForm {
     
@@ -26,7 +27,7 @@ public class DataDataStoresSelectForm extends ActionForm {
     private String buttonAction;
     
     /** Selection from list - will be a dataStoreId */
-    private String selectedDataStoreID;
+    private String selectedDataStoreId;
     
     private List dataStoreIds;
     /** Reset form */
@@ -38,14 +39,25 @@ public class DataDataStoresSelectForm extends ActionForm {
         dataStoreIds = ConfigRequests.getDataConfig(request).listDataStoreIds();
         
         // Usual reset stuff
-        selectedDataStoreID = null; // nothing selected yet        
+        selectedDataStoreId = null; // nothing selected yet        
         buttonAction = null; // updated when user submits form        
     }
     
     /** Validate as required */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-        
+                    
+        if( !getDataStoreIds().contains( getSelectedDataStoreId() ) ){
+            errors.add( "selectedDataStoreId",            
+                new ActionError("errors.requiredFactory", getSelectedDataStoreId() )
+            );
+        }
+        if( !"delete".equals( getButtonAction() ) &&
+            !"edit".equals( getButtonAction() ) ){
+            errors.add( "buttonAction",            
+                new ActionError("errors.requireDataStoreID", getButtonAction() )
+            );            
+        }
         return errors;
     }    
 
@@ -62,8 +74,8 @@ public class DataDataStoresSelectForm extends ActionForm {
      * </p>
      * @return Selected DataStoreID or <code>null</code> if nothing is selected 
      */
-    public String getSelectedDataStoreID() {
-        return selectedDataStoreID;
+    public String getSelectedDataStoreId() {
+        return selectedDataStoreId;
     }
     
     /**
@@ -81,8 +93,8 @@ public class DataDataStoresSelectForm extends ActionForm {
     public void setButtonAction(String string) {
         buttonAction = string;
     }    
-    public void setSelectedDataStoreID(String string) {
-        selectedDataStoreID = string;
+    public void setSelectedDataStoreId(String string) {
+        selectedDataStoreId = string;
     }
 
 }
