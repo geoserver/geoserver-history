@@ -5,13 +5,13 @@
 <table class="state" width="100%">
   <tbody>
     <tr>
-      <td>
+      <td class="node">
         GeoServer
 <logic:equal name="GeoServer.ApplicationState" property="appChanged" value="true">
         *
 </logic:equal>
       </td>
-      <td align="right">
+      <td class="timestamp">
 <logic:notEmpty name="GeoServer.ApplicationState" property="appTimestamp">
         <bean:write name="GeoServer.ApplicationState"
                     property="appTimestamp"
@@ -23,13 +23,13 @@
       </td>      
     </tr>
     <tr>
-      <td>
+      <td class="node">
         Configuration        
 <logic:equal name="GeoServer.ApplicationState" property="configChanged" value="true">
         *
 </logic:equal>        
       </td>
-      <td align="right">
+      <td class="timestamp">
 <logic:notEmpty name="GeoServer.ApplicationState" property="configTimestamp">
         <bean:write name="GeoServer.ApplicationState"
               property="configTimestamp"
@@ -41,10 +41,10 @@
       </td>
     </tr>
     <tr>
-      <td>
+      <td class="node">
         XML        
       </td>
-      <td align="right">
+      <td class="timestamp">
 <logic:notEmpty name="GeoServer.ApplicationState" property="xmlTimestamp">
         <bean:write name="GeoServer.ApplicationState"
                     property="xmlTimestamp"
