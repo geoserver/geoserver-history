@@ -466,12 +466,22 @@ public class TransactionResponse implements Response {
                         preprocess.close();
                     }
                     
-                    if (types.length == 1) {
-                        store.modifyFeatures(types[0], values[0], filter);
-                    } else {
-                        store.modifyFeatures(types, values, filter);
-                    }
-                    
+                    try{
+	                    if (types.length == 1) {
+	                        store.modifyFeatures(types[0], values[0], filter);
+	                    } else {
+	                        store.modifyFeatures(types, values, filter);
+	                    }
+                }catch (IOException e)  //DJB: this is for cite tests.  We should probaby do this for all the exceptions here - throw a transaction FAIL instead of serice exception  
+				{
+                	//this failed - we want a FAILED not a service exception!
+                	build = new WfsTransResponse(WfsTransResponse.FAILED,
+                            transactionRequest.getGeoServer().isVerbose());
+                	 // add in exception details here??
+                	response = build;
+                	// DJB: it looks like the transaction is rolled back in writeTo()
+                	return;
+					}                    
                     if ((request.getLockId() != null)
                             && store instanceof FeatureLocking
                             && (request.getReleaseAction() == TransactionRequest.SOME)) {

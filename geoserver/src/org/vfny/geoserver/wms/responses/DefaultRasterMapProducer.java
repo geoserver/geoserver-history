@@ -185,8 +185,10 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         } else {
             LOGGER.fine("setting to transparent");
 
-            int type = AlphaComposite.SRC_OVER;
-            graphic.setComposite(AlphaComposite.getInstance(type, 0));
+            // Do not need to set Alpha Blending ..... simply we don't draw the background :-)
+            
+            //int type = AlphaComposite.SRC_OVER;
+            //graphic.setComposite(AlphaComposite.getInstance(type, 0.0f));
         }
 
         Rectangle paintArea = new Rectangle(width, height);

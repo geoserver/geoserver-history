@@ -204,9 +204,10 @@ public class DataFormatsEditorForm extends ActionForm {
                 	Object[] inArray = {getParamValue(i)};
                 	value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
                 } catch (Exception e) {
-                    errors.add("paramValue[" + i + "]",
-                            new ActionError("error.dataFormatEditor.param.parse", key,
-                            		getParamValue(i).getClass(), e));
+                	value = null;
+//                    errors.add("paramValue[" + i + "]",
+//                            new ActionError("error.dataFormatEditor.param.parse", key,
+//                            		getParamValue(i).getClass(), e));
                 }
 
 //                if ((value == null) && param.required) {

@@ -267,11 +267,16 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 					Object value = null;
 					String key = descr.getName().toString();
 					
-					Class[] clArray = {String.class};
-					Object[] inArray = {dfConfig.getParameters().get(key)};
-					value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+					try {
+						Class[] clArray = {String.class};
+						Object[] inArray = {dfConfig.getParameters().get(key)};
+						value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+					} catch (Exception e) {
+						value = null;
+					}
 					
-					params.parameter(key).setValue(value);
+					if( value != null )
+						params.parameter(key).setValue(value);
 				}
 			}
 			
@@ -291,14 +296,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		} catch (SecurityException e) {
 			throw new IOException(e.getMessage());
 		} catch (IOException e) {
-			throw new IOException(e.getMessage());
-		} catch (InstantiationException e) {
-			throw new IOException(e.getMessage());
-		} catch (IllegalAccessException e) {
-			throw new IOException(e.getMessage());
-		} catch (InvocationTargetException e) {
-			throw new IOException(e.getMessage());
-		} catch (NoSuchMethodException e) {
 			throw new IOException(e.getMessage());
 		}
 		

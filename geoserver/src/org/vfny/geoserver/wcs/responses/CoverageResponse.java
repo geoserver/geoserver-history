@@ -185,11 +185,16 @@ public class CoverageResponse implements Response {
 					Object value = null;
 					String key = descr.getName().toString();
 					
-					Class[] clArray = {String.class};
-					Object[] inArray = {dfConfig.getParameters().get(key)};
-					value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+					try {
+						Class[] clArray = {String.class};
+						Object[] inArray = {dfConfig.getParameters().get(key)};
+						value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+					} catch (Exception e) {
+						value = null;
+					}
 					
-					params.parameter(key).setValue(value);
+					if( value != null )
+						params.parameter(key).setValue(value);
 				}
 			}
 			
@@ -282,18 +287,6 @@ public class CoverageResponse implements Response {
 			throw new WcsException(e, "problem with CoverageResults",
 					request.getHandle());
 		} catch (SecurityException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
-		} catch (InstantiationException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
-		} catch (IllegalAccessException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
-		} catch (InvocationTargetException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
-		} catch (NoSuchMethodException e) {
 			throw new WcsException(e, "problem with CoverageResults",
 					request.getHandle());
 		}

@@ -108,11 +108,16 @@ public class DataCoveragesNewAction extends ConfigAction {
 					Object value = null;
 					String key = descr.getName().toString();
 					
-					Class[] clArray = {String.class};
-					Object[] inArray = {dfConfig.getParameters().get(key)};
-					value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
-
-					params.parameter(key).setValue(value);
+					try {
+						Class[] clArray = {String.class};
+						Object[] inArray = {dfConfig.getParameters().get(key)};
+						value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+					} catch (Exception e) {
+						value = null;
+					}
+					
+					if( value != null )
+						params.parameter(key).setValue(value);
 				}
 			}
 
@@ -132,14 +137,6 @@ public class DataCoveragesNewAction extends ConfigAction {
 		} catch (SecurityException e) {
 			throw new ConfigurationException(e);
 		} catch (IOException e) {
-			throw new ConfigurationException(e);
-		} catch (InstantiationException e) {
-			throw new ConfigurationException(e);
-		} catch (IllegalAccessException e) {
-			throw new ConfigurationException(e);
-		} catch (InvocationTargetException e) {
-			throw new ConfigurationException(e);
-		} catch (NoSuchMethodException e) {
 			throw new ConfigurationException(e);
 		}
     	

@@ -164,11 +164,16 @@ public class CoveragesEditorAction extends ConfigAction {
 					Object value = null;
 					String key = descr.getName().toString();
 					
-					Class[] clArray = {String.class};
-					Object[] inArray = {dfConfig.getParameters().get(key)};
-					value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+					try {
+						Class[] clArray = {String.class};
+						Object[] inArray = {dfConfig.getParameters().get(key)};
+						value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+					} catch (Exception e) {
+						value = null;
+					}
 					
-					params.parameter(key).setValue(value);
+					if( value != null )
+						params.parameter(key).setValue(value);
 				}
 			}
 			
@@ -188,14 +193,6 @@ public class CoveragesEditorAction extends ConfigAction {
 		} catch (SecurityException e) {
 			throw new ServletException(e);
 		} catch (IOException e) {
-			throw new ServletException(e);
-		} catch (InstantiationException e) {
-			throw new ServletException(e);
-		} catch (IllegalAccessException e) {
-			throw new ServletException(e);
-		} catch (InvocationTargetException e) {
-			throw new ServletException(e);
-		} catch (NoSuchMethodException e) {
 			throw new ServletException(e);
 		}
 		
