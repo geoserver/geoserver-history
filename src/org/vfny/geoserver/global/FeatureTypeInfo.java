@@ -17,6 +17,9 @@ import org.geotools.styling.Style;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+// Modif C. Kolbowicz - 07/10/2004
+import org.vfny.geoserver.global.dto.LegendURLDTO;
+//-- Modif C. Kolbowicz - 07/10/2004
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import java.io.IOException;
@@ -30,9 +33,10 @@ import java.util.Map;
 /**
  * Represents a FeatureTypeInfo, its user config and autodefined information.
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @author Chris Holmes
  * @author dzwiers
+ * @Charles Kolbowicz
  * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
@@ -142,6 +146,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     private FeatureType ft;
 
+    // Modif C. Kolbowicz - 07/10/2004
+    /**
+     * Holds value of property legendURL.
+     */
+    private LegendURL legendURL;
+    //-- Modif C. Kolbowicz - 07/10/2004
+    
     /**
      * FeatureTypeInfo constructor.
      * 
@@ -160,7 +171,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         this.data = data;
         _abstract = dto.getAbstract();
         dataStoreId = dto.getDataStoreId();
-        defaultStyle = dto.getDefaultStyle();
+        defaultStyle = dto.getDefaultStyle();        
+        
+        // Modif C. Kolbowicz - 07/10/2004
+        if (dto.getLegendURL() != null) {
+            legendURL = new LegendURL(dto.getLegendURL());
+        } //-- Modif C. Kolbowicz - 07/10/2004   
+        
         definitionQuery = dto.getDefinitionQuery();
         dirName = dto.getDirName();
         keywords = dto.getKeywords();
@@ -201,6 +218,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setAbstract(_abstract);
         dto.setDataStoreId(dataStoreId);
         dto.setDefaultStyle(defaultStyle);
+        
+        // Modif C. Kolbowicz - 07/10/2004
+        if (legendURL != null) {
+            dto.setLegendURL((LegendURLDTO)legendURL.toDTO());
+        } //-- Modif C. Kolbowicz - 07/10/2004
+        
         dto.setDefinitionQuery(definitionQuery);
         dto.setDirName(dirName);
         dto.setKeywords(keywords);
@@ -956,4 +979,20 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     public Object getMetaData(String key) {
         return meta.get(key);
     }
+    
+    /**
+     * getLegendURL purpose.
+     * 
+     * <p>
+     * returns the FeatureTypeInfo legendURL
+     * </p>
+     *
+     * @return String the FeatureTypeInfo legendURL
+     */
+    // Modif C. Kolbowicz - 07/10/2004
+    public LegendURL getLegendURL() {
+        return this.legendURL;
+    }        
+    //-- Modif C. Kolbowicz - 07/10/2004
+    
 }

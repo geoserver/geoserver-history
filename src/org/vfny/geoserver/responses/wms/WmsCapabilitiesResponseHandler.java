@@ -8,6 +8,7 @@ import org.geotools.styling.Style;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Request;
@@ -30,6 +31,7 @@ import java.util.List;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
+ * @author Charles Kolbowicz
  * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.20 2004/07/21 18:43:39 jmacgill Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
@@ -302,11 +304,44 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         //add the layer style
         startElement("Style");
         Style ftStyle = ftype.getDefaultStyle();
+        
         handleSingleElem("Name", ftStyle.getName());
         handleSingleElem("Title", ftStyle.getTitle());
         handleSingleElem("Abstract", ftStyle.getAbstract());
+        handleLegendURL(ftype.getLegendURL());
         endElement("Style");
     }
+    
+    // Modif C. Kolbowicz - 07/10/2004
+    /**
+     * Writes layer legend icon URL.
+     *
+     * @param legend The legendURL to write out.
+     *
+     * @throws SAXException For any problems.
+     *
+     * @task TODO: write wms specific elements.
+     */    
+    protected void handleLegendURL(LegendURL legend)
+        throws SAXException {                                
+        
+        if (legend != null) {
+            AttributesImpl attrs = new org.xml.sax.helpers.AttributesImpl();
+            attrs.addAttribute("", "width", "width", "", String.valueOf(legend.getWidth()));
+            attrs.addAttribute("", "height", "height", "", String.valueOf(legend.getHeight()));        
+            startElement("LegendURL", attrs);
+
+            handleSingleElem("Format", legend.getFormat());
+            attrs.clear();
+            attrs.addAttribute("http://www.w3.org/1999/xlink", "type", "xlink:type", "", "simple");            
+            attrs.addAttribute("http://www.w3.org/1999/xlink", "href", "xlink:href", "", legend.getOnlineResource());
+            startElement("OnlineResource", attrs);
+            endElement("OnlineResource");
+            
+            endElement("LegendURL");
+        }
+    }
+    //-- Modif C. Kolbowicz - 07/10/2004
 
     /**
      * DOCUMENT ME!
