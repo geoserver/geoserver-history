@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.31 2004/09/09 16:50:15 cholmesny Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -637,8 +637,10 @@ public class XMLConfigWriter {
 			if(fti == null){
 				//delete it
 				File[] t = fa[j].listFiles();
-				for(int x=0;x<t.length;x++)
+				if (t != null) {
+				    for(int x=0;x<t.length;x++)
 					t[x].delete();
+				}
 				fa[j].delete();
 			}
 		}
@@ -875,7 +877,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.31 2004/09/09 16:50:15 cholmesny Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
