@@ -6,6 +6,8 @@ package org.vfny.geoserver.requests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.geotools.feature.AttributeType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.CompareFilter;
@@ -93,7 +95,7 @@ public class UpdateSuite extends TransactionSuite {
         update2.setTypeName("BUILTUPA_1M");
 
         CompareFilter compFilter = factory.createCompareFilter(AbstractFilter.COMPARE_GREATER_THAN);
-        AttributeExpression tempLeftExp = factory.createAttributeExpression(null);
+        AttributeExpression tempLeftExp = factory.createAttributeExpression((AttributeType)null);
         tempLeftExp.setAttributePath("TILE_ID");
 
         LiteralExpression tempRightExp = factory.createLiteralExpression(1000);

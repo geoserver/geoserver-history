@@ -8,6 +8,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
+
+import org.geotools.feature.AttributeType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FidFilter;
@@ -185,7 +187,7 @@ public class LockSuite extends RequestTestCase {
 
         // make base comparison objects
         GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = factory.createAttributeExpression(null);
+        AttributeExpression leftExpression = factory.createAttributeExpression((AttributeType)null);
         leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linear ring
