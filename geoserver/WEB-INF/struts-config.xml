@@ -395,6 +395,9 @@
   
   <plug-in className="org.vfny.geoserver.config.ConfigPlugIn">
   </plug-in>  
+  
+  <plug-in className="org.geotools.validation.xml.ValidationPlugIn">
+  </plug-in>  
 
 </struts-config>
 

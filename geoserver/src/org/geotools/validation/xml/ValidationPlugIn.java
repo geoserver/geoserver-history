@@ -39,7 +39,7 @@ import org.geotools.validation.dto.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationPlugIn.java,v 1.1 2004/01/20 23:37:02 dmzwiers Exp $
+ * @version $Id: ValidationPlugIn.java,v 1.2 2004/01/20 23:51:29 dmzwiers Exp $
  */
 public class ValidationPlugIn implements PlugIn {
 
@@ -138,9 +138,9 @@ public class ValidationPlugIn implements PlugIn {
 		
 		// step 1 make a list required plug-ins
 		Set plugInNames = new HashSet();
-		Iterator i = testSuites.entrySet().iterator();
+		Iterator i = testSuites.keySet().iterator();
 		while(i.hasNext()){
-			TestSuiteDTO dto = (TestSuiteDTO)i.next();
+			TestSuiteDTO dto = (TestSuiteDTO)testSuites.get(i.next());
 			Iterator j = dto.getTests().iterator();
 			while(j.hasNext()){
 				TestDTO tdto = (TestDTO)j.next();
@@ -166,12 +166,13 @@ public class ValidationPlugIn implements PlugIn {
 			if(plugInArgs == null)
 				plugInArgs = new HashMap();
 			org.geotools.validation.xml.PlugIn plugIn = new org.geotools.validation.xml.PlugIn(plugInName,plugInClass,dto.getDescription(),plugInArgs);
+			defaultPlugIns.put(plugInName,plugIn);
 		}
 		
 		// step 3 configure plug-ins with tests + add to processor
-		i = testSuites.entrySet().iterator();
+		i = testSuites.keySet().iterator();
 		while(i.hasNext()){
-			TestSuiteDTO tdto = (TestSuiteDTO)i.next();
+			TestSuiteDTO tdto = (TestSuiteDTO)testSuites.get(i.next());
 			Iterator j = tdto.getTests().iterator();
 			while(j.hasNext()){
 				TestDTO dto = (TestDTO)j.next();
