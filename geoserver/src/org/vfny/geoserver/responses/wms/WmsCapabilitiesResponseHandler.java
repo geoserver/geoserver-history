@@ -16,7 +16,7 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3 2003/12/26 21:59:27 cholmesny Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = ServerConfig.getInstance()
@@ -44,6 +44,10 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         WMSConfig wmsConfig = (WMSConfig) config;
 
         AttributesImpl atts = new AttributesImpl();
+
+        //handleSingleElem("!DOCTYPE WMT_MS_Capabilities SYSTEM \"http://www.digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\"", null);
+        //atts.addAttribute("WMT_MS_Capabilities
+        //atts = new AttributesImpl();
         atts.addAttribute("", "version", "version", "", CAP_VERSION);
         atts.addAttribute("", "", "updateSequence", "updateSequence",
             wmsConfig.getUpdateTime());
@@ -58,6 +62,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException DOCUMENT ME!
      */
     public void endDocument(ServiceConfig config) throws SAXException {
+        unIndent();
         endElement("WMT_MS_Capabilities");
     }
 
@@ -120,7 +125,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
         endElement("Capability");
 
-        handleLayers(config);
+        //        handleLayers(config);
     }
 
     protected void handleLayers(WMSConfig config) throws SAXException {
@@ -130,13 +135,14 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             layer = (FeatureTypeConfig) it.next();
-            if(layer.isEnabled())
-            {
-              startElement("Layer");
-              indent();
-              handleFeatureType(layer);
-              unIndent();
-              endElement("Layer");
+
+            if (layer.isEnabled()) {
+                cReturn();
+                startElement("Layer");
+                indent();
+                handleFeatureType(layer);
+                unIndent();
+                endElement("Layer");
             }
         }
     }
@@ -166,7 +172,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         sldAtts.addAttribute("", "UserLayer", "UserLayer", "", supportsUserLayer);
         sldAtts.addAttribute("", "UserStyle", "UserStyle", "", supportsUserStyle);
         sldAtts.addAttribute("", "RemoteWFS", "RemoteWFS", "", supportsRemoteWFS);
-
+        cReturn();
         startElement("UserDefinedSymbolization", sldAtts);
         endElement("UserDefinedSymbolization");
     }
@@ -179,6 +185,11 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
     protected void handleRequest(WMSConfig config) throws SAXException {
         startElement("Request");
+        indent();
+        handleCapability(config, "GetCapabilities");
+        cReturn();
+        handleCapability(config, "GetMap");
+        unIndent();
 
         /*
            handleCapability(config, "GetCapabilities");
@@ -191,7 +202,70 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         endElement("Request");
     }
 
+    protected void handleCapability(WMSConfig config, String capabilityName)
+        throws SAXException {
+        boolean isPost = false;
+        startElement(capabilityName);
+        indent();
+
+        if (capabilityName.equals("GetCapabilities")) {
+            //HACK - hardcode.  Also, do we actually return this mime-type?
+            handleSingleElem("Format", "application/vnd.ogc.wms_xml");
+            cReturn();
+            isPost = true;
+        }
+
+        if (capabilityName.startsWith("GetMap")) {
+            Iterator formats = GetMapResponse.getMapFormats().iterator();
+
+            while (formats.hasNext()) {
+                handleSingleElem("Format", (String) formats.next());
+                cReturn();
+            }
+        }
+
+        startElement("DCPType");
+        indent();
+        startElement("HTTP");
+        indent();
+        startElement("Get");
+
+        String baseUrl = config.getURL();
+        String url = baseUrl + "?";
+        handleOnlineResource(url);
+        endElement("Get");
+
+        if (isPost) {
+            startElement("Post");
+
+            String postUrl = baseUrl;
+            handleOnlineResource(postUrl);
+            endElement("Post");
+        }
+
+        unIndent();
+        endElement("HTTP");
+        unIndent();
+        endElement("DCPType");
+        unIndent();
+        endElement(capabilityName);
+    }
+
+    protected void handleOnlineResource(String url) throws SAXException {
+        AttributesImpl attributes = new AttributesImpl();
+        attributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
+            "http://www.w3.org/1999/xlink");
+        attributes.addAttribute("", "xlink:type", "xlink:type", "", "simple");
+        attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
+
+        indent();
+        startElement("OnlineResource", attributes);
+        endElement("OnlineResource");
+        unIndent();
+    }
+
     protected void handleExceptions(WMSConfig config) throws SAXException {
+        cReturn();
         startElement("Exception");
         indent();
 
@@ -199,11 +273,15 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         for (int i = 0; i < formats.length; i++) {
             handleSingleElem("Format", formats[i]);
-            cReturn();
+
+            if (i < (formats.length - 1)) {
+                cReturn();
+            }
         }
 
         unIndent();
         endElement("Exception");
+        cReturn();
     }
 
     /**
@@ -264,6 +342,10 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
                 startElement("Keyword");
                 characters(String.valueOf(it.next()));
                 endElement("Keyword");
+
+                if (it.hasNext()) {
+                    cReturn();
+                }
             }
 
             unIndent();
