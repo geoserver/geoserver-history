@@ -6,15 +6,26 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.geotools.data.DataStore;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.global.xml.GMLUtils;
 /**
  * @author User
  *
@@ -30,10 +41,13 @@ public class DataAttributeTypesEditorForm extends ActionForm {
 	private String name;
 	private String selectedType;
 	private String fragment;
+    
+    HttpServletRequest request;
 	
 	
 	public void reset(ActionMapping arg0, HttpServletRequest request) {
 		super.reset(arg0, request);
+        this.request = request;
 		
 		String selectedAttributeType = (String) request.getSession().getAttribute("selectedAttributeType");
 				
@@ -158,5 +172,30 @@ public class DataAttributeTypesEditorForm extends ActionForm {
 	public void setSelectedType(String selectedType) {
 		this.selectedType = selectedType;
 	}
+    
+    public SortedSet getAttributeTypes() throws IOException {
 
+        TreeSet set = new TreeSet();
+        
+        ServletContext context = getServlet().getServletContext();
+        DataConfig dataConfig = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+        FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+                
+        DataStore dataStore = dataConfig.getDataStore(ftConfig.getDataStoreId()).findDataStore();
+       
+        FeatureType featureType = dataStore.getSchema(ftConfig.getName());
+        AttributeType[] types = featureType.getAttributeTypes();
+        
+        for (int i = 0; i < types.length; i++) {
+            List list = GMLUtils.schemaList(types[i].getName(), types[i].getClass());
+            System.out.println("SKOG["+i+"]"+"name/class:"+types[i].getName()+"/"+types[i].getClass());
+            System.out.println("Listsize:"+list.size());
+            for (Iterator iter = list.iterator(); iter.hasNext();) {
+				String element = (String) iter.next();
+                System.out.println("Element: " + element);
+                set.add(element);
+			}
+        }    
+        return set;
+    }
 }
