@@ -30,7 +30,7 @@
   <meta content="text/html; charset=iso-8859-1" http-equiv="content-type">
   <meta content="text/css" http-equiv="content-style-type">  
   <meta name="description"
-        content="    <bean:message key="<%= keyShort %>"/>">
+        content="<bean:message key="<%= keyShort %>"/>">
   <meta name="keywords"
         content="(GeoServer) (GIS) (Geographic Information Systems)     <bean:message key="<%= keyWords %>"/>"/>
   <meta name="author" content="Jody Garnett, Richard Gould">
@@ -39,8 +39,8 @@
     <!-- @import url("<html:rewrite forward='baseStyle'/>"); -->
   </style>
   
-  <link type="image/gif" href="gs.gif" rel="icon"><!-- mozilla --> 
-  <link href="gs.ico" rel="SHORTCUT ICON"><!-- ie -->
+  <link type="image/gif" href="images/gs.gif" rel="icon"><!-- mozilla --> 
+  <link href="images/gs.ico" rel="SHORTCUT ICON"><!-- ie -->
 
 <html:base/>
 </head>
@@ -122,9 +122,24 @@
           	<tr>
               <td class="<tiles:getAsString name='layer'/>"
                   rowspan="1" colspan="2">
-                <h1 class="title">
-                  <bean:message key="<%= keyTitle %>"/>
-                </h1>  
+                <table class="title">
+                  <tbody>
+                    <tr>
+                      <td class="menu">
+                        <tiles:insert attribute="menuator"/>
+                      </td>
+                      <td class="title">
+                        <h1 class="title">
+                          <bean:message key="<%= keyTitle %>"/>
+                        </h1>
+                        <p class="abstract">
+                          <bean:message key="<%= keyShort %>"/>
+                        </p>
+                      </td>
+                      <td class="icon"></td>
+                    </tr>    
+                  </tbody>
+                </table>
                 <tiles:insert attribute="body"/>                
               </td>
 	        </tr>
