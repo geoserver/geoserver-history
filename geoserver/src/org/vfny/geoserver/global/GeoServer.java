@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.global;
 
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
 /**
@@ -17,7 +16,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.15 2004/03/27 10:51:06 cholmesny Exp $
+ * @version $Id: GeoServer.java,v 1.16 2004/03/30 04:49:11 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -33,43 +32,60 @@ public class GeoServer extends GlobalLayerSupertype {
      * </p>
      */
     public static final String WEB_CONTAINER_KEY = "GeoServer";
-    
     private String title;
-	private int maxFeatures = Integer.MAX_VALUE;
-	private boolean verbose = true;
-	private int numDecimals = 4;
-	private Charset charSet = Charset.forName("UTF-8");    
-	private String schemaBaseUrl;
-	private String contactPerson;
-	private String contactOrganization;
-	private String contactPosition;
-	private String addressType;
-	private String address;
-	private String addressCity;
-	private String addressState;
-	private String addressPostalCode;
-	private String addressCountry;
-	private String contactVoice;
-	private String contactFacsimile;
-	private String contactEmail;
+    private int maxFeatures = Integer.MAX_VALUE;
+    private boolean verbose = true;
+    private int numDecimals = 4;
+    private Charset charSet = Charset.forName("UTF-8");
+    private String schemaBaseUrl;
+    private String contactPerson;
+    private String contactOrganization;
+    private String contactPosition;
+    private String addressType;
+    private String address;
+    private String addressCity;
+    private String addressState;
+    private String addressPostalCode;
+    private String addressCountry;
+    private String contactVoice;
+    private String contactFacsimile;
+    private String contactEmail;
 
     /** Default Logging level */
     private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
                                        .getLevel();
 
-    /** The reference to the wms configuration for this instance */
+    /**
+     * The reference to the wms configuration for this instance
+     *
+     * @return DOCUMENT ME!
+     */
+
     //private WMS wms;
 
-    /** The reference to the wfs configuration for this instance */
+    /**
+     * The reference to the wfs configuration for this instance
+     *
+     * @return DOCUMENT ME!
+     */
+
     //private WFS wfs;
-    
-    /** The validation processor */
+
+    /**
+     * The validation processor
+     *
+     * @return DOCUMENT ME!
+     */
+
     //ValidationProcessor processor;
 
     /**
      * The reference to the data configuration for this instance (formerly
      * CatalogConfig)
+     *
+     * @return DOCUMENT ME!
      */
+
     //private Data data;
 
     /**
@@ -160,9 +176,11 @@ public class GeoServer extends GlobalLayerSupertype {
      * @return Charset the default charset for this server instance.
      */
     public Charset getCharSet() {
-    	if(charSet!=null)
-    		return charSet;
-    	return Charset.forName("UTF-8");
+        if (charSet != null) {
+            return charSet;
+        }
+
+        return Charset.forName("UTF-8");
     }
 
     /**
@@ -299,23 +317,25 @@ public class GeoServer extends GlobalLayerSupertype {
      * getSchemaBaseUrl purpose.
      * 
      * <p>
-     * The Schema Base URL for this instance.  This should generally be a 
-     * local reference, as GeoServer by default puts up the schemas that it needs
-     * and references them.  It could be used to specify an alternate site for
-     * the schemas, however, for example if a user didn't want their servlet
-     * container hit every time someone did a validation, they could instead store
-     * it on another machine.  I don't really know if this is useful to anyone...
+     * The Schema Base URL for this instance.  This should generally be a
+     * local reference, as GeoServer by default puts up the schemas that it
+     * needs and references them.  It could be used to specify an alternate
+     * site for the schemas, however, for example if a user didn't want their
+     * servlet container hit every time someone did a validation, they could
+     * instead store it on another machine.  I don't really know if this is
+     * useful to anyone...
      * </p>
-     * @task TODO: Right now this is broken, and I'm not quite sure
-     * if there's an elegant way to have this return the local schemas.  Perhaps
-     * we should just have it return 'local', and then the users of this method
-     * can do the local referencing themselves.  For now no one is using this 
-     * method, perhaps we should just leave it out for 1.2.0, as it's very 
-     * obscure.  I think I only added it originally because I didn't want to 
-     * go through the busy work of cleaning up and figuring out how to copy over
-     * the ogc schemas.  
      *
      * @return String the Schema Base URL for this instance.
+     *
+     * @task TODO: Right now this is broken, and I'm not quite sure if there's
+     *       an elegant way to have this return the local schemas.  Perhaps we
+     *       should just have it return 'local', and then the users of this
+     *       method can do the local referencing themselves.  For now no one
+     *       is using this  method, perhaps we should just leave it out for
+     *       1.2.0, as it's very  obscure.  I think I only added it originally
+     *       because I didn't want to  go through the busy work of cleaning up
+     *       and figuring out how to copy over the ogc schemas.
      */
     public String getSchemaBaseUrl() {
         return schemaBaseUrl;
@@ -333,29 +353,38 @@ public class GeoServer extends GlobalLayerSupertype {
     /**
      * Gets the config for the WMS.
      *
-     * @return WMS the wms object
+     * @param dto DOCUMENT ME!
+     *
+     * @throws ConfigurationException DOCUMENT ME!
      */
+
     /*public WMS getWMS() {
-        return wms;
-    }*/
+       return wms;
+       }*/
 
     /**
      * Gets the config for the WFS.
      *
-     * @return WFS the wfs object
+     * @param dto DOCUMENT ME!
+     *
+     * @throws ConfigurationException DOCUMENT ME!
      */
+
     /*public WFS getWFS() {
-        return wfs;
-    }*/
+       return wfs;
+       }*/
 
     /**
      * Gets the config for the Data.
      *
-     * @return Data the data object
+     * @param dto DOCUMENT ME!
+     *
+     * @throws ConfigurationException DOCUMENT ME!
      */
+
     /*public Data getData() {
-        return data;
-    }*/
+       return data;
+       }*/
 
     /**
      * load purpose.
@@ -364,40 +393,37 @@ public class GeoServer extends GlobalLayerSupertype {
      * Loads the specified DTOs.
      * </p>
      *
-     * @param wms WMSDTO The wms data.
-     * @param wfs WFSDTO The wfs data
-     * @param geoServer GeoServerDTO The geo server data
-     * @param data DataDTO The data for a catalog.
+     * @param dto WMSDTO The wms data.
      *
      * @throws ConfigurationException If an error occurs.
      */
+
     /*public void load(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
-        DataDTO data, File baseDir ) throws ConfigurationException {
-        load(geoServer);
-        load(wms);
-        load(wfs);
-        load(data, baseDir );
-    }*/
-    
+       DataDTO data, File baseDir ) throws ConfigurationException {
+       load(geoServer);
+       load(wms);
+       load(wfs);
+       load(data, baseDir );
+       }*/
     /*private Map testSuites;
-    private Map plugIns;
+       private Map plugIns;
     
-    public void load(Map testSuites, Map plugIns){
-    	this.testSuites = testSuites;this.plugIns = plugIns;
-    	try{
-    		processor = new ValidationProcessor(testSuites,plugIns);
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-    }
+       public void load(Map testSuites, Map plugIns){
+               this.testSuites = testSuites;this.plugIns = plugIns;
+               try{
+                       processor = new ValidationProcessor(testSuites,plugIns);
+               }catch(Exception e){
+                       e.printStackTrace();
+               }
+       }
     
-    public Map toPlugInDTO(){
-    	return plugIns;
-    }
+       public Map toPlugInDTO(){
+               return plugIns;
+       }
     
-    public Map toTestSuiteDTO(){
-    	return testSuites;
-    }*/
+       public Map toTestSuiteDTO(){
+               return testSuites;
+       }*/
 
     /**
      * load purpose.
@@ -406,15 +432,15 @@ public class GeoServer extends GlobalLayerSupertype {
      * Loads the specified DTOs.
      * </p>
      *
-     * @param wms WMSDTO The wms data.
-     * @param wfs WFSDTO The wfs data
+     * @param dto WMSDTO The wms data.
      *
      * @throws ConfigurationException If an error occurs.
      */
+
     /*public void load(WMSDTO wms, WFSDTO wfs) throws ConfigurationException {
-        load(wms);
-        load(wfs);
-    }*/
+       load(wms);
+       load(wfs);
+       }*/
 
     /**
      * load purpose.
@@ -423,18 +449,19 @@ public class GeoServer extends GlobalLayerSupertype {
      * Loads the WMSDTO into the current instance as a WMS object
      * </p>
      *
-     * @param wms WMSDTO
+     * @param dto WMSDTO
      *
      * @throws ConfigurationException If an error occurs
      */
+
     /*public void load(WMSDTO wms) throws ConfigurationException {
-        if (wms != null) {
-            this.wms = new WMS((WMSDTO) wms.clone());
-        } else {
-            throw new ConfigurationException(
-                "load(WMSDTO) expected a non-null value");
-        }
-    }*/
+       if (wms != null) {
+           this.wms = new WMS((WMSDTO) wms.clone());
+       } else {
+           throw new ConfigurationException(
+               "load(WMSDTO) expected a non-null value");
+       }
+       }*/
 
     /**
      * load purpose.
@@ -443,18 +470,19 @@ public class GeoServer extends GlobalLayerSupertype {
      * Loads the WFSDTO into the current instance as a WFS object
      * </p>
      *
-     * @param wfs WFSDTO
+     * @param dto WFSDTO
      *
      * @throws ConfigurationException If an error occurs
      */
+
     /*public void load(WFSDTO wfs) throws ConfigurationException {
-        if (wfs != null) {
-            this.wfs = new WFS((WFSDTO) wfs.clone());
-        } else {
-            throw new ConfigurationException(
-                "load(WFSDTO) expected a non-null value");
-        }
-    }*/
+       if (wfs != null) {
+           this.wfs = new WFS((WFSDTO) wfs.clone());
+       } else {
+           throw new ConfigurationException(
+               "load(WFSDTO) expected a non-null value");
+       }
+       }*/
 
     /**
      * load purpose.
@@ -463,30 +491,30 @@ public class GeoServer extends GlobalLayerSupertype {
      * Loads the GeoServerDTO into the current instance as a GeoServer object
      * </p>
      *
-     * @param geoServer GeoServerDTO
+     * @param dto GeoServerDTO
      *
      * @throws ConfigurationException If an error occurs
      */
     public void load(GeoServerDTO dto) throws ConfigurationException {
         if (dto != null) {
-        	address = dto.getContact().getAddress();
-        	addressCity = dto.getContact().getAddressCity();
-        	addressCountry = dto.getContact().getAddressCountry();
-        	addressPostalCode = dto.getContact().getAddressPostalCode();
-        	addressState = dto.getContact().getAddressState();
-        	addressType = dto.getContact().getAddressType();
-        	charSet = dto.getCharSet();
-        	contactEmail = dto.getContact().getContactEmail();
-        	contactFacsimile = dto.getContact().getContactFacsimile();
-        	contactOrganization = dto.getContact().getContactOrganization();
-        	contactPerson = dto.getContact().getContactPerson();
-        	contactPosition = dto.getContact().getContactPosition();
-        	contactVoice = dto.getContact().getContactVoice();
-        	loggingLevel = dto.getLoggingLevel();
-        	maxFeatures = dto.getMaxFeatures();
-        	numDecimals = dto.getNumDecimals();
-        	schemaBaseUrl = dto.getSchemaBaseUrl();
-        	verbose = dto.isVerbose();
+            address = dto.getContact().getAddress();
+            addressCity = dto.getContact().getAddressCity();
+            addressCountry = dto.getContact().getAddressCountry();
+            addressPostalCode = dto.getContact().getAddressPostalCode();
+            addressState = dto.getContact().getAddressState();
+            addressType = dto.getContact().getAddressType();
+            charSet = dto.getCharSet();
+            contactEmail = dto.getContact().getContactEmail();
+            contactFacsimile = dto.getContact().getContactFacsimile();
+            contactOrganization = dto.getContact().getContactOrganization();
+            contactPerson = dto.getContact().getContactPerson();
+            contactPosition = dto.getContact().getContactPosition();
+            contactVoice = dto.getContact().getContactVoice();
+            loggingLevel = dto.getLoggingLevel();
+            maxFeatures = dto.getMaxFeatures();
+            numDecimals = dto.getNumDecimals();
+            schemaBaseUrl = dto.getSchemaBaseUrl();
+            verbose = dto.isVerbose();
         } else {
             throw new ConfigurationException(
                 "load(GeoServerDTO) expected a non-null value");
@@ -495,32 +523,31 @@ public class GeoServer extends GlobalLayerSupertype {
 
     /**
      * Loads the DataDTO into the current instance as a Data object
-     * 
-     * @param data DataDTO
      *
-     * @throws ConfigurationException If an error occurs
+     * @return DOCUMENT ME!
      */
+
     /*public void load(DataDTO data) throws ConfigurationException {
-        if (data != null) {
-                this.data.load((DataDTO) data.clone());
-        } else {
-            throw new ConfigurationException(
-                "load(DataDTO) expected a non-null value");
-        }
-    }
+       if (data != null) {
+               this.data.load((DataDTO) data.clone());
+       } else {
+           throw new ConfigurationException(
+               "load(DataDTO) expected a non-null value");
+       }
+       }
     
-    public void load(DataDTO data, File baseDir) throws ConfigurationException {
-    	if (data != null) {
-    		if (this.data == null) {
-    			this.data = new Data((DataDTO) data.clone(),baseDir);
-    		} else {
-    			this.data.load((DataDTO) data.clone());
-    		}
-    	} else {
-    		throw new ConfigurationException(
-    		"load(DataDTO) expected a non-null value");
-    	}
-    }*/
+       public void load(DataDTO data, File baseDir) throws ConfigurationException {
+               if (data != null) {
+                       if (this.data == null) {
+                               this.data = new Data((DataDTO) data.clone(),baseDir);
+                       } else {
+                               this.data.load((DataDTO) data.clone());
+                       }
+               } else {
+                       throw new ConfigurationException(
+                       "load(DataDTO) expected a non-null value");
+               }
+       }*/
 
     /**
      * getDTO purpose.
@@ -529,13 +556,12 @@ public class GeoServer extends GlobalLayerSupertype {
      * Generates a WMSDTO for the WMS provided.
      * </p>
      *
-     * @param wms WMS the object to generate from
-     *
      * @return WMSDTO the generated object
      */
+
     /*public static WMSDTO getDTO(WMS wms) {
-        return (WMSDTO) ((WMSDTO) wms.toDTO()).clone();
-    }*/
+       return (WMSDTO) ((WMSDTO) wms.toDTO()).clone();
+       }*/
 
     /**
      * getDTO purpose.
@@ -544,16 +570,14 @@ public class GeoServer extends GlobalLayerSupertype {
      * Generates a WFSDTO for the WFS provided.
      * </p>
      *
-     * @param wfs WFS the object to generate from
-     *
      * @return WFSDTO the generated object
      */
-    /*public static WFSDTO getDTO(WFS wfs) {
-        WFSDTO w = (WFSDTO) wfs.toDTO();
-        w = (WFSDTO) w.clone();
 
-        return (w);
-    }*/
+    /*public static WFSDTO getDTO(WFS wfs) {
+       WFSDTO w = (WFSDTO) wfs.toDTO();
+       w = (WFSDTO) w.clone();
+       return (w);
+       }*/
 
     /**
      * getDTO purpose.
@@ -562,13 +586,12 @@ public class GeoServer extends GlobalLayerSupertype {
      * Generates a GeoServerDTO for the GeoServer provided.
      * </p>
      *
-     * @param gs GeoServer the object to generate from
-     *
      * @return GeoServerDTO the generated object
      */
+
     /*public static GeoServerDTO getDTO(GeoServer gs) {
-        return (GeoServerDTO) ((GeoServerDTO) gs.toDTO()).clone();
-    }*/
+       return (GeoServerDTO) ((GeoServerDTO) gs.toDTO()).clone();
+       }*/
 
     /**
      * getDTO purpose.
@@ -577,13 +600,12 @@ public class GeoServer extends GlobalLayerSupertype {
      * Generates a DataDTO for the Data provided.
      * </p>
      *
-     * @param dt Data the object to generate from
-     *
      * @return DataDTO the generated object
      */
+
     /*public static DataDTO getDTO(Data dt) {
-        return (DataDTO) ((DataDTO) dt.toDTO()).clone();
-    }*/
+       return (DataDTO) ((DataDTO) dt.toDTO()).clone();
+       }*/
 
     /**
      * toWMSDTO purpose.
@@ -594,9 +616,10 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return WMSDTO the generated object
      */
+
     /*public WMSDTO toWMSDTO() {
-        return getDTO(wms);
-    }*/
+       return getDTO(wms);
+       }*/
 
     /**
      * toWFSDTO purpose.
@@ -607,9 +630,10 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return WFSDTO the generated object
      */
+
     /*public WFSDTO toWFSDTO() {
-        return getDTO(wfs);
-    }*/
+       return getDTO(wfs);
+       }*/
 
     /**
      * toGeoServerDTO purpose.
@@ -621,9 +645,10 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return GeoServerDTO the generated object
      */
+
     /*public GeoServerDTO toGeoServerDTO() {
-        return (GeoServerDTO) toDTO();
-    }*/
+       return (GeoServerDTO) toDTO();
+       }*/
 
     /**
      * toDataDTO purpose.
@@ -634,9 +659,10 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return DataDTO the generated object
      */
+
     /*public DataDTO toDataDTO() {
-        return getDTO(data);
-    }*/
+       return getDTO(data);
+       }*/
 
     /**
      * toDTO purpose.
@@ -650,71 +676,87 @@ public class GeoServer extends GlobalLayerSupertype {
      * @return DTO the generated object
      */
     public Object toDTO() {
-    	GeoServerDTO dto = new GeoServerDTO();
-    	dto.setCharSet(charSet);
-    	dto.setLoggingLevel(loggingLevel);
-    	dto.setMaxFeatures(maxFeatures);
-    	dto.setNumDecimals(numDecimals);
-    	dto.setSchemaBaseUrl(schemaBaseUrl);
-    	dto.setVerbose(verbose);
-    	
-    	ContactDTO cdto = new ContactDTO();
-    	dto.setContact(cdto);
-    	
-    	cdto.setAddress(address);
-    	cdto.setAddressCity(addressCity);
-    	cdto.setAddressCountry(addressCountry);
-    	cdto.setAddressPostalCode(addressPostalCode);
-    	cdto.setAddressState(addressState);
-    	cdto.setAddressType(addressType);
-    	cdto.setContactEmail(contactEmail);
-    	cdto.setContactFacsimile(contactFacsimile);
-    	cdto.setContactOrganization(contactOrganization);
-    	cdto.setContactPerson(contactPerson);
-    	cdto.setContactPosition(contactPosition);
-    	cdto.setContactVoice(contactVoice);
-    	
+        GeoServerDTO dto = new GeoServerDTO();
+        dto.setCharSet(charSet);
+        dto.setLoggingLevel(loggingLevel);
+        dto.setMaxFeatures(maxFeatures);
+        dto.setNumDecimals(numDecimals);
+        dto.setSchemaBaseUrl(schemaBaseUrl);
+        dto.setVerbose(verbose);
+
+        ContactDTO cdto = new ContactDTO();
+        dto.setContact(cdto);
+
+        cdto.setAddress(address);
+        cdto.setAddressCity(addressCity);
+        cdto.setAddressCountry(addressCountry);
+        cdto.setAddressPostalCode(addressPostalCode);
+        cdto.setAddressState(addressState);
+        cdto.setAddressType(addressType);
+        cdto.setContactEmail(contactEmail);
+        cdto.setContactFacsimile(contactFacsimile);
+        cdto.setContactOrganization(contactOrganization);
+        cdto.setContactPerson(contactPerson);
+        cdto.setContactPosition(contactPosition);
+        cdto.setContactVoice(contactVoice);
+
         return dto;
     }
-	/**
-	 * Access processor property.
-	 * 
-	 * @return Returns the processor.
-	 */
-	/*public ValidationProcessor getProcessor() {
-		return processor;
-	}*/
 
-	/**
-	 * @return Returns the title.
-	 */
-	public String getTitle() {
-		return title;
-	}
-	/**
-	 * @param title The title to set.
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-    
     /**
-     * Property representing the contact party (person, position or organization).
+     * Access processor property.
+     *
+     * @return Returns the processor.
+     */
+
+    /*public ValidationProcessor getProcessor() {
+       return processor;
+       }*/
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return Returns the title.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param title The title to set.
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Property representing the contact party (person, position or
+     * organization).
+     * 
      * <p>
      * This is a derived property.
      * </p>
-     * @return Contact party (person, position or organization), null if unknown
+     *
+     * @return Contact party (person, position or organization), null if
+     *         unknown
      */
-    public String getContactParty(){
-        if( getContactPerson() != null && getContactPerson().length() != 0){
+    public String getContactParty() {
+        if ((getContactPerson() != null) && (getContactPerson().length() != 0)) {
             return getContactPerson(); // ie Chris Holmes 
         }
-        if( getContactPosition() != null && getContactPosition().length() != 0 ){
+
+        if ((getContactPosition() != null)
+                && (getContactPosition().length() != 0)) {
             return getContactPosition(); // ie Lead Developer 
-        }        
-        if( getContactOrganization() != null && getContactOrganization().length() != 0 ){
+        }
+
+        if ((getContactOrganization() != null)
+                && (getContactOrganization().length() != 0)) {
             return getContactOrganization(); // ie TOPP 
-        }        
+        }
+
         return null;
-    }    
+    }
 }
