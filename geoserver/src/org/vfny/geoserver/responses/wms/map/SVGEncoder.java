@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.*;
 import org.geotools.data.*;
 import org.geotools.feature.*;
 import org.geotools.filter.*;
+import org.geotools.styling.Style;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import java.io.*;
 import java.net.*;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: SVGEncoder.java,v 1.3 2003/12/17 22:35:03 cholmesny Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -69,7 +70,6 @@ public class SVGEncoder {
      * graphics is needed for a single layer
      */
     private boolean collectGeometries = false;
-
     private boolean abortProcess = false;
 
     /**
@@ -137,10 +137,10 @@ public class SVGEncoder {
 
     /**
      * If <code>collect == true</code>, then all the geometries will be grouped
-     * in a single SVG element by FeatureType requested. The effect is like
-     * a union operation upon the geometries of the whole FeatureResults
+     * in a single SVG element by FeatureType requested. The effect is like a
+     * union operation upon the geometries of the whole FeatureResults
      * resulting in a single geometry collection.
-     *
+     * 
      * <p>
      * NOTE: if this field is set, then writting of ids and attributes will be
      * ignored, since a single <code>&lt;path/%gt;</code> svg element will be
@@ -149,7 +149,7 @@ public class SVGEncoder {
      * </p>
      *
      * @param collect wether to collect geometries into a single svg element
-     * for each FeatureResults
+     *        for each FeatureResults
      */
     public void setCollect(boolean collect) {
         this.collectGeometries = collect;
@@ -179,27 +179,27 @@ public class SVGEncoder {
     /**
      * sets the "viewBox" of the generated SVG and establishes the encoding
      * blur factor to <code>blurFactor</code>
-     *
+     * 
      * <p>
      * establishing the blur factor means that the greatest dimension between
      * the width and height of the new SVG coordinate space <code>env</code>
      * will be divided by this factor to obtain the minimun distance allowable
      * between two coordinates to actually encode them.
      * </p>
-     *
+     * 
      * <p>
      * This method updates the <code>minCoordDistance</code> field, wich every
      * coordinate -<b>except the first 3</b> of a <i>path</i> element-, will
      * be compared against the most previously written to decide if such
      * distance is enough to encode such coordinate or it can be just skipped
      * </p>
-     *
+     * 
      * <p>
      * In a <i>path</i> element, the first 3 coordinates do not get compared
      * against the minimun coordinate separation distance as the easyest way
      * of keeping polygon shapes consistent
      * </p>
-     *
+     * 
      * <p>
      * NOTE: if you don't want that klind of hacky geometry generalyzation,
      * just pass <code>0</code> (zero) as <code>blurFactor</code>
@@ -245,7 +245,7 @@ public class SVGEncoder {
      * @throws IOException DOCUMENT ME!
      */
     public void encode(final FeatureTypeConfig[] layers,
-        final FeatureResults[] results, final List styles,
+        final FeatureResults[] results, final Style[] styles,
         final OutputStream out) throws IOException {
         this.writer = new SVGWriter(out);
         abortProcess = false;
@@ -284,9 +284,8 @@ public class SVGEncoder {
     }
 
     private void writeLayers(FeatureTypeConfig[] layers,
-        FeatureResults[] results, List styles)
-        throws IOException, AbortedException
-    {
+        FeatureResults[] results, Style[] styles)
+        throws IOException, AbortedException {
         int nLayers = results.length;
         int nConfigs = ((layers != null) && (layers.length >= nLayers))
             ? nLayers : 0;
@@ -311,12 +310,14 @@ public class SVGEncoder {
 
                 String groupId = null;
 
-                if (styles == null) {
-                    groupId = layerConfig.getName(true);
-                } else {
-                    groupId = (String) styles.get(i);
-                }
+                //modified ch = delegate now changes style names to style 
+                //objects, so execute takes a style array.
+                //if (styles == null) {
+                groupId = layerConfig.getName(true);
 
+                //} else {
+                //groupId = (String) styles.get(i);
+                //}
                 writer.write("<g id=\"" + groupId + "\" class=\"" + groupId
                     + "\">\n");
                 writeFeatures(featureReader);
@@ -417,13 +418,12 @@ public class SVGEncoder {
             coordsSkipCount = 0;
 
             Class gtype = featureType.getDefaultGeometry().getType();
-            boolean doCollect = collectGeometries && gtype != Point.class &&
-                                gtype != MultiPoint.class;
+            boolean doCollect = collectGeometries && (gtype != Point.class)
+                && (gtype != MultiPoint.class);
 
-            if(doCollect)
-            {
-              writer.write("<path ");
-              writer.write("d=\"");
+            if (doCollect) {
+                writer.write("<path ");
+                writer.write("d=\"");
             }
 
             while (reader.hasNext()) {
@@ -435,9 +435,8 @@ public class SVGEncoder {
                 writeGeometry(ft);
             }
 
-            if(doCollect)
-            {
-              writer.write("\"/>\n");
+            if (doCollect) {
+                writer.write("\"/>\n");
             }
 
             LOGGER.fine("encoded " + featureType.getTypeName() + " skipped "
@@ -479,7 +478,7 @@ public class SVGEncoder {
     /**
      * Writes the content of the <b>d</b> attribute in a <i>path</i> SVG
      * element
-     *
+     * 
      * <p>
      * While iterating over the coordinate array passed as parameter, this
      * method performs a kind of very basic path generalization, verifying
@@ -685,6 +684,7 @@ public class SVGEncoder {
         writeId();
         writeAttributes();
         writer.write("d=\"");
+
         for (int i = 0; i < n; i++) {
             poly = (com.vividsolutions.jts.geom.Polygon) mpoly.getGeometryN(i);
             writePolyContent(poly);
@@ -774,7 +774,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(
@@ -900,11 +900,10 @@ class SVGWriter extends OutputStreamWriter {
 }
 
 
-class SVGEncoderHandler
-{
-  protected SVGWriter writer;
-  public SVGEncoderHandler(SVGWriter writer)
-  {
-    this.writer = writer;
-  }
+class SVGEncoderHandler {
+    protected SVGWriter writer;
+
+    public SVGEncoderHandler(SVGWriter writer) {
+        this.writer = writer;
+    }
 }
