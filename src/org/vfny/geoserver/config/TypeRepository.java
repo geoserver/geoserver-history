@@ -32,6 +32,7 @@ import org.vfny.geoserver.responses.WfsTransactionException;
  */
 public class TypeRepository {
         
+    /** The character after a namespace prefix. */ 
     private static final String PREFIX_DELIMITER = ":";
     
     /** Class logger */
@@ -80,6 +81,32 @@ public class TypeRepository {
             repository.readTypes(startDir, config);
         }
         return repository;
+    }
+
+
+    /**
+     * Gets the internal typename (prefix plus typeName, such as topp:rail),
+     * given a typename and uri.
+     *
+     * @param typeName the type to find the prefix for.
+     * @param uri the uri of the namespace the type lives in.
+     * @return the prefixed typeName, null if the type was not found.
+     */
+    public String getInternalTypeName(String typeName, String uri){
+	LOG.finer("looking for internal type: " + typeName + ", " + uri);
+	for(Iterator i = getAllTypeNames().iterator(); i.hasNext();){
+	    String curTypeName = i.next().toString();
+	    TypeInfo curType = getType(curTypeName); 
+	    LOG.finest("looking at type " + curType.getName() + 
+		       ", " + curType.getXmlns());
+	    if (curType.getName().equals(typeName) &&
+		curType.getXmlns().equals(uri)){
+		LOG.finer("returning internal typename: " 
+			  + curType.getPrefix() + ":" + typeName);
+		return curType.getPrefix() + ":" + typeName;
+	    }
+	}
+	return null;
     }
 
     /**
@@ -144,12 +171,12 @@ public class TypeRepository {
     /**
      * gets the prefix for the featureType */
     private String getPrefix(String featureTypeName) throws WfsException {
-	TypeInfo typeInfo = getType(featureTypeName);
-	if (typeInfo == null) {
-	    throw new WfsException("Feature Type " + featureTypeName + " does "
-				   + "not exist on this server");
-	}
-	return typeInfo.getPrefix();
+    	TypeInfo typeInfo = getType(featureTypeName);
+    	if (typeInfo == null) {
+    	    throw new WfsException("Feature Type " + featureTypeName + " does "
+    				   + "not exist on this server");
+    	}
+    	return typeInfo.getPrefix();
     }
 
     /**
@@ -161,6 +188,9 @@ public class TypeRepository {
 	return new ArrayList(types.keySet());
     }
 
+    /**
+     * Frees the resources of all the types held by the repository.
+     */
     public void closeTypeResources() {
 	for(Iterator i = getAllTypeNames().iterator(); i.hasNext();){
 	    String curType = i.next().toString(); 
@@ -241,7 +271,7 @@ public class TypeRepository {
 	//LOG.finer("locked features = " + lockedFeatures);
 	for (Iterator i = features.iterator(); i.hasNext();){
 	    String curFid = i.next().toString();
-	    LOG.fine("checking feature: " + curFid);
+	    LOG.finest("checking feature: " + curFid);
 	    if (lockedFeatures.containsKey(curFid)){
 		if (lockId == null) {
 		    return true;
