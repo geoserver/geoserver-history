@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.44 2004/06/26 22:25:22 jive Exp $
+ * @version $Id: Data.java,v 1.45 2004/09/13 16:05:10 cholmesny Exp $
  */
 public class Data extends GlobalLayerSupertype /*implements Repository*/ {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -204,9 +204,9 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
             map.put(id, dataStoreInfo);
 
             if (dataStoreDTO.isEnabled()) {
-                LOGGER.fine("Register DataStore '" + id + "'");
+                LOGGER.finer("Register DataStore '" + id + "'");
             } else {
-                LOGGER.finer("Did not Register DataStore '" + id
+                LOGGER.fine("Did not Register DataStore '" + id
                     + "' as it was not enabled");
             }
         }
@@ -331,7 +331,7 @@ SCHEMA:
             }
 
             Style s = getStyle(featureTypeDTO.getDefaultStyle());
-
+            
             if (s == null) {
                 LOGGER.severe("FeatureTypeInfo " + key + " ignored - Style '"
                     + featureTypeDTO.getDefaultStyle() + "' not found!");
@@ -544,6 +544,11 @@ SCHEMA:
 
             try {
                 style = loadStyle(styleDTO.getFilename());
+                //HACK: due to our crappy weird id shit we rename the style's specified
+                //name with the id we (and our clients) refer to the style as.
+                //Should redo style management to not make use of our weird ids, just
+                //use the style's name out of the styles directory.
+                style.setName(id);
             } catch (Exception ioException) { // was IOException
                 LOGGER.log(Level.SEVERE, "Could not load style " + id,
                     ioException);
@@ -637,177 +642,7 @@ SCHEMA:
         return m;
     }
 
-    /**
-     * Dynamically tries to connect to this DataStore!
-     * 
-     * <p>
-     * Returns a map of Exception by dataStoreId:typeName. If by some marvel
-     * the we could connect to a FeatureSource we will record Boolean.TRUE.
-     * </p>
-     * 
-     * <p>
-     * We will make an initial attempt to connect to the real dataStore (with
-     * out any metadata based filtering or retyping. Only if this proceeds
-     * will we try for getStatus( FeatureTypeInfo ).
-     * </p>
-     *
-     * @return Map of Exception by dataStoreId:typeName
-     */
-
-    /*public SortedMap status(DataStoreInfo info) {
-       SortedMap status = new TreeMap();
-       String id = info.getId();
-       LOGGER.finer(id + ": checking status of DataStore!");
-       LOGGER.finest(id + ": namespace prefix '" + info.getNamesSpacePrefix()
-           + "'");
-       LOGGER.finest(id + ": title '" + info.getTitle() + "'");
-       LOGGER.finest(id + ": enabled " + info.isEnabled());
-       DataStore store = null;
-       try {
-           store = info.getDataStore();
-       } catch (Throwable couldNotConnect) {
-           LOGGER.warning(id + ": Could not connect to DataStore!");
-           //couldNotConnect.printStackTrace();
-           status.put(id, couldNotConnect);
-           return status;
-       }
-       String[] typeNames = store.getTypeNames();
-       for (int t = 0; t < typeNames.length; t++) {
-           String typeName = typeNames[t];
-           try {
-               assertWorking(store, typeName);
-               status.put(id + ":" + typeName, Boolean.TRUE);
-           } catch (Throwable didNotWork) {
-               LOGGER.warning(id + ":" + typeName
-                   + ": geotools2 FeatureSource did not work!");
-               //didNotWork.printStackTrace();
-               status.put(id + ":" + typeName, didNotWork);
-           }
-       }
-       return status;
-       }*/
-    /*public SortedMap status(NameSpaceInfo info) {
-       SortedMap status = new TreeMap();
-       String prefix = info.getPrefix();
-       LOGGER.finer(prefix + ": checking status of Namespace!");
-       LOGGER.finest(prefix + ": namespace prefix '" + info.getPrefix() + "'");
-       LOGGER.finest(prefix + ": uri '" + info.getURI() + "'");
-       LOGGER.finest(prefix + ": default " + info.isDefault());
-       for (Iterator i = info.getTypeNames().iterator(); i.hasNext();) {
-           String typeName = (String) i.next();
-           FeatureTypeInfo typeInfo = null;
-           if(!typeInfo.isEnabled()){
-                   status.put(prefix+":"+typeName, Boolean.FALSE);
-                   continue;
-           }
-           try {
-               typeInfo = (FeatureTypeInfo) info.getFeatureTypeMetaData(typeName);
-               assertWorking(typeInfo);
-               status.put(prefix + ":" + typeName, Boolean.TRUE);
-           } catch (Throwable badInfo) {
-               LOGGER.warning(prefix + ":" + typeName
-                   + ": FeatureTypeInfo did not work!");
-               //badInfo.printStackTrace();
-               status.put(prefix + ":" + typeName, badInfo);
-           }
-       }
-       return status;
-       }*/
-    /*public void assertWorking(FeatureTypeInfo info) throws IOException {
-       String id = info.getPrefix() + ":" + info.getName();
-       LOGGER.finest(id + ": check status of GeoServer FeatureTypeInfo");
-       LOGGER.finest(id + ": name:'" + info.getName() + "'");
-       LOGGER.finest(id + ": prefix:'" + info.getPrefix() + "'");
-       LOGGER.finest(id + ": schema base:'" + info.getSchemaBase() + "'");
-       LOGGER.finest(id + ": schema name:'" + info.getSchemaName() + "'");
-       LOGGER.finest(id + ": schema title:'" + info.getTitle() + "'");
-       LOGGER.finest(id + ": schema abstract:'" + info.getAbstract() + "'");
-       LOGGER.finest(id + ": schema typeName:'" + info.getTypeName() + "'");
-       LOGGER.finest(id + ": schema query:'" + info.getDefinitionQuery() + "'");
-       LOGGER.finest(id + ": schema keywords:'" + info.getKeywords() + "'");
-       LOGGER.finest(id + ": schema bounds:'" + info.getLatLongBoundingBox()
-           + "'");
-       FeatureType featureType = info.getFeatureType();
-       LOGGER.finest(id + ": featureType '" + featureType + "'");
-       FeatureSource source = info.getFeatureSource();
-       LOGGER.finest(id + ": source aquired '" + source + "'");
-       assertWorking(source);
-       LOGGER.finest(id + ": schema attributeNames:'"
-           + info.getAttributeNames() + "'");
-       LOGGER.finest(id + ": schema schema:'" + info.getXMLSchema() + "'");
-       }*/
-
-    /**
-     * Assert that GeoTools2 typeName exists and works for typeName
-     *
-     * @return DOCUMENT ME!
-     */
-
-    /*public void assertWorking(DataStore datastore, String typeName)
-       throws IOException {
-       LOGGER.finest(typeName + ": check status of GeoTools2 FeatureType");
-       FeatureType featureType = datastore.getSchema(typeName);
-       LOGGER.finest(typeName + ": featureType '" + featureType + "'");
-       FeatureSource source = null;
-       source = datastore.getFeatureSource(typeName);
-       LOGGER.finest(typeName + ": source aquired '" + source + "'");
-       assertWorking(source);
-       }*/
-
-    /**
-     * Test that the FeatureSource works.
-     * 
-     * <p>
-     * A smattering of tests, used to check the status of a FeatureSource.
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     */
-
-    /*public void assertWorking(FeatureSource source) throws IOException {
-       String id = source.getSchema().getTypeName();
-       // Test optimized getCount()
-       //
-       LOGGER.finest(id + ": source count optimized:'"
-           + source.getCount(Query.ALL) + "'");
-       FeatureResults all = source.getFeatures();
-       // Test High Level FeatureResults API
-       LOGGER.finest(id + ": source count results:'" + all.getCount() + "'");
-       // Test Low Level FeatureReader API
-       //
-       FeatureReader reader = all.reader();
-       try {
-           boolean hasNext = reader.hasNext();
-           LOGGER.finest(id + ": reader hasNext()" + hasNext);
-           if (hasNext) {
-               LOGGER.finest(id + ": reader next()" + reader.next());
-           }
-       } catch (NoSuchElementException e) {
-           throw new DataSourceException(e.getMessage(), e);
-       } catch (IllegalAttributeException e) {
-           throw new DataSourceException(e.getMessage(), e);
-       } finally {
-           reader.close();
-       }
-       LOGGER.finest(id + ": source aquired '" + source + "'");
-       }*/
-
-    /**
-     * getDataStoreInfos purpose.
-     * 
-     * <p>
-     * A list of the posible DataStoreInfo
-     * </p>
-     *
-     * @return DataStoreInfo[] list of the posible DataStoreInfo
-     */
-
-    /*public DataStoreInfo[] getDataStoreInfos() {
-       List dslist = new ArrayList(dataStores.values());
-       DataStoreInfo[] dStores = new DataStoreInfo[dslist.size()];
-       dStores = (DataStoreInfo[]) dslist.toArray(dStores);
-       return dStores;
-       }*/
+    
 
     /**
      * toDTO purpose.
