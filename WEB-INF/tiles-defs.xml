@@ -54,19 +54,30 @@
    		<put name="body" value="/WEB-INF/pages/MainMenu.jsp"/>
    		<put name="layer" value="administration"/>
         <put name="locationForwards" value="welcome"/>
-        <put name="actionForwards" value="config"/>        
+        <put name="actionForwards" value="config"/>
    	</definition>
    	
    	<!-- CONFIG -->
    	<definition name="config" extends=".mainLayout">
    		<put name="key" value="config"/>
-   		<put name="body" value="/WEB-INF/pages/GeoServerConfiguration.jsp"/>
+   		<put name="body" value="/WEB-INF/pages/Configuration.jsp"/>
    		<put name="layer" value="configuration"/>
    		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
         <put name="locationForwards" value="welcome"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+        <put name="actionForwards" value="config.server:config.wfs:config.wms:config.data"/>   		
    	</definition>
 
+   	<!-- CONFIG Server -->
+   	<definition name="config.server" extends=".mainLayout">
+   		<put name="key" value="config"/>
+   		<put name="body" value="/WEB-INF/pages/GeoServerConfiguration.jsp"/>
+   		<put name="layer" value="configuration"/>
+   		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
+        <put name="locationForwards" value="welcome:config"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+   	</definition>
+   	
 	<!-- CONFIG VALIDATION -->   	
    	<definition name="config.validation" extends=".mainLayout">
    		<put name="key" value="config.validation"/>
