@@ -37,7 +37,7 @@
   </servlet>
   <servlet>
     <servlet-name>WmsDispatcher</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.wms.WmsDispatcher</servlet-class>
+    <servlet-class>org.vfny.geoserver.wms.servlets.WmsDispatcher</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>WfsDispatcher</servlet-name>
@@ -58,7 +58,7 @@
   </servlet>
   <servlet>
     <servlet-name>GetMap</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.wms.GetMap</servlet-class>
+    <servlet-class>org.vfny.geoserver.wms.servlets.GetMap</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>LockFeature</servlet-name>
@@ -74,19 +74,19 @@
   </servlet>
   <servlet>
     <servlet-name>GetFeatureInfo</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.wms.GetFeatureInfo</servlet-class>
+    <servlet-class>org.vfny.geoserver.wms.servlets.GetFeatureInfo</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>DescribeLayer</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.wms.DescribeLayer</servlet-class>
+    <servlet-class>org.vfny.geoserver.wms.servlets.DescribeLayer</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>WMSGetCapabilities</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.wms.Capabilities</servlet-class>
+    <servlet-class>org.vfny.geoserver.wms.servlets.Capabilities</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>GetLegendGraphic</servlet-name>
-    <servlet-class>org.vfny.geoserver.servlets.wms.GetLegendGraphic</servlet-class>
+    <servlet-class>org.vfny.geoserver.wms.servlets.GetLegendGraphic</servlet-class>
   </servlet>
   <servlet>
    <servlet-name>TestWfsPost</servlet-name>
