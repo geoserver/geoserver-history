@@ -20,6 +20,8 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
@@ -42,7 +44,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.2 2004/03/09 01:37:40 dmzwiers Exp $
+ * @version $Id: ValidationTestDoIt.java,v 1.3 2004/03/16 23:58:31 dmzwiers Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
@@ -53,7 +55,7 @@ public class ValidationTestDoIt extends ConfigAction {
         ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
 		TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession().getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
 		Map plugins = new HashMap();Map ts = new HashMap();
-		validationConfig.toDTO(plugins,ts);
+		validationConfig.toDTO(plugins,ts); // return by ref.
 		
 		GeoValidator gv = new GeoValidator(ts,plugins);
         DataConfig dataConfig = (DataConfig) getDataConfig();
