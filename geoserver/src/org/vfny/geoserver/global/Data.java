@@ -54,7 +54,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.17 2004/01/20 00:57:24 jive Exp $
+ * @version $Id: Data.java,v 1.18 2004/01/20 00:58:33 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -127,7 +127,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * @throws ConfigurationException
      * @throws NullPointerException 
      */
-    void load(DataDTO config) throws ConfigurationException {
+    void load(DataDTO config) {
         catalog = config;
 
         if (config == null) {
@@ -357,7 +357,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * @return Map of Style by id
      * @throws ConfigurationException If the style could not be loaded from the filename
      */
-    private final Map loadStyles( DataDTO dto ) throws ConfigurationException{
+    private final Map loadStyles( DataDTO dto ) {
         Map map = new HashMap();
     
         if (dto == null || dto.getStyles() == null) {
