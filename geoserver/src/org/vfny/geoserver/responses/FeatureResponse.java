@@ -18,7 +18,7 @@ import org.geotools.data.postgis.PostgisConnection;
 import org.geotools.data.postgis.PostgisDataSource;
 import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.config.FeatureTypeBean;
+import org.vfny.geoserver.config.TypeInfo;
 import org.vfny.geoserver.config.TypeRepository;
 
 /**
@@ -65,7 +65,7 @@ public class FeatureResponse {
     private static String getQuery(Query query, TypeRepository repository)
         throws WfsException {
         
-        FeatureTypeBean meta = repository.getType(query.getFeatureTypeName());
+        TypeInfo meta = repository.getType(query.getTypeName());
         PostgisConnection db = new PostgisConnection (meta.getHost(),
                                                       meta.getPort(),
                                                       meta.getDatabaseName()); 

@@ -19,7 +19,7 @@ import org.vfny.geoserver.config.configuration.GlobalConfiguration;
  * @author Rob Hranac, TOPP
  * @version $VERSION$
  */
-public class ConfigurationBean {
+public class ConfigInfo {
 
     /** Class logger */
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
@@ -39,7 +39,7 @@ public class ConfigurationBean {
     public static final String TYPE_SCHEMA = "schema";
 
     /** */
-    private static ConfigurationBean config = null;
+    private static ConfigInfo config = null;
 
     /** a Castor class to read internal configuration information */
     private GlobalConfiguration global = new GlobalConfiguration();
@@ -54,28 +54,27 @@ public class ConfigurationBean {
      * configuration file.  This information is primarily used in the 
      * 'Service' section of the return document.
      */
-    private ConfigurationBean() {
+    private ConfigInfo() {
         global = readProperties(ROOT_DIR);
     }
 
-
-    private ConfigurationBean(String rootDir) {
+    private ConfigInfo(String rootDir) {
         global = readProperties(rootDir);
     }
     
     /** Returns root webserver application directory */
-    public static ConfigurationBean getInstance() { 
+    public static ConfigInfo getInstance() { 
         if(config == null) {
             String configFile = ROOT_DIR + CONFIG_DIR + CONFIG_FILE;
-            config = new ConfigurationBean(configFile);
+            config = new ConfigInfo(configFile);
         }
         return config;
     }    
 
     /** Returns root webserver application directory */
-    public static ConfigurationBean getInstance(String configFile) { 
+    public static ConfigInfo getInstance(String configFile) { 
         if(config == null) {
-            config = new ConfigurationBean(configFile);
+            config = new ConfigInfo(configFile);
         }
         return config;
     }    
