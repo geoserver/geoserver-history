@@ -18,7 +18,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Query.java,v 1.10.4.1 2003/11/04 22:40:23 cholmesny Exp $
+ * @version $Id: Query.java,v 1.10.4.2 2003/11/06 22:10:31 cholmesny Exp $
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?
@@ -82,6 +82,25 @@ public class Query {
      */
     public String getTypeName() {
         return this.typeName;
+    }
+
+    private String getName() {
+        if (typeName.indexOf(":") == -1) {
+            return typeName;
+        } else {
+            //HACK: Request kvp reader does the same thing.
+            //put in common utility, and do more efficiently (indexOf?)
+            String[] splitName = typeName.split("[:]");
+            String name = typeName;
+
+            if (splitName.length == 1) {
+                name = splitName[0];
+            } else {
+                name = splitName[splitName.length - 1];
+            }
+
+            return name;
+        }
     }
 
     /**
@@ -194,8 +213,8 @@ public class Query {
             props = (String[]) propertyNames.toArray(new String[0]);
         }
 
-        DefaultQuery query = new DefaultQuery(null, this.filter, maxFeatures,
-                props, this.handle);
+        DefaultQuery query = new DefaultQuery(getName(), this.filter,
+                maxFeatures, props, this.handle);
 
         return query;
     }
