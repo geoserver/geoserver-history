@@ -76,8 +76,8 @@ public class FeatureSuite extends TestCase {
         Reader inputStream = new FileReader(inputFile);
         FeatureRequest request = 
             XmlRequestReader.readGetFeature(new BufferedReader(inputStream));
-        LOGGER.fine("base request: " + baseRequest);
-        LOGGER.fine("read request: " + request);
+        LOGGER.info("base request: " + baseRequest);
+        LOGGER.info("read request: " + request);
         LOGGER.info("XML " + fileName +" test passed: " +  
                     baseRequest.equals(request));
 
@@ -270,7 +270,53 @@ public class FeatureSuite extends TestCase {
         // run test        
         assertTrue(runXmlTest( baseRequest, "12", true));
      }
-        
+   
+ public void test77() throws Exception { 
+        // make base comparison objects               
+        Coordinate coord[] = new Coordinate[5];
+        coord[0] = new Coordinate(50,40);
+        coord[1] = new Coordinate(50,100);
+        coord[2] = new Coordinate(60,100);
+        coord[3] = new Coordinate(60,40);
+        coord[4] = new Coordinate(50,40);
+        LinearRing outerRing = new LinearRing(coord, new PrecisionModel(), 0);
+        LinearRing innerRing[] = new LinearRing[0];
+        Polygon tempPoly = 
+            new Polygon(outerRing, innerRing, new PrecisionModel(), 0);
+        AttributeExpression tempLeftExp = 
+            factory.createAttributeExpression(null); 
+        tempLeftExp.setAttributePath("location");
+        LiteralExpression tempRightExp = factory.
+            createLiteralExpression(DefaultExpression.LITERAL_GEOMETRY);
+        tempRightExp.setLiteral(tempPoly);
+        org.geotools.filter.GeometryFilter tempFilter = 
+            factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+        tempFilter.addLeftGeometry(tempLeftExp);
+        tempFilter.addRightGeometry(tempRightExp);
+        FeatureRequest baseRequest = new FeatureRequest();
+       
+	FidFilter temp1 = factory.createFidFilter("123");
+	temp1.addFid("124");
+	DeleteRequest delete2 = new DeleteRequest();
+	FidFilter temp2 = factory.createFidFilter("1023");
+	temp2.addFid("16");
+	Query query = new Query();
+        query.setTypeName("rail");
+        query.addFilter(temp1);
+        query.addPropertyName("name");
+        query.addPropertyName("id");
+        baseRequest.addQuery(query);
+        query = new Query();
+        query.setTypeName("roads");
+        query.addFilter(temp2);
+        query.addPropertyName("length");
+        query.addPropertyName("id");
+        baseRequest.addQuery(query);
+        baseRequest.setMaxFeatures(10000);
+        // run test        
+        assertTrue(runXmlTest( baseRequest, "15", true));
+     }
+     
     public void test8() throws Exception { 
         // make base comparison objects               
         LiteralExpression tempExp1 = 
@@ -728,10 +774,10 @@ public class FeatureSuite extends TestCase {
 
         // make base comparison objects
         org.geotools.filter.GeometryFilter filter = 
-            factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = 
-            factory.createAttributeExpression(null); 
-        leftExpression.setAttributePath("@");
+            factory.createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
+        //AttributeExpression leftExpression = 
+        //    factory.createAttributeExpression(null); 
+        //leftExpression.setAttributePath("@");
         // Creates coordinates for the linear ring
         Coordinate[] coords = new Coordinate[5];
         coords[0] = new Coordinate(10,10);
@@ -743,7 +789,7 @@ public class FeatureSuite extends TestCase {
         Polygon polygon = new Polygon(outerShell, new PrecisionModel(), 0);
         LiteralExpression rightExpression = factory.
             createLiteralExpression(polygon); 
-        filter.addLeftGeometry(leftExpression);
+        //filter.addLeftGeometry(leftExpression);
         filter.addRightGeometry(rightExpression);
 
         Query query = new Query();
