@@ -42,12 +42,6 @@ public class EmbeddedTomcat {
      */
     private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("org.vfny.geoserver.EmbeddedTomcat");
     
-
-        static {
-	Geotools.init("Log4JFormatter", Level.FINEST);
-	LOG.info("initing embedded");
-    }
-
     /** Sets the global test file for the instance to check if all is OK. */
     private static final String TEST_FILE = "/lib/catalina/embedded.jar";
       // TODO 3: Would be nicer to check entire directory structure.
@@ -111,8 +105,10 @@ public class EmbeddedTomcat {
         embedded = new Embedded();
 
         // print all log statments to standard error
-        embedded.setDebug(5);
-        embedded.setLogger(new SystemOutLogger());
+	//uncomment two next statements for debugging.
+         //embedded.setDebug(5);
+        //Geotools.init("Log4JFormatter", Level.FINEST);
+	embedded.setLogger(new SystemOutLogger());
 
         // Create an engine
         engine = embedded.createEngine();
