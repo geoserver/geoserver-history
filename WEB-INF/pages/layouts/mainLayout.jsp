@@ -46,7 +46,7 @@
         </td>
 	</tr>
 	
-    <tr style="vertical-align: top;">
+    <tr>
       <td class="sidebar">
         <tiles:insert attribute="status"/>		
         <tiles:insert attribute="buttons"/>          
@@ -56,11 +56,10 @@
       <td style="vertical-align: top;"
           rowspan="1" colspan="2">
             
-        <table cellpadding="0" cellspacing="0" border="0"
-               style="text-align: left; width: 100%;">
+        <table class="main">
           <tbody>
             <tr class="bar">
-              <td class="locator">                        
+              <td class="locator">
                 <tiles:insert attribute="location"/>
               </td>
               <td class="loginStatus">
