@@ -112,6 +112,7 @@
       </table>
       <!-- #BeginEditable "main" --> 
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="additional"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Additional options</td>
         </tr>
@@ -179,6 +180,7 @@
         </tr>
       </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0" height="90">
+       <a name="namespaces"></a>
         <tr> 
           <td bgcolor="#333366" class="title">Multiple Namespaces</td>
         </tr>
@@ -229,13 +231,17 @@
           </td>
         </tr>
       </table>
+
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+      <a name="shapefile"></a>	 
         <tr> 
           <td bgcolor="#333366" class="title">Shapefile support</td>
+	 
         </tr>
-        <tr> 
+        <tr>
           <td height="45"> 
-            <blockquote>The 0.96 release includes a first attempt at shapefile
+	  
+            <blockquote> The 0.96 release includes a first attempt at shapefile
 	    support.  Postgis remains the recommended geoserver datasource, due
 	    to its speed and transactional capabilities.  But for those users 
 	    wishing to avoid the lengthy postgis install, who just want to get 
@@ -257,7 +263,7 @@
 	      </i><p>
 	     </blockquote>
 
-	     If you can store the
+           If you can store the
 	    .shp, .dbx and .shx files in the same directory as info.xml then
 	    the filename tag can be used as a shortcut, the url will be 
 	    constructed automatically using that directory.:
@@ -273,7 +279,94 @@
          </td>
         </tr>
       </table>
+ <table width="100%" cellpadding="5" cellspacing="5" border="0">
+      <a name="oracle"></a>	 
+        <tr> 
+          <td bgcolor="#333366" class="title">Oracle support</td>
+	 
+        </tr>
+        <tr>
+          <td height="45"> 
+	  
+            <blockquote> The 0.98 release includes a new oracle datasource,
+	    contributed by Sean Geoghegan.  It includes support of all ogc
+	    filters, connection pooling, and transactional capabilities.  To use
+	    the Oracle Datasource the info.xml file must have the following 
+	    values for the DatasourceParams:
+	     <table width="91%" border="0" cellspacing="3" cellpadding="3" align="center">
+                <tr align="left" valign="top"> 
+                  <td width="20%" height="20"><b>Param Name</b></td>
+                  <td width="74%" height="20"><b>Description</b></td>
+                </tr>
+	     <tr align="left" valign="top">
+                  <td width="12%" height="11">host</td>
+                  <td width="74%" height="11">The machine which the Oracle 
+		  instance is running on.</td>
+                </tr>
+                <tr align="left" valign="top">
+                  <td width="12%" height="17">port</td>
+                  <td width="74%" height="17">The port the Oracle instance is 
+		  running on.  The default is 1521</td>
+                </tr>
+                <tr align="left" valign="top">
+                  <td width="12%" height="26">user</td>
+                  <td width="74%" height="26">The user to connect with.</td>
+                </tr>
+                <tr align="left" valign="top">
+                  <td width="12%" height="17">passwd</td>
+                  <td width="74%" height="17">The password to connect with.</td>
+                </tr>
+		<tr align="left" valign="top">
+                  <td width="12%" height="17">dbtype</td>
+                  <td width="74%" height="17">Must be 'oracle' to use the 
+		  oracle datasource.</td>
+                </tr>
+		<tr align="left" valign="top">
+                  <td width="12%" height="17">table</td>
+                  <td width="74%" height="17">The name of the Oracle table to 
+		  load features from, must have an SDO_GEOMETRY column</td>
+                </tr>
+		<tr align="left" valign="top">
+                  <td width="12%" height="17">instance</td>
+                  <td width="74%" height="17">The Oracle instance name, should be 
+		  the same as the SERVICE ID</td>
+                </tr>
+              </table>
+	      Additionally, two jars are required in the geoserver/lib directory.
+	      As Oracle is not open source we can not distribute these, but you 
+	      should be able to find them, either somewhere within your oracle
+	      install, or on the <a href="http://otn.oracle.com">Oracle Technology 
+	      Network</a>.
+	      The two jars you need are classes12.jar, which contains the jdbc
+	      classes, and sdoapi.jar, which contains the spatial api jars.  
+	      If you recieve an uncaught exception - NoClassDefFoundError, then
+	      you probably have the jar in the wrong place or the wrong jars.
+	      And please don't hesitate to email the geoserver-devel@lists.sf.net
+	      list with any problems. The DatasourceParams element of the info.xml 
+	      file should look as follows:
+	      <blockquote>
+	      <p><i>
+	        &nbsp;&nbsp;&nbsp;&nbsp;&lt;DatasourceParams&gt;<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;host&gt;localhost&lt;/host&gt; 
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;port&gt;1521&lt;/port&gt; <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;instance&gt;test&lt;/instance&gt; 
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;user&gt;test&lt;/user&gt; <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;passwd&gt;test&lt;/passwd&gt; <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table&gt;river&lt;/table&gt; 
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dbtype&gt;oracle&lt;/dbtype&gt; 
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/DatasourceParams&gt;<br>
+                   
+                </blockquote>
+	     </blockquote>
+         </td>
+        </tr>
+      </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+       <a name="z3950"></a>
         <tr> 
           <td bgcolor="#333366" class="title">z39.50 Module</td>
         </tr>
@@ -323,6 +416,7 @@
         </tr>
       </table>
        <table width="100%" cellpadding="5" cellspacing="5" border="0">
+      <a name="international"></a>       
         <tr> 
           <td bgcolor="#333366" class="title">Internationalization</td>
         </tr>
@@ -357,7 +451,7 @@
 	     will work with the various places they are used - mime encoding, xml 
 	     declaration and the postgis jdbc driver.  Please send email to the
 	     list at geoserver-devel@lists.sourceforge.net, or to the geoserver team:
-	     geoserver@openplans.org
+	     geoserver@openplans.org.  
 	   </blockquote>
           </td>
         </tr>
