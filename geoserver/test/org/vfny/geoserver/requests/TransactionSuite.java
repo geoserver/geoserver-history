@@ -11,6 +11,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.geotools.data.DefaultCatalog;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
@@ -19,6 +20,7 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
+import org.vfny.geoserver.config.ServerConfig;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.*;
@@ -30,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -38,7 +41,7 @@ import java.util.logging.Logger;
  * Tests the get feature request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionSuite.java,v 1.5 2003/12/22 23:07:03 cholmesny Exp $
+ * @version $Id: TransactionSuite.java,v 1.6 2003/12/23 20:25:05 cholmesny Exp $
  *
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.
@@ -58,6 +61,7 @@ public class TransactionSuite extends RequestTestCase {
     protected static FilterFactory factory = FilterFactory.createFilterFactory();
     protected FeatureType schema;
     protected Feature testFeature;
+    protected ServerConfig config;
 
     /**
      * Constructor with super.
@@ -81,7 +85,10 @@ public class TransactionSuite extends RequestTestCase {
         return suite;
     }
 
-    public void setUp() {
+    public void setUp() throws Exception {
+        Map values = new HashMap();
+        ServerConfig.load(values, new DefaultCatalog());
+
         //config = ConfigInfo.getInstance(CONFIG_DIR);
         //config.setTypeDir(TYPE_DIR);
         //repo = TypeRepository.getInstance();
