@@ -4,7 +4,7 @@
 <article>
   <title>Quickstart</title>
 
-  <para>The GeoServer 1.2.0 beta WFS server ships with a minimal configuration
+  <para>The GeoServer 1.2.0-rc1 WFS server ships with a minimal configuration
   of two shapefiles and a couple of validation tests.</para>
 
   <para>The steps are:</para>
@@ -18,7 +18,7 @@
 
     <listitem>
       <para>Install a Servlet Container. We recommend <ulink
-      url="http://www.caucho.com">Resin</ulink> (open source, free to
+      url="http://jetty.mortbay.org">Jetty</ulink> (open source, free to
       non-commercial users) or <ulink
       url="http://jakarta.apache.org/tomcat/index.html">Tomcat</ulink> (open
       source, free).</para>
@@ -50,20 +50,23 @@
       <programlisting>http://locahost:8080/geoserver/</programlisting>
 
       <para>Your Servlet Container will compile all the JSP pages, this
-      process should take a minuet or two. This is a one time only
+      process should take a minute or two. This is a one time only
       delay.</para>
 
       <para>To interact with the configuration system you will need to login
       with the user name <constant>admin</constant> and the password
-      <constant>geoserver</constant>.</para>
+      <constant>geoserver</constant>. You can change the password at
+      Server-&gt;Config-&gt;Password.</para>
     </listitem>
   </orderedlist>
 
   <para>Congratulations now have a working GeoServer installation!</para>
 
   <para>The User Guides provide a series of walkthroughs using your new
-  GeoServer installation. For additional support an active user community is
-  available by joining the GeoServer <ulink
+  GeoServer installation. If you want to make use of the WMS then you should
+  install <ulink url="???">JAI</ulink> and the Image I/O extension, see the
+  WMS documentation page for more information. For additional support an
+  active user community is available by joining the GeoServer <ulink
   url="https://sourceforge.net/mail/?group_id=25086">mailing list</ulink>. We
   also strongly encourage you to submit bugs and improvements you would like
   to see to our <ulink
