@@ -329,7 +329,7 @@ public class WfsTransResponse {
 	public void addXml(StringBuffer retXml){
 	    // StringBuffer retXml = new StringBuffer(indent);
 	    retXml.append(indent);
-	    //retXml.append("<wfs:InsertResult handle=\"" + handle + "\">");
+	    retXml.append("<wfs:InsertResult");
 	    if (handle!= null) {
 	    retXml.append(" handle=\"" + handle + "\"");
 	    }
