@@ -57,12 +57,12 @@
 </code></pre>
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/GetCapabilities">
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs/GetCapabilities">
       getCapabilities
     </a>
   </li>
   <li>
-    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/TestWfsPost">
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs/TestWfsPost">
       TestWfsPost
     </a>
   </li>
@@ -76,7 +76,7 @@
 
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wms/GetCapabilities">
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms/GetCapabilities">
       getCapabilities
     </a>
   </li>
