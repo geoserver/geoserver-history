@@ -22,9 +22,9 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.AlphaComposite;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -120,7 +120,17 @@ public class JAIMapResponse extends GetMapDelegate {
                 LOGGER.info("renderer was null, so jai not found");
                 supportedFormats = Collections.EMPTY_LIST;
             } else {
-                supportedFormats = Arrays.asList(mimeTypes);
+                supportedFormats = new java.util.ArrayList();
+
+                List formatsList = Arrays.asList(mimeTypes);
+
+                for (Iterator it = formatsList.iterator(); it.hasNext();) {
+                    String format = it.next().toString();
+
+                    if (!format.equals("")) {
+                        supportedFormats.add(format);
+                    }
+                }
 
                 if (LOGGER.isLoggable(Level.CONFIG)) {
                     StringBuffer sb = new StringBuffer(
@@ -306,16 +316,16 @@ public class JAIMapResponse extends GetMapDelegate {
             //LOGGER.fine("setting up renderer");
             //java.awt.Graphics g = image.getGraphics();
             graphic = image.createGraphics();
-   
 
             if (!request.isTransparent()) {
-               graphic.setColor(request.getBgColor()); 
-               graphic.fillRect(0, 0, width, height);
+                graphic.setColor(request.getBgColor());
+                graphic.fillRect(0, 0, width, height);
             } else {
                 LOGGER.fine("setting to transparent");
-		int type = AlphaComposite.SRC_OVER;
-		graphic.setComposite(AlphaComposite.getInstance(type, 0));
-	    }
+
+                int type = AlphaComposite.SRC_OVER;
+                graphic.setComposite(AlphaComposite.getInstance(type, 0));
+            }
 
             renderer = new LiteRenderer(map);
 
