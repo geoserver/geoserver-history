@@ -11,8 +11,9 @@
     Service. This should allow users to view their data both as GML (through
     the WFS) and as images (using the WMS). This is made possible by porting
     the GeoTools WMS into the GeoServer architecture. Configuring the
-    datastores in <emphasis>catalog.xml</emphasis> should make them available
-    to both services.</para>
+    DataStores through the web administration interface or in the
+    <emphasis>catalog.xml</emphasis> file should make them available to both
+    services.</para>
 
     <para>The WMS still needs some work, and we're hoping that various
     developers can devote some good time to it. Right now it can return
@@ -49,7 +50,7 @@
     and the Image I/O extension <ulink
     url="http://java.sun.com/products/java-media/jai/downloads/download-iio.html">here</ulink>.
     If they are not present then GeoServer will not advertise them in the
-    capabilities document. </para>
+    capabilities document.</para>
   </sect1>
 
   <sect1>
