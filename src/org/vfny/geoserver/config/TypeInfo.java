@@ -1,23 +1,3 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2002, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
- */
-/* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.vfny.geoserver.config;
 
 import org.geotools.data.DataSource;
@@ -26,8 +6,6 @@ import org.geotools.data.DataSourceFinder;
 import org.geotools.data.DataSourceMetaData;
 import org.vfny.geoserver.responses.WfsException;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -38,12 +16,14 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeInfo.java,v 1.20 2003/09/05 22:04:52 cholmesny Exp $
+ * @version $Id: TypeInfo.java,v 1.21 2003/09/12 17:01:36 cholmesny Exp $
  */
 public class TypeInfo {
     /** Class logger */
     private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
-    public static final String PREFIX_DELIMITER = ":";
+
+    /** the deliminter between namespace prefixes and types.*/
+    //public static final String PREFIX_DELIMITER = ":";
 
      /** Internal representation of user defined type information. */
     private FeatureType internalType;
@@ -56,8 +36,6 @@ public class TypeInfo {
     /** the string of where the schema file should be located. */
     private String pathToSchemaFile;
 
-    /** standard connection for getFeatures. */
-    Connection dbConnection;
     private DataSource transactionDS;
     private DataSource featureDSource;
 
@@ -65,19 +43,13 @@ public class TypeInfo {
     //when schemas can go to xsd and back it would be good to have here.
 
     /**
-     * Initializes the database and request handler.
-     */
-    public TypeInfo() {
-    }
-
-    /**
-     * Initializes the database and request handler.
+     * Reads the typeInfo
      *
-     * @param typeName The query from the request object.
+     * @param typePath The path to the info.xml file to read.
      */
-    public TypeInfo(String typeName) {
-        LOG.finest("reading typeinfo for " + typeName);
-        readTypeInfo(typeName);
+    public TypeInfo(String typePath) {
+        LOG.finest("reading typeinfo for " + typePath);
+        readTypeInfo(typePath);
     }
 
     /**
@@ -96,7 +68,7 @@ public class TypeInfo {
      *
      * @param prefix The namespace prefix used internally.
      */
-    void setPrefix(String prefix) {
+    final void setPrefix(String prefix) {
         if (config.getNSUri(prefix) == null) {
             config.addPrefixNamespace(prefix);
         }
@@ -132,8 +104,6 @@ public class TypeInfo {
      *
      * @return The name of this featureType.
      */
-
-    //REVISIT: name getTableName()?  It should only be used for that purpose.
     public String getName() {
         LOG.finest("returning name " + internalType.getName());
 
@@ -141,12 +111,12 @@ public class TypeInfo {
     }
 
     /**
-     * Fetches the featureType name with its proper namespace prefix
-     *
+     * Fetches the featureType name with its proper namespace prefix.
+     * This should be used for all internal references to the type.
      * @return The name with its prefix.
      */
     public String getFullName() {
-        return prefix + ":" + internalType.getName();
+        return getPrefix() + ":" + internalType.getName();
     }
 
     /**
@@ -219,59 +189,6 @@ public class TypeInfo {
     }
 
     /**
-     * Fetches the user-defined database name
-     *
-     * @return the db name from info.xml
-     *
-     * @deprecated use getDataParams() to get this info instead.
-     */
-    public String getDatabaseName() {
-        return internalType.getDatabaseName().toString();
-    }
-
-    /**
-     * Fetches the user-defined feature type keywords
-     *
-     * @return the host from info.xml
-     */
-    public String getHost() {
-        return internalType.getHost().toString();
-    }
-
-    /**
-     * Fetches the user-defined port for the database
-     *
-     * @return DOCUMENT ME!
-     *
-     * @deprecated use getDataParams() to get this info instead.
-     */
-    public String getPort() {
-        return internalType.getPort().toString();
-    }
-
-    /**
-     * Fetches the user-defined user for the database
-     *
-     * @return DOCUMENT ME!
-     *
-     * @deprecated use getDataParams() to get this info instead.
-     */
-    public String getUser() {
-        return internalType.getUser().toString();
-    }
-
-    /**
-     * Fetches the user-defined password for the database
-     *
-     * @return DOCUMENT ME!
-     *
-     * @deprecated use getDataParams() to get this info instead.
-     */
-    public String getPassword() {
-        return internalType.getPassword().toString();
-    }
-
-    /**
      * Fetches the mandatory property names.  This should eventually move to
      * the schema - but we need to be able to read in XML schemas for that to
      * happen.  For now the info.xml file has a field that will get the
@@ -324,7 +241,7 @@ public class TypeInfo {
     }
 
     /**
-     * gets the datasource associated with this typeInfo.  This uses the
+     * Gets the datasource associated with this typeInfo.  This uses the
      * current datasource connection, so it should not be used for
      * transactions, those should generate their own datasources from their
      * connections.
@@ -461,7 +378,7 @@ public class TypeInfo {
         tempResponse.append("      <Name>" + name + "</Name>\n");
         tempResponse.append("      <Title>" + internalType.getTitle()
             + "</Title>\n");
-        tempResponse.append("      <Abstract>" + internalType.getAbstract()
+        tempResponse.append("      <Abstract>" + getAbstract()
             + "</Abstract>\n");
         tempResponse.append("      <Keywords>" + getKeywords()
             + "</Keywords>\n");
@@ -544,17 +461,7 @@ public class TypeInfo {
      * which can shut itself down.
      */
     public void close() {
-        if (dbConnection != null) {
-            try {
-                LOG.finer("closing connection in " + getName());
-                dbConnection.close();
-            } catch (SQLException e) {
-                LOG.finer("had trouble closing connection in " + getName()
-                    + ": " + e.getMessage());
-            }
-        }
-
-        featureDSource = null;
+	featureDSource = null;
         transactionDS = null;
     }
 }
