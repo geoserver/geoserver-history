@@ -1,5 +1,13 @@
-GeoServer 1.2.0 README file
+GeoServer 1.2.1 README file
 ---------------------------
+
+The 1.2.1 release is focused on easier installation.  First is a binary
+release, consisting of a built in servlet container to run the included
+geoserver war, and startup and shutdown scripts for windows and linux.  
+The only changes to the source code are two minor fixes to datastores,
+a fix in ArcSDE to deal with requests that are out of bounds, and an 
+improvement in postgis to speed up spatial requests in large tables.
+The readme for 1.2.0 is as follows:
 
 Welcome to GeoServer 1.2.0!  This release has been a long time coming, but we 
 think it's well worth the wait.  First off a huge thanks go out to everyone
