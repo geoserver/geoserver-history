@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Iterator;
-
 import org.geotools.factory.FactoryFinder;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
@@ -15,6 +11,11 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
 import org.vfny.geoserver.responses.Response;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -141,5 +142,23 @@ public class GetLegendGraphicResponse implements Response {
      */
     public static boolean supportsFormat(String mimeType) {
         return getProducerFactory(mimeType) != null;
+    }
+
+    /**
+     * Convenient method to search and return all the supported image formats
+     * for the creation of legend graphics.
+     *
+     * @return the set of all the supported legend graphic formats.
+     */
+    public static Set getFormats() {
+        Set allFormats = new HashSet();
+        Iterator it = FactoryFinder.factories(GetLegendGraphicProducerSpi.class);
+
+        while (it.hasNext()) {
+            allFormats.addAll(((GetLegendGraphicProducerSpi) it.next())
+                .getSupportedFormats());
+        }
+
+        return allFormats;
     }
 }
