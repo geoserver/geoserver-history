@@ -2,7 +2,9 @@ package org.vfny.geoserver.form.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -100,6 +102,13 @@ public class DataDataStoresEditorForm extends ActionForm {
 		return errors;
 	}
 
+    public Map getParams(){
+        Map map = new HashMap();
+        for( int i=0; i< paramKeys.size();i++){
+            map.put( paramKeys.get(i), paramValues.get(i));
+        }
+        return map;
+    }
 	/**
 	 * @return
 	 */
