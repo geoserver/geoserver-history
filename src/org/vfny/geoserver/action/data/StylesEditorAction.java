@@ -6,8 +6,11 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
@@ -35,7 +39,8 @@ public class StylesEditorAction extends ConfigAction {
         throws IOException, ServletException {
         
         StylesEditorForm stylesForm = (StylesEditorForm) form;
-        final String filename = stylesForm.getFilename();
+        FormFile file= stylesForm.getSldFile() ;
+        final String filename = file.getFileName();
         final String styleID = stylesForm.getStyleID();
         
         StyleConfig style = user.getStyle();
@@ -43,7 +48,21 @@ public class StylesEditorAction extends ConfigAction {
             // Must of bookmarked? Redirect so they can select            
             return mapping.findForward("config.data.style");            
         }
-        style.setFilename( new File(filename) );
+        File rootDir= new File(getServlet().getServletContext().getRealPath("/"));
+        File styleDir= new File(rootDir, "data/styles");
+        // send content of FormFile to /styles :
+        // there nothing to keep the styles in memory for XMLConfigWriter.store() 
+        InputStreamReader isr= new InputStreamReader(file.getInputStream()) ;
+        FileWriter fw= new FileWriter( new File(styleDir,filename) ) ;
+        char[] tampon= new char[1024] ;
+        int charsRead ;
+        while ((charsRead= isr.read(tampon,0,1024))!=-1) {
+          fw.write(tampon,0,charsRead) ;
+        }
+        fw.flush() ;
+        fw.close() ;
+        isr.close() ;
+        style.setFilename( new File(styleDir,filename) );
         style.setId(styleID);
 
         // Do configuration parameters here

@@ -49,7 +49,7 @@
    		<put name="body" value="/WEB-INF/pages/Login.jsp"/>   		
    		<put name="layer" value="application"/>
         <put name="locationForwards" value="welcome"/>        
-   	</definition>  	
+   	</definition>
 
    	<definition name="welcome.demo" extends=".mainLayout">
    		<put name="key" value="welcome.demo"/>
@@ -88,16 +88,16 @@
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
         <put name="menuForwards"
-             value="config.server.login"/>   		   		
+             value="config.server.login"/>
    	</definition>
    	
-   	<definition name="config.server.login" extends=".mainLayout">
-   		<put name="key" value="config.server.login"/>
-   		<put name="body" value="/WEB-INF/pages/loginEditor.jsp"/>   		
-   		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:config.server"/>        
-   	</definition>
-   	   	
+        <definition name="config.server.login" extends=".mainLayout">
+                <put name="key" value="config.server.login"/>
+                <put name="body" value="/WEB-INF/pages/loginEditor.jsp"/>
+                <put name="layer" value="configuration"/>
+        <put name="locationForwards" value="welcome:config:config.server"/>
+        </definition>
+
 	<!-- CONFIG VALIDATION -->   	
    	<definition name="config.validation" extends=".mainLayout">
    		<put name="key" value="config.validation"/>
@@ -209,6 +209,10 @@
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+<!-- didier, 2004-04-18, logical order :
+        <put name="menuForwards"
+             value="config.data.store:config.data.namespace:config.data.style:config.data.type"/>
+  -->
         <put name="menuForwards"
              value="config.data.namespace:config.data.store:config.data.style:config.data.type"/>
    	</definition>
