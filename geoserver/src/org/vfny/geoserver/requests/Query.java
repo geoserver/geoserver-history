@@ -18,7 +18,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Query.java,v 1.10.4.3 2003/11/12 20:20:40 jive Exp $
+ * @version $Id: Query.java,v 1.10.4.4 2003/12/03 21:26:41 cholmesny Exp $
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?
@@ -211,38 +211,50 @@ public class Query {
 
         if ((propertyNames != null) && (propertyNames.size() > 0)) {
             props = (String[]) propertyNames.toArray(new String[0]);
-        }                
+        }
+
         DefaultQuery query = new DefaultQuery(getName(), this.filter,
                 maxFeatures, props, this.handle);
 
         return query;
     }
+
     /**
      * Get this query as a geotools Query.
+     * 
      * <p>
-     * if maxFeatures is a not positive value DefaultQuery.DEFAULT_MAX will
-     * be used.
+     * if maxFeatures is a not positive value DefaultQuery.DEFAULT_MAX will be
+     * used.
      * </p>
+     * 
      * <p>
      * The method name is changed to toDataStoreQuery since this is a one way
      * conversion.
      * </p>
+     *
      * @param maxFeatures number of features, or 0 for DefaultQuery.DEFAULT_MAX
+     *
      * @return A Query for use with the FeatureSource interface
      */
-    public org.geotools.data.Query toDataQuery( int maxFeatures ) {
-        if( maxFeatures <=0 ){
+    public org.geotools.data.Query toDataQuery(int maxFeatures) {
+        if (maxFeatures <= 0) {
             maxFeatures = DefaultQuery.DEFAULT_MAX;
         }
+
         String[] props = null;
 
         if ((propertyNames != null) && (propertyNames.size() > 0)) {
             props = (String[]) propertyNames.toArray(new String[0]);
-        }                
+        }
+
+        if (filter == null) {
+            filter = Filter.NONE;
+        }
+
         DefaultQuery query = new DefaultQuery(getName(), this.filter,
                 maxFeatures, props, this.handle);
 
-        return query;        
+        return query;
     }
 
     /**
