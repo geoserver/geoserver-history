@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="lib/gt2-experiment.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-gml.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-graph.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-main.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-mysql.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-oracle-spatial.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-postgis.jar"/>
@@ -51,5 +50,7 @@
 	<classpathentry kind="lib" path="lib/xalan.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry sourcepath="/home/gabriel/workspace/gt/module/main" kind="lib" path="lib/gt2-main.jar"/>
+	<classpathentry kind="lib" path="lib/commons-httpclient-2.0.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
