@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
  <Transaction handle="my insert"
-   xmlns="http://www.openplans.org"
+   xmlns="http://www.openplans.org/rail"
    xmlns:gml="http://www.opengis.net/gml">
     <Insert handle="insert 1">
    <rail fid="44">
