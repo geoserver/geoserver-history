@@ -42,7 +42,8 @@
       </connectionParams>
     </datastore> 
     
-    <!-- A sample oracle datastore, hosted on a remote computer -->  
+    <!-- A sample oracle datastore, hosted on a remote computer  
+    <!-- commented out, or it causes the web interface grief
     <datastore id="remoteOracle" enabled="false" namespace="lake">
       <description>A remote oracle database</description>
       <connectionParams>
@@ -52,10 +53,12 @@
         <parameter name="instance" value="test"/>
         <parameter name="user" value="cholmes"/>
         <parameter name="passwd" value="cite"/>
-        <!-- Optional param, if not working then try removing this -->
+
+        Optional param, if not working then try removing this
         <parameter name="schema" value="chtest"/>
       </connectionParams>
     </datastore> 
+    -->
 
     <datastore id="bizkaiaSde" enabled="false" namespace="biz">
       <description>A test SDE database</description>
