@@ -97,6 +97,7 @@ public abstract class DefaultRasterLegendProducer
      * for the GetLegendGraphic operation.
      */
     public static final Color BG_COLOR = Color.WHITE;
+
     /**
      * Image observer to help in creating the stack like legend graphic from
      * the images created for each rule
@@ -104,10 +105,10 @@ public abstract class DefaultRasterLegendProducer
     private static final ImageObserver imgObs = new Canvas();
 
     /** padding percentaje factor at both sides of the legend. */
-    private static final float hpaddingFactor = 0.2f;
+    private static final float hpaddingFactor = 0.15f;
 
     /** top & bottom padding percentaje factor for the legend */
-    private static final float vpaddingFactor = 0.2f;
+    private static final float vpaddingFactor = 0.15f;
 
     /** The image produced at <code>produceLegendGraphic</code> */
     private BufferedImage legendGraphic;
@@ -198,7 +199,7 @@ public abstract class DefaultRasterLegendProducer
             Graphics2D graphics = image.createGraphics();
             graphics.setColor(BG_COLOR);
             graphics.fillRect(0, 0, w, h);
-            
+
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
                 Symbolizer symbolizer = symbolizers[sIdx];
                 Style2D style2d = styleFactory.createStyle(sampleFeature,
@@ -294,7 +295,7 @@ public abstract class DefaultRasterLegendProducer
         } else if (symbolizer instanceof PolygonSymbolizer) {
             if (this.sampleRect == null) {
                 this.sampleRect = new Rectangle2D.Float(hpad, vpad,
-                        legendWidth - hpad, legendHeight - vpad);
+                        legendWidth - 2 * hpad, legendHeight - 2 * vpad);
             }
 
             sampleShape = this.sampleRect;
@@ -373,9 +374,15 @@ public abstract class DefaultRasterLegendProducer
                 if (isWithInScale(r, scaleDenominator)) {
                     ruleList.add(r);
 
-                    if (r.hasElseFilter()) {
-                        ruleList.add(r);
-                    }
+                    /*
+                     * I'm commented this out since I guess it has no sense
+                     * for producing the legend, since wether or not the rule
+                     * has an else filter, the legend is drawn only if the
+                     * scale denominator lies inside the rule's scale range.
+                          if (r.hasElseFilter()) {
+                              ruleList.add(r);
+                          }
+                     */
                 }
             }
         }
