@@ -16,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -25,6 +27,13 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
+import org.geotools.geometry.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
@@ -148,12 +157,57 @@ public class TypesEditorAction extends ConfigAction {
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
 
         Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
-
-        typeForm.setMinX(Double.toString(envelope.getMinX()));
-        typeForm.setMaxX(Double.toString(envelope.getMaxX()));
-        typeForm.setMinY(Double.toString(envelope.getMinY()));
-        typeForm.setMaxY(Double.toString(envelope.getMaxY()));
-
+        
+          // do a translation from the data's coordinate system to lat/long
+        
+        
+        String srs = typeForm.getSRS();  // what the user typed in for the srs in the form
+        
+        if (srs.indexOf(':') == -1) // check to see if its of the form "EPSG:#" (or some such thing)
+        	srs= "EPSG:"+srs;       //assume they wanted to use an EPSG number
+        
+        try {
+        	CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
+        	CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
+        	MathTransform xform = CRS.transform(crsTheirData,crsLatLong);
+        	Envelope xformed_envelope = JTS.transform(envelope,xform); //convert data bbox to lat/long
+        	
+            typeForm.setMinX(Double.toString(xformed_envelope.getMinX()));
+            typeForm.setMaxX(Double.toString(xformed_envelope.getMaxX()));
+            typeForm.setMinY(Double.toString(xformed_envelope.getMinY()));
+            typeForm.setMaxY(Double.toString(xformed_envelope.getMaxY()));
+            
+        }
+        catch (NoSuchAuthorityCodeException e)
+		{
+        	  LOGGER.fine(e.getLocalizedMessage() );
+        	  LOGGER.fine(e.getStackTrace().toString());
+        	  ActionErrors errors = new ActionErrors();
+              errors.add(ActionErrors.GLOBAL_ERROR,
+                  new ActionError("error.data.couldNotFindSRSAuthority", e.getLocalizedMessage(), e.getAuthorityCode() ));
+              saveErrors(request, errors);
+              return mapping.findForward("config.data.type.editor");
+		}
+        catch (FactoryException fe)
+		{
+          LOGGER.fine(fe.getLocalizedMessage() );
+      	  LOGGER.fine(fe.getStackTrace().toString());
+      	  ActionErrors errors = new ActionErrors();
+            errors.add(ActionErrors.GLOBAL_ERROR,
+                new ActionError("error.data.factoryException"));
+            saveErrors(request, errors);
+            return mapping.findForward("config.data.type.editor");
+		}
+        catch (TransformException te)
+		{
+          LOGGER.fine(te.getLocalizedMessage() );
+      	  LOGGER.fine(te.getStackTrace().toString());
+      	  ActionErrors errors = new ActionErrors();
+            errors.add(ActionErrors.GLOBAL_ERROR,
+                new ActionError("error.data.transformException"));
+            saveErrors(request, errors);
+            return mapping.findForward("config.data.type.editor");
+		}
         return mapping.findForward("config.data.type.editor");
     }
 
