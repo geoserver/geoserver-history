@@ -6,11 +6,17 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.Collection;
+import java.util.TreeSet;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 
 /**
  * @author rgould
@@ -29,6 +35,19 @@ public class DataDataStoresForm extends ActionForm {
 	private String username;
 	private String password;
 	
+	private String selectedDataStore;
+	private String selectedDataStoreType;
+	
+	private TreeSet dataStores;
+	private TreeSet dataStoreTypes;
+	private TreeSet namespaces;
+	
+	private String action;
+	
+	public DataDataStoresForm () {
+		System.out.println("Konstruktor");
+	}
+	
 	/*
 	 * Because of the way that STRUTS works, if the user does not check the enabled box,
 	 * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
@@ -43,8 +62,37 @@ public class DataDataStoresForm extends ActionForm {
 	
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
+
+System.out.println("FormRESET");
 		
 		enabledChecked = false;		
+		action = "";
+				
+		ServletContext context = getServlet().getServletContext();
+		DataConfig config =
+			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+
+		dataStores = new TreeSet(config.getDataStores().keySet());
+		namespaces = new TreeSet(config.getNameSpaces().keySet());
+		dataStoreTypes = new TreeSet( config.listDataStoreFactoryNames());
+				
+		DataStoreConfig dsConfig;
+		
+		selectedDataStore = (String) context.getAttribute("selectedDataStore");
+		System.out.println("retrieving from context: selectedDataStor:::: " + selectedDataStore);
+
+		dsConfig = config.getDataStore(selectedDataStore);		
+		if (dsConfig == null) {
+			System.out.println("SDS null||empty, so grabbing first one");
+			dsConfig = config.getDataStore( (String) dataStores.first());
+		}
+		
+		dataStoreID = dsConfig.getId();
+		description = dsConfig.getAbstract();
+		enabled = dsConfig.isEnabled();
+		namespace = dsConfig.getNameSpaceId();
+
+		//Retrieve connection params		
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -177,6 +225,63 @@ public class DataDataStoresForm extends ActionForm {
 	 */
 	public void setEnabledChecked(boolean b) {
 		enabledChecked = b;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSelectedDataStore() {
+		return selectedDataStore;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setSelectedDataStore(String string) {
+		ServletContext context = getServlet().getServletContext();
+		context.setAttribute("selectedDataStore", string);
+		System.out.println("selectedDataStor in context set to " + string);
+		selectedDataStore = string;
+	}
+	
+	public Collection getDataStores() {
+		return dataStores;
+	}
+	
+	public Collection getDataStoreTypes() {
+		return dataStoreTypes;
+	}
+	
+	public Collection getNamespaces() {
+		return namespaces;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSelectedDataStoreType() {
+		return selectedDataStoreType;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setSelectedDataStoreType(String string) {
+		selectedDataStoreType = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setAction(String string) {
+		action = string;
 	}
 
 }

@@ -6,11 +6,13 @@
  */
 package org.vfny.geoserver.form.data;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.DataConfig;
 
 /**
  * @author rgould
@@ -23,6 +25,8 @@ public class DataStylesForm extends ActionForm {
 	private String styleID;
 	private boolean _default;
 	private String filename;
+	
+	private String selectedStyle;	
 	
 	/*
 	 * Because of the way that STRUTS works, if the user does not check the default box,
@@ -40,7 +44,12 @@ public class DataStylesForm extends ActionForm {
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
 		
-		defaultChecked = false; 
+		defaultChecked = false;
+		
+		ServletContext context = getServlet().getServletContext();
+		DataConfig config =
+			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {

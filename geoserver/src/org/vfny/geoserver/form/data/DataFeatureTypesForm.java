@@ -6,11 +6,13 @@
  */
 package org.vfny.geoserver.form.data;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.DataConfig;
 
 /**
  * @author rgould
@@ -27,8 +29,15 @@ public class DataFeatureTypesForm extends ActionForm {
 	private String keywords;
 	private String _abstract;
 	
+	private String selectedFeatureType;	
+	
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
+		
+		ServletContext context = getServlet().getServletContext();
+		DataConfig config =
+			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+		
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {

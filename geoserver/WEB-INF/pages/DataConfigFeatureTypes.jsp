@@ -5,20 +5,30 @@
 <table border=0 width=100%>
 	<html:errors/><BR>
 	
-	<html:form action="CatalogConfigNamespacesSubmit">
+	<html:form action="DataConfigNamespacesSubmit">
 	
 	<tr><td>
 		<beam:message key="label.featureTypes"/>:
-		</td><td>
+	</td><td>
 		<html:select property="selectedFeatureType">
-			<html:options collection="featureTypes"/>
+			<html:options property="featureTypes"/>
 		</html:select>
 		
-		</td><td>
+	</td><td>
 		
-		<html:submit property="new" value="<bean:message key="label.new"/>"/><BR>
-		<html:submit property="edit" value="<bean:message key="label.edit"/>"/><BR>
-		<html:submit property="delete" value="<bean:message key="label.delete"/>"/><BR>			
+		<html:submit property="action" value="new">
+			<bean:message key="label.new"/>
+		</html:submit>
+		<BR>
+		<html:submit property="action" value="edit">
+			<bean:message key="label.edit"/>
+		</html:submit>
+		<BR>
+		<html:submit property="action" value="delete">
+			<bean:message key="label.delete"/>
+		</html:submit>
+		<BR>
+			
 	</td></tr>
 	
 	<tr><td align="right">

@@ -62,6 +62,6 @@ public final class WFSContentAction extends ConfigAction {
 		
 		config.setEnabledFeatures(set);
 
-		return mapping.findForward("wfsConfigDescription");
+		return mapping.findForward("wfsConfigContent");
 	}
 }

@@ -15,7 +15,7 @@
 <BR>
 	<html:link forward="wmsConfigMenu"><bean:message key="label.wmsConfig"/></html:link><BR>
 <BR>
-	<html:link forward="dataConfigMenu"><bean:message key="label.catalogConfig"/></html:link><BR>
+	<html:link forward="dataConfigMenu"><bean:message key="label.dataConfig"/></html:link><BR>
 
 </body>
 

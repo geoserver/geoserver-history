@@ -28,20 +28,20 @@
     		type="org.vfny.geoserver.form.wms.WMSContentForm"/>
 
     	<form-bean
-    		name="catalogDataStoresForm"
-    		type="org.vfny.geoserver.form.data.CatalogDataStoresForm"/>
+    		name="dataDataStoresForm"
+    		type="org.vfny.geoserver.form.data.DataDataStoresForm"/>
     		
     	<form-bean
-    		name="catalogNamespacesForm"
-    		type="org.vfny.geoserver.form.data.CatalogNamespacesForm"/>
+    		name="dataNamespacesForm"
+    		type="org.vfny.geoserver.form.data.DataNamespacesForm"/>
 
     	<form-bean
-    		name="catalogStylesForm"
-    		type="org.vfny.geoserver.form.data.CatalogStylesForm"/>
+    		name="dataStylesForm"
+    		type="org.vfny.geoserver.form.data.DataStylesForm"/>
     		
     	<form-bean
-    		name="catalogFeatureTypesForm"
-    		type="org.vfny.geoserver.form.data.CatalogFeatureTypesForm"/>
+    		name="dataFeatureTypesForm"
+    		type="org.vfny.geoserver.form.data.DataFeatureTypesForm"/>
     		
     </form-beans>
 
@@ -72,8 +72,8 @@
        		name="wmsConfigMenu"
        		path="/WMSConfigMenu.do"/>
        	<forward
-       		name="catalogConfigMenu"
-       		path="/CatalogConfigMenu.do"/>
+       		name="dataConfigMenu"
+       		path="/DataConfigMenu.do"/>
        		
        	<forward
        		name="wfsConfigDescription"
@@ -90,17 +90,17 @@
        		path="/WMSConfigContent.do"/>
        		       		
        	<forward
-       		name="catalogConfigDataStores"
-       		path="/catalogConfigDataStores.do"/>
+       		name="dataConfigDataStores"
+       		path="/DataConfigDataStores.do"/>
        	<forward
-       		name="catalogConfigNamespaces"
-       		path="/catalogConfigNamespaces.do"/>
+       		name="dataConfigNamespaces"
+       		path="/DataConfigNamespaces.do"/>
        	<forward
-       		name="catalogConfigStyles"
-       		path="/catalogConfigStyles.do"/>
+       		name="dataConfigStyles"
+       		path="/DataConfigStyles.do"/>
        	<forward
-       		name="catalogConfigFeatureTypes"
-       		path="/catalogConfigFeatureTypes.do"/>       	       		
+       		name="dataConfigFeatureTypes"
+       		path="/DataConfigFeatureTypes.do"/>       	       		
        		
        	<forward
        		name="baseStyle"
@@ -136,9 +136,9 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="wms.description"/>        
         <action
-        	path="/CatalogConfigMenu"
+        	path="/DataConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="catalog.datastores"/>        
+        	parameter="data.dataStores"/>        
         	
         <action
         	path="/WFSConfigDescription"
@@ -158,21 +158,21 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="wms.content"/>
         <action
-        	path="/CatalogConfigDataStores"
+        	path="/DataConfigDataStores"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="catalog.dataStores"/>
+        	parameter="data.dataStores"/>
         <action
-        	path="/CatalogConfigNamespaces"
+        	path="/DataConfigNamespaces"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="catalog.namespaces"/>
+        	parameter="data.namespaces"/>
         <action
-        	path="/CatalogConfigStyles"
+        	path="/DataConfigStyles"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="catalog.styles"/>
+        	parameter="data.styles"/>
         <action
-        	path="/CatalogConfigFeatureTypes"
+        	path="/DataConfigFeatureTypes"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="catalog.featureTypes"/>
+        	parameter="data.featureTypes"/>
 
 <!-- Submit Actions -->        	
         	
@@ -208,33 +208,33 @@
         	input="wms.content"/>
 
         <action
-        	path="/CatalogConfigDataStoresSubmit"
-        	type="org.vfny.geoserver.action.data.CatalogDataStoresAction"
-        	name="catalogDataStoresForm"
+        	path="/DataConfigDataStoresSubmit"
+        	type="org.vfny.geoserver.action.data.DataDataStoresAction"
+        	name="dataDataStoresForm"
         	scope="request"
         	validate="true"
-        	input="catalog.dataStores"/>
+        	input="data.dataStores"/>
         <action
-        	path="/CatalogConfigNamespacesSubmit"
-        	type="org.vfny.geoserver.action.data.CatalogNamespacesAction"
-        	name="catalogNamespacesForm"
+        	path="/DataConfigNamespacesSubmit"
+        	type="org.vfny.geoserver.action.data.DataNamespacesAction"
+        	name="dataNamespacesForm"
         	scope="request"
         	validate="true"
-        	input="catalog.namespaces"/>
+        	input="data.namespaces"/>
         <action
-        	path="/CatalogConfigStylesSubmit"
-        	type="org.vfny.geoserver.action.data.CatalogStylesAction"
-        	name="catalogStylesForm"
+        	path="/DataConfigStylesSubmit"
+        	type="org.vfny.geoserver.action.data.DataStylesAction"
+        	name="dataStylesForm"
         	scope="request"
         	validate="true"
-        	input="catalog.styles"/>
+        	input="data.styles"/>
         <action
-        	path="/CatalogConfigFeatureTypesSubmit"
-        	type="org.vfny.geoserver.action.data.CatalogFeatureTypesAction"
-        	name="catalogFeatureTypesForm"
+        	path="/DataConfigFeatureTypesSubmit"
+        	type="org.vfny.geoserver.action.data.DataFeatureTypesAction"
+        	name="dataFeatureTypesForm"
         	scope="request"
         	validate="true"
-        	input="catalog.featureTypes"/>        	        	
+        	input="data.featureTypes"/>        	        	
 
 <!-- End Submit Actions -->
 

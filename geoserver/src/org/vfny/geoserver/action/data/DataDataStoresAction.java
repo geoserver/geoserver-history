@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresForm;
 
 /**
@@ -33,6 +34,8 @@ public class DataDataStoresAction extends ConfigAction {
 		HttpServletResponse response)
 		throws IOException, ServletException {
 			
+System.out.println("lalalala DataStoresAction.exexcute!");
+			
 		DataDataStoresForm dataStoresForm = (DataDataStoresForm) form;
 		
 		String dataStoreID = dataStoresForm.getDataStoreID();
@@ -42,15 +45,47 @@ public class DataDataStoresAction extends ConfigAction {
 		String port = dataStoresForm.getPort();
 		String username = dataStoresForm.getUsername();
 		String password = dataStoresForm.getPassword();
-
+		
+		String action = dataStoresForm.getAction();
+		
 		boolean enabled = dataStoresForm.isEnabled();
-		if (dataStoresForm.isEnabledChecked()) {
+		if (dataStoresForm.isEnabledChecked() == false) {
 			enabled = false;
 		}
 		
-		DataConfig config = (DataConfig) getDataConfig();
+		DataConfig dataConfig = (DataConfig) getDataConfig();
+		DataStoreConfig config = null;
 		
-		return mapping.findForward("data.dataStores");
+		if (action.equals("edit") || action.equals("submit")) {
+			config = (DataStoreConfig) dataConfig.getDataStore(dataStoresForm.getSelectedDataStore());
+		} else if (action.equals("new")) {
+			config = new DataStoreConfig();
+		}
+		
+		//If they push edit, simply forward them back so the information is repopulated.
+		if (action.equals("edit")) {
+			System.out.println("edit selected for dataStore: " + dataStoresForm.getSelectedDataStore());
+			dataStoresForm.reset(mapping, request);
+			return mapping.findForward("dataConfigDataStores");
+		}
+		
+		if (action.equals("delete")) {
+			dataConfig.removeDataStore(dataStoresForm.getSelectedDataStore());
+			System.out.println("Delete requested on " + dataStoresForm.getSelectedDataStore());
+		} else {
+			
+			config.setId(dataStoreID);
+			config.setEnabled(enabled);
+			config.setNameSpaceId(namespace);
+			config.setAbstract(description);
+		
+			//Do configuration parameters here.
+		
+			dataConfig.addDataStore(dataStoreID, config);
+		}
+			
+		dataStoresForm.reset(mapping, request);				
+		return mapping.findForward("dataConfigDataStores");
 	}
 
 }

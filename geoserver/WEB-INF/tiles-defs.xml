@@ -102,5 +102,96 @@
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    		</putList>
    	</definition>
-  
+
+   	<definition name="data.dataStores" extends=".mainLayout">
+   		<put name="body" value="data.dataStores.tabLayout"/>
+   	</definition>
+
+   	<definition name="data.dataStores.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
+   		<put name="selectedIndex" value="0"/>
+   		<put name="parameterName" value="selected"/>
+   		<putList name="tabList">
+   			<item value="DataStores"
+   				link="/WEB-INF/pages/DataConfigDataStores.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Namespaces"
+   				link="/geoserver/DataConfigNamespaces.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Styles"
+   				link="/geoserver/DataConfigStyles.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="FeatureTypes"
+   				link="/geoserver/DataConfigFeatureTypes.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   		</putList>
+   	</definition>
+
+   	<definition name="data.namespaces" extends=".mainLayout">
+   		<put name="body" value="data.namespaces.tabLayout"/>
+   	</definition>   	
+
+   	<definition name="data.namespaces.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
+   		<put name="selectedIndex" value="1"/>
+   		<put name="parameterName" value="selected"/>
+   		<putList name="tabList">
+   			<item value="DataStores"
+   				link="/geoserver/DataConfigDataStores.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Namespaces"
+   				link="/WEB-INF/pages/DataConfigNamespaces.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Styles"
+   				link="/geoserver/DataConfigStyles.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="FeatureTypes"
+   				link="/geoserver/DataConfigFeatureTypes.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   		</putList>
+   	</definition>
+
+   	<definition name="data.styles" extends=".mainLayout">
+   		<put name="body" value="data.styles.tabLayout"/>
+   	</definition>   	
+
+   	<definition name="data.styles.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
+   		<put name="selectedIndex" value="2"/>
+   		<put name="parameterName" value="selected"/>
+   		<putList name="tabList">
+   			<item value="DataStores"
+   				link="/geoserver/DataConfigDataStores.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Namespaces"
+   				link="/geoserver/DataConfigNamespaces.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Styles"
+   				link="/WEB-INF/pages/DataConfigNamespaces.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="FeatureTypes"
+   				link="/geoserver/DataConfigFeatureTypes.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   		</putList>
+   	</definition>
+   	
+   	<definition name="data.featureTypes" extends=".mainLayout">
+   		<put name="body" value="data.featureTypes.tabLayout"/>
+   	</definition>   	
+
+   	<definition name="data.featureTypes.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
+   		<put name="selectedIndex" value="3"/>
+   		<put name="parameterName" value="selected"/>
+   		<putList name="tabList">
+   			<item value="DataStores"
+   				link="/geoserver/DataConfigDataStores.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Namespaces"
+   				link="/geoserver/DataConfigNamespaces.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Styles"
+   				link="/geoserver/DataConfigStyles.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="FeatureTypes"
+   				link="/WEB-INF/pages/DataConfigFeatureTypes.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   		</putList>
+   	</definition>
 </tiles-definitions>

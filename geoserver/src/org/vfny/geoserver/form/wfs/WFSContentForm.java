@@ -47,6 +47,11 @@ public class WFSContentForm extends ActionForm {
 	 * method exists.
 	 * Reset is called *every* time on ActionForm. Before the populate
 	 * process has a go at things.  
+	 * 
+	 * The problem is that reset() retrieves the WFS's config enabled value
+	 * and uses that to pre-populate the form. Thus, if they deselect it, setEnabled is
+	 * never called, and enabled still remains true. The way I have done it isn't simple,
+	 * but it works just fine.
 	 */
 	private boolean enabledChecked = false; 
 

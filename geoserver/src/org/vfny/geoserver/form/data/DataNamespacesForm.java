@@ -6,11 +6,15 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.TreeSet;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.DataConfig;
 
 /**
  * @author rgould
@@ -24,6 +28,10 @@ public class DataNamespacesForm extends ActionForm {
 	private String URI;
 	private boolean _default;
 	private String prefix;
+	
+	private String selectedNamespace;
+	
+	private TreeSet namespaces;	
 
 	/*
 	 * Because of the way that STRUTS works, if the user does not check the default box,
@@ -42,6 +50,15 @@ public class DataNamespacesForm extends ActionForm {
 		super.reset(arg0, arg1);
 		
 		defaultChecked = false; 
+		
+		ServletContext context = getServlet().getServletContext();
+		DataConfig config =
+			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+			
+		namespaces = new TreeSet(config.getNameSpaces().keySet());
+		
+		Namespace nsConfig			
+		
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
