@@ -37,7 +37,7 @@
   <!-- pc example -->
   <property name="dir.container" value="C:\resin-3.0.7\webapps"/>
   <property name="dir.geotools" 
-            value="c:\eclipse\workspace\geotools2\geotools-src"/>
+            value="..\geotools2\geotools-src"/>
 
  <!-- jars -->
   <property name="jar.geotools" value="${dir.lib}/geotools.jar"/>
@@ -819,15 +819,15 @@ failonerror="true"/>
 	</jar>
 	
     <!-- Esri Shapefile support, include META-INF -->	
-    <delete file="${dir.lib}/g2-shapefile.jar" failonerror="true"/>            
-	<jar jarfile="${dir.lib}/g2-shapefile.jar"
+    <delete file="${dir.lib}/gt2-shapefile.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/gt2-shapefile.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/shapefile/target/classes/"/>
 	</jar>
 	
     <!-- Oracle Spatial support, include META-INF -->		
-    <delete file="${dir.lib}/g2-oracle-spatial.jar" failonerror="true"/>            
-	<jar jarfile="${dir.lib}/g2-oracle-spatial.jar"
+    <delete file="${dir.lib}/gt2-oracle-spatial.jar" failonerror="true"/>            
+	<jar jarfile="${dir.lib}/gt2-oracle-spatial.jar"
          whenempty="fail">	
       <fileset dir="${dir.geotools}/oraclespatial/target/classes/"/>
 	</jar>	
