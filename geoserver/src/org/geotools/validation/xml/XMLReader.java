@@ -23,8 +23,8 @@ import javax.xml.parsers.ParserConfigurationException;
  * Load validation configuration from XML.
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: XMLReader.java,v 1.6 2004/01/21 01:26:54 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: XMLReader.java,v 1.7 2004/01/21 18:43:39 dmzwiers Exp $
  */
 public class XMLReader {
     /**
@@ -157,7 +157,7 @@ public class XMLReader {
      *
      * @throws ValidationException DOCUMENT ME!
      */
-    public static TestDTO readTestDTO(Reader inputSource, Map plugIns)
+    public static TestDTO readTest(Reader inputSource, Map plugIns)
         throws ValidationException {
         TestDTO dto = null;
 
@@ -198,7 +198,7 @@ public class XMLReader {
      *
      * @throws ValidationException DOCUMENT ME!
      */
-    public static TestSuiteDTO readTestSuiteDTO(Reader inputSource, Map plugIns)
+    public static TestSuiteDTO readTestSuite(Reader inputSource, Map plugIns)
         throws ValidationException {
         TestSuiteDTO dto = new TestSuiteDTO();
 

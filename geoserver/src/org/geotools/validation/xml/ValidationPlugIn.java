@@ -34,8 +34,8 @@ import javax.servlet.ServletException;
  * after the GeoServer application.
  * </p>
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationPlugIn.java,v 1.5 2004/01/21 01:26:54 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationPlugIn.java,v 1.6 2004/01/21 18:43:39 dmzwiers Exp $
  */
 public class ValidationPlugIn implements PlugIn {
     public static final String WEB_CONTAINER_KEY = "Validation.PlugIn.Key";
@@ -290,7 +290,7 @@ public class ValidationPlugIn implements PlugIn {
             for (int i = 0; i < fileList.length; i++) {
                 if (fileList[i].canWrite() && fileList[i].isFile()) {
                     FileReader fr = new FileReader(fileList[i]);
-                    TestSuiteDTO dto = XMLReader.readTestSuiteDTO(fr, plugInDTOs);
+                    TestSuiteDTO dto = XMLReader.readTestSuite(fr, plugInDTOs);
                     r.put(dto.getName(), dto);
                 }
             }
