@@ -605,41 +605,116 @@
 
 <!-- RELEASE -->
 <!-- builds a release version of the application -->
-  <target name="release" depends="init, all">
-    
-    <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
+  <target name="release-all" depends="release-binary, release-src"/>
+  
+  <target name="release-src" depends="clean">
+    <delete file="${basedir}/geoserver-${name.release}-src.tar.gz" 
             failonerror="false"/>
-    <delete file="${basedir}/geoserver-${name.release}.tar" 
+    <delete file="${basedir}/geoserver-${name.release}-src.tar" 
             failonerror="false"/>
     <delete dir="${dir.build}" failonerror="false"/>
-    <delete dir="${dir.release}" failonerror="false"/>
-    <copy file="${dir.misc}/documents/license.txt" todir="${basedir}"/>
-    <tar longfile="gnu"
-         basedir="${basedir}/.."
-         tarfile="geoserver-${name.release}.tar"/>
+    <!--<delete dir="${dir.release}" failonerror="false"/>-->
+    
+    <mkdir dir="${dir.build}"/>
+    
+    <copy todir="${dir.build}">
+	  <fileset dir="${basedir}">
+	    <include name="license.txt"/>
+	    <include name="build.xml"/>
+	    <include name=".classpath"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}">
+	  <fileset dir="${dir.misc}/documents">
+        <include name="license.txt"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/src">
+	  <fileset dir="${dir.src}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/test">
+	  <fileset dir="${dir.test}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/lib">
+	  <fileset dir="${dir.lib}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/doc">
+	  <fileset dir="${dir.doc}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/bin">
+	  <fileset dir="${dir.bin}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/WEB-INF">
+	  <fileset dir="${dir.webinf}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build/misc}">
+	  <fileset dir="${dir.misc}">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
 
-    <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
-            failonerror="false"/>
-    <delete file="${basedir}/geoserver-${name.release}.zip" 
-            failonerror="false"/>
-    <zip basedir="${basedir}/.."
-         destfile="geoserver-${name.release}.zip"
-	 excludes="geoserver-${name.release}.tar"/>
-    <gzip src="geoserver-${name.release}.tar" 
-          zipfile="geoserver-${name.release}.tar.gz"/>
-    <copy file="${basedir}/geoserver-${name.release}.tar.gz" 
+    <tar destfile="${basedir}/geoserver-${name.release}-src.tar">
+	  <tarfileset dir="${dir.build}">
+	    <include name="**/*"/>
+	  </tarfileset>
+	</tar>
+	 	 
+	<zip destfile="${basedir}/geoserver-${name.release}-src.zip">
+	  <fileset dir="${dir.build}">
+	    <include name="**/*"/>
+	  </fileset>
+	</zip>
+	
+    <delete dir="${dir.build}" failonerror="false"/>
+	 	 
+    <gzip src="geoserver-${name.release}-src.tar" 
+          zipfile="geoserver-${name.release}-src.tar.gz"/>
+    <copy file="${basedir}/geoserver-${name.release}-src.tar.gz" 
           todir="${dir.release}"/>
-    <copy file="${basedir}/geoserver-${name.release}.zip" 
+    <copy file="${basedir}/geoserver-${name.release}-src.zip" 
           todir="${dir.release}"/>
 
-    <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
+    <delete file="${basedir}/geoserver-${name.release}-src.tar.gz" 
             failonerror="true"/>
-    <delete file="${basedir}/geoserver-${name.release}.zip" 
+    <delete file="${basedir}/geoserver-${name.release}-src.zip" 
             failonerror="true"/>
-    <delete file="${basedir}/geoserver-${name.release}.tar" 
+    <delete file="${basedir}/geoserver-${name.release}-src.tar" 
             failonerror="true"/>
-    <delete file="${basedir}/geoserver.war" failonerror="true"/>
     <delete file="${basedir}/license.txt" failonerror="true"/>
+  </target>
+  
+  <target name="release-binary" depends="clean">
+    <antcall target="war">
+      <param name="conf.path" value="${basedir}/misc/cite/confUserBasic.zip"/>
+    </antcall>
+    <copy file="${basedir}/geoserver.war" 
+          todir="${dir.release}"/>
   </target>
 
 <!-- ====================================================================== -->
