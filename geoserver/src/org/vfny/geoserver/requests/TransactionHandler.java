@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.9 2003/09/15 18:27:06 cholmesny Exp $
+ * @version $Id: TransactionHandler.java,v 1.10 2003/10/21 17:33:26 cholmesny Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {
@@ -62,6 +62,10 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
 
     /** holds the list of features for an insert request. */
     private List curFeatures;
+
+    /** Flag to alert signal we are within a Property element.  The state
+	thing was not giving enough information. */
+    private boolean inProperty = false;
 
     /**
      * Empty constructor.
@@ -161,7 +165,9 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
                     }
                 }
             }
-        }
+        } else if (state == PROPERTY) {
+	    inProperty = true;
+	}
     }
 
     /**
@@ -207,6 +213,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
                     + " to " + curPropertyValue);
                 curPropertyName = new String();
                 curPropertyValue = null;
+		inProperty = false;
             } else {
                 throw new SAXException("<property> element should only occur "
                     + "within a <update> element.");
@@ -286,9 +293,9 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      * @param geometry The geometry to set as a property.
      */
     public void geometry(Geometry geometry) {
-        LOGGER.finer("recieved geometry " + geometry);
+        LOGGER.finer("recieved geometry " + geometry + " inProp " + inProperty);
 
-        if (state == VALUE) {
+        if (inProperty) {
             curPropertyValue = geometry;
         }
     }
