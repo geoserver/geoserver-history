@@ -22,16 +22,16 @@ import javax.xml.transform.TransformerException;
 
 /**
  * handles the encoding the results of a GetFeature or GetFeatureWithLock
- * request's results to GML2 and GML2.gz formats.
+ * request's results to GML2 and GML2-GZIP formats.
  * 
  * <p>
- * GML2.gz format is just GML2 with gzip compression. If GML2.gz format was
+ * GML2-GZIP format is just GML2 with gzip compression. If GML2-GZIP format was
  * requested, <code>getContentEncoding()</code> will retutn
  * <code>"gzip"</code>, otherwise will return <code>null</code>
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.3 2004/03/14 05:16:49 cholmesny Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.4 2004/03/16 22:51:44 groldan Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
@@ -54,7 +54,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      */
     private FeatureTransformer transformer;
 
-    /** will be true if GML2.gz output format was requested */
+    /** will be true if GML2-GZIP output format was requested */
     private boolean compressOutput = false;
 
     /**
@@ -74,16 +74,16 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      *
      * @param outputFormat DOCUMENT ME!
      *
-     * @return true if <code>outputFormat</code> is GML2 or GML2.gz
+     * @return true if <code>outputFormat</code> is GML2 or GML2-GZIP
      */
     public boolean canProduce(String outputFormat) {
         return "GML2".equalsIgnoreCase(outputFormat)
-        || "GML2.gz".equalsIgnoreCase(outputFormat);
+        || "GML2-GZIP".equalsIgnoreCase(outputFormat);
     }
 
     /**
      * prepares for encoding into GML2 format, optionally compressing its
-     * output in gzip, if outputFormat is equal to GML2.gz
+     * output in gzip, if outputFormat is equal to GML2-GZIP
      *
      * @param outputFormat DOCUMENT ME!
      * @param results DOCUMENT ME!
@@ -92,7 +92,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      */
     public void prepare(String outputFormat, GetFeatureResults results)
         throws IOException {
-        this.compressOutput = "GML2.gz".equalsIgnoreCase(outputFormat);
+        this.compressOutput = "GML2-GZIP".equalsIgnoreCase(outputFormat);
         this.results = results;
 
         FeatureRequest request = results.getRequest();
