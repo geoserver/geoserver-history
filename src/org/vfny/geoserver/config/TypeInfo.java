@@ -222,7 +222,8 @@ public class TypeInfo {
      * should generate their own datasources from their connections.  
      *
      * @param propertyNames the list of attributes that this datasource should
-     * return.  If null or empty then all attributes will be returned.
+     * return.  If null then all attributes are returned.  If empty (size = 0)
+     * then a datasource that only returns fids will be returned.
      * @return a newly created datasource using the connection held by this 
      * typeInfo.  
      * @throws WfsException if there were problems creating the datasource
@@ -235,7 +236,7 @@ public class TypeInfo {
 	DataSource data = null;
 	try {
 	    data = new PostgisDataSource(connection, getName(), maxFeatures);
-	    if (propertyNames != null && propertyNames.size() > 0) {
+	    if (propertyNames != null) {
 		org.geotools.feature.FeatureType schema = data.getSchema();
 		AttributeType[] properties = new AttributeType[propertyNames.size()];
 		try {
