@@ -5,6 +5,9 @@
 package org.vfny.geoserver.global;
 
    import org.vfny.geoserver.global.FeatureTypeInfo;
+   import org.vfny.geoserver.global.Data;   
+   import org.vfny.geoserver.global.NameSpaceInfo;
+   import org.xml.sax.helpers.NamespaceSupport;   
    import org.vfny.geoserver.responses.wfs.ASFeatureTransformer.FeatureTranslator;
    import org.geotools.feature.Feature;
    import org.xml.sax.helpers.AttributesImpl;
@@ -14,6 +17,7 @@ package org.vfny.geoserver.global;
    import java.util.TreeSet;
    import java.util.SortedSet;
    import java.util.HashMap;
+   import java.util.HashSet;   
    import java.util.Iterator;
 
    import java.util.logging.Logger;
@@ -39,7 +43,12 @@ public class XMLelementStructure {
 	 * count of attributes in the result set.
 	 */
 	private int dbAttributeCount;
-
+	
+	/*
+	 * pointer to namespaces declared in catalog.xml via Data catalogue object
+	 * 
+	 */	
+	private Data data;
 	
     /**
      * Factory method to create a tree structured list of XML elements
@@ -48,6 +57,7 @@ public class XMLelementStructure {
      *
      * @param ft FeatureTypeInfo containing AttributeTypeInfo with 
      * xapth attriubutes from schema.xml for this feature type
+     * @param data Data - pointer to catalogu (of datastores) 
      *
      * @return element tree *or* null if not supported by FeatureTypeInfo
      *
@@ -55,7 +65,7 @@ public class XMLelementStructure {
      *
      * @see JDBCDataStore#buildAttributeType(ResultSet)
      */	
-	public XMLelementStructure (FeatureTypeInfo ft) {
+	public XMLelementStructure (FeatureTypeInfo ft, Data data) {
 
 		// create the Elements structure; group xpath attributes in 
 		// FeatureTypeInfo into parent + childless elements (BreakGroup)
@@ -67,6 +77,8 @@ public class XMLelementStructure {
 		if (ft == null) {
 			return;
 		}
+		
+		this.data = data;
 		
 		List atts = ft.getAttributes();
 		if (atts == null) {
@@ -353,6 +365,34 @@ public class XMLelementStructure {
 		return head.groupingElement.getName();
 	}
 
+	/**
+	*
+	* Load the namespaces corresponding to the prefixes scanned from the 
+	* xpaths in schema.xml
+	* 
+	* need to pass in some namespace related object from ASFeatureTransformer
+	*  
+	*/
+	public void loadGlobalNamespaces(HashSet allAttPrefixes, NamespaceSupport nsSupport) {
+
+		NameSpaceInfo nsi;
+		String uri;
+		
+		Iterator i = helper.prefixList.iterator();
+		while ( i.hasNext()) {
+			String prefix = (String) i.next();
+			if (!allAttPrefixes.contains(prefix)) {
+				allAttPrefixes.add(prefix);
+				nsi = data.getNameSpace(prefix);
+				if (nsi != null) {
+					uri = nsi.getURI();
+				} else {
+					uri = "http://missing.namespace.in.catalog.xml";
+				}
+            	nsSupport.declarePrefix(prefix, uri);
+			}
+		}
+	}
 	
 	private class Element {
 
@@ -360,7 +400,7 @@ public class XMLelementStructure {
 		// indices 1..n pertain to its attributes
 
 		private ArrayList name = new ArrayList();
-		private ArrayList rsAttName = new ArrayList();;	// column in result set
+		private ArrayList rsAttName = new ArrayList();		// column in result set
 		private ArrayList rsAttIndex = new ArrayList(); 	// position of attribute in result set 
 		private int fidIndex = -1;
 		boolean suppressFID = false;
@@ -627,11 +667,15 @@ public class XMLelementStructure {
 		
 		TreeSet elementList = new TreeSet();
 		HashMap fidElementList = new HashMap();
+		HashSet prefixList = new HashSet();
+		
 		
 		// String xpath;
 		
 		private Helper(FeatureTypeInfo ft) {
 
+			// todo : fold into one loop 
+			
 			// compile a list of elements
 			
 			String member;
@@ -663,6 +707,51 @@ public class XMLelementStructure {
 				}
 			}
 			LOGGER.fine("fidElementList = " + fidElementList );
+
+			// compile a list of namespace prefixes
+			
+			String prefix;
+			
+			i = atts.iterator();
+			while (i.hasNext()) {
+				AttributeTypeInfo att = (AttributeTypeInfo)i.next();
+				member = att.getXpath();
+				int maxOccurs = att.getMaxOccurs();
+				if ( maxOccurs ==  0 ) continue;
+					
+				int colon = member.indexOf(':');
+				// extract all prefixes in this xpath
+				while (colon > -1 ) {
+					
+					int at = member.indexOf('@');
+					prefix = null;
+					if (at > -1 && at < colon) {
+						// attribute prefix
+						prefix = member.substring(at+1, colon);
+					} else {
+
+						// find / closest to :
+						int slash = member.indexOf('/');
+						int prevSlash = -1;
+						while (slash > -1 && slash < colon) {
+							prevSlash = slash;
+							slash = member.indexOf('/', slash+1);
+						}
+						slash = prevSlash;
+						if (slash > -1 && slash < colon) {
+							// element prefix
+							prefix = member.substring(slash+1, colon);
+						}
+					}
+				
+					if ( prefix != null && !prefix.equals("gml") )
+						prefixList.add(prefix);	// gml is a default prefix
+					
+					member = member.replaceAll(prefix+":","");
+					colon = member.indexOf(':');
+				}
+			}
+			LOGGER.fine("prefixList = " + prefixList );			
 		}
 		
 		/**

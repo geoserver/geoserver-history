@@ -228,7 +228,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             }
             
             // build a tree of XML elements if xpath atts can be found in schema
-            elementTree = new XMLelementStructure(this); 
+            elementTree = new XMLelementStructure(this, this.data); 
         }
 
         schemaBase = dto.getSchemaBase();
@@ -491,9 +491,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         }
 
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        if (dataStore instanceof JDBCDataStore && bypassSQL != null &&
-        		!schema.isEmpty() ) {
-        	// for pass through SQL, use the FetaureType built here 
+//        if (dataStore instanceof JDBCDataStore && bypassSQL != null &&
+//        		!schema.isEmpty() ) {
+        if ( dataStore instanceof JDBCDataStore && (bypassSQL != null ||
+        		!schema.isEmpty()) ) {        	
+        	// for pass through SQL, use the FetaureType built here
+        	// which may have been supplied by a schema.xml or generated from
+        	// resultset metadata
         	return new JDBCFeatureSource((JDBCDataStore)dataStore, ft);
         } else {
         	return dataStore.getFeatureSource(typeName);
