@@ -1,31 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <!--
 Service level configuration
 -->
 <serverConfiguration>
   <global>
-    <!-- Defines the logging level.  Common options are SEVERE,
-          WARNING, INFO, CONFIG, FINER, FINEST, in order of
-          Increasing statements logged.
-      -->
+
+      <!-- Defines the logging level.  Common options are SEVERE,
+           WARNING, INFO, CONFIG, FINE, FINER, FINEST, in order of
+           Increasing statements logged.
+       -->
      <loggingLevel>FINER</loggingLevel>
 
-      <!-- The base URL where this servlet will run.  If running locally
-           then http://localhost:8080 (or whatever port you're running on)
-           should work.  If you are serving to the world then this must be
-           the location where the geoserver servlets appear-->
-      <URL>http://beta.openplans.org/geoserver/</URL>
 
-     <!-- Sets the max number of Features returned by GetFeature -->
-     <maxFeatures value="50000"/>
+     <!-- Sets the maximum features returned by GeoServer.  This used to
+          be necessary, due to out of memory errors.  The server is much
+          more scalable now, but admins may use it to limit the amount of
+          data returned, so naive clients don't ask for megabytes.
+       -->
+     <!--     
+     <maxFeatures value="1000000"/>
+     -->
 
-     <!-- Whether newlines and indents should be returned in -->
-     <!-- XML responses.  Default is false -->
+     <!-- Sets if the xml returned should have line feeds and indents. 
+          The default is true.  Setting it to false will cut down on
+          the amount of blank spaces returned to clients, and is recommended
+          if humans will not read the output -->
      <verbose value="true"/>
 
      <!-- Sets the max number of decimal places past the zero returned in
-          a GetFeature response.  Default is 4
-         should it be moved to FeatureType level?-->
+          the gml coordinates of a GetFeature response.  Default is 4 -->
      <numDecimals value="8"/>
 
     <!-- Sets the global character set.  This could use some more testing
@@ -36,9 +39,11 @@ Service level configuration
           that GeoServer does not check if the CharSet is valid before
           attempting to use it, so it will fail miserably if a bad charset
           is used.
-      -->
+     -->     
+     <!--
      <charSet value="ISO-8859-1"/>
-     
+      -->
+
      <!-- Define a base url for the location of the wfs schemas.
           By default GeoServer loads and references its own at
           <URL>/data/capabilities. Uncomment to enable.  The
@@ -62,7 +67,7 @@ Service level configuration
     <service type="WFS" enabled="true">
       <!-- Service elements, needed for the capabilities document -->
       <!-- Title and OnlineResource are the two required -->
-      <name>FreeFS</name>
+      <name>TOPP GeoServer</name>
       <title>The Open Planning Project Basemap Server</title>
       <abstract>This is a test server.  It contains some basemap data 
 from New York City.</abstract>
