@@ -239,6 +239,7 @@ public class ConfigInfo {
      * gets all the xmlns declarations mapped in this ConfigInfo.
      * 
      * @return the array of xmlns declarations.
+     */
     public String[] getAllXmlns(){
 	Set prefixSet = wfsGlobal.getNamespaces().keySet();
 	String[] retStrings = new String[prefixSet.size()];
