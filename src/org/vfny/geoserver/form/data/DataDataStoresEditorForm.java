@@ -151,10 +151,6 @@ public class DataDataStoresEditorForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping,
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-
-        //ServletContext context = getServlet().getServletContext();
-        //DataConfig config = ConfigRequests.getDataConfig( request );
-        //DataStoreConfig dsConfig = config.getDataStore(dataStoreId);
         
         // Selected DataStoreConfig is in session
         //

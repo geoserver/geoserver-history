@@ -11,30 +11,38 @@
 
 </span>
 
+<p>
+<bean:message key="text.welcome"/>
+</p>
+
 <h2>
   <bean:write name="WFS" property="title"/>
 </h2>
-<p>
-  <bean:write name="WFS" property="abstract"/>
-</p>
+<pre><code><bean:write name="WFS" property="abstract"/>
+</code></pre>
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/getCapabilities">getCapabilities</a>
+    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/getCapabilities">
+      getCapabilities
+    </a>
   </li>
   <li>
-    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/TestWfsPost">TestWfsPost</a>
+    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/TestWfsPost">
+      TestWfsPost
+    </a>
   </li>
 </ul>
 
 <h2>
   <bean:write name="WMS" property="title"/>
 </h2>
-<p>
-  <bean:write name="WMS" property="abstract"/>
-</p>
+<pre><code><bean:write name="WMS" property="abstract"/>
+</code></pre>
 
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wms/getCapabilities">getCapabilities</a>
+    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wms/getCapabilities">
+      getCapabilities
+    </a>
   </li>
 </ul>

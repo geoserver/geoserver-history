@@ -27,6 +27,12 @@
          <bean:message key="label.default"/>
        </html:submit>
     </td>
-  </tr>			
+  </tr>
+  <tr>
+    <td class="label">&nbsp;</td>
+	<td>
+       <bean:message key="text.namespace"/>
+    </td>
+  </tr>  
 </table>
 </html:form>

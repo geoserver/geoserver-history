@@ -137,7 +137,11 @@
         <forward 
         	name="admin.freeLocks"
         	path="/admin/freeLocks.do"/>
-        	        	        		
+        	
+        <forward 
+        	name="admin.freeMemory"
+        	path="/admin/freeMemory.do"/>
+        	
         <forward 
         	name="login"
         	path="/admin/login.do"/>
@@ -319,8 +323,14 @@
         	path ="/admin/freeLocks"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin.freeLocks"
-        	name="blankBean"/>       
-        	
+        	name="blankBean"/>
+
+        <action
+        	path ="/admin/freeMemory"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="admin.freeMemory"
+        	name="blankBean"/>
+        	        	
 		<action
 			path ="/admin/login"
         	type="org.apache.struts.actions.ForwardAction"
@@ -480,7 +490,7 @@
         	parameter="config.data.type.editor"/>        	        	
 
 <!-- Submit Actions -->    
-
+		<!-- Welcome Actions -->
 		<action
 			path="/admin/loginSubmit"
 			type="org.vfny.geoserver.action.LoginAction"
@@ -489,6 +499,18 @@
 			validate="true"
 			input="/admin/login.do"/>
 
+		<!-- Admin Actions -->
+        <action
+        	path="/admin/freeLocks"
+        	type="org.vfny.geoserver.action.FreeLocksAction"
+        	name="blankBean"/>
+
+        <action
+        	path="/admin/freeMemory"
+        	type="org.vfny.geoserver.action.FreeMemoryAction"
+        	name="blankBean"/>
+        	        	
+        <!-- Config Actions -->
 		<action    	
         	path="/config/geoServerSubmit"
         	type="org.vfny.geoserver.action.global.GeoServerConfigurationSubmit"
@@ -497,6 +519,7 @@
         	validate="true"
         	input="/config/server.do"/>
         	
+       	<!-- WFS Actions -->
         <action
         	path="/config/wfs/descriptionSubmit"
         	type="org.vfny.geoserver.action.wfs.WFSDescriptionAction"
@@ -513,6 +536,7 @@
         	validate="true"
         	input="/config/wfs/content.do"/>
 
+       	<!-- WMS Actions -->
         <action
         	path="/config/wms/descriptionSubmit"
         	type="org.vfny.geoserver.action.wms.WMSDescriptionAction"
@@ -528,6 +552,7 @@
         	validate="true"
         	input="/config/wms/content.do"/>
 
+       	<!-- DATA Stores Actions -->
         <action
         	path="/config/data/storeSubmit"
         	type="org.vfny.geoserver.action.data.DataDataStoresEditorAction"

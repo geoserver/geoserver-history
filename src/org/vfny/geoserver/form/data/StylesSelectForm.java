@@ -51,15 +51,16 @@ public class StylesSelectForm extends ActionForm {
 
         styles = new TreeSet();
         Iterator i = config.getStyles().values().iterator();
+        boolean defaultSet = false;
         while(i.hasNext()){
         	StyleConfig sc = (StyleConfig)i.next();
         	if(sc.isDefault()){
         		styles.add(sc.getId()+"*");
-        	}else{
+                defaultSet = true;
+        	} else {
         		styles.add(sc.getId());
         	}
-        }
-        
+        }                
         StyleConfig sConfig;
 
         UserContainer user = Requests.getUserContainer(request);        

@@ -93,9 +93,9 @@ public class TypesEditorAction extends ConfigAction {
      * @return
      */
     private void sync(TypesEditorForm form, FeatureTypeConfig config ) {
-        
-        config.setAbstract(form.getAbstract());
         config.setName(form.getName());
+        config.setAbstract(form.getAbstract());
+        config.setDefaultStyle( form.getStyleId() );        
         config.setSRS(Integer.parseInt(form.getSRS()));
         config.setTitle(form.getTitle());
         config.setLatLongBBox(getBoundingBox(form));        
