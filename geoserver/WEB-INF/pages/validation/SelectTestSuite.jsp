@@ -55,9 +55,10 @@ if(tvr!=null && tvr.getErrors().size()>0){
 <tr><td>RUN NOT COMPLETED</td></tr>
 <%
 }
-java.util.Iterator i = tvr.getErrors().values().iterator();
+java.util.Iterator i = tvr.getErrors().entrySet().iterator();
 while(i.hasNext()){
-  String s = i.next().toString(); // should be a string anyways
+  java.util.Map.Entry m = (java.util.Map.Entry)i.next();
+  String s = ((org.geotools.feature.Feature)m.getKey()).getID()+" "+m.getValue().toString(); // should be a string anyways
   %>
 <tr><td><%=s%></td></tr>
   <%
