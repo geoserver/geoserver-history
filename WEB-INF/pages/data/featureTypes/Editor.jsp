@@ -115,18 +115,33 @@
 		<html:select property="schemaBase">
 			<html:options property="allYourBase"/>
 		</html:select>
+		<html:submit property="action">
+			Change
+		</html:submit>
       </td>
     </tr>
-
+<logic:iterate id="attribute" indexId="index" name="typesEditorForm" property="attributes">
 	<tr>
       <td class="label">
-		attributes:
+		<bean:write name="attribute" property="name"/>:
 	  </td>
 	  <td class="datum">
-		<bean:write name="typesEditorForm" property="attributes"/>
+        <table border=0 width="100%">
+          <tr style="white-space: nowrap;">
+            <td width="70%"><bean:write name="attribute" property="type"/></td>
+            <td>nillable:<bean:write name="attribute" property="nillable"/></td>
+            <td>min:<bean:write name="attribute" property="minOccurs"/></td>
+            <td>max:<bean:write name="attribute" property="maxOccurs"/></td>
+          </tr>
+          <tr>
+            <td>
+              <pre><code><bean:write name="attribute" property="fragment"/></code></pre>
+            </td>
+          </tr>
+        </table>		
       </td>
     </tr>
-
+</logic:iterate>
     
     <tr>
       <td class="label">

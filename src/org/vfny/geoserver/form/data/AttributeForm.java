@@ -9,35 +9,35 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 public class AttributeForm {
     
     private String name;    
-    private boolean nillible;
+    private boolean nillable;
     private String minOccurs;
     private String maxOccurs;    
-    private String selectedType;
+    private String type;
     private String fragment;
     
     public AttributeForm( AttributeTypeInfoConfig config ){
         name = config.getName();
-        nillible = config.isNillable();
+        nillable = config.isNillable();
         
         minOccurs = String.valueOf( config.getMinOccurs() );
         maxOccurs = String.valueOf( config.getMaxOccurs() );
-        selectedType = config.getType();
+        type = config.getType();
         fragment = config.getFragment();
     }
     public AttributeTypeInfoDTO toDTO(){
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
         dto.setName( name );
-        dto.setNillable( nillible );
+        dto.setNillable( nillable );
         dto.setMinOccurs( Integer.parseInt( minOccurs ) );
         dto.setMaxOccurs( Integer.parseInt( maxOccurs ) );
         
-        if( AttributeTypeInfoConfig.TYPE_FRAGMENT.equals(selectedType) ){
+        if( AttributeTypeInfoConfig.TYPE_FRAGMENT.equals(type) ){
             dto.setComplex( true );
             dto.setType( fragment );
         }
         else {
             dto.setComplex( false );
-            dto.setType( selectedType );                        
+            dto.setType( type );                        
         }        
         return dto;        
     }
@@ -95,25 +95,25 @@ public class AttributeForm {
     /**
      * @return Returns the nillible.
      */
-    public boolean isNillible() {
-        return nillible;
+    public boolean isNillable() {
+        return nillable;
     }
     /**
      * @param nillible The nillible to set.
      */
-    public void setNillible(boolean nillible) {
-        this.nillible = nillible;
+    public void setNillable(boolean nillible) {
+        this.nillable = nillible;
     }
     /**
      * @return Returns the selectedType.
      */
-    public String getSelectedType() {
-        return selectedType;
+    public String getType() {
+        return type;
     }
     /**
      * @param selectedType The selectedType to set.
      */
-    public void setSelectedType(String selectedType) {
-        this.selectedType = selectedType;
+    public void setType(String selectedType) {
+        this.type = selectedType;
     }
 }

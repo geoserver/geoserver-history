@@ -9,18 +9,18 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 public class AttributeDisplay {
     
     private String name;    
-    private boolean nillible;
+    private boolean nillable;
     private String minOccurs;
     private String maxOccurs;    
-    private String selectedType;
+    private String type;
     private String fragment;
     
     public AttributeDisplay( AttributeTypeInfoConfig config ){
         name = config.getName();
-        nillible = config.isNillable();
+        nillable = config.isNillable();
         minOccurs = String.valueOf( config.getMinOccurs() );
         maxOccurs = String.valueOf( config.getMaxOccurs() );
-        selectedType = config.getType();
+        type = config.getType();
         fragment = config.getFragment();
     }
     public AttributeDisplay( AttributeTypeInfoDTO dto ){
@@ -53,19 +53,19 @@ public class AttributeDisplay {
 	/**
 	 * @return Returns the nillible.
 	 */
-	public boolean isNillible() {
-		return nillible;
+	public boolean isNillable() {
+		return nillable;
 	}
 	/**
 	 * @return Returns the selectedType.
 	 */
-	public String getSelectedType() {
-		return selectedType;
+	public String getType() {
+		return type;
 	}
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return name+":"+selectedType;
+        return name+":"+type;
     }
 }
