@@ -24,6 +24,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.AlphaComposite;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -48,7 +49,7 @@ import javax.imageio.stream.ImageOutputStream;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.28 2004/09/13 16:14:34 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.29 2004/09/16 21:44:28 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -305,11 +306,16 @@ public class JAIMapResponse extends GetMapDelegate {
             //LOGGER.fine("setting up renderer");
             //java.awt.Graphics g = image.getGraphics();
             graphic = image.createGraphics();
-            graphic.setColor(request.getBgColor());
+   
 
             if (!request.isTransparent()) {
-                graphic.fillRect(0, 0, width, height);
-            }
+               graphic.setColor(request.getBgColor()); 
+               graphic.fillRect(0, 0, width, height);
+            } else {
+                LOGGER.fine("setting to transparent");
+		int type = AlphaComposite.SRC_OVER;
+		graphic.setComposite(AlphaComposite.getInstance(type, 0));
+	    }
 
             renderer = new LiteRenderer(map);
 
