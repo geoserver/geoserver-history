@@ -10,6 +10,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geotools.data.Catalog;
 import org.geotools.data.DataStore;
@@ -49,11 +50,13 @@ import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.1.2.3 2003/11/26 07:09:41 jive Exp $
+ * @version $Id: ValidationConfig.java,v 1.1.2.4 2003/11/26 08:29:20 jive Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
 public class ValidationConfig extends AbstractConfig {
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.config");    
     /** This is the validation processor we are configuring.
      * <p>
      * I don't like having parts of the application, contained by the
@@ -131,6 +134,7 @@ public class ValidationConfig extends AbstractConfig {
      */
     public ValidationConfig(File dir) {
         if( dir.exists() ){
+            LOGGER.info("Default isValidALL and uniqueFID enabled");
             // XML not supported yet - lets use a couple Validations
             processor.addValidation(
                 new IsValidGeometryFeatureValidation(
