@@ -7,6 +7,7 @@ package org.vfny.geoserver.action.data;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.geotools.data.DataStoreFinder;
 
@@ -31,13 +32,23 @@ import javax.servlet.ServletContext;
  *
  * @author Richard Gould, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.10 2004/09/05 17:19:46 cholmesny Exp $
+ * @version $Id: DataStoreUtils.java,v 1.11 2004/09/20 20:46:19 cholmesny Exp $
  */
 public abstract class DataStoreUtils {
     public static DataStore aquireDataStore(Map params, ServletContext sc)
         throws IOException {
     	String baseDir = sc.getRealPath("/");
-        return DataStoreFinder.getDataStore(getParams(params,baseDir));
+       	DataStore store = DataStoreFinder.getDataStore(getParams(params,baseDir));
+        if (store == null) {
+            //TODO: this should throw an exception, but the classes using
+            //this class aren't ready to actually get it...
+           //LOGGER.fine("could not acquire datastore with params: " + params);
+           //throw new DataSourceException("could not find a dataStore with " +
+            //			  "params: " + params);
+            return null;
+	} else {
+	    return store;
+	}
     }
 
     /**
