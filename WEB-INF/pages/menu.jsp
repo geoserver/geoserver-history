@@ -2,7 +2,9 @@
 <table>
 	<tr><td class="head"><font class="pn-title"><bean:message key="label.context"/></font></td></tr>
 	<tr><td class="main">
-		<bean:message key="label.mainMenu"/>
+		<html:link forward="main.menu">
+			<bean:message key="label.mainMenu"/>
+		</html:link>
 		<bean:message key="label.login"/> 
 		<bean:message key="label.logout"/> 
 		<bean:message key="label.help"/>	

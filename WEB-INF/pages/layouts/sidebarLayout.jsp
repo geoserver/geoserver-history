@@ -15,7 +15,7 @@
 	</tr>
 	<tr>
 		<td valign="top" align="left">
-			<tiles:insert attribute="actions"/>
+			<tiles:insert attribute="messages"/>
 		</td>
 	</tr>
 </table>
