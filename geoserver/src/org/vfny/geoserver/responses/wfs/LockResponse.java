@@ -25,7 +25,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: LockResponse.java,v 1.3 2003/12/31 00:58:12 cholmesny Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -97,6 +97,16 @@ public class LockResponse implements Response {
      * @task REVISIT: this will have to be reworked for the next version of the
      *       spec, when getFeatureWithLock can specify lockAction, but we'll
      *       cross that bridge when we come to it.
+     * @task TODO: I really think we've got too much code duplication here
+     *       with FeatureResponse.  Locking is easily the most complex
+     * operation we've got, and having each do their own thing will easily
+     * mess things up with just a little change.  The fact that the code is
+     * forked has already given me a good amount of greif, but I don't want to
+     * rework it before 1.1.0.  But there should be a single performLock that
+     * both can use, or else really move _all_ the functionality to geotools.
+     * I do understand that getFeatureWithLock does need to be sure that there
+     * are no time differences between lock acquiring and reporting, but 
+     * something needs to be done.
      */
     public static String performLock(LockRequest request, boolean getXml)
         throws WfsException, IOException {
@@ -150,9 +160,11 @@ public class LockResponse implements Response {
 
                     //DEFQuery is just some indirection, should be in the locking interface.
                     //int numberLocked = ((DEFQueryFeatureLocking)source).lockFeature(feature);
+		    //HACK: Query.NO_NAMES isn't working in postgis right now,
+		    //so we'll just use all.
                     int numberLocked = source.lockFeatures(new DefaultQuery(
                                 meta.getShortName(), fidFilter,
-                                Query.DEFAULT_MAX, Query.NO_NAMES,
+                                Query.DEFAULT_MAX, Query.ALL_NAMES,
                                 curLock.getHandle()));
 
                     if (numberLocked == 1) {
