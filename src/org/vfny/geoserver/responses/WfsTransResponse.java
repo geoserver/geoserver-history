@@ -21,6 +21,7 @@ import  org.apache.xml.serialize.OutputFormat;
 import  org.apache.xml.serialize.Serializer;
 import  org.apache.xml.serialize.SerializerFactory;
 import  org.apache.xml.serialize.XMLSerializer;
+import org.vfny.geoserver.config.ConfigInfo;
 
 /**
  * Java representation of a WFS_TransactionResponse xml element.
@@ -68,6 +69,14 @@ public class WfsTransResponse {
     /** Name of the status element of the xml document */
     public static final String STATUS = "Status";
 
+    public static final String V_OFFSET = "   ";
+
+    private boolean verbose = ConfigInfo.getInstance().formatOutput();
+
+    private String indent = (verbose) ? "\n" + V_OFFSET : " ";
+
+    private String offset = (verbose) ? V_OFFSET : "";
+    
     /** Status of the transaction represented by this response.*/
     private short status;
 
@@ -152,16 +161,62 @@ public class WfsTransResponse {
      * Generates the xml represented by this object.
      */
     public String getXmlResponse() {
-	
-	String retString;
-	Document doc = null;
+	//boolean verbose = ConfigInfo.getInstance().formatOutput();
+	//String indent = ((verbose) ? "\n" + OFFSET : " ");
+	StringBuffer retXml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+	if (verbose) retXml.append("\n");
+	retXml.append("<wfs:TransactionResponse");
+	retXml.append(indent + "version=\"" + CUR_VERSION + "\""); 
+	retXml.append(indent + "xmlns:wfs=\"http://www.opengis.net/wfs\"");
+	//if (insertResults.size() > 0){
+	retXml.append(indent + "xmlns:ogc=\"http://www.opengis.net/ogc\"");
+	//}
+	retXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+	retXml.append(indent + "xsi:schemaLocation=\"http://www.opengis.net/wfs"
+		      + " ../wfs/1.0.0/WFS-transaction.xsd\">");
+	appendInsertResults(retXml);
+	retXml.append(indent + "<wfs:TransactionResult");
+	if (handle!= null) {
+	    retXml.append(" handle=\"" + handle + "\"");
+	}
+	retXml.append(">");
+	retXml.append(indent + offset + "<wfs:Status>");
+	retXml.append(indent + offset + offset);
+	switch (status) {
+	case SUCCESS: 
+	    retXml.append("<wfs:SUCCESS/>");
+	    break;
+	case FAILED:
+	    retXml.append("<wfs:FAILED/>");
+	    break;
+	case PARTIAL:
+	    retXml.append("<wfs:PARTIAL/>");
+	    break;
+	}
+	retXml.append(indent + offset + "</wfs:Status>");
+	if (locator != null) {
+	    retXml.append(indent + offset + "<wfs:Locator>");
+	    retXml.append(locator + "</wfs:Locator>");
+	}
+	if (message != null) {
+	    retXml.append(indent + offset + "<wfs:Message>");
+	    retXml.append(message + "</wfs:Message>");
+	}
+	retXml.append(indent + "</wfs:TransactionResult>");
+	if (verbose) retXml.append("\n");
+	retXml.append("</wfs:TransactionResponse>");
+
+
+
+	/*Document doc = null;
 	try {
 	    DocumentBuilderFactory dfactory = 
 		DocumentBuilderFactory.newInstance();
 	    dfactory.setNamespaceAware(true);
 	    doc = dfactory.newDocumentBuilder().newDocument();		
 	    //retval = new org.apache.xerces.dom.DocumentImpl();
-	    Element root = doc.createElement(ROOT);
+	    Element root = doc.createElementNS("http://www.opengis.net/wfs", 
+					       "wfs:" + ROOT);
 	    doc.appendChild( root );
 	    root.setAttribute(VERSION, CUR_VERSION);
 	    addInsertResults(root, doc);
@@ -202,7 +257,8 @@ public class WfsTransResponse {
 	    LOG.warning("Problem configuring parser, make sure one is in " + 
 			"the classpath" + e);
 	    retString = "couldn't find xml parser: " + e.getMessage();
-	}
+	    }*/
+	String retString = retXml.toString();
 	LOG.finer("returning xml " + retString);
 	return retString;
     }
@@ -234,6 +290,15 @@ public class WfsTransResponse {
 	}
     }
 
+    private void appendInsertResults(StringBuffer retXml){
+	if (insertResults != null) {
+	    Iterator iter = insertResults.iterator();
+	    while(iter.hasNext()) {
+		((InsertResult)iter.next()).addXml(retXml);
+	    }
+	}
+    }
+
     private void addInsertResults(Element root, Document doc){
 	if (insertResults != null) {
 	    Iterator iter = insertResults.iterator();
@@ -261,6 +326,25 @@ public class WfsTransResponse {
 	    this.featureIds = featureIds;
 	}
 
+	public void addXml(StringBuffer retXml){
+	    // StringBuffer retXml = new StringBuffer(indent);
+	    retXml.append(indent);
+	    //retXml.append("<wfs:InsertResult handle=\"" + handle + "\">");
+	    if (handle!= null) {
+	    retXml.append(" handle=\"" + handle + "\"");
+	    }
+	    retXml.append(">");
+	    Iterator iter = featureIds.iterator();
+	    while(iter.hasNext()) {
+		retXml.append(indent + offset + "<ogc:FeatureId fid=\"");
+		retXml.append(iter.next() + "\"/>");
+	    }
+	    retXml.append(indent + "</wfs:InsertResult>");
+	    //return retXml.toString();
+	}
+		
+		
+	
 	public void getDOM(Element root, Document doc) {
 	    Element insResultElem = doc.createElement(INSERT_RESULT);
 	     if (!isEmpty(handle)){
