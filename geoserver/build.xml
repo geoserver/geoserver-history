@@ -526,7 +526,7 @@
         <exclude name="**/xalan.jar" />
         <exclude name="**/ki*.jar" />
         <exclude name="**/a2jruntime.jar" />
-        <exclude name="**/log4j-1.2.5.jar" />
+        <!--exclude name="**/log4j-1.2.5.jar" /-->
         <exclude name="**/lucene.jar" />
         <exclude name="**/xml-apis.jar" />
         <exclude name="**/xercesImpl.jar" />
@@ -791,9 +791,12 @@
 	<zip destfile="${basedir}/geoserver-${name.release}-src.zip">
 	  <zipfileset dir="${dir.build}" prefix="geoserver">
 	    <include name="**/*"/>
+            <exclude name="bin/*"/>
             <exclude name="geoserver.war"/>
             <exclude name="org/**"/>
 	  </zipfileset>
+          <zipfileset dir="${dir.build}" prefix="geoserver"
+                      filemode="755" includes="bin/*"/>
 	</zip>
 	
     <delete dir="${dir.build}" failonerror="false"/>
