@@ -2,10 +2,6 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.vfny.geoserver.global.dto;
 
 import java.nio.charset.Charset;
@@ -22,11 +18,11 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: GeoServerDTO.java,v 1.4 2004/01/19 23:48:48 cholmesny Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
     /** Sets the max number of Features returned by GetFeature */
-    private int maxFeatures = 20000;
+    private int maxFeatures = Integer.MAX_VALUE;
 
     /**
      * XML Verbosity.
@@ -51,10 +47,10 @@ public final class GeoServerDTO implements DataTransferObject {
      * Sets the max number of decimal places past the zero returned in a
      * GetFeature response.  Default is 4.
      * </p>
-     * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has
-     * a getFeature response
+     * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has a
+     * getFeature response
      */
-    private int numDecimals = 8;
+    private int numDecimals = 4;
 
     /**
      * Sets the global character set.
@@ -62,8 +58,8 @@ public final class GeoServerDTO implements DataTransferObject {
      * <p>
      * This could use some more testing from international users. What it does
      * is sets the encoding globally for all postgis database connections (the
-     * charset tag in FeatureTypeInfo), as well as specifying the encoding
-     * in the return
+     * charset tag in FeatureTypeInfo), as well as specifying the encoding in
+     * the return
      * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
      * header and mime type.
      * </p>
@@ -78,7 +74,7 @@ public final class GeoServerDTO implements DataTransferObject {
      * is used.
      * </p>
      */
-    private Charset charSet = Charset.forName("ISO-8859-1");
+    private Charset charSet = Charset.forName("UTF-8");
 
     /**
      * Define a base url for the location of the wfs schemas.
@@ -129,7 +125,8 @@ public final class GeoServerDTO implements DataTransferObject {
      * does nothing
      * </p>
      */
-    public GeoServerDTO() {}
+    public GeoServerDTO() {
+    }
 
     /**
      * GlobalConfig constructor.
@@ -141,10 +138,12 @@ public final class GeoServerDTO implements DataTransferObject {
      * </p>
      *
      * @param g
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public GeoServerDTO(GeoServerDTO g) {
         if (g == null) {
-			throw new NullPointerException();
+            throw new NullPointerException();
         }
 
         maxFeatures = g.getMaxFeatures();
@@ -216,16 +215,23 @@ public final class GeoServerDTO implements DataTransferObject {
 
         return r;
     }
-    
-    public int hashCode(){
-    	int i = 1;
-    	if(maxFeatures!=0)
-    		i *= maxFeatures;
-		if(numDecimals!=0)
-			i *= numDecimals;
-		if(schemaBaseUrl!=null)
-			i *= schemaBaseUrl.hashCode();
-    	return i;
+
+    public int hashCode() {
+        int i = 1;
+
+        if (maxFeatures != 0) {
+            i *= maxFeatures;
+        }
+
+        if (numDecimals != 0) {
+            i *= numDecimals;
+        }
+
+        if (schemaBaseUrl != null) {
+            i *= schemaBaseUrl.hashCode();
+        }
+
+        return i;
     }
 
     /**
@@ -443,6 +449,7 @@ public final class GeoServerDTO implements DataTransferObject {
      * @param level
      */
     public void setLoggingLevel(Level level) {
+        //init this now so the rest of the config has correct log levels.
         loggingLevel = level;
     }
 }
