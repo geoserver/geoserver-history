@@ -9,7 +9,7 @@
         <span class="help" title="<bean:message key="help.namespace.prefix"/>">
           <bean:message key="label.prefix"/>:
         </span>
-      </td
+      </td>
       <td class="datum">
         <html:text property="prefix" size="60"/>
 	  </td>
