@@ -30,13 +30,42 @@ import org.geotools.feature.FeatureType;
 import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
 import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
 
-import com.sun.tools.javac.v8.util.List;
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
- * ValidationProcessor purpose.
+ * ValidationProcessor Runs validation tests against Features and reports
+ * the outcome of the tests.
  * <p>
- * Description of ValidationProcessor ...
+ * The validation processor contains two main data structures. Each one is a
+ * HashMap of ArrayLists that hold Validations. The first one, featureLookup, 
+ * holds per-feature validation tests (tests that operate on one feature at a 
+ * time with no knowledge of any other features. The second one, integrityLookup, 
+ * holds integrity validations (validations that span multiple features and/or 
+ * multiple feature types).
+ * <p>
+ * Each HashMap of validations is hashed with a key whose value is a 
+ * FeatureTypeName. This key provides access to an ArrayList of validations
+ * that are to be performed on this FeatureType.
+ * <p>
+ * Validations are added via the two addValidation() methods.
+ * <p>
+ * The validations are run when runFeatureTests() and runIntegrityTests() are called.
+ * It is recommended that the user call runFeatureTests() before runIntegrityTests()
+ * as it is usually the case that integrity tests are much more time consuming. If a 
+ * Feature is incorrect, it can probably be detected early on, and quickly, in the 
+ * feature validation tests. 
+ * <p>
+ * For validations that are performed on every FeatureType, a value called ANYTYPENAME
+ * has been created and can be stored in the validationLookup tables if a validation
+ * specifies that it is run against all FeatureTypes. The value that causes a
+ * validation to be run against all FeatureTypes is null. Or Validation.ALL
+ * <p>
+ * 
+ * Results of the validation tests are handled using a Visitor pattern. This visitor
+ * is a ValidationResults object that is passed into the runFeatureTests() and
+ * runIntegrityTests() methods. Each individual validation will record error messages 
+ * in the ValidationResults visitor.
+ * 
  * <p>
  * Capabilities:
  * <ul>
@@ -44,12 +73,19 @@ import com.vividsolutions.jts.geom.Envelope;
  * </ul>
  * Example Use:
  * <pre><code>
- * ValidationProcessor x = new ValidationProcessor(...);
+ * ValidationProcessor processor = new ValidationProcessor();<br>
+ * processor.addValidation(FeatureValidation1);<br>
+ * processor.addValidation(FeatureValidation2);<br>
+ * processor.addValidation(IntegrityValidation1);<br>
+ * processor.addValidation(FeatureValidation3);<br>
+ * <p>
+ * processor.runFeatureTests(FeatureType, Feature, ValidationResults);<br>
+ * processor.runIntegrityTests(layers, Envelope, ValidationResults);<br>
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.1.2.5 2003/11/26 07:52:47 sploreg Exp $
+ * @version $Id: ValidationProcessor.java,v 1.1.2.6 2003/11/26 20:43:52 sploreg Exp $
  */
 public class ValidationProcessor {
 

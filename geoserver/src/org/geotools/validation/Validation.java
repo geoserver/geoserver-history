@@ -1,9 +1,12 @@
 package org.geotools.validation;
 
 /**
- * Validation purpose.
+ * Validation An interfaces used to define a type ov validation test that
+ * is performed on Features.
  * <p>
- * Description of Validation ...
+ * Validation provides functionality for a ValidationProcessor to hand <br>
+ * each Validation test a list of FeatureTypes that it is supposed to validate.
+ * The validation test takes it upon itself to validate the data when it is called.
  * <p>
  * Capabilities:
  * <ul>
@@ -11,12 +14,11 @@ package org.geotools.validation;
  * </ul>
  * Example Use:
  * <pre><code>
- * Validation x = new Validation(...);
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: Validation.java,v 1.1.2.3 2003/11/23 07:42:29 jive Exp $
+ * @author $Author: sploreg $ (last modification)
+ * @version $Id: Validation.java,v 1.1.2.4 2003/11/26 20:43:34 sploreg Exp $
  */
 public interface Validation
 {
@@ -25,72 +27,71 @@ public interface Validation
 	
 	
 	/**
-	 * setName purpose.
+	 * setName
 	 * <p>
-	 * Description ...
+	 * Sets the name of the validation.
 	 * </p>
-	 * @param name
-	 * @return
+	 * @param name the name of the validation.
 	 */
 	void 	setName( String name );
 	
 	/**
-	 * getName purpose.
+	 * getName
 	 * <p>
-	 * Description ...
+	 * Returns the name of the validation.
 	 * </p>
-	 * @return
+	 * @return the name of the validation.
 	 */
 	String 	getName();
 	
 	
 	
 	/**
-	 * setDescription purpose.
+	 * setDescription
 	 * <p>
-	 * Description ...
+	 * Sets the description of the validation.
 	 * </p>
-	 * @param description
+	 * @param description of the validation
 	 */
 	void 	setDescription( String description );
 	
 	/**
-	 * getDescription purpose.
+	 * getDescription
 	 * <p>
-	 * Description ...
+	 * Returns the description of the validation.
 	 * </p>
-	 * @return
+	 * @return the description of the validation.
 	 */
 	String 	getDescription();
 	
 	
 	
 	/**
-	 * getPriority purpose.
+	 * getPriority
 	 * <p>
-	 * Description ...
+	 * Returns thepriority (time cost) of the validation test
 	 * </p>
-	 * @return
+	 * @return The priority (time cost) of the validation test
 	 */
 	int 	getPriority();
 	
 	
 	
 	/**
-	 * setTypeNames purpose.
+	 * setTypeNames
 	 * <p>
-	 * Description ...
+	 * Sets the FeatureType names that this validation test is run against.
 	 * </p>
-	 * @param names
+	 * @param names FeatureType names that this validation test is run against.
 	 */
 	void 	setTypeNames(String[] names);
 	
 	/**
-	 * getTypeNames purpose.
+	 * getTypeNames
 	 * <p>
-	 * Description ...
+	 * Returns the FeatureType names that this validation test is run against.
 	 * </p>
-	 * @return
+	 * @return the FeatureType names that this validation test is run against.
 	 */
 	String[] getTypeNames();
 }
