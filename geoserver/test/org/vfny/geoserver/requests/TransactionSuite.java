@@ -20,7 +20,7 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
-import org.vfny.geoserver.config.ServerConfig;
+import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.*;
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * Tests the get feature request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionSuite.java,v 1.6 2003/12/23 20:25:05 cholmesny Exp $
+ * @version $Id: TransactionSuite.java,v 1.6.2.1 2003/12/30 23:10:12 dmzwiers Exp $
  *
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.

@@ -8,6 +8,7 @@ import org.geotools.data.memory.*;
 
 import org.vfny.geoserver.requests.wfs.*;
 import org.vfny.geoserver.config.*;
+import org.vfny.geoserver.global.*;
 /**
  * This is my attempt at testing FeatureResponse using
  * normal JUnit tests.
