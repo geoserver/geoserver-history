@@ -63,6 +63,12 @@ import org.vfny.geoserver.requests.Request;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
+ * @task REVISIT: Take a request in the constructor?  This would make it so 
+ * we do not have to rely on schemas.opengis.net being available, as it will
+ * just reference the geoserver instance that created it.  But to do this we
+ * need the request, as that's how we figure out the baseUrl.  Would probably
+ * not be that hard to get the request included, and would lead to better 
+ * error reporting...
  */
 public class ServiceException extends Exception {
     /** Class logger */
