@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.7 2004/02/09 23:30:05 dmzwiers Exp $
+ * @version $Id: GetMapRequest.java,v 1.8 2004/03/14 16:00:54 groldan Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
@@ -280,6 +280,26 @@ public class GetMapRequest extends WMSRequest {
         mandatorys.width = width;
     }
 
+    public void setCollectGeometries(boolean collect)
+    {
+      customs.collectGeometries = collect;
+    }
+
+    public void setGeneralizationFactor(double gfactor)
+    {
+      customs.generalizationFactor = gfactor;
+    }
+
+    public boolean isCollectGeometries()
+    {
+      return customs.collectGeometries;
+    }
+
+    public double getGeneralizationFactor()
+    {
+      return customs.generalizationFactor;
+    }
+
     /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
@@ -321,7 +341,8 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     *
+     * holding of custom request parameters: FILTERS, SVGHEADER, ATTRIBUTES,
+     * COLLECT, GENERALIZATIONFACTOR
      */
     private class CustomParameters {
         /** wether the xml header and SVG element must be printed */
@@ -344,5 +365,9 @@ public class GetMapRequest extends WMSRequest {
          * production of other non raster map formats.
          */
         List attributes = Collections.EMPTY_LIST;
+
+        double generalizationFactor = -1;
+
+        boolean collectGeometries = false;
     }
 }
