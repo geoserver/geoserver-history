@@ -7,8 +7,10 @@ package org.vfny.geoserver.config;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
-import org.exolab.castor.xml.*;
-import org.vfny.geoserver.config.configuration.*;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.vfny.geoserver.config.configuration.GlobalConfiguration;
 
 /**
  * Reads all necessary configuration data and abstracts it away from the 
@@ -20,32 +22,31 @@ import org.vfny.geoserver.config.configuration.*;
 public class ConfigurationBean {
 
     /** Class logger */
-    private static Logger LOGGER = 
-        Logger.getLogger("org.vfny.geoserver.config");
-
-    /** A Castor-generated class to read internal configuration information */
-    private GlobalConfiguration configuration = new GlobalConfiguration();
-    
+    private static Logger LOG = Logger.getLogger("org.vfny.geoserver.config");
     /** Root directory of webserver */
-    private static final String ROOT_DIR = findRootDirectory();
-    
-    /** Root directory for feature types */
-    private static final String FEATURE_TYPE_DIR = ROOT_DIR + 
-        "/data/featureTypes/";
-    
-    /** Root directory of capabilities data */
-    private static final String CAPABILITIES_DIR = ROOT_DIR + 
-        "/data/capabilities/";
-    
-    /** Global configuration filename */
-    private static final String CONFIG_FILE = ROOT_DIR + 
-        "/data/configuration.xml";
-    
-    /** Default name of feature type information */
-    private static final String FEATURE_TYPE_INFO_NAME = "info";
-    
+    private static final String ROOT_DIR = guessRootDir();
     /** Default name for feature type schemas */
-    private static final String FEATURE_TYPE_SCHEMA_NAME = "schema";
+    private static final String CONFIG_FILE =  "/configuration.xml";
+    /** Default name for feature type schemas */
+    private static final String CONFIG_DIR =  "/data";
+    /** Default name for feature type schemas */
+    private static final String TYPE_DIR =  "/featureTypes";
+    /** Default name for feature type schemas */
+    private static final String CAP_DIR =  "/capabilities";
+    /** Default name of feature type information */
+    public static final String TYPE_INFO = "info";    
+    /** Default name for feature type schemas */
+    public static final String TYPE_SCHEMA = "schema";
+
+    /** */
+    private static ConfigurationBean config = null;
+
+    /** a Castor class to read internal configuration information */
+    private GlobalConfiguration global = new GlobalConfiguration();
+    /** Root directory for feature types */
+    private String typeDir = ROOT_DIR + CONFIG_DIR + TYPE_DIR;
+    /** Root directory of capabilities data */
+    private String capabilitiesDir = ROOT_DIR + CONFIG_DIR + CAP_DIR;
     
 
     /**
@@ -53,97 +54,94 @@ public class ConfigurationBean {
      * configuration file.  This information is primarily used in the 
      * 'Service' section of the return document.
      */
-    public ConfigurationBean() {        
-        try {
-            FileReader featureTypeDocument = new FileReader(CONFIG_FILE );
-            configuration = (GlobalConfiguration) Unmarshaller.
-                unmarshal(GlobalConfiguration.class, featureTypeDocument);
-        }
-        catch( FileNotFoundException e ) {
-            LOGGER.finest("Configuration file does not exist: " + 
-                        CONFIG_FILE);
-        }
-        catch( MarshalException e ) {
-            LOGGER.finest("Castor could not unmarshal configuration file: " + 
-                        CONFIG_FILE);
-            LOGGER.finest("Castor says: " + e.toString() );
-        }
-        catch( ValidationException e ) {
-            LOGGER.finest("Castor says the config file isn't valid XML: "
-                        + CONFIG_FILE);
-            LOGGER.finest("Castor says: " + e.toString() );
-        }        
+    private ConfigurationBean() {
+        global = readProperties(ROOT_DIR);
+    }
+
+
+    private ConfigurationBean(String rootDir) {
+        global = readProperties(rootDir);
     }
     
+    /** Returns root webserver application directory */
+    public static ConfigurationBean getInstance() { 
+        if(config == null) {
+            String configFile = ROOT_DIR + CONFIG_DIR + CONFIG_FILE;
+            config = new ConfigurationBean(configFile);
+        }
+        return config;
+    }    
 
     /** Returns root webserver application directory */
-    private static String findRootDirectory() { 
+    public static ConfigurationBean getInstance(String configFile) { 
+        if(config == null) {
+            config = new ConfigurationBean(configFile);
+        }
+        return config;
+    }    
+
+
+    private static GlobalConfiguration readProperties(String configFile) {
+        GlobalConfiguration global = null;
+        try {
+            FileReader featureTypeDocument = new FileReader(configFile);
+            global = (GlobalConfiguration) Unmarshaller.
+                unmarshal(GlobalConfiguration.class, featureTypeDocument);
+        }
+        catch(FileNotFoundException e) {
+            LOG.finest("Configuration file does not exist: " + configFile);
+        }
+        catch(MarshalException e) {
+            LOG.finest("Castor could not unmarshal configuration file: " + 
+                        configFile);
+        }
+        catch(ValidationException e) {
+            LOG.finest("Castor says the config file isn't valid XML: "
+                        + configFile);
+        }        
+        return global;
+    } 
+
+
+    /** Returns root webserver application directory */
+    private static String guessRootDir() { 
         return System.getProperty("user.dir") + "/webapps/geoserver";
     }    
     
-    /** Returns the user-specified title of this service */
-    public String getTitle() { return configuration.getTitle(); }
-    
-    
-    /** Returns user-specified abstract for this service */
-    public String getAbstract() { return configuration.getAbstract(); }
-    
-    
-    /** Returns user-specified keywords for this service  */
-    public String getKeywords() { return configuration.getKeywords(); }
-    
-    
-    /** Returns URL for this service */
-    public String getOnlineResource() { 
-        return configuration.getOnlineResource();
-    }
-    
-    
-    /** Returns user-specified fees for this service */
-    public String getFees() { return configuration.getFees(); }
-    
-    
-    /** Returns user-specified access constraints for this service */
-    public String getAccessConstraints() { 
-        return configuration.getAccessConstraints();
-    }
-    
-    /** 
-     * Returns the current time as a string
-     */
-    public String getCurrentTime() {  
-        Date now = new Date();
-        return now.toString();
-    }
-    
-    
-    /** Returns user-specified maintainer for this service */
-    public String getMaintainer() { return configuration.getMaintainer(); }
 
-    
-    /** Returns fixed version number for this service */
-    public String getFreeFsVersion() { return "0.9b"; }
-    
-    
-    /** Returns user-specified URL for this service */
-    public String getUrl() { return configuration.getURL(); }
-    
-    
+    /** Returns the user-specified title of this service */
+    public String getTitle() { return global.getTitle(); }        
+    /** Returns user-specified abstract for this service */
+    public String getAbstract() { return global.getAbstract(); }    
+    /** Returns user-specified keywords for this service  */
+    public String getKeywords() { return global.getKeywords(); }    
+    /** Returns URL for this service */
+    public String getOnlineResource(){ return global.getOnlineResource(); }
     /** Returns user-specified fees for this service */
-    public String getFeatureTypeDirectory() { return FEATURE_TYPE_DIR; }
-    
-    
-    /** Returns default feature type information name */
-    public String getFeatureTypeInfoName() { return FEATURE_TYPE_INFO_NAME; }
-    
-    
+    public String getFees() { return global.getFees(); }
+    /** Returns user-specified access constraints for this service */
+    public String getAccessConstraints(){return global.getAccessConstraints();}
+    /** Returns user-specified maintainer for this service */
+    public String getMaintainer() { return global.getMaintainer(); }
+    /** Returns user-specified URL for this service */
+    public String getUrl() { return global.getURL(); }
+
+    /** Returns fixed version number for this service */
+    public String getFreeFsVersion() { return "0.9b"; }        
+    /** Returns the current time as a string. */
+    public String getCurrentTime() { return (new Date()).toString(); }
+            
+
+    /** Returns user-specified fees for this service */
+    public String getTypeDir() { return typeDir; }    
+    /** Returns user-specified fees for this service */
+    public void setTypeDir(String typeDir) { this.typeDir = typeDir; }
+
     /** Returns root capabilities directory for this service */
-    public String getCapabilitiesDirectory() { return CAPABILITIES_DIR; }
-    
-    
-    /** Returns default feature type schema name */
-    public String getFeatureTypeSchemaName() { 
-        return FEATURE_TYPE_SCHEMA_NAME;
+    public String getCapabilitiesDir() { return capabilitiesDir; }
+    /** Returns user-specified fees for this service */
+    public void setCapabilitiesDir(String capabilitiesDir) { 
+        this.capabilitiesDir = capabilitiesDir;
     }
     
     

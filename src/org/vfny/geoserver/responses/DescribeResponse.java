@@ -29,14 +29,13 @@ public class DescribeResponse {
     private String xmlResponse = new String();
     
     /** Bean that holds global server configuration information. */
-    private static ConfigurationBean configuration = 
-        new ConfigurationBean();
+    private static ConfigurationBean config = ConfigurationBean.getInstance();
     
     // Initialize some generic GML information
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE
     
     /** Fixed return header information */
-    private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"" + configuration.getUrl() + "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:vfny=\"" + configuration.getUrl() + "\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/>\n\n";
+    private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema targetNamespace=\"" + config.getUrl() + "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:vfny=\"" + config.getUrl() + "\" xmlns:gml=\"http://www.opengis.net/gml\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" version=\"1.0\">\n  <xs:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://www.opengis.net/namespaces/gml/core/feature.xsd\"/>\n\n";
     
     /** Fixed return footer information */
     private static final String FOOTER = "</xs:schema>";
@@ -87,7 +86,7 @@ public class DescribeResponse {
         // call appropriate subfunction
         if(requestedTables.isEmpty()) {
             tempResponse = tempResponse + 
-                generateAllTypes(configuration.getFeatureTypeDirectory());
+                generateAllTypes(config.getTypeDir());
         } else {
             tempResponse = tempResponse + 
                 generateSpecifiedTypes(requestedTables);
@@ -115,9 +114,9 @@ public class DescribeResponse {
             
             // set the current file
             // print type data for the table object
-            currentFile = configuration.getFeatureTypeDirectory() + 
+            currentFile = config.getTypeDir() + 
                 requestedTables.get(i).toString() + 
-                "/" + configuration.getFeatureTypeSchemaName() + ".xml";
+                "/" + config.TYPE_SCHEMA + ".xml";
             tempResponse = tempResponse + writeFile( currentFile );
             //_log.info("current file: " + currentFile);
         }
@@ -162,7 +161,7 @@ public class DescribeResponse {
             // assign temp variables; convenience/confusion lesseners only
             currentFeatureType = file[i].getName();
             currentFileName = targetDirectoryName + "/" + currentFeatureType + 
-                "/" + configuration.getFeatureTypeSchemaName() + ".xml";
+                "/" + config.TYPE_SCHEMA + ".xml";
             
             // actual work of writing out file is delegated to private function
             tempResponse = tempResponse + writeFile(currentFileName);

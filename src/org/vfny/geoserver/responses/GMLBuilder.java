@@ -50,7 +50,7 @@ public class GMLBuilder {
         Logger.getLogger("org.vfny.geoserver.responses");
 
     /** Gets global server configuration information **/
-    private ConfigurationBean configurationInfo = new ConfigurationBean();
+    private ConfigurationBean configInfo = ConfigurationBean.getInstance();
     
     /** Spatial reference system for this response **/
     private String srs;
@@ -189,7 +189,7 @@ public class GMLBuilder {
             if(verbose) {
                 finalResult.append("\n<gml:featureCollection xmlns:gml=\"" + 
                                    "http://www.opengis.net/gml\" scope=\"" + 
-                                   configurationInfo.getUrl() + "\">");
+                                   configInfo.getUrl() + "\">");
                 
                 /*
                 if( bbox.isSet() ) {
@@ -205,7 +205,7 @@ public class GMLBuilder {
                 finalResult.append("<?xml version='1.0' encoding='UTF-8'?>");
                 finalResult.append("<gml:featureCollection xmlns:gml=\"" + 
                                    "http://www.opengis.net/gml\" scope=\"" + 
-                                   configurationInfo.getUrl() + "\">");
+                                   configInfo.getUrl() + "\">");
                 
                 // append bounding box preamble to response, if a bounding box was requested
                 /*
