@@ -14,10 +14,13 @@ import javax.servlet.http.HttpSession;
  * Called by ActionForms to lookup things in the WebContainer for the JSP page.
  * Similar to the Requests utility classes.
  * </p>
- * 
+ * <p>
+ * These methods need to be kept in lockstep with the ConfigAction convience
+ * methods.
+ * </p>
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ConfigRequests.java,v 1.1.2.1 2004/01/12 05:11:18 jive Exp $
+ * @version $Id: ConfigRequests.java,v 1.1.2.2 2004/01/12 05:18:40 jive Exp $
  */
 public class ConfigRequests {
     /**
@@ -30,7 +33,7 @@ public class ConfigRequests {
      *
      * @return Configuration information for the Web Map Server
      */
-    protected WMSConfig getWMSConfig(HttpServletRequest request){
+    public static WMSConfig getWMSConfig(HttpServletRequest request){
         HttpSession session = request.getSession();
         ServletContext context = session.getServletContext();                 
         return (WMSConfig) context.getAttribute(WMSConfig.CONFIG_KEY);
@@ -46,7 +49,7 @@ public class ConfigRequests {
      *
      * @return Configuration information for Web Feature Server
      */
-    protected WFSConfig getWFSConfig(HttpServletRequest request){
+    public static WFSConfig getWFSConfig(HttpServletRequest request){
         HttpSession session = request.getSession();
         ServletContext context = session.getServletContext();                 
         return (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
@@ -57,7 +60,7 @@ public class ConfigRequests {
      *
      * @return Configuration model for Global information.
      */
-    protected GlobalConfig getGlobalConfig(HttpServletRequest request){
+    public static GlobalConfig getGlobalConfig(HttpServletRequest request){
         HttpSession session = request.getSession();
         ServletContext context = session.getServletContext();                 
         return (GlobalConfig) context.getAttribute(GlobalConfig.CONFIG_KEY);
@@ -68,7 +71,7 @@ public class ConfigRequests {
      *
      * @return Configuration model for Catalog information.
      */
-    protected DataConfig getDataConfig(HttpServletRequest request){
+    public static DataConfig getDataConfig(HttpServletRequest request){
         HttpSession session = request.getSession();
         ServletContext context = session.getServletContext();                 
         return (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
