@@ -18,7 +18,7 @@
         </html:form>		  
       </td>
     </tr>
-    <form action="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/TestWfsPost" method="POST">    
+    <form action="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs/TestWfsPost" method="POST">    
       <tr>
         <td class="label">url:</td>
         <td class="datum">
