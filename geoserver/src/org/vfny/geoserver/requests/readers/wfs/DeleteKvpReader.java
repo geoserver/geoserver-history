@@ -20,7 +20,7 @@ import java.util.logging.*;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DeleteKvpReader.java,v 1.1.2.1 2003/11/04 22:46:52 cholmesny Exp $
+ * @version $Id: DeleteKvpReader.java,v 1.1.2.2 2003/11/12 03:42:30 jive Exp $
  */
 public class DeleteKvpReader extends KvpRequestReader {
     /** Class logger */
@@ -91,7 +91,7 @@ public class DeleteKvpReader extends KvpRequestReader {
         // prepare the release action boolean for all delete transactions
         if (keyExists("RELEASEACTION")) {
             String lockAction = getValue("RELEASEACTION");
-            parentRequest.setReleaseAll(lockAction);
+            parentRequest.setReleaseAction(lockAction);
         }
 
         // check for errors in the request

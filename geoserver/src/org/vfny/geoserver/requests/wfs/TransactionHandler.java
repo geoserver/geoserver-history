@@ -23,7 +23,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.1.2.1 2003/11/04 22:48:26 cholmesny Exp $
+ * @version $Id: TransactionHandler.java,v 1.1.2.2 2003/11/12 03:42:26 jive Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {
@@ -153,7 +153,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
                     LOGGER.finest("found releaseAction: " + atts.getValue(i));
 
                     try {
-                        request.setReleaseAll(atts.getValue(i));
+                        request.setReleaseAction(atts.getValue(i));
                     } catch (WfsTransactionException e) {
                         throw new SAXException(e);
                     }

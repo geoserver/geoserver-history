@@ -15,14 +15,58 @@ import java.util.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionRequest.java,v 1.1.2.1 2003/11/04 22:48:26 cholmesny Exp $
+ * @version $Id: TransactionRequest.java,v 1.1.2.2 2003/11/12 03:42:26 jive Exp $
  */
 public class TransactionRequest extends WFSRequest {
     protected List subRequests = new ArrayList();
+    
     protected String lockId = null;
-    protected boolean releaseAll = true;
+    
+    /** Replaced with releaseAction */ 
+    //protected boolean releaseAll = true;
 
-    /** Specifices the user-defined name for the entire get feature request */
+
+    /**
+     * Release lockID when the transaction completes.
+     * <p>
+     * WFS Specification Definition of ALL:
+     * </p>
+     * <p>
+     * <i>    A value of ALL indicates that the locks on all feature instances
+     * locked using the specified <b>lockId</b> should be released when the
+     * transaction completes, regardless of whether or not a particular feature
+     * instance in the locked set was actually operated upon. </i>
+     * </p>
+     */
+    public static final ReleaseAction ALL = new ReleaseAction("ALL");
+    
+    /**
+     * Release lockID when the transaction completes.
+     * <p>
+     * WFS Specification Definition of SOME:
+     * </p>
+     * <i>    A value of SOME indicates that only the locks on feature instances
+     * modified by the transaction should be released. The other, unmodified,
+     * feature instances should remain locked using the same <b>LockId</b> so
+     * that subsequent transactions can operate on those feature instances. </i>
+     * </p>
+     * <p>
+     * <i>    In the event that the releaseAction is set to SOME, and an expiry
+     * period was specified, the expiry counter must be reset to zero after
+     * each transaction unless all feature instances in the locked set have
+     * been operated upon. </i>
+     * </p>
+     */    
+    public final static ReleaseAction SOME = new ReleaseAction("NONE");
+    
+    /**
+     * Control how locked features are treated when a transaction is completed.
+     */
+    protected ReleaseAction releaseAction = ALL;
+    
+    /**
+     * Specifices the user-defined name for the entire get feature request
+     */
     protected String handle = null;
 
     /**
@@ -80,29 +124,48 @@ public class TransactionRequest extends WFSRequest {
         return handle;
     }
 
-    public void setReleaseAll(String releaseAction)
+    public void setReleaseAction(String releaseAction)
         throws WfsTransactionException {
+            
         if (releaseAction != null) {
             if (releaseAction.toUpperCase().equals("ALL")) {
-                this.releaseAll = true;
+                this.releaseAction = ALL;
             } else if (releaseAction.toUpperCase().equals("SOME")) {
-                this.releaseAll = false;
+                this.releaseAction= SOME;
             } else {
                 throw new WfsTransactionException("Illegal releaseAction: "
                     + releaseAction + ", only " + "SOME or ALL allowed",
                     handle, handle);
             }
         }
+        else {
+            // TODO: set to default?
+            // this.releaseAction = ALL;
+        }
     }
 
     /**
      * Sets the release for the Transaction request.
-     *
-     * @param release <tt>true</tt> if all features held by the lock should be
-     *        released after this operation.
+     * <p>
+     * <ul>
+     * <li>true:  if all features held by the lockID should be released</li>
+     * <li>false: if all feature held by the lockID, and not modified by this
+     *            transaction should be reset to their initial expire value</li>
+     * </ul>
+     * <p>
+     * No matter what value you pick the features you modify in this transaction
+     * that are held by lockID will be released.
+     * </p>     
+     * @param releaseAll <tt>true</tt> if all features held by the lock should
+     *        be released after this operation.
      */
-    public void setReleaseAll(boolean release) {
-        this.releaseAll = release;
+    public void setReleaseAction(boolean releaseAll ) {
+        if( releaseAll ){
+            releaseAction = ALL;
+        }
+        else {
+            releaseAction = SOME;
+        }        
     }
 
     /**
@@ -112,7 +175,7 @@ public class TransactionRequest extends WFSRequest {
      *         released after this operation.
      */
     public boolean getReleaseAll() {
-        return releaseAll;
+        return releaseAction == ALL;
     }
 
     /**
@@ -135,7 +198,7 @@ public class TransactionRequest extends WFSRequest {
 
     public String toString() {
         StringBuffer tRequest = new StringBuffer("Lock Id: " + lockId + "\n");
-        tRequest.append("release all: " + releaseAll + "\n");
+        tRequest.append("releaseAction: " + releaseAction + "\n");
         tRequest.append("handle: " + handle + "\n");
 
         for (int i = 0; i < subRequests.size(); i++) {
@@ -167,7 +230,7 @@ public class TransactionRequest extends WFSRequest {
             TransactionRequest testTrans = (TransactionRequest) obj;
             boolean isEqual = true;
 
-            if (this.releaseAll == testTrans.getReleaseAll()) {
+            if (this.releaseAction == testTrans.releaseAction) {
                 isEqual = testField(this.lockId, testTrans.getLockId());
                 isEqual = testField(this.handle, testTrans.getHandle())
                     && isEqual;
@@ -190,4 +253,31 @@ public class TransactionRequest extends WFSRequest {
             return false;
         }
     }
+}
+
+/**
+ * Class used for releaseAction values SOME and ALL.
+ * <p>
+ * This class is not public, so the only two instances
+ * will be TransactionRequest.SOME and TransactionRequest.ALL.
+ * </p>
+ * <p>
+ * Since we are only using two instances we can use the identity opperator,
+ * to check the value of releaseAction.
+ * </p>
+ * <p>
+ * The is the standard Java Enum idiom, we could later subclass
+ * SOME and ALL to provide support for their respective unlocking
+ * policies.
+ * </p>
+ */
+class ReleaseAction {
+private String text;
+ReleaseAction( String str ){
+    text = str;
+}
+public String toString(){
+    return text;
+}    
+
 }

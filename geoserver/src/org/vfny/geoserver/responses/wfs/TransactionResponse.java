@@ -24,9 +24,10 @@ import java.util.logging.*;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.1.2.1 2003/11/04 22:54:55 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.1.2.2 2003/11/12 03:42:30 jive Exp $
  */
 public class TransactionResponse implements Response {
+    
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
@@ -36,7 +37,8 @@ public class TransactionResponse implements Response {
     //HACK: this is not safe, this class should probably not be static.
     //TODO: just get rid of this, it should always be set in Transaction
     //anyways.
-    private static String transHandle;
+    //private static String transHandle;
+    
     private static ServerConfig config = ServerConfig.getInstance();
 
     /** temporal, remove it when response streaming be implemented */
@@ -87,12 +89,13 @@ public class TransactionResponse implements Response {
         LOGGER.finer("doing transaction response");
 
         //        TypeRepository repository = TypeRepository.getInstance();
-        transHandle = request.getHandle();
+        //transHandle = request.getHandle();
 
         // main handler and return string
         //  generate GML for heander for each table requested
         WfsTransResponse response = new WfsTransResponse(WfsTransResponse.SUCCESS,
                 request.getHandle());
+                
         SubTransactionRequest subRequest = request.getSubRequest(0);
         String lockId = request.getLockId();
         LOGGER.finer("got lockId: " + lockId);
