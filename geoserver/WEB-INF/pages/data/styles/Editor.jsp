@@ -15,14 +15,6 @@
   </tr>	
   <tr>
     <td class="label">
-		<bean:message key="label.default"/>:
-	</td>
-    <td class="datum">
-		<html:checkbox property="default"/>
-	</td>
-  </tr>
-  <tr>
-    <td class="label">
 		<bean:message key="label.filename"/>
 	</td>
     <td class="datum">

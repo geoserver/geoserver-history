@@ -7,7 +7,6 @@ package org.vfny.geoserver.action.data;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesEditorForm;
@@ -40,7 +37,6 @@ public class StylesEditorAction extends ConfigAction {
         StylesEditorForm stylesForm = (StylesEditorForm) form;
         final String filename = stylesForm.getFilename();
         final String styleID = stylesForm.getStyleID();
-        final boolean _default = stylesForm.isDefaultValue();
         
         StyleConfig style = user.getStyle();
         if( style == null ){
@@ -48,7 +44,6 @@ public class StylesEditorAction extends ConfigAction {
             return mapping.findForward("config.data.style");            
         }
         style.setFilename( new File(filename) );
-        style.setDefault(_default);
         style.setId(styleID);
 
         // Do configuration parameters here
