@@ -21,9 +21,19 @@ import java.util.Map;
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
+ * 
+ * <p>
+ * DataStoreInfoDTO dsiDto = new DataStoreInfoDTO();
+ * dsiDto.setIde("myDataStore");
+ * dsiDto.setEnabled(true);
+ * dsiDto.setTile("My Data Store");
+ * Map m = new HashMap();
+ * m.put("key","param");
+ * dsiDto.setConnectionParams(m);
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.1.2.2 2004/01/06 23:54:39 dmzwiers Exp $
  */
 public final class DataStoreInfoDTO implements DataStructure {
     /** unique datasore identifier */
@@ -134,10 +144,12 @@ public final class DataStoreInfoDTO implements DataStructure {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
+    	if(obj == null || !(obj instanceof DataStoreInfoDTO))
+    		return false;
         DataStoreInfoDTO ds = (DataStoreInfoDTO) obj;
         boolean r = true;
         r = r && (id == ds.getId());
-        r = r && nameSpaceId.equals(ds.getNameSpaceId());
+        r = r && (nameSpaceId == ds.getNameSpaceId());
         r = r && (enabled == ds.isEnabled());
         r = r && (_abstract == ds.getAbstract());
 
@@ -149,6 +161,31 @@ public final class DataStoreInfoDTO implements DataStructure {
 
         return r;
     }
+
+	/**
+	 * Implement hashCode.
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 * 
+	 * @return Service hashcode or 0
+	 */
+	public int hashCode() {
+		int r = 1;
+		
+		if (id != null) {
+			r *= id.hashCode();
+		}
+
+		if (nameSpaceId != null) {
+			r *= nameSpaceId.hashCode();
+		}
+
+		if (_abstract != null) {
+			r *= _abstract.hashCode();
+		}
+		
+		return r;
+	}
 
     /**
      * getAbstract purpose.

@@ -22,8 +22,23 @@ import java.util.Map;
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
  *
+ *<p>
+ *DataDTO dDto = new DataDTO();
+ *Map m = new HashMap();
+ *NameSpaceDTO ns = new NameSpaceDTO();
+ *ns.setUri("dzwiers.refractions.net");
+ *m.put("nsDave",ns);
+ *dDto.setNameSpaces(m);
+ *ns = new NameSpaceDTO();
+ *ns.setUri("jgarnett.refractions.net");
+ *ns.setDefault(true);
+ *dDto.addNameSpace("nsJody"ns);
+ *dDto.setDefaultNameSpace(ns);
+ *...
+ *</p>
+ *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
+ * @version $Id: DataDTO.java,v 1.1.2.2 2004/01/06 23:54:39 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -33,35 +48,35 @@ public final class DataDTO implements DataStructure {
     /**
      * A set of datastores and their names.
      *
-     * @see org.vfny.geoserver.config.data.DataStoreInfo
+     * @see org.vfny.geoserver.global.dto.DataStoreInfo
      */
     private Map dataStores;
 
     /**
      * A set of namespaces and their names.
      *
-     * @see org.vfny.geoserver.config.data.NameSpaceConfig
+     * @see org.vfny.geoserver.global.dto.NameSpace
      */
     private Map nameSpaces;
 
     /**
      * A set of featuretypes and their names.
      *
-     * @see org.vfny.geoserver.config.data.FeatureTypeInfo
+     * @see org.vfny.geoserver.global.dto.FeatureTypeInfo
      */
     private Map featuresTypes;
 
     /**
      * A set of styles and their names.
      *
-     * @see org.vfny.geoserver.config.data.StyleConfig
+     * @see org.vfny.geoserver.global.dto.Style
      */
     private Map styles;
 
     /**
      * the default namespace for the server instance.
      *
-     * @see org.vfny.geoserver.config.data.NameSpaceConfig
+     * @see org.vfny.geoserver.global.dto.NameSpace
      */
     private NameSpaceDTO defaultNameSpace;
 
@@ -122,7 +137,7 @@ public final class DataDTO implements DataStructure {
      * 
      * <p>
      * This method creates default values for the class. This method  should
-     * noly be called by class constructors.
+     * only be called by class constructors.
      * </p>
      */
     private void defaultSettings() {
@@ -188,6 +203,12 @@ public final class DataDTO implements DataStructure {
             return false;
         }
 
+		if (styles != null) {
+			r = r && EqualsLibrary.equals(styles, c.getStyles());
+		} else if (c.getStyles() != null) {
+			return false;
+		}
+
         if (defaultNameSpace != null) {
             r = r && defaultNameSpace.equals(c.getDefaultNameSpace());
         } else if (c.getDefaultNameSpace() != null) {
@@ -197,6 +218,38 @@ public final class DataDTO implements DataStructure {
         return r;
     }
 
+	/**
+	 * Implement hashCode.
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 * 
+	 * @return Service hashcode or 0
+	 */
+	public int hashCode() {
+		int r = 1;
+		
+		if (dataStores != null) {
+			r *= dataStores.hashCode();
+		}
+
+		if (nameSpaces != null) {
+			r *= nameSpaces.hashCode();
+		}
+
+		if (featuresTypes != null) {
+			r *= featuresTypes.hashCode();
+		}
+
+		if (styles != null) {
+			r *= styles.hashCode();
+		}
+
+		if (defaultNameSpace != null) {
+			r *= defaultNameSpace.hashCode();
+		}
+		return r;
+	}
+	
     /**
      * getDataStores purpose.
      * 

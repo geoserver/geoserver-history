@@ -17,7 +17,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.6 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.1.2.7 2004/01/06 23:54:39 dmzwiers Exp $
  */
 public class GeoServer extends Abstract{// implements org.apache.struts.action.PlugIn{
 	
@@ -387,7 +387,10 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 	
 	public void load(DataDTO data) throws ConfigurationException {
 		if(data!=null)
-			this.data = new Data(data);
+			if(this.data == null)
+				this.data = new Data(data);
+			else
+				this.data.load(data);
 		else
 			throw new ConfigurationException("load(DataDTO) expected a non-null value");
 	}

@@ -25,9 +25,17 @@ import com.vividsolutions.jts.geom.Envelope;
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
+ * 
+ * <p>
+ * FeatureTypeInfoDTO ftiDto = new FeatureTypeInfoDTO();
+ * ftiDto.setName("My Feature Type");
+ * ftiDto.setTitle("The Best Feature Type");
+ * ftiDto.setSRS(23769);
+ * ftiDto.setDataStoreId("myDataStore");
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.2 2004/01/06 23:03:14 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.3 2004/01/06 23:54:39 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataStructure {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -186,7 +194,7 @@ public final class FeatureTypeInfoDTO implements DataStructure {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (obj == null || !(obj instanceof FeatureTypeInfoDTO)) {
             return false;
         }
 
@@ -230,6 +238,34 @@ public final class FeatureTypeInfoDTO implements DataStructure {
 
         return r;
     }
+
+	/**
+	 * Implement hashCode.
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 * 
+	 * @return Service hashcode or 0
+	 */
+	public int hashCode() {
+		int r = 1;
+		
+		if (name != null) {
+			r *= name.hashCode();
+		}
+
+		if (dataStoreId != null) {
+			r *= dataStoreId.hashCode();
+		}
+
+		if (title != null) {
+			r *= title.hashCode();
+		}
+		
+		if(SRS!=0)
+			r = SRS%r;
+		
+		return r;
+	}
 
     /**
      * getAbstract purpose.

@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.5 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.6 2004/01/06 23:54:39 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -73,43 +73,63 @@ public class Data extends Abstract
     
     // we create instances of everything at the start to support the datastore connections
     public Data(DataDTO config) throws ConfigurationException {
-    	catalog = config;
-
-		nameSpaces = new HashMap();
-		dataStores = new HashMap();
-		styles = new HashMap();
-		featureTypes = new HashMap();
+		load(config);
+    }
 		
-    	Iterator i = config.getDataStores().keySet().iterator();
-    	while(i.hasNext()){
-    		Object key = i.next();
-    		dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),nameSpaces));
-    	}
+	void load(DataDTO config) throws ConfigurationException {
+		catalog = config;
+		if(config == null)
+			throw new NullPointerException("");
 
+		if(dataStores == null)
+			dataStores = new HashMap();
+		if(config.getDataStores() == null)
+			throw new NullPointerException("");
+		Iterator i = config.getDataStores().keySet().iterator();
+		while(i.hasNext()){
+			Object key = i.next();
+			if(!dataStores.containsKey(key))
+				dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),nameSpaces));
+		}
+
+		if(featureTypes == null)
+			featureTypes = new HashMap();
+		if(config.getFeaturesTypes() == null)
+			throw new NullPointerException("");
 		i = config.getFeaturesTypes().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			featureTypes.put(key,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), dataStores));
+			if(!featureTypes.containsKey(key))
+				featureTypes.put(key,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), dataStores));
 		}
-    	defaultNameSpace = new NameSpace(config.getDefaultNameSpace());
 
+		if(nameSpaces == null)
+			nameSpaces = new HashMap();
+		if(config.getNameSpaces() == null)
+			throw new NullPointerException("");
 		i = config.getNameSpaces().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			nameSpaces.put(key,new NameSpace((NameSpaceDTO)config.getNameSpaces().get(key)));
+			if(!nameSpaces.containsKey(key))
+				nameSpaces.put(key,new NameSpace((NameSpaceDTO)config.getNameSpaces().get(key)));
 		}
+		defaultNameSpace = new NameSpace(config.getDefaultNameSpace());
 
+		if(styles == null)
+			styles = new HashMap();
+		if(config.getStyles() == null)
+			throw new NullPointerException("");
 		i = config.getStyles().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			// should be re-worked
-			try{
-				styles.put(key,loadStyle(((StyleDTO)config.getStyles().get(key)).getFilename()));
-			}catch(IOException e){
-				LOGGER.fine("Error loading style:"+key.toString());
-			}
+			if(!styles.containsKey(key))
+				try{
+					styles.put(key,loadStyle(((StyleDTO)config.getStyles().get(key)).getFilename()));
+				}catch(IOException e){
+					LOGGER.fine("Error loading style:"+key.toString());
+				}
 		}
-    }
+	}
 
     /**
      * DOCUMENT ME!

@@ -17,10 +17,15 @@ import java.io.File;
  * server.
  * </p>
  * 
- * <p></p>
+ * <p>
+ * StyleDTO styleDto = new StyleDTO();
+ * styleDto.setDefault(false);
+ * styleDto.setId("My Style");
+ * styleDto.setFilename(new File(myStyle.sld));
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
+ * @version $Id: StyleDTO.java,v 1.1.2.2 2004/01/06 23:54:39 dmzwiers Exp $
  */
 public final class StyleDTO implements DataStructure {
     /** The syle id. */
@@ -112,7 +117,7 @@ public final class StyleDTO implements DataStructure {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (obj == null || !(obj instanceof StyleDTO)) {
             return false;
         }
 
@@ -128,6 +133,27 @@ public final class StyleDTO implements DataStructure {
 
         return r;
     }
+    
+	/**
+	 * Implement hashCode.
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 * 
+	 * @return Service hashcode or 0
+	 */
+	public int hashCode() {
+		int r = 1;
+		
+		if (id != null) {
+			r *= id.hashCode();
+		}
+
+		if (filename != null) {
+			r *= filename.hashCode();
+		}
+		
+		return r;
+	}
 
     /**
      * isDefault purpose.

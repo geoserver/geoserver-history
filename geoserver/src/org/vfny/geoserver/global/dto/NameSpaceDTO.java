@@ -24,8 +24,15 @@ package org.vfny.geoserver.global.dto;
  * Jody here - does this actual defin the namespace used by the GML?
  * </p>
  * 
+ * <p>
+ * NameSpaceDTO nsDto = new NameSpaceDTO();
+ * nsDto.setDefault(false);
+ * nsDto.setPrefix("me");
+ * nsDto.setUri("dzwiers.refraction.net");
+ * </p>
+ * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceDTO.java,v 1.1.2.1 2004/01/05 23:26:26 dmzwiers Exp $
+ * @version $Id: NameSpaceDTO.java,v 1.1.2.2 2004/01/06 23:54:39 dmzwiers Exp $
  */
 public final class NameSpaceDTO implements DataStructure {
     //public static final String PREFIX_DELIMITER = ":";
@@ -119,12 +126,36 @@ public final class NameSpaceDTO implements DataStructure {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
+    	if(obj == null ||!(obj instanceof NameSpaceDTO))
+    		return false;
+    		
         NameSpaceDTO ns = (NameSpaceDTO) obj;
 
         return ((prefix == ns.getPrefix())
         && ((uri == ns.getUri()) && (_default == ns.isDefault())));
     }
 
+	/**
+	 * Implement hashCode.
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 * 
+	 * @return Service hashcode or 0
+	 */
+	public int hashCode() {
+		int r = 1;
+		
+		if (prefix != null) {
+			r *= prefix.hashCode();
+		}
+
+		if (uri != null) {
+			r *= uri.hashCode();
+		}
+		
+		return r;
+	}
+	
     /**
      * isDefault purpose.
      * 
