@@ -163,7 +163,7 @@
             <td><bean:message key="nillable"/>:<html:checkbox property='<%= "attributes[" + index + "].nillable" %>'/></td>
             <td><bean:message key="min"/>:<html:text size="2" property='<%= "attributes[" + index + "].minOccurs"%>'/></td>
             <td><bean:message key="max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
-            <td>
+            <td width=16>
               <% if (first == false) { %>
           	  <html:image src="../../../images/up.png" 
           	  	          titleKey="type.title.up" 
@@ -172,7 +172,7 @@
           	  <% } 
           	     first = false; %>
           	</td>
-          	<td> 
+          	<td width=16> 
           	  <% if (attributesSize-1 != index.intValue()) { %>
           	  <html:image src="../../../images/down.png" 
           	              titleKey="type.title.down" 
@@ -180,7 +180,7 @@
           	              value="<%= "down_"+ index%>"/>
           	  <% } %>
           	</td> 
-          	<td>
+          	<td width=16>
           	  <html:image src="../../../images/delete.png" 
           	  	          titleKey="type.title.delete" 
           	  	          property="action" 
