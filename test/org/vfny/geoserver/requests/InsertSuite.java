@@ -78,13 +78,14 @@ public class InsertSuite extends TestCase {
 	config = ConfigInfo.getInstance(CONFIG_DIR);
         config.setTypeDir(TYPE_DIR);
         repo = TypeRepository.getInstance();
+	
 
 	AttributeType[] atts = { 
 	    new AttributeTypeDefault("fid", Integer.class),
 	    new AttributeTypeDefault("geom", Polygon.class),
 	    new AttributeTypeDefault("name", String.class)};
 	try {
-	schema = (new FeatureTypeFlat(atts)).setTypeName("geom_test");
+	schema = (new FeatureTypeFlat(atts)).setTypeName("rail");
 	} catch (SchemaException e) {
 	    LOGGER.finer("problem with creating schema");
 	}
@@ -154,21 +155,20 @@ public class InsertSuite extends TestCase {
 
     /* These tests need a geom_test feature type with an info.xml and
      * an info.xml added to rail to properly work. */
-    /*
    public void testXml1() throws Exception { 
-        // make base comparison objects        
+            // make base comparison objects        
        InsertRequest insert = new InsertRequest();
        
-	insert.setHandle("insert 1");
-	insert.addFeature(testFeature);
+       insert.setHandle("insert 1");
+       insert.addFeature(testFeature);
        TransactionRequest baseRequest = new TransactionRequest();
        baseRequest.addSubRequest(insert);
-       	baseRequest.setHandle("my insert");
+       baseRequest.setHandle("my insert");
         // run test       
-        assertTrue(runXmlTest( baseRequest, "insert1", true));
+       assertTrue(runXmlTest( baseRequest, "insert1", true));
     }
 
-
+    
     public void testXml2() throws Exception { 
         // make base comparison objects        
        InsertRequest insert = new InsertRequest();
@@ -201,7 +201,8 @@ public class InsertSuite extends TestCase {
         // run test       
         assertTrue(runXmlTest( baseRequest, "insert2", true));
     }
-    
+
+    /*    
     public void testDiffFeatures() throws Exception{
 	TransactionRequest baseRequest = new TransactionRequest();
 	try {
