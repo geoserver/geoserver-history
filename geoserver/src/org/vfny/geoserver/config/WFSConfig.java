@@ -21,11 +21,13 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.7 2004/02/09 23:30:04 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.8 2004/02/12 22:07:59 emperorkefka Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
     private boolean gmlPrefixing;
+    
+    private int serviceLevel;
 
     /**
      * This is a set of <code>dataStoreID.typeName</code> that is  enabled for
@@ -77,6 +79,7 @@ public class WFSConfig extends ServiceConfig {
     public WFSConfig(WFSDTO w) {
         super(w.getService());
         gmlPrefixing = w.isGmlPrefixing();
+        serviceLevel = w.getServiceLevel();
     }
 
     /**
@@ -99,6 +102,7 @@ public class WFSConfig extends ServiceConfig {
 
         super.update(dto.getService());
         gmlPrefixing = dto.isGmlPrefixing();
+        serviceLevel = dto.getServiceLevel();
     }
 
     /**
@@ -116,6 +120,7 @@ public class WFSConfig extends ServiceConfig {
         WFSDTO wfsDto = new WFSDTO();
         wfsDto.setService((ServiceDTO) super.toServDTO());
         wfsDto.setGmlPrefixing(gmlPrefixing);
+        wfsDto.setServiceLevel(serviceLevel);
 
         return wfsDto;
     }
@@ -163,4 +168,22 @@ public class WFSConfig extends ServiceConfig {
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
     }
+	/**
+	 * Access serviceLevel property.
+	 * 
+	 * @return Returns the serviceLevel.
+	 */
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	/**
+	 * Set serviceLevel to serviceLevel.
+	 *
+	 * @param serviceLevel The serviceLevel to set.
+	 */
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
+
 }

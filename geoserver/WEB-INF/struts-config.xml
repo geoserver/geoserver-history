@@ -168,6 +168,12 @@
        		name="dataConfigDataStores"
        		path="/DataConfigDataStores.do"/>
        	<forward
+       		name="dataConfigDataStoresNew"
+       		path="/DataConfigDataStoresNew.do"/>
+       	<forward
+       		name="dataConfigDataStoresEditor"
+       		path="/DataConfigDataStoresEditor.do"/>
+       	<forward
        		name="dataConfigNamespaces"
        		path="/DataConfigNamespaces.do"/>
        	<forward
@@ -249,7 +255,11 @@
         <action
         	path="/DataConfigDataStores"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.dataStores"/>
+        	parameter="data.dataStores.select"/>
+        <action
+        	path="/DataConfigDataStoresEditor"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.dataStores.editor"/>        	
         <action
         	path="/DataConfigNamespaces"
         	type="org.apache.struts.actions.ForwardAction"

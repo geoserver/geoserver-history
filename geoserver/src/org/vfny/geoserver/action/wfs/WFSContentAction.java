@@ -48,6 +48,7 @@ public final class WFSContentAction extends ConfigAction {
         WFSConfig config = getWFSConfig();
         config.setEnabled(enabled);
         config.setOnlineResource(new URL(onlineResource));
+        config.setServiceLevel(contentForm.getServiceLevel());
 
         Set set = new TreeSet();
 

@@ -17,10 +17,12 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WFSConfig;
+import org.vfny.geoserver.global.dto.WFSDTO;
 
 
 /**
@@ -33,6 +35,7 @@ public class WFSContentForm extends ActionForm {
     private boolean enabled;
     private String onlineResource;
     private String describeURL;
+    private int serviceLevel;
     private String[] selectedFeatures;
     private String[] features;
 
@@ -147,14 +150,12 @@ public class WFSContentForm extends ActionForm {
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
 
-        System.out.println("reset: setting Enabled Check = false");
         enabledChecked = false;
 
         ServletContext context = getServlet().getServletContext();
         WFSConfig config = (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
-
-        System.out.println("reset: setting Enabled from config = "
-            + config.isEnabled());
+        
+        serviceLevel = config.getServiceLevel();
         this.enabled = config.isEnabled();
 
         URL url = config.getOnlineResource();
@@ -182,6 +183,10 @@ public class WFSContentForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
+        if (serviceLevel != WFSDTO.BASIC && serviceLevel != WFSDTO.TRANSACTION) {
+            errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
+        }
+        
         return errors;
     }
 
@@ -202,4 +207,23 @@ public class WFSContentForm extends ActionForm {
     public void setEnabledChecked(boolean b) {
         enabledChecked = b;
     }
+    
+	/**
+	 * Access serviceLevel property.
+	 * 
+	 * @return Returns the serviceLevel.
+	 */
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	/**
+	 * Set serviceLevel to serviceLevel.
+	 *
+	 * @param serviceLevel The serviceLevel to set.
+	 */
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
+
 }
