@@ -8,7 +8,8 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.LinkedList;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
@@ -16,8 +17,6 @@ import org.apache.struts.config.ModuleConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoServerPlugIn;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 
 /**
@@ -31,7 +30,7 @@ import javax.servlet.ServletException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.4 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: ConfigPlugIn.java,v 1.5 2004/02/07 01:30:05 jive Exp $
  *
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  */

@@ -10,14 +10,17 @@
  */
 package org.vfny.geoserver.action;
 
-import org.apache.struts.action.Action;
+import java.io.File;
+import java.io.IOException;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.GlobalConfig;
-import org.vfny.geoserver.config.WFSConfig;
-import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
@@ -25,7 +28,6 @@ import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,8 +37,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
 /**
  * Update GeoServer with the current configuration.
  * <p>

@@ -7,13 +7,10 @@
 package org.vfny.geoserver.form.validation;
 
 import java.beans.PropertyDescriptor;
-import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
 import java.util.List;
-
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,8 +21,6 @@ import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.validation.ArgumentConfig;
 import org.vfny.geoserver.config.validation.TestConfig;
 
-import com.sun.tools.corba.se.idl.InvalidArgument;
-
 /**
  * ValidationTestEditorForm purpose.
  * <p>
@@ -34,7 +29,7 @@ import com.sun.tools.corba.se.idl.InvalidArgument;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestEditorForm.java,v 1.1 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: ValidationTestEditorForm.java,v 1.2 2004/02/07 01:30:05 jive Exp $
  */
 public class ValidationTestEditorForm extends ActionForm {
     

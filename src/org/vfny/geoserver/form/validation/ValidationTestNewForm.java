@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.config.validation.TestSuiteConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 
 /**
@@ -40,7 +39,7 @@ import org.vfny.geoserver.config.validation.ValidationConfig;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestNewForm.java,v 1.1 2004/01/31 00:27:28 jive Exp $
+ * @version $Id: ValidationTestNewForm.java,v 1.2 2004/02/07 01:30:05 jive Exp $
  */
 public class ValidationTestNewForm extends ActionForm {
     

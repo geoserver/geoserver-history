@@ -19,7 +19,6 @@ import org.vfny.geoserver.config.validation.TestConfig;
 import org.vfny.geoserver.config.validation.TestSuiteConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.form.validation.ValidationTestNewForm;
-import org.vfny.geoserver.form.validation.ValidationTestSuiteNewForm;
 import org.vfny.geoserver.global.UserContainer;
 
 /**
@@ -44,8 +43,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestNewAction.java,v 1.3 2004/02/05 17:33:19 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: ValidationTestNewAction.java,v 1.4 2004/02/07 01:29:55 jive Exp $
  */
 public class ValidationTestNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
