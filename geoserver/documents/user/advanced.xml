@@ -116,20 +116,22 @@
     connection pooling, and transactional capabilities. Please check the
     <ulink
     url="http://docs.codehaus.org/display/GEOS/Installing+Oracle#Installing+Oracle-Oracle%20Installation%20Information">wiki</ulink>
-    for the latest information on oracle. </para>
+    for the latest information on oracle.</para>
 
-    <para>The oracle datastore has been substantially improved since RC1. We
-    have cleaned up a few little annoying bugs, and done some good testing. We
-    are no longer dependant on the sdoapi jar, thanks to some work done by
-    Refractions Research. There is still one jar file that we can not
+    <para>The oracle datastore has been substantially improved since 1.2.0
+    RC1. We have cleaned up a few little annoying bugs, and done some good
+    testing. We are no longer dependant on the sdoapi jar, thanks to some work
+    done by Refractions Research. There is still one jar file that we can not
     distribute, but it is readily available from the oracle technology network
     <ulink
     url="http://otn.oracle.com/software/tech/java/sqlj_jdbc/index.html">here</ulink>.
-    It is the jdbc driver, generally called classes12. Just place the jar in
-    the webapps/geoserver/WEB-INF/lib/ directory of a geoserver war install
-    (or in geoserver/lib of a source installation that you are building from).
-    Once the jar is in the directory then oracle should be an option from the
-    drop down menu when creating a new datastore. </para>
+    It is the jdbc driver, generally called classes12, we've also found one
+    called ojdbc14 that works, the main class it needs to have is
+    oracle.jdbc.driver.OracleDriver. Just place the jar in the
+    webapps/geoserver/WEB-INF/lib/ directory of a geoserver war install (or in
+    geoserver/lib of a source installation that you are building from). Once
+    the jar is in the directory then oracle should be an option from the drop
+    down menu when creating a new datastore.</para>
 
     <para>To use the Oracle Datastore the <emphasis>catalog.xml</emphasis>
     file must have the following values for the connectionParams:</para>
