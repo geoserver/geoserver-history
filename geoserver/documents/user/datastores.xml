@@ -11,7 +11,7 @@
   information, no matter how minor or even seemingly unrelated, that we are
   missing here that would have been helpful, please don't hesitate to email
   geoserver-devel@lists.sourceforge.net and let us know, since it is likely
-  that someone else in the future will also want that information. </para>
+  that someone else in the future will also want that information.</para>
 
   <section>
     <title>PostGIS</title>
@@ -24,15 +24,16 @@
     url="http://geos.refractions.net">GEOS</ulink> before you install PostGIS,
     as it will speed up spatial queries in GeoServer, we automatically detect
     its presence and use it if available. If you are a windows users then you
-    might check out Postgres 8 (link), which is still in beta as we are
-    writing this, but offers much, much better windows support, with
-    installers and able to run as a service. The only way to run Postgres 7 is
-    to use cygwin, which we highly recommend, but which can be a bitch to set
-    up. PostGIS will work with both 7 and 8. If you are a windows user check
-    out the <ulink
-    url="http://dcmms.sourceforge.net/postgis_installer.php">dcmms source
-    forge project</ulink>, which has a great PostGIS installer. And there's
-    also a good page on Windows and postgis <ulink
+    might check out Postgres 8, which as we write is at release candidate 1
+    looking to be official quite soon. It should offer much, muc better
+    windows support, including installers and running as a windows service.
+    Check the <ulink url="http://www.postgresql.org">postgresql home
+    page</ulink> for more information. The only way to run Postgres 7 is to
+    use cygwin, which we highly recommend, but which can be a bitch to set up.
+    PostGIS will work with both 7 and 8. If you are a windows user check out
+    the <ulink url="http://dcmms.sourceforge.net/postgis_installer.php">dcmms
+    source forge project</ulink>, which has a great PostGIS installer. And
+    there's also a good page on Windows and postgis <ulink
     url="http://www.gasai.com/gisapps/WindowsHowTo.html">here</ulink>. If you
     have just installed PostGIS then we recommend connecting to it with the
     command line psql tool before testing with GeoServer, just to make sure
@@ -93,7 +94,7 @@
             does not have transaction privileges on the database, and only
             letting GeoServer connect with that user. This will not be
             reflected in the Capabilities documents, but all attempted
-            inserts, updates, and deletes will be rejected. </entry>
+            inserts, updates, and deletes will be rejected.</entry>
           </row>
 
           <row>
@@ -110,11 +111,11 @@
             Well Known Binary (WKB) format to read the PostGIS databse, or the
             more tested Well Known Text (WKT) format. At this point we believe
             WKB is well tested enough that we recommend using it, as it is
-            more accurate and faster. </entry>
+            more accurate and faster.</entry>
           </row>
 
           <row>
-            <entry>loose bbox </entry>
+            <entry>loose bbox</entry>
 
             <entry>This is an option for speed in bbox requests, with a slight
             hit in accuracy. It uses a faster bounding box operation for
@@ -126,7 +127,7 @@
             one should note that using a NOT DISJOINT filter will still be
             exactly accurate, it's only the BBOX filter, which is intended as
             a shortcut for NOT DISJOINT, that will be slightly off (and much
-            faster). </entry>
+            faster).</entry>
           </row>
         </tbody>
       </tgroup>
@@ -143,17 +144,16 @@
     <para>For users who don't have a spatial database already set up and want
     to get GeoServer running quickly, we offer support for Shapefiles directly
     in GeoServer. You can even perform transactions against Shapefiles,
-    modifying them through the WFS-T (link?) interface. But we do not really
-    recommend it, as they weren't designed for such purposes. Any production
-    instance of GeoServer should use a spatial database, PostGIS has a great
-    shp2pgsql tool to easily turn your shapefiles into PostGIS tables (link to
-    section on using shp2pgsql?). Thanks goes to the GeoTools team for this
-    great contribution, and especially Ian Schneider, for getting things good
-    to go for GeoServer.</para>
+    modifying them through the WFS-T interface. But we do not really recommend
+    it, as they weren't designed for such purposes. Any production instance of
+    GeoServer should use a spatial database, PostGIS has a great shp2pgsql
+    tool to easily turn your shapefiles into PostGIS tables. Thanks goes to
+    the GeoTools team for this great contribution, and especially Ian
+    Schneider, for getting things good to go for GeoServer.</para>
 
     <para>We are planning on redoing the way Shapefiles are added and stored
     in 1.3, as the method is a bit clunky, but we've finally got fixes in with
-    1.2.4 to handle the most annoying shapefile problems of the past. </para>
+    1.2.4 to handle the most annoying shapefile problems of the past.</para>
 
     <para>The main field of the Shapefile DataStore is the url. A url is just
     a location, it need not be an online location (though it can be). In the
@@ -164,14 +164,14 @@
     your file system. The included sample shapefiles make use of the first
     way, but that's because we have no idea where you might put GeoServer, so
     can not refer to them on your file system, since we don't know the
-    absolute location. </para>
+    absolute location.</para>
 
     <para>All file url's that start with file:data/ are interpreted by
     GeoServer as relative ones. This means that GeoServer will figure out the
     root directory for you automatically. This is best for those wanting to
     transfer a GeoServer configuration to another computer, as you can just
     include all the Shapefiles that are needed and refer to them relatively.
-    An example of this is the states shapefile, its url is: </para>
+    An example of this is the states shapefile, its url is:</para>
 
     <programlisting>file:data/featureTypes/states/states.shp </programlisting>
 
@@ -180,16 +180,15 @@
     <para>Note that the web admin tool does some magic as to where to place
     the files. If you are adding a new shapefile we recommend that you put it
     in the featureTypes directory named datastoreid_shapefileName where
-    datastoreid is the value you assign it when you create the new datastore
-    (picture?), and shapefileName is the name of the actual file. Doing this
-    has the nice effect of creating the configuration files in the same
-    directory as the actual shapefiles, and thus making all directly available
-    for download from the same spot (if you don't do this everything will
-    still work, the files will just be in different locations, unless you move
-    the generated config files back to your shapefile directory). Which brings
-    up the other nice effect of using the relative locations, users can
-    directly download the shapefiles, by just accessing it through the web.
-    Try going to: </para>
+    datastoreid is the value you assign it when you create the new datastore,
+    and shapefileName is the name of the actual file. Doing this has the nice
+    effect of creating the configuration files in the same directory as the
+    actual shapefiles, and thus making all directly available for download
+    from the same spot (if you don't do this everything will still work, the
+    files will just be in different locations, unless you move the generated
+    config files back to your shapefile directory). Which brings up the other
+    nice effect of using the relative locations, users can directly download
+    the shapefiles, by just accessing it through the web. Try going to:</para>
 
     <programlisting><ulink
         url="http://localhost:8080/geoserver/data/featureTypes/bc_roads/">http://localhost:8080/geoserver/data/featureTypes/bc_roads/</ulink></programlisting>
@@ -210,7 +209,7 @@
     <programlisting>file:/C:/Documents and Settings/Chris/My Documents/shapefiles/states.shp</programlisting>
 
     <para>Notice the drive letter is specified, followed by a typical file
-    path. </para>
+    path.</para>
 
     <para>In Linux you would not specify the drive letter, just the location
     on the file system:</para>
@@ -218,18 +217,17 @@
     <programlisting>file:/home/cholmes/shapefiles/states.shp</programlisting>
 
     <para>Note that a consequence of using the Url is that you actually can
-    refer to a shapefile that is online (find a sample one?). We certainly
-    don't recommend it, you should instead download the file to the same
-    computer GeoServer is running on, so you're not sending network requests
-    every time. But it is an interesting example of how you can spread your
-    resources around and have GeoServer centralize them and share them with
-    the world. </para>
+    refer to a shapefile that is online. We certainly don't recommend it, you
+    should instead download the file to the same computer GeoServer is running
+    on, so you're not sending network requests every time. But it is an
+    interesting example of how you can spread your resources around and have
+    GeoServer centralize them and share them with the world.</para>
 
     <para>There are two other optional parameters for Shapefiles. The memory
     mapped buffer should generally be set to true, it's more for programmers.
     The dbf charset parameter specifies a Character Set to be used to read the
     DBF file (the file that contains the attributes of the Shapefile). The
-    default is ISO-8859-1. </para>
+    default is ISO-8859-1.</para>
 
     <section>
       <title>Indexed Shapefile</title>
@@ -246,7 +244,7 @@
       index parameter to true. For more details please download the file from
       the DataStore Extras section, <ulink url="???">here</ulink>. It will
       have complete instructions on how to install it. This will be a default
-      for 1.3. </para>
+      for 1.3.</para>
     </section>
   </section>
 
@@ -278,7 +276,7 @@
     completely portable JDBC library, that runs as a thin client on any
     computer. If you don't have Oracle installed on your computer, and/or are
     not an Oracle expert and know exactly how an OCI connection works, then we
-    recommend you use this one. </para>
+    recommend you use this one.</para>
 
     <para>Often GeoServer will be installed on a computer that has all the OCI
     (Oracle Call Interface) drivers needed for a thick connection (such as
@@ -289,7 +287,7 @@
     of taking a host, port, and instance params it uses an 'alias'. This alias
     can be found in $ORACLE_HOME/network/admin/tnsnames.ora. Note that if you
     are using the OCI you must use the classes12.jar or ojdbc14.jar found in
-    your $ORACLE_HOME/jdbc/lib directory. </para>
+    your $ORACLE_HOME/jdbc/lib directory.</para>
 
     <para>All Oracle DataStores make use of the following parameters:</para>
 
@@ -345,7 +343,7 @@
 
     <para>Additionally, a standard JDBC connection will make use of the
     following parameters to specify the machine that Oracle is running on, and
-    the port and instance to connect to. </para>
+    the port and instance to connect to.</para>
 
     <informaltable>
       <tgroup cols="2">
@@ -389,14 +387,14 @@
     <para>An OCI connection does not need that information, it uses the
     'alias', which contains all the connection information, and indeed is
     specially configured for it. As we mentioned earlier this alias can be
-    found in </para>
+    found in</para>
 
     <programlisting>$ORACLE_HOME/network/admin/tnsnames.ora</programlisting>
 
     <para>We have also had some success with leaving the alias as an empty
-    string, it seems to find the appropriate default. </para>
+    string, it seems to find the appropriate default.</para>
 
-    <para>So the param is: </para>
+    <para>So the param is:</para>
 
     <informaltable>
       <tgroup cols="2">
@@ -415,7 +413,7 @@
             <entry>alias</entry>
 
             <entry>The connection alias from tnsnames.ora used to connect
-            with. </entry>
+            with.</entry>
           </row>
         </tbody>
       </tgroup>
@@ -460,7 +458,7 @@
     different versions of ArcSDE. The DataStore was contributed by and
     maintained by Gabriel Roldán, testing against ArcSDE 8.3. We got a number
     of good bugs fixed for 1.2.3, so please let us know if you encounter
-    problems, and we will do our best to fix them. </para>
+    problems, and we will do our best to fix them.</para>
 
     <para>To connect to an ArcSDE instance you must have the following
     parameters:</para>
@@ -514,7 +512,7 @@
     </informaltable>
 
     <para>As with PostGIS and Oracle configuration of the files directly also
-    needs a 'dbtype' parameter equal to 'arcsde'. </para>
+    needs a 'dbtype' parameter equal to 'arcsde'.</para>
 
     <para>There are also a number of optional parameters to configure the
     ArcSDE connection 'pool'. GeoTools makes use of a number of connections,
@@ -563,14 +561,14 @@
             <entry>pool.increment</entry>
 
             <entry>The number of new connections to add to the pool when
-            incrementing. One is most likely fine. </entry>
+            incrementing. One is most likely fine.</entry>
           </row>
 
           <row>
             <entry>pool.timeOut</entry>
 
             <entry>The amount of time that a connection request should wait
-            for an unused connection before failing. </entry>
+            for an unused connection before failing.</entry>
           </row>
         </tbody>
       </tgroup>
@@ -581,7 +579,7 @@
     been recently tested, it requires an upgrade to the java sdk, you must
     replace jsde_sdk-8.3.jar in the GeoServer lib directory with the
     equivalent from SDE 9. We have not found it publicly distributed yet, once
-    we do we will add it to the default GeoServer download. </para>
+    we do we will add it to the default GeoServer download.</para>
 
     <para>ArcSDE 9 has also been recently tested, it requires an upgrade to
     the java sdk, you must replace jsde_sdk-8.3.jar in the GeoServer lib

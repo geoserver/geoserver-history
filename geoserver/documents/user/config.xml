@@ -54,7 +54,7 @@
         <title></title>
 
         <screenshot><screeninfo></screeninfo> <mediaobject>
-        <imageobject><imagedata
+        <imageobject><imagedata align="center"
         fileref="../images/welcome.jpg"></imagedata></imageobject>
         </mediaobject></screenshot>
       </figure>
@@ -85,16 +85,8 @@
       GeoServer we require a log-in to access the Admin and Config sections.
       Attempting to click on either from the start page will take you to the
       log-in page if you are not already logged in, or you can click on the
-      login link in upper right corner. The Log In page looks as
-      follows:</para>
-
-      <figure>
-        <title></title>
-
-        <screenshot><screeninfo></screeninfo> <mediaobject>
-        <imageobject><imagedata fileref="???"></imagedata></imageobject>
-        </mediaobject></screenshot>
-      </figure>
+      login link in upper right corner. This should take you to the log-in
+      page.</para>
 
       <para>At this point there is only one username and password for the
       application. In the future we hope to have multiple roles and profiles,
@@ -132,7 +124,7 @@ password: geoserver</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="../images/apply-button.jpg" />
+          <imagedata align="center" fileref="../images/apply-button.jpg" />
         </imageobject>
       </mediaobject>
 
@@ -145,7 +137,7 @@ password: geoserver</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="../images/save-button.jpg" />
+          <imagedata align="center" fileref="../images/save-button.jpg" />
         </imageobject>
       </mediaobject>
 
@@ -190,7 +182,7 @@ password: geoserver</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="../images/config.jpg" />
+        <imagedata align="center" fileref="../images/config.jpg" />
       </imageobject>
     </mediaobject>
 
@@ -457,12 +449,12 @@ password: geoserver</programlisting>
       These can be easily defined to ensure simple things like no 0 length
       geometries, and no dangling lines. But it can also express more complex
       tests, like ensuring that no streets overlap with defined houses, and
-      that the street name is defined in a Gazetteer. </para>
+      that the street name is defined in a Gazetteer.</para>
 
       <para>The Validation configuration is accessed in the WFS section. For
       1.2.4 we don't have time to port and improve the validation guide, so
       for now just refer to the document created by Refractions, found <ulink
-      url="ValidationUserGuide.pdf">here</ulink>. </para>
+      url="ValidationUserGuide.pdf">here</ulink>.</para>
     </section>
   </section>
 </article>

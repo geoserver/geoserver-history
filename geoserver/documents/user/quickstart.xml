@@ -18,13 +18,13 @@
 
     <listitem>
       <para>Download and install geoserver-1.2.*-bin.zip or
-      geoserver-1.2.*.exe. </para>
+      geoserver-1.2.*.exe.</para>
     </listitem>
 
     <listitem>
       <para>Start GeoServer. With the windows installer you should have
-      specified a short cut location, for linux shell scripts will be
-      $GEOSERVER_HOME/bin</para>
+      specified a start menu short cut location, for linux shell scripts will
+      be in $GEOSERVER_HOME/bin</para>
     </listitem>
 
     <listitem>
@@ -53,15 +53,18 @@
     </listitem>
   </orderedlist>
 
-  <para>Congratulations now have a working GeoServer installation!</para>
+  <para>Congratulations you now have a working GeoServer installation!</para>
 
-  <para>The User Guides provide a series of walkthroughs using your new
-  GeoServer installation. If you want to make use of the WMS then you should
-  install <ulink
+  <para>The user documentation provide a series of walkthroughs using your new
+  GeoServer installation, the <ulink url="config.html">Configuration</ulink>
+  page is a good place to start.. If you want to make use of the WMS
+  (visualization) then you should install <ulink
   url="http://java.sun.com/products/java-media/jai/">JAI</ulink> and the
-  <ulink url="http://java.sun.com/developer/earlyAccess/jai_imageio/">Image
-  I/O extension</ulink>, see the WMS documentation page for more information.
-  For additional support an active user community is available by joining the
+  <ulink
+  url="http://java.sun.com/products/java-media/jai/downloads/download-iio-1_0_01.html">Image
+  I/O extension</ulink>, see the <ulink
+  url="installation.html">installation</ulink> page for more information. For
+  additional support an active user community is available by joining the
   GeoServer <ulink url="https://sourceforge.net/mail/?group_id=25086">mailing
   list</ulink>. We also strongly encourage you to submit bugs and improvements
   you would like to see to our <ulink

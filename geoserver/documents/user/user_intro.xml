@@ -13,45 +13,40 @@
     data with others, we feel you are a part of what we are hoping to
     accomplish, and welcome you. We believe that the open sharing of
     information, and especially spatial data, is essential to tackle many of
-    the problems of the world. GeoServer aspires to be the <ulink
+    the problems of the world. </para>
+
+    <para>GeoServer aspires to be the <ulink
     url="http://www.apache.org">Apache</ulink> of spatial data sharing, by
     providing an open source, freely available implementation of the <ulink
-    url="http://www.opengis.org">OpenGIS Consortium's</ulink> (OGC) Web
-    Feature Service (WFS) and Web Map Service (WMS) specifications. We hope to
-    enable greater geographic interoperability by enforcing OGC standards and
-    lowering the barriers to entry for geographic data providers interested in
-    sharing their data. Even if you evaluate GeoServer and decide that another
-    product suits your needs better, then by all means use it, we don't
-    pretend that our software will meet every use (though we encourage you to
-    help it do so). But if you do, please use one that fully implements OGC
-    standards. The GeoServer Project itself strives to be as open as possible,
+    url="http://www.opengeospatial.org">OpenGeospatial Consortium's</ulink>
+    (OGC) Web Feature Service (WFS) and Web Map Service (WMS) specifications.
+    We hope to enable greater geographic interoperability by enforcing OGC
+    standards and lowering the barriers to entry for geographic data providers
+    interested in sharing their data. Even if you evaluate GeoServer and
+    decide that another product suits your needs better, then by all means use
+    it, we don't pretend that our software will meet every use (though we
+    encourage you to help it do so). But if you do, please use one that fully
+    implements OGC standards. </para>
+
+    <para>The GeoServer Project itself strives to be as open as possible,
     making it easy for any one to contribute, be it with feature suggestions,
     bug reports, patches, documentation, encouragement, funding, development,
     design, translation, or more. We want GeoServer to be collaboratively
     built, so that it can effectively meet a variety of needs, hopefully
     leading to a world of more open technology and open spatial data. To that
     end we ask that if you do find the software useful you try to find a way
-    to give back, as good users are our most valuable resource. See the
-    contributing section (how to help section? Link) for more on this, but we
-    would like to dispel the notion right here that it is only through writing
-    code that you can contribute. There are many, many ways that you can help
-    us build a better geographic data server, and some of them only take a
-    couple of minutes. If you have had enough of our blathering at this point
-    and just want to get started you can skip to the installation section (or
-    the quickstart section, but if you're really impatient you've probably
-    already done that). For more about the history, philosophies, and future
-    (link all of these) of the GeoServer Project please read on. </para>
-
-    <para>&lt;cut&gt;GeoServer has an active user community that you can
-    engage by joining the GeoServer <ulink
-    url="https://sourceforge.net/mail/?group_id=25086">mailing list</ulink>
-    and asking questions or making suggestions.If you create a user account at
-    this site, you may participate in forums and vote in polls as well. We
-    also strongly encourage you to submit bugs and improvements you would like
-    to see to our , as the only way we can improve GeoServer is with your
-    feedback. You will have to create an account to use it, but your email
-    address will not be used except to notify you when your issue is worked on
-    &lt;/cut&gt;.</para>
+    to give back, as good users are our most valuable resource. See the <ulink
+    url="contribution.html">How to Help</ulink> section for more on this, but
+    we would like to dispel the notion right here that it is only through
+    writing code that you can contribute. There are many, many ways that you
+    can help us build a better geographic data server, and some of them only
+    take a couple of minutes. If you have had enough of our blathering at this
+    point and just want to get started you can skip to the <ulink
+    url="installation.html">installation</ulink> section (or the <ulink
+    url="quickstart.html">quickstart</ulink> section, but if you're really
+    impatient you've probably already done that). For more about the history,
+    philosophies, and future (link all of these) of the GeoServer Project
+    please read on.</para>
   </sect1>
 
   <sect1 id="java">
@@ -68,31 +63,34 @@
     this reason all tools in the suite must be open source and free. The first
     of these was GeoServer, which came out of a recognition that a suite of
     tools to enable citizen involvement in urban planning would be for naught
-    if they could not access any spatial data. The GeoServer Project envisions
-    a spatial data web, just like the internet, where you can search for and
-    download text data, you could simply search and browse the spatial data
-    web. Data providers would be able to publish their data straight to this
-    web, and users could directly access it, without having to specifically
-    know who might provide the data they want, contact them in some way, get
-    emailed (or sent, or pointed to a web location) some file, convert the
-    file to a format they could work in, and then actually get started on the
-    task they really want to do. At the time GeoServer was starting the
-    OpenGIS Consortium was working on the Web Feature Service standard. It
-    specifies a protocol to make spatial data directly available on the web,
-    using GML (Geographic Markup Language), an interoperable data format.
-    Happily <ulink url="http://www.refractions.net">Refractions
-    Research</ulink> had started work on <ulink
-    url="http://postgis.refractions.net">PostGIS</ulink>, giving GeoServer an
-    open source spatial database to run on top of. After wrestling with the
-    fact that an internal model of geographic features was needed, and not
-    wanting to replicate a ton of work, GeoServer found the <ulink
-    url="http://www.geotools.org">GeoTools</ulink> project, an open source GIS
-    Java toolkit. Both projects have benefited immensely from this
-    collaboration as we helped develop much of their model further, and
-    GeoTools code turned into direct GeoServer contributions, including
+    if they could not access any spatial data. </para>
+
+    <para>The GeoServer Project envisions a spatial data web, just like the
+    internet, where you can search for and download text data, you could
+    simply search and browse the spatial data web. Data providers would be
+    able to publish their data straight to this web, and users could directly
+    access it, without having to specifically know who might provide the data
+    they want, contact them in some way, get emailed (or sent, or pointed to a
+    web location) some file, convert the file to a format they could work in,
+    and then actually get started on the task they really want to do. At the
+    time GeoServer was starting the OpenGIS Consortium was working on the Web
+    Feature Service standard. It specifies a protocol to make spatial data
+    directly available on the web, using GML (Geographic Markup Language), an
+    interoperable data format. Happily <ulink
+    url="http://www.refractions.net">Refractions Research</ulink> had started
+    work on <ulink url="http://postgis.refractions.net">PostGIS</ulink>,
+    giving GeoServer an open source spatial database to run on top of. </para>
+
+    <para>After wrestling with the fact that an internal model of geographic
+    features was needed, and not wanting to replicate a ton of work, GeoServer
+    found the <ulink url="http://www.geotools.org">GeoTools</ulink> project,
+    an open source GIS Java toolkit. Both projects have benefited immensely
+    from this collaboration as we helped develop much of their model further,
+    and GeoTools code turned into direct GeoServer contributions, including
     support for Shapefiles, Oracle, and ArcSDE, as well as the WMS that is now
-    an integrated part of GeoServer. In 2003 GeoServer made its way to 1.0 as
-    part of the OGC’s <ulink
+    an integrated part of GeoServer. </para>
+
+    <para>In 2003 GeoServer made its way to 1.0 as part of the OGC’s <ulink
     url="http://cite.occamlab.com/tsOGC/">CITE</ulink> project, where we
     helped develop a conformance testing suite and were named the WFS
     reference implementation. Then we went back to the drawing board in order
@@ -120,17 +118,19 @@
     of us could alone. We take the full open source development model
     extremely seriously, far beyond just the license, we believe in creating a
     community working together to build GeoServer. A good representation of
-    this philosophy can be found in Eric Raymond’s The Cathedral and the
-    Bazaar (link). GeoServer accepts most all contributions, even uses far
-    from our core mission, and allows any one to build upon on the code. We
-    treat our users as co-developers, as they are our most valuable resource.
-    And we believe that a number of different companies, governments, NGO’s,
-    universities and R+D groups can all use and contribute to GeoServer for
-    their own ends, making the software much better for all. This is already
-    very much happening, as the major fundings for GeoServer have come from
-    very diverse sources. We are working on some documents to show exactly how
-    each can use and further build GeoServer together (check the wiki), but
-    for now we just want to emphasize that the decision structure for the
+    this philosophy can be found in Eric Raymond’s <ulink
+    url="http://www.catb.org/~esr/writings/cathedral-bazaar/">The Cathedral
+    and the Bazaar</ulink> (link). GeoServer accepts most all contributions,
+    even uses far from our core mission, and allows any one to build upon on
+    the code. We treat our users as co-developers, as they are our most
+    valuable resource. And we believe that a number of different companies,
+    governments, NGO’s, universities and R+D groups can all use and contribute
+    to GeoServer for their own ends, making the software much better for all.
+    This is already very much happening, as the major fundings for GeoServer
+    have come from very diverse sources. We are working on some documents to
+    show exactly how each can use and further build GeoServer together (check
+    the <ulink url="http://docs.codehaus.org/display/GEOS/Home">wiki</ulink>),
+    but for now we just want to emphasize that the decision structure for the
     project is extremely open. It is a complete meritocracy, and anyone can
     influence the direction. TOPP is committed to employing someone to focus
     on keeping GeoServer moving, doing the day to day work of keeping the
@@ -140,27 +140,28 @@
     transfer to a Project Management Committee (PMC) like GeoTools has, when
     appropriate. But even if you do not become a major contributor, you still
     very much have a say on the direction of GeoServer, and there are many,
-    many smaller ways in which you can contribute. The other way that this
-    core belief manifests itself is that we leverage as much already exisiting
-    work as possible, and strive to work with other open source projects as
-    much as possible. We’ve had varying success with this over the years, from
-    GeoTools where we both have benefitted incredibly from close
-    collaboration, to attempts to join up with other projects that were not
-    quite as successful. But we believe strongly that the extra up front
-    effort to just set up a collaboration pays off handsomely, as working with
-    GeoTools has proven. So please get in touch if you are interested in
-    collaboration. Oftentimes it won’t make sense to work directly with
-    GeoServer, but working together at the GeoTools level can gain us almost
-    all the benefits of direct collaboration, as each project’s efforts will
-    feed the others. If you are working in another language then we encourage
-    you to use the open OGC interfaces, and to test against GeoServer to make
-    sure interoperability is actually achieved (and please report any bugs on
-    the GeoServer end!). Beyond direct collaboration, we also make use of as
-    many other open source projects as possible. GeoServer would simply not be
-    possible without Jetty, PostGIS, Postgresql, Tomcat, Ant, STRUTS, xerces,
-    wkb4j, and more (links). One of the greatest thing about open source is
-    that we do not need to replicate work, we can just leverage the great work
-    of others. </para>
+    many smaller ways in which you can contribute. </para>
+
+    <para>The other way that this core belief manifests itself is that we
+    leverage as much already exisiting work as possible, and strive to work
+    with other open source projects as much as possible. We’ve had varying
+    success with this over the years, from GeoTools where we both have
+    benefitted incredibly from close collaboration, to attempts to join up
+    with other projects that were not quite as successful. But we believe
+    strongly that the extra up front effort to just set up a collaboration
+    pays off handsomely, as working with GeoTools has proven. So please get in
+    touch if you are interested in collaboration. Oftentimes it won’t make
+    sense to work directly with GeoServer, but working together at the
+    GeoTools level can gain us almost all the benefits of direct
+    collaboration, as each project’s efforts will feed the others. If you are
+    working in another language then we encourage you to use the open OGC
+    interfaces, and to test against GeoServer to make sure interoperability is
+    actually achieved (and please report any bugs on the GeoServer end!).
+    Beyond direct collaboration, we also make use of as many other open source
+    projects as possible. GeoServer would simply not be possible without
+    Jetty, PostGIS, Postgresql, Tomcat, Ant, STRUTS, xerces, wkb4j, and more.
+    One of the greatest thing about open source is that we do not need to
+    replicate work, we can just leverage the great work of others.</para>
   </sect1>
 
   <sect1 id="database">
@@ -181,13 +182,14 @@
     is the older list, and many people joined it before the users list was
     active. It also gets updates from the JIRA task tracker. The
     subscribe/unscribe interface and the archives for the lists are available
-    <ulink url="???">here</ulink>. One thing we definitely want to emphasize
-    is to use the list for most all communication, try not to email individual
-    developers. And be warned that if you do email individual developers they
-    are likely to cc the list (unless you explicitly ask them not to). This is
-    part of our belief in open collaboration - there are likely other people
-    who have the same questions, and they would like to be able to at least
-    read the archives and attempt to find the answer.</para>
+    <ulink url="http://sourceforge.net/mail/?group_id=25086">here</ulink>. One
+    thing we definitely want to emphasize is to use the list for most all
+    communication, try not to email individual developers. And be warned that
+    if you do email individual developers they are likely to cc the list
+    (unless you explicitly ask them not to). This is part of our belief in
+    open collaboration - there are likely other people who have the same
+    questions, and they would like to be able to at least read the archives
+    and attempt to find the answer.</para>
 
     <para>The second primary communication point is the task tracker. It keeps
     track of all bugs, feature requests, tasks, and issues, ensuring that the
@@ -198,10 +200,14 @@
     have to create an account and log in. We promise this is the hardest part
     of figuring out the task tracker. And it does have a purpose, as after you
     have an account JIRA will notify you whenever any modifications have been
-    made to the issue you reported. To create an account click on log in
-    (link, redo this)… After you are logged in you should go back to the
-    GeoServer project (link), and then there should appear a link to ‘report
-    issue’ (again, check this). </para>
+    made to the issue you reported. To create an account just go <ulink
+    url="http://jira.codehaus.org/secure/Signup!default.jspa">here</ulink>.
+    Then be sure you are logged in and go to the <ulink
+    url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">GeoServer
+    JIRA page</ulink>. After you are logged in there should be a links at the
+    top to 'create new issue'. You also will have many more options when
+    viewing issues, like 'watch', to get email notifications on updates to
+    other issues, or 'comment'. </para>
   </sect1>
 
   <sect1 id="geoserver">
@@ -222,22 +228,22 @@
     but at commercial prices. Refractions Research is foremost among these,
     they have made great contributions to GeoServer, and thus know the
     software quite well. See their <ulink
-    url="http://www.refractions.net/geoserver">GeoServer support page</ulink>
-    for more information. They can assist directly with installations,
-    configurations, customizations, and telephone support. And as more
-    companies are contributing to GeoServer we are slowly building a network
-    in many countries that can offer local, customized support on GeoServer.
-    This model is actually much better than the normal commercial model, since
-    you pay directly for what you get. You don’t get support as a side effect
-    of buying an expensive software license (though often you have to pay far
-    more for support even if you have the license), instead you get to use the
-    software for free, and get access to the lists of developers, and only if
-    that is not sufficient then you can pay for support. Or you can retain a
-    company for prompt support whenever you need it. Note that this situation
-    is the case for most any successful open source project, there are most
-    always companies that will provide most any level of support for you, if
-    you are willing for free. Just because you can get lots of support for
-    free does not mean that you can’t get even more, if you pay a little
-    money. </para>
+    url="http://www.refractions.net/geoserver/support.html">GeoServer support
+    page</ulink> for more information. They can assist directly with
+    installations, configurations, customizations, and telephone support. And
+    as more companies are contributing to GeoServer we are slowly building a
+    network in many countries that can offer local, customized support on
+    GeoServer. This model is actually much better than the normal commercial
+    model, since you pay directly for what you get. You don’t get support as a
+    side effect of buying an expensive software license (though often you have
+    to pay far more for support even if you have the license), instead you get
+    to use the software for free, and get access to the lists of developers,
+    and only if that is not sufficient then you can pay for support. Or you
+    can retain a company for prompt support whenever you need it. Note that
+    this situation is the case for most any successful open source project,
+    there are most always companies that will provide most any level of
+    support for you, if you are willing for free. Just because you can get
+    lots of support for free does not mean that you can’t get even more, if
+    you pay a little money.</para>
   </sect1>
 </article>

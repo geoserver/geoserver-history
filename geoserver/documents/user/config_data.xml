@@ -28,7 +28,7 @@
   <para>This will take you to a page where you can select Namespace, Stores,
   Style or FeatureType. Once again, if doing a complete GeoServer
   configuration we recommend doing the four sections of Data from top to
-  bottom. </para>
+  bottom.</para>
 
   <section>
     <title>Namespace</title>
@@ -58,7 +58,7 @@
     'road' can be, for example. These schemas should have their own
     namespaces. GeoServer comes with a few sample namespaces, but keep in mind
     these are just samples. If you are serving a public GeoServer it is
-    essential to define your own namespace. </para>
+    essential to define your own namespace.</para>
 
     <para>The default sample namespace is</para>
 
@@ -73,7 +73,7 @@
     identifiers on a space that you own. But it could be valid, since as we
     said a URI is just an identifier, it need not point to a location). So we
     recommend that you define the URI to perhaps the same URL that it is
-    served from, with perhaps a different trailing identifier, such </para>
+    served from, with perhaps a different trailing identifier, such</para>
 
     <programlisting>http://www.myblorg.org/geo</programlisting>
 
@@ -117,7 +117,7 @@ xmlns:gml="http://www.opengis.net/gml"
     you want your featureType to live in. Also note that GeoServer completely
     handles multiple namespaces, doing all the work for you, so you just need
     to define them, and GeoServer will return all the appropriate imports and
-    XML namespacing in the DescribeFeatureType responses. </para>
+    XML namespacing in the DescribeFeatureType responses.</para>
 
     <para>In GeoServer the prefix is very important, as it is also used
     internally. In true XML the namespace mapping should be completely
@@ -161,7 +161,7 @@ xmlns:gml="http://www.opengis.net/gml"
     without using its prefix. This is to some extent a holdover to the
     transition from single namespace to multiple namespaces. And the default
     will also be at the top of the drop down box when you define a DataStore,
-    saving you an extra mouse click. </para>
+    saving you an extra mouse click.</para>
   </section>
 
   <section>
@@ -180,11 +180,11 @@ xmlns:gml="http://www.opengis.net/gml"
     with the rest we define the connection parameters in the Store and the
     rest in the FeatureType. Each available DataStore is discussed separately,
     as each has its own parameters and tricks, and you are likely only
-    interested in one or two. But all have a few common parameters. </para>
+    interested in one or two. But all have a few common parameters.</para>
 
     <para>To define a new DataStore, click on Stores from the main Data page,
     and then hit the New button. This will take you to a page like the
-    following: </para>
+    following:</para>
 
     <mediaobject>
       <imageobject>
@@ -209,7 +209,7 @@ xmlns:gml="http://www.opengis.net/gml"
     select it, and then fill in the appropriate parameters.</para>
 
     <para>You also need to define a DataStore ID. This is just used
-    internally, and should be unique. </para>
+    internally, and should be unique.</para>
 
     <para>After selecting the DataStore ID and the type of DataStore you would
     like to create then hit the New button and you will be taken to a page
@@ -237,11 +237,11 @@ xmlns:gml="http://www.opengis.net/gml"
     exactly the same connection parameters, but different DataStore ids and
     namespaces. We know, it's a bit hacky, but it's the best we've got, and
     changing this around requires a lot of changes in GeoTools (though it
-    should be possible if we get the arbitrary mapping of schemas correct).
-    </para>
+    should be possible if we get the arbitrary mapping of schemas
+    correct).</para>
 
     <para>Description is mostly used internally, so that other admins can get
-    extra information about the DataStore. </para>
+    extra information about the DataStore.</para>
 
     <para>As for the additional fields, they depend on the format of the data
     you wish to server. GeoServer 1.2 comes with support for four data types
@@ -266,7 +266,7 @@ xmlns:gml="http://www.opengis.net/gml"
     nastier when you get into different versions). The GeoServer project will
     do all that we can to support them, but if you require real support then
     we recommend you hire someone to do consulting on GeoServer (link to
-    section on this). </para>
+    section on this).</para>
 
     <para>We have also started offering 'DataStore Extras'. This a section of
     the download page where we offer new and experimental DataStores.
@@ -279,32 +279,34 @@ xmlns:gml="http://www.opengis.net/gml"
     example there were a number of speed improvements to the PostGIS datastore
     in 1.2.3, but instead of downloading the whole new server, you could just
     download the jar into your 1.2.0 version, and get all the improvements.
-    (General procedure for installing datastore extras?) </para>
+    (General procedure for installing datastore extras?)</para>
 
     <para>From here we recommend that you follow the configuration of the
     DataStore that you are most interested in. See the DataStore page for
     specific information on Shapefile, Indexed Shapefile, PostGIS, Oracle,
-    ArcSDE, and MySQL. </para>
+    ArcSDE, and MySQL.</para>
   </section>
 
   <section>
     <title>Style</title>
 
-    <para>A 'Style' (link to glossary?) defines the presentation of a layer in
-    the WMS. A WFS just returns the raw data, a WMS returns a picture of the
-    data, but there needs to be some way to say how you want that data to
-    look. For example you can define a style to draw roads in blue and streams
-    in black (which would be kind of weird, but you could do it). Each Layer
-    in a WMS can have a number of different styles, so that users can request
-    different views of the same data. The OpenGIS Consortium introduced a
-    specific Style Language Descriptor XML language to specify a way for users
-    to specify these views. To define a 'style' in GeoServer you must use an
-    SLD file. In 1.2 GeoServer is not yet a SLD-WMS (meaning a user can
-    specify the SLD in the request, as well as some other operations), we are
-    planning it for 1.3, but for now we use SLD to define the styles that a
-    user can request. To specify a new style you must first create an SLD
-    file. See our in progress introduction to SLD (link), and the SLD
-    specification (link), for more information. Once you have defined an SLD
+    <para>A 'Style' defines the presentation of a layer in the WMS. A WFS just
+    returns the raw data, a WMS returns a picture of the data, but there needs
+    to be some way to say how you want that data to look. For example you can
+    define a style to draw roads in blue and streams in black (which would be
+    kind of weird, but you could do it). Each Layer in a WMS can have a number
+    of different styles, so that users can request different views of the same
+    data. The OpenGIS Consortium introduced a specific Style Language
+    Descriptor XML language to specify a way for users to specify these views.
+    To define a 'style' in GeoServer you must use an SLD file. In 1.2
+    GeoServer is not yet a SLD-WMS (meaning a user can specify the SLD in the
+    request, as well as some other operations), we are planning it for 1.3,
+    but for now we use SLD to define the styles that a user can request. To
+    specify a new style you must first create an SLD file. See our in progress
+    <ulink url="http://docs.codehaus.org/display/GEOS/SLD+Intro">introduction
+    to SLD</ulink>, and the <ulink
+    url="http://www.opengeospatial.org/docs/02-070.pdf">SLD
+    specification</ulink>, for more information. Once you have defined an SLD
     file you can upload it to GeoServer. Hit the 'new' button on the styles
     page, and you will then have to specify the StyleID, which is how users
     will refer to the style when requesting it from GeoServer. Then select the
@@ -322,35 +324,13 @@ xmlns:gml="http://www.opengis.net/gml"
     Andrea Aime wrote some code to do this, but it's still buggy, and we would
     need to figure out how to run it in an applet, and how to run applets in
     STRUTS). 1.3 should see some Style improvements, as one of the main focus
-    is to make a full SLD-WMS, which will beg a few architecture changes.
-    </para>
+    is to make a full SLD-WMS, which will beg a few architecture
+    changes.</para>
   </section>
 
   <section>
     <title>FeatureType</title>
 
-    <para>coming soon!</para>
-
-    <section>
-      <title>Validation</title>
-
-      <para>GeoServer 1.2 includes the innovative Validation capabilities,
-      completed by Refractions Research, which gratefully acknowledges the
-      GeoConnections Secretariat for providing matching funds for the
-      development via the GeoInnovations program. It provides a mechanism for
-      ensuring that features edited via GeoServer are spatially clean before
-      allowing them to be inserted into the spatial backend databases. If you
-      are working using GeoServer to its full WFS-T transactional capabilities
-      we strongly recommend that you consider defining a few validation tests.
-      These can be easily defined to ensure simple things like no 0 length
-      geometries, and no dangling lines. But it can also express more complex
-      tests, like ensuring that no streets overlap with defined houses, and
-      that the street name is defined in a Gazetteer.</para>
-
-      <para>The Validation configuration is accessed in the WFS section. For
-      1.2.4 we don't have time to port and improve the validation guide, so
-      for now just refer to the document created by Refractions, found <ulink
-      url="ValidationUserGuide.pdf">here</ulink>.</para>
-    </section>
+    <para>This should be done. Silly computers lost it. </para>
   </section>
 </article>
