@@ -299,8 +299,13 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @throws IOException DOCUMENT ME!
      */
     private void writeTempFiles() throws IOException {
-        this.tempDir = new File(System.getProperty("java.io.tmpdir"));
+        final File envTmpDir = new File(System.getProperty("java.io.tmpdir"));
 
+		this.tempDir = new File(envTmpDir, "cite_test_datastore");
+		if(this.tempDir.exists())
+			this.tempDir.delete();
+		this.tempDir.mkdir();
+		
         if (!this.tempDir.exists() || !this.tempDir.isDirectory()) {
             throw new IOException(this.tempDir.getAbsolutePath()
                 + " is not a writable directory");
