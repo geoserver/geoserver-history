@@ -21,6 +21,12 @@
 	</td><td>
 		<bean:write name="validationTestEditorForm" property="plugInName"/>
 	</td></tr>
+	
+	<tr><td valign="top" align="right">
+		<bean:message key="label.plugInDescription"/>:
+	</td><td>
+		<bean:write name="validationTestEditorForm" property="plugInDescription"/>
+	</td></tr>
 
 <logic:iterate id="attribute" indexId="ctr" name="validationTestEditorForm" property="attributeKeys">
 	<tr><td align="right">
