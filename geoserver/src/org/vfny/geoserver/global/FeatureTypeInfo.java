@@ -44,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.18 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.19 2004/02/02 18:51:46 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -529,6 +529,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
             }
 
             xmlSchemaFrag = sw.toString();
+            sw.close();
         }
 
         return xmlSchemaFrag;

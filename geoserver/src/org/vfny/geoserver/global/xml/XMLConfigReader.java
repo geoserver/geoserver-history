@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.23 2004/01/31 00:27:23 jive Exp $
+ * @version $Id: XMLConfigReader.java,v 1.24 2004/02/02 18:51:46 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -184,9 +184,13 @@ public class XMLConfigReader {
         Element configElem = null;
 
         try {
-            configElem = ReaderUtils.loadConfig(new FileReader(configFile));
+        	FileReader fr = new FileReader(configFile);
+            configElem = ReaderUtils.loadConfig(fr);
+            fr.close();
         } catch (FileNotFoundException e) {
             throw new ConfigurationException(e);
+        } catch (IOException e) {
+        	throw new ConfigurationException(e);
         }
 
         LOGGER.fine("parsing configuration documents");
@@ -236,9 +240,13 @@ public class XMLConfigReader {
         Element catalogElem = null;
 
         try {
-            catalogElem = ReaderUtils.loadConfig(new FileReader(catalogFile));
+        	FileReader fr = new FileReader(catalogFile);
+            catalogElem = ReaderUtils.loadConfig(fr);
+            fr.close();
         } catch (FileNotFoundException e) {
             throw new ConfigurationException(e);
+        } catch (IOException e) {
+        	throw new ConfigurationException(e);
         }
 
         LOGGER.info("loading catalog configuration");
@@ -852,17 +860,16 @@ public class XMLConfigReader {
         }
 
         Element featureElem = null;
-        Reader reader = null;
+
 
         try {
-            reader = new FileReader(infoFile);
-        } catch (FileNotFoundException fileNotFound) {
-            throw new ConfigurationException("Could not read info file:"
-                + infoFile, fileNotFound);
-        }
-
-        try {
+        	Reader reader = null;
+        	reader = new FileReader(infoFile);
             featureElem = ReaderUtils.loadConfig(reader);
+            reader.close();
+        } catch (FileNotFoundException fileNotFound) {
+        	throw new ConfigurationException("Could not read info file:"
+        			+ infoFile, fileNotFound);
         } catch (Exception erk) {
             throw new ConfigurationException("Could not parse info file:"
                 + infoFile, erk);
@@ -1090,20 +1097,17 @@ public class XMLConfigReader {
         throws ConfigurationException {
         schemaFile = ReaderUtils.checkFile(schemaFile, false);
 
-        Reader reader;
-
-        try {
-            reader = new FileReader(schemaFile);
-        } catch (FileNotFoundException e) {
-            LOGGER.log(Level.FINEST, e.getMessage(), e);
-            throw new ConfigurationException("Could not open schmea file:"
-                + schemaFile, e);
-        }
-
         Element elem = null;
 
         try {
+        	Reader reader;
+        	reader = new FileReader(schemaFile);
             elem = ReaderUtils.loadConfig(reader);
+            reader.close();
+        } catch (FileNotFoundException e) {
+        	LOGGER.log(Level.FINEST, e.getMessage(), e);
+        	throw new ConfigurationException("Could not open schmea file:"
+        			+ schemaFile, e);
         } catch (Exception erk) {
             throw new ConfigurationException("Could not parse schema file:"
                 + schemaFile, erk);

@@ -29,8 +29,8 @@ import javax.xml.transform.TransformerException;
  * ArgHelper purpose.
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
  */
 public class ArgHelper {
     private static final Mapping[] argumentTypeMappings = {
@@ -184,8 +184,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected interface Mapping {
         /**
@@ -278,8 +278,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      *
      * @see Mapping
      */
@@ -328,7 +328,9 @@ public class ArgHelper {
         public Object getInstance(String elem) {
         	Element value;
 			try {
-				value = ReaderUtils.loadConfig(new StringReader(elem));
+				StringReader sr = new StringReader(elem);
+				value = ReaderUtils.loadConfig(sr);
+				sr.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -440,8 +442,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class GeometryMapping implements Mapping {
         /**
@@ -483,7 +485,9 @@ public class ArgHelper {
         public Object getInstance(String value) {
         	Element elem;
 			try {
-				elem = ReaderUtils.loadConfig(new StringReader(value));
+				StringReader sr = new StringReader(value);
+				elem = ReaderUtils.loadConfig(sr);
+				sr.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -563,8 +567,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class EnvelopeMapping implements Mapping {
         /**
@@ -735,8 +739,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class ShortMapping implements Mapping {
         /**
@@ -842,8 +846,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class IntegerMapping implements Mapping {
         /**
@@ -947,8 +951,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class LongMapping implements Mapping {
         /**
@@ -1052,8 +1056,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class FloatMapping implements Mapping {
         /**
@@ -1157,8 +1161,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class DoubleMapping implements Mapping {
         /**
@@ -1262,8 +1266,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class DateMapping implements Mapping {
         /**
@@ -1391,8 +1395,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class URIMapping implements Mapping {
         /**
@@ -1505,8 +1509,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class BooleanMapping implements Mapping {
         /**
@@ -1610,8 +1614,8 @@ public class ArgHelper {
      * </p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.9 2004/01/31 00:24:06 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: ArgHelper.java,v 1.10 2004/02/02 18:51:45 dmzwiers Exp $
      */
     protected static class StringMapping implements Mapping {
         /**

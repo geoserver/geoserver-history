@@ -19,8 +19,8 @@ import javax.xml.parsers.ParserConfigurationException;
  * Load validation configuration from XML.
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: XMLReader.java,v 1.8 2004/01/31 00:24:06 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: XMLReader.java,v 1.9 2004/02/02 18:51:45 dmzwiers Exp $
  */
 public class XMLReader {
     /**
@@ -112,47 +112,6 @@ public class XMLReader {
         } catch (IOException ioe) {
             throw new ValidationException("Cannot parse the inputSource: Cannot configure the parser.",
                 ioe);
-        }
-
-        return dto;
-    }
-
-    /**
-     * readTestDTO purpose.
-     * 
-     * <p>
-     * This method is intended to read an XML Test (testSuiteSchema.xsd) into a
-     * TestDTO object.
-     * </p>
-     *
-     * @param inputSource A reader which contains a copy of a valid Test
-     *        desciption.
-     * @param plugIns A name of plugin names to valid plugin DTOs
-     *
-     * @return the resulting dto based on the input provided.
-     *
-     * @throws ValidationException DOCUMENT ME!
-     */
-    public static TestDTO readTest(Reader inputSource, Map plugIns)
-        throws ValidationException {
-        TestDTO dto = null;
-
-        try {
-            Element elem = null;
-
-            try {
-                elem = ReaderUtils.loadConfig(inputSource);
-            } catch (ParserConfigurationException e) {
-                throw new ValidationException("An error occured loading the XML parser.",
-                    e);
-            } catch (SAXException e) {
-                throw new ValidationException("An error occured loading the XML parser.",
-                    e);
-            }
-
-            dto = loadTestDTO(elem, plugIns);
-        } catch (IOException e) {
-            throw new ValidationException("Error reading a test", e);
         }
 
         return dto;
@@ -376,6 +335,7 @@ public class XMLReader {
 	                FileReader fr = new FileReader(fileList[i]);
 	                PlugInDTO dto = XMLReader.readPlugIn(fr);
 	                r.put(dto.getName(), dto);
+	                fr.close();
 	            }
 	        }
 	    } catch (IOException e) {
@@ -415,6 +375,7 @@ public class XMLReader {
 	                FileReader fr = new FileReader(fileList[i]);
 	                TestSuiteDTO dto = XMLReader.readTestSuite(fr, plugInDTOs);
 	                r.put(dto.getName(), dto);
+	                fr.close();
 	            }
 	        }
 	    } catch (IOException e) {
@@ -423,47 +384,5 @@ public class XMLReader {
 	    }
 	
 	    return r;
-	}
-	
-	public static ArgumentDTO readArgument(Reader r)throws ValidationException{
-		Element elem = null;
-		try{
-			elem =ReaderUtils.loadConfig(r);
-		}catch(Exception e){
-			throw new ValidationException("An io error occured while loading the plugin's",
-					e);
-		}
-		boolean _fixed = false;
-		String key = "";
-
-		try {
-			_fixed = ReaderUtils.getBooleanAttribute(elem,"final",false);
-			key = ReaderUtils.getChildText(elem, "name", true);
-		} catch (SAXException e) {
-			throw new ValidationException(
-					"Error reading argument :name required");
-		}
-
-		NodeList nl2 = elem.getElementsByTagName("*");
-
-		if (nl2.getLength() != 2) {
-			throw new ValidationException("Invalid Argument for argument \"" + key + "\"");
-		}
-
-		if (((Element) nl2.item(0)).getTagName().equals("name")) {
-			elem = (Element) nl2.item(1);
-		} else {
-			elem = (Element) nl2.item(0);
-		}
-
-		// elem whould have the value now
-		Object val = ArgHelper.getArgumentInstance(elem.getTagName()
-				.trim(), elem);
-		ArgumentDTO adto = new ArgumentDTO();
-		adto.setName(key);
-		adto.setValue(val);
-		adto.setFinal(_fixed);
-		
-		return adto;
 	}
 }
