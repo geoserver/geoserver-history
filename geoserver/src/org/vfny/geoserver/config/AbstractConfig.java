@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: AbstractConfig.java,v 1.1.2.5 2003/11/17 09:00:24 jive Exp $
+ * @version $Id: AbstractConfig.java,v 1.1.2.6 2003/11/19 18:06:26 groldan Exp $
  */
 public abstract class AbstractConfig {
     /** DOCUMENT ME! */
@@ -176,6 +176,20 @@ public abstract class AbstractConfig {
         }
     }
 
+    public Element getFirstChildElement(Element root)
+    {
+      Node child = root.getFirstChild();
+
+      while (child != null) {
+          if (child.getNodeType() == Node.ELEMENT_NODE)
+          {
+            return (Element) child;
+          }
+          child = child.getNextSibling();
+      }
+      return null;
+    }
+
     /**
      * returns the first Element that is a direct child of <code>root</code>
      * named <code>name</code>
@@ -322,7 +336,7 @@ public abstract class AbstractConfig {
         if( map.containsKey( key )){
             return (String) map.get( key );
         }
-        return null;               
+        return null;
     }
     public static File get( Map map, String key, File defaultFile ){
         if( map.containsKey( key )){
@@ -341,7 +355,7 @@ public abstract class AbstractConfig {
             return (List) map.get( key );
         }
         return defaultList;
-    }    
+    }
     public static int get( Map map, String key, int defaultValue ){
         if( map.containsKey( key )){
             return Integer.parseInt( (String) map.get( key ));
@@ -357,23 +371,23 @@ public abstract class AbstractConfig {
         else {
             return defaultValue;
         }
-    }    
+    }
     public static Charset get( Map map, String key, Charset defaultCharSet ){
         if( map.containsKey( key )){
             return (Charset) map.get( key );
         }
-        return defaultCharSet;        
+        return defaultCharSet;
     }
     public static Level get( Map map, String key, Level defaultLevel ){
         if( map.containsKey( key )){
-            return (Level) map.get( key );            
-        }        
-        return defaultLevel;   
+            return (Level) map.get( key );
+        }
+        return defaultLevel;
     }
     public static URL get( Map map, String key, URL defaultUrl ){
         if( map.containsKey( key )){
             return (URL) map.get( key );
         }
         return defaultUrl;
-    }    
+    }
 }

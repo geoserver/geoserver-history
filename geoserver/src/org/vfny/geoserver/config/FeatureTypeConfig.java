@@ -19,10 +19,10 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.6 2003/11/17 09:00:24 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.7 2003/11/19 18:06:27 groldan Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
-
+    /** DOCUMENT ME!  */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
     /** DOCUMENT ME! */
@@ -38,7 +38,7 @@ public class FeatureTypeConfig extends BasicConfig {
     private String SRS;
 
     /** DOCUMENT ME! */
-    private Filter definitionQuery;
+    private Filter definitionQuery = Filter.NONE;
 
     /** DOCUMENT ME! */
     private FeatureType schema;
@@ -50,54 +50,63 @@ public class FeatureTypeConfig extends BasicConfig {
     private String defaultStyle;
     private String pathToSchemaFile;
     private String prefix;
-
     private int numDecimals = DEFAULT_NUM_DECIMALS;
 
     /**
      * GT2 based configuration, Config map supplies extra info.
+     *
      * <p>
      * We need to make an GeometryAttributeType that knows about SRID
      * </p>
+     *
      * <ul>
-     * <li>datastore.featuretype.srid: int (default 0)</li>
-     * <li>datastore.featuretype.numDecimals: int (default 8)</li>
-     * <li>datastore.featuretype.bbxo: Envelope (default calcuated)</li>
+     * <li>
+     * datastore.featuretype.srid: int (default 0)
+     * </li>
+     * <li>
+     * datastore.featuretype.numDecimals: int (default 8)
+     * </li>
+     * <li>
+     * datastore.featuretype.bbxo: Envelope (default calcuated)
+     * </li>
      * </ul>
+     *
+     *
      * @param config
      * @param type
      * @param dataStoreConfig
      */
-    public FeatureTypeConfig( Map config, FeatureType type, DataStoreConfig dataStoreConfig ){
-        super( config );
-        String key = type.getNamespace()+"."+type.getTypeName();
-        
-        SRS = String.valueOf( get( config, key+".srid", 0 ) );
+    public FeatureTypeConfig(Map config, FeatureType type,
+        DataStoreConfig dataStoreConfig) {
+        super(config);
+
+        String key = type.getNamespace() + "." + type.getTypeName();
+        SRS = String.valueOf(get(config, key + ".srid", 0));
         dataStore = dataStoreConfig;
-        numDecimals = get( config, key+".numDecimals", 8 );
-        schema = type;     
+        numDecimals = get(config, key + ".numDecimals", 8);
+        schema = type;
         styles = new HashMap(0);
-        
-        if( type.getDefaultGeometry() == null ){
+
+        if (type.getDefaultGeometry() == null) {
             latLongBBox = new Envelope();
-        }
-        else if( config.containsKey( key+".bbox" )){
-            latLongBBox = (Envelope ) config.get( key+".bbox" );            
-        }
-        else {
+        } else if (config.containsKey(key + ".bbox")) {
+            latLongBBox = (Envelope) config.get(key + ".bbox");
+        } else {
             try {
-                FeatureSource access =
-                dataStore.getDataStore().getFeatureSource( type.getTypeName() );
-            
+                FeatureSource access = dataStore.getDataStore()
+                                                .getFeatureSource(type
+                        .getTypeName());
                 latLongBBox = access.getBounds();
-                if( latLongBBox == null ){
+
+                if (latLongBBox == null) {
                     latLongBBox = access.getFeatures().getBounds();
                 }
-            }
-            catch (IOException io){
+            } catch (IOException io) {
                 latLongBBox = new Envelope();
             }
-        }                   
+        }
     }
+
     /**
      * Creates a new FeatureTypeConfig object.
      *
@@ -111,9 +120,7 @@ public class FeatureTypeConfig extends BasicConfig {
         super(fTypeRoot);
 
         String msg = null;
-
         String dataStoreId = getAttribute(fTypeRoot, "datastore", true);
-
         this.dataStore = catalog.getDataStore(dataStoreId);
 
         if (dataStore == null) {
@@ -138,13 +145,36 @@ public class FeatureTypeConfig extends BasicConfig {
         } else {
             LOGGER.info("featureType " + getName() + " is not enabled");
         }
+
         Element numDecimalsElem = getChildElement(fTypeRoot, "numDecimals",
                 false);
 
-        if (numDecimalsElem != null)
-        {
+        if (numDecimalsElem != null) {
             this.numDecimals = getIntAttribute(numDecimalsElem, "value", false,
                     DEFAULT_NUM_DECIMALS);
+        }
+
+        loadDefinitionQuery(fTypeRoot);
+    }
+
+    private void loadDefinitionQuery(Element typeRoot)
+        throws ConfigurationException {
+        Element defQNode = getChildElement(typeRoot, "definitionQuery", false);
+        Filter filter = null;
+
+        if (defQNode != null) {
+            LOGGER.fine("definitionQuery element found, looking for Filter");
+
+            Element filterNode = getChildElement(defQNode, "Filter", false);
+
+            if ((filterNode != null)
+                    && ((filterNode = getFirstChildElement(filterNode)) != null)) {
+                this.definitionQuery = FilterDOMParser.parseFilter(filterNode);
+
+                return;
+            }
+
+            LOGGER.fine("No Filter definition query found");
         }
     }
 
@@ -153,8 +183,7 @@ public class FeatureTypeConfig extends BasicConfig {
      *
      * @return DOCUMENT ME!
      */
-    public int getNumDecimals()
-    {
+    public int getNumDecimals() {
         return numDecimals;
     }
 
@@ -280,7 +309,17 @@ public class FeatureTypeConfig extends BasicConfig {
                 + " does not have a properly configured " + "datastore");
         }
 
-        return dataStore.getDataStore().getFeatureSource(super.getName());
+        FeatureSource realSource = getRealFeatureSource();
+        FeatureSource mappedSource = new DEFQueryFeatureLocking(realSource,
+            getSchema(), this.definitionQuery);
+        return mappedSource;
+    }
+
+    private FeatureSource getRealFeatureSource()
+        throws NoSuchElementException, IllegalStateException, IOException {
+      FeatureSource realSource = dataStore.getDataStore().
+          getFeatureSource(super.getName());
+      return realSource;
     }
 
     /**
@@ -296,6 +335,15 @@ public class FeatureTypeConfig extends BasicConfig {
         }
 
         return bbox;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public Filter getDefinitionQuery() {
+        return this.definitionQuery;
     }
 
     /**
@@ -323,7 +371,6 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
-
      **/
     public String getOperations() {
         //get this from the datasource?
@@ -360,7 +407,7 @@ public class FeatureTypeConfig extends BasicConfig {
                 + "enabled");
         }
 
-        FeatureSource source = getFeatureSource();
+        FeatureSource source = getRealFeatureSource();
         this.bbox = source.getBounds();
 
         if (this.latLongBBox == null) {
@@ -385,7 +432,7 @@ public class FeatureTypeConfig extends BasicConfig {
     private FeatureType getSchema(Element attsElem)
         throws ConfigurationException, IOException {
         NodeList exposedAttributes = null;
-        FeatureType schema = getFeatureSource().getSchema();
+        FeatureType schema = getRealFeatureSource().getSchema();
         FeatureType filteredSchema = null;
 
         if (attsElem != null) {
