@@ -464,6 +464,14 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             double maxx = Double.parseDouble(bboxValues[2].toString());
             double maxy = Double.parseDouble(bboxValues[3].toString());
             bbox = new Envelope(minx, maxx, miny, maxy);
+            if (minx > maxx) {
+                throw new WmsException("illegal bbox, minX: " + minx + " is " +
+                                       "greater than maxX: " + maxx);
+            }
+            if (miny > maxy) {
+                throw new WmsException("illegal bbox, minY: " + miny + " is " +
+                                       "greater than maxY: " + maxy);
+            }
         } catch (NumberFormatException ex) {
             throw new WmsException(ex,
                 "Illegal value for BBOX parameter: " + bboxParam,
@@ -528,7 +536,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                     if (!configuredStyles.containsKey(st)) {
                         throw new WmsException(st
                             + " style not recognized by this server",
-                            getClass().getName());
+                            "StyleNotDefined");
                     }
                 }else{ //use the layer's default style
                 	LOGGER.finer("applying default style to " + layers[i].getName());
@@ -606,7 +614,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         } catch (NoSuchElementException ex) {
             throw new WmsException(ex,
                 layerName + ": no such layer on this server",
-                getClass().getName());
+                "LayerNotDefined");
         }
 
         return featureTypes;
