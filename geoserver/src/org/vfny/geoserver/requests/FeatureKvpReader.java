@@ -35,18 +35,21 @@ public class FeatureKvpReader
     public FeatureKvpReader (String request) { super(request); }
     
     
+    public FeatureRequest getRequest() throws WfsException {
+	return getRequest(false);
+    }
+
     /**
      * Returns GetFeature request object.
      * @return Feature request object.
      */
-    public FeatureRequest getRequest()
+    public FeatureRequest getRequest(boolean withLock)
         throws WfsException {
 	
-	boolean withLock = false;
 	FeatureRequest currentRequest = new FeatureRequest();
-	if( kvpPairs.containsKey("REQUEST")) {
+	if( withLock || kvpPairs.containsKey("REQUEST")) {
 	    String request = (String) kvpPairs.get("REQUEST");
-	    if (request.equalsIgnoreCase("GETFEATUREWITHLOCK")) {
+	    if (withLock || request.equalsIgnoreCase("GETFEATUREWITHLOCK")) {
 		withLock = true;
 		currentRequest = new FeatureWithLockRequest();
 	    }
