@@ -39,7 +39,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.14 2004/03/03 08:51:00 jive Exp $
+ * @version $Id: DataTransferObjectFactory.java,v 1.15 2004/03/03 09:39:09 jive Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -120,7 +120,7 @@ public class DataTransferObjectFactory {
      * @return Data Transfer Object for provided schema
      */
     public static FeatureTypeInfoDTO create(String dataStoreId,
-        FeatureType schema) {
+        FeatureType schema) {               
         FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO();
         dto.setAbstract(null);
         dto.setDataStoreId(dataStoreId);
@@ -132,12 +132,15 @@ public class DataTransferObjectFactory {
         dto.setName(schema.getTypeName());
         dto.setNumDecimals(8);
         dto.setSchemaAttributes(generateAttributes(schema));
-        dto.setSchemaBase(NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml").getElement("AbstractFeatureType").getTypeDefName());
-        dto.setSchemaName(dataStoreId.toUpperCase() + "_"
+
+        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+        String schemaBase = gml.getElement("AbstractFeatureType").getQualifiedTypeDefName();                
+        dto.setSchemaBase( schemaBase );
+        
+        dto.setSchemaName( dataStoreId.toUpperCase() + "_"
             + schema.getTypeName().toUpperCase() + "_TYPE");
         dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());
         dto.setTitle(schema.getNamespace() + " " + schema.getTypeName());
-
         return dto;
     }
 

@@ -2,10 +2,6 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.vfny.geoserver.global.dto;
 
 import junit.framework.TestCase;
@@ -17,7 +13,7 @@ import java.net.URL;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ServiceDTOTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
+ * @version $Id: ServiceDTOTest.java,v 1.5 2004/03/03 09:39:08 jive Exp $
  */
 public class ServiceDTOTest extends TestCase {
     ServiceDTO dto;
