@@ -33,7 +33,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataNamespacesSelectAction.java,v 1.3 2004/02/25 21:51:11 dmzwiers Exp $
+ * @version $Id: DataNamespacesSelectAction.java,v 1.4 2004/02/25 23:32:34 dmzwiers Exp $
  */
 public class DataNamespacesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -52,7 +52,9 @@ public class DataNamespacesSelectAction extends ConfigAction {
         String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
 
         config = (NameSpaceConfig) dataConfig.getNameSpace(namespacesForm.getSelectedNamespace());
-        
+        if(config==null){
+        	throw new NullPointerException();
+        }
         getUserContainer(request).setNamespaceConfig(config);
 
         if (action.equals(delete)) {
