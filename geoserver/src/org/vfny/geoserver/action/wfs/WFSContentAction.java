@@ -45,7 +45,6 @@ public final class WFSContentAction extends ConfigAction {
 			System.out.println("Whoa, it was never actually checked. Setting to false.");	
 		}
 		String onlineResource = contentForm.getOnlineResource();
-		String describeURL = contentForm.getDescribeURL();
 		String[] selectedFeatures = contentForm.getSelectedFeatures();
 		String[] features = contentForm.getFeatures(); 
 	
@@ -53,7 +52,6 @@ public final class WFSContentAction extends ConfigAction {
 		System.out.println("Action.execute: setting config.setEnabled =" + enabled);		
 		config.setEnabled(enabled);
 		config.setOnlineResource(new URL(onlineResource));
-		config.setDescribeURL(new URL(describeURL));
 		
 		Set set = new TreeSet();
 		if (selectedFeatures !=null) {
