@@ -57,6 +57,5 @@
 	<classpathentry kind="var" path="GEOSERVER/xalan.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/xercesImpl.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/xml-apis.jar"/>
-	<classpathentry kind="var" path="GEOSERVER"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
