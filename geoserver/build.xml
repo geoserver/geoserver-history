@@ -60,14 +60,13 @@
   <property name="jar.ki-util" value="${dir.lib}/ki-util.jar"/>
   
   <property name="test.name" value="config.ConfigSuite"/>
-
- <property name="jetty.run"  value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml"/>
-
+  <property name="jetty.run"  value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml"/>
   <property name="jetty.jvmarg"  value="-Djetty.home=${basedir}/server" />
 
+  <!-- Chris this fails on ant 3.8.1 - w/ unexpected element "available"
   <available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
   <available file="${basedir}/server/geoserver" type="dir" property="server.built"/>
-
+  -->
   <!-- If you don't have your own conf directory uncomment on of the following -->
   <!--<property name="test.type" value="UserBasic"/>-->
   <!--<property name="test.type" value="CitePostGis"/>-->
