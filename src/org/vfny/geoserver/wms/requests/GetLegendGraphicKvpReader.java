@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers.wms;
+package org.vfny.geoserver.wms.requests;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,11 +22,9 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
-import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
+import org.vfny.geoserver.wms.WmsException;
 
 
 /**
@@ -100,7 +98,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
         String format = getValue("FORMAT");
 
-        if (!org.vfny.geoserver.responses.wms.GetLegendGraphicResponse
+        if (!org.vfny.geoserver.wms.responses.GetLegendGraphicResponse
                 .supportsFormat(format)) {
             throw new WmsException("Invalid graphic format: " + format,
                 "InvalidFormat");

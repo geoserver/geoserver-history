@@ -2,14 +2,15 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests;
+package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.Request;
 
 /**
  * DOCUMENT ME!
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: WMSRequest.java,v 1.6 2004/02/09 23:11:33 dmzwiers Exp $
  */
 public class WMSRequest extends Request {

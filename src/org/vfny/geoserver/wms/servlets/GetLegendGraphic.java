@@ -2,14 +2,14 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.servlets.wms;
+package org.vfny.geoserver.wms.servlets;
 
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.readers.wms.GetLegendGraphicKvpReader;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wms.GetLegendGraphicResponse;
-import org.vfny.geoserver.servlets.WMService;
+import org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader;
+import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
+
 import java.util.Map;
 
 

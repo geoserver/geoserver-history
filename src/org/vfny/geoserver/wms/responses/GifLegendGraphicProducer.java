@@ -2,10 +2,11 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package org.vfny.geoserver.wms.responses;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.responses.wms.map.gif.GIFOutputStream;
+import org.vfny.geoserver.wms.responses.map.gif.GIFOutputStream;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -32,7 +33,7 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * DefaultRasterLegendProducer#produceLegendGraphic(GetLegendGraphicRequest)}
      * to <code>out</code> in "image/gif" format.
      *
-     * @see org.vfny.geoserver.responses.wms.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
+     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
         GIFOutputStream.writeGIF(out, super.getLegendGraphic());
@@ -47,7 +48,7 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * @throws IllegalStateException if <code>super.getLegendGraphic() ==
      *         null</code>, to respect the workflow.
      *
-     * @see org.vfny.geoserver.responses.wms.GetLegendGraphicProducer#getContentType()
+     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
      */
     public String getContentType() throws IllegalStateException {
     	if(super.getLegendGraphic() == null)

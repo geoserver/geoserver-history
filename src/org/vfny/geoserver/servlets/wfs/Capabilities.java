@@ -20,7 +20,7 @@ import org.vfny.geoserver.servlets.WFService;
  * server can do.
  *
  * @author Rob Hranac, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: Capabilities.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Capabilities extends WFService {

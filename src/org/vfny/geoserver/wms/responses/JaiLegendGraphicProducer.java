@@ -2,10 +2,11 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package org.vfny.geoserver.wms.responses;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.responses.wms.helpers.JAISupport;
+import org.vfny.geoserver.wms.responses.helpers.JAISupport;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -35,7 +36,7 @@ class JaiLegendGraphicProducer extends DefaultRasterLegendProducer {
      * Encodes the image created by the superclss to the format specified at
      * the constructor and sends it to <code>out</code>.
      *
-     * @see org.vfny.geoserver.responses.wms.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
+     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
         JAISupport.encode(this.outputFormat, super.getLegendGraphic(), out);
@@ -44,7 +45,7 @@ class JaiLegendGraphicProducer extends DefaultRasterLegendProducer {
     /**
      * Returns the MIME type in which the legend graphic will be encoded.
      *
-     * @see org.vfny.geoserver.responses.wms.GetLegendGraphicProducer#getContentType()
+     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
      */
     public String getContentType() throws IllegalStateException {
         return this.outputFormat;

@@ -1,9 +1,9 @@
-package org.vfny.geoserver.responses.wms.map.svg;
+package org.vfny.geoserver.wms.responses.map.svg;
 
-import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.wms.WmsException;
 
 /**
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: EncoderConfigurationException.java,v 1.1 2004/03/14 16:15:22 groldan Exp $
  */
 

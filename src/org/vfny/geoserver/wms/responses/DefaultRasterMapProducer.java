@@ -2,11 +2,12 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package org.vfny.geoserver.wms.responses;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.renderer.lite.LiteRenderer2;
-import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.wms.WmsException;
+
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;

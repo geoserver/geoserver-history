@@ -2,15 +2,16 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms;
+package org.vfny.geoserver.wms.responses;
 
 import org.geotools.factory.FactoryFinder;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
 import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;

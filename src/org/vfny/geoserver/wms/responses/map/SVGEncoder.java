@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.map;
+package org.vfny.geoserver.wms.responses.map;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Point;
 /**
  * DOCUMENT ME!
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: SVGEncoder.java,v 1.9 2004/04/16 06:28:56 jive Exp $
  */
 public class SVGEncoder {

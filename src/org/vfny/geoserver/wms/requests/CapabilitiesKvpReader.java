@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers.wms;
+package org.vfny.geoserver.wms.requests;
 
 import java.util.Map;
 

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wms.featureInfo;
+package org.vfny.geoserver.wms.responses.featureInfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,9 +14,9 @@ import org.geotools.data.FeatureResults;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
-import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.responses.wfs.GML2FeatureResponseDelegate;
 import org.vfny.geoserver.responses.wfs.GetFeatureResults;
+import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
 
 /**

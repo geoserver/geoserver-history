@@ -2,10 +2,9 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.wms;
+package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.requests.WMSRequest;
 
 
 /**

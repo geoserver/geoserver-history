@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers.wms;
+package org.vfny.geoserver.wms.requests;
 
 import java.util.List;
 import java.util.Map;
@@ -13,12 +13,10 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
-import org.vfny.geoserver.requests.wms.DescribeLayerRequest;
+import org.vfny.geoserver.wms.WmsException;
 
 
 /**
