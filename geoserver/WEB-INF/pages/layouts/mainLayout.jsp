@@ -80,31 +80,11 @@
           		</tr>
           		<tr>
             		<td>
-            			<table class="body_main">
-				            <tbody>
-                			<tr>
-	                  			<td class="property_label">
-	                  				SRS:<br>
-				                </td>
-	            			    <td class="property_control"><br>
-			                    </td>
-          			        </tr>
-			                <tr>
-            				    <td class="property_label">
-            				    	<span class="error">
-            				    		*Title:
-            				    	</span><br>
-				                </td>
-                				<td class="property_control"><br>
-				                </td>
-                			</tr>
-				            </tbody>
-			            </table>
+            			<tiles:insert attribute="body"/>
             		</td>
 	          </tr>
     		  </tbody>
 	      </table>
-	      <tiles:insert attribute="body"/>
 		</td>
 	</tr>
 </table>

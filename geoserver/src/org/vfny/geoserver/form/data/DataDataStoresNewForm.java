@@ -29,8 +29,8 @@ import org.vfny.geoserver.action.data.DataStoreUtils;
  * </p>
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.5 2004/02/09 23:29:45 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresNewForm.java,v 1.6 2004/02/16 22:31:54 emperorkefka Exp $
  */
 public class DataDataStoresNewForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
@@ -93,12 +93,11 @@ public class DataDataStoresNewForm extends ActionForm {
         if ((getDataStoreID() == null) || getDataStoreID().equals("")) {
             errors.add("dataStoreID",
                 new ActionError("error.dataStoreId.required", getDataStoreID()));
-        }
-
-        if (!Pattern.matches("^\\w*$", getDataStoreID())) {
+        } else if (!Pattern.matches("^\\w*$", getDataStoreID())) {
             errors.add("dataStoreID",
-                new ActionError("error.dataStoreId.invalid", getDataStoreID()));
+                    new ActionError("error.dataStoreId.invalid", getDataStoreID()));
         }
+        
 
         return errors;
     }
