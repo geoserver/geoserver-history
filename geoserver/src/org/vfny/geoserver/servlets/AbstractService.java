@@ -23,7 +23,7 @@ import javax.servlet.http.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: AbstractService.java,v 1.1.2.7 2003/11/14 21:50:56 jive Exp $
+ * @version $Id: AbstractService.java,v 1.1.2.8 2003/11/14 23:56:43 jive Exp $
  *
  * @task TODO: I changed this so it automatically buffers responses, so  as to
  *       better handle errors, not serving up nasty servlet errors if
@@ -300,6 +300,8 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
         Response serviceResponse = service.getResponseHandler();
         OutputStream out = null;
         try {
+            response.setContentType(serviceResponse.getContentType());            
+            
             serviceResponse.execute(serviceRequest);
             out = response.getOutputStream();
             out = new BufferedOutputStream( out );
@@ -364,6 +366,8 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
         ByteArrayOutputStream buffer = null;
         Response serviceResponse = service.getResponseHandler();        
         try {
+            response.setContentType(serviceResponse.getContentType());
+                        
             // execute request
             serviceResponse.execute(serviceRequest);
 
@@ -407,7 +411,7 @@ class FileStratagy implements AbstractService.ServiceStratagy {
         File temp = null;
         Response serviceResponse = service.getResponseHandler();        
         try {
-            
+            response.setContentType(serviceResponse.getContentType());            
             // execute request
             serviceResponse.execute(serviceRequest);
 
