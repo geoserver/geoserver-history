@@ -1,0 +1,17 @@
+<featureType datastore = "streams" >
+<name>streams</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>0</SRS>
+<title>streams_Type</title>
+<abstract>Generated from streams</abstract>
+<numDecimals value = "8" />
+<keywords>streams</keywords>
+<latLonBoundingBox dynamic = "false" miny = "566202.5" maxy = "5246975.92" maxx = "5233088.89" minx = "556630.66"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "normal"  />
+</featureType>
