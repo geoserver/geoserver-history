@@ -107,26 +107,34 @@ public class DescribeResponse {
         
         String tempResponse = new String();             
         String currentFile = new String();
+	String curTypeName = new String();
+	String generatedType = new String();
+	ArrayList validTypes = new ArrayList();
         
         // Loop through requested tables to add element types
         for (int i = 0; i < requestedTables.size(); i++ ) {
             
             // set the current file
             // print type data for the table object
-            currentFile = config.getTypeDir() + 
-                requestedTables.get(i).toString() + config.SCHEMA_FILE;
-            tempResponse = tempResponse + writeFile( currentFile );
-            //_log.info("current file: " + currentFile);
-        }
+            curTypeName = requestedTables.get(i).toString();
+	    currentFile = config.getTypeDir() + curTypeName + 
+		"/" + config.SCHEMA_FILE;
+	    generatedType = writeFile(currentFile);
+	    if (!generatedType.equals("")) {
+		tempResponse = tempResponse + writeFile( currentFile );
+		//_log.info("current file: " + currentFile);
+		validTypes.add(curTypeName);
+	    } 
+       }
         
         // Loop through requested tables again to add elements
         // NOT VERY EFFICIENT - PERHAPS THE MYSQL ABSTRACTION CAN FIX THIS; 
         //  STORE IN HASH?
-        for (int i = 0; i < requestedTables.size(); i++ ) {
+        for (int i = 0; i < validTypes.size(); i++ ) {
 
             // Print element representation of table
             tempResponse = tempResponse + 
-                printElement(requestedTables.get(i).toString());
+                printElement(validTypes.get(i).toString());
         }
         
         tempResponse = tempResponse + "\n\n";
@@ -151,7 +159,6 @@ public class DescribeResponse {
         // keeps master list of files within the directory
         String[] files = currentDirectory.list();
         File[] file = currentDirectory.listFiles();
-        
         
         // Loop through all files in the directory
         for (int i = 0; i < files.length; i++) {
