@@ -155,8 +155,15 @@ public class TypesEditorAction extends ConfigAction {
                                                             .getServletContext());
         FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
-
+        
+        LOGGER.fine("calculating bbox for their dataset" );
         Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
+        
+        typeForm.setDataMinX(Double.toString(envelope.getMinX()));
+        typeForm.setDataMaxX(Double.toString(envelope.getMaxX()));
+        typeForm.setDataMinY(Double.toString(envelope.getMinY()));
+        typeForm.setDataMaxY(Double.toString(envelope.getMaxY()));
+        
         
           // do a translation from the data's coordinate system to lat/long
         
@@ -165,7 +172,8 @@ public class TypesEditorAction extends ConfigAction {
         
         if (srs.indexOf(':') == -1) // check to see if its of the form "EPSG:#" (or some such thing)
         	srs= "EPSG:"+srs;       //assume they wanted to use an EPSG number
-        
+ 
+
         try {
         	CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
         	CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
@@ -194,7 +202,7 @@ public class TypesEditorAction extends ConfigAction {
       	  LOGGER.fine(fe.getStackTrace().toString());
       	  ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
-                new ActionError("error.data.factoryException"));
+                new ActionError("error.data.factoryException",fe.getLocalizedMessage()));
             saveErrors(request, errors);
             return mapping.findForward("config.data.type.editor");
 		}
