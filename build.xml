@@ -664,12 +664,21 @@
 
     <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
             failonerror="false"/>
+    <delete file="${basedir}/geoserver-${name.release}.zip" 
+            failonerror="false"/>
+    <zip basedir="${basedir}/.."
+         destfile="geoserver-${name.release}.zip"
+	 excludes="geoserver-${name.release}.tar"/>
     <gzip src="geoserver-${name.release}.tar" 
           zipfile="geoserver-${name.release}.tar.gz"/>
     <copy file="${basedir}/geoserver-${name.release}.tar.gz" 
           todir="${dir.release}"/>
+    <copy file="${basedir}/geoserver-${name.release}.zip" 
+          todir="${dir.release}"/>
 
     <delete file="${basedir}/geoserver-${name.release}.tar.gz" 
+            failonerror="true"/>
+    <delete file="${basedir}/geoserver-${name.release}.zip" 
             failonerror="true"/>
     <delete file="${basedir}/geoserver-${name.release}.tar" 
             failonerror="true"/>
