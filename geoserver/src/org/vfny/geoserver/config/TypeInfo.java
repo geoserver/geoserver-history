@@ -44,6 +44,8 @@ public class TypeInfo {
     /** The namespace prefix used internally for this featureType.*/
     private String prefix;
 
+    private String prefixFileDelimiter = config.getFilePrefixDelimiter();
+
     /** the string of where the schema file should be located.*/
     private String pathToSchemaFile;
 
@@ -176,16 +178,19 @@ public class TypeInfo {
      */
     public Connection getConnection() throws WfsException {
 	LOG.finer("getting connection for type: " + getName());
-	if (dbConnection == null) {
-	    try {
+	try {
+	    if (dbConnection == null || dbConnection.isClosed()) {
+		
 		this.dbConnection = getNewConnection();
-	    } catch (SQLException e) {
-		String message = "Problem getting Connection to db: " 
-		    + e.getMessage();
-		LOG.warning(message);
-		throw new WfsException(message, "typeInfo");
-	    }
+	    }	
+	} catch (SQLException e) {
+	    String preMessage = "Problem getting Connection to db";
+	    String message = preMessage + ": " + e.getMessage();
+	    LOG.warning(message);
+	    throw new WfsException(e, preMessage, 
+				   "typeInfo for: " + getFullName());
 	}
+	
 	return dbConnection;
     }
 
@@ -317,7 +322,7 @@ public class TypeInfo {
 	    File featureTypeFile = new File(typeName);
 	    File parentDir = featureTypeFile.getParentFile();
 	    String parentDirName =  parentDir.getName();
-	    int prefixDelimPos = parentDirName.lastIndexOf(PREFIX_DELIMITER);
+	    int prefixDelimPos = parentDirName.indexOf(prefixFileDelimiter);
 	    if (prefixDelimPos > 0) {
 		prefix = parentDirName.substring(0, prefixDelimPos);
 	    } else {
@@ -428,4 +433,23 @@ public class TypeInfo {
             "        </wfsfl:FeatureType>\n");                
         return tempResponse.toString();
     }
+
+    /**
+     * closes the resources associated with this type.  For now this means
+     * closing the connection that postgis uses.  This should eventually be
+     * handled completely in the datasource, but for now this is they way 
+     * to let the connections go.
+     */
+    public void close(){
+	if (dbConnection != null) {
+	    try {
+		LOG.finer("closing connection in " + getName());
+		dbConnection.close();
+	    } catch (SQLException e) {
+		LOG.finer("had trouble closing connection in " + getName() + ": " +
+			  e.getMessage());
+	    }
+	}
+    }
+
 }
