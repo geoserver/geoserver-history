@@ -22,7 +22,7 @@ import javax.xml.transform.stream.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.23 2004/01/02 21:14:42 cholmesny Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.24 2004/01/02 23:02:39 cholmesny Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -93,26 +93,6 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
             Charset charset = ServerConfig.getInstance().getGlobalConfig()
                                           .getCharSet();
             Writer writer = new OutputStreamWriter(out, charset);
-
-            //HACK: This should be done programatically, but for the life of
-            //me I can't find it.  There seems to be no output key that 
-            //allows you to set _where_ to find the dtd.  And I found
-            //transformer stuff to read in dtd elements like this, but none
-            //to declare them and have them transformed.  If someone knows
-            //how to get rid of this horrible hack please let me know.
-            if ((this.service != null) && this.service.equals("WMS")) {
-                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
-                    "yes");
-
-                //TODO: Should reference a local capabilities_1_1_1.dtd
-                String declaration = "<?xml version='1.0' encoding=\"UTF-8\" "
-                    + "standalone=\"no\" ?>  "
-                    + "<!DOCTYPE WMT_MS_Capabilities SYSTEM "
-                    + "\"http://www.digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\">";
-
-                writer.write(declaration, 0, declaration.length());
-            }
-
             StreamResult result = new StreamResult(writer);
 
             transformer.transform(source, result);
