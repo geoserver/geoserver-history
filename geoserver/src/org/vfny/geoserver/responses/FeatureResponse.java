@@ -132,18 +132,26 @@ public class FeatureResponse {
                 //LOG.finest("sent attribute: " + attributes[j].toString());
 		//TODO: use attributeType.isGeometry() - get working with
 		//multiple geometries (in GMLBuilder).
+		LOG.finest("att name: " + attributeTypes[j].getName());
 		if (attributeTypes[j].isGeometry()) {
-		    gml.initializeGeometry(attributes[j].getClass(), 
+		    Object curAtt = attributes[j];
+		    if (curAtt == null) {
+			gml.addAttribute(attributeTypes[j].getName(), "");
+		    } else {
+			gml.initializeGeometry(attributes[j].getClass(), 
 					   typeName, 
 					   meta.getSrs(),  
 					   attributeTypes[geometryPosition].
 					   getName());
 		
 		    //LOG.finest("geometry att: " + attributes[j].getClass());
-		    //LOG.finest("att name: " + attributeTypes[j].getName());
-            gml.addGeometry((Geometry) attributes[j], 
-			    attributeTypes[j].getName());
-		LOG.finest("added geometry: " + ((Geometry) attributes[j]).toString());
+
+		    
+		    
+			gml.addGeometry((Geometry) attributes[j], 
+					attributeTypes[j].getName());
+		    }
+	    //LOG.finest("added geometry: " + ((Geometry) attributes[j]).toString());
 		} else {
 		    String attrString;
 		    if (attributes[j] == null) {
