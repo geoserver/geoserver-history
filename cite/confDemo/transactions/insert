@@ -10,6 +10,7 @@
 >
   <wfs:Insert>
     <gd:streams>
+    <gd:the_geom>
       <gml:MultiLineString srsName="http://www.opengis.net/gml/srs/epsg.xml#0">
 	<gml:lineStringMember>
 	<gml:LineString>
@@ -19,6 +20,7 @@
 </gml:LineString>
 </gml:lineStringMember>
 </gml:MultiLineString>
+</gd:the_geom>
     </gd:streams>
   </wfs:Insert>
 </wfs:Transaction>
