@@ -192,7 +192,7 @@ public class FeatureResponse {
 	}
 	FeatureCollection collection = null;
 	try {
-	DataSource data = meta.getDataSource(propertyNames, maxFeatures);
+	DataSource data = meta.getDataSource();
 	LOG.finest("filter is " + query.getFilter());
 	org.geotools.data.Query dsQuery = 
 	    query.getDataSourceQuery(data.getSchema(), maxFeatures);
