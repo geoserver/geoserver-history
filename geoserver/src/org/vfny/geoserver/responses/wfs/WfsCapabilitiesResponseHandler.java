@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.1.2.5 2003/11/17 23:46:56 cholmesny Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.1.2.6 2003/11/22 02:01:57 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -176,7 +176,12 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         indent();
         startElement("Query");
         endElement("Query");
-        unIndent();
+	startElement("Insert");
+        endElement("Insert");
+        startElement("Update");
+        endElement("Update");
+        startElement("Delete");
+        endElement("Delete");
         startElement("Lock");
         endElement("Lock");
         unIndent();
