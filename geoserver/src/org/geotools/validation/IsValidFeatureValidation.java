@@ -16,6 +16,10 @@
 */ 
 package org.geotools.validation;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import com.vividsolutions.jts.geom.Geometry;
@@ -28,11 +32,13 @@ import com.vividsolutions.jts.geom.Geometry;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class IsValidFeatureValidation implements FeatureValidation {
-
+    /** The logger for the validation module. */
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.geotools.validation");
+            
 	private String name;
 	private String description;
 	private String[] typeNames;
-	
 	
 	/**
 	 * Empty constructor needed for Java Beans.
@@ -113,23 +119,35 @@ public class IsValidFeatureValidation implements FeatureValidation {
 		Feature feature,
 		FeatureType type,
 		ValidationResults results) {
-		
+		try {
+            throw new IOException("");
+		} catch (IOException e) {
+            // TODO: Handle IOException: e 
+            LOGGER.log( Level.FINEST, e.getMessage(), e );
+        }
+        finally {
+            
+        }
 		Geometry geom =  feature.getDefaultGeometry();
-		if (!type.getDefaultGeometry().isNillable()) {
-			if (geom == null) {
-				results.error(feature, "Geometry was null but is not nillable.");
-				return false;
-			}
-		}
-		else
-			if (geom == null)
-				return true;
-		
+        if( geom == null ){
+            if (type.getDefaultGeometry().isNillable()) {
+                LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+") passed" );                
+                return true;                
+            }
+            else {
+                String message = "Geometry was null but is not nillable.";
+                results.error(feature, message );
+                LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+"):"+message );                
+                return false;
+            }                       
+        }
 		if (!geom.isValid()) {
-			results.error(feature, "Not a valid geometry. isValid() failed");
+            String message = "Not a valid geometry. isValid() failed";
+            LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+"):"+message );            
+			results.error(feature, message );
 			return false;
 		}
-			
+        LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+") passed" );        
 		return true;
 	}
 	
