@@ -193,6 +193,9 @@ public class TypeRepository {
 
     /**
      * Frees the resources of all the types held by the repository.
+     * @REVISIT: this does nothing now, as we no longer control connections
+     * We need some connection control from datasource interface, or
+     * else a connection manager.
      */
     public void closeTypeResources() {
 	for(Iterator i = getAllTypeNames().iterator(); i.hasNext();){
@@ -308,7 +311,7 @@ public class TypeRepository {
 				   + ", information not in data folder");
 	}
 	DataSource data = 
-	    getType(typeName).getDataSource(new ArrayList(), 1000000);
+	    getType(typeName).getDataSource();
 	Feature[] features = null;
 	try {
 	    QueryImpl query = new QueryImpl(null, new AttributeType[0]); 
