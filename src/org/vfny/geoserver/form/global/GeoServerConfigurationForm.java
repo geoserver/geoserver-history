@@ -39,7 +39,7 @@ import org.vfny.geoserver.config.GlobalConfig;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: GeoServerConfigurationForm.java,v 1.2 2004/04/16 17:23:28 cholmesny Exp $
+ * @version $Id: GeoServerConfigurationForm.java,v 1.3 2004/09/09 17:04:42 cholmesny Exp $
  */
 public class GeoServerConfigurationForm extends ActionForm {
     
@@ -52,6 +52,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     private String loggingLevel;
     private String adminUserName;
     private String adminPassword;
+    private boolean verboseExceptions;
     
     /** The name of the contact person */
     private String contactPerson;
@@ -90,6 +91,8 @@ public class GeoServerConfigurationForm extends ActionForm {
     private String contactEmail;    
     
 	private boolean verboseChecked;
+	
+	private boolean verboseExceptionsChecked;
     
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
@@ -99,7 +102,9 @@ public class GeoServerConfigurationForm extends ActionForm {
 
         maxFeatures = globalConfig.getMaxFeatures();
         verbose = globalConfig.isVerbose();
+        verboseExceptions = globalConfig.isVerboseExceptions();
         verboseChecked = false;
+        verboseExceptionsChecked = false;
         numDecimals = globalConfig.getNumDecimals();
         charset = globalConfig.getCharSet().name();
         baseURL = globalConfig.getBaseUrl();
@@ -170,26 +175,65 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * @param verbose The verbose to set.
 	 */
 	public void setVerbose(boolean verbose) {
-        verboseChecked = true;
+		verboseChecked = true;
 		this.verbose = verbose;
 	}
+	
+	/**
+		 * Access verboseChecked property.
+		 * 
+		 * @return Returns the verboseChecked.
+		 */
+		public boolean isVerboseChecked() {
+			return verboseChecked;
+		}
+
+		/**
+		 * Set verboseChecked to verboseChecked.
+		 *
+		 * @param verboseChecked The verboseChecked to set.
+		 */
+		public void setVerboseChecked(boolean verboseChecked) {
+			this.verboseChecked = verboseChecked;
+		}
+
 
 	/**
-	 * Access verboseChecked property.
+		 * Access verboseChecked property.
+		 * 
+		 * @return Returns the verboseChecked.
+		 */
+		public boolean isVerboseExceptionsChecked() {
+			return verboseExceptionsChecked;
+		}
+
+		/**
+		 * Set verboseChecked to verboseChecked.
+		 *
+		 * @param verboseChecked The verboseChecked to set.
+		 */
+		public void setVerboseExceptionsChecked(boolean verboseExceptionsChecked) {
+			this.verboseExceptionsChecked = verboseExceptionsChecked;
+		}
+
+	
+	/**
+	 * Access verboseExceptions property.
 	 * 
-	 * @return Returns the verboseChecked.
+	 * @return Returns the verboseExceptions.
 	 */
-	public boolean isVerboseChecked() {
-		return verboseChecked;
+	public boolean isVerboseExceptions() {
+		return verboseExceptions;
 	}
 
 	/**
-	 * Set verboseChecked to verboseChecked.
+	 * Set verboseExceptions to verboseExceptions.
 	 *
-	 * @param verboseChecked The verboseChecked to set.
+	 * @param verboseExceptions The verboseExceptions to set.
 	 */
-	public void setVerboseChecked(boolean verboseChecked) {
-		this.verboseChecked = verboseChecked;
+	public void setVerboseExceptions(boolean verboseExceptions) {
+		verboseExceptionsChecked = true;
+		this.verboseExceptions = verboseExceptions;
 	}
 
 	/**
