@@ -17,8 +17,8 @@
 
     <para>The WMS still needs some work, and we're hoping that various
     developers can devote some good time to it. Right now it can return
-    GetCapabilities and GetMap, but we have not yet ported the gt2wms
-    GetFeatureInfo and GetLegendGraphic. We hope to also add full SLD
+    GetCapabilities and GetMap, and we recently added GetFeatureInfo. We have
+    not yet ported GetLegendGraphic from gt2wms. We hope to also add full SLD
     capabilities eventually, as geotools has a lot of solid SLD code. The
     other piece that has not yet ported is caching of features, which the WFS
     could also benefit from. GeoServer's architecture is a bit more complex,
