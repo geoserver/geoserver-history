@@ -927,8 +927,8 @@ public class XMLConfigReader {
 				param = (Element) paramElems.item(i);
 				paramKey = ReaderUtils.getAttribute(param, "name", true);
 				paramValue = ReaderUtils.getAttribute(param, "value", false);
-				connectionParams.put(paramKey, paramValue);
-				LOGGER.finer("added parameter " + paramKey + ": '" + paramValue
+				connectionParams.put(paramKey, paramValue.replaceAll("'","\""));
+				LOGGER.finer("added parameter " + paramKey + ": '" + paramValue.replaceAll("'","\"")
 						+ "'");
 			}
 		}

@@ -19,9 +19,14 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.coverage.grid.GridFormatFactorySpi;
+import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.GeographicCRS;
+import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.data.DataFormatUtils;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
@@ -121,9 +126,9 @@ public class DataFormatsEditorForm extends ActionForm {
 //        }
 
         //Retrieve connection params
-        GridFormatFactorySpi factory = dfConfig.getFactory();
-        type = (dfConfig.getType() != null && dfConfig.getType().length() > 0 ? dfConfig.getType() : factory.createFormat().getName());
-        ParameterValueGroup params = factory.createFormat().getReadParameters();
+        Format factory = dfConfig.getFactory();
+        type = (dfConfig.getType() != null && dfConfig.getType().length() > 0 ? dfConfig.getType() : factory.getName());
+        ParameterValueGroup params = factory.getReadParameters();
 
         if( params != null && params.values().size() > 0 ) {
             paramKeys = new ArrayList(params.values().size());
@@ -177,8 +182,8 @@ public class DataFormatsEditorForm extends ActionForm {
         DataFormatConfig dfConfig = user.getDataFormatConfig();
         //
         // dsConfig is the only way to get a factory
-        GridFormatFactorySpi factory = dfConfig.getFactory();
-         ParameterValueGroup info = factory.createFormat().getReadParameters();
+        Format factory = dfConfig.getFactory();
+         ParameterValueGroup info = factory.getReadParameters();
 
         Map connectionParams = new HashMap();
 
@@ -193,7 +198,7 @@ public class DataFormatsEditorForm extends ActionForm {
                 if (param == null) {
                     errors.add("paramValue[" + i + "]",
                         new ActionError("error.dataFormatEditor.param.missing", key,
-                            factory.createFormat().getDescription()));
+                            factory.getDescription()));
 
                     continue;
                 }
@@ -201,9 +206,22 @@ public class DataFormatsEditorForm extends ActionForm {
                 Object value = null;
 
                 try {
-                	Class[] clArray = {getParamValue(i).getClass()};
-                	Object[] inArray = {getParamValue(i)};
-                	value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+    				if( key.equalsIgnoreCase("crs") ) {
+						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
+							CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+							CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) getParamValue(i));
+							value = crs;
+						} else {
+							CoordinateReferenceSystem crs = GeographicCRS.WGS84;
+							value = crs;
+						}
+    				} else if( key.equalsIgnoreCase("envelope") ) {
+    					
+    				} else {
+                    	Class[] clArray = {getParamValue(i).getClass()};
+                    	Object[] inArray = {getParamValue(i)};
+                    	value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+    				}
                 } catch (Exception e) {
                 	value = null;
 //                    errors.add("paramValue[" + i + "]",

@@ -54,7 +54,7 @@ public class DataFormatConfig {
     private Map parameters;
 
     /** Config ONLY! DataStoreFactory used to test params */
-    private GridFormatFactorySpi factory;
+    private Format factory;
 
     /**
      * Create a new DataStoreConfig from a dataStoreId and factoryDescription
@@ -73,11 +73,11 @@ public class DataFormatConfig {
     }
 
     /** Creates a new DataStoreConfig for the provided factory. */
-    public DataFormatConfig(String dataFormatId, GridFormatFactorySpi factory) {
+    public DataFormatConfig(String dataFormatId, Format factory) {
     	this.factory = factory;
         id = dataFormatId;
         //nameSpaceId = "";
-        type = factory.createFormat().getName();
+        type = factory.getName();
         url = "file:data/coverages/";
         enabled = true;
         title = "";
@@ -348,13 +348,13 @@ public class DataFormatConfig {
 	/**
 	 * @return Returns the factory.
 	 */
-	public GridFormatFactorySpi getFactory() {
+	public Format getFactory() {
 		return factory;
 	}
 	/**
 	 * @param factory The factory to set.
 	 */
-	public void setFactory(GridFormatFactorySpi factory) {
+	public void setFactory(Format factory) {
 		this.factory = factory;
 	}
 /**

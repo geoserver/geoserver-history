@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,33 +33,33 @@ import javax.servlet.ServletContext;
  * @author cholmesny
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
+ * @version $Id: DataFormatUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
  */
-public abstract class DataFormatUtils {
-    public static Format acquireFormat(String type, ServletContext sc)
-        throws IOException {
-    	String baseDir = sc.getRealPath("/");
-    	Format format = null;
-    	for( int i = 0; i < GridFormatFinder.getFormatArray().length; i++ ) {
-    		if( GridFormatFinder.getFormatArray()[i].getName().equals(type) ) {
-    			format = GridFormatFinder.getFormatArray()[i];
-    			break;
-    		}
-    	}
-    	
-        if (format == null) {
-            //TODO: this should throw an exception, but the classes using
-            //this class aren't ready to actually get it...
-            //return null;
-        	throw new IOException("Cannot handle format: " + type);
-	} else {
-	    return format;
+public class DataFormatUtils {
+	public synchronized static Format acquireFormat(String type, ServletContext sc)
+	throws IOException {
+		String baseDir = sc.getRealPath("/");
+		Format format = null;
+		for( int i = 0; i < GridFormatFinder.getFormatArray().length; i++ ) {
+			if( GridFormatFinder.getFormatArray()[i].getName().equals(type) ) {
+				format = GridFormatFinder.getFormatArray()[i];
+				break;
+			}
+		}
+		
+		if (format == null) {
+			//TODO: this should throw an exception, but the classes using
+			//this class aren't ready to actually get it...
+			//return null;
+			throw new IOException("Cannot handle format: " + type);
+		} else {
+			return format;
+		}
 	}
-    }
 
-    protected static Map getParams(Map m, ServletContext sc) {
+    protected synchronized static Map getParams(Map m, ServletContext sc) {
     	String baseDir = sc.getRealPath("/");
-    	return getParams(m, baseDir);
+    	return Collections.synchronizedMap(getParams(m, baseDir));
     }
 
     /**
@@ -69,8 +70,8 @@ public abstract class DataFormatUtils {
      * sensitve isses dataStores tend to have.
      * </p>
      */
-    protected static Map getParams(Map m, String baseDir){
-        return FormatInfo.getParams(m, baseDir);
+    protected synchronized static Map getParams(Map m, String baseDir){
+        return Collections.synchronizedMap(FormatInfo.getParams(m, baseDir));
     }
 
     /**
@@ -81,7 +82,7 @@ public abstract class DataFormatUtils {
      *
      * @return DOCUMENT ME!
      */
-    public static ParameterValue find(Format format, String key) {
+    public synchronized static ParameterValue find(Format format, String key) {
         return find(format.getReadParameters(), key);
     }
 
@@ -93,7 +94,7 @@ public abstract class DataFormatUtils {
      *
      * @return DOCUMENT ME!
      */
-    public static ParameterValue find(ParameterValueGroup params, String key) {
+    public synchronized static ParameterValue find(ParameterValueGroup params, String key) {
         List list=params.values();
         Iterator it=list.iterator();
         ParameterDescriptor descr=null;
@@ -121,14 +122,11 @@ public abstract class DataFormatUtils {
      *
      * @return
      */
-    public static GridFormatFactorySpi aquireFactory(Map params, String type) {
-        for (Iterator i = GridFormatFinder.getAvailableFormats();
-                i.hasNext();) {
-            GridFormatFactorySpi factory = (GridFormatFactorySpi) i.next();
-
-            if (factory.createFormat().getName().equals(type)) {
-                return factory;
-            }
+    public synchronized static Format aquireFactory(Map params, String type) {
+        for( int i = 0; i < GridFormatFinder.getFormatArray().length; i++ ) {
+        	Format format = GridFormatFinder.getFormatArray()[i];
+            if(format.getName().equals(type))
+            	return format;
         }
 
         return null;
@@ -156,18 +154,11 @@ public abstract class DataFormatUtils {
      *
      * @return
      */
-    public static GridFormatFactorySpi aquireFactory(String description) {
-        for (Iterator i = GridFormatFinder.getAvailableFormats();
-                i.hasNext();) {
-            GridFormatFactorySpi factory = (GridFormatFactorySpi) i.next();
-
-            if (factory.createFormat().getDescription().equals(description)) {
-                return factory;
-            }
-
-            if (factory.getClass().toString().equals(description)) {
-                return factory;
-            }
+    public synchronized static Format aquireFactory(String description) {
+        for( int i = 0; i < GridFormatFinder.getFormatArray().length; i++ ) {
+        	Format format = GridFormatFinder.getFormatArray()[i];
+            if(format.getDescription().equals(description))
+            	return format;
         }
 
         return null;
@@ -182,7 +173,7 @@ public abstract class DataFormatUtils {
      *
      * @return Descriptions for user to choose from
      */
-    public static List listDataFormatsDescriptions() {
+    public synchronized static List listDataFormatsDescriptions() {
         List list = new ArrayList();
 
         for( int i = 0; i < GridFormatFinder.getFormatArray().length; i++ ) {
@@ -190,16 +181,16 @@ public abstract class DataFormatUtils {
             list.add(format.getDescription());
         }
 
-        return list;
+        return Collections.synchronizedList(list);
     }
 
-    public static Map defaultParams(String description) {
-        return defaultParams(aquireFactory(description));
+    public synchronized static Map defaultParams(String description) {
+        return Collections.synchronizedMap(defaultParams(aquireFactory(description)));
     }
 
-    public static Map defaultParams(GridFormatFactorySpi factory) {
+    public synchronized static Map defaultParams(Format factory) {
         Map defaults = new HashMap();
-        ParameterValueGroup params = factory.createFormat().getReadParameters();
+        ParameterValueGroup params = factory.getReadParameters();
         
         if( params != null ) {
             List list=params.values();
@@ -229,7 +220,7 @@ public abstract class DataFormatUtils {
             }
         }
 
-        return defaults;
+        return Collections.synchronizedMap(defaults);
     }
 
     /**
@@ -246,7 +237,7 @@ public abstract class DataFormatUtils {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public static Map toParams(GridFormatFactorySpi factory, Map params)
+    public synchronized static Map toParams(GridFormatFactorySpi factory, Map params)
         throws IOException {
         Map map = new HashMap(params.size());
 
@@ -263,10 +254,10 @@ public abstract class DataFormatUtils {
             }
         }
 
-        return map;
+        return Collections.synchronizedMap(map);
     }
  
-    public static Envelope getBoundingBoxEnvelope(GridCoverage gc) throws IOException {
+    public synchronized static Envelope getBoundingBoxEnvelope(GridCoverage gc) throws IOException {
         Envelope ev = gc.getEnvelope();
 
         return ev;

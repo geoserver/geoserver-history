@@ -24,6 +24,8 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
+import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.GeographicCRS;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -35,6 +37,8 @@ import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
@@ -201,6 +205,8 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			
 			File file = new File(baseDir, path);
 			url = file.toURL();
+		} else {
+			url = new URL(path);
 		}
 		
 		return url;
@@ -269,9 +275,22 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 					String key = descr.getName().toString();
 					
 					try {
-						Class[] clArray = {String.class};
-						Object[] inArray = {dfConfig.getParameters().get(key)};
-						value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+	    				if( key.equalsIgnoreCase("crs") ) {
+							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
+								CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
+								value = crs;
+							} else {
+								CoordinateReferenceSystem crs = GeographicCRS.WGS84;
+								value = crs;
+							}
+	    				} else if( key.equalsIgnoreCase("envelope") ) {
+	    					
+	    				} else {
+							Class[] clArray = {String.class};
+							Object[] inArray = {dfConfig.getParameters().get(key)};
+							value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+	    				}
 					} catch (Exception e) {
 						value = null;
 					}

@@ -24,14 +24,18 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.coverage.grid.GridFormatFactorySpi;
 import org.geotools.data.coverage.grid.stream.StreamGridCoverageExchange;
+import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.GeocentricCRS;
+import org.geotools.referencing.crs.GeographicCRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageExchange;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
@@ -74,8 +78,8 @@ public class DataFormatsEditorAction extends ConfigAction {
 		
 		Map params = dataFormatsForm.getParams();
 		
-		GridFormatFactorySpi factory = config.getFactory();
-		ParameterValueGroup info = factory.createFormat().getReadParameters();
+		Format factory = config.getFactory();
+		ParameterValueGroup info = factory.getReadParameters();
 		
 		// Convert Params into the kind of Map we actually need
 		//
@@ -94,12 +98,24 @@ public class DataFormatsEditorAction extends ConfigAction {
 				return mapping.findForward("config.data.format.editor");
 			}
 			
-			Object value;
+			Object value = null;
 			
 			try {
-				Class[] clArray = {String.class};
-				Object[] inArray = {params.get(key)};
-				value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+				if( key.equalsIgnoreCase("crs") ) {
+					if( params.get(key) != null && ((String) params.get(key)).length() > 0 ) {
+						CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+						CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) params.get(key));
+						value = crs;
+					} else {
+						CoordinateReferenceSystem crs = GeographicCRS.WGS84;
+						value = crs;
+					}
+				} else if( key.equalsIgnoreCase("envelope") ) {
+				} else {
+					Class[] clArray = {String.class};
+					Object[] inArray = {params.get(key)};
+					value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
+				}
 			} catch (Exception e) {
 				value = param.getValue();
 			}
@@ -134,7 +150,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 		try {
 			ServletContext sc = request.getSession().getServletContext();
 			Map niceParams = DataFormatUtils.getParams(parameters, sc);
-			Format victim = factory.createFormat();
+			Format victim = factory;
 			String[] typeNames = null;
 			ParameterValueGroup vicParams = victim.getReadParameters();
 			if( niceParams != null && !niceParams.isEmpty() ) {
@@ -259,6 +275,8 @@ public class DataFormatsEditorAction extends ConfigAction {
 			
 			File file = new File(baseDir, path);
 			url = file.toURL();
+		} else {
+			url = new URL(path);
 		}
 		
 		return url;

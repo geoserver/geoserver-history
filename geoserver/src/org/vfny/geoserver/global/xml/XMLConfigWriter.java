@@ -616,7 +616,7 @@ public class XMLConfigWriter {
 			while (i.hasNext()) {
 				String key = (String) i.next();
 				temp.put("name", key);
-				temp.put("value", df.getParameters().get(key).toString());
+				temp.put("value", df.getParameters().get(key).toString().replaceAll("\"","'"));
 				cw.attrTag("parameter", temp);
 			}
 			

@@ -907,7 +907,7 @@
 	<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-${version.geotools}.jar" />
 
-<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" />	
 	<copy failonerror="false" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
