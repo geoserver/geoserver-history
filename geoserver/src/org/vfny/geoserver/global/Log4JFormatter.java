@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.io.LineWriter;
+import org.geotools.resources.Utilities;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -16,9 +18,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import java.util.prefs.Preferences;
-
-import org.geotools.io.LineWriter;
-import org.geotools.resources.Utilities;
 
 
 /**
@@ -184,6 +183,20 @@ public class Log4JFormatter extends Formatter {
 
         final Logger logger = Logger.getLogger(base);
 
+        //This little routine may be a bit buggy, but it's the best I've got
+        //to make the levels change as we reload the dto's.  Feel free to 
+        //improve.  ch
+        if (!logger.getUseParentHandlers()) {
+            logger.setLevel(filterLevel);
+
+            Handler handler = logger.getHandlers()[0];
+
+            //this should be the right handler, if set with geoserver.
+            if (handler != null) {
+                handler.setLevel(filterLevel);
+            }
+        }
+
         for (Logger parent = logger; parent.getUseParentHandlers();) {
             parent = parent.getParent();
 
@@ -212,6 +225,7 @@ public class Log4JFormatter extends Formatter {
                             }
 
                             try {
+                                logger.removeHandler(handler);
                                 handler = new Stdout(handler, log4j);
                                 handler.setLevel(filterLevel);
                             } catch (UnsupportedEncodingException exception) {
@@ -220,6 +234,10 @@ public class Log4JFormatter extends Formatter {
                                 unexpectedException(exception);
                             }
                         }
+                    }
+
+                    if (handler.getClass().equals(Stdout.class)) {
+                        handler.setLevel(filterLevel);
                     }
 
                     logger.addHandler(handler);
