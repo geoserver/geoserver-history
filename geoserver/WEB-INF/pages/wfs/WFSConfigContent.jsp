@@ -6,7 +6,9 @@
 	<html:form action="WFSConfigContentSubmit">
 	
 	<tr><td align="right">
-		<bean:message key="label.enabled"/>:
+		<span class="help" title="<bean:message key="help.enabled"/>">
+			<bean:message key="label.enabled"/>:
+		</span>
 	</td><td colspan=2>
 		<html:checkbox property="enabled"/>
 	</td></tr>
@@ -19,12 +21,16 @@
 		<html:text property="onlineResource" size="60"/>
 	</td></tr>
 	
-	<tr><td></td><td align="left"><bean:message key="label.featureList"/></td><td align="left"><bean:message key="label.namespace"/></tr>
+	<tr><td>&nbsp;</td><td align="left">
+		<span class="help" title="<bean:message key="help.featureList"/>">
+			<bean:message key="label.featureList"/>
+		</span>
+	</td><td align="left">
+		<bean:message key="label.namespace"/>
+	</td></tr>
 
 <logic:iterate id="feature" name="wfsContentForm" property="features">
-	<tr>
-
-	<td></td>
+	<tr><td>&nbsp;</td>
 	<td align="left">
 
 			<html:multibox property="selectedFeatures">

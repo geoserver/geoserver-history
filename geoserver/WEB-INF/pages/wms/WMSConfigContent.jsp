@@ -6,7 +6,14 @@
 	
 	<html:form action="WMSConfigContentSubmit" focus="serviceType">
 	
-	<tr><td align="right"><bean:message key="label.enabled"/>:</td><td colspan=2><html:checkbox property="enabled"/>
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.enabled"/>">
+			<bean:message key="label.enabled"/>:
+		</span>
+		</td><td colspan=2>
+			<html:checkbox property="enabled"/>
+	</td></tr>
+		
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.onlineResource_service"/>">
 			<bean:message key="label.onlineResource"/>:
@@ -15,9 +22,21 @@
 		<html:text property="onlineResource" size="60"/>
 	</td></tr>
 
-	<tr><td align="right"><span class="help" title="<bean:message key="help.updateTime_service"/>"><bean:message key="label.updateTime"/>:</span></td><td colspan=2><html:text property="updateTime" size="60"/></td></tr>
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.updateTime_service"/>">
+			<bean:message key="label.updateTime"/>:
+		</span>
+	</td><td colspan=2>
+		<html:text property="updateTime" size="60"/>
+	</td></tr>
 	
-	<tr><td></td><td align="left"><bean:message key="label.featureList"/></td><td align="left"><bean:message key="label.namespace"/></tr>
+	<tr><td>&nbsp;</td><td align="left">
+		<span class="help" title="<bean:message key="help.featureList"/>">
+			<bean:message key="label.featureList"/>
+		</span>
+	</td><td align="left">
+		<bean:message key="label.namespace"/>
+	</td></tr>
 
 <logic:iterate id="feature" name="wmsContentForm" property="features">
 	<tr>
