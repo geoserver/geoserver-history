@@ -2,19 +2,18 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.servlets.wfs;
+package org.vfny.geoserver.wfs.servlets;
 
 import java.util.Map;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
-import org.vfny.geoserver.requests.readers.wfs.TransactionXmlReader;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wfs.TransactionResponse;
 import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.servlets.WFService;
+import org.vfny.geoserver.wfs.requests.readers.DeleteKvpReader;
+import org.vfny.geoserver.wfs.requests.readers.TransactionXmlReader;
+import org.vfny.geoserver.wfs.responses.TransactionResponse;
 
 
 /**

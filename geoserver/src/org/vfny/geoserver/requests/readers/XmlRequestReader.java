@@ -18,9 +18,9 @@ import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.FilterHandlerImpl;
 import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.wfs.WfsException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
@@ -32,7 +32,7 @@ import org.xml.sax.helpers.ParserAdapter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: XmlRequestReader.java,v 1.7 2004/02/13 01:07:09 dmzwiers Exp $
  */
 public abstract class XmlRequestReader {

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.wfs;
+package org.vfny.geoserver.wfs.requests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ import org.geotools.feature.Feature;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
 import org.geotools.gml.GMLHandlerFeature;
-import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.responses.wfs.WfsTransactionException;
+import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wfs.responses.WfsTransactionException;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers.wfs;
+package org.vfny.geoserver.wfs.requests.readers;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  * appropriate internal CapabilitiesRequest object, upon request.
  *
  * @author Rob Hranac, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: CapabilitiesKvpReader.java,v 1.7 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {

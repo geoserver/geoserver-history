@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.servlets.wfs;
+package org.vfny.geoserver.wfs.servlets;
 
 import java.util.Map;
 
@@ -11,11 +11,10 @@ import javax.servlet.ServletContext;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.readers.wfs.LockKvpReader;
-import org.vfny.geoserver.requests.readers.wfs.LockXmlReader;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wfs.LockResponse;
-import org.vfny.geoserver.servlets.WFService;
+import org.vfny.geoserver.wfs.requests.readers.LockKvpReader;
+import org.vfny.geoserver.wfs.requests.readers.LockXmlReader;
+import org.vfny.geoserver.wfs.responses.LockResponse;
 
 
 /**

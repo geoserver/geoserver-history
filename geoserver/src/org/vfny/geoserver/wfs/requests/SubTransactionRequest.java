@@ -2,10 +2,10 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.wfs;
+package org.vfny.geoserver.wfs.requests;
 
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.wfs.WfsException;
 
 
 /**

@@ -2,15 +2,16 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests;
+package org.vfny.geoserver.wfs.requests;
 
 import org.geotools.validation.ValidationProcessor;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.Request;
 
 /**
  * Defines a general WFS Request type
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: WFSRequest.java,v 1.7 2004/02/09 23:11:33 dmzwiers Exp $
  */
 abstract public class WFSRequest extends Request {

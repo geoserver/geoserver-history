@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wfs;
+package org.vfny.geoserver.wfs.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,7 +27,6 @@ import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -36,9 +35,10 @@ import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wfs.FeatureRequest;
-import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
 import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wfs.requests.FeatureRequest;
+import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
 
 
 /** 

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers.wfs;
+package org.vfny.geoserver.wfs.requests.readers;
 
 import java.util.List;
 import java.util.Map;
@@ -11,11 +11,11 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.wfs.DeleteRequest;
-import org.vfny.geoserver.requests.wfs.TransactionRequest;
+import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wfs.requests.DeleteRequest;
+import org.vfny.geoserver.wfs.requests.TransactionRequest;
 
 /**
  * This utility reads in a Delete KVP request and turns it into an appropriate
@@ -23,7 +23,7 @@ import org.vfny.geoserver.requests.wfs.TransactionRequest;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: DeleteKvpReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class DeleteKvpReader extends KvpRequestReader {

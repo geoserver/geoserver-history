@@ -25,7 +25,6 @@ import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.feature.FeatureType;
 import org.geotools.referencing.CRS;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;

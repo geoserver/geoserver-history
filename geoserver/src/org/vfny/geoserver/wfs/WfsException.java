@@ -2,7 +2,9 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver;
+package org.vfny.geoserver.wfs;
+
+import org.vfny.geoserver.ServiceException;
 
 /**
  * This defines an exception that can be turned into a valid xml service

@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
@@ -15,7 +17,6 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
-import org.geotools.filter.LogicFilter;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
@@ -24,8 +25,7 @@ import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wfs;
+package org.vfny.geoserver.wfs.responses;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.requests.wfs.FeatureRequest;
+import org.vfny.geoserver.wfs.requests.FeatureRequest;
 
 
 /**

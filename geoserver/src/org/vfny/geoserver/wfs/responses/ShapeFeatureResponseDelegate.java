@@ -2,20 +2,8 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.responses.wfs;
+package org.vfny.geoserver.wfs.responses;
 
-import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
-import org.geotools.data.FeatureStore;
-import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.gml.producer.FeatureTransformer;
-import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpaceInfo;
-import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,13 +11,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.xml.transform.TransformerException;
+
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.shapefile.ShapefileDataStore;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.wfs.requests.FeatureRequest;
 
 
 /**
@@ -89,7 +85,7 @@ import javax.xml.transform.TransformerException;
  */
 public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wfs");
+            "org.vfny.geoserver.wfs.responses");
 
     /** will be true if Shape-GZIP output format was requested */
     private boolean compressOutput = false;

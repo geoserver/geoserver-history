@@ -36,11 +36,15 @@
 
 package org.vfny.geoserver.wms.responses.map.gif;
 
-import java.io.*;
-import java.awt.*;
-import java.awt.image.*;
-import java.util.Hashtable;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.ImageObserver;
+import java.awt.image.PixelGrabber;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.logging.Logger;
 
 public class GIFOutputStream extends FilterOutputStream

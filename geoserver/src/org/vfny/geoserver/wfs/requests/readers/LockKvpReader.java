@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.requests.readers.wfs;
+package org.vfny.geoserver.wfs.requests.readers;
 
 import java.util.List;
 import java.util.Map;
@@ -11,10 +11,10 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.wfs.LockRequest;
+import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wfs.requests.LockRequest;
 
 
 /**
@@ -22,7 +22,7 @@ import org.vfny.geoserver.requests.wfs.LockRequest;
  * appropriate internal Lock type request object.
  *
  * @author Rob Hranac, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: LockKvpReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class LockKvpReader extends KvpRequestReader {
