@@ -50,7 +50,6 @@ public class DataStoreConfig extends AbstractConfig {
         LOGGER.finer("creating a new DataStore configuration");
 
         String namespacePrefix = getAttribute(dsElem, "namespace", true);
-
         this.nameSpace = catalog.getNameSpace(namespacePrefix);
 
         if (this.nameSpace == null) {
@@ -59,11 +58,13 @@ public class DataStoreConfig extends AbstractConfig {
             throw new ConfigurationException(msg);
         }
 
-        this.enabled = true || getBooleanAttribute(dsElem, "enabled", false);
+        //Huh?  Doesn't this just set this always to true?
+        //this.enabled = true || getBooleanAttribute(dsElem, "enabled", false);
+        this.enabled = getBooleanAttribute(dsElem, "enabled", false);
         this.title = getChildText(dsElem, "title", false);
         this._abstract = getChildText(dsElem, "abstract", false);
         loadConnectionParams(getChildElement(dsElem, "connectionParams", true));
-        LOGGER.finer("created DataStore " + toString());
+        LOGGER.info("created DataStore " + toString());
     }
 
     /**
