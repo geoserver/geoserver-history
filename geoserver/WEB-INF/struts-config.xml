@@ -128,11 +128,11 @@
         		
         <forward 
         	name="login"
-        	path="/login.do"/>
+        	path="/admin/login.do"/>
         	
         <forward 
        		name="logout"
-        	path="/logout.do"/>
+        	path="/admin/logout.do"/>
         	
         <forward
         	name="config.validation"
@@ -276,11 +276,11 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config"
         	name="blankBean"/>
-        <action
+        <!--<action
         	path="/config/geoServer"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="geoServer"
-        	name="blankBean"/>
+        	name="blankBean"/>-->
 
         <!-- CONFIG WFS -->        	
         <action
@@ -412,7 +412,7 @@
 			name="loginForm"
 			scope="request"
 			validate="true"
-			input="welcome.login"/>
+			input="admin.login"/>
 
 		<action    	
         	path="/config/geoServerSubmit"
@@ -420,7 +420,7 @@
         	name="geoServerConfigurationForm"
         	scope="request"
         	validate="true"
-        	input="main.geoServer.configuration"/>
+        	input="config"/>
         	
         <action
         	path="/config/wfs/descriptionSubmit"
