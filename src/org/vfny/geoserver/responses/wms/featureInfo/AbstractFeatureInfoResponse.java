@@ -1,28 +1,18 @@
 package org.vfny.geoserver.responses.wms.featureInfo;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-import org.geotools.data.FeatureReader;
+
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
@@ -32,15 +22,25 @@ import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+
 
 public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate {
 
+	/**
+	 * Empty style used in order to not having to parse the styles, because
+	 * we don't need them for a GetFeatureInfo request.
+	 */
+	private static final Style defaultStyle = StyleFactory.createStyleFactory().createStyle();
     /**
      * Creates a new GetMapDelegate object.
      */
@@ -49,7 +49,21 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         super();
     }
 
-    public abstract String getContentEncoding();
+    
+    /**
+     * Returns the content encoding for the output data.
+     * <p>
+     * Note that this reffers to an encoding applied to the response stream (such
+     * as GZIP or DEFLATE), and not to the MIME response type, wich is returned
+     * by <code>getContentType()</code>
+     * </p>
+     * @return <code>null</code> since no special encoding is performed while
+     *         wrtting to the output stream.
+     */
+    public String getContentEncoding() {
+        return null;
+    }
+    
 
     /**
      * Evaluates if this Map producer can generate the map format specified by
@@ -133,9 +147,10 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      * @throws java.lang.IllegalStateException if <code>execute()</code> has
      *         not been previously called
      */
-    public String getContentType(GeoServer gs)
-        throws java.lang.IllegalStateException {
-        //Return a default?  Format is not set until execute is called...
+    public String getContentType(GeoServer gs){
+    	if(format == null){
+    		throw new IllegalStateException("Content type unknown since execute() has not been called yet");
+    	}
         return format;
     }
 
@@ -144,7 +159,6 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @param requestedLayers The information on the types requested.
      * @param queries The results of the queries to generate maps with.
-     * @param styles The styles to be used on the results.
      *
      * @throws WmsException For any problems.
      *
@@ -152,7 +166,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *       deprecated.
      */
     protected void execute(FeatureTypeInfo[] requestedLayers, Query[] queries,
-        Style[] styles, int x, int y) throws WmsException {
+        int x, int y) throws WmsException {
         GetFeatureInfoRequest request = getRequest();
         this.format = request.getFormat();
 
@@ -166,11 +180,10 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             MapLayer layer = null;
 
             for (int i = 0; i < requestedLayers.length; i++) {
-                Style style = styles[i];
                 Query query = queries[i];
                 FeatureSource source = requestedLayers[i].getFeatureSource();
 
-                layer = new DefaultMapLayer(source, style);
+                layer = new DefaultMapLayer(source, defaultStyle);
                 layer.setQuery(query);
                 map.addLayer(layer);
             }
@@ -199,7 +212,6 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             
             renderer.setOutput(graphic, paintArea);
             LOGGER.fine("Output set");
-            //renderer.paint((Graphics2D) image.getGraphics(), paintArea, at);
             
             Coordinate c = renderer.pixelToWorld(x, y, dataArea);
             LOGGER.fine("real world coordinate is " + c);
@@ -219,9 +231,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     results.add(ml.getFeatureSource().getFeatures(filter));
                 }
             }
-            
-            //results = layer.getFeatureSource().getFeatures(filter);
-            
+
             LOGGER.fine("called renderer");
 
             map = null;

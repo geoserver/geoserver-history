@@ -4,9 +4,11 @@
  */
 package org.vfny.geoserver.responses.wms.featureInfo;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
@@ -17,22 +19,15 @@ import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.LogicFilter;
-import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.wms.GetMapRequest;
-import org.vfny.geoserver.responses.Response;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
+import org.vfny.geoserver.responses.Response;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -57,7 +52,7 @@ import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
  *
  * <ul>
  * <li>
- * execute(FeatureTypeInfo[], FeatureResults[], Style[])
+ * execute(FeatureTypeInfo[], FeatureResults[])
  * </li>
  * <li>
  * canProduce(String mapFormat)
@@ -71,7 +66,7 @@ import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
  * </ul>
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n, Axios Engineering
  * @author Chris Holmes
  * @version $Id: GetFeatureInfoDelegate.java,v 1.1 2004/07/15 21:13:14 jmacgill Exp $
  */
@@ -97,7 +92,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Executes a GetMapRequest.  Builds the proper objects from the request
+     * Executes a GetFeatureInfo request.  Builds the proper objects from the request
      * names.
      *
      * @param request A valid GetMapRequest.
@@ -108,34 +103,13 @@ public abstract class GetFeatureInfoDelegate implements Response {
         this.request = request;
 
         FeatureTypeInfo[] layers = request.getLayers();
-        Style[] styles = buildStyles(request.getStyles(), request.getWMS());
         Filter[] filters = request.getFilters();
         List attributes = request.getAttributes();
         Query[] queries = buildQueries(layers, filters, attributes);
         int x = request.getX();
         int y = request.getY();
 
-/*
- GR: commented out since getFeatures() will be done in execute(FeatureTypeInfo[], Query[], Style[]) 
-        int nLayers = layers.length;
-        FeatureResults[] resultLayers = new FeatureResults[nLayers];
-        FeatureTypeInfo ftype = null;
-        Filter filter = null;
-        FeatureResults features = null;
-
-        try {
-            for (int i = 0; i < nLayers; i++) {
-                ftype = layers[i];
-                features = ftype.getFeatureSource().getFeatures(queries[i]);
-                resultLayers[i] = features;
-            }
-        } catch (IOException ex) {
-            throw new WmsException(ex, "Error getting features",
-                getClass().getName() + ".execute()");
-        }
-*/
-
-        execute(layers, queries, styles, x, y);
+        execute(layers, queries, x, y);
     }
 
     /**
@@ -156,12 +130,11 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *        requested layers, already setted up with the bbox filter from
 	 *		  the BBOX parameter of the GetMap request and to retrieve the
 	 *		  specified attributes in the ATTRIBUTES request parameter.
-     * @param styles Matching array of the styles to process the results with.
      *
      * @throws WmsException For any problems executing.
      */
     protected abstract void execute(FeatureTypeInfo[] requestedLayers,
-        Query[] queries, Style[] styles, int x, int y)
+        Query[] queries, int x, int y)
         throws WmsException;
 
     /**
@@ -261,29 +234,6 @@ public abstract class GetFeatureInfoDelegate implements Response {
         }
 
         return finalLayerFilter;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param styleNames DOCUMENT ME!
-     * @param gs DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws WmsException DOCUMENT ME!
-     */
-    protected Style[] buildStyles(List styleNames, WMS gs)
-        throws WmsException {
-        Style[] styles = new Style[styleNames.size()];
-        int i = 0;
-        Data gc = gs.getData();
-
-        for (Iterator it = styleNames.iterator(); it.hasNext(); i++) {
-            styles[i] = gc.getStyle((String) it.next());
-        }
-
-        return styles;
     }
 
     /**
