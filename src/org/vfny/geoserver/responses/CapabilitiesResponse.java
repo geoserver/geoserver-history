@@ -23,6 +23,7 @@ import org.vfny.geoserver.config.configuration.*;
  * get it to work in places.  My advice: don't regenerate this code.
  *
  *@author Rob Hranac, TOPP
+ *@author Chris Holmes, TOPP
  *@version $VERSION$
  */
 public class CapabilitiesResponse {
@@ -312,12 +313,16 @@ public class CapabilitiesResponse {
         throws WfsException {
         TypeRepository repository = TypeRepository.getInstance();
         TypeInfo responseFeatureType = repository.getType( featureTypeName );
-        String tempResponse = responseFeatureType.getCapabilitiesXml( responseVersion );
-        
+	String tempResponse = new String();
+        if (responseFeatureType != null) {
+	    tempResponse = 
+		responseFeatureType.getCapabilitiesXml( responseVersion );
+        }
         try {
             xmlOutFinal.write(tempResponse.getBytes());
         } catch (Exception e) {
-            throw new WfsException( e, "Could not write XML output file", CapabilitiesResponse.class.getName() );
+            throw new WfsException( e, "Could not write XML output file", 
+				    CapabilitiesResponse.class.getName() );
         }
         
     }
