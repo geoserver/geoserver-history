@@ -50,6 +50,6 @@
     <classpathentry kind="lib" path="lib/catalina/server/lib/tomcat-util.jar"/>
     <classpathentry kind="lib" path="lib/catalina/server/lib/warp.jar"/>
     <classpathentry kind="lib" path="lib/catalina/lib/naming-factory.jar"/>
-    <classpathentry kind="src" path="/geotools2"/>
+    <classpathentry kind="lib" path="lib/geotools.jar"/>
     <classpathentry kind="output" path="build"/>
 </classpath>
