@@ -508,7 +508,28 @@
           </td>
         </tr>
       </table>
-     
+       <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Obtaining test data</td>
+        </tr>
+        <tr> 
+          <td height="45"> 
+            <blockquote>The easiest way to get some postgis data to work with
+	    is to acquire shapefiles and use the shp2pgsql utility provided
+	    by postgis.  It should be in your pgsql installation directory, 
+	    under the bin subdirectory.  As for acquiring shapefiles, the US
+	    census provides a lot of their data free of cost in the shape
+	    format, available <a href="http://www.esri.com/data/download/census2000_tigerline/index.html">here</a>.  The latest release of geoserver also
+	    includes support for using shapefiles directly, information is
+	    about this option is available in the <a href="advanced.htm">
+	    advanced</a> section.  Using the shapefiles directly sacrifices
+	    a lot of speed and flexibility, so converting them to postgis
+	    is the recommended way, but the option is available for easier
+	    set up.
+            </blockquote>
+          </td>
+        </tr>
+      </table>
       <table width="100%" cellpadding="5" cellspacing="5" border="0">
         <tr> 
           <td bgcolor="#333366" class="title">Testing GeoServer</td>
