@@ -4,16 +4,21 @@
  */
 package org.vfny.geoserver.config;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
 
 
 /**
- * DOCUMENT ME!
+ * Represents a configuration of the WFS service.  Inherits most everything
+ * from ServiceConfig.
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @author Chris Holmes
+ * @version $Id: WFSConfig.java,v 1.1.2.4 2003/11/12 02:19:14 cholmesny Exp $
  */
 public class WFSConfig extends ServiceConfig {
+    
+    private String describeUrl;
+    
     /**
      * Creates a new WFSConfig object.
      *
@@ -24,5 +29,24 @@ public class WFSConfig extends ServiceConfig {
     public WFSConfig(Element root) throws ConfigurationException {
         super(root);
         URL = GlobalConfig.getInstance().getBaseUrl() + "/wfs";
+    }
+
+    /**
+     * Gets the base url of a describe request.
+     * @task REVISIT: consider using the /wfs? base, as it makes things a bit
+     * clearer.  Right now, however, I'm getting problems with the & in 
+     * returned xml, having to put a &amp; in, and not sure if clients
+     * will process it correctly.
+     */
+    public String getDescribeBaseUrl() {
+	if (this.describeUrl == null) {
+	    this.describeUrl = GlobalConfig.getInstance().getBaseUrl() +
+		"DescribeFeatureType?typeName=";
+	}
+	return describeUrl;
+    }
+
+    public String getDescribeUrl(String typeName) {
+	return getDescribeBaseUrl() + typeName;
     }
 }
