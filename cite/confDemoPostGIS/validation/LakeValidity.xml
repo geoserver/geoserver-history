@@ -6,8 +6,8 @@
 	xs:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd">
 	<name>Lake Integrity Checks</name>
 	<description>Checks to ensure the lakes are valid</description>
-	<!--<test>
-		<name>lake is valid geom</name>
+	<test>
+		<name>Lake Valid</name>
 		<description>Checks that Lakes are represented by valid geometries</description>
 		<plugin>Is Valid Geometry</plugin>
 		<argument >
@@ -16,12 +16,12 @@
 		</argument>
 	</test>
 	<test>
-		<name>lake == polygon</name>
-		<description>Checks that Lakes are closed polygons</description>
-		<plugin>Polygon Gap Detection</plugin>
-		<argument >
+		<name>Stream</name>
+		<description>Stream must not crosss itself (expect on a node)</description>
+		<plugin>Line Not Self Intersection</plugin>
+		<argument>
 			<name>typeRef</name>
-			<string>lakes:lakes</string>
+			<string>streams:streams</string>
 		</argument>
-	</test>-->
+	</test>
 </suite>
