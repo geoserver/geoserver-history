@@ -91,7 +91,7 @@ public abstract class DataStoreUtils {
 
     /**
      * After user has selected Description can aquire Factory based on
-     * description.
+     * display name.
      * 
      * <p>
      * Use factory for:
@@ -107,20 +107,20 @@ public abstract class DataStoreUtils {
      * </ul>
      * 
      *
-     * @param description
+     * @param diplayName
      *
      * @return
      */
-    public static DataStoreFactorySpi aquireFactory(String description) {
+    public static DataStoreFactorySpi aquireFactory(String displayName) {
         for (Iterator i = DataStoreFinder.getAvailableDataStores();
                 i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
 
-            if (factory.getDescription().equals(description)) {
+            if (factory.getDisplayName().equals(displayName)) {
                 return factory;
             }
 
-            if (factory.getClass().toString().equals(description)) {
+            if (factory.getClass().toString().equals(displayName)) {
                 return factory;
             }
         }
@@ -173,7 +173,7 @@ public abstract class DataStoreUtils {
         for (Iterator i = DataStoreFinder.getAvailableDataStores();
                 i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
-            list.add(factory.getDescription());
+            list.add(factory.getDisplayName());
         }
 
         return list;
