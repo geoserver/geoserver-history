@@ -6,9 +6,11 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +28,7 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
+import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
@@ -33,6 +36,7 @@ import org.vfny.geoserver.form.data.AttributeDisplay;
 import org.vfny.geoserver.form.data.AttributeForm;
 import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -125,18 +129,13 @@ public class TypesEditorAction extends ConfigAction {
         }
         else {
             config.setSchemaBase( schemaBase );
-            for( Iterator i=form.getAttributes().iterator(); i.hasNext();){
-                Object obj = i.next();
-                
-                if( obj instanceof AttributeDisplay ){
-                    continue; // skip - display only attributes
-                }
-                else if (obj instanceof AttributeForm ){
-                    AttributeForm attribute = (AttributeForm) obj;
-                }
+            List schemaAttributes = new ArrayList();
+            for( Iterator i=form.toSchemaAttributes().iterator(); i.hasNext();){
+                AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO) i.next();
+                schemaAttributes.add( new AttributeTypeInfoConfig( attributeDTO ) );                                        
             }
-        }
-        form.getAttributes();
+            config.setSchemaAttributes( schemaAttributes );
+        }        
         config.setSchemaAttributes( form.toSchemaAttributes() );                
     }
     /**
