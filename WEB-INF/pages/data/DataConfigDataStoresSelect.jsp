@@ -24,6 +24,12 @@
 			<bean:message key="label.delete"/>
 		</html:submit>
 	</td></tr>
+
+	<tr>
+		<td>&nbsp;</td>
+		<td><html:link forward="dataConfigDataStoresNew"><bean:message key="label.createNewDataStore"/></html:link></td>	
+	</tr>
+	
 	</html:form>
 
 </table>

@@ -14,6 +14,17 @@
 	</td></tr>
 	
 	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.serviceLevel"/>">
+			<bean:message key="label.serviceLevel"/>:
+		</span>
+	</td><td colspan=2>
+		<html:select property="serviceLevel" size="2">
+			<html:option key="label.serviceLevel.basic" value="<%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.BASIC) %>"/>
+			<html:option key="label.serviceLevel.transactional" value="<%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.TRANSACTION) %>"/>
+		</html:select>
+	</td></tr>	
+	
+	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.onlineResource_service"/>">
 			<bean:message key="label.onlineResource"/>:
 		</span>
