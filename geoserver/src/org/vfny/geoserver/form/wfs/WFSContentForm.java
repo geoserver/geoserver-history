@@ -41,15 +41,14 @@ public class WFSContentForm extends ActionForm {
 	 * 
 	 * Probably a better way to do this, but I can't think of one.
 	 * -rgould
+	 * 
+	 * TODO: Hey richard Jody here - Struts knows that boolean properties are
+	 * not set if the user does nothing. Apparently that is why the reset
+	 * method exists.
+	 * Reset is called *every* time on ActionForm. Before the populate
+	 * process has a go at things.  
 	 */
 	private boolean enabledChecked = false; 
-
-	/**
-	 * @return
-	 */
-	public String getDescribeURL() {
-		return describeURL;
-	}
 
 	/**
 	 * @return
@@ -139,13 +138,6 @@ public class WFSContentForm extends ActionForm {
 			this.onlineResource = "";
 		}
 
-		url = config.getDescribeURL();
-		if (url != null) {
-			this.describeURL = url.toString();
-		} else {
-			this.describeURL = "";
-		}
-	
 		Set featureSet = config.getEnabledFeatures();
 		this.features = new String[featureSet.size()];
 		
