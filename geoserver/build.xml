@@ -26,7 +26,7 @@
 
   <!-- secondary directories -->
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
-  <property name="dir.data" value="${dir.misc}/data"/>
+  <property name="dir.data" value="${dir.conf}"/>
   <property name="dir.testsJar" 
   value="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
   <property name="dir.testApp" value="${dir.server}/webapps/ROOT/WEB-INF"/>
