@@ -181,7 +181,7 @@ public class CapabilitiesResponse {
      */
     private String addNameSpace(String qName, String url){
 	String spaces = "   ";
-	return "" + spaces + "xmlns" + qName + "=\"" + url + "\"";
+	return "\n" + spaces + "xmlns" + qName + "=\"" + url + "\"";
     }
     
     
@@ -203,7 +203,7 @@ public class CapabilitiesResponse {
         if ( tagType == TAG_ONLY )
             tag = tag.concat("/");
         tag = tempSpaces + "<" + tag;
-        tag = tag.concat(">");
+        tag = tag.concat(">\n");
         
         xmlOutFinal.write(tag.getBytes(), 0, tag.length() );
     }
@@ -234,12 +234,12 @@ public class CapabilitiesResponse {
         
         StringBuffer tempCapabilityInfo = new StringBuffer();
         
-        tempCapabilityInfo.append("  <Capability>    <Request>");
+        tempCapabilityInfo.append("\n  <Capability>\n    <Request>");
         tempCapabilityInfo.append(tempReturnCapability("GetCapabilities"));
         tempCapabilityInfo.append(tempReturnCapability("DescribeFeatureType"));
         tempCapabilityInfo.append(tempReturnCapability("GetFeature"));
 	tempCapabilityInfo.append(tempReturnCapability("Transaction"));
-        tempCapabilityInfo.append("    </Request>  </Capability>");
+        tempCapabilityInfo.append("\n    </Request>\n  </Capability>\n");
         
         try {
             xmlOutFinal.write(tempCapabilityInfo.toString().getBytes());
@@ -258,13 +258,13 @@ public class CapabilitiesResponse {
         String url = config.getUrl();
         String tempCapability = new String();
         
-        tempCapability = "      <" + request + ">";
+        tempCapability = "\n      <" + request + ">";
         if (request.equals("DescribeFeatureType") )
-            tempCapability = tempCapability + "        <SchemaDescriptionLanguage><XMLSCHEMA/></SchemaDescriptionLanguage>";
+            tempCapability = tempCapability + "\n        <SchemaDescriptionLanguage><XMLSCHEMA/></SchemaDescriptionLanguage>";
         if (request.equals("GetFeature") )
-            tempCapability = tempCapability + "        <ResultFormat><GML2/></ResultFormat>";
-        tempCapability = tempCapability + "        <DCPType><HTTP><Get onlineResource=\"" + url + "/" + request + "?\"/></HTTP></DCPType>";
-        tempCapability = tempCapability + "        <DCPType><HTTP><Post onlineResource=\"" + url + "/" + request + "\"/></HTTP></DCPType>      </" + request + ">";
+            tempCapability = tempCapability + "\n        <ResultFormat><GML2/></ResultFormat>";
+        tempCapability = tempCapability + "\n        <DCPType><HTTP><Get onlineResource=\"" + url + "/" + request + "?\"/></HTTP></DCPType>";
+        tempCapability = tempCapability + "\n        <DCPType><HTTP><Post onlineResource=\"" + url + "/" + request + "\"/></HTTP></DCPType>\n      </" + request + ">";
         
         return tempCapability;
     }
