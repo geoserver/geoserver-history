@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -28,7 +27,7 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class LoadXMLAction extends Action {
+public class LoadXMLAction extends GeoServerAction {
 	public ActionForward execute(ActionMapping mapping,
 		ActionForm form,
 		HttpServletRequest request,

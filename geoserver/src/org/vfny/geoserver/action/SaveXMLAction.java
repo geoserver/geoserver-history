@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -28,16 +27,15 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class SaveXMLAction extends Action {
+public class SaveXMLAction extends GeoServerAction {
 	public ActionForward execute(ActionMapping mapping,
 		ActionForm form,
 		HttpServletRequest request,
 		HttpServletResponse response)
 		throws IOException, ServletException {
 			
-			GeoServer gs = null;
+			GeoServer gs = getGeoServer(request);
 			ServletContext sc = request.getSession().getServletContext();
-			gs = (GeoServer)sc.getAttribute(GeoServer.SESSION_KEY);
 			File rootDir = new File(sc.getRealPath("/"));
 			try{
 				XMLConfigWriter.store(gs.toWMSDTO(),gs.toWFSDTO(),gs.toGeoServerDTO(),gs.toDataDTO(),rootDir);

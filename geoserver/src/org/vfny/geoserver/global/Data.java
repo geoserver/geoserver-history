@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +35,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.6 2004/01/06 23:54:39 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.7 2004/01/07 00:38:29 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -75,7 +76,16 @@ public class Data extends Abstract
     public Data(DataDTO config) throws ConfigurationException {
 		load(config);
     }
-		
+	
+	/**
+	 * load purpose.
+	 * Places the data in this container and innitializes it. 
+	 * Complex tests are performed to detect existing datasources, 
+	 * while the remainder only include simplistic id checks.
+	 * </p>
+	 * @param config
+	 * @throws ConfigurationException
+	 */
 	void load(DataDTO config) throws ConfigurationException {
 		catalog = config;
 		if(config == null)
@@ -85,43 +95,72 @@ public class Data extends Abstract
 			dataStores = new HashMap();
 		if(config.getDataStores() == null)
 			throw new NullPointerException("");
+		Set s = dataStores.keySet();
 		Iterator i = config.getDataStores().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			if(!dataStores.containsKey(key))
+			s.remove(key);
+			//find missing ones
+			if(!dataStores.containsKey(key)){
 				dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),nameSpaces));
+			}else{// check for small changes
+				DataStoreInfoDTO dsiDto = (DataStoreInfoDTO)((DataStoreInfo)dataStores.get(key)).toDTO();
+				if(dsiDto!=null && !(dsiDto.equals(config.getDataStores().get(key)))){
+					dataStores.put(key,new DataStoreInfo((DataStoreInfoDTO)config.getDataStores().get(key),nameSpaces));
+				}
+			}
 		}
-
+		// s contains all the unchecked values.
+		i = s.iterator();
+		while(i.hasNext())
+			dataStores.remove(i.next());
+			
 		if(featureTypes == null)
 			featureTypes = new HashMap();
+		s = featureTypes.keySet();
 		if(config.getFeaturesTypes() == null)
 			throw new NullPointerException("");
 		i = config.getFeaturesTypes().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
+			s.remove(key);
 			if(!featureTypes.containsKey(key))
 				featureTypes.put(key,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), dataStores));
 		}
+		// s contains all the unchecked values.
+		i = s.iterator();
+		while(i.hasNext())
+			featureTypes.remove(i.next());
 
 		if(nameSpaces == null)
 			nameSpaces = new HashMap();
+		s = nameSpaces.keySet();
 		if(config.getNameSpaces() == null)
 			throw new NullPointerException("");
 		i = config.getNameSpaces().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
-			if(!nameSpaces.containsKey(key))
+			s.remove(key);
+			if(!nameSpaces.containsKey(key)){
 				nameSpaces.put(key,new NameSpace((NameSpaceDTO)config.getNameSpaces().get(key)));
+				if(((NameSpaceDTO)config.getNameSpaces().get(key)).isDefault())
+					defaultNameSpace = (NameSpace)nameSpaces.get(key);
+			}
 		}
-		defaultNameSpace = new NameSpace(config.getDefaultNameSpace());
+		// s contains all the unchecked values.
+		i = s.iterator();
+		while(i.hasNext())
+			nameSpaces.remove(i.next());
 
 		if(styles == null)
 			styles = new HashMap();
+		s = styles.keySet();
 		if(config.getStyles() == null)
 			throw new NullPointerException("");
 		i = config.getStyles().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
+			s.remove(key);
 			if(!styles.containsKey(key))
 				try{
 					styles.put(key,loadStyle(((StyleDTO)config.getStyles().get(key)).getFilename()));
@@ -129,6 +168,10 @@ public class Data extends Abstract
 					LOGGER.fine("Error loading style:"+key.toString());
 				}
 		}
+		// s contains all the unchecked values.
+		i = s.iterator();
+		while(i.hasNext())
+			styles.remove(i.next());
 	}
 
     /**
