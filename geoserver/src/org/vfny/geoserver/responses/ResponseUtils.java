@@ -83,4 +83,27 @@ public class ResponseUtils {
         //return the encoded string
         return buffer.toString();
     }
+
+     /**
+     * Writes <CODE>string</CODE> into writer, escaping &, ', ", <, and >
+     * with the XML excape strings.
+     */
+    public static void writeEscapedString(Writer writer, String string)
+        throws IOException {
+        for(int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
+            if(c == '<')
+                writer.write("&lt;");
+            else if(c == '>')
+                writer.write("&gt;");
+            else if(c == '&')
+                writer.write("&amp;");
+            else if(c == '\'')
+                writer.write("&apos;");
+            else if(c == '"')
+                writer.write("&quot;");
+            else
+		writer.write(c);
+        }
+    }
 }
