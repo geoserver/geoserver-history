@@ -30,6 +30,7 @@ public class TransactionHandler
     private static final short UPDATE = 3;
     private static final short PROPERTY_NAME = 4;
     private static final short VALUE = 5;
+    private static final short PROPERTY = 6;
 
     /** Class logger */
     private static Logger LOGGER = 
@@ -44,7 +45,13 @@ public class TransactionHandler
     /** Tracks tag we are currently inside: helps maintain state. */
     private short state = UNKNOWN;
   
+    /** holds the property name for an update request. */
+    private String curPropertyName;
 
+    /** holds the property value for an update request. */
+    private String curPropertyValue;
+
+	
     /** Empty constructor. */
     public TransactionHandler () { super(); }
     
@@ -68,7 +75,9 @@ public class TransactionHandler
             return PROPERTY_NAME;
         } else if(stateName.equals("Value")) {
             return VALUE;
-        } else {
+        } else if(stateName.equals("Property")) {
+            return PROPERTY;
+        }else {
             return UNKNOWN;
         }           
     }
@@ -143,7 +152,20 @@ public class TransactionHandler
         //  return list
         if(state == DELETE || state == UPDATE || state == INSERT) {
             request.addSubRequest(subRequest);
-        }
+	    if (state == UPDATE) {
+		LOGGER.finest("adding property to update");
+	    }
+        } else if(state == PROPERTY) {
+	    if (subRequest.getClass().equals(UpdateRequest.class)) {
+		((UpdateRequest) subRequest).addProperty(curPropertyName,
+							 curPropertyValue);
+		curPropertyName = new String();
+		curPropertyValue = new String();
+	    } else {
+		throw new SAXException("<property> element should only occur " 
+				       + "within a <update> element.");
+	    }
+	}
 
         state = UNKNOWN;
     }
@@ -163,10 +185,10 @@ public class TransactionHandler
         if(state == PROPERTY_NAME) {
             String s = new String(ch, start, length);
             LOGGER.finest("found property name: " + s);
-            ((UpdateRequest) subRequest).addPropertyName(s);
+	    curPropertyName = s;
         } else if (state == VALUE) {
             String s = new String(ch, start, length);
-            ((UpdateRequest) subRequest).addValue(s);
+            curPropertyValue = s;
         }        
     }
     
@@ -181,4 +203,7 @@ public class TransactionHandler
         } catch(WfsException e) {
         }
     }    
+
+    
+	    
 }
