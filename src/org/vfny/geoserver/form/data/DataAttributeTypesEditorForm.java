@@ -175,7 +175,7 @@ public class DataAttributeTypesEditorForm extends ActionForm {
                                                                 .getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
 
         DataStore dataStore = dataConfig.getDataStore(ftConfig.getDataStoreId())
-                                        .findDataStore();
+                                        .findDataStore(context);
         FeatureType featureType = dataStore.getSchema(ftConfig.getName());
         AttributeType[] types = featureType.getAttributeTypes();
         AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) request.getSession()

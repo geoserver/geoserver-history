@@ -42,7 +42,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.1 2004/02/28 00:54:25 dmzwiers Exp $
+ * @version $Id: ValidationTestDoIt.java,v 1.2 2004/03/09 01:37:40 dmzwiers Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
@@ -58,13 +58,13 @@ public class ValidationTestDoIt extends ConfigAction {
 		GeoValidator gv = new GeoValidator(ts,plugins);
         DataConfig dataConfig = (DataConfig) getDataConfig();
 		Map dataStores = dataConfig.getDataStores();
-		TestValidationResults vr = runTransactions(dataStores,gv);
+		TestValidationResults vr = runTransactions(dataStores,gv,context);
 		
 		request.getSession().setAttribute(TestValidationResults.CURRENTLY_SELECTED_KEY,vr);
 		return  mapping.findForward("config.validation.suite");
 	}
 
-    private TestValidationResults runTransactions(Map dsm, ValidationProcessor v) {
+    private TestValidationResults runTransactions(Map dsm, ValidationProcessor v, ServletContext sc) {
         if ((dsm == null) || (dsm.size() == 0)) {
             System.out.println("No Datastores were defined.");
 
@@ -86,7 +86,7 @@ public class ValidationTestDoIt extends ConfigAction {
             String key = i.next().toString();
             DataStoreConfig dsc = (DataStoreConfig) dsm.get(key);
             try {
-            	DataStore ds = dsc.findDataStore();
+            	DataStore ds = dsc.findDataStore(sc);
             
             	String[] ss = ds.getTypeNames();
             	for (int j = 0; j < ss.length; j++) {

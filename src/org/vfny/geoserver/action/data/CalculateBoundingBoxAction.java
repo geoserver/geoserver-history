@@ -47,7 +47,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: CalculateBoundingBoxAction.java,v 1.2 2004/02/25 00:38:53 dmzwiers Exp $
+ * @version $Id: CalculateBoundingBoxAction.java,v 1.3 2004/03/09 01:37:40 dmzwiers Exp $
  */
 public class CalculateBoundingBoxAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -60,13 +60,13 @@ public class CalculateBoundingBoxAction extends ConfigAction {
         FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
         DataConfig dataConfig = getDataConfig();
         DataStoreConfig dsConfig = dataConfig.getDataStore(ftConfig.getDataStoreId());
-        DataStore dataStore = dsConfig.findDataStore();
+        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
         FeatureType featureType = dataStore.getSchema(ftConfig.getName());
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
         
         ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));
         request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
         
-        return mapping.findForward("config.data.types");
+        return mapping.findForward("config.data.type.editor");
     }
 }

@@ -98,7 +98,7 @@ public class DataAttributeTypesNewForm extends ActionForm {
 
         DataStore dataStore = null;
         System.out.println("Run Level -1");
-        dataStore = DataStoreUtils.aquireDataStore(params);
+        dataStore = DataStoreUtils.aquireDataStore(params,context);
         System.out.println("Run Level 0");
         FeatureType featureType = dataStore.getSchema(ftConfig.getName());
         System.out.println("Run Level 1");

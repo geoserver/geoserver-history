@@ -53,7 +53,7 @@ public class DataAttributeTypesNewAction extends ConfigAction {
         String featureTypeName = ftConfig.getName();
 
         DataStoreConfig dsConfig = dataConfig.getDataStore(dataStoreID);
-        DataStore dataStore = dsConfig.findDataStore();
+        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
 
         FeatureType featureType = dataStore.getSchema(featureTypeName);
 

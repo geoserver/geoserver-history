@@ -15,6 +15,8 @@ import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.servlet.ServletContext;
+
 import org.geotools.data.DataStore;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
@@ -34,7 +36,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.12 2004/02/09 23:30:04 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.13 2004/03/09 01:37:40 dmzwiers Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -665,14 +667,14 @@ public class DataConfig {
      *
      * @return a set of all "DataStoreId.TypeName"
      */
-    public SortedSet getFeatureTypeIdentifiers() {
+    public SortedSet getFeatureTypeIdentifiers(ServletContext sc) {
         TreeSet set = new TreeSet();
 
         for (Iterator iter = dataStores.values().iterator(); iter.hasNext();) {
             DataStoreConfig dataStoreConfig = (DataStoreConfig) iter.next();
 
             try {
-                DataStore dataStore = dataStoreConfig.findDataStore();
+                DataStore dataStore = dataStoreConfig.findDataStore(sc);
 
                 String[] typeNames = dataStore.getTypeNames();
 

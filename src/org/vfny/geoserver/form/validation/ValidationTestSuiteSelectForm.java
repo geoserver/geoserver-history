@@ -25,8 +25,8 @@ import org.vfny.geoserver.config.validation.ValidationConfig;
  * </p>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestSuiteSelectForm.java,v 1.1 2004/01/31 00:27:28 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationTestSuiteSelectForm.java,v 1.2 2004/03/09 01:37:40 dmzwiers Exp $
  */
 public class ValidationTestSuiteSelectForm extends ActionForm {
     
@@ -50,8 +50,9 @@ public class ValidationTestSuiteSelectForm extends ActionForm {
     public SortedSet getTestSuites(){
         ServletContext context = this.getServlet().getServletContext();
         ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
-
-        return new TreeSet(validationConfig.getTestSuiteNames());        
+        if(validationConfig!=null)
+        	return new TreeSet(validationConfig.getTestSuiteNames());
+        return new TreeSet();
     }
 	/**
 	 * Access selectedTestSuite property.
