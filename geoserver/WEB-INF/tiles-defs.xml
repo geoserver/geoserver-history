@@ -193,15 +193,6 @@
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	
-   	<definition name="config.data.store" extends=".mainLayout">
-        <put name="key" value="config.data.store"/>
-   		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresSelect.jsp"/>
-        <put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
-   		<put name="layer" value="data"/>   				   		
-        <put name="locationForwards" value="welcome:config:config.data:config.data.store"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
-   	</definition>
-   	
    	<definition name="config.data.store.new" extends=".mainLayout">
         <put name="key" value="config.data.store.new"/>
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresNew.jsp"/>
@@ -216,7 +207,7 @@
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:config.data.store:config.data.store"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.store:config.data.store"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
 
