@@ -30,7 +30,7 @@ import java.util.List;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.19 2004/06/12 12:20:58 groldan Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.20 2004/07/21 18:43:39 jmacgill Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     /** DOCUMENT ME! */
@@ -368,6 +368,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleCapability(config, "GetCapabilities");
         cReturn();
         handleCapability(config, "GetMap");
+        cReturn();
+        handleCapability(config, "GetFeatureInfo");
         unIndent();
         endElement("Request");
     }
@@ -396,6 +398,15 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         if (capabilityName.startsWith("GetMap")) {
             Iterator formats = GetMapResponse.getMapFormats().iterator();
+
+            while (formats.hasNext()) {
+                handleSingleElem("Format", (String) formats.next());
+                cReturn();
+            }
+        }
+        
+        if (capabilityName.startsWith("GetFeatureInfo")) {
+            Iterator formats = GetFeatureInfoResponse.getMapFormats().iterator();
 
             while (formats.hasNext()) {
                 handleSingleElem("Format", (String) formats.next());
