@@ -167,6 +167,7 @@ public class TypesEditorAction extends ConfigAction {
         
           // do a translation from the data's coordinate system to lat/long
         
+        //TODO: DJB: NOTE: 1/2 of the config stuff has the srs as an int, 1/2 as string!!  We should be more consistent!
         
         String srs = typeForm.getSRS();  // what the user typed in for the srs in the form
         
