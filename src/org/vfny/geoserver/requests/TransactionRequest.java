@@ -103,7 +103,7 @@ public class TransactionRequest
     public String toString() {
 	StringBuffer tRequest = new StringBuffer("Lock Id: " + lockId + "\n");
 	tRequest.append("release all: " + releaseAll + "\n");
-	tRequest.append("\nhandle: " + handle + "\n");
+	tRequest.append("handle: " + handle + "\n");
 	for (int i = 0; i < subRequests.size(); i++) {
 	    tRequest.append(subRequests.get(i).toString() + "\n");
 	}
