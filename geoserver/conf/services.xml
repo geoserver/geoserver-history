@@ -48,7 +48,7 @@ Service level configuration
 
   </global>
   <services>
-    <service type="WFS" enabled="true">
+    <service type="WFS">
       <!-- Service elements, needed for the capabilities document -->
       <!-- Title and OnlineResource are the two required -->
       <name>FreeFS</name>
@@ -68,7 +68,7 @@ from New York City.</abstract>
       <maintainer>The Open Planning Project</maintainer>
     </service>
 
-    <service type="WMS" enabled="true">
+    <service type="WMS">
       <!-- Service elements, needed for the capabilities document -->
       <!-- Title and OnlineResource are the two required -->
       <name>FreeWMS</name>
@@ -91,6 +91,7 @@ from New York City.</abstract>
      <!-- Set the run attribute to false or comment the tag -->
      <!-- If you don't want the module to run. -->
      <!-- The Port tag specifies which port to run on. -->
+     <!-- Not currently working, should be back in the next version. -->
      <service type="Z39.50" enabled="false">
       <port>3210</port>
      </service>
