@@ -8,6 +8,7 @@ package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -21,6 +22,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -53,44 +55,89 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
 
 		// After extracting params into a map
-		Map aMap = new HashMap();
+		Map paramValues = new HashMap();
+        Map paramTexts = new HashMap();
         
-        aMap.putAll(dataStoresForm.getParams());
-        		
-		// Test to see if they work. if not, send em back!
-        try {
-            //Promote the connectionParameters to their actual classes
-            DataStoreFactorySpi factory = config.getFactory();
-            /* 
-            System.out.println( "before:"+aMap );
-            System.out.println( "canProcess"+factory.canProcess( aMap ));
-                        
-            aMap = DataStoreUtils.toConnectionParams( factory,aMap);
-            System.out.println( "after:"+aMap );
-            System.out.println( "canProcess"+factory.canProcess( aMap ));            
-            */
-     /*       if( !factory.canProcess( aMap )){
-                // We could not use these params!
-                //
-                ActionErrors errors = new ActionErrors();                
+        Map params = dataStoresForm.getParams();
+        System.out.println("form params:" + params );        
+        DataStoreFactorySpi factory = config.getFactory();
+        Param info[] = factory.getParametersInfo();
+        
+        // Convert Params into the kind of Map we actually need
+        //
+        for( Iterator i=params.keySet().iterator(); i.hasNext(); ){
+            String key = (String) i.next();
+            
+            Param param = DataStoreUtils.find( info, key );
+            if( param == null ){
+                System.out.println("Could not find Param for:"+ key );
+                
+                ActionErrors errors = new ActionErrors();
                 errors.add( ActionErrors.GLOBAL_ERROR,
-                    new ActionError("error.cannotProcessConnectionParams")) ;
+                        new ActionError("error.cannotProcessConnectionParams")) ;
                 saveErrors(request, errors);
-                return mapping.findForward("dataConfigDataStores");    
+                return mapping.findForward("dataConfigDataStores");
             }
-       */     
-            DataStore victim = factory.createDataStore( aMap );
-            System.out.println( "victim:"+victim);            
+            Object value;
+            try {                
+                value = param.lookUp( params );
+            }
+            catch (IOException erp ){
+                System.out.println("Could not handle:"+ key );
+                
+                ActionErrors errors = new ActionErrors();
+                errors.add( ActionErrors.GLOBAL_ERROR,
+                        new ActionError("error.cannotProcessConnectionParams")) ;
+                saveErrors(request, errors);
+                return mapping.findForward("dataConfigDataStores");
+            }
+            if( value != null ){
+                paramValues.put( key, value );
+                if( param.type != String.class ){
+                    System.out.println("form "+key+" converted from "+param.type.getName() );
+                }
+                String text = param.text(value);
+                System.out.println("form  "+key+" added '"+text+"'" );                
+                paramTexts.put( key, text );
+            }
+        }
+        // put magic namespace into the mix
+        //
+        paramValues.put("namespace", dataStoresForm.getNamespaceId() );
+        paramTexts.put("namespace", dataStoresForm.getNamespaceId() );
+        
+        System.out.println("form values:" + paramValues );
+        
+        if( !factory.canProcess( paramValues )){
+            // We could not use these params!
+            //
+            System.out.println("Could not process params:"+ paramValues );
+            
+            ActionErrors errors = new ActionErrors();
+            errors.add( ActionErrors.GLOBAL_ERROR,
+                new ActionError("error.cannotProcessConnectionParams")) ;
+            saveErrors(request, errors);
+            return mapping.findForward("dataConfigDataStores");    
+        }
+        
+        try {
+            DataStore victim = factory.createDataStore( paramValues );
+            System.out.println( "temporary datastore:"+victim);            
             if( victim == null ){
                 // We *really* could not use these params!
                 //
+                System.out.println("Could not make datastore:"+ paramValues);
                 ActionErrors errors = new ActionErrors();
                 errors.add( ActionErrors.GLOBAL_ERROR,
                     new ActionError("error.invalidConnectionParams")) ;
                 saveErrors(request, errors);
                 return mapping.findForward("dataConfigDataStores");                            
             }
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable throwable) {
+            System.out.println("Could not make datastore:"+ paramValues);
+            throwable.printStackTrace();
+            
             ActionErrors errors = new ActionErrors();
             errors.add( ActionErrors.GLOBAL_ERROR,
                 new ActionError("error.exception", throwable.getMessage())) ;
@@ -108,8 +155,9 @@ public class DataDataStoresEditorAction extends ConfigAction {
 		config.setEnabled(enabled);
 		config.setNameSpaceId(namespace);
 		config.setAbstract(description);
-		
-		config.setConnectionParams(aMap);
+        System.out.println("config texts:" + paramTexts );        
+		config.setConnectionParams( paramTexts );
+        
 		dataConfig.addDataStore(config);
         
         request.getSession().removeAttribute("selectedDataStoreId");			

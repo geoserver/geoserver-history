@@ -1,5 +1,6 @@
 package org.vfny.geoserver.form.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
@@ -17,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.action.data.DataStoreUtils;
+import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 
@@ -86,12 +89,20 @@ public class DataDataStoresEditorForm extends ActionForm {
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-		namespaces = new TreeSet(config.getNameSpaces().keySet());
-				
+		namespaces = new TreeSet( config.getNameSpaces().keySet() );
 		
 		dataStoreId = (String) request.getSession().getAttribute("selectedDataStoreId");
-        System.out.println("Session DSID: " + dataStoreId);        
+        System.out.println("Session DSID: " + dataStoreId);
+        if( dataStoreId == null){
+            // something is horribly wrong no DataStoreID selected!
+            // The JSP needs to not include us if there is no
+            // selected DataStore
+            //
+            throw new RuntimeException("selectedDataStoreId required in Session");
+        }        
 		DataStoreConfig dsConfig = config.getDataStore( dataStoreId );
+        System.out.println("dsConfig:"+dsConfig );
+        System.out.println("dsConfig params:"+dsConfig.getConnectionParams() );        
         
         description = dsConfig.getAbstract();
 		enabled = dsConfig.isEnabled();
@@ -108,13 +119,33 @@ public class DataDataStoresEditorForm extends ActionForm {
         for( int i = 0; i<params.length; i++ ){
             Param param = params[i];
             String key = param.key;
+            
+            if( "namespace".equals(key)) {
+                // skip namespace as it is *magic* and
+                // appears to be an entry used in all datastores?
+                //
+                continue;
+            }
             Object value = dsConfig.getConnectionParams().get( key );
-            String text = value != null ? param.getAsText( value ) : null;
+            String text;
+            System.out.println("config param "+key+" value:"+ value );
+            if( value == null ){
+                text = null;
+            }
+            else if (value instanceof String ){
+                text = (String) value;
+            }
+            else {
+                System.out.println("config converted "+key+" from:"+ value.getClass().getName() );                
+                text = param.text( value );
+            }
+            System.out.println("config param "+key+" text:"+ value );
             
             paramKeys.add( key );
             paramValues.add( text != null ? text : "" );
-            paramHelp.add( param.description + (param.required?"":"(optional)") );
-        }		        
+            paramHelp.add( param.description + (param.required?"":" (optional)") );
+        }
+        System.out.println("rest to:"+getParams() );
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -125,45 +156,57 @@ public class DataDataStoresEditorForm extends ActionForm {
         DataStoreConfig dsConfig = config.getDataStore( dataStoreId );
         		
         DataStoreFactorySpi factory = dsConfig.getFactory();
-        Map params = new HashMap( paramKeys.size() );
+        Param info[] = factory.getParametersInfo();
+        
+        Map params = new HashMap();
+        
+        System.out.println("validate text:" + getParams() );
         
         // Convert Params into the kind of Map we actually need
         //
         for( int i=0; i< paramKeys.size();i++){
-            String key = (String) paramKeys.get(i);
-            Param param = DataStoreUtils.find( factory, key );
+            String key = (String) getParamKey(i);
+            
+            Param param = DataStoreUtils.find( info, key );
             if( param == null ){
                 errors.add( "paramValue["+i+"]",
                     new ActionError("error.dataStoreEditor.param.missing", key, factory.getDescription() )
                 );
                 continue;
             }
-            String text = (String) paramValues.get(i);
-            if(( text == null || text.length() == 0 ) && param.required ){
-                errors.add( "paramValue["+i+"]",
-                    new ActionError("error.dataStoreEditor.param.required", key )
-                );
-                continue;                
+            Object value;
+            try {                
+                value = param.lookUp( getParams() );
             }
-            Object value = param.setAsText( text );
-            if( value == null ){
+            catch (IOException erp ){
                 errors.add( "paramValue["+i+"]",
-                    new ActionError("error.dataStoreEditor.param.parse", key, param.type )
+                    new ActionError("error.dataStoreEditor.param.parse", key, param.type, erp )
                 );
                 continue;
             }
-            params.put( key, value );
+            if( value == null && param.required ){
+                errors.add( "paramValue["+i+"]",
+                        new ActionError("error.dataStoreEditor.param.required", key )
+                );
+                continue;    
+            }
+            if( value != null ){
+                params.put( key, value );
+            }
         }
+        // put magic namespace into the mix
+        //
+        params.put("namespace", getNamespaceId() );
+        System.out.println("validate params:" + params );
+        
         // Factory will provide even more stringent checking
         //
-        /*
         if( !factory.canProcess( getParams() )){
             errors.add( "paramValue",
-                new ActionError("error.datastore.validationfailed" )
+                new ActionError("error.datastoreEditor.validation" )
             );
         }
-        */
-		return errors;
+        return errors;
 	}
     
     public Map getParams(){

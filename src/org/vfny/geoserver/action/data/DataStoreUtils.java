@@ -19,8 +19,8 @@ import org.geotools.data.DataStoreFactorySpi.Param;
  * A collecitno of utilties for dealing with GeotTools DataStore.
  * 
  * @author Richard Gould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.2 2004/01/12 21:01:25 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataStoreUtils.java,v 1.3 2004/01/14 09:59:51 jive Exp $
  */
 public abstract class DataStoreUtils {
     
@@ -151,22 +151,20 @@ public abstract class DataStoreUtils {
      * @param params
      * @return Map with real values that may be acceptable to Factory
      */
-    public static Map toConnectionParams( DataStoreFactorySpi factory, Map params ){
+    public static Map toConnectionParams( DataStoreFactorySpi factory, Map params ) throws IOException{
         Map map = new HashMap( params.size() );
         
+        Param info[] = factory.getParametersInfo();
+        
         // Convert Params into the kind of Map we actually need
-        for( Iterator i = params.entrySet().iterator(); i.hasNext(); ){
-            Map.Entry entry = (Map.Entry) i.next();
+        for( Iterator i = params.keySet().iterator(); i.hasNext(); ){
+            String key = (String) i.next();
             
-            String key = (String) entry.getKey();
-            Param param = DataStoreUtils.find( factory, key );
-            Object value = entry.getValue();
+            Object value = find( info, key ).lookUp( params );
             
-            if( value != null &&
-                param.type != String.class && value instanceof String ){
-                value = param.setAsText( (String) value );
+            if( value != null ){
+                map.put( key, value );
             }
-            params.put( key, value );
         }
         return map;        
     }

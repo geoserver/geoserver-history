@@ -50,7 +50,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.7 2004/01/13 23:46:53 jive Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.8 2004/01/14 09:59:51 jive Exp $
  */
 public class AttributeTypeInfoConfig {
     
@@ -58,7 +58,7 @@ public class AttributeTypeInfoConfig {
     public static final String TYPE_FRAGMENT = "(xml fragment)";
     
     /** attribute name*/
-    private String name;
+    private final String name;
     
     /** attribute min occurs*/
     private int minOccurs;
@@ -131,7 +131,11 @@ public class AttributeTypeInfoConfig {
      * @param attributeType GeoTools2 attributeType used for configuration
      */
     public AttributeTypeInfoConfig( AttributeType attributeType ){
-        
+        name = attributeType.getName();
+        minOccurs = 1;
+        maxOccurs = 1;
+        type = TYPE_FRAGMENT;
+        fragment = "";
     }
     
     /**
