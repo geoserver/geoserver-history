@@ -30,7 +30,7 @@ import java.util.logging.*;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.3 2003/12/31 00:57:16 cholmesny Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -160,6 +160,12 @@ public class TransactionResponse implements Response {
 
         if (authorizationID != null) {
             LOGGER.finer("got lockId: " + authorizationID);
+
+            if (!catalog.lockExists(authorizationID)) {
+                String mesg = "Attempting to use a lockID that does not exist"
+                    + ", it has either expired or was entered wrong.";
+                throw new WfsException(mesg);
+            }
 
             try {
                 transaction.addAuthorization(authorizationID);
@@ -302,7 +308,8 @@ public class TransactionResponse implements Response {
                     //datasources don't implement, use the FeatureSource 
                     //bounds, or FeatureResults?  Whichever one will compute
                     //it for you if datastore can't.
-                    //envelope.expandToInclude(store.getBounds(query));
+                    envelope.expandToInclude(store.getBounds(query));
+
                     if (types.length == 1) {
                         store.modifyFeatures(types[0], values[0], filter);
                     } else {
@@ -348,118 +355,142 @@ public class TransactionResponse implements Response {
     }
 
     protected void featureValidation(FeatureType type,
-        FeatureCollection collection) throws IOException, WfsTransactionException {
-            
-        ValidationProcessor validation =
-            ServerConfig.getInstance().getValidationConfig().getProcessor();
+        FeatureCollection collection)
+        throws IOException, WfsTransactionException {
+        ValidationProcessor validation = ServerConfig.getInstance()
+                                                     .getValidationConfig()
+                                                     .getProcessor();
 
         final Map failed = new TreeMap();
-        ValidationResults results = new ValidationResults(){
-            String name;
-            String description;
-            public void setValidation(Validation validation) {
-                name = validation.getName();
-                description = validation.getDescription();
-            }
-            public void error(Feature feature, String message) {
-                LOGGER.warning( name+": "+message+" ("+description+")");                
-                failed.put( feature.getID(),
-                    name+": "+message+" "+
-                    "("+description+")"
-                );
-            }
-            public void warning(Feature feature, String message) {
-                LOGGER.warning( name+": "+message+" ("+description+")");
-            }
-        };            
+        ValidationResults results = new ValidationResults() {
+                String name;
+                String description;
+
+                public void setValidation(Validation validation) {
+                    name = validation.getName();
+                    description = validation.getDescription();
+                }
+
+                public void error(Feature feature, String message) {
+                    LOGGER.warning(name + ": " + message + " (" + description
+                        + ")");
+                    failed.put(feature.getID(),
+                        name + ": " + message + " " + "(" + description + ")");
+                }
+
+                public void warning(Feature feature, String message) {
+                    LOGGER.warning(name + ": " + message + " (" + description
+                        + ")");
+                }
+            };
+
         try {
-            validation.runFeatureTests( type, collection, results );            
-        }
-        catch( Exception badIdea ){
+            validation.runFeatureTests(type, collection, results);
+        } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
-            throw new DataSourceException( "Validation Failed", badIdea );            
+            throw new DataSourceException("Validation Failed", badIdea);
         }
-        if( failed.isEmpty() ) return; // everything worked out
+
+        if (failed.isEmpty()) {
+            return; // everything worked out
+        }
+
         StringBuffer message = new StringBuffer();
-        for( Iterator i=failed.entrySet().iterator(); i.hasNext(); ){
+
+        for (Iterator i = failed.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
-            message.append( entry.getKey() );
-            message.append( " failed test " );
-            message.append( entry.getValue() );
-            message.append( "\n" );
+            message.append(entry.getKey());
+            message.append(" failed test ");
+            message.append(entry.getValue());
+            message.append("\n");
         }
-        throw new WfsTransactionException( message.toString(), "validation" );
+
+        throw new WfsTransactionException(message.toString(), "validation");
     }
 
     protected void integrityValidation(Map stores, Envelope check)
         throws IOException, WfsTransactionException {
         CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
-        ValidationProcessor validation =
-            ServerConfig.getInstance().getValidationConfig().getProcessor();
-        
+        ValidationProcessor validation = ServerConfig.getInstance()
+                                                     .getValidationConfig()
+                                                     .getProcessor();
+
         // go through each modified typeName
         // and ask what we need to check
         //
         Set typeNames = new HashSet();
-        for( Iterator i=stores.keySet().iterator(); i.hasNext(); ){
+
+        for (Iterator i = stores.keySet().iterator(); i.hasNext();) {
             String typeName = (String) i.next();
+
             //typeNames.addAll( validation.getDependencies( typeName ) ); 
         }
-        
+
         // Grab a source for each typeName we need to check
         // Grab from the provided stores - so we check against
         // the transaction 
         //
         Map sources = new HashMap();
-        for( Iterator i=typeNames.iterator(); i.hasNext(); ){
+
+        for (Iterator i = typeNames.iterator(); i.hasNext();) {
             String typeName = (String) i.next();
-            if( stores.containsKey( typeName )){
-                sources.put( typeName, stores.get( typeName )); 
-            }
-            else {
+
+            if (stores.containsKey(typeName)) {
+                sources.put(typeName, stores.get(typeName));
+            } else {
                 // These will be using Transaction.AUTO_COMMIT
                 // this is okay as they were not involved in our
                 // Transaction...
-                FeatureTypeConfig meta = catalog.getFeatureType( typeName );
-                sources.put( typeName, meta.getFeatureSource() );                
+                FeatureTypeConfig meta = catalog.getFeatureType(typeName);
+                sources.put(typeName, meta.getFeatureSource());
             }
         }
+
         final Map failed = new TreeMap();
-        ValidationResults results = new ValidationResults(){
-            String name;
-            String description;
-            public void setValidation(Validation validation) {
-                name = validation.getName();
-                description = validation.getDescription();
-            }
-            public void error(Feature feature, String message) {
-                LOGGER.warning( name+": "+message+" ("+description+")");                
-                failed.put( feature.getID(),
-                    name+": "+message+" "+
-                    "("+description+")"
-                );
-            }
-            public void warning(Feature feature, String message) {
-                LOGGER.warning( name+": "+message+" ("+description+")");
-            }
-        };
+        ValidationResults results = new ValidationResults() {
+                String name;
+                String description;
+
+                public void setValidation(Validation validation) {
+                    name = validation.getName();
+                    description = validation.getDescription();
+                }
+
+                public void error(Feature feature, String message) {
+                    LOGGER.warning(name + ": " + message + " (" + description
+                        + ")");
+                    failed.put(feature.getID(),
+                        name + ": " + message + " " + "(" + description + ")");
+                }
+
+                public void warning(Feature feature, String message) {
+                    LOGGER.warning(name + ": " + message + " (" + description
+                        + ")");
+                }
+            };
+
         try {
-            validation.runIntegrityTests( stores, check, results );            
-        }
-        catch( Exception badIdea ){
+            validation.runIntegrityTests(stores, check, results);
+        } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
-            throw new DataSourceException( "Validation Failed", badIdea );            
+            throw new DataSourceException("Validation Failed", badIdea);
         }
-        if( failed.isEmpty() ) return; // everything worked out
+
+        if (failed.isEmpty()) {
+            return; // everything worked out
+        }
+
         StringBuffer message = new StringBuffer();
-        for( Iterator i=failed.entrySet().iterator(); i.hasNext(); ){
+
+        for (Iterator i = failed.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
-            message.append( entry.getKey() );
-            message.append( " failed test " );
-            message.append( entry.getValue() );
-            message.append( "\n" );
+            message.append(entry.getKey());
+            message.append(" failed test ");
+            message.append(entry.getValue());
+            message.append("\n");
         }
-        throw new WfsTransactionException( message.toString(), "validation" );                    
+
+        throw new WfsTransactionException(message.toString(), "validation");
     }
 
     /**
@@ -487,6 +518,12 @@ public class TransactionResponse implements Response {
      *
      * @throws ServiceException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
+     *
+     * @task REVISIT: not sure if unlocking should take place here.  It makes
+     *       sense to do it after commit, but putting it here also means that
+     *       if there are problems with locking the user will not know about
+     *       it all, since the success response will have already been written
+     *       out.
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         if ((transaction == null) || (response == null)) {
@@ -509,6 +546,18 @@ public class TransactionResponse implements Response {
             switch (response.status) {
             case WfsTransResponse.SUCCESS:
                 transaction.commit();
+
+                String lockId = request.getLockId();
+
+                //releaseAction SOME is handled during the transaction processing.  This
+                //is less than ideal, to have the code all scattered about.  We should
+                //consider having catalog be able to deal with the release actions.
+                if ((lockId != null)
+                        && (request.getReleaseAction() == TransactionRequest.ALL)) {
+                    CatalogConfig catalog = ServerConfig.getInstance()
+                                                        .getCatalog();
+                    catalog.lockRelease(lockId, transaction);
+                }
 
                 break;
 
