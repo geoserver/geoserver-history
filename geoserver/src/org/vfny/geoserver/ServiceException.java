@@ -5,16 +5,18 @@
 package org.vfny.geoserver;
 
 import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.responses.GMLBuilder;
+import org.vfny.geoserver.responses.ResponseUtils;
 import java.io.IOException;
 import java.util.logging.*;
 
 
 /**
- * DOCUMENT ME!
+ * Represents a standard OGC service exception.  Able to turn itself into
+ * the proper xml response.
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @author Chris Holmes
+ * @version $Id: ServiceException.java,v 1.1.2.2 2003/11/07 23:07:57 cholmesny Exp $
  */
 public class ServiceException extends Exception {
     /** Class logger */
@@ -97,7 +99,7 @@ public class ServiceException extends Exception {
     }
 
     public String getXmlResponse() {
-        return getXmlResponse(false);
+        return getXmlResponse(true);
     }
 
     /**
@@ -151,7 +153,8 @@ public class ServiceException extends Exception {
 
             for (int i = 0; i < trace.length; i++) {
                 String line = indent + indent + "at " + trace[i].toString();
-                returnXml.append(GMLBuilder.encodeXML(line) + "\n");
+                returnXml.append(line + "\n");
+		returnXml.append(ResponseUtils.encodeXML(line) + "\n");
             }
         }
 
