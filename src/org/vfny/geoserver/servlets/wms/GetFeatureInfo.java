@@ -4,26 +4,26 @@
  */
 package org.vfny.geoserver.servlets.wms;
 
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.readers.wms.GetMapKvpReader;
-import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wms.GetMapResponse;
-import org.vfny.geoserver.servlets.WMService;
 import java.io.IOException;
 import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wms.GetFeatureInfoKvpReader;
+import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.GetFeatureInfoResponse;
+import org.vfny.geoserver.servlets.WMService;
 
 
 /**
  * WMS service wich returns request and response handlers to manage a GetMap
  * request
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: GetFeatureInfo.java,v 1.1 2004/07/15 21:13:13 jmacgill Exp $
  */
 public class GetFeatureInfo extends WMService {
