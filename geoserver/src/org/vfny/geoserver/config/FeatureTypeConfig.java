@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.*;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.4.2.5 2004/01/09 08:40:49 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.4.2.6 2004/01/09 23:10:12 dmzwiers Exp $
  */
 public class FeatureTypeConfig{
 	
@@ -52,14 +52,19 @@ public class FeatureTypeConfig{
 	
 	/**
 	 * Copy of the featuretype schema as a string.
-	 * @TODO parse this into a memory representation.
 	 */
-	private String schema;
+	private List schema;
 	
 	/**
 	 * The featuretype name.
 	 */
 	private String name;
+	
+	/** the schema name */
+	private String schemaName;
+	
+	/** the schema base */
+	private String schemaBase;
 	
 	/**
 	 * The featuretype directory name. This is used to write to, and is 
@@ -112,7 +117,7 @@ public class FeatureTypeConfig{
 		dataStoreId = "";
 		latLongBBox = new Envelope();
 		SRS = 0;
-		schema = "";
+		schema = new ArrayList();
 		defaultStyle = "";
 		name = "";
 		title = "";
@@ -120,7 +125,7 @@ public class FeatureTypeConfig{
 		keywords = new LinkedList();
 		numDecimals = 8;
 		definitionQuery = null;
-		dirName = "";
+		dirName = schemaName = schemaBase = "";
 	}
 
 	/**
@@ -150,6 +155,8 @@ public class FeatureTypeConfig{
 		}
 		defaultStyle = f.getDefaultStyle();
 		dirName = f.getDirName();
+		schemaName = f.getSchemaName();
+		schemaBase = f.getSchemaBase();
 	}
 
 	/**
@@ -167,7 +174,9 @@ public class FeatureTypeConfig{
 		dataStoreId = f.getDataStoreId();
 		latLongBBox = new Envelope(f.getLatLongBBox());
 		SRS = f.getSRS();
-		schema = f.getSchema();
+		schema = new ArrayList();
+		for(int i=0;i<f.getSchema().size();i++)
+			schema.add(new AttributeTypeInfoConfig((AttributeTypeInfoDTO)f.getSchema().get(i)));
 		name = f.getName();
 		title = f.getTitle();
 		_abstract = f.getAbstract();
@@ -180,6 +189,8 @@ public class FeatureTypeConfig{
 		}
 		defaultStyle = f.getDefaultStyle();
 		dirName = f.getDirName();
+		schemaName = f.getSchemaName();
+		schemaBase = f.getSchemaBase();
 	}
 	
 	/**
@@ -196,7 +207,10 @@ public class FeatureTypeConfig{
 		f.setDataStoreId(dataStoreId);
 		f.setLatLongBBox( new Envelope(latLongBBox));
 		f.setSRS(SRS);
-		f.setSchema(schema);
+		List s = new ArrayList();
+		for(int i=0;i<schema.size();i++)
+			s.add(schema.get(i));
+		f.setSchema(s);
 		f.setName(name);
 		f.setTitle(title);
 		f.setAbstract(_abstract);
@@ -209,6 +223,8 @@ public class FeatureTypeConfig{
 		}
 		f.setDefaultStyle(defaultStyle);
 		f.setDirName(dirName);
+		f.setSchemaBase(schemaBase);
+		f.setSchemaName(schemaName);
 		return f;
 	}
 	
@@ -463,7 +479,7 @@ public class FeatureTypeConfig{
 	 * </p>
 	 * @return
 	 */
-	public String getSchema() {
+	public List getSchema() {
 		return schema;
 	}
 
@@ -472,10 +488,10 @@ public class FeatureTypeConfig{
 	 * <p>
 	 * Description ...
 	 * </p>
-	 * @param schema
+	 * @param schemaElements
 	 */
-	public void setSchema(String schema) {
-		this.schema = schema;
+	public void setSchema(List schemaElements) {
+		this.schema = schemaElements;
 	}
 
 	/**
@@ -500,4 +516,48 @@ public class FeatureTypeConfig{
 		dirName = string;
 	}
 
+    
+	/**
+	 * getSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	/**
+	 * setSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSchemaName(String string) {
+		schemaName = string;
+	}
+
+	/**
+	 * getSchemaBase purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSchemaBase() {
+		return schemaBase;
+	}
+
+	/**
+	 * setSchemaBase purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSchemaBase(String string) {
+		schemaBase = string;
+	}
 }

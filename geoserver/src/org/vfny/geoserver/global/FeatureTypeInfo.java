@@ -20,7 +20,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.*;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.12 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.13 2004/01/09 23:10:12 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
     /** Default constant */
@@ -289,7 +289,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return ftc.getSRS()+"";
     }
 
-
     /**
      * creates a FeatureTypeInfo schema from the list of defined exposed
      * attributes, or the full schema if no exposed attributes were defined
@@ -304,7 +303,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @task TODO: if the default geometry attribute was not declared as
      *       exposed should we expose it anyway? I think yes.
      */
-    private FeatureType getSchema(Element attsElem)
+    /*private FeatureType getSchema(Element attsElem)
         throws ConfigurationException, IOException {
         NodeList exposedAttributes = null;
         FeatureType schema = getRealFeatureSource().getSchema();
@@ -343,7 +342,57 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         }
 
         return filteredSchema;
-    }
+    }*/
+
+	/**
+	 * creates a FeatureTypeInfo schema from the list of defined exposed
+	 * attributes, or the full schema if no exposed attributes were defined
+	 *
+	 * @param attsElem a parsed DOM
+	 *
+	 * @return A complete FeatureType
+	 *
+	 * @throws ConfigurationException For an invalid DOM tree
+	 * @throws IOException When IO fails
+	 *
+	 * @task TODO: if the default geometry attribute was not declared as
+	 *       exposed should we expose it anyway? I think yes.
+	 */
+	private FeatureType getSchema(List attrElems)
+		throws ConfigurationException, IOException {
+		FeatureType schema = getRealFeatureSource().getSchema();
+		FeatureType filteredSchema = null;
+
+		if (attrElems.size() == 0) {
+			return schema;
+		}
+
+		AttributeType[] attributes = new AttributeType[attrElems.size()];
+		String attName;
+
+		for (int i = 0; i < attrElems.size(); i++) {
+			AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO)attrElems.get(i);
+			String name = ati.getName();
+			if(name == "" && ati.isRef())
+				name = ati.getType();
+			attributes[i] = schema.getAttributeType(name);
+
+			if (attributes[i] == null) {
+				throw new ConfigurationException("the FeatureTypeConfig " + getName()
+					+ " does not contains the configured attribute " + name
+					+ ". Check your catalog configuration");
+			}
+		}
+
+		try {
+			filteredSchema = FeatureTypeFactory.newFeatureType(attributes,
+					getName());
+		} catch (SchemaException ex) {
+		} catch (FactoryConfigurationError ex) {
+		}
+
+		return filteredSchema;
+	}
     
     /**
      * getAttribute purpose.
@@ -380,13 +429,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 		return value;
 	}
     
-    private FeatureType getSchema(String schema) throws ConfigurationException{
+    /*private FeatureType getSchema(String schema) throws ConfigurationException{
     	try{
     		return getSchema(loadConfig(new StringReader(schema)));
     	}catch(IOException e){
     		throw new ConfigurationException("",e);
     	}
-    }
+    }*/
 
 	/**
 	 * loadConfig purpose.
@@ -483,5 +532,49 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	 */
 	public String getTitle() {
 		return ftc.getTitle();
+	}
+    
+	/**
+	 * getSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSchemaName() {
+		return ftc.getSchemaName();
+	}
+
+	/**
+	 * setSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSchemaName(String string) {
+		ftc.setSchemaName(string);
+	}
+    
+	/**
+	 * getSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSchemaBase() {
+		return ftc.getSchemaBase();
+	}
+
+	/**
+	 * setSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSchemaBase(String string) {
+		ftc.setSchemaBase(string);
 	}
 }

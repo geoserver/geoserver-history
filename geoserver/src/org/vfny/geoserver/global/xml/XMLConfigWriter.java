@@ -37,7 +37,7 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
-import org.vfny.geoserver.global.dto.WMSDTO;
+import org.vfny.geoserver.global.dto.*;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -47,7 +47,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.7 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.8 2004/01/09 23:10:12 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -436,7 +436,7 @@ public class XMLConfigWriter {
 				File dir2 = WriterUtils.initWriteFile(new File(dir,ft.getDirName()),true);
 				storeFeature(ft,dir2);
 				if(ft.getSchema()!=null)
-					storeFeatureSchema(ft.getSchema(),dir2);
+					storeFeatureSchema(ft,dir2);
 			}
 		}
 	}
@@ -516,11 +516,43 @@ public class XMLConfigWriter {
 		}
 	}
 	
-	protected static void storeFeatureSchema(String fs, File dir) throws ConfigurationException{
+	protected static void storeFeatureSchema(FeatureTypeInfoDTO fs, File dir) throws ConfigurationException{
 		File f = WriterUtils.initWriteFile(new File(dir,"schema.xml"),false);
 		try{
 			WriterHelper cw = new WriterHelper(new FileWriter(f));
-			cw.write(fs);
+			HashMap m = new HashMap();
+			m.put("name",fs.getSchemaName());
+			cw.openTag("xs:complexType",m);
+			cw.openTag("xs:complexContent");
+			m = new HashMap();
+			m.put("base",fs.getSchemaBase());
+			cw.openTag("xs:extension",m);
+			cw.openTag("xs:sequence");
+			for(int i=0;i<fs.getSchema().size();i++){
+				AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO)fs.getSchema().get(i);
+				m = new HashMap();
+				m.put("nillable",""+ati.isNillable());
+				m.put("minOccurs",""+ati.getMinOccurs());
+				m.put("maxOccurs",""+ati.getMaxOccurs());
+				if(ati.isRef()){
+					if(ati.getName() == null || ati.getName()==""){
+						m.put("ref",ati.getType());
+					}else{
+						m.put("name",ati.getName());
+						m.put("type",ati.getType());
+					}
+					cw.attrTag("xs:element",m);
+				}else{
+					m.put("name",ati.getName());
+					cw.openTag("xs:element",m);
+					cw.write(ati.getType());
+					cw.closeTag("xs:element");
+				}
+			}
+			cw.closeTag("xs:sequence");
+			cw.closeTag("xs:extension");
+			cw.closeTag("xs:complexContent");
+			cw.closeTag("xs:complexType");
 		}catch(IOException e){
 			throw new ConfigurationException(e);
 		}
@@ -534,7 +566,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.7 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.8 2004/01/09 23:10:12 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -612,7 +644,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.7 2004/01/09 21:27:51 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.8 2004/01/09 23:10:12 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

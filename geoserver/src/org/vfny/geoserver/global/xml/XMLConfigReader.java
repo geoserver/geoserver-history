@@ -16,7 +16,7 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.io.BufferedReader;
+import java.io.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,6 +31,11 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+	
+
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.apache.xml.serialize.LineSeparator;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -47,7 +52,7 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
-import org.vfny.geoserver.global.dto.WMSDTO;
+import org.vfny.geoserver.global.dto.*;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,7 +74,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.14 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.15 2004/01/09 23:10:11 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -397,7 +402,9 @@ public class XMLConfigReader {
 	 */
 	protected void loadWFS(Element wfsElement) throws ConfigurationException{
 		wfs = new WFSDTO();
-		wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(ReaderUtils.getChildElement(wfsElement,"gmlPrefixing"), "value",false));
+		try{
+			wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(ReaderUtils.getChildElement(wfsElement,"gmlPrefixing"), "value",false));
+		}catch(Exception e){}
 		ServiceDTO s = loadService(wfsElement);
 		wfs.setService(s);
 	}
@@ -649,10 +656,10 @@ public class XMLConfigReader {
 			try{
 				File pathToSchemaFile = new File(parentDir, "schema.xml");
 				LOGGER.finest("pathToSchema is " + pathToSchemaFile);
-				ft.setSchema(loadSchema(pathToSchemaFile));
+				ft.setSchema(loadSchema(pathToSchemaFile,ft));
 				LOGGER.finer("added featureType " + ft.getName());
 			}catch(Exception e){
-				ft.setSchema("");
+				ft.setSchema(new ArrayList());
 				// prob means schema missing;
 				LOGGER.fine("error" + e);
 			}
@@ -797,20 +804,53 @@ public class XMLConfigReader {
 	 * @return A string representation of the file contents.
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	protected String loadSchema(File path) throws ConfigurationException{
-		StringBuffer sb = new StringBuffer();
-		try{
-			path = ReaderUtils.initFile(path, false);
-			FileReader fr = new FileReader(path);
-			BufferedReader br = new BufferedReader(fr);
-			while(br.ready()){
-				sb.append(br.readLine()+"\n");
+	protected List loadSchema(File path, FeatureTypeInfoDTO fti) throws ConfigurationException{
+		ArrayList al = new ArrayList();
+		path = ReaderUtils.initFile(path, false);
+		Element elem = ReaderUtils.loadConfig(path);
+		fti.setSchemaName(ReaderUtils.getAttribute(elem,"name",true));
+		elem = ReaderUtils.getChildElement(elem,"xs:extension");
+		fti.setSchemaName(ReaderUtils.getAttribute(elem,"base",true));
+		elem = ReaderUtils.getChildElement(elem,"xs:sequence");
+		NodeList nl = elem.getElementsByTagName("xs:element");
+		for(int i=0;i<nl.getLength();i++){
+			// one element now
+			elem = (Element)nl.item(i);
+			AttributeTypeInfoDTO ati = new AttributeTypeInfoDTO();
+			String name = ReaderUtils.getAttribute(elem,"name",false);
+			String ref = ReaderUtils.getAttribute(elem,"ref",false);
+			String type = ReaderUtils.getAttribute(elem,"type",false);
+			if(ref != null && ref != ""){
+				ati.setRef(true);
+				ati.setType(ref);
+			}else{
+				ati.setName(name);
+				if(type!=null && type!=""){
+					ati.setType(type);
+				}else{
+					Element tmp = ReaderUtils.getFirstChildElement(elem);
+					OutputFormat format = new OutputFormat((Document)tmp);
+					format.setLineSeparator(LineSeparator.Windows);
+					format.setIndenting(true);
+					format.setLineWidth(0);             
+					format.setPreserveSpace(true);
+					StringWriter sw = new StringWriter();
+					XMLSerializer serializer = new XMLSerializer (sw,format);
+					try{
+						serializer.asDOMSerializer();
+						serializer.serialize(tmp);
+					}catch(IOException e){
+						throw new ConfigurationException(e);
+					}
+					ati.setType(sw.toString());
+				}
 			}
-		}catch(IOException e){
-			//throw new ConfigurationException(e);
-			return "";
+			ati.setNillable(ReaderUtils.getBooleanAttribute(elem,"nillable",false));
+			ati.setMaxOccurs(ReaderUtils.getIntAttribute(elem,"maxOccurs",false,1));
+			ati.setMinOccurs(ReaderUtils.getIntAttribute(elem,"minOccurs",false,0));
+			al.add(ati);
 		}
-		return sb.toString();
+		return al;
 	}
 	
 	/**
@@ -866,7 +906,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.14 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.15 2004/01/09 23:10:11 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

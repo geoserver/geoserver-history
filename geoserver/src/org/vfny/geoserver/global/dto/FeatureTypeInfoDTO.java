@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global.dto;
 
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.geotools.filter.Filter;
@@ -35,7 +36,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.5 2004/01/09 17:34:18 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.1.2.6 2004/01/09 23:10:12 dmzwiers Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -49,10 +50,14 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * Copy of the featuretype schema as a string.
-     *
-     * @task TODO parse this into a memory representation.
      */
-    private String schema;
+    private List schema;
+
+	/** The schema name. */
+	private String schemaName;
+
+	/** The schemaBase name. */
+	private String schemaBase;
 
     /** The featuretype name. */
     private String name;
@@ -103,7 +108,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 		dataStoreId = "";
 		latLongBBox = new Envelope();
 		SRS = 0;
-		schema = "";
+		schema = new ArrayList();
 		defaultStyle = "";
 		name = "";
 		title = "";
@@ -111,7 +116,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 		keywords = new LinkedList();
 		numDecimals = 8;
 		definitionQuery = null;
-		dirName = "";
+		dirName = schemaName = schemaBase = "";
     }
 
     /**
@@ -148,6 +153,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
         defaultStyle = dto.getDefaultStyle();
         dirName = dto.getDirName();
+		schemaName = dto.getSchemaName();
+		schemaBase = dto.getSchemaBase();
     }
 
     /**
@@ -217,7 +224,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         }
 
         r = r && (dirName == f.getDirName());
-
+        r = r && (schemaName == f.getSchemaName());
+		r = r && (schemaBase == f.getSchemaBase());
         return r;
     }
 
@@ -527,12 +535,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * getSchema purpose.
      * 
      * <p>
-     * Description ...
+     * Returns An ordered list of AttributeTypeInfoDTOs
      * </p>
      *
-     * @return
+     * @return An ordered list of AttributeTypeInfoDTOs
      */
-    public String getSchema() {
+    public List getSchema() {
         return schema;
     }
 
@@ -540,13 +548,13 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * setSchema purpose.
      * 
      * <p>
-     * Description ...
+     * Stores a list of AttributeTypeInfoDTOs.
      * </p>
      *
-     * @param schema
+     * @param schemaElements An ordered list of AttributeTypeInfoDTOs
      */
-    public void setSchema(String schema) {
-        this.schema = schema;
+    public void setSchema(List schemaElements) {
+        this.schema = schemaElements;
     }
 
     /**
@@ -574,4 +582,48 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     public void setDirName(String string) {
         dirName = string;
     }
+    
+	/**
+	 * getSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	/**
+	 * setSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSchemaName(String string) {
+		schemaName = string;
+	}
+
+	/**
+	 * getSchemaBase purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSchemaBase() {
+		return schemaBase;
+	}
+
+	/**
+	 * setSchemaBase purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSchemaBase(String string) {
+		schemaBase = string;
+	}
 }
