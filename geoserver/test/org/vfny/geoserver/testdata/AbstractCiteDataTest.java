@@ -226,7 +226,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
                     }
                 });
 
-            Panel p = new Panel() {
+            Panel p = new Panel(null) {//no layout manager so it respects setSize
                     public void paint(Graphics g) {
                         g.drawImage(image, 0, 0, this);
                     }
