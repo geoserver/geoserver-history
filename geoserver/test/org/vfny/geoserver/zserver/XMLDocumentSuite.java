@@ -7,7 +7,6 @@ package org.vfny.geoserver.zserver;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
  * Tests the XMLDocument converter.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: XMLDocumentSuite.java,v 1.9 2004/01/31 00:17:51 jive Exp $
+ * @version $Id: XMLDocumentSuite.java,v 1.10 2004/04/02 11:35:45 cholmesny Exp $
  */
 public class XMLDocumentSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/
@@ -36,7 +35,7 @@ public class XMLDocumentSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/zserver";
+        + "/test/test-data/zserver";
     private String testPath = DATA_DIRECTORY + "/test1/metadata.xml";
     private String testMapPath = DATA_DIRECTORY + "/geo.map";
     private Properties testMap;
@@ -91,11 +90,11 @@ public class XMLDocumentSuite extends TestCase {
         }
 
         //assertTrue(doc.get(xpath).equals("John"));
-/*        assertTrue(doc.get("path").equals(barPath));
 
-        String lastMod = DateField.timeToString(barFile.lastModified());
-        assertTrue(doc.get("modified").equals(lastMod));
-        assertTrue(doc.get("true").equals("true"));*/
+        /*        assertTrue(doc.get("path").equals(barPath));
+           String lastMod = DateField.timeToString(barFile.lastModified());
+           assertTrue(doc.get("modified").equals(lastMod));
+           assertTrue(doc.get("true").equals("true"));*/
     }
 
     public void testPaths() {
@@ -118,10 +117,12 @@ public class XMLDocumentSuite extends TestCase {
         String htmlPath = DATA_DIRECTORY + "/bar.html";
         String sgmlPath = DATA_DIRECTORY + "/bar.sgml";
         String textPath = DATA_DIRECTORY + "/bar.txt";
- // TODO fix this, commented for alpha release
- //       assertTrue(doc.get("html").equals(htmlPath));
- /*       assertTrue(doc.get("sgml").equals(sgmlPath));
-        assertTrue(doc.get("sutrs").equals(textPath));*/
+
+        // TODO fix this, commented for alpha release
+        //       assertTrue(doc.get("html").equals(htmlPath));
+
+        /*       assertTrue(doc.get("sgml").equals(sgmlPath));
+           assertTrue(doc.get("sutrs").equals(textPath));*/
     }
 
     public void testWithMap() {

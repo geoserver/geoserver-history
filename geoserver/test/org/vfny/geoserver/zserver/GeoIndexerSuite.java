@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * Tests the GeoIndexer helper methods.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoIndexerSuite.java,v 1.7 2004/01/31 00:17:51 jive Exp $
+ * @version $Id: GeoIndexerSuite.java,v 1.8 2004/04/02 11:35:45 cholmesny Exp $
  */
 public class GeoIndexerSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/
@@ -33,7 +33,7 @@ public class GeoIndexerSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = BASE_DIR
-        + "/misc/unit/zserver";
+        + "/test/test-data/zserver";
     private static final String INDEX_DIR = BASE_DIR + "/misc/documents/index";
     private static final String ATTRIBUTE_MAP = DATA_DIRECTORY + "/geo.map";
     private Properties testProps;

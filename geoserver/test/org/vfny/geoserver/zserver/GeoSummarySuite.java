@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * Tests the GeoSummary classes's setting of fields and creation of summaries.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoSummarySuite.java,v 1.6 2004/01/31 00:17:51 jive Exp $
+ * @version $Id: GeoSummarySuite.java,v 1.7 2004/04/02 11:35:45 cholmesny Exp $
  *
  * @task TODO: we need to test xml output.  Our old way of comparing strings.
  *       no longer works, as different xml implementations lead to different
@@ -37,7 +37,7 @@ public class GeoSummarySuite extends TestCase {
 
     /** Unit test data directory */
     private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/zserver";
+        + "/test/test-data/zserver";
     private String testMapPath = DATA_DIRECTORY + "/geo.map";
     private Properties testMap;
     private org.apache.lucene.document.Document doc;
