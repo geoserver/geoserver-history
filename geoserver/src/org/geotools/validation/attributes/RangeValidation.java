@@ -6,6 +6,7 @@ package org.geotools.validation.attributes;
 
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
+import org.geotools.validation.DefaultFeatureValidation;
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.ValidationResults;
 
@@ -49,13 +50,10 @@ import org.geotools.validation.ValidationResults;
  * </p>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: RangeValidation.java,v 1.1 2004/01/31 00:24:06 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: RangeValidation.java,v 1.2 2004/02/10 18:29:03 dmzwiers Exp $
  */
-public class RangeValidation implements FeatureValidation {
-    private String typeRef;
-    private String description;
-    private String name;
+public class RangeValidation extends DefaultFeatureValidation {
     private int max = Integer.MAX_VALUE;
     private int min = Integer.MIN_VALUE;
     private String path;
@@ -91,7 +89,7 @@ public class RangeValidation implements FeatureValidation {
      *      org.geotools.validation.ValidationResults)
      */
     public boolean validate(Feature feature, FeatureType type,
-        ValidationResults results) throws Exception {
+        ValidationResults results){
         Object ft = feature.getAttribute(path);
 
         if (ft == null) {
@@ -120,66 +118,6 @@ public class RangeValidation implements FeatureValidation {
     }
 
     /**
-     * Override setName.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param name
-     *
-     * @see org.geotools.validation.Validation#setName(java.lang.String)
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Override getName.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     *
-     * @see org.geotools.validation.Validation#getName()
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Override setDescription.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param description
-     *
-     * @see org.geotools.validation.Validation#setDescription(java.lang.String)
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Override getDescription.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     *
-     * @see org.geotools.validation.Validation#getDescription()
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
      * Override getPriority.
      * 
      * <p>
@@ -192,41 +130,6 @@ public class RangeValidation implements FeatureValidation {
      */
     public int getPriority() {
         return 0;
-    }
-
-    /**
-     * Set type ref as dataStoreId:typeName.
-     * 
-     * @param typeRef type referenced 
-     *
-     * @see org.geotools.validation.Validation#setTypeNames(java.lang.String[])
-     */
-    public void setTypeRef( String typeRef ) {
-        this.typeRef = typeRef;
-    }
-
-    public String getTypeRef(){
-        return typeRef;
-    }
-    /**
-     * Override getTypeNames.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     *
-     * @see org.geotools.validation.Validation#getTypeRefs()
-     */
-    public String[] getTypeRefs() {
-        if( typeRef == null ){
-            return null;
-        }
-        if( typeRef.equals("*")){
-            return ALL;
-        }
-        return new String[]{ typeRef, };
     }
 
     /**
