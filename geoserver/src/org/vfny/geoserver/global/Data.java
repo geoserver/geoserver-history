@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.8 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.9 2004/01/07 22:43:40 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -179,7 +179,7 @@ public class Data extends Abstract
      *
      * @return DOCUMENT ME!
      */
-    public DataStoreInfo[] getDataStores() {
+    public DataStoreInfo[] getDataStoreInfos() {
         List dslist = new ArrayList(dataStores.values());
         DataStoreInfo[] dStores = new DataStoreInfo[dslist.size()];
         dStores = (DataStoreInfo[]) dslist.toArray(dStores);
@@ -199,7 +199,7 @@ public class Data extends Abstract
      * @return the DataStoreInfo with id attribute equals to <code>id</code>
      *         or null if there no exists
      */
-    public DataStoreInfo getDataStore(String id) {
+    public DataStoreInfo getDataStoreInfo(String id) {
         return (DataStoreInfo) dataStores.get(id);
     }
 
@@ -210,7 +210,7 @@ public class Data extends Abstract
      *
      * @return DOCUMENT ME!
      */
-    public List getDataStores(NameSpace ns) {
+    /*public List getDataStores(NameSpace ns) {
         List dataStoresNs = new ArrayList();
         DataStoreInfo dsc;
 
@@ -223,7 +223,7 @@ public class Data extends Abstract
         }
 
         return dataStoresNs;
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -280,7 +280,7 @@ public class Data extends Abstract
      *
      * @throws NoSuchElementException DOCUMENT ME!
      */
-    public FeatureTypeInfo getFeatureType(String typeName)
+    public FeatureTypeInfo getFeatureTypeInfo(String typeName)
         throws NoSuchElementException {
         int prefixDelimPos = typeName.lastIndexOf(NameSpace.PREFIX_DELIMITER);
 
@@ -313,7 +313,7 @@ public class Data extends Abstract
      *
      * @return DOCUMENT ME!
      */
-    public FeatureTypeInfo getFeatureType(String localName, String uri) {
+    public FeatureTypeInfo getFeatureTypeInfo(String localName, String uri) {
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
 
@@ -333,7 +333,7 @@ public class Data extends Abstract
      *
      * @return DOCUMENT ME!
      */
-    public Map getFeatureTypes() {
+    public Map getFeatureTypeInfos() {
         return this.featureTypes;
     }
 

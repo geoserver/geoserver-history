@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.2.2.8 2004/01/06 23:03:13 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.2.2.9 2004/01/07 22:44:05 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -161,7 +161,7 @@ public class TransactionResponse implements Response {
             String typeName = element.getTypeName();
 
             if (!stores.containsKey(typeName)) {
-                FeatureTypeInfo meta = catalog.getFeatureType(typeName);
+                FeatureTypeInfo meta = catalog.getFeatureTypeInfo(typeName);
 
                 try {
                     FeatureSource source = meta.getFeatureSource();
@@ -449,7 +449,7 @@ public class TransactionResponse implements Response {
                 // These will be using Transaction.AUTO_COMMIT
                 // this is okay as they were not involved in our
                 // Transaction...
-                FeatureTypeInfo meta = catalog.getFeatureType( typeName );
+                FeatureTypeInfo meta = catalog.getFeatureTypeInfo( typeName );
                 sources.put( typeName, meta.getFeatureSource() );                
             }
         }

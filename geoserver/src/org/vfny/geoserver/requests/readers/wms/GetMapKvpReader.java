@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.2.2.8 2004/01/06 23:03:14 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.2.2.9 2004/01/07 22:44:05 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -387,7 +387,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         try {
             for (int i = 0; i < layerCount; i++) {
                 layerName = (String) layers.get(i);
-                ftype = catalog.getFeatureType(layerName);
+                ftype = catalog.getFeatureTypeInfo(layerName);
                 featureTypes[i] = ftype;
             }
         } catch (NoSuchElementException ex) {

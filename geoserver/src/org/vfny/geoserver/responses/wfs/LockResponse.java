@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.8 2004/01/06 23:03:13 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.9 2004/01/07 22:44:05 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -150,7 +150,7 @@ public class LockResponse implements Response {
             Filter curFilter = curLock.getFilter();
 
             //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
-            FeatureTypeInfo meta = catalog.getFeatureType(curTypeName);
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(curTypeName);
             NameSpace namespace = meta.getDataStore().getNameSpace();
             FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
             FeatureResults features = source.getFeatures(curFilter);
@@ -345,7 +345,7 @@ public class LockResponse implements Response {
 
                 String curTypeName = curLock.getFeatureType();
 
-                FeatureTypeInfo meta = catalog.getFeatureType(curTypeName);
+                FeatureTypeInfo meta = catalog.getFeatureTypeInfo(curTypeName);
                 FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
 
                 Transaction t = new DefaultTransaction();

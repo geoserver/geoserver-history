@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.8 2004/01/06 23:03:13 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.9 2004/01/07 22:44:05 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -194,7 +194,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
         endElement("Operations");
 
-        Collection featureTypes = request.getGeoServer().getData().getFeatureTypes().values();
+        Collection featureTypes = request.getGeoServer().getData().getFeatureTypeInfos().values();
         FeatureTypeInfo ftype;
 
         for (Iterator it = featureTypes.iterator(); it.hasNext();) {

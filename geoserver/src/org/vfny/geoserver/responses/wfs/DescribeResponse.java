@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.3.2.8 2004/01/06 23:03:13 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.3.2.9 2004/01/07 22:44:05 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -151,7 +151,7 @@ public class DescribeResponse implements Response {
         //ComplexType table = new ComplexType();
         if (requestedTypes.size() == 0) {
             //if there are no specific requested types then get all.
-            requestedTypes = new ArrayList(wfsRequest.getGeoServer().getData().getFeatureTypes().keySet());
+            requestedTypes = new ArrayList(wfsRequest.getGeoServer().getData().getFeatureTypeInfos().keySet());
         }
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfsRequest.getGeoServer().getCharSet().displayName()+ "\"?>" + "\n<xs:schema ");
@@ -160,7 +160,7 @@ public class DescribeResponse implements Response {
         if (allSameType(requestedTypes, wfsRequest)) {
             //all the requested have the same namespace prefix, so return their
             //schemas.
-            FeatureTypeInfo nsInfoType = wfsRequest.getGeoServer().getData().getFeatureType((String) requestedTypes
+            FeatureTypeInfo nsInfoType = wfsRequest.getGeoServer().getData().getFeatureTypeInfo((String) requestedTypes
                     .get(0));
 
             //all types have same prefix, so just use the first.
@@ -191,7 +191,7 @@ public class DescribeResponse implements Response {
             //iterate through the types, and make a set of their prefixes.
             while (nameIter.hasNext()) {
                 String typeName = nameIter.next().toString();
-                String typePrefix = wfsRequest.getGeoServer().getData().getFeatureType(typeName).getPrefix();
+                String typePrefix = wfsRequest.getGeoServer().getData().getFeatureTypeInfo(typeName).getPrefix();
                 prefixes.add(typePrefix);
             }
 
@@ -290,7 +290,7 @@ public class DescribeResponse implements Response {
             curTypeName = requestedTypes.get(i).toString();
 
             //TypeInfo meta = repository.getFeatureType(curTypeName);
-            FeatureTypeInfo meta = gs.getData().getFeatureType(curTypeName);
+            FeatureTypeInfo meta = gs.getData().getFeatureTypeInfo(curTypeName);
 
             curTypeName = meta.getName();
 
@@ -452,7 +452,7 @@ public class DescribeResponse implements Response {
      * @throws WfsException if the featureTypeName is not in the repository.
      */
     private String getPrefix(String featureTypeName, GeoServer gs) throws WfsException {
-        FeatureTypeInfo ftConf = gs.getData().getFeatureType(featureTypeName);
+        FeatureTypeInfo ftConf = gs.getData().getFeatureTypeInfo(featureTypeName);
 
         if (ftConf == null) {
             throw new WfsException("Feature Type " + featureTypeName + " does "

@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.2.2.7 2004/01/06 23:03:15 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.2.2.8 2004/01/07 22:44:05 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -114,7 +114,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             //featureTypes?  Like add a 
             //!namespaceURI.equals("http://www.opengis.net/gml"); 
             //(not sure if that'd work, but something to that effect
-            FeatureTypeInfo fType = catalog.getFeatureType(localName,
+            FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName,
                     namespaceURI);
             String internalTypeName = null;
 
@@ -229,7 +229,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             insideInsert = false;
         }
 
-        FeatureTypeInfo fType = catalog.getFeatureType(localName, namespaceURI);
+        FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName, namespaceURI);
         String internalTypeName = null;
 
         if (fType != null) {

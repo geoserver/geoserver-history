@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.9 2004/01/07 00:51:42 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.10 2004/01/07 22:44:05 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();
@@ -136,7 +136,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
     protected void handleLayers(WMS config) throws SAXException {
         Data catalog = server.getData();
-        Collection ftypes = catalog.getFeatureTypes().values();
+        Collection ftypes = catalog.getFeatureTypeInfos().values();
         FeatureTypeInfo layer;
 
         for (Iterator it = ftypes.iterator(); it.hasNext();) {

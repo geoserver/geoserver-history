@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2.2.7 2004/01/06 23:03:13 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.8 2004/01/07 22:44:05 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -241,7 +241,7 @@ public class FeatureResponse implements Response {
                        it.hasNext() && (maxFeatures > 0);) {
                       
                 query = (Query) it.next();                                                                   
-                meta = catalog.getFeatureType( query.getTypeName() );
+                meta = catalog.getFeatureTypeInfo( query.getTypeName() );
                 namespace = meta.getDataStore().getNameSpace();                
                 source = (FeatureLocking) meta.getFeatureSource();
         
