@@ -22,13 +22,13 @@
       <tr>
         <td class="label">url:</td>
         <td class="datum">
-          <input type="text" size="80" name="url" value="<bean:write name="demoForm" property="url"/>">
+          <input type="text" size="90" name="url" value="<bean:write name="demoForm" property="url"/>">
         </td>
       </tr>
       <tr>
         <td class="label">body:</td>
         <td class="datum">
-          <textarea rows=10 cols=80 name="body"><bean:write name="demoForm" property="body"/></textarea>
+          <textarea rows=25 cols=90 name="body"><bean:write name="demoForm" property="body"/></textarea>
         </td>
       </tr>    
       <tr>
