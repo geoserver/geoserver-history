@@ -5,7 +5,6 @@
 package org.vfny.geoserver.global;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.geotools.data.AttributeTypeMetaData;
-import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.FeatureSource;
@@ -28,7 +26,6 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
-import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
@@ -41,7 +38,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.29 2004/02/16 23:46:55 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.30 2004/03/02 10:20:27 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -714,7 +711,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     	if(ft == null){
     		int count = 0;
     		ft = fs.getSchema();
-    		String[] baseNames = getRequiredBaseAttributes();
+    		String[] baseNames = DataTransferObjectFactory.getRequiredBaseAttributes( schemaBase );
     		AttributeType[] attributes = new AttributeType[schema.size()+baseNames.length];
     		int errors = 0;
     		for(;count<baseNames.length;count++){
@@ -757,48 +754,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     	return ft;
     }
     
-    private String[] getRequiredBaseAttributes(){
-    	if("AbstractFeatureType".equals(schemaBase)){
-    		return new String[] {"description","name","boundedBy"};
-    	}
-    	if("AbstractFeatureCollectionBaseType".equals(schemaBase)){
-    		return new String[] {"description","name","boundedBy"};
-    	}
-    	if("GeometryPropertyType".equals(schemaBase)){
-    		return new String[] {"geometry"};
-    	}
-    	if("FeatureAssociationType".equals(schemaBase)){
-    		return new String[] {"feature"};
-    	}
-    	if("BoundingShapeType".equals(schemaBase)){
-    		return new String[] {"box"};
-    	}
-    	if("PointPropertyType".equals(schemaBase)){
-    		return new String[] {"point"};
-    	}
-    	if("PolygonPropertyType".equals(schemaBase)){
-    		return new String[] {"polygon"};
-    	}
-    	if("LineStringPropertyType".equals(schemaBase)){
-    		return new String[] {"lineString"};
-    	}
-    	if("MultiPointPropertyType".equals(schemaBase)){
-    		return new String[] {"multiPoint"};
-    	}
-    	if("MultiLineStringPropertyType".equals(schemaBase)){
-    		return new String[] {"multiLineString"};
-    	}
-    	if("MultiPolygonPropertyType".equals(schemaBase)){
-    		return new String[] {"multiPolygonString"};
-    	}
-    	if("MultiGeometryPropertyType".equals(schemaBase)){
-    		return new String[] {"multiGeometry"};
-    	}
-    	if("NullType".equals(schemaBase)){
-    		return new String[] {};
-    	}
-    	return new String[] {};
-    }
+
 
     /**
      * Implement getDataStoreMetaData.
