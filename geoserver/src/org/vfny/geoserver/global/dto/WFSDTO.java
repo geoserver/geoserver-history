@@ -14,7 +14,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.1.2.2 2004/01/06 22:16:55 jive Exp $
+ * @version $Id: WFSDTO.java,v 1.1.2.3 2004/01/09 01:21:16 dmzwiers Exp $
  */
 public final class WFSDTO implements DataStructure {
 
@@ -109,6 +109,6 @@ public final class WFSDTO implements DataStructure {
         if (dto == null) {
             throw new NullPointerException("ServiceDTO requrired");            
         }
-        service = new ServiceDTO( dto );    
+        service = dto;    
     }
 }

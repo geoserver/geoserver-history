@@ -30,7 +30,7 @@ import java.util.Arrays;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceDTO.java,v 1.1.2.4 2004/01/07 23:50:07 dmzwiers Exp $
+ * @version $Id: ServiceDTO.java,v 1.1.2.5 2004/01/09 01:21:16 dmzwiers Exp $
  */
 public final class ServiceDTO implements DataStructure {
     /**
@@ -174,6 +174,7 @@ public final class ServiceDTO implements DataStructure {
         fees = dto.getFees();
         accessConstraints = dto.getAccessConstraints();
         maintainer = dto.getMaintainer();
+        onlineResource = dto.getOnlineResource();
     }
 
     /**

@@ -22,7 +22,7 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.2.2.6 2004/01/08 17:36:39 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.2.2.7 2004/01/09 01:21:15 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
@@ -50,12 +50,6 @@ public class WFSConfig extends ServiceConfig {
      * </p>
      */
     private Set enabledFeatures = new TreeSet(); // keep sorted	
-    
-    /**
-     * The Describe-URL for the WFS
-     *
-     */
-    private URL describeURL;
 
     /**
      * WFS constructor.
@@ -121,19 +115,6 @@ public class WFSConfig extends ServiceConfig {
 
         return wfsDto;
     }
-	/**
-	 * @return
-	 */
-	public URL getDescribeURL() {
-		return describeURL;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setDescribeURL(URL url) {
-		describeURL = url;
-	}
 
 	/**
 	 * @return

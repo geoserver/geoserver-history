@@ -69,7 +69,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.10 2004/01/08 00:41:04 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.11 2004/01/09 01:21:16 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -189,9 +189,9 @@ public class XMLConfigReader {
 			String serviceType = elem.getAttribute("type");
 
 			if ("WFS".equalsIgnoreCase(serviceType)) {
-				loadWFS(elem,geoServer);
+				loadWFS(elem);
 			} else if ("WMS".equalsIgnoreCase(serviceType)) {
-				loadWMS(elem,geoServer);
+				loadWMS(elem);
 			} else if ("Z39.50".equalsIgnoreCase(serviceType)) {
 				//...
 			} else {
@@ -279,7 +279,7 @@ public class XMLConfigReader {
 	 * @throws ConfigurationException When an error occurs.
 	 */
 	protected void loadGlobal(Element globalElem) throws ConfigurationException{
-		GeoServerDTO g = geoServer;
+		geoServer = new GeoServerDTO();
 		LOGGER.fine("parsing global configuration parameters");
 		
 		Level loggingLevel = getLoggingLevel(globalElem);
@@ -288,33 +288,33 @@ public class XMLConfigReader {
 		Log4JFormatter.init("org.geotools", loggingLevel);
 		Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
 		LOGGER.config("logging level is " + loggingLevel);
-		g.setLoggingLevel(loggingLevel);
+		geoServer.setLoggingLevel(loggingLevel);
 
 		Element elem = null;
 		elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
-		g.setContact(loadContact(elem));
+		geoServer.setContact(loadContact(elem));
 
 		elem = ReaderUtils.getChildElement(globalElem, "verbose", false);
 
 		if (elem != null) {
-			g.setVerbose(ReaderUtils.getBooleanAttribute(elem, "value", false));
+			geoServer.setVerbose(ReaderUtils.getBooleanAttribute(elem, "value", false));
 		}
 
 		elem = ReaderUtils.getChildElement(globalElem, "maxFeatures");
 
 		if (elem != null) {
 			//if the element is pressent, it's "value" attribute is mandatory
-			g.setMaxFeatures(ReaderUtils.getIntAttribute(elem, "value", true, g.getMaxFeatures()));
+			geoServer.setMaxFeatures(ReaderUtils.getIntAttribute(elem, "value", true, geoServer.getMaxFeatures()));
 		}
 
-		LOGGER.config("maxFeatures is " + g.getMaxFeatures());
+		LOGGER.config("maxFeatures is " + geoServer.getMaxFeatures());
 		elem = ReaderUtils.getChildElement(globalElem, "numDecimals");
 
 		if (elem != null) {
-			g.setNumDecimals(ReaderUtils.getIntAttribute(elem, "value", true, g.getNumDecimals()));
+			geoServer.setNumDecimals(ReaderUtils.getIntAttribute(elem, "value", true, geoServer.getNumDecimals()));
 		}
 
-		LOGGER.config("numDecimals returning is " + g.getNumDecimals());
+		LOGGER.config("numDecimals returning is " + geoServer.getNumDecimals());
 		elem = ReaderUtils.getChildElement(globalElem, "charSet");
 
 		if (elem != null) {
@@ -322,22 +322,22 @@ public class XMLConfigReader {
 
 			try {
 				Charset cs = Charset.forName(chSet);
-				g.setCharSet(cs);
+				geoServer.setCharSet(cs);
 				LOGGER.finer("charSet: " + cs.displayName());
 			} catch (Exception ex) {
 				LOGGER.info(ex.getMessage());
 			}
 		}
 
-		LOGGER.config("charSet is " + g.getCharSet());
-		g.setBaseUrl(ReaderUtils.getChildText(globalElem, "URL", true));
+		LOGGER.config("charSet is " + geoServer.getCharSet());
+		geoServer.setBaseUrl(ReaderUtils.getChildText(globalElem, "URL", true));
 
 		String schemaBaseUrl = ReaderUtils.getChildText(globalElem, "SchemaBaseUrl");
 		
 		if (schemaBaseUrl != null) {
-			g.setSchemaBaseUrl(schemaBaseUrl);
+			geoServer.setSchemaBaseUrl(schemaBaseUrl);
 		} else {
-			g.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
+			geoServer.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
 		}
 	}
 	
@@ -395,9 +395,10 @@ public class XMLConfigReader {
 	 * @see GlobalData#getBaseUrl()
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	protected void loadWFS(Element wfsElement, GeoServerDTO g) throws ConfigurationException{
-		WFSDTO w = wfs;
-		w.setService(loadService(wfsElement));
+	protected void loadWFS(Element wfsElement) throws ConfigurationException{
+		wfs = new WFSDTO();
+		ServiceDTO s = loadService(wfsElement);
+		wfs.setService(s);
 	}
 
 	/**
@@ -411,9 +412,9 @@ public class XMLConfigReader {
 	 * @see GlobalData#getBaseUrl()
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	protected void loadWMS(Element wmsElement, GeoServerDTO g) throws ConfigurationException{
-		WMSDTO w = wms;
-		w.setService(loadService(wmsElement));
+	protected void loadWMS(Element wmsElement) throws ConfigurationException{
+		wms = new WMSDTO();
+		wms.setService(loadService(wmsElement));
 	}
 
 	/**
@@ -441,7 +442,6 @@ public class XMLConfigReader {
 		}catch(MalformedURLException e){
 			throw new ConfigurationException(e);
 		}
-		
 		return s;
 	}
 
@@ -570,7 +570,6 @@ public class XMLConfigReader {
 		ds.setAbstract(ReaderUtils.getChildText(dsElem, "abstract", false));
 		LOGGER.fine("loading connection parameters for DataStoreDTO " + ds.getNameSpaceId());
 		ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(dsElem, "connectionParams", true)));
-		LOGGER.info("created " + toString());
 		return ds;
 	}
 
@@ -857,50 +856,6 @@ public class XMLConfigReader {
 		return wms;
 	}
 
-	/**
-	 * setData purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param dataDTO
-	 */
-	public void setData(DataDTO dataDTO) {
-		data = dataDTO;
-	}
-
-	/**
-	 * setGeoServer purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param serverDTO
-	 */
-	public void setGeoServer(GeoServerDTO serverDTO) {
-		geoServer = serverDTO;
-	}
-
-	/**
-	 * setWfs purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param wfsdto
-	 */
-	public void setWfs(WFSDTO wfsdto) {
-		wfs = wfsdto;
-	}
-
-	/**
-	 * setWms purpose.
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * @param wmsdto
-	 */
-	public void setWms(WMSDTO wmsdto) {
-		wms = wmsdto;
-	}
-
 }
 
 /**
@@ -910,7 +865,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.10 2004/01/08 00:41:04 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.11 2004/01/09 01:21:16 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceConfig.java,v 1.10.2.6 2004/01/08 17:36:39 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.10.2.7 2004/01/09 01:21:15 dmzwiers Exp $
  */
 public class ServiceConfig{
 	
@@ -144,6 +144,7 @@ public class ServiceConfig{
 	 fees = s.getFees();
 	 accessConstraints = s.getAccessConstraints();
 	 maintainer = s.getMaintainer();
+	 onlineResource = s.getOnlineResource();
 	}
 	
 	/**
