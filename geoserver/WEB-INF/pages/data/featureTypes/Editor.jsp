@@ -137,7 +137,7 @@
       <td class="label">
 		<bean:write name="attribute" property="name"/>:
 	  </td>
-	  <td class="datum"><% System.out.println("Hmmm.."); %>
+	  <td class="datum">
         <table border=0 width="100%">
 		<% if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) { %>
           <tr style="white-space: nowrap;">
