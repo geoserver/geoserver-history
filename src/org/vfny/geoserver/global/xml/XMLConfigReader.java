@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.41 2004/09/08 17:39:03 cholmesny Exp $
+ * @version $Id: XMLConfigReader.java,v 1.42 2004/09/09 16:50:15 cholmesny Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -276,6 +276,7 @@ public class XMLConfigReader {
 
         while (i.hasNext()) {
             NameSpaceInfoDTO ns = (NameSpaceInfoDTO) i.next();
+
             if (ns.isDefault()) {
                 data.setDefaultNameSpacePrefix(ns.getPrefix());
                 LOGGER.finer("set default namespace pre to " + ns.getPrefix());
@@ -349,12 +350,12 @@ public class XMLConfigReader {
         elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
         geoServer.setContact(loadContact(elem));
 
-		elem = ReaderUtils.getChildElement(globalElem, "verbose", false);
+        elem = ReaderUtils.getChildElement(globalElem, "verbose", false);
 
-				if (elem != null) {
-					geoServer.setVerbose(ReaderUtils.getBooleanAttribute(elem, "value",
-							false, true));
-				}
+        if (elem != null) {
+            geoServer.setVerbose(ReaderUtils.getBooleanAttribute(elem, "value",
+                    false, true));
+        }
 
         elem = ReaderUtils.getChildElement(globalElem, "maxFeatures");
 
@@ -418,22 +419,14 @@ public class XMLConfigReader {
         if (adminPassword != null) {
             geoServer.setAdminPassword(adminPassword);
         }
-        
 
-		elem = ReaderUtils.getChildElement(globalElem, "verboseExceptions", false);
+        elem = ReaderUtils.getChildElement(globalElem, "verboseExceptions",
+                false);
 
-				if (elem != null) {
-					geoServer.setVerboseExceptions(ReaderUtils.getBooleanAttribute(elem, "value",
-							false, true));
-				}
-				
-
-		elem = ReaderUtils.getChildElement(globalElem, "srsXmlStyle", false);
-
-				if (elem != null) {
-					geoServer.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
-							false, true));
-				}
+        if (elem != null) {
+            geoServer.setVerboseExceptions(ReaderUtils.getBooleanAttribute(
+                    elem, "value", false, true));
+        }
     }
 
     /**
@@ -511,6 +504,14 @@ public class XMLConfigReader {
         wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(
                 ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
                 "value", false, false));
+
+        Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
+                false);
+
+        if (elem != null) {
+            wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
+                    false, true));
+        }
 
         String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
                 "serviceLevel");
@@ -1079,10 +1080,10 @@ public class XMLConfigReader {
      */
     protected Envelope loadLatLongBBox(Element bboxElem)
         throws ConfigurationException {
-        
-        if(bboxElem == null)
-        	return new Envelope();
-        
+        if (bboxElem == null) {
+            return new Envelope();
+        }
+
         boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem, "dynamic",
                 false, true);
 
