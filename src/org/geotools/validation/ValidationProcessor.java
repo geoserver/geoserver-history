@@ -45,7 +45,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * Each HashMap of validations is hashed with a key whose value is a 
  * FeatureTypeName. This key provides access to an ArrayList of validations
- * that are to be performed on this FeatureType.
+ * that are to be performed on this FeatureTypeInfo.
  * <p>
  * Validations are added via the two addValidation() methods.
  * <p>
@@ -55,7 +55,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Feature is incorrect, it can probably be detected early on, and quickly, in the 
  * feature validation tests. 
  * <p>
- * For validations that are performed on every FeatureType, a value called ANYTYPENAME
+ * For validations that are performed on every FeatureTypeInfo, a value called ANYTYPENAME
  * has been created and can be stored in the validationLookup tables if a validation
  * specifies that it is run against all FeatureTypes. The value that causes a
  * validation to be run against all FeatureTypes is null. Or Validation.ALL
@@ -79,13 +79,13 @@ import com.vividsolutions.jts.geom.Envelope;
  * processor.addValidation(IntegrityValidation1);<br>
  * processor.addValidation(FeatureValidation3);<br>
  * <p>
- * processor.runFeatureTests(FeatureType, Feature, ValidationResults);<br>
+ * processor.runFeatureTests(FeatureTypeInfo, Feature, ValidationResults);<br>
  * processor.runIntegrityTests(layers, Envelope, ValidationResults);<br>
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationProcessor.java,v 1.3 2004/01/12 21:01:32 dmzwiers Exp $
  */
 public class ValidationProcessor {
 
@@ -185,12 +185,12 @@ public class ValidationProcessor {
 			tests.add(validation);
 			featureLookup.put(ANYTYPENAME, tests);	// add the ALL test to it
 		}
-		else	// a non ALL FeatureType validation
+		else	// a non ALL FeatureTypeInfo validation
 		{
 			for (int i=0; i<featureTypeList.length; i++)
 			{
 				ArrayList tests = (ArrayList)featureLookup.get(featureTypeList[i]);
-				if (tests == null)	// if this FeatureType doesn't have a validation test yet
+				if (tests == null)	// if this FeatureTypeInfo doesn't have a validation test yet
 					tests = new ArrayList();	// put it in the list
 				tests.add(validation);
 				featureLookup.put(featureTypeList[i], tests);	// add a validation to it
@@ -226,7 +226,7 @@ public class ValidationProcessor {
 			for (int i=0; i<integrityTypeList.length; i++)
 			{
 				ArrayList tests = (ArrayList)integrityLookup.get(integrityTypeList[i]);
-				if (tests == null)	// if this FeatureType doesn't have a validation test yet
+				if (tests == null)	// if this FeatureTypeInfo doesn't have a validation test yet
 					tests = new ArrayList();	// put it in the list
 				tests.add(validation);
 				integrityLookup.put(integrityTypeList[i], tests);	// add a validation to it
@@ -264,10 +264,10 @@ public class ValidationProcessor {
 	/**
 	 * getDependencies purpose.
 	 * <p>
-	 * Gets all the FeatureTypes that this FeatureType uses. 
+	 * Gets all the FeatureTypes that this FeatureTypeInfo uses. 
 	 * </p>
 	 * @param typeName the FeatureTypeName
-	 * @return all the FeatureTypes that this FeatureType uses.
+	 * @return all the FeatureTypes that this FeatureTypeInfo uses.
 	 */
 	public Set getDependencies(String typeName)
 	{
@@ -278,7 +278,7 @@ public class ValidationProcessor {
 			for (int i=0; i<validations.size(); i++)	// for each validation
 			{
 				String[] types = ((Validation)validations.get(i)).getTypeNames();
-				for (int j=0; j<types.length; j++)	// for each FeatureType
+				for (int j=0; j<types.length; j++)	// for each FeatureTypeInfo
 					s.add(types[i]);				// add it to the list
 			}
 		}
@@ -290,14 +290,14 @@ public class ValidationProcessor {
 	/**
 	 * runFeatureTests
 	 * <p>
-	 * Performs a lookup on the FeatureType name to determine what FeatureTests
+	 * Performs a lookup on the FeatureTypeInfo name to determine what FeatureTests
 	 * need to be performed. Once these tests are gathered, they are run on each 
 	 * feature in the FeatureCollection.
 	 * The first validation test lookup checks to see if there are any validations that are
-	 * to be performed on every FeatureType. An example of this could be an isValid() test
+	 * to be performed on every FeatureTypeInfo. An example of this could be an isValid() test
 	 * on all geometries in all FeatureTypes. Once those tests have been gathered,
-	 * a lookup is performed on the TypeName of the FeatureType to check for
-	 * specific FeatureType validation tests.
+	 * a lookup is performed on the TypeName of the FeatureTypeInfo to check for
+	 * specific FeatureTypeInfo validation tests.
 	 * A list of validation tests is returned from each lookup, if any exist.
 	 * When all the validation tests have been gathered, each test is iterated through
 	 * then run on each Feature, with the ValidationResults coming along for the ride,
@@ -306,8 +306,8 @@ public class ValidationProcessor {
 	 * Parameter "FeatureCollection collection" should be changed later to take
 	 * in a FeatureSource so not everything is loaded into memory.
 	 * </p>
-	 * @param type The FeatureType of the features being tested.
-	 * @param collection The collection of features, of a particulare FeatureType "type", that are to be validated.
+	 * @param type The FeatureTypeInfo of the features being tested.
+	 * @param collection The collection of features, of a particulare FeatureTypeInfo "type", that are to be validated.
 	 * @param results Storage for the results of the validation tests.
 	 * @throws Exception FeatureValidations throw Exceptions
 	 */
@@ -316,7 +316,7 @@ public class ValidationProcessor {
 		// check for any tests that are to be performed on ALL features
 		ArrayList tests = (ArrayList) featureLookup.get(ANYTYPENAME);
 		
-		// check for any FeatureType specific tests
+		// check for any FeatureTypeInfo specific tests
 		ArrayList FT_tests = (ArrayList) featureLookup.get(type.getTypeName());
 
 		// append featureType specific tests to the list of tests		
@@ -332,7 +332,7 @@ public class ValidationProcessor {
 				tests = FT_tests;
 		}
 
-		if (tests != null)	// if we found some tests to be performed on this FeatureType
+		if (tests != null)	// if we found some tests to be performed on this FeatureTypeInfo
 		{
 			// for each test that is to be performed on this featureType
 			for (int i=0; i<tests.size(); i++)
@@ -354,13 +354,13 @@ public class ValidationProcessor {
 	/**
 	 * runIntegrityTests
 	 * <p>
-	 * Performs a lookup on the FeatureType name to determine what IntegrityTests
+	 * Performs a lookup on the FeatureTypeInfo name to determine what IntegrityTests
 	 * need to be performed. Once these tests are gathered, they are run on the collection 
 	 * features in the Envelope, defined by a FeatureSource (not a FeatureCollection!).
 	 * The first validation test lookup checks to see if there are any validations that are
-	 * to be performed on every FeatureType. An example of this could be a uniqueID() test
+	 * to be performed on every FeatureTypeInfo. An example of this could be a uniqueID() test
 	 * on a unique column value in all FeatureTypes. Once those tests have been gathered,
-	 * a lookup is performed on the TypeName of the FeatureType to check for
+	 * a lookup is performed on the TypeName of the FeatureTypeInfo to check for
 	 * specific Integrity validation tests.
 	 * A list of validation tests is returned from each lookup, if any exist.
 	 * When all the validation tests have been gathered, each test is iterated through
@@ -386,13 +386,13 @@ public class ValidationProcessor {
 		} 
 		
 		
-		// for each modified FeatureType
+		// for each modified FeatureTypeInfo
 		for (int i=0; i<sources.length; i++)
 		{
 			// check for any tests that are to be performed on ALL features
 			ArrayList tests = (ArrayList) integrityLookup.get(ANYTYPENAME);
 
-			// check for any FeatureType specific tests
+			// check for any FeatureTypeInfo specific tests
 			ArrayList FT_tests = (ArrayList) integrityLookup.get(sources[i].getSchema().getTypeName());
 			
 			// append featureType specific integrity tests to the list of tests		
@@ -408,7 +408,7 @@ public class ValidationProcessor {
 					tests = FT_tests;
 			}
 			 
-			if (tests != null)	// if we found some tests to be performed on this FeatureType
+			if (tests != null)	// if we found some tests to be performed on this FeatureTypeInfo
 			{
 				// for each test that is to be performed on this featureType
 				for (int j=0; j<tests.size(); j++)

@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver;
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.responses.ResponseUtils;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.*;
+import java.util.logging.Logger;
+
+import org.vfny.geoserver.responses.ResponseUtils;
 
 
 /**
@@ -58,15 +57,12 @@ import java.util.logging.*;
  * 
  * <p>
  * Java Exception have recently developed the ability to contain other
- * exceptions. By calling initCause on your Service Exception you can get the
+ * exceptions. By calling initCause on your ServiceConfig Exception you can get the
  * real exception included in the stacktrace above.
  * </p>
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.3 2003/12/16 22:47:39 cholmesny Exp $
- *
- * @task TODO: print directly to an output stream for getXmlResponse.
  */
 public class ServiceException extends Exception {
     /** Class logger */
@@ -249,9 +245,6 @@ public class ServiceException extends Exception {
 
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
 
-        returnXml.append(ServerConfig.getInstance().getWFSConfig()
-                                     .getSchemaBaseUrl());
-
         returnXml.append("wfs/1.0.0/OGC-exception.xsd\">\n");
 
         //REVISIT: handle multiple service exceptions?  must refactor class.
@@ -275,19 +268,5 @@ public class ServiceException extends Exception {
         LOGGER.fine("return wfs exception is " + returnXml);
 
         return returnXml.toString();
-
-        //this is code from .14 and .15.  It can be reused if we need
-        //backwards compatibility.
-
-        /*String returnXml;
-           returnXml = "<WFS_Exception>\n";
-           returnXml = returnXml + "   <Exception>\n";
-           returnXml = returnXml + "      <Locator>" + this.locator +
-               "</Locator>\n";
-           returnXml = returnXml + "      <Message>" + this.preMessage + ": " +
-               this.getMessage() + "</Message>\n";
-           returnXml = returnXml + "   </Exception>\n";
-           returnXml = returnXml + "</WFS_Exception>\n";
-           return returnXml;*/
     }
 }

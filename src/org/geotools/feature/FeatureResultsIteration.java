@@ -4,10 +4,11 @@
  */
 package org.geotools.feature;
 
-import org.geotools.data.*;
 import java.io.IOException;
-import java.util.*;
-import java.util.Iterator;
+
+import org.geotools.data.DataSourceException;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
 
 
 /**

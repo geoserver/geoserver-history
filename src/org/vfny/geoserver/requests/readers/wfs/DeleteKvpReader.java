@@ -4,13 +4,16 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.wfs.*;
-import java.util.*;
-import java.util.logging.*;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.wfs.DeleteRequest;
+import org.vfny.geoserver.requests.wfs.TransactionRequest;
 
 
 /**
@@ -20,7 +23,7 @@ import java.util.logging.*;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DeleteKvpReader.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: DeleteKvpReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
  */
 public class DeleteKvpReader extends KvpRequestReader {
     /** Class logger */

@@ -4,17 +4,36 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.ServerConfig;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.responses.*;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketException;
-import java.util.*;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
-import javax.servlet.*;
-import javax.servlet.http.*;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.vfny.geoserver.ExceptionHandler;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.responses.Response;
 
 
 /**
@@ -24,6 +43,9 @@ import javax.servlet.http.*;
  * <p>
  * It is really important to ensure the following workflow:
  * 
+=======
+ * It is <b>really</b> important to ensure the following workflow:
+ * 
  * <ol>
  * <li>
  * get a Request reader
@@ -31,8 +53,11 @@ import javax.servlet.http.*;
  * <li>
  * ask the Request Reader for the Request object - t this time, request
  * parameters should be fully checked<br>
- * i.e. the Request objects contains the list of FeatureTypeConfig's rather
+ * i.e. the Request objects contains the list of FeatureTypeInfo's rather
  * than just the type names.
+ * </li>
+ * <li>
+ * Provide the resulting Request with the ServletRequest that generated it 
  * </li>
  * <li>
  * get the appropiate ResponseHandler
@@ -45,6 +70,9 @@ import javax.servlet.http.*;
  * </li>
  * <li>
  * write to the http response's output stream
+ * </li>
+ * <li>
+ * pending - call Response cleanup
  * </li>
  * </ol>
  * </p>
@@ -71,7 +99,8 @@ import javax.servlet.http.*;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.4 2004/01/02 21:16:04 cholmesny Exp $
+=======
+ * @version $Id: AbstractService.java,v 1.5 2004/01/12 21:01:26 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -79,11 +108,10 @@ public abstract class AbstractService extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
-    protected static final ServerConfig config = ServerConfig.getInstance();
+    //protected static final GeoServer config = GeoServer.getInstance();
 
     /** Specifies mime type */
-    protected static final String MIME_TYPE = config.getGlobalConfig()
-                                                    .getMimeType();
+    //protected static final String MIME_TYPE = config.getMimeType();
     private static Map context;
 
     /**
@@ -268,26 +296,25 @@ public abstract class AbstractService extends HttpServlet {
             serviceResponse = getResponseHandler();
         } catch (Throwable t) {
             sendError(response, t);
-
             return;
         }
-
+		LOGGER.finer("serviceRequest provided with HttpServletRequest: " + request);
+		serviceRequest.setHttpServletRequest( request );
+		
         try {
-            LOGGER.finer("response handler is: " + serviceResponse);
-
             // execute request
             LOGGER.fine("executing request");
             serviceResponse.execute(serviceRequest);
         } catch (ServiceException serviceException) {
             LOGGER.warning("service exception while executing request: "
                 + serviceException.getMessage());
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             sendError(response, serviceException);
 
             return;
         } catch (Throwable t) {
             //we can safelly send errors here, since we have not touched response yet
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             sendError(response, t);
 
             return;
@@ -295,7 +322,7 @@ public abstract class AbstractService extends HttpServlet {
 
         try { //catch block to wrap exceptions properly.
 
-            String mimeType = serviceResponse.getContentType();
+            String mimeType = serviceResponse.getContentType(serviceRequest.getGeoServer());
             response.setContentType(mimeType);
             LOGGER.fine("execution succeed, mime type is: " + mimeType);
         } catch (Throwable t) {
@@ -323,12 +350,12 @@ public abstract class AbstractService extends HttpServlet {
             // I will still give stratagy and serviceResponse
             // a chance to clean up
             //
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
 
             return;
         } catch (IOException ex) {
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
             sendError(response, ex);
 
@@ -341,24 +368,24 @@ public abstract class AbstractService extends HttpServlet {
             stratagyOuput.flush();
             stratagy.flush();
         } catch (java.net.SocketException sockEx) { // user cancel
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
 
             return;
         }catch (IOException ioException) { // stratagyOutput error
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
             sendError(response, ioException);
 
             return;
         }catch (ServiceException writeToFailure) { // writeTo Failure
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
             sendError(response, writeToFailure);
 
             return;
         }catch (Throwable help) { // This is an unexpected error(!)
-            serviceResponse.abort();
+            serviceResponse.abort(serviceRequest.getGeoServer());
             stratagy.abort();
             sendError(response, help);
 
@@ -431,7 +458,12 @@ public abstract class AbstractService extends HttpServlet {
      * @return DOCUMENT ME!
      */
     protected String getMimeType() {
-        return config.getGlobalConfig().getMimeType();
+		ServletContext context = getServletContext();
+		try{
+			return ((GeoServer)context.getAttribute( "GeoServer" )).getMimeType();
+		}catch(NullPointerException e){
+			return "text/xml; charset=" + Charset.forName("ISO-8859-1").displayName();
+		}
     }
 
     /**
@@ -456,7 +488,7 @@ public abstract class AbstractService extends HttpServlet {
      * Some errors know how to write themselves out WfsTransactionException for
      * instance. It looks like this might be is handled by
      * getExceptionHandler().newServiceException( t, pre, null ). I still
-     * would not mind seeing a check for Service Exception here.
+     * would not mind seeing a check for ServiceConfig Exception here.
      * </p>
      * 
      * <p>
@@ -514,7 +546,8 @@ public abstract class AbstractService extends HttpServlet {
         }
 
         OutputStream out = new BufferedOutputStream(responseOut);
-        response.setContentType(result.getContentType());
+		ServletContext context = getServletContext();
+        response.setContentType(result.getContentType((GeoServer)context.getAttribute( "GeoServer" )));
 
         try {
             result.writeTo(out);
@@ -589,7 +622,7 @@ public abstract class AbstractService extends HttpServlet {
          * Complete opperation in the negative.
          * 
          * <p>
-         * Gives Service a chance to clean up resources
+         * Gives ServiceConfig a chance to clean up resources
          * </p>
          */
         public void abort();
@@ -723,10 +756,10 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
 
 
 /**
- * A safe Service stratagy that uses a temporary file until writeTo completes.
+ * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

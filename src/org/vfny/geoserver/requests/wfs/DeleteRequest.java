@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
+import java.util.logging.Logger;
+
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.requests.*;
-import java.util.logging.*;
 
 
 /**
@@ -33,7 +33,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteRequest.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: DeleteRequest.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */
@@ -55,7 +55,7 @@ public class DeleteRequest extends SubTransactionRequest {
     }
 
     /**
-     * Gets the Name of the FeatureType for this request.
+     * Gets the Name of the FeatureTypeInfo for this request.
      *
      * @return The feature type name.
      */

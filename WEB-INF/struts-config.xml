@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+
+<!-- ==================================== Data Source Configuration -->
+
+<!-- ======================================== Form Bean Definitions -->
+
+    <form-beans>
+    	<form-bean
+    		name="wfsDescriptionForm"
+    		type="org.vfny.geoserver.form.wfs.WFSDescriptionForm"/>
+    		
+    	<form-bean
+    		name="wfsContentForm"
+    		type="org.vfny.geoserver.form.wfs.WFSContentForm"/>
+
+    	<form-bean
+    		name="wmsDescriptionForm"
+    		type="org.vfny.geoserver.form.wms.WMSDescriptionForm"/>
+    		
+    	<form-bean
+    		name="wmsContentForm"
+    		type="org.vfny.geoserver.form.wms.WMSContentForm"/>
+
+    	<form-bean
+    		name="dataDataStoresSelectForm"
+    		type="org.vfny.geoserver.form.data.DataDataStoresSelectForm"/>
+    	<form-bean
+    		name="dataDataStoresNewForm"
+    		type="org.vfny.geoserver.form.data.DataDataStoresNewForm"/>
+    	<form-bean
+    		name="dataDataStoresEditorForm"
+    		type="org.vfny.geoserver.form.data.DataDataStoresEditorForm"/>
+    		
+    	<form-bean
+    		name="dataNamespacesForm"
+    		type="org.vfny.geoserver.form.data.DataNamespacesForm"/>
+
+    	<form-bean
+    		name="dataStylesForm"
+    		type="org.vfny.geoserver.form.data.DataStylesForm"/>
+    		
+    	<form-bean
+    		name="dataFeatureTypesForm"
+    		type="org.vfny.geoserver.form.data.DataFeatureTypesForm"/>
+    		
+    </form-beans>
+
+<!-- ================================= Global Exception Definitions -->
+
+    <global-exceptions>
+    </global-exceptions>
+
+<!-- =================================== Global Forward Definitions -->
+
+    <global-forwards>
+        <!-- Default forward to "Welcome" action -->
+        <!-- Demonstrates using index.jsp to forward -->
+        <forward
+            name="welcome"
+            path="/Welcome.do"/>
+           
+        <forward 
+        	name="mainmenu"
+        	path="/MainMenu.do"/>
+       	<forward
+       		name="systemConfigMenu"
+       		path="/SystemConfigMenu.do"/>
+       	<forward
+       		name="wfsConfigMenu"
+       		path="/WFSConfigMenu.do"/>
+       	<forward
+       		name="wmsConfigMenu"
+       		path="/WMSConfigMenu.do"/>
+       	<forward
+       		name="dataConfigMenu"
+       		path="/DataConfigMenu.do"/>
+       		
+       	<forward
+       		name="wfsConfigDescription"
+       		path="/WFSConfigDescription.do"/>
+       	<forward
+       		name="wfsConfigContent"
+       		path="/WFSConfigContent.do"/>
+       		
+       	<forward
+       		name="wmsConfigDescription"
+       		path="/WMSConfigDescription.do"/>
+       	<forward
+       		name="wmsConfigContent"
+       		path="/WMSConfigContent.do"/>
+       		       		
+       	<forward
+       		name="dataConfigDataStores"
+       		path="/DataConfigDataStores.do"/>
+       	<forward
+       		name="dataConfigNamespaces"
+       		path="/DataConfigNamespaces.do"/>
+       	<forward
+       		name="dataConfigStyles"
+       		path="/DataConfigStyles.do"/>
+       	<forward
+       		name="dataConfigFeatureTypes"
+       		path="/DataConfigFeatureTypes.do"/>       	       		
+       		
+       	<forward
+       		name="baseStyle"
+       		path="/style.css"/>
+
+    </global-forwards>
+
+<!-- =================================== Action Mapping Definitions -->
+
+    <action-mappings>
+            <!-- Default "Welcome" action -->
+            <!-- Forwards to Welcome.jsp -->
+
+        <action
+            path="/Welcome"
+            type="org.apache.struts.actions.ForwardAction"
+            parameter="/WEB-INF/pages/Welcome.jsp"/>
+            
+        <action
+        	path ="/MainMenu"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="/WEB-INF/pages/MainMenu.jsp"/>
+        <action
+        	path="/SystemConfigMenu"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="/WEB-INF/pages/SystemConfigMenu.jsp"/>
+        <action
+        	path="/WFSConfigMenu"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wfs.description"/>
+        <action
+        	path="/WMSConfigMenu"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wms.description"/>        
+        <action
+        	path="/DataConfigMenu"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.dataStores"/>        
+        	
+        <action
+        	path="/WFSConfigDescription"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wfs.description"/>
+        <action
+        	path="/WFSConfigContent"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wfs.content"/>
+
+        <action
+        	path="/WMSConfigDescription"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wms.description"/>
+        <action
+        	path="/WMSConfigContent"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wms.content"/>
+        <action
+        	path="/DataConfigDataStores"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.dataStores"/>
+        <action
+        	path="/DataConfigNamespaces"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.namespaces"/>
+        <action
+        	path="/DataConfigStyles"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.styles"/>
+        <action
+        	path="/DataConfigFeatureTypes"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.featureTypes"/>
+
+<!-- Submit Actions -->        	
+        	
+        <action
+        	path="/WFSConfigDescriptionSubmit"
+        	type="org.vfny.geoserver.action.wfs.WFSDescriptionAction"
+        	name="wfsDescriptionForm"
+        	scope="request"
+        	validate="true"
+        	input="wfs.description"/>
+        	
+        <action
+        	path="/WFSConfigContentSubmit"
+        	type="org.vfny.geoserver.action.wfs.WFSContentAction"
+        	name="wfsContentForm"
+        	scope="request"
+        	validate="true"
+        	input="wfs.content"/>
+
+        <action
+        	path="/WMSConfigDescriptionSubmit"
+        	type="org.vfny.geoserver.action.wms.WMSDescriptionAction"
+        	name="wmsDescriptionForm"
+        	scope="request"
+        	validate="true"
+        	input="wms.description"/>
+        <action
+        	path="/WMSConfigContentSubmit"
+        	type="org.vfny.geoserver.action.wms.WMSContentAction"
+        	name="wmsContentForm"
+        	scope="request"
+        	validate="true"
+        	input="wms.content"/>
+
+        <action
+        	path="/DataConfigDataStoresSubmit"
+        	type="org.vfny.geoserver.action.data.DataDataStoresEditorAction"
+        	name="dataDataStoresEditorForm"
+        	scope="request"
+        	validate="true"
+        	input="data.dataStores"/>
+        	
+        <action
+        	path="/DataConfigDataStoresSelect"
+        	type="org.vfny.geoserver.action.data.DataDataStoresSelectAction"
+        	name="dataDataStoresSelectForm"
+        	scope="request"
+        	validate="true"
+        	input="data.dataStores"/>
+
+        <action
+        	path="/DataConfigDataStoresNew"
+        	type="org.vfny.geoserver.action.data.DataDataStoresNewAction"
+        	name="dataDataStoresNewForm"
+        	scope="request"
+        	validate="true"
+        	input="data.dataStores"/>        	
+        	        	
+        <action
+        	path="/DataConfigNamespacesSubmit"
+        	type="org.vfny.geoserver.action.data.DataNamespacesAction"
+        	name="dataNamespacesForm"
+        	scope="request"
+        	validate="true"
+        	input="data.namespaces"/>
+        <action
+        	path="/DataConfigStylesSubmit"
+        	type="org.vfny.geoserver.action.data.DataStylesAction"
+        	name="dataStylesForm"
+        	scope="request"
+        	validate="true"
+        	input="data.styles"/>
+        <action
+        	path="/DataConfigFeatureTypesSubmit"
+        	type="org.vfny.geoserver.action.data.DataFeatureTypesAction"
+        	name="dataFeatureTypesForm"
+        	scope="request"
+        	validate="true"
+        	input="data.featureTypes"/>        	        	
+
+<!-- End Submit Actions -->
+
+    </action-mappings>
+
+<!-- ===================================== Controller Configuration -->
+
+    <controller
+       processorClass="org.apache.struts.tiles.TilesRequestProcessor"/>
+
+<!-- ================================ Message Resources Definitions -->
+
+    <message-resources parameter="ApplicationResources"/>
+
+
+<!-- ======================================= Plug Ins Configuration -->
+
+  <!-- ========== Tiles plugin ===================  -->
+  <!--												-->
+  <!--
+     This plugin initialize Tiles definition factory. This later can takes some
+	 parameters explained here after. The plugin first read parameters from web.xml, then
+	 overload them with parameters defined here. All parameters are optional.
+	 The plugin should be declared in each struts-config file.
+       - definitions-config: (optional) 
+            Specify configuration file names. There can be several comma 
+		    separated file names (default: ?? )
+       - moduleAware: (optional - struts1.1) 
+            Specify if the Tiles definition factory is module aware. If true (default), 
+			there will be one factory for each Struts module. 
+			If false, there will be one common factory for all module. In this later case, 
+			it is still needed to declare one plugin per module. The factory will be 
+			initialized with parameters found in the first initialized plugin (generally the
+			one associated with the default module).
+			  true : One factory per module. (default)
+			  false : one single shared factory for all modules
+	   - definitions-parser-validate: (optional)
+	        Specify if xml parser should validate the Tiles configuration file.
+			  true : validate. DTD should be specified in file header. (default)
+			  false : no validation
+			  
+	  Paths found in Tiles definitions are relative to the main context.
+  -->
+  <!-- comment following if struts1.0.x -->
+  <plug-in className="org.apache.struts.tiles.TilesPlugin" >
+    <set-property property="definitions-config" 
+	                 value="/WEB-INF/tiles-defs.xml" />
+    <set-property property="moduleAware" value="true" />
+    <set-property property="definitions-parser-validate" value="true" />
+  </plug-in>
+
+  <!-- end comment if struts1.0.x -->
+
+  <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+    <set-property
+        property="pathnames"
+        value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+  </plug-in>
+  
+  <plug-in className="org.vfny.geoserver.global.ApplicationState">
+  </plug-in>
+  
+  <plug-in className="org.vfny.geoserver.global.GeoServerPlugIn">
+  </plug-in>  
+  
+  <plug-in className="org.vfny.geoserver.config.ConfigPlugIn">
+  </plug-in>  
+
+</struts-config>
+

@@ -1,8 +1,8 @@
 package org.vfny.geoserver.requests.readers;
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.Request;
-import java.util.*;
+import java.util.Map;
+
+import org.vfny.geoserver.global.WMS;
 
 
 /**
@@ -14,12 +14,12 @@ import java.util.*;
  * to recognize it
  *
  * @author Gabriel Roldán
- * @version $Id: WmsKvpRequestReader.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: WmsKvpRequestReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader
 {
     /** DOCUMENT ME! */
-    protected static final ServerConfig config = ServerConfig.getInstance();
+    //protected static final GeoServer config = GeoServer.getInstance();
 
     /**
      * Creates a new WmsKvpRequestReader object.
@@ -44,7 +44,7 @@ public abstract class WmsKvpRequestReader extends KvpRequestReader
             version = getValue("WMTVER");
 
         if (version == null)
-            version = config.getWMSConfig().getVersion();
+            version = WMS.getVersion();
 
         return version;
     }

@@ -3,11 +3,10 @@ package org.geotools.validation;
 import java.util.HashMap;
 
 import org.geotools.data.DataTestCase;
-import org.geotools.data.*;
-import org.geotools.data.memory.*;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.feature.Feature;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
 import org.geotools.validation.spatial.LineIsSingleSegmentFeatureValidation;
 import org.geotools.validation.spatial.LineNoSelfIntersectFeatureValidation;
 import org.geotools.validation.spatial.LineNoSelfOverlappingFeatureValidation;
@@ -45,8 +44,8 @@ import org.geotools.validation.spatial.LinesNotIntersectIntegrityValidation;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: ValidationPlugInTester.java,v 1.2 2003/12/16 18:46:11 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationPlugInTester.java,v 1.3 2004/01/12 21:01:29 dmzwiers Exp $
  */
 public class ValidationPlugInTester extends DataTestCase {
 

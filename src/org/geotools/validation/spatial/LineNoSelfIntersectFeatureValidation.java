@@ -48,8 +48,8 @@ import com.vividsolutions.jts.geom.LineString;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: LineNoSelfIntersectFeatureValidation.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: LineNoSelfIntersectFeatureValidation.java,v 1.3 2004/01/12 21:01:31 dmzwiers Exp $
  */
 public class LineNoSelfIntersectFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
@@ -189,10 +189,10 @@ public class LineNoSelfIntersectFeatureValidation implements FeatureValidation {
 	 * of a LineString doubles back on itself for one segment, then terminates. A
 	 * different validation is needed to test overlapping. Uses JTS' intersect routine.
 	 * </p>
-	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureType, org.geotools.validation.ValidationResults)
+	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureTypeInfo, org.geotools.validation.ValidationResults)
 	 * 
  	 * @param feature The Feature to be validated.
-	 * @param type The FeatureType of the feature.
+	 * @param type The FeatureTypeInfo of the feature.
 	 * @param results The storage for error messages.
 	 * @return True if the feature does not self intersect.
 	 */

@@ -4,21 +4,21 @@
  */
 package org.vfny.geoserver.responses;
 
-import org.vfny.geoserver.config.ServerConfig;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: XmlResponseHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: XmlResponseHandler.java,v 1.3 2004/01/12 21:01:27 dmzwiers Exp $
  */
 public abstract class XmlResponseHandler implements ResponseHandler {
     /** blank attributes to be used when none are needed. */
     protected static final Attributes atts = new AttributesImpl();
-    protected static ServerConfig server = ServerConfig.getInstance();
     private static final int TAB_SIZE = 2;
     private char[] cr = new char[0];
     private char[] tab = new char[0];

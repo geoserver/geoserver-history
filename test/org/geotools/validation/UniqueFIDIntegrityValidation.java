@@ -16,16 +16,13 @@
  */
 package org.geotools.validation;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
-import org.geotools.feature.IllegalAttributeException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -44,8 +41,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: UniqueFIDIntegrityValidation.java,v 1.2 2003/12/16 18:46:11 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: UniqueFIDIntegrityValidation.java,v 1.3 2004/01/12 21:01:29 dmzwiers Exp $
  */
 public class UniqueFIDIntegrityValidation implements IntegrityValidation {
 

@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.geotools.feature.*;
+import java.util.Iterator;
+import java.util.logging.Logger;
+
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureCollections;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.CatalogConfig;
-import org.vfny.geoserver.config.ServerConfig;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.responses.wfs.*;
-import java.util.*;
-import java.util.logging.*;
+import org.vfny.geoserver.WfsException;
 
 
 /**
@@ -23,7 +22,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: InsertRequest.java,v 1.3 2003/12/31 19:03:14 cholmesny Exp $
+ * @version $Id: InsertRequest.java,v 1.4 2004/01/12 21:01:25 dmzwiers Exp $
  */
 public class InsertRequest extends SubTransactionRequest {
     /** Class logger */
@@ -75,30 +74,14 @@ public class InsertRequest extends SubTransactionRequest {
      * @param feature To be inserted into the database.
      *
      * @throws WfsException if added typeName does not match the set typeNames.
-     *
-     * @task REVISIT: Right now we just set the typename according to the  last
-     *       feature added.  This makes it so we can't add features of
-     *       different types.  This can be fixed - inserts just would not use
-     *       the typename,  instead each would be looked up when the time to
-     *       add it came (in  TransactionResponse), and the appropriate
-     *       FeatureStore would be created.
      */
     public void addFeature(Feature feature) throws WfsException {
-        //here we need to set the internal type name, that will be used
-        //for lookup.  This is a bit confusing, as geotools thinks of 
-        //typename as just the name, whereas geoserver needs the prefix
-        //as well, since that's how they are stored internally.
-        FeatureType fType = feature.getFeatureType();
-        String name = fType.getTypeName();
-        String namespace = fType.getNamespace();
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
-        String addTypeName = catalog.getFeatureType(name, namespace).getName();
-
-        //LOGGER.info("
         if (typeName == null) {
             features.add(feature);
-            setTypeName(addTypeName);
+            setTypeName(feature.getFeatureType().getTypeName());
         } else {
+            String addTypeName = feature.getFeatureType().getTypeName();
+
             if (typeName.equals(addTypeName)) {
                 features.add(feature);
             } else {

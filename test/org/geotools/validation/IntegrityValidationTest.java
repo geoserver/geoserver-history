@@ -16,11 +16,12 @@
  */
 package org.geotools.validation;
 
-import org.geotools.data.*;
-import org.geotools.data.memory.*;
+import java.util.HashMap;
+
+import org.geotools.data.DataTestCase;
+import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
 import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
-import java.util.HashMap;
 
 
 /**
@@ -33,8 +34,8 @@ import java.util.HashMap;
  * <p></p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: IntegrityValidationTest.java,v 1.3 2003/12/16 23:11:23 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: IntegrityValidationTest.java,v 1.4 2004/01/12 21:01:29 dmzwiers Exp $
  */
 public class IntegrityValidationTest extends DataTestCase {
     MemoryDataStore store;

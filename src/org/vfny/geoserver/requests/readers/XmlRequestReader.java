@@ -4,16 +4,25 @@
  */
 package org.vfny.geoserver.requests.readers;
 
-import org.geotools.filter.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.geotools.filter.Filter;
-import org.geotools.gml.*;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.io.*;
-import java.util.logging.*;
-import javax.xml.parsers.*;
+import org.geotools.filter.FilterFilter;
+import org.geotools.gml.GMLFilterDocument;
+import org.geotools.gml.GMLFilterGeometry;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.requests.FilterHandlerImpl;
+import org.vfny.geoserver.requests.Request;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
@@ -23,7 +32,7 @@ import javax.xml.parsers.*;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: XmlRequestReader.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: XmlRequestReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
  */
 public abstract class XmlRequestReader {
     /** Class logger */

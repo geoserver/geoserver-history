@@ -1,28 +1,49 @@
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2002, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.requests.wfs;
 
-import com.vividsolutions.jts.geom.*;
-import org.geotools.feature.*;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
+
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.AttributeTypeFactory;
+import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.gml.*;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.CatalogConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.config.ServerConfig;
-import org.vfny.geoserver.oldconfig.*;
-import org.xml.sax.*;
-import java.util.*;
-import java.util.logging.*;
+import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.gml.GMLFilterFeature;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.requests.Request;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.4 2004/01/03 00:09:08 cholmesny Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.5 2004/01/12 21:01:25 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -51,16 +72,18 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private TransactionFilterHandler parent;
 
     //private TypeRepository typeRepo = TypeRepository.getInstance();
-    private CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+
+	private Data catalog = null;
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.
      *
      * @param parent The parent of this filter.
      */
-    public TransactionFeatureHandler(TransactionFilterHandler parent) {
+    public TransactionFeatureHandler(TransactionFilterHandler parent, Request r) {
         super(parent);
         this.parent = parent;
+        catalog = r.getGeoServer().getData();
     }
 
     /**
@@ -91,10 +114,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             //featureTypes?  Like add a 
             //!namespaceURI.equals("http://www.opengis.net/gml"); 
             //(not sure if that'd work, but something to that effect
-            FeatureTypeConfig fType = catalog.getFeatureType(localName,
+            FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName,
                     namespaceURI);
-
-            //LOGGER.info("feature type is: " +
             String internalTypeName = null;
 
             if (fType != null) {
@@ -125,22 +146,12 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                     || (localName.equals("pointMember")))) {
                 LOGGER.finest("inside feature " + internalTypeName);
 
-                //REVISIT: I'm taking out this loop, as it's only caused greif.
-                //Though I think it's possible I've never heard of xml 
-                //attributes being used for gml.  Even if we did read them
-                //in correctly our datastores will squash them into elements,
-                //and thus won't conform to the stated schemas.  If this 
-                //actually is an issue then the geotools feature model should
-                //deal with it and have an attribute flag for certain attribute
-                //types, to indicate they should not be printed as elements.
+                for (int i = 0; i < atts.getLength(); i++) {
+                    String name = atts.getLocalName(i);
+                    attributes.add(atts.getValue(i));
+                    attributeNames.add(name);
+                }
 
-                /*for (int i = 0; i < atts.getLength(); i++) {
-                   String name = atts.getLocalName(i);
-                   if (!name.equals("fid") && !name.equals("schemaLocation")) {
-                       attributes.add(atts.getValue(i));
-                       attributeNames.add(name);
-                   }
-                   }*/
                 if (!typeName.equalsIgnoreCase(internalTypeName)) {
                     if (attName.equals("")) {
                         LOGGER.finest("setting attName to " + localName);
@@ -205,7 +216,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * a coordinates (or coord) element, it uses internal methods to set the
      * current state of the coordinates reader appropriately.
      *
-     * @param namespaceURI Namespace of the element.
+     * @param namespaceURI NameSpaceInfo of the element.
      * @param localName Local name of the element.
      * @param qName Full name of the element, including namespace prefix.
      *
@@ -218,7 +229,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             insideInsert = false;
         }
 
-        FeatureTypeConfig fType = catalog.getFeatureType(localName, namespaceURI);
+        FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName, namespaceURI);
         String internalTypeName = null;
 
         if (fType != null) {
@@ -263,6 +274,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             if ((tempValue != null) && !tempValue.toString().trim().equals("")) {
                 attributes.add(tempValue);
                 attributeNames.add(attName);
+
             }
 
             int index = attName.lastIndexOf('/');

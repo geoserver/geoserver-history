@@ -4,13 +4,15 @@
  */
 package org.vfny.geoserver.servlets.wfs;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.readers.wfs.*;
-import org.vfny.geoserver.responses.*;
-import org.vfny.geoserver.responses.wfs.*;
-import org.vfny.geoserver.servlets.*;
-import java.util.*;
+import java.util.Map;
+
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
+import org.vfny.geoserver.requests.readers.wfs.TransactionXmlReader;
+import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.responses.wfs.TransactionResponse;
+import org.vfny.geoserver.servlets.WFService;
 
 
 /**
@@ -20,7 +22,7 @@ import java.util.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: Transaction.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: Transaction.java,v 1.3 2004/01/12 21:01:28 dmzwiers Exp $
  */
 public class Transaction extends WFService {
     /**

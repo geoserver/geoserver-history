@@ -4,16 +4,23 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
-import org.geotools.filter.*;
-import org.geotools.gml.*;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.wfs.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.io.*;
-import javax.xml.parsers.*;
+import java.io.IOException;
+import java.io.Reader;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.geotools.filter.FilterFilter;
+import org.geotools.gml.GMLFilterDocument;
+import org.geotools.gml.GMLFilterGeometry;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.wfs.LockHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
@@ -21,7 +28,7 @@ import javax.xml.parsers.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: LockXmlReader.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: LockXmlReader.java,v 1.3 2004/01/12 21:01:25 dmzwiers Exp $
  */
 public class LockXmlReader extends XmlRequestReader {
     /**

@@ -4,12 +4,6 @@
  */
 package org.vfny.geoserver.zserver;
 
-import org.apache.lucene.document.DateField;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-
-//for main
-import org.apache.lucene.index.IndexWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
@@ -19,6 +13,11 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import org.apache.lucene.document.DateField;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexWriter;
 
 
 /**

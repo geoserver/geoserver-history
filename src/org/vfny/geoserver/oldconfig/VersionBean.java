@@ -23,7 +23,7 @@ public class VersionBean
   /** Update sequence number */
   private static final String WFS_UPDATE_SEQUENCE = "0";
 
-  /** Web Feature Service Name */
+  /** Web Feature ServiceConfig Name */
   private static final String WFS_NAME = "Web Feature Server";
 
   /** Empty constructor */
@@ -36,7 +36,7 @@ public class VersionBean
     return FREEFS_VERSION;
   }
 
-  /** Returns Web Feature Service version */
+  /** Returns Web Feature ServiceConfig version */
   public String getWfsVersion()
   {
     return WFS_VERSION;

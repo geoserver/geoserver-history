@@ -4,27 +4,24 @@
  */
 package org.vfny.geoserver.requests;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.io.BufferedReader;
-import java.util.logging.Logger;
 import java.util.Map;
-import org.vfny.geoserver.requests.wfs.DescribeRequest;
+import java.util.logging.Logger;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.DescribeKvpReader;
 import org.vfny.geoserver.requests.readers.wfs.DescribeXmlReader;
+import org.vfny.geoserver.requests.wfs.DescribeRequest;
 
 /**
  * Tests the get capabilities request handling.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeSuite.java,v 1.5 2003/12/22 22:45:30 cholmesny Exp $
+ * @version $Id: DescribeSuite.java,v 1.6 2004/01/12 21:01:28 dmzwiers Exp $
  */
 public class DescribeSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
