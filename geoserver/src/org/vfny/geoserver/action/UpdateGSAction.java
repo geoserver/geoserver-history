@@ -17,7 +17,16 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.GlobalConfig;
+import org.vfny.geoserver.config.WFSConfig;
+import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 
 /**
  * @author User
@@ -34,8 +43,16 @@ public class UpdateGSAction extends Action {
 		GeoServer gs = null;
 		ServletContext sc = request.getSession().getServletContext();
 		gs = (GeoServer)sc.getAttribute(GeoServer.SESSION_KEY);
-		//TODO Finish this
-		//TODO remember to store wms.gmlprefixing on serverside
-		return null; 
+		try{
+			gs.load((WMSDTO)(((WMSConfig)sc.getAttribute(WMSConfig.CONFIG_KEY)).toDTO()),
+				(WFSDTO)((WFSConfig)sc.getAttribute(WFSConfig.CONFIG_KEY)).toDTO(),
+				(GeoServerDTO)((GlobalConfig)sc.getAttribute(GlobalConfig.CONFIG_KEY)).toDTO(),
+				(DataDTO)((DataConfig)sc.getAttribute(DataConfig.CONFIG_KEY)).toDTO());
+		}catch(ConfigurationException e){
+			throw new ServletException(e);
+		}
+			
+		//HACK
+		return mapping.findForward("welcome");
 	}
 }

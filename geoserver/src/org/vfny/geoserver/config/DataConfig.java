@@ -40,9 +40,10 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.2 2004/01/07 22:52:12 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.3 2004/01/07 23:10:54 dmzwiers Exp $
  */
 public class DataConfig implements DataStructure{
+	public static final String CONFIG_KEY = "Config.Data";
 	
 	/**
 	 * A set of datastores and their names.

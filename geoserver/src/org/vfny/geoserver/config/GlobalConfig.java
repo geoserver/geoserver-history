@@ -19,9 +19,10 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.3.2.7 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.3.2.8 2004/01/07 23:10:54 dmzwiers Exp $
  */
 public class GlobalConfig implements DataStructure {
+	public static final String CONFIG_KEY = "Config.Global";
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = 20000;
 

@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.action;
 
-import java.net.URL;
-
-import javax.servlet.ServletContext;
-
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.config.WFSConfig;
@@ -42,8 +38,8 @@ import org.vfny.geoserver.config.WMSConfig;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ConfigAction.java,v 1.1.2.7 2004/01/07 22:51:38 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ConfigAction.java,v 1.1.2.8 2004/01/07 23:10:54 dmzwiers Exp $
  */
 public class ConfigAction extends GeoServerAction {
     
@@ -58,9 +54,7 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration information for the Web Map Server
      */
     protected WMSConfig getWMSConfig() {
-        ServletContext context = getServlet().getServletContext();
-
-        return (WMSConfig) context.getAttribute("GeoServer.WMSConfig");
+        return (WMSConfig) getServlet().getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
     }
 
     /**
@@ -74,7 +68,7 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration information for Web Feature Server
      */
     protected WFSConfig getWFSConfig() {
-        ServletContext context = getServlet().getServletContext();
+      /*  ServletContext context = getServlet().getServletContext();
         WFSConfig config =
             (WFSConfig) context.getAttribute("GeoServer.WFSConfig");
         if( config == null ){
@@ -95,7 +89,9 @@ public class ConfigAction extends GeoServerAction {
             }catch(Exception e){}
             config.setTitle("Sample WFS Configuration");                        
         }
-        return config; 
+        return config; */
+
+		return (WFSConfig) getServlet().getServletContext().getAttribute(WFSConfig.CONFIG_KEY);
     }
 
     /**
@@ -104,9 +100,7 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration model for Global information.
      */
     protected GlobalConfig getGlobalConfig() {
-        ServletContext context = getServlet().getServletContext();
-
-        return (GlobalConfig) context.getAttribute("GeoServer.GlobalConfig");
+		return (GlobalConfig) getServlet().getServletContext().getAttribute(GlobalConfig.CONFIG_KEY);
     }
     
     /**
@@ -114,9 +108,7 @@ public class ConfigAction extends GeoServerAction {
      *
      * @return Configuration model for Catalog information.
      */
-    protected DataConfig getCatalogConfig() {
-        ServletContext context = getServlet().getServletContext();
-
-        return (DataConfig) context.getAttribute("GeoServer.CatalogConfig");
+    protected DataConfig getDataConfig() {
+		return (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
     }    
 }
