@@ -25,13 +25,13 @@ import java.util.logging.Logger;
  * at all.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RequestTestCase.java,v 1.1 2003/12/19 02:29:07 cholmesny Exp $
+ * @version $Id: RequestTestCase.java,v 1.2 2003/12/19 03:39:11 cholmesny Exp $
  */
 public abstract class RequestTestCase extends TestCase {
-    // Initializes the logger. Uncomment to see log messages.
+    //Initializes the logger. Uncomment to see log messages.
     //static {
-    //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
-    //java.util.logging.Level.FINE);
+    // org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
+    //					       java.util.logging.Level.FINER);
     //}
 
     /** Class logger */
@@ -119,6 +119,7 @@ public abstract class RequestTestCase extends TestCase {
 
         // Compare parsed request to base request
         if (match) {
+	    assertEquals(baseRequest, request);
             return baseRequest.equals(request);
         } else {
             return !baseRequest.equals(request);
