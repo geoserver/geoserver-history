@@ -11,12 +11,14 @@ import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.geotools.data.*;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import java.util.List;
+import java.util.Collections;
+import java.io.IOException;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: EncoderConfig.java,v 1.1 2004/03/14 16:15:22 groldan Exp $
+ * @version $Id: EncoderConfig.java,v 1.2 2004/03/14 23:27:03 groldan Exp $
  */
 public class EncoderConfig {
     /** the XML and SVG header */
@@ -68,6 +70,25 @@ public class EncoderConfig {
       this.styles = styles;
     }
 
+    public List getAttributes(String typeName) throws IOException
+    {
+      List atts = Collections.EMPTY_LIST;
+      if(!request.getAttributes().isEmpty())
+      {
+        int layerIndex = -1;
+        int lCount = requestedLayers.length;
+        for(int i = 0; i < lCount; i++)
+        {
+          if(requestedLayers[i].getFeatureType().getTypeName().equals(typeName))
+          {
+            layerIndex = i;
+            break;
+          }
+        }
+        atts = (List)request.getAttributes().get(layerIndex);
+      }
+      return atts;
+    }
     public FeatureTypeInfo[] getLayers()
     {
       return requestedLayers;
@@ -81,6 +102,11 @@ public class EncoderConfig {
     public Style[] getStyles()
     {
       return styles;
+    }
+
+    public GetMapRequest getRequest()
+    {
+      return request;
     }
 
     /**

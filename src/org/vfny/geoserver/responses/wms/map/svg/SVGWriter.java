@@ -7,6 +7,8 @@ package org.vfny.geoserver.responses.wms.map.svg;
 import com.vividsolutions.jts.geom.*;
 
 import org.geotools.feature.*;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.FeatureReader;
 
 import java.io.*;
 
@@ -14,15 +16,20 @@ import java.text.*;
 
 import java.util.*;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGWriter.java,v 1.2 2004/03/14 22:14:58 groldan Exp $
+ * @version $Id: SVGWriter.java,v 1.3 2004/03/14 23:27:03 groldan Exp $
  */
 public class SVGWriter extends OutputStreamWriter {
+
+    private static final Logger LOGGER = Logger.getLogger(
+      SVGWriter.class.getPackage().getName());
+
     /**
      * a number formatter setted up to write SVG legible numbers ('.' as
      * decimal separator, no group separator
@@ -63,7 +70,7 @@ public class SVGWriter extends OutputStreamWriter {
     private int coordsWriteCount;
 
     /** DOCUMENT ME! */
-    private SVGFeatureWriterHandler writerHandler;
+    private SVGFeatureWriterHandler writerHandler = new SVGFeatureWriterHandler();
 
     /** DOCUMENT ME!  */
     private SVGFeatureWriter featureWriter = null;
@@ -137,7 +144,7 @@ public class SVGWriter extends OutputStreamWriter {
             throw new IllegalArgumentException(
                 "No SVG Feature writer defined for " + gtype);
         }
-
+/*
         if (config.isCollectGeometries()) {
             this.writerHandler = new CollectSVGHandler(featureWriter);
         } else {
@@ -146,6 +153,12 @@ public class SVGWriter extends OutputStreamWriter {
             this.writerHandler = new BoundsSVGHandler(this.writerHandler);
             this.writerHandler = new AttributesSVGHandler(this.writerHandler);
         }
+ */
+    }
+
+    public void setWriterHandler(SVGFeatureWriterHandler handler)
+    {
+      this.writerHandler = handler;
     }
 
     /**
@@ -248,6 +261,84 @@ public class SVGWriter extends OutputStreamWriter {
         super.write('\n');
     }
 
+    public void writeFeatures(FeatureReader reader, String style)
+        throws IOException, AbortedException {
+        Feature ft;
+
+        try {
+            FeatureType featureType = reader.getFeatureType();
+            Class gtype = featureType.getDefaultGeometry().getType();
+
+            boolean doCollect = config.isCollectGeometries() &&
+                  gtype != Point.class && gtype != MultiPoint.class;
+
+            setGeometryType(gtype);
+
+            setPointsAsCircles("#circle".equals(style));
+
+            if(style != null && !"#circle".equals(style) && style.startsWith("#"))
+              style = style.substring(1);
+            else
+              style = null;
+
+            setAttributeStyle(style);
+
+            setUpWriterHandler(featureType, doCollect);
+
+            if(doCollect)
+            {
+              write("<path ");
+              write("d=\"");
+            }
+
+            while (reader.hasNext()) {
+                ft = reader.next();
+                writeFeature(ft);
+                ft = null;
+            }
+
+            if(doCollect)
+            {
+              write("\"/>\n");
+            }
+
+            LOGGER.fine("encoded " + featureType.getTypeName());
+        } catch (NoSuchElementException ex) {
+            throw new DataSourceException(ex.getMessage(), ex);
+        } catch (IllegalAttributeException ex) {
+            throw new DataSourceException(ex.getMessage(), ex);
+        }
+    }
+
+    private void setUpWriterHandler(FeatureType featureType, boolean doCollect)
+    throws IOException
+    {
+      if (doCollect) {
+          this.writerHandler = new CollectSVGHandler(featureWriter);
+          LOGGER.finer("Established a collecting features writer handler");
+      } else {
+          this.writerHandler = new SVGFeatureWriterHandler();
+          String typeName = featureType.getTypeName();
+          List atts = config.getAttributes(typeName);
+          if(atts.contains("#FID"))
+          {
+            this.writerHandler = new FIDSVGHandler(this.writerHandler);
+            atts.remove("#FID");
+            LOGGER.finer("Added FID handler decorator");
+          }
+          if(atts.contains("#BOUNDS"))
+          {
+            this.writerHandler = new BoundsSVGHandler(this.writerHandler);
+            atts.remove("#BOUNDS");
+            LOGGER.finer("Added BOUNDS handler decorator");
+          }
+          if(atts.size() > 0)
+          {
+            this.writerHandler = new AttributesSVGHandler(this.writerHandler);
+            LOGGER.finer("Added ATTRIBUTES handler decorator");
+          }
+      }
+    }
 
     /**
      * DOCUMENT ME!
@@ -268,9 +359,9 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.3 $
      */
-    private class SVGFeatureWriterHandler {
+    public class SVGFeatureWriterHandler {
         /**
          * DOCUMENT ME!
          *
@@ -341,9 +432,9 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.3 $
      */
-    private class CollectSVGHandler extends SVGFeatureWriterHandler {
+    public class CollectSVGHandler extends SVGFeatureWriterHandler {
         /** DOCUMENT ME! */
         private SVGFeatureWriter featureWriter;
 
@@ -372,7 +463,7 @@ public class SVGWriter extends OutputStreamWriter {
     /**
      * decorator handler that adds the feature id as the "id" attribute
      */
-    private class FIDSVGHandler extends SVGFeatureWriterHandler {
+    public class FIDSVGHandler extends SVGFeatureWriterHandler {
         /** DOCUMENT ME!  */
         private SVGFeatureWriterHandler handler;
 
@@ -411,7 +502,7 @@ public class SVGWriter extends OutputStreamWriter {
     /**
      * decorator handler that adds the feature id as the "id" attribute
      */
-    private class BoundsSVGHandler extends SVGFeatureWriterHandler {
+    public class BoundsSVGHandler extends SVGFeatureWriterHandler {
         /** DOCUMENT ME!  */
         private SVGFeatureWriterHandler handler;
 
@@ -453,7 +544,7 @@ public class SVGWriter extends OutputStreamWriter {
     /**
      * decorator handler that adds the feature id as the "id" attribute
      */
-    private class AttributesSVGHandler extends SVGFeatureWriterHandler {
+    public class AttributesSVGHandler extends SVGFeatureWriterHandler {
         /** DOCUMENT ME!  */
         private SVGFeatureWriterHandler handler;
 
@@ -556,7 +647,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.3 $
      */
     private abstract class SVGFeatureWriter {
         /**
