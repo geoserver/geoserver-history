@@ -74,6 +74,9 @@ public class Dispatcher extends HttpServlet {
     /** WMS DescribeLayer request type */
     public static final int DESCRIBE_LAYER_REQUEST = 8;
     
+    /** WMS GetLegendGraphic request type */
+    public static final int GET_LEGEND_GRAPHIC_REQUEST = 9;
+
     public static final short WMS_SERVICE = 101;
     public static final short WFS_SERVICE = 102;
 
