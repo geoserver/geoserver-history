@@ -29,8 +29,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.resources.Geotools;
-
 import com.k_int.codec.util.OIDRegister;
 
 
@@ -48,9 +46,6 @@ import com.k_int.codec.util.OIDRegister;
  */
 public class GeoZServer extends Thread {
     /* Initializes the logger. */
-    static {
-        Geotools.init( Level.FINER);
-    }
 
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
