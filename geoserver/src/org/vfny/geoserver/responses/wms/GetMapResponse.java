@@ -20,19 +20,24 @@ import java.util.*;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.1.2.3 2003/11/16 19:29:39 groldan Exp $
+ * @version $Id: GetMapResponse.java,v 1.1.2.4 2003/11/19 18:21:59 groldan Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
-    private static final Map delegates = new HashMap();
+    private static final List delegates = new LinkedList();
+
+    private static final List supportedMimeTypes = new LinkedList();
 
     static {
-        delegates.put("image/svg+xml", SVGMapResponse.class);
-        delegates.put("image/svg xml", SVGMapResponse.class);
+        GetMapDelegate producer;
 
-        /**
-         * @task TODO: add JAI format handlers
-         */
+        producer = new SVGMapResponse();
+        supportedMimeTypes.addAll(producer.getSupportedFormats());
+        delegates.add(producer);
+
+        producer = new JAIMapResponse();
+        supportedMimeTypes.addAll(producer.getSupportedFormats());
+        delegates.add(producer);
     }
 
     private GetMapDelegate delegate;
@@ -113,7 +118,18 @@ public class GetMapResponse implements Response {
     private static GetMapDelegate getDelegate(GetMapRequest request)
         throws WmsException {
         String requestFormat = request.getFormat();
-        Class delegateClass = (Class) delegates.get(requestFormat);
+        GetMapDelegate delegate = null;
+        Class delegateClass = null;
+
+        for(Iterator it = delegates.iterator(); it.hasNext();)
+        {
+          delegate = (GetMapDelegate)it.next();
+          if(delegate.canProduce(requestFormat))
+          {
+            delegateClass = delegate.getClass();
+            break;
+          }
+        }
 
         if (delegateClass == null) {
             throw new WmsException(requestFormat
@@ -121,8 +137,6 @@ public class GetMapResponse implements Response {
                 + "Please consult the Capabilities document",
                 "GetMapResponse.getDelegate");
         }
-
-        GetMapDelegate delegate = null;
 
         try {
             delegate = (GetMapDelegate) delegateClass.newInstance();
@@ -133,5 +147,14 @@ public class GetMapResponse implements Response {
         }
 
         return delegate;
+    }
+
+    /**
+     * iterates over the registered Map producers and fills a list with
+     * all the map formats' MIME types that the producers can handle
+     */
+    private static List getMapFormats()
+    {
+      return supportedMimeTypes;
     }
 }
