@@ -93,10 +93,10 @@
     <para>If you'd just like to get an installation up and running quickly,
     and don't care so much about advanced features and speed, then we
     recommend the Shapefile format, with installation information <ulink
-    url="dvanced.htm#shapefile">here</ulink>. If you have an existing Oracle
+    url="advanced.html#shapefile">here</ulink>. If you have an existing Oracle
     spatial installation, and would like to use GeoServer to serve that data
     as GML, then check out the install information <ulink
-    url="advanced.htm#oracle">here</ulink>. Be sure to fully read this
+    url="advanced.html#oracle">here</ulink>. Be sure to fully read this
     installation document before trying out Oracle or Shapefile DataStores,
     even if you are not going to use PostGIS.</para>
 
@@ -324,7 +324,7 @@ The document tree is shown below.</programlisting></para>
     </informaltable>
 
     <para>For more configuration options, check the <ulink
-    url="advanced.htm">Advanced</ulink> section.</para>
+    url="advanced.html">Advanced</ulink> section.</para>
   </sect1>
 
   <sect1 id="data">
@@ -384,8 +384,8 @@ The document tree is shown below.</programlisting></para>
     defined in the <emphasis>catalog.xml</emphasis> file. The following sample
     <emphasis>catalog.xml</emphasis> file is for a PostGIS DataStore, as it is
     the most solid one that GeoServer supports. <ulink
-    url="advanced.htm#shapefile">Shapefile</ulink>, <ulink
-    url="advanced.htm#oracle">Oracle</ulink> and ArcSDE DataStores are also
+    url="advanced.html#shapefile">Shapefile</ulink>, <ulink
+    url="advanced.html#oracle">Oracle</ulink> and ArcSDE DataStores are also
     available in various degrees of maturity; click on the hyper links for
     more information.<programlisting> &lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 &lt;catalog&gt;
@@ -595,7 +595,7 @@ The document tree is shown below.</programlisting></para>
     url="http://www.esri.com/data/download/census2000_tigerline/index.html">here</ulink>.
     The GeoServer also includes support for using shapefiles directly,
     information about this option is available in the <ulink
-    url="advanced.htm">advanced</ulink> section. Using the shapefiles directly
+    url="advanced.html">advanced</ulink> section. Using the shapefiles directly
     sacrifices a lot of speed and flexibility, so converting them to PostGIS
     is the recommended way, but the option is available for easier set
     up.</para>
