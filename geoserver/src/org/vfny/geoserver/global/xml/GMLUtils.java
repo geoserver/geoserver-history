@@ -30,8 +30,8 @@ import com.vividsolutions.jts.geom.Polygon;
  * Utility class defining GML constants, and utility functions.
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: GMLUtils.java,v 1.7 2004/01/20 04:17:42 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: GMLUtils.java,v 1.8 2004/01/20 05:04:01 jive Exp $
  */
 public class GMLUtils {
     /** Mappings by schema */
@@ -302,12 +302,14 @@ public class GMLUtils {
         return search(baseGmlTypes, s);
     }
 
+    /** Comment this please? And don't commit System outs in something used this
+     * much.*/
     private static boolean search(String[] a, String s) {
         // deal with namespace
         int t = s.lastIndexOf(":");
 
         if (t != -1) {
-System.out.println("$$$$$"+s+"^"+s.substring(t+1)+"^");
+//System.out.println("$$$$$"+s+"^"+s.substring(t+1)+"^");
             s = s.substring(t+1);
         }
 
@@ -316,7 +318,7 @@ System.out.println("$$$$$"+s+"^"+s.substring(t+1)+"^");
             if (a[i].equals(s)) {
                 return true;
             }
-System.out.println("FALSE"+a[i]+"$$"+s+"$$");
+//System.out.println("FALSE"+a[i]+"$$"+s+"$$");
         }
         return false;
     }
@@ -359,8 +361,8 @@ System.out.println("FALSE"+a[i]+"$$"+s+"$$");
      * GMLUtils.
      * 
      * @author jgarnett, Refractions Research, Inc.
-     * @author $Author: emperorkefka $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.7 2004/01/20 04:17:42 emperorkefka Exp $
+     * @author $Author: jive $ (last modification)
+     * @version $Id: GMLUtils.java,v 1.8 2004/01/20 05:04:01 jive Exp $
      */
     public static class Mapping {
         public final String prefix; // gml or xs
