@@ -18,6 +18,8 @@ import org.vfny.geoserver.responses.WfsException;
 public class InsertRequest 
     extends SubTransactionRequest {
 
+    public static final short operationType = INSERT;
+
     /** Empty constructor. */
     public InsertRequest() {}
 
@@ -27,5 +29,7 @@ public class InsertRequest
         throw new WfsException("Attempted to add filter (" + filter + 
                                ") to update request: " + handle);
     }
+
+    public short getOpType() { return operationType; }
    
 }

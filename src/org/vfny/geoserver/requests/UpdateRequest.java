@@ -17,8 +17,10 @@ import org.vfny.geoserver.responses.WfsException;
  */
 public class UpdateRequest extends SubTransactionRequest {
 
-    public UpdateRequest() {}
+    public UpdateRequest() {
+    }
 
+    public static final short operationType = UPDATE;
 
     public void addPropertyName(String propertyName) {
     }
@@ -31,5 +33,8 @@ public class UpdateRequest extends SubTransactionRequest {
         throw new WfsException("Attempted to add filter (" + filter + 
                                ") to update request: " + handle);
     }
+
+    public short getOpType() { return operationType; }
+    
    
 }
