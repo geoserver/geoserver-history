@@ -4,7 +4,8 @@
  */
 package org.vfny.geoserver.responses;
 
-import java.io.*;
+import java.io.StringWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -12,28 +13,12 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
 import  org.apache.xml.serialize.OutputFormat;
 import  org.apache.xml.serialize.Serializer;
 import  org.apache.xml.serialize.SerializerFactory;
 import  org.apache.xml.serialize.XMLSerializer;
-import com.vividsolutions.jts.geom.Geometry;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.AttributeType;
-import org.geotools.data.DataSource;
-import org.geotools.data.DataSourceException;
-import org.geotools.data.postgis.PostgisConnection;
-import org.geotools.data.postgis.PostgisDataSource;
-import org.vfny.geoserver.requests.TransactionRequest;
-import org.vfny.geoserver.requests.SubTransactionRequest;
-import org.vfny.geoserver.requests.DeleteRequest;
-import org.vfny.geoserver.requests.UpdateRequest;
-import org.vfny.geoserver.requests.InsertRequest;
-import org.vfny.geoserver.config.TypeInfo;
-import org.vfny.geoserver.config.TypeRepository;
-
 
 /**
  * Java representation of a WFS_TransactionResponse xml element.
@@ -49,6 +34,7 @@ public class WfsTransResponse {
     /** Standard logging instance for class */
     private static final Logger LOG = 
         Logger.getLogger("org.vfny.geoserver.responses");
+
     /** Status if the transaction was successful  */
     public static final short SUCCESS = 0;
     
@@ -138,7 +124,6 @@ public class WfsTransResponse {
 	
     }
 
-
     /**
      * Generates the xml represented by this object.
      */
@@ -175,8 +160,6 @@ public class WfsTransResponse {
 		statusElem.appendChild(result);
 	    addTextElement(doc, transResult, "Locator", locator);
 	    addTextElement(doc, transResult, "Message", message);
-
-    
 	    StringWriter sw = new StringWriter();
 	    OutputFormat format  = new OutputFormat(doc );
             XMLSerializer serial = new XMLSerializer( sw, format );
@@ -204,8 +187,7 @@ public class WfsTransResponse {
      */
      private void addTextElement(Document d, Element parent, 
 				String elem_name, String value) {
-	if ( value != null && !value.equals(""))
-	{
+	if ( value != null && !value.equals("")) {
 	    Element new_element = d.createElement(elem_name);
 	    parent.appendChild(new_element);
 	    new_element.appendChild(d.createTextNode(value.toString()));
