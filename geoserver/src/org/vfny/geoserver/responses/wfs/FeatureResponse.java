@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.6 2003/11/13 19:55:30 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.7 2003/11/14 01:53:49 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -44,8 +44,6 @@ public class FeatureResponse implements Response {
     // set by execute2, used by write2
     private FeatureRequest request;
     private List resultList;
-    private Set fids;
-    private Set lockFailedFids;
     
     /**
      * Empty constructor
@@ -63,14 +61,14 @@ public class FeatureResponse implements Response {
     }
 
     /**
-     * DOCUMENT ME!
+     * Origional writeToMethod
      *
      * @param out DOCUMENT ME!
      *
      * @throws ServiceException DOCUMENT ME!
      * @throws WfsException DOCUMENT ME!
      */
-    public void writeTo(OutputStream out) throws ServiceException {
+    public void writeToBackup(OutputStream out) throws ServiceException {
         try {
             if ((transformer == null) || (features == null)) {
                 throw new IllegalStateException(
@@ -95,70 +93,6 @@ public class FeatureResponse implements Response {
             throw new WfsException(ex);
         }
     }
-    static int safe = 0;
-    
-    /**
-     * Writes response in a safe manner.
-     * <p>
-     * Uses a temporary file to hold the response during construction.
-     * If the response is successful the temporary file is copied to out.
-     * If not an error message should be produced
-     * (currently throw ServiceException).
-     * </p>
-     * <p>
-     * This idea could really be moved "up" a level.
-     * Pros: common safty code, less work for Response implementations
-     * Cons: Some Responses may be being Safe and not require this
-     * </p>
-     * @param out
-     * @throws ServiceException
-     */
-    public synchronized void writeToSafe( OutputStream out ) throws ServiceException {
-        if( request == null ){
-            throw new IllegalStateException(
-                "execute has not been called prior to writeToSafe");
-        }
-        safe++;
-        File temp = null;        
-        try {
-            temp = File.createTempFile( "FeatureResponse"+safe,"tmp" );
-            FileOutputStream safe = new FileOutputStream( temp );
-                        
-            writeToImplementation( safe );
-            safe.close();
-            
-            // request succeeded!
-            
-            // copy result to the real output stream
-            InputStream copy = new BufferedInputStream( new FileInputStream( temp ) );
-            // need to buffer this for performance
-            // not sure if it has been done already
-            if( out instanceof BufferedOutputStream ){
-                out = new BufferedOutputStream( out );    
-            }
-            
-            int b;
-            
-            b = copy.read();
-            while( b != -1 ){
-                out.write( b );
-                b = copy.read();                    
-            }
-            copy.close();                  
-        }
-        catch( IOException ex ){
-            // write out actual error message?
-            throw new WfsException(ex);
-        } catch (TransformerException te) {
-            // write out actual error message?
-            throw new WfsException(te);
-        }
-        finally {
-            if( temp != null ){
-                temp.delete();
-            }                    
-        }
-    }
     /**
      * Jody here with one pass replacement for writeTo.
      * <p>
@@ -170,22 +104,32 @@ public class FeatureResponse implements Response {
      * - execute gathers the resultList
      * - sets up the header
      */
-    public void writeToImplementation( OutputStream out ) throws ServiceException, TransformerException {
+    public void writeTo(OutputStream out) throws ServiceException {
         // to do a single pass we would 
         // have to perform the execution here
         //
         // This should probably be done, since FeatureResults are "live"
         // and may change between the locking and the writing
+        
         if( request == null || resultList == null){
             throw new IllegalStateException(
                 "execute has not been called prior to writeTo" );            
         }
-        int maxFeatures = request.getMaxFeatures();
-        for( Iterator i=resultList.iterator(); i.hasNext() && maxFeatures>0; ){
-            FeatureResults featureResults = (FeatureResults) i.next();
+        // execute should of set all the header information
+        // including the lockID
+        //
+        // execute should also fail if all of the locks could not be aquired
+        
+        try {
+            transformer.transform( resultList, out );        
+        }
+        catch( TransformerException gmlException){
+            ServiceException serviceException =
+                new ServiceException( request.getHandle()+" error:"+gmlException.getMessage() );
+            serviceException.initCause( gmlException );
             
-            transformer.transform( featureResults, out );
-        }        
+            throw serviceException;                
+        }
     }
     /**
      * Jody here with a replacement for execute that make use
@@ -201,8 +145,9 @@ public class FeatureResponse implements Response {
      * @param req
      * @throws ServiceException
      */
-    public void execute2( FeatureRequest request ) throws ServiceException {
+    public void execute( FeatureRequest request ) throws ServiceException {
         LOGGER.finest("write xml response. called request is: " + request);
+        
         FeatureLock featureLock = null;
         if( request instanceof FeatureWithLockRequest){
             featureLock = ((FeatureWithLockRequest)request).toFeatureLock();                        
@@ -228,8 +173,8 @@ public class FeatureResponse implements Response {
         int maxFeatures = request.getMaxFeatures();
 
         StringBuffer typeNames = new StringBuffer();
-        fids = new HashSet();
-        lockFailedFids = new HashSet();
+        Set lockedFids = new HashSet();
+        Set lockFailedFids = new HashSet();
         
         FeatureLocking source;        
         Feature feature;
@@ -265,7 +210,6 @@ public class FeatureResponse implements Response {
                 for( FeatureReader reader= features.reader(); reader.hasNext(); ){
                     feature = reader.next();
                     fid = feature.getID();
-                    fids.add( fid );
                     maxFeatures--;
                                         
                     if( featureLock != null ){                    
@@ -274,17 +218,23 @@ public class FeatureResponse implements Response {
                     
                         if( numberLocked == 1){
                             LOGGER.finest("Lock "+fid+" (authID:"+featureLock.getAuthorization()+")" );
+                            lockedFids.add( fid );
                         }
                         else if ( numberLocked == 0 ){
                             LOGGER.finest("Lock "+fid+" conflict (authID:"+featureLock.getAuthorization()+")" );                            
                             lockFailedFids.add( fid );
                         }
                         else {
-                            LOGGER.warning("Lock "+numberLocked+" "+fid+" (authID:"+featureLock.getAuthorization()+") duplicated FeatureID!" );                            
+                            LOGGER.warning("Lock "+numberLocked+" "+fid+" (authID:"+featureLock.getAuthorization()+") duplicated FeatureID!" );
+                            lockedFids.add( fid );
                         }                                        
                     }                    
                 }
                 results.add( features );
+            }
+            if( !lockedFids.isEmpty()){
+                // TODO: figure out how to error!
+                
             }
             features = (FeatureResults[])
                 results.toArray(new FeatureResults[results.size()]);
