@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.9 2003/12/03 19:15:07 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.10 2003/12/03 20:49:59 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
     /** DOCUMENT ME! */
@@ -159,10 +159,13 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
                                 type, dataStoreConfig);
                         featureTypes.put(typeNames[t], typeConfig);
                     } catch (IOException e) {
+			
+			LOGGER.log(Level.CONFIG, "problem loading type " + typeNames[t], e); 
                         // type was not available?
                     }
                 }
             } catch (IOException e) {
+		LOGGER.log(Level.CONFIG, "problem loading datastore " + dataStoreConfig, e); 
                 // datastore not available                
             }
         }
