@@ -20,7 +20,7 @@ import java.util.Locale;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGWriter.java,v 1.1 2004/03/14 16:15:22 groldan Exp $
+ * @version $Id: SVGWriter.java,v 1.2 2004/03/14 22:14:58 groldan Exp $
  */
 public class SVGWriter extends OutputStreamWriter {
     /**
@@ -268,7 +268,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.1 $
+     * @version $Revision: 1.2 $
      */
     private class SVGFeatureWriterHandler {
         /**
@@ -341,7 +341,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.1 $
+     * @version $Revision: 1.2 $
      */
     private class CollectSVGHandler extends SVGFeatureWriterHandler {
         /** DOCUMENT ME! */
@@ -397,7 +397,13 @@ public class SVGWriter extends OutputStreamWriter {
             throws IOException {
             handler.startFeature(featureWriter, ft);
             write(" id=\"");
-            write(ft.getID());
+            try {
+              write(ft.getID());
+            }
+            catch (IOException ex) {
+              System.err.println("error getting fid from " + ft);
+              throw ex;
+            }
             write("\"");
         }
     }
@@ -482,7 +488,7 @@ public class SVGWriter extends OutputStreamWriter {
 
                 if ((value != null) && !(value instanceof Geometry)) {
                     write(' ');
-                    write("bfa:" + type.getAttributeType(i).getName());
+                    write(type.getAttributeType(i).getName());
                     write("=\"");
                     encodeAttribute(String.valueOf(value));
                     write('\"');
@@ -550,7 +556,7 @@ public class SVGWriter extends OutputStreamWriter {
      * DOCUMENT ME!
      *
      * @author $author$
-     * @version $Revision: 1.1 $
+     * @version $Revision: 1.2 $
      */
     private abstract class SVGFeatureWriter {
         /**
