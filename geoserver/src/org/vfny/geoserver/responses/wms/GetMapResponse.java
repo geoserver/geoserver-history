@@ -28,7 +28,7 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.9 2004/03/10 23:39:06 groldan Exp $
+ * @version $Id: GetMapResponse.java,v 1.10 2004/03/14 16:09:21 groldan Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
@@ -102,13 +102,20 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * DOCUMENT ME!
+     * delegates the writing and encoding of the results of the request to
+     * the <code>GetMapDelegate</code> wich is actually processing it, and
+     * has been obtained when <code>execute(Request)</code> was called
      *
-     * @param out DOCUMENT ME!
+     * @param out the output to where the map must be written
      *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws IllegalStateException DOCUMENT ME!
+     * @throws ServiceException if the delegate throws a ServiceException inside
+     * its <code>writeTo(OuptutStream)</code>, mostly due to
+     *
+     * @throws IOException if the delegate throws an IOException inside
+     * its <code>writeTo(OuptutStream)</code>, mostly due to
+     *
+     * @throws IllegalStateException if this method is called before
+     * <code>execute(Request)</code> has succeed
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         if (delegate == null) {
@@ -123,9 +130,11 @@ public class GetMapResponse implements Response {
      * Creates a GetMapDelegate specialized in generating the requested map
      * format
      *
-     * @param request DOCUMENT ME!
+     * @param request a request parameter object wich holds the processed
+     * request objects, such as layers, bbox, outpu format, etc.
      *
-     * @return DOCUMENT ME!
+     * @return A specialization of <code>GetMapDelegate</code> wich can produce
+     * the requested output map format
      *
      * @throws WmsException if no specialization is configured for the output
      *         format specified in <code>request</code> or if it can't be
