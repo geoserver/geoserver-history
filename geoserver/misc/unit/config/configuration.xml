@@ -8,7 +8,7 @@
 		<Fees>This is a free server.</Fees>
 		<AccessConstraints>There are no access constraints to this server.</AccessConstraints>
                 <Verbose/>
-		<URL>http://beta.vfny.org/geoserver</URL>
+		<URL>http://beta.openplans.org/geoserver</URL>
 		<Maintainer>Vision for New York</Maintainer>
                 <Namespace uri="http://www.openplans.org/rail" 
                            prefix="rail"/>
