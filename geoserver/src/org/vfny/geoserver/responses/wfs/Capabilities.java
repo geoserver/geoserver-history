@@ -15,17 +15,21 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.2.2.4 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: Capabilities.java,v 1.2.2.5 2004/01/06 09:00:48 jive Exp $
  */
 public class Capabilities extends CapabilitiesResponse {
     protected Service getGlobalService() {
-        return GeoServer.getInstance().getWMS();
+        //return GeoServer.getInstance().getWMS();
+    	// JG - that was a mistake right?
+		if( request == null ){
+			throw new IllegalStateException(
+					"Call execute before get getGlobalService!"
+			);
+		}    	
+    	return request.getGeoServer().getWFS();
     }
 
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
         return new WfsCapabilitiesResponseHandler(contentHandler);
-    }
-    public void abort() {        
-    }
-
+    }    
 }

@@ -16,16 +16,17 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSCapabilitiesResponse.java,v 1.2.2.4 2004/01/05 22:14:42 dmzwiers Exp $
+ * @version $Id: WMSCapabilitiesResponse.java,v 1.2.2.5 2004/01/06 09:00:48 jive Exp $
  */
 public class WMSCapabilitiesResponse extends CapabilitiesResponse {
     /**
-     * DOCUMENT ME!
+     * Retrieves the GeoServer's Global Web Map Service.
      *
-     * @return DOCUMENT ME!
+     * @return Web Map Service
      */
     protected Service getGlobalService() {
-        return GeoServer.getInstance().getWMS();
+        //return GeoServer.getInstance().getWMS();
+    	return request.getGeoServer().getWMS();
     }
 
     /**
@@ -37,16 +38,8 @@ public class WMSCapabilitiesResponse extends CapabilitiesResponse {
      */
     protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
         CapabilitiesResponseHandler cr = new WmsCapabilitiesResponseHandler(contentHandler);
-        cr.setPrettyPrint(true,
-            GeoServer.getInstance().isVerbose());
+        cr.setPrettyPrint(true, request.getGeoServer().isVerbose() );
 
         return cr;
     }
-    /* (non-Javadoc)
-     * @see org.vfny.geoserver.responses.Response#abort()
-     */
-    public void abort() {
-        // nothing to undo    
-    }
-
 }
