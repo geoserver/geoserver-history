@@ -54,7 +54,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.20 2004/01/20 03:26:40 emperorkefka Exp $
+ * @version $Id: Data.java,v 1.21 2004/01/20 06:33:59 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -141,32 +141,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         featureTypes = loadFeatureTypes( config );
         
         // Step 3: set up styles
-        styles = loadStyles( config );
-        
-        
-        //
-        // Devel Sanity Checks!
-        // 
-        // These should be removed from a production system
-        // and the capability made available with
-        // check status actions
-        //
-        Map status1=null;
-        Map status2=null;        
-        try {
-            status1 = statusDataStores();            
-        }
-        catch (Throwable ignore ){
-            LOGGER.warning("Problem checking DataStore status:"+ignore);
-        }
-        try {
-            status2 = statusNamespaces();            
-        }
-        catch (Throwable ignore ){
-            LOGGER.warning("Problem checking Namespace status:"+ignore);            
-        }        
-        outputStatus( "DataStore Status", status1 );
-        outputStatus( "Namespace Status", status2 );        
+        styles = loadStyles( config );                
     }
     
     /**
