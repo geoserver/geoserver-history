@@ -12,7 +12,7 @@
       <connectionParams>
         <!-- change the file to the location where geoserver puts the file.
              We're working on making this easier to configure, automatically detect it for you.  -->
-        <parameter name="url" value="file:featureTypes/bc_roads/bc_roads.shp"/>
+        <parameter name="url" value="file:data/featureTypes/bc_roads/bc_roads.shp"/>
       </connectionParams>
     </datastore>
 
