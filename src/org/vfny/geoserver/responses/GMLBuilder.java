@@ -644,13 +644,15 @@ public class GMLBuilder {
 		 finalResult.append(GEOM_OFFSET + " </gml:LinearRing>" + 
 			    GEOM_OFFSET + "</gml:outerBoundaryIs>");            
 		 if (geometry.getNumInteriorRing() > 0) {
-		     finalResult.append("\n         <gml:innerBoundaryIs>");
+		    
 		     for( int i = 0 ; i < geometry.getNumInteriorRing() ; i++ ) {
+			 finalResult.append("\n         <gml:innerBoundaryIs>");
 			 finalResult.append("\n          <gml:LinearRing>");
-                    writeCoordinates( geometry.getInteriorRingN(i) );
-                    finalResult.append("\n          </gml:LinearRing>");
+			 writeCoordinates( geometry.getInteriorRingN(i) );
+			 finalResult.append("\n          </gml:LinearRing>");
+			 finalResult.append("\n        </gml:innerBoundaryIs>");
 		     }
-		     finalResult.append("\n        </gml:innerBoundaryIs>");
+
 		 }
 		 finalResult.append( abstractGeometryEnd );
 	    } else {
@@ -663,16 +665,13 @@ public class GMLBuilder {
             finalResult.append("</gml:LinearRing></gml:" + 
                                "outerBoundaryIs>");            
             if (geometry.getNumInteriorRing() > 0) {
-                if (verbose) finalResult.append(GEOM_OFFSET);
-		finalResult.append("<gml:innerBoundaryIs>");
-                for( int i = 0 ; i < geometry.getNumInteriorRing() ; i++ ) {
-		    if (verbose) finalResult.append(GEOM_OFFSET + " ");
-                    finalResult.append("<gml:LinearRing>");
+		for( int i = 0 ; i < geometry.getNumInteriorRing() ; i++ ) {
+		    finalResult.append("<gml:innerBoundaryIs>");
+		    finalResult.append("<gml:LinearRing>");
                     writeCoordinates( geometry.getInteriorRingN(i) );
-		    if (verbose) finalResult.append(GEOM_OFFSET + " ");
-                    finalResult.append("</gml:LinearRing>");
-                }
-                finalResult.append("</gml:innerBoundaryIs>");
+		    finalResult.append("</gml:LinearRing>");
+		    finalResult.append("</gml:innerBoundaryIs>");
+		}
             }
             finalResult.append( abstractGeometryEnd );
 	    }
