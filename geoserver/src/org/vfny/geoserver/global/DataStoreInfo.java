@@ -21,7 +21,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.3 2004/01/15 01:09:52 dmzwiers Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMetaData {
     /** for logging */
@@ -129,7 +129,11 @@ public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMeta
                     "No datastore found capable of managing " + toString());
             }
         }
-
+/*System.out.println("***");
+String [] s = dataStore.getTypeNames();
+for(int i=0;i<s.length;i++)
+System.out.println(s[i]);
+System.out.println("***");*/
         return dataStore;
     }
 
