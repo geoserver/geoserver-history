@@ -68,6 +68,8 @@
     <fileset dir="${dir.catalina}/server/lib" includes="servlets-ssi.jar"/>
     <fileset dir="${dir.catalina}/server/lib" includes="servlets.webdav.jar"/>
     <fileset dir="${dir.catalina}/server/lib" includes="jakarta-regexp-1.2.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="tomcat-ajp.jar"/>
+    <fileset dir="${dir.catalina}/server/lib" includes="tomcat-util.jar"/>
     <fileset dir="${dir.catalina}/lib" includes="naming-factory.jar"/>
     <fileset dir="${dir.catalina}/common/lib" includes="crimson.jar"/>
     <fileset dir="${dir.catalina}/common/lib" includes="jasper-compiler.jar"/>
