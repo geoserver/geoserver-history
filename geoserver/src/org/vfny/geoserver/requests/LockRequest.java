@@ -4,16 +4,19 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
 
 /**
  * Represents a lock request.
  *
- * @author Rob Hranac, TOPP
- * @version $version$
+ * @author Rob Hranac, TOPP <br>
+ * @author Chris Holmes, TOPP
+ * @version $Id: LockRequest.java,v 1.3 2003/07/03 20:46:10 cholmesny Exp $
  */
 public class LockRequest extends Request {
 
@@ -190,7 +193,7 @@ public class LockRequest extends Request {
      * @return true if mine equals test, including if they
      * are both null.
      */
-    private boolean testField(Object mine, Object test) {
+    private static boolean testField(Object mine, Object test) {
 	LOGGER.finest("testing " + mine + " and " + test);
 	if (mine != null) {
 	    return mine.equals(test);
@@ -203,7 +206,7 @@ public class LockRequest extends Request {
      * Represents a single Lock element. 
      * @author Chris Holmes
      */
-    public class Lock { 
+    public static class Lock { 
 
 	/** The feature types to lock. */
 	protected String featureType = new String();
@@ -242,9 +245,9 @@ public class LockRequest extends Request {
 
 
 
-	/*************************************************************************
-	 * Overrides of toString and equals methods.                             *
-	 *************************************************************************/
+         /********************************************************************
+	 * Overrides of toString and equals methods.                         *
+	 ********************************************************************/
 	public String toString() {
 	    return("\n Lock\n   typeName: " + featureType + 
 		   "\n   handle: " + handle + "\n   filter: " + filter);
