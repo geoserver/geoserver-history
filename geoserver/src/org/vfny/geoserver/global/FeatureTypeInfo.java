@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.8 2004/01/09 02:36:13 jive Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.9 2004/01/09 08:22:50 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
     /** Default constant */
@@ -113,7 +113,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @return DataStoreInfo the requested DataStoreInfo if it was found.
      * @see Data#getDataStoreInfo(String)
      */
-    public DataStoreInfo getDataStore() {
+    public DataStoreInfo getDataStoreInfo() {
         return data.getDataStoreInfo(ftc.getDataStoreId());
     }
 
@@ -129,18 +129,20 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *       is.
      */
     public boolean isEnabled() {
-        return (getDataStore() != null) && (getDataStore().isEnabled());
+        return (getDataStoreInfo() != null) && (getDataStoreInfo().isEnabled());
     }
 
     /**
-     * getPrefix purpose.
+     * Returns the XML prefix used for GML output of this FeatureType.
      * <p>
-     * returns the namespace prefix for this FeatureTypeInfo
+     * Returns the namespace prefix for this FeatureTypeInfo.
+     * This prefix also seems to be used as a "ID" for looking up GeoServer
+     * Namespace.
      * </p>
      * @return String the namespace prefix.
      */
     public String getPrefix() {
-		return getDataStore().getNameSpace().getPrefix();
+		return getDataStoreInfo().getNameSpace().getPrefix();
     }
 
     /**
@@ -160,7 +162,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 + "enabled");
         }
 
-        return getDataStore().getNameSpace();
+        return getDataStoreInfo().getNameSpace();
     }
 
     /**
@@ -185,7 +187,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @see getName()
      */
     public String getName(boolean allowShort) {
-        if (allowShort && (!isEnabled() || (getDataStore() == null))) {
+        if (allowShort && (!isEnabled() || (getDataStoreInfo() == null))) {
             return getShortName();
         } else {
             return getName();
@@ -211,7 +213,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @throws IOException when an error occurs.
      */
     public FeatureSource getFeatureSource() throws IOException {
-        if (!isEnabled() || (getDataStore().getDataStore() == null)) {
+        if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
             throw new IOException("featureType: " + getName(true)
                 + " does not have a properly configured " + "datastore");
         }
@@ -233,7 +235,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	 */
     private FeatureSource getRealFeatureSource()
         throws NoSuchElementException, IllegalStateException, IOException {
-        FeatureSource realSource = getDataStore().getDataStore().getFeatureSource(ftc.getName());
+        FeatureSource realSource = getDataStoreInfo().getDataStore().getFeatureSource(ftc.getName());
 
         return realSource;
     }

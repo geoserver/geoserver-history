@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2.2.9 2004/01/08 23:44:48 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.10 2004/01/09 08:22:33 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -242,7 +242,7 @@ public class FeatureResponse implements Response {
                       
                 query = (Query) it.next();                                                                   
                 meta = catalog.getFeatureTypeInfo( query.getTypeName() );
-                namespace = meta.getDataStore().getNameSpace();                
+                namespace = meta.getDataStoreInfo().getNameSpace();                
                 source = (FeatureLocking) meta.getFeatureSource();
         
                 typeNames.append( query.getTypeName() );
@@ -328,7 +328,7 @@ public class FeatureResponse implements Response {
             WFS wfsConfig = config.getWFS();
             String wfsSchemaLoc = config.getSchemaBaseUrl() + "wfs/1.0.0/" + "GlobalWFS-basic.xsd";
             String fSchemaLoc = config.getBaseUrl() + "wfs/"+ "DescribeFeatureType?typeName="+typeNames.toString();
-            namespace = meta.getDataStore().getNameSpace();
+            namespace = meta.getDataStoreInfo().getNameSpace();
             transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
             transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
 	    transformer.setGmlPrefixing(true); //TODO: make this a user config

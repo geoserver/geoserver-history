@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.3.2.9 2004/01/07 22:44:05 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.3.2.10 2004/01/09 08:22:33 jive Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -164,7 +164,7 @@ public class DescribeResponse implements Response {
                     .get(0));
 
             //all types have same prefix, so just use the first.
-            NameSpace namespace = nsInfoType.getDataStore().getNameSpace();
+            NameSpace namespace = nsInfoType.getDataStoreInfo().getNameSpace();
             String targetNs = namespace.getUri();
 
             //String targetNs = nsInfoType.getXmlns();

@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.9 2004/01/07 22:44:05 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.10 2004/01/09 08:22:33 jive Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -151,7 +151,7 @@ public class LockResponse implements Response {
 
             //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(curTypeName);
-            NameSpace namespace = meta.getDataStore().getNameSpace();
+            NameSpace namespace = meta.getDataStoreInfo().getNameSpace();
             FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
             FeatureResults features = source.getFeatures(curFilter);
             source.setFeatureLock(featureLock);
