@@ -7,7 +7,7 @@
   <tr>
     <td class="label">
       <bean:message key="label.namespaces"/>:
-    </td
+    </td>
     <td class="datum">
       <html:select property="selectedNamespace">
         <html:options property="namespaces"/>
