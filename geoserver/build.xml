@@ -8,7 +8,7 @@
 <!-- under the PROPERTIES section.                                          -->
 <!-- ====================================================================== -->
 
-<project name="geoserver" default="all" basedir=".">
+<project name="geoserver" default="clean" basedir=".">
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
@@ -120,6 +120,7 @@
     <echo message="                    -param: name.release=[release]"/>
     <echo message=""/>
     <echo message=" ADMIN TARGETS"/>
+    <echo message="    help | ?:     displays this message"/>
     <echo message="    fix-tabs:     turns all tabs into 4 spaces"/>
     <echo message="    cvs-checkout: checks out source from server, refresh"/>
     <echo message="    cvs-commit:   commits all changes"/>
@@ -134,15 +135,16 @@
 <!-- ====================================================================== -->
 <!-- COMPILATION TARGETS                                                    -->
 <!-- ====================================================================== -->
-
-<!-- INITIALIZE                                                             -->
+<!-- INITIALIZE
+      checks to make sure that directory structure is in place, etc.  -->
   <target name="init">
     <mkdir dir="${dir.build}"/>
     <mkdir dir="${dir.server}"/>
     <tstamp><format property="date.current" pattern="MM.dd.yyyy"/></tstamp>
   </target>
 
-<!-- ALL                                                                    -->
+<!-- ALL
+      builds all of the files in the project, no clean -->
   <target name="all" depends="init">
     <javac srcdir="${dir.src}" 
            destdir="${dir.build}" 
@@ -190,7 +192,7 @@
         </fileset>
       </classpath>
       <test fork="true" 
-            name="org.vfny.geoserver.requests.FeatureSuite"/>
+            name="org.vfny.geoserver.responses.FeatureSuite"/>
     </junit>
   </target>
 
