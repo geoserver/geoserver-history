@@ -124,7 +124,7 @@ import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GetFeatureInfoKvpReader.java,v 1.1 2004/07/15 21:13:13 jmacgill Exp $
+ * @version $Id: GetFeatureInfoKvpReader.java,v 1.2 2004/07/16 19:28:52 jmacgill Exp $
  */
 public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */
@@ -258,7 +258,7 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
             request.setX(x);
             request.setY(y);
         } catch (NumberFormatException ex) {
-            throw new WmsException("WIDTH and HEIGHT incorrectly specified");
+            throw new WmsException("X and Y incorrectly specified");
         }
 
         String format = getValue("FORMAT");
