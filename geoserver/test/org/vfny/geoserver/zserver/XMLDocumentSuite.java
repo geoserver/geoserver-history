@@ -76,7 +76,7 @@ public class XMLDocumentSuite extends TestCase {
      */
     public static Test suite() {
         TestSuite suite = new TestSuite(XMLDocumentSuite.class);
-	LOGGER.info("Creating XMLDocument suite.");
+	LOGGER.fine("Creating XMLDocument suite.");
         return suite;
     }
     
@@ -126,7 +126,7 @@ public class XMLDocumentSuite extends TestCase {
 	    try {
 		barFile = new File(barPath);	    
 		doc = XMLDocument.Document(barFile, map);
-		LOGGER.info("doc is " + doc);
+		LOGGER.fine("doc is " + doc);
 	    } catch (Exception e) {
 		fail("exception creating document: " + e);
 	    }
@@ -189,10 +189,10 @@ public class XMLDocumentSuite extends TestCase {
 	}
 	
 	double east = NumericField.stringToNumber(doc.get(EAST_FIELD)).doubleValue();
-	LOGGER.info("east " + east);
+	LOGGER.fine("east " + east);
 	assertTrue(east == -75.631);
 	double extent = NumericField.stringToNumber(doc.get("extent")).doubleValue();
-	LOGGER.info("extent " + extent);
+	LOGGER.fine("extent " + extent);
 	assertTrue(extent == 19.77124208);
 
     }
