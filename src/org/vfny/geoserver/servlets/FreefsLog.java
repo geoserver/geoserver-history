@@ -26,7 +26,7 @@ import java.util.prefs.*;
  * 
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version 0.92 beta, 1/23/03
+ * @version 0.95 beta, 4/24/03
  *
  */
 public class FreefsLog extends HttpServlet {
@@ -66,23 +66,14 @@ public class FreefsLog extends HttpServlet {
 	String path = root + CONFIG_DIR;
 	LOG.finer("init with path: " + path);
 	ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
-	//this is now set in WfsConfig, so it gets set earlier.
-	//Level level = cfgInfo.getLogLevel(); //Put this in user config file.
-	//Log4JFormatter.init("org.geotools", level);
-	//Log4JFormatter.init("org.vfny.geoserver", level);
-	//TODO: zserver configuration files and classes.
-	Properties zserverProps = new Properties();
-	zserverProps.put("port", "5210"); //HACK -allow user to configure this!
-	zserverProps.put("datafolder", cfgInfo.getTypeDir());
-	zserverProps.put("fieldmap", path + cfgInfo.GEO_MAP_FILE);
-	zserverProps.put("database", root + CONFIG_DIR + "zserver-index");
-	try {
-	    server = new GeoZServer(zserverProps);
-	    server.start();
-	} catch (java.io.IOException e) {
-	    LOGGER.info("zserver module could not start: " + e.getMessage());
-	}
-	
+	if (cfgInfo.runZServer()) {
+	    try {
+		server = new GeoZServer(cfgInfo.getZServerProps());
+		server.start();
+	    } catch (java.io.IOException e) {
+		LOGGER.info("zserver module could not start: " + e.getMessage());
+	    }
+	}	
     }
     
     
@@ -97,15 +88,12 @@ public class FreefsLog extends HttpServlet {
     }
 
     /**
-     * Closes down the zserver if it is running.
+     * Closes down the zserver if it is running, and frees up resources.
      */    
     public void destroy() {
 	super.destroy();
-	TypeRepository repo = TypeRepository.getInstance();
-	for(Iterator i = repo.getAllTypeNames().iterator(); i.hasNext();){
-	    String curType = i.next().toString(); 
-	    repo.getType(curType).close();
-	}
+	TypeRepository.getInstance().closeTypeResources();
+	
 	LOGGER.finer("shutting down zserver");
     if (server != null) server.shutdown(1);
     
