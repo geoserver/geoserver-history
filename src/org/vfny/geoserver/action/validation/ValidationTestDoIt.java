@@ -19,13 +19,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
-import org.geotools.validation.dto.TestSuiteDTO;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -44,7 +39,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.4 2004/04/16 00:00:59 dmzwiers Exp $
+ * @version $Id: ValidationTestDoIt.java,v 1.5 2004/04/20 23:20:41 dmzwiers Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
