@@ -35,8 +35,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.9 2004/02/09 23:29:48 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.10 2004/03/02 10:18:43 jive Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -54,9 +54,10 @@ public class DataTransferObjectFactory {
     public static AttributeTypeInfoDTO create(AttributeType attributeType) {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
 
-        dto.setName(attributeType.getName());
+        dto.setName(attributeType.getName());        
         dto.setMinOccurs(0);
         dto.setMaxOccurs(1);
+        dto.setNillable( attributeType.isNillable() );        
         NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
         NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
         NameSpaceElement nse = nst1.getElement(attributeType.getName());
@@ -74,6 +75,31 @@ public class DataTransferObjectFactory {
         return dto;
     }
 
+    /**
+     * Construct any of the well-known GML attributeTypes.
+     */
+    public static AttributeTypeInfoDTO create( String schemaBase, String attributeName ){
+        AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
+
+        dto.setName( attributeName );
+        dto.setMinOccurs(0);
+        dto.setMaxOccurs(1);
+        NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
+        NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+        NameSpaceElement nse = nst1.getElement( attributeName );
+        
+        if(nse == null)
+            nse = nst2.getElement( attributeName );
+
+        if (nse == null) {
+            dto.setComplex(false);
+            dto.setType( nst1.getElement("string").getTypeRefName() );
+        } else {
+            dto.setComplex(false);
+            dto.setType( nse.getTypeRefName() );
+        }
+        return dto;        
+    }
     /**
      * Construct DTO based on provided schema.
      * 
@@ -109,6 +135,12 @@ public class DataTransferObjectFactory {
         return dto;
     }
 
+    /**
+     * List of attribtues DTO information gernated from schema.
+     * 
+     * @param schema
+     * @return
+     */
     public static List generateAttributes(FeatureType schema) {
         AttributeType[] attributes = schema.getAttributeTypes();
         List list = new ArrayList(attributes.length);
@@ -116,7 +148,64 @@ public class DataTransferObjectFactory {
         for (int i = 0; i < attributes.length; i++) {
             list.add(create(attributes[i]));
         }
-
         return list;
     }
+    /**
+     * List of attribtue DTO information generated from schemaBase.
+     * 
+     * @param schemaBase
+     * @return
+     */
+    public static List generateAttribtues( String schemaBase ){
+        String attributeNames[] = getRequiredBaseAttributes( schemaBase );
+        
+        List list = new ArrayList(attributeNames.length);
+        for (int i = 0; i < attributeNames.length; i++) {
+            list.add(create(schemaBase,attributeNames[i]));
+        }
+        return list;    	
+    }
+    
+    public static String[] getRequiredBaseAttributes(String schemaBase){
+        if("AbstractFeatureType".equals(schemaBase)){
+            return new String[] {"description","name","boundedBy"};
+        }
+        if("AbstractFeatureCollectionBaseType".equals(schemaBase)){
+            return new String[] {"description","name","boundedBy"};
+        }
+        if("GeometryPropertyType".equals(schemaBase)){
+            return new String[] {"geometry"};
+        }
+        if("FeatureAssociationType".equals(schemaBase)){
+            return new String[] {"feature"};
+        }
+        if("BoundingShapeType".equals(schemaBase)){
+            return new String[] {"box"};
+        }
+        if("PointPropertyType".equals(schemaBase)){
+            return new String[] {"point"};
+        }
+        if("PolygonPropertyType".equals(schemaBase)){
+            return new String[] {"polygon"};
+        }
+        if("LineStringPropertyType".equals(schemaBase)){
+            return new String[] {"lineString"};
+        }
+        if("MultiPointPropertyType".equals(schemaBase)){
+            return new String[] {"multiPoint"};
+        }
+        if("MultiLineStringPropertyType".equals(schemaBase)){
+            return new String[] {"multiLineString"};
+        }
+        if("MultiPolygonPropertyType".equals(schemaBase)){
+            return new String[] {"multiPolygonString"};
+        }
+        if("MultiGeometryPropertyType".equals(schemaBase)){
+            return new String[] {"multiGeometry"};
+        }
+        if("NullType".equals(schemaBase)){
+            return new String[] {};
+        }
+        return new String[] {};
+    }    
 }
