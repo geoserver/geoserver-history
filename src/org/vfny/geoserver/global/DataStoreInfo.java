@@ -6,7 +6,6 @@ package org.vfny.geoserver.global;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DataStoreMetaData;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -24,10 +23,9 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.13 2004/04/05 11:53:19 cholmesny Exp $
+ * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
  */
-public class DataStoreInfo extends GlobalLayerSupertype
-    implements DataStoreMetaData {
+public class DataStoreInfo extends GlobalLayerSupertype {
     /** for logging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");

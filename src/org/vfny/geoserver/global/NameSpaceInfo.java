@@ -13,8 +13,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.geotools.data.FeatureTypeMetaData;
-import org.geotools.data.NamespaceMetaData;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 
 
@@ -33,10 +31,9 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.10 2004/04/22 08:26:40 emperorkefka Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.11 2004/06/26 19:51:24 jive Exp $
  */
-public class NameSpaceInfo extends GlobalLayerSupertype
-    implements NamespaceMetaData {
+public class NameSpaceInfo extends GlobalLayerSupertype {
 	
 	private String prefix;
 	private String uri;
@@ -328,7 +325,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      *
      * @see org.geotools.data.NamespaceMetaData#getFeatureTypeMetaData(java.lang.String)
      */
-    public FeatureTypeMetaData getFeatureTypeMetaData(String typeName) {
+    public FeatureTypeInfo getFeatureTypeInfo(String typeName) {
         return data.getFeatureTypeInfo(typeName, uri );
     }
 

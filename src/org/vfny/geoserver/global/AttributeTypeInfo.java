@@ -11,7 +11,6 @@ package org.vfny.geoserver.global;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geotools.data.AttributeTypeMetaData;
 import org.geotools.feature.AttributeType;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 
@@ -24,10 +23,10 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.11 2004/03/14 05:20:24 cholmesny Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: AttributeTypeInfo.java,v 1.12 2004/06/26 19:51:24 jive Exp $
  */
-public class AttributeTypeInfo implements AttributeTypeMetaData {
+public class AttributeTypeInfo {
 	private String name;
 	private int minOccurs;
 	private int maxOccurs;
