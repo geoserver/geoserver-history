@@ -35,16 +35,16 @@ import org.geotools.feature.Feature;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: RoadValidationResults.java,v 1.2 2003/12/16 18:46:11 cholmesny Exp $
+ * @author $Author: sploreg $ (last modification)
+ * @version $Id: RoadValidationResults.java,v 1.3 2003/12/16 22:28:20 sploreg Exp $
  */
 public class RoadValidationResults implements ValidationResults {
 
-	ArrayList validationList;
-	ArrayList failedFeatures;
-	ArrayList warningFeatures;
-	ArrayList failureMessages;
-	ArrayList warningMessages;
+	public ArrayList validationList;
+	public ArrayList failedFeatures;
+	public ArrayList warningFeatures;
+	public ArrayList failureMessages;
+	public ArrayList warningMessages;
 
 
 	/**
