@@ -67,7 +67,19 @@ public class TransactionRequest
     /** Returns the user-defined name for the entire Transaction request. */ 
     public String getHandle() { return handle; }
 
+    
+    /** Sets the release for the Transaction request. */
+    public void setReleaseAll(boolean release) { this.releaseAll = release; }
+    
+    /** Returns the release for the Transaction request. */ 
+    public boolean getReleaseAll() { return releaseAll; }
 
+    /** Sets the lock id for the entire Transaction request. */
+    public void setLockId(String lockId) { this.lockId = lockId; }
+    
+    /** Returns the lock id for the entire Transaction request. */ 
+    public String getLockId() { return lockId; }
+    
     public String toString() {
 	StringBuffer tRequest = new StringBuffer("Lock Id: " + lockId + "\n");
 	tRequest.append("release all: " + releaseAll + "\n");
@@ -76,6 +88,34 @@ public class TransactionRequest
 	}
 	return tRequest.toString();
     }    
+
+    public boolean equals(Object obj) {
+	    if (obj != null && 
+		obj.getClass() == this.getClass()){
+		TransactionRequest testTrans = (TransactionRequest)obj;
+		boolean isEqual = true;
+		if(this.releaseAll == testTrans.getReleaseAll()) {
+		    if (this.lockId != null) {
+			isEqual = this.lockId.equals(testTrans.getLockId());
+		    } else {
+			isEqual = (testTrans.getLockId() == null);
+		    }
+		    if(this.subRequests.size() == testTrans.getSubRequestSize()){
+			for(int i = 0; i < subRequests.size(); i++) {
+			    isEqual = isEqual && subRequests.get(i).equals
+			    (testTrans.getSubRequest(i));
+			}
+		    } else {
+			isEqual = false;
+		    }
+		} else {
+		    isEqual = false;
+		}
+		return isEqual;
+	    } else {
+		return false;
+	    }
+    }
 
 
 }
