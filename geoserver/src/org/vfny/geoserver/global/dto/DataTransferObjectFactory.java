@@ -38,8 +38,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.13 2004/03/02 22:29:43 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.14 2004/03/03 08:51:00 jive Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -252,39 +252,45 @@ public class DataTransferObjectFactory {
      * <p>
      * List construction order:
      * <ul>
-     * <li>Use of property types if name and exact type match one of the gml properties references.
+     * <li>Use of property types if name and exact type match one of the gml
+     *     properties references.<br>
      *     For <code>name="pointProperty", type=com.vividsolutions.jts.geom.Point</code> maps to:
      *     <b>gml:PointPropertyType</b>
      *     </li>
-     * <li>Search the schema for defined types are checked for an exact match based on type.
+     * <li>Search the schema for defined types are checked for an exact match
+     *     based on type.<br>
      *     For <code>type=java.lang.String</code> maps to:
      *      <b>xs:string</b>
      *      </li>
-     * A linear seach of the defined types is made making use of isAssignable.
-     * For type=com.vividsolutions.jts.geom.Geometry maps to: gml:PointType gml:LineStringType gml:LinearRingType gml:BoxType gml:PolygonType gml:GeometryCollectionType gml:MultiPointType gml:MultiLineStringType, gml:MultiPolygonType
+     * <li>A linear seach of the defined types is made making use of
+     *     isAssignable.<br>
+     *     For <code>type=com.vividsolutions.jts.geom.Geometry</code> maps to:
+     *     <b>gml:PointType gml:LineStringType gml:LinearRingType gml:BoxType gml:PolygonType gml:GeometryCollectionType gml:MultiPointType gml:MultiLineStringType, gml:MultiPolygonType</b>
+     *     </li>
+     * <li>As a wild assumption we assume <code>xs:string</code> can be used.<br>
+     *     For <code>type=java.net.URL</code> maps to: <b>xs:string</b>
+     *    </li>
+     * </ul>
+     * <p>
      * All mappings are consulted using using a linear search.
-     * As a wild assumption we assume xs:string can be used.
-     * For type=java.net.URL maps to: xs:string
-
-    This list is returned in the order of most specific to least specific.
-
-    Complete Example:
-    name="pointProperty", class=type=com.vividsolutions.jts.geom.Point
-
-    Expected Mapping:
-
-        * gml:PointPropertyType - pointProperty & Point.class match
-        * gml:PointType - Point.class match
-        * gml:AbstractGeometry - Point instance of Geometry match
-        * xs:string - String assumption
-
-    @param name - DOCUMENT ME!
-    @param type - Type to look up schema for 
-    @return List is returned in the order of most specific to least specific.
-
- 
+     * The list is returned in the order of most specific to least specific.
+     * </p>
+     * Complete Example:
+     * <code>name="pointProperty", class=type=com.vividsolutions.jts.geom.Point</code>
+     * <p>
+     * Expected Mapping:
+     * </p>
+     * <ul>
+     * <li>gml:PointPropertyType - pointProperty & Point.class match</li>
+     * <li>gml:PointType - Point.class match</li>
+     * <li>gml:AbstractGeometry - Point instance of Geometry match</li>
+     * <li>xs:string - String assumption</li>
+     * </ul>
+     * @param name attribute name
+     * @param type attribtue type
+     * @return List is returned in the order of most specific to least specific.
      */
-    public List getElements(String name, Class type){
+    public static List getElements(String name, Class type){
     	NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
     	NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
     	List result = new LinkedList();
@@ -322,11 +328,22 @@ public class DataTransferObjectFactory {
         	NameSpaceElement element = (NameSpaceElement)i.next();
         	// add the rest afterwards
         	if(!result.contains(element)) result.add(element);
-    	}
-    	
+    	}    	
     	NameSpaceElement element = xs.getElement("string");
     	if(!result.contains(element)) result.add(element);
     	
-        return result; // fix me
-    }    
+        return result;
+    }
+    /**
+     * Retrive best NameSpaceElement match for provided attribtue name and type.
+     * <p>
+     * Best match is determined by the search order defined by getElements.
+     * </p>
+     * @param name
+     * @param type
+     * @return Closest NameSapceElement
+     */
+    private static final NameSpaceElement getBestMatch( String name, Class type ){
+        return (NameSpaceElement) getElements( name, type ).get(0);
+    }
 }
