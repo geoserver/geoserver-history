@@ -26,6 +26,7 @@ import org.vfny.geoserver.responses.WfsException;
  *
  * @version $VERSION$
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  */
 public class XmlRequestReader {
 
@@ -193,4 +194,47 @@ public class XmlRequestReader {
         }
         return contentHandler.getRequest();
     }    
+
+    /**
+     * Reads the Transaction XML request into a GetFeature object.
+     * @param rawRequest The plain POST text from the client.
+     */ 
+    public static TransactionRequest readTransaction(Reader rawRequest) 
+        throws WfsException {
+
+        // translate string into a proper SAX input source
+        InputSource requestSource = new InputSource(rawRequest);
+
+        // instantiante parsers and content handlers
+        TransactionHandler contentHandler = new TransactionHandler();
+        FilterFilter filterParser = new FilterFilter(contentHandler, null);
+        GMLFilterGeometry geometryFilter = new GMLFilterGeometry(filterParser);
+        GMLFilterDocument documentFilter = 
+            new GMLFilterDocument(geometryFilter);
+
+        // read in XML file and parse to content handler
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser parser = factory.newSAXParser();            
+            ParserAdapter adapter = new ParserAdapter(parser.getParser());
+            
+            adapter.setContentHandler(documentFilter);
+            adapter.parse(requestSource);
+            LOGGER.fine("just parsed: " + requestSource);
+        } catch (SAXException e) {
+            throw new WfsException( e, 
+                                    "XML getFeature request SAX parsing error",
+                                    XmlRequestReader.class.getName() );
+        } catch (IOException e) {
+            throw new WfsException( e, "XML get feature request input error",
+                                    XmlRequestReader.class.getName() );
+        } catch (ParserConfigurationException e) {
+            throw new WfsException( e, "Some sort of issue creating parser",
+                                    XmlRequestReader.class.getName() );
+        }
+
+        return contentHandler.getRequest();        
+    }
+
+
 }
