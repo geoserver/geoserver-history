@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.3 2004/01/15 23:02:36 jive Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.4 2004/01/15 23:04:15 jive Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -276,7 +276,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * @return dataStoreId.typeName
      */
     public String getKey(){
-        return getDataStoreId()+"."+getName();
+        return getDataStoreId()+":"+getName();
     }
     /**
      * The extent of this FeatureType.
