@@ -14,7 +14,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2 alpha"/>
+  <property name="name.release" value="1.2-alpha"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
