@@ -478,7 +478,7 @@
 			name="loginForm"
 			scope="request"
 			validate="true"
-			input="/admin/login"/>
+			input="/admin/login.do"/>
 
 		<action    	
         	path="/config/geoServerSubmit"
@@ -486,7 +486,7 @@
         	name="geoServerConfigurationForm"
         	scope="request"
         	validate="true"
-        	input="/config/server"/>
+        	input="/config/server.do"/>
         	
         <action
         	path="/config/wfs/descriptionSubmit"
@@ -494,7 +494,7 @@
         	name="wfsDescriptionForm"
         	scope="request"
         	validate="true"
-        	input="/config/wfs/description"/>
+        	input="/config/wfs/description.do"/>
         	
         <action
         	path="/config/wfs/contentSubmit"
@@ -502,7 +502,7 @@
         	name="wfsContentForm"
         	scope="request"
         	validate="true"
-        	input="/config/wfs/content"/>
+        	input="/config/wfs/content.do"/>
 
         <action
         	path="/config/wms/descriptionSubmit"
@@ -510,14 +510,14 @@
         	name="wmsDescriptionForm"
         	scope="request"
         	validate="true"
-        	input="/config/wms/description"/>
+        	input="/config/wms/description.do"/>
         <action
         	path="/config/wms/contentSubmit"
         	type="org.vfny.geoserver.action.wms.WMSContentAction"
         	name="wmsContentForm"
         	scope="request"
         	validate="true"
-        	input="/config/wms/content"/>
+        	input="/config/wms/content.do"/>
 
         <action
         	path="/config/data/storeSubmit"
@@ -525,7 +525,7 @@
         	name="dataDataStoresEditorForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/storeEditor"/>
+        	input="/config/data/storeEditor.do"/>
         	
         <action
         	path="/config/data/storeSelect"
@@ -533,7 +533,7 @@
         	name="dataDataStoresSelectForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/storeSelect"/>
+        	input="/config/data/storeSelect.do"/>
 
         <action
         	path="/config/data/storeNewSubmit"
@@ -541,7 +541,7 @@
         	name="dataDataStoresNewForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/storeNew"/>        	
+        	input="/config/data/storeNew.do"/>        	
       
         <action
         	path="/config/data/namespaceSelect"
@@ -549,21 +549,21 @@
         	name="dataNamespacesSelectForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/namespaceSelect"/>
+        	input="/config/data/namespaceSelect.do"/>
         <action
         	path="/config/data/namespaceNewSubmit"
         	type="org.vfny.geoserver.action.data.DataNamespacesNewAction"
         	name="dataNamespacesNewForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/namespaceNew"/>
+        	input="/config/data/namespaceNew.do"/>
         <action
         	path="/config/data/namespaceSubmit"
         	type="org.vfny.geoserver.action.data.DataNamespacesEditorAction"
         	name="dataNamespacesEditorForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/namespaceEditor"/>
+        	input="/config/data/namespaceEditor.do"/>
         	
         	
         <action
@@ -572,7 +572,7 @@
         	name="dataStylesForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/style"/>
+        	input="/config/data/style.do"/>
         <action
         	path="/config/data/featureTypeSubmit"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesEditorAction"
@@ -588,7 +588,7 @@
         	validate="true"
         	input="config/data/featureType"/>   
          <action
-        	path="/config/data/featureTypeNewSubmit"
+        	path="/config/data/featureTypeNewSubmit.do"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesNewAction"
         	name="dataFeatureTypesNewForm"
         	scope="request"
@@ -623,7 +623,7 @@
         	name="validationTestSuiteSelectForm"
         	scope="request"
         	validate="true"
-        	input="/config/validation/testSuiteSelect"/>
+        	input="/config/validation/testSuiteSelect.do"/>
 
          <action
         	path="/config/validation/testSuiteNew"
@@ -631,7 +631,7 @@
         	name="validationTestSuiteNewForm"
         	scope="request"
         	validate="true"
-        	input="/config/validation/testSuiteSelect"/>
+        	input="/config/validation/testSuiteSelect.do"/>
 
          <action
         	path="/config/validation/test"
@@ -639,7 +639,7 @@
         	name="validationTestSelectForm"
         	scope="request"
         	validate="true"
-        	input="/config/validation/test"/>
+        	input="/config/validation/test.do"/>
         	
          <action
 			path="/config/validation/testNew"
@@ -647,7 +647,7 @@
         	name="validationTestNewForm"
         	scope="request"
         	validate="true"
-        	input="/config/validation/testNew"/>
+        	input="/config/validation/testNew.do"/>
         	        	
          <action
         	path="/config/validation/testEditor"
@@ -655,7 +655,7 @@
         	name="validationTestEditorForm"
         	scope="request"
         	validate="true"
-        	input="/config/validation/testEditor"/>
+        	input="/config/validation/testEditor.do"/>
         	
         <action
         	path="/config/data/calculateBoundingBox"

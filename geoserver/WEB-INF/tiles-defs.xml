@@ -224,7 +224,7 @@
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:config.data:config.data.store:config.data.store"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.store"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
 
