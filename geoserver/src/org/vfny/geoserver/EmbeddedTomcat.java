@@ -4,16 +4,13 @@
  */
 package org.vfny.geoserver;
 
-import org.apache.catalina.Connector;
-import org.apache.catalina.Context;
-import org.apache.catalina.Deployer;
-import org.apache.catalina.Engine;
-import org.apache.catalina.Host;
-import org.apache.catalina.logger.SystemOutLogger;
-import org.apache.catalina.startup.Embedded;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+import org.apache.catalina.*;
+import org.apache.catalina.logger.*;
+import org.apache.catalina.startup.*;
+import java.io.*;
+
+//Logging system
+import java.net.*;
 
 //Logging system
 import java.util.logging.Logger;
@@ -25,7 +22,7 @@ import java.util.logging.Logger;
  * and path variables are in place before it begins.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: EmbeddedTomcat.java,v 1.6 2003/09/05 20:54:09 cholmesny Exp $
+ * @version $Id: EmbeddedTomcat.java,v 1.6.4.1 2003/11/04 22:32:23 cholmesny Exp $
  */
 public class EmbeddedTomcat {
     /** The logger for the filter module. */
@@ -122,7 +119,7 @@ public class EmbeddedTomcat {
         Connector connector = embedded.createConnector(null, 8081, false);
         embedded.addConnector(connector);
 
-        // Start the embedded server      
+        // Start the embedded server
         embedded.start();
     }
 

@@ -1,0 +1,181 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
+package org.vfny.geoserver.config;
+
+import org.w3c.dom.*;
+import java.nio.charset.*;
+import java.util.logging.*;
+
+
+/**
+ * Global server configuration parameters
+ *
+ * @author Gabriel Roldán
+ * @version 0.1
+ */
+public class GlobalConfig extends AbstractConfig {
+    /** DOCUMENT ME! */
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.config");
+
+    /** DOCUMENT ME! */
+    private Level loggingLevel = Level.FINE;
+
+    /** Sets the max number of Features returned by GetFeature */
+    private int maxFeatures = 20000;
+
+    /**
+     * Whether newlines and indents should be returned in XML responses.
+     * Default is false
+     */
+    private boolean verbose = true;
+
+    /**
+     * Sets the max number of decimal places past the zero returned in a
+     * GetFeature response.  Default is 4 should it be moved to FeatureType
+     * level?
+     */
+    private int numDecimals = 8;
+
+    /**
+     * Sets the global character set.  This could use some more testing from
+     * international users, but what it does is sets the encoding globally for
+     * all postgis database connections (the charset tag in FeatureType), as
+     * well as specifying the encoding in the return xml header and mime type.
+     * The default is UTF-8.  Also be warned that GeoServer does not check if
+     * the CharSet is valid before attempting to use it, so it will fail
+     * miserably if a bad charset is used.
+     */
+    private Charset charSet;
+    private ContactConfig contactConfig;
+
+    /**
+     * Creates a new GlobalConfig object.
+     *
+     * @param globalConfigElem DOCUMENT ME!
+     *
+     * @throws ConfigurationException DOCUMENT ME!
+     */
+    public GlobalConfig(Element globalConfigElem) throws ConfigurationException {
+        LOGGER.fine("parsing global configuration parameters");
+
+        Element elem = null;
+
+        elem = getChildElement(globalConfigElem, "ContactInformation");
+        this.contactConfig = new ContactConfig(elem);
+
+        Level loggingLevel = getLoggingLevel(globalConfigElem);
+        elem = getChildElement(globalConfigElem, "verbose", false);
+
+        if (elem != null) {
+            this.verbose = getBooleanAttribute(elem, "value", false);
+        }
+
+        elem = getChildElement(globalConfigElem, "maxFeatures");
+
+        if (elem != null) {
+            //if the element is pressent, it's "value" attribute is mandatory
+            this.maxFeatures = getIntAttribute(elem, "value", true, maxFeatures);
+        }
+
+        elem = getChildElement(globalConfigElem, "numDecimals");
+
+        if (elem != null) {
+            this.numDecimals = getIntAttribute(elem, "value", true, numDecimals);
+        }
+
+        elem = getChildElement(globalConfigElem, "charSet");
+        charSet = Charset.forName("ISO-8859-1");
+
+        if (elem != null) {
+            String chSet = getAttribute(elem, "value", true);
+
+            try {
+                Charset cs = Charset.forName(chSet);
+                this.charSet = cs;
+                LOGGER.fine("charSet: " + cs.displayName());
+            } catch (Exception ex) {
+                LOGGER.info(ex.getMessage());
+            }
+        }
+    }
+
+    public ContactConfig getContactInformation() {
+        return contactConfig;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param globalConfigElem DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    private Level getLoggingLevel(Element globalConfigElem) {
+        Level level = null;
+        Element levelElem = getChildElement(globalConfigElem, "loggingLevel");
+
+        if (levelElem != null) {
+            String levelName = levelElem.getFirstChild().getNodeValue();
+
+            try {
+                level = Level.parse(levelName);
+            } catch (IllegalArgumentException ex) {
+                LOGGER.info("illegal loggingLevel name: " + levelName);
+            }
+        }
+
+        return level;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public Charset getCharSet() {
+        return charSet;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public Level getLoggingLevel() {
+        return loggingLevel;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public int getMaxFeatures() {
+        return maxFeatures;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public int getNumDecimals() {
+        return numDecimals;
+    }
+
+    /**
+     * wether xml documents should be pretty formatted
+     *
+     * @return DOCUMENT ME!
+     */
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public String getMimeType() {
+        return "text/xml; charset=" + getCharSet().displayName();
+    }
+}
