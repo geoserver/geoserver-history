@@ -5,19 +5,19 @@
 package org.vfny.geoserver.global.dto;
 
 /**
- * AttributeTypeInfoDTO purpose.
- * <p>
  * Represents most of a xs:element for an XMLSchema.
- * 
+ * <p>
  * we have three types of information to store, Schema defined types, 
  * references and extentions on types. If the type represented is either 
- * a reference or a Schema defined type  then isRef should be true. 
+ * a reference or a Schema defined type  then isRef should be true.
+ * </p> 
  * <p>
- * Non-complex types are of the form 
- * <code>{element name='test' type='xs:string'/}</code> or 
- * <code>{element name='test' type='gml:PointType'/}</code>. 
- * These cases have their type name stored in this.type
+ * Non-complex types are of the form:
  * </p>
+ * <ul>
+ * <li><code>{element name='test' type='xs:string'/}</code></li>
+ * <li><code>{element name='test' type='gml:PointType'/}</code></li>
+ * </ul>
  * <p>
  * For complex types such as 
  * <code>
@@ -40,7 +40,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.5 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.6 2004/01/13 23:46:53 jive Exp $
  */
 public class AttributeTypeInfoDTO  implements DataTransferObject {
 		
