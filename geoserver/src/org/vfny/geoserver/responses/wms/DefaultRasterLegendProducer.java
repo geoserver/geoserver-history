@@ -26,6 +26,7 @@ import org.geotools.util.NumberRange;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
@@ -91,6 +92,11 @@ public abstract class DefaultRasterLegendProducer
      */
     private static final GeometryFactory geomFac = new GeometryFactory();
 
+    /**
+     * Legend graphics background color, since no BGCOLOR parameter is defined
+     * for the GetLegendGraphic operation.
+     */
+    public static final Color BG_COLOR = Color.WHITE;
     /**
      * Image observer to help in creating the stack like legend graphic from
      * the images created for each rule
@@ -190,7 +196,9 @@ public abstract class DefaultRasterLegendProducer
             BufferedImage image = new BufferedImage(w, h,
                     BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = image.createGraphics();
-
+            graphics.setColor(BG_COLOR);
+            graphics.fillRect(0, 0, w, h);
+            
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
                 Symbolizer symbolizer = symbolizers[sIdx];
                 Style2D style2d = styleFactory.createStyle(sampleFeature,
