@@ -4,13 +4,16 @@
  */
 package org.vfny.geoserver;
 
+import javax.servlet.http.HttpServletRequest;
+import org.vfny.geoserver.requests.Requests;
+
 /**
  * This defines an exception that can be turned into a valid xml service
  * exception that wms clients will expect.  All errors should be wrapped in
  * this before returning to clients.
  *
  * @author Gabriel Roldán
- * @version $Id: WmsException.java,v 1.6 2004/05/22 05:11:50 cholmesny Exp $
+ * @version $Id: WmsException.java,v 1.7 2004/09/08 17:34:04 cholmesny Exp $
  */
 public class WmsException extends ServiceException {
     /**
@@ -70,11 +73,13 @@ public class WmsException extends ServiceException {
      *
      * @task REVISIT: adapt it to handle WMS too
      */
-    public String getXmlResponse(boolean printStackTrace) {
+    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request) {
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\"");
         returnXml.append(" encoding=\"UTF-8\" standalone=\"no\" ?>");
+        String dtdUrl = Requests.getSchemaBaseUrl(request) + 
+			"/wms/1.1.1/WMS_exception_1_1_1.dtd";
         returnXml.append(
-            "<!DOCTYPE ServiceExceptionReport SYSTEM \"http://schemas.opengis.net/wms/1.1.1/WMS_exception_1_1_1.dtd\"> ");
+            "<!DOCTYPE ServiceExceptionReport SYSTEM \"" + dtdUrl + "\"> ");
         returnXml.append("<ServiceExceptionReport version=\"1.1.1\">");
 
         // Write exception code

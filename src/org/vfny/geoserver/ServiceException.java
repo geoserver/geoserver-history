@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver;
 
+import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.responses.ResponseUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
-import org.vfny.geoserver.responses.ResponseUtils;
-import org.vfny.geoserver.requests.Request;
 
 /**
  * Represents a standard OGC service exception.  Able to turn itself into the
@@ -63,12 +64,13 @@ import org.vfny.geoserver.requests.Request;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @task REVISIT: Take a request in the constructor?  This would make it so 
- * we do not have to rely on schemas.opengis.net being available, as it will
- * just reference the geoserver instance that created it.  But to do this we
- * need the request, as that's how we figure out the baseUrl.  Would probably
- * not be that hard to get the request included, and would lead to better 
- * error reporting...
+ *
+ * @task REVISIT: Take a request in the constructor?  This would make it so  we
+ *       do not have to rely on schemas.opengis.net being available, as it
+ *       will just reference the geoserver instance that created it.  But to
+ *       do this we need the request, as that's how we figure out the baseUrl.
+ *       Would probably not be that hard to get the request included, and
+ *       would lead to better  error reporting...
  */
 public class ServiceException extends Exception {
     /** Class logger */
@@ -175,11 +177,14 @@ public class ServiceException extends Exception {
     /**
      * DOCUMENT ME!
      *
+     * @param printStackTrace DOCUMENT ME!
+     *
      * @return DOCUMENT ME!
      */
-    public String getXmlResponse() {
-        return getXmlResponse(true);
-    }
+
+    //public String getXmlResponse() {
+    //	return getXmlResponse(true);
+    //}
 
     /**
      * gets the message, encoding it with the proper escaped xml characters. If
@@ -198,24 +203,15 @@ public class ServiceException extends Exception {
         String indent = "   ";
         StringBuffer mesg = new StringBuffer();
 
-        if (!isEmpty(this.preMessage)) {
-            mesg.append(this.preMessage + ": ");
-        }
-
+        //this distinction no longer so much applies, as we don't always
+        //throw Service exceptions for all expected exceptions.
+        //if (!isEmpty(this.preMessage)) {
+        //    mesg.append(this.preMessage + ": ");
+        //}
         //mesg.append(ResponseUtils.encodeXML(this.getMessage()) + "\n");
+        //        if (printStackTrace) {
         if (printStackTrace) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PrintWriter writer = new PrintWriter(baos);
-            Throwable cause = getCause();
-
-            if (cause == null) {
-                this.printStackTrace(writer);
-            } else {
-                cause.printStackTrace(writer);
-            }
-
-            writer.flush();
-            mesg.append(baos.toString());
+            mesg.append(createStackTrace());
         } else {
             mesg.append(this.getMessage());
         }
@@ -223,18 +219,43 @@ public class ServiceException extends Exception {
         return ResponseUtils.encodeXML(mesg.toString());
     }
 
+    private String createStackTrace() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintWriter writer = new PrintWriter(baos);
+        Throwable cause = getCause();
+
+        if (cause == null) {
+            this.printStackTrace(writer);
+        } else {
+            cause.printStackTrace(writer);
+        }
+
+        writer.flush();
+
+        return baos.toString();
+    }
+
     /**
      * Return request type.
      *
      * @param printStackTrace whether the stack trace should be included.
+     * @param request DOCUMENT ME!
      *
      * @return The ServiceExceptionReport of this error.
      *
      * @task REVISIT: Our error handling should actually have knowledge of the
-     * app configuration, so that we can set the ogc error report to validate
-     * right (reference our own schema), and to put the correct mime type here.
+     *       app configuration, so that we can set the ogc error report to
+     *       validate right (reference our own schema), and to put the correct
+     *       mime type here.
      */
-    public String getXmlResponse(boolean printStackTrace) {
+    public String getXmlResponse(boolean printStackTrace,
+        HttpServletRequest request) {
+        //Perhaps not the best place to do this, but it's by far the best place to ensure
+        //that all logged errors get recorded in the same way, as there all must return
+        //xml responses.
+        LOGGER.warning("encountered error: " + getMessage() + "\nStackTrace: "
+            + createStackTrace());
+
         String indent = "   ";
 
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>\n");
@@ -248,12 +269,12 @@ public class ServiceException extends Exception {
         returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
             + "XMLSchema-instance\"\n");
 
-        //REVISIT: this probably isn't right, need to learn about xml schemas
         returnXml.append(indent);
 
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
 
-        returnXml.append("http://schemas.opengis.net/wfs/1.0.0/OGC-exception.xsd\">\n");
+        returnXml.append(Requests.getSchemaBaseUrl(request)
+            + "/wfs/1.0.0/OGC-exception.xsd\">\n");
 
         //REVISIT: handle multiple service exceptions?  must refactor class.
         returnXml.append(indent + "<ServiceException");
