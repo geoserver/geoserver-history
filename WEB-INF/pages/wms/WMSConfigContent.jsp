@@ -4,7 +4,7 @@
 
 <table border=0 width=100%>
 	
-	<html:form action="WMSConfigContentSubmit" focus="serviceType">
+	<html:form action="/config/wms/contentSubmit" focus="serviceType">
 	
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.enabled"/>">

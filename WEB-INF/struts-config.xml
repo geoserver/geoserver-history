@@ -184,7 +184,7 @@
        		
        	<forward
        		name="stores"
-       		path="/config/data/stores.do"/>
+       		path="/config/data/store.do"/>
        	<forward
        		name="dataConfigDataStoresNewPage"
        		path="/config/data/storesNewPage.do"/>
@@ -194,7 +194,7 @@
        		
        	<forward
        		name="namespaces"
-       		path="/config/data/namespacesSelectPage.do"/>
+       		path="/config/data/namespace.do"/>
        	<forward
        		name="dataConfigNamespacesSelect"
        		path="/config/data/namespacesSelectPage.do"/>
@@ -207,11 +207,11 @@
       		       		
        	<forward
        		name="styles"
-       		path="/config/data/styles.do"/>
+       		path="/config/data/style.do"/>
        		
        	<forward
        		name="types"
-       		path="/config/data/featureTypes.do"/>   
+       		path="/config/data/featureType.do"/>   
        		
        	<forward
        		name="calculateBoundingBox"

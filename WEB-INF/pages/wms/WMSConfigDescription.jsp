@@ -3,7 +3,7 @@
 
 <table border=0 width=100%>
 
-	<html:form action="WMSConfigDescriptionSubmit" focus="name">
+	<html:form action="/config/wms/descriptionSubmit" focus="name">
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.name_service"/>">
 			<bean:message key="label.name"/>:

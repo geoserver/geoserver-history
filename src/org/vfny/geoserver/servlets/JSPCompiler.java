@@ -30,7 +30,7 @@ import org.vfny.geoserver.requests.Requests;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: JSPCompiler.java,v 1.1 2004/02/24 00:34:52 dmzwiers Exp $
+ * @version $Id: JSPCompiler.java,v 1.2 2004/02/24 21:59:46 dmzwiers Exp $
  */
 public class JSPCompiler extends HttpServlet {
 
@@ -70,7 +70,7 @@ public class JSPCompiler extends HttpServlet {
     	os.print("  <link type=\"image/gif\" href=\"gs.gif\" rel=\"icon\"><!-- mozilla --> \n");
     	os.print("  <link href=\"gs.ico\" rel=\"SHORTCUT ICON\"><!-- ie -->\n");
     	os.print("</head>\n");
-    	os.print("<body onload=\"javascript:window.location.replace('Welcome.do')\"><br><center>\n");
+    	os.print("<body onload=\"javascript:window.location.replace('welcome.do')\"><br><center>\n");
     	os.print("<table width=\"60%\" height=\"60%\"><tr><td>\n");
     	os.print("<center>\n");
     	os.print("  <span class=\"project\">\n");
@@ -99,7 +99,7 @@ public class JSPCompiler extends HttpServlet {
     		con.disconnect();
     	}catch(Exception e){
     		// should not stop compilation ...
-    		e.printStackTrace();
+    		System.err.println("ERROR compiling "+url);
     	}
 
     	ServletOutputStream os = response.getOutputStream();

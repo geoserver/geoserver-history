@@ -43,7 +43,7 @@
 	<logic:notEqual name="GeoServer.ApplicationState" property="configChanged" value="true">
 		<span class="configUnchanged">
 	</logic:notEqual>
-		<html:link forward="data"><bean:message key="label.data"/></html:link><logic:equal name="GeoServer.ApplicationState" property="geoServerChanged" value="true">*</logic:equal>
+		<html:link forward="config.data"><bean:message key="label.data"/></html:link><logic:equal name="GeoServer.ApplicationState" property="geoServerChanged" value="true">*</logic:equal>
 	</span>
 	
 	<span class="saveButtons">
