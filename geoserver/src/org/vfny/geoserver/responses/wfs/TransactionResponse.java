@@ -63,7 +63,7 @@ import java.util.logging.Logger;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.23 2004/04/21 00:12:44 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.24 2004/04/21 05:46:22 cholmesny Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -379,7 +379,7 @@ public class TransactionResponse implements Response {
                     // Add to validation check envelope                                
                     envelope.expandToInclude(collection.getBounds());
                 } catch (IOException ioException) {
-                    throw new WfsTransactionException(ioException.getMessage(),
+                    throw new WfsTransactionException(ioException,
                         element.getHandle(), request.getHandle());
                 }
             }
@@ -477,7 +477,16 @@ public class TransactionResponse implements Response {
         FeatureCollection collection)
         throws IOException, WfsTransactionException {
         ValidationProcessor validation = request.getValidationProcessor();
-
+		if (validation == null){
+			//This is a bit hackish, as the validation processor should not
+			//be null, but confDemo gives us a null processor right now, some
+			//thing to do with no test element in the xml files in validation.
+			//But I'm taking no validation process to mean that we can't do
+			//any validation.  Hopefully this doesn't mess people up?
+			//could mess up some validation stuff, but not everyone makes use
+			//of that, and I don't want normal transaction stuff messed up. ch
+			return;
+		}
         final Map failed = new TreeMap();
         ValidationResults results = new ValidationResults() {
                 String name;
@@ -507,6 +516,7 @@ public class TransactionResponse implements Response {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
         }
+		
 
         if (failed.isEmpty()) {
             return; // everything worked out
@@ -585,7 +595,12 @@ public class TransactionResponse implements Response {
             };
 
         try {
-            validation.runIntegrityTests(stores, check, results);
+        	//should never be null, but confDemo is giving grief, and I 
+        	//don't want transactions to mess up just because validation 
+        	//stuff is messed up. ch
+        	if (validation != null){
+                validation.runIntegrityTests(stores, check, results);
+        	}
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
