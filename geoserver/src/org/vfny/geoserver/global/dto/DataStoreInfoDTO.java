@@ -33,10 +33,10 @@ import java.util.Map;
  * </code></prefix>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.1.2.6 2004/01/09 23:44:55 dmzwiers Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.1.2.7 2004/01/10 00:37:57 dmzwiers Exp $
  */
 public final class DataStoreInfoDTO implements DataTransferObject {
-    /** unique datasore identifier */
+    /** unique datastore identifier */
     private String id;
 
     /** unique namespace to refer to this datastore */

@@ -14,7 +14,7 @@
 	</td></tr>
 	
 	<tr><td align="right">
-		<span class="help" title="<bean:message key="help.serviceType"/>">
+		<span class="help" title="<bean:message key="help.onlineResource_service"/>">
 			<bean:message key="label.onlineResource"/>:
 		</span>
 	</td><td colspan=2>

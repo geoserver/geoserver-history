@@ -36,7 +36,9 @@
 </table><table border=0 width=100%>
 
 	<tr><td align="right">
-		<bean:message key="label.dataStoreID"/>
+		<span class="help" title="<bean:message key="help.dataStore_id"/>">
+			<bean:message key="label.dataStoreID"/>
+		</span>
 	</td><td colspan=2 align="left">
 		<html:text property="dataStoreID" size="60"/>
 	</td></tr>
@@ -48,7 +50,9 @@
 	</td></tr>
 	
 	<tr><td align="right">
-		<bean:message key="label.namespace"/>
+		<span class="help" title="<bean:message key="help.dataStore_nameSpace"/>">
+			<bean:message key="label.namespace"/>
+		</span>
 	</td><td colspan=2 align="left">
 		<html:select property="namespace">
 			<html:options property="namespaces"/>
@@ -56,31 +60,41 @@
 	</td></tr>
 	
 	<tr><td align="right">
-		<bean:message key="label.description"/>
+		<span class="help" title="<bean:message key="help.dataStore_description"/>">
+			<bean:message key="label.description"/>
+		</span>
 	</td><td colspan=2 align="left">
 		<html:text property="description" size="60"/>
 	</td></tr>
 	
 	<tr><td align="right">
-		<bean:message key="label.server"/>
+		<span class="help" title="<bean:message key="help.dataStore_server"/>">
+			<bean:message key="label.server"/>
+		</span>
 	</td><td colspan=2 align="left">
 		<html:text property="server" size="60"/>
 	</td></tr>
 	
 	<tr><td align="right">
-		<bean:message key="label.port"/>
+		<span class="help" title="<bean:message key="help.dataStore_port"/>">
+			<bean:message key="label.port"/>
+		</span>
 	</td><td colspan=2 align="left">
 		<html:text property="port" size="60"/>
 	</td></tr>
 	
 	<tr><td align="right">
-		<bean:message key="label.username"/>
+		<span class="help" title="<bean:message key="help.dataStore_username"/>">
+			<bean:message key="label.username"/>
+		</span>
 	</td><td colspan=2 align="left">
 		<html:text property="username" size="60"/>
 	</td></tr>
 	
 	<tr><td align="right">
-		<bean:message key="label.password"/>
+		<span class="help" title="<bean:message key="help.dataStore_password"/>">
+			<bean:message key="label.password"/>
+		</span>
 	</td><td colspan=2 align="left">
 		<html:password property="password" size="60"/>
 	</td></tr>

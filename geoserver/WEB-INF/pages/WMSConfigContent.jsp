@@ -9,14 +9,14 @@
 	
 	<tr><td align="right"><bean:message key="label.enabled"/>:</td><td colspan=2><html:checkbox property="enabled"/>
 	<tr><td align="right">
-		<span class="help" title="<bean:message key="help.serviceType"/>">
+		<span class="help" title="<bean:message key="help.onlineResource_service"/>">
 			<bean:message key="label.onlineResource"/>:
 		</span>
 	</td><td colspan=2>
 		<html:text property="onlineResource" size="60"/>
 	</td></tr>
 
-	<tr><td align="right"><span class="help" title="<bean:message key="help.serviceType"/>"><bean:message key="label.updateTime"/>:</span></td><td colspan=2><html:text property="updateTime" size="60"/></td></tr>
+	<tr><td align="right"><span class="help" title="<bean:message key="help.updateTime_service"/>"><bean:message key="label.updateTime"/>:</span></td><td colspan=2><html:text property="updateTime" size="60"/></td></tr>
 	
 	<tr><td></td><td align="left"><bean:message key="label.featureList"/></td><td align="left"><bean:message key="label.namespace"/></tr>
 
