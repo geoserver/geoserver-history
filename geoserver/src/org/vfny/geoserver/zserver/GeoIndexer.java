@@ -80,19 +80,9 @@ public class GeoIndexer {
     public GeoIndexer(Properties serverProps) {
 	this.serverProps = serverProps;
 	pathToIndex = serverProps.getProperty("database");
-	//indexer = new IndexWriter(pathToIndex, new ZServAnalyzer(), true);
-	//searcher = new IndexSearcher(pathToIndex);
-	try {
-	    dataFolder = new File(serverProps.getProperty("datafolder"));
-	    FileInputStream fis = 
-		new FileInputStream(serverProps.getProperty("fieldmap"));
-	    attrMap = new Properties();
-	    attrMap.load(fis);
-	} catch (FileNotFoundException e) {
-	    LOGGER.severe("couldn't find file " + e.getMessage());
-	} catch (IOException e) {
-	    LOGGER.severe(e.getMessage());
-	}
+	dataFolder = new File(serverProps.getProperty("datafolder"));
+	attrMap = GeoProfile.getUseAttrMap();
+	
     }
     
     /**
