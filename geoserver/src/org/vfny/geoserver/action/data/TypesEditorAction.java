@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,10 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
@@ -64,10 +67,16 @@ public class TypesEditorAction extends ConfigAction {
         
         System.out.println("form bean:"+form.getClass().getName() );
         TypesEditorForm typeForm = (TypesEditorForm) form;
-        
+
         String action = typeForm.getAction();
         System.out.println("TypesEditorAction is "+action );
-        if( action.equals("Submit")){
+        
+        Locale locale = (Locale) request.getLocale();
+        MessageResources messages = servlet.getResources();
+        final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));
+        final String ADD    = HTMLEncoder.decode(messages.getMessage(locale, "label.add"));
+        
+        if( action.equals(SUBMIT)){
             return executeSubmit(mapping, typeForm, user, request);
         }
         
@@ -76,15 +85,15 @@ public class TypesEditorAction extends ConfigAction {
             int index = Integer.parseInt(action.substring(3));
             Object attribute = attributes.remove(index);
             attributes.add(index-1, attribute);
-        }
-        if( action.startsWith("down_")){
+        } else if( action.startsWith("down_")){
             int index = Integer.parseInt(action.substring(5));
             Object attribute = attributes.remove(index);
             attributes.add(index+1, attribute);
-        }
-        if( action.startsWith("delete_")){
+        } else if( action.startsWith("delete_")){
             int index = Integer.parseInt(action.substring(7));
             attributes.remove(index);
+        } else if( action.equals(ADD)) {
+            
         }
         
         // Update, Up, Down, All need to resync
