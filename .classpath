@@ -27,7 +27,6 @@
 	<classpathentry kind="lib" path="lib/struts.jar"/>
 	<classpathentry kind="lib" path="lib/jsde_sdk-8.3.jar"/>
 	<classpathentry kind="lib" path="lib/vecmath-1.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/geoserver.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-arcsde.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-graph.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-main.jar"/>
