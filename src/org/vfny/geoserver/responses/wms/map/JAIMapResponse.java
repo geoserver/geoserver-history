@@ -7,7 +7,7 @@ package org.vfny.geoserver.responses.wms.map;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.map.DefaultMapContext;
+import org.geotools.map.DefaultMap;
 import org.geotools.renderer.Renderer;
 import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.styling.Style;
@@ -37,7 +37,7 @@ import javax.imageio.stream.ImageOutputStream;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.12 2004/04/07 19:37:47 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.13 2004/04/07 20:06:16 dmzwiers Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -217,15 +217,14 @@ public class JAIMapResponse extends GetMapDelegate {
         try {
             LOGGER.fine("setting up map");
 
-			DefaultMapContext map = new DefaultMapContext();
+            org.geotools.map.Map map = new DefaultMap();
             Style[] layerstyle = null;
             StyleBuilder sb = new StyleBuilder();
 
             for (int i = 0; i < requestedLayers.length; i++) {
                 Style style = styles[i];
                 FeatureCollection fc = resultLayers[i].collection();
-                //map.addFeatureTable(fc, style);
-				map.addLayer(fc, style);
+                map.addFeatureTable(fc, style);
             }
 
             LOGGER.fine("map setup");
@@ -249,7 +248,7 @@ public class JAIMapResponse extends GetMapDelegate {
                 LOGGER.fine("calling renderer");
 
                 Date start = new Date();
-                //map.render(renderer, env);
+                map.render(renderer, env);
 
                 Date end = new Date();
                 LOGGER.fine("returning image after render time of "
