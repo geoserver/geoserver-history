@@ -228,7 +228,7 @@ public class GMLBuilder {
         public void start(String srs, String xmlns) {
             this.srs = srs;
 	    String indent = ((verbose) ? "\n   " : " ");
-	    finalResult.append(FEATURE_COLL_HEAD + indent);
+	    finalResult.append(FEATURE_COLL_HEAD);
             finalResult.append(indent + "xmlns=\"" + xmlns + "\"");
 	    finalResult.append(indent + XMLNS_GML);
 	    finalResult.append(indent + XMLNS_WFS + ">");
@@ -257,7 +257,7 @@ public class GMLBuilder {
 	    if (verbose) bbox.append("\n   ");
 	    bbox.append("</gml:boundedBy>");
 	    finalResult.insert(boxInsertPos, bbox.toString());
-	    if (verbose) finalResult.append("\n\n");
+	    if (verbose) finalResult.append("\n");
 	    finalResult.append( "</wfs:FeatureCollection>" );
 	}
 	
