@@ -34,6 +34,8 @@
         <parameter name="database" value="testdb"/>
         <parameter name="user" value="postgres"/>
         <parameter name="passwd" value="postgres"/>
+        <!-- optional charset param. -->
+        <parameter name="charset" value="iso-8859-1"/>
       </connectionParams>
     </datastore>  
 
