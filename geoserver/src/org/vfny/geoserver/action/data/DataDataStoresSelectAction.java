@@ -5,18 +5,6 @@
  */
 package org.vfny.geoserver.action.data;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.util.MessageResources;
-import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.action.HTMLEncoder;
-import org.vfny.geoserver.config.ConfigRequests;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.form.data.DataDataStoresSelectForm;
-import org.vfny.geoserver.global.UserContainer;
-
 import java.io.IOException;
 import java.util.Locale;
 
@@ -24,13 +12,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
+import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.action.HTMLEncoder;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.form.data.DataDataStoresSelectForm;
+import org.vfny.geoserver.global.UserContainer;
 
 /**
  * Select a DataStore for editing.
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.7 2004/02/05 00:01:50 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresSelectAction.java,v 1.8 2004/02/07 01:30:05 jive Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,

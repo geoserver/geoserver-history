@@ -6,18 +6,30 @@
  */
 package org.geotools.validation.attributes;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.TestCase;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import org.xml.sax.*;
-import org.geotools.feature.*;
-import org.geotools.validation.ValidationResults;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 /**
  * GazetteerNameValidationTest purpose.
  * <p>
@@ -25,8 +37,8 @@ import com.vividsolutions.jts.geom.*;
  * </p>
  *  
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GazetteerNameValidationTest.java,v 1.2 2004/02/05 18:56:20 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: GazetteerNameValidationTest.java,v 1.3 2004/02/07 01:29:04 jive Exp $
  */
 public class GazetteerNameValidationTest extends TestCase {
 
