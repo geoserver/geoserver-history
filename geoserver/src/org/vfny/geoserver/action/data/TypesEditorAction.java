@@ -25,14 +25,15 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.form.data.AttributeDisplay;
 import org.vfny.geoserver.form.data.AttributeForm;
 import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.UserContainer;
@@ -97,10 +98,10 @@ public class TypesEditorAction extends ConfigAction {
             int index = Integer.parseInt(action.substring(7));
             attributes.remove(index);
         } else if( action.equals(ADD)) {
-            
+            executeAdd( mapping, typeForm, user, request );          
         }
         
-        // Update, Up, Down, All need to resync
+        // Update, Up, Down, Add, Remove need to resync
         sync( typeForm, user.getFeatureTypeConfig() );
         form.reset( mapping, request );
         return mapping.findForward("config.data.type.editor");        
@@ -129,14 +130,25 @@ public class TypesEditorAction extends ConfigAction {
         }
         else {
             config.setSchemaBase( schemaBase );
-            List schemaAttributes = new ArrayList();
-            for( Iterator i=form.toSchemaAttributes().iterator(); i.hasNext();){
-                AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO) i.next();
-                schemaAttributes.add( new AttributeTypeInfoConfig( attributeDTO ) );                                        
-            }
-            config.setSchemaAttributes( schemaAttributes );
+            config.setSchemaAttributes( form.toSchemaAttributes() );
         }        
         config.setSchemaAttributes( form.toSchemaAttributes() );                
+    }
+    private void executeAdd(ActionMapping mapping, TypesEditorForm form, UserContainer user, HttpServletRequest request) {
+        String attributeName = form.getNewAttribute();
+        FeatureType featureType = null;        
+        try {
+            DataConfig config = ConfigRequests.getDataConfig(request);                
+            DataStoreConfig dataStoreConfig = config.getDataStore( form.getDataStoreId() );                
+            DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
+            featureType = dataStore.getSchema( form.getName() );                            
+        } catch (IOException e) {
+            // DataStore unavailable!
+        } 
+        AttributeType attributeType = featureType.getAttributeType( attributeName );
+        AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attributeType );
+        AttributeForm newAttribute = new AttributeForm( attributeConfig, attributeType );
+        form.getAttributes().add( newAttribute );
     }
     /**
      * Execute Submit Action.
