@@ -44,8 +44,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestEditorAction.java,v 1.4 2004/02/07 01:29:55 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationTestEditorAction.java,v 1.5 2004/04/08 21:58:25 dmzwiers Exp $
  */
 public class ValidationTestEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -73,7 +73,9 @@ public class ValidationTestEditorAction extends ConfigAction {
         for (int i = 0; i < attributeKeys.size(); i++) {
             System.out.println((String) attributeKeys.get(i)+"="+ (String) attributeValues.get(i));
             System.out.println(testConfig.getArgs());
-            testConfig.setArgStringValue((String) attributeKeys.get(i), (String) attributeValues.get(i));
+            String val = (String) attributeValues.get(i);
+            if(val != null && val != "")
+            	testConfig.setArgStringValue((String) attributeKeys.get(i), val);
         }
        
         suiteConfig.addTest(testConfig);
