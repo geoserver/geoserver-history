@@ -67,8 +67,6 @@
     		name="wfsContentForm"
     		type="org.vfny.geoserver.form.wfs.WFSContentForm"/>
 
-
-
     <!-- sample form bean descriptor for a DynaActionForm
         <form-bean
             name="logonForm"
@@ -116,10 +114,27 @@
        	<forward
        		name="wfsConfigMenu"
        		path="/WFSConfigMenu.do"/>
+       	<forward
+       		name="wmsConfigMenu"
+       		path="/WMSConfigMenu.do"/>
+       	<forward
+       		name="catalogConfigMenu"
+       		path="/CatalogConfigMenu.do"/>
        		
+       	<forward
+       		name="wfsConfigDescription"
+       		path="/WFSConfigDescription"/>
        	<forward
        		name="wfsConfigContent"
        		path="/WFSConfigContent.do"/>
+       		
+       	<forward
+       		name="wmsConfigDescription"
+       		path="/WMSConfigDescription"/>
+       	<forward
+       		name="wmsConfigContent"
+       		path="/WMSConfigContent.do"/>
+       		       		
        		
        	<forward
        		name="baseStyle"
@@ -150,7 +165,15 @@
         	path="/WFSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="wfs.description"/>
-        
+        <action
+        	path="/WMSConfigMenu"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wms.description"/>        
+        <action
+        	path="/CatalogConfigMenu"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="catalog.datastores"/>        
+        	
         <action
         	path="/WFSConfigDescription"
         	type="org.apache.struts.actions.ForwardAction"
