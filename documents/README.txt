@@ -1,11 +1,12 @@
-GeoServer 1.2.0-rc1 README file
+GeoServer 1.2.0-rc2 README file
 ---------------------------
 
-The 1.2.0-rc1 release is the result of pounding out many bugs by the
-GeoServer team.  The documentation for installation and execution is available
-online at http://geoserver.sf.net/documentation/1.2.0-rc1. It can also be 
+The 1.2.0-rc2 release is the result of getting rid of a few pesky bugs from 
+rc1, as well as testing for the many changes occuring in GeoTools, our main  
+library.  The documentation for installation and execution is available
+online at http://geoserver.sf.net/documentation/1.2.0-rc2. It can also be 
 built with the ant document target.  The struts based web interface tool is
-coming along nicely, it is available at http://localhost:8080/geoserver/.
+available at http://localhost:8080/geoserver/.
 
 
 Supporting GeoServer
@@ -19,46 +20,39 @@ display.
 
 New Features and Bug Fixes since 1.2-beta
 --------------------------------------
-Ability to edit the login user name and password.
+Fixed bug with WMS leaving PostGIS connections open.
 
-Faster WMS rendering.
+Nicer messages if JAI is not present.
 
-Demo page for the web interface.
+Stopped styles from being clobbered if they have the same name.
 
-Fixed errors with JSPCompiler.
+Cleaned up documentation a bit.
 
-Fixed errors with nulls in datastores.
+WMS dtd's now referenced locally.
 
-Many small tweaks.
+Added more Demo files.
 
+Fixed cursor and memory leaks with heavy PostGIS usage.
 
 
 Bugs
 ----------
 
-We are expecting a few minor bugs and would appreciate bug reports on our
-JIRA task tracker http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311
+We are moving along to 1.2.0 quite nicely, so would love to hear of any lingering
+problems that you may experience.  Please make use of our JIRA task tracker 
+http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311
 
-There also may be a major bug with oracle, as we have not
-had any users successfully test it with 1.2.  But none of the core developers
-has good access to an oracle database, so it's hard for us to debug.
-Another known issues to date include wfs/wms services not detecting server 
-ports correctly through firewalls unless the incoming and outgoing ports 
-match. This is an effect of dynamically testing for the ports through the 
-Java Servlets.  Working with styles through the web interface is also a bit
-buggy.  We will hit all these and more for 1.2.0
-There are quite a few known bugs right now, see 
- for complete listings.
-For the 1.2.0 release we will enumerate all the bugs here.
+Oracle still has not been tested extensively, as we did not quite have time
+to go through the whole install and configuration.  We think things should
+work, a few geotools developers have tested.  But for 1.2.0 we will completely
+confirm it all ourselves.  Check the wiki for the latest updates at:
+http://docs.codehaus.org/display/GEOS/Home
 
-If you have feature requests or find bugs, please make use of our JIRA task 
-tracker, available thanks to codehaus at 
-http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311.  More support 
-is also available on the new geoserver-users@lists.sourceforge.net, for those 
-who do not want all the developer updates of 
+More support is also available on the new geoserver-users@lists.sourceforge.net, 
+for those who do not want all the developer updates of 
 geoserver-devel@lists.sourceforge.net. List information is available at 
 http://lists.sourceforge.net/lists/listinfo/geoserver-users.  You can also 
-contact us directly at geoserver@openplans.org.
+contact us directly at geoserver@openplans.org.  
 
 
 
