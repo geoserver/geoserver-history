@@ -13,23 +13,23 @@
     
 <!-- ====================================================================== -->
 <!-- LOCAL PROPERTIES                                                       -->
+<!-- These should be defined in the build.properties file, which will       -->
+<!-- override these values                                                  -->
 <!-- ====================================================================== -->
         
   <!-- external directories -->
   <!-- pc example -->
-  <property file="build.properties"/>
-  
+  <property file="build.properties"/>  
   <!--These should be defined in the build.properties file, which will -->
-  <!-- override these values --> 
-      
+  <!-- override these values -->      
   <property name="dir.container" value="C:\java\tomcat4\webapps"/>
-  <property name="dir.geotools" 
-            value="..\geotools2\geotools-src"/>
+  <property name="dir.geotools" value="C:\java\mm\gt"/>
+  <property name="version.geotools" value="2.0-B6-DEV"/>		
+  <property name="dir.maven" value="C:\Documents and Settings\jgarnett\.maven\repository"/>
 
   <!-- If you don't have your own conf directory then define one of -->
   <!-- these test.type's in your build.properties file-->
-  <!--<property name="test.type" value="UserBasic"/-->
-  <!--<property name="test.type" value="Demo"/>-->
+  <property name="test.type" value="UserBasic"/>
   <!--property name="test.type" value="DemoPostGIS"/-->
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>--> 
@@ -141,8 +141,8 @@
     <echo message=""/>
     <echo message=" ADMIN TARGETS"/>
     <echo message="    help | ?:     displays this message"/>
-    <echo message="    geotools:     builds, deploys the geotools jar"/>
-    <echo message="                    -param: dir.geotools=[geotools_path]"/>
+    <echo message="    geotools:     copies the geotools jars"/>
+    <echo message="                    -param: dir.gt=[geotools_path]"/>
     <echo message="    conf:         builds a default configuration to edit"/>
     <echo message="                    -param: test.type=CitePostGis"/>
     <echo message=""/>
@@ -807,138 +807,46 @@ failonerror="true"/>
 
 <!-- GEOTOOLS JAR -->
 <!-- builds geotools jar -->
-<!-- status   geotools2 release           Geoserver ant target
-     ======   =================           ====================
-     include  gt2-arcsde.jar              gt2-arcsde.jar
-     required gt2-graph.jar               gt2-main.jar
-     required gt2-main.jar                gt2-main.jar
-     exclude  gt2-oracle-spatial.jar      gt2-oracle-spatial.jar
-     include  gt2-postgis.jar             gt2-postgis.jar
-     include  gt2-shapefile.jar           gt2-shapefile.jar
-     required gt2-validation              gt2-validation.jar
-     required opengis-2.0-B3.jar          opengis-2.0.jar
-     included                             gt2-property.jar
-     
-     To make the geotools2 relase (from the geotools directory):
+<!-- To grab the geotools2 jars (from the geotools directory):
         maven -Drelease.version=2.0 createRelease
         
-     Please only use this ant task for testing changes to the geotools
-     library, building with maven is required before commit changed jar
-     files.
+     Building with maven is required before commit changed jar files.
 -->
-  <target name="geotools" depends="init,gt2-validation"
-      description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
-    <delete file="${dir.lib}/gt2-main.jar" failonerror="true"/>
-    <jar jarfile="${dir.lib}/gt2-main.jar"
-         whenempty="fail">
-      <fileset dir="${dir.geotools}/core/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/data/target/classes/"
-               includes="**/*.class"/>                        
-      <fileset dir="${dir.geotools}/defaultcore/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/filter/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/cts-coordtrans/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/gcs-coverage/target/classes/"
-               includes="**/*.class"/>          
-      <fileset dir="${dir.geotools}/lite-rendering/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/resources/target/classes/">
-               <include name="**/*.class"/>   
-               <include name="**/*.utf"/>
-               <include name="**/*.properties"/>
-               <include name="**/*.serialized"/>
-      </fileset>   
-      <fileset dir="${dir.geotools}/sldstyling/target/classes/"
-               includes="**/*.class"/>               
-      <fileset dir="${dir.geotools}/svgsupport/target/classes/"
-               includes="**/*.class"/>
-      <fileset dir="${dir.geotools}/renderer/target/classes/"
-               includes="**/*.class"/>   
-      <fileset dir="${dir.geotools}/map/target/classes/"
-               includes="**/*.class"/>              
-      <fileset dir="${dir.geotools}/gmldatasource/target/classes/"
-               includes="**/*.class"/>        
-    </jar>
-
-    <!-- Opengis support, include META-INF -->	
-    <delete file="${dir.lib}/opengis-2.0.jar" failonerror="true"/>        
-	<jar jarfile="${dir.lib}/opengis-2.0.jar"
-         whenempty="fail">	
-      <fileset dir="${dir.geotools}/opengis/target/classes/"
-               includes="**/*.class"/>
-	</jar>      
-                          
-    <!-- Graph support, include META-INF -->	
-    <delete file="${dir.lib}/gt2-graph.jar" failonerror="true"/>        
-	<jar jarfile="${dir.lib}/gt2-graph.jar"
-         whenempty="fail">	
-      <fileset dir="${dir.geotools}/graph/target/classes/"
-               includes="**/*.class"/> 
-	</jar>
-
-    <!-- Validation support, include META-INF
-    <delete file="${dir.lib}/gt2-validation.jar" failonerror="true"/>        
-	<jar jarfile="${dir.lib}/gt2-validation.jar"
-         whenempty="fail">	
-      <fileset dir="${dir.geotools}/validation/target/classes/">
-      		<include name="**/*.class"/>
-      		<include name="**/*.properties"/>
-	  </fileset>
-	</jar>
-    -->
-	<!-- Potgis support, include META-INF -->	
-    <!--<delete file="${dir.lib}/gt2-arcsde.jar" failonerror="true"/>        
-	<jar jarfile="${dir.lib}/gt2-arcsde.jar"
-         whenempty="fail">	
-      <fileset dir="${dir.geotools}/arcsde/target/classes/"/>
-	</jar>-->          	          
-      
-    <!-- Potgis support, include META-INF -->	
-    <delete file="${dir.lib}/gt2-postgis.jar" failonerror="true"/>        
-	<jar jarfile="${dir.lib}/gt2-postgis.jar"
-         whenempty="fail">	
-      <fileset dir="${dir.geotools}/postgis/target/classes/"/>
-	</jar>
-	
-    <!-- Esri Shapefile support, include META-INF -->	
-    <delete file="${dir.lib}/gt2-shapefile.jar" failonerror="true"/>            
-	<jar jarfile="${dir.lib}/gt2-shapefile.jar"
-         whenempty="fail">	
-      <fileset dir="${dir.geotools}/shapefile/target/classes/"/>
-	</jar>
-	
-    <!-- Oracle Spatial support, include META-INF -->		
-    <delete file="${dir.lib}/gt2-oracle-spatial.jar" failonerror="true"/>            
-	<jar jarfile="${dir.lib}/gt2-oracle-spatial.jar"
-         whenempty="fail">	
-      <fileset dir="${dir.geotools}/oraclespatial/target/classes/"/>
-	</jar>	
-	
-    <!-- Java Property support, include META-INF -->		
-    <delete file="${dir.lib}/gt2-property.jar" failonerror="true"/>            
-	<jar jarfile="${dir.lib}/gt2-property.jar"
-         whenempty="fail">	
-      <fileset dir="${dir.geotools}/j2se-demos/target/classes/"
-      	       includes="META-INF/**"/>
-      <fileset dir="${dir.geotools}/j2se-demos/target/classes/"
-      	       includes="geotools/data/**"/>
-	</jar>
+  <target name="geotools" depends="init"
+      description="Generate geotools2 jars for quick testing (use maven for jars you commit)">    
+  	<copy
+  	  toFile="${dir.lib}/geoapi-SNAPSHOT.jar"
+  	  file="${dir.maven}/geoapi/jars/geoapi-SNAPSHOT.jar"/>
+  	
+  	<copy
+	  toFile="${dir.lib}/gt2-arcsde.jar"
+  	  file="${dir.geotools}/plugin/arcsde/target/arcsde-${version.geotools}.jar"/>
+  	<copy
+      toFile="${dir.lib}/gt2-graph.jar"
+  	  file="${dir.geotools}/ext/graph/target/graph-${version.geotools}.jar"/>
+  	<copy
+      toFile="${dir.lib}/gt2-main.jar"
+  	  file="${dir.geotools}/module/main/target/main-${version.geotools}.jar"/>  	
+  	<copy
+   	  file="${dir.geotools}/plugin/oraclespatial/target/oracle-spatial-${version.geotools}.jar"
+      toFile="${dir.lib}/gt2-oracle-spatial.jar"/>
+  	<copy
+  		file="${dir.geotools}/plugin/postgis/target/postgis-${version.geotools}.jar"
+  		toFile="${dir.lib}/gt2-postgis.jar"/>  	  	
+  	<copy
+  	  file="${dir.geotools}/plugin/shapefile/target/shapefile-${version.geotools}.jar"
+  	  toFile="${dir.lib}/gt2-shapefile.jar"/>  	
+  	<copy
+  		file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar"
+  		toFile="${dir.lib}/gt2-validation.jar"/> 	  	                              
   </target>
 
   <target name="gt2-validation" depends="init"
       description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
     <!-- Validation support, include META-INF -->   
-    <delete file="${dir.lib}/gt2-validation.jar" failonerror="true"/>        
-    <jar jarfile="${dir.lib}/gt2-validation.jar"
-         whenempty="fail">  
-      <fileset dir="${dir.geotools}/validation/target/classes/">
-            <include name="**/*.class"/>
-            <include name="**/*.properties"/>
-      </fileset>
-    </jar>      
+  	<copy
+  		file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar"
+  		toFile="${dir.lib}/gt2-validation.jar"/>
   </target>
         
 </project>
