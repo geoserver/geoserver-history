@@ -7,6 +7,7 @@ package org.vfny.geoserver.requests;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
+import org.vfny.geoserver.config.ConfigInfo;
 
 /**
  * Implements the WFS GetFeature interface, which responds to requests for GML.
@@ -25,11 +26,12 @@ public class FeatureRequest
 
     /** The maximum returned if the user requests no limit of features at all, 
         but the other request parameters don't restrict to below 500. */
-    protected static final int SOFT_MAX_FEATURES = 500;
+    protected static final int SOFT_MAX_FEATURES = 
+	ConfigInfo.getInstance().getMaxFeatures();
     
     /** This is the maximum that is returned if the user specifically requests
         more than the soft max.  */
-    protected static final int HARD_MAX_FEATURES = 1000;
+    protected static final int HARD_MAX_FEATURES = SOFT_MAX_FEATURES + 1000;
     
     /** Creates a max features constraint for the entire request */
     protected int maxFeatures = SOFT_MAX_FEATURES;
