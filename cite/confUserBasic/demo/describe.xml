@@ -1,3 +1,6 @@
+<!-- A sample describe request.  The schema is generated automatically by  -->
+<!-- GeoServer.  You can modify the schema with the web interface to hide  -->
+<!-- and/or require certain attributes. -->
 <DescribeFeatureType
   version="1.0.0"
   service="WFS"

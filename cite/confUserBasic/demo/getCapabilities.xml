@@ -1,3 +1,5 @@
+<!-- Gets the WFS capabilities.  To get the WMS capabilities use this     -->
+<!-- request, but change the url to http://.../geoserver/wms/GetCapabilities-->
 <GetCapabilities
   service="WFS"
   xmlns="http://www.opengis.net/wfs"
