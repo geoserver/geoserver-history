@@ -1,215 +1,80 @@
-BODY {
-background: #FFFFFF;
-color: #000000;
-font-family: Tahoma, Verdana, sans-serif;
-margin-top: 0;
-margin-left: 0;
-margin-right: 0;
-margin-bottom: 0;
+/* GeoServer Default Style */
+body {
+ font-size: 90%;
+ margin: 0ex;
+ color: #000;
+ font-family: tahoma, verdana, sans, arial, helvetica, sans-serif;
+ background: #fed;
 }
-TD.head {
-background: #333366;
+a:visited,
+a:link {
+ color: #99C;
+ text-decoration: none;
 }
-TD.main {
-background: #ffeebb;
+a:hover {
+ color: #99C;
+ text-decoration: underline;
 }
-TD.sub {
-background: #eeeeee;
+table.page {
+ text-align: left;
+ width: 100%;
+ cellspacing: 0;
+ cellpadding: 0;
 }
-TD.changed{
-background: #FF7722;
+tr.header {
+ vertical-align: bottom;
+ white-space: nowrap;
 }
-A:link {
-color: #0000FF;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
+td.gutter {
+ width: 12em;
 }
-A:active {
-color: #0000FF;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
+.project {
+ font-size: 110%;
+ font-weight: bold;
+ font-style: italic;
+ color: #99C;
 }
-A:visited {
-color: #0000FF;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
+.license {
+ font-size: 90%;
+ font-weight: normal;
+ font-style: italic;
+ color: #99C;
 }
-A:hover {
-color: #0000FF;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
+.title {
+ font-size: 140%;
+ font-weight: bold;
+ font-style: normal;
 }
-A.pn-title {
-color: #FFFFFF;
-font: bold 14px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
+.contact {
+ font-size: 90%;
 }
-A.pn-title:active {
-color: #FFFFFF;
-font: bold 14px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
+
+td.sidebar {
+ vertical-align: top;
 }
-A.pn-title:visited {
-color: #FFFFFF;
-font: bold 14px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
+tr.bar {
+ background: #99C;
+ color: #ccc;
+ vertical-align: center;
+ height: 1.5em;
 }
-A.pn-title:hover {
-color: #FFFFFF;
-font: bold 14px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
+td.locator {
+ white-space: nowrap;
+ border: black 1px;
 }
-A.pn-normal:link {
-color: #0000FF;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
+span.locator {
+ font-size: 90%;
 }
-A.pn-normal:active {
-color: #0000FF;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
+td.login {
+ font-size: 90%;
+ vertical-align:center;
+ text-align: right;
+ white-space: nowrap;
+ border: black 1px;
 }
-A.pn-normal:visited {
-color: #0000FF;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
+span.loginStatus {
+ font-size: 100%;
 }
-A.pn-normal:hover {
-color: #0000FF;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
-}
-A.pn-sub:link {
-color: #0000FF;
-font: 12px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
-}
-A.pn-sub:active {
-color: #0000FF;
-font: 12px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
-}
-A.pn-sub:visited {
-color: #0000FF;
-font: 12px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
-}
-A.pn-sub:hover {
-color: #0000FF;
-font: 12px Tahoma, Verdana, sans-serif;
-text-decoration: underline;
-background: none;
-}
-A.pn-logo:link {
-color: #0000FF;
-font-size: 18px;
-font-weight: bold;
-font-family: Tahoma, Verdana, sans-serif;
-letter-spacing: 3px;
-text-decoration: none;
-background: none;
-}
-A.pn-logo:active {
-color: #0000FF;
-font-size: 18px;
-font-weight: bold;
-font-family: Tahoma, Verdana, sans-serif;
-letter-spacing: 3px;
-text-decoration: none;
-background: none;
-}
-A.pn-logo:visited {
-color: #0000FF;
-font-size: 18px;
-font-weight: bold;
-font-family: Tahoma, Verdana, sans-serif;
-letter-spacing: 3px;
-text-decoration: none;
-background: none;
-}
-A.pn-logo:hover {
-color: #0000FF;
-font-size: 16px;
-font-weight: bold;
-font-family: Tahoma, Verdana, sans-serif;
-letter-spacing: 3px;
-text-decoration: none;
-background: none;
-}
-.pn-logo {
-color: #000000;
-font-size: 18px;
-font-weight: bold;
-font-family: Tahoma, Verdana, sans-serif;
-letter-spacing: 3px;
-text-decoration: none;
-background: none;
-}
-.pn-logo-small {
-color: #000000;
-font-size: 13px;
-font-weight: bold;
-font-family: Tahoma, Verdana, sans-serif;
-text-decoration: none;
-background: none;
-}
-.pn-pagetitle {
-color: #000000;
-font: bold 16px Tahoma, Verdana, sans-serif;
-text-decoration: none;
-background: none;
-}
-.pn-title {
-color: #FFFFFF;
-font: bold 14px Tahoma, Verdana, sans-serif;
-text-decoration: none;
-}
-.pn-storytitle {
-color: #000000;
-font: bold 14px Tahoma, Verdana, sans-serif;
-letter-spacing: 3px;
-text-decoration: none;
-background: none;
-}
-.pn-normal {
-color: #000000;
-font: 13px Tahoma, Verdana, sans-serif;
-text-decoration: none;
-background: #FFFFFF;
-}
-.pn-sub {
-color: #000000;
-font: 12px Tahoma, Verdana, sans-serif;
-text-decoration: none;
-background: none;
-}
-INPUT.pn-text {
-background : #D9DCC2;
-color: #000000;
-border: solid 2px #000000;
-font-size: 10px;
-}
-span.help {
-	border-bottom: 1px dashed #6666cc; /*copy gecko's behaviour to IE*/
-	cursor: help;
-}
-green {
-	background: #00FF00;
-}
-red {
-	background: #FF0000;
-}
-grey {
-	background: #AAAAAA;
+td.content {
+ vertical-align: top;
 }

@@ -1,12 +1,14 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 
+<span class="project">
+  <a href="<bean:message key="link.geoserver"/>">
+    <bean:message key="geoserver.logo"/>
+  </a>
+</span>
 
-<span class="logo">
-	<a href="http://geoserver.sourceforge.net/">
-		<bean:message key="geoserver.logo"/>
-	</a>
-	<a href="http://geoserver.sourceforge.net/license.html">
-		&copy;
-	</a>
+<span class="license">
+  <a href="<bean:message key="link.license"/>">
+    &copy;
+  </a>
 </span>

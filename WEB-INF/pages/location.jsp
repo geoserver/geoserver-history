@@ -2,6 +2,6 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<span class="location">
+<span class="locator">
 	Configuration | Data | FeatureType | Editor
-</span><br>
+</span>
