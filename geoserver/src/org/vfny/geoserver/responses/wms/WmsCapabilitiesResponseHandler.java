@@ -29,7 +29,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.12 2004/02/09 23:29:49 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.13 2004/02/19 18:38:34 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();
@@ -89,17 +89,6 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     }
 
     /**
-     * Starts the Service element.
-     *
-     * @param config The Wms config to turn into a capabilities document.
-     *
-     * @throws SAXException If anything goes wrong.
-     */
-    protected void startService(Service config) throws SAXException {
-        startElement("Service");
-    }
-
-    /**
      * Calls endElement for Service
      *
      * @param config The Wms config to turn into a capabilities document.
@@ -107,7 +96,63 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException For any problems.
      */
     protected void endService(Service config) throws SAXException {
-        endElement("Service");
+    	String tmp = "";
+    	tmp = config.getGeoServer().getContactPerson();
+    	if(tmp!=null && tmp!=""){
+    		startElement("Contact");
+        	handleSingleElem("ContactPerson",tmp);
+        	
+        	tmp = config.getGeoServer().getContactOrganization();
+        	if(tmp!=null && tmp!="")
+        		handleSingleElem("ContactOrganization",tmp);
+        	
+        	tmp = config.getGeoServer().getContactPosition();
+        	if(tmp!=null && tmp!="")
+        		handleSingleElem("ContactPosition",tmp);
+        		
+        	tmp = config.getGeoServer().getAddress();
+        	if(tmp!=null && tmp!=""){
+        		startElement("ContactAddress");
+        		
+        		tmp = config.getGeoServer().getAddressType();
+        		if(tmp!=null && tmp!="")
+        			handleSingleElem("AddressType",tmp);;
+        		
+        		tmp = config.getGeoServer().getAddress();
+        		handleSingleElem("Address",tmp);;
+        		
+        		tmp = config.getGeoServer().getAddressCity();
+        		if(tmp!=null && tmp!="")
+        			handleSingleElem("City",tmp);;
+        		
+        		tmp = config.getGeoServer().getAddressState();
+        		if(tmp!=null && tmp!="")
+        			handleSingleElem("StateOrProvince",tmp);;
+        		
+        		tmp = config.getGeoServer().getAddressPostalCode();
+        		if(tmp!=null && tmp!="")
+        			handleSingleElem("PostCode",tmp);;
+        		
+        		tmp = config.getGeoServer().getAddressCountry();
+        		if(tmp!=null && tmp!="")
+        			handleSingleElem("Country",tmp);
+        		
+        		endElement("ContactAddress");
+        	}
+        	tmp = config.getGeoServer().getContactVoice();
+        	if(tmp!=null && tmp!="")
+        		handleSingleElem("ContactVoiceTelephone",tmp);
+        	
+        	tmp = config.getGeoServer().getContactFacsimile();
+        	if(tmp!=null && tmp!="")
+        		handleSingleElem("ContactFacsimileTelephone",tmp);
+        	
+        	tmp = config.getGeoServer().getContactEmail();
+        	if(tmp!=null && tmp!="")
+        		handleSingleElem("ContactElectronicMailAddress",tmp);
+        	endElement("Contact");
+    	}
+    	super.endService(config);
     }
 
     /**
