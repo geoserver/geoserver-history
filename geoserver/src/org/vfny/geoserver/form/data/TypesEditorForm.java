@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.3 2004/03/02 16:09:01 jive Exp $
+ * @version $Id: TypesEditorForm.java,v 1.4 2004/03/02 21:53:03 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -159,7 +159,7 @@ public class TypesEditorForm extends ActionForm {
             // defined by schemaBase
             //
             //
-            List schemaAttribtues = DataTransferObjectFactory.generateAttribtues( schemaBase );
+            List schemaAttribtues = DataTransferObjectFactory.generateRequiredAttribtues(schemaBase);
             attributes.addAll( attribtuesDisplayList( schemaAttribtues ));
             attributes.addAll( attribtuesFormList( type.getSchemaAttributes() ));
         }
