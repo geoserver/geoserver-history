@@ -58,7 +58,6 @@
     <classpathentry kind="lib" path="lib/commons-lang.jar"/>
     <classpathentry kind="lib" path="lib/commons-logging.jar"/>
     <classpathentry kind="lib" path="lib/commons-validator.jar"/>
-    <classpathentry kind="lib" path="lib/geoserver.jar"/>
     <classpathentry kind="lib" path="lib/jakarta-oro.jar"/>
     <classpathentry kind="lib" path="lib/struts.jar"/>
     <classpathentry kind="output" path="build"/>
