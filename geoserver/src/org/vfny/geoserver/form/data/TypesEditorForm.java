@@ -39,8 +39,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.10 2004/04/05 23:50:20 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.11 2004/04/06 18:19:06 emperorkefka Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -545,5 +545,13 @@ public class TypesEditorForm extends ActionForm {
      */
     public void setStyles(SortedSet styles) {
         this.styles = styles;
+    }
+    
+    public Object getAttribute(int index) {
+    	return attributes.get(index);
+    }
+    
+    public void setAttribute(int index, Object attribute) {
+    	attributes.set(index, attribute);
     }
 }
