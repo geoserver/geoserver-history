@@ -19,7 +19,7 @@ import org.vfny.geoserver.config.*;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: IntegrityValidationTest.java,v 1.1.2.1 2003/11/23 07:41:08 jive Exp $
+ * @version $Id: IntegrityValidationTest.java,v 1.1.2.2 2003/11/23 08:03:39 jive Exp $
  */
 public class IntegrityValidationTest extends DataTestCase {
     MemoryDataStore store;
@@ -82,8 +82,23 @@ public class IntegrityValidationTest extends DataTestCase {
    	
    	public void testUniqueFID2() throws Exception
    	{
+        RoadValidationResults validationResults = new RoadValidationResults();
+                
+        UniqueFIDIntegrityValidation validator = new UniqueFIDIntegrityValidation("isValidRoad", "Tests to see if a road is valid", IsValidFeatureValidation.ALL, "FID");
+        validationResults.setValidation(validator);
+                
 		roadFeatures[0] = roadFeatures[1];
-		//DataUtilities
+        FeatureSource badDog = DataUtilities.source( roadFeatures );
+        FeatureReader r = badDog.getFeatures().reader();
+        while( r.hasNext() ){
+            System.out.println( r.next() );
+        }
+        r.close();
+        
+        HashMap layers = new HashMap();
+        layers.put("road", badDog );        
+        
+        assertTrue( !validator.validate(layers, null, validationResults) );
    		
    	}
    	   	
