@@ -21,7 +21,7 @@ import org.geotools.filter.Filter;
  * added to the property list by calling add Property.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: UpdateRequest.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: UpdateRequest.java,v 1.7 2004/03/31 05:05:31 cholmesny Exp $
  */
 public class UpdateRequest extends SubTransactionRequest {
     /** Class logger */
@@ -32,7 +32,7 @@ public class UpdateRequest extends SubTransactionRequest {
     private List properties;
 
     /** Specifies the features to change. */
-    private Filter filter;
+    private Filter filter = Filter.NONE;
 
     /** Specifies the table of features */
     protected String typeName = null;

@@ -34,7 +34,7 @@ import org.geotools.filter.Filter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteRequest.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: DeleteRequest.java,v 1.7 2004/03/31 05:05:31 cholmesny Exp $
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */
@@ -45,7 +45,7 @@ public class DeleteRequest extends SubTransactionRequest {
     protected String typeName = null;
 
     /** Specifies the features to lock. */
-    protected Filter filter = null;
+    protected Filter filter = Filter.NONE;
     protected boolean releaseAll = true;
 
     /**
