@@ -19,9 +19,10 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.7 2003/11/19 18:06:27 groldan Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.8 2003/11/19 19:11:55 cholmesny Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
+
     /** DOCUMENT ME!  */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
@@ -54,7 +55,7 @@ public class FeatureTypeConfig extends BasicConfig {
 
     /**
      * GT2 based configuration, Config map supplies extra info.
-     *
+     * 
      * <p>
      * We need to make an GeometryAttributeType that knows about SRID
      * </p>
@@ -253,6 +254,26 @@ public class FeatureTypeConfig extends BasicConfig {
         }
 
         return prefix;
+    }
+
+    /**
+     * Gets the namespace for this featureType.  This isn't _really_
+     * necessary, but I'm putting it in in case we change namespaces,  letting
+     * FeatureTypes set their own namespaces instead of being dependant on
+     * datasources.  This method will allow us to make that change more easily
+     * in the future.
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IllegalStateException DOCUMENT ME!
+     */
+    public NameSpace getNameSpace() {
+        if (!isEnabled()) {
+            throw new IllegalStateException("This featureType is not "
+                + "enabled");
+        }
+
+        return getDataStore().getNameSpace();
     }
 
     /**
