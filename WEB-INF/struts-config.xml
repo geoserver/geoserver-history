@@ -138,10 +138,10 @@
         	name="validation"
         	path="/ValidationTestSuite.do"/>
         <forward
-        	name="validationTestSuite"
+        	name="suite"
         	path="/ValidationTestSuite.do"/>
         <forward
-        	name="validationTest"
+        	name="test"
         	path="/ValidationTest.do"/>
 
         <forward
@@ -150,18 +150,12 @@
         	
         	
        	<forward
-       		name="geoServerConfiguration"
+       		name="config"
        		path="/GeoServerConfiguration.do"/>
-       	<forward
-       		name="wfsConfigMenu"
-       		path="/WFSConfigMenu.do"/>
-       	<forward
-       		name="wmsConfigMenu"
-       		path="/WMSConfigMenu.do"/>
-       	<forward
-       		name="dataConfigMenu"
-       		path="/DataConfigMenu.do"/>
        		
+       	<forward
+       		name="wfs"
+       		path="/WFSConfigMenu.do"/>
        	<forward
        		name="wfsConfigDescription"
        		path="/WFSConfigDescription.do"/>
@@ -170,14 +164,21 @@
        		path="/WFSConfigContent.do"/>
        		
        	<forward
+       		name="wms"
+       		path="/WMSConfigMenu.do"/>
+       	<forward
        		name="wmsConfigDescription"
        		path="/WMSConfigDescription.do"/>
        	<forward
        		name="wmsConfigContent"
        		path="/WMSConfigContent.do"/>
-       		       		
+
        	<forward
-       		name="dataConfigDataStores"
+       		name="data"
+       		path="/DataConfigMenu.do"/>
+       		
+       	<forward
+       		name="stores"
        		path="/DataConfigDataStores.do"/>
        	<forward
        		name="dataConfigDataStoresNewPage"
@@ -186,9 +187,8 @@
        		name="dataConfigDataStoresEditor"
        		path="/DataConfigDataStoresEditor.do"/>
        		
-       		
        	<forward
-       		name="dataConfigNamespaces"
+       		name="namespaces"
        		path="/DataConfigNamespacesSelectPage.do"/>
        	<forward
        		name="dataConfigNamespacesSelect"
@@ -199,13 +199,13 @@
        	<forward
        		name="dataConfigNamespacesNewPage"
        		path="/DataConfigNamespacesNewPage.do"/>
-      		
+      		       		
+       	<forward
+       		name="styles"
+       		path="/DataConfigStyles.do"/>
        		
        	<forward
-       		name="dataConfigStyles"
-       		path="/DataConfigStyles.do"/>
-       	<forward
-       		name="dataConfigFeatureTypes"
+       		name="types"
        		path="/DataConfigFeatureTypes.do"/>       	       		
        		
        	<forward
@@ -217,126 +217,143 @@
 <!-- =================================== Action Mapping Definitions -->
 
     <action-mappings>
-
+        <!-- WELCOME -->
         <action
             path="/Welcome"
             type="org.apache.struts.actions.ForwardAction"
-            parameter="main.welcome"/>
+            parameter="welcome"
+            name="blankBean"/>
 
         <action
             path="/ContactInformation"
             type="org.apache.struts.actions.ForwardAction"
-            parameter="main.contact"/>
-                        
-        <action
-        	path ="/Administration"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="main.menu"
-        	name="blankBean"/>       	
-       	
+            parameter="welcome.contact"/>
+                              	       	
 		<action
 			path ="/Login"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="main.login"/>
+        	parameter="welcome.login"/>
 
 		<action        	
 			path ="/Logout"
         	type="org.vfny.geoserver.action.LogoutAction"
         	parameter=""/>
 
-        	
+        <!-- ADMIN -->
         <action
-        	path="/ValidationMenu"
+        	path ="/Administration"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="main.validation.menu"/>
+        	parameter="admin"
+        	name="blankBean"/>        	
+        	
+        <!-- CONFIG -->
         <action
         	path="/GeoServerConfiguration"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="main.geoServer.configuration"/>
+        	parameter="config"
+        	name="blankBean"/>
+
+        <!-- CONFIG WFS -->        	
         <action
         	path="/WFSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wfs.menu"/>
-        <action
-        	path="/WMSConfigMenu"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wms.menu"/>        
-        <action
-        	path="/DataConfigMenu"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.menu"/>        
-        	
+        	parameter="wfs"/>
+
         <action
         	path="/WFSConfigDescription"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="wfs.description"/>
+
+        <!-- CONFIG WMS -->       	
         <action
-        	path="/WFSConfigContent"
+        	path="/WMSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="wfs.content"/>
+        	parameter="wms"/>        
 
         <action
         	path="/WMSConfigDescription"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="wms.description"/>
+
         <action
         	path="/WMSConfigContent"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="wms.content"/>
+
+        <!-- CONFIG VALIDATION -->
         <action
-        	path="/DataConfigDataStores"
+        	path="/Validation"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.dataStores.select"/>
+        	parameter="validation"/>
+
+        <action
+        	path="/Validation/Suite"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="validation.suite"/>
+        	
+        <action
+        	path="/Validation/Test"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="validation.test"/>
+        	
+        <action
+        	path="/Validation/TestEdit"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="validation.test.editor"/>
+        	        	
+        <!-- DATA -->
+        <action
+        	path="/Data"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data"/>        
+        	
+       <!-- DATA STORES -->
+        <action
+        	path="/Data/Store"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="data.store"/>
         <action	
-        	path="/DataConfigDataStoresNewPage"
+        	path="/Data/StoreNew"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.dataStores.new"/>
+        	parameter="data.store.new"/>
         <action
-        	path="/DataConfigDataStoresEditor"
+        	path="/Data/StoreEditor"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.dataStores.editor"/>        	
+        	parameter="data.store.editor"/>        	
         	
-        	
+       <!-- DATA NAMESPACES -->        	
         <action
-        	path="/DataConfigNamespaces"
+        	path="/Data/Namespace"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.namespaces.select"/>
+        	parameter="data.namespace"/>
         <action
-        	path="/DataConfigNamespacesSelectPage"
+        	path="/Data/NamespaceNew"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.namespaces.select"/>
+        	parameter="data.namespace.new"/> 
         <action
-        	path="/DataConfigNamespacesNewPage"
+        	path="/Data/NamespaceEditor"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.namespaces.new"/> 
+        	parameter="data.namespace.editor"/>        	        	
+
+		<!-- DATA styles -->        	
         <action
-        	path="/DataConfigNamespacesEditorPage"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.namespaces.editor"/>        	        	
-        	
-        <action
-        	path="/DataConfigStyles"
+        	path="/Data/Style"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="data.styles"/>
-        <action
-        	path="/DataConfigFeatureTypes"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="data.featureTypes"/>
         	
+		<!-- DATA featuretypes -->
         <action
-        	path="/ValidationTestSuite"
+        	path="/Data/FeatureType"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="validation.testSuiteSelect"/>
+        	parameter="data.type"/>
         <action
-        	path="/ValidationTest"
+        	path="/Data/FeatureTypeNew"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="validation.testSelect"/>
+        	parameter="data.type.new"/>
         <action
-        	path="/ValidationTestEdit"
+        	path="/Data/FeatureTypeEditor"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="validation.testEditor"/>
-
-
+        	parameter="data.type.editor"/>        	        	
 <!-- Submit Actions -->    
 
 		<action
