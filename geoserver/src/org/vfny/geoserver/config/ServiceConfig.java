@@ -12,7 +12,8 @@ import java.util.*;
  * default configuration for services
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @author Chris Holmes
+ * @version $Id: ServiceConfig.java,v 1.9.4.3 2003/11/11 02:41:40 cholmesny Exp $
  */
 public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -25,14 +26,15 @@ public abstract class ServiceConfig extends BasicConfig {
     private String onlineResource;
 
     /** DOCUMENT ME! */
-    private String URL;
+    protected String URL;
 
     public ServiceConfig(Element serviceRoot) throws ConfigurationException {
         super(serviceRoot);
         this.serviceType = getAttribute(serviceRoot, "type", true);
         this.enabled = getBooleanAttribute(serviceRoot, "enabled", true);
         this.onlineResource = getChildText(serviceRoot, "onlineResource", true);
-        this.URL = getChildText(serviceRoot, "URL");
+
+        //this.URL = getChildText(serviceRoot, "URL");
     }
 
     /**
@@ -75,8 +77,10 @@ public abstract class ServiceConfig extends BasicConfig {
      * Gets the base schema url.
      *
      * @return The url to use as the base for schema locations.
+     *
+     * @deprecated Use GlobalConfig.getSchemaBaseUrl()
      */
     public String getSchemaBaseUrl() {
-        return getURL() + "/data/capabilities/";
+        return GlobalConfig.getInstance().getSchemaBaseUrl();
     }
 }
