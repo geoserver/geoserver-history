@@ -65,7 +65,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.4 2004/01/13 19:37:41 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.5 2004/01/13 21:12:20 jive Exp $
  */
 public class AttributeTypeInfoConfig {
 	/** attribute name*/
@@ -138,10 +138,8 @@ public class AttributeTypeInfoConfig {
 	}
 
 	/**
-	 * getMaxOccurs purpose.
-	 * <p>
 	 * The max number of occurences for this element.
-	 * </p>
+     * 
 	 * @return max number of occurences
 	 */
 	public int getMaxOccurs() {
@@ -149,10 +147,8 @@ public class AttributeTypeInfoConfig {
 	}
 
 	/**
-	 * getMinOccurs purpose.
-	 * <p>
-	 * the min number of occurences for this element
-	 * </p>
+	 * The min number of occurences for this element
+	 * 
 	 * @return min number of occurences
 	 */
 	public int getMinOccurs() {
@@ -160,11 +156,19 @@ public class AttributeTypeInfoConfig {
 	}
 
 	/**
-	 * getName purpose.
+	 * Attribute name property.
 	 * <p>
-	 * returns the element name
+	 * May be used directly to lookup AttribtueType in FeatureType as an
+     * XPATH expression:
 	 * </p>
-	 * @return the element name
+     * <pre><code>
+     * AttributeType type = featureType.getAttribtue( attributeTypeConfig.getName() );
+     * </code></pre>
+     * <p>
+     * May also be used to identify the element name in a XMLSchema document
+     * genrated by describe type (or our XML based persistence). 
+     * </p>
+	 * @return Attribute the element name
 	 */
 	public String getName() {
 		return name;
@@ -248,18 +252,19 @@ public class AttributeTypeInfoConfig {
 	}
 
 	/**
-	 * setType purpose.
+	 * Set the type property
 	 * <p>
-	 * Stores the type for this element. This is an XML fragment when isRef() returns false.
+	 * Stores the type for this element.
+     * This is an XML fragment when isComplex() returns false.
 	 * </p>
-	 * @param stringthe type for this element. This is an XML fragment when isRef() returns false.
+	 * @param type of attribute (as a XML fragment when isComplex() returns false)
 	 */
-	public void setType(String string) {
-		type = string;
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	/**
-	 * update purpose.
+	 * Update AttributeTypeInfo based on a new Data Transfer Object.
 	 * <p>
 	 * Loads the specified data into this class.
 	 * </p>
@@ -273,7 +278,15 @@ public class AttributeTypeInfoConfig {
 		nillable = dto.isNillable();
 		type = dto.getName();
 	}
-	
+
+    /**
+     * Package up Configuration as a Data Transfer Object
+     * <p>
+     * The resulting DTO object can be used to write a backup to disk
+     * using global.dto, or used to configure the live GeoSever application
+     * using global.
+     * </p>
+     */    
 	public AttributeTypeInfoDTO toDto(){
 		AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
 		dto.setMaxOccurs(maxOccurs);
