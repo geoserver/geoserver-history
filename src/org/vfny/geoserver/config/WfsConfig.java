@@ -26,6 +26,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 
+import org.geotools.resources.Geotools;
+import org.geotools.resources.Log4JFormatter;
+import org.geotools.resources.MonolineFormatter;
+
 /**
  * This class represents the global geoserver configuration options that
  * are not part of the Service element of a capabilities response.  They
@@ -69,7 +73,7 @@ public class WfsConfig implements java.io.Serializable {
 
     private Level logLevel = Logger.getLogger("").getLevel();
     
-    private int maxFeatures = 2000;
+    private int maxFeatures = 1000000;
 
     private String defaultPrefix;
 
@@ -138,12 +142,23 @@ public class WfsConfig implements java.io.Serializable {
 		}
 	    }
 	
+	    String logLevel = findTextFromTag(configElem, LOG_TAG);
+	    wfsConfig.setLogLevel(logLevel);
+	    Level level = wfsConfig.getLogLevel(); 
+	    //init this now so the rest of the config has correct log levels.
+	    Log4JFormatter.init("org.geotools", level);
+	    Log4JFormatter.init("org.vfny.geoserver", level);
+
 	    Element verboseElem = 
 		(Element) configElem.getElementsByTagName(VERBOSE_TAG).item(0);
 	    if (verboseElem != null){
 		if (!verboseElem.getAttribute("value").equals("false")){
 		    wfsConfig.setVerbose(true);
+		} else {
+		    wfsConfig.setVerbose(false);
 		}
+	    } else {
+		wfsConfig.setVerbose(false);
 	    }
 
 	    String baseUrl = findTextFromTag(configElem, URL_TAG);
@@ -170,12 +185,14 @@ public class WfsConfig implements java.io.Serializable {
 		    //throw new ConfigurationException(message);
 		    LOGGER.warning(message);
 		}
+		LOGGER.config("adding namespace: " + prefix + ":" + uri);
+		namespaces.put(prefix, uri);
 		if (defaultA != null && defaultA.equals("true")){
+		    LOGGER.config("setting default namespace to " + uri);
 		    wfsConfig.setDefaultPrefix(prefix);
 		    newDefault = true;
 		}
-		LOGGER.finer("adding namespace: " + prefix + ":" + uri);
-		namespaces.put(prefix, uri);
+
 	    }
 	    if (!newDefault) {
 		String defaultURI = ServiceConfig.findTextFromTag
@@ -189,8 +206,7 @@ public class WfsConfig implements java.io.Serializable {
 	    wfsConfig.setNamespaces(namespaces);
 	    fis.close();
 
-	    String logLevel = findTextFromTag(configElem, LOG_TAG);
-	    wfsConfig.setLogLevel(logLevel);
+	  
 
 	} catch (IOException ioe) {
 	    String message = "problem reading file " + configFile  + "due to: "
@@ -216,12 +232,13 @@ public class WfsConfig implements java.io.Serializable {
     }
 
     void setMaxFeatures(String max){
-	LOGGER.finer("setting max features with " + max);
+	LOGGER.finest("setting max features with " + max);
 	//if (!max.equals("")){
 	    try {
 		this.maxFeatures = Integer.parseInt(max);
+		LOGGER.config("setting max features to " + max);
 	    } catch (NumberFormatException e){
-		LOGGER.info("could not parse maxFeatures: " + max + ", " +
+		LOGGER.finer("could not parse maxFeatures: " + max + ", " +
 			       "using default: " + this.maxFeatures);
 	    }
 	    //}
@@ -233,9 +250,11 @@ public class WfsConfig implements java.io.Serializable {
 
     void setLogLevel(String level){
 	try {
+	    
 	    logLevel = Level.parse(level);
+	    LOGGER.config("setting LogLevel to " + logLevel);
 	} catch (IllegalArgumentException e){
-	    LOGGER.warning("could not parse LogLevel: " + level + ", using " +
+	    LOGGER.config("could not parse LogLevel: " + level + ", using " +
 			   "level: " + this.logLevel + ", found in " +
 			   "logging.properties file in java home");
 	}
@@ -253,6 +272,8 @@ public class WfsConfig implements java.io.Serializable {
     /**
      * sets the whether responses should have line feeds and nice formatting*/
     void setVerbose(boolean verbose){
+	LOGGER.config("Output from GeoServer will " + (verbose ? "" : "not") +
+		      "insert newlines and indents into return xml");
 	this.verbose = verbose;
     }
 
