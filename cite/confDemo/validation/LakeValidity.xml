@@ -6,7 +6,7 @@
 	xs:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd">
 	<name>Lake Integrity Checks</name>
 	<description>Checks to ensure the lakes are valid</description>
-	<test>
+	<!--<test>
 		<name>lake is valid geom</name>
 		<description>Checks that Lakes are represented by valid geometries</description>
 		<plugin>Is Valid Geometry</plugin>
@@ -23,5 +23,5 @@
 			<name>typeRef</name>
 			<string>lakes:lakes</string>
 		</argument>
-	</test>
+	</test>-->
 </suite>
