@@ -17,6 +17,8 @@ import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
+import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
+import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
 
 /**
  * ValidationConfig sets up the Tests used for the VWFS.
@@ -47,7 +49,7 @@ import org.geotools.validation.ValidationProcessor;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.1.2.2 2003/11/26 06:49:24 jive Exp $
+ * @version $Id: ValidationConfig.java,v 1.1.2.3 2003/11/26 07:09:41 jive Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
@@ -128,8 +130,24 @@ public class ValidationConfig extends AbstractConfig {
      * @param dir Validation Directory
      */
     public ValidationConfig(File dir) {
-        // need to implement xml file format as outlined
-        // in design documentation
+        if( dir.exists() ){
+            // XML not supported yet - lets use a couple Validations
+            processor.addValidation(
+                new IsValidGeometryFeatureValidation(
+                    "isValidALL",
+                    "Tests to see if a geometry is valid",
+                     Validation.ALL
+                )
+            );
+            processor.addValidation(            
+                new UniqueFIDIntegrityValidation(
+                    "uniqueFID",
+                    "Checks if each feature has a unique ID",
+                    Validation.ALL,
+                    "FID"
+                )
+            );
+        }        
     }
     
     
