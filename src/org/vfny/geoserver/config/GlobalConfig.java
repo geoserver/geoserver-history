@@ -19,7 +19,7 @@ import java.util.logging.*;
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: GlobalConfig.java,v 1.3 2003/12/23 20:44:12 cholmesny Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -63,10 +63,10 @@ public class GlobalConfig extends AbstractConfig {
 
     /**
      * Used to aquire a GlobalConfig for testing against
-     *
+     * 
      * <p>
      * The provided config Map recognizes:
-     *
+     * 
      * <ul>
      * <li>
      * global.maxFeatures: int (default 2000 )
@@ -91,7 +91,7 @@ public class GlobalConfig extends AbstractConfig {
      * </li>
      * </ul>
      * </p>
-     *
+     * 
      * <p>
      * In general this is expected to be used by testcases, in which case the
      * actual java objects can be supplied. And then only if you really need
@@ -106,7 +106,7 @@ public class GlobalConfig extends AbstractConfig {
                 Logger.getLogger("org.vfny.geoserver.config").getLevel());
         verbose = get(config, "global.verbose", true);
         numDecimals = get(config, "global.numDecimal", 8);
-        charSet = get(config, "global.charset", Charset.forName("foo"));
+        charSet = get(config, "global.charset", Charset.forName("UTF-8"));
 
         try {
             baseUrl = get(config, "global.base",
@@ -188,7 +188,7 @@ public class GlobalConfig extends AbstractConfig {
         //TODO: better checking.
         this.baseUrl = getChildText(globalConfigElem, "URL", true);
 
-        if (baseUrl != null && !baseUrl.endsWith("/")) {
+        if ((baseUrl != null) && !baseUrl.endsWith("/")) {
             this.baseUrl = baseUrl + "/";
         }
 
