@@ -57,7 +57,7 @@ public class ServiceConfig implements java.io.Serializable {
     public static final String VERBOSE_TAG = "Verbose";
 
     /** Regular Expression to split values from spaces or commas */
-    public static final String WHITE_SPACE_OR_COMMA = "[\\s,]+";
+    public static final String WHITE_SPACE_OR_COMMA = ",\\s+";
 
 
         /** Standard logging instance for class */
@@ -147,7 +147,10 @@ public class ServiceConfig implements java.io.Serializable {
 		    String message = "could not find root tag: " + rootTag + 
 			" in file: " + configFile;
 		    LOGGER.warning(message);
-		    throw new ConfigurationException(message);
+		    //throw new ConfigurationException(message);
+		    //instead of throwing exception, just search whole document
+		    configElem = serviceDoc.getDocumentElement();
+
 		}
 	    }
 		
