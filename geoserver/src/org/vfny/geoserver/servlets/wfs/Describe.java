@@ -4,20 +4,15 @@
  */
 package org.vfny.geoserver.servlets.wfs;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.readers.wfs.*;
-import org.vfny.geoserver.requests.wfs.*;
-import org.vfny.geoserver.responses.*;
-import org.vfny.geoserver.responses.wfs.*;
-import org.vfny.geoserver.servlets.WFService;
-import java.io.*;
 import java.util.Map;
-import java.util.logging.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.readers.wfs.DescribeKvpReader;
+import org.vfny.geoserver.requests.readers.wfs.DescribeXmlReader;
+import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.responses.wfs.DescribeResponse;
+import org.vfny.geoserver.servlets.WFService;
 
 
 /**
@@ -28,7 +23,7 @@ import javax.servlet.http.*;
  * with other tables.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: Describe.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: Describe.java,v 1.2.2.1 2003/12/30 23:00:47 dmzwiers Exp $
  */
 public class Describe extends WFService {
     /**

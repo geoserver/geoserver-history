@@ -4,13 +4,17 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.File;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
 
-import org.geotools.data.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.*;
+import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.DataSourceFinder;
+import org.geotools.data.DataSourceMetaData;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.config.old.ConfigurationException;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
@@ -21,7 +25,7 @@ import org.vfny.geoserver.*;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán, Dominion t.i.
- * @version $Id: TypeInfo.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: TypeInfo.java,v 1.2.2.1 2003/12/30 23:00:43 dmzwiers Exp $
  */
 public class TypeInfo
 {

@@ -2,24 +2,23 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
-import com.sun.jndi.toolkit.url.Uri;
-import org.geotools.data.*;
-import org.geotools.feature.*;
-import org.w3c.dom.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.*;
+import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.w3c.dom.Element;
 
 
 /**
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.3 2003/12/23 20:44:12 cholmesny Exp $
+ * @version $Id: GlobalConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */

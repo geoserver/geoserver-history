@@ -4,26 +4,22 @@
  */
 package org.vfny.geoserver.servlets.wms;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.readers.wms.*;
-import org.vfny.geoserver.responses.*;
-import org.vfny.geoserver.responses.wms.*;
-import org.vfny.geoserver.servlets.WMService;
-import java.io.*;
 import java.util.Map;
-import java.util.logging.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.readers.wms.CapabilitiesKvpReader;
+import org.vfny.geoserver.requests.readers.wms.CapabilitiesXmlReader;
+import org.vfny.geoserver.responses.Response;
+import org.vfny.geoserver.responses.wms.WMSCapabilitiesResponse;
+import org.vfny.geoserver.servlets.WMService;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: Capabilities.java,v 1.2.2.1 2003/12/30 23:00:48 dmzwiers Exp $
  */
 public class Capabilities extends WMService {
     /**

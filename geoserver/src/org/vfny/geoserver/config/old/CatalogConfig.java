@@ -2,31 +2,32 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geotools.data.Catalog;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureLockFactory;
-import org.geotools.data.FeatureLocking;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.*;
-import org.geotools.styling.*;
-import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.requests.wfs.*;
-import org.vfny.geoserver.responses.wfs.*;
-import org.w3c.dom.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.geotools.styling.SLDStyle;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.3 2003/12/17 22:16:18 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  */
 public class CatalogConfig extends AbstractConfig
 /**

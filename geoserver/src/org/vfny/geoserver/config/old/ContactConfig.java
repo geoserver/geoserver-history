@@ -2,11 +2,12 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
 import java.util.Map;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -29,7 +30,7 @@ import org.w3c.dom.*;
  * &lt;/ContactInformation&gt;<br></code>
  *
  * @author Gabriel Roldán
- * @version $Id: ContactConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: ContactConfig.java,v 1.1.2.1 2003/12/30 23:00:43 dmzwiers Exp $
  *
  * @task REVISIT: may be it will be necessary to create a real contact
  *       hierarchy if we plan to add Catalog service.

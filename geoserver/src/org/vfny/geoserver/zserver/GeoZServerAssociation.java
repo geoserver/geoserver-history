@@ -16,22 +16,6 @@
 //
 package org.vfny.geoserver.zserver;
 
-import com.k_int.IR.*;
-import com.k_int.IR.Syntaxes.Conversion.*;
-
-// for OID Register
-import com.k_int.codec.util.*;
-import com.k_int.gen.AsnUseful.*;
-import com.k_int.gen.NegotiationRecordDefinition_charSetandLanguageNegotiation_3.*;
-import com.k_int.gen.Z39_50_APDU_1995.*;
-
-// Used to represent arbritray query structures
-import com.k_int.util.RPNQueryRep.RootNode;
-import com.k_int.z3950.util.*;
-
-// For XML components
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.util.Enumeration;
@@ -39,6 +23,55 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Logger;
+
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+
+import com.k_int.IR.IRQuery;
+import com.k_int.IR.InformationFragment;
+import com.k_int.IR.PresentException;
+import com.k_int.IR.RecordFormatSpecification;
+import com.k_int.IR.ScanException;
+import com.k_int.IR.ScanInformation;
+import com.k_int.IR.ScanRequestInfo;
+import com.k_int.IR.Scanable;
+import com.k_int.IR.SearchException;
+import com.k_int.IR.SearchTask;
+import com.k_int.IR.Searchable;
+import com.k_int.IR.TimeoutExceededException;
+import com.k_int.codec.util.OIDRegister;
+import com.k_int.codec.util.OIDRegisterEntry;
+import com.k_int.gen.AsnUseful.EXTERNAL_type;
+import com.k_int.gen.AsnUseful.encoding_inline0_type;
+import com.k_int.gen.NegotiationRecordDefinition_charSetandLanguageNegotiation_3.CharSetandLanguageNegotiation_type;
+import com.k_int.gen.NegotiationRecordDefinition_charSetandLanguageNegotiation_3.Iso10646_type;
+import com.k_int.gen.NegotiationRecordDefinition_charSetandLanguageNegotiation_3.OriginProposal_type;
+import com.k_int.gen.NegotiationRecordDefinition_charSetandLanguageNegotiation_3.proposedCharSets_inline0_choice1_type;
+import com.k_int.gen.Z39_50_APDU_1995.DefaultDiagFormat_type;
+import com.k_int.gen.Z39_50_APDU_1995.DeleteResultSetRequest_type;
+import com.k_int.gen.Z39_50_APDU_1995.DeleteResultSetResponse_type;
+import com.k_int.gen.Z39_50_APDU_1995.ElementSetNames_type;
+import com.k_int.gen.Z39_50_APDU_1995.InitializeRequest_type;
+import com.k_int.gen.Z39_50_APDU_1995.NamePlusRecord_type;
+import com.k_int.gen.Z39_50_APDU_1995.OtherInformationItem43_type;
+import com.k_int.gen.Z39_50_APDU_1995.PDU_type;
+import com.k_int.gen.Z39_50_APDU_1995.PresentRequest_type;
+import com.k_int.gen.Z39_50_APDU_1995.PresentResponse_type;
+import com.k_int.gen.Z39_50_APDU_1995.Query_type;
+import com.k_int.gen.Z39_50_APDU_1995.RPNQuery_type;
+import com.k_int.gen.Z39_50_APDU_1995.Records_type;
+import com.k_int.gen.Z39_50_APDU_1995.ScanRequest_type;
+import com.k_int.gen.Z39_50_APDU_1995.SearchRequest_type;
+import com.k_int.gen.Z39_50_APDU_1995.SearchResponse_type;
+import com.k_int.gen.Z39_50_APDU_1995.addinfo_inline14_type;
+import com.k_int.gen.Z39_50_APDU_1995.information_inline45_type;
+import com.k_int.gen.Z39_50_APDU_1995.record_inline13_type;
+import com.k_int.util.RPNQueryRep.RootNode;
+import com.k_int.z3950.util.APDUEvent;
+import com.k_int.z3950.util.GenericEventToTargetListenerAdapter;
+import com.k_int.z3950.util.TargetAPDUListener;
+import com.k_int.z3950.util.Z3950Constants;
+import com.k_int.z3950.util.ZTargetEndpoint;
 
 
 /**
@@ -49,7 +82,7 @@ import java.util.logging.Logger;
  *         handles a connection, handling the init, search and present
  *         requests.
  * @author Chris Holmes, TOPP
- * @version $Id: GeoZServerAssociation.java,v 1.6 2003/09/16 18:55:27 cholmesny Exp $
+ * @version $Id: GeoZServerAssociation.java,v 1.6.6.1 2003/12/30 23:00:40 dmzwiers Exp $
  * @task TODO: change this so it extends ZServerAssociation, instead of r
  * ewriting things, as there are many methods used which were not changed.  
  * Also, unit tests, but you'd need a client or else sample encoded z3950 requests.

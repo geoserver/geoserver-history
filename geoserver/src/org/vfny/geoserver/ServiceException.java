@@ -4,12 +4,12 @@
  */
 package org.vfny.geoserver;
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.responses.ResponseUtils;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.*;
+import java.util.logging.Logger;
+
+import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.responses.ResponseUtils;
 
 
 /**
@@ -64,7 +64,7 @@ import java.util.logging.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.3 2003/12/16 22:47:39 cholmesny Exp $
+ * @version $Id: ServiceException.java,v 1.3.2.1 2003/12/30 23:00:51 dmzwiers Exp $
  *
  * @task TODO: print directly to an output stream for getXmlResponse.
  */

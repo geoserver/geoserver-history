@@ -2,13 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
 /**
  * Thrown when there is an error in configuration.
  *
  * @author Chris Holmes
- * @version $Id: ConfigurationException.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: ConfigurationException.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  */
 public class ConfigurationException extends Exception {
     /**

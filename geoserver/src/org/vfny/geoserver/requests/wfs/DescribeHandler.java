@@ -4,10 +4,12 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.vfny.geoserver.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.util.logging.*;
+import java.util.logging.Logger;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 
 /**
@@ -22,7 +24,7 @@ import java.util.logging.*;
  * </p>
  *
  * @author Rob Hranac, TOPP
- * @version $Id: DescribeHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: DescribeHandler.java,v 1.2.2.1 2003/12/30 23:00:40 dmzwiers Exp $
  */
 public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */

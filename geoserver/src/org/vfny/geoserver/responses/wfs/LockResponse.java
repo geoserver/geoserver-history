@@ -4,20 +4,36 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.data.*;
-import org.geotools.feature.*;
-import org.geotools.filter.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLocking;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.data.Query;
+import org.geotools.data.Transaction;
+import org.geotools.feature.Feature;
+import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.oldconfig.*;
+import org.geotools.filter.FilterFactory;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.config.old.CatalogConfig;
+import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.config.old.NameSpace;
+import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.oldconfig.TypeRepository;
 import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.wfs.*;
+import org.vfny.geoserver.requests.wfs.LockRequest;
 import org.vfny.geoserver.responses.Response;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
 
 
 /**
@@ -25,7 +41,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation

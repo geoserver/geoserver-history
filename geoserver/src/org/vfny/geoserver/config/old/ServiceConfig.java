@@ -2,10 +2,11 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
-import org.w3c.dom.*;
-import java.util.*;
+import java.util.Map;
+
+import org.w3c.dom.Element;
 
 
 /**
@@ -13,7 +14,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceConfig.java,v 1.10 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: ServiceConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  */
 public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */

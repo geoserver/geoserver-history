@@ -17,18 +17,23 @@
      
 package org.vfny.geoserver.zserver;
 
-import org.geotools.resources.Geotools;
-import java.net.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Properties;
-import com.k_int.codec.util.*; 
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.geotools.resources.Geotools;
+
+import com.k_int.codec.util.OIDRegister;
 
 /**
  * GeoZServer : Controller class for a Z39.50 Server
  * @author Chris Holmes, 
- * @version $Id: GeoZServer.java,v 1.5 2003/09/16 18:55:27 cholmesny Exp $
+ * @version $Id: GeoZServer.java,v 1.5.6.1 2003/12/30 23:00:40 dmzwiers Exp $
  * Made by slightly modifying ZServer.java to
  * start up with a properties file, so it can be invoked by
  * another class.  Most code by:

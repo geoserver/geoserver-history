@@ -4,13 +4,15 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.geotools.filter.*;
+import java.util.logging.Logger;
+
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.util.logging.*;
+import org.geotools.filter.FilterHandler;
+import org.vfny.geoserver.requests.Query;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 
 /**
@@ -25,7 +27,7 @@ import java.util.logging.*;
  * </p>
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: FeatureHandler.java,v 1.2.2.1 2003/12/30 23:00:39 dmzwiers Exp $
  */
 public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler {

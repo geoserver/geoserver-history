@@ -4,24 +4,45 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.data.*;
-import org.geotools.feature.*;
-import org.geotools.filter.FidFilter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.gml.producer.*;
-import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.requests.wfs.*;
-import org.vfny.geoserver.responses.*;
-
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
+
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLocking;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Transaction;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.filter.FidFilter;
+import org.geotools.filter.FilterFactory;
+import org.geotools.gml.producer.FeatureTransformer;
+import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.config.old.CatalogConfig;
+import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.config.old.NameSpace;
+import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.config.old.WFSConfig;
+import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.wfs.FeatureRequest;
+import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
+import org.vfny.geoserver.responses.Response;
 
 
 /**
@@ -29,7 +50,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.1 2003/12/30 23:00:41 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */

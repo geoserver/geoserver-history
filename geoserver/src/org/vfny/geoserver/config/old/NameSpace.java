@@ -2,13 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: NameSpace.java,v 1.3 2003/12/18 00:18:28 dmzwiers Exp $
+ * @version $Id: NameSpace.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  */
 public class NameSpace {
     /** DOCUMENT ME!  */

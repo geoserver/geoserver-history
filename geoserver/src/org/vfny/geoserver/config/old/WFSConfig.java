@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ import org.w3c.dom.Element;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.1 2003/12/30 23:00:43 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";

@@ -4,12 +4,9 @@
  */
 package org.vfny.geoserver.responses;
 
-import com.vividsolutions.jts.geom.*;
-import org.vfny.geoserver.oldconfig.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.logging.Logger;
 
 
 public class ResponseUtils {

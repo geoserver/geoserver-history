@@ -4,9 +4,11 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.responses.wfs.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.vfny.geoserver.requests.WFSRequest;
+import org.vfny.geoserver.responses.wfs.WfsTransactionException;
 
 
 /**
@@ -15,7 +17,7 @@ import java.util.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionRequest.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: TransactionRequest.java,v 1.2.2.1 2003/12/30 23:00:39 dmzwiers Exp $
  */
 public class TransactionRequest extends WFSRequest {
     public static final String TRANSACTION_REQUEST_TYPE = "Transaction";

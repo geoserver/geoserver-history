@@ -4,9 +4,11 @@
  */
 package org.vfny.geoserver.responses;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.requests.Request;
-import java.io.*;
 
 
 /**
@@ -32,7 +34,7 @@ import java.io.*;
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: Response.java,v 1.2.2.1 2003/12/30 23:00:45 dmzwiers Exp $
  */
 public interface Response {
     /**

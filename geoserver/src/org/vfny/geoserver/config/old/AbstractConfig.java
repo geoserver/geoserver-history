@@ -2,12 +2,9 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
-
-import org.w3c.dom.*;
+package org.vfny.geoserver.config.old;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -15,12 +12,17 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: AbstractConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: AbstractConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  */
 public abstract class AbstractConfig {
     /** DOCUMENT ME! */

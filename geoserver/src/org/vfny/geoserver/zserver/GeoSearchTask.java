@@ -23,18 +23,6 @@ package org.vfny.geoserver.zserver;
 
 
 //jzkit imports.
-import com.k_int.IR.*;
-import com.k_int.IR.QueryModels.RPNTree;
-import com.k_int.IR.Syntaxes.DOMTree;
-import com.k_int.IR.Syntaxes.SUTRS;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-
-//lucene imports
-import org.apache.lucene.search.Searcher;
-import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,7 +30,30 @@ import java.io.RandomAccessFile;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Searcher;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import com.k_int.IR.AsynchronousEnumeration;
+import com.k_int.IR.DefaultSourceEnumeration;
+import com.k_int.IR.IFSNotificationTarget;
+import com.k_int.IR.IREvent;
+import com.k_int.IR.IRQuery;
+import com.k_int.IR.IRStatusReport;
+import com.k_int.IR.InformationFragment;
+import com.k_int.IR.InformationFragmentSource;
+import com.k_int.IR.RecordFormatSpecification;
+import com.k_int.IR.SearchException;
+import com.k_int.IR.SearchTask;
+import com.k_int.IR.QueryModels.RPNTree;
+import com.k_int.IR.Syntaxes.DOMTree;
+import com.k_int.IR.Syntaxes.SUTRS;
 
 
 /**
@@ -52,7 +63,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  *
  * @author Chris Holmes, TOPP
  * @author:     Ian Ibbotson (ian.ibbotson@k-int.com) Company:     KI
- * @version $Id: GeoSearchTask.java,v 1.6 2003/09/16 18:55:27 cholmesny Exp $ based on DemoSearchTask:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
+ * @version $Id: GeoSearchTask.java,v 1.6.6.1 2003/12/30 23:00:41 dmzwiers Exp $ based on DemoSearchTask:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
  */
 public class GeoSearchTask extends SearchTask
     implements InformationFragmentSource {

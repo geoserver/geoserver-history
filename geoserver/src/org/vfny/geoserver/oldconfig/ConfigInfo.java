@@ -4,11 +4,15 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.util.*;
-import java.util.logging.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.geotools.data.*;
-import org.vfny.geoserver.config.*;
+import org.geotools.data.DataSourceFinder;
+import org.vfny.geoserver.config.old.ConfigurationException;
 
 /**
  * Reads all necessary configuration data and abstracts it away from the

@@ -4,12 +4,20 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.config.*;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.vfny.geoserver.config.old.GlobalConfig;
+import org.vfny.geoserver.config.old.ServerConfig;
 import org.vfny.geoserver.responses.ResponseUtils;
-import org.w3c.dom.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -19,7 +27,7 @@ import java.util.logging.*;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WfsTransResponse.java,v 1.2.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */

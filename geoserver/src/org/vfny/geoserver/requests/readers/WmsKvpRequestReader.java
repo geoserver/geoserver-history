@@ -1,8 +1,8 @@
 package org.vfny.geoserver.requests.readers;
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.Request;
-import java.util.*;
+import java.util.Map;
+
+import org.vfny.geoserver.config.old.ServerConfig;
 
 
 /**
@@ -14,7 +14,7 @@ import java.util.*;
  * to recognize it
  *
  * @author Gabriel Roldán
- * @version $Id: WmsKvpRequestReader.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: WmsKvpRequestReader.java,v 1.2.2.1 2003/12/30 23:00:51 dmzwiers Exp $
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader
 {

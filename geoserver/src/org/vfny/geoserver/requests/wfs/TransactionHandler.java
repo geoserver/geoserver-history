@@ -20,17 +20,22 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import com.vividsolutions.jts.geom.*;
-import org.geotools.feature.*;
-import org.geotools.filter.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.geotools.feature.Feature;
 import org.geotools.filter.Filter;
-import org.geotools.gml.*;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.responses.wfs.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.util.*;
-import java.util.logging.*;
+import org.geotools.filter.FilterHandler;
+import org.geotools.gml.GMLHandlerFeature;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.responses.wfs.WfsTransactionException;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -38,7 +43,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: TransactionHandler.java,v 1.2.2.1 2003/12/30 23:00:40 dmzwiers Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {

@@ -4,15 +4,15 @@
  */
 package org.vfny.geoserver.responses;
 
-import org.vfny.geoserver.config.*;
-import org.xml.sax.*;
+import org.vfny.geoserver.config.old.ServiceConfig;
+import org.xml.sax.SAXException;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: ResponseHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: ResponseHandler.java,v 1.2.2.1 2003/12/30 23:00:45 dmzwiers Exp $
  */
 public interface ResponseHandler {
     void handleDocument(ServiceConfig config) throws SAXException;

@@ -4,8 +4,11 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.responses.*;
+import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.config.old.ServiceConfig;
+import org.vfny.geoserver.responses.CapabilitiesResponse;
+import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
+import org.vfny.geoserver.responses.ResponseHandler;
 import org.xml.sax.ContentHandler;
 
 
@@ -13,7 +16,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSCapabilitiesResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WMSCapabilitiesResponse.java,v 1.2.2.1 2003/12/30 23:00:48 dmzwiers Exp $
  */
 public class WMSCapabilitiesResponse extends CapabilitiesResponse {
     /**

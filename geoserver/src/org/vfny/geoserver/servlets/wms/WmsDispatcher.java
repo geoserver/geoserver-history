@@ -4,16 +4,19 @@
  */
 package org.vfny.geoserver.servlets.wms;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.servlets.Dispatcher;
-import java.io.*;
+import java.io.IOException;
 import java.util.Map;
-import java.util.logging.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.servlets.Dispatcher;
 
 
 /**
@@ -31,7 +34,7 @@ import javax.servlet.http.*;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.1 2003/12/17 01:13:29 cholmesny Exp $
+ * @version $Id: WmsDispatcher.java,v 1.1.2.1 2003/12/30 23:00:48 dmzwiers Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded

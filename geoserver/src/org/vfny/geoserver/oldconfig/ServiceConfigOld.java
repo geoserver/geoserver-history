@@ -4,20 +4,30 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.xml.parsers.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
 
-import org.vfny.geoserver.config.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.vfny.geoserver.config.old.ConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Represents the various service elements used by OGC
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ServiceConfigOld.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: ServiceConfigOld.java,v 1.2.2.1 2003/12/30 23:00:43 dmzwiers Exp $
  */
 public class ServiceConfigOld
     implements java.io.Serializable

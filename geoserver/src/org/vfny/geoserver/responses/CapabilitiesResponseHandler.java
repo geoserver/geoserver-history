@@ -4,19 +4,25 @@
  */
 package org.vfny.geoserver.responses;
 
+import java.io.IOException;
+
+import org.vfny.geoserver.config.old.BasicConfig;
+import org.vfny.geoserver.config.old.CatalogConfig;
+import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.config.old.ServiceConfig;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
+
 import com.vividsolutions.jts.geom.Envelope;
-import org.vfny.geoserver.config.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.io.*;
-import java.util.*;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3 2003/12/26 22:00:08 cholmesny Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.1 2003/12/30 23:00:45 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";

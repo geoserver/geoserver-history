@@ -2,18 +2,19 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
-import org.w3c.dom.*;
 import java.util.Date;
 import java.util.Map;
+
+import org.w3c.dom.Element;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: WMSConfig.java,v 1.1.2.1 2003/12/30 23:00:43 dmzwiers Exp $
  */
 public class WMSConfig extends ServiceConfig {
     /** WMS version spec implemented */

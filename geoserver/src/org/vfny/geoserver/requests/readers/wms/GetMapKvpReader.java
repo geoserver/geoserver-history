@@ -4,24 +4,31 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import java.util.*;
-import java.util.logging.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
-import org.geotools.feature.*;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.wms.*;
-import com.vividsolutions.jts.geom.*;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.config.old.CatalogConfig;
+import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
+import org.vfny.geoserver.requests.wms.GetMapRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.2.2.1 2003/12/30 23:00:49 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(

@@ -4,10 +4,12 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import java.util.*;
+import java.util.Map;
+
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.requests.CapabilitiesRequest;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
 
 
 /**
@@ -16,7 +18,7 @@ import java.util.*;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.2.2.1 2003/12/30 23:00:38 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**

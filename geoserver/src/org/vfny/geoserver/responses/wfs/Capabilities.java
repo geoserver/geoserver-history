@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.config.ServiceConfig;
-import org.vfny.geoserver.responses.*;
+import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.config.old.ServiceConfig;
+import org.vfny.geoserver.responses.CapabilitiesResponse;
+import org.vfny.geoserver.responses.ResponseHandler;
 import org.xml.sax.ContentHandler;
 
 
@@ -14,7 +15,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: Capabilities.java,v 1.2.2.1 2003/12/30 23:00:41 dmzwiers Exp $
  */
 public class Capabilities extends CapabilitiesResponse {
     protected ServiceConfig getServiceConfig() {

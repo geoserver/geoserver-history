@@ -4,16 +4,18 @@
  */
 package org.vfny.geoserver;
 
-import org.apache.catalina.*;
-import org.apache.catalina.logger.*;
-import org.apache.catalina.startup.*;
-import java.io.*;
-
-//Logging system
-import java.net.*;
-
-//Logging system
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Logger;
+
+import org.apache.catalina.Connector;
+import org.apache.catalina.Context;
+import org.apache.catalina.Deployer;
+import org.apache.catalina.Engine;
+import org.apache.catalina.Host;
+import org.apache.catalina.logger.SystemOutLogger;
+import org.apache.catalina.startup.Embedded;
 
 
 /**
@@ -22,7 +24,7 @@ import java.util.logging.Logger;
  * and path variables are in place before it begins.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: EmbeddedTomcat.java,v 1.7 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: EmbeddedTomcat.java,v 1.7.2.1 2003/12/30 23:00:51 dmzwiers Exp $
  */
 public class EmbeddedTomcat
 {

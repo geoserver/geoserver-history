@@ -4,24 +4,31 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.*;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.map.*;
-import org.geotools.renderer.*;
-import org.geotools.renderer.lite.LiteRenderer;
-import org.geotools.styling.*;
-import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.wms.GetMapRequest;
-import org.vfny.geoserver.responses.*;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.imageio.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+
+import org.geotools.data.FeatureResults;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.map.DefaultMap;
+import org.geotools.renderer.Renderer;
+import org.geotools.renderer.lite.LiteRenderer;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleBuilder;
+import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.requests.wms.GetMapRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -30,7 +37,7 @@ import javax.imageio.stream.ImageOutputStream;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.4 2003/12/17 23:53:35 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.4.2.1 2003/12/30 23:00:47 dmzwiers Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */

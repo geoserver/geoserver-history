@@ -4,14 +4,19 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.oldconfig.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.responses.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.config.old.NameSpace;
+import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.oldconfig.TypeInfo;
+import org.vfny.geoserver.oldconfig.TypeRepository;
+import org.vfny.geoserver.oldconfig.VersionBean;
+import org.vfny.geoserver.requests.CapabilitiesRequest;
+import org.vfny.geoserver.responses.XmlOutputStream;
 
 
 //import javax.servlet.*;
@@ -26,7 +31,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.1 2003/12/30 23:00:41 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */

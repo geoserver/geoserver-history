@@ -4,21 +4,33 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.xml.parsers.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
-import org.vfny.geoserver.config.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.vfny.geoserver.config.old.ConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * This class represents a FeatureType element in a Capabilities document along
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.2 $ $Date: 2003/12/16 18:46:08 $
+ * @version $Revision: 1.2.2.1 $ $Date: 2003/12/30 23:00:43 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
  *       castor generated FeatureType, but it is now unclear if we _really_

@@ -4,10 +4,8 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.geotools.filter.*;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.responses.wfs.*;
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.WfsException;
 
 
 /**
@@ -18,7 +16,7 @@ import org.vfny.geoserver.responses.wfs.*;
  * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: SubTransactionRequest.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: SubTransactionRequest.java,v 1.2.2.1 2003/12/30 23:00:40 dmzwiers Exp $
  */
 public abstract class SubTransactionRequest {
     public static final short UPDATE = 0;

@@ -2,28 +2,23 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
-import org.geotools.io.LineWriter;
-import org.geotools.resources.Utilities;
-
-// Writer
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
-
-// Logging
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
-
-// Preferences
 import java.util.prefs.Preferences;
+
+import org.geotools.io.LineWriter;
+import org.geotools.resources.Utilities;
 
 
 /**

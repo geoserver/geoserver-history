@@ -2,18 +2,27 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.vfny.geoserver.config.old;
 
-import com.vividsolutions.jts.geom.*;
-import org.geotools.data.*;
-import org.geotools.factory.*;
-import org.geotools.feature.*;
-import org.geotools.filter.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import org.geotools.data.FeatureSource;
+import org.geotools.factory.FactoryConfigurationError;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.SchemaException;
+import org.geotools.filter.Filter;
+import org.geotools.filter.FilterDOMParser;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.WmsException;
-import org.w3c.dom.*;
-import java.io.*;
-import java.util.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -21,7 +30,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.4 2003/12/18 00:18:28 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
