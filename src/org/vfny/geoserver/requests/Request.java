@@ -7,6 +7,7 @@ package org.vfny.geoserver.requests;
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.global.GeoServer;
+import org.geotools.validation.ValidationProcessor;
 
 /**
  * Defines a general Request type and provides accessor methods for universal
@@ -20,7 +21,7 @@ import org.vfny.geoserver.global.GeoServer;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.7 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.8 2004/01/20 23:37:02 dmzwiers Exp $
  */
 abstract public class Request {
 	/**
@@ -180,11 +181,14 @@ abstract public class Request {
 	 */
 	public GeoServer getGeoServer(){
 		GeoServer gs = Requests.getGeoServer( getHttpServletRequest() );
-		// was a work around for wrong loading order
-		//if(gs == null)
-		//	return new GeoServer();
 		return gs;
 	}
+	
+	public ValidationProcessor getValidationProcessor(){
+		ValidationProcessor vp = Requests.getValidationProcessor( getHttpServletRequest() );
+		return vp;
+	}
+
 	
 	public String getRootDir(){
 		return httpServletRequest.getSession().getServletContext().getRealPath("/");

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import org.geotools.validation.ValidationProcessor;
+import org.geotools.validation.xml.ValidationPlugIn;
 
 /**
  * Utility methods helpful when processing GeoServer Requests.
@@ -49,6 +51,26 @@ public final class Requests {
 		HttpSession session = request.getSession();
 		ServletContext context = session.getServletContext();
 		return (GeoServer) context.getAttribute( GeoServer.WEB_CONTAINER_KEY );		
+	}
+	
+	/**
+	 * Aquire ValidationProcessor from Web Container.  
+	 * <p>
+	 * In ValidationProcessor is create by a STRUTS plug-in and is available through
+	 * the Web container.
+	 * </p>
+	 * <p>
+	 * Test cases may seed the request object with a Mock WebContainer and a 
+	 * Mock ValidationProcessor.
+	 * </p>
+	 * @param request HttpServletRequest used to aquire servlet context
+	 * @return ValidationProcessor instance for the current Web Application
+	 */
+	public static ValidationProcessor getValidationProcessor(HttpServletRequest request) {
+		ServletRequest req = request;
+		HttpSession session = request.getSession();
+		ServletContext context = session.getServletContext();
+		return ((ValidationPlugIn) context.getAttribute( ValidationPlugIn.WEB_CONTAINER_KEY )).getValidationProcessor();		
 	}
 	
 	public static String getBaseUrl(HttpServletRequest httpServletRequest){

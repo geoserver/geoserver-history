@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.5 2004/01/16 17:58:29 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.6 2004/01/20 23:37:02 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -380,7 +380,7 @@ public class TransactionResponse implements Response {
         FeatureCollection collection) throws IOException, WfsTransactionException {
             
         ValidationProcessor validation =
-		request.getGeoServer().getValidationConfig().getProcessor();
+		request.getValidationProcessor();
 
         final Map failed = new TreeMap();
         ValidationResults results = new ValidationResults(){
@@ -424,7 +424,7 @@ public class TransactionResponse implements Response {
         throws IOException, WfsTransactionException {
         Data catalog = request.getGeoServer().getData();
         ValidationProcessor validation =
-		request.getGeoServer().getValidationConfig().getProcessor();
+		request.getValidationProcessor();
         
         // go through each modified typeName
         // and ask what we need to check
