@@ -33,7 +33,7 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.9 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.10 2004/04/22 08:26:40 emperorkefka Exp $
  */
 public class NameSpaceInfo extends GlobalLayerSupertype
     implements NamespaceMetaData {
@@ -316,10 +316,10 @@ public class NameSpaceInfo extends GlobalLayerSupertype
     }
 
     /**
-     * Implement getFeatureTypeMetaData.
+     * Search for FeatureTypeInfo based on prefix:typeName
      * 
      * <p>
-     * Description ...
+     * Convience method for data.getFeatureTypeInfo( typeName, uri );
      * </p>
      *
      * @param typeName
@@ -329,7 +329,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype
      * @see org.geotools.data.NamespaceMetaData#getFeatureTypeMetaData(java.lang.String)
      */
     public FeatureTypeMetaData getFeatureTypeMetaData(String typeName) {
-        return data.getFeatureTypeInfo(typeName);
+        return data.getFeatureTypeInfo(typeName, uri );
     }
 
     public String toString() {
