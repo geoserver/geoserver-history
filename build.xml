@@ -762,7 +762,6 @@
     </antcall>
     <copy file="${dir.build}/geoserver.war" 
           todir="${dir.release}"/>
-    <move file="${dir.release}/geoserver.war" tofile="${dir.release}/geoserver-${name.release}.war"/>
   </target>
   
   <target name="release-docs" depends="document">
