@@ -51,10 +51,6 @@ import java.util.logging.Logger;
 public class Data extends GlobalLayerSupertype /*implements Repository*/ {
     public static final String WEB_CONTAINER_KEY = "DATA";
 
-    /** for debugging */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
-
     /** Default name of feature type information */
     private static final String INFO_FILE = "info.xml";
 

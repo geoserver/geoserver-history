@@ -875,8 +875,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         List list = new ArrayList();
 
         try {
-            FeatureType schema = getFeatureType();
-            AttributeType[] types = schema.getAttributeTypes();
+            FeatureType ftype = getFeatureType();
+            AttributeType[] types = ftype.getAttributeTypes();
             list = new ArrayList(types.length);
 
             for (int i = 0; i < types.length; i++) {
@@ -925,8 +925,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                                       .getDataStore();
 
             try {
-                FeatureType schema = dataStore.getSchema(typeName);
-                info.sync(schema.getAttributeType(attributeName));
+                FeatureType ftype = dataStore.getSchema(typeName);
+                info.sync(ftype.getAttributeType(attributeName));
             } catch (IOException e) {
             }
         } else {
@@ -935,8 +935,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                                       .getDataStore();
 
             try {
-                FeatureType schema = dataStore.getSchema(typeName);
-                info = new AttributeTypeInfo(schema.getAttributeType(
+                FeatureType ftype = dataStore.getSchema(typeName);
+                info = new AttributeTypeInfo(ftype.getAttributeType(
                             attributeName));
             } catch (IOException e) {
             }
