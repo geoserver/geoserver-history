@@ -1,455 +1,317 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
 <article>
-  <title>Build Documentation</title>
-
-  <sect1>
-    <title>Welcome</title>
-
-    <para>The GeoServer project is a Java implementation of the 1.0 Web
-    Feature Server specification from the <ulink
-    url="http://www.opengis.org">OpenGIS</ulink> Consortium. GeoServer aspires
-    to be the '<ulink url="http://www.apache.org">Apache</ulink>' of OpenGIS
-    data serving and its mission is to enable greater geographic
-    interoperability by reiforcing OpenGIS standards and lowering the barriers
-    to entry for geographic data providers. Developers should keep in mind the
-    four primary goals of GeoServer, listed in order of importance:</para>
-
-    <itemizedlist>
-      <listitem>
-        <para><emphasis role="bold">Standards Compliance</emphasis>: The
-        primary intent of the GeoServer project is to promote standardization
-        and it must, therefore, adhere to published standards as closely as
-        possible. GeoServer also attempts to support as many relevant
-        geographic standards as possible.</para>
-      </listitem>
-
-      <listitem>
-        <para><emphasis role="bold">Data Format Support</emphasis>: In order
-        to make GeoServer a useful product, it must help translate the current
-        cacaphony of geogaphic data formats into a single format. Therefore,
-        supporting several data formats - both relational and flat files - is
-        of primary importance to the project.</para>
-      </listitem>
-
-      <listitem>
-        <para><emphasis role="bold">Ease of Use</emphasis>: GeoServer is
-        targeted at organizations with minimal technical expertise and must,
-        therefore, be easy to install, configure, and run for organizations
-        with few technical resources.</para>
-      </listitem>
-
-      <listitem>
-        <para><emphasis role="bold">Efficiency</emphasis>: Given that the
-        volume of data required by geographic applications generally entails
-        severe computational and bandwidth loads, GeoServer strives to be as
-        efficient as possible, while achieving other goals.</para>
-      </listitem>
-    </itemizedlist>
-
-    <para>GeoServer is implemented using Java2 Enterprise Edition (J2EE)
-    standards, including Java Servlets and Java Server Pages. Therefore, in
-    order to install and use GeoServer, you need to first install a servlet
-    container, such as <ulink
-    url="http://jakarta.apache.org/tomcat/">Tomcat</ulink> or <ulink
-    url="http://www.caucho.com/">Resin</ulink>. This requirement is explained
-    further in the Testing section. GeoServer also makes use of several free,
-    open source libraries and tools such as <ulink
-    url="http://jakarta.apache.org/ant/">Ant</ulink>, and <ulink
-    url="http://xml.apache.org/xerces-j/">Xerces</ulink>. The function of
-    these libraries within GeoServer is explained further in the Libraries
-    section. Although the development team has plans to expand database
-    support, GeoServer uses PostGIS as its primary source for storage of
-    geographic data. PostGIS is an extension of the popular open source
-    Postgres database system and is detailed in the Data section. To get
-    started working with the GeoServer code, you should consult the Download
-    section and the read about Building.</para>
-
-    <para>GeoServer has an active developer community that you can engage by
-    joining the GeoServer mailing list and asking questions or making
-    suggestions. If you create a user account at this site, you may
-    participate in forums and vote in polls as well. However, first, you must
-    download the GeoServer source; go to our download page. You may download
-    our latest stable release, or else check out the current working code from
-    cvs.</para>
-  </sect1>
-
-  <sect1>
-    <title>Building</title>
-
-    <para>Most of this documentation assumes that you are building GeoServer
-    on a Unix system and that you have Unix command line utilities availible
-    to you. All of the examples given below are Unix command line prompts. As
-    GeoServer is built in Java using a platform-neutral build tool, there is
-    nothing to prevent you from developing and testing GeoServer on Windows.
-    In fact, we encourage you to do so and send us documentation! However, we
-    have not done so, so keep this bias in mind as you are reading the
-    documentation that follows.</para>
-
-    <para>GeoServer is built against the <ulink
-    url="http://java.sun.com/j2se/">JDK1.4.1</ulink>. If you do not have the
-    JDK1.4.1 installed on your machine, you should download it from Sun and
-    put it in your JAVA_HOME path.</para>
-
-    <para>GeoServer is built using <ulink
-    url="http://jakarta.apache.org/ant/">Ant</ulink>. If you are not yet
-    familiar with the magical and wonderful Ant build tool, you should first
-    visit their site, download and install Ant. You do not need to know much
-    about Ant in order to work with GeoServer: most useful build and testing
-    targets are included with the distribution. If you go to the root
-    GeoServer directory and type:</para>
-
-    <programlisting>ant</programlisting>
-
-    <para>You will be given a list of all build targets availible, as well as
-    a description of what they do. If you would like to see the the Ant build
-    file, just open up 'build.xml' in the root directory. To execute any of
-    the build targets from the root GeoServer directory, you simply need to
-    type:</para>
-
-    <programlisting>ant <emphasis>target</emphasis></programlisting>
-
-    <para>Where target is the name of the target that you want to build. Since
-    all necessary libraries are included in the GeoServer directory, you
-    should now be able to build any needed target. Don't worry about classpath
-    issues: Ant takes care of them for you.</para>
-
-    <para>When building geoserver a number of ant properties can be set to
-    ease configuration. These can be set a number of ways, in the build.xml
-    file, passing in with a -D, and with a build.properties file. For more
-    information see the ant documentation. But one important property that
-    most developers will make use of is the test.type property. This tells
-    geoserver where to get its configuration when building. Four
-    pre-configured geoservers are set up, in the cite/ directory. CitePostGis
-    is preconfigured for a postgis database, see cite/README.txt for more
-    information. The UserBasic test type is the one that release geoservers
-    use, it contains two small shapefiles. And the two Demo test types provide
-    a number of matching layers, which can make a nice looking map for demo
-    purposes. If no test.type property is set then geoserver will build from
-    the conf/ directory. We recommend developers set up their own conf/
-    directory, copying one of the cite/conf directories makes a good starting
-    point, but then it can be modified to the developers whims. Note that if
-    the web admin tool is used to configure and save changes those files must
-    be copied back into the conf/ directory for a fresh build. For the next
-    major release we are working on making the configuration more coherent,
-    likely by setting a geoserver home directory that geoserver instances run
-    from. </para>
-  </sect1>
-
-  <sect1>
-    <title>Setting up your Data Environment</title>
-
-    <para>As the user build documentation has sufficient information to set up
-    Shapefiles, PostGIS, ArcSDE and Oracle we will skip the procedure to get
-    one running. PostGIS is the best tested, but the other three have all
-    undergone a decent amount of testing as well, so any should work. Please
-    provide feedback on any that do not. We do recommend testing against a
-    variety of different datastores and geometry types.</para>
-  </sect1>
-
-  <sect1>
-    <title>Directory Structure</title>
-
-    <para>The directory structure of GeoServer is relatively simple; note that
-    as a general rule, descriptive and long names are favored over
-    abbreviations, with a few exceptions. Directory and most file names here
-    generally follow the same naming conventions as Java methods: lowercase
-    start, uppercase for new words, no spaces. At the root directory, the lie
-    of the land looks something like this:</para>
-
-    <informaltable>
-      <tgroup cols="2">
-        <colspec align="left" colwidth="100" />
-
-        <tbody>
-          <row>
-            <entry>WEB-INF</entry>
-
-            <entry>This contains information for the struts based web admin
-            tool, such as jsps, tile definitions and application
-            resources</entry>
-          </row>
-
-          <row>
-            <entry>build.xml</entry>
-
-            <entry>This is the Ant build file, referenced in the Building
-            section.</entry>
-          </row>
-
-          <row>
-            <entry>build</entry>
-
-            <entry>This section contains all the .CLASS files and is an exact
-            mirror of the source directory.</entry>
-          </row>
-
-          <row>
-            <entry>capabilities</entry>
-
-            <entry>This section contains all the non-proprietary schemas
-            required to run GeoServer.</entry>
-          </row>
-
-          <row>
-            <entry>cite</entry>
-
-            <entry>This section contains information for performing CITE
-            tests, including bundled configurations.</entry>
-          </row>
-
-          <row>
-            <entry>conf</entry>
-
-            <entry>This is where the files to configure GeoServer are
-            contained (active when no test.type is set).</entry>
-          </row>
-
-          <row>
-            <entry>documents</entry>
-
-            <entry>This section contains the documentation, as well as a few
-            definition files. </entry>
-          </row>
-
-          <row>
-            <entry>lib</entry>
-
-            <entry>This section contains all the libraries used by GeoServer
-            and is discussed in the Libraries section.</entry>
-          </row>
-
-          <row>
-            <entry>release</entry>
-
-            <entry>This section contains the generated release files.</entry>
-          </row>
-
-          <row>
-            <entry>server</entry>
-
-            <entry>This section contains the built-in test server
-            configuration and working files.</entry>
-          </row>
-
-          <row>
-            <entry>src</entry>
-
-            <entry>This section contains all of the .java files and is an
-            exact mirror of the classes directory.</entry>
-          </row>
-
-          <row>
-            <entry>test</entry>
-
-            <entry>This section contains all the .java testing files and test
-            data.</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable>
-  </sect1>
-
-  <sect1>
-    <title>GeoTools2</title>
-
-    <para>GeoServer's primary library is the excellent <ulink
-    url="http://geotools.org">GeoTools2</ulink> gis toolkit. GeoServer
-    maintains a very close relationship with GeoTools, most every serious
-    GeoServer developer has commit rights on GeoTools. This is by design,
-    GeoServer does not want to reinvent the wheel with yet another feature
-    model, so instead we have worked extensively with GeoTools to improve
-    their feature model to handle the functionality GeoServer needs. GeoTools
-    does all the 'heavy lifting', the reading and writing to datastores, the
-    querying and filtering, the rendering and generation of GML. So many
-    GeoServer improvements and bug fixes actually fall into the GeoTools code
-    base. This has the nice effect of having even more eyes to find bugs, as
-    other projects make use of GeoTools, and there are more developers there
-    to put their minds on improvements. For any serious GeoServer development
-    work we highly recommend getting acquainted with GeoTools, the best place
-    to start is with the <ulink
-    url="http://geotools.codehaus.org/Developers+Guide">Developer's
-    Guide</ulink> . GeoServer follows most all the same conventions as
-    GeoTools, so any questions about coding style or unit testing should be
-    found there until we get that information in our Developer's Guide. The
-    GeoServer 1.2.0 release directly uses the Geotools 2.0-rc1 jars, and the
-    latest GeoServer geotools jars will attempt to always stay in sync with
-    the 2.0.x branch of GeoTools2.</para>
-  </sect1>
-
-  <sect1>
-    <title>Other Geoserver Libraries</title>
-
-    <para>GeoServer is built on top of several excellent open source software
-    libraries. We greatly appreciate and thank the authors for their hard work
-    and dedication. Without their efforts, GeoServer would not exist. Here are
-    the libraries, with brief descriptions of how they fit into
-    GeoServer.</para>
-
-    <informaltable>
-      <tgroup cols="3">
-        <colspec align="left" colwidth="100" />
-
-        <colspec align="left" colwidth="100" />
-
-        <tbody>
-          <row>
-            <entry><ulink
-            url="http://geoserver.sourceforge.net/">GeoServer</ulink> (<ulink
-            url="http://www.vfny.org/">VFNY</ulink>)</entry>
-
-            <entry>geoserver.jar</entry>
-
-            <entry>This is the GeoServer .JAR file, which contains all classes
-            except the servlets themselves.</entry>
-          </row>
-
-          <row>
-            <entry><ulink url="http://jdbc.postgresql.org/">JDBC</ulink>
-            (<ulink url="http://www.postgresql.org/">Postgres</ulink>)</entry>
-
-            <entry>jdbcPostgres.jar</entry>
-
-            <entry>This is the Postgres JDBC driver.</entry>
-          </row>
-
-          <row>
-            <entry><ulink
-            url="http://www.vividsolutions.com/jtc/main.html">JTS</ulink>
-            (<ulink url="http://www.vividsolutions.com">Vivid</ulink>)</entry>
-
-            <entry>jts-1.4.0.jar</entry>
-
-            <entry>The Java Topology Suite, which is used as base types for
-            all geometries, as well as for filtering.</entry>
-          </row>
-
-          <row>
-            <entry><ulink
-            url="http://java.sun.com/products/servlet/index.html">Servlet</ulink>
-            (<ulink url="http://java.sun.com/">Sun</ulink>)</entry>
-
-            <entry>servlet.jar</entry>
-
-            <entry>This is the Servlet reference library, used for compilation
-            checking during testing.</entry>
-          </row>
-
-          <row>
-            <entry><ulink
-            url="http://jakarta.apache.org/struts/index.html">Struts</ulink>
-            (<ulink url="http://jakarta.apache.org/">Jakarta</ulink>)</entry>
-
-            <entry>struts.jar, commons-*.jar</entry>
-
-            <entry>The struts project implements an MVC design pattern that
-            helps with the administrative interface.</entry>
-          </row>
-
-          <row>
-            <entry><ulink
-            url="http://xml.apache.org/xerces2-j/index.html">Xerces</ulink>
-            (<ulink url="http://www.apache.org/">Apache</ulink>)</entry>
-
-            <entry>xerces.jar, xml-apis.jar</entry>
-
-            <entry>Xerces handles all of the SAX parsing for the request
-            interfaces.</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable>
-  </sect1>
-
-  <sect1>
-    <title>Setting up the Test Environment</title>
-
-    <para>Several good open source, free servlet containers and a bevy of
-    commercial ones exist on the market. We recommend <ulink
-    url="http://www.caucho.com/">Resin</ulink> (open source, free to
-    non-commercial users) or <ulink
-    url="http://jakarta.apache.org/tomcat/index.html">Tomcat</ulink> (open
-    source, free). Most GeoServer testing has occured on Tomcat 5, which is
-    remarkably simple to set up and administer. Given the maturity of these
-    projects, we will say nothing further about installation.</para>
-
-    <para>Once you have successfully installed a servlet container, you are
-    ready to test GeoServer. If you have correctly configured your build file,
-    from the GeoServer root directory you can type:</para>
-
-    <programlisting>ant test-ext</programlisting>
-
-    <para>Which will build a .WAR file and place it in the application
-    directory of your servlet container (set using the dir.container
-    property). A .WAR file is a Web Application Archive file, which is
-    essentially a .JAR file with extra information for a servlet container.
-    After you run test-ext, your servlet container should auto-expand it and
-    run your servlets correctly. The easiest way to test this is to browse the
-    application URL, followed by GetCapabilities and see if it returns a
-    GetCapabilities XML document. For example, from a browser on your server,
-    if you were using port 8080 you would type:</para>
-
-    <programlisting><ulink
-        url="http://localhost:81/geoserver/wfs/GetCapabilities">http://localhost:8080/geoserver/wfs/GetCapabilities</ulink></programlisting>
-
-    <para>You can start out testing with the provided shapefiles, but we
-    recommend setting up your own PostGIS, ArcSDE or Oracle database and
-    working against that. The web administration tool can be used to configure
-    these, but be sure to copy the changes back to the conf/ directory or else
-    the changes will be lost the next time you build geoserver. The changes
-    are primarily contained in the catalog.xml and services.xml files, which
-    are in the webapps/geoserver/WEB-INF/ of a running geoserver. They are
-    stored here so that users can not view these files, as they may contain
-    passwords and other sensitive configuration information. These should be
-    copied to the root of the conf/ directory after a save is done in the web
-    admin tool. Then the other directories in data/, such as featureTypes and
-    styles, should be copied to their equivalents in conf/. </para>
-  </sect1>
-
-  <sect1>
-    <title>Plug-in DataSources</title>
-
-    <para>Geoserver 0.96 introduces new support for plug-in datasources.
-    Shapefiles are the first instance of the new plug-in style, but the work
-    done for them will make new geotools datasource much easier to add to
-    geoserver. If you find a datasource in geotools that you would like to try
-    out with geoserver then it can be used with hopefully a fairly minimal
-    amount of tweaking. If implemented exactly right then the jar should be
-    able to be added directly to the lib directory of geoserver. The geotools
-    datasource must implement the DataSourceFactorySpi interface for the
-    plugin jar to work, and the jar must include a META-INF entry for the
-    factory implementing class. If everything is correct on the datasource
-    side then the only thing to be done is to edit the info.xml file for the
-    correct DatasourceParams, which are the params that the
-    DataSourceFactorySpi will look for. If there are developers interested in
-    new datasources for geoserver, please don't hesitate to contact us, we've
-    been working to make the process relatively painless, with plug-in
-    mechanisms and a new AbstractDataSource in geotools to handle much of the
-    messy work</para>
-  </sect1>
-
-  <sect1>
-    <title>Project Communications</title>
-
-    <para>A primary component for project communications is our JIRA task
-    tracker, available <ulink
-    url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">here</ulink>.
-    This keeps tracks of all bugs, feature requests, and improvments to be
-    made on GeoServer. Please report any issues directly to it. You must sign
-    up for an account, which is only used to notify you of changes to the
-    issue you reported. Reporting here will send an initial email to the
-    geotools-devel list, at which time other developers can view the issue and
-    choose to 'watch' it. This will send them emails whenever the issue has
-    been updated in any way. Submitting bugs here ensures that they will be
-    remembered, we try to keep as much communication as possible on the JIRA
-    itself, so that the history of the project is recorded in public, not on
-    private email exchanges. </para>
-
-    <para>The other primary entry point for communications is the development
-    list - geotools-devel@lists.sourceforge.net. This is where development of
-    GeoServer is discussed, and where the JIRA tasks are sent. We encourage
-    you to send to the public list rather than emailing core developers
-    directly, as others may be interested in your questions as well. </para>
-  </sect1>
+  <title>Building GeoServer</title>
+
+  <para>This document is focused on building GeoServer from the source code.
+  It contains information on obtaining the source code, the directory
+  structure of the source tree, how to compile and run the source, and hints
+  on a few popular tools. This document should be enough to get GeoServer
+  building, for further information on actually writing and testing code in
+  GeoServer please see the <ulink url="???">Hacking</ulink> section.</para>
+
+  <section>
+    <title>Obtaining the Source Code</title>
+
+    <para>Please see the wiki page on this subject, as we have recently
+    changed the way you obtain the source code, <ulink
+    url="???">here</ulink>.</para>
+  </section>
+
+  <section>
+    <title>GeoServer Configuration</title>
+
+    <para>The source tree of GeoServer contains several directories. Some are
+    permanent, while others are temporarily created. This directory overview
+    only attempts the top level basics, to give a quick overview of what is
+    where.</para>
+
+    <section>
+      <title>Permanent Directories</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>The <filename>bin/</filename> directory contains the start and
+          stop scripts, for linux and windows. These can be used with the
+          source check out, but are more tailored for the binary release. If
+          working with the source then we recommend using the ant 'test',
+          'war', and 'run' targets, see the section on <ulink
+          url="???">ant</ulink> for more information.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para>The <filename>capabilities/</filename> directory contains the
+          schema information that GeoServer uses. These schemas are copied to
+          the war files, and the responses that GeoServer returns directly
+          refer to schemas hosted in the servlet container. These schemas are
+          taken directly from http://schemas.opengis.org – they are the
+          official OGC schemas for WFS and WMS.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para>The <filename>cite/</filename> directory was created to ease
+          testing with the CITE tests. (link to section on CITE). There are
+          sql scripts to create a PostGIS database that will work with CITE.
+          The conf*/ directories are various sample configurations of
+          GeoServer. They allow all developers to test with the exact same
+          config. ConfDemo and confDemoPostGIS contain 6 layers all in the
+          same area. ConfCitePostGis contains the featureTypes that work with
+          the sql scripts. And confUserBasic/ is the default configuration
+          shipped with the releases.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>documents/</filename> directory is a fairly
+          random assortment of various documents. It contains the user and
+          developer documentation in docbook format, a few configuration
+          files, the docbook-xsl files to transform the docbook files into
+          generated html.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>lib/</filename> directory contains the various
+          libraries that geoserver needs to run.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>src/ </filename>directory contains all of
+          geoserver source files.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>test/</filename> directory contains the junit
+          test classes along with the test data that they use.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>WEB-INF/</filename> directory contains STRUTS
+          resource files needed for the web administration tool</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Temporary Directories</title>
+
+      <para>These directories are not part of the source checkout or download,
+      but are generally created by various targets.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><filename>build/</filename> is where the class and war files
+          are created.</para>
+        </listitem>
+
+        <listitem>
+          <para><filename>release/</filename> is where the zipped release
+          files are created.</para>
+        </listitem>
+
+        <listitem>
+          <para><filename>server/</filename> is the location of the jetty
+          based embedded geoserver instance.</para>
+        </listitem>
+
+        <listitem>
+          <para><filename>conf/</filename> optional directory where a
+          developer may store the configuration that he wants to build
+          geoserver with.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>Compiling GeoServer</title>
+
+    <section>
+      <title>Java</title>
+
+      <para>The first obvious requirement of building GeoServer is a JDK 1.4
+      installation on your development machine. It can be obtained from Sun's
+      website <link linkend="???">here</link>. Be sure to set a JAVA_HOME
+      environment variable to the base directory where it is installed. Java
+      1.5 should also work, though all GeoServer code must be written against
+      1.4. You are more than welcome to use Java 1.5 though. We recently fixed
+      out 1.5 compilation errors. The only hiccup that you should encounter is
+      that GeoServer assumes xalan (an apache xslt library), is included in
+      Java. In 1.4 it was, but in 1.5 that appears to not be the case. To
+      include it in the build targets edit the build.xml file and remove (or
+      comment out) the line that says:</para>
+
+      <programlisting><emphasis role="bold">&lt;exclude name="**/xalan.jar" &gt;</emphasis></programlisting>
+
+      <para>This should be in the 'war' section of the file. Subsequent builds
+      will then properly copy xalan to GeoServer.</para>
+    </section>
+
+    <section>
+      <title>Ant</title>
+
+      <para>GeoServer is built using <ulink
+      url="http://jakarta.apache.org/ant/">Ant</ulink>, , the excellent
+      cross-platform Java based build tool. If you have never worked with ant
+      we recommend digging into the <ulink url="???">ant manual</ulink> a bit.
+      But as it is the most popular Java build tool, and GeoServer provides
+      most every build target that you need, we will say little more about it.
+      Most IDE's now have ant partially or fully integrated. But it is easily
+      worked on from the command line. To get started with the build targets
+      that GeoServer provides go to the root GeoServer directory and
+      type:</para>
+
+      <programlisting>ant</programlisting>
+
+      <para>You will be given a list of all build targets availible, as well
+      as a description of what they do. If you would like to see the the Ant
+      build file, just open up 'build.xml' in the root directory. To execute
+      any of the build targets from the root GeoServer directory, you simply
+      need to type:</para>
+
+      <programlisting>ant <emphasis>target</emphasis></programlisting>
+
+      <para>Where target is the name of the target that you want to build.
+      Since all necessary libraries are included in the GeoServer directory,
+      you should now be able to build any needed target. Don't worry about
+      classpath issues: Ant takes care of them for you.</para>
+    </section>
+
+    <section>
+      <title>Setting Ant properties</title>
+
+      <para>Setting Ant properties. The GeoServer build process optionally
+      makes use of several ant properties. These can be set in a number of
+      ways: passing in on the command line, setting in a build.properties
+      file, and editing the build.xml file. Each has their advantages and
+      disadvantages, but we recommend using a build.properties file. It makes
+      it so you do not have to pass in the argument each time, and also
+      prevents conflicts in the build file if you update from CVS. A sample
+      build.properties file looks as follows:</para>
+
+      <programlisting><emphasis role="bold">dir.container=c:/resin-3.0.6/webapps
+#test.type=UserBasic
+test.type=Demo</emphasis></programlisting>
+
+      <para>Each line contains a property value pair, the first a geotools
+      property, the second the value to be used. Note that a # in front of the
+      line is how you comment out things in ant. The properties that can be
+      user defined are in the 'LOCAL PROPERTIES' section of the build file.
+      Other developer documentation sections will relate what properties
+      should be set when.</para>
+    </section>
+
+    <section>
+      <title>Build targets</title>
+
+      <para>To build GeoServer for development purposes we recommend using one
+      of three targets: <emphasis>war</emphasis>,
+      <emphasis>test-ext</emphasis>, and <emphasis>test</emphasis>. Each of
+      these will build any modified source files anew, they are just different
+      ways of operating, depending on the developer's preference.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>war</emphasis> builds a war file with configuration
+          based on the test.type property, and places it in the build
+          directory. This can the be copied into any servlet container by
+          hand. Test-ext and test both depend on this target.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>test-ext</emphasis> does the additional step of
+          copying the built war to the directory defined by the dir.container
+          property (link to setting ant properties), and deletes the old
+          expanded war. This should be the directory where the servlet
+          container uses its .war files, generally it will be named webapps,
+          such as /opt/tomcat/webapps. This target may seem like a fairly
+          useless convenience, but when you are working with GeoServer
+          extensively it is just nice to have.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>test</emphasis> takes the war built by the war
+          target, and expands it in the embedded Jetty servlet container that
+          is a part of every GeoServer download. It then runs Jetty, so you
+          can start testing immediately.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>One additional target to take note of is the
+      <emphasis>run</emphasis> target. This performs the second half of the
+      test target, meaning it runs Jetty, but does not build a new war. This
+      can be useful to just restart GeoServer when there are no changes to the
+      source files or the configuration, as it starts up much more quickly. A
+      nice trick if working in GeoTools is to copy the jars built from
+      GeoTools directly into the embedded servlet container
+      (<filename>server/geoserver/WEB-INF/lib/</filename>), and just hit run,
+      as the new jars will be picked up, without having to rebuild
+      GeoServer.</para>
+    </section>
+
+    <section>
+      <title>Build Configuration</title>
+
+      <para>By default GeoServer is built with the configuration files in
+      the<filename> conf/</filename> directory. For more information about
+      these files see the page on <ulink url="???">GeoServer Files</ulink>.
+      The source download will come with a default <ulink
+      url="???">conf/</ulink> directory, and a svn checkout should build one
+      at the first ant build. But note that one can also set a
+      <emphasis>test.type</emphasis> ant property, which will use a
+      pre-defined configuration from the <filename>cite/</filename> directory.
+      See Section 3.3 of this document for more information on setting ant
+      properties. The directory was originally intended to put the PostGIS
+      CITE configuration, with all the appropriate geoserver files and postgis
+      sql scripts to get users started quickly. Developers started using it
+      more generically, though it still retains its name. Each sub-directory
+      that starts with 'conf' can be passed to build a war using the
+      <emphasis>test.type</emphasis> ant property (link to properties
+      section). Each test.type is the name of the directory after the conf
+      prefix. These provide a convenient place for developers to share
+      configuration information. Right now PostGIS is the only one that works
+      completely with CITE, for 1.3 we hope to have sample configurations for
+      all DataStores. We also have two 'demo' configurations, that are more
+      interesting sets of FeatureTypes, that are quite useful for diagnosing
+      and displaying problems, as the CITE features are a bit boring. Any time
+      a <emphasis>test.type</emphasis> property is set the 'war' target and
+      the 'test' property will use that instead of the normal conf/ directory.
+      </para>
+
+      <para>If no test.type (like CitePostGis or UserBasic) variables are
+      found then the conf/ directory will be used. This is an area where
+      GeoServer needs improvement. Basically if you build from source then the
+      changes you made with the web admin tool will be lost when you copy in
+      the new war. Having the <filename>conf/</filename> directory helps (but
+      does not solve) this problem. It allows the developer to put his
+      configuration there. If you make changes with the web admin tool you can
+      copy the appropriate files back into the <filename>conf/</filename>
+      directory (it mirrors geoserver/data/ in the webapp directory pretty
+      much directly, except that the <filename>services.xml</filename> and
+      <filename>catalog.xml</filename> are in geoserver/WEB-INF, so that they
+      can not be seen by users). </para>
+    </section>
+  </section>
+
+  <section>
+    <title>Running GeoServer with an IDE</title>
+
+    <para>We hope that developers will fill in the <ulink url="???">GeoServer
+    Wiki</ulink> with their experiences of how to get GeoServer set up with
+    various IDE's. But for now we only have one good contribution, which is
+    how to run GeoServer with Eclipse and Tomcat, avalialble <ulink
+    url="???">here</ulink>. Also note that the GeoServer source download comes
+    with a .project and .classpath, which defines the Eclipse project, as
+    Eclipse is easily the most popular IDE among GeoServer developers. We have
+    no inherent preference for Eclipse though, and are more than willing to
+    include other useful meta files for other IDE's, it just happens that
+    Eclipse is the only one to have been contributed.</para>
+  </section>
 </article>
