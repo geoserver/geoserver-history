@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.1.2.16 2003/11/25 05:35:36 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.17 2003/12/06 00:42:05 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -115,6 +115,7 @@ public class FeatureResponse implements Response {
             throw new IllegalStateException(
                 "execute has not been called prior to writeTo" );            
         }
+
         // execute should of set all the header information
         // including the lockID
         //
@@ -164,6 +165,13 @@ public class FeatureResponse implements Response {
     public void execute( FeatureRequest request ) throws ServiceException {
         LOGGER.finest("execute FeatureRequest response. Called request is: " + request);
 	    this.request = request;
+
+	       String outputFormat = request.getOutputFormat();
+        if (!outputFormat.equalsIgnoreCase("GML2")) {
+            throw new WfsException("output format: " + outputFormat + " not "
+                + "supported by geoserver");
+        }
+
         if( request instanceof FeatureWithLockRequest){
             featureLock = ((FeatureWithLockRequest)request).toFeatureLock();
             String authorization = featureLock.getAuthorization();        
@@ -222,11 +230,13 @@ public class FeatureResponse implements Response {
                 }
                                 
                 // This doesn't seem to be working?
-                ftNames.declareNamespace( source.getSchema(), namespace.getPrefix(), namespace.getUri() );
+
                 
                 // Run through features and record FeatureIDs
                 // Lock FeatureIDs as required
-                FeatureResults features = source.getFeatures( query.toDataQuery( maxFeatures ) );
+                LOGGER.fine("Query is " + query + "\n To gt2: " + query.toDataQuery(maxFeatures));
+		FeatureResults features = source.getFeatures( query.toDataQuery( maxFeatures ) );
+                ftNames.declareNamespace( features.getSchema(), namespace.getPrefix(), namespace.getUri() );
                 maxFeatures -= features.getCount();
                 results.add( features );
                 
