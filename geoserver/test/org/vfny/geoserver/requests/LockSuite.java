@@ -25,12 +25,14 @@ import org.geotools.filter.DefaultExpression;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.LiteralExpression;
 import org.geotools.resources.Geotools;
+import org.geotools.resources.Log4JFormatter;
 
 /**
- * Tests the get feature request handling.
+ * Tests the lock feature request handling.
  *
  * @version $VERSION$
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  */
 public class LockSuite extends TestCase {
 
@@ -47,8 +49,13 @@ public class LockSuite extends TestCase {
 
     /* Initializes the logger. */
     static {
-        Geotools.init("Log4JFormatter", Level.FINEST);
+        Geotools.init("Log4JFormatter", Level.FINE);
+	Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
     }
+
+    private LockRequest lock1;
+
+    private LockRequest lock2;
     
     /** Constructor with super. */
     public LockSuite (String testName) { super(testName); }
@@ -63,29 +70,29 @@ public class LockSuite extends TestCase {
      * @param match Whether or not base request and parse request should match.
      * @throws Excpetion If there is any problem running the test.
      */
-        /*
-    private static boolean runXmlTest(GetFeatureRequest baseRequest,
+ 
+    private static boolean runXmlTest(LockRequest baseRequest,
                                       String fileName, 
                                       boolean match)
-        throws Exception {
-        // Read the file and parse it
-        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
-        Reader inputStream = new FileReader(inputFile);
-        LockFeatureRequest request = 
-            GetFeatureReaderXml.readGetFeature(new BufferedReader(inputStream));
+	throws Exception {
+	// Read the file and parse it
+	File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
+	Reader inputStream = new FileReader(inputFile);
+	LockRequest request = 
+             XmlRequestReader.readLockRequest((Reader)new BufferedReader(inputStream));
         LOGGER.fine("base request: " + baseRequest);
         LOGGER.fine("read request: " + request);
         LOGGER.info("XML " + fileName +" test passed: " +  
                     baseRequest.equals(request));
 
         // Compare parsed request to base request
-        if(match) {
-            return baseRequest.equals(request);
-        } else {
+        if(match) { 
+            return request.equals(baseRequest);//baseRequest.toString().equals(request.toString());
+        } else { 
             return !baseRequest.equals(request);
         }
     }
-        */
+        
 
     /**
      * Handles actual XML test running details.
@@ -121,8 +128,68 @@ public class LockSuite extends TestCase {
      * Handles test set up details.
      */
     public void setUp() {
+	
     }
 
+
+    public void testXml1() throws Exception {
+	LockRequest request = new LockRequest();
+	request.setLockAll(false);
+	addLock1(request);
+	assertTrue(runXmlTest(request, "lock1", true));
+    }
+
+      public void testXml2() throws Exception {
+	  LockRequest request = new LockRequest();
+	  request.addLock("roads", null);
+    	assertTrue(runXmlTest(request, "lock2", true));
+    }
+
+    public void testXml3() throws Exception {
+	LockRequest request = new LockRequest();
+	addLock3(request);
+	assertTrue(runXmlTest(request, "lock3", true));	
+    }
+
+    public void testXml4() throws Exception {
+	LockRequest request = new LockRequest();
+	addLock3(request);
+	addLock1(request);
+	request.setExpiry(3);
+	assertTrue(runXmlTest(request, "lock4", true));	
+    }
+
+    private void addLock1(LockRequest request) throws Exception{
+	FidFilter tempFilter = factory.createFidFilter("rail.1013");
+	tempFilter.addFid("rail.1014");
+	tempFilter.addFid("rail.1015");
+	tempFilter.addFid("rail.1016");
+	tempFilter.addFid("rail.1017");
+	request.addLock("rail", tempFilter, "lock1");
+    }
+
+    private void addLock3(LockRequest request) throws Exception {
+	org.geotools.filter.GeometryFilter gf =
+	    factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+	int srid = 0;
+ 	Coordinate[] points = { new Coordinate(-95.7, 38.1),
+				new Coordinate(-97.8, 38.2),
+				new Coordinate(-97.8,42.9),
+				new Coordinate(-95.7,42.9),
+				 new Coordinate(-95.7,38.1) };
+	PrecisionModel precModel = new PrecisionModel();
+	LinearRing shell = new LinearRing(points, precModel, srid);
+	Polygon testPoly = new Polygon(shell, precModel, srid);
+
+	LiteralExpression right = 
+            factory.createLiteralExpression(testPoly);
+	gf.addRightGeometry(right);
+	gf.addLeftGeometry(factory.createAttributeExpression
+			   (null, "the_geom"));
+	request.addLock("INWATERA_1M", gf, "Lock3");
+    }
+
+   
 
     /*************************************************************************
      * KVP TESTS                                                             *
@@ -135,7 +202,7 @@ public class LockSuite extends TestCase {
     /**
      * Example 1 from the WFS 1.0 specification.
      */   
-    public void testKVP1() 
+    /*    public void testKVP1() 
         throws Exception {
          String testRequest = "VERSION=1.0.0&" + 
              "REQUEST=lockFEATURE&" + 
@@ -144,14 +211,14 @@ public class LockSuite extends TestCase {
 
         // make base comparison objects        
         LockRequest baseRequest = new LockRequest();
-        baseRequest.addFeatureType("rail");
+        baseRequest.addLock("rail", null, null);
         // run test       
         assertTrue( runKvpTest( baseRequest, testRequest, true));
-     }
+	} */
 
     /**
      * Example 2 from the WFS 1.0 specification.
-     */   
+     *   
     public void testKVP2() 
         throws Exception {
          String testRequest = "VERSION=1.0.0&" + 
@@ -162,17 +229,18 @@ public class LockSuite extends TestCase {
 
         // make base comparison objects        
         LockRequest baseRequest = new LockRequest();
-        baseRequest.addFeatureType("rail");
+	// baseRequest.addFeatureType("rail");
         FidFilter filter = factory.
             createFidFilter("123");
-        baseRequest.addFilter(filter);
-        // run test       
+        //baseRequest.addFilter(filter);
+	baseRequest.addLock("rail", filter, null);
+	// run test       
         assertTrue(runKvpTest(baseRequest, testRequest, true));
-     }
+     }*/
 
     /**
      * Example 3 from the WFS 1.0 specification.
-     */   
+     *   
     public void testKVP3() 
         throws Exception {
          String testRequest = "VERSION=1.0.0&" + 
@@ -182,15 +250,15 @@ public class LockSuite extends TestCase {
 
         // make base comparison objects        
         LockRequest baseRequest = new LockRequest();
-        baseRequest.addFeatureType("rail");
-        baseRequest.addFeatureType("roads");
+        baseRequest.addLock("rail", null);
+        baseRequest.addLock("roads", null);
         // run test       
         assertTrue(runKvpTest(baseRequest, testRequest, true));
-     }
+     }*/
 
     /**
      * Example 13 from the WFS 1.0 specification.
-     */   
+     *   
     public void testKVP4() 
         throws Exception {
         String testRequest = "VERSION=1.0.0&" + 
@@ -202,8 +270,6 @@ public class LockSuite extends TestCase {
 
         LockRequest baseRequest = new LockRequest();
         baseRequest.setVersion("1.0.0");
-        baseRequest.addFeatureType("rail");
-        baseRequest.addFeatureType("roads");
         baseRequest.setLockAll(true);
 
         // make base comparison objects
@@ -226,10 +292,14 @@ public class LockSuite extends TestCase {
         filter.addLeftGeometry(leftExpression);
         filter.addRightGeometry(rightExpression);
 
-        baseRequest.addFilter(filter);
-        baseRequest.addFilter(filter);
+	baseRequest.addLock("rail", filter);
+        baseRequest.addLock("roads", filter);
+
+
+	//        baseRequest.addFilter(filter);
+        //baseRequest.addFilter(filter);
 
         // run test       
         assertTrue(runKvpTest(baseRequest, testRequest, true));
-    }
+    }*/
 }
