@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.1.2.2 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: GeoServerDTO.java,v 1.1.2.3 2004/01/07 23:50:07 dmzwiers Exp $
  */
 public final class GeoServerDTO implements DataStructure {
     /** Sets the max number of Features returned by GetFeature */
@@ -78,7 +78,7 @@ public final class GeoServerDTO implements DataStructure {
      * is used.
      * </p>
      */
-    private Charset charSet;
+    private Charset charSet = Charset.forName("ISO-8859-1");
 
     /**
      * The base URL where this servlet will run.

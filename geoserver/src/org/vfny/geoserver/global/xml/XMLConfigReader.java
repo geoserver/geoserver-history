@@ -68,7 +68,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.8 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.9 2004/01/07 23:50:06 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -910,7 +910,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.8 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.9 2004/01/07 23:50:06 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**
@@ -1273,7 +1273,10 @@ class ReaderUtils{
 				keywords.add(kword);
 			}
 		}
-		return (String [])keywords.toArray();
+		String[] s = (String [])keywords.toArray();
+		if(s==null)
+			return new String[0];
+		return s;
 	}
 
 	/**

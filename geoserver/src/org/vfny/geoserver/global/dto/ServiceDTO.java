@@ -30,7 +30,7 @@ import java.util.Arrays;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceDTO.java,v 1.1.2.3 2004/01/06 23:55:02 jive Exp $
+ * @version $Id: ServiceDTO.java,v 1.1.2.4 2004/01/07 23:50:07 dmzwiers Exp $
  */
 public final class ServiceDTO implements DataStructure {
     /**
@@ -96,7 +96,7 @@ public final class ServiceDTO implements DataStructure {
      * Example: <code>new String[]{"WFS","New York"}</code>
      * </p>
      */
-    private String[] keywords;
+    private String[] keywords = new String[0];
 
     /**
      * The fees associated with the service.
