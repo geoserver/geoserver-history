@@ -223,7 +223,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		
 		// create the feature type
 		AttributeType geom = AttributeTypeFactory.newAttributeType("geom", Polygon.class);
-		AttributeType grid = AttributeTypeFactory.newAttributeType("grid", GridCoverage2D.class);
+		AttributeType grid = AttributeTypeFactory.newAttributeType("grid", GridCoverage.class);
 		
 		FeatureType schema = null;
 		AttributeType[] attTypes = {geom, grid};

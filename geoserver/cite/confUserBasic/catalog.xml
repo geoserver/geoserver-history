@@ -264,6 +264,7 @@
 		<style id="maleVsFemale" filename="usa_ratio.sld" />
 		<style id="population" filename="popshade.sld" />
 		<style id="manualVsWorkers" filename="usa_math.sld" />
+		<style id="raster" filename="raster.sld" />
 		<style filename="NamedPlaces.sld" id="cite_named_places" />
 		<style filename="MapNeatline.sld" id="cite_map_neatline" />
 		<style filename="Buildings.sld" id="cite_buildings" />
@@ -277,7 +278,6 @@
 		<style filename="DividedRoutes.sld" id="cite_divided_routes" />
 		<style filename="capitals.sld" id="capitals" />
 		<style filename="simpleRoads.sld" id="simple_roads" />
-		<style filename="raster.sld" id="raster" />
 	</styles>
 
 </catalog>

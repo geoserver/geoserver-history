@@ -504,7 +504,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             	if( layers[i].getType() == MapLayerInfo.TYPE_VECTOR )
             		styles.add(layers[i].getFeature().getDefaultStyle());
             	else if( layers[i].getType() == MapLayerInfo.TYPE_RASTER ) {
-            		styles.add(findStyle(request, "raster"));
+            		styles.add(layers[i].getCoverage().getDefaultStyle());
             	}
         } else {
             List styleNames = readFlat(rawStyles, INNER_DELIMETER);
@@ -552,7 +552,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                     styles.add(currStyle);
                 } else if( currLayer.getType() == MapLayerInfo.TYPE_RASTER ) {
                     if ((null == currStyleName) || "".equals(currStyleName)) {
-                        currStyle = findStyle(request, "raster");
+                        currStyle = currLayer.getCoverage().getDefaultStyle();
                     } else {
                         currStyle = findStyle(request, currStyleName);
 

@@ -541,10 +541,10 @@ public class WMSCapsTransformer extends TransformerBase {
             //add the layer style
             start("Style");
 
-            Style ftStyle = coverage.getDefaultStyle();
-            element("Name", ftStyle.getName());
-            element("Title", ftStyle.getTitle());
-            element("Abstract", ftStyle.getAbstract());
+            Style cvStyle = coverage.getDefaultStyle();
+            element("Name", cvStyle.getName());
+            element("Title", cvStyle.getTitle());
+            element("Abstract", cvStyle.getAbstract());
             //handleLegendURL(coverage);
             end("Style");
 

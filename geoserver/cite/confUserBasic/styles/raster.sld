@@ -1,21 +1,15 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<StyledLayerDescriptor version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<NamedLayer>
-<Name>A Test Layer</Name>
-<title>The title of the layer</title>
-<abstract>
-A styling layer used for the unit tests of sldstyler
-</abstract>
-<!-- with in a layer you have Named Styles -->
-<UserStyle>
-    <!-- again they have names, titles and abstracts -->
-  <Name>raster</Name>
-  <Title>A raster default style</Title>
-  <Abstract>A sample style used for raster data</Abstract>
-    <!-- FeatureTypeStyles describe how to render different features -->
-    <!-- a feature type for polygons -->
-    <FeatureTypeStyle>
-      <Rule>
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/sld
+http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" version="1.0.0">
+<UserLayer>
+	<Name>raster_layer</Name>
+	<UserStyle>
+		<Name>raster</Name>
+		<Title>A boring default style</Title>
+		<Abstract>A sample style for rasters</Abstract>
+		<FeatureTypeStyle>
+	        <FeatureTypeName>Feature</FeatureTypeName>
+			<Rule>
 				<RasterSymbolizer>
 				    <Opacity>1.0</Opacity>
 				    <ColorMap>
@@ -44,9 +38,9 @@ A styling layer used for the unit tests of sldstyler
 				       <AVERAGE/>
 				    </OverlapBehavior>
 				    <ShadedRelief/>
-				 </RasterSymbolizer>
-      </Rule>
-    </FeatureTypeStyle>
-</UserStyle>
+				</RasterSymbolizer>
+			</Rule>
+		</FeatureTypeStyle>
+	</UserStyle>
+</UserLayer>
 </StyledLayerDescriptor>
-

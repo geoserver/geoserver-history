@@ -448,7 +448,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         //does not care about a style.  Should be able to seamlessly at least do
         //something for wms.
         if ((defaultStyle == null) || defaultStyle.equals("")) {
-            defaultStyle = "normal";
+            defaultStyle = "raster";
         }
 
         return defaultStyle;
