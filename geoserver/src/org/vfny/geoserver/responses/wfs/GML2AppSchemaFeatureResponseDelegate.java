@@ -99,7 +99,9 @@ public class GML2AppSchemaFeatureResponseDelegate implements FeatureResponseDele
      * @return true if <code>outputFormat</code> is GML2 or GML2-GZIP
      */
     public boolean canProduce(String outputFormat) {
-        return "GML2-AS".equalsIgnoreCase(outputFormat)
+        
+    	
+    	return "GML2-AS".equalsIgnoreCase(outputFormat)
         || "GML2-AS-GZIP".equalsIgnoreCase(outputFormat);
     }
 
@@ -130,7 +132,8 @@ public class GML2AppSchemaFeatureResponseDelegate implements FeatureResponseDele
     public void prepare(String outputFormat, GetFeatureResults results,
     		ASFeatureTransformer featureTransformer)
         throws IOException {
-        this.compressOutput = "GML2-GZIP".equalsIgnoreCase(outputFormat);
+        this.compressOutput = "GML2-GZIP".equalsIgnoreCase(outputFormat) ||
+							"GML2-AS-GZIP".equalsIgnoreCase(outputFormat);
         this.results = results;
 
         FeatureRequest request = results.getRequest();

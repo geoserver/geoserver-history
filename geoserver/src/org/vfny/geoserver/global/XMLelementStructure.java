@@ -49,11 +49,13 @@ public class XMLelementStructure {
 	 * 
 	 */	
 	private Data data;
+
+
 	
     /**
      * Factory method to create a tree structured list of XML elements
-     * and their attributes in a form suitable for populating a DOM
-     * from a result set
+     * and their attributes in a form suitable for nested GML elements
+     * from a result set, as a report writer might do.
      *
      * @param ft FeatureTypeInfo containing AttributeTypeInfo with 
      * xapth attriubutes from schema.xml for this feature type
@@ -65,8 +67,14 @@ public class XMLelementStructure {
      *
      * @see JDBCDataStore#buildAttributeType(ResultSet)
      */	
-	public XMLelementStructure (FeatureTypeInfo ft, Data data) {
-
+	public static XMLelementStructure createXMLelementStructure(FeatureTypeInfo ft, Data data) {
+	
+		if (ft == null) {
+			return null;
+		}
+		
+		XMLelementStructure structure = new XMLelementStructure();
+		
 		// create the Elements structure; group xpath attributes in 
 		// FeatureTypeInfo into parent + childless elements (BreakGroup)
 		// and a list of nesting elements (elements with children)
@@ -74,17 +82,18 @@ public class XMLelementStructure {
 		// element values and asscoiated attributes are mapped in schema.xml
 		// to a database attribute
 		
-		if (ft == null) {
-			return;
-		}
-		
-		this.data = data;
-		
 		List atts = ft.getAttributes();
 		if (atts == null) {
 			// LOGGER.warning("FeatureTypeInfo " + ft.getName() + " does not have attributes!");
-			return; 
+			return null; 
 		}
+		if (!Helper.checkXpaths(ft)) {
+			LOGGER.info("schema.xml for FeatureTypeInfo " + ft.getName() + " does not have, or is missing xpath attributes - nested element GML output turned off");
+			return null;
+		}
+
+		structure.data = data;
+		structure.helper = new Helper(ft);
 		
 		int index = -1;
 		Iterator i = atts.iterator();
@@ -94,14 +103,16 @@ public class XMLelementStructure {
 			AttributeTypeInfo att = (AttributeTypeInfo)i.next();
 			String name = att.getName();
 			String xpath = att.getXpath();
-			LOGGER.fine("***** xpath =  " + xpath);
+			LOGGER.finer("***** xpath =  " + xpath);
 			if (xpath == null) continue;
-			if (helper == null) helper = new Helper(ft);
 
-			addStructure(head, null, "", xpath, name, index);
+			structure.addStructure(structure.head, null, "", xpath, name, index);
 		}
-		dbAttributeCount = ++index;
+		structure.dbAttributeCount = ++index;
+		
+		return structure;
 	}
+	
 
 	public int getDBattributeCount() {
 		return dbAttributeCount;
@@ -132,21 +143,21 @@ public class XMLelementStructure {
 			rpath = rpath.substring(finish);
 		}
 		lpath = lpath + structure;
-		LOGGER.fine("lpath = " + lpath + ", structure = " + structure);
+		LOGGER.finer("lpath = " + lpath + ", structure = " + structure);
 
 		// do grandchildren case first ?
 		
 		if (helper.hasChildren(lpath)) {
 		
-			LOGGER.fine("has Children");
+			LOGGER.finer("has Children");
 			
 			// find or create a grouping element
 			treeNode = treeNode.doGroupElement(structure);
 			element = treeNode.groupingElement;
-			LOGGER.fine("Grouping Element is " + element.name.get(0));
+			LOGGER.finer("Grouping Element is " + element.name.get(0));
 			
 		} else if (structure.startsWith("/")) {
-			LOGGER.fine("element, no children");
+			LOGGER.finer("element, no children");
 
 			if (rpath == null) {
 				element = treeNode.doBreakElement(structure, dbAttName, dbAttIndex);
@@ -155,7 +166,7 @@ public class XMLelementStructure {
 			}
 			
 		} else if (structure.startsWith("@")) {
-			LOGGER.fine("attribute");
+			LOGGER.finer("attribute");
 			
 			element.addLeaf(structure, lpath, dbAttName, dbAttIndex);
 			
@@ -415,7 +426,7 @@ public class XMLelementStructure {
 				name.add(elementName);
 				rsAttName.add("");
 				rsAttIndex.add(new Integer(0));
-				LOGGER.fine("added grouping element " + elementName);
+				LOGGER.finer("added grouping element " + elementName);
 			} else {
 				// throw an exception ?
 				LOGGER.warning("Error adding parent XML element " + elementName + " to processing tree");
@@ -444,12 +455,12 @@ public class XMLelementStructure {
 					if (maxOccurs != null) {
 						if (maxOccurs.intValue() == 0 ) {
 							suppressFID = true;
-							LOGGER.fine("suppress = true");
+							LOGGER.finer("suppress = true");
 						}
 					}
 				}
 			}
-			LOGGER.fine("Added leaf " + leafName + ", " + dbAttName + ", " + attIndex);
+			LOGGER.finer("Added leaf " + leafName + ", " + dbAttName + ", " + attIndex);
 		}
 
 		private String getName() {
@@ -586,7 +597,7 @@ public class XMLelementStructure {
 		}
 
 		private Element addBreakElement(String leafName, String dbAttName, int attIndex) {
-			LOGGER.fine("adding break element");
+			LOGGER.finer("adding break element");
 			Element e = new Element();
 			e.addLeaf(leafName, "", dbAttName, attIndex);
 			breakElements.add(e);			
@@ -669,13 +680,30 @@ public class XMLelementStructure {
 		HashMap fidElementList = new HashMap();
 		HashSet prefixList = new HashSet();
 		
+
+		private static boolean checkXpaths(FeatureTypeInfo ft) {
+
+			boolean isOK = false;
+			
+			List atts = ft.getAttributes();
+			
+			Iterator i = atts.iterator();
+			while (i.hasNext()) {
+				AttributeTypeInfo att = (AttributeTypeInfo)i.next();
+				if (att.getXpath() == null || att.getXpath().equals("") ) {
+					return false;
+				}
+				isOK = true;
+			}
+			return isOK;
+		}
 		
 		// String xpath;
 		
 		private Helper(FeatureTypeInfo ft) {
 
 			// todo : fold into one loop 
-			
+
 			// compile a list of elements
 			
 			String member;
@@ -692,7 +720,7 @@ public class XMLelementStructure {
 				}
 				elementList.add(member);
 			}
-			LOGGER.fine("elementList = " + elementList );
+			LOGGER.finer("elementList = " + elementList );
 
 			// compile a list of elements having fid || gmld:id atts
 			
@@ -706,7 +734,7 @@ public class XMLelementStructure {
 					fidElementList.put(member, new Integer(maxOccurs));					
 				}
 			}
-			LOGGER.fine("fidElementList = " + fidElementList );
+			LOGGER.finer("fidElementList = " + fidElementList );
 
 			// compile a list of namespace prefixes
 			
@@ -751,7 +779,7 @@ public class XMLelementStructure {
 					colon = member.indexOf(':');
 				}
 			}
-			LOGGER.fine("prefixList = " + prefixList );			
+			LOGGER.finer("prefixList = " + prefixList );			
 		}
 		
 		/**

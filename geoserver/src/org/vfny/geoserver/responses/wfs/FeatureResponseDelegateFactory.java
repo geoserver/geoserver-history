@@ -67,4 +67,39 @@ public class FeatureResponseDelegateFactory {
         throw new NoSuchElementException("Can't find an encoder for "
             + outputFormat + " output format");
     }
+    
+    /**
+     * Prioritises encoder selection; returns a structured GML2 encoder if  
+     * feature type attribute to XML element mappings are available.
+     * Currently this is an all or nothing approach, so if there are
+     * multiple queries, the target feature types must all have a schema.xml
+     * supporting feature type attribute to XML element mapping.
+     * 
+     * If Outputformat is not GML2 or GML2-ZIP or useXpathMapping is not true
+     * then returns FeatureResponseDelegate encoderFor(String outputFormat)
+     * 
+     * This is mainly a hack to make life easier for WFS clients, who only 
+     * know to request GML2 
+     *
+     * @param outputFormat the outputformat passed in the getFeature request
+     * @param useXpathMapping set to true if structured GML2 is required
+     * 
+     * @return FeatureResponseDelegate wrapping an encoder
+     *
+     * @throws NoSuchElementException if a mathcing encoder cannot be found
+     */
+    public static FeatureResponseDelegate encoderFor(
+    		String outputFormat, boolean useXpathMapping)
+        throws NoSuchElementException {
+    
+    	if (	("GML2".equalsIgnoreCase(outputFormat) ||
+    			"GML2-GZIP".equalsIgnoreCase(outputFormat)) &&
+				useXpathMapping) {
+    		
+    		return new GML2AppSchemaFeatureResponseDelegate();
+    	} else {
+    		return encoderFor(outputFormat);
+    	}
+    }    
 }
+

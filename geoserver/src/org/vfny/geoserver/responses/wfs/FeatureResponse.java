@@ -51,6 +51,7 @@ public class FeatureResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
+    
     FeatureResponseDelegate delegate;
 
     /**
@@ -159,27 +160,47 @@ public class FeatureResponse implements Response {
     public void execute(FeatureRequest request) throws ServiceException {
 
     	// look see if first query is SQL pass through - only support
-    	// one query in this case ?
+    	// one query in this case - or all must do SQL pass through *and*
+    	// the feature types are accompanied by an extended schema XML - or -
+    	// the features correspond with a view or table in the database.
     	
     	boolean passThroughSQL = false; 
-   	
+    	boolean hasNestedElementMappings = false;
+    	
     	Iterator it = request.getQueries().iterator();
     	if ( it.hasNext()) {
-            LOGGER.fine("examining executionPattern for getFeature request " + request);
-            LOGGER.fine("setting Data catalog");            
     		Data catalog = request.getWFS().getData();
-            LOGGER.fine("setting Query query");    		
     		Query query = (Query) it.next();
-            LOGGER.fine("setting FeatureTypeInfo meta");    		
+            // LOGGER.fine("setting FeatureTypeInfo meta");
     		FeatureTypeInfo meta = catalog.getFeatureTypeInfo(query.getTypeName());
-    		passThroughSQL = (meta.getBypassSQL() != null);
-    	}
 
-        LOGGER.finer("doing pass through SQL");    	
+    		// assumes that if the first query uses bypass sql, any subsequent queries
+    		//  must also use bypass sql.
+    		passThroughSQL = (meta.getBypassSQL() != null);
+    		
+    		// Similarly, assumes that if the first query has an extended schema.xml
+    		// for outputting nested XML elements, any subsequent queries must also
+    		// have an extended schema.xml for the corresponding feature type
+    		hasNestedElementMappings = (meta.getXMLelementStructure() != null);
+    	}
+    	
+    	String outputFormat = request.getOutputFormat();
+    	
+        try {
+            delegate = FeatureResponseDelegateFactory.encoderFor(outputFormat, hasNestedElementMappings);
+            {
+    	        Class c = delegate.getClass();
+    	        LOGGER.finer("delegate = " + c.getName());
+            }            
+        } catch (NoSuchElementException ex) {
+            throw new WfsException("output format: " + outputFormat + " not "
+                + "supported by geoserver", ex);
+        }
     	
     	if (!passThroughSQL) {
     		standardExecute(request);
     	} else {
+            LOGGER.finer("doing pass through SQL");    	
     		passThroughSQLExecute(request);
     	}
     }   
@@ -200,17 +221,6 @@ public class FeatureResponse implements Response {
 
         String outputFormat = request.getOutputFormat();
         LOGGER.fine("outputFormat = " + outputFormat);
-
-        try {
-            delegate = FeatureResponseDelegateFactory.encoderFor(outputFormat);
-            {
-    	        Class c = delegate.getClass();
-    	        LOGGER.fine("delegate = " + c.getName());
-            }            
-        } catch (NoSuchElementException ex) {
-            throw new WfsException("output format: " + outputFormat + " not "
-                + "supported by geoserver", ex);
-        }
 
         GetFeatureResults results = new GetFeatureResults(request);
         {
@@ -326,13 +336,6 @@ public class FeatureResponse implements Response {
         this.request = request;
 
         String outputFormat = request.getOutputFormat();
-
-        try {
-            delegate = FeatureResponseDelegateFactory.encoderFor(outputFormat);
-        } catch (NoSuchElementException ex) {
-            throw new WfsException("output format: " + outputFormat + " not "
-                + "supported by geoserver", ex);
-        }
 
         if (request instanceof FeatureWithLockRequest) {
             featureLock = ((FeatureWithLockRequest) request).toFeatureLock();

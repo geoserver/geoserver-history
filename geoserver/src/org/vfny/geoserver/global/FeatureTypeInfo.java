@@ -228,7 +228,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             }
             
             // build a tree of XML elements if xpath atts can be found in schema
-            elementTree = new XMLelementStructure(this, this.data); 
+            elementTree = XMLelementStructure.createXMLelementStructure(this, this.data); 
+            
         }
 
         schemaBase = dto.getSchemaBase();
