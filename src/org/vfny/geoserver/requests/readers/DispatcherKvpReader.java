@@ -14,7 +14,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * Reads in a generic request and attempts to determine its type.
  *
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: DispatcherKvpReader.java,v 1.11 2004/08/02 17:38:04 cholmesny Exp $
  */
 public class DispatcherKvpReader {
@@ -54,6 +54,8 @@ public class DispatcherKvpReader {
                 return Dispatcher.GET_MAP_REQUEST;
             } else if (responseType.equals("GETFEATUREINFO")) {
                 return Dispatcher.GET_FEATURE_INFO_REQUEST;
+            }else if (responseType.equals("DESCRIBELAYER")) {
+                return Dispatcher.DESCRIBE_LAYER_REQUEST;
             }
             else {
                 return Dispatcher.UNKNOWN;
