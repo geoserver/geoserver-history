@@ -4,18 +4,16 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
 
 
 /**
@@ -29,15 +27,15 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  * method, which allows for some slight client laziness and helps explain to
  * lost souls/spiders what lives at the URL. Due to the string parsing, it is
  * much faster (and recommended) to use the URIs specified in the
- * GetCapabablities response.  Currently does not support post requests, but
- * most requests for this will likely come with get.
+ * GetCapabablities response.
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.11 2004/02/09 23:29:43 dmzwiers Exp $
+ * @version $Id: Dispatcher.java,v 1.12 2004/03/30 04:41:49 cholmesny Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
+ * @task TODO: move the post dispatcher work from WfsDispatcher up here.
  */
 public class Dispatcher extends HttpServlet {
     /** Class logger */
