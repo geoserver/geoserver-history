@@ -77,7 +77,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         String version = super.getRequestVersion();
 
         if (!GetLegendGraphicRequest.SLD_VERSION.equals(version)) {
-            throw new WmsException("Invalid SLD version number");
+            throw new WmsException("Invalid SLD version number \"" + version + "\"");
         }
 
         String layer = getValue("LAYER");
@@ -104,6 +104,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
             throw new WmsException("Invalid graphic format: " + format,
                 "InvalidFormat");
         }
+        glgr.setFormat(format);
 
         parseOptionalParameters(glgr, fti);
 

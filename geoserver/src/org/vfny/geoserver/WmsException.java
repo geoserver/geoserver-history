@@ -68,7 +68,7 @@ public class WmsException extends ServiceException {
      * @param e The message for the .
      */
     public WmsException(Throwable e) {
-        super(e);
+        super(e.getMessage(), e);
     }
 
     /**

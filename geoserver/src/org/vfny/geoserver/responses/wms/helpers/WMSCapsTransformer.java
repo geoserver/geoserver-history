@@ -25,6 +25,7 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.CapabilitiesRequest;
 import org.vfny.geoserver.responses.wms.DescribeLayerResponse;
 import org.vfny.geoserver.responses.wms.GetFeatureInfoResponse;
+import org.vfny.geoserver.responses.wms.GetLegendGraphicResponse;
 import org.vfny.geoserver.responses.wms.GetMapResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -251,6 +252,16 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Format", DescribeLayerResponse.DESCLAYER_MIME_TYPE);
             handleDcpType(serviceUrl, null);
             end("DescribeLayer");
+
+            start("GetLegendGraphic");
+
+            for (Iterator it = GetLegendGraphicResponse.getFormats().iterator();
+                    it.hasNext();) {
+                element("Format", String.valueOf(it.next()));
+            }
+
+            handleDcpType(serviceUrl, null);
+            end("GetLegendGraphic");
 
             end("Request");
         }
