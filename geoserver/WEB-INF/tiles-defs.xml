@@ -43,7 +43,7 @@
    		<put name="body" value="/WEB-INF/pages/ContactInformation.jsp"/>
    		<put name="title" value="title.contact"/>
    		<put name="layer" value="application"/>
-        <put name="locationForwards" value="welcome|contact"/>   		   		
+        <put name="locationForwards" value="welcome:contact"/>   		   		
    	</definition>
    	
    	<definition name="main.menu" extends=".mainLayout">
