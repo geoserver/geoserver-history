@@ -4,33 +4,33 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.AttributeType;
-import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.gml.GMLFilterFeature;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.Requests;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Uses SAX to extact a Transactional request from and incoming XML stream.
+ * Uses SAX to extact a Transactional request from and incoming XML stream. It
+ * now makes use of the FeatureType of the typename to parse the attribute
+ * values correctly.  Right now this leads to a bit of loose parsing, for
+ * example if the attributes passed in are in the wrong order we correct for
+ * that.  If an attribute is passed in twice for some reason the code right
+ * now will just use the second
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.12 2004/03/09 18:59:56 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.13 2004/04/05 11:55:12 cholmesny Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -40,7 +40,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             "org.vfny.geoserver.requests");
 
     /** Stores current feature attributes. */
-    private List attributes = new Vector();
+    private Object[] attributes;
     private List attributeNames = new Vector();
 
     /** Stores current feature attributes. */
@@ -60,6 +60,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
     //private TypeRepository typeRepo = TypeRepository.getInstance();
     private Data catalog = null;
+    private FeatureType curFeatureType;
+    private AttributeType curAttributeType;
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.
@@ -67,7 +69,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * @param parent The parent of this filter.
      * @param r DOCUMENT ME!
      */
-    public TransactionFeatureHandler(TransactionFilterHandler parent, HttpServletRequest r) {
+    public TransactionFeatureHandler(TransactionFilterHandler parent,
+        HttpServletRequest r) {
         super(parent);
         this.parent = parent;
         catalog = Requests.getWFS(r).getData();
@@ -110,7 +113,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             }
 
             if (!insideFeature) {
-                if (internalTypeName == null || fType==null) {
+                if ((internalTypeName == null) || (fType == null)) {
                     throw new SAXException(
                         "Could not find featureType with name " + localName
                         + ", and uri: " + namespaceURI);
@@ -118,9 +121,16 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
                 //fix for insert ...
                 typeName = internalTypeName;
-System.out.println("typeName"+typeName);
-                attributes = new Vector();
-                attributeNames = new Vector();
+
+                try {
+                    curFeatureType = fType.getFeatureType();
+                } catch (java.io.IOException ioe) {
+                    throw new SAXException(ioe);
+                }
+
+                int numAtts = curFeatureType.getAttributeTypes().length;
+                attributes = new Object[numAtts];
+                attributeNames = new Vector(numAtts);
 
                 //currentFeature = new FeatureFlat();
                 insideFeature = true;
@@ -133,11 +143,16 @@ System.out.println("typeName"+typeName);
                     && !((localName.equals("lineStringMember"))
                     || (localName.equals("polygonMember"))
                     || (localName.equals("pointMember")))) {
-                LOGGER.finest("inside feature " + internalTypeName);
+                LOGGER.fine("inside feature " + internalTypeName);
 
+                //This is for feature attributes as xml attributes.  Is this
+                //valid in the xmlspec?  
                 for (int i = 0; i < atts.getLength(); i++) {
                     String name = atts.getLocalName(i);
-                    attributes.add(atts.getValue(i));
+                    String attString = atts.getValue(i);
+                    AttributeType type = curFeatureType.getAttributeType(name);
+                    Object value = type.parse(attString);
+                    attributes[curFeatureType.find(type)] = value;
                     attributeNames.add(name);
                 }
 
@@ -150,14 +165,23 @@ System.out.println("typeName"+typeName);
                         attName = attName + "/" + localName;
                     }
 
-                    LOGGER.finest("attName now equals " + attName);
-                }
+                    //this may not work with nested attributes, but the rest of our
+                    //code doesn't handle them either, so this can be revisited.
+                    curAttributeType = curFeatureType.getAttributeType(attName);
 
-                insideAttribute = true;
+                    if (curAttributeType == null) {
+                        throw new SAXException(
+                            "Could not find attributeType named " + attName
+                            + "in featureType " + curFeatureType);
+                    }
+
+                    LOGGER.fine("attName now equals " + attName);
+                    insideAttribute = true;
+                }
 
                 return;
             } else if (insideAttribute) {
-                LOGGER.finest("inside attribute");
+                LOGGER.finer("inside attribute");
             }
         } else {
             parent.startElement(namespaceURI, localName, qName, atts);
@@ -179,21 +203,24 @@ System.out.println("typeName"+typeName);
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-        // the methods here read in both coordinates and coords and take the
-        // grunt-work out of this task for geometry handlers.
-        // See the documentation for CoordinatesReader to see what this entails
-        String rawAttribute = new String(ch, start, length);
 
-        if (insideAttribute) {
-            try {
-                tempValue = new Integer(rawAttribute);
-            } catch (NumberFormatException e1) {
-                try {
-                    tempValue = new Double(rawAttribute);
-                } catch (NumberFormatException e2) {
-                    tempValue = new String(rawAttribute);
-                }
-            }
+        String rawAttribute = new String(ch, start, length);
+        LOGGER.fine("we are inside attribute: " + insideAttribute
+            + ", curAttType is " + curAttributeType + " curFeatureT: "
+            + curFeatureType + " attName " + attName);
+
+        if (insideAttribute && !rawAttribute.trim().equals("")) {
+            tempValue = curAttributeType.parse(rawAttribute);
+
+            //try {
+            //    tempValue = new Integer(rawAttribute);
+            //} catch (NumberFormatException e1) {
+            //    try {
+            //        tempValue = new Double(rawAttribute);
+            //    } catch (NumberFormatException e2) {
+            //        tempValue = new String(rawAttribute);
+            //    }
+            //}
         } else {
             parent.characters(ch, start, length);
         }
@@ -226,27 +253,32 @@ System.out.println("typeName"+typeName);
             internalTypeName = fType.getName();
         }
 
+
         if (typeName.equals(internalTypeName)) {
-            AttributeType[] attDef = new AttributeType[attributes.size()];
-
-            for (int i = 0; i < attributes.size(); i++) {
-                attDef[i] = AttributeTypeFactory.newAttributeType((String) attributeNames
-                        .get(i), attributes.get(i).getClass());
-            }
-
+            //AttributeType[] attDef = new AttributeType[attributes.size()];
+            //for (int i = 0; i < attributes.size(); i++) {
+            //    attDef[i] = AttributeTypeFactory.newAttributeType((String) attributeNames
+            //            .get(i), attributes.get(i).getClass());
+            //}
             try {
-                //Note localName is used here instead of typeName as typeName's
-                //meaning is with the prefix for internal GeoServer types,
-                //which we don't want passed to our datasources.
-                FeatureType schema = FeatureTypeFactory.newFeatureType(attDef,
-                        //localName, namespaceURI);
-                		internalTypeName, namespaceURI);
-                Feature feature = schema.create(attributes.toArray());
+                //TODO: This is a hack, setting the namespace here.  What
+                //should be done is that our datastores should be constructed
+                //with namespaces.  I just coded up some stuff that should do
+                //that, check DataStoreInfo, we add it to the connection params, which 
+                //should create it with Postgis and Oracle, but it doesn't seem to be
+                //working.  This should be good enough, it'd just be nice to be cleaner.
+                FeatureTypeFactory ftFactory = FeatureTypeFactory
+                    .createTemplate(curFeatureType);
+                ftFactory.setNamespace(namespaceURI);
+
+                FeatureType schema = ftFactory.getFeatureType();
+                Feature feature = schema.create(attributes);
 
                 //currentFeature.setAttributes((Object []) attributes.toArray());
                 parent.feature(feature);
                 LOGGER.finest("resetting attName at end of feature");
                 attName = "";
+                LOGGER.finer("created feature: " + feature);
             } catch (org.geotools.feature.SchemaException sve) {
                 throw new RuntimeException("problem creating schema", sve);
             } catch (org.geotools.feature.IllegalAttributeException ife) {
@@ -263,7 +295,19 @@ System.out.println("typeName"+typeName);
             LOGGER.finest("end - inside attribute [" + tempValue + "]");
 
             if ((tempValue != null) && !tempValue.toString().trim().equals("")) {
-                attributes.add(tempValue);
+                int insertPosition = curFeatureType.find(curAttributeType);
+                Object curAtt = attributes[insertPosition];
+
+                //REVISIT: If we ever support complex attributes then this can
+                //just create a list and add to it.
+                if (curAtt != null) {
+                    throw new SAXException("Attempted to set attribute "
+                        + attName + " twice, first with " + curAtt
+                        + ", and then with " + tempValue + ".\n  Future "
+                        + "versions of GeoServer may support complex attributes");
+                }
+
+                attributes[insertPosition] = tempValue;
                 attributeNames.add(attName);
             }
 
@@ -276,7 +320,7 @@ System.out.println("typeName"+typeName);
                 attName = "";
             }
 
-            LOGGER.finest("attName now equals " + attName);
+            LOGGER.finer("attName now equals " + attName);
             insideAttribute = false;
         } else {
             parent.endElement(namespaceURI, localName, qName);
@@ -303,7 +347,8 @@ System.out.println("typeName"+typeName);
                 attributeNames.add(attName);
             }
 
-            attributes.add(geometry);
+            int position = curFeatureType.find(curAttributeType);
+            attributes[position] = geometry;
             insideAttribute = false;
 
             int index = attName.lastIndexOf('/');
