@@ -19,7 +19,7 @@ import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.xml.GMLUtils;
+import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -44,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.20 2004/02/02 23:17:34 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.21 2004/02/06 19:58:05 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -57,9 +57,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     /** ref to parent set of datastores. */
     private Data data;
     private Map meta;
-
-    // generated data from here down
-    // FeatureType schema; // we need to aquire/generate this
 
     /**
      * AttributeTypeInfo by attribute name.
@@ -123,26 +120,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     public int getNumDecimals() {
         return ftc.getNumDecimals();
     }
-
-    /**
-     * getSchema purpose.
-     * 
-     * <p>
-     * Generates a real FeatureType and returns it! Access geotools2
-     * FeatureType
-     * </p>
-     *
-     * @return FeatureType
-     */
-
-    /*public FeatureType getSchema() {
-       try{
-           return getSchema(ftc.getSchema());
-       }catch(Exception e){
-       e.printStackTrace();
-                           return null;
-                   }
-           }*/
 
     /**
      * getDataStore purpose.
@@ -329,28 +306,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     }
 
     /**
-     * getRealFeatureSource purpose.
-     * 
-     * <p>
-     * Returns a real FeatureSource. Used by getFeatureSource()
-     * </p>
-     *
-     * @return FeatureSource the feature source represented by this info class
-     *
-     * @throws IOException DOCUMENT ME!
-     *
-     * @see getFeatureSource()
-     */
-
-    /*private FeatureSource getRealFeatureSource()
-       throws NoSuchElementException, IllegalStateException, IOException {
-           DataStoreInfo dsi = getDataStoreInfo();
-           //dsi.getNameSpace().getPrefix()+":"+
-       FeatureSource realSource = dsi.getDataStore().getFeatureSource(ftc.getName());
-       return realSource;
-       }*/
-
-    /**
      * getBoundingBox purpose.
      * 
      * <p>
@@ -415,94 +370,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     }
 
     /**
-     * creates a FeatureTypeInfo schema from the list of defined exposed
-     * attributes, or the full schema if no exposed attributes were defined
-     *
-     * @return A complete FeatureType
-     *
-     * @throws IOException When IO fails
-     *
-     * @task TODO: if the default geometry attribute was not declared as
-     *       exposed should we expose it anyway? I think yes.
-     */
-
-    /*private FeatureType getSchema(Element attsElem)
-       throws ConfigurationException, IOException {
-       NodeList exposedAttributes = null;
-       FeatureType schema = getRealFeatureSource().getSchema();
-       FeatureType filteredSchema = null;
-       if (attsElem != null) {
-           exposedAttributes = attsElem.getElementsByTagName("attribute");
-       }
-       if ((exposedAttributes == null) || (exposedAttributes.getLength() == 0)) {
-           return schema;
-       }
-       int attCount = exposedAttributes.getLength();
-       AttributeType[] attributes = new AttributeType[attCount];
-       Element attElem;
-       String attName;
-       for (int i = 0; i < attCount; i++) {
-           attElem = (Element) exposedAttributes.item(i);
-           attName = getAttribute(attElem, "name", true);
-           attributes[i] = schema.getAttributeType(attName);
-           if (attributes[i] == null) {
-               throw new ConfigurationException("the FeatureTypeConfig " + getName()
-                   + " does not contains the configured attribute " + attName
-                   + ". Check your catalog configuration");
-           }
-       }
-       try {
-           filteredSchema = FeatureTypeFactory.newFeatureType(attributes,
-                   getName());
-       } catch (SchemaException ex) {
-       } catch (FactoryConfigurationError ex) {
-       }
-       return filteredSchema;
-       }*/
-
-    /**
-     * creates a FeatureTypeInfo schema from the list of defined exposed
-     * attributes, or the full schema if no exposed attributes were defined
-     *
-     * @return A complete FeatureType
-     *
-     * @throws IOException When IO fails
-     *
-     * @task TODO: if the default geometry attribute was not declared as
-     *       exposed should we expose it anyway? I think yes.
-     */
-
-    /*private FeatureType getSchema(List attrElems)
-       throws ConfigurationException, IOException {
-       FeatureType schema = getRealFeatureSource().getSchema();
-       FeatureType filteredSchema = null;
-       if (attrElems.size() == 0) {
-               return schema;
-       }
-       AttributeType[] attributes = new AttributeType[attrElems.size()];
-       String attName;
-       for (int i = 0; i < attrElems.size(); i++) {
-    
-               AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO)attrElems.get(i);
-               String name = ati.getName();
-               if(name == "" && ati.isRef())
-                       name = ati.getType();
-               attributes[i] = schema.getAttributeType(name);
-               if (attributes[i] == null) {
-                       throw new ConfigurationException("the FeatureTypeConfig " + ftc.getName()
-                               + " does not contains the configured attribute " + name
-                               + ". Check your catalog configuration");
-               }
-       }
-       try {
-               filteredSchema = FeatureTypeFactory.newFeatureType(attributes,ftc.getName());
-       } catch (SchemaException ex) {
-       } catch (FactoryConfigurationError ex) {
-       }
-       return filteredSchema;
-       }*/
-
-    /**
      * Get XMLSchema for this FeatureType.
      * 
      * <p>
@@ -561,7 +428,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
                 || (dto.getSchemaAttributes().size() == 0)) {
             // generate stuff
             FeatureType schema = getFeatureType();
-            dto.setSchemaBase(GMLUtils.ABSTRACTFEATURETYPE.toString());
+            dto.setSchemaBase(NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml").getElement("AbstractFeatureType").getQualifiedTypeDefName());
             dto.setSchemaName(schema.getTypeName()); //.toUpperCase()+"_TYPE" );
             dto.setSchemaAttributes(DataTransferObjectFactory
                 .generateAttributes(schema));

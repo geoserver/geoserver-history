@@ -11,7 +11,10 @@ package org.vfny.geoserver.global.dto;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.vfny.geoserver.global.xml.GMLUtils;
+import org.vfny.geoserver.global.xml.NameSpaceElement;
+import org.vfny.geoserver.global.xml.NameSpaceTranslator;
+import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,8 +34,8 @@ import java.util.List;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.7 2004/01/31 00:27:26 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.8 2004/02/06 19:58:04 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -53,16 +56,18 @@ public class DataTransferObjectFactory {
         dto.setName(attributeType.getName());
         dto.setMinOccurs(0);
         dto.setMaxOccurs(1);
+        NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
+        NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+        NameSpaceElement nse = nst1.getElement(attributeType.getName());
+        if(nse == null)
+        	nse = nst2.getElement(attributeType.getName());
 
-        GMLUtils.Mapping mapping = GMLUtils.schema(attributeType.getName(),
-                attributeType.getType());
-
-        if (mapping == null) {
+        if (nse == null) {
             dto.setComplex(false);
-            dto.setType(GMLUtils.STRING.toString());
+            dto.setType(nst1.getElement("string").getTypeRefName());
         } else {
             dto.setComplex(false);
-            dto.setType(mapping.toString());
+            dto.setType(nse.getTypeRefName());
         }
 
         return dto;
@@ -94,7 +99,7 @@ public class DataTransferObjectFactory {
         dto.setName(schema.getTypeName());
         dto.setNumDecimals(8);
         dto.setSchemaAttributes(generateAttributes(schema));
-        dto.setSchemaBase(GMLUtils.ABSTRACTFEATURETYPE.toString());
+        dto.setSchemaBase(NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml").getElement("AbstractFeatureType").getTypeDefName());
         dto.setSchemaName(dataStoreId.toUpperCase() + "_"
             + schema.getTypeName().toUpperCase() + "_TYPE");
         dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());

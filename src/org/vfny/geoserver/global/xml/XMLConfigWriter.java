@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.19 2004/02/03 20:09:16 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.20 2004/02/06 19:58:03 dmzwiers Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -751,40 +751,23 @@ public class XMLConfigWriter {
             m.put("nillable", "" + ati.isNillable());
             m.put("minOccurs", "" + ati.getMinOccurs());
             m.put("maxOccurs", "" + ati.getMaxOccurs());
-
+            NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
+            NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
             if (!ati.isComplex()) {
                 if (ati.getName() == ati.getType()) {
                     String r = "";
-
-                    if (GMLUtils.isXMLSchemaElement(ati.getType())) {
-                    	if(!"xs:".equals(ati.getType().substring(0,3)))
-                    		r = "xs:" + ati.getType();
-                    	else
-                    		r = ati.getType();
-                    } else {
-                    	if(!"gml:".equals(ati.getType().substring(0,4)))
-                    		r = "gml:" + ati.getType();
-                    	else
-                    		r = ati.getType();
-                    }
-
+                    NameSpaceElement nse = nst1.getElement(ati.getType());
+                    if(nse == null)
+                    	nse = nst2.getElement(ati.getType());
+                    r = nse.getQualifiedTypeRefName();
                     m.put("ref", r);
                 } else {
                     m.put("name", ati.getName());
-
                     String r = "";
-
-                    if (GMLUtils.isXMLSchemaElement(ati.getType())) {
-                    	if(!"xs:".equals(ati.getType().substring(0,3)))
-                    		r = "xs:" + ati.getType();
-                    	else
-                    		r = ati.getType();
-                    } else {
-                    	if(!"gml:".equals(ati.getType().substring(0,4)))
-                    		r = "gml:" + ati.getType();
-                    	else
-                    		r = ati.getType();
-                    }
+                    NameSpaceElement nse = nst1.getElement(ati.getType());
+                    if(nse == null)
+                    	nse = nst2.getElement(ati.getType());
+                    r = nse.getQualifiedTypeRefName();
 
                     m.put("type", r);
                 }
@@ -817,7 +800,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.19 2004/02/03 20:09:16 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.20 2004/02/06 19:58:03 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */

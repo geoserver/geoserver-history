@@ -10,7 +10,9 @@ package org.vfny.geoserver.config;
 
 import org.geotools.feature.AttributeType;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.xml.GMLUtils;
+import org.vfny.geoserver.global.xml.NameSpaceElement;
+import org.vfny.geoserver.global.xml.NameSpaceTranslator;
+import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 
 
 /**
@@ -69,7 +71,7 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.17 2004/02/05 00:44:35 jive Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.18 2004/02/06 19:58:04 dmzwiers Exp $
  */
 public class AttributeTypeInfoConfig {
     /** Value of getType() used to indicate that fragement is in use */
@@ -170,14 +172,15 @@ public class AttributeTypeInfoConfig {
         minOccurs = 1;
         maxOccurs = 1;
 
-        GMLUtils.Mapping mapping = GMLUtils.schema(name, attributeType.getType());
+        NameSpaceTranslator nst = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");
+        NameSpaceElement nse = nst.getElement(name);
 
-        if (mapping == null) {
+        if (nse == null) {
             type = TYPE_FRAGMENT;
             fragment = "<!-- definition for " + attributeType.getType()
                 + " -->";
         } else {
-            type = mapping.toString();
+            type = nse.getTypeRefName();
             fragment = "";
         }
     }
