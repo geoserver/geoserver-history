@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Mapbuilder WPS Interoperability Experiment Client</title>
+    <link rel='StyleSheet' type='text/css' href='/mapbuilder/lib/skin/default/docsStyle.css'>
+    <link rel='StyleSheet' type='text/css' href='wpsStyle.css'>
+    <script>
+      // URL of Mapbuilder configuration file.
+      var mbConfigUrl='wpsDemoConfig.xml';
+    </script>
+    <script type="text/javascript" src="/mapbuilder/lib/Mapbuilder.js"></script>
+  </head>
+  <body onload="mbDoLoad()">
+    <table style="width:800">
+      <tr>
+        <td style="width:200">
+          <div>
+            <div id="locatorMap"/>
+          </div>
+        </td>
+        <td style="width:600">
+          <h1>Mapbuilder WPS Client</h1>
+          <p>A generic client to demonstrate Web Processing Services (WPS) from
+          the OGC Interoperability Experiment.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" style="padding:8px">
+          <ul>
+            Web processing services
+            <li>
+            <a href="javascript:config.loadModel('wpsCapTemplate','PCIwpsCaps.xml')">
+            Sample instance</a>
+            </li>
+            <li>
+            <a href="javascript:config.loadModel('wpsCapTemplate','http://wms1.agr.gc.ca/GeoPS/gdas_GeoPS.php?request=GetCapabilities&service=WPS')">
+            GDAS XML Stream Based Geoprocessing Service</a>
+            </li>
+            <li>
+            <a href="javascript:config.loadModel('wpsCapTemplate','http://wms1.agr.gc.ca:8081/geoproc/servlet/SpatialOperation?SERVICE=WPS&REQUEST=GetCapabilities')">
+            Spatial Operation</a>
+            </li>
+            <li>
+            <a href="javascript:config.loadModel('wpsCapTemplate','http://wms1.agr.gc.ca:8081/geoproc/servlet/FeatureDataFormatConversion?SERVICE=WPS&REQUEST=GetCapabilities')">
+            Feature Data Format Conversion</a>
+            </li>
+            <li>
+            <a href="javascript:config.loadModel('wpsCapTemplate','http://wms1.agr.gc.ca:8081/geoproc/servlet/FeatureLocator?SERVICE=WPS&REQUEST=GetCapabilities')">
+            ESRI Shapefile Feature Locator</a>
+            </li>
+            <li>
+            <a href="javascript:config.loadModel('wpsCapTemplate','http://gws2.pcigeomatics.com/wps/wps?request=GetCapabilities&service=WPS')">
+            PCI Remote Sensing Calculations (needs more metadata in caps document)</a>
+            </li>
+          </ul>
+          <ul>
+            Web processing clients
+            <li>
+            <a href="http://wms1.agr.gc.ca/GeoPS/gdas_GeoPS_client.php">
+            AAFC GDAS Based GeoPS Client</a>
+            </li>
+            <li>
+            <a href="http://wms1.agr.gc.ca:8081/geoproc/index.jsp">
+            AAFC client</a>
+            </li>
+          </ul>
+          <ul>
+            <li>
+            <a href="http://portal.opengeospatial.org/wiki/twiki/bin/view/WPSie/WpsOverview">
+            About the WPS IE</a>
+            </li>
+            <li>
+            <a href="http://www.opengeospatial.org/press/?page=pressrelease&year=0&prid=211">
+            OGC Press Release</a>
+            </li>
+            <li>
+            <a href="../index.html">
+            other mapbuilder demos</a>
+            </li>
+          </ul>
+        </td>
+        <td>
+          <table width="100%">
+            <tr>
+              <td align="left">
+                <h2 id="mapTitle"></h2>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <table>
+                  <tr>
+                    <td colspan="2">
+                      <div id="mainMapPane"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left">
+                      <div id="mainButtonBar"/>
+                    </td>
+                    <td align="right" id="cursorTrack" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="left">
+                <dl>
+                  <dt>1. Specify the web processing service</dt>
+                  <dd>Enter the URL for a WPS GetCapabilities document.
+                  The URL could also be selected from a search in a WPS registry
+                  once one of these exists.
+                  </dd>
+                  <dd id="urlInput"/>
+                  <dt>2. Select the process to execute
+                  </dt>
+                  <dd id="selectProcess">
+                  </dd>
+                  <dt>3. Enter the arguments for the process and invoke
+                  </dt>
+                  <dd id="argsInput">
+                  </dd>
+                  <dt>4. Access the results
+                  </dt>
+                  <dd id="accessResults">
+                  </dd>
+                </dl>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+    </table>
+
+    <table class="footer">
+      <tr>
+        <td><a href="http://mapbuilder.sourceforge.net">Community Map Builder</a><br/>$Name:  $</td>
+        <td width="60"><img src="/mapbuilder/lib/skin/default/images/Icon.gif"/></td>
+      </tr>
+    </table>
+
+  </body>
+</html>

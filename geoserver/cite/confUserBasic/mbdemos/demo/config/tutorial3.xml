@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<MapbuilderConfig version="0.2.0" id="tutorial3" 
+    xmlns="http://mapbuilder.sourceforge.net/mapbuilder" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder /mapbuilder/lib/schemas/config.xsd">
+  <skinDir>/mapbuilder/lib/skin/default</skinDir>
+
+  <models>
+
+    <Context id="firstMap">
+      <defaultModelUrl>context/cded.xml</defaultModelUrl>
+      
+      <widgets>
+        <MapPane id="mainMapWidget">
+          <tools> 
+            <AoiBox>
+              <lineColor>magenta</lineColor>
+              <lineWidth>2</lineWidth>
+              <crossSize>25</crossSize>
+            </AoiBox>
+            <AoiMouseHandler/>
+            <DragPanHandler>
+              <enabled>false</enabled>
+            </DragPanHandler>
+          </tools> 
+					<htmlTagId>mainMapPane</htmlTagId>
+					<mapContainerId>mainMapContainer</mapContainerId>
+        </MapPane>
+        
+        <Legend id="defaultLegend"/>
+        
+        <CursorTrack id="cursorTrack">
+          <mouseHandler>firstMap.mainMapWidget</mouseHandler>
+        </CursorTrack>
+
+      </widgets>
+    </Context>
+
+  </models>
+
+  <widgets>
+    <ButtonBar id="buttonBar">  
+      <targetModel>firstMap</targetModel>
+      <tools>
+        <ZoomIn id="zoomIn">
+          <class>RadioButton</class>
+          <selected>true</selected>
+          <mouseHandler>firstMap.mainMapWidget</mouseHandler>
+          <dependsOn>firstMap.mainMapWidget.AoiMouseHandler</dependsOn>
+          <dependsOn>firstMap.mainMapWidget.AoiBox</dependsOn>
+          <enabledSrc>/images/ZoomInEnable.gif</enabledSrc>
+          <disabledSrc>/images/ZoomInDisable.gif</disabledSrc>
+          <tooltip>click and drag to zoom in</tooltip>
+        </ZoomIn>
+        <ZoomOut id="zoomOut">
+          <class>RadioButton</class>
+          <mouseHandler>firstMap.mainMapWidget</mouseHandler>
+          <dependsOn>firstMap.mainMapWidget.AoiMouseHandler</dependsOn>
+          <dependsOn>firstMap.mainMapWidget.AoiBox</dependsOn>
+          <enabledSrc>/images/ZoomOutEnable.gif</enabledSrc>
+          <disabledSrc>/images/ZoomOutDisable.gif</disabledSrc>
+          <tooltip>click to zoom out</tooltip>
+        </ZoomOut>
+        <DragPan id="dragPan">
+          <class>RadioButton</class>
+          <mouseHandler>firstMap.mainMapWidget</mouseHandler>
+          <dependsOn>firstMap.mainMapWidget.DragPanHandler</dependsOn>
+          <enabledSrc>/images/PanEnable.gif</enabledSrc>
+          <disabledSrc>/images/PanDisable.gif</disabledSrc>
+          <tooltip>click and drag to pan</tooltip>
+        </DragPan>
+        <Reset id="reset">
+          <class>Button</class>
+          <disabledSrc>/images/ResetExtentDisable.gif</disabledSrc>
+          <tooltip>reset the map to full extent</tooltip>
+        </Reset>
+      </tools>
+    </ButtonBar>
+  </widgets>
+      
+</MapbuilderConfig>

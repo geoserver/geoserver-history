@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<MapbuilderConfig version="0.2.0" id="tutorial1" 
+    xmlns="http://mapbuilder.sourceforge.net/mapbuilder" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/config.xsd">
+  <skinDir>/mapbuilder/lib/skin/default</skinDir>
+
+  <models>
+    <Context id="mainMap">
+      <defaultModelUrl>context/locatorMap.xml</defaultModelUrl>
+      <widgets>
+        <MapPane id="mainMapWidget">
+          <fixedWidth>250</fixedWidth>
+          <htmlTagId>mainMapPane</htmlTagId>
+          <mapContainerId>mainMapContainer</mapContainerId>
+        </MapPane>
+      </widgets>
+    </Context>
+  </models>
+
+</MapbuilderConfig>
