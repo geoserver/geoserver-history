@@ -48,7 +48,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.10 2004/01/19 22:15:00 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.11 2004/01/19 23:37:31 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -372,6 +372,7 @@ public class FeatureResponse implements Response {
             //FeatureType schema = meta.getSchema();
             //bad hardcode - 2 is to indent 2 spaces, -1 is to do no indenting.
             transformer.setIndentation(config.isVerbose() ? 2 : (-1));
+            transformer.setNumDecimals(config.getNumDecimals());
 
             WFS wfsConfig = config.getWFS();
             String wfsSchemaLoc = request.getBaseUrl() + "wfs/1.0.0/"
