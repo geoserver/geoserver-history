@@ -195,6 +195,13 @@ great way to get involved in the GeoServer project.&nbsp; Soon we will
 have some better design documents, but until then just email
 geoserver-devel@lists.sourceforge.net and we can point you in the right
 directions.</p>
+           <p>Note: In order to render images the java installation running
+the WMS needs to be installed with the Java Advanced Imaging and JAI Image 
+I/O apis.  The JAI can be downloaded <a href="http://java.sun.com/products/java-media/jai/downloads/download-1_1_2.html">here</a> 
+and the Image I/O extension <a href="http://java.sun.com/products/java-media/jai/downloads/download-iio.html">here</a>.  Currently the WMS will fail with
+nasty errors if they are not present, the next version of GeoServer will
+include better reporting, not advertising the image types if they are not 
+available.   
             </blockquote>
             </td>
           </tr>
