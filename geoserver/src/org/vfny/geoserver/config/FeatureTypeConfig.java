@@ -5,7 +5,6 @@
 package org.vfny.geoserver.config;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,12 +20,11 @@ import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-
 /**
  * User interface FeatureType staging area.
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.19 2004/03/09 05:38:19 jive Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
  */
 public class FeatureTypeConfig {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -240,8 +238,7 @@ public class FeatureTypeConfig {
         defaultStyle = dto.getDefaultStyle();
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
-        schemaBase = dto.getSchemaBase() != null ?
-                     dto.getSchemaBase() : "AbstractFeatureType";        
+        schemaBase = dto.getSchemaBase();        
     }
 
     /**
@@ -475,13 +472,14 @@ public class FeatureTypeConfig {
     public void setNumDecimals(int numDecimals) {
         this.numDecimals = numDecimals;
     }
+    
     /**
      * Access schemaAttributes property.
      * 
      * @return Returns the schemaAttributes.
      */
     public List getSchemaAttributes() {
-        return Collections.unmodifiableList( schemaAttributes );
+        return schemaAttributes;
     }
     /**
      * Set schemaAttributes to schemaAttributes.
@@ -489,12 +487,7 @@ public class FeatureTypeConfig {
      * @param schemaAttributes The schemaAttributes to set.
      */
     public void setSchemaAttributes(List schemaAttributes) {
-        this.schemaAttributes = schemaAttributes;
-//    	if(schemaAttributes == null || schemaAttributes.isEmpty()){
-//    		if("".equals(getSchemaBase())){
-//    			return null;
-//    		}
-//    	}
+        this.schemaAttributes = schemaAttributes;    	
     }
     /**
      * Access schemaBase property.

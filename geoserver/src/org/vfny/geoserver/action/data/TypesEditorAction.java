@@ -5,6 +5,16 @@
 
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -15,85 +25,140 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.form.data.DataFeatureTypesEditorForm;
+import org.vfny.geoserver.form.data.AttributeDisplay;
+import org.vfny.geoserver.form.data.AttributeForm;
+import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.UserContainer;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 
 /**
- * DOCUMENT ME!
- *
- * @author rgould To change the template for this generated type comment go to
- *         Window>Preferences>Java>Code Generation>Code and Comments
+ * These Action handles all the buttons for the FeatureType Editor.
+ * <p>
+ * This one is more complicated then usual since not all the actions require
+ * the form bean to be validated! I am going to have to hack a little bit
+ * to make that happen, I may end up making the form bean validation differ
+ * depending on the selected action.
+ * </p>
+ * <p>
+ * Buttons that make this action go:
+ * <ul>
+ * <li>Submit: update the FeatureTypeConfig held by the user, punt it back into
+ *     DataConfig and return to the FeatureTypeSelect screen.
+ *     </li>
+ * <li>Up and Down (for each attribute): not quite sure how to make these work
+ *     yet - I hope I dont have to give them different names.
+ *     </li>
+ * </ul>
+ * As usual we will have to uninternationlize the action name provided to us.
+ * </p>
+ * @author Richard Gould
+ * @author Jody Garnett
  */
 public class TypesEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        DataFeatureTypesEditorForm featureTypesForm = (DataFeatureTypesEditorForm) form;
-
-        String name = featureTypesForm.getName();
-        String SRS = featureTypesForm.getSRS();
-        String title = featureTypesForm.getTitle();
-        double latLonBoundingBoxMinX = Double.parseDouble(featureTypesForm.getLatLonBoundingBoxMinX());
-        double latLonBoundingBoxMinY = Double.parseDouble(featureTypesForm.getLatLonBoundingBoxMinY());
-        double latLonBoundingBoxMaxX = Double.parseDouble(featureTypesForm.getLatLonBoundingBoxMaxX());
-        double latLonBoundingBoxMaxY = Double.parseDouble(featureTypesForm.getLatLonBoundingBoxMaxY());
-        String keywords = featureTypesForm.getKeywords();
-        String _abstract = featureTypesForm.get_abstract();
-        boolean _default = featureTypesForm.is_default();
-
-        if (featureTypesForm.isDefaultChecked() == false) {
-            _default = false;
-        }
-
-        DataConfig dataConfig = (DataConfig) getDataConfig();
-        FeatureTypeConfig config = dataConfig.getFeatureTypeConfig(name);
-        //TODO - RETRIEVE featuretype config		
-
-        config.setAbstract(_abstract);
-        config.setName(name);
-        config.setSRS(Integer.parseInt(SRS));
-        config.setTitle(title);
-        config.setLatLongBBox(new Envelope(latLonBoundingBoxMinX, 
-                                           latLonBoundingBoxMinY,
-                                           latLonBoundingBoxMaxX,
-                                           latLonBoundingBoxMaxY));
-
         
-        List list = new ArrayList();
-        String[] array = (keywords != null)
-            ? keywords.split(System.getProperty("line.separator")) : new String[0];
+        TypesEditorForm typeForm = (TypesEditorForm) form;        
+        String action = typeForm.getAction();
+        System.out.println("TypesEditorAction is "+action );
+        if( action.startsWith("Up")){
+            // TODO: implement Attribute Up
+        }
+        if( action.startsWith("Down")){
+            // TODO: implement Attribute Down        
+        }
+        if( action.startsWith("remove")){
+            // TODO: implement Attribute Remove            
+        }
+        if( action.equals("Submit")){
+        	return executeSubmit(mapping, typeForm, user, request);
+        }        
+        return mapping.findForward("config.data.type.editor");        
+    }    
+    
+    /**
+     * Execute Submit Action.
+     * 
+	 * @param mapping
+	 * @param form
+	 * @param user
+	 * @param request
+	 * @return
+	 */
+	private ActionForward executeSubmit(ActionMapping mapping, TypesEditorForm form, UserContainer user, HttpServletRequest request) {
+        FeatureTypeConfig config = user.getFeatureTypeConfig();
+        //TODO - RETRIEVE featuretype config from user
+
+        config.setAbstract(form.getAbstract());
+        config.setName(form.getName());
+        config.setSRS(Integer.parseInt(form.getSRS()));
+        config.setTitle(form.getTitle());
+        config.setLatLongBBox(getBoundingBox(form));        
+        config.setKeywords(keyWords(form));
+        
+        String schemaBase = form.getSchemaBase();        
+        if( schemaBase == null || schemaBase.equals("") || schemaBase.equals("--")){
+            config.setSchemaBase( null );
+            config.setSchemaAttributes( null );
+        }
+        else {
+            config.setSchemaBase( schemaBase );
+            for( Iterator i=form.getAttributes().iterator(); i.hasNext();){
+                Object obj = i.next();
+                
+                if( obj instanceof AttributeDisplay ){
+                    continue; // skip - display only attributes
+                }
+                else if (obj instanceof AttributeForm ){
+                    AttributeForm attribute = (AttributeForm) obj;
+                }
+            }
+        }
+        form.getAttributes();
+        
+        config.setSchemaAttributes( form.toSchemaAttributes() );
+
+        DataConfig dataConfig = (DataConfig) getDataConfig();        
+        dataConfig.addFeatureType( config.getName(), config );
+
+        // Don't think reset is needed (as me have moved on to new page)
+        // form.reset(mapping, request);
+        
+        getApplicationState().notifyConfigChanged();
+        // Feature no longer selected
+        user.setFeatureTypeConfig( null );        
+        return mapping.findForward("config.data.type");
+	}
+	/**
+	 * @param typeForm
+	 * @return Bounding box in lat long
+	 */
+	private Envelope getBoundingBox(TypesEditorForm typeForm) {
+		return new Envelope(Double.parseDouble(typeForm.getMinX()), 
+                            Double.parseDouble(typeForm.getMinY()),
+                            Double.parseDouble(typeForm.getMaxX()),
+                            Double.parseDouble(typeForm.getMaxY()));
+	}
+
+	/**
+	 * @param typeForm
+	 * @return Set of keywords
+	 */
+	private Set keyWords(TypesEditorForm typeForm) {
+		HashSet keywords = new HashSet();
+        String[] array = (typeForm.getKeywords() != null)
+            ? typeForm.getKeywords().split(System.getProperty("line.separator")) : new String[0];
 
         for (int i = 0; i < array.length; i++) {
-            list.add(array[i]);
+            keywords.add(array[i]);
         }
+		return keywords;
+	}
 
-        config.setKeywords(new HashSet(list));
-
-        if (_default) {
-            config.setSchemaAttributes(null);
-        }
-
-        dataConfig.addFeatureType(name, config);
-
-        featureTypesForm.reset(mapping, request);
-        getApplicationState().notifyConfigChanged();
-
-        return mapping.findForward("config.data.type");
-    }
-
-    DataStore aquireDataStore(String dataStoreID) throws IOException {
+	DataStore aquireDataStore(String dataStoreID) throws IOException {
         DataConfig dataConfig = getDataConfig();
         DataStoreConfig dataStoreConfig = dataConfig.getDataStore(dataStoreID);
 
