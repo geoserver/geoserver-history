@@ -4,22 +4,26 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 
 /**
  * Creates an encoder for a specific getfeature results output format
+ * 
  * <p>
- * this opens the doors for future additions of new output formats (BXML?),
- * by decoupling the execution from the response generation of a getfeature
+ * this opens the doors for future additions of new output formats (BXML?), by
+ * decoupling the execution from the response generation of a getfeature
  * request
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: FeatureResponseDelegateFactory.java,v 1.1 2004/03/10 23:39:06 groldan Exp $
+ * @version $Id: FeatureResponseDelegateFactory.java,v 1.2 2004/03/12 10:19:44 cholmesny Exp $
  */
 public class FeatureResponseDelegateFactory {
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private static final List encoders = new LinkedList();
 
     static {
