@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.5 2004/01/15 19:03:16 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.6 2004/01/15 19:04:19 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -188,7 +188,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeContact purpose.
 	 * <p>
-	 * Writes a contact into the WriterHelper provided from the ContactConfig provided.
+	 * Writes a contact into the WriterUtils provided from the ContactConfig provided.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @param c The ContactConfig to write.
@@ -222,7 +222,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeService purpose.
 	 * <p>
-	 * Writes a service into the WriterHelper provided from the WFS or WMS object provided.
+	 * Writes a service into the WriterUtils provided from the WFS or WMS object provided.
 	 * </p>
 	 * @param obj either a WFS or WMS object.
 	 * @param cw The Configuration Writer
@@ -282,7 +282,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeCatalog purpose.
 	 * <p>
-	 * Writes a catalog into the WriterHelper provided from Data provided in memory.
+	 * Writes a catalog into the WriterUtils provided from Data provided in memory.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @throws ConfigurationException When an IO exception occurs.
@@ -338,7 +338,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeDataStore purpose.
 	 * <p>
-	 * Writes a DataStoreInfo into the WriterHelper provided.
+	 * Writes a DataStoreInfo into the WriterUtils provided.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @param ds The Datastore. 
@@ -376,7 +376,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeNameSpace purpose.
 	 * <p>
-	 * Writes a NameSpaceInfoDTO into the WriterHelper provided.
+	 * Writes a NameSpaceInfoDTO into the WriterUtils provided.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @param ns The NameSpaceInfo. 
@@ -399,7 +399,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeStyle purpose.
 	 * <p>
-	 * Writes a StyleDTO into the WriterHelper provided.
+	 * Writes a StyleDTO into the WriterUtils provided.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @param ns The StyleDTO. 
@@ -571,7 +571,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.5 2004/01/15 19:03:16 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.6 2004/01/15 19:04:19 dmzwiers Exp $
  */
 class WriterUtils{
 	/**

@@ -26,13 +26,13 @@ import java.util.logging.Logger;
 import org.vfny.geoserver.global.ConfigurationException;
 
 /**
- * WriterHelper purpose.
+ * WriterUtils purpose.
  * <p>
  * Used to provide assitance writing xml to a Writer.
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterHelper.java,v 1.1 2004/01/15 19:03:16 dmzwiers Exp $
+ * @version $Id: WriterHelper.java,v 1.2 2004/01/15 19:04:19 dmzwiers Exp $
  */
 public class WriterHelper{
 	/**
@@ -46,7 +46,7 @@ public class WriterHelper{
 	protected Writer writer;
 	
 	/**
-	 * WriterHelper constructor.
+	 * WriterUtils constructor.
 	 * <p>
 	 * Should never be called.
 	 * </p>
@@ -55,7 +55,7 @@ public class WriterHelper{
 	protected WriterHelper(){}
 	
 	/**
-	 * WriterHelper constructor.
+	 * WriterUtils constructor.
 	 * <p>
 	 * Stores the specified writer to use for output.
 	 * </p>
