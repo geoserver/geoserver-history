@@ -24,7 +24,7 @@
 		<description>Checks that Streams do not self intersect</description>
 		<plugin>Line Not Self Intersection</plugin>
 		<argument >
-			<name>lineTypeRef</name>
+			<name>typeRef</name>
 			<string>streams:streams</string>
 		</argument>
 	</test>
