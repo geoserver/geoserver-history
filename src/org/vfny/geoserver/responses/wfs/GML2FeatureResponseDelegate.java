@@ -34,7 +34,7 @@ import javax.xml.transform.TransformerException;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.7 2004/03/31 05:15:30 cholmesny Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.8 2004/04/05 12:05:07 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
@@ -129,29 +129,16 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
             if (ftNamespaces.containsKey(uri)) {
                 String location = (String) ftNamespaces.get(uri);
                 ftNamespaces.put(uri, location + "," + meta.getName());
-
-                //namespace.getPrefix() + 
-                //":" + meta.getFeatureType().getTypeName())
             } else {
                 ftNamespaces.put(uri,
                     request.getBaseUrl() + "wfs/"
                     + "DescribeFeatureType?typeName=" + meta.getName());
             }
-
-            //ftNames.declareNamespace(features.getSchema(),
-            //    namespace.getPrefix(), namespace.getUri());
-            //typeNames.append(namespace.getPrefix() + ":"
-            //    + meta.getFeatureType().getTypeName());
-            //if ((resIndex < (resCount - 1)) && (maxFeatures > 0)) {
-            //    typeNames.append(",");
-            //}
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
             "org.apache.xalan.processor.TransformerFactoryImpl");
 
-        //bad hardcode - 2 is to indent 2 spaces, -1 is to do no indenting.
-        transformer.setIndentation(config.isVerbose() ? 2 : (-1));
         transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
@@ -159,23 +146,18 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         String wfsSchemaLoc = request.getSchemaBaseUrl()
             + "wfs/1.0.0/WFS-basic.xsd";
 
-        //String fSchemaLoc = request.getBaseUrl() + "wfs/"
-        //    + "DescribeFeatureType?typeName=" + typeNames.toString();
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
 
-        //namespace = meta.getDataStoreInfo().getNameSpace();
         for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
             String uri = (String) it.next();
             transformer.addSchemaLocation(uri, (String) ftNamespaces.get(uri));
         }
 
-        transformer.setGmlPrefixing(true); //TODO: make this a user config
+        transformer.setGmlPrefixing(request.getWFS().isGmlPrefixing());
 
         FeatureLock featureLock = results.getFeatureLock();
 
         if (featureLock != null) {
-            // TODO: chris needs to add the lock authorization to
-            //       the transformer header info
             transformer.setLockId(featureLock.getAuthorization());
         }
 
