@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.4.2.1 2004/02/02 22:46:54 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.4.2.2 2004/02/03 21:12:28 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -369,6 +369,7 @@ public class FeatureResponse implements Response {
 
 			transformer.setIndentation(globalConfig.isVerbose() ? INDENT_SIZE : 
 				(NO_FORMATTING));
+			transformer.setNumDecimals(globalConfig.getNumDecimals());
             ServerConfig config = ServerConfig.getInstance();
             WFSConfig wfsConfig = config.getWFSConfig();
             String wfsSchemaLoc = wfsConfig.getWfsBasicLocation();
