@@ -68,7 +68,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.6 2004/01/15 01:14:34 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.7 2004/01/15 21:55:15 emperorkefka Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -629,6 +629,8 @@ public class XMLConfigReader {
 				LOGGER.fine("Info dir:"+file[i].toString());
 				FeatureTypeInfoDTO ft = loadFeature(new File(file[i],"info.xml"));
 				DataStoreInfoDTO dsi = (DataStoreInfoDTO)data.getDataStores().get(ft.getDataStoreId());
+				
+				//TODO JODYFIXTHIS
 				featureTypes.put(dsi.getNameSpaceId()+":"+ft.getName(), ft);
 			}
 		}
