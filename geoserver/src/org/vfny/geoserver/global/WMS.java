@@ -7,10 +7,25 @@ package org.vfny.geoserver.global;
 import org.vfny.geoserver.global.dto.*;
 
 /**
- * DOCUMENT ME!
+ * WMS
+ * 
+ * <p>
+ * Represents the GeoServer information required to configure an 
+ * instance of the WMS Server. This class holds the currently used 
+ * configuration and is instantiated initially by the GeoServerPlugIn 
+ * at start-up, but may be modified by the Configuration Interface 
+ * during runtime. Such modifications come from the GeoServer Object 
+ * in the SessionContext. 
+ * </p>
+ * 
+ * <p>
+ * WMS wms = new WMS(dto);
+ * System.out.println(wms.getName() + wms.WMS_VERSION);
+ * System.out.println(wms.getAbstract());
+ * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.1.2.5 2004/01/07 23:27:58 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.1.2.6 2004/01/08 19:31:19 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -19,33 +34,57 @@ public class WMS extends Service {
     /** WMS spec specifies this fixed service name */
     private static final String FIXED_SERVICE_NAME = "OGC:GlobalWMS";
 
-    /** DOCUMENT ME!  */
+    /** list of WMS Exception Formats  */
     private static final String[] EXCEPTION_FORMATS = {
         "application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
         "application/vnd.ogc.se_blank"
     };
-
-	private WMSDTO config = null;
-
+	
+	/**
+	 * WMS constructor.
+	 * <p>
+	 * Stores the data specified in the WMSDTO object in this WMS Object for GeoServer to use.
+	 * </p>
+	 * @param config The data intended for GeoServer to use. 
+	 */
     public WMS(WMSDTO config){
     	super(config.getService());
-    	this.config = config;
-    	//URL = GeoServer.getInstance().getBaseUrl() + "/wms";
     }
     
+    /**
+     * WMS constructor.
+     * <p>
+     * Package constructor intended for default use by GeoServer
+     * </p>
+     * @see GeoServer#GeoServer()
+     */
 	WMS(){
 		super(new ServiceDTO());
-		config = new WMSDTO();
 	}
 
+	/**
+	 * Implement toDTO.
+	 * <p>
+	 * Package method used by GeoServer. This method may return references, 
+	 * and does not clone, so extreme caution sould be used when traversing 
+	 * the results.
+	 * </p>
+	 * @see org.vfny.geoserver.global.Abstract#toDTO()
+	 * 
+	 * @return WMSDTO An instance of the data this class represents. Please see Caution Above.
+	 */
 	Object toDTO(){
-		return config;
+		WMSDTO w = new WMSDTO();
+		w.setService(config);
+		return w;
 	}
 	
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * getExceptionFormats purpose.
+     * <p>
+     * Returns a static list of Exception Formats in as Strings
+     * </p>
+     * @return String[] a static list of Exception Formats
      */
     public String[] getExceptionFormats() {
         return EXCEPTION_FORMATS;
@@ -55,52 +94,52 @@ public class WMS extends Service {
      * overrides getName() to return the fixed service name as specified by OGC
      * WMS 1.1 spec
      *
-     * @return DOCUMENT ME!
+     * @return static service name.
      */
     public String getName() {
         return FIXED_SERVICE_NAME;
     }
 
      /**
-     * DOCUMENT ME!
+     * Returns the version of this WMS Instance.
      *
-     * @return DOCUMENT ME!
+     * @return static version name
      */
     public static String getVersion() {
         return WMS_VERSION;
     }
 
     /**
-     * DOCUMENT ME!
+     * Informs the user that this WMS supports SLD
      *
-     * @return DOCUMENT ME!
+     * @return true
      */
     public boolean supportsSLD() {
         return true;
     }
 
     /**
-     * DOCUMENT ME!
+     * Informs the user that this WMS supports User Layers
      *
-     * @return DOCUMENT ME!
+     * @return true
      */
     public boolean supportsUserLayer() {
         return true;
     }
 
     /**
-     * DOCUMENT ME!
+     * Informs the user that this WMS supports User Styles
      *
-     * @return DOCUMENT ME!
+     * @return true
      */
     public boolean supportsUserStyle() {
         return true;
     }
 
     /**
-     * DOCUMENT ME!
+     * Informs the user that this WMS supports Remote WFS.
      *
-     * @return DOCUMENT ME!
+     * @return true
      */
     public boolean supportsRemoteWFS() {
         return true;
