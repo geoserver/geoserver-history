@@ -5,6 +5,10 @@
 package org.vfny.geoserver.responses.wms.helpers;
 
 import org.geotools.renderer.lite.LiteRenderer2;
+import org.vfny.geoserver.WmsException;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,6 +18,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 
 /**
@@ -94,11 +100,52 @@ public final class JAISupport {
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns wether the JAI library is available by checking  the available
+     * formats.
      *
      * @return <code>true</code> if JAI is available
+     *
+     * @see #getSupportedFormats()
      */
     public static boolean isJaiAvailable() {
         return getSupportedFormats().size() > 0;
+    }
+
+    /**
+     * Encodes a BufferedImage using JAI in <code>format</code> format and
+     * sends it to <code>outStream</code>.
+     *
+     * @param format the MIME type of the output image in which to encode
+     *        <code>image</code> through JAI
+     * @param image the actual image to be encoded in <code>format</code>
+     *        format.
+     * @param outStream the encoded image destination.
+     *
+     * @throws IOException if the image writing to <code>outStream</code>
+     *         fails.
+     * @throws IllegalArgumentException if <code>format</code> is not a
+     *         supported output format for the installed JAI library.
+     */
+    protected void encode(String format, BufferedImage image,
+        OutputStream outStream) throws IOException {
+        if (format.equalsIgnoreCase("jpeg")) {
+            format = "image/jpeg";
+        }
+
+        Iterator it = ImageIO.getImageWritersByMIMEType(format);
+
+        if (!it.hasNext()) {
+            throw new IllegalArgumentException("Format not supported: "
+                + format);
+        }
+
+        ImageWriter writer = (ImageWriter) it.next();
+        ImageOutputStream ioutstream = null;
+
+        ioutstream = ImageIO.createImageOutputStream(outStream);
+        writer.setOutput(ioutstream);
+        writer.write(image);
+        writer.dispose();
+        ioutstream.close();
     }
 }
