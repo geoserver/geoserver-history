@@ -5,7 +5,7 @@
 - throw friendly exception if a request was made when the server
   did not finished starting up
 - initialize datasores at startup time
-- creo q no escribe los poligonos con anillos interiores
+- make FeatureTransformer write inner rings in polygons
 - manejar multiples queries (queries sobre multiples datasources)
 
 - get transactions working again.
@@ -31,3 +31,9 @@
   collide.
 - GetCapabilities should not choke if datastores are not enabled.
 - Use IanS's new gml producer.
+- Evaluate using cactus (http://jakarta.apache.org/cactus) to make server-side unit tests
+- update all that empty javadoc comments, at least in the services hierarchy, wich seems
+	to be pretty good
+- figure out how to configure hierarchy layers for wms
+- create wms services, and isolate wms map creation from request processing, allowing
+	for content type extensions
