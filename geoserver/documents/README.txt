@@ -1,34 +1,12 @@
-GeoServer 1.2.0 Alpha README file
+GeoServer 1.2.0-rc1 README file
 ---------------------------
 
-The 1.2.0 release is an extension of all the hard work put into creating 
-the recently released version 1.1.0. The documentation for instalation and 
-execution remains in doc/usr/install.htm. All previous users should consult the
-documentation for 1.1.0, as some of the configuration information has changed.
-The major changes from a user's point of view is the added configuration
-support, with a Struts based configuration tool
-(http://localhost:8080/geoserver/).
+The 1.2.0-rc1 release is the result of pounding out many bugs by the
+GeoServer team.  The documentation for installation and execution is available
+online at http://geoserver.sf.net/documentation/1.2.0-rc1. It can also be 
+built with the ant document target.  The struts based web interface tool is
+coming along nicely, it is available at http://localhost:8080/geoserver/.
 
-There were also a number of code organization and design changes surrounding
-the configuration portion of GeoServer. Although this will not affect response
-time, these changes are intended to improve future maintenance initiatives.
-This alpha release does not include dynamic validation configurations,
-which will come at a later date.
-
-Thanks to all of you listed below for version 1.1.0. The Refractions team (Jody
-- Lead, Richard - UI Creation, David - GeoServer Modifications) would also like
-to thank Chris and Steve for their design insights. The Refractions team would 
-also like to thank all the other GeoServer developers who helped in our online
-IRC brainstorming sessions. The Refractions team would also like to thank our
-sponsor, GeoInnovations (www.geoconnections.org),
-and our partner, the Open Planning Project. 
-
-Because this is an Alpha release, we are expecting some minor bugs. Please
-report such items on the JIRA task tracker, following the instructions included
-in the last paragraph of this document. Known issues to date include wfs/wms
-services not detecting server ports correctly through firewalls unless the
-incoming and outgoing ports match. This is an effect of dynamically testing for
-the ports through the Java Servlets.  
 
 Supporting GeoServer
 --------------------
@@ -39,34 +17,48 @@ people are actually using the project.  The map also serves as a demonstration
 of GeoServer as it is built using GeoServer for the queries and MapServer to
 display.
 
-New Features and Bug Fixes since 1.1.0
+New Features and Bug Fixes since 1.2-beta
 --------------------------------------
+Ability to edit the login user name and password.
 
-* Web based configuration tool
+Faster WMS rendering.
 
-* Redesign of configuration internals, to a more flexible architecture.
+Demo page for the web interface.
 
-* SVG Encoder now handles polygons.
+Fixed errors with JSPCompiler.
 
-* numDecimals fixed to limit the number of decimals in coordinates of gml.
+Fixed errors with nulls in datastores.
 
-* verbose fixed (at least for GetFeature the one where it really matters, the others
-  need more work).
+Many small tweaks.
 
-* maxFeatures makes a comeback, by popular request.
-
-* No more baseUrl configuration parameter, the server now detects where requests
-  come from.
 
 
 Bugs
 ----------
 
+We are expecting a few minor bugs and would appreciate bug reports on our
+JIRA task tracker http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311
+
+There also may be a major bug with oracle, as we have not
+had any users successfully test it with 1.2.  But none of the core developers
+has good access to an oracle database, so it's hard for us to debug.
+Another known issues to date include wfs/wms services not detecting server 
+ports correctly through firewalls unless the incoming and outgoing ports 
+match. This is an effect of dynamically testing for the ports through the 
+Java Servlets.  Working with styles through the web interface is also a bit
+buggy.  We will hit all these and more for 1.2.0
 There are quite a few known bugs right now, see 
-http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311 for complete listings.
+ for complete listings.
 For the 1.2.0 release we will enumerate all the bugs here.
 
-If you have feature requests or find bugs, please make use of our JIRA task tracker, available thanks to codehaus at http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311.  More support is also available on the new geoserver-users@lists.sourceforge.net, for those who do not want all the developer updates of geoserver-devel@lists.sourceforge.net. List information is available at http://lists.sourceforge.net/lists/listinfo/geoserver-users.  You can also contact us directly at geoserver@openplans.org.
+If you have feature requests or find bugs, please make use of our JIRA task 
+tracker, available thanks to codehaus at 
+http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311.  More support 
+is also available on the new geoserver-users@lists.sourceforge.net, for those 
+who do not want all the developer updates of 
+geoserver-devel@lists.sourceforge.net. List information is available at 
+http://lists.sourceforge.net/lists/listinfo/geoserver-users.  You can also 
+contact us directly at geoserver@openplans.org.
 
 
 
