@@ -8,57 +8,24 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
-import junit.framework.TestCase;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.AttributeTypeFactory;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureFactory;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.IllegalAttributeException;
-import org.geotools.feature.SchemaException;
-import org.vfny.geoserver.config.ConfigInfo;
-import org.vfny.geoserver.config.TypeRepository;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.logging.Logger;
+
 
 
 /**
  * Tests the Insert request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: InsertSuite.java,v 1.6 2003/09/16 03:33:31 cholmesny Exp $
+ * @version $Id: InsertSuite.java,v 1.7 2003/09/19 19:06:25 cholmesny Exp $
  */
-public class InsertSuite extends TestCase {
+public class InsertSuite extends TransactionSuite {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
-    //java.util.logging.Level.FINE);
+    //java.util.logging.Level.FINER);
     //}
-
-    /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
-
-    /** Unit test data directory */
-    private static final String CONFIG_DIR = System.getProperty("user.dir")
-        + "/misc/documents/configuration.xml";
-
-    /** Unit test data directory */
-    private static final String TYPE_DIR = System.getProperty("user.dir")
-        + "/misc/testData/featureTypes";
-
-    /** Unit test data directory */
-    private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/requests";
-    private ConfigInfo config;
-    private TypeRepository repo;
-    private FeatureType schema;
-    private Feature testFeature;
-    private FeatureFactory featureFactory;
 
     /**
      * Constructor with super.
@@ -69,78 +36,11 @@ public class InsertSuite extends TestCase {
         super(testName);
     }
 
-    /**
-     * Handles test set up details.
-     */
-    public void setUp() {
-        config = ConfigInfo.getInstance(CONFIG_DIR);
-        config.setTypeDir(TYPE_DIR);
-        repo = TypeRepository.getInstance();
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Insert tests");
+        suite.addTestSuite(InsertSuite.class);
 
-        AttributeType[] atts = {
-            AttributeTypeFactory.newAttributeType("fid", Integer.class),
-            AttributeTypeFactory.newAttributeType("geom", Polygon.class),
-            AttributeTypeFactory.newAttributeType("name", String.class)
-        };
-
-        try {
-            schema = FeatureTypeFactory.newFeatureType(atts, "rail");
-        } catch (SchemaException e) {
-            LOGGER.finer("problem with creating schema");
-        }
-
-        Coordinate[] points = {
-            new Coordinate(15, 15), new Coordinate(15, 25),
-            new Coordinate(25, 25), new Coordinate(25, 15),
-            new Coordinate(15, 15)
-        };
-        PrecisionModel precModel = new PrecisionModel();
-        int srid = 2035;
-        LinearRing shell = new LinearRing(points, precModel, srid);
-        Polygon the_geom = new Polygon(shell, precModel, srid);
-
-        Integer featureId = new Integer(44);
-        String name = "insert polygon";
-        Object[] attributes = { featureId, the_geom, name };
-
-        try {
-            testFeature = schema.create(attributes, String.valueOf(featureId));
-        } catch (IllegalAttributeException ife) {
-            LOGGER.warning("problem in setup " + ife);
-        }
-    }
-
-    /**
-     * Handles actual XML test running details.
-     *
-     * @param baseRequest Base request, for comparison.
-     * @param fileName File name to parse.
-     * @param match Whether or not base request and parse request should match.
-     *
-     * @return <tt>true</tt> if the test passed.
-     *
-     * @throws Exception If there is any problem running the test.
-     */
-    private static boolean runXmlTest(TransactionRequest baseRequest,
-        String fileName, boolean match) throws Exception {
-        // Read the file and parse it
-        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
-        Reader inputStream = new FileReader(inputFile);
-        TransactionRequest request = XmlRequestReader.readTransaction(new BufferedReader(
-                    inputStream));
-        LOGGER.info("base request: " + baseRequest);
-        LOGGER.info("read request: " + request);
-        LOGGER.info("XML " + fileName + " test passed: "
-            + baseRequest.toString().equals(request.toString()));
-
-        //no implement insert request equals method, since there is no
-        //geotools feature and featureType equals methods.7
-        if (match) {
-            return baseRequest.equals(request);
-            //return baseRequest.toString().equals(request.toString());
-        } else {
-            return !baseRequest.equals(request);
-        }
+        return suite;
     }
 
     /* These tests need a geom_test feature type with an info.xml and
@@ -183,8 +83,7 @@ public class InsertSuite extends TestCase {
         Object[] attributes = { featureId, the_geom, name };
 
         //try{
-        Feature feature2 = featureFactory.create(attributes,
-                String.valueOf(featureId));
+        Feature feature2 = schema.create(attributes, String.valueOf(featureId));
 
         insert.addFeature(feature2);
         baseRequest.setHandle("my second insert");
