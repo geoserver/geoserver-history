@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.8 2004/01/16 20:06:29 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.9 2004/01/17 01:00:20 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -543,11 +543,23 @@ public class XMLConfigWriter {
 				m.put("minOccurs",""+ati.getMinOccurs());
 				m.put("maxOccurs",""+ati.getMaxOccurs());
 				if(!ati.isComplex()){
-					if(ati.getName() == null || ati.getName()==""){
-						m.put("ref",ati.getType());
+					if(ati.getName() == ati.getType()){
+						String r = "";
+						if(GMLUtils.isXMLSchemaElement(ati.getType())){
+							r = "xs:"+ati.getType();
+						}else{
+							r = "gml:"+ati.getType();
+						}
+						m.put("ref",r);
 					}else{
 						m.put("name",ati.getName());
-						m.put("type",ati.getType());
+						String r = "";
+						if(GMLUtils.isXMLSchemaElement(ati.getType())){
+							r = "xs:"+ati.getType();
+						}else{
+							r = "gml:"+ati.getType();
+						}
+						m.put("type",r);
 					}
 					cw.attrTag("xs:element",m);
 				}else{
@@ -571,7 +583,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.8 2004/01/16 20:06:29 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.9 2004/01/17 01:00:20 dmzwiers Exp $
  */
 class WriterUtils{
 	/**

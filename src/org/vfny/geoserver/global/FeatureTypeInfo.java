@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.13 2004/01/16 19:53:27 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.14 2004/01/17 01:00:20 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -256,7 +256,8 @@ e.printStackTrace();
         	String typeName = ftc.getName();
         	FeatureSource realSource = dataStore.getFeatureSource(typeName);
         	
-        	if(ftc.getSchema() == null || (ftc.getSchema().isEmpty() || ftc.getDefinitionQuery() == null )){
+        	if( (ftc.getSchema() == null || ftc.getSchema().isEmpty())){// && 
+        			//(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
         		fs = realSource;
         	}
         	else {
@@ -271,13 +272,18 @@ e.printStackTrace();
     }
     
     public static FeatureSource reTypeSource( FeatureSource source, FeatureTypeInfoDTO ftc ) throws SchemaException {
-    	String attributeNames[] = new String[ ftc.getSchema().size() ];
+    	AttributeType attributes[] = new AttributeType[ ftc.getSchema().size() ];
+    	
     	List attributeDefinitions = ftc.getSchema();
     	int index=0;
-    	for( Iterator i=attributeDefinitions.iterator(); i.hasNext(); index++ ){
-    		attributeNames[index] = ((AttributeTypeInfoDTO)i.next()).getName(); 
+    	FeatureType ft = source.getSchema();
+    	
+    	for(int i = 0;i<attributes.length;i++){
+    		AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO)ftc.getSchema().get( i ); 
+    		String xpath = attributeDTO.getName();
+    		attributes[i] = ft.getAttributeType(xpath);   		
     	}
-    	FeatureType myType = DataUtilities.createSubType( source.getSchema(), attributeNames );
+    	FeatureType myType = FeatureTypeFactory.newFeatureType(attributes,ftc.getName());
     	
     	return GeoServerFeatureLocking.create( source, myType, ftc.getDefinitionQuery());
     }
@@ -421,7 +427,6 @@ e.printStackTrace();
 	/*private FeatureType getSchema(List attrElems)
 		throws ConfigurationException, IOException {
 		FeatureType schema = getRealFeatureSource().getSchema();
-System.out.println("FeatureTypeInfo:getSchema"+(schema==null));
 		FeatureType filteredSchema = null;
 
 		if (attrElems.size() == 0) {
@@ -447,7 +452,6 @@ System.out.println("FeatureTypeInfo:getSchema"+(schema==null));
 		}
 
 		try {
-System.out.println("getSchema"+ftc.getName());
 			filteredSchema = FeatureTypeFactory.newFeatureType(attributes,ftc.getName());
 		} catch (SchemaException ex) {
 		} catch (FactoryConfigurationError ex) {
@@ -471,12 +475,10 @@ System.out.println("getSchema"+ftc.getName());
 			StringWriter sw = new StringWriter();
 			try{
 				FeatureTypeInfoDTO dto = getGeneratedDTO();
-//System.out.println("getXMLSchema - generated base = "+dto.getSchemaBase());
 				XMLConfigWriter.storeFeatureSchema(dto,sw);
 			}catch(ConfigurationException e){}
 			xmlSchemaFrag = sw.toString();
 		}
-System.out.println("FeatureTypeInfo:getXMLSchema:"+xmlSchemaFrag);
 		return xmlSchemaFrag;
 	}
 	/**
@@ -498,7 +500,7 @@ System.out.println("FeatureTypeInfo:getXMLSchema:"+xmlSchemaFrag);
 			// generate stuff
 			FeatureType schema = getFeatureType();
 			dto.setSchemaBase( GMLUtils.ABSTRACTFEATURETYPE.toString() );
-			dto.setSchemaName( dto.getDataStoreId().toUpperCase()+"_"+schema.getTypeName().toUpperCase()+"_TYPE" );
+			dto.setSchemaName(schema.getTypeName().toUpperCase()+"_TYPE" );
 			dto.setSchema( DataTransferObjectFactory.generateAttributes( schema ) );
 		}
 		return dto;
