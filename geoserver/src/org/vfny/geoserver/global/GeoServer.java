@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.21 2004/04/22 20:31:36 emperorkefka Exp $
+ * @version $Id: GeoServer.java,v 1.22 2004/09/08 17:39:02 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
     /** For debugging */
@@ -56,43 +56,13 @@ public class GeoServer extends GlobalLayerSupertype {
     
     /** Should we throw the stack traces back in responses? */
     private boolean verboseExceptions = false;
+    
+    private boolean srsXmlStyle = false;
 
     /** Default Logging level */
     private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
                                        .getLevel();
 
-    /**
-     * The reference to the wms configuration for this instance
-     *
-     * @return DOCUMENT ME!
-     */
-
-    //private WMS wms;
-
-    /**
-     * The reference to the wfs configuration for this instance
-     *
-     * @return DOCUMENT ME!
-     */
-
-    //private WFS wfs;
-
-    /**
-     * The validation processor
-     *
-     * @return DOCUMENT ME!
-     */
-
-    //ValidationProcessor processor;
-
-    /**
-     * The reference to the data configuration for this instance (formerly
-     * CatalogConfig)
-     *
-     * @return DOCUMENT ME!
-     */
-
-    //private Data data;
 
     /**
      * getAddress purpose.
@@ -391,6 +361,8 @@ public class GeoServer extends GlobalLayerSupertype {
             verbose = dto.isVerbose();
             adminUserName = dto.getAdminUserName();
             adminPassword = dto.getAdminPassword();
+            verboseExceptions = dto.isVerboseExceptions();
+            srsXmlStyle = dto.isSrsXmlStyle();
         } else {
             throw new ConfigurationException(
                 "load(GeoServerDTO) expected a non-null value");
@@ -418,6 +390,8 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setVerbose(verbose);
         dto.setAdminUserName(adminUserName);
         dto.setAdminPassword(adminPassword);
+        dto.setSrsXmlStyle(srsXmlStyle);
+        dto.setVerboseExceptions(verboseExceptions);
 
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
@@ -505,6 +479,7 @@ public class GeoServer extends GlobalLayerSupertype {
 
         return geoserver.toString();
     }
+	
 	/**
 	 * Should we display stackTraces or not? (And give them a nice
      * little message instead?)
@@ -522,5 +497,27 @@ public class GeoServer extends GlobalLayerSupertype {
 	 */
 	public void setVerboseExceptions(boolean showStackTraces) {
 		this.verboseExceptions = showStackTraces;
+	}
+	
+	/**
+	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+	 * style.  
+	 *
+	 * @return <tt>true</tt> if the srs is reported with the xml style
+	 */
+	public boolean isSrsXmlStyle() {
+		return srsXmlStyle;
+	}
+
+	/**
+	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+	 * style.  
+	 *
+	 * @param doXmlStyle whether the srs style should be xml or not.
+	 */
+	public void setSrsXmlStyle(boolean doXmlStyle) {
+		this.srsXmlStyle = doXmlStyle;
 	}
 }
