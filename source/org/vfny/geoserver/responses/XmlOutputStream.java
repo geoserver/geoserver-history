@@ -9,25 +9,48 @@ import java.io.*;
 import org.apache.log4j.Category;
 
 
+/**
+ * Smart ByteArray to store XML values and offers convenient methods for
+ * writing XML and file values to the stream.
+ * 
+ *@author Rob Hranac, Vision for New York
+ *@version 0.9 beta, 11/01/01
+ *
+ */
 public class XmlOutputStream extends ByteArrayOutputStream {
 		
-		/** standard logging instance for class */
+
+		/** Standard logging instance for class */
 		private static Category _log = Category.getInstance( XmlOutputStream.class.getName() );
 
 		/** XML preamble encoding length */
 		private static final int ENCODING_LENGTH = 40;
 
 
+	 /**
+		* Empty constructor, calls super.
+		*
+		*/ 
 		public XmlOutputStream() {
 				super();
 		}
 
 
+	 /**
+		* Constructor with XML length set.
+		*
+		* @param length The column/XML tag name.
+		*/ 
 		public XmlOutputStream(int length) {
 				super(length);
 		}
 		
 
+	 /**
+		* Writes XML output to XML final, stripping XML encoding preamble.
+		*
+		* @param xmlOut XML output to write to XML final.
+		*/ 
 		public void writeToClean(OutputStream xmlOut)
 				throws WfsException {
 
@@ -41,6 +64,12 @@ public class XmlOutputStream extends ByteArrayOutputStream {
 		}
 
 
+
+	 /**
+		* Writes XML output directly, with no modification, to XML final.
+		*
+		* @param xmlOut XML output to write to XML final.
+		*/ 
 		public void writeToNormal(OutputStream xmlOut)
 				throws WfsException {
 				
@@ -54,6 +83,11 @@ public class XmlOutputStream extends ByteArrayOutputStream {
 		}
 
 
+	 /**
+		* Writes file contents directly to XML output stream.
+		*
+		* @param inputFileName File to write to XML stream.
+		*/ 
 		public void writeFile(String inputFileName) 
 				throws WfsException {
 

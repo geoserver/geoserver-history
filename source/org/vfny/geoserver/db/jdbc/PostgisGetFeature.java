@@ -9,59 +9,91 @@ import java.sql.*;
 
 import org.apache.log4j.Category;
 
+import com.vividsolutions.jts.io.*;
+import com.vividsolutions.jts.geom.*;
+
 import org.vfny.geoserver.db.*;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.requests.BoundingBox;
+import org.vfny.geoserver.responses.WfsException;
+
 
 /**
  * Connects to a Postgis database and returns properly formatted GML.
  *
+ * <p>This standard class must exist for every supported datastore.</p>
  *
- *@author Vision for New York
- *@author Rob Hranac
- *@version 0.9 alpha, 11/01/01
- *
+ *@author Rob Hranac, Vision for New York
+ *@version $0.9 alpha, 11/01/01$
  */
 public class PostgisGetFeature extends PostgisTransaction implements GetFeatureTransaction {
 
-		// initialize to clean Postgis database requests of SRID part
+
+		/** Standard logging instance */
+		private Category _log = Category.getInstance(PostgisGetFeature.class.getName());
+
+		/** Initialize to clean Postgis database requests of SRID part */
 		private StringTokenizer geometryCleaner;
 
-		// initialize default geometry id and feature ids as well as temp default bounding box
-		// ALL NEED TO BE GENERALIZED, JUST TEMPORARY
-		private static final String GID_NAME = "gid";
-		private static final String FID_NAME = "objectid";
-		//private static final String DEFAULT_BBOX = " WHERE the_geom && GeometryFromText('BOX3D(979757,197685 981595,199542)'::box3d,-1);";
+		/** GID - since all layers may contain only one primary geometry (i.e. geometry or geom collection), this is the same as a row ID */
+		// NEEDS TO BE GENERALIZED, JUST TEMPORARY
+		private static final String GID_NAME = "objectid";
 
-		// initializes log file
-		private Category _log = Category.getInstance(PostgisGetFeature.class.getName());
+		/** FID - since all layers may contain only one primary geometry (i.e. geometry or geom collection), this is the same as a row ID */
+		// NEEDS TO BE GENERALIZED, JUST TEMPORARY
+		private static final String FID_NAME = "objectid";
+
+		/** Factory for producing geometries (from JTS) */
+		private GeometryFactory geometryFactory;
+
+		/** Well Known Text reader (from JTS) */
+		private WKTReader geometryReader;
+
+		/** Creates a GML response with methods for adding features, attributes, and geometries */
+		private GMLBuilder response;
+
+		/** The maximum features allowed by the server for any given response */
+		private int maxFeatures;
 
 
 	 /**
 		* Initializes the database and request handler.
 		*
+		* @param response The query from the request object.
+		* @param maxFeatures The query from the request object.
 		*/ 
-		public PostgisGetFeature () {
+		public PostgisGetFeature (GMLBuilder response, int maxFeatures) {
 
 				super();
+
+				// create the return response type
+				this.response = response;
+				this.maxFeatures = maxFeatures;
+
 		}
 		
 
 	 /**
-		* Returns the full GML GetFeature response for each query.
+		* Returns the full GML GetFeature response for each query and bounding box
 		*
-		* @param query The query from the request object.
+		* <p>Note that bounding box parameters are included because get feature
+		* requests may contain more than 1 generic query with a single unified 
+		* bounding box for each request.</p>
+		*
+		* @param genericQuery The query from the request object.
 		*/ 
-		public String getFeature (Query genericQuery, int maxFeatures) {
+		public void getFeature (Query genericQuery) {
+
+				//_log.info("bbox: " + bbox.getCoordinates() );
 
 				// create a JDBC version of the query
+				// HACK ALERT; THIS SHOULD BE IMPLEMENTED WITH A FACTORY AND SUBCLASSING
 				SQLStatement query = new SQLStatement( genericQuery );
-
-				// create the return response type
-				PostgisGML response = new PostgisGML( query.getFeatureTypeName(), "32118");
 
 				// initialize a few local tracking variables
 				String geometryName = "none";
+				String geometryResult = "";
 				String gid;
 				String fid;
 
@@ -76,25 +108,33 @@ public class PostgisGetFeature extends PostgisTransaction implements GetFeatureT
 
 						// return the SQL results, get their metadata, and remember the number of columns
 						int resultCounter = 0;
-
 						this.setDatabaseConnection( query.getDatastoreConfiguration() );
-
 						ResultSet result = this.getResultSet( query.getSQL() );
 						ResultSetMetaData resultMetaData = result.getMetaData();
 						columnCount = resultMetaData.getColumnCount();
 
+						// Creates a well-known text reader and geometry factory for generation
+						// CAN SPECIFY PRECISION AND SRID HERE, IF YOU WANT
+						geometryFactory = new GeometryFactory();
+						geometryReader = new WKTReader(geometryFactory);
 
-						// loop through entire result set
+						//_log.info("bbox: " + bbox.getCoordinates() );
+
+						// initialize GML result set with appropriate feature type
+						response.startFeatureType( query.getFeatureTypeName(), query.getMetadata().getSrs(), query.getBoundingBox() );
+
+						// loop through entire result set or until maxFeatures are reached
 						while( result.next() && ( resultCounter < maxFeatures ) ) {
 
 								//_log.info("got result: " + resultCounter + 1 );
+
 								// find gid and fid and start the feature type
 								gid = result.getString( GID_NAME );
 								fid = result.getString( FID_NAME );
 								response.startFeature( fid );
 
 								// loop through all columns
-								// INEFFICIENT TO LOOP THROUGH THESE COLUMNS - ABSTRACT
+								// INEFFICIENT TO LOOP THROUGH THESE COLUMNS - MAKE ABSTRACT
 								// ALSO, THIS REMAINS JUST WRONG BECUASE IT IGNORES USER SPECIFICATIONS
 								// ALSO, QUESTION REMAINS WHETHER IT IS FASTER TO LOOP THROUGH COLUMNS HERE OR READ AND MATCH STORED SCHEMA
 								for( int i = 1 ; i <= columnCount ; i++ ) {
@@ -121,10 +161,13 @@ public class PostgisGetFeature extends PostgisTransaction implements GetFeatureT
 														geometryName = currentColumnName;
 														
 														// set the geometric type
-														response.initializeGeometry( cleanGeometry( currentResult ) );
-														
+														response.initializeGeometry( createGeometry(currentResult), query.getFeatureTypeName(), query.getMetadata().getSrs(), geometryName );
+
 														// note that we have discovered the geometry type
 														firstPass = false;
+
+														// remember geometry result
+														geometryResult = currentResult;
 												}
 
 												// if current column is an attribute, write it to response object
@@ -138,14 +181,19 @@ public class PostgisGetFeature extends PostgisTransaction implements GetFeatureT
 										else if( !currentColumnName.equals(GID_NAME) && !currentColumnName.equals(FID_NAME) && !currentColumnName.equals(geometryName) ) {
 												response.addAttribute( currentColumnName, currentResult );
 										}
+									 
+										// remember geometry result
+										else if( currentColumnName.equals(geometryName) ) {
+												geometryResult = currentResult;
+										}
 								}
 
 								// write out geometry to response object
 								// and wrap up the given feature element
-								response.addGeometry( cleanGeometry(currentResult), geometryName, gid );
+								response.addGeometry( createGeometry(geometryResult), gid );
 								response.endFeature();
 
-
+								// increment result count
 								resultCounter++;
 						}								
 						
@@ -155,27 +203,57 @@ public class PostgisGetFeature extends PostgisTransaction implements GetFeatureT
 				catch (SQLException e) {
 						_log.info("Some sort of database connection error: " + e.getMessage());
 				}
-				catch (Exception e) {
+				catch (WfsException e) {
 						_log.info("Some unkown error: " + e.getMessage());
 				}
+				catch (ParseException e) {
+						_log.info("Failed to parse the geometry from PostGIS: " + e.getMessage());
+				}
+				catch (Exception e) {
+						_log.info("Error from the result set: " + e.getMessage());
+						_log.info( e.toString() );
+						e.printStackTrace();
+				}
 				
+				// end the GML feature type after end of loop is reached
+				response.endFeatureType();
+
+		}
+
+
+	 /**
+		* Returns the full GML GetFeature response for each query.
+		*
+		*/ 
+		public String getFinalResponse() {
+
 				// return the final GML
 				return response.getGML();
 		}
 
 
 	 /**
-		* Throws away the SRID component of the Postgis datatype from the database.
+		* Creates a new geometry object from the PostGIS database.
 		*
-		* @param geometry Postgis representation of an OGC simple type as string.
+		* @param geometryString The PostGIS WKT + SRID string representation of the geometry
 		*/ 
-		private String cleanGeometry (String geometry) {
+		private Geometry createGeometry(String geometryString)
+				throws ParseException{
 
-				// toss the SRID part
-				geometryCleaner = new StringTokenizer( geometry, ";" );
-				geometryCleaner.nextToken();
+				//_log.info("geom string: " + geometryString);
 
-				return geometryCleaner.nextToken();
+				// clean geometry of SRID
+				String tempGeomStr;
+				StringTokenizer cleanGeometry = new StringTokenizer( geometryString, ";");
+				cleanGeometry.nextToken();
+				tempGeomStr = cleanGeometry.nextToken();
+
+				// create geometry
+				Geometry tempGeom = geometryReader.read( tempGeomStr );
+
+				// return the geometry
+				return tempGeom;
 		}
+
 
 }

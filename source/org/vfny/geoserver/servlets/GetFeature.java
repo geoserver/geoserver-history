@@ -20,18 +20,19 @@ import org.vfny.geoserver.responses.*;
  * XML docs.
  *
  *@author Rob Hranac, Vision for New York
- *@version 0.9 alpha, 11/01/01
+ *@version 0.9 beta, 11/01/01
  *
  */
 public class GetFeature extends HttpServlet {
 
-		/** create standard logging instance for class */
+
+		/** Standard logging instance for class */
 		private static Category _log = Category.getInstance(GetFeature.class.getName());
 
-		/** specify MIME type */
+		/** Specifies MIME type */
 		private static final String MIME_TYPE = "text/xml";
 
-		/** establishes clean request object, which processes getFeature client request */
+		/** Establishes clean request object, which processes getFeature client request */
 		private static CleanRequest requestCleaner = new CleanRequest();
 
 
@@ -46,7 +47,7 @@ public class GetFeature extends HttpServlet {
 
 				// THIS IS CLUNKY; MUST BE A BETTER WAY TO DO THIS?
 				/** create temporary response string */
-				String tempResponse;
+				String tempResponse = "";
 
 				// implements the main request/response logic
 				try {
@@ -58,9 +59,15 @@ public class GetFeature extends HttpServlet {
 				// catches all errors; client should never see a stack trace 
 				catch (WfsException wfs) {
 						tempResponse = wfs.getXmlResponse();
+						_log.info("Threw a wfs exception: " + wfs.getMessage());
+						wfs.printStackTrace(response.getWriter());
+						wfs.printStackTrace();
 				}
 				catch (Exception e) {
 						tempResponse = e.getMessage();
+						_log.info("Had an undefined error: " + e.getMessage());
+						e.printStackTrace(response.getWriter());
+						e.printStackTrace();
 				}
 
 				// set content type and return response, whatever it is 

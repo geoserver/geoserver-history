@@ -1,8 +1,7 @@
-/*
- * Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
+/* Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
  * This servlet implements the OGC WFS getCapabilitiesResponse inteface.
- *
  */
+
 package org.vfny.geoserver.responses;
 
 import java.io.*;
@@ -21,9 +20,8 @@ import java.sql.*;
  * SHOULD ABSTRCT SOME GML GENERATION OUT OF CLASS.
  * SHOULD ABSTRACT GML FORMATING OUT OF CLASS.
  *
- *@author Vision for New York
- *@author Rob Hranac
- *@version 0.9 alpha, 11/01/01
+ *@author Rob Hranac, Vision for New York
+ *@version 0.9 beta, 11/01/01
  *
  */
 public class ComplexType {
@@ -79,6 +77,7 @@ public class ComplexType {
 				return getDescribeFeatureResponse;
 		}
 
+
 	 /**
 		* Simple internal function to correctly parse datastore content to XML.
 		*
@@ -94,6 +93,7 @@ public class ComplexType {
 				return result;
 		}
 
+
 	 /**
 		* Simple internal function to to print table header information.
 		*
@@ -104,6 +104,7 @@ public class ComplexType {
 		private static String tableHeaderPrint ( String tableName ) throws Exception {
 				return "<xs:complexType name='" + tableName + "_Type'>\n\t<xs:complexContent>\n\t\t<xs:extension base='gml:AbstractFeatureType'>\n\t\t\t<xs:sequence minOccurs='0' maxOccurs='unbounded'>";
 		}
+
 
 	 /**
 		* Simple internal function to to print table footer information.

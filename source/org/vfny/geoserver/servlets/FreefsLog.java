@@ -4,13 +4,27 @@
 
 package org.vfny.geoserver.servlets;
 
-import org.apache.log4j.BasicConfigurator;
-import javax.servlet.http.*;
 import java.io.PrintWriter;
 import java.io.IOException;
+import javax.servlet.http.*;
 
+import org.apache.log4j.BasicConfigurator;
+
+
+/**
+ * Initializes all logging functions.
+ * 
+ * @author Rob Hranac, Vision for New York
+ * @version 0.9 beta, 11/01/01
+ *
+ */
 public class FreefsLog extends HttpServlet {
  
+
+	 /**
+		* Initializes logging.
+		*
+		*/ 
 		public void init() {
 				String prefix =  getServletContext().getRealPath("/");
 				String file = getInitParameter("log4j-init-file");
@@ -22,6 +36,13 @@ public class FreefsLog extends HttpServlet {
 						//}
 		}
 		
+
+	 /**
+		* Initializes logging.
+		*
+		* @param req The servlet request object.
+		* @param resp The servlet response object.
+		*/ 
 		public void doGet(HttpServletRequest req, HttpServletResponse res) {
 				BasicConfigurator.configure();
 		}

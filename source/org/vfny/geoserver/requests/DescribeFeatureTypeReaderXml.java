@@ -26,16 +26,18 @@ import org.vfny.geoserver.config.*;
  * before passing the request.</p>
  * 
  * @author Rob Hranac, Vision for New York
- * @version alpha, 12/01/01
+ * @version beta, 12/01/01
  *
  */
 public class DescribeFeatureTypeReaderXml {
+
 
 		/** create standard logging instance for class */
 		private static Category _log = Category.getInstance(DescribeFeatureTypeReaderXml.class.getName());
 
 		/** create a describe feature type request class to return */
 		DescribeFeatureTypeHandler contentHandler = new DescribeFeatureTypeHandler();
+
 
 	 /**
 		* Constructor with raw request buffer.
@@ -64,6 +66,7 @@ public class DescribeFeatureTypeReaderXml {
 				}
 
 		}
+
 
 	 /**
 		* Return the describe feature type request object.

@@ -7,8 +7,8 @@ import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import javax.xml.bind.*;
-import javax.xml.marshal.*;
+/*import javax.xml.bind.*;
+	import javax.xml.marshal.*;*/
 
 import org.apache.log4j.Category;
 
@@ -16,70 +16,88 @@ import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.config.configuration.*;
 
+
 /**
- * Implements the WFS GetCapabilities interface, which tells clients what the server can do.
- *
- * Note that this behavior is implemented using
- * the early access release of JAX-B from Sun.  I found this release to be
- * brilliant in concept, but imperfect in implementation.  In particular,
- * the validator appears to throw invalid exceptions on nested, repeated
- * subelements of valid, well-formed internal XML document representations.
+ * Handles a GetCapabilities request and creates a GetCapabilities response GML string.
  *
  * Therefore, the get response is assembled not as a monolithic document,
  * which would be much neater, but as a series of subdocuments.  Also, I 
  * have implemented some horrible hacks in the auto-generated code to
  * get it to work in places.  My advice: don't regenerate this code.
  *
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 alpha, 11/01/01
+ * @author Rob Hranac, Vision for New York
+ * @version $0.9 beta, 11/01/01$
  *
  */
-
 public class GetCapabilitiesResponse {
 
-		// create standard logging instance for class
+
+		/** Standard logging instance for class */
 		private Category _log = Category.getInstance( GetCapabilitiesResponse.class.getName() );
 
-		// Get some global variables
+		/** Version of the response */
 		private String version;
+
+		/** Service requested */
 		private String service;
 
-		// Get some global variables
+		/** Version information for the server. */
 		private VersionBean versionInfo = new VersionBean();
+
+		/** Configuration information for the server. */
 		private ConfigurationBean configurationInfo = new ConfigurationBean();
 
-		// Convenience variables for XML subfunctions
+		/** XML Tag Type: start */
 		private static final int TAG_START = 1;
+
+		/** XML Tag Type: end */
 		private static final int TAG_END = 2;
+
+		/** XML Tag Type: only */
 		private static final int TAG_ONLY = 3;
 
+
+		/******************************************
+      Convenience variables for XML subfunctions
+		*******************************************/
+
+		/** Operations capabilities file */
 		private final String OPERATIONS_FILE = configurationInfo.getCapabilitiesDirectory() + "operations.xml";
+
+		/** Filter capabilities file */
 		private final String FILTER_FILE = configurationInfo.getCapabilitiesDirectory() + "filter.xml";
+
+		/** Service metadata file */
 		private final String SERVICE_METADATA_FILE = configurationInfo.getCapabilitiesDirectory() + "serviceMetadata.xml";
+
+		/** Operations signatures file */
 		private final String OPERATIONS_SIGNATURES_FILE = configurationInfo.getCapabilitiesDirectory() + "operationsSignatures.xml";
+
+		/** Additional capabilities file */
 		private final String ADDITIONAL_CAPABILITIES_FILE = configurationInfo.getCapabilitiesDirectory() + "additionalCapabilities.xml";
 
-		// Create xml output stream elements and configuration object
+		/** Final XML output stream elements and configuration object */
 		private static XmlOutputStream xmlOutFinal = new XmlOutputStream(60000);
+
+		/** Temporary XML output stream elements and configuration object */
 		private static XmlOutputStream xmlOutTemp = new XmlOutputStream(60000);
 
+
 	 /**
-		* Passes the Post method to the Get method, with no modifications.
+		* Sets version and service.
 		*
+		* @param request Request from the capabilities response server.
 		*/ 
 		public GetCapabilitiesResponse(GetCapabilitiesRequest request) {
 
 				version = request.getVersion();
 				service = request.getService();
 
-				//_log.info("this is the response version: " + version);
 		}
 
+
 	 /**
-		* Handles all Get.responses.
-		*
-		* This method implements the main return XML logic for the class.
+		* Creates the XML response.
 		*
 		*/
 		public String getXmlResponse()
@@ -110,9 +128,9 @@ public class GetCapabilitiesResponse {
 								xmlOutFinal.writeFile( OPERATIONS_SIGNATURES_FILE );
 
 								addTag("ContentMetadata", TAG_START, 3 );
-								addTag("wfsfl:FeatureTypeList", TAG_START, 6 );
+								addTag("wfsfl:wfsFeatureTypeList", TAG_START, 6 );
 								addFeatureTypeInfo( configurationInfo.getFeatureTypeDirectory(), version );
-								addTag("wfsfl:FeatureTypeList", TAG_END, 6 );
+								addTag("wfsfl:wfsFeatureTypeList", TAG_END, 6 );
 								addTag("ContentMetadata", TAG_END, 3 );
 
 								xmlOutFinal.writeFile( ADDITIONAL_CAPABILITIES_FILE );
@@ -123,10 +141,10 @@ public class GetCapabilitiesResponse {
 		}
 
 
-	/**
-		* Internal utility that writes some header information.
-		*
-		*/
+		/**
+		 * Internal utility that writes some header information.
+		 *
+		 */
 		private void addHeaderInfo() {
 
 				String encoding = "<?xml version='1.0' encoding='UTF-8'?>\n";
@@ -137,13 +155,13 @@ public class GetCapabilitiesResponse {
 		}
 
 
-	/**
-		* Internal utility that writes xml tags.
-		* Immediately writes the tag to the final buffer.
-		*
-		* @param tag.The XML tag name.
-		* @param tagType.The XML tag type, defined in the class.
-		*/
+		/**
+		 * Internal utility that writes xml tags.
+		 *
+		 * @param tag.The XML tag name.
+		 * @param tagType.The XML tag type, defined in the class.
+		 * @param spaces.Spaces to be added to the XML tag.
+		 */
 		private void addTag( String tag, int tagType, int spaces ) {
 
 				String tempSpaces = new String();
@@ -162,8 +180,8 @@ public class GetCapabilitiesResponse {
 
 
 		/**
-		 * Set all configurable server content 
-		 * return document.
+		 * Adds service information to the XML output stream.
+		 *
 		 */
 		private void service()
 				throws WfsException {
@@ -178,9 +196,8 @@ public class GetCapabilitiesResponse {
 
 
 	 /**
-		* Set all capability information.
+		* Adds capability information to the XML output stream.
 		* 
-		* This gets messy.  I finally got sick of the JAXB idiocy and wrote it by hand.
 		*/
 		private void capability()
 				throws WfsException {
@@ -200,8 +217,10 @@ public class GetCapabilitiesResponse {
 				}
 		}
 
+
 	 /**
-		* Temporary function for adding capability response data. 
+		* Adds capability information to the XML output stream.
+		*
 		*/
 		private String tempReturnCapability(String request) {
 
@@ -219,10 +238,12 @@ public class GetCapabilitiesResponse {
 				return tempCapability;
 		}
 
+
 	 /**
-		* Add feature type info. 
+		* Adds feature type metadata to the XML output stream.
 		* 
 		* @param targetDirectoryName The directory in which to search for files.
+		* @param responseVersion The expected version of the WFS response.
 		*/
 		private void addFeatureTypeInfo(String targetDirectoryName, String responseVersion)
 				throws WfsException {
@@ -251,9 +272,10 @@ public class GetCapabilitiesResponse {
 
 
 	 /**
-		* Adds a feature type object to the final output buffer
-		*
-		* @param featureTypeName The name of the feature type.
+		* Adds feature type metadata to the XML output stream.
+		* 
+		* @param featureTypeName The directory in which to search for files.
+		* @param responseVersion The expected version of the WFS response.
 		*/
 		private void addFeatureType(String featureTypeName, String responseVersion) 
 				throws WfsException {
@@ -269,12 +291,13 @@ public class GetCapabilitiesResponse {
 				
 		}
 
+
 	/**
 		* Internal utility to write a root element to the temporary buffer, then final buffer.
 		* Validates, marshals, strips encoding content, and writes to final buffer.
 		*
 		* @param xmlBranch.The XML branch root element (JAXB class).
-		*/
+		*
 		private void writeToBuffer(MarshallableRootElement xmlBranch)
 				throws WfsException {
 
@@ -291,7 +314,7 @@ public class GetCapabilitiesResponse {
 				catch (IOException e) {
 						throw new WfsException( e, "Had problems reading internal XML file", GetCapabilitiesResponse.class.getName() );
 				}
-		}
+				}*/
 
 
 

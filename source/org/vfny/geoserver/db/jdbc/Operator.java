@@ -1,38 +1,36 @@
-/*
- * Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
+/* Copyright (c) 2001 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root application directory.
  */
 package org.vfny.geoserver.db.jdbc;
 
 import java.io.*;
 
+
 /**
- * This class contains an abstraction of each potential SQL predicate element.
+ * Contains an abstraction of each potential SQL predicate element.
  *
- * <p>Note that these elements must - by definition - correspond to
- * the elements in the OGC Filter specification.
- * 
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 beta, 11/01/01
- *
+ * @author Rob Hranac, Vision for New York
+ * @version $0.9 beta, 11/01/01$
  */
 public class Operator {
 
-		// name of element according to OGC filter spec
+
+		/** Name of element according to OGC filter spec */
 		private String name = new String();
 
-		// type of element according to how it must be handled
+		/** Type of element according to how it must be handled */
 		private String type = new String();
 
-		// SQL code for translation
+		/** SQL code for translation */
 		private String SQL = new String();
+
 
 	 /**
 		* Empty constructor.
 		*/ 
 		public Operator () {
 		}
+
 
 	 /**
 		* Predicate element constructor.
@@ -47,26 +45,16 @@ public class Operator {
 				this.SQL = SQL;
 		}
 
-	 /**
-		* Returns element name.
-		*/ 
-		public String getName () {
-				return this.name;
-		}
 
-	 /**
-		* Returns element type.
-		*/ 
-		public String getType () {
-				return this.type;
-		}
+	 /** Returns element name. */ 
+		public String getName () { return this.name;	}
 
-	 /**
-		* Returns SQL coding for element.
-		*/ 
-		public String getSQL () {
-				return this.SQL;
-		}
+	 /** Returns element type. */ 
+		public String getType () { return this.type; }
+
+	 /** Returns SQL coding for element. */ 
+		public String getSQL () { return this.SQL; }
+
 
 	 /**
 		* Set element name.
@@ -77,6 +65,7 @@ public class Operator {
 				this.name = name;
 		}
 
+
 	 /**
 		* Set element type.
 		*
@@ -85,6 +74,7 @@ public class Operator {
 		public void setType (String type) {
 				this.type = type;
 		}
+
 
 	 /**
 		* Set element name.

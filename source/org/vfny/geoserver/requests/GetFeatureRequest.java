@@ -16,43 +16,41 @@ import org.vfny.geoserver.db.jdbc.SQLStatement;
  * XML docs.
  *
  *@author Rob Hranac, Vision for New York
- *@version 0.9 alpha, 11/01/01
+ *@version 0.9 beta, 11/01/01
  *
  */
 public class GetFeatureRequest {
 
-		/** the maximum returned if the user requests no limit of features at all, but the other request parameters don't restrict to below 500 */
+
+		/** The maximum returned if the user requests no limit of features at all, but the other request parameters don't restrict to below 500 */
 		protected static final int SOFT_MAX_FEATURES = 500;
 
-		/** this is the maximum that is returned if the user specifically requests more than the soft max */
+		/** This is the maximum that is returned if the user specifically requests more than the soft max */
 		protected static final int HARD_MAX_FEATURES = 1000;
 
-		/** creates a full list of queries */
+		/** Creates a full list of queries */
 		protected List queries = new Vector();
 
-		/** creates a full list of bounding boxes */
-		protected BoundingBox boundingBox = new BoundingBox();
-
 		// SHOULD CHANGE THIS TO GENERIC OUTPUT FORMAT, WITH STATIC FINAL POTENTIAL INPUTS
-		/** specifies the output format */
+		/** Specifies the output format */
 		protected String outputFormat = "GML2";
 
-		/** specifices the user-defined name for the entire get feature request */
+		/** Specifices the user-defined name for the entire get feature request */
 		protected String handle = new String();
 
 		// SUBCLASS OF UNIVERSAL REQUEST TYPE
-		/** specifies the type of request - should always be get feature */
+		/** Specifies the type of request - should always be get feature */
 		protected String request = new String();
 
 		// SUBCLASS OF UNIVERSAL REQUEST TYPE
-		/** specifies the version of response requested */
+		/** Specifies the version of response requested */
 		protected String version = new String();
 
 		// I HAVE NO IDEA WHAT THIS DOES
-		/** creates an object version type */
+		/** Creates an object version type */
 		//protected String objVersion = new String();
 
-		/** creates a max features constraint for the entire request */
+		/** Creates a max features constraint for the entire request */
 		protected int maxFeatures = SOFT_MAX_FEATURES;
 
 
@@ -216,25 +214,5 @@ public class GetFeatureRequest {
 		public int getMaxFeatures () {
 				return this.maxFeatures;
 		}
-
-
-	 /**
-		* Returns the bounding boxes for this request.
-		*
-		*/ 
-		public BoundingBox getBoundingBox () {
-				return this.boundingBox;
-		}
-
-
-	 /**
-		* Sets the bounding box for this request.
-		*
-		* @param boundingBoxes The entire set of bounding boxes for this request.
-		*/ 
-		public void setBoundingBoxes (BoundingBox boundingBox) {
-				this.boundingBox = boundingBox;
-		}
-
 
 }

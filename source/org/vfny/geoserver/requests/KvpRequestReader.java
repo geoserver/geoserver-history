@@ -7,24 +7,33 @@ package org.vfny.geoserver.requests;
 import java.io.*;
 import java.util.*;
 
+
 /**
- * This utility reads in a general KVP request and turns it into a list KVPs, stored in a hashtable.
+ * Reads in a general KVP request and turns it into a list KVPs, stored in a hashtable.
  * 
  * <p>If you pass this utility a KVP request (everything after the '?' in the URI),
- * it will translate this into a list of feature types.  Note that you must check for validity
+ * it will translate this into a list of key-word value pairs.  These pairs represent
+ * every element in the KVP GET request.  This class may then be subclassed and
+ * used by request-specific classes.  Note that you must check for validity
  * before passing the request.</p>
  * 
  * @author Rob Hranac, Vision for New York
- * @version alpha, 12/01/01
+ * @version beta, 12/01/01
  *
  */
 abstract public class KvpRequestReader {
 
 
-		// internal tokenizer for raw coordinate string
+		/** Internal tokenizer for raw coordinate string */
 		protected static final String KEYWORD_DELIMITER = "&";
+
+		/** Internal tokenizer for raw coordinate string */
 		protected static final String VALUE_DELIMITER = "=";
+
+		/** Internal tokenizer for raw coordinate string */
 		protected static final String LIST_DELIMITER = ",";
+
+		/** KVP pair listing; stores all data from the KVP request */
 		protected Hashtable kvpPairs = new Hashtable();
 
 
@@ -33,7 +42,7 @@ abstract public class KvpRequestReader {
 		* parses the entire request string into a kvp hash table for
 		* quick access by sub-classes.
 		*
-		* @param describeFeatureTypeRequest The raw request string from the client.
+		* @param rawRequest The raw request string from the client.
 		*/
 		public KvpRequestReader (String rawRequest) {
 

@@ -6,11 +6,10 @@ package org.vfny.geoserver.requests;
 
 import java.io.*;
 import java.util.*;
-import javax.xml.bind.*;
-import javax.xml.marshal.*;
 
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
+
 import org.apache.xerces.parsers.SAXParser;
 import org.apache.log4j.Category;
 
@@ -18,23 +17,27 @@ import org.vfny.geoserver.responses.*;
 import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.config.*;
 
+
 /**
- * This utility reads in a DescribeFeatureType KVP request and turns it into a list of requested Feature Types.
+ * This utility reads in a DescribeFeatureType KVP request and returns a DescribeFeatureType request object.
  * 
  * <p>If you pass this utility a KVP request (everything after the '?' in the URI),
- * it will translate this into a list of feature types.  Note that you must check for validity
- * before passing the request.</p>
+ * it will translate this into a list of feature types, encapsulated in a DescribeFeatureType request object.
+ * Note that you must check for validity before passing the request.</p>
  * 
  * @author Rob Hranac, Vision for New York
- * @version 1
+ * @version 0.9 beta, 11/01/01
  *
  */
 public class GetCapabilitiesReaderXml {
 
-		// create standard logging instance for class
+
+		/** Standard logging instance for class. */
 		private static Category _log = Category.getInstance(GetCapabilitiesReaderXml.class.getName());
 
+		/** GetCapabilities request object. */
 		private GetCapabilitiesHandler currentRequest;
+
 
 	 /**
 		* Constructor with raw request string.  Calls parent.
@@ -65,8 +68,9 @@ public class GetCapabilitiesReaderXml {
 
 		}
 
+
 	 /**
-		* Returns a list of requested feature types..
+		* Returns a GetCapabilities request object (i.e. list of requested feature types).
 		*
 		*/
 		public GetCapabilitiesRequest getRequest () {

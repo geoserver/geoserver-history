@@ -29,16 +29,16 @@ import org.vfny.geoserver.responses.WfsException;
  * specified in the GetCapabablities response.
  *
  * @author Rob Hranac, Vision for New York
- * @version 0.9 alpha, 11/01/01
+ * @version 0.9 beta, 11/01/01
  *
  */
 public class Dispatcher extends HttpServlet {
 
 
-		/** create standard logging instance for class */
+		/** Standard logging instance for class */
 		private Category _log = Category.getInstance(Dispatcher.class.getName());
 
-		/** specify MIME type */
+		/** Stores MIME type */
 		private static final String MIME_TYPE = "text/xml";
 
 		/** Map metadata request type */
@@ -157,7 +157,16 @@ public class Dispatcher extends HttpServlet {
 		}
 
 
-
+	 /**
+		* Handles all request forwarding.
+		*
+		* This method implements the main matching logic for this class.
+		*
+		* @param tempResponse Error response string.
+		* @param targetRequest Internally noted target response for forward.
+		* @param request Servlet request object.
+		* @param response Servlet request object.
+		*/
 		private void forwardRequest(String tempResponse, int targetRequest, HttpServletRequest request, HttpServletResponse response)
 				throws ServletException, IOException {
 

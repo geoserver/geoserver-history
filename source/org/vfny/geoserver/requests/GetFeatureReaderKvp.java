@@ -15,15 +15,16 @@ import org.apache.log4j.Category;
 
 import org.vfny.geoserver.db.jdbc.*;
 
+
 /**
- * This utility reads in a DescribeFeatureType KVP request and turns it into a list of requested Feature Types.
+ * This utility reads in a GetFeature KVP request and turns it into a GetFeature type request object.
  * 
  * <p>If you pass this utility a KVP request (everything after the '?' in the URI),
- * it will translate this into a list of feature types.  Note that you must check for validity
+ * it will translate this into a GetFeature type request object.  Note that you must check for validity
  * before passing the request.</p>
  * 
  * @author Rob Hranac, Vision for New York
- * @version alpha, 12/01/01
+ * @version beta, 12/01/01
  *
  */
 public class GetFeatureReaderKvp extends KvpRequestReader {
@@ -32,7 +33,7 @@ public class GetFeatureReaderKvp extends KvpRequestReader {
 	 /**
 		* Constructor with raw request string.  Calls parent.
 		*
-		* @param describeFeatureTypeRequest The raw request string from the client.
+		* @param getFeatureRequest The raw request string from the client.
 		*/
 		public GetFeatureReaderKvp (String getFeatureRequest) {
 				super(getFeatureRequest);
@@ -41,8 +42,9 @@ public class GetFeatureReaderKvp extends KvpRequestReader {
 
 
 	 /**
-		* Returns a list of requested feature types..
+		* Returns GetFeature request object.
 		*
+		* @return Get feature request objects
 		*/
 		public GetFeatureRequest getRequest () {
 
@@ -59,8 +61,9 @@ public class GetFeatureReaderKvp extends KvpRequestReader {
 
 
 	 /**
-		* Returns a list of requested feature types..
+		* Returns a list of requested queries.
 		*
+		* @return List of requested queries
 		*/
 		private List getQueries() {
 
@@ -82,9 +85,12 @@ public class GetFeatureReaderKvp extends KvpRequestReader {
 
 
 	 /**
-		* This utility checks for more coordinates in the set passed by the constructor..
+		* This utility checks for more coordinates in the set passed by the constructor.
 		*
-		* @param typeNameValues The unparsed type names from the Hash.
+		* @param featureType Feature type name for the query.
+		* @param propertyNamesGroup List of property names.
+		* @param featureIdsGroup List of feature IDs.
+		* @param filter List of filters.
 		*/
 		private Query makeQuery (String featureType, String propertyNamesGroup, String featureIdsGroup, String filter) {
 
@@ -111,9 +117,9 @@ public class GetFeatureReaderKvp extends KvpRequestReader {
 
 
 	 /**
-		* This utility checks for more coordinates in the set passed by the constructor..
+		* Reads the filter.
 		*
-		* @param filter The unparsed type names from the Hash.
+		* @param filter OGC 0.7 filter specification.
 		*/
 		private void readFilter (String filter) {
 				

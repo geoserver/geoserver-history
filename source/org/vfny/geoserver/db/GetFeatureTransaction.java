@@ -4,16 +4,31 @@
 package org.vfny.geoserver.db;
 
 import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.requests.BoundingBox;
+
 
 /**
- * Defines a general interface for querying and returning features from any datastore..
+ * Defines a general interface for querying and returning features from any datastore.
+ * This interface _must_ be implemented by every datastore.
  * 
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 beta, 11/01/01
- *
+ * @author Rob Hranac, Vision for New York
+ * @version $0.9 beta, 03/22/02$
  */
 public interface GetFeatureTransaction {
 
-		public String getFeature (Query query, int maxFeatures);
+
+	 /**
+		* Adds all datastore query data to the returned 
+		*
+		* @param query Generic getFeature query
+		*/ 
+		public void getFeature (Query query);
+
+
+	 /**
+		* Returns final GML as a string.
+		*
+		* @return GML output
+		*/ 
+		public String getFinalResponse ();
 }

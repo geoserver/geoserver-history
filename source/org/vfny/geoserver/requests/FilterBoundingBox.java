@@ -1,7 +1,6 @@
 /* Copyright (c) 2002 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root application directory.
  */
-
 package org.vfny.geoserver.requests;
 
 import java.io.*;
@@ -25,15 +24,15 @@ import org.vfny.geoserver.responses.WfsException;
  * using the special <i>BoundingBox</i> tag.
  * 
  * @author Rob Hranac, Vision for New York
- * @version 0.9 beta, 11/01/01
+ * @version $0.9 beta, 11/01/01$
  *
  */
 public class FilterBoundingBox extends XMLFilterImpl {
 
 
-		// *******************************************
-		// Internal tracking variables...		
-		// *******************************************
+		/********************************************
+		 Internal tracking variables...		
+		 *******************************************/
 
 		/** Convenience variables to track XML stream: whether or not the handler is inside the filter portion of the Get Feature request */
 		private boolean insideFilter = false;
@@ -145,6 +144,8 @@ public class FilterBoundingBox extends XMLFilterImpl {
 				throws SAXException {
 
 				
+				String tempCoord = new String();
+
 				// if not inside a filter, pass to parent
 				if( !insideFilter )
 						super.endElement( namespaceURI, localName, rawName);
@@ -169,18 +170,14 @@ public class FilterBoundingBox extends XMLFilterImpl {
 
 										// create a bounding box object and attempt to initialize it
 										// MUST FIX SRID
-										PostgisBox3d tempBoundingBox = new PostgisBox3d();
-										try {
-												tempBoundingBox.setBoundingBox( coordinates );
-												tempBoundingBox.setSrid( "-1" );
-										}
-										catch (SQLException e) {
-												throw new SAXException("Problems reading bounding box");
-										}
+
+										tempCoord = coordinates.replace( ',' , '!' );
+										tempCoord = tempCoord.replace( ' ' , ',' );										
+										tempCoord = tempCoord.replace( '!' , ' ' );										
 
 										// THIS IS UGLY KLUDGE
 										// SHOULD PASS AS A POSTGIS OBJECT
-										String finalSQL = propertyName + tempBoundingBox.getBoundingBox();
+										String finalSQL = propertyName + " && GeometryFromText('BOX3D (" + tempCoord + ")'::box3d,";				
 										
 										// generate the predicate for the GetFeatureHandler to grab
 										super.startElement( "", "SQLPredicate", "", new AttributesImpl());

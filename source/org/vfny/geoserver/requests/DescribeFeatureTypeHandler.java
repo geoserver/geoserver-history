@@ -1,7 +1,6 @@
 /* Copyright (c) 2002 Vision for New York - www.vfny.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root application directory.
  */
-
 package org.vfny.geoserver.requests;
 
 import java.io.*;
@@ -21,57 +20,89 @@ import org.apache.log4j.Category;
  * chained, it will still generate valid queries, but with no filtering whatsoever.</p>
  * 
  * @author Rob Hranac, Vision for New York
- * @version 0.9 alpha, 11/01/01
+ * @version 0.9 beta, 11/01/01
  *
  */
 class DescribeFeatureTypeHandler extends DescribeFeatureTypeRequest implements ContentHandler {
 
-		/** standard logging class */
+
+		/** Standard logging class */
 		static Category _log = Category.getInstance(DescribeFeatureTypeHandler.class.getName());
 
-		/** local variable to track current tag */
+		/** Local variable to track current tag */
 		private String currentTag = new String();
 
 
-		// ********************************************
-		// Start of SAX Content Handler Methods
-		//  most of these are unused at the moment
-		//  no namespace awareness, yet
+		/*********************************************
+		 Start of SAX Content Handler Methods
+		  most of these are unused at the moment
+		  no namespace awareness, yet
+		*********************************************/
 
 
-		public void setDocumentLocator (Locator locator) {
-		}
+		/** Notes the document locator.	*/ 
+		public void setDocumentLocator (Locator locator) {}
 
+
+		/** Notes the start of the document.	*/ 
 		public void startDocument()
-				throws SAXException {
-		}
+				throws SAXException {}
 
+
+		/** Notes the start of the document.	*/ 
 		public void endDocument()
-				throws SAXException {
-		}
+				throws SAXException {}
 
+
+		/** Notes processing instructions.	*/ 
 		public void processingInstruction(String target, String data)
-				throws SAXException {
-		}
+				throws SAXException {}
 
-		public void startPrefixMapping(String prefix, String uri) {
-		}
 
-		public void endPrefixMapping(String prefix) {
-		}
+		/** Notes start of prefix mappings. */ 
+		public void startPrefixMapping(String prefix, String uri) {}
 
+
+		/** Notes end of prefix mappings. */ 
+		public void endPrefixMapping(String prefix) {}
+
+
+	 /**
+		* Notes the start of the element and sets the current tag.
+		*
+		* @param namespaceURI URI for namespace appended to element.
+		* @param localName Local name of element.
+		* @param rawName Raw name of element.
+		* @param atts Element attributes.
+		*/ 
 		public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
 				throws SAXException {
 				
 				currentTag = localName;
 		}
 
+
+	 /**
+		* Notes the end of the element and sets the current tag.
+		*
+		* @param namespaceURI URI for namespace appended to element.
+		* @param localName Local name of element.
+		* @param rawName Raw name of element.
+		*/ 
 		public void endElement(String namespaceURI, String localName, String rawName)
 				throws SAXException {
 
 				currentTag = "";
 		}
 
+
+	 /**
+		* Checks if inside type name and adds to feature type list, if so.
+		*
+		* @param ch URI for namespace appended to element.
+		* @param start Local name of element.
+		* @param length Raw name of element.
+		*/ 
 		public void characters(char[] ch, int start, int length)
 				throws SAXException {
 
@@ -81,12 +112,26 @@ class DescribeFeatureTypeHandler extends DescribeFeatureTypeRequest implements C
 				}
 		}
 
+
+	 /**
+		* Notes ignorable whitespace.
+		*
+		* @param ch URI for namespace appended to element.
+		* @param start Local name of element.
+		* @param length Raw name of element.
+		*/ 
 		public void ignorableWhitespace(char[] ch, int start, int length)
 				throws SAXException {
 		}
 
+
+	 /**
+		* Notes skipped entity.
+		*
+		* @param name Name of skipped entity.
+		*
+		*/ 
 		public void skippedEntity(String name)
-				throws SAXException {
-		}
+				throws SAXException {}
 
 }

@@ -14,34 +14,29 @@ import org.apache.log4j.Category;
 import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.responses.*;
 
+
 /**
  * Implements the WFS DescribeFeatureTypes inteface, which tells clients the schema for each feature type.
  *
  * This servlet returns descriptions of all feature types served by the FreeFS.
- * It does this by inspecting the table for the feature type every time it is
- * called.  This is not particularly efficient, but it does serve the purpose
- * of keeping in close sych with the database itself.  Future versions of this servlet
- * will likely store some of this data in the feature type directory.
- *
  * Note that this assumes that the possible schemas are only single tables,
  * with no foreign key relationships with other tables.
  *
- * IMPORTANT NOTE: This version assumes that all passwords, usernames, and database
- * for every table are the same.
- * 
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 alpha, 11/01/01
+ * @author Rob Hranac, Vision for New York
+ * @version 0.9 beta, 11/01/01
  *
  */
 public class DescribeFeatureType extends HttpServlet {
 
-		/** standard logging instance for class */
+
+		/** Standard logging instance for class */
 		private static Category _log = Category.getInstance(DescribeFeatureType.class.getName());
 
+
 		// THIS WILL LIKELY CHANGE SOON: NOT EXPLICITLY STATED IN SPEC
-		/** set global MIME type */
+		/** Stores global MIME type */
 		private static final String MIME_TYPE = "text/xml";
+
 
 	 /**
 		* Handles XML request objects and returns appropriate response.
@@ -53,7 +48,7 @@ public class DescribeFeatureType extends HttpServlet {
 				throws ServletException, IOException {
 
 				// THIS IS CLUNKY; MUST BE A BETTER WAY TO DO THIS?
-				/** create temporary response string */
+				/** Create temporary response string */
 				String tempResponse;
 
 				// implements the main request/response logic
@@ -73,6 +68,7 @@ public class DescribeFeatureType extends HttpServlet {
 				response.getWriter().write( tempResponse );
 
 		}
+
 
 	 /**
 		* Handles KVP request objects and returns appropriate response.
@@ -120,6 +116,7 @@ public class DescribeFeatureType extends HttpServlet {
 
 				return currentXmlRequest.getRequest();
 		}
+
 
 	 /**
 		* Internal method to pull the feature type names from the KVP request query.
