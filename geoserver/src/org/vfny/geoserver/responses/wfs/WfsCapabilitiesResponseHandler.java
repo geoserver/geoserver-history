@@ -14,10 +14,11 @@ import java.util.*;
 
 
 /**
- * DOCUMENT ME!
+ * Handles a Wfs specific sections of the capabilities response.
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @author Chris Holmes
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.1.2.2 2003/11/07 23:04:49 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     /**
@@ -137,10 +138,14 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         for (Iterator it = featureTypes.iterator(); it.hasNext();) {
             ftype = (FeatureTypeConfig) it.next();
 
-            startElement("FeatureType");
-            handleFeatureType(ftype);
-            unIndent();
-            endElement("FeatureType");
+            if (ftype.isEnabled()) { //can't handle ones that aren't enabled.
+
+                //and they shouldn't be handled, as they won't function.
+                startElement("FeatureType");
+                handleFeatureType(ftype);
+                unIndent();
+                endElement("FeatureType");
+            }
         }
 
         endElement("FeatureTypeList");
