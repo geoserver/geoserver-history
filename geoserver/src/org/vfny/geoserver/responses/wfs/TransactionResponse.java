@@ -11,6 +11,9 @@ import org.geotools.feature.*;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.validation.Validation;
+import org.geotools.validation.ValidationProcessor;
+import org.geotools.validation.ValidationResults;
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.oldconfig.*;
@@ -27,7 +30,7 @@ import java.util.logging.*;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.1.2.8 2003/11/19 22:16:14 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.1.2.9 2003/11/26 08:06:24 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -376,54 +379,74 @@ public class TransactionResponse implements Response {
     }
 
     protected void integrityValidation(Map stores, Envelope check)
-        throws IOException {
-        // need to hook into integrity validation here
+        throws IOException, WfsTransactionException {
+        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+        ValidationProcessor validation =
+            ServerConfig.getInstance().getValidationConfig().getProcessor();
+        
+        // go through each modified typeName
+        // and ask what we need to check
         //
-        // For now we will just check that there are no duplicate
-        // fids, really we are only supposed to check within the
-        // check envelope
+        Set typeNames = new HashSet();
+        for( Iterator i=stores.keySet().iterator(); i.hasNext(); ){
+            String typeName = (String) i.next();
+            //typeNames.addAll( validation.getDependencies( typeName ) ); 
+        }
+        
+        // Grab a source for each typeName we need to check
+        // Grab from the provided stores - so we check against
+        // the transaction 
         //
-        // Remember that these FeatureSources are backed by the transaction
-        //
-        // We can be smart and only request the Fids
-        //
-        // Chris tells me that by asking for a Query with no properties
-        // I'll be okay
-        DefaultQuery fidQuery = new DefaultQuery(Filter.NONE); //, new String[0]);
-
-        //FID type query not working yet.
-        fidQuery.setHandle(request.getHandle() + " integrity validation");
-
-        for (Iterator i = stores.values().iterator(); i.hasNext();) {
-            FeatureSource source = (FeatureSource) i.next();
-            String typeName = source.getSchema().getTypeName();
-            Set sanityCheck = new HashSet();
-            fidQuery.setTypeName(typeName);
-
-            FeatureReader reader = source.getFeatures(fidQuery).reader();
-
-            try {
-                while (reader.hasNext()) {
-                    String fid = reader.next().getID();
-
-                    if (sanityCheck.contains(fid)) {
-                        throw new IOException(typeName + " validation error: "
-                            + fid + " is a duplicate feature id");
-                    } else {
-                        sanityCheck.add(fid);
-                    }
-                }
-            } catch (NoSuchElementException noElemenetException) {
-                throw new IOException("Problem confirming " + typeName
-                    + " integrity:" + noElemenetException);
-            } catch (IllegalAttributeException attribException) {
-                throw new IOException("Problem confirming " + typeName
-                    + " integrity:" + attribException);
-            } finally {
-                reader.close();
-                sanityCheck.clear();
+        Map sources = new HashMap();
+        for( Iterator i=typeNames.iterator(); i.hasNext(); ){
+            String typeName = (String) i.next();
+            if( stores.containsKey( typeName )){
+                sources.put( typeName, stores.get( typeName )); 
+            }
+            else {
+                // These will be using Transaction.AUTO_COMMIT
+                // this is okay as they were not involved in our
+                // Transaction...
+                FeatureTypeConfig meta = catalog.getFeatureType( typeName );
+                sources.put( typeName, meta.getFeatureSource() );                
             }
         }
+        final Map failed = new TreeMap();
+        ValidationResults results = new ValidationResults(){
+            String name;
+            String description;
+            public void setValidation(Validation validation) {
+                name = validation.getName();
+                description = validation.getDescription();
+            }
+            public void error(Feature feature, String message) {
+                LOGGER.warning( name+": "+message+" ("+description+")");                
+                failed.put( feature.getID(),
+                    name+": "+message+" "+
+                    "("+description+")"
+                );
+            }
+            public void warning(Feature feature, String message) {
+                LOGGER.warning( name+": "+message+" ("+description+")");
+            }
+        };
+        try {
+            validation.runIntegrityTests( stores, check, results );            
+        }
+        catch( Exception badIdea ){
+            // ValidationResults should of handled stuff will redesign :-)
+            throw new DataSourceException( "Validation Failed", badIdea );            
+        }
+        if( failed.isEmpty() ) return; // everything worked out
+        StringBuffer message = new StringBuffer();
+        for( Iterator i=failed.entrySet().iterator(); i.hasNext(); ){
+            Map.Entry entry = (Map.Entry) i.next();
+            message.append( entry.getKey() );
+            message.append( " failed test " );
+            message.append( entry.getValue() );
+            message.append( "\n" );
+        }
+        throw new WfsTransactionException( message.toString(), "validation" );                    
     }
 
     /**
