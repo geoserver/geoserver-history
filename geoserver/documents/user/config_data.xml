@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>Data</title>
+
+  <para>Data is perhaps the most important section of the web admin tool,
+  which is why it gets its own page. This section is where you set up all the
+  connections and configurations of your data so that it can be shared through
+  GeoServer's OGC interfaces. These connections are shared by the WMS and WFS,
+  each only need be configured once. To get to the Data page click on Config
+  from the welcome page:</para>
+
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="../images/config.jpg" />
+    </imageobject>
+  </mediaobject>
+
+  <para>Then click on the Data button:</para>
+
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="../images/data-button.jpg" />
+    </imageobject>
+  </mediaobject>
+
+  <para>This will take you to a page where you can select Namespace, Stores,
+  Style or FeatureType. Once again, if doing a complete GeoServer
+  configuration we recommend doing the four sections of Data from top to
+  bottom. </para>
+
+  <section>
+    <title>Namespace</title>
+
+    <para>A Namespace is used to discriminate XML vocabularies from one
+    another. All WFS's make use of three standard namespaces –</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>WFS - http://www.opengis.net/wfs</para>
+      </listitem>
+
+      <listitem>
+        <para>GML - http://www.opengis.net/gml</para>
+      </listitem>
+
+      <listitem>
+        <para>Filter - http://www.opengis.net/ogc</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Additionally, each WFS will use one or more 'Application Schemas'.
+    GML is a sort of meta language from which more specific languages can be
+    defined. A WFS makes use of one or more of these specific languages to
+    describe its schemas – returned by the DescribeFeatureType response. The
+    XML schema that it returns defines that more specific language, of what a
+    'road' can be, for example. These schemas should have their own
+    namespaces. GeoServer comes with a few sample namespaces, but keep in mind
+    these are just samples. If you are serving a public GeoServer it is
+    essential to define your own namespace. </para>
+
+    <para>The default sample namespace is</para>
+
+    <programlisting> http://www.openplans.org/topp</programlisting>
+
+    <para>All namespaces are URI's – Uniform Resource Identifiers. They are
+    like URLs (the L is for location), except they do not need to point to a
+    specific location on the web. They only need to be a unique identifier.
+    Using the same base URI as a URL that you have registered is highly
+    recommend, however, since it is highly unlikely that someone else is using
+    that same identifier (and indeed would be a little weird, someone defining
+    identifiers on a space that you own. But it could be valid, since as we
+    said a URI is just an identifier, it need not point to a location). So we
+    recommend that you define the URI to perhaps the same URL that it is
+    served from, with perhaps a different trailing identifier, such </para>
+
+    <programlisting>http://www.myblorg.org/geo</programlisting>
+
+    <para>To configure a namespace hit the Namespace link from the main Data
+    page. This will take you to the following page:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="../images/namespace.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>There will be a few preconfigured namespaces, which you can edit and
+    delete if you so desire, but we recommend that you hit the New button to
+    create your own. This will have you first define a 'prefix'. In XML a
+    prefix is used as shorthand for a full namespace. So instead of having to
+    say:</para>
+
+    <programlisting>&lt;http://www.openplans.org/topp:bc_roads fid="bc_roads.1"&gt;
+    &lt;http://www.openplans.org/topp:the_geom&gt;
+    &lt;http://www.opengis.net/gml:MultiLineString srsName="EPSG:27354"&gt;
+ ...</programlisting>
+
+    <para>You can simply define your prefixes at the top of the
+    document:</para>
+
+    <programlisting>...
+xmlns:topp="http://www.openplans.org/topp" 
+xmlns:gml="http://www.opengis.net/gml"
+...</programlisting>
+
+    <para>and then you just have to say:</para>
+
+    <programlisting>&lt;topp:bc_roads fid="bc_roads.1"&gt;
+    &lt;topp:the_geom&gt;
+    &lt;gml:MultiLineString srsName="EPSG:27354"&gt;
+ ...</programlisting>
+
+    <para>Note that GeoServer takes care of all of this for you, you just need
+    to define the namespace and the prefix, and then decide which namespace
+    you want your featureType to live in. Also note that GeoServer completely
+    handles multiple namespaces, doing all the work for you, so you just need
+    to define them, and GeoServer will return all the appropriate imports and
+    XML namespacing in the DescribeFeatureType responses. </para>
+
+    <para>In GeoServer the prefix is very important, as it is also used
+    internally. In true XML the namespace mapping should be completely
+    arbitrary, but for GeoServer we are not quite there yet for all requests,
+    so requests should be made using the appropriate prefix. This is what
+    pretty much everyone does automatically, indeed most people don't know
+    that you can do things differently, so we feel that this is a fine
+    shortcut to take. It is essential that you always do include the namespace
+    definitions for your requests to GeoServer, however, or things will often
+    not work as expected. We recommend a prefix four or less characters in
+    length. Three seems to be pretty standard, but plus or minus one does not
+    hurt anyone. More than that and you start to lose some of the point of
+    defining a prefix, as it's meant as shorthand. After defining the prefix
+    you will be taking to the Namespace editor page (you can also get here
+    later by selecting your namespace from the drop down list and then
+    clicking 'Edit'):</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="../images/namespace-editor.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>On this page you will define the URI, which as we said, should be a
+    unique identifier for <emphasis>your</emphasis> features. Using the
+    GeoServer defaults is a bad idea, as your features are not coming from The
+    Open Planning Project, or Refractions. In the future we are looking to
+    support better mapping from data to pre-defined schemas, based on some
+    good thinking and experiments from <ulink
+    url="http://socialchange.net.au">Social Change Online</ulink> for the
+    Australian Government. See the roadmap in the wiki for more information
+    (link). When this is available you will define the namespace, and indeed
+    the schema itself, in a known 'information community', so that the
+    attributes mean the same thing, achieving true interoperability.</para>
+
+    <para>Additionally, from the main Namespace page you can define the
+    'default' namespace. Just hit the 'Default' button when the namespace you
+    would like to default is shown in the pull down box. An astrix by it will
+    indicate that it is in fact the default. The default namespace has two
+    special properties in GeoServer. First, kvp requests can be made on it
+    without using its prefix. This is to some extent a holdover to the
+    transition from single namespace to multiple namespaces. And the default
+    will also be at the top of the drop down box when you define a DataStore,
+    saving you an extra mouse click. </para>
+  </section>
+
+  <section>
+    <title>DataStore</title>
+
+    <para>After defining your namespace(s) the next step is to define your
+    DataStore. A DataStore represents a single, physical, source of geographic
+    data. It can consist of one or more featureTypes (or layers). A
+    featureType can be a table (as in a database), a single file (as in a
+    shapefile), a directory (as in a VPF library). The DataStore construct is
+    used so that you do not need to define connection parameters for each and
+    every table in a large database. Instead you define them in the DataStore,
+    and each FeatureType (table) refers to the DataStore that defines those
+    parameters. In the case of Shapefiles, where each file can only contain
+    one FeatureType, this may seem to be a bit of overkill, but to be in line
+    with the rest we define the connection parameters in the Store and the
+    rest in the FeatureType. Each available DataStore is discussed separately,
+    as each has its own parameters and tricks, and you are likely only
+    interested in one or two. But all have a few common parameters. </para>
+
+    <para>To define a new DataStore, click on Stores from the main Data page,
+    and then hit the New button. This will take you to a page like the
+    following: </para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="../images/datastore-new.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>In the DataStore Description drop down box there will appear all the
+    currently supported DataStores, from which you can select the type of
+    DataStore you want to create. Note that the default GeoServer installation
+    will not include all the possible DataStores. For example the oracle
+    datastore(s) will only show up when the proper oracle jars are in the lib/
+    section, as we can not legally distribute these with GeoServer. There are
+    also a number of DataStores available in the DataStore Extras download
+    section (link), that for some reason or another are not quite ready for
+    the default GeoServer installation. Many will be once they are well
+    tested. Others are the latest versions of common DataStores, we make these
+    available so users need not go through a whole upgrade procedure, they can
+    just drop in the latest jar for their datastore. When the jars are
+    installed correctly in the lib/ directory (each should have instructions
+    on how to do this), it will show up in the drop down box. You just need to
+    select it, and then fill in the appropriate parameters.</para>
+
+    <para>You also need to define a DataStore ID. This is just used
+    internally, and should be unique. </para>
+
+    <para>After selecting the DataStore ID and the type of DataStore you would
+    like to create then hit the New button and you will be taken to a page
+    that looks more or less like the following:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="../images/datastore-editor.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>We will examine each DataStore in turn (this one happens to be
+    MySQL), for now we just want to point out the three common fields that all
+    DataStores have:</para>
+
+    <para>Enabled allows you to 'turn off' access to the store, and all
+    featureTypes defined in it. This can be useful for testing purposes, so
+    GeoServer does not load everything up.</para>
+
+    <para>Namespace is a drop down box of the possible namespaces. You should
+    have defined your namespace, so select that one. One thing to note is that
+    there is a slight limitation with GeoServer here, namely that you can not
+    define two featureTypes from the same DataStore in different namespaces.
+    If you wish to do that the recommend way is to define two DataStores, with
+    exactly the same connection parameters, but different DataStore ids and
+    namespaces. We know, it's a bit hacky, but it's the best we've got, and
+    changing this around requires a lot of changes in GeoTools (though it
+    should be possible if we get the arbitrary mapping of schemas correct).
+    </para>
+
+    <para>Description is mostly used internally, so that other admins can get
+    extra information about the DataStore. </para>
+
+    <para>As for the additional fields, they depend on the format of the data
+    you wish to server. GeoServer 1.2 comes with support for four data types
+    by default. <ulink url="http://postgis.refractions.net">PostGIS</ulink>
+    was the first datastore offered with GeoServer, and remains the best
+    supported and most tested. PostGIS is based on the advanced open source
+    database <ulink url="http://postgresql.org">Postgresql</ulink>, with
+    extensions to handle spatial types and operations. It conforms to the
+    OGC's Simple Features for SQL (link) specification, and will be submitted
+    to formal conformance certification soon, as it approaches 1.0. Shapefiles
+    were the first additional datastore supported, allowing users to quickly
+    get GeoServer running. We recommend using a real transactional database,
+    but do offer the ability to serve and do transactions on shapefiles in
+    GeoServer directly, with solid performance. Note that there is also a new
+    shapefile datastore that builds and uses a spatial index, available as a
+    DataStore Extra (link). Oracle is also available, though it needs an extra
+    jar in order to run, as we are not allowed to redistribute the jar. ArcSDE
+    is also supported, and 1.2.3 brought a number of bug fixes to get it
+    actually working decently well, but it still is not that fast. Proprietary
+    datastores such as Oracle and ArcSDE are harder for us to support, since
+    they can not be easily downloaded, installed and tested (and it gets even
+    nastier when you get into different versions). The GeoServer project will
+    do all that we can to support them, but if you require real support then
+    we recommend you hire someone to do consulting on GeoServer (link to
+    section on this). </para>
+
+    <para>We have also started offering 'DataStore Extras'. This a section of
+    the download page where we offer new and experimental DataStores.
+    DataStores are written to be completely pluggable, you just put the
+    appropriate jar files (link to gloss) in the lib/ directory of GeoServer,
+    and they are available at the next GeoServer start up. This means that we
+    can offer new DataStores, such as MySQL and Indexed Shapefile, for
+    advanced users to test out, as well as easily make upgrades to older
+    DataStores available. VPF support should also be available shortly. For
+    example there were a number of speed improvements to the PostGIS datastore
+    in 1.2.3, but instead of downloading the whole new server, you could just
+    download the jar into your 1.2.0 version, and get all the improvements.
+    (General procedure for installing datastore extras?) </para>
+
+    <para>From here we recommend that you follow the configuration of the
+    DataStore that you are most interested in. See the DataStore page for
+    specific information on Shapefile, Indexed Shapefile, PostGIS, Oracle,
+    ArcSDE, and MySQL. </para>
+  </section>
+
+  <section>
+    <title>Style</title>
+
+    <para>A 'Style' (link to glossary?) defines the presentation of a layer in
+    the WMS. A WFS just returns the raw data, a WMS returns a picture of the
+    data, but there needs to be some way to say how you want that data to
+    look. For example you can define a style to draw roads in blue and streams
+    in black (which would be kind of weird, but you could do it). Each Layer
+    in a WMS can have a number of different styles, so that users can request
+    different views of the same data. The OpenGIS Consortium introduced a
+    specific Style Language Descriptor XML language to specify a way for users
+    to specify these views. To define a 'style' in GeoServer you must use an
+    SLD file. In 1.2 GeoServer is not yet a SLD-WMS (meaning a user can
+    specify the SLD in the request, as well as some other operations), we are
+    planning it for 1.3, but for now we use SLD to define the styles that a
+    user can request. To specify a new style you must first create an SLD
+    file. See our in progress introduction to SLD (link), and the SLD
+    specification (link), for more information. Once you have defined an SLD
+    file you can upload it to GeoServer. Hit the 'new' button on the styles
+    page, and you will then have to specify the StyleID, which is how users
+    will refer to the style when requesting it from GeoServer. Then select the
+    file from your computer, and hit submit, and it will be uploaded directly
+    to GeoServer (yes, we know this is way cooler than the way shapefiles
+    work, and we will work to move shapefiles to a similar style). Much of
+    this is a bit clunky, and will be redone in the future. For example we
+    ignore the 'name' element of the SLD document in favor of the StyleID that
+    a user specifies. We should be able to automatically detect that, and
+    change it on the fly if the user wants to. Also our 'edit' just allows you
+    to upload a new file. Instead it should at a minimum have a large field to
+    edit the actual sld file, and in our dreams would have a complete SLD GUI,
+    where you could edit a real map with the presentation you want, and then
+    automatically generate that SLD file (if anyone is interested in this
+    Andrea Aime wrote some code to do this, but it's still buggy, and we would
+    need to figure out how to run it in an applet, and how to run applets in
+    STRUTS). 1.3 should see some Style improvements, as one of the main focus
+    is to make a full SLD-WMS, which will beg a few architecture changes.
+    </para>
+  </section>
+
+  <section>
+    <title>FeatureType</title>
+
+    <para>coming soon!</para>
+
+    <section>
+      <title>Validation</title>
+
+      <para>GeoServer 1.2 includes the innovative Validation capabilities,
+      completed by Refractions Research, which gratefully acknowledges the
+      GeoConnections Secretariat for providing matching funds for the
+      development via the GeoInnovations program. It provides a mechanism for
+      ensuring that features edited via GeoServer are spatially clean before
+      allowing them to be inserted into the spatial backend databases. If you
+      are working using GeoServer to its full WFS-T transactional capabilities
+      we strongly recommend that you consider defining a few validation tests.
+      These can be easily defined to ensure simple things like no 0 length
+      geometries, and no dangling lines. But it can also express more complex
+      tests, like ensuring that no streets overlap with defined houses, and
+      that the street name is defined in a Gazetteer.</para>
+
+      <para>The Validation configuration is accessed in the WFS section. For
+      1.2.4 we don't have time to port and improve the validation guide, so
+      for now just refer to the document created by Refractions, found <ulink
+      url="ValidationUserGuide.pdf">here</ulink>.</para>
+    </section>
+  </section>
+</article>

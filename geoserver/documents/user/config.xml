@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>Configuring GeoServer</title>
+
+  <para>This document and the Data document should completely describe how to
+  configure GeoServer. This is focused on the basics of the web administration
+  tool, and then goes into configuring the options and metadata for the
+  server. The Data document focuses on adding your own data to GeoServer. Both
+  documents assume you are working with the web administration tool, for
+  information on working with files see the developer docs.</para>
+
+  <section>
+    <title>Web Admin Tool Introduction</title>
+
+    <para>The main focus of GeoServer 1.2 was the web administration tool. It
+    is built on STRUTS (link), and offers a complete graphical user interface,
+    so that users need not ever touch configuration files. It additionally
+    offers the ability to 'try out' new configurations before actually saving
+    them. The work was driven by the excellent team at <ulink
+    url="???">Refractions Research</ulink>, with funding from the
+    GeoConnections program (link). Note that the web administration tool is in
+    no way required to operate GeoServer, you are more than welcome to work
+    directly with the configuration files. We discuss these at length in the
+    Developer's section, see <ulink
+    url="../developer/config_files.html">GeoServer Config Files</ulink>, but
+    for the User docs we assume that you are working through the web admin
+    tool. Some advanced users may need to access the files directly, we will
+    discuss those situations in the user docs. In the future it may be
+    possible to administer a remote GeoServer using a desktop client like
+    uDig, as we designed for such a situation. The admin tool is meant to be
+    as intuitive and self explanatory as possible, and much help from it
+    directly. Most every operation and link has a tool tip that pops up on a
+    mouse over (when you leave the mouse on top of it for over a second). It
+    is also designed for Internationalization, and has been translated into
+    French, with Spanish hopefully coming shortly. It should start up
+    automatically in the language that the computer running GeoServer is set
+    to. If you are interested in translating GeoServer into another language,
+    please get in touch. See the translation section in <ulink
+    url="contributing.html">How to Help</ulink> for more information.</para>
+
+    <section>
+      <title>Accessing the Web Admin Tool</title>
+
+      <para>To access the web admin tool simply fire up your favorite browser
+      and enter the following address:</para>
+
+      <programlisting><ulink url="http://localhost:8080/geoserver">http://localhost:8080/geoserver</ulink></programlisting>
+
+      <para>You should see a page like:</para>
+
+      <figure>
+        <title></title>
+
+        <screenshot><screeninfo></screeninfo> <mediaobject>
+        <imageobject><imagedata
+        fileref="../images/welcome.jpg"></imagedata></imageobject>
+        </mediaobject></screenshot>
+      </figure>
+
+      <para>The first time accessing this page will take a bit of time to
+      load, as GeoServer needs to compile the pages of the application. This
+      will only occur on the first access of the tool, and in future GeoServer
+      versions we should be able to cut down that load time substantially
+      (this is also the only place the JDK as opposed to the JRE is really
+      needed, as java is needed to compile the web pages). As you can see the
+      welcome page contains a few messages and links relating to GeoServer,
+      and then also displays the Title and Abstract sections of the WMS and
+      WFS Capabilities documents. When you edit these the changes will be
+      reflected in the welcome page, so that it is a welcome to your GeoServer
+      instance, with links to the Capabilities documents. It also contains
+      links to the three main GeoServer sections. Demo is the only public
+      section, it contains a nice page to make WMS and WFS requests against
+      GeoServer, with a number of samples. Admin and Config both require you
+      to login. Admin is still more at the idea stage, meant to administer a
+      running GeoServer. Config contains the bulk of the web admin tool, it is
+      where all the configuration of GeoServer takes place.</para>
+    </section>
+
+    <section>
+      <title>Logging In</title>
+
+      <para>So that not everyone can come in and modify the configuration of
+      GeoServer we require a log-in to access the Admin and Config sections.
+      Attempting to click on either from the start page will take you to the
+      log-in page if you are not already logged in, or you can click on the
+      login link in upper right corner. The Log In page looks as
+      follows:</para>
+
+      <figure>
+        <title></title>
+
+        <screenshot><screeninfo></screeninfo> <mediaobject>
+        <imageobject><imagedata fileref="???"></imagedata></imageobject>
+        </mediaobject></screenshot>
+      </figure>
+
+      <para>At this point there is only one username and password for the
+      application. In the future we hope to have multiple roles and profiles,
+      so that different users can have different levels of access. This would
+      include administration of GeoServer, but ideally would also extend
+      towards access and transactional capabilities on layers. Your
+      Capabilities documents would be geared to the profile of the user
+      accessing the application, if they were allowed to see the layer, and if
+      they were allowed to modify it. The default password of a new GeoServer
+      instance is</para>
+
+      <programlisting>username: admin
+password: geoserver</programlisting>
+
+      <para>We highly recommend changing the password, so access to the
+      administration of GeoServer is not open to all.</para>
+    </section>
+
+    <section>
+      <title>Changing the Password</title>
+
+      <para>To change the password go to the Config section. You will then be
+      able to select the Server section, and from there the Password section.
+      Enter your new user name and password, and then save.</para>
+    </section>
+
+    <section>
+      <title>Saving your changes.</title>
+
+      <para>The GeoServer admin tool is built so that you can 'try out' your
+      changes. You will notice three buttons on the left side whenever you are
+      in the configuration sections of the application. The general mode of
+      working is to hit 'Apply' after you have made the changes you would
+      like.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="../images/apply-button.jpg" />
+        </imageobject>
+      </mediaobject>
+
+      <para>This applies the changes to the running GeoServer application, so
+      that you can then do your normal WFS and WMS access to 'try out' the
+      changes, to see if everything is configured correctly. But after an
+      apply these changes have not yet been 'committed'. If you are to restart
+      GeoServer then the changes will be lost. So if you are happy with your
+      changes then you should hit the 'Save' button:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="../images/save-button.jpg" />
+        </imageobject>
+      </mediaobject>
+
+      <para>This will save the current configuration as XML files that
+      GeoServer will read the next time it starts up. If you are not happy
+      with your changes then hitting the 'Load' button will discard the
+      changes you have done and revert GeoServer to the state it was in when
+      you last hit 'Save' (or last started up, if no changes have been saved.)
+      Note that the current state of saves can be ascertained by looking at
+      the left hand tool menu. If there are changes that have been submitted,
+      but not applied, then the Configuration line will have be starred. Once
+      Apply is hit then GeoServer will have a star by it, indicating that
+      there are applied changes that have not been saved. Note that both can
+      easily be starred, if you have applied some changes and only submitted
+      others. The date and time for each displays the last time they were
+      modified. One last thing to mention, the status bars all indicate the
+      amount of successfully loaded DataStores. Just in case you were
+      wondering. We admit this is not all that useful, but hey, it looks kinda
+      cool, no?</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Admin Page</title>
+
+    <para>The Administration Page is still more of a placeholder for future
+    ideas. The main useful functionality it offers at the moment is to release
+    locks that may have gone stale. But we know of no clients that make use of
+    the WFS locking capabilities, so this functionality is likely not used too
+    much. It also provides information on the JVM version and if JAI is
+    installed. The free memory tool works more or less, but it reports very
+    confusing numbers. The admin page in the future will likely be used to
+    administer user roles and access permissions, but there is much work to be
+    done before we get there.</para>
+  </section>
+
+  <section>
+    <title>Config</title>
+
+    <para>To get to the main Config page hit the 'Config' button from the
+    welcome page:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="../images/config.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>From the main Config page there are four options. In general we
+    recommend working through configuration from top to bottom, though you can
+    work in most any order. If you are making a production instance of
+    GeoServer it is very important to fill out all fields. If you are just
+    evaluating GeoServer, wanting to try out your own data, then you can just
+    focus on the data section (link) (just Stores and FeatureType (links?) if
+    you want to get very minimal). Though the server (link) section should
+    also be useful, especially if you need to debug (link?).</para>
+
+    <section>
+      <title>Server</title>
+
+      <para>Password is the only subsection of Server, see the section on
+      Setting your Password for more information.</para>
+
+      <para>The Contact Information is used in the Capabilities document of
+      the WMS server, and shows up in the contact link of the web admin tool.
+      We recommend filling this out with your contact information, so people
+      can get in touch with you if they need more information. It is very self
+      explanatory, so we will not bother explaining every field. The rest of
+      the options beg a little more explanations however:</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <colspec align="left" colwidth="100" />
+
+          <thead>
+            <row>
+              <entry align="center">Option Name</entry>
+
+              <entry align="center">Description</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>Maximum Features</entry>
+
+              <entry>Used to set the maximum number of features returned to a
+              client. This can lead to incomplete WFS responses, not returning
+              all the features, but for extremely large tables it can be nice
+              to return something when a client accidentally makes a request
+              that would send gigabytes of data to them. We set the initial
+              value extremely high, since users are more likely to be upset if
+              we are arbitrarily cutting off their data.</entry>
+            </row>
+
+            <row>
+              <entry>Verbose</entry>
+
+              <entry>Controls whether the returned XML contains formatting to
+              make it more human readable. It includes nice whitespace indents
+              and newlines, but we only recommend using it for testing
+              purposes. The reason is it will increase the amount of data (and
+              thus bandwidth used) returned by GeoServer substantially, and
+              most consumers of GeoServer will be computers who just throw out
+              the extra whitespace. .</entry>
+            </row>
+
+            <row>
+              <entry>Verbose Exceptions</entry>
+
+              <entry>This is one of the most useful configuration options. It
+              is essential for reporting bugs that you may encounter with
+              GeoServer. Normally GeoServer just returns the error message.
+              With Verbose Exceptions the server will return a full set of
+              information for programmers to figure out the problem. For more
+              information on reporting bugs in GeoServer see the section in
+              the <ulink url="???">How To Help</ulink> document.</entry>
+            </row>
+
+            <row>
+              <entry>Number of Decimals</entry>
+
+              <entry>Decimals sets how many decimals past the zero GeoServer
+              should return. This can be most useful as sometimes
+              approximations will lead to most all values returned with
+              .999999999998 and .000000000001 for example. Returning this
+              level of detail is likely not useful to the client, and is
+              likely not even significant in the dataset (though it can be),
+              but it _greatly_ increases the amount of bandwidth needed if
+              every value is 10 times as long (1.0 vs .99999999998).</entry>
+            </row>
+
+            <row>
+              <entry>Character Set</entry>
+
+              <entry>Specifies the character encoding that will be used in the
+              XML returned by GeoServer. The default is UTF-8, which we
+              recommend for most users. But if you are returning in a language
+              that requires a different character set, then this option should
+              be set. Please report if there are any problems, as we very much
+              believe in the importance of the internationalization of
+              GeoServer, but lack the ability and time to really test it. Note
+              that the Character Set must be listed in the <ulink
+              url="http://www.iana.org/assignments/character-sets">IANA
+              Charset Registry</ulink>, and additionally must have a Java
+              implementation available. Most versions of Java support a good
+              number of Character Sets, and additional jars can likely be
+              added if your character set it not present.</entry>
+            </row>
+
+            <row>
+              <entry>Logging Level</entry>
+
+              <entry>Level sets the amount of information that GeoServer logs.
+              The list goes from the least amount of logging (OFF) at the top
+              to the most (ALL). Anything finer than INFO starts to get into
+              debugging information. We recommend either INFO or FINE. Note
+              that in the binary installations the logging messages just go to
+              the console. We are working on improving this to make it easier
+              to save to files. We are also investigating loggers that are
+              more focused on the type of information that GeoServer
+              administrators are more interested in, like access information,
+              who is making requests and what they are requesting.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>After completing this information before to hit 'Submit'. Then you
+      may go about the normal save procedure, trying out the changes with
+      'Apply', and making them persistent with 'Save' if you are happy with
+      them.</para>
+    </section>
+
+    <section>
+      <title>WFS and WMS Sections</title>
+
+      <para>Next you should configure the WMS and WFS sections. They are quite
+      similar, mostly setting up meta information for the capabilities
+      documents that each serve. The WFS section additionally offers a few WFS
+      specific configuration items, and access to the Validation (link)
+      interface. If you are just evaluating GeoServer then the meta
+      information need not be configured, but if you are serving GeoServer
+      publically then we highly recommend that you take the time to fill these
+      out appropriately, so that clients don't confuse your layers for the
+      GeoServer defaults. If you are only using one of the WFS and WMS then we
+      recommend that you disable the one not being used in the Contents
+      section. Each Service has a Contents and a Description. The Contents
+      section controls options specific to each, and the Description section
+      focuses on the Capabilities document's meta information.</para>
+
+      <section>
+        <title>Contents</title>
+
+        <para>The Contents section contains an Enabled check box – if you are
+        not using one of the services (or are using another piece of software,
+        such as MapServer, to serve the other service), then we recommend
+        disabling the it so that users can not access it. The section also
+        contains the Online Resource section. We admit that this would
+        probably be more appropriate in the GetCapabilities section. According
+        to the specs it is supposed to be the 'home page' of the service. Some
+        web page that you've put up telling about the WMS and/or WFS that
+        GeoServer is providing. If you don't have one set up then we recommend
+        just putting the welcome page to the GeoServer web admin tool, as
+        that's what it was designed for. Just put the outside address that
+        GeoServer would be accessed from, with geoserver/ and none of the /wfs
+        or /wms.</para>
+
+        <para>geoserver-*.exe is the easiest installation. Just double click
+        on the downloaded file and follow the windows installer. Note that it
+        is standard for a pop up window to tell you which version of Java it
+        is using. And if it can not find an appropriate version of Java to use
+        it will warn you. You should first install Java before using the
+        installer, so that the links to run the application work correctly.
+        Pick the location to install GeoServer, and on completion short cuts
+        will appear in the windows start menu.</para>
+      </section>
+
+      <section>
+        <title>Additional WFS Contents</title>
+
+        <para>The WFS Contents section contains two additional options.
+        srsName as XML determines if the GetFeature results will have the
+        srsName element as an XML attribute, such as:</para>
+
+        <programlisting>&lt;gml:MultiLineString srsName="http://www.opengis.net/gml/srs/epsg.xml#27354"&gt;</programlisting>
+
+        <para>as all examples in the WFS specification are, or as the more
+        terse:</para>
+
+        <programlisting>&lt;gml:MultiLineString srsName="EPSG:27354"&gt;</programlisting>
+
+        <para>We recommend the former (srsName as XML set to true), the main
+        reason we offer the latter is that some clients for some reason have a
+        hard time parsing the former. So if users are complaining of having
+        trouble with their clients parsing things correctly we you may try
+        unchecking srsNames as XML.</para>
+
+        <para>The other option is the Service Level, which allows you to 'turn
+        off' access to transactions. This is often a prudent move, if you are
+        opening your GeoServer up to the world, so that not anyone can just
+        come in and modify your configuration. In the future we hope to offer
+        more complex configurations then just 'Basic' and 'Transactional',
+        such as support for user level authentications and the like, but for
+        now it just turns on and off. By modifying the configuration files
+        directly you can get a bit more control, specifying which of insert,
+        update and delete you want to make available. Note that at this time
+        the change is not reflected in the Capabilities document, ie it will
+        still tell the address for Transactions, just none will go
+        through.</para>
+
+        <para>To start GeoServer simply click on the 'Start GeoServer' icon.
+        This will run the application until 'Stop GeoServer' is hit. The
+        application can also be stopped by closing the console window that is
+        open, or hitting 'ctrl-c' in the console window.</para>
+      </section>
+
+      <section>
+        <title>Description</title>
+
+        <orderedlist>
+          <para>The Description section of each should look very familiar to
+          anyone working with WMS or WFS before. For those who have not, we
+          quote the WFS specification:</para>
+
+          <informaltable><tgroup cols="2"><colspec align="left"
+          colwidth="100"></colspec><thead><row><entry align="center">ELEMENT
+          NAME</entry><entry
+          align="center">DESCRIPTION</entry></row></thead><tbody><row><entry>Name</entry><entry>A
+          name the service provider assigns to the web feature service
+          instance.</entry></row><row><entry>Title</entry><entry>The
+          &lt;Title&gt; is a human-readable title to briefly identify this
+          server in menus.
+          </entry></row><row><entry>Abstract</entry><entry>The
+          &lt;Abstract&gt; is a descriptive narrative for more information
+          about the server.
+          </entry></row><row><entry>Keywords</entry><entry>The &lt;Keyword&gt;
+          element contains short words to aid catalog searching.
+          </entry></row><row><entry>OnlineResource</entry><entry>The
+          &lt;OnlineResource&gt; element defines the top-level HTTP URL of
+          this service. Typically the URL of a "home page" for the service.
+          </entry></row><row><entry>Maintainer</entry><entry>The name of the
+          maintainer for this
+          server.</entry></row><row><entry>Fees</entry><entry>The &lt;Fees&gt;
+          element contains a text block indicating any fees imposed by the
+          service provider for usage of the service or for data retrieved from
+          the WFS. The keyword NONE is reserved to mean no fees.
+          </entry></row><row><entry>Access Constraints</entry><entry>The
+          &lt;AccessConstraints&gt; element constain a text block describing
+          any access constraints imposed by the service provider on the WFS or
+          data retrieved from that service. The keyword NONE is reserved to
+          indicate no access constraints are
+          imposed.</entry></row></tbody></tgroup></informaltable>
+        </orderedlist>
+      </section>
+    </section>
+
+    <section>
+      <title>Validation</title>
+
+      <para>GeoServer 1.2 includes the innovative Validation capabilities,
+      completed by Refractions Research, which gratefully acknowledges the
+      GeoConnections Secretariat for providing matching funds for the
+      development via the GeoInnovations program. It provides a mechanism for
+      ensuring that features edited via GeoServer are spatially clean before
+      allowing them to be inserted into the spatial backend databases. If you
+      are working using GeoServer to its full WFS-T transactional capabilities
+      we strongly recommend that you consider defining a few validation tests.
+      These can be easily defined to ensure simple things like no 0 length
+      geometries, and no dangling lines. But it can also express more complex
+      tests, like ensuring that no streets overlap with defined houses, and
+      that the street name is defined in a Gazetteer. </para>
+
+      <para>The Validation configuration is accessed in the WFS section. For
+      1.2.4 we don't have time to port and improve the validation guide, so
+      for now just refer to the document created by Refractions, found <ulink
+      url="ValidationUserGuide.pdf">here</ulink>. </para>
+    </section>
+  </section>
+</article>

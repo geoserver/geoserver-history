@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>How to Help</title>
+
+  <para>GeoServer fully embraces an open source development model that does
+  not see a split between user and developer, producer and consumer, but
+  instead sees everyone as a valuable resource in a collaborative quest to
+  build something better than any of us could alone. The amount of effort that
+  has been contributed already has been incredible, and in many ways we feel
+  we are just getting started. To help that effort we ask that you do not see
+  yourself simply as a user of the software, but instead try to find a way to
+  give something back. This certainly does not have to be as a developer, it
+  can be as simple as suggesting a feature or improvement, reporting a
+  problem, or letting others know about GeoServer. These may seem like very
+  minor things, but commercial software companies pay large amounts of money
+  for these things, but they call them Market Research, Quality Assurance and
+  Advertising. Every little thing helps to make GeoServer a better project,
+  and while there are a few core developers, the software would not be nearly
+  as advanced as it is today without a community of people testing, making
+  suggestions and spreading the word. You can even help out by just offering
+  words of encouragement to those working on the project, as many developers
+  do not do this for the money, but do it for personal creativity and for the
+  feeling of building something that others really appreciate. Adding yourself
+  to the <ulink
+  url="http://www.moximedia.com:8080/imf-ows/imf.jsp?site=gs_users">user
+  map</ulink> is a great way to let us know that you value the work done.
+  </para>
+
+  <para>One last word about contributing, before we go into all the different
+  ways that you can help out, is to do it because you want to. Find a task
+  that really interests you, that you feel good about doing, or that forces
+  you to learn something new. We are excited about working on GeoServer, and
+  hope that the quality of the project is a testament to that. We believe the
+  first step in changing the world is to love what you do on a day to day
+  basis; that if you do not enjoy your work then what you create in the world
+  will reflect that. We do hope that you will come to love working on
+  GeoServer, and will find ways to contribute ever more. But if it makes you
+  unhappy, if you are using or contributing to GeoServer out of an unwanted
+  obligation, then we very much encourage you to change your life to find (or
+  at least try to find) something that you do love. </para>
+
+  <section>
+    <title>Documentation</title>
+
+    <para>One of the best ways to help out is with documentation, a task most
+    developer's loathe. We very much believe in the importance of documenting
+    as much as possible, but having our core community be developers means we
+    are often late in fully documenting everything. So lately we have tried to
+    lower the barrier to entry to write documentation, by starting the <ulink
+    url="http://docs.codehaus.org/display/GEOS/Home">GeoServer Wiki</ulink>.
+    The site is editable by anyone, with an incredibly simple mark up language
+    that takes about 2 minutes to learn. Please add or modify any information
+    there. It currently could use a nice re-organization, which we hope to
+    start relatively soon. Please feel free to not limit yourself to adding
+    straight documentation, we really welcome most any information that might
+    be relevant to other users. This could be howtos on getting GeoServer
+    working with various clients (link to client section), or background
+    explanations of OGC specs that you had to look up and would have found
+    useful, or even how GeoServer compares to other WMS/WFSes out there. We
+    believe in having as much open information as possible. Eventually we hope
+    to contribute various portions of our wiki that are more general than just
+    GeoServer to wider projects, such as the wiki based Open Source GIS book
+    we are collaborating on. So for now just put that information on the
+    GeoServer wiki, so it is available somewhere, and we will figure out
+    exactly where it should go later. We would very much like the wiki to be a
+    vast repository of information, of all things GeoServer related. If you
+    are interested in becoming involved in GeoServer, but lack the coding
+    skills, then leading the GeoServer documentation would be a great way to
+    join. Eventually we are hoping to move even the user and developers docs
+    to wiki (as soon as we can figure out good internationalization and how to
+    work offline). To use the wiki you will have to sign up for an account.
+    This is just so that we can recognize who posted what to the wiki. Wiki
+    lesson? At the very least better directions on how to log in, maybe even a
+    picture?</para>
+  </section>
+
+  <section>
+    <title>Email and JIRA assistance</title>
+
+    <para>Related to documentation is helping out on the email lists. We would
+    really like a self supporting users list, and you can become an expert on
+    using GeoServer by thoroughly reading the documentation, reading the list
+    archives, and being on the lists for awhile. But even if you can’t answer
+    the questions yourself, it is a great help to direct things where
+    appropriate. Send bugs to the JIRA task tracker, ask the devel list, and
+    point to the documentation. And perhaps the best thing to do is to work to
+    close the gap between the email lists and the documentation. The ideal
+    would be if every question asked and answered on the email lists were then
+    turned into documentation. If someone asks a questions once it is fairly
+    likely that someone else has the same question. It would be great if
+    someone could build a really comprehensive FAQ, answering common questions
+    and pointing to other points in the documentation. </para>
+
+    <para>You can also help us keep the JIRA task tracker organized. We tend
+    to not get too many duplicate bugs, as most people do not yet report
+    directly to the tracker whenever they have a problem, but eliminating
+    those would be great. And then also scheduling what bugs should be fixed
+    for what releases. Most people submit them without a fix version number,
+    it's actually a great help just to schedule the bugs for the next minor
+    release, and the requested issues for the next major release. </para>
+  </section>
+
+  <section>
+    <title>Translation</title>
+
+    <para>Another great way to help out is translation. We would like
+    GeoServer available in as many languages as possible, as we want world
+    wide data to be available to all. The first thing to translate is the web
+    administration tool, which can be easily translated to most any language
+    by making a new ApplicationsResources file. The second way is by
+    translating this documentation. For further information on how to
+    translate GeoServer please see the page on the wiki (link). Eventually we
+    would even like to set up GeoServer community sites in different
+    languages, if you are interested in this please let us know.</para>
+  </section>
+
+  <section>
+    <title>Reporting Bugs</title>
+
+    <para>If you have a problem when working with GeoServer, then please,
+    please let us know, we can only fix problems if we know about them. To
+    report a bug please use our JIRA task tracker. See the communcation
+    section for information on the task tracker. If possible you should try to
+    see if your bug has been reported, by searching, but you need not spend a
+    ton of time doing that, as the developers can easily recognize duplicates
+    and mark them as such. To help us fix the bug as quickly as possible (and
+    so we don’t have to email you a ton of questions), please include as much
+    information as possible about the bug. After you select the type of issue
+    (most likely bug, but please feel free to report ‘wishes’ or ‘new
+    features’ that you would like to see in GeoServer), then you will be lead
+    to a page of several fields. Please try to fill out as many as possible
+    (check all these, maybe a nice table?). The version of GeoServer you are
+    using is essential. For the fix version you can put the next logical
+    version of GeoServer, if developers need to reschedule it they will.
+    Please put as much information in the environment field as you can. If
+    your GeoServer version is a binary, source, or war install. If it is a war
+    install then put the servlet container type and version. Include your
+    version of Java (found by typing ‘java –version’ at the command line),
+    your operating system and its version, and the backend datastore you are
+    using (oracle, postgis, ect.) as well as its version. Then describe the
+    issue in as much depth as possible. If the error is in a request made to
+    GeoServer (as opposed to in the web admin tool), then we ask that you
+    change the Verbose Exceptions property to true. Login to the admin tool
+    andgo to Config -&gt; Server, and you should see a checkbox. Make sure
+    that it is checked, and you can also use this opportunity to adjust the
+    logging level. A FINE or FINER is general appropriate for a bug report.
+    After adjusting the server configuration be sure to hit submit and then
+    apply. Then try the error again, and you should see a lot more information
+    from GeoServer. Copy down this response, and include both the request and
+    the response. This large error, which should have a bunch of java line
+    numbers, is probably the most important part of a good bug report. If the
+    error is in the web admin tool then try to replicate the error, and write
+    down the exact path that lead you to the error. The other very helpful
+    piece of information is the logs from GeoServer. In the binary
+    installation these go to the console, in the war installation it depends
+    on the servlet container (tomcat puts it in
+    $CATALINA_HOME/logs/catalina.out). Before reporting the bug please check
+    the relevant specifications to make sure that you are making the correct
+    request, though if you include it we should be able to quickly tell if the
+    request is right. Remember to include namespace declarations in your
+    request, as GeoServer will not function correctly unless they are there.
+    If it is an error with configuration then the service.xml and catalog.xml
+    files may be useful (found in server/geoserver/WEB-INF/), as well as the
+    info.xml file (and schema.xml if there is one) for the featureType that is
+    messing up (found in server/geoserver/data/featureTypes/(featureType
+    name)/. If the backend data format is messing up then try to include the
+    data, either the shapefile or perhaps a dump of the database. Note that
+    you can attach files directly to an issue, which we highly recommend for
+    larger files. When you submit a bug it will be sent to the devel list, and
+    developers will respond appropriately. JIRA will notify you of progress
+    and when it is resolved. When it is sent to the devel list other
+    interested parties can also subscribe to get notifications of the bug by
+    hitting the ‘watch’ button. </para>
+  </section>
+
+  <section>
+    <title>Suggestions for Improvement</title>
+
+    <para>If you have suggestions as to how we can make GeoServer better, we
+    would love to hear them. Even if we are already planning on implementing a
+    feature that you would like it does not hurt to hear from you, as we will
+    likely move it up the priority list a bit. We usually have a poll on the
+    GeoServer homepage on what feature you would like to see us implement
+    next. It is generally features we are planning on hitting relatively soon,
+    and we definitely take the results of the poll into account for the order
+    in which we do them. Coming features and improvements are also tracked in
+    our JIRA task tracker. They are scheduled there according to the GeoServer
+    version they will be implemented in. We are also working on constructing a
+    broad roadmap and vision for the future direction of GeoServer, and we
+    would love feedback and input on where you would like to see the project
+    go. Please check the wiki for the latest, and comment or add to it. And if
+    you do evaluate GeoServer and decide that it is not for you, please let us
+    know why you did not end up choosing it, what features were lacking, and
+    we will do our best to implement them in the future. </para>
+  </section>
+
+  <section>
+    <title>Spread the word</title>
+
+    <para>A further way to really help out the GeoServer project is to spread
+    the word about it. This may seem like a minor thing, but as we said
+    earlier, commercial companies pay big money for marketing to sell their
+    products. But the marketing they can’t buy is the word of mouth grassroots
+    information sharing about good software. So at the very least you can
+    email a few co-workers and friends who might be interested. If you are on
+    any lists of people who might be interested then you could email them. And
+    you could also blog about it, put it in directories, and even write an
+    article. But let people know, because it directly benefits you, since the
+    wider the circle of users is the more potential contributors there are.
+    </para>
+  </section>
+
+  <section>
+    <title>Development</title>
+
+    <para>If you are a software developer then that is of course the obvious
+    way to help out, to write code to improve GeoServer. Generally developers
+    start with bug fixes and small patches, and then move into larger
+    contributions as they learn the system. Even if you don’t know Java, or do
+    not really know computer programmer, we do encourage you to try to look at
+    the code and figure out what is going on. That is the whole beauty of open
+    source, you can open up the hood of the car and see how it is running. You
+    can start as a user and slowly educate yourself on how it all works. Our
+    developers are more than happy to help out as you learn and get
+    acquainted, and we try our hardest to keep our code clean and well
+    documented. For further information about developing with GeoServer please
+    see the developers documentation (link), as we spent a lot of time on
+    those docs so it is easy for developers to contribute. </para>
+  </section>
+
+  <section>
+    <title>Help fund GeoServer improvements</title>
+
+    <para>A final way to help out is to push for GeoServer to be used more in
+    your own organization. There may be some capabilities that GeoServer is
+    lacking compared to commercial solutions, but we would like to point out
+    that it may be more cost effective to employ developers to work directly
+    on the capability you need than to merely pay for the right to use some
+    one else's software. Any improvements made on GeoServer go to the benefit
+    of all, not just those who can afford expensive software. Funding that
+    initial improvement can also lead to a snowball effect, as there are
+    likely other organizations who would be much closer to using and further
+    supporting GeoServer if it was closer to meeting their requirements. A
+    number of different organizations can form the next step in improving
+    GeoServer, so that in funding for one improvement you will start the ball
+    rolling for many, many more improvements. We have little doubt that the
+    collaborative open source model can easily lead to GeoServer becoming an
+    Apache type project, being simply the best in its category, open source or
+    commercial. And if there is concern over the quality of support available
+    from an Open Source project please see the section on Commercial Support.
+    Also note that you are more than welcome to use in house developers or
+    your favorite software company to perform improvements on GeoServer, we
+    just ask that they roll their improvements back in to the code base. If
+    you need help finding good developers we can easily assist, just email
+    <ulink url="???">geoserver@openplans.org</ulink>. We are building a
+    network of consulting companies in different companies who can all make
+    incremental improvements on GeoServer. </para>
+  </section>
+</article>

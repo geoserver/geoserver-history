@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>Installation</title>
+
+  <para>This document describes?</para>
+
+  <section>
+    <title>Requirements</title>
+
+    <para>The first requirement for all installations of GeoServer is that you
+    must have a <ulink url="http://java.sun.com/j2se/1.4/">Java SDK
+    1.4</ulink> or greater installed on your computer. If you do not have the
+    JDK1.4 installed on your machine, you should download it from Sun and
+    point to the root install directory with the JAVA_HOME environment
+    variable (export JAVA_HOME=/etc/java/j2sdk1.4 on Linux. The geoserver.exe
+    installation should work ok without this, but to set it in windows go to
+    Control Panel -&gt; System -&gt; Advanced (tab) -&gt; Environment
+    Variables). Most of our testing occurred against JDK1.4.2. If your not
+    sure if you have java, or not sure what version, type java -version from
+    the command line. If the command doesn't work or if the version is less
+    than 1.4 then you'll have to download, install, and set JAVA_HOME. Note
+    that just the Java Runtime Environment (JRE) is not sufficient for
+    GeoServer. We are working on making a GeoServer that can just run with a
+    JRE, indeed even a GeoServer that includes a JRE. But for now you will
+    need the JDK.</para>
+
+    <section>
+      <title>A note on Java 1.5</title>
+
+      <para>We are still working against Java 1.4, and will continue to always
+      support it. But many users are upgrading to 1.5, as it can lead to some
+      nice speed increases. GeoServer 1.2 currently will not work by default
+      with Java 1.5, due to a library that was present in 1.4, but is not
+      standard in 1.5. We do not want to distribute it with GeoServer since it
+      adds an extra 1.5 megabytes, and most users have it by default. If you
+      are using GeoServer with Java 1.5 and are getting errors (like a
+      TransformerFactoryConfiguration error, or simply a 500 internal Server
+      error) then we recommend downloading the latest xalan.jar from
+      xerces.org. You can add this just to GeoServer, by placing it in the
+      GeoServer WEB-INF/lib/ directory (explain where this is? Link to a
+      section explaining this paradigm). Or you can permanently add it to your
+      Java installation, so that you won't have to copy it over during
+      GeoServer upgrades, by putting it in JAVA_HOME/jre/lib/ext.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Getting GeoServer</title>
+
+    <section>
+      <title>Downloading GeoServer</title>
+
+      <para>GeoServer is available for download on our sourceforge home, using
+      their excellent file release system. Downloads are instantly available
+      on mirrors around the world. The main GeoServer distribution is
+      available here (link). In addition there are other files that we
+      distribute, such as DataStore Extensions (link), which includes updated
+      DataStores for past GeoServer version (so you can get the latest
+      upgrades without having to completely reinstall and reconfigure
+      GeoServer), as well as more experimental ones, such as MySQL, Indexed
+      Shapefiles, and VPF support, that are still in testing, so we don't want
+      to distribute them yet with the full, stable GeoServer distribution. You
+      can view all files that GeoServer offers by clicking here (link).</para>
+    </section>
+
+    <section>
+      <title>Which Version of GeoServer?</title>
+
+      <para>We currently make four different versions of GeoServer available
+      for download. All have the same functionality, they just differ in how
+      you run them.</para>
+
+      <para><filename>geoserver-*-bin.zip</filename> is the binary release. It
+      will run GeoServer right away, without installing any additional
+      software. The release consists of documentation, an embedded Jetty
+      (link) servlet container (the key to no additional software), and start
+      up and shutdown scripts, for windows and linux. We recommend this
+      release if you are on linux and want the easiest installation.</para>
+
+      <para><filename>geoserver-*.exe</filename> is exactly the same as the
+      binary release, but also contains a nice windows installer. It will give
+      dialog boxes about where to install GeoServer, and installs shortcuts to
+      stop and start GeoServer from the start menu. We recommend this release
+      if you are on windows and want the easiest installation.</para>
+
+      <para><filename>geoserver-*-.war</filename> is a Java WAR (link) file,
+      that can be plugged into any servlet container (at least theoretically,
+      write once debug everywhere is often in effect, please report any bugs
+      on different servlet containers to our issue tracker(link)). We
+      recommend this for people who are already running Java web applications
+      and would like to keep their existing set up. It is also the smallest
+      download, it only contains the GeoServer application.</para>
+
+      <para><filename>geoserver-*-src.zip</filename> contains the source code
+      from which all other distributions can be built. It is a snapshot of the
+      source code repository at the time of release. It contains java source
+      files, java testing source files, docbook files (from which
+      documentation can be built), and all the other files that are needed to
+      build and test GeoServer. For more information about working with the
+      source code see the developers section of this manual, as we talk much
+      more in depth about working with it. We recommend this download for java
+      developers, who would like to see how GeoServer works, and who are
+      interested in modifying and contributing to GeoServer.</para>
+    </section>
+
+    <section>
+      <title>Additional Libraries for Visualization</title>
+
+      <para>If you are interested in the visualization (Web Map Service WMS)
+      portion of GeoServer than we highly recommend downloading and installing
+      the Java Advanced Imaging library (available <ulink
+      url="http://java.sun.com/products/java-media/jai/downloads/download-1_1_2.html">here</ulink>)
+      and the Image I/O extensions (available <ulink
+      url="http://java.sun.com/products/java-media/jai/downloads/download-iio.html">here</ulink>).
+      Note we have also had success with the new Image I/O release candidate,
+      as it has a nice installer that does both JAI and the Image I/O
+      extensions. It is available here (link). Installing these will give
+      support for styles (link to glossary), as well as a number of image
+      formats, such as jpeg, tiff, bmp, and more. If you are only interested
+      in using GeoServer as a WFS (for example if you are using MapServer for
+      visualization, or do not care about visualization), then there is no
+      reason to install these additional libraries.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Installing and Starting GeoServer</title>
+
+    <para>As the main difference between the four GeoServer versions is
+    installation, we will examine each on its own. Please click on the version
+    that you are working with (read the relevant section?)</para>
+
+    <section>
+      <title>geoserver-*-bin</title>
+
+      <section>
+        <title>Unzipping</title>
+
+        <para>After downloading the binary distribution, unzip into a
+        convenient location. This will create all the relevant files in a
+        “geoserver” directory. For the purposes of the remainder of this
+        document, the symbolic name "${geoserver.home}" is used to refer to
+        the full pathname of the release directory.</para>
+      </section>
+
+      <section>
+        <title>Starting Up</title>
+
+        <para>There are two techniques by which the GeoServer 1.2 binary
+        distribution can be started:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Via an environment variable:</para>
+
+            <orderedlist>
+              <listitem>
+                <para>Set an environment variable GEOSERVER_HOME to the path
+                of the directory into which you have installed GeoServer
+                1.2.</para>
+              </listitem>
+
+              <listitem>
+                <para>Execute the shell command:</para>
+
+                <programlisting>%GEOSERVER_HOME%\bin\startup             (Windows)
+
+$GEOSERVER_HOME/bin/startup.sh           (Unix)</programlisting>
+              </listitem>
+            </orderedlist>
+          </listitem>
+
+          <listitem>
+            <para>By modifying your current working directory:</para>
+
+            <orderedlist>
+              <listitem>
+                <para>Execute the following shell commands (on
+                windows):</para>
+
+                <programlisting>cd %GEOSERVER_HOME%\bin
+startup                 </programlisting>
+
+                <para>or (on Unix)</para>
+
+                <programlisting>cd $GEOSERVER_HOME/bin
+./startup.sh</programlisting>
+              </listitem>
+            </orderedlist>
+          </listitem>
+        </itemizedlist>
+
+        <para>After startup, the default web administration tool included with
+        GeoServer 1.2 will be available by browsing:</para>
+
+        <programlisting><ulink url="http://localhost:8080/geoserver">http://localhost:8080/geoserver</ulink></programlisting>
+
+        <para>To stop GeoServer use the same techniques as startup, but use
+        the shutdown file, in the same location (shutdown.sh or shutdown.bat).
+        To remove GeoServer simply delete the directory where it was unzipped.
+        Be sure GeoServer is not running. </para>
+
+        <para>We have isolated Configuration Information, from the GeoServer
+        Application Information currently being used. Configuration
+        information is captured by a series of classes in the config package.
+        The Advantage of this approach is that it gives us a chance to recast
+        concepts into terms acceptable to the user interface.</para>
+      </section>
+
+      <section>
+        <title>Troubleshooting</title>
+
+        <orderedlist>
+          <listitem>
+            <para>The most common hiccup is when another web server (or any
+            process for that matter) has laid claim to port 8080. This is the
+            default HTTP port that GeoServer attempts to bind to at startup.
+            To change this, open the file:</para>
+
+            <programlisting>$GEOSERVER_HOME/documents/jetty.xml</programlisting>
+
+            <para>and search for '8080'. Change it to a port that isn't in
+            use, and is greater than 1024, as ports less than or equal to 1024
+            require superuser access to bind to.</para>
+
+            <para>Restart GeoServer and you're in business. Be sure that you
+            replace the "8080" in the URL you're using to access GeoServer.
+            For example, if you change the port to 1977, you would request the
+            URL to </para>
+
+            <programlisting>http://localhost:1977/geoserver</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>The 'localhost' machine isn't found. This could happen if
+            you're behind a proxy. If that's the case, make sure the proxy
+            configuration for your browser knows that you shouldn't be going
+            through the proxy to access the "localhost" machine. In Netscape,
+            this is under Edit/preferences -&gt; Advanced/proxies, and in
+            Internet Explorer, Tools -&gt; Internet Options -&gt; Connections
+            -&gt; LAN Settings.</para>
+          </listitem>
+        </orderedlist>
+      </section>
+    </section>
+
+    <section>
+      <title>geoserver-*.exe</title>
+
+      <section>
+        <title>Installing</title>
+
+        <para>geoserver-*.exe is the easiest installation. Just double click
+        on the downloaded file and follow the windows installer. Note that it
+        is standard for a pop up window to tell you which version of Java it
+        is using. And if it can not find an appropriate version of Java to use
+        it will warn you. You should first install Java before using the
+        installer, so that the links to run the application work correctly.
+        Pick the location to install GeoServer, and on completion short cuts
+        will appear in the windows start menu. </para>
+      </section>
+
+      <section>
+        <title>Starting Up</title>
+
+        <para>To start GeoServer simply click on the 'Start GeoServer' icon.
+        This will run the application until 'Stop GeoServer' is hit. The
+        application can also be stopped by closing the console window that is
+        open, or hitting 'ctrl-c' in the console window. After startup, the
+        default web administration tool included with GeoServer 1.2 will be
+        available by browsing to:</para>
+
+        <programlisting><ulink url="http://localhost:8080/geoserver">http://localhost:8080/geoserver</ulink></programlisting>
+
+        <para>It should also be available through the 'GeoServer
+        Administration' link in the start menu. </para>
+
+        <para>To remove GeoServer just double click on the Uninstall link on
+        the GeoServer start menu. Make sure that GeoServer has been shut down.
+        This will remove the start menu icons and GeoServer itself.</para>
+      </section>
+
+      <section>
+        <title>Troubleshooting</title>
+
+        <orderedlist>
+          <listitem>
+            <para>The most common hiccup is when another web server (or any
+            process for that matter) has laid claim to port 8080. This is the
+            default HTTP port that GeoServer attempts to bind to at startup.
+            To change this, open the file:</para>
+
+            <programlisting>$GEOSERVER_HOME/documents/jetty.xml</programlisting>
+
+            <para>and search for '8080'. Change it to a port that isn't in
+            use, and is greater than 1024, as ports less than or equal to 1024
+            require superuser access to bind to.</para>
+
+            <para>Restart GeoServer and you're in business. Be sure that you
+            replace the "8080" in the URL you're using to access GeoServer.
+            For example, if you change the port to 1977, you would request the
+            URL to</para>
+
+            <programlisting>http://localhost:1977/geoserver</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>The 'localhost' machine isn't found. This could happen if
+            you're behind a proxy. If that's the case, make sure the proxy
+            configuration for your browser knows that you shouldn't be going
+            through the proxy to access the "localhost" machine. In Netscape,
+            this is under Edit/preferences -&gt; Advanced/proxies, and in
+            Internet Explorer, Tools -&gt; Internet Options -&gt; Connections
+            -&gt; LAN Settings.</para>
+          </listitem>
+        </orderedlist>
+      </section>
+    </section>
+
+    <section>
+      <title>geoserver-*-.war</title>
+
+      <section>
+        <title>Installing</title>
+
+        <para>The geoserver war download requires a servlet container. We
+        recommend that if you do not have a servlet container you use the bin
+        or .exe GeoServer download, as they have an embedded Jetty servlet
+        container, so that you need not details of setting up one up. But if
+        you like more control over your software, or already have a favorite
+        container, then using the war is right for you. We do recommend
+        sticking with the latest stable versions. We try to be as backwards
+        compatible as possible, but we are not willing to bend over backwards
+        for bugs that have been fixed in later versions. We recommend Jetty,
+        Resin, and Tomcat as solid open source containers, and there are a
+        bevy of commercial ones on the market as well. This option is also
+        most useful if you are working on a production server that already has
+        a servlet container on it, as system administrators don't generally
+        like to upgrade software and install new software at your every whim.
+        And it's good to keep those guys happy, they do a lot of great, and
+        under appreciated, work. So with the war installation you can keep
+        them happy, as they'll have a servlet container all ready for you.
+        </para>
+
+        <para>To install GeoServer, simply place the war in your application
+        directory, generally webapps/. Most modern containers will
+        automatically detect the new war and expand it, some will require you
+        to restart. The war file will be expanded into the appropriate
+        directory structure.</para>
+      </section>
+
+      <section>
+        <title>Starting Up</title>
+
+        <para>Starting the GeoServer war depends on the servlet container -
+        once you start up your servlet container with GeoServer in the proper
+        webapps directory it should be available. To access the web admin page
+        go to:</para>
+
+        <programlisting>http://SERVER_ADDRESS:SERVER_PORT/geoserver/</programlisting>
+
+        <para>The server address is the name of the server, localhost if it is
+        on your machine, but if set up on a remote machine it will be that ip
+        address or machine name. The server port will be the port the servlet
+        container is configured on. The default for most is 8080, but it also
+        may be another address - check your container's configuration.</para>
+
+        <para>simply click on the 'Start GeoServer' icon. This will run the
+        application until 'Stop GeoServer' is hit. The application can also be
+        stopped by closing the console window that is open, or hitting
+        'ctrl-c' in the console window. After startup, the default web
+        administration tool included with GeoServer 1.2 will be available by
+        browsing to:</para>
+
+        <programlisting><ulink url="http://localhost:8080/geoserver">http://localhost:8080/geoserver</ulink></programlisting>
+      </section>
+
+      <section>
+        <title>Troubleshooting</title>
+
+        <orderedlist>
+          <para>As GeoServer is a standard WAR file we will not go into much
+          troubleshooting, as that is likely done in your servlet container.
+          One thing to note though, for the rest of the documentation we will
+          always refer to http://localhost:8080/geoserver – in those cases
+          just substitute your server and port. Also note that we sometimes
+          refer to the $GEOSERVER_HOME/server/geoserver/ directory or various
+          sub directories thereof. For the war installation that
+          $GEOSERVER_HOME location is not set. When that location is used just
+          substitute your_container/webapps/geoserver, as server/geoserver is
+          just where the embedded servlet container expands its war. In 1.3 we
+          hope to have a real GEOSERVER_HOME directory where configuration is
+          stored, for now it just takes place within the servlet container.
+          </para>
+        </orderedlist>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Testing GeoServer</title>
+
+    <para>Once you have your version of GeoServer running, we recommend a
+    simple test, going to: </para>
+
+    <programlisting><ulink
+        url="http://localhost:8080/geoserver/wfs/GetCapabilities">http://localhost:8080/geoserver/wfs/GetCapabilities</ulink></programlisting>
+
+    <para> You should see an XML WFS Capabilities file. If you do not then go
+    back and read your section again, as something went wrong. You can also go
+    to:</para>
+
+    <programlisting><ulink url="http://localhost:8080/geoserver">http://localhost:8080/geoserver</ulink></programlisting>
+
+    <para>and the web administration tool should load. You can start to play
+    with it, it will be discussed in length in the next sections. Note that it
+    takes a little while to load the first time, this is a one time only load,
+    after that it should start up right away. </para>
+
+    <para>You can also go to the demo section, from the main welcome page, or
+    directly at:</para>
+
+    <programlisting><ulink url="http://localhost:8080/geoserver/demo.do">http://localhost:8080/geoserver/demo.do</ulink></programlisting>
+
+    <para>This shows a number of sample requests that you can issue against
+    geoserver. It should serve as a quick demonstration of the wms and wfs
+    requests, as well as a test that geoserver is in fact working properly.
+    The requests are issued against two shapefiles that are included and
+    configured in all geoservers by default. (We should make a demo folder
+    download tutorial thing that has a ton of W*S requests for reference, that
+    people can plug into the demo section and learn about the
+    interfaces).</para>
+  </section>
+</article>
