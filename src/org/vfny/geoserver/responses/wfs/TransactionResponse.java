@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.29 2004/04/22 08:27:06 emperorkefka Exp $
+ * @version $Id: TransactionResponse.java,v 1.30 2004/04/22 10:02:23 emperorkefka Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -668,8 +668,9 @@ public class TransactionResponse implements Response {
         	//don't want transactions to mess up just because validation 
         	//stuff is messed up. ch
             LOGGER.finer("Runing integrity tests using validation processor ");
-        	validation.runIntegrityTests(typeRefs, stores, check, results);        	
+        	validation.runIntegrityTests(stores.keySet(), sources, check, results);        	
         } catch (Exception badIdea) {
+            badIdea.printStackTrace();
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
         }
