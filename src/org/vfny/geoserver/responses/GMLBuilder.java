@@ -41,6 +41,7 @@ import org.vfny.geoserver.config.ConfigInfo;
  * </ul></p>
  *
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  * @version $VERSION$
  */
 public class GMLBuilder {
@@ -91,22 +92,27 @@ public class GMLBuilder {
     /**
      * Adds a feature type start tag
      * @param featureType The GML feature type name.
-     * @param srs The SRS name.
      */ 
-    public void startFeatureType (String featureType, String srs) {        
+    public void initializeFeatureType (String featureType) {        
         // initialize both feature members and attributes with the feature type
         featureMemberWriter.initialize(featureType);
         attributeWriter.initialize(featureType);                
         
         // add feature type tag
-        featureTypeWriter.start(srs);        
+
     }
-    
-    
+
+    /**
+     * Adds the xml namespaces and FeatureCollection tag.
+     */
+    public void startFeatureCollection(String srs) {
+	featureTypeWriter.start(srs);        
+    }
+
     /**
      * Adds a feature type end tag
      */ 
-    public void endFeatureType () {
+    public void endFeatureCollection () {
         featureTypeWriter.end();
     }
     
@@ -187,8 +193,9 @@ public class GMLBuilder {
         public void start(String srs) {
             
             if(verbose) {
-                finalResult.append("\n<gml:featureCollection xmlns:gml=\"" + 
-                                   "http://www.opengis.net/gml\" scope=\"" + 
+                finalResult.append("\n<wfs:FeatureCollection xmlns:gml=\"" + 
+                                   "http://www.opengis.net/gml\" xmlns:wfs=\""
+				   + "http://www.opengis.net/wfs\" scope=\"" + 
                                    configInfo.getUrl() + "\">");
                 
                 /*
@@ -203,8 +210,9 @@ public class GMLBuilder {
                 */
             } else {
                 finalResult.append("<?xml version='1.0' encoding='UTF-8'?>");
-                finalResult.append("<gml:featureCollection xmlns:gml=\"" + 
-                                   "http://www.opengis.net/gml\" scope=\"" + 
+                finalResult.append("<wfs:FeatureCollection xmlns:gml=\"" + 
+                                   "http://www.opengis.net/gml\" xmlns:wfs=\""
+				   + "http://www.opengis.net/wfs\" scope=\"" + 
                                    configInfo.getUrl() + "\">");
                 
                 // append bounding box preamble to response, if a bounding box was requested
@@ -227,9 +235,9 @@ public class GMLBuilder {
          */ 
         public void end() {
             if( verbose ) {
-                finalResult.append( "\n</gml:featureCollection>" );
+                finalResult.append( "\n</wfs:FeatureCollection>" );
             } else {
-                finalResult.append("</gml:featureCollection>" );
+                finalResult.append("</wfs:FeatureCollection>" );
             }
         }
         
