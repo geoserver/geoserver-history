@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.29 2004/06/03 19:40:13 cholmesny Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.30 2004/08/03 15:20:43 cholmesny Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -296,6 +296,7 @@ public class XMLConfigWriter {
             s = w.getService();
             t = "WFS";
             gml = w.isGmlPrefixing();
+            serviceLevel = w.getServiceLevel();
         } else if (obj instanceof WMSDTO) {
             WMSDTO w = (WMSDTO) obj;
             s = w.getService();
@@ -865,7 +866,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.29 2004/06/03 19:40:13 cholmesny Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.30 2004/08/03 15:20:43 cholmesny Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
