@@ -11,6 +11,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import javax.xml.transform.Transformer;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -34,7 +35,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.32 2004/03/10 23:39:05 groldan Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.33 2004/07/23 16:55:52 cholmesny Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {
@@ -163,6 +164,7 @@ public abstract class CapabilitiesResponse extends XMLFilterImpl
             }catch(NullPointerException e){
             	charset = request.getWMS().getGeoServer().getCharSet();
             }
+	    transformer.setOutputProperty(OutputKeys.ENCODING, charset.name());
             Writer writer = new OutputStreamWriter(out, charset);
             StreamResult result = new StreamResult(writer);
 
