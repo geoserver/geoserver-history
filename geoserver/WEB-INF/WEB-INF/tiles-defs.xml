@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+
+<!--
+     This is a blank Tiles definition file with a commented example.
+-->
+
+<tiles-definitions>
+
+    <definition name=".mainLayout" path="/layouts/main.jsp">
+        <put name="title"  value="GeoServer Configuration" />
+        <put name="header" value=".header" />
+        <put name="sidebar"   value=".sideBar" />
+        <put name="body"   value=".body" />
+    </definition>
+
+    <definition name=".header" path="/tiles/layouts/header.jsp" >
+        <put name="logo" value="/tiles/header/logo.jsp" />
+        <put name="location" value="/tiles/head/location.jsp" />
+        <put name="menu" value="/tiles/header/menu.jsp" />
+    </definition>
+    
+    <definition name=".sideBar" path="/tiles/layouts/sidebar.jsp" >
+    	<put name="status" value="/tiles/sidebar/status.jsp"/>
+    	<put name="buttons" value="/tiles/sidebar/buttons.jsp"/>
+    	<put name="actions" value="/tiles/sidebar/actions.jsp"/>
+    </definition>
+    
+    <definition name=".body" path="/tiles/layouts/body.jsp" >
+    	<put name="tabs" value="/tiles/body/tabs.jsp" />
+    	<put name="selector" value="/tiles/body/selector.jsp" />
+    	<put name="editor" value="/tiles/body/editor.jsp" />
+    </definition>
+    
+    
+
+    <definition name="wfs.Description" extends=".mainLayout">
+        <put name="title"  value="WFS Config - Description" />
+        <!--<put name="body"   value=".aPage.body" />-->
+    </definition>
+
+</tiles-definitions>
