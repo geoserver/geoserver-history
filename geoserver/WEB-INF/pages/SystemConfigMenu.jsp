@@ -11,9 +11,9 @@
 <body bgcolor="white">
 
 <BR>
-	<html:link forward="wfsConfigMenu"><bean:message key="label.wfsConfig"/><BR></html:link>
+	<html:link forward="wfsConfigMenu"><bean:message key="label.wfsConfig"/></html:link><BR>
 <BR>
-	<bean:message key="label.wmsConfig"/><BR>
+	<html:link forward="wmsConfigMenu"><bean:message key="label.wmsConfig"/></html:link><BR>
 <BR>
 	<bean:message key="label.catalogConfig"/><BR>
 
