@@ -17,6 +17,7 @@
 package org.vfny.geoserver.config;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.8 2004/01/12 23:55:27 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.9 2004/01/14 02:57:49 emperorkefka Exp $
  */
 public class FeatureTypeConfig{
 	
@@ -485,6 +486,25 @@ public class FeatureTypeConfig{
 	 */
 	public List getSchema() {
 		return schema;
+	}
+	
+	/**
+	 * Searches through the schema looking for an AttributeTypeInfoConfig
+	 * that matches the name passed in attributeTypeName
+	 * 
+	 * @param attributeTypeName, the name of the AttributeTypeInfo to search for.
+	 * @return AttributeTypeInfoConfig from the schema, if found
+	 */
+	public AttributeTypeInfoConfig getAttributeFromSchema(String attributeTypeName ){
+		Iterator iter = schema.iterator();
+		while(iter.hasNext()) {
+			AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) iter.next();
+			if (atiConfig.getName().equals(attributeTypeName)) {
+				return atiConfig;
+			}
+		}
+		return null;
+		
 	}
 
 	/**
