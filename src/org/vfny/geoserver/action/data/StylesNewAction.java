@@ -56,6 +56,6 @@ public class StylesNewAction extends ConfigAction {
         
         // Pass style over to the Editor
         user.setStyle( style );        
-        return mapping.findForward("config.data.namespace.editor");
+        return mapping.findForward("config.data.style.editor");
     }
 }

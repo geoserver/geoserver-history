@@ -2,7 +2,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:form action="/config/data/styleSubmit">
+<html:form action="/config/data/styleEditorSubmit">
 
 <table class="info">
   <tr>
@@ -18,7 +18,7 @@
 		<bean:message key="label.default"/>:
 	</td>
     <td class="datum">
-		<html:checkbox property="_default"/>
+		<html:checkbox property="default"/>
 	</td>
   </tr>
   <tr>

@@ -2,7 +2,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:form action="/config/data/styleSelect">
+<html:form action="/config/data/styleSelectSubmit">
 
 <table class="info">
   <tr>
@@ -18,10 +18,10 @@
     <tr>
     <td class="label">&nbsp;</td>
     <td class="datum">
-	  <html:submit property="action" value="edit">
+	  <html:submit property="action">
 		<bean:message key="label.edit"/>
 	  </html:submit>
-      <html:submit property="action" value="delete">
+      <html:submit property="action">
 		<bean:message key="label.delete"/>
 	  </html:submit>
 	</td>
