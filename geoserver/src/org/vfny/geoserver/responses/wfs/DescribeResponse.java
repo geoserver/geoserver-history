@@ -327,7 +327,13 @@ public class DescribeResponse implements Response {
 
                 File schemaFile = meta.getSchemaFile();
                    try {
-                       if (schemaFile.exists() && schemaFile.canRead()) {
+                       //Hack here, schemaFile should not be null, but it is
+                       //when a fType is first created, since we only add the 
+                       //schemaFile param to dto on a load.  This should be
+                       //fixed, maybe even have the schema file persist, or at
+                       //the very least be present right after creation.
+                       if (schemaFile != null &&
+                            schemaFile.exists() && schemaFile.canRead()) {
                            generatedType = writeFile(schemaFile);
                        } else {
                            FeatureType ft2 = meta.getFeatureType();
