@@ -12,6 +12,7 @@ import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.LiteRenderer;
+import org.geotools.styling.StyleAttributeExtractor;
 import org.geotools.styling.Style;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
@@ -47,7 +48,7 @@ import javax.imageio.stream.ImageOutputStream;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.25 2004/09/09 15:29:29 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.26 2004/09/13 16:12:09 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -287,7 +288,7 @@ public class JAIMapResponse extends GetMapDelegate {
                 Style style = styles[i];
                 Query query = queries[i];
                 FeatureSource source = requestedLayers[i].getFeatureSource();
-
+		checkStyle(style, source);
                 layer = new DefaultMapLayer(source, style);
                 layer.setQuery(query);
                 map.addLayer(layer);
@@ -311,7 +312,7 @@ public class JAIMapResponse extends GetMapDelegate {
             
             //we already do everything that the optimized data loading does...
             //if we set it to true then it does it all twice...
-            renderer.setOptimizedDataLoadingEnabled(true);
+            renderer.setOptimizedDataLoadingEnabled(false);
 
             //Envelope dataArea = map.getLayerBounds();
             Envelope dataArea = request.getBbox();
@@ -326,11 +327,38 @@ public class JAIMapResponse extends GetMapDelegate {
 
             map = null;
             this.image = image;
-        } catch (Exception exp) {
+        } catch (IOException exp) {
             exp.printStackTrace();
+            //LOGGER.info("uh, we're in this catch loop");
+            //throw new RuntimeException("can we get a wms exception?");
             throw new WmsException(null, "Internal error : " + exp.getMessage());
+             
         }
     }
+
+    /**
+     * Checks to make sure that the style passed in can process this FeatureSource.
+     * This should really be done at start up time, and returned as part of the 
+     * WMS capabilities.
+     * 
+     * @param style The style to check
+     * @param source The source requested.
+     */
+	private void checkStyle(Style style, FeatureSource source) throws WmsException {
+		FeatureType fType = source.getSchema();
+		StyleAttributeExtractor sae = new StyleAttributeExtractor();
+		sae.visit(style);
+		String[] styleAttributes = sae.getAttributeNames();
+		for (int i = 0; i < styleAttributes.length; i++){
+			String attName = styleAttributes[i];
+			if (fType.getAttributeType(attName) == null) {
+				throw new WmsException("The requested Style can not be used with " 
+				+ "this featureType.  The style specifies an attribute of " + attName
+				 + " and the featureType definition is: " + fType);
+			}
+		}
+		
+	}
 
     /**
      * Sets up the affine transform.  Stolen from liteRenderer code.
