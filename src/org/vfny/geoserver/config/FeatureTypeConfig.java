@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -33,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.9 2004/01/14 02:57:49 emperorkefka Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.10 2004/01/15 00:54:34 jive Exp $
  */
 public class FeatureTypeConfig{
 	
@@ -118,19 +120,27 @@ public class FeatureTypeConfig{
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public FeatureTypeConfig(){
-		dataStoreId = "";
+	public FeatureTypeConfig(String dataStoreId, FeatureType schema){
+		this.dataStoreId = dataStoreId;
 		latLongBBox = new Envelope();
-		SRS = 0;
-		schema = new ArrayList();
+		SRS = schema.getDefaultGeometry().getGeometryFactory().getSRID();
+		this.schema = new ArrayList();
+        for( int i=0; i<schema.getAttributeCount(); i++){
+            AttributeType attrib = schema.getAttributeType( i );
+            this.schema.add( new AttributeTypeInfoConfig( attrib ) );
+        }
 		defaultStyle = "";
-		name = "";
-		title = "";
-		_abstract = "";
+		name = schema.getTypeName();
+		title = schema.getTypeName()+"_Type";
+		_abstract = "Generated from "+dataStoreId;
 		keywords = new LinkedList();
+        keywords.add( dataStoreId );
+        keywords.add( name );
 		numDecimals = 8;
 		definitionQuery = null;
-		dirName = schemaName = schemaBase = "";
+		dirName = dataStoreId+"_"+name;
+        schemaName = name+"_Type";
+        schemaBase = "AbstractFeatureType";
 	}
 
 	/**
@@ -163,6 +173,7 @@ public class FeatureTypeConfig{
 		schemaName = f.getSchemaName();
 		schemaBase = f.getSchemaBase();
 	}
+    
 
 	/**
 	 * load purpose.
