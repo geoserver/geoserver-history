@@ -90,6 +90,9 @@ public class CapabilitiesResponse {
     public CapabilitiesResponse(CapabilitiesRequest request) {
         version = request.getVersion();
         service = request.getService();
+	if (version == null) {
+	    version = ""; //so we don't get a null pointer exception
+	}
     }
     
 
