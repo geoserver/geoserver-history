@@ -5,6 +5,7 @@
 package org.vfny.geoserver.requests;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -28,23 +29,6 @@ import org.vfny.geoserver.global.UserContainer;
  * @author Jody Garnett
  */
 public final class Requests {
-
-	/**
-	 * Aquire GeoServer from Web Container.  
-	 * <p>
-	 * In GeoServer is create by a STRUTS plug-in and is available through
-	 * the Web container.
-	 * </p>
-	 * <p>
-	 * Test cases may seed the request object with a Mock WebContainer and a 
-	 * Mock GeoServer.
-	 * </p>
-	 * @param request GeoServer Request used to aquire session reference
-	 * @return GeoServer instance for the current Web Application
-	 */
-	public static GeoServer getGeoServer( Request request ){
-		return getGeoServer( request.getHttpServletRequest() );
-	}
 	
 	/**
 	 * Aquire GeoServer from Web Container.  
@@ -60,21 +44,10 @@ public final class Requests {
 	 * @return GeoServer instance for the current Web Application
 	 */
 	public static GeoServer getGeoServer(HttpServletRequest request) {
+		ServletRequest req = request;
 		HttpSession session = request.getSession();
 		ServletContext context = session.getServletContext();
 		return (GeoServer) context.getAttribute( "GeoServer" );		
-	}
-
-	/**
-	 * Aquire type safe session information in a UserContainer.  
-	 * <p>
-	 * Please note that the UserContainer may be lazyly created.
-	 * </p>
-	 * @param request GeoServer Request used to aquire session reference
-	 * @return UserContainer containing typesafe session information.
-	 */
-	public static UserContainer getUserContainer( Request request ){
-		return getUserContainer( request.getHttpServletRequest() );
 	}
 	
 	/**
@@ -109,11 +82,13 @@ public final class Requests {
 	 */
 	public static boolean isLoggedIn(HttpServletRequest request) {
 		HttpSession session = request.getSession();
+		
 		synchronized( session ){
 			UserContainer user = (UserContainer) session.getAttribute( UserContainer.SESSION_KEY );
 			return user != null;
 		}
 	}
+	
 	/**
 	 * Ensures a user is logged out.
 	 * <p>

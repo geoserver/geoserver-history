@@ -7,6 +7,8 @@ package org.vfny.geoserver.requests;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import org.vfny.geoserver.global.GeoServer;
+
 /**
  * Defines a general Request type and provides accessor methods for universal
  * request information.
@@ -19,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.5.2.3 2004/01/06 08:41:05 jive Exp $
+ * @version $Id: Request.java,v 1.5.2.4 2004/01/06 09:49:29 jive Exp $
  */
 abstract public class Request {
 	/**
@@ -181,6 +183,24 @@ abstract public class Request {
 	 */
 	public HttpServletRequest getHttpServletRequest() throws ClassCastException {
 		return (HttpServletRequest) getServletRequest();
+	}
+	/**
+	 * Convience method for accessing GeoServer from the Web Container.
+	 * <p>
+	 * This method is used to replace calls to GeoServer.getInstnace().
+	 * </p>
+	 * @param servletRequest
+	 */
+	public GeoServer getGeoServer(){
+		return Requests.getGeoServer( getHttpServletRequest() );
+	}
+	/**
+	 * Tests if user is Logged into GeoServer.
+	 * 
+	 * @return <code>true</code> if user is logged in
+	 */
+	public boolean isLoggedIn(){
+		return Requests.isLoggedIn( getHttpServletRequest() );
 	}
 	
 	/**
