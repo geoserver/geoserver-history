@@ -78,7 +78,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                     new ActionError("error.cannotProcessConnectionParams"));
                 saveErrors(request, errors);
 
-                return mapping.findForward("config.data.store");
+                return mapping.findForward("config.data.store.editor");
             }
 
             Object value;
@@ -92,7 +92,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                     new ActionError("error.cannotProcessConnectionParams"));
                 saveErrors(request, errors);
 
-                return mapping.findForward("config.data.store");
+                return mapping.findForward("config.data.store.editor");
             }
 
             if (value != null) {
@@ -117,7 +117,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                 new ActionError("error.cannotProcessConnectionParams"));
             saveErrors(request, errors);
 
-            return mapping.findForward("config.data.store");
+            return mapping.findForward("config.data.store.editor");
         }
 
         try {
@@ -133,7 +133,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                     new ActionError("error.invalidConnectionParams"));
                 saveErrors(request, errors);
 
-                return mapping.findForward("config.data.store");
+                return mapping.findForward("config.data.store.editor");
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -144,7 +144,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
             saveErrors(request, errors);
 
-            return mapping.findForward("config.data.store");
+            return mapping.findForward("config.data.store.editor");
         }
 
         boolean enabled = dataStoresForm.isEnabled();
