@@ -9,6 +9,8 @@ import org.geotools.data.*;
 import org.geotools.factory.*;
 import org.geotools.feature.*;
 import org.geotools.filter.*;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.WmsException;
 import org.w3c.dom.*;
 import java.io.*;
 import java.util.*;
@@ -19,11 +21,10 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.3 2003/12/17 22:15:15 cholmesny Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
-
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
     /** DOCUMENT ME! */
@@ -46,6 +47,7 @@ public class FeatureTypeConfig extends BasicConfig {
 
     /** DOCUMENT ME! */
     private Map styles;
+    private CatalogConfig catalog;
 
     /** DOCUMENT ME! */
     private String defaultStyle;
@@ -59,7 +61,7 @@ public class FeatureTypeConfig extends BasicConfig {
      * <p>
      * We need to make an GeometryAttributeType that knows about SRID
      * </p>
-     *
+     * 
      * <ul>
      * <li>
      * datastore.featuretype.srid: int (default 0)
@@ -71,7 +73,7 @@ public class FeatureTypeConfig extends BasicConfig {
      * datastore.featuretype.bbxo: Envelope (default calcuated)
      * </li>
      * </ul>
-     *
+     * 
      *
      * @param config
      * @param type
@@ -141,7 +143,7 @@ public class FeatureTypeConfig extends BasicConfig {
                     + getName() + ": " + ex.getMessage(), ex);
             }
 
-            loadStyles(getChildElement(fTypeRoot, "styles"));
+            loadStyles(getChildElement(fTypeRoot, "styles"), catalog);
             loadLatLongBBox(getChildElement(fTypeRoot, "latLonBoundingBox"));
         } else {
             LOGGER.info("featureType " + getName() + " is not enabled");
@@ -257,8 +259,8 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
-     * Gets the namespace for this featureType.  This isn't _really_
-     * necessary, but I'm putting it in in case we change namespaces,  letting
+     * Gets the namespace for this featureType.  This isn't _really_ necessary,
+     * but I'm putting it in in case we change namespaces,  letting
      * FeatureTypes set their own namespaces instead of being dependant on
      * datasources.  This method will allow us to make that change more easily
      * in the future.
@@ -332,15 +334,17 @@ public class FeatureTypeConfig extends BasicConfig {
 
         FeatureSource realSource = getRealFeatureSource();
         FeatureSource mappedSource = new DEFQueryFeatureLocking(realSource,
-            getSchema(), this.definitionQuery);
+                getSchema(), this.definitionQuery);
+
         return mappedSource;
     }
 
     private FeatureSource getRealFeatureSource()
         throws NoSuchElementException, IllegalStateException, IOException {
-      FeatureSource realSource = dataStore.getDataStore().
-          getFeatureSource(super.getName());
-      return realSource;
+        FeatureSource realSource = dataStore.getDataStore().getFeatureSource(super
+                .getName());
+
+        return realSource;
     }
 
     /**
@@ -405,6 +409,19 @@ public class FeatureTypeConfig extends BasicConfig {
      */
     public Map getStyles() {
         return this.styles;
+    }
+
+    //HACK: should not have access to all catalog styles, but first we need
+    //to figure out the loading of styles.
+    public Style getStyle(String styleName) throws WmsException {
+        Style style = (Style) styles.get(styleName);
+        LOGGER.info("got style " + style + " from " + styles);
+
+        if (style == null) {
+            throw new WmsException("style named " + styleName + " not found");
+        }
+
+        return style;
     }
 
     /**
@@ -527,18 +544,56 @@ public class FeatureTypeConfig extends BasicConfig {
      * DOCUMENT ME!
      *
      * @param styles DOCUMENT ME!
+     * @param catalog DOCUMENT ME!
+     *
+     * @throws ConfigurationException DOCUMENT ME!
+     *
+     * @task TODO: I'm not sure this class is necessary, or if it's doing what
+     *       we want.  Right now it reads in the style elements in an info.xml
+     *       file (or rather doesn't, as I haven't got it working yet), and
+     *       then limits the styles to those.  I think that instead what it
+     *       should do is analyze the styles of catalog, see if they match
+     *       this FeatureType, and if they do then load the styles.
      */
-    private void loadStyles(Element styles) {
+    private void loadStyles(Element styles, CatalogConfig catalog)
+        throws ConfigurationException {
         NodeList stylesList = null;
         int numStyles = 0;
+        LOGGER.info("loading styles " + styles);
 
-        if (styles != null) {
-            stylesList = styles.getElementsByTagName("style");
-            numStyles = stylesList.getLength();
-        }
+        //HACK: we need to shake out catalog and config and whatnot.
+        this.styles = catalog.getStyles();
 
-        if (numStyles == 0) {
-            this.styles = new HashMap(numStyles + 1);
-        }
+        /*if (styles != null) {
+           stylesList = styles.getElementsByTagName("style");
+           numStyles = stylesList.getLength();
+           this.styles = new HashMap(numStyles);
+           for (int i = 0; i < numStyles; i++) {
+               Node node = stylesList.item(i);
+               if (node instanceof Element) {
+                   Element elem = (Element) node;
+                   String id = getElementText(elem, true);
+                   Style style = catalog.getStyle(id);
+                   if (style == null) {
+                       LOGGER.warning("Problem loading styles for " + getName(true) +
+                                      ", requested id " + id + " is not available in loaded "
+                                      + "styles: " + catalog.getStyles());
+                   } else {
+                       LOGGER.config("featureType " + getName(true) + " added style " + id);
+                       this.styles.put(id, style);
+                       String defaultVal = getAttribute(elem, "default", false);
+                       if (defaultVal != null && defaultVal.equals("true")) {
+                           this.defaultStyle = id;
+                       }
+                   }
+               }
+           }
+        
+           }
+        
+           //TODO: programatically provide a good default.
+           if (numStyles == 0) {
+               this.styles = new HashMap(numStyles + 1);
+               }*/
     }
 }
