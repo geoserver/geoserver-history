@@ -24,12 +24,12 @@ import org.vfny.geoserver.config.ConfigRequests;
  *
 <<<<<<< DataDataStoresSelectForm.java
  * @author rgould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.7 2004/02/09 23:29:45 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.8 2004/03/02 10:06:42 jive Exp $
 =======
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.7 2004/02/09 23:29:45 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.8 2004/03/02 10:06:42 jive Exp $
 >>>>>>> 1.4
  */
 public class DataDataStoresSelectForm extends ActionForm {
@@ -73,10 +73,8 @@ public class DataDataStoresSelectForm extends ActionForm {
         Locale locale = (Locale) request.getLocale();
         System.out.println(locale.getDisplayLanguage());
         MessageResources messages = servlet.getResources();
-        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
-        
-        System.out.println(getButtonAction() + " == " + edit);
+        String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
         
         if (!getDataStoreIds().contains(getSelectedDataStoreId())) {
             errors.add("selectedDataStoreId",
@@ -84,12 +82,11 @@ public class DataDataStoresSelectForm extends ActionForm {
                     getSelectedDataStoreId()));
         }
 
-        if (!delete.equals(getButtonAction())
-                && !edit.equals(getButtonAction())) {
+        if (!DELETE.equals(getButtonAction())
+                && !EDIT.equals(getButtonAction())) {
             errors.add("buttonAction",
                 new ActionError("errors.buttonAction.invalid", getButtonAction()));
         }
-
         return errors;
     }
 
