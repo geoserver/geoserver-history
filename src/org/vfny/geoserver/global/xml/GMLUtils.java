@@ -30,8 +30,8 @@ import java.util.Map;
  * Utility class defining GML constants, and utility functions.
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: GMLUtils.java,v 1.12 2004/01/31 00:27:23 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: GMLUtils.java,v 1.13 2004/02/05 21:59:47 dmzwiers Exp $
  */
 public class GMLUtils {
     /** Mappings by schema */
@@ -626,8 +626,8 @@ public class GMLUtils {
      * Used to store Java/GML type mappings for use with GMLUtils.
      *
      * @author jgarnett, Refractions Research, Inc.
-     * @author $Author: jive $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.12 2004/01/31 00:27:23 jive Exp $
+     * @author $Author: dmzwiers $ (last modification)
+     * @version $Id: GMLUtils.java,v 1.13 2004/02/05 21:59:47 dmzwiers Exp $
      */
     public static class Mapping {
         // XML Land
@@ -636,7 +636,6 @@ public class GMLUtils {
         public final String extension; // int or PointPropertyType
         
         // Java Land
-        public final String name; // pointProperty - onlyed used by PropertyType
         public final Class type; // Java class that best represents this
 
         public Mapping(String xmlSchema) {
@@ -644,6 +643,7 @@ public class GMLUtils {
         }
         public Mapping(String xmlSchema, Class type) {
             String[] split = xmlSchema.split(":");
+            String name = "";
             this.prefix = split[0];
             this.extension = split[1];
             if (extension.endsWith("Type")) {
