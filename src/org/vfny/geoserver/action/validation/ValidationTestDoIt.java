@@ -14,6 +14,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -38,8 +40,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.9 2004/06/28 23:41:10 emperorkefka Exp $
+ * @author $Author: sploreg $ (last modification)
+ * @version $Id: ValidationTestDoIt.java,v 1.10 2004/06/29 11:32:01 sploreg Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
@@ -67,16 +69,27 @@ public class ValidationTestDoIt extends ConfigAction {
 		    ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
 		    TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession().getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
 		    Map plugins = new HashMap();
-		    Map ts = new HashMap();
-		    validationConfig.toDTO(plugins,ts); // return by ref.
-		    
-		    ValidationRunnable testThread = new ValidationRunnable();
-		    testThread.setup(ts, plugins, getDataConfig(), context, request);
-		
-		    Thread thread = new Thread(testThread);
-		
-		    request.getSession().setAttribute(ValidationRunnable.KEY, thread);
-		    thread.start();
+		    Map testSuites = new HashMap();
+		    validationConfig.toDTO(plugins,testSuites); // return by ref.
+		    try {
+		    	ValidationRunnable testThread = new ValidationRunnable(	testSuites, 
+														    			plugins, 
+																		getDataConfig(), 
+																		context, 
+																		request);
+		    	//TODO grab the TestValidationResults from testThread
+		    	// ie. TestValidationResults results = testThread.results;
+		    	Thread thread = new Thread(testThread);
+		    	thread.start();
+		    	
+		    	request.getSession().setAttribute(ValidationRunnable.KEY, thread);		    	
+		    }
+		    catch (Exception erp){
+		    	ActionErrors errors = new ActionErrors();
+                errors.add(ActionErrors.GLOBAL_ERROR,
+                    new ActionError("error.cannotRunValidation",erp));
+                saveErrors(request, errors);
+		    }		    
 		}
 		
 		return  mapping.findForward("config.validation.displayResults");
