@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.4 2004/01/15 00:37:11 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.5 2004/01/15 21:55:15 emperorkefka Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -43,7 +43,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  */
 public class DataConfig {
     public static final String CONFIG_KEY = "Config.Data";
-    public static final String SEPARATOR  = "::";
+    public static final String SEPARATOR  = ".";
 
     /**
      * A set of datastores and their names.
@@ -60,7 +60,7 @@ public class DataConfig {
     private Map nameSpaces;
 
     /**
-     * FeatureTypesInfoConfig referenced by key "<code>dataStoreID.typeName</code>"
+     * FeatureTypesInfoConfig referenced by key "<code>dataStoreID + SEPARATOR + typeName</code>"
      * 
      * @see org.vfny.geoserver.global.dto.FeatureTypeInfoConfig
      */
@@ -139,6 +139,7 @@ public class DataConfig {
 
         while (i.hasNext()) {
             Object key = i.next();
+            System.out.println("DataConf ConstruktDTO key = "+key);
             featuresTypes.put(key,
                 new FeatureTypeConfig(
                     (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
@@ -203,6 +204,7 @@ public class DataConfig {
 
         while (i.hasNext()) {
             Object key = i.next();
+            System.out.println("DataConf updateDTO key = "+key);
             FeatureTypeInfoDTO f = (FeatureTypeInfoDTO) data.getFeaturesTypes()
                                                             .get(key);
             featuresTypes.put(f.getDataStoreId() + f.getName(),
@@ -372,6 +374,8 @@ public class DataConfig {
      * @return
      */
     public FeatureTypeConfig getFeatureTypeConfig(String key) {
+    	System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FTCONFIG KEYS:::::::");
+    	System.out.println(featuresTypes.keySet());
         return (FeatureTypeConfig) featuresTypes.get(key);
     }
 
@@ -523,7 +527,7 @@ public class DataConfig {
         if (featuresTypes == null) {
             featuresTypes = new HashMap();
         }
-
+System.out.println("DataConf.addFeatureType key = " +key);
         if ((key != null) && (ft != null)) {
             featuresTypes.put(key, ft);
         }
