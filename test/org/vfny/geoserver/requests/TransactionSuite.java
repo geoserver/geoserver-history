@@ -1,147 +1,116 @@
-/* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root 
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.requests;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.Filter;
-import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.FidFilter;
-import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.AttributeExpression;
-import org.geotools.filter.LiteralExpression;
-import org.geotools.resources.Geotools;
+import org.vfny.geoserver.config.ConfigInfo;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.logging.Logger;
+
 
 /**
  * Tests the get feature request handling.
  *
- * @author Rob Hranac, TOPP
- * @version $VERSION$
+ * @author Chris Holmes, TOPP
+ * @version $Id: TransactionSuite.java,v 1.3 2003/09/16 03:32:10 cholmesny Exp $
+ *
+ * @task REVISIT: This should serve as the place for the sub transaction suites
+ *       to run their tests.
  */
 public class TransactionSuite extends TestCase {
+    // Initializes the logger. Uncomment to see log messages.
+    //static {
+    //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
+    //java.util.logging.Level.FINE);
+    //}
 
     /** Class logger */
-    private static final Logger LOGGER =  
-        Logger.getLogger("org.vfny.geoserver.requests");
+    protected static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.requests");
 
     /** Unit test data directory */
-    private static final String DATA_DIRECTORY = 
-        System.getProperty("user.dir") + "/misc/unit/requests";
+    private static final String DATA_DIRECTORY = System.getProperty("user.dir")
+        + "/misc/unit/requests";
 
-    /* Initializes the logger. */
+    /** Holds mappings between HTTP and ASCII encodings */
+    protected static FilterFactory factory = FilterFactory.createFilterFactory();
+
+    /** Unit test data directory */
+    private static final String CONFIG_DIR = System.getProperty("user.dir")
+        + "/misc/unit/config/";
+
+    //classes complain if we don't set up a valid config info.
     static {
-        Geotools.init("Log4JFormatter", Level.INFO);
+        ConfigInfo.getInstance(CONFIG_DIR);
     }
-    
-    /** Constructor with super. */
-    public TransactionSuite (String testName) { super(testName); }
 
-    /*************************************************************************
-     * STATIC METHODS FOR TEST RUNNING                                       *
-     *************************************************************************/
     /**
-     * Handles actual XML test running details.
-     * @param baseRequest Base request, for comparison.
-     * @param fileName File name to parse.
-     * @param match Whether or not base request and parse request should match.
-     * @throws Excpetion If there is any problem running the test.
+     * Constructor with super.
+     *
+     * @param testName The name of the test.
      */
-    /*
-    private static boolean runXmlTest(TransactionRequest baseRequest,
-                                      String fileName, 
-                                      boolean match)
-        throws Exception {
-
-        // Read the file and parse it
-        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
-        Reader inputStream = new FileReader(inputFile);
-        TransactionRequest request = 
-            XmlRequestReader.readGetFeature(new BufferedReader(inputStream));
-        LOGGER.fine("base request: " + baseRequest);
-        LOGGER.fine("read request: " + request);
-        LOGGER.info("XML " + fileName +" test passed: " +  
-                    baseRequest.equals(request));
-
-        // Compare parsed request to base request
-        if(match) {
-            return baseRequest.equals(request);
-        } else {
-            return !baseRequest.equals(request);
-        }
+    public TransactionSuite(String testName) {
+        super(testName);
     }
-    */
+
+    public static void main(java.lang.String[] args) {
+        junit.textui.TestRunner.run(suite());
+    }
+
+    public static Test suite() {
+        TestSuite suite = new TestSuite("All transaction tests");
+        suite.addTestSuite(UpdateSuite.class);
+
+        //suite.addTestSuite(InsertSuite.class);
+        suite.addTestSuite(DeleteSuite.class);
+
+        return suite;
+    }
+
+    public void setUp() {
+    }
+
     /**
      * Handles actual XML test running details.
      *
      * @param baseRequest Base request, for comparison.
      * @param fileName File name to parse.
      * @param match Whether or not base request and parse request should match.
-     * @throws Excpetion If there is any problem running the test.
+     *
+     * @return <tt>true</tt> if the test passed.
+     *
+     * @throws Exception If there is any problem running the test.
      */
-    private static boolean runKvpTest(FeatureRequest baseRequest,
-                                      String requestString, 
-                                      boolean match)
-        throws Exception {
-
+    static boolean runXmlTest(TransactionRequest baseRequest, String fileName,
+        boolean match) throws Exception {
         // Read the file and parse it
-        FeatureKvpReader reader = new FeatureKvpReader(requestString);
-        FeatureRequest request = reader.getRequest();
-
-        LOGGER.fine("base request: " + baseRequest);
-        LOGGER.fine("read request: " + request);
-        LOGGER.info("KVP test passed: " +  
-                    baseRequest.equals(request));
+        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
+        Reader inputStream = new FileReader(inputFile);
+        TransactionRequest request = XmlRequestReader.readTransaction(new BufferedReader(
+                    inputStream));
+        LOGGER.finer("base request: " + baseRequest);
+        LOGGER.finer("read request: " + request);
+        LOGGER.fine("XML " + fileName + " test passed: "
+            + baseRequest.equals(request));
 
         // Compare parsed request to base request
-        if(match) {
-            return baseRequest.equals(request);
+        if (match) {
+            return assertEquals(baseRequest, request);
         } else {
-            return !baseRequest.equals(request);
+            return !(assertEquals(baseRequest, request));
         }
     }
 
-
-    /**
-     * Handles test set up details.
-     */
-    public void setUp() {
+    protected static boolean assertEquals(TransactionRequest baseRequest,
+        TransactionRequest testRequest) {
+        return baseRequest.equals(testRequest);
     }
-    
-
-    /*************************************************************************
-     * XML TESTS                                                             *
-     *************************************************************************
-     * XML GetFeature parsing tests.  Each test reads from a specific XML    *
-     * file and compares it to the base request defined in the test itself.  *
-     * Tests are run via the static methods in this suite.  The tests        *
-     * themselves are quite generic, so documentation is minimal.            *
-     *************************************************************************/
-    public void test1() throws Exception {        
-        // make base comparison objects
-        TransactionRequest baseRequest = new TransactionRequest();
-        // run test
-    }
-    
-    
-
-    /*************************************************************************
-     * KVP TESTS                                                             *
-     *************************************************************************
-     * KVP GetFeature parsing tests.  Each test reads from a specific KVP    *
-     * string and compares it to the base request defined in the test itself.*
-     * Tests are run via the static methods in this suite.  The tests        *
-     * themselves are quite generic, so documentation is minimal.            *
-     *************************************************************************/
 }
