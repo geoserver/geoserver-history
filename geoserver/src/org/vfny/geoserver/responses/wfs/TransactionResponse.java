@@ -61,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.13 2004/02/20 22:23:45 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.14 2004/03/02 17:25:15 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -89,7 +89,7 @@ public class TransactionResponse implements Response {
             throw new WfsException(
                 "bad request, expected TransactionRequest, but got " + request);
         }
-        if( (request.getWFS().getServiceLevel() | WFSDTO.TRANSACTIONAL ) == 0 ){
+        if( (request.getWFS().getServiceLevel() & WFSDTO.TRANSACTIONAL ) == 0 ){
         	throw new ServiceException("Transaction support is not enabled");
         }
         //REVISIT: this should maybe integrate with the other exception 
@@ -193,7 +193,7 @@ public class TransactionResponse implements Response {
         String authorizationID = request.getLockId();
 
         if (authorizationID != null) {
-            if( (request.getWFS().getServiceLevel() | WFSDTO.SERVICE_LOCKING ) == 0 ){
+            if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_LOCKING ) == 0 ){
                 // could we catch this during the handler, rather than during execution?
                 throw new ServiceException("Lock support is not enabled");
             }            
@@ -228,7 +228,7 @@ public class TransactionResponse implements Response {
             FeatureStore store = (FeatureStore) stores.get(typeName);
 
             if (element instanceof DeleteRequest) {
-                if( (request.getWFS().getServiceLevel() | WFSDTO.SERVICE_DELETE ) == 0 ){
+                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_DELETE ) == 0 ){
                     // could we catch this during the handler, rather than during execution?
                     throw new ServiceException("Transaction Delete support is not enabled");
                 }
@@ -310,7 +310,7 @@ public class TransactionResponse implements Response {
             }
 
             if (element instanceof InsertRequest) {
-                if( (request.getWFS().getServiceLevel() | WFSDTO.SERVICE_INSERT ) != 0 ){
+                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_INSERT ) == 0 ){
                     // could we catch this during the handler, rather than during execution?
                     throw new ServiceException("Transaction INSERT support is not enabled");
                 }
@@ -336,7 +336,7 @@ public class TransactionResponse implements Response {
             }
 
             if (element instanceof UpdateRequest) {
-                if( (request.getWFS().getServiceLevel() | WFSDTO.SERVICE_UPDATE ) == 0 ){
+                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_UPDATE ) == 0 ){
                     // could we catch this during the handler, rather than during execution?
                     throw new ServiceException("Transaction Update support is not enabled");
                 }
