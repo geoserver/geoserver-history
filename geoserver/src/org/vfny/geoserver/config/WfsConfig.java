@@ -129,13 +129,11 @@ public class WfsConfig implements java.io.Serializable {
 	throws ConfigurationException{
 	WfsConfig wfsConfig = new WfsConfig();
 	try {
-	    //FileInputStream fis = new FileInputStream(configFile);
 	    FileReader fis = new FileReader(configFile);
 	    LOGGER.info("got input reader, about to make input source");
 	    InputSource in = new InputSource(fis);
-	     DocumentBuilderFactory dfactory = new org.apache.xerces.jaxp.DocumentBuilderFactoryImpl();
-	     //DocumentBuilderFactory dfactory = 
-	     //DocumentBuilderFactory.newInstance();
+	    DocumentBuilderFactory dfactory = 
+		DocumentBuilderFactory.newInstance();
 	    dfactory.setNamespaceAware(true);
 	    Document wfsDoc = dfactory.newDocumentBuilder().parse(in);
 	    Element configElem = wfsDoc.getDocumentElement();
