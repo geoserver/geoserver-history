@@ -29,7 +29,7 @@
 
 <ul>
   <li>
-    <a href="http://geoserver.sourceforge.net/documentation/1.2.0-rc1">
+    <a href="http://geoserver.sourceforge.net/documentation/1.2.0-rc2">
       Documentation
     </a>
   </li>
@@ -38,9 +38,14 @@
       Wiki
     </a>
   </li>
-    <li>
+  <li>
     <a href="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">
       Task Tracker
+    </a>
+   </li>
+   <li>
+    <a href="http://www.moximedia.com:8080/imf-ows/imf.jsp?site=gs_users">
+      User Map
     </a>
   </li>
 </ul>
