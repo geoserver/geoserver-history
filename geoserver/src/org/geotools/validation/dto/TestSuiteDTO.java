@@ -6,9 +6,9 @@
  */
 package org.geotools.validation.dto;
 
-import java.util.List;
-import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * TestSuiteDTO purpose.
@@ -33,7 +33,7 @@ import java.util.Iterator;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestSuiteDTO.java,v 1.1 2004/01/14 22:54:26 dmzwiers Exp $
+ * @version $Id: TestSuiteDTO.java,v 1.2 2004/01/15 01:14:44 dmzwiers Exp $
  */
 public class TestSuiteDTO {
 	/** the test suite name */

@@ -6,6 +6,7 @@ package org.vfny.geoserver.global;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,14 +28,14 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.xml.*;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import java.io.*;
+
 import com.vividsolutions.jts.geom.Envelope;
 
 
@@ -44,7 +45,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.4 2004/01/15 01:09:52 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.5 2004/01/15 01:14:34 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -425,12 +426,12 @@ System.out.println("getSchema"+ftc.getName());
 		return sw.toString();
 	}
 	
-	public void readXMLSchema(String xml){
+	/*public void readXMLSchema(String xml){
 		StringReader sr = new StringReader(xml);
 		try{
 			XMLConfigReader.loadSchema(ReaderUtils.loadConfig(sr),ftc);
 		}catch(ConfigurationException e){}
-	}
+	}*/
 	
     /**
      * getAttribute purpose.
