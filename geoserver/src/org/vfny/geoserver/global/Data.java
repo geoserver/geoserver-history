@@ -4,9 +4,14 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.data.Catalog;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureTypeMetaData;
 import org.geotools.data.LockingManager;
+import org.geotools.data.NamespaceMetaData;
 import org.geotools.data.Transaction;
 import org.geotools.styling.SLDStyle;
 import org.geotools.styling.Style;
@@ -20,7 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,9 +45,9 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.1.2.17 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.18 2004/01/12 04:55:14 jive Exp $
  */
-public class Data extends GlobalLayerSupertype {
+public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
@@ -54,10 +61,10 @@ public class Data extends GlobalLayerSupertype {
     /** holds the mappings between prefixes and NameSpaceInfo objects */
     private Map nameSpaces;
 
-    /** the default NameSpaceInfo */
+    /** NameSpaceInfo */
     private NameSpaceInfo defaultNameSpace;
 
-    /** holds the mapping of datastores and data store id's */
+    /** Mapping of DataStoreInfo by id */
     private Map dataStores;
 
     /** holds the mapping of Styles and style names */
@@ -321,7 +328,7 @@ public class Data extends GlobalLayerSupertype {
     }
 
     /**
-     * searches a DataStoreInfo by its id attribute
+     * Locate a DataStoreInfo by its id attribute.
      *
      * @param id the DataStoreInfo id looked for
      *
@@ -755,5 +762,107 @@ public class Data extends GlobalLayerSupertype {
         }
 
         return false;
+    }
+
+    //
+    // GeoTools2 Catalog API
+    // 
+    /**
+     * Set of available Namespace prefixes.
+     * @see org.geotools.data.Catalog#getPrefixes()
+     * 
+     * @return Set of namespace Prefixes
+     */
+    public Set getPrefixes() {
+        return Collections.unmodifiableSet( nameSpaces.keySet() );
+    }
+
+    /**
+     * Prefix of the defaultNamespace.
+     * @see org.geotools.data.Catalog#getDefaultPrefix()
+     * @return prefix of the default namespace
+     */
+    public String getDefaultPrefix() {
+        return defaultNameSpace.getPrefix();
+    }
+
+    /**
+     * Implement getNamespace.
+     * <p>
+     * Description ...
+     * </p>
+     * @see org.geotools.data.Catalog#getNamespace(java.lang.String)
+     * 
+     * @param prefix
+     * @return
+     */
+    public NamespaceMetaData getNamespaceMetaData(String prefix) {
+        return (NamespaceMetaData) getNameSpace( prefix );
+    }
+
+    /**
+     * Register a DataStore with this Catalog.
+     * <p>
+     * This is part of the public CatalogAPI, the fact that we don't want
+     * to support it here may be gounds for it's removal. 
+     * </p>
+     * <p>
+     * GeoSever and the global package would really like to have <b>complete</b>
+     * control over the DataStores in use by the application. It recognize that
+     * this may not always be possible. As GeoServer is extend with additional
+     * Modules (such as config) that wish to locate and talk to DataStores
+     * independently of GeoServer the best we can do is ask them to register
+     * with the this Catalog in global.
+     * </p>
+     * <p>
+     * This reveals what may be a deisgn flaw in GeoTools2 DataStore. We have
+     * know way of knowing if the dataStore has already been placed into our
+     * care as DataStores are not good at identifying themselves. To complicate
+     * matters most keep a static connectionPool around in their Factory - it
+     * could be that the Factories are supposed to be smart enough to prevent
+     * duplication.
+     * </p>
+     * 
+     * @see org.geotools.data.Catalog#registerDataStore(org.geotools.data.DataStore)
+     * 
+     * @param dataStore
+     * @throws IOException
+     */
+    public void registerDataStore(DataStore dataStore) throws IOException {
+            
+    }
+
+    /**
+     * Access to the set of DataStores in use by GeoServer.
+     * <p>
+     * The provided Set may not be modified :-)
+     * </p>
+     * @see org.geotools.data.Catalog#getDataStores(java.lang.String)
+     * 
+     * @param namespace
+     * @return
+     */
+    public Set getDataStores() {
+        return Collections.unmodifiableSet( new HashSet( dataStores.values() ) );
+    }
+
+    /**
+     * Convience method for Accessing FeatureSource by prefix:typeName.
+     * <p>
+     * This method is part of the public Catalog API. It allows the Validation
+     * framework to be writen using only public Geotools2 interfaces.
+     * </p>
+     * @see org.geotools.data.Catalog#getFeatureSource(java.lang.String, java.lang.String)
+     * 
+     * @param prefix Namespace prefix in which the FeatureType available
+     * @param typeName typeNamed used to identify FeatureType
+     * @return
+     */
+    public FeatureSource getFeatureSource(String prefix, String typeName) throws IOException {
+        NamespaceMetaData namespace = getNamespaceMetaData( prefix );
+        FeatureTypeMetaData featureType = namespace.getFeatureTypeMetaData( typeName );
+        DataStoreMetaData dataStore = featureType.getDataStoreMetaData();
+        
+        return dataStore.getDataStore().getFeatureSource( typeName );       
     }
 }
