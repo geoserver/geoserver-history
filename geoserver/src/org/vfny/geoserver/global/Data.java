@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.12 2004/01/08 00:41:04 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.13 2004/01/08 18:05:41 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -133,7 +133,7 @@ public class Data extends Abstract
 			Object key = i.next();
 			s.remove(key);
 			if(!featureTypes.containsKey(key))
-				featureTypes.put(key,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), this));
+				featureTypes.put(((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key)).getName(),new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), this));
 		}
 		// s contains all the unchecked values.
 		/*i = s.iterator();
