@@ -6,6 +6,7 @@ package org.geotools.validation.attributes;
 
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
+import org.geotools.validation.DefaultFeatureValidation;
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.ValidationResults;
 
@@ -33,16 +34,12 @@ import org.geotools.validation.ValidationResults;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: NullZeroValidation.java,v 1.1 2004/01/31 00:24:07 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: NullZeroValidation.java,v 1.2 2004/02/03 21:40:52 dmzwiers Exp $
  */
-public class NullZeroValidation implements FeatureValidation {
+public class NullZeroValidation extends DefaultFeatureValidation {
     private String attributeName;
-    private String name = "";
-    private String description = "";
     
-    private String typeRef;
-
     public NullZeroValidation(){super();}
     
     /**
@@ -65,7 +62,7 @@ public class NullZeroValidation implements FeatureValidation {
      *      org.geotools.validation.ValidationResults)
      */
     public boolean validate(Feature feature, FeatureType type,
-        ValidationResults results) throws Exception {
+        ValidationResults results){// throws Exception {
         Object ft = feature.getAttribute(attributeName);
 
         if (ft == null) {
@@ -88,48 +85,6 @@ public class NullZeroValidation implements FeatureValidation {
     }
 
     /**
-     * Implement setName.
-     *
-     * @see org.geotools.validation.Validation#setName(java.lang.String)
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Implement getName.
-     *
-     * @see org.geotools.validation.Validation#getName()
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Implement setDescription.
-     *
-     * @see org.geotools.validation.Validation#setDescription(java.lang.String)
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Implement getDescription.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     *
-     * @see org.geotools.validation.Validation#getDescription()
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
      * Implement getPriority.
      *
      * @see org.geotools.validation.Validation#getPriority()
@@ -146,31 +101,13 @@ public class NullZeroValidation implements FeatureValidation {
      * @see org.geotools.validation.Validation#getTypeRefs()
      */
     public String[] getTypeRefs() {
-        if( typeRef == null ){
+        if( getTypeRef() == null ){
             return null;
         }
-        if( typeRef.equals("*")){
+        if( getTypeRef().equals("*")){
             return ALL;
         }
-        return new String[]{ typeRef, };
-    }
-
-    /**
-     * Access typeName property.
-     *
-     * @return Returns the typeName.
-     */
-    public String getTypeRef() {
-        return typeRef;
-    }
-
-    /**
-     * Set typeName to typeName.
-     *
-     * @param typeName The typeName to set.
-     */
-    public void setTypeRef(String typeName) {
-        this.typeRef = typeName;
+        return new String[]{ getTypeRef(), };
     }
     
     /**
