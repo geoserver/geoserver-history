@@ -30,6 +30,14 @@ Service level configuration
      <!-- Sets the max number of decimal places past the zero returned in
           the gml coordinates of a GetFeature response.  Default is 4 -->
      <numDecimals value="8"/>
+     
+     <!-- The user name of the administrator of this machine.  Used for   -->
+     <!-- logging in to the web administration tool.                      -->
+     <adminUserName>admin</adminUserName>
+       
+     <!-- The user name of the administrator of this machine.  Used for   -->
+     <!-- logging in to the web administration tool.                      -->
+     <adminPassword>geoserver</adminPassword>
 
      <!-- Please supply contact information -->
      <ContactInformation>
@@ -95,12 +103,5 @@ This is a description of your Web Map Server.
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
     </service>
 
-     <!-- This tag is to run the zserver module. -->
-     <!-- Set the run attribute to false or comment the tag -->
-     <!-- If you don't want the module to run. -->
-     <!-- The Port tag specifies which port to run on. -->
-     <service type="Z39.50" enabled="false">
-      <port>3210</port>
-     </service>
   </services>
 </serverConfiguration>
