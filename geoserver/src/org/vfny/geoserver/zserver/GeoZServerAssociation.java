@@ -185,7 +185,7 @@ public class GeoZServerAssociation implements TargetAPDUListener
     
     for ( int i=0; i<Z3950Constants.z3950_option_names.length; i++ ) {
 	if ( init_request.options.isSet(i) )
-	    LOGGER.info("Origin requested service: "
+	    LOGGER.finer("Origin requested service: "
 			+Z3950Constants.z3950_option_names[i]);
     }
 
@@ -194,7 +194,7 @@ public class GeoZServerAssociation implements TargetAPDUListener
     {
 	//the geo profile does not require support of scan.
 	init_request.options.clearBit(7);
-	    LOGGER.info("Origin requested scan, not supported by" + 
+	    LOGGER.finer("Origin requested scan, not supported by" + 
 			"this backend realisation.");
     }
 
@@ -260,7 +260,7 @@ public class GeoZServerAssociation implements TargetAPDUListener
                              true,
                              "174",
                              "TOPP geoserver zserver",
-                             "$Id: GeoZServerAssociation.java,v 1.2 2002/11/22 21:55:59 cholmesny Exp $",
+                             "$Id: GeoZServerAssociation.java,v 1.3 2003/01/16 23:32:31 cholmesny Exp $",
                              null,
                              null);
     }
@@ -387,7 +387,7 @@ public class GeoZServerAssociation implements TargetAPDUListener
         }
         catch ( TimeoutExceededException tee )
         {
-          LOGGER.info("Timeout exceeded waiting for search to complete");
+          LOGGER.finer("Timeout exceeded waiting for search to complete");
         }
 
         if ( search_request.resultSetName != null ) {
@@ -497,7 +497,7 @@ public class GeoZServerAssociation implements TargetAPDUListener
     catch ( SearchException se )
 	{
 	    // We need to populate a diagnostic here
-	    LOGGER.info("Search returning diagnostic. Reason:"+se.toString());
+	    LOGGER.finer("Search returning diagnostic. Reason:"+se.toString());
 	    se.printStackTrace();
 	    response.resultCount = BigInteger.valueOf(0);
 	    response.presentStatus = BigInteger.valueOf(5); // Failure
