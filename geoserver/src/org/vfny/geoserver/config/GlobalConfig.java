@@ -120,12 +120,20 @@ public class GlobalConfig extends AbstractConfig {
         //TODO: better checking.
         this.baseUrl = getChildText(globalConfigElem, "URL", true);
 
+        if (!baseUrl.endsWith("/")) {
+            baseUrl += "/";
+        }
+
         String schemaBaseUrl = getChildText(globalConfigElem, "SchemaBaseUrl");
 
         if (schemaBaseUrl != null) {
             this.schemaBaseUrl = schemaBaseUrl;
+
+            if (!schemaBaseUrl.endsWith("/")) {
+                schemaBaseUrl += "/";
+            }
         } else {
-            this.schemaBaseUrl = baseUrl + "/data/capabilities/";
+            this.schemaBaseUrl = baseUrl + "data/capabilities/";
         }
 
         globalConfig = this;
