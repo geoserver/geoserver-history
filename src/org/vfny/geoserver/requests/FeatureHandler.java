@@ -98,6 +98,10 @@ public class FeatureHandler
                     LOGGER.finest("found max features: " + atts.getValue(i));
                     request.setMaxFeatures(atts.getValue(i));
                 }
+		if( atts.getLocalName(i).equals("outputFormat") ) {
+                    LOGGER.finest("found outputFormat: " + atts.getValue(i));
+                    request.setOutputFormat(atts.getValue(i));
+                }
             }
         }
     }
