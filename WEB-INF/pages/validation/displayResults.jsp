@@ -44,7 +44,12 @@ while(i.hasNext()){
   org.geotools.feature.Feature feature = (org.geotools.feature.Feature) m.getKey();
   String fid = feature != null ? feature.getID() : "(problem)";
   Object msg = m.getValue();
-  String message = msg != null ? m.toString() : "an error has occured";
+  String message = "";
+  if (msg == null) {
+  	message = "an error has occured";
+  } else {
+  	message = (String) msg;
+  }
   %>
 <tr><td><%=fid%></td><td><code><%=org.vfny.geoserver.action.HTMLEncoder.encode(message)%></code></td></tr>
   <%
