@@ -53,37 +53,66 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
         //                                 getRequest().getGeoServer().getCharSet());
         PrintWriter writer = new PrintWriter(osw);
+        
+        //DJB: this is to limit the number of features read - as per the spec 7.3.3.7 FEATURE_COUNT
+        
+        int featuresPrinted = 0;  // how many features we've actually printed so far!
+        int maxfeatures = getRequest().getFeatureCount(); // will default to 1 if not specified in the request
 
         try {
-            for (int i = 0; i < results.size(); i++) {
+            for (int i = 0; i < results.size(); i++)  //for each layer queried
+            {
                 FeatureResults fr = (FeatureResults) results.get(i);
 
                 FeatureReader reader = fr.reader();
+                
+                if ( reader.hasNext() && (featuresPrinted<maxfeatures) ) // if this layer has a hit and we're going to print it
+                {	
+                	writer.println("Results for FeatureType '"+ reader.getFeatureType().getTypeName() + "':");
+                }
 
-                while (reader.hasNext()) {
+                while (reader.hasNext()) 
+                {
                     Feature f = reader.next();
 
                     FeatureType schema = f.getFeatureType();
-                    writer.println("Found " + fr.getCount() + " in "
-                        + schema.getTypeName());
-
                     AttributeType[] types = schema.getAttributeTypes();
-                    writer.println("------");
 
-                    for (int j = 0; j < types.length; j++) {
-                        if (Geometry.class.isAssignableFrom(types[j].getType())) {
-                            writer.println(types[j].getName() + " = [GEOMETRY]");
-                        } else {
-                            writer.println(types[j].getName() + " = "
-                                + f.getAttribute(types[j].getName()));
-                        }
-                    }
+                    if (featuresPrinted<maxfeatures)
+					{
+                    	writer.println("--------------------------------------------");
+	                    for (int j = 0; j < types.length; j++) //for each column in the featuretype
+	                    {     	
+	                        if (Geometry.class.isAssignableFrom(types[j].getType())) 
+	                        {
+	                            //writer.println(types[j].getName() + " = [GEOMETRY]"); 
+	                        	
+	                        	//DJB: changed this to print out WKT - its very nice for users
+	                        	//Geometry g = (Geometry) f.getAttribute(types[j].getName());
+	                            //writer.println(types[j].getName() + " = [GEOMETRY] = "+g.toText() ); 
+	                        	
+	                        	//DJB: decided that all the geometry info was too much - they should use GML version if they want those details
+	                        	Geometry g = (Geometry) f.getAttribute(types[j].getName());
+	                        	writer.println(types[j].getName() + " = [GEOMETRY ("+g.getGeometryType()+") with "+g.getNumPoints()+" points]"); 
+	                        	
+	                        } else {
+	                            writer.println(types[j].getName() + " = "
+	                                + f.getAttribute(types[j].getName()));
+	                        }                                         
+	                    }
+	                    writer.println("--------------------------------------------");
+	                    featuresPrinted++;
+					}
                 }
             }
         } catch (IllegalAttributeException ife) {
             writer.println("Unable to generate information " + ife);
         }
-
+        
+        if (featuresPrinted ==0)
+        {
+        	writer.println("no features were found");
+        }
         writer.flush();
     }
 }
