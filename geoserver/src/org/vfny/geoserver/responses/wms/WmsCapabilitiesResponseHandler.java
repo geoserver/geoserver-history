@@ -16,7 +16,7 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.1.2.2 2003/11/14 20:39:15 groldan Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.1.2.3 2003/11/16 19:38:42 groldan Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = ServerConfig.getInstance()
@@ -130,11 +130,14 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             layer = (FeatureTypeConfig) it.next();
-            startElement("Layer");
-            indent();
-            handleFeatureType(layer);
-            unIndent();
-            endElement("Layer");
+            if(layer.isEnabled())
+            {
+              startElement("Layer");
+              indent();
+              handleFeatureType(layer);
+              unIndent();
+              endElement("Layer");
+            }
         }
     }
 
