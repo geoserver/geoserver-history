@@ -30,8 +30,8 @@ import org.geotools.validation.xml.ValidationException;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GeoValidator.java,v 1.2 2004/04/20 23:20:51 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: GeoValidator.java,v 1.3 2004/04/21 06:50:41 jive Exp $
  */
 public class GeoValidator extends ValidationProcessor {
 	public static final String WEB_CONTAINER_KEY = "GeoValidator";
@@ -67,6 +67,14 @@ public class GeoValidator extends ValidationProcessor {
 	private Map plugIns;
 	
 	private Map errors;
+    /**
+     * Map of errors encountered during loading process
+     * <p>
+     * Map of true (loaded), false (never used), or exception (error) keyed
+     * by PlugIn and Test DataTransferObjects.
+     * </p>
+     * @return Map of status by PlugInDTO and TestDTO 
+     */ 
 	public Map getErrors(){
 		return errors;
 	}
@@ -97,9 +105,13 @@ public class GeoValidator extends ValidationProcessor {
 			}
 		}
 
+        // Mark all plug-ins as not loaded
+        //
 		i = plugIns.values().iterator();
-		while(i.hasNext())
-			errors.put(i.next(),Boolean.FALSE);
+		while(i.hasNext()) {
+            PlugIn plugIn = (PlugIn) i.next();
+            errors.put( plugIn,Boolean.FALSE );
+        }
 		
 		// step 2 configure plug-ins with defaults
 		Map defaultPlugIns = new HashMap(plugInNames.size());
@@ -133,11 +145,12 @@ public class GeoValidator extends ValidationProcessor {
 						plugInClass, dto.getDescription(), plugInArgs);
 				defaultPlugIns.put(plugInName, plugIn);
 			} catch (ValidationException e) {
-				e.printStackTrace();
-				errors.put(dto,e);
-				//error should log here
+                e.printStackTrace();
+                // Update dto entry w/ an error?
+                errors.put(dto,e);
 				continue;
 			}
+            // mark dto entry as a success
 			errors.put(dto,Boolean.TRUE);
 		}
 
@@ -181,7 +194,8 @@ public class GeoValidator extends ValidationProcessor {
 					}
 				} catch (ValidationException e) {
 					e.printStackTrace();
-					errors.put(dto,e);
+                    // place test error under the plugIn DTO that spawned it
+                    errors.put(dto,e);
 					//error should log here
 					continue;
 				}
