@@ -59,7 +59,7 @@ import java.util.logging.Logger;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.20 2004/04/15 23:58:12 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.21 2004/04/16 00:34:36 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -426,7 +426,7 @@ public class TransactionResponse implements Response {
         //
         try {
             integrityValidation(stores, envelope);
-        } catch (IOException invalid) {
+        } catch (Exception invalid) {
             throw new WfsTransactionException(invalid);
         }
 
