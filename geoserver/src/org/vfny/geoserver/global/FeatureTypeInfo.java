@@ -6,25 +6,31 @@ package org.vfny.geoserver.global;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.geotools.data.AttributeTypeMetaData;
+import org.geotools.data.DataStoreMetaData;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureTypeMetaData;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.dto.*;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -37,9 +43,9 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.13 2004/01/09 23:10:12 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.14 2004/01/12 12:54:59 jive Exp $
  */
-public class FeatureTypeInfo extends GlobalLayerSupertype {
+public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
@@ -49,6 +55,16 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	/** ref to parent set of datastores. */
 	private Data data;
 	
+    private Map meta;
+    
+    /**
+     * AttributeTypeInfo by attribute name.
+     * <p>
+     * This will be null unless populated by schema or DTO.
+     * </p>
+     */
+    private Map attributeInfo;
+    
 	/**
 	 * FeatureTypeInfo constructor.
 	 * <p>
@@ -58,11 +74,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	 * @param data Data a reference for future use to get at DataStoreInfo instances
 	 * @throws ConfigurationException
 	 */
-    public FeatureTypeInfo(FeatureTypeInfoDTO config, Data data)throws ConfigurationException{
-    	ftc = config;
+    public FeatureTypeInfo(FeatureTypeInfoDTO dto, Data data)throws ConfigurationException{
+    	ftc = dto;
     	this.data = data;
+        attributeInfo = null; // will need to generate later               
     }
-
+    
 	/**
 	 * toDTO purpose.
 	 * <p>
@@ -126,7 +143,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @task REVISIT: Consider adding more fine grained control to config
      *       files, so users can indicate specifically if they want the
      *       featureTypes enabled, instead of just relying on if the datastore
-     *       is.
+     *       is. Jody here - this should be done on a service by service basis
+     *       WMS and WFS will need to decide for themselves on this one
      */
     public boolean isEnabled() {
         return (getDataStoreInfo() != null) && (getDataStoreInfo().isEnabled());
@@ -502,20 +520,17 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
 	/**
-	 * getAbstract purpose.
-	 * <p>
-	 * returns the FeatureTypeInfo abstract
-	 * </p>
-	 * @return String the FeatureTypeInfo abstract
+	 * Get abstract (description) of FeatureType.
+	 * @return Short description of FeatureType
 	 */
 	public String getAbstract() {
 		return ftc.getAbstract();
 	}
 
 	/**
-	 * getKeywords purpose.
+	 * Keywords describing content of FeatureType.
 	 * <p>
-	 * returns the FeatureTypeInfo keywords
+	 * Keywords are often used by Search engines or Catalog services.
 	 * </p>
 	 * @return List the FeatureTypeInfo keywords
 	 */
@@ -577,4 +592,142 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	public void setSchemaBase(String string) {
 		ftc.setSchemaBase(string);
 	}
+
+    //
+    // FeatureTypeMetaData Interface
+    //
+    /**
+     * Access typeName.
+     * 
+     * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
+     * @return typeName for FeatureType
+     */
+    public String getTypeName() {
+        return ftc.getDataStoreId();
+    }
+
+    /**
+     * Access real geotools2 FeatureType.
+     * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
+     * 
+     * @return Schema information.
+     * @throws IOException
+     */
+    public FeatureType getFeatureType() throws IOException {
+        return getSchema();
+    }
+
+    /**
+     * Implement getDataStoreMetaData.
+     * 
+     * @see org.geotools.data.FeatureTypeMetaData#getDataStoreMetaData()
+     * 
+     * @return
+     */
+    public DataStoreMetaData getDataStoreMetaData() {
+        return (DataStoreMetaData) data.getDataStoreInfo( ftc.getDataStoreId() );
+    }
+
+    /**
+     * FeatureType attributes names as a List.
+     * <p>
+     * Convience method for accessing attribute names as a Collection.
+     * You may use the names for AttributeTypeMetaData lookup or with the schema
+     * for XPATH queries.
+     * </p>
+     * @see org.geotools.data.FeatureTypeMetaData#getAttributeNames()
+     * 
+     * @return List of attribute names
+     */
+    public List getAttributeNames() {
+        List attribs = ftc.getSchema();
+        
+        if( attribs.size() != 0 ){
+            List list = new ArrayList( attribs.size() );
+                
+            for( Iterator i=attribs.iterator(); i.hasNext(); ){
+                AttributeTypeInfoDTO at = (AttributeTypeInfoDTO) i.next();
+                list.add( at.getName() );               
+            }
+            return list;
+        }
+        AttributeType[] types = getSchema().getAttributeTypes();
+        List list = new ArrayList( types.length );
+        for( int i=0; i<types.length; i++){
+            list.add( types[i].getName() );
+        }
+        return list;        
+    }
+    
+    /**
+     * Implement AttributeTypeMetaData.
+     * <p>
+     * Description ...
+     * </p>
+     * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
+     * 
+     * @param attributeName
+     * @return
+     */
+    public synchronized AttributeTypeMetaData AttributeTypeMetaData(String attributeName) {
+        if( attributeInfo == null ){
+            attributeInfo = new HashMap();
+        }
+        if( attributeInfo.containsKey( attributeName ) ){
+            return (AttributeTypeMetaData) attributeInfo.get( attributeName );
+        }
+        AttributeTypeInfo info = null;
+        if( ftc.getSchema() != null ){
+            for( Iterator i=ftc.getSchema().iterator(); i.hasNext(); ){
+                AttributeTypeInfoDTO dto = (AttributeTypeInfoDTO) i.next();
+                info = new AttributeTypeInfo( dto ); 
+            }
+            FeatureType schema = getSchema();
+            info.sync( schema.getAttributeType( attributeName ));                        
+        }
+        else {
+            // will need to generate from Schema
+            FeatureType schema = getSchema();
+            info = new AttributeTypeInfo( schema.getAttributeType( attributeName ));
+        }
+        attributeInfo.put( attributeName, info );
+        
+        return info;
+    }
+
+    /**
+     * Implement containsMetaData.
+     * 
+     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
+     * 
+     * @param key
+     * @return
+     */
+    public boolean containsMetaData(String key) {
+        return meta.containsKey( key );
+    }
+
+    /**
+     * Implement putMetaData.
+     * 
+     * @see org.geotools.data.MetaData#putMetaData(java.lang.String, java.lang.Object)
+     * 
+     * @param key
+     * @param value
+     */
+    public void putMetaData(String key, Object value) {
+        meta.put( key, value );
+    }
+
+    /**
+     * Implement getMetaData.
+     * 
+     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
+     * 
+     * @param key
+     * @return
+     */
+    public Object getMetaData(String key) {
+        return meta.get( key );
+    }
 }
