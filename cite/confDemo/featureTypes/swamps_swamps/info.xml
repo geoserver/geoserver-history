@@ -8,7 +8,7 @@ native wich EPGS code for the FeatureTypeInfoDTO
 <abstract>Generated from swamps</abstract>
 <numDecimals value = "8" />
 <keywords>swamps</keywords>
-<latLonBoundingBox dynamic = "false" miny = "566158.42" maxy = "5245605.3100000005" maxx = "5233496.95" minx = "556789.58"  />
+<latLonBoundingBox dynamic = "false" miny = "5232814.54" maxy = "5247062.24" maxx = "566377.84" minx = "556588.18"  />
 <!--
 the default style this FeatureTypeInfoDTO can be represented by.
 at least must contain the "default" attribute 
