@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.41 2004/04/16 21:42:10 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.42 2004/04/22 03:50:10 emperorkefka Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -960,36 +960,49 @@ SCHEMA:
     }
 
     /**
-     * getFeatureTypeInfo purpose.
+     * Locate FeatureTypeInfo by name
+     * <p>
+     * The following searchness is used::
+     * <ul>
+     * <li>search prefix:typeName for direct match with name
+     * <li>search prefix:typeName for match with defaultnamespaceprefix:name
+     * <li>linear search of typeName for direct match 
+     * </ul>
+     * </p>
      * 
      * <p>
-     * returns the FeatureTypeInfo for the specified unique name
+     * Yes this is the magic method used by TransasctionResponse. If
+     * you wondered what it was doing - this is it.
      * </p>
-     *
      * @param typeName String The FeatureTypeInfo Name
      *
      * @return FeatureTypeInfo
      *
      * @throws NoSuchElementException
      */
-    public FeatureTypeInfo getFeatureTypeInfo(String typeName)
+    public FeatureTypeInfo getFeatureTypeInfo(String name)
         throws NoSuchElementException {
-        LOGGER.finest("getting type " + typeName);
+        LOGGER.finest("getting type " + name);
 
-        FeatureTypeInfo ftype = (FeatureTypeInfo) featureTypes.get(typeName);
+        FeatureTypeInfo found = null;
+        
+        found = (FeatureTypeInfo) featureTypes.get(name);
+        if( found != null ) return found;
+        
+        String defaultPrefix = defaultNameSpace.getPrefix();
+        found = (FeatureTypeInfo) featureTypes.get( defaultPrefix+ ":" + name);
+        if( found != null ) return found;
 
-        if (ftype == null) {
-            ftype = (FeatureTypeInfo) featureTypes.get(defaultNameSpace
-                    .getPrefix() + ":" + typeName);
-
-            if (ftype == null) {
-                throw new NoSuchElementException(
-                    "there is no FeatureTypeConfig named " + typeName
-                    + " configured in this server");
+        for( Iterator i=featureTypes.values().iterator(); i.hasNext();){
+        	FeatureTypeInfo fto = (FeatureTypeInfo) i.next();
+            if( name != null && name.equals( fto.getName() )){
+            	found = fto;
             }
         }
-
-        return ftype;
+        if( found != null ) return found;
+        
+        throw new NoSuchElementException(
+            "Could not locate FeatureTypeConfig '" + name+ "'");
     }
 
     /**
