@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.39 2004/04/07 13:34:52 cholmesny Exp $
+ * @version $Id: XMLConfigReader.java,v 1.40 2004/04/15 19:08:02 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -785,7 +785,7 @@ public class XMLConfigReader {
         for (int i = 0; i < pCount; i++) {
             param = (Element) paramElems.item(i);
             paramKey = ReaderUtils.getAttribute(param, "name", true);
-            paramValue = ReaderUtils.getAttribute(param, "value", true);
+            paramValue = ReaderUtils.getAttribute(param, "value", false);
             connectionParams.put(paramKey, paramValue);
             LOGGER.finer("added parameter " + paramKey + ": '" + paramValue
                 + "'");
