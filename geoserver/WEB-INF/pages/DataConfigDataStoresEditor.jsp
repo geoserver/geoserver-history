@@ -10,7 +10,7 @@
 			<bean:message key="label.dataStoreID"/>
 		</span>
 	</td><td colspan=2 align="left">
-		<html:text property="dataStoreID" size="60"/>
+		<html:text property="dataStoreId" size="60"/>
 	</td></tr>
 	
 	<tr><td align="right">
