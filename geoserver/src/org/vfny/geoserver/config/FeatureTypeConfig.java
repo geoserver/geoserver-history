@@ -16,6 +16,7 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.4.2.4 2004/01/08 17:36:40 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.4.2.5 2004/01/09 08:40:49 jive Exp $
  */
 public class FeatureTypeConfig{
 	
@@ -134,7 +135,7 @@ public class FeatureTypeConfig{
 			throw new NullPointerException();
 		}
 		dataStoreId = f.getDataStoreId();
-		latLongBBox = CloneLibrary.clone(f.getLatLongBBox());
+		latLongBBox = new Envelope( f.getLatLongBBox() );
 		SRS = f.getSRS();
 		schema = f.getSchema();
 		name = f.getName();
@@ -143,7 +144,7 @@ public class FeatureTypeConfig{
 		numDecimals = f.getNumDecimals();
 		definitionQuery = f.getDefinitionQuery();
 		try{
-			keywords = CloneLibrary.clone(f.getKeywords()); //clone?
+			keywords = new ArrayList( f.getKeywords() ); 
 		}catch(Exception e){
 			keywords = new LinkedList();
 		}
@@ -164,7 +165,7 @@ public class FeatureTypeConfig{
 			throw new NullPointerException("FeatureTypeInfo Data Transfer Object required");
 		}
 		dataStoreId = f.getDataStoreId();
-		latLongBBox = CloneLibrary.clone(f.getLatLongBBox());
+		latLongBBox = new Envelope(f.getLatLongBBox());
 		SRS = f.getSRS();
 		schema = f.getSchema();
 		name = f.getName();
@@ -173,7 +174,7 @@ public class FeatureTypeConfig{
 		numDecimals = f.getNumDecimals();
 		definitionQuery = f.getDefinitionQuery();
 		try{
-			keywords = CloneLibrary.clone(f.getKeywords()); //clone?
+			keywords = new ArrayList(f.getKeywords());
 		}catch(Exception e){
 			keywords = new LinkedList();
 		}
@@ -193,7 +194,7 @@ public class FeatureTypeConfig{
 	public FeatureTypeInfoDTO toDTO(){
 		FeatureTypeInfoDTO f = new FeatureTypeInfoDTO();
 		f.setDataStoreId(dataStoreId);
-		f.setLatLongBBox(CloneLibrary.clone(latLongBBox));
+		f.setLatLongBBox( new Envelope(latLongBBox));
 		f.setSRS(SRS);
 		f.setSchema(schema);
 		f.setName(name);
@@ -202,7 +203,7 @@ public class FeatureTypeConfig{
 		f.setNumDecimals(numDecimals);
 		f.setDefinitionQuery(definitionQuery);
 		try{
-			f.setKeywords(CloneLibrary.clone(keywords));
+			f.setKeywords( new ArrayList(keywords));
 		}catch(Exception e){
 			// do nothing, defaults already exist.
 		}

@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.2.2.4 2004/01/08 17:36:39 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.2.2.5 2004/01/09 08:40:49 jive Exp $
  */
 public class DataStoreConfig{
 
@@ -82,7 +82,8 @@ public class DataStoreConfig{
 		enabled = ds.isEnabled();
 		_abstract = ds.getAbstract();
 		try{
-			connectionParams = CloneLibrary.clone(ds.getConnectionParams()); //clone?
+			connectionParams =
+				new HashMap( ds.getConnectionParams() );
 		}catch(Exception e){
 			connectionParams = new HashMap();  	
 		}
@@ -107,7 +108,7 @@ public class DataStoreConfig{
 		enabled = ds.isEnabled();
 		_abstract = ds.getAbstract();
 		try{
-			connectionParams = CloneLibrary.clone(ds.getConnectionParams()); //clone?
+			connectionParams = new HashMap(ds.getConnectionParams()); //clone?
 		}catch(Exception e){
 			connectionParams = new HashMap();  	
 		}
@@ -129,8 +130,8 @@ public class DataStoreConfig{
 		ds.setEnabled(enabled);
 		ds.setAbstract(_abstract);
 		try{
-			ds.setConnectionParams(CloneLibrary.clone(connectionParams));
-		}catch(Exception e){
+			ds.setConnectionParams( new HashMap(connectionParams));
+		} catch(Exception e){
 			// default already created  	
 		}
 		return ds;
