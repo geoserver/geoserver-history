@@ -65,6 +65,14 @@ class DescribeHandler
             
         LOGGER.finest("found start element: " + localName);
         currentTag = localName;
+	if(currentTag.equals("DescribeFeatureType")) {
+            for(int i = 0; i < atts.getLength(); i++) {
+                if( atts.getLocalName(i).equals("outputFormat") ) {
+                    LOGGER.finest("found outputFormat: " + atts.getValue(i));
+                    request.setOutputFormat(atts.getValue(i));
+                }
+            }
+	}
     }
 
 

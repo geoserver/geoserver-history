@@ -28,9 +28,9 @@ public class DescribeKvpReader
         DescribeRequest currentRequest = new DescribeRequest();        
         currentRequest.setVersion(((String) kvpPairs.get("VERSION")));
         currentRequest.setRequest(((String) kvpPairs.get("REQUEST")));
-        currentRequest.
-            setFeatureTypes(readFlat((String) kvpPairs.get("TYPENAME"), 
-                                     INNER_DELIMETER));        
+        currentRequest.setOutputFormat(((String) kvpPairs.get("OUTPUTFORMAT")));
+	currentRequest.setFeatureTypes
+	    (readFlat((String) kvpPairs.get("TYPENAME"), INNER_DELIMETER));     
         return currentRequest;
     }    
 }
