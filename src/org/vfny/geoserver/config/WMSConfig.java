@@ -21,38 +21,11 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.7 2004/02/09 23:30:04 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.8 2004/04/01 23:24:17 emperorkefka Exp $
  */
 public class WMSConfig extends ServiceConfig {
     private static final String WMS_VERSION = "1.1.1";
     public static final String CONFIG_KEY = "Config.WMS";
-
-    /**
-     * This is a set of <code>dataStoreID.typeName</code> that is  enabled for
-     * use with WMS.
-     * 
-     * <p>
-     * You can use this information to bother DataConfig for the details such
-     * as:
-     * </p>
-     * 
-     * <ul>
-     * <li>
-     * Title
-     * </li>
-     * <li>
-     * Abstract
-     * </li>
-     * </ul>
-     * 
-     * <p>
-     * Cool?
-     * </p>
-     */
-    private Set enabledFeatures = new TreeSet(); // keep sorted
-
-    /** A string representing the update time of the WMS */
-    private String updateTime;
 
     /**
      * WMS constructor.
@@ -118,41 +91,5 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setService((ServiceDTO) super.toServDTO());
 
         return wmsDto;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setUpdateTime(String string) {
-        updateTime = string;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public Set getEnabledFeatures() {
-        return enabledFeatures;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param set
-     */
-    public void setEnabledFeatures(Set set) {
-        enabledFeatures = set;
     }
 }
