@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.responses.ResponseUtils;
-
+import org.vfny.geoserver.requests.Request;
 
 /**
  * Represents a standard OGC service exception.  Able to turn itself into the
@@ -224,7 +224,9 @@ public class ServiceException extends Exception {
      *
      * @return The ServiceExceptionReport of this error.
      *
-     * @task REVISIT: adapt it to handle WMS too
+     * @task REVISIT: Our error handling should actually have knowledge of the
+     * app configuration, so that we can set the ogc error report to validate
+     * right (reference our own schema), and to put the correct mime type here.
      */
     public String getXmlResponse(boolean printStackTrace) {
         String indent = "   ";
@@ -245,7 +247,7 @@ public class ServiceException extends Exception {
 
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
 
-        returnXml.append("wfs/1.0.0/OGC-exception.xsd\">\n");
+        returnXml.append("http://schemas.opengis.net/wfs/1.0.0/OGC-exception.xsd\">\n");
 
         //REVISIT: handle multiple service exceptions?  must refactor class.
         returnXml.append(indent + "<ServiceException");
