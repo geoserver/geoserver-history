@@ -15,6 +15,7 @@ import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.postgis.PostgisConnectionFactory;
 import org.geotools.data.postgis.PostgisDataSource;
+import org.geotools.filter.Filter;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFlat;
@@ -75,28 +76,40 @@ public class TransactionResponse {
 	
 	String lockId = request.getLockId();
 	LOGGER.finer("got lockId: " + lockId);
-	if (!request.getReleaseAll()){
-	    String message = "release action SOME not supported yet by " +
-		"geoserver, as only whole types can currently be locked"; 
-	    throw new WfsTransactionException(message, request.getHandle(), 
-					      request.getHandle());
-	}
+	//if (!request.getReleaseAll()){
+	//   String message = "release action SOME not supported yet by " +
+	//	"geoserver"; 
+	//   throw new WfsTransactionException(message, request.getHandle(), 
+	//				      request.getHandle());
+	//}
 	for(int i = 0, n = request.getSubRequestSize(); i < n; i++) {  
 	    subRequest = request.getSubRequest(i);
 	    String typeName = subRequest.getTypeName(); 
-	    
-	    if (repository.isLocked(typeName)) {
-		if (!repository.isCorrectLock(typeName, lockId)) { 
-		    throw new WfsTransactionException("Feature Type: " + 
-						      typeName + " is locked", 
-						      subRequest.getHandle(), 
-						      transHandle);
-		}
+	    Filter filter = null;
+	    if (subRequest.getOpType() == SubTransactionRequest.DELETE){
+		filter = ((DeleteRequest)subRequest).getFilter();
+	    } else if (subRequest.getOpType() == SubTransactionRequest.UPDATE){
+		filter = ((UpdateRequest)subRequest).getFilter();
+	    } //REVISIT: should inserts detect if the whole featureType is 
+	    //locked?  Hard to check right now.
+	    try {
+	    if (repository.isLocked(typeName, filter, lockId)) {
+		LOGGER.finer("it's locked, should throw exception");
+		String message = ("Feature Type: " + typeName + " is locked," +
+				  " and the lockId of the request - " + lockId +
+				  " - is not the proper lock");
+		throw new WfsTransactionException(message, 
+						  subRequest.getHandle(), 
+						  transHandle);
+	    } 
+	    } catch (WfsException e){
+		throw new WfsTransactionException(e, subRequest.getHandle(),
+						  transHandle);
 	    }
 	    Collection addedFids = getSub(subRequest, con);
-	      if (addedFids != null) {
-		  response.addInsertResult(subRequest.getHandle(), addedFids);
-	      }
+	    if (addedFids != null) {
+		response.addInsertResult(subRequest.getHandle(), addedFids);
+	    }
 	}
 	
 	//HACK: fails to unlock locks with different typeNames.  Right now it
@@ -105,7 +118,8 @@ public class TransactionResponse {
 	//the transaction does not go all the way through.
 	//Or is better default action for now to have it release even if 
 	//transaction does not complete?
-	repository.unlock(subRequest.getTypeName(), lockId);
+	//repository.unlock(subRequest.getTypeName(), lockId);
+	repository.unlock(request);
 	try {
 	    con.commit();
 	    con.close();
@@ -167,17 +181,23 @@ public class TransactionResponse {
 	    //this hasn't been tested with more than 15,000 features...not sure
        //if things will mess up with more, and this means 100,000 is the limit 
 	    String typeName = sub.getTypeName();
+	    //if (sub.getOpType() == SubTransactionRequest.INSERT) {
+	    //this is for our insert fid hack...we only want the fid from data
+	    //FeatureType schema = 
+	    //    FeatureTypeFactory.create(new AttributeType[0]);
+	    // int srid = ((PostgisDataSource)data).querySRID(con, typeName);
+		 //HACK: this should be fixed in the datasource...
+	    // ((FeatureTypeFlat)schema).setSRID(srid);
+		 //data = new PostgisDataSource(con, typeName, schema, 100000);
+		//} else {
+	    data = new PostgisDataSource(con, typeName);
 	    if (sub.getOpType() == SubTransactionRequest.INSERT) {
 	    //this is for our insert fid hack...we only want the fid from data
 		FeatureType schema = 
 		    FeatureTypeFactory.create(new AttributeType[0]);
-		 int srid = ((PostgisDataSource)data).querySRID(con, typeName);
-		 //HACK: this should be fixed in the datasource...
-		 ((FeatureTypeFlat)schema).setSRID(srid);
-		data = new PostgisDataSource(con, typeName, schema, 100000);
-	    } else {
-		data = new PostgisDataSource(con, typeName);
+		data.setSchema(schema);
 	    }
+		//}
 	} catch (DataSourceException e) {
 	    String message = "Problem creating datasource: " 
 			+ e.getMessage() +", " + e.getCause();
@@ -218,6 +238,7 @@ public class TransactionResponse {
 	try {
 	    //ArrayList committed = new ArrayList();
 	    Feature[] oldFeatures = data.getFeatures(null).getFeatures();
+	    LOGGER.finer("insert old feature is " + oldFeatures[0]);
 	    HashSet oldFids = new HashSet(oldFeatures.length);
 	    int i;
 	    for (i = 0; i < oldFeatures.length; i++) {
