@@ -14,12 +14,16 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: WFSDTO.java,v 1.5 2004/02/12 00:43:20 dmzwiers Exp $
  */
 public final class WFSDTO implements DataTransferObject {
     /** The service parameters for this instance. */
     private ServiceDTO service;
     private boolean gmlPrefixing;
+    private int serviceLevel;
+    
+    public static final int BASIC = 1;
+    public static final int TRANSACTION = 2;
 
     /**
      * WFS Data Transfer Object constructor.  does nothing
@@ -46,6 +50,7 @@ public final class WFSDTO implements DataTransferObject {
 
         service = (ServiceDTO) new ServiceDTO(other.getService());
         gmlPrefixing = other.isGmlPrefixing();
+        serviceLevel = other.getServiceLevel();
     }
 
     /**
@@ -75,8 +80,8 @@ public final class WFSDTO implements DataTransferObject {
 
         WFSDTO dto = (WFSDTO) other;
 
-        return (service == null) ? (dto.getService() == null)
-                                 : service.equals(dto.getService());
+        return (serviceLevel == dto.getServiceLevel() &&(service == null) ? (dto.getService() == null)
+                                 : service.equals(dto.getService()));
     }
 
     /**
@@ -149,4 +154,22 @@ public final class WFSDTO implements DataTransferObject {
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
     }
+	/**
+	 * Access serviceLevel property.
+	 * 
+	 * @return Returns the serviceLevel.
+	 */
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	/**
+	 * Set serviceLevel to serviceLevel.
+	 *
+	 * @param serviceLevel The serviceLevel to set.
+	 */
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
+
 }

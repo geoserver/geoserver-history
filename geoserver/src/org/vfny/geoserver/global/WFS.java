@@ -26,13 +26,15 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.6 2004/02/09 23:11:35 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.7 2004/02/12 00:43:20 dmzwiers Exp $
  */
 public class WFS extends Service {
     private boolean gmlPrefixing;
     public static final String WEB_CONTAINER_KEY = "WFS";
     
     private GeoValidator gv;
+    
+    private int serviceLevel;
 
     /**
      * WFS constructor.
@@ -47,6 +49,7 @@ public class WFS extends Service {
     public WFS(WFSDTO config) {
         super(config.getService());
         gmlPrefixing = config.isGmlPrefixing();
+        serviceLevel = config.getServiceLevel();
     }
     
     /**
@@ -59,6 +62,7 @@ public class WFS extends Service {
     public void load (WFSDTO config) {
     	super.load(config.getService());
     	gmlPrefixing = config.isGmlPrefixing();
+    	serviceLevel = config.getServiceLevel();
     }
     /**
      * WFS constructor.
@@ -92,7 +96,7 @@ public class WFS extends Service {
         WFSDTO dto = new WFSDTO();
         dto.setService((ServiceDTO)super.toDTO());
         dto.setGmlPrefixing(gmlPrefixing);
-
+        dto.setServiceLevel(serviceLevel);
         return dto;
     }
 
@@ -137,6 +141,15 @@ public class WFS extends Service {
 	 */
 	void setValidation(GeoValidator gv) {
 		this.gv = gv;
+	}
+
+	/**
+	 * Access serviceLevel property.
+	 * 
+	 * @return Returns the serviceLevel.
+	 */
+	public int getServiceLevel() {
+		return serviceLevel;
 	}
 
 }
