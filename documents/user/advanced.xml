@@ -97,7 +97,7 @@
     reference with the <emphasis>data/featureTypes/bc_roads</emphasis> path.
     If the file was stored there then the params should look like
     this:<programlisting>&lt;connectionParams&gt;
-  &lt;parameter name="filename" value="file:data/featureTypes/bc_roads/bc_roads.shp"&gt;
+  &lt;parameter name="url" value="file:data/featureTypes/bc_roads/bc_roads.shp"&gt;
 &lt;/connectionParams&gt;</programlisting></para>
 
     <para>One more thing to note, the name element of the
@@ -113,9 +113,23 @@
 
     <para>GeoServer also offers Oracle Spatial support, contributed and
     maintained by Sean Geoghegan. It includes support of all OGC filters,
-    connection pooling, and transactional capabilities. To use the Oracle
-    Datastore the <emphasis>catalog.xml</emphasis> file must have the
-    following values for the connectionParams:</para>
+    connection pooling, and transactional capabilities. </para>
+
+    <para>We are not sure if Oracle works with GeoServer 1.2.0-rc1, as Sean is
+    away from the project, and the rest of the core developers do not have
+    convenient oracle dbs to hit. Please check the <ulink
+    url="???">wiki</ulink> for the latest information on oracle. And if you
+    have success with installing oracle let us know. We apologize greatly for
+    not having oracle ready for this release, as we know it is a popular
+    datastore, but it is not very accessible for most of us open source
+    developers so is harder to support. The GeoServer Project personally
+    recommends switching to PostGIS, as it is a very solid database with
+    excellent spatial support, and is much easier for us to debug. And it will
+    save you on licensing costs. But we will try to support Oracle, because we
+    are all about interoperability.</para>
+
+    <para>To use the Oracle Datastore the <emphasis>catalog.xml</emphasis>
+    file must have the following values for the connectionParams:</para>
 
     <informaltable>
       <tgroup cols="2">
@@ -179,26 +193,22 @@
       </tgroup>
     </informaltable>
 
-    <para>Currently we are not including the geotools oracle jar in the
-    standard GeoServer distribution, since it will not work properly in the
-    web interface unless the additional proprietary jars are included. So to
-    use oracle you must download the oracle spatial jar from geotools <ulink
-    url="???">here</ulink>. Two additional jars must also be place in
-    geoserver/lib, along with the gt2 oracle spatial jar. As Oracle is not
-    open source we can not distribute these, but you should be able to find
-    them, either somewhere within your oracle install, or on the <ulink
+    <para>Two additional jars must also be place in geoserver/lib, along with
+    the gt2 oracle spatial jar. As Oracle is not open source we can not
+    distribute these, but you should be able to find them, either somewhere
+    within your oracle install, or on the <ulink
     url="http://otn.oracle.com/">Oracle Technology Network</ulink>. The two
     jars you need are classes12.jar, which contains the jdbc classes, and
     sdoapi.jar, which contains the spatial api jars. If you recieve an
     uncaught exception - NoClassDefFoundError, then you probably have the jar
     in the wrong place or the wrong jars. Users have had the best luck with
     the jars distributed with their oracle installations, others seem to be
-    more prone to errors. </para>
+    more prone to errors.</para>
 
     <para>A few other little notes from users: The oracle spatial table you
     are using must have a correct entry in USER_SDO_GEOM_METADATA view. And
     whatever table you use MUST have a primary key declared, it will not work
-    otherwise. </para>
+    otherwise.</para>
 
     <para>Also note that the name element in the <emphasis>info.xml</emphasis>
     file to specify the featureType must be all capitalized, for some reason
@@ -290,7 +300,7 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
           <row>
             <entry>instance</entry>
 
-            <entry>The ArcSDE instance name.</entry>
+            <entry>The ArcSDE instance name (required).</entry>
           </row>
         </tbody>
       </tgroup>
