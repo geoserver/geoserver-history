@@ -21,7 +21,7 @@ import org.geotools.validation.dto.TestSuiteDTO;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.4 2004/02/09 23:29:48 dmzwiers Exp $
+ * @version $Id: ValidationConfig.java,v 1.5 2004/03/09 02:12:25 dmzwiers Exp $
  */
 public class ValidationConfig {
 	
@@ -38,6 +38,8 @@ public class ValidationConfig {
 	 */
 	public ValidationConfig() {
 		super();
+		plugIns = new HashMap();
+		testSuites = new HashMap();
 	}
 	
 	/**
