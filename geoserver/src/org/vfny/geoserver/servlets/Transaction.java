@@ -62,9 +62,11 @@ public class Transaction
         
         // catches all errors; client should never see a stack trace 
 	    } catch (WfsTransactionException wte) {
-		LOGGER.info("Threw a WfsTransactionException");
-	    wte.setHandle(wfsRequest.getHandle());
-	    tempResponse =  wte.getXmlResponse();
+		LOGGER.info("Caught a WfsTransactionException...");
+		if (wfsRequest != null) {
+		    wte.setHandle(wfsRequest.getHandle());
+		}
+		tempResponse =  wte.getXmlResponse();
 	    }
 	 catch (Exception e) {
             tempResponse = e.getMessage();
