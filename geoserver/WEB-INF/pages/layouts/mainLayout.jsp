@@ -70,7 +70,7 @@
               <td class="<tiles:getAsString name='layer'/>"
                   rowspan="1" colspan="2">
                 <h1 class="title">
-                  <tiles:getAsString name='title'/>
+                  <bean:message key="<%= titleKey %>"/>
                 </h1>  
                 <tiles:insert attribute="body"/>
                 
