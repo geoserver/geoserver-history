@@ -132,8 +132,9 @@
                 This is by far the hardest part of the installation process, but 
                 the documentation to install these three components is quite good. 
                 Our testing has occurred on JDK 1.4.1, Tomcat 4.0.4, and PostGIS 
-                0.7.3 on top of Postgresql 7.2.2. While installing PostGIS make 
-                sure to include the JDBC drivers in the PostgreSQL compile.</p>
+                0.7.3 on top of Postgresql 7.2.2. To actually build geoserver you 
+		must use <a href="http://ant.apache.org">Ant</a>, an excellent build
+		tool from apache.</p>
               <p>GeoServer has an active user community that you can engage by 
                 joining the GeoServer mailing list and asking questions or making 
                 suggestions.&nbsp;&nbsp;If you create a user account at this site, 
@@ -243,7 +244,13 @@
               <p>If you have an existing GeoServer installation on your machine, 
                 you should backup your <i>geoserver/data/featureTypes</i> directory 
                 before placing the new <i>.war</i> file. To create the <i>.war</i>
-		file you must run <i>ant war</i> from the geoserver root directory.
+		file you must have a working install of Ant, available for download
+		<a href="http://ant.apache.org/bindownload.cgi">here</a>.  For it 
+		to work properly the ANT_HOME path must point to the location it was 
+		installed.  The geoserver build file can perform a number of tasks with Ant - 
+		to see the options just type <i>ant</i> from the geoserver root
+		directory.  To create geoserver.war run ant with the <i>war</i> build
+		target -  type <i>ant war</i> from the root geoserver directory. 
 		This creates the <i>geoserver.war</i> in the same directory.
               <p>Move 'geoserver.war' from the GeoServer root directory to the 
                 war file directory of your Java Servlet container (i.e. 'webapps' 
@@ -258,7 +265,9 @@
                 get nothing, then you should consult your server documentation 
                 to see what has gone wrong. If a <i>geoserver</i> directory has 
                 not been created automatically by your server, then your server 
-                is probably not behaving as it should.</p>
+                is probably not behaving as it should.  You can also have geoserver
+		copy <i>geoserver.war</i> directly to your servlet container with the
+		test-ext ant build target.</p>
             </blockquote>
           </td>
         </tr>
