@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.4 2004/01/15 01:09:51 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -520,7 +520,14 @@ public class XMLConfigWriter {
 	protected static void storeFeatureSchema(FeatureTypeInfoDTO fs, File dir) throws ConfigurationException{
 		File f = WriterUtils.initWriteFile(new File(dir,"schema.xml"),false);
 		try{
-			WriterHelper cw = new WriterHelper(new FileWriter(f));
+			storeFeatureSchema(fs,new FileWriter(f));
+		}catch(IOException e){
+			throw new ConfigurationException(e);
+		}
+		}
+			
+	public static void storeFeatureSchema(FeatureTypeInfoDTO fs,Writer w) throws ConfigurationException{
+			WriterHelper cw = new WriterHelper(w);
 			HashMap m = new HashMap();
 			m.put("name",fs.getSchemaName());
 			cw.openTag("xs:complexType",m);
@@ -554,9 +561,6 @@ public class XMLConfigWriter {
 			cw.closeTag("xs:extension");
 			cw.closeTag("xs:complexContent");
 			cw.closeTag("xs:complexType");
-		}catch(IOException e){
-			throw new ConfigurationException(e);
-		}
 	}
 }
 
@@ -567,7 +571,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.4 2004/01/15 01:09:51 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -645,7 +649,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.4 2004/01/15 01:09:51 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

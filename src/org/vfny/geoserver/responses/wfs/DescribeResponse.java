@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.5 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.6 2004/01/15 01:09:52 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -303,8 +303,9 @@ public class DescribeResponse implements Response {
                 FeatureType ft = meta.getSchema();
 
                 File inputFile = new File(currentFile);
-
-                generatedType = generateFromSchema(meta.getSchema());
+                FeatureType ft2 = meta.getSchema();
+System.out.println("DecribeResponse:generateSpecifiedTypes:"+ft2.getTypeName());
+                generatedType = generateFromSchema(ft2);
 
                 if (!generatedType.equals("")) {
                     tempResponse = tempResponse + generatedType;

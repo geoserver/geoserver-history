@@ -27,13 +27,14 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.xml.*;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
+import java.io.*;
 import com.vividsolutions.jts.geom.Envelope;
 
 
@@ -43,7 +44,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.3 2004/01/14 22:54:26 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.4 2004/01/15 01:09:52 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -114,6 +115,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
     	try{
         	return getSchema(ftc.getSchema());
     	}catch(Exception e){
+e.printStackTrace();
     		return null;
     	}
     }
@@ -189,7 +191,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
      * @return String the FeatureTypeInfo name - should be unique for the parent Data instance.
      */
     public String getName() {
-        return ":"+ftc.getName();
+        return ((DataStoreInfo)data.getDataStoreInfo(ftc.getDataStoreId())).getNameSpace().getPrefix()+":"+ftc.getName();
     }
 
     /**
@@ -381,6 +383,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
 	private FeatureType getSchema(List attrElems)
 		throws ConfigurationException, IOException {
 		FeatureType schema = getRealFeatureSource().getSchema();
+System.out.println("FeatureTypeInfo:getSchema"+(schema==null));
 		FeatureType filteredSchema = null;
 
 		if (attrElems.size() == 0) {
@@ -398,15 +401,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
 			attributes[i] = schema.getAttributeType(name);
 
 			if (attributes[i] == null) {
-				throw new ConfigurationException("the FeatureTypeConfig " + getName()
+				throw new ConfigurationException("the FeatureTypeConfig " + ftc.getName()
 					+ " does not contains the configured attribute " + name
 					+ ". Check your catalog configuration");
 			}
 		}
 
 		try {
-			filteredSchema = FeatureTypeFactory.newFeatureType(attributes,
-					getName());
+System.out.println("getSchema"+ftc.getName());
+			filteredSchema = FeatureTypeFactory.newFeatureType(attributes,ftc.getName());
 		} catch (SchemaException ex) {
 		} catch (FactoryConfigurationError ex) {
 		}
@@ -414,6 +417,21 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
 		return filteredSchema;
 	}
     
+	public String getXMLSchema(){
+		StringWriter sw = new StringWriter();
+		try{
+			XMLConfigWriter.storeFeatureSchema(ftc,sw);
+		}catch(ConfigurationException e){}
+		return sw.toString();
+	}
+	
+	public void readXMLSchema(String xml){
+		StringReader sr = new StringReader(xml);
+		try{
+			XMLConfigReader.loadSchema(ReaderUtils.loadConfig(sr),ftc);
+		}catch(ConfigurationException e){}
+	}
+	
     /**
      * getAttribute purpose.
      * <p>
