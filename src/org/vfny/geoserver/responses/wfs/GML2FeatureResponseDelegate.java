@@ -31,9 +31,12 @@ import javax.xml.transform.TransformerException;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.2 2004/03/12 10:19:44 cholmesny Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.3 2004/03/14 05:16:49 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
+    private static final int NO_FORMATTING = -1;
+    private static final int INDENT_SIZE = 2;
+
     /**
      * This is a "magic" class provided by Geotools that writes out GML for an
      * array of FeatureResults.
@@ -54,7 +57,9 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     /** will be true if GML2.gz output format was requested */
     private boolean compressOutput = false;
 
-    /** the results of a getfeature request wich this object will encode as GML2 */
+    /**
+     * the results of a getfeature request wich this object will encode as GML2
+     */
     private GetFeatureResults results;
 
     /**
@@ -127,6 +132,9 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
 
         //bad hardcode - 2 is to indent 2 spaces, -1 is to do no indenting.
         transformer.setIndentation(config.isVerbose() ? 2 : (-1));
+        transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
+                                                      : (NO_FORMATTING));
+        transformer.setNumDecimals(config.getNumDecimals());
 
         String wfsSchemaLoc = request.getBaseUrl() + "wfs/1.0.0/"
             + "WFS-basic.xsd";
