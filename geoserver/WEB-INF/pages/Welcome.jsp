@@ -30,7 +30,7 @@
 </code></pre>
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/getCapabilities">
+    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wfs/GetCapabilities">
       getCapabilities
     </a>
   </li>
@@ -49,7 +49,7 @@
 
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wms/getCapabilities">
+    <a href="<%=org.vfny.geoserver.requests.Requests.getBaseUrl(request)%>wms/GetCapabilities">
       getCapabilities
     </a>
   </li>
