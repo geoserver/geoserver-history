@@ -62,6 +62,10 @@
     		name="dataAttributeTypesEditorForm"
     		type="org.vfny.geoserver.form.data.DataAttributeTypesEditorForm"/>    		
     		
+		<form-bean
+			name="blankBean"
+			type="org.apache.struts.action.DynaActionForm"/>
+    		
     </form-beans>
 
 <!-- ================================= Global Exception Definitions -->
@@ -300,6 +304,19 @@
         	scope="request"
         	validate="true"
         	input="data.featureTypes"/>
+        	
+        <action
+        	path="/SaveToGeoServer"
+        	type="org.vfny.geoserver.action.UpdateGSAction"
+        	name="blankBean"/>
+        <action
+        	path="/SaveToXML"
+        	type="org.vfny.geoserver.action.SaveXMLAction"
+        	name="blankBean"/>
+        <action
+        	path="/LoadFromXML"
+        	type="org.vfny.geoserver.action.LoadXMLAction"
+        	name="blankBean"/>        	        	
 
 
 <!-- End Submit Actions -->
