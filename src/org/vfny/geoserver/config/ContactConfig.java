@@ -46,7 +46,7 @@ import org.vfny.geoserver.global.dto.ContactDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactConfig.java,v 1.6 2004/02/18 21:29:10 jive Exp $
+ * @version $Id: ContactConfig.java,v 1.7 2004/02/18 23:40:18 emperorkefka Exp $
  */
 public class ContactConfig {
     /** The name of the contact person */
@@ -169,13 +169,13 @@ public class ContactConfig {
      * @return Contact party (person, position or organization), null if unknown
      */
     public String getContactParty(){
-        if( getContactPerson() != null ){
+        if( getContactPerson() != null && getContactPerson().length() != 0){
             return getContactPerson(); // ie Chris Holmes 
         }
-        if( getContactPosition() != null ){
+        if( getContactPosition() != null && getContactPosition().length() != 0 ){
             return getContactPosition(); // ie Lead Developer 
         }        
-        if( getContactOrganization() != null ){
+        if( getContactOrganization() != null && getContactOrganization().length() != 0 ){
             return getContactOrganization(); // ie TOPP 
         }        
         return null;
