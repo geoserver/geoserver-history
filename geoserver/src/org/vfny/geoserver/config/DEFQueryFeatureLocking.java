@@ -7,12 +7,12 @@ package org.vfny.geoserver.config;
 import com.vividsolutions.jts.geom.*;
 import org.geotools.data.*;
 import org.geotools.data.postgis.*;
+import org.geotools.factory.*;
 import org.geotools.feature.*;
 import org.geotools.filter.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
-import org.geotools.factory.*;
 
 
 /**
@@ -21,15 +21,16 @@ import org.geotools.factory.*;
  * definition query configured for it.
  *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.3 2004/01/05 23:12:06 cholmesny Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
     private FeatureSource source;
     private FeatureType schema;
     private Filter definitionQuery;
+    private List mandatoryAtts;
 
     /**
      * Creates a new DEFQueryFeatureLocking object.
@@ -37,12 +38,14 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param source DOCUMENT ME!
      * @param schema DOCUMENT ME!
      * @param definitionQuery DOCUMENT ME!
+     * @param mandatoryAtts DOCUMENT ME!
      */
     public DEFQueryFeatureLocking(FeatureSource source, FeatureType schema,
-        Filter definitionQuery) {
+        Filter definitionQuery, List mandatoryAtts) {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
+        this.mandatoryAtts = mandatoryAtts;
     }
 
     /**
@@ -54,7 +57,6 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws DataSourceException DOCUMENT ME!
      */
     private Query makeDefinitionQuery(Query query) throws IOException {
         if (query == Query.ALL) {
@@ -65,7 +67,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
             String handle = query.getHandle();
             int maxFeatures = query.getMaxFeatures();
             String typeName = query.getTypeName();
-            String[] propNames = extractAllowedAttributes(query);
+            String[] propNames = extractAttributes(query);
             Filter filter = query.getFilter();
             filter = makeDefinitionFilter(filter);
 
@@ -74,8 +76,8 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
                     propNames, handle);
 
             return constrainedQuery;
-        }catch(DataSourceException dse){
-          throw dse;
+        } catch (DataSourceException dse) {
+            throw dse;
         } catch (Exception ex) {
             throw new DataSourceException(
                 "can't restrict the query to match the definition criteria: "
@@ -86,8 +88,8 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
     /**
      * creates a list of FeatureType's attribute names based on the attributes
      * requested by <code>query</code> and making sure they not contain any
-     * non exposed attribute.
-     *
+     * non exposed attribute, and that they contain the mandatory attributes.
+     * 
      * <p>
      * Exposed attributes are those configured in the "attributes" element of
      * the FeatureType's configuration
@@ -97,7 +99,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      *
      * @return DOCUMENT ME!
      */
-    private String[] extractAllowedAttributes(Query query) {
+    private String[] extractAttributes(Query query) {
         String[] propNames = null;
 
         if (query.retrieveAllProperties()) {
@@ -115,8 +117,21 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
                 if (schema.getAttributeType(queriedAtts[i]) != null) {
                     allowedAtts.add(queriedAtts[i]);
                 } else {
+                    //REVISIT: I think an exception should be thrown here, 
+                    //asking for a property that is not present normally
+                    //causes an exception to be thrown.
                     LOGGER.info("queried a not allowed property: "
                         + queriedAtts[i] + ". Ommitting it from query");
+                }
+            }
+
+            if (mandatoryAtts != null) {
+                for (Iterator i = mandatoryAtts.iterator(); i.hasNext();) {
+                    String attName = (String) i.next();
+
+                    if (!allowedAtts.contains(attName)) {
+                        allowedAtts.add(attName);
+                    }
                 }
             }
 
@@ -136,22 +151,24 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      *
      * @return DOCUMENT ME!
      *
-     * @throws IllegalFilterException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     private Filter makeDefinitionFilter(Filter filter)
         throws DataSourceException {
         Filter newFilter = filter;
 
         try {
-          if (definitionQuery != Filter.NONE) {
-            FilterFactory ff = FilterFactory.createFilterFactory();
-            newFilter = ff.createLogicFilter(AbstractFilter.LOGIC_AND);
-            ( (LogicFilter) newFilter).addFilter(definitionQuery);
-            ( (LogicFilter) newFilter).addFilter(filter);
-          }
-        }catch (Exception ex) {
-          throw new DataSourceException("Can't create the definition filter", ex);
+            if (definitionQuery != Filter.NONE) {
+                FilterFactory ff = FilterFactory.createFilterFactory();
+                newFilter = ff.createLogicFilter(AbstractFilter.LOGIC_AND);
+                ((LogicFilter) newFilter).addFilter(definitionQuery);
+                ((LogicFilter) newFilter).addFilter(filter);
+            }
+        } catch (Exception ex) {
+            throw new DataSourceException("Can't create the definition filter",
+                ex);
         }
+
         return newFilter;
     }
 
@@ -159,6 +176,8 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * DOCUMENT ME!
      *
      * @param lock DOCUMENT ME!
+     *
+     * @throws UnsupportedOperationException DOCUMENT ME!
      */
     public void setFeatureLock(FeatureLock lock) {
         if (source instanceof FeatureLocking) {
@@ -189,10 +208,11 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
     }
 
     public int lockFeature(Feature feature) throws IOException {
-	if (source instanceof PostgisFeatureLocking) {
-	    return ((PostgisFeatureLocking) source).lockFeature(feature);
-	} else {
-            throw new DataSourceException("FeatureType does not supports locking");
+        if (source instanceof PostgisFeatureLocking) {
+            return ((PostgisFeatureLocking) source).lockFeature(feature);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports locking");
         }
     }
 
@@ -204,16 +224,17 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public int lockFeatures(Filter filter) throws IOException {
-      filter = makeDefinitionFilter(filter);
-      if (source instanceof FeatureLocking) {
-          return ((FeatureLocking) source).lockFeatures(filter);
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports locking");
-      }
+        filter = makeDefinitionFilter(filter);
+
+        if (source instanceof FeatureLocking) {
+            return ((FeatureLocking) source).lockFeatures(filter);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports locking");
+        }
     }
 
     /**
@@ -222,30 +243,30 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public int lockFeatures() throws IOException {
-      if (source instanceof FeatureLocking) {
-          return ((FeatureLocking) source).lockFeatures();
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports locking");
-      }
+        if (source instanceof FeatureLocking) {
+            return ((FeatureLocking) source).lockFeatures();
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports locking");
+        }
     }
 
     /**
      * DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public void unLockFeatures() throws IOException {
-      if (source instanceof FeatureLocking) {
-          ((FeatureLocking) source).lockFeatures();
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports locking");
-      }
+        if (source instanceof FeatureLocking) {
+            ((FeatureLocking) source).lockFeatures();
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports locking");
+        }
     }
 
     /**
@@ -254,16 +275,17 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param filter DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public void unLockFeatures(Filter filter) throws IOException {
-      filter = makeDefinitionFilter(filter);
-      if (source instanceof FeatureLocking) {
-          ((FeatureLocking) source).unLockFeatures(filter);
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports locking");
-      }
+        filter = makeDefinitionFilter(filter);
+
+        if (source instanceof FeatureLocking) {
+            ((FeatureLocking) source).unLockFeatures(filter);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports locking");
+        }
     }
 
     /**
@@ -272,16 +294,17 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param query DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public void unLockFeatures(Query query) throws IOException {
-      query = makeDefinitionQuery(query);
-      if (source instanceof FeatureLocking) {
-          ((FeatureLocking) source).lockFeatures(query);
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports locking");
-      }
+        query = makeDefinitionQuery(query);
+
+        if (source instanceof FeatureLocking) {
+            ((FeatureLocking) source).lockFeatures(query);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports locking");
+        }
     }
 
     /**
@@ -292,15 +315,15 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public Set addFeatures(FeatureReader reader) throws IOException {
-      if (source instanceof FeatureStore) {
-          return ((FeatureStore) source).addFeatures(reader);
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports writing");
-      }
+        if (source instanceof FeatureStore) {
+            return ((FeatureStore) source).addFeatures(reader);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports writing");
+        }
     }
 
     /**
@@ -309,16 +332,17 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param filter DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public void removeFeatures(Filter filter) throws IOException {
-      filter = makeDefinitionFilter(filter);
-      if (source instanceof FeatureStore) {
-          ((FeatureStore) source).removeFeatures(filter);
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports writing");
-      }
+        filter = makeDefinitionFilter(filter);
+
+        if (source instanceof FeatureStore) {
+            ((FeatureStore) source).removeFeatures(filter);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports writing");
+        }
     }
 
     /**
@@ -329,21 +353,21 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param filter DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
+     *
      * @task REVISIT: should we check that non exposed attributes are requiered
-     * in <code>type</code>?
+     *       in <code>type</code>?
      */
     public void modifyFeatures(AttributeType[] type, Object[] value,
-        Filter filter) throws IOException
-    {
+        Filter filter) throws IOException {
+        filter = makeDefinitionFilter(filter);
 
-      filter = makeDefinitionFilter(filter);
-      if (source instanceof FeatureStore) {
-          ((FeatureStore) source).modifyFeatures(type, value, filter);
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports writing");
-      }
+        if (source instanceof FeatureStore) {
+            ((FeatureStore) source).modifyFeatures(type, value, filter);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports writing");
+        }
     }
 
     /**
@@ -354,17 +378,18 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param filter DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public void modifyFeatures(AttributeType type, Object value, Filter filter)
         throws IOException {
-      filter = makeDefinitionFilter(filter);
-      if (source instanceof FeatureStore) {
-          ((FeatureStore) source).modifyFeatures(type, value, filter);
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports writing");
-      }
+        filter = makeDefinitionFilter(filter);
+
+        if (source instanceof FeatureStore) {
+            ((FeatureStore) source).modifyFeatures(type, value, filter);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports writing");
+        }
     }
 
     /**
@@ -373,44 +398,47 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param reader DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     public void setFeatures(FeatureReader reader) throws IOException {
-      if (source instanceof FeatureStore) {
-          ((FeatureStore) source).setFeatures(reader);
-      } else {
-          throw new DataSourceException(
-              "FeatureType does not supports write operations");
-      }
+        if (source instanceof FeatureStore) {
+            ((FeatureStore) source).setFeatures(reader);
+        } else {
+            throw new DataSourceException(
+                "FeatureType does not supports write operations");
+        }
     }
 
     /**
      * DOCUMENT ME!
      *
      * @param transaction DOCUMENT ME!
+     *
+     * @throws UnsupportedOperationException DOCUMENT ME!
      */
     public void setTransaction(Transaction transaction) {
-      if (source instanceof FeatureStore) {
-          ((FeatureStore) source).setTransaction(transaction);
-      } else {
-          throw new UnsupportedOperationException(
-              "FeatureType does not supports write operations");
-      }
+        if (source instanceof FeatureStore) {
+            ((FeatureStore) source).setTransaction(transaction);
+        } else {
+            throw new UnsupportedOperationException(
+                "FeatureType does not supports write operations");
+        }
     }
 
     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     *
+     * @throws UnsupportedOperationException DOCUMENT ME!
      */
-    public Transaction getTransaction()
-    {
-      if (source instanceof FeatureStore) {
-          return ((FeatureStore) source).getTransaction();
-      } else {
-          throw new UnsupportedOperationException(
-              "FeatureType does not supports write operations");
-      }
+    public Transaction getTransaction() {
+        if (source instanceof FeatureStore) {
+            return ((FeatureStore) source).getTransaction();
+        } else {
+            throw new UnsupportedOperationException(
+                "FeatureType does not supports write operations");
+        }
     }
 
     /**
@@ -419,7 +447,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      */
     public DataStore getDataStore() {
-      return source.getDataStore();
+        return source.getDataStore();
     }
 
     /**
@@ -428,7 +456,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param listener DOCUMENT ME!
      */
     public void addFeatureListener(FeatureListener listener) {
-      source.addFeatureListener(listener);
+        source.addFeatureListener(listener);
     }
 
     /**
@@ -437,7 +465,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param listener DOCUMENT ME!
      */
     public void removeFeatureListener(FeatureListener listener) {
-      source.removeFeatureListener(listener);
+        source.removeFeatureListener(listener);
     }
 
     /**
@@ -448,11 +476,11 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     public FeatureResults getFeatures(Query query) throws IOException {
-      query = makeDefinitionQuery(query);
-      return source.getFeatures(query);
+        query = makeDefinitionQuery(query);
+
+        return source.getFeatures(query);
     }
 
     /**
@@ -463,11 +491,11 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     public FeatureResults getFeatures(Filter filter) throws IOException {
-      filter = makeDefinitionFilter(filter);
-      return source.getFeatures(filter);
+        filter = makeDefinitionFilter(filter);
+
+        return source.getFeatures(filter);
     }
 
     /**
@@ -476,13 +504,13 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     public FeatureResults getFeatures() throws IOException {
-      if(definitionQuery == Filter.NONE)
-        return source.getFeatures();
-      else
-        return source.getFeatures(definitionQuery);
+        if (definitionQuery == Filter.NONE) {
+            return source.getFeatures();
+        } else {
+            return source.getFeatures(definitionQuery);
+        }
     }
 
     /**
@@ -491,7 +519,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      */
     public FeatureType getSchema() {
-      return schema;
+        return schema;
     }
 
     /**
@@ -500,16 +528,15 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
-     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     public Envelope getBounds() throws IOException {
-      if(definitionQuery == Filter.NONE)
-        return source.getBounds();
-      else
-      {
-        Query query = new DefaultQuery(definitionQuery);
-        return source.getBounds(query);
-      }
+        if (definitionQuery == Filter.NONE) {
+            return source.getBounds();
+        } else {
+            Query query = new DefaultQuery(definitionQuery);
+
+            return source.getBounds(query);
+        }
     }
 
     /**
@@ -518,15 +545,17 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @param query DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
      */
-    public Envelope getBounds(Query query) throws IOException
-    {
-      try {
-        query = makeDefinitionQuery(query);
-      }catch (IOException ex) {
-        return null;
-      }
-      return source.getBounds(query);
+    public Envelope getBounds(Query query) throws IOException {
+        try {
+            query = makeDefinitionQuery(query);
+        } catch (IOException ex) {
+            return null;
+        }
+
+        return source.getBounds(query);
     }
 
     /**
@@ -537,11 +566,12 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      */
     public int getCount(Query query) {
-      try {
-        query = makeDefinitionQuery(query);
-      }catch (IOException ex) {
-        return -1;
-      }
-      return source.getCount(query);
+        try {
+            query = makeDefinitionQuery(query);
+        } catch (IOException ex) {
+            return -1;
+        }
+
+        return source.getCount(query);
     }
 }
