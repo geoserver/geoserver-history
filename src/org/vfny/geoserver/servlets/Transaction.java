@@ -7,6 +7,7 @@ package org.vfny.geoserver.servlets;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ public class Transaction
         Logger.getLogger("org.vfny.geoserver.servlets");
     
     /** Specifies MIME type */
-    private static final String MIME_TYPE = "text/xml";
+    private static final String MIME_TYPE = "text/xml; charset=UTF-8";
 
     /**
      * Reads the XML request from the client, turns it into a generic request 
@@ -62,17 +63,30 @@ public class Transaction
         
         // catches all errors; client should never see a stack trace 
 	    } catch (WfsTransactionException wte) {
-		LOGGER.info("Caught a WfsTransactionException...");
+		LOGGER.info("Caught a WfsTransactionException: " + 
+			    wte.getMessage());
 		if (wfsRequest != null) {
 		    wte.setHandle(wfsRequest.getHandle());
 		}
+		if (LOGGER.isLoggable(Level.FINER)){
+		    wte.printStackTrace();
+		}
 		tempResponse =  wte.getXmlResponse();
 	    }
-	 catch (Exception e) {
-            tempResponse = e.getMessage();
-            LOGGER.info("Had an undefined error: " + e.getMessage());
-            e.printStackTrace(response.getWriter());
-            e.printStackTrace();
+        
+        // catches all errors; client should never see a stack trace 
+	    catch (WfsException wfs) {
+		tempResponse = wfs.getXmlResponse();
+		LOGGER.info("Threw a wfs exception: " + wfs.getMessage());
+		if (LOGGER.isLoggable(Level.FINER)){
+		    wfs.printStackTrace();
+		}
+	    }
+	    catch (Exception e) {
+		tempResponse = e.getMessage();
+		LOGGER.info("Had an undefined error: " + e.getMessage());
+		e.printStackTrace(response.getWriter());
+		e.printStackTrace();
 	    }
         
         response.setContentType(MIME_TYPE);
