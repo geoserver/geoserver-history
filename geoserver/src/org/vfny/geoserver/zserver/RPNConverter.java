@@ -28,7 +28,7 @@ import com.k_int.util.RPNQueryRep.RootNode;
  * Helper class that converts a jzkit QueryNode into a lucene search query.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RPNConverter.java,v 1.11 2004/02/09 23:29:45 dmzwiers Exp $
+ * @version $Id: RPNConverter.java,v 1.12 2004/09/27 23:38:22 cholmesny Exp $
  */
 public class RPNConverter {
     /** The length of a full date string, CCYYMMDD. */
@@ -191,14 +191,14 @@ public class RPNConverter {
         term = term.toLowerCase();
 
         //to lower case for case insensitivity, to mimic our Analyzer
-        Enumeration enum = rpnTermNode.getAttrEnum();
+        Enumeration _enum = rpnTermNode.getAttrEnum();
         String useVal = GeoProfile.Attribute.ANY; //default is any.
         int relation = GeoProfile.EQUALS; //default is equals.
         boolean truncation = false; //default is no truncation.
         boolean matchAll = false;
 
-        while (enum.hasMoreElements()) {
-            AttrTriple triple = (AttrTriple) enum.nextElement();
+        while (_enum.hasMoreElements()) {
+            AttrTriple triple = (AttrTriple) _enum.nextElement();
             String attrVal = triple.getAttrVal().toString();
 
             switch (triple.getAttrType().intValue()) {
