@@ -16,21 +16,23 @@
  */
 package org.vfny.geoserver.config.data;
 
-import java.util.List;
 import java.util.LinkedList;
-import com.vividsolutions.jts.geom.*;
-import org.geotools.filter.*;
+import java.util.List;
+
+import org.geotools.filter.Filter;
 import org.vfny.geoserver.config.CloneLibrary;
-import org.vfny.geoserver.config.EqualsLibrary;
 import org.vfny.geoserver.config.DataStructure;
+import org.vfny.geoserver.config.EqualsLibrary;
+
+import com.vividsolutions.jts.geom.Envelope;
 /**
- * FeatureTypeConfig purpose.
+ * GlobalFeatureType purpose.
  * <p>
- * Description of FeatureTypeConfig ...
+ * Description of GlobalFeatureType ...
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.2 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class FeatureTypeConfig implements DataStructure{
 	
@@ -45,7 +47,7 @@ public class FeatureTypeConfig implements DataStructure{
 	private Envelope latLongBBox;
 	
 	/**
-	 * native wich EPGS code for the FeatureTypeConfig
+	 * native wich EPGS code for the GlobalFeatureType
 	 */
 	private int SRS;
 	
@@ -90,7 +92,7 @@ public class FeatureTypeConfig implements DataStructure{
 	
 	/**
 	 * the list of exposed attributes. If the list is empty or not present
-	 * at all, all the FeatureTypeConfig's attributes are exposed, if is present,
+	 * at all, all the GlobalFeatureType's attributes are exposed, if is present,
 	 * only those oattributes in this list will be exposed by the services
 	 */
 	private Filter definitionQuery = null;
@@ -101,9 +103,9 @@ public class FeatureTypeConfig implements DataStructure{
 	private String defaultStyle;
 
 	/**
-	 * FeatureTypeConfig constructor.
+	 * GlobalFeatureType constructor.
 	 * <p>
-	 * Creates a FeatureTypeConfig to represent an instance with default data.
+	 * Creates a GlobalFeatureType to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
@@ -134,9 +136,9 @@ public class FeatureTypeConfig implements DataStructure{
 	}
 
 	/**
-	 * FeatureTypeConfig constructor.
+	 * GlobalFeatureType constructor.
 	 * <p>
-	 * Creates a copy of the FeatureTypeConfig provided. If the FeatureTypeConfig provided 
+	 * Creates a copy of the GlobalFeatureType provided. If the GlobalFeatureType provided 
 	 * is null then default values are used. All the data structures are cloned. 
 	 * </p>
 	 * @param f The featuretype to copy.
@@ -171,7 +173,7 @@ public class FeatureTypeConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this FeatureTypeConfig
+	 * @return A copy of this GlobalFeatureType
 	 */
 	public Object clone(){
 		return new FeatureTypeConfig(this);
@@ -184,7 +186,7 @@ public class FeatureTypeConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The FeatureTypeConfig object to test.
+	 * @param obj The GlobalFeatureType object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	public boolean equals(Object obj){

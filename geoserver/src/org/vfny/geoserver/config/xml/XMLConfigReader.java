@@ -16,21 +16,43 @@
  */
 package org.vfny.geoserver.config.xml;
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.config.data.*;
-import org.vfny.geoserver.config.wfs.*;
-import org.vfny.geoserver.config.wms.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import javax.xml.parsers.*;
-import java.nio.charset.*;
-import org.geotools.filter.*;
-import com.vividsolutions.jts.geom.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.geotools.filter.FilterDOMParser;
+import org.vfny.geoserver.config.ContactConfig;
+import org.vfny.geoserver.config.GlobalConfig;
+import org.vfny.geoserver.config.ModelConfig;
+import org.vfny.geoserver.config.ServiceConfig;
+import org.vfny.geoserver.config.data.CatalogConfig;
+import org.vfny.geoserver.config.data.DataStoreConfig;
+import org.vfny.geoserver.config.data.FeatureTypeConfig;
+import org.vfny.geoserver.config.data.StyleConfig;
+import org.vfny.geoserver.config.wfs.WFSConfig;
+import org.vfny.geoserver.config.wms.WMSConfig;
 import org.vfny.geoserver.global.Log4JFormatter;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import com.vividsolutions.jts.geom.Envelope;
 /**
  * XMLConfigReader purpose.
  * <p>
@@ -43,7 +65,7 @@ import org.vfny.geoserver.global.Log4JFormatter;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.4 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.5 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -527,11 +549,11 @@ public class XMLConfigReader {
 	/**
 	 * loadDataStore purpose.
 	 * <p>
-	 * Converts a DOM tree into a DataStoreConfig object.
+	 * Converts a DOM tree into a GlobalDataStore object.
 	 * </p>
-	 * @param dsElem a DOM tree to convert into a DataStoreConfig object.
+	 * @param dsElem a DOM tree to convert into a GlobalDataStore object.
 	 * @param nameSpaces the map of pre-loaded namespaces to check for inconsistencies.
-	 * @return A complete DataStoreConfig object loaded from the DOM tree provided.
+	 * @return A complete GlobalDataStore object loaded from the DOM tree provided.
 	 * @throws ConfigException When an error occurs.
 	 */
 	protected DataStoreConfig loadDataStore(Element dsElem, Map nameSpaces) throws ConfigException {
@@ -614,10 +636,10 @@ public class XMLConfigReader {
 	/**
 	 * loadDataStore purpose.
 	 * <p>
-	 * Converts a intoFile tree into a FeatureTypeConfig object. Uses loadFeaturePt2(Element) to interpret the XML.
+	 * Converts a intoFile tree into a GlobalFeatureType object. Uses loadFeaturePt2(Element) to interpret the XML.
 	 * </p>
-	 * @param infoFile a File to convert into a FeatureTypeConfig object. (info.xml)
-	 * @return A complete FeatureTypeConfig object loaded from the File handle provided.
+	 * @param infoFile a File to convert into a GlobalFeatureType object. (info.xml)
+	 * @return A complete GlobalFeatureType object loaded from the File handle provided.
 	 * @throws ConfigException When an error occurs.
 	 * @see loadFeaturePt2(Element)
 	 */
@@ -643,10 +665,10 @@ public class XMLConfigReader {
 	/**
 	 * loadFeaturePt2 purpose.
 	 * <p>
-	 * Converts a DOM tree into a FeatureTypeConfig object.
+	 * Converts a DOM tree into a GlobalFeatureType object.
 	 * </p>
-	 * @param fTypeRoot a DOM tree to convert into a FeatureTypeConfig object.
-	 * @return A complete FeatureTypeConfig object loaded from the DOM tree provided.
+	 * @param fTypeRoot a DOM tree to convert into a GlobalFeatureType object.
+	 * @return A complete GlobalFeatureType object loaded from the DOM tree provided.
 	 * @throws ConfigException When an error occurs.
 	 */
 	protected FeatureTypeConfig loadFeaturePt2(Element fTypeRoot) throws ConfigException{
@@ -800,7 +822,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.4 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.5 2004/01/03 00:19:20 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

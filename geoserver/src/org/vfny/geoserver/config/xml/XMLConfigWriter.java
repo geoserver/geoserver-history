@@ -17,15 +17,28 @@
 package org.vfny.geoserver.config.xml;
 
 
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.config.data.*;
-import org.vfny.geoserver.config.wfs.*;
-import org.vfny.geoserver.config.wms.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import com.vividsolutions.jts.geom.*;
+import org.vfny.geoserver.config.ContactConfig;
+import org.vfny.geoserver.config.GlobalConfig;
+import org.vfny.geoserver.config.ModelConfig;
+import org.vfny.geoserver.config.ServiceConfig;
+import org.vfny.geoserver.config.data.DataStoreConfig;
+import org.vfny.geoserver.config.data.FeatureTypeConfig;
+import org.vfny.geoserver.config.data.NameSpaceConfig;
+import org.vfny.geoserver.config.data.StyleConfig;
+import org.vfny.geoserver.config.wfs.WFSConfig;
+import org.vfny.geoserver.config.wms.WMSConfig;
+
+import com.vividsolutions.jts.geom.Envelope;
 /**
  * XMLConfigWriter purpose.
  * <p>
@@ -33,7 +46,7 @@ import com.vividsolutions.jts.geom.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -119,7 +132,7 @@ public class XMLConfigWriter {
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/03 00:19:20 dmzwiers Exp $
 	 */
 	protected class WriterHelper{
 		/**
@@ -535,7 +548,7 @@ public class XMLConfigWriter {
 	 * 
 	 * storeDataStore purpose.
 	 * <p>
-	 * Writes a DataStoreConfig into the WriterHelper provided.
+	 * Writes a GlobalDataStore into the WriterHelper provided.
 	 * </p>
 	 * @param cw The Configuration Writer
 	 * @param ds The Datastore. 
@@ -622,7 +635,7 @@ public class XMLConfigWriter {
 	 * </p>
 	 * @param dir The FeatureTypes directory
 	 * @throws ConfigException When an IO exception occurs.
-	 * @see storeFeature(FeatureTypeConfig,File)
+	 * @see storeFeature(GlobalFeatureType,File)
 	 */
 	protected void storeFeatures(File dir) throws ConfigException{
 		LOGGER.fine("In method storeFeatures");
@@ -644,7 +657,7 @@ public class XMLConfigWriter {
 	 * <p>
 	 * Writes a FeatureTypes into it's Directory.
 	 * </p>
-	 * @param dir The particular FeatureTypeConfig directory
+	 * @param dir The particular GlobalFeatureType directory
 	 * @throws ConfigException When an IO exception occurs.
 	 * @see storeFeatures(File)
 	 */
@@ -732,7 +745,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.4 2004/01/02 17:53:28 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/03 00:19:20 dmzwiers Exp $
  */
 class WriterUtils{
 	/**

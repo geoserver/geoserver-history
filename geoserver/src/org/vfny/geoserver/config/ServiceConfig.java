@@ -16,8 +16,8 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * ServiceConfig purpose.
@@ -27,7 +27,7 @@ import java.util.LinkedList;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceConfig.java,v 1.10.2.2 2003/12/31 23:35:16 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.10.2.3 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class ServiceConfig implements DataStructure{
 	

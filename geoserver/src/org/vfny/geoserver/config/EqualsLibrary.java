@@ -16,7 +16,9 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 //import com.vividsolutions.jts.geom.*;
 /**
  * EqualsLibrary purpose.
@@ -27,7 +29,7 @@ import java.util.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: EqualsLibrary.java,v 1.1.2.1 2003/12/31 20:05:33 dmzwiers Exp $
+ * @version $Id: EqualsLibrary.java,v 1.1.2.2 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public final class EqualsLibrary {
 	

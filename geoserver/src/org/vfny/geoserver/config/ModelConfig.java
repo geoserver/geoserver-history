@@ -16,9 +16,9 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.config.data.*;
-import org.vfny.geoserver.config.wfs.*;
-import org.vfny.geoserver.config.wms.*;
+import org.vfny.geoserver.config.data.CatalogConfig;
+import org.vfny.geoserver.config.wfs.WFSConfig;
+import org.vfny.geoserver.config.wms.WMSConfig;
 
 /**
  * ModelConfig purpose.
@@ -28,7 +28,7 @@ import org.vfny.geoserver.config.wms.*;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ModelConfig.java,v 1.1.2.2 2004/01/02 17:47:43 dmzwiers Exp $
+ * @version $Id: ModelConfig.java,v 1.1.2.3 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class ModelConfig implements DataStructure {
 	

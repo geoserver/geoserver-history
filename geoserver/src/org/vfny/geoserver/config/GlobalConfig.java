@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.config;
 
-import java.nio.charset.*;
-import java.util.logging.*;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
 
 
 /**
@@ -17,7 +17,7 @@ import java.util.logging.*;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.3.2.3 2004/01/01 00:20:23 jive Exp $
+ * @version $Id: GlobalConfig.java,v 1.3.2.4 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class GlobalConfig implements DataStructure {
     /** Sets the max number of Features returned by GetFeature */
@@ -46,7 +46,7 @@ public class GlobalConfig implements DataStructure {
      * Sets the max number of decimal places past the zero returned in a
      * GetFeature response.  Default is 4.
      * </p>
-     * DZ - should it be moved to FeatureTypeConfig level? JG - no WMS also has
+     * DZ - should it be moved to GlobalFeatureType level? JG - no WMS also has
      * a getFeature response
      */
     private int numDecimals = 8;
@@ -57,7 +57,7 @@ public class GlobalConfig implements DataStructure {
      * <p>
      * This could use some more testing from international users. What it does
      * is sets the encoding globally for all postgis database connections (the
-     * charset tag in FeatureTypeConfig), as well as specifying the encoding
+     * charset tag in GlobalFeatureType), as well as specifying the encoding
      * in the return
      * <code>org.vfny.geoserver.config.org.vfny.geoserver.config.xml</code>
      * header and mime type.

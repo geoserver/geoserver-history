@@ -16,19 +16,19 @@
  */
 package org.vfny.geoserver.config.data;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.vfny.geoserver.config.CloneLibrary;
 import org.vfny.geoserver.config.DataStructure;
 /**
- * DataStoreConfig purpose.
+ * GlobalDataStore purpose.
  * <p>
  * Used to describe a datastore, typically one specified in the catalog.xml config file. 
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.2 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class DataStoreConfig implements DataStructure{
 
@@ -47,13 +47,13 @@ public class DataStoreConfig implements DataStructure{
 	  /** a short description about this data store */
 	  private String _abstract;
 
-	  /** connection parameters to create the DataStoreConfig */
+	  /** connection parameters to create the GlobalDataStore */
 	  private Map connectionParams;
 	  
 	/**
-	 * DataStoreConfig constructor.
+	 * GlobalDataStore constructor.
 	 * <p>
-	 * Creates a DataStoreConfig to represent an instance with default data.
+	 * Creates a GlobalDataStore to represent an instance with default data.
 	 * </p>
 	 * @see defaultSettings()
 	 */
@@ -78,9 +78,9 @@ public class DataStoreConfig implements DataStructure{
 	  }
 	
 	/**
-	 * DataStoreConfig constructor.
+	 * GlobalDataStore constructor.
 	 * <p>
-	 * Creates a copy of the DataStoreConfig provided. If the DataStoreConfig provided 
+	 * Creates a copy of the GlobalDataStore provided. If the GlobalDataStore provided 
 	 * is null then default values are used. All the datastructures are cloned. 
 	 * </p>
 	 * @param ds The datastore to copy.
@@ -108,7 +108,7 @@ public class DataStoreConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#clone()
 	 * 
-	 * @return A copy of this DataStoreConfig
+	 * @return A copy of this GlobalDataStore
 	 */
 	  public Object clone(){
 	  	return new DataStoreConfig(this);
@@ -121,7 +121,7 @@ public class DataStoreConfig implements DataStructure{
 	 * </p>
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * 
-	 * @param obj The DataStoreConfig object to test.
+	 * @param obj The GlobalDataStore object to test.
 	 * @return true when the object passed is the same as this object.
 	 */
 	  public boolean equals(Object obj){

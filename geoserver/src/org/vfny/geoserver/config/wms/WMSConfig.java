@@ -18,8 +18,8 @@ package org.vfny.geoserver.config.wms;
 
 import java.util.Date;
 
-import org.vfny.geoserver.config.ServiceConfig;
 import org.vfny.geoserver.config.DataStructure;
+import org.vfny.geoserver.config.ServiceConfig;
 /**
  * GlobalWMS purpose.
  * <p>
@@ -28,7 +28,7 @@ import org.vfny.geoserver.config.DataStructure;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.1.2.2 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.1.2.3 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class WMSConfig implements DataStructure{
 

@@ -16,8 +16,8 @@
  */
 package org.vfny.geoserver.config.wfs;
 
-import org.vfny.geoserver.config.ServiceConfig;
 import org.vfny.geoserver.config.DataStructure;
+import org.vfny.geoserver.config.ServiceConfig;
 
 /**
  * GlobalWFS purpose.
@@ -27,7 +27,7 @@ import org.vfny.geoserver.config.DataStructure;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.1.2.2 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.3 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class WFSConfig implements DataStructure{
 	//public static final String WFS_FOLDER = "wfs/1.0.0/";

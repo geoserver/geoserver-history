@@ -16,12 +16,12 @@
  */
 package org.vfny.geoserver.config.data;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.vfny.geoserver.config.CloneLibrary;
-import org.vfny.geoserver.config.EqualsLibrary;
 import org.vfny.geoserver.config.DataStructure;
+import org.vfny.geoserver.config.EqualsLibrary;
 /**
  * GlobalCatalog purpose.
  * <p>
@@ -31,15 +31,15 @@ import org.vfny.geoserver.config.DataStructure;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @see DataSource
- * @see FeatureTypeConfig
+ * @see GlobalFeatureType
  * @see StyleConfig 
- * @version $Id: CatalogConfig.java,v 1.1.2.2 2004/01/02 17:53:29 dmzwiers Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.3 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class CatalogConfig implements DataStructure{
 	
 	/**
 	 * A set of datastores and their names.
-	 * @see org.vfny.geoserver.config.data.DataStoreConfig
+	 * @see org.vfny.geoserver.config.data.GlobalDataStore
 	 */
 	private Map dataStores;
 	
@@ -51,7 +51,7 @@ public class CatalogConfig implements DataStructure{
 	
 	/**
 	 * A set of featuretypes and their names.
-	 * @see org.vfny.geoserver.config.data.FeatureTypeConfig
+	 * @see org.vfny.geoserver.config.data.GlobalFeatureType
 	 */
 	private Map featuresTypes;
 	

@@ -15,9 +15,9 @@
  *
  */
 package org.vfny.geoserver.config.data;
-import org.vfny.geoserver.config.DataStructure;
-
 import java.io.File;
+
+import org.vfny.geoserver.config.DataStructure;
 /**
  * StyleConfig purpose.
  * <p>
@@ -29,7 +29,7 @@ import java.io.File;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleConfig.java,v 1.1.2.1 2003/12/31 23:35:14 dmzwiers Exp $
+ * @version $Id: StyleConfig.java,v 1.1.2.2 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public class StyleConfig implements DataStructure {
 	

@@ -16,13 +16,12 @@
  */
 package org.vfny.geoserver.config;
 
+import java.lang.reflect.Constructor;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 
-import java.lang.reflect.Constructor;
-import com.vividsolutions.jts.geom.*;
-import org.vfny.geoserver.config.DataStructure;
+import com.vividsolutions.jts.geom.Envelope;
 /**
  * CloneLibrary purpose.
  * <p>
@@ -32,7 +31,7 @@ import org.vfny.geoserver.config.DataStructure;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.1.2.1 2003/12/31 20:05:33 dmzwiers Exp $
+ * @version $Id: CloneLibrary.java,v 1.1.2.2 2004/01/03 00:19:20 dmzwiers Exp $
  */
 public final class CloneLibrary {
 	
