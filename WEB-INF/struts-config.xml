@@ -197,7 +197,7 @@
        		path="/config/data/store.do"/>
        	<forward
        		name="config.data.store.new"
-       		path="/config/data/storesNew.do"/>
+       		path="/config/data/storeNew.do"/>
        	<forward
        		name="config.data.store.editor"
        		path="/config/data/storeEditor.do"/>
@@ -386,10 +386,10 @@
         	path="/config/data/namespace"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.namespace"/>
-        <!--<action
+        <action
         	path="/config/data/namespaceNew"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.namespace.new"/> -->
+        	parameter="config.data.namespace.new"/>
         <action
         	path="/config/data/namespaceEditor"
         	type="org.apache.struts.actions.ForwardAction"
@@ -495,7 +495,7 @@
         	validate="true"
         	input="/config/data/namespaceSelect"/>
         <action
-        	path="/config/data/namespaceNew"
+        	path="/config/data/namespaceNewSubmit"
         	type="org.vfny.geoserver.action.data.DataNamespacesNewAction"
         	name="dataNamespacesNewForm"
         	scope="request"

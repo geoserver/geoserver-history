@@ -54,9 +54,12 @@ public class DataStylesAction extends ConfigAction {
         
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
-        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
-        String _new = HTMLEncoder.decode(messages.getMessage(locale, "label.new"));
+        //String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        //String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        //String _new = HTMLEncoder.decode(messages.getMessage(locale, "label.new"));
+        String edit = "edit";
+        String delete = "delete";
+        String _new = "new";
         String submit = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));        
 
         if (action.equals(edit) || action.equals(submit)) {
@@ -70,7 +73,7 @@ public class DataStylesAction extends ConfigAction {
         if (action.equals(edit)) {
             stylesForm.reset(mapping, request);
 
-            return mapping.findForward("config.data.styles");
+            return mapping.findForward("config.data.style");
         }
 
         if (action.equals(delete)) {
@@ -88,6 +91,6 @@ public class DataStylesAction extends ConfigAction {
 
         stylesForm.reset(mapping, request);
 
-        return mapping.findForward("config.data.styles");
+        return mapping.findForward("config.data.style");
     }
 }
