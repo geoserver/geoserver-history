@@ -4,11 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
-import org.geotools.resources.Log4JFormatter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import java.io.FileReader;
@@ -30,7 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * the future, such as for a WMS or WCS.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsConfig.java,v 1.15 2003/09/12 16:24:11 cholmesny Exp $
+ * @version $Id: WfsConfig.java,v 1.16 2003/09/16 00:48:41 cholmesny Exp $
  */
 public class WfsConfig implements java.io.Serializable {
     public static final String NAMESPACE_TAG = "Namespace";
@@ -172,7 +170,7 @@ public class WfsConfig implements java.io.Serializable {
             wfsConfig.setCharSet(findTextFromTag(configElem, CHARSET_TAG));
 
             String delimiter = findTextFromTag(configElem, DELIMIT_TAG);
-            LOGGER.info("delimiter is " + delimiter);
+            LOGGER.finer("delimiter is " + delimiter);
             wfsConfig.setFilePrefixDelimiter(delimiter);
 
             //HashMap namespaces = new HashMap();
