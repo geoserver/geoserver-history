@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.21 2004/02/09 23:29:49 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.22 2004/02/12 00:43:20 dmzwiers Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -278,6 +278,7 @@ public class XMLConfigWriter {
         String u = null;
         String t = "";
         boolean gml = false;
+        int serviceLevel=0;
 
         if (obj instanceof WFSDTO) {
             WFSDTO w = (WFSDTO) obj;
@@ -337,6 +338,10 @@ public class XMLConfigWriter {
 
         if (gml) {
             cw.valueTag("gmlPrefixing", gml + "");
+        }
+
+        if (serviceLevel!=0) {
+        	cw.valueTag("serviceLevel", serviceLevel + "");
         }
 
         if ((s.getMaintainer() != null) && (s.getMaintainer() != "")) {
@@ -802,7 +807,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.21 2004/02/09 23:29:49 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.22 2004/02/12 00:43:20 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */

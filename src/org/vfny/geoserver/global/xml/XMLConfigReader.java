@@ -63,7 +63,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.31 2004/02/09 23:29:49 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.32 2004/02/12 00:43:20 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -477,6 +477,9 @@ public class XMLConfigReader {
             wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(
                     ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
                     "value", false));
+            wfs.setServiceLevel(ReaderUtils.getIntAttribute(
+            		ReaderUtils.getChildElement(wfsElement, "serviceLevel"),
+					"value", false,WFSDTO.BASIC));
         } catch (Exception e) {
         }
 
