@@ -275,23 +275,27 @@ public class TypeRepository {
 	LOG.finer("checking isLocked on: " + typeName + ", " + lockId + ", " + filter);
 	List features = getFidFeatures(typeName, filter);    
 	//LOG.finer("locked features = " + lockedFeatures);
+	if (lockId != null && !lockId.equals("") && !lockIdExists(lockId)){
+	    throw new WfsException("attempting a transaction with invalid lockId " + lockId
+				   + ".  It either never existed or has expired");
+	}
+	//boolean featuresAreLocked = false;
 	for (Iterator i = features.iterator(); i.hasNext();){
 	    String curFid = i.next().toString();
 	    LOG.finest("checking feature: " + curFid);
 	    if (lockedFeatures.containsKey(curFid)){
-		if (lockId == null) {
+		if (lockId == null || lockId.equals("")) {
 		    return true;
 		} else {
 		    String targetLockId = 
 			((InternalLock)lockedFeatures.get(curFid)).getId();
 		    if (!targetLockId.equals(lockId)){
 			return true;
-		    }
-		    
+		    } 
 		}
 	    }
 	}
-	return false;//lockedFeatures.containsKey(typeName);
+	return false;
     }
 
     /**
@@ -403,6 +407,10 @@ public class TypeRepository {
 	lock.addFeatures(lockAll, getFidFeatures(typeName, filter));
 	LOG.finest("locked " + typeName + " with: " + lock.getId());
 	return lockId;
+    }
+
+    public boolean lockIdExists(String lockId){
+	return (locks.get(lockId) != null);
     }
 
     /**
