@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GlobalConfiguration version="0.0.13" updateSequence="0">
+<GlobalConfiguration>
 		<Name>FreeFS</Name>
-		<Title>The VFNY OWS1 Basemap Server</Title>
+		<Title>The Open Planning Project Basemap Server</Title>
 		<Abstract>This is a test server.  It contains some basemap data from New York City.</Abstract>
-		<Keywords>WFS, OGS, OWS1</Keywords>
-		<OnlineResource>http://beta.vfny.org/geoserver</OnlineResource>
+		<Keywords>WFS, CITE, New York</Keywords>
+		<OnlineResource>http://www.openplans.org/</OnlineResource>
 		<Fees>This is a free server.</Fees>
 		<AccessConstraints>There are no access constraints to this server.</AccessConstraints>
-		<URL>http://beta.vfny.org/geoserver</URL>
-		<Maintainer>Vision for New York</Maintainer>
+		<URL>http://beta.openplans.org/geoserver</URL>
+		<Maintainer>The Open Planning Project</Maintainer>
+                <Verbose value="true"/>
+                <Namespace uri="http://www.openplans.org/topp" 
+                           prefix="topp"/>
 </GlobalConfiguration>
