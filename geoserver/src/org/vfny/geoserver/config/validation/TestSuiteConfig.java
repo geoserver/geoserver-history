@@ -180,15 +180,15 @@ public class TestSuiteConfig{
 		TestSuiteDTO ts = new TestSuiteDTO();
     	ts.setName(name);
     	ts.setDescription(description);
-    	Map tests = new HashMap();
+    	Map myTests = new HashMap();
 
     	Iterator i = this.tests.keySet().iterator();
 
     	while (i.hasNext()) {
     		TestConfig t = (TestConfig)  this.tests.get(i.next());
-    		tests.put(t.getName(),t.toDTO(plugIns));
+    		myTests.put(t.getName(),t.toDTO(plugIns));
     	}
-    	ts.setTests(tests);
+    	ts.setTests(myTests);
     	return ts;
     }
     
