@@ -47,3 +47,9 @@ xxx- FeatureTransformer handle null atts.DONE
   compliant we must report all errors, but that kills the speed gains
   of not holding the whole response string in memory.
 	for content type extensions
+- Exception handling: I've enabled full stack traces in response for most
+  errors.  What I'd like to see is most all classes try to only throw
+  ServiceExceptions, so that user configuration and other expected errors
+  are wrapped, and report themselves back as one line, while ones that are
+  the result of programming errors send themselves as full stack traces, so 
+  that it's easier for us to get at the problem.
