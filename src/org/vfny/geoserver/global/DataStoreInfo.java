@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.8 2004/02/02 08:56:45 jive Exp $
+ * @version $Id: DataStoreInfo.java,v 1.9 2004/02/02 09:34:31 jive Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype
     implements DataStoreMetaData {
@@ -126,10 +126,12 @@ public class DataStoreInfo extends GlobalLayerSupertype
 	    				entry.setValue( file.toURL().toExternalForm() );
 	    			}	    			
 	    		}
-	    		// consider 
-	    		// if( value instance of URL ){
-	    		//    URL url = (URL) value;
-	    		//    ...	    		
+	    		else if (value instanceof URL && ((URL)value).getProtocol().equals("file")){
+	    			URL url = (URL) value;
+	    			String path = url.getPath();
+	    			File file = new File( data.getBaseDir(), path );
+    				entry.setValue( file.toURL() );
+	    		}	    	
     		}
     		catch( MalformedURLException ignore ){
     			// ignore attempt to fix relative paths
