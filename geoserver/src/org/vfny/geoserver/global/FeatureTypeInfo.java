@@ -35,29 +35,95 @@ import java.util.Map;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.36 2004/03/14 05:23:11 cholmesny Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.37 2004/04/16 05:55:03 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
+    /**
+     * Id used to locate parent DataStoreInfo using Data Catalog.
+     */
     private String dataStoreId;
+    /**
+     * Bounding box in Lat Long of the extent of this FeatureType.
+     * <p>
+     * Note reprojection may be required to derive this value.
+     * </p>
+     */
     private Envelope latLongBBox;
+    /**
+     * SRS number used to locate Coordidate Reference Systems
+     * <p>
+     * This will be used for reprojection and such like.
+     * </p>
+     */
     private int SRS;
+    
+    /**
+     * List of AttributeTypeInfo representing the schema.xml information.
+     * <p>
+     * Used to define the order and manditoryness of FeatureType attributes
+     * during query (re)construction.
+     * </p> 
+     */
     private List schema;
+    
+    /** Name of elment that is an instance of schemaBase */
     private String schemaName;
+    
+    /** Base schema (usually NullType) defining manditory attribtues */
     private String schemaBase;
-    private String name;
+    
+    /** typeName as defined by gt2 DataStore */
+    private String typeName;
+    
+    /**
+     * Directory where featureType is loaded from.
+     * 
+     * This may contain metadata files.
+     */
     private String dirName;
+    /**
+     * Abstract used to describe FeatureType
+     */
     private String _abstract;
+    /**
+     * List of keywords for Web Register Services
+     */
     private List keywords;
+    /**
+     * Number of decimals used in GML output.
+     */
     private int numDecimals;
+    /**
+     * Magic query used to limit scope of this FeatureType.
+     */
     private Filter definitionQuery = null;
+    /**
+     * Default style used to render this FeatureType with WMS
+     */
     private String defaultStyle;
+    /**
+     * Title of this FeatureType as presented to End-Users.
+     * <p>
+     * Think of this as the display name on the off chance that typeName
+     * is considered ugly.
+     * </p>
+     */
     private String title;
 
-    /** ref to parent set of datastores. */
+    /**
+     * ref to parent set of datastores.
+     * <p>
+     * This backpointer to our Catalog can be used to locate our DataStore
+     * using the dataStoreId.
+     * </p>
+     */
     private Data data;
+    /**
+     * MetaData used by apps to squirel information away for a rainy day.
+     */
     private Map meta;
 
     /**
@@ -65,12 +131,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * 
      * <p>
      * This will be null unless populated by schema or DTO.
+     * Even if the DTO provides one this list will be lazily
+     * created - so use the accessors.
      * </p>
      */
-    /** will be lazily generated */
     private String xmlSchemaFrag;
 
-    /** will be lazily created */
+    /**
+     * The real geotools2 featureType cached for sanity checks.
+     * <p>
+     * This will be lazily created so use the accessors
+     * </p>
+     */
     private FeatureType ft;
 
     /**
@@ -96,7 +168,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         dirName = dto.getDirName();
         keywords = dto.getKeywords();
         latLongBBox = dto.getLatLongBBox();
-        name = dto.getName();
+        typeName = dto.getName();
         numDecimals = dto.getNumDecimals();
 
         List tmp = dto.getSchemaAttributes();
@@ -136,7 +208,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         dto.setDirName(dirName);
         dto.setKeywords(keywords);
         dto.setLatLongBBox(latLongBBox);
-        dto.setName(name);
+        dto.setName(typeName);
         dto.setNumDecimals(numDecimals);
 
         List tmp = new LinkedList();
@@ -237,16 +309,17 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
         return getDataStoreInfo().getNameSpace();
     }
-
+    
     /**
-     * overrides getName to return full type name with namespace prefix
+     * Complete xml name (namespace:element> for this FeatureType.
+     * 
+     * This is the full type name with namespace prefix.
      *
      * @return String the FeatureTypeInfo name - should be unique for the
      *         parent Data instance.
      */
-    public String getName() {
-        return ((DataStoreInfo) data.getDataStoreInfo(dataStoreId)).getNameSpace()
-                .getPrefix() + ":" + name;
+    public String getName() {        
+        return getPrefix() + ":" + typeName;
     }
 
     /**
@@ -271,14 +344,17 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
     }
 
     /**
-     * Same as getName()
+     * Access the name of this FeatureType.
+     * <p>
+     * This is the typeName as provided by the real gt2 DataStore.
+     * </p>
      *
      * @return String getName()
      *
      * @see getName()
      */
     public String getShortName() {
-        return name;
+        return typeName;
     }
 
     /**
@@ -299,7 +375,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         }
 
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        String typeName = name;
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
 
         if (((schema == null) || schema.isEmpty())) { // &&
@@ -349,7 +424,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      */
     public Envelope getBoundingBox() throws IOException {
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(name);
+        FeatureSource realSource = dataStore.getFeatureSource(typeName);
 
         return realSource.getBounds();
     }
@@ -741,7 +816,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
                 }
 
                 try {
-                    ft = FeatureTypeFactory.newFeatureType(attributes, name);
+                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName);
                 } catch (SchemaException ex) {
                 } catch (FactoryConfigurationError ex) {
                 }
@@ -849,7 +924,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
                                       .getDataStore();
 
             try {
-                FeatureType schema = dataStore.getSchema(name);
+                FeatureType schema = dataStore.getSchema(typeName);
                 info.sync(schema.getAttributeType(attributeName));
             } catch (IOException e) {
             }
@@ -859,7 +934,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
                                       .getDataStore();
 
             try {
-                FeatureType schema = dataStore.getSchema(name);
+                FeatureType schema = dataStore.getSchema(typeName);
                 info = new AttributeTypeInfo(schema.getAttributeType(
                             attributeName));
             } catch (IOException e) {
