@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReaderTest.java,v 1.2 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: XMLConfigReaderTest.java,v 1.3 2004/01/20 00:52:30 dmzwiers Exp $
  */
 public class XMLConfigReaderTest extends TestCase {
 
@@ -120,7 +120,7 @@ System.out.println("***************");
 					r = false;
 				else{
 					r = r && key == f.getName();
-					r = r && f.getSchema() != null;
+					r = r && f.getSchemaAttributes() != null;
 				} 
 			}
 		}
@@ -168,7 +168,7 @@ System.out.println("***************");
 							r = false;
 						else{
 							r = r && key == f.getName();
-							r = r && f.getSchema() != null;
+							r = r && f.getSchemaAttributes() != null;
 						}
 					} 
 				}

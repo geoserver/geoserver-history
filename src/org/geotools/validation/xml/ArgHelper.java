@@ -41,7 +41,7 @@ import org.geotools.gml.producer.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+ * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
  */
 class ArgHelper {
 	
@@ -54,7 +54,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected interface Mapping{
 		
@@ -121,16 +121,18 @@ class ArgHelper {
 	 * <p>
 	 * Returns an instance for the specified argument type from the Element provided.
 	 * </p>
-	 * @param typeName String the argument type name.
+	 * @param elementName String the argument element name.
 	 * @param value Element the element to create the Argument from.
 	 * @return The Specified argument in Object form.
 	 */
-	public static Object getArgumentInstance(String typeName, Element value) throws ValidationException{
-		if(typeName == null)
+	public static Object getArgumentInstance(String elementName, Element value) throws ValidationException{
+		if(elementName == null)
 			throw new NullPointerException("A Typename must be specified.");
-		for(int i=0;i<argumentTypeMappings.length;i++)
-			if(typeName.equals(argumentTypeMappings[i].getElementName()))
+		for(int i=0;i<argumentTypeMappings.length;i++){
+			if(elementName.equals(argumentTypeMappings[i].getElementName())){
 				return argumentTypeMappings[i].getInstance(value);
+			}
+		}
 		return null;
 	}
 	
@@ -179,7 +181,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class FilterMapping implements Mapping{
 		
@@ -271,7 +273,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class GeometryMapping implements Mapping{
 		
@@ -353,7 +355,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class EnvelopeMapping implements Mapping{
 		
@@ -460,7 +462,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class ShortMapping implements Mapping{
 		
@@ -544,7 +546,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class IntegerMapping implements Mapping{
 		
@@ -627,7 +629,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class LongMapping implements Mapping{
 		
@@ -710,7 +712,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class FloatMapping implements Mapping{
 		
@@ -793,7 +795,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class DoubleMapping implements Mapping{
 		
@@ -876,7 +878,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class DateMapping implements Mapping{
 		
@@ -963,7 +965,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class URIMapping implements Mapping{
 		
@@ -976,7 +978,7 @@ class ArgHelper {
 		 * @return the type name
 		 */
 		public String getType(){
-			return "xs:anyUri";
+			return "xs:anyURI";
 		}
 		
 		/**
@@ -988,7 +990,7 @@ class ArgHelper {
 		 * @return the element name
 		 */
 		public String getElementName(){
-			return "anyUri";
+			return "anyURI";
 		}
 		
 		/**
@@ -1036,7 +1038,7 @@ class ArgHelper {
 			if(!(obj instanceof URI))
 				throw new ClassCastException("Object of type Long was expected.");
 
-			return "<anyUri>"+((URI)obj).toString()+"</anyUri>\n";
+			return "<anyURI>"+((URI)obj).toString()+"</anyURI>\n";
 		}
 	}
 
@@ -1048,7 +1050,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class BooleanMapping implements Mapping{
 		
@@ -1131,7 +1133,7 @@ class ArgHelper {
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
 	 * @author $Author: dmzwiers $ (last modification)
-	 * @version $Id: ArgHelper.java,v 1.3 2004/01/20 00:36:51 dmzwiers Exp $
+	 * @version $Id: ArgHelper.java,v 1.4 2004/01/20 00:52:30 dmzwiers Exp $
 	 */
 	protected static class StringMapping implements Mapping{
 		
