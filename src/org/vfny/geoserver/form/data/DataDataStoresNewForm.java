@@ -1,7 +1,4 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
+
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -30,8 +27,8 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.3 2004/01/21 00:26:08 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresNewForm.java,v 1.4 2004/01/31 00:27:25 jive Exp $
  */
 public class DataDataStoresNewForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");

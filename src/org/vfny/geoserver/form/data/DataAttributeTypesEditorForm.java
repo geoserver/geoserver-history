@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 13, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
+
 package org.vfny.geoserver.form.data;
 
 import org.apache.struts.action.ActionErrors;
@@ -47,25 +42,18 @@ public class DataAttributeTypesEditorForm extends ActionForm {
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
         this.request = request;
-        System.out.println("Run Level 0");
-
         FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession()
                                                                 .getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
-        System.out.println("Run Level 1");
 
         AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) request.getSession()
                                                                           .getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
-        System.out.println("Run Level 2");
+
         nillible = config.isNillable();
-        System.out.println("Run Level 3");
         minOccurs = Integer.toString(config.getMinOccurs());
         maxOccurs = Integer.toString(config.getMaxOccurs());
         name = config.getName();
-        System.out.println("Run Level 4");
         selectedType = config.getType();
         fragment = config.getFragment();
-        System.out.println("Run Level 5");
-        System.out.println("Run Level 6");
     }
 
     public ActionErrors validate(ActionMapping mapping,
@@ -136,15 +124,6 @@ public class DataAttributeTypesEditorForm extends ActionForm {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param name The name to set.
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**

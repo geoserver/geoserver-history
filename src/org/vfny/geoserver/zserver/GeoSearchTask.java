@@ -63,7 +63,7 @@ import com.k_int.IR.Syntaxes.SUTRS;
  *
  * @author Chris Holmes, TOPP
  * @author:     Ian Ibbotson (ian.ibbotson@k-int.com) Company:     KI
- * @version $Id: GeoSearchTask.java,v 1.7 2004/01/12 21:01:26 dmzwiers Exp $ based on DemoSearchTask:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
+ * @version $Id: GeoSearchTask.java,v 1.8 2004/01/31 00:27:24 jive Exp $ based on DemoSearchTask:  Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
  */
 public class GeoSearchTask extends SearchTask
     implements InformationFragmentSource {

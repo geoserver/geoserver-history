@@ -12,6 +12,7 @@ import org.vfny.geoserver.requests.wfs.LockRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockKvpReader.java,v 1.4 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: LockKvpReader.java,v 1.5 2004/01/31 00:27:26 jive Exp $
  */
 public class LockKvpReader extends KvpRequestReader {
     /** Class logger */
@@ -45,9 +46,9 @@ public class LockKvpReader extends KvpRequestReader {
      *         request.
      * @throws WfsException DOCUMENT ME!
      */
-    public Request getRequest() throws ServiceException {
+    public Request getRequest(HttpServletRequest request) throws ServiceException {
         LockRequest currentRequest = new LockRequest();
-
+        currentRequest.setHttpServletRequest(request);
         // set global request parameters
         LOGGER.finest("setting global request parameters");
 

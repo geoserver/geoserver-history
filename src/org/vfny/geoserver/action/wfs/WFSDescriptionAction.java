@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Dec 29, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package org.vfny.geoserver.action.wfs;
 
 import org.apache.struts.action.ActionForm;

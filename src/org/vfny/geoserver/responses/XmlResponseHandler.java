@@ -14,7 +14,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: XmlResponseHandler.java,v 1.6 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: XmlResponseHandler.java,v 1.7 2004/01/31 00:27:24 jive Exp $
  */
 public abstract class XmlResponseHandler implements ResponseHandler {
     /** blank attributes to be used when none are needed. */

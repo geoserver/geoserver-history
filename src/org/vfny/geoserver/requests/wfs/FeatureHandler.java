@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureHandler.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: FeatureHandler.java,v 1.5 2004/01/31 00:27:28 jive Exp $
  */
 public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler {

@@ -15,7 +15,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WFSCapabilitiesResponse.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: WFSCapabilitiesResponse.java,v 1.5 2004/01/31 00:27:25 jive Exp $
  */
 public class WFSCapabilitiesResponse extends CapabilitiesResponse {
     /**

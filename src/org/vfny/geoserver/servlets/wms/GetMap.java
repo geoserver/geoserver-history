@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * request
  *
  * @author Gabriel Roldán
- * @version $Id: GetMap.java,v 1.4 2004/01/21 00:26:09 dmzwiers Exp $
+ * @version $Id: GetMap.java,v 1.5 2004/01/31 00:27:29 jive Exp $
  */
 public class GetMap extends WMService {
     /**

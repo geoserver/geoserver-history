@@ -26,7 +26,7 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.3 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.4 2004/01/31 00:27:23 jive Exp $
  */
 public class WFS extends Service {
     private boolean gmlPrefixing;

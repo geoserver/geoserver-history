@@ -13,7 +13,7 @@ import org.vfny.geoserver.requests.wfs.TransactionRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This utility reads in a Delete KVP request and turns it into an appropriate
@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DeleteKvpReader.java,v 1.4 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: DeleteKvpReader.java,v 1.5 2004/01/31 00:27:26 jive Exp $
  */
 public class DeleteKvpReader extends KvpRequestReader {
     /** Class logger */
@@ -41,14 +41,17 @@ public class DeleteKvpReader extends KvpRequestReader {
     /**
      * Returns Delete request object.
      *
+     * @param request the servlet request to get the GeoServer config from
+     *
      * @return Delete request objects
      *
      * @throws WfsException If no type is found, if filter length doesn't match
      *         feature length, or if no filter is found.  We don't want  users
      *         to accidentally delete their whole db.
      */
-    public Request getRequest() throws WfsException {
+    public Request getRequest(HttpServletRequest request) throws WfsException {
         TransactionRequest parentRequest = new TransactionRequest();
+        parentRequest.setHttpServletRequest(request);
         boolean releaseAll = true;
 
         // set global request parameters

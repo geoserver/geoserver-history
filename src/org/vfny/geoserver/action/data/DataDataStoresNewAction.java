@@ -1,7 +1,4 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
+
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -28,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresNewAction.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresNewAction.java,v 1.5 2004/01/31 00:27:24 jive Exp $
  */
 public class DataDataStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,

@@ -20,17 +20,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.5 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.6 2004/01/31 00:27:28 jive Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers.wms");
+
+    /**the request wich will be built by getRequest method*/
+    private GetMapRequest request;
 
     /**
      * Creates a new GetMapKvpReader object.
@@ -45,13 +49,17 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * Produces a <code>GetMapRequest</code> instance by parsing the GetMap
      * mandatory, optional and custom parameters.
      *
+     * @param httpRequest the servlet request who's application object holds the
+     * server configuration
+     *
      * @return a <code>GetMapRequest</code> completely setted up upon the
      *         parameters passed to this reader
      *
      * @throws ServiceException DOCUMENT ME!
      */
-    public Request getRequest() throws ServiceException {
-        GetMapRequest request = new GetMapRequest();
+    public Request getRequest(HttpServletRequest httpRequest) throws ServiceException {
+        request = new GetMapRequest();
+        request.setHttpServletRequest(httpRequest);
         String version = getRequestVersion();
         request.setVersion(version);
 
@@ -64,7 +72,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Parses the optional parameters:
-     * 
+     *
      * <ul>
      * <li>
      * SRS
@@ -79,7 +87,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * BGCOLOR
      * </li>
      * </ul>
-     * 
+     *
      *
      * @param request DOCUMENT ME!
      *
@@ -95,10 +103,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Parses the mandatory GetMap request parameters:
-     * 
+     *
      * <p>
      * Mandatory parameters:
-     * 
+     *
      * <ul>
      * <li>
      * LAYERS
@@ -160,7 +168,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * parses the following custom parameters for the GetMap request handling:
-     * 
+     *
      * <ul>
      * <li>
      * FILTERS if present, must contain a list of filters, exactly one per
@@ -181,7 +189,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * SVG map
      * </li>
      * </ul>
-     * 
+     *
      *
      * @param request DOCUMENT ME!
      * @param layers DOCUMENT ME!
@@ -318,11 +326,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         Map configuredStyles = null;
 
-        try {
-            configuredStyles = getRequest().getGeoServer().getData().getStyles();
-        } catch (ServiceException e) {
-            throw new WmsException(e);
-        }
+        configuredStyles = request.getGeoServer().getData().getStyles();
 
         String st;
 
@@ -382,11 +386,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
         Data catalog = null;
 
-        try {
-            catalog = getRequest().getGeoServer().getData();
-        } catch (ServiceException e) {
-            throw new WmsException(e);
-        }
+        catalog = request.getGeoServer().getData();
 
         String layerName = null;
         FeatureTypeInfo ftype = null;

@@ -19,7 +19,7 @@ import java.util.List;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.9 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.10 2004/01/31 00:27:24 jive Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";

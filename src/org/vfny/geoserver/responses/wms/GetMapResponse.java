@@ -26,7 +26,7 @@ import java.util.List;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.5 2004/01/21 00:26:11 dmzwiers Exp $
+ * @version $Id: GetMapResponse.java,v 1.6 2004/01/31 00:27:29 jive Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */

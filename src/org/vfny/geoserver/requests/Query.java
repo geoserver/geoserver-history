@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Query.java,v 1.13 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: Query.java,v 1.14 2004/01/31 00:27:25 jive Exp $
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?

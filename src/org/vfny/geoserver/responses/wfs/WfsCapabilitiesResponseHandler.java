@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.9 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.10 2004/01/31 00:27:25 jive Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";

@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 19, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
+
 package org.vfny.geoserver.form.data;
 
 import org.apache.struts.action.ActionErrors;
@@ -23,8 +18,8 @@ import javax.servlet.http.HttpServletRequest;
  * DataFeatureTypesNewForm purpose.
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataFeatureTypesNewForm.java,v 1.3 2004/01/21 00:26:08 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataFeatureTypesNewForm.java,v 1.4 2004/01/31 00:27:25 jive Exp $
  */
 public class DataFeatureTypesNewForm extends ActionForm {
     String selectedNewFeatureType;

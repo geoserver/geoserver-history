@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Roldán
- * @version $Id: SVGMapResponse.java,v 1.5 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: SVGMapResponse.java,v 1.6 2004/01/31 00:27:28 jive Exp $
  */
 public class SVGMapResponse extends GetMapDelegate {
     private static final Logger LOGGER = Logger.getLogger(

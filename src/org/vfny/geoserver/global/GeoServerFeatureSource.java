@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureSource.java,v 1.5 2004/01/21 00:58:29 jive Exp $
+ * @version $Id: GeoServerFeatureSource.java,v 1.6 2004/01/31 00:27:23 jive Exp $
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */

@@ -9,7 +9,7 @@ package org.vfny.geoserver.requests;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesRequest.java,v 1.3 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: CapabilitiesRequest.java,v 1.4 2004/01/31 00:27:25 jive Exp $
  */
 public class CapabilitiesRequest extends Request {
     /**

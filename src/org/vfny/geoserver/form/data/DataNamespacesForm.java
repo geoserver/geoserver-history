@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 8, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package org.vfny.geoserver.form.data;
 
 import org.apache.struts.action.ActionErrors;
@@ -33,6 +28,7 @@ public class DataNamespacesForm extends ActionForm {
     private String selectedNamespace;
     private String action;
     private TreeSet namespaces;
+    private HttpServletRequest request;
 
     /*
      * Because of the way that STRUTS works, if the user does not check the default box,
@@ -46,8 +42,9 @@ public class DataNamespacesForm extends ActionForm {
      */
     private boolean defaultChecked = false;
 
-    public void reset(ActionMapping arg0, HttpServletRequest arg1) {
-        super.reset(arg0, arg1);
+    public void reset(ActionMapping arg0, HttpServletRequest request) {
+        super.reset(arg0, request);
+        this.request = request;
 
         defaultChecked = false;
         action = "";
@@ -59,7 +56,7 @@ public class DataNamespacesForm extends ActionForm {
 
         NameSpaceConfig nsConfig;
 
-        selectedNamespace = (String) context.getAttribute("selectedNamespace");
+        selectedNamespace = (String) request.getSession().getAttribute("selectedNamespace");
 
         nsConfig = config.getNameSpace(selectedNamespace);
 
@@ -167,8 +164,8 @@ public class DataNamespacesForm extends ActionForm {
      * @param string
      */
     public void setSelectedNamespace(String string) {
-        ServletContext context = getServlet().getServletContext();
-        context.setAttribute("selectedNamespace", string);
+        
+        request.getSession().setAttribute("selectedNamespace", string);
         selectedNamespace = string;
     }
 

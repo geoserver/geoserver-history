@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.3 2004/01/14 22:54:26 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.4 2004/01/31 00:27:23 jive Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */

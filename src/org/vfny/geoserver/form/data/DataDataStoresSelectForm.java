@@ -1,7 +1,4 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
+
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -20,9 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Select current DataStore for edit or delete Action.
  *
+<<<<<<< DataDataStoresSelectForm.java
+ * @author rgould, Refractions Research, Inc.
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataDataStoresSelectForm.java,v 1.5 2004/01/31 00:27:25 jive Exp $
+=======
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.4 2004/01/21 01:26:54 jive Exp $
+ * @version $Id: DataDataStoresSelectForm.java,v 1.5 2004/01/31 00:27:25 jive Exp $
+>>>>>>> 1.4
  */
 public class DataDataStoresSelectForm extends ActionForm {
     /** Action that spawned us must be "edit" or "delete" */
@@ -40,12 +43,10 @@ public class DataDataStoresSelectForm extends ActionForm {
      */
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
-        System.out.println("SELECT RESET");
 
         // Pass data from congif layer to screen
         // REVIST: Bad Design JSP should lookup data itself!
         dataStoreIds = ConfigRequests.getDataConfig(request).listDataStoreIds();
-        System.out.println("####### " + dataStoreIds);
 
         // Usual reset stuff
         selectedDataStoreId = null; // nothing selected yet        

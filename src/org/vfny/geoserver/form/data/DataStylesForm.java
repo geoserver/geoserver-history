@@ -45,9 +45,11 @@ public class DataStylesForm extends ActionForm {
      * -rgould
      */
     private boolean defaultChecked = false;
+	private HttpServletRequest request;
 
-    public void reset(ActionMapping arg0, HttpServletRequest arg1) {
-        super.reset(arg0, arg1);
+    public void reset(ActionMapping arg0, HttpServletRequest request) {
+        super.reset(arg0, request);
+        this.request = request;
 
         defaultChecked = false;
         action = "";
@@ -59,7 +61,7 @@ public class DataStylesForm extends ActionForm {
 
         StyleConfig sConfig;
 
-        selectedStyle = (String) context.getAttribute("selectedStyle");
+        selectedStyle = (String) request.getSession().getAttribute("selectedStyle");
 
         sConfig = config.getStyle(selectedStyle);
 
@@ -185,8 +187,7 @@ public class DataStylesForm extends ActionForm {
      * @param string
      */
     public void setSelectedStyle(String string) {
-        ServletContext context = getServlet().getServletContext();
-        context.setAttribute("selectedStyle", string);
+        request.getSession().setAttribute("selectedStyle", string);
         selectedStyle = string;
     }
 

@@ -31,7 +31,7 @@ import java.util.Map;
  * dsiDto.setConnectionParams(m); </code>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.3 2004/01/21 00:37:56 dmzwiers Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class DataStoreInfoDTO implements DataTransferObject {
     /** unique datastore identifier */

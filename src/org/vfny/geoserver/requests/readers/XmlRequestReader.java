@@ -30,7 +30,7 @@ import javax.xml.parsers.SAXParserFactory;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: XmlRequestReader.java,v 1.4 2004/01/21 00:26:09 dmzwiers Exp $
+ * @version $Id: XmlRequestReader.java,v 1.5 2004/01/31 00:27:28 jive Exp $
  */
 public abstract class XmlRequestReader {
     /** Class logger */

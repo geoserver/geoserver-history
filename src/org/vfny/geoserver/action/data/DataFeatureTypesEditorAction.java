@@ -2,12 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Jan 8, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package org.vfny.geoserver.action.data;
 
 import org.apache.struts.action.ActionForm;
@@ -62,7 +57,7 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
         config.setSRS(Integer.parseInt(SRS));
         config.setTitle(title);
 
-        // Errrrrrrrrrrrr config.setLatLongBBox(new Envelope());
+        
         List list = new ArrayList();
         String[] array = (keywords != null)
             ? keywords.split(System.getProperty("line.separator")) : new String[0];

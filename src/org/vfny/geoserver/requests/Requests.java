@@ -5,7 +5,6 @@
 package org.vfny.geoserver.requests;
 
 import org.geotools.validation.ValidationProcessor;
-import org.geotools.validation.xml.ValidationPlugIn;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
@@ -77,14 +76,8 @@ public final class Requests {
      *
      * @return ValidationProcessor instance for the current Web Application
      */
-    public static ValidationProcessor getValidationProcessor(
-        HttpServletRequest request) {
-        ServletRequest req = request;
-        HttpSession session = request.getSession();
-        ServletContext context = session.getServletContext();
-
-        return ((ValidationPlugIn) context.getAttribute(ValidationPlugIn.WEB_CONTAINER_KEY))
-        .getValidationProcessor();
+    public static ValidationProcessor getValidationProcessor(HttpServletRequest request) {
+        return  getGeoServer(request).getProcessor();
     }
 
     public static String getBaseUrl(HttpServletRequest httpServletRequest) {

@@ -35,7 +35,7 @@ import javax.servlet.http.HttpSession;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.3 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: WfsDispatcher.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */

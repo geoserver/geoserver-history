@@ -39,8 +39,8 @@ import org.vfny.geoserver.config.WMSConfig;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ConfigAction.java,v 1.2 2004/01/12 21:01:31 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: ConfigAction.java,v 1.3 2004/01/31 00:27:27 jive Exp $
  */
 public class ConfigAction extends GeoServerAction {
     /**

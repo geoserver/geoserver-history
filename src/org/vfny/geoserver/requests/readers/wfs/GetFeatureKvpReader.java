@@ -15,12 +15,12 @@ import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This utility reads in a GetFeature KVP request and turns it into a
  * GetFeature type request object.
- * 
+ *
  * <p>
  * If you pass this utility a KVP request (everything after the '?' in the
  * URI), it will translate this into a GetFeature type request object.  Note
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: GetFeatureKvpReader.java,v 1.4 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: GetFeatureKvpReader.java,v 1.5 2004/01/31 00:27:26 jive Exp $
  */
 public class GetFeatureKvpReader extends KvpRequestReader {
     /** Class logger */
@@ -46,23 +46,24 @@ public class GetFeatureKvpReader extends KvpRequestReader {
         super(kvPairs);
     }
 
-    public Request getRequest() throws ServiceException {
-        return getRequest(false);
+    public Request getRequest(HttpServletRequest request) throws ServiceException {
+        return getRequest(false, request);
     }
 
     /**
      * Returns GetFeature request object.
      *
      * @param withLock Whether this should be a GetFeatureWithLock request.
-     *
+     * @param srequest to set the request's servlet request
      * @return Feature request object.
      *
      * @throws WfsException If no typename or featureid is present, or if the
      *         filter list size doesn't match the feature list size.
      */
-    public FeatureRequest getRequest(boolean withLock)
+    public FeatureRequest getRequest(boolean withLock, HttpServletRequest srequest)
         throws WfsException {
         FeatureRequest currentRequest = new FeatureRequest();
+        currentRequest.setHttpServletRequest(srequest);
 
         boolean useLock = false;
 

@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Minimal class to implement the FilterHandler interface.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FilterHandlerImpl.java,v 1.5 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: FilterHandlerImpl.java,v 1.6 2004/01/31 00:27:25 jive Exp $
  */
 public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler,
     FilterHandler {

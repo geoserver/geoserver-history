@@ -14,7 +14,7 @@ import org.xml.sax.ContentHandler;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: Capabilities.java,v 1.5 2004/01/31 00:27:25 jive Exp $
  */
 public class Capabilities extends CapabilitiesResponse {
     protected Service getGlobalService() {

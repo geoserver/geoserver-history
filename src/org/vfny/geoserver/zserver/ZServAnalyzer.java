@@ -14,7 +14,7 @@ import java.io.Reader;
  * A lucene Analyzer that filters LetterTokenizer with LowerCaseFilter.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ZServAnalyzer.java,v 1.5 2004/01/21 00:26:11 dmzwiers Exp $
+ * @version $Id: ZServAnalyzer.java,v 1.6 2004/01/31 00:27:24 jive Exp $
  */
 public final class ZServAnalyzer extends Analyzer {
     /**

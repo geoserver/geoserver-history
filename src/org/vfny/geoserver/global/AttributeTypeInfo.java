@@ -23,8 +23,8 @@ import java.util.Map;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.3 2004/01/21 00:26:07 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: AttributeTypeInfo.java,v 1.4 2004/01/31 00:27:23 jive Exp $
  */
 public class AttributeTypeInfo implements AttributeTypeMetaData {
     /** Following Davids lead with use of DTO delegate */

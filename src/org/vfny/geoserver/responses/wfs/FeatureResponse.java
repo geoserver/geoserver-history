@@ -47,7 +47,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.16 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.17 2004/01/31 00:27:25 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -261,7 +261,7 @@ public class FeatureResponse implements Response {
         Set lockedFids = new HashSet();
         Set lockFailedFids = new HashSet();
 
-        FeatureLocking source;
+        FeatureSource source;
         Feature feature;
         String fid;
         FilterFactory filterFactory = FilterFactory.createFilterFactory();
@@ -279,7 +279,7 @@ public class FeatureResponse implements Response {
                 query = (Query) it.next();
                 meta = catalog.getFeatureTypeInfo(query.getTypeName());
                 namespace = meta.getDataStoreInfo().getNameSpace();
-                source = (FeatureLocking) meta.getFeatureSource();
+                source = meta.getFeatureSource();
 
                 typeNames.append(query.getTypeName());
 
@@ -300,35 +300,44 @@ public class FeatureResponse implements Response {
                 maxFeatures -= features.getCount();
                 results.add(features);
 
-                if (featureLock != null) {
+                if (featureLock != null ){
                     // geotools2 locking code
-                    source.setFeatureLock(featureLock);
-
+                    if( source instanceof FeatureLocking) {
+                        ((FeatureLocking)source).setFeatureLock(featureLock);    
+                    }
                     FeatureReader reader = null;
 
                     try {
                         for (reader = features.reader(); reader.hasNext();) {
                             feature = reader.next();
                             fid = feature.getID();
-
-                            fidFilter = filterFactory.createFidFilter(fid);
-                            numberLocked = source.lockFeatures(fidFilter);
-
-                            if (numberLocked == 1) {
-                                LOGGER.finest("Lock " + fid + " (authID:"
-                                    + featureLock.getAuthorization() + ")");
-                                lockedFids.add(fid);
-                            } else if (numberLocked == 0) {
+                            if( !(source instanceof FeatureLocking)) {
                                 LOGGER.finest("Lock " + fid
-                                    + " conflict (authID:"
-                                    + featureLock.getAuthorization() + ")");
-                                lockFailedFids.add(fid);
-                            } else {
-                                LOGGER.warning("Lock " + numberLocked + " "
-                                    + fid + " (authID:"
-                                    + featureLock.getAuthorization()
-                                    + ") duplicated FeatureID!");
-                                lockedFids.add(fid);
+                                        + " not supported by data store (authID:"
+                                        + featureLock.getAuthorization() + ")");                                
+                                lockFailedFids.add( fid );                        
+                                continue; // locking is not supported!                                
+                            }
+                            else {
+                                fidFilter = filterFactory.createFidFilter(fid);
+                                numberLocked = ((FeatureLocking)source).lockFeatures(fidFilter);
+    
+                                if (numberLocked == 1) {
+                                    LOGGER.finest("Lock " + fid + " (authID:"
+                                        + featureLock.getAuthorization() + ")");
+                                    lockedFids.add(fid);
+                                } else if (numberLocked == 0) {
+                                    LOGGER.finest("Lock " + fid
+                                        + " conflict (authID:"
+                                        + featureLock.getAuthorization() + ")");
+                                    lockFailedFids.add(fid);
+                                } else {
+                                    LOGGER.warning("Lock " + numberLocked + " "
+                                        + fid + " (authID:"
+                                        + featureLock.getAuthorization()
+                                        + ") duplicated FeatureID!");
+                                    lockedFids.add(fid);
+                                }
                             }
                         }
                     } finally {
@@ -336,7 +345,6 @@ public class FeatureResponse implements Response {
                             reader.close();
                         }
                     }
-
                     if (!lockedFids.isEmpty()) {
                         Transaction t = new DefaultTransaction();
 
@@ -350,7 +358,6 @@ public class FeatureResponse implements Response {
                     }
                 }
             }
-
             if ((featureLock != null) && !lockFailedFids.isEmpty()) {
                 // I think we need to release and fail when lockAll fails
                 //

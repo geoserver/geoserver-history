@@ -35,7 +35,7 @@ import javax.imageio.stream.ImageOutputStream;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.6 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.7 2004/01/31 00:27:28 jive Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */

@@ -20,7 +20,7 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.5 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: WMSConfig.java,v 1.6 2004/01/31 00:27:27 jive Exp $
  */
 public class WMSConfig extends ServiceConfig {
     private static final String WMS_VERSION = "1.1.1";

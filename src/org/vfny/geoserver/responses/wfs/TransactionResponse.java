@@ -57,7 +57,7 @@ import java.util.logging.Logger;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.7 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.8 2004/01/31 00:27:25 jive Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */

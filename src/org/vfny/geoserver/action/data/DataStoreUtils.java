@@ -20,8 +20,8 @@ import java.util.Map;
  * A collecitno of utilties for dealing with GeotTools DataStore.
  *
  * @author Richard Gould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.4 2004/01/21 00:26:07 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataStoreUtils.java,v 1.5 2004/01/31 00:27:24 jive Exp $
  */
 public abstract class DataStoreUtils {
     public static DataStore aquireDataStore(Map params)

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.5 2004/01/21 01:26:54 jive Exp $
+ * @version $Id: TransactionHandler.java,v 1.6 2004/01/31 00:27:28 jive Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {

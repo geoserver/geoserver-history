@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.7 2004/01/21 00:26:08 dmzwiers Exp $
+ * @version $Id: GetMapDelegate.java,v 1.8 2004/01/31 00:27:28 jive Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;

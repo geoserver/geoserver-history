@@ -82,7 +82,7 @@ import com.k_int.z3950.util.ZTargetEndpoint;
  *         handles a connection, handling the init, search and present
  *         requests.
  * @author Chris Holmes, TOPP
- * @version $Id: GeoZServerAssociation.java,v 1.7 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: GeoZServerAssociation.java,v 1.8 2004/01/31 00:27:24 jive Exp $
  * @task TODO: change this so it extends ZServerAssociation, instead of r
  * ewriting things, as there are many methods used which were not changed.  
  * Also, unit tests, but you'd need a client or else sample encoded z3950 requests.

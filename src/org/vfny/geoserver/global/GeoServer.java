@@ -4,11 +4,13 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.validation.ValidationProcessor;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import java.nio.charset.Charset;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.6 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.7 2004/01/31 00:27:23 jive Exp $
  */
 public class GeoServer extends GlobalLayerSupertype { // implements org.apache.struts.action.PlugIn{
 
@@ -48,30 +50,15 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
 
     /** The reference to the wfs configuration for this instance */
     private WFS wfs;
+    
+    /** The validation processor */
+    ValidationProcessor processor;
 
     /**
      * The reference to the data configuration for this instance (formerly
      * CatalogConfig)
      */
     private Data data;
-
-    /**
-     * GeoServer constructor.
-     * 
-     * <p>
-     * To be called by the Struts ActionServlet
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     */
-
-    /*public GeoServer() {
-       wms = new WMS();
-       wfs = new WFS();
-       data = new Data();
-       validation = new Validation();
-       geoServer = new GeoServerDTO();
-       }*/
 
     /**
      * getAddress purpose.
@@ -364,6 +351,22 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
         load(wfs);
         load(data);
     }
+    
+    private Map testSuites;
+    private Map plugIns;
+    
+    public void load(Map testSuites, Map plugIns){
+    	this.testSuites = testSuites;this.plugIns = plugIns;
+    	processor = new ValidationProcessor(testSuites,plugIns);
+    }
+    
+    public Map toPlugInDTO(){
+    	return plugIns;
+    }
+    
+    public Map toTestSuiteDTO(){
+    	return testSuites;
+    }
 
     /**
      * load purpose.
@@ -596,4 +599,13 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
     Object toDTO() {
         return geoServer;
     }
+	/**
+	 * Access processor property.
+	 * 
+	 * @return Returns the processor.
+	 */
+	public ValidationProcessor getProcessor() {
+		return processor;
+	}
+
 }

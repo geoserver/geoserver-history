@@ -9,7 +9,7 @@ import org.vfny.geoserver.requests.CapabilitiesRequest;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import java.util.Map;
-
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an
@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.5 2004/01/21 00:26:06 dmzwiers Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.6 2004/01/31 00:27:26 jive Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
@@ -32,12 +32,15 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
      * Get Capabilities request.
      *
+     * @param request the servlet request to get the GeoServer object from
+     *
      * @return Capabilities request.
      *
      * @throws ServiceException DOCUMENT ME!
      */
-    public Request getRequest() throws ServiceException {
+    public Request getRequest(HttpServletRequest request) throws ServiceException {
         CapabilitiesRequest currentRequest = new CapabilitiesRequest("WFS");
+        currentRequest.setHttpServletRequest(request);
         currentRequest.setVersion(getValue("VERSION"));
 
         //service is set in the constructor

@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: ResponseHandler.java,v 1.3 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: ResponseHandler.java,v 1.4 2004/01/31 00:27:24 jive Exp $
  */
 public interface ResponseHandler {
     void handleDocument(Service config) throws SAXException;

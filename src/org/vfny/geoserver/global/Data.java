@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.24 2004/01/21 01:26:54 jive Exp $
+ * @version $Id: Data.java,v 1.25 2004/01/31 00:27:23 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -178,7 +178,6 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         }
 
         Map map = new HashMap();
-
         for (Iterator i = dto.getDataStores().values().iterator(); i.hasNext();) {
             DataStoreInfoDTO dataStoreDTO = (DataStoreInfoDTO) i.next();
             String id = dataStoreDTO.getId();
@@ -235,7 +234,15 @@ public class Data extends GlobalLayerSupertype implements Catalog {
 
         return map;
     }
-
+    
+    /**
+     * map of all featureTypeDTO -> load status (Boolean.True, Boolean.False, Exception)
+     * Boolean.True when feature was loaded.
+     * Boolean.False when something was disabled.
+     * Exception the error. 
+     */
+    private Map errors;
+    
     /**
      * Configure a map of FeatureTypeInfo by prefix:typeName.
      * 
@@ -260,11 +267,13 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      * @throws NullPointerException DOCUMENT ME!
      */
     private final Map loadFeatureTypes(DataDTO dto) {
+    	errors = new HashMap();
         if ((dto == null) || (dto.getFeaturesTypes() == null)) {
+        	errors = null;
             throw new NullPointerException(
                 "Non null list of FeatureTypes required");
         }
-
+        
         Map map = new HashMap();
 
 SCHEMA: 
@@ -292,6 +301,13 @@ SCHEMA:
                 LOGGER.severe("FeatureTypeInfo " + key
                     + " could not be used - DataStore " + dataStoreId
                     + " is not defined!");
+                DataStoreInfoDTO tmp = (DataStoreInfoDTO)dto.getDataStores().get(dataStoreId);
+                if(tmp!=null && (!tmp.isEnabled()))
+                	errors.put(featureTypeDTO,Boolean.FALSE);
+                else
+                	errors.put(featureTypeDTO,new ConfigurationException("FeatureTypeInfo " + key
+                    + " could not be used - DataStore " + dataStoreId
+                    + " is not defined!"));
 
                 continue;
             } else {
@@ -304,6 +320,9 @@ SCHEMA:
                 LOGGER.severe("FeatureTypeInfo " + key + " ignored - Style '"
                     + featureTypeDTO.getDefaultStyle() + "' not found!");
 
+ 
+                errors.put(featureTypeDTO,new ConfigurationException("FeatureTypeInfo " + key + " ignored - Style '"
+                    + featureTypeDTO.getDefaultStyle() + "' not found!"));
                 continue SCHEMA;
             }
 
@@ -323,7 +342,7 @@ SCHEMA:
                     attributeNames.add(attrib.getName());
                     ATTRIBUTENames.add(attrib.getName().toUpperCase());
                 }
-
+                if(featureTypeDTO.getSchemaAttributes()!=null)
                 for (Iterator a = featureTypeDTO.getSchemaAttributes().iterator();
                         a.hasNext();) {
                     AttributeTypeInfoDTO attribDTO = (AttributeTypeInfoDTO) a
@@ -340,7 +359,9 @@ SCHEMA:
                                 + " ignored - attribute '" + attributeName
                                 + "' not found!");
                         }
-
+                       	errors.put(featureTypeDTO,new ConfigurationException("FeatureTypeInfo " + key
+                        			+ " could not be used - DataStore " + dataStoreId
+									+ " is not defined!"));
                         continue SCHEMA;
                     }
                 }
@@ -348,13 +369,14 @@ SCHEMA:
                 LOGGER.severe("FeatureTypeInfo " + key
                     + " ignored - as DataStore " + dataStoreId
                     + " is disabled!");
-
+                errors.put(featureTypeDTO,Boolean.FALSE);
                 continue;
             } catch (IOException ioException) {
                 LOGGER.log(Level.SEVERE,
                     "FeatureTypeInfo " + key + " ignored - ad DataStore "
                     + dataStoreId + " is broken", ioException);
 
+                errors.put(featureTypeDTO,ioException);
                 continue;
             }
 
@@ -373,6 +395,7 @@ SCHEMA:
                     + " ignored - due to a configuration problem",
                     configException);
 
+                errors.put(featureTypeDTO,configException);
                 continue;
             }
 
@@ -381,6 +404,8 @@ SCHEMA:
             if (map.containsKey(key2)) {
                 LOGGER.severe("FeatureTypeInfo '" + key2
                     + "' already defined - you must have duplicate defined?");
+                errors.put(featureTypeDTO,new ConfigurationException("FeatureTypeInfo '" + key2
+                		+ "' already defined - you must have duplicate defined?"));
             } else {
                 LOGGER.finest("FeatureTypeInfo " + key2
                     + " has been created...");
@@ -388,6 +413,7 @@ SCHEMA:
 
                 LOGGER.finest("FeatureTypeInfo '" + key2 + "' is registered:"
                     + dataStoreInfo);
+                errors.put(featureTypeDTO,Boolean.TRUE);
             }
         }
 
@@ -473,22 +499,15 @@ SCHEMA:
      *
      * @return Map of Exception by dataStoreId:typeName
      */
-    public SortedMap statusDataStores() {
-        SortedMap status = new TreeMap();
-
-        DataStoreInfo info;
-
-        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
-            info = (DataStoreInfo) i.next();
-
-            try {
-                status.putAll(status(info));
-            } catch (Throwable t) {
-                status.put(info.getId(), t);
-            }
-        }
-
-        return status;
+    public Map statusDataStores() {
+    	Map m = new HashMap();
+    	Iterator i = errors.entrySet().iterator();
+    	while(i.hasNext()){
+    		Map.Entry e = (Map.Entry)i.next();
+    		FeatureTypeInfoDTO ftdto = (FeatureTypeInfoDTO)e.getKey();
+    		m.put(ftdto.getDataStoreId()+":"+ftdto.getName(),e.getValue());
+    	}
+    	return m;
     }
 
     /**
@@ -501,22 +520,18 @@ SCHEMA:
      *
      * @return Map of Exception by prefix:typeName
      */
-    public SortedMap statusNamespaces() {
-        SortedMap status = new TreeMap();
-
-        NameSpaceInfo namespaceInfo;
-
-        for (Iterator n = nameSpaces.values().iterator(); n.hasNext();) {
-            namespaceInfo = (NameSpaceInfo) n.next();
-
-            try {
-                status.putAll(status(namespaceInfo));
-            } catch (Throwable badNamespace) {
-                status.put(namespaceInfo.getPrefix(), badNamespace);
-            }
-        }
-
-        return status;
+    public Map statusNamespaces() {
+    	Map m = new HashMap();
+    	Iterator i = errors.entrySet().iterator();
+    	while(i.hasNext()){
+    		Map.Entry e = (Map.Entry)i.next();
+    		FeatureTypeInfoDTO ftdto = (FeatureTypeInfoDTO)e.getKey();
+    		DataStoreInfoDTO dsdto = (DataStoreInfoDTO)catalog.getDataStores().get(ftdto.getDataStoreId());
+    		if(dsdto != null){
+    			m.put(dsdto.getNameSpaceId()+":"+ftdto.getName(),e.getValue());
+    		}
+    	}
+    	return m;
     }
 
     /**
@@ -537,7 +552,7 @@ SCHEMA:
      *
      * @return Map of Exception by dataStoreId:typeName
      */
-    public SortedMap status(DataStoreInfo info) {
+    /*public SortedMap status(DataStoreInfo info) {
         SortedMap status = new TreeMap();
 
         String id = info.getId();
@@ -578,9 +593,9 @@ SCHEMA:
         }
 
         return status;
-    }
+    }*/
 
-    public SortedMap status(NameSpaceInfo info) {
+    /*public SortedMap status(NameSpaceInfo info) {
         SortedMap status = new TreeMap();
 
         String prefix = info.getPrefix();
@@ -593,7 +608,10 @@ SCHEMA:
             String typeName = (String) i.next();
 
             FeatureTypeInfo typeInfo = null;
-
+            if(!typeInfo.isEnabled()){
+            	status.put(prefix+":"+typeName, Boolean.FALSE);
+            	continue;
+            }
             try {
                 typeInfo = (FeatureTypeInfo) info.getFeatureTypeMetaData(typeName);
                 assertWorking(typeInfo);
@@ -608,9 +626,9 @@ SCHEMA:
         }
 
         return status;
-    }
+    }*/
 
-    public void assertWorking(FeatureTypeInfo info) throws IOException {
+    /*public void assertWorking(FeatureTypeInfo info) throws IOException {
         String id = info.getPrefix() + ":" + info.getName();
 
         LOGGER.finest(id + ": check status of GeoServer FeatureTypeInfo");
@@ -637,7 +655,7 @@ SCHEMA:
         LOGGER.finest(id + ": schema attributeNames:'"
             + info.getAttributeNames() + "'");
         LOGGER.finest(id + ": schema schema:'" + info.getXMLSchema() + "'");
-    }
+    }*/
 
     /**
      * Assert that GeoTools2 typeName exists and works for typeName
@@ -647,7 +665,7 @@ SCHEMA:
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void assertWorking(DataStore datastore, String typeName)
+    /*public void assertWorking(DataStore datastore, String typeName)
         throws IOException {
         LOGGER.finest(typeName + ": check status of GeoTools2 FeatureType");
 
@@ -658,7 +676,7 @@ SCHEMA:
         source = datastore.getFeatureSource(typeName);
         LOGGER.finest(typeName + ": source aquired '" + source + "'");
         assertWorking(source);
-    }
+    }*/
 
     /**
      * Test that the FeatureSource works.
@@ -672,7 +690,7 @@ SCHEMA:
      * @throws IOException If the FeatureSource does not work
      * @throws DataSourceException DOCUMENT ME!
      */
-    public void assertWorking(FeatureSource source) throws IOException {
+    /*public void assertWorking(FeatureSource source) throws IOException {
         String id = source.getSchema().getTypeName();
 
         // Test optimized getCount()
@@ -705,7 +723,7 @@ SCHEMA:
         }
 
         LOGGER.finest(id + ": source aquired '" + source + "'");
-    }
+    }*/
 
     /**
      * getDataStoreInfos purpose.

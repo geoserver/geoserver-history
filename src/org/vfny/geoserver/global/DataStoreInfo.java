@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.6 2004/01/21 00:26:07 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.7 2004/01/31 00:27:23 jive Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype
     implements DataStoreMetaData {

@@ -18,7 +18,7 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceConfig.java,v 1.4 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: NameSpaceConfig.java,v 1.5 2004/01/31 00:27:27 jive Exp $
  */
 public class NameSpaceConfig {
     //public static final String PREFIX_DELIMITER = ":";
