@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 /**
  * ThreadedBatchTester purpose.
@@ -23,7 +24,7 @@ import java.net.URL;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ThreadedBatchTester.java,v 1.4 2004/03/04 20:47:48 dmzwiers Exp $
+ * @version $Id: ThreadedBatchTester.java,v 1.5 2004/03/04 20:53:59 dmzwiers Exp $
  */
 public class ThreadedBatchTester {
 	private static int runs = 100;
@@ -75,9 +76,9 @@ public class ThreadedBatchTester {
 		for(int i=0;i<runs;i++){
 			TestGetThread tpt = (TestGetThread) threads[i];
 			os.print(tpt.getResult()+", ");
-			os.print(tpt.getTime1()+", ");
-			os.print(tpt.getTime2()+", ");
-			os.print(tpt.getTime3()+"\n");
+			os.print(tpt.getTime1().getTime()+", ");
+			os.print(tpt.getTime2().getTime()+", ");
+			os.print(tpt.getTime3().getTime()+"\n");
 		}
 	}
 	
