@@ -150,7 +150,7 @@ public abstract class AbstractService extends HttpServlet {
         ServletContext context = config.getServletContext();
         String stgyKey = context.getInitParameter("serviceStratagy");
         Class stgyClass = BufferStrategy.class;
-
+	
         if (stgyKey == null) {
             LOGGER.info("No service strategy configured, defaulting to BUFFER");
         } else {
@@ -575,7 +575,15 @@ public abstract class AbstractService extends HttpServlet {
      */
     protected AbstractService.ServiceStrategy getServiceStrategy()
         throws ServiceException {
-        return getServiceStrategy(safetyMode);
+	ServletContext context = getServletContext();
+        GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+        //If verbose exceptions is on then lets make sure they actually get the
+        //exception by using the file strategy.
+        if (geoServer.isVerboseExceptions()) {
+            return getServiceStrategy(FileStrategy.class);
+        } else {
+            return getServiceStrategy(safetyMode);
+        }
     }
 
     /**
