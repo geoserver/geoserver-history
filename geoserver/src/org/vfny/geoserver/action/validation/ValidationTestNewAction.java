@@ -6,6 +6,8 @@
  */
 package org.vfny.geoserver.action.validation;
 
+import java.util.HashMap;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,8 +45,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </code></pre>
  * 
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestNewAction.java,v 1.4 2004/02/07 01:29:55 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationTestNewAction.java,v 1.5 2004/02/25 01:18:58 dmzwiers Exp $
  */
 public class ValidationTestNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -64,6 +66,7 @@ public class ValidationTestNewAction extends ConfigAction {
         TestConfig testConfig = new TestConfig();
         testConfig.setName(newName);
         testConfig.setPlugIn(plugIn);
+        testConfig.setArgs(new HashMap());
         
         TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession().getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
         suiteConfig.addTest(testConfig);
