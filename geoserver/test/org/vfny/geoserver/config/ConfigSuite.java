@@ -78,7 +78,7 @@ public class ConfigSuite extends TestCase {
 
     public void test1() throws Exception {        
         LOGGER.fine(repo.toString());
-        LOGGER.fine("has two types: " + (repo.typeCount() == 2));
+        LOGGER.fine("has two types: " + (repo.typeCount() == 3));
         assertTrue(repo.typeCount() == 3);
 	String prefix = config.getDefaultNSPrefix();
         LOGGER.fine("has roads: " + (repo.getType(prefix + ":roads") != null));
