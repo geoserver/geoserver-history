@@ -269,20 +269,23 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                 //that, check DataStoreInfo, we add it to the connection params, which 
                 //should create it with Postgis and Oracle, but it doesn't seem to be
                 //working.  This should be good enough, it'd just be nice to be cleaner.
-                FeatureTypeFactory ftFactory = FeatureTypeFactory
-                    .createTemplate(curFeatureType);
-                ftFactory.setNamespace(namespaceURI);
+                //FeatureTypeFactory ftFactory = FeatureTypeFactory
+		//   .createTemplate(curFeatureType);
+                //ftFactory.setNamespace(namespaceURI);
 
-                FeatureType schema = ftFactory.getFeatureType();
-                Feature feature = schema.create(attributes);
+                //FeatureType schema = ftFactory.getFeatureType();
+                
+		//removing hack, as this wasn't compiling, and we should not
+		//be using this hack.
+		Feature feature = curFeatureType.create(attributes);
 
                 //currentFeature.setAttributes((Object []) attributes.toArray());
                 parent.feature(feature);
                 LOGGER.finest("resetting attName at end of feature");
                 attName = "";
                 LOGGER.finer("created feature: " + feature);
-            } catch (org.geotools.feature.SchemaException sve) {
-                throw new RuntimeException("problem creating schema", sve);
+		//} catch (org.geotools.feature.SchemaException sve) {
+	    //throw new RuntimeException("problem creating schema", sve);
             } catch (org.geotools.feature.IllegalAttributeException ife) {
                 throw new RuntimeException("problem creating feature", ife);
             }

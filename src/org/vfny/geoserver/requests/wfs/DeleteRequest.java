@@ -41,11 +41,10 @@ public class DeleteRequest extends SubTransactionRequest {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
-    /** Specifies the output format */
-    protected String typeName = null;
-
     /** Specifies the features to lock. */
     protected Filter filter = Filter.NONE;
+
+    /** Whether all locks should be released after this transaction. */
     protected boolean releaseAll = true;
 
     /**

@@ -425,7 +425,7 @@ abstract public class KvpRequestReader {
         String cleanRequest = clean(qString);
         LOGGER.fine("clean request is " + cleanRequest);
 
-        Map kvpPairs = new HashMap();
+        Map kvps = new HashMap();
 
         // parses initial request sream into KVPs
         StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(),
@@ -447,7 +447,7 @@ abstract public class KvpRequestReader {
                 //int index = filterVal.lastIndexOf("</Filter>");
                 //String filt2 = kvpPair.subString
                 LOGGER.finest("putting filter value " + filterVal);
-                kvpPairs.put("FILTER", filterVal);
+                kvps.put("FILTER", filterVal);
             } else {
                 // handles all other standard cases by looking for the correct
                 //  delimeter and then sticking the KVPs into the hash table
@@ -464,15 +464,15 @@ abstract public class KvpRequestReader {
                         // assign value and store in hash with key
                         value = requestValues.nextToken();
                         LOGGER.finest("putting kvp pair: " + key + ": " + value);
-                        kvpPairs.put(key, value);
+                        kvps.put(key, value);
                     }
                 }
             }
         }
 
-        LOGGER.fine("returning parsed " + kvpPairs);
+        LOGGER.fine("returning parsed " + kvps);
 
-        return kvpPairs;
+        return kvps;
     }
 
     /**

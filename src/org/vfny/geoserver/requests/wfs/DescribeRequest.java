@@ -150,12 +150,12 @@ public class DescribeRequest extends WFSRequest {
             return false;
         }
 
-        DescribeRequest request = (DescribeRequest) o;
+        DescribeRequest eqRequest = (DescribeRequest) o;
         boolean isEqual = true;
         Iterator internal = featureTypes.listIterator();
-        Iterator compare = request.getFeatureTypes().listIterator();
+        Iterator compare = eqRequest.getFeatureTypes().listIterator();
 
-        if (request.allRequested()) {
+        if (eqRequest.allRequested()) {
             isEqual = this.allRequested() && isEqual;
 
             return isEqual;

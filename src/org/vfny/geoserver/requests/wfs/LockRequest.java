@@ -74,7 +74,7 @@ public class LockRequest extends WFSRequest {
      * @return
      */
     public FeatureLock toFeatureLock() {
-        String handle = getHandle();
+        //String handle = getHandle();
 
         if ((handle == null) || (handle.length() == 0)) {
             handle = "GeoServer";
@@ -258,9 +258,9 @@ public class LockRequest extends WFSRequest {
         ListIterator externalIterator;
         boolean isEqual = true;
 
-        LockRequest request = (LockRequest) obj;
+        LockRequest lrequest = (LockRequest) obj;
 
-        if (this.expiry == request.getExpiry()) {
+        if (this.expiry == lrequest.getExpiry()) {
             isEqual = isEqual && true;
         } else {
             isEqual = false;
@@ -268,7 +268,7 @@ public class LockRequest extends WFSRequest {
 
         LOGGER.finest("checking expiry equality: " + isEqual);
 
-        if (this.lockAll == request.getLockAll()) {
+        if (this.lockAll == lrequest.getLockAll()) {
             isEqual = isEqual && true;
         } else {
             isEqual = false;
@@ -277,7 +277,7 @@ public class LockRequest extends WFSRequest {
         LOGGER.finest("checking locking equality: " + isEqual);
 
         internalIterator = locks.listIterator();
-        externalIterator = request.getLocks().listIterator();
+        externalIterator = lrequest.getLocks().listIterator();
 
         while (internalIterator.hasNext()) {
             if (!externalIterator.hasNext()) {

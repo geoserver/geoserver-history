@@ -244,14 +244,14 @@ public class FeatureRequest extends WFSRequest {
             return false;
         }
 
-        FeatureRequest request = (FeatureRequest) obj;
+        FeatureRequest frequest = (FeatureRequest) obj;
         boolean isEqual = true;
 
-        if ((this.version == null) && (request.getVersion() == null)) {
+        if ((this.version == null) && (frequest.getVersion() == null)) {
             isEqual = isEqual && true;
-        } else if ((this.version == null) || (request.getVersion() == null)) {
+        } else if ((this.version == null) || (frequest.getVersion() == null)) {
             isEqual = false;
-        } else if (request.getVersion().equals(version)) {
+        } else if (frequest.getVersion().equals(version)) {
             isEqual = isEqual && true;
         } else {
             isEqual = false;
@@ -259,11 +259,11 @@ public class FeatureRequest extends WFSRequest {
 
         LOGGER.finest("checking version equality: " + isEqual);
 
-        if ((this.handle == null) && (request.getHandle() == null)) {
+        if ((this.handle == null) && (frequest.getHandle() == null)) {
             isEqual = isEqual && true;
-        } else if ((this.handle == null) || (request.getHandle() == null)) {
+        } else if ((this.handle == null) || (frequest.getHandle() == null)) {
             isEqual = false;
-        } else if (request.getHandle().equals(handle)) {
+        } else if (frequest.getHandle().equals(handle)) {
             isEqual = isEqual && true;
         } else {
             isEqual = false;
@@ -271,12 +271,12 @@ public class FeatureRequest extends WFSRequest {
 
         LOGGER.finest("checking handle equality: " + isEqual);
 
-        if ((this.outputFormat == null) && (request.getOutputFormat() == null)) {
+        if ((this.outputFormat == null) && (frequest.getOutputFormat() == null)) {
             isEqual = isEqual && true;
         } else if ((this.outputFormat == null)
-                || (request.getOutputFormat() == null)) {
+                || (frequest.getOutputFormat() == null)) {
             isEqual = false;
-        } else if (request.getOutputFormat().equals(outputFormat)) {
+        } else if (frequest.getOutputFormat().equals(outputFormat)) {
             isEqual = isEqual && true;
         } else {
             isEqual = false;
@@ -284,14 +284,14 @@ public class FeatureRequest extends WFSRequest {
 
         LOGGER.finest("checking output format equality: " + isEqual);
 
-        if (this.maxFeatures == request.getMaxFeatures()) {
+        if (this.maxFeatures == frequest.getMaxFeatures()) {
             isEqual = isEqual && true;
         }
 
         LOGGER.finest("checking max features equality: " + isEqual);
 
         ListIterator internalIterator = queries.listIterator();
-        ListIterator externalIterator = request.getQueries().listIterator();
+        ListIterator externalIterator = frequest.getQueries().listIterator();
 
         while (internalIterator.hasNext()) {
             if (!externalIterator.hasNext()) {

@@ -34,9 +34,6 @@ public class UpdateRequest extends SubTransactionRequest {
     /** Specifies the features to change. */
     private Filter filter = Filter.NONE;
 
-    /** Specifies the table of features */
-    protected String typeName = null;
-
     /** Specifices the user-defined name for the entire get feature request */
     protected boolean releaseAll = true;
 
