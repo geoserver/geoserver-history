@@ -37,7 +37,6 @@ import com.vividsolutions.jts.geom.Geometry;
  * <p>
  * Capabilities:
  * <ul>
- * </li></li>
  * </ul>
  * Example Use:
  * <pre><code>
@@ -46,8 +45,8 @@ import com.vividsolutions.jts.geom.Geometry;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: LinesNotIntersectIntegrityValidation.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: LinesNotIntersectIntegrityValidation.java,v 1.3 2004/01/21 00:35:23 dmzwiers Exp $
  */
 public class LinesNotIntersectIntegrityValidation implements IntegrityValidation {
 

@@ -4,6 +4,16 @@
  */
 package org.geotools.validation.xml;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -11,14 +21,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 
 /**
@@ -32,7 +34,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ReaderUtils.java,v 1.4 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: ReaderUtils.java,v 1.5 2004/01/21 00:35:55 dmzwiers Exp $
  *
  * @see XMLConfigReader
  */
@@ -62,8 +64,8 @@ class ReaderUtils {
      *
      * @return the resulting DOM tree
      *
-     * @throws ParserConfigurationException
      * @throws ParserConfigurationException DOCUMENT ME!
+     * @throws ParserConfigurationException
      * @throws SAXException DOCUMENT ME!
      */
     public static Element loadConfig(Reader configFile)

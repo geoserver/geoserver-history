@@ -10,6 +10,18 @@
  */
 package org.geotools.validation.xml;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
@@ -20,16 +32,6 @@ import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 
 /**
@@ -58,7 +60,7 @@ import javax.servlet.ServletException;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationPlugIn.java,v 1.3 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: ValidationPlugIn.java,v 1.4 2004/01/21 00:35:56 dmzwiers Exp $
  */
 public class ValidationPlugIn implements PlugIn {
     public static final String WEB_CONTAINER_KEY = "Validation.PlugIn.Key";

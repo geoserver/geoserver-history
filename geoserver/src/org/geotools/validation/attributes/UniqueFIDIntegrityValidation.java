@@ -38,7 +38,6 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * Capabilities:
  * <ul>
- * </li></li>
  * </ul>
  * Example Use:
  * <pre><code>
@@ -48,7 +47,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UniqueFIDIntegrityValidation.java,v 1.3 2004/01/12 21:01:35 dmzwiers Exp $
+ * @version $Id: UniqueFIDIntegrityValidation.java,v 1.4 2004/01/21 00:35:24 dmzwiers Exp $
  */
 public class UniqueFIDIntegrityValidation implements IntegrityValidation {
 

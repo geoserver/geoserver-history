@@ -38,7 +38,6 @@ import com.vividsolutions.jts.geom.LineString;
  * <p>
  * Capabilities:
  * <ul>
- * </li></li>
  * </ul>
  * Example Use:
  * <pre><code>
@@ -48,7 +47,7 @@ import com.vividsolutions.jts.geom.LineString;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: LineIsSingleSegmentFeatureValidation.java,v 1.3 2004/01/12 21:01:31 dmzwiers Exp $
+ * @version $Id: LineIsSingleSegmentFeatureValidation.java,v 1.4 2004/01/21 00:35:23 dmzwiers Exp $
  */
 public class LineIsSingleSegmentFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
