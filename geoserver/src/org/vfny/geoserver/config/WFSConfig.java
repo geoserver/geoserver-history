@@ -6,6 +6,8 @@ package org.vfny.geoserver.config;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
+
+import java.net.URL;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -20,7 +22,7 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.2.2.4 2004/01/07 22:48:13 emperorkefka Exp $
+ * @version $Id: WFSConfig.java,v 1.2.2.5 2004/01/08 07:54:31 emperorkefka Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
@@ -47,7 +49,13 @@ public class WFSConfig extends ServiceConfig {
      * Cool?
      * </p>
      */
-    private Set enabled = new TreeSet(); // keep sorted	
+    private Set enabledFeatures = new TreeSet(); // keep sorted	
+    
+    /**
+     * The Describe-URL for the WFS
+     *
+     */
+    private URL describeURL;
 
     /**
      * WFS constructor.
@@ -145,4 +153,32 @@ public class WFSConfig extends ServiceConfig {
 
         return wfsDto;
     }
+	/**
+	 * @return
+	 */
+	public URL getDescribeURL() {
+		return describeURL;
+	}
+
+	/**
+	 * @param url
+	 */
+	public void setDescribeURL(URL url) {
+		describeURL = url;
+	}
+
+	/**
+	 * @return
+	 */
+	public Set getEnabledFeatures() {
+		return enabledFeatures;
+	}
+
+	/**
+	 * @param set
+	 */
+	public void setEnabledFeatures(Set set) {
+		enabledFeatures = set;
+	}
+
 }
