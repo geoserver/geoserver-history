@@ -51,18 +51,23 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.10 2004/01/14 18:29:51 emperorkefka Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.11 2004/01/14 23:06:20 emperorkefka Exp $
  */
 public class AttributeTypeInfoConfig {
     
     /** Value of getType() used to indicate that fragement is in use */
     public static final String TYPE_FRAGMENT = "(xml fragment)";
     
-    /** attribute name*/
-    private final String name;
-    
-    /** attribute min occurs*/
-    private int minOccurs;
+    /**
+     * XML Fragment used to define stuff.
+     * <p>
+     * This property is only used with getType() is equals to "(xml fragment)".
+     * </p>
+     * <p>
+     * baseGMLTypes can only be used in your XML fragment.
+     * </p>
+     */
+    private String fragment;
     
     /**
      * Maxmium number of occurances of this attribute in a feature.
@@ -84,6 +89,12 @@ public class AttributeTypeInfoConfig {
      * @see AttributeTypeInfoDTO.isNillable
      */
     private int maxOccurs;
+    
+    /** attribute min occurs*/
+    private int minOccurs;
+    
+    /** attribute name*/
+    private final String name;
     
     /**
      * Indicate if the attribute is allowed to be <code>null</code>.
@@ -110,17 +121,6 @@ public class AttributeTypeInfoConfig {
      * @return type The element type, or <code>TYPE_FRAGMENT</code>
      */
     public String type;
-    
-    /**
-     * XML Fragment used to define stuff.
-     * <p>
-     * This property is only used with getType() is equals to "(xml fragment)".
-     * </p>
-     * <p>
-     * baseGMLTypes can only be used in your XML fragment.
-     * </p>
-     */
-    private String fragment;
 
     /**
      * Set up AttributeTypeInfo based on attributeType.
@@ -166,6 +166,20 @@ public class AttributeTypeInfoConfig {
         maxOccurs = dto.getMaxOccurs();
         nillable = dto.isNillable();        
     }
+    /**
+     * XML Fragment used to define stuff.
+     * <p>
+     * This property is only used with getType() is equals to "(xml fragment)".
+     * </p>
+     * <p>
+     * baseGMLTypes can only be used in your XML fragment.
+     * </p>
+     
+     * @return Returns the fragment.
+     */
+    public String getFragment() {
+    	return fragment;
+    }
 
     /**
      * getMaxOccurs purpose.
@@ -201,6 +215,22 @@ public class AttributeTypeInfoConfig {
     }
 
     /**
+     * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
+     * <p>
+     * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
+     * getFragment() to examine the actual user's definition.
+     * </p>
+     * <p>
+     * Other than that getType should be one of the constants defined by
+     * GMLUtils.
+     * </p>
+     * @return The element, or <code>TYPE_FRAGMENT</code>
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
      * Indicate if the attribute is allowed to be <code>null</code>.
      * <p>
      * Nillable is often used to indicate that an attribute is optional.
@@ -216,19 +246,19 @@ public class AttributeTypeInfoConfig {
     }
 
     /**
-     * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
+     * XML Fragment used to define stuff.
      * <p>
-     * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
-     * getFragment() to examine the actual user's definition.
+     * This property is only used with getType() is equals to "(xml fragment)".
      * </p>
      * <p>
-     * Other than that getType should be one of the constants defined by
-     * GMLUtils.
+     * baseGMLTypes can only be used in your XML fragment.
      * </p>
-     * @return The element, or <code>TYPE_FRAGMENT</code>
+     * @param fragment The fragment to set.
      */
-    public String getType() {
-        return type;
+    
+    
+    public void setFragment(String fragment) {
+    	this.fragment = fragment;
     }
 
     /**
@@ -306,35 +336,5 @@ public class AttributeTypeInfoConfig {
      */
     public void setType(String type) {
         this.type = type;
-    }
-    /**
-     * XML Fragment used to define stuff.
-     * <p>
-     * This property is only used with getType() is equals to "(xml fragment)".
-     * </p>
-     * <p>
-     * baseGMLTypes can only be used in your XML fragment.
-     * </p>
-     
-     * @return Returns the fragment.
-     */
-    public String getFragment() {
-    	return fragment;
-    }
-
-    /**
-     * XML Fragment used to define stuff.
-     * <p>
-     * This property is only used with getType() is equals to "(xml fragment)".
-     * </p>
-     * <p>
-     * baseGMLTypes can only be used in your XML fragment.
-     * </p>
-     * @param fragment The fragment to set.
-     */
-    
-    
-    public void setFragment(String fragment) {
-    	this.fragment = fragment;
     }
 }

@@ -6,11 +6,18 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.Collections;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 /**
  * @author User
  *
@@ -22,8 +29,13 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 	private String buttonAction;
 	private String selectedAttributeType;
 	
+	//we must save the request so getAttributeTypes can function
+	private HttpServletRequest request;
+	
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
+		
+		request = arg1;
 		
 		buttonAction ="";
 		selectedAttributeType="";
@@ -33,6 +45,20 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 		ActionErrors errors = new ActionErrors();
 		
 		return errors;
+	}
+	
+	public SortedSet getAttributeTypes() {
+		
+		ServletContext context = getServlet().getServletContext();
+		DataConfig config =
+			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+
+		FeatureTypeConfig ftConfig = config.getFeatureTypeConfig((String) request.getSession().getAttribute("selectedFeatureType"));		
+		
+		
+		return Collections.unmodifiableSortedSet(new TreeSet(
+					ftConfig.getSchema()
+				));
 	}
 	/**
 	 * @return Returns the buttonAction.
