@@ -20,7 +20,7 @@
 	</td><td colspan=2>
 		<html:select property="serviceLevel" size="2">
 			<html:option key="label.serviceLevel.basic" value="<%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.BASIC) %>"/>
-			<html:option key="label.serviceLevel.transactional" value="<%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.TRANSACTION) %>"/>
+			<html:option key="label.serviceLevel.transactional" value="<%= java.lang.Integer.toString(org.vfny.geoserver.global.dto.WFSDTO.TRANSACTIONAL) %>"/>
 		</html:select>
 	</td></tr>	
 	

@@ -4,14 +4,14 @@
 
 <span class="geoserverConfiguration">
 <BR>
-	<html:link forward="wfsConfigMenu"><bean:message key="label.wfsConfig"/></html:link><BR>
+	<html:link forward="config.wfs"><bean:message key="label.wfsConfig"/></html:link><BR>
 <BR>
-	<html:link forward="wmsConfigMenu"><bean:message key="label.wmsConfig"/></html:link><BR>
+	<html:link forward="config.wms"><bean:message key="label.wmsConfig"/></html:link><BR>
 <BR>
-	<html:link forward="dataConfigMenu"><bean:message key="label.dataConfig"/></html:link><BR>
+	<html:link forward="config.data"><bean:message key="label.dataConfig"/></html:link><BR>
 	
 <table border=0>
-	<html:form action="GeoServerConfigurationSubmit">
+	<html:form action="/config/geoServerSubmit">
 	
 	<tr><td align="right" valign="center">
 		<span class="help" title="<bean:message key="help.global.maxFeatures"/>">
