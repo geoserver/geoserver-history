@@ -18,6 +18,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeDefault;
 import org.geotools.feature.FeatureFactory;
+import org.geotools.feature.FlatFeatureFactory;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.Feature;
 import com.vividsolutions.jts.geom.Geometry;
@@ -218,7 +219,7 @@ public class TransactionFeatureHandler
                 FeatureType schema = 
 		    FeatureTypeFactory.create(attDef).setTypeName(typeName);
                 schema.setNamespace(namespaceURI);
-                FeatureFactory fac = new FeatureFactory(schema);
+                FeatureFactory fac = new FlatFeatureFactory(schema);
                 Feature feature = fac.create((Object []) attributes.toArray());
                 //currentFeature.setAttributes((Object []) attributes.toArray());
                 parent.feature(feature);
