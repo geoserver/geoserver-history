@@ -19,7 +19,7 @@
 
   ;Name and file
   Name "GeoServer 1.2"
-  OutFile "GeoServer-1.2.1.exe"
+  OutFile "geoserver-1.2.3.exe"
 
 
   ;Default installation folder
@@ -37,8 +37,8 @@
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ICON "C:\Program Files\NSIS\Contrib\Graphics\Icons\win-install.ico"
-  !define MUI_UNICON "C:\Program Files\NSIS\Contrib\Graphics\Icons\win-uninstall.ico"
+  !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\win-install.ico"
+  !define MUI_UNICON "$(NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
@@ -59,7 +59,7 @@
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Modern UI Test" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\GeoServer 1.2" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
   
   !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
