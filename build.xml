@@ -249,11 +249,14 @@
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
+			
+			<test fork="true" name="org.vfny.geoserver.requests.FeatureSuite" />
+				
 			<test fork="true" name="org.vfny.geoserver.requests.CapabilitiesSuite" />
 			<test fork="true" name="org.vfny.geoserver.requests.DescribeSuite" />
 			<test fork="true" name="org.vfny.geoserver.requests.TransactionSuite" />
 			<test fork="true" name="org.vfny.geoserver.requests.LockSuite" />
-			<test fork="true" name="org.vfny.geoserver.requests.FeatureSuite" />
+			
 		</junit>
 	</target>
 
