@@ -809,6 +809,11 @@
 		<include name="RUNNING.txt" />
 	</fileset>
 </copy>
+	<copy todir="${dir.build}">
+		<fileset dir="${basedir}/bin">
+		<include name="**/*" />
+		</fileset>
+</copy>
 <copy todir="${dir.build}/documents/" failonerror="false">
 	<fileset dir="${dir.doc}">
 		<include name="**/*" />
@@ -827,17 +832,21 @@
 <!--copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/-->
 <unwar src="${dir.build}/geoserver.war" dest="${dir.build}/server/geoserver/" />
 
-<zip destfile="${basedir}/geoserver-${name.release}-bin.zip">
-	<zipfileset dir="${dir.build}" prefix="geoserver">
+	
+<tar destfile="${basedir}/geoserver-${name.release}-bin.tar">
+	<tarfileset dir="${dir.build}" prefix="geoserver">
 		<include name="**/*" />
-		<exclude name="bin/*" />
 		<exclude name="geoserver.war" />
 		<exclude name="org/**" />
-	</zipfileset>
-	<zipfileset dir="${dir.build}" prefix="geoserver" filemode="755" includes="bin/*" />
-</zip>
+	</tarfileset>
+</tar>
 
-<copy file="${basedir}/geoserver-${name.release}-bin.zip" todir="${dir.release}" />
+<gzip src="${basedir}/geoserver-${name.release}-bin.tar" zipfile="${basedir}/geoserver-${name.release}-bin.tar.gz" />
+
+<copy file="${basedir}/geoserver-${name.release}-bin.tar.gz" todir="${dir.release}" />
+	<delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
+	<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
+
 <delete dir="${dir.build}" failonerror="false" />
 <delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
 
@@ -907,7 +916,7 @@
 	<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-${version.geotools}.jar" />
 
-	<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
+<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" />	
 	<copy failonerror="false" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
