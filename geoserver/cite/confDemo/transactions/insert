@@ -10,12 +10,6 @@
 >
   <wfs:Insert>
     <gd:streams>
-      <gml:boundedBy>
-        <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#0">
-          <gml:coordinates>564669.09,5246679.99 564669.09,5246975.92 564709.98,5246975.92 564709.98,5246679.99
-          </gml:coordinates>
-        </gml:Box>
-      </gml:boundedBy>
       <gml:MultiLineString srsName="http://www.opengis.net/gml/srs/epsg.xml#0">
 	<gml:lineStringMember>
 	<gml:LineString>

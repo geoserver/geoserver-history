@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * now will just use the second
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.16 2004/04/16 22:07:05 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.17 2004/04/16 22:11:17 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -124,7 +124,6 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
                 try {
                     curFeatureType = fType.getFeatureType();
-System.out.println("Schema Base = "+fType.getSchemaBase());
                 } catch (java.io.IOException ioe) {
                     throw new SAXException(ioe);
                 }
@@ -151,7 +150,6 @@ System.out.println("Schema Base = "+fType.getSchemaBase());
                 for (int i = 0; i < atts.getLength(); i++) {
                     String name = atts.getLocalName(i);
                     String attString = atts.getValue(i);
-System.out.println("\n\n\nTYPE NAME = "+curFeatureType.getTypeName()+"  :: Attr Name = "+name+"\n\n\n");
                     AttributeType type = curFeatureType.getAttributeType(name);
                     Object value = type.parse(attString);
                     attributes[curFeatureType.find(type)] = value;
@@ -347,7 +345,6 @@ System.out.println("\n\n\nTYPE NAME = "+curFeatureType.getTypeName()+"  :: Attr 
             } else {
                 attributeNames.add(attName);
             }
-System.out.println("cur attr type "+curAttributeType);
 
 
             int position = curFeatureType.find(curAttributeType);
