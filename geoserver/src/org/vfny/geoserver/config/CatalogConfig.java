@@ -9,20 +9,25 @@ import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.wfs.*;
 import org.vfny.geoserver.responses.wfs.*;
 import org.w3c.dom.*;
+import java.io.File;
 import java.util.*;
 import java.util.logging.Logger;
 
 
 /**
- * DOCUMENT ME!
+ * Holds the featureTypes.  Replaced TypeRepository.
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @author Chris Holmes
+ * @version $Id: CatalogConfig.java,v 1.1.2.2 2003/11/11 02:45:40 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
+
+    /** Default name of feature type information */
+    public static final String INFO_FILE = "info.xml";
 
     /** The holds the mappings between prefixes and uri's */
     private Map nameSpaces;
@@ -46,15 +51,20 @@ public class CatalogConfig extends AbstractConfig {
      * Creates a new CatalogConfig object.
      *
      * @param root DOCUMENT ME!
+     * @param featureTypeDir DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public CatalogConfig(Element root) throws ConfigurationException {
+    public CatalogConfig(Element root, String featureTypeDir)
+        throws ConfigurationException {
         LOGGER.info("loading catalog configuration");
         loadNameSpaces(getChildElement(root, "namespaces", true));
         loadDataStores(getChildElement(root, "datastores", true));
         loadStyles(getChildElement(root, "styles", false));
-        loadFeatureTypes(getChildElement(root, "featureTypes", true));
+
+        File startDir = new File(featureTypeDir);
+        this.featureTypes = new HashMap();
+        loadFeatureTypes(startDir);
     }
 
     /**
@@ -154,7 +164,9 @@ public class CatalogConfig extends AbstractConfig {
      * @return DOCUMENT ME!
      */
     public NameSpace getNameSpace(String prefix) {
-        return (NameSpace) nameSpaces.get(prefix);
+        NameSpace retNS = (NameSpace) nameSpaces.get(prefix);
+
+        return retNS;
     }
 
     /**
@@ -208,6 +220,40 @@ public class CatalogConfig extends AbstractConfig {
     }
 
     /**
+     * Checks that the collection of featureTypeNames all have the same prefix.
+     * Used to determine if their schemas are all in the same namespace or if
+     * imports need to be done.
+     *
+     * @param featureTypeNames list of featureTypes, generally from a
+     *        DescribeFeatureType request.
+     *
+     * @return true if all the typenames in the collection have the same
+     *         prefix.
+     *
+     * @throws WfsException if any of the names do not exist in this
+     *         repository.
+     *
+     * @task HACK: returns true just to get things working.
+     */
+    public boolean allSameType(Collection featureTypeNames)
+        throws WfsException {
+        return true;
+
+        /*   Iterator nameIter = featureTypeNames.iterator();
+           boolean sameType = true;
+           if (!nameIter.hasNext()) {
+               return false;
+           }
+           String firstPrefix = getPrefix(nameIter.next().toString());
+           while (nameIter.hasNext()) {
+               if (!firstPrefix.equals(getPrefix(nameIter.next().toString()))) {
+                   return false;
+               }
+           }
+           return sameType;*/
+    }
+
+    /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
@@ -241,6 +287,7 @@ public class CatalogConfig extends AbstractConfig {
             defaultNS = (defaultNS || (nsCount == 1));
 
             NameSpace ns = new NameSpace(prefix, uri, defaultNS);
+            LOGGER.config("added namespace " + ns);
             nameSpaces.put(prefix, ns);
 
             if (defaultNS) {
@@ -318,22 +365,81 @@ public class CatalogConfig extends AbstractConfig {
     /**
      * DOCUMENT ME!
      *
-     * @param fTypesElem DOCUMENT ME!
+     * @param currentFile DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    private void loadFeatureTypes(Element fTypesElem)
+    private void loadFeatureTypes(File currentFile)
         throws ConfigurationException {
-        NodeList ftlist = fTypesElem.getElementsByTagName("featureType");
-        Element ftypeElem;
-        int ftCount = ftlist.getLength();
-        this.featureTypes = new HashMap(2 * ftCount);
+        LOGGER.finest("examining: " + currentFile.getAbsolutePath());
+        LOGGER.finest("is dir: " + currentFile.isDirectory());
 
-        FeatureTypeConfig ft = null;
+        if (currentFile.isDirectory()) {
+            File[] file = currentFile.listFiles();
 
-        for (int i = 0; i < ftCount; i++) {
-            ft = new FeatureTypeConfig(this, (Element) ftlist.item(i));
-            featureTypes.put(ft.getName(), ft);
+            for (int i = 0, n = file.length; i < n; i++) {
+                loadFeatureTypes(file[i]);
+            }
+        } else if (isInfoFile(currentFile)) {
+            String curPath = currentFile.getAbsolutePath();
+            Element featureElem = ServerConfig.loadConfig(currentFile.toString());
+            FeatureTypeConfig ft = null;
+
+            try {
+                File parentDir = currentFile.getParentFile();
+                ft = new FeatureTypeConfig(this, featureElem);
+
+                String pathToSchemaFile = new File(parentDir, "schema.xml")
+                    .toString();
+                LOGGER.finest("pathToSchema is " + pathToSchemaFile);
+                ft.setSchemaFile(pathToSchemaFile);
+                featureTypes.put(ft.getName(), ft);
+                LOGGER.finer("added featureType " + ft.getName());
+            } catch (ConfigurationException cfge) {
+                LOGGER.warning("could not add FeatureType at " + currentFile
+                    + " due to " + cfge);
+            }
         }
+    }
+
+    /*  private void loadType(String filePath) throws ConfigurationException {
+       try {
+           Element featureElem = ServerConfig.loadConfig(configFile);
+    
+           String featureTag = featureElem.getTagName();
+           if (!featureTag.equals(rootTag) && !featureTag.equals(OLD_ROOT_TAG)) {
+               featureElem = (Element) featureElem.getElementsByTagName(rootTag)
+                                                  .item(0);
+               if (featureElem == null) {
+                   String message = "could not find root tag: " + rootTag
+                       + " in file: " + filePath;
+                   LOGGER.warning(message);
+                   throw new ConfigurationException(message);
+               }
+           }
+    
+       NodeList ftlist = fTypesElem.getElementsByTagName("featureType");
+       Element ftypeElem;
+       int ftCount = ftlist.getLength();
+       FeatureTypeConfig ft = null;
+       for (int i = 0; i < ftCount; i++) {
+           ft = new FeatureTypeConfig(this, (Element) ftlist.item(i));
+           featureTypes.put(ft.getName(), ft);
+       }
+       }*/
+
+    /**
+     * tests whether a given file is a file containing type information.
+     *
+     * @param testFile the file to test.
+     *
+     * @return <tt>true</tt> if the file has type info.
+     */
+    private static boolean isInfoFile(File testFile) {
+        String testName = testFile.getAbsolutePath();
+        int start = testName.length() - INFO_FILE.length();
+        int end = testName.length();
+
+        return testName.substring(start, end).equals(INFO_FILE);
     }
 }
