@@ -2,18 +2,22 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table border=0 width=100%>
-	<html:form action="/config/data/namespaceNewSubmit">
-		<tr><td>
-			<bean:message key="label.prefix"/>:
-		</td><td>
-			<html:text property="prefix" size="60"/>
-		</td></tr>
-		<tr><td>&nbsp;</td>
-		<td>
-			<html:submit>
-				<bean:message key="label.new"/>
-			</html:submit>
-		</td></tr>
-	</html:form>
-</table>
+<html:form action="/config/data/namespaceNewSubmit">
+  <table class="info">
+    <tr>
+      <td class="label">
+        <bean:message key="label.prefix"/>:
+      </td
+      <td class="datum">
+        <html:text property="prefix" size="60"/>
+	  </td>
+    <tr>
+      <td class="label">&nbsp;</td>
+	  <td class="datum">
+        <html:submit>
+          <bean:message key="label.new"/>
+        </html:submit>
+	  </td>
+    </tr>
+  </table>
+</html:form>
