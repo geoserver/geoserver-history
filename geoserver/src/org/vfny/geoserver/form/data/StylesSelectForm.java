@@ -10,6 +10,7 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.Iterator;
 import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
@@ -48,7 +49,17 @@ public class StylesSelectForm extends ActionForm {
         ServletContext context = getServlet().getServletContext();
         DataConfig config = ConfigRequests.getDataConfig(request);
 
-        styles = new TreeSet(config.getStyles().keySet());
+        styles = new TreeSet();
+        Iterator i = config.getStyles().values().iterator();
+        while(i.hasNext()){
+        	StyleConfig sc = (StyleConfig)i.next();
+        	if(sc.isDefault()){
+        		styles.add(sc.getId()+"*");
+        	}else{
+        		styles.add(sc.getId());
+        	}
+        }
+        
         StyleConfig sConfig;
 
         UserContainer user = Requests.getUserContainer(request);        

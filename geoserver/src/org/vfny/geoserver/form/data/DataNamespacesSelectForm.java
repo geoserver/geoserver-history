@@ -22,8 +22,8 @@ import org.vfny.geoserver.requests.Requests;
  * DataNamespacesSelectForm
  * <p>
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataNamespacesSelectForm.java,v 1.2 2004/02/28 05:24:36 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataNamespacesSelectForm.java,v 1.3 2004/03/01 19:28:55 dmzwiers Exp $
  */
 public class DataNamespacesSelectForm extends ActionForm {
     /** namespace the user selected (value is a prefix) */
@@ -45,6 +45,9 @@ public class DataNamespacesSelectForm extends ActionForm {
         //
         DataConfig config = ConfigRequests.getDataConfig(request);        
         namespaces = new TreeSet(config.getNameSpaces().keySet());
+        String def = config.getDefaultNameSpace().getPrefix();
+        namespaces.remove(def);
+        namespaces.add(def+"*");
     }
 
     public ActionErrors validate(ActionMapping mapping,

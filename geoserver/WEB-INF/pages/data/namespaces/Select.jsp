@@ -23,6 +23,9 @@
        <html:submit property="action">
          <bean:message key="label.delete"/>
        </html:submit>
+       <html:submit property="action">
+         <bean:message key="label.default"/>
+       </html:submit>
     </td>
   </tr>			
 </table>
