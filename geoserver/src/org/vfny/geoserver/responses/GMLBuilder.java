@@ -8,6 +8,8 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
@@ -84,6 +86,8 @@ public class GMLBuilder {
     /** Sets level of indendation and documentation for response **/
     private boolean verbose;
 
+    private NumberFormat coordFormatter = NumberFormat.getInstance(Locale.US);
+
     private static final String XML_HEADER = "<?xml version='1.0' encoding='UTF-8'?>";
     
     private static final String FEATURE_COLL_HEAD = "<wfs:FeatureCollection ";
@@ -102,19 +106,16 @@ public class GMLBuilder {
 
     private static final String XS_NAMESPACE = "xmlns:xs=" + SCHEMA_URI;
 
-    //    private final String FEATURE_COLL_INIT_V = "<wfs:FeatureCollection\n " 
-    //+ "  xmlns=\"" + configInfo.getUrl() + "/myns\"\n" + 
-    //"   xmlns:gml=\"http://www.opengis.net/gml\"\n   xmlns:wfs=\"" +
-    //"http://www.opengis.net/wfs\">"; 
-    
     /**
      * Constructor to set verbosity
      * @param verbose Sets level of indendation and documentation for response
      */ 
     public GMLBuilder(boolean verbose) {
         this.verbose = verbose;
+	if (coordFormatter instanceof DecimalFormat) {
+	    ((DecimalFormat)coordFormatter).applyPattern("#.################");
+	}
         finalResult.append(XML_HEADER);
-	//"<?xml version='1.0' encoding='UTF-8'?>"
 	if (verbose){
 	    finalResult.append("\n");
 	}
@@ -143,8 +144,6 @@ public class GMLBuilder {
 	featureTypeWriter.start(srs, typeInfo);        
 	//for now we'll just hack - put all in the first srs.
     }
-
-
 
     /**
      * Adds a feature type end tag
@@ -251,8 +250,6 @@ public class GMLBuilder {
 			       WFS_URI + schIndent + WFS_LOC + "\">");
 	    boxInsertPos = finalResult.length();
 	}
-    
-        
         
         /**
          * Writes an end tag for the feature collection/type.
@@ -266,8 +263,12 @@ public class GMLBuilder {
 	    bbox.append("<gml:Box>");
 	    if (verbose) bbox.append("\n     ");
 	    bbox.append("<gml:coordinates>");
-	    bbox.append(geomEnv.getMinX() + "," + geomEnv.getMinY() + " ");
-	    bbox.append(geomEnv.getMaxX() + "," + geomEnv.getMaxY());
+	    //REVISIT: we use default cs,ds ect. for coordinates.  Should we
+	    //allow user configurable?  They can set it, we do it here?
+	    bbox.append(coordFormatter.format(geomEnv.getMinX()) + "," + 
+			coordFormatter.format(geomEnv.getMinY()) + " ");
+	    bbox.append(coordFormatter.format(geomEnv.getMaxX()) + "," + 
+			coordFormatter.format(geomEnv.getMaxY()));
 	    bbox.append("</gml:coordinates>");
 	    if (verbose) bbox.append("\n    ");
 	    bbox.append("</gml:Box>");
@@ -444,26 +445,26 @@ public class GMLBuilder {
         private void initializeGeometry(Class geometry, String featureType, 
                                         String srs, String tagName) { 
             String geometryName = "";
-            LOGGER.finer("checking type: " + geometry.toString());
+            LOGGER.finest("checking type: " + geometry.toString());
 
             // set internal geometry representation
             if( geometry.equals(Point.class) ) {
-                LOGGER.finer("found point");
+                LOGGER.finest("found point");
                 geometryType = POINT;
                 geometryName = "Point";
             }
             else if( geometry.equals(LineString.class) ) {
-                LOGGER.finer("found linestring");
+                LOGGER.finest("found linestring");
                 geometryType = LINESTRING;
                 geometryName = "LineString";
             }
             else if( geometry.equals(Polygon.class) ) {
-                LOGGER.finer("found polygon");
+                LOGGER.finest("found polygon");
                 geometryType = POLYGON;
                 geometryName = "Polygon";
             }
             else if( geometry.equals(MultiPoint.class) ) {
-                LOGGER.finer("found multi");
+                LOGGER.finest("found multi");
                 geometryType = MULTIPOINT;
                 geometryName = "MultiPoint";
             }
@@ -781,18 +782,12 @@ public class GMLBuilder {
         private void writeCoordinates(Geometry geometry) {            
             int dimension = geometry.getDimension();
             Coordinate[] tempCoordinates = geometry.getCoordinates(); 
- 
             finalResult.append( coordinatesStart );            
             for(int i = 0, n = geometry.getNumPoints(); i < n; i++) {
-		double xCoord = tempCoordinates[i].x;
-		double yCoord = tempCoordinates[i].y;
-		//		BigDecimal xCoord = new BigDecimal(tempCoordinates[i].x);
-		//xCoord = xCoord.setScale(10,  BigDecimal.ROUND_HALF_UP);
-		//BigDecimal yCoord = new BigDecimal(tempCoordinates[i].y).setScale(15);
-		//yCoord = yCoord.setScale(10,  BigDecimal.ROUND_HALF_UP);
+	        String xCoord = coordFormatter.format(tempCoordinates[i].x);
+		String yCoord = coordFormatter.format(tempCoordinates[i].y);
 		finalResult.append( xCoord + coordinateDelimeter + yCoord + 
 				    tupleDelimeter);
-		//+ BigDecimal.valueOf((long)tempCoordinates[i].y, 15) + tupleDelimeter);
             }
             finalResult.deleteCharAt( finalResult.length() - 1 );            
             finalResult.append( coordinatesEnd );
