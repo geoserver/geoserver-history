@@ -4,13 +4,15 @@
  */
 package org.vfny.geoserver;
 
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.requests.Requests;
-import org.vfny.geoserver.responses.ResponseUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.Requests;
+import org.vfny.geoserver.responses.ResponseUtils;
 
 
 /**

@@ -6,32 +6,23 @@
  */
 package org.vfny.geoserver.action.validation;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.geotools.data.DataStore;
-import org.geotools.data.DefaultRepository;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Repository;
-
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.geotools.validation.Validator;
-import org.geotools.validation.dto.TestDTO;
-import org.geotools.validation.dto.TestSuiteDTO;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.global.GeoValidator;
 
 import com.vividsolutions.jts.geom.Envelope;
 

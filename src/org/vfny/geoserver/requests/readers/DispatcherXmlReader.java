@@ -5,16 +5,18 @@
 
 package org.vfny.geoserver.requests.readers;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.xerces.parsers.SAXParser;
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.DispatcherHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**

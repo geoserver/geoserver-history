@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.vfny.geoserver.ExceptionHandler;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.responses.Response;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,12 +21,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.vfny.geoserver.ExceptionHandler;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.responses.Response;
 
 
 /**

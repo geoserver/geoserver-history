@@ -4,6 +4,16 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+
+import javax.xml.transform.TransformerException;
+
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
 import org.geotools.gml.producer.FeatureTransformer;
@@ -13,14 +23,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -33,7 +35,7 @@ import javax.xml.transform.TransformerException;
  * <code>"gzip"</code>, otherwise will return <code>null</code>
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: GML2FeatureResponseDelegate.java,v 1.10 2004/09/09 16:48:54 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {

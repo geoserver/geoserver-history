@@ -4,18 +4,18 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.global.Log4JFormatter;
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
 /**
  * complete configuration ser for the whole server
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @author dzwiers
  * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */

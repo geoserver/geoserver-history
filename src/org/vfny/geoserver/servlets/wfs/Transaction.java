@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.servlets.wfs;
 
+import java.util.Map;
+
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
@@ -13,7 +15,6 @@ import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wfs.TransactionResponse;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.servlets.WFService;
-import java.util.Map;
 
 
 /**
@@ -22,7 +23,7 @@ import java.util.Map;
  * and returns a TransactionResponse xml element.
  *
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: Transaction.java,v 1.11 2004/06/03 19:34:36 cholmesny Exp $
  */
 public class Transaction extends WFService {

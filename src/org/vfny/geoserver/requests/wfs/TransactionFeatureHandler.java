@@ -4,21 +4,23 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.gml.GMLFilterFeature;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Requests;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**

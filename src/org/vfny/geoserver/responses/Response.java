@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver.responses;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
-import java.io.IOException;
-import java.io.OutputStream;
 
 
 /**

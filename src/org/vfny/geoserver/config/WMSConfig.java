@@ -4,9 +4,6 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 

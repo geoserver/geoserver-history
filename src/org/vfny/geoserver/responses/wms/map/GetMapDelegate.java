@@ -4,9 +4,13 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
@@ -27,12 +31,8 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Base class for delegates who creates a map based on a GetMap request.
@@ -70,7 +70,7 @@ import java.util.logging.Logger;
  * </ul>
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @author Chris Holmes
  * @version $Id: GetMapDelegate.java,v 1.13 2004/09/09 15:29:28 cholmesny Exp $
  * @task TODO: This whole thing needs to be redone a bit.  The problem right now is that

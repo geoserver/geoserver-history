@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.k_int.codec.util.OIDRegister;

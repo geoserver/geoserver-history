@@ -7,8 +7,6 @@ package org.vfny.geoserver.action.wms;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

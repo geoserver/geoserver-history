@@ -4,23 +4,25 @@
  */
 package org.vfny.geoserver.responses.wms.map.svg;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
+
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 
 
 /**
  * DOCUMENT ME!
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: EncodeSVG.java,v 1.4 2004/04/16 06:28:56 jive Exp $
  */
 public class EncodeSVG {

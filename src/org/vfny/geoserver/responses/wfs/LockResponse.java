@@ -32,16 +32,16 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.LockRequest;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.global.dto.*;
 
 /**
  * Handles a Lock request and creates a LockResponse string.
  *
  * @author Chris Holmes, TOPP
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: LockResponse.java,v 1.15 2004/04/16 06:28:56 jive Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current

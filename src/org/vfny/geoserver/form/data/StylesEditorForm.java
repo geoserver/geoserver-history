@@ -10,7 +10,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.io.File;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +18,10 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-
+import org.apache.struts.config.ControllerConfig;
+import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.upload.MultipartRequestHandler;
-import org.apache.struts.upload.CommonsMultipartRequestHandler;
-import org.apache.struts.config.ControllerConfig;
-
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;

@@ -4,7 +4,16 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.geotools.styling.Style;
@@ -15,14 +24,8 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

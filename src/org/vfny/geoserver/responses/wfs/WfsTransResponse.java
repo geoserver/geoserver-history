@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.vfny.geoserver.requests.Request;
-import org.vfny.geoserver.responses.ResponseUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -16,6 +12,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.responses.ResponseUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

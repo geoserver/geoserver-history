@@ -4,12 +4,15 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.data.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureResults;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
-import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
-import java.io.*;
-import java.util.*;
 
 
 /**
@@ -20,7 +23,7 @@ import java.util.*;
  * produced when a succesfull execution of a GetFeature/GetFeatureWithLock ends
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: GetFeatureResults.java,v 1.1 2004/03/10 23:39:06 groldan Exp $
  */
 public class GetFeatureResults {

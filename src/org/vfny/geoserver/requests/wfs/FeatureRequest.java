@@ -4,13 +4,14 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.requests.WFSRequest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**

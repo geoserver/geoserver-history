@@ -4,9 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,14 +12,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.logging.Logger;
+
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 
 /**
  * This is the configuration iformation for one DataStore. This class can also
  * generate real datastores.
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @author dzwiers
  * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
  */
