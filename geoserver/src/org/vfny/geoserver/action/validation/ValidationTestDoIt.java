@@ -44,7 +44,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.3 2004/03/16 23:58:31 dmzwiers Exp $
+ * @version $Id: ValidationTestDoIt.java,v 1.4 2004/04/16 00:00:59 dmzwiers Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
@@ -95,7 +95,7 @@ public class ValidationTestDoIt extends ConfigAction {
                     FeatureSource fs = ds.getFeatureSource(ss[j]);
                     sources.put(ss, fs);
 
-                    v.runFeatureTests(fs.getSchema(),
+                    v.runFeatureTests(dsc.getId(),fs.getSchema(),
                         fs.getFeatures().collection(), (ValidationResults) vr);
                     System.out.println("Feature Test Results for " + key + ":"
                         + ss[j]);

@@ -59,7 +59,7 @@ import java.util.logging.Logger;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.19 2004/04/05 12:00:45 cholmesny Exp $
+ * @version $Id: TransactionResponse.java,v 1.20 2004/04/15 23:58:12 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -353,7 +353,7 @@ public class TransactionResponse implements Response {
                     FeatureReader reader = DataUtilities.reader(collection);
 
                     //
-                    featureValidation(store.getSchema(), collection);
+                    featureValidation(catalog.getFeatureTypeInfo(store.getSchema().getTypeName()).getDataStoreInfo().getId(),store.getSchema(), collection);
 
                     Set fids = store.addFeatures(reader);
                     build.addInsertResult(element.getHandle(), fids);
@@ -435,7 +435,7 @@ public class TransactionResponse implements Response {
         response = build;
     }
 
-    protected void featureValidation(FeatureType type,
+    protected void featureValidation(String dsid,FeatureType type,
         FeatureCollection collection)
         throws IOException, WfsTransactionException {
         ValidationProcessor validation = request.getValidationProcessor();
@@ -464,7 +464,7 @@ public class TransactionResponse implements Response {
             };
 
         try {
-            validation.runFeatureTests(type, collection, results);
+            validation.runFeatureTests(dsid,type, collection, results);
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
