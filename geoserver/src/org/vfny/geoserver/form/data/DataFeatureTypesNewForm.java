@@ -18,28 +18,10 @@ import org.vfny.geoserver.config.DataConfig;
 
 /**
  * DataFeatureTypesNewForm purpose.
- * <p>
- * Description of DataFeatureTypesNewForm ...
- * </p>
- * 
- * <p>
- * Capabilities:
- * </p>
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * DataFeatureTypesNewForm x = new DataFeatureTypesNewForm(...);
- * </code></pre>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataFeatureTypesNewForm.java,v 1.1 2004/01/20 00:23:07 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataFeatureTypesNewForm.java,v 1.2 2004/01/20 07:57:45 jive Exp $
  */
 public class DataFeatureTypesNewForm extends ActionForm {
 	
