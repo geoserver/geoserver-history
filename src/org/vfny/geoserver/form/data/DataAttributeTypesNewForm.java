@@ -81,7 +81,13 @@ public class DataAttributeTypesNewForm extends ActionForm {
 		System.out.println("HATE LEVEL 3");
 		Map params = DataStoreUtils.toConnectionParams(dsFactory, dsConfig.getConnectionParams());
 		System.out.println("HATE LEVEL 4");	
-		DataStore dataStore = DataStoreUtils.aquireDataStore(params);
+        DataStore dataStore=null;
+        try {
+		dataStore = DataStoreUtils.aquireDataStore(params);
+        }
+        catch( Throwable t){
+         t.printStackTrace();         
+        }
 System.out.println("BORKBORKNBOBRKHJROJFALDKJFLAKD");
 		
 		

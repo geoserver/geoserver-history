@@ -1,4 +1,5 @@
-<featureType datastore="cgf">
+<?xml version="1.0" encoding="UTF-8"?> 
+<featureType datastore="cite_postgis">
 	<name>Points</name>
 	<title>The cite:Point layer</title>
 	<abstract>Test point features for the CITE project</abstract>

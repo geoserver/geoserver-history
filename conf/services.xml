@@ -9,7 +9,7 @@ Service level configuration
            WARNING, INFO, CONFIG, FINE, FINER, FINEST, in order of
            Increasing statements logged.
        -->
-     <loggingLevel>FINER</loggingLevel>
+     <loggingLevel>FINEST</loggingLevel>
 
 
      <!-- Sets the maximum features returned by GeoServer.  This used to
