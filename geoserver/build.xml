@@ -157,7 +157,8 @@
            destdir="${dir.build}" 
            includes="**" 
            classpathref="path.build"
-           deprecation="off"/>
+           deprecation="off"
+           debug="on"/>
     <jar jarfile="${dir.lib}/geoserver.jar">
       <fileset dir="${dir.build}">
         <exclude name="**/servlets/*" />
@@ -185,7 +186,8 @@
            destdir="${dir.build}" 
            includes="**/*.java" 
            classpathref="path.build" 
-           deprecation="on"/>
+           deprecation="on"
+           debug="on"/>
     <antcall target="all"/>
     <junit fork="false"
            printsummary="on">
