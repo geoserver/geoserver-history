@@ -901,9 +901,23 @@
 <copy failonerror="false" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
 <copy failonerror="false" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
 
-<copy failonerror="false" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.geotools}/plugin/arcsde/target/arcsde-${version.geotools}.jar" />
-<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.geotools}/ext/graph/target/graph-${version.geotools}.jar" />
-<copy failonerror="false" toFile="${dir.lib}/gt2-main.jar" file="${dir.geotools}/module/main/target/main-${version.geotools}.jar" />
+	
+<!-- added by DJB to be more complete. -->
+	<copy failonerror="false" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-${version.geotools}.jar" />
+
+<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" />	
+	<copy failonerror="false" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
+
+
+	
 <copy failonerror="false" file="${dir.geotools}/plugin/oraclespatial/target/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
 <copy failonerror="false" file="${dir.geotools}/plugin/postgis/target/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
 <copy failonerror="false" file="${dir.geotools}/plugin/shapefile/target/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
