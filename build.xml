@@ -291,9 +291,61 @@
 		<delete dir="${dir.server}/geoserver" />
 		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
 		<antcall target="run" />
-
 	</target>
 
+	<!-- Eclipse instructions:  
+  To test from ide:
+  1) select "test from ide" from the outline view this build.xml
+  2) right click and choose "Ant Build"
+  You will need to ensure that your Ant Build target is set up to
+  use your j2sdk JRE, with the added tools.jar from the sdk libs.
+  
+  To stop please just hit terminate on your console view.
+  -->
+	<target name="test from ide" depends="init, all"
+	    description="Deploy and run with jetty without forking">
+		<!-- no longer needed, as work is in geoserver/WEB-INF -->
+		<!--mkdir dir="${dir.server}/work"/-->
+
+		<!-- This will now build with the users directory, which I think is
+         appropriate for testing of this sort, as you'll want to configure
+         in the conf directory, since whenever you start with this it blows
+         away changes the ui might have done. -->
+		<antcall target="war">
+			<!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
+		</antcall>
+		<delete dir="${dir.server}/geoserver" />
+		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
+		<antcall target="run from ide" />
+	</target>
+	<!--
+	  To debug you will need to:
+  1) Right click on "debug from ide" and choose "Ant Build ..."
+     - this will compile and set everything up for ...
+  2) Right click on "debug from ide" and choose "Debug..."
+  2) You will need to set up a new debug configuration:
+     - the above j2sdk tools.jar
+     - project:geoserver
+     - Main Class: org.mortbay.start.Main
+  
+  After the first time you can just reuse your debug configuration.   
+  To stop please hit "Terminate" on your eclipse Console view.
+	-->
+	<target name="debug from ide" depends="init, all"
+	    description="Deploy and run with jetty without forking">
+		<!-- no longer needed, as work is in geoserver/WEB-INF -->
+		<!--mkdir dir="${dir.server}/work"/-->
+
+		<!-- This will now build with the users directory, which I think is
+         appropriate for testing of this sort, as you'll want to configure
+         in the conf directory, since whenever you start with this it blows
+         away changes the ui might have done. -->
+		<antcall target="war">
+			<!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
+		</antcall>
+		<delete dir="${dir.server}/geoserver" />
+		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
+	</target>
 	<!-- Prepares embedded server, server.built isn't working, so users must
       run this manually -->
 	<target name="prepareEmbedded" depends="init" unless="server.built">
@@ -318,25 +370,6 @@
 	</target>
 
 	<!-- run/debug from and IDE like eclise -->
-	<!-- Eclipse instructions:
-  
-  To run:
-  1) select "run from ide" from the outline view this build.xml
-  2) right click and choose "Ant Build"
-  You will need to ensure that your Ant Build target is set up to
-  use your j2sdk JRE, with the added tools.jar from the sdk libs.
-  
-  To debug you will need to:
-  0) call prepareEmbdedded or war or something to get ready
-  1) Right click on "run from ide" and choose "Debug ..."
-  2) You will need to set up a new configuration with:
-     - the above j2sdk tools.jar
-     - project:geoserver
-     - Main Class: org.mortbay.start.Main
-     
-  To stop either of these please hit "Terminate" on your eclipse
-  Console view.
-  -->
 	<target name="run from ide" depends="prepareEmbedded, init" description="Run from eclipse, so process can be terminated">
 		<echo message="Please be sure that either prepareEmbedded or" />
 		<echo message="test has been run before using this target" />
