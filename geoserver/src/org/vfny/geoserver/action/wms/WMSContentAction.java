@@ -42,25 +42,12 @@ public final class WMSContentAction extends ConfigAction {
         }
 
         String onlineResource = contentForm.getOnlineResource();
-        String updateTime = contentForm.getUpdateTime();
-        String[] selectedFeatures = contentForm.getSelectedFeatures();
-        String[] features = contentForm.getFeatures();
 
         WMSConfig config = getWMSConfig();
 
         config.setEnabled(enabled);
         config.setOnlineResource(new URL(onlineResource));
-        config.setUpdateTime(updateTime);
 
-        Set set = new TreeSet();
-
-        if (selectedFeatures != null) {
-            for (int i = 0; i < selectedFeatures.length; i++) {
-                set.add(selectedFeatures[i]);
-            }
-        }
-
-        config.setEnabledFeatures(set);
         getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("wmsConfigContent");

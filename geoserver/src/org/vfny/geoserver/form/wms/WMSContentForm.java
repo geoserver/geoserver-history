@@ -5,6 +5,7 @@
 
 package org.vfny.geoserver.form.wms;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
@@ -12,9 +13,11 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
 import org.vfny.geoserver.config.WMSConfig;
 
 
@@ -27,9 +30,6 @@ import org.vfny.geoserver.config.WMSConfig;
 public class WMSContentForm extends ActionForm {
     private boolean enabled;
     private String onlineResource;
-    private String updateTime;
-    private String[] selectedFeatures;
-    private String[] features;
 
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
@@ -80,42 +80,6 @@ public class WMSContentForm extends ActionForm {
         onlineResource = string;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String[] getFeatures() {
-        return features;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String[] getSelectedFeatures() {
-        return selectedFeatures;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param strings
-     */
-    public void setFeatures(String[] strings) {
-        features = strings;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param strings
-     */
-    public void setSelectedFeatures(String[] strings) {
-        selectedFeatures = strings;
-    }
-
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
 
@@ -133,45 +97,25 @@ public class WMSContentForm extends ActionForm {
         } else {
             this.onlineResource = "";
         }
-
-        this.updateTime = config.getUpdateTime();
-
-        Set featureSet = config.getEnabledFeatures();
-        this.features = new String[featureSet.size()];
-
-        Iterator iter = featureSet.iterator();
-        int counter = 0;
-
-        while (iter.hasNext()) {
-            String featureTypeName = (String) iter.next();
-            features[counter] = featureTypeName;
-            counter++;
-        }
     }
 
     public ActionErrors validate(ActionMapping mapping,
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
+        if (onlineResource == null || onlineResource.equals("")) {
+        	errors.add("onlineResource", 
+                    new ActionError("error.wms.onlineResource.required", onlineResource));
+        } else {
+            try {
+             URL url = new URL(onlineResource);   
+            } catch (MalformedURLException badURL) {
+             errors.add("onlineResource", 
+                    new ActionError("error.wms.onlineResource.malformed", badURL));   
+            }
+        }
+
         return errors;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setUpdateTime(String string) {
-        updateTime = string;
     }
 
     /**
