@@ -10,9 +10,10 @@ import java.util.Properties;
 import javax.servlet.http.*;
 //import javax.servlet.*;
 import org.geotools.resources.Geotools;
+import org.geotools.resources.Log4JFormatter;
+import org.geotools.resources.MonolineFormatter;
 import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.zserver.GeoZServer;
-
 //Logging system
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -50,7 +51,9 @@ public class FreefsLog extends HttpServlet {
      *
      */ 
     public void init() {
-	Geotools.init("Log4JFormatter", Level.FINEST);
+	Level level = Level.FINEST; //Put this in user config file.
+	Log4JFormatter.init("org.geotools", level);
+	Log4JFormatter.init("org.vfny.geoserver", level);
 	String root = this.getServletContext().getRealPath("/");
 	String path = root + CONFIG_DIR;
 	LOG.finest("init with path" + path);
