@@ -42,46 +42,37 @@ public abstract class ConfigResponseHandler extends XmlResponseHandler {
         cReturn();
         handleKeywords(config.getKeywords());
         cReturn();
-
-        String fees = config.getFees();
-
-        if ((fees == null) || "".equals(fees)) {
-            fees = "NONE";
-        }
-
-        handleSingleElem("Fees", fees);
-        cReturn();
-
-        String accessConstraints = config.getAccessConstraints();
-
-        if ((accessConstraints == null) || "".equals(accessConstraints)) {
-            accessConstraints = "NONE";
-        }
-
-        handleSingleElem("AccessConstraints", accessConstraints);
         unIndent();
     }
 
     /**
-     * DOCUMENT ME!
+     * Handles a keyword list.
      *
-     * @param kwords DOCUMENT ME!
+     * @param kwords The list of key words.
      *
      * @throws SAXException DOCUMENT ME!
+     *
+     * @task REVISIT: I don't think this is currently right for wms or wfs
+     *       service elements.  I'm just subclassing for WfsCapabilities
+     *       response. It should be Keywords instead of Keyword.  For WMS I
+     *       think it should be KeywordList or something to that effect, with
+     *       individual keywords delimited by keyword elements.  So I'm not
+     *       sure what should go here by default, perhaps should just remain
+     *       abstract.
      */
     protected void handleKeywords(List kwords) throws SAXException {
-        startElement("Keyword");
+        startElement("Keywords");
 
         if (kwords != null) {
             for (Iterator it = kwords.iterator(); it.hasNext();) {
                 characters(it.next().toString());
 
                 if (it.hasNext()) {
-                    characters(". ");
+                    characters(", ");
                 }
             }
         }
 
-        endElement("Keyword");
+        endElement("Keywords");
     }
 }
