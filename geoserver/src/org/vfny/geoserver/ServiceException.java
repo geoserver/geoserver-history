@@ -6,7 +6,9 @@ package org.vfny.geoserver;
 
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.responses.ResponseUtils;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.*;
 
 
@@ -18,7 +20,7 @@ import java.util.logging.*;
  * JG - here is my guess on what the parameters do:
  * </p>
  * <pre><code>
- * [?xml version="1.0" ?]
+ * [?xml version="1.0" ?
  * [ServiceExceptionReport
  *    version="1.2.0"
  *    xmlns="http://www.opengis.net/ogc"
@@ -62,7 +64,9 @@ import java.util.logging.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: ServiceException.java,v 1.3 2003/12/16 22:47:39 cholmesny Exp $
+ *
+ * @task TODO: print directly to an output stream for getXmlResponse.
  */
 public class ServiceException extends Exception {
     /** Class logger */
@@ -74,13 +78,6 @@ public class ServiceException extends Exception {
 
     /** full classpath of originating GeoServer class */
     protected String locator = new String();
-
-    /**
-     * the standard exception that was thrown JG - this does not appear to be
-     * used anywhere?
-     */
-
-    //protected Exception standardException = new Exception();
 
     /** Diagnostic code */
     protected String code = new String();
@@ -182,6 +179,19 @@ public class ServiceException extends Exception {
         return getXmlResponse(true);
     }
 
+    /**
+     * gets the message, encoding it with the proper escaped xml characters. If
+     * requested it prints the whole stack trace in the response.
+     *
+     * @param printStackTrace set to <tt>true</tt> if the full stack trace
+     *        should be returned to client apps.
+     *
+     * @return The message of this error, with xml escapes.
+     *
+     * @task REVISIT: The stack trace printing is not that efficient, but it
+     *       should be relatively small.  Once we convert errors to print
+     *       directly to the servlet output stream we can make it faster.
+     */
     public String getXmlMessage(boolean printStackTrace) {
         String indent = "   ";
         StringBuffer mesg = new StringBuffer();
@@ -190,24 +200,25 @@ public class ServiceException extends Exception {
             mesg.append(this.preMessage + ": ");
         }
 
-        mesg.append(ResponseUtils.encodeXML(this.getMessage()) + "\n");
-
+        //mesg.append(ResponseUtils.encodeXML(this.getMessage()) + "\n");
         if (printStackTrace) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintWriter writer = new PrintWriter(baos);
             Throwable cause = getCause();
 
-            StackTraceElement[] trace = (cause == null) ? getStackTrace()
-                                                        : cause.getStackTrace();
-
-            for (int i = 0; i < trace.length; i++) {
-                String line = indent + indent + "at " + trace[i].toString();
-
-                mesg.append(line + "\n");
-
-                mesg.append(ResponseUtils.encodeXML(line) + "\n");
+            if (cause == null) {
+                this.printStackTrace(writer);
+            } else {
+                cause.printStackTrace(writer);
             }
+
+            writer.flush();
+            mesg.append(baos.toString());
+        } else {
+            mesg.append(this.getMessage());
         }
 
-        return mesg.toString();
+        return ResponseUtils.encodeXML(mesg.toString());
     }
 
     /**
