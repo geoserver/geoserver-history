@@ -166,6 +166,13 @@
 	       But if you'd still like to use it, you can just add a line to your configuration.xml:
 	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;PrefixDelimiter&gt;:&lt;/PrefixDelimiter&gt;</i>
 	      </li>
+	       <br>
+	      <li>The NumDecimals element can be used to set how many places
+	      past the decimal are returned in a getFeature response.  
+	      To set to two decimal places add the following to your configuration.xml:
+	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;NumDecimals&gt;2 &lt;/NumDecimals&gt;</i>
+	      </li>
+	      <br>
 	     </ul>
 	    </blockquote>
           </td>
@@ -322,19 +329,15 @@
         <tr> 
           <td height="45"> 
             <blockquote>
-	    A side effect of the new plug-in datasources of the 0.96 release is
-	    that support for international encoding in postgis has been momentarily
-	    lost.  We have resolved the problem, and the fix is now in cvs and will
-	    be a part of the 0.97 release.  If you are currently using a version of
-	    GeoServer where you have modified the source code to handle international
-	    encodings you are advised to either stay with that install or to work
-	    off of cvs (look <a href="http://sourceforge.net/cvs/?group_id=25086">here</a>
-	    for info on cvs access).  There are no major architectural
-	    changes planned for 0.97, so working off
-	    of cvs should not be too much of a problem.  To use the new internationalization
+	    The 0.97 release includes better support for international character set
+	    encoding.  If you have problems with this don't hesitate to ask for support;
+	    We've tried to resolve the issues, but we also don't have the capacity to 
+	    carry out extensive tests for different languages, so we rely on our users
+	    to let us know when things go wrong.  Hopefully the fixes thus far should
+	    be sufficient for most users. To use the new internationalization
 	    fixes, the easiest way is to add a &lt;CharSet&gt; element to the 
-	    configuration.xml file that contains the encoding you wish to use:<br>
-	     <i> &nbsp;&nbsp;&nbsp;&nbsp;&lt;CharSet&gt;iso-8859-1&lt;/CharSet&gt;</i><br>
+	    configuration.xml file that contains the encoding you wish to use:<br><br>
+	     <i> &nbsp;&nbsp;&nbsp;&nbsp;&lt;CharSet&gt;iso-8859-1&lt;/CharSet&gt;</i><br><br>
 	     This will set the mime encoding and the xml header encoding to that charset, 
 	     as well as setting the charSet property for all instances of postgis.  If
 	     no CharSet element is found then the default is UTF-8 for the return xml, and
