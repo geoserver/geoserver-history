@@ -70,7 +70,9 @@
           	<tr>
               <td class="<tiles:getAsString name='layer'/>"
                   rowspan="1" colspan="2">
-                <div class="title"><tiles:getAsString name='title'/></div>  
+                <h1 class="title">
+                  <tiles:getAsString name='title'/>
+                </h1>  
                 <tiles:insert attribute="body"/>
                 
               </td>

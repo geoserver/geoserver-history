@@ -4,15 +4,15 @@ body {
  margin: 0ex;
  color: #000;
  font-family: tahoma, verdana, sans, arial, helvetica, sans-serif;
- background: #fed;
+ background: rgb(240,230,220);
 }
 a:visited,
 a:link {
- color: #99C;
+ color: rgb(102,102,153);
  text-decoration: none;
 }
 a:hover {
- color: #99C;
+ color: rgb(102,102,153);
  text-decoration: underline;
 }
 table.page {
@@ -32,32 +32,41 @@ td.gutter {
  font-size: 110%;
  font-weight: bold;
  font-style: italic;
- color: #99C;
+ color: rgb(102,102,153);
 }
 .license {
  font-size: 90%;
  font-weight: normal;
  font-style: italic;
- color: #99C;
+ color: rgb(102,102,153);
 }
-.title {
- font-size: 140%;
+.service {
+ font-size: 110%;
  font-weight: bold;
  font-style: normal;
+ padding: .5ex 1ex 0ex 0ex; 
 }
 .contact {
  font-size: 90%;
 }
-
 td.sidebar {
  vertical-align: top;
 }
 
+table.main {
+ text-align: left;
+ width: 100%;
+ border-width: 1px 1px 1px 1px;
+ border-style: solid;
+ border-color: black;
+ border-spacing: 0;
+ background: rgb(102,102,153); 
+}
+
 tr.bar {
- background: #99C;
  color: #ccc;
- vertical-align: center;
- height: 1.5em;
+ vertical-align: center;    
+ white-space: nowrap; 
 }
 .bar a:visited,
 .bar a:link {
@@ -68,36 +77,51 @@ tr.bar {
  color: #fff;
  text-decoration: underline;
 }
-
 td.locator {
- white-space: nowrap;
- border: black 1px;
+ padding: 0.5ex 0 0.5ex 1ex; 
+ border-width: 0 0 1px 0;
+ border-style: solid;
+ border-color: black;
 }
-
 span.locator {
  font-size: 90%;
 }
-
 td.loginStatus {
- vertical-align:center;
  text-align: right;
- white-space: nowrap;
- border: black 1px;
+ padding: 0.5ex 1ex 0.5ex 0; 
+ border-width: 0 0 1px 0px;
+ border-style: solid;
+ border-color: black; 
 }
 span.loginStatus {
  font-size: 90%;
 }
-title {
- font-size: 140%;
- font-weight: bold;
+tr.content {
+ padding: 0; 
 }
 td.application {
  vertical-align: top;
  background-color: rgb(250,250,250);
 }
+td.application h1.title {
+ font-size: 110%; 
+ white-space: nowrap; 
+ text-align: center;
+ background-color: rgb(240,240,240); 
+ padding: 0;
+ margin: 2px;  
+}
 td.maintenance {
  vertical-align: top;
- background-color: rgb(153,153,102);
+ background-color: rgb(240,240,250);
+}
+td.maintenance h1.title {
+ font-size: 110%; 
+ white-space: nowrap; 
+ text-align: center;
+ background-color: rgb(240,240,240); 
+ padding: 0;
+ margin: 2px;  
 }
 td.service {
  vertical-align: top;
