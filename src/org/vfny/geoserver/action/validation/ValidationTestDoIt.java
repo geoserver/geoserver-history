@@ -38,8 +38,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.6 2004/04/22 08:22:52 emperorkefka Exp $
+ * @author $Author: sploreg $ (last modification)
+ * @version $Id: ValidationTestDoIt.java,v 1.7 2004/04/30 02:48:37 sploreg Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
@@ -78,17 +78,18 @@ public class ValidationTestDoIt extends ConfigAction {
         TestValidationResults vr = new TestValidationResults();
         Iterator i = dsm.keySet().iterator();
 
+		//TODO: we only get one datastore here when we may need more than that
+		// do another pass through it and get those typesNames
         while (i.hasNext()) {
             Map sources = new HashMap();
             String key = i.next().toString();
             DataStoreConfig dsc = (DataStoreConfig) dsm.get(key);
             try {
             	DataStore ds = dsc.findDataStore(sc);
-            
             	String[] ss = ds.getTypeNames();
             	for (int j = 0; j < ss.length; j++) {
                     FeatureSource fs = ds.getFeatureSource(ss[j]);
-                    sources.put(ss, fs);
+                    sources.put(dsc.getId() +":"+ss[j], fs);
 
                     v.runFeatureTests(dsc.getId(),fs.getSchema(),
                         fs.getFeatures().collection(), (ValidationResults) vr);
