@@ -116,6 +116,10 @@
        	<forward
        		name="wfsConfigMenu"
        		path="/WFSConfigMenu.do"/>
+       		
+       	<forward
+       		name="baseStyle"
+       		path="/style.css"/>
 
     </global-forwards>
 
@@ -223,6 +227,9 @@
   </plug-in>
   
   <plug-in className="org.vfny.geoserver.form.wfs.WFSDescriptionForm">
+  </plug-in>
+  
+  <plug-in className="org.vfny.geoserver.global.GeoServer">
   </plug-in>
 
 </struts-config>
