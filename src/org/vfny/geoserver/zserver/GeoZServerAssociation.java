@@ -52,8 +52,8 @@ import  org.apache.xml.serialize.XMLSerializer;
  *
  * This class handles a connection, handling the init,
  * search and present requests.  
- * @author: Chris Holmes, TOPP
- * @version $VERSION$
+ * @author Chris Holmes, TOPP
+ * @version GeoServer 0.93
  *
  * TODO: change this so it extends ZServerAssociation, instead
  * of rewriting things, as there are many methods used which
@@ -259,8 +259,8 @@ public class GeoZServerAssociation implements TargetAPDUListener
                              init_request.exceptionalRecordSize.longValue(),
                              true,
                              "174",
-                             "TOPP geoserver zserver",
-                             "$Id: GeoZServerAssociation.java,v 1.3 2003/01/16 23:32:31 cholmesny Exp $",
+                             "TOPP Geoserver zserver module",
+                             "GeoServer 0.93",
                              null,
                              null);
     }
@@ -752,11 +752,15 @@ public class GeoZServerAssociation implements TargetAPDUListener
 	    }
 	    LOGGER.finer("requested_syntax="+requested_syntax);
 	    requested_syntax_name = requested_syntax.getName();
+	    if(requested_syntax_name.equals("usmarc")) {
+		//HACK!  USMARC not yet supported...
+		requested_syntax_name = "sutrs";
+	    }
 	    LOGGER.finer("requested_syntax_name="+requested_syntax_name);
 	}
 	else
       {
-	  requested_syntax_name = "xml"; //REVISIT: should this be
+	  requested_syntax_name = "sutrs"; //REVISIT: should this be
 	  //default?  We're sure to have it...
 	  requested_syntax = reg.lookupByName(requested_syntax_name);
       }
@@ -848,8 +852,8 @@ public class GeoZServerAssociation implements TargetAPDUListener
 		    rec.encoding.which = 
 			encoding_inline0_type.octet_aligned_CID;
 		    rec.encoding.o = sw.toString().getBytes();  	  
-		} else if  ( requested_syntax_name.equals
-			     (Z3950Constants.RECSYN_SUTRS)){
+		} else {//if  ( requested_syntax_name.equals
+		    //    (Z3950Constants.RECSYN_SUTRS)){
 		    rec.direct_reference = 
 			reg.oidByName(requested_syntax_name);
 		    rec.encoding = new encoding_inline0_type();
