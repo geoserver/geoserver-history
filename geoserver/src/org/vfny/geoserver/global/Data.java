@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.38 2004/04/08 21:15:08 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.39 2004/04/15 20:59:29 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -281,6 +281,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
      */
     private final Map loadFeatureTypes(DataDTO dto) {
         errors = new HashMap();
+		featureTypes = new HashMap(); // to fix lazy loading
 
         if ((dto == null) || (dto.getFeaturesTypes() == null)) {
             errors = null;

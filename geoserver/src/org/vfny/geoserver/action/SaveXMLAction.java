@@ -145,11 +145,12 @@ public class SaveXMLAction extends ConfigAction {
 
         if (testsFL != null) {
             for (int j = 0; j < testsFL.length; j++) {
-                String flName = testsFL[j].getName();
-                flName = flName.substring(0, flName.length() - 4);
+				boolean found = false;
+				i = testSuites.keySet().iterator();
+				while(!found && i.hasNext())
+					found = (((TestSuiteDTO) testSuites.get(i.next())).getName().replaceAll(" ", "") + ".xml").equals(testsFL[j].getName());
 
-                if (testSuites.get(flName) == null) {
-                    // delete this
+                if (!found) {
                     testsFL[j].delete();
                 }
             }
