@@ -11,7 +11,7 @@
 		<bean:message key="label.featureTypes"/>:
 	</td><td>
 		<html:select property="selectedFeatureTypeName">
-			<html:options name="Config.Data" property="featureTypeKeySet"/>
+			<html:options property="typeNames"/>
 		</html:select>
 		
 	</td></tr>

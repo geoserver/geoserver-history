@@ -6,11 +6,15 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.SortedSet;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.DataConfig;
 
 /**
  * @author User
@@ -46,6 +50,14 @@ public class DataFeatureTypesSelectForm extends ActionForm {
 	 */
 	public void setSelectedFeatureTypeName(String selectedFeatureTypeName) {
 		this.selectedFeatureTypeName = selectedFeatureTypeName;
+	}
+	
+	public SortedSet getTypeNames() {
+		ServletContext context = getServlet().getServletContext();
+		DataConfig config =
+			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);	
+		
+		return config.getFeatureTypeIdentifiers();
 	}
 
 }

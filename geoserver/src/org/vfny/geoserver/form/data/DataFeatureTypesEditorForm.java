@@ -37,8 +37,15 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-		FeatureTypeConfig ftConfig = config.getFeatureTypeConfig((String) request.getSession().getAttribute("selectedFeatureType"));		
+		String featureTypeName = (String) request.getSession().getAttribute("selectedFeatureType");
+		System.out.println("Editor form: "+featureTypeName);
+		int index = featureTypeName.indexOf(DataConfig.SEPARATOR);
 		
+		featureTypeName = featureTypeName.substring(index+DataConfig.SEPARATOR.length());
+		System.out.println("Editor form: "+featureTypeName);
+		FeatureTypeConfig ftConfig = config.getFeatureTypeConfig(featureTypeName);		
+		if (ftConfig == null)
+			System.out.println("NULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULL");
 		_abstract = ftConfig.getAbstract();
 		latlonBoundingBox = ftConfig.getLatLongBBox().toString();
 		name = ftConfig.getName();
