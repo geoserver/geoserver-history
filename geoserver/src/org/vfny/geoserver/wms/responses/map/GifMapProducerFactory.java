@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses.map;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -94,4 +95,12 @@ public class GifMapProducerFactory implements GetMapProducerFactorySpi {
 
         return new GIFMapProducer();
     }
+
+	/* (non-Javadoc)
+	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 */
+	public Map getImplementationHints() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

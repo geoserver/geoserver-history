@@ -248,20 +248,22 @@ public class DescribeResponse implements Response {
 						tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
 						tempResponse.append("\n  </lonLatEnvelope>");
 				    } else {
-				    	tempResponse.append("\n  <lonLatEnvelope" 
-				    			+ "WGS84(DD)"
-				    			+">");
-				    	tempResponse.append("\n   <gml:pos>" 
-				    			+ (cv.getEnvelope() != null ? cv.getEnvelope().getMinX() + " " + cv.getEnvelope().getMinY() : "") 
-				    			+ "</gml:pos>");
-				    	tempResponse.append("\n   <gml:pos>" 
-				    			+ (cv.getEnvelope() != null ? cv.getEnvelope().getMaxX() + " " + cv.getEnvelope().getMaxY() : "") 
-				    			+ "</gml:pos>");
-				    	tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-				    	tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-				    	tempResponse.append("\n  </lonLatEnvelope>");
+				    	// @task TODO: Handle non-affine transforms
 				    }
-				}
+			    } else {
+			    	tempResponse.append("\n  <lonLatEnvelope" 
+			    			+ " srsName=\"WGS84(DD)\""
+			    			+">");
+			    	tempResponse.append("\n   <gml:pos>" 
+			    			+ (cv.getEnvelope() != null ? cv.getEnvelope().getMinX() + " " + cv.getEnvelope().getMinY() : "") 
+			    			+ "</gml:pos>");
+			    	tempResponse.append("\n   <gml:pos>" 
+			    			+ (cv.getEnvelope() != null ? cv.getEnvelope().getMaxX() + " " + cv.getEnvelope().getMaxY() : "") 
+			    			+ "</gml:pos>");
+			    	tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+			    	tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+			    	tempResponse.append("\n  </lonLatEnvelope>");
+			    }
 			} catch (OperationNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

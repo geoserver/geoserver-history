@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.vfny.geoserver.ServiceException;
@@ -136,4 +137,12 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
         public void abort() {
         }
     }
+
+	/* (non-Javadoc)
+	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 */
+	public Map getImplementationHints() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

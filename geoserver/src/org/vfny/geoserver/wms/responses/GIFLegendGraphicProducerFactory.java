@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
@@ -86,4 +87,12 @@ public class GIFLegendGraphicProducerFactory
 
         return new GifLegendGraphicProducer();
     }
+
+	/* (non-Javadoc)
+	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 */
+	public Map getImplementationHints() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
