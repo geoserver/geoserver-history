@@ -36,16 +36,13 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UniqueFIDValidation.java,v 1.4 2004/02/10 20:33:31 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: UniqueFIDValidation.java,v 1.5 2004/02/11 00:16:20 jive Exp $
  */
 public class UniqueFIDValidation extends DefaultIntegrityValidation {
-
-
-	private String uniqueID;		// the column name that this validation checks
-									//   to see if they are all unique.
-		
-		
+    /** Type Ref or "*" for all */
+    String typeRef;
+    
 	/**
 	 * UniqueFIDIntegrityValidation constructor.
 	 * <p>
@@ -132,27 +129,45 @@ public class UniqueFIDValidation extends DefaultIntegrityValidation {
 				reader.close();		// this is an important line	
 			}
 
-		}
-		
+		}	
 		return result;
 	}
 
-	/**
-	 * Access uniqueID property.
-	 * 
-	 * @return Returns the uniqueID.
-	 */
-	public String getUniqueID() {
-		return uniqueID;
-	}
+    /**
+     * Implementation of getTypeNames.
+     *
+     * @return Array of typeNames, or empty array for all, null for disabled
+     *
+     * @see org.geotools.validation.Validation#getTypeNames()
+     */
+    public String[] getTypeRefs() {
+        if( typeRef == null){
+            return null; // disabled
+        }
+        else if( typeRef.equals("*")){
+            return new String[0]; // apply to all
+        }
+        else {
+            return new String[]{ typeRef, };
+        }
+        
+    }
+    /**
+     * Access typeRef property.
+     * 
+     * @return Returns the typeRef.
+     */
+    public String getTypeRef() {
+        return typeRef;
+    }
 
-	/**
-	 * Set uniqueID to uniqueID.
-	 *
-	 * @param uniqueID The uniqueID to set.
-	 */
-	public void setUniqueID(String uniqueID) {
-		this.uniqueID = uniqueID;
-	}
+    /**
+     * Set typeRef to indicate type, or * for all.
+     *
+     * @param typeRef The typeRef to set.
+     */
+    public void setTypeRef(String typeRef) {
+        this.typeRef = typeRef;
+    }
 
 }

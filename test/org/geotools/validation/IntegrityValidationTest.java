@@ -22,7 +22,7 @@ import java.util.HashMap;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: IntegrityValidationTest.java,v 1.6 2004/01/31 00:17:52 jive Exp $
+ * @version $Id: IntegrityValidationTest.java,v 1.7 2004/02/11 00:16:57 jive Exp $
  */
 public class IntegrityValidationTest extends DataTestCase {
     MemoryDataStore store;
@@ -70,9 +70,10 @@ public class IntegrityValidationTest extends DataTestCase {
         // the visitor
         RoadValidationResults validationResults = new RoadValidationResults();
 
-        UniqueFIDValidation validator = new UniqueFIDValidation("isValidRoad",
-                "Tests to see if a road is valid",
-                IsValidGeometryValidation.ALL, "FID");
+        UniqueFIDValidation validator = new UniqueFIDValidation();
+        validator.setName("isValidRoad");
+        validator.setDescription("Tests to see if a road is valid");
+        validator.setTypeRef( "*" );
         validationResults.setValidation(validator);
 
         HashMap layers = new HashMap();
