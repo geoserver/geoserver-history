@@ -1,0 +1,556 @@
+<html><!-- #BeginTemplate "/Templates/main.dwt" -->
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Rob Hranac" name="author">
+<!-- #BeginEditable "doctitle" --> 
+<title>the GeoServer Project :: Documentation</title>
+<!-- #EndEditable --> 
+<style type="text/css">
+<!--
+.title {  font-family: Arial, Helvetica, sans-serif; font-size: 14pt; color: #FFFFFF; font-weight: bold}
+.navigation {  font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #333366}
+.header { font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: bold; color: #333366 }
+.finePrint { font-family: Arial, Helvetica, sans-serif; font-size: 9px; font-weight: lighter; color: #999999}
+.navigationSub { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: normal; color: #333366 }
+.titleSection { font-family: Arial, Helvetica, sans-serif; font-size: 14pt; color: #333366; font-weight: bold }
+.modifyMe {  color: #FF0000}
+-->
+</style>
+</head>
+<body vlink="#333366" alink="#333366" link="#333366" text="#000000" bgcolor="#ffffff">
+<table cellspacing="5" width="100%" border="0">
+  <tr> 
+    <td colspan="2">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td><a href="http://geoserver.sourceforge.net"><img border="0" align="left" src="http://geoserver.sourceforge.net/html/images/logo.gif"></a></td>
+          <td align="right" valign="top"><font color="#333366"><strong class="header">Documentation</strong></font></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="2"> 
+      <hr size="1" noshade>
+    </td>
+  </tr>
+  <tr> 
+    <td valign="top" width="188" height="272"> 
+      <title></title>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" height="100%">
+        <tr>
+          <td valign="top"> 
+            <table cellspacing="5" border="0">
+              <tr> 
+                <th align="left" colspan="2" height="8"><font color="#333366"><strong class="navigation">User</strong></font></th>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="../user/install.htm">Install</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="../user/schemaTutorial.htm">Schema 
+                  Tutorial</a></font></td>
+              </tr>
+            </table>
+            <table cellspacing="5" border="0">
+              <tr> 
+                <th align="left" colspan="2" height="8"><font color="#333366"><strong class="navigation">Developer 
+                  </strong></font></th>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="build.htm">Build</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><a href="testingUtility.htm">Testing 
+                  Utility</a></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><a href="license.htm">License</a></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><font size="-1"><a href="http://geoserver.sourceforge.net/documentation/javadocs/index.html">API</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/rfc13info.htm">WFS 
+                  Specification</a></font></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td valign="bottom"> 
+            <p><span class="finePrint">Java, Servlets, J2EE, EJB, JDBC, JNDI, 
+              JTA, Sun, Sun Microsystems are trademarks or registered trademarks 
+              of Sun Microsystems, Inc. in the United States and in other countries. 
+              XML, XML Schema, XSLT and related standards are trademarks or registered 
+              trademarks of MIT, INRIA, Keio or others, and a product of the World 
+              Wide Web Consortium. All other product names mentioned herein are 
+              trademarks of their respective owners.</span></p>
+            <p>&nbsp;</p>
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+    <td valign="top" width="961" height="272">
+<table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td class="titleSection"><!-- #BeginEditable "Title"  -->Build 
+            Documentation <!-- #EndEditable --></td>
+        </tr>
+      </table>
+      <!-- #BeginEditable "main" --> 
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Welcome</td>
+        </tr>
+        <tr> 
+          <td height="505"> 
+            <blockquote> 
+              <p>The GeoServer project is a Java implementation of the 1.0 Web 
+                Feature Server specification from the <a href="http://www.opengis.org">OpenGIS 
+                Consortium</a>. &nbsp; GeoServer aspires to be the '<a href="http://www.apache.org">Apache</a>' 
+                of OpenGIS data serving and its mission is to enable greater geographic 
+                interoperability by reiforcing OpenGIS standards and lowering 
+                the barriers to entry for geographic data providers.&nbsp;&nbsp;Developers 
+                should keep in mind the four primary goals of GeoServer, listed 
+                in order of importance:</p>
+              <ul>
+                <li><b>Standards Compliance</b>: The primary intent of the GeoServer 
+                  project is to promote standardization and it must, therefore, 
+                  adhere to published standards as closely as possible.&nbsp;&nbsp;GeoServer 
+                  also attempts to support as many relevant geographic standards 
+                  as possible.<br>
+                  <br>
+                </li>
+                <li><b>Data Format Support</b>: In order to make GeoServer a useful 
+                  product, it must help translate the current cacaphony of geogaphic 
+                  data formats into a single format.&nbsp;&nbsp;Therefore, supporting 
+                  several data formats - both relational and flat files - is of 
+                  primary importance to the project.<br>
+                  <br>
+                </li>
+                <li><b>Ease of Use</b>: GeoServer is targeted at organizations 
+                  with minimal technical expertise and must, therefore, be easy 
+                  to install, configure, and run for organizations with few technical 
+                  resources.<br>
+                  <br>
+                </li>
+                <li><b>Efficiency</b>: Given that the volume of data required 
+                  by geographic applications generally entails severe computational 
+                  and bandwidth loads, GeoServer strives to be as efficient as 
+                  possible, while achieving other goals.</li>
+              </ul>
+              <p> GeoServer is implemented using Java2 Enterprise Edition (J2EE) 
+                standards, including Java Servlets and Java Server Pages. &nbsp;Therefore, 
+                in order to install and use GeoServer, you need to first install 
+                a servlet container, such as <a href="http://jakarta.apache.org/tomcat/index.html">Tomcat</a> 
+                or <a href="http://www.caucho.com">Resin</a>. &nbsp;This requirement 
+                is explained further in the Testing section.&nbsp;&nbsp;GeoServer 
+                also makes use of several free, open source libraries and tools 
+                such as <a href="http://jakarta.apache.org/struts/index.html">Struts</a>, 
+                <a href="http://jakarta.apache.org/log4j/docs/index.html">Log4J</a>, 
+                <a href="http://jakarta.apache.org/ant/index.html">Ant</a>, and 
+                <a href="http://xml.apache.org/xerces-j/index.html">Xerces</a>. 
+                &nbsp;The function of these libraries within GeoServer is explained 
+                further in the Libraries section.&nbsp;&nbsp;Although the development 
+                team has plans to expand database support, GeoServer uses PostGIS 
+                as its primary source for storage of geographic data.&nbsp;&nbsp;PostGIS 
+                is an extension of the popular open source Postgres database system 
+                and is detailed in the Data section. &nbsp;To get started working 
+                with the GeoServer code, you should consult the Download section 
+                and the read about Building.</p>
+              <p>GeoServer has an active developer community that you can engage 
+                by joining the GeoServer mailing list and asking questions or 
+                making suggestions.&nbsp;&nbsp;If you create a user account at 
+                this site, you may participate in forums and vote in polls as 
+                well. &nbsp;However, first, you must download the GeoServer source; 
+                go to our download page.&nbsp;&nbsp;You may download either our 
+                nightly build or our latest stable release.</p>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Building</td>
+        </tr>
+        <tr> 
+          <td> 
+            <blockquote> 
+              <p>Most of this documentation assumes that you are building GeoServer 
+                on a Unix system and that you have Unix command line utilities 
+                availible to you.&nbsp;&nbsp;All of the examples given below are 
+                Unix command line prompts.&nbsp;&nbsp;As GeoServer is built in 
+                Java using a platform-neutral build tool, there is nothing to 
+                prevent you from developing and testing GeoServer on Windows.&nbsp;&nbsp;In 
+                fact, we encourage you to do so and send us documentation!&nbsp;&nbsp;However, 
+                we have not done so, so keep this bias in mind as you are reading 
+                the documentation that follows.</p>
+              <p>GeoServer is built against the <a href="http://java.sun.com/j2se/">JDK1.3.1</a>.&nbsp;&nbsp;If 
+                you do not have the JDK1.3.1 installed on your machine, you should 
+                download it from Sun and put it in your JAVA_HOME path.</p>
+              <p>GeoServer is built using <a href="http://jakarta.apache.org/ant/index.html">Ant</a>.&nbsp;&nbsp;If 
+                you are not yet familiar with the magical and wonderful Ant build 
+                tool, you should first visit their site, download and install 
+                Ant.&nbsp;&nbsp;You do not need to know much about Ant in order 
+                to work with GeoServer: most useful build and testing targets 
+                are included with the distribution.&nbsp;&nbsp;If you go to the 
+                root GeoServer directory and type:</p>
+              <blockquote> 
+                <p>ant</p>
+              </blockquote>
+              <p>You will be given a list of all build targets availible, as well 
+                as a description of what they do.&nbsp;&nbsp;If you would like 
+                to see the the Ant build file, just open up 'build.xml' in the 
+                root directory.&nbsp;&nbsp;To execute any of the build targets 
+                from the root GeoServer directory, you simply need to type:</p>
+              <blockquote> 
+                <p>ant <i>target</i></p>
+              </blockquote>
+              <p>Where target is the name of the target that you want to build.&nbsp;&nbsp;Since 
+                all necessary libraries are included in the GeoServer directory, 
+                you should now be able to build any needed target. &nbsp;Don't 
+                worry about classpath issues: Ant takes care of them for you.</p>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Setting up your Data Environment</td>
+        </tr>
+        <tr> 
+          <td> 
+            <blockquote> 
+              <p>Although it is a primary goal of the GeoServer project to support 
+                several data storage formats, good support exists now only for 
+                PostGIS, an excellent extension of the venerable Postgresql relational 
+                database. &nbsp;<a href="/Templates/http;//postgis.refractions.net/%20">PostGIS</a> 
+                and <a href="http://www.postgresql.org/">Postgresql</a> are open 
+                source databases that are free to all users. Postgresql was developed 
+                at <a href="http://www.berkeley.edu">Berkeley</a> several years 
+                ago and PostGIS is a recent extension developed by the clever 
+                programmers at <a href="http://www.refractions.net/">Refractions 
+                Research</a>. Installing Postgresql and PostGIS is the most complicated 
+                part of setting up a GeoServer site and for this reason, we will 
+                supplement the documentation to do so a little here.</p>
+              <p>First, you should download the full source of Postgresql.&nbsp;&nbsp;Binaries, 
+                RPMs, and other packaged builds will generally not suffice because 
+                you will need to compile the PostGIS extension and JDBC bindings 
+                into Postgresql in order for it to correctly speak with GeoServer.</p>
+              <p>First, download Postgresql - we have had the best luck with version 
+                7.1.2. &nbsp;You should configure and install it, per the installation 
+                instructions. &nbsp;It should go something like this:</p>
+              <blockquote> 
+                <p>./configure --with-java<br>
+                  make<br>
+                  make install</p>
+              </blockquote>
+              <p>Make sure that you configure it with Java. &nbsp;Then, download 
+                PostGIS. &nbsp;You should place PostGIS in your Postgresql 'contrib' 
+                directory and follow the directions for installation there.</p>
+              <p>You should, of course, check to make sure that Postgresql and 
+                PostGIS are functioning correctly before you attempt to connect 
+                with then using GeoServer.&nbsp;&nbsp;You may use the command 
+                line psql tool to do this.</p>
+              <blockquote> 
+                <p>&nbsp;</p>
+              </blockquote>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Directory Structure</td>
+        </tr>
+        <tr> 
+          <td> 
+            <blockquote> 
+              <p>The directory structure of GeoServer is relatively simple; note 
+                that as a general rule, descriptive and long names are favored 
+                over abbreviations, with a few exceptions (such as 'misc' instead 
+                of 'miscellaneous' which I never spell the same way twice).&nbsp;&nbsp;Directory 
+                and most file names here generally follow the same naming conventions 
+                as Java methods: lowercase start, uppercase for new words, no 
+                spaces. &nbsp;At the root directory, the lie of the land looks 
+                something like this:</p>
+              <blockquote> 
+                <table width="100%" border="0" cellspacing="3" cellpadding="3">
+                  <tr align="left" valign="top"> 
+                    <td width="13%" height="24"> build.xml </td>
+                    <td width="87%" height="24">This is the Ant build file, referenced 
+                      in the Building section.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%">classes</td>
+                    <td width="87%">This section contains all the .CLASS files 
+                      and is an exact mirror of the source directory.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%">documentation</td>
+                    <td width="87%">This section - for the moment - contains the 
+                      JavaDocs only.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%">jsp</td>
+                    <td width="87%">This section contains all the .JSP files used 
+                      for administration.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%">libraries</td>
+                    <td width="87%">This section contains all the libraries used 
+                      by GeoServer and is discussed in the Libraries section.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%">misc</td>
+                    <td width="87%">This section contains all the miscellaneous 
+                      files used for building the application and is somewhat 
+                      complex; it is discussed below.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%">source</td>
+                    <td width="87%">This sectioin contains all of the .JAVA files 
+                      and is an exact mirror of the classes directory.</td>
+                  </tr>
+                </table>
+              </blockquote>
+              <p>The 'misc' directory is further divided into the following sub-directories.</p>
+              <blockquote> 
+                <table width="100%" border="0" cellspacing="3" cellpadding="3">
+                  <tr align="left" valign="top"> 
+                    <td width="13%" height="6"> changelog</td>
+                    <td width="87%" height="6">This section contains a list of 
+                      daily changelogs. &nbsp;Changelogs must be saved using a 
+                      name of the form: changelog-<i>MM.DD.YYYY</i>.txt, where 
+                      <i>MM</i> is the two digit month, <i>DD</i> is the two digit 
+                      day, and <i>YYYY</i> is the four digit year. &nbsp;If saved 
+                      in this form, they will be automatically placed in thier 
+                      correct nightly build. &nbsp;If a changelog for that day 
+                      does not exist, the nightly build will complain.&nbsp;&nbsp;They 
+                      also serve as a useful reference to new developers.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%" height="264">documents</td>
+                    <td width="87%" height="264"> 
+                      <p>This section contains the following files:</p>
+                      <table width="100%" border="0" cellspacing="3" cellpadding="3">
+                        <tr> 
+                          <td width="19%">configuration.xml</td>
+                          <td width="81%">This is the GeoServer configuration 
+                            file, referenced in the <a href="/Templates/testing.htm">Testing</a> 
+                            section.</td>
+                        </tr>
+                        <tr> 
+                          <td width="19%">filter.xml</td>
+                          <td width="81%">This is the file that specifies the 
+                            current GeoServer filtering capabilities.</td>
+                        </tr>
+                        <tr> 
+                          <td width="19%"> freefs.log</td>
+                          <td width="81%">This is the blank GeoServer log file, 
+                            used by Log4J.</td>
+                        </tr>
+                        <tr> 
+                          <td width="19%">license.txt</td>
+                          <td width="81%">This is the GPL license file, built 
+                            into the release distributions.</td>
+                        </tr>
+                        <tr> 
+                          <td width="19%">operations.xml</td>
+                          <td width="81%">This is the file that specifies the 
+                            current GeoServer operations capabilities.</td>
+                        </tr>
+                        <tr> 
+                          <td width="19%">stylesheet.css</td>
+                          <td width="81%">This is the JavaDoc stylesheet.</td>
+                        </tr>
+                        <tr> 
+                          <td width="19%">web_production.xml</td>
+                          <td width="81%">This is the web.xml file for the .WAR 
+                            release build. </td>
+                        </tr>
+                        <tr> 
+                          <td width="19%">web_test.xml</td>
+                          <td width="81%">This is the web.xml file for the.WAR 
+                            test builds.</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%">packageLists</td>
+                    <td width="87%">This section contains the package lists for 
+                      all libraries linked to the GeoServer API (mostly libraries). 
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="13%">testData</td>
+                    <td width="87%">This section contains an exact mirror of the 
+                      directory structure for the featureTypes (under the data 
+                      directory) that will be compiled into both the release and 
+                      test builds.</td>
+                  </tr>
+                </table>
+              </blockquote>
+              <p>&nbsp;</p>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">GeoServer Libraries</td>
+        </tr>
+        <tr> 
+          <td> 
+            <blockquote> 
+              <p>GeoServer is built on top of several excellent open source software 
+                libraries. &nbsp;We greatly appreciate and thank the authors for 
+                their hard work and dedication. &nbsp;Without their efforts, GeoServer 
+                would not exist. &nbsp;Here are the libraries, with brief descriptions 
+                of how they fit into GeoServer.</p>
+              <blockquote> 
+                <table width="100%" border="0" cellspacing="3" cellpadding="3">
+                  <tr align="left" valign="top"> 
+                    <td width="12%" height="39"> 
+                      <p><a href="http://castor.exolab.org/">Castor</a><br>
+                        (<a href="http://www.exolab.org/">Exolab</a>) </p>
+                    </td>
+                    <td width="14%" height="39">castor.jar</td>
+                    <td width="74%" height="39">This is an XML binding library 
+                      and marshalling framework. &nbsp;It is currently used to 
+                      read all of the local XML configuration and information 
+                      files.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="12%" height="6"><a href="http://geoserver.sourceforge.net">GeoServer</a><br>
+                      (<a href="http://www.vfny.org">VFNY</a>)</td>
+                    <td width="14%" height="6"> geoserver.jar</td>
+                    <td width="74%" height="6">This is the GeoServer .JAR file, 
+                      which contains all classes except the servlets themselves.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="12%"><a href="http://jdbc.postgresql.org">JDBC<br>
+                      </a>(<a href="http://www.postgresql.org">Postgres</a>)</td>
+                    <td width="14%">jdbcPostgres.jar</td>
+                    <td width="74%">This is the Postgres JDBC driver, used primarily 
+                      in the GetFeature interface.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="12%"><a href="http://www.vividsolutions.com/jts/main.htm">JTS</a><br>
+                      (<a href="http://www.vividsolutions.com">Vivid</a>)</td>
+                    <td width="14%">jts-1.0.0.jar</td>
+                    <td width="74%">The Java Topology Suite, which is used as 
+                      base types for all geometries, as well as for filtering.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="12%"><a href="http://jakarta.apache.org/log4j/docs/index.html">Log4J</a><br>
+                      (<a href="http://jakarta.apache.org">Jakarta</a>) </td>
+                    <td width="14%">log4j.jar</td>
+                    <td width="74%">Log4j contains all of the logging capabilities 
+                      - both for debugging and production use.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="12%"><a href="http://java.sun.com/products/servlet/index.html">Servlet</a><br>
+                      (<a href="http://java.sun.com">Sun</a>) </td>
+                    <td width="14%">servlet.jar</td>
+                    <td width="74%">This is the Servlet reference library, used 
+                      for compilation checking during testing.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="12%" height="17"> 
+                      <p><a href="http://jakarta.apache.org/struts/index.html">Struts</a><br>
+                        (<a href="http://jakarta.apache.org">Jakarta</a>)</p>
+                    </td>
+                    <td width="14%" height="17">struts.jar</td>
+                    <td width="74%" height="17">The struts project implements 
+                      an MVC design pattern that helps with the administrative 
+                      interface.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="12%"><a href="http://xml.apache.org/xerces2-j/index.html">Xerces</a><br>
+                      (<a href="http://www.apache.org">Apache</a>)</td>
+                    <td width="14%">xerces.jar</td>
+                    <td width="74%"> Xerces handles all of the SAX parsing for 
+                      the request interfaces. </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Setting up the Test Environment</td>
+        </tr>
+        <tr> 
+          <td height="611"> 
+            <blockquote> 
+              <p>Several good open source, free servlet containers and a bevy 
+                of commercial ones exist on the market.&nbsp;&nbsp;We recommend 
+                <a href="http://www.caucho.com">Resin</a> (open source, free to 
+                non-commercial users) or <a href="http://jakarta.apache.org/tomcat/index.html">Tomcat</a> 
+                (open source, free). &nbsp;Most GeoServer testing has occured 
+                on Resin, which is remarkably simple to set up and administer. 
+                &nbsp;We reccomend using the stand-alone server installation over 
+                the integrated Apache install. &nbsp;Given the maturity of these 
+                projects, we will say nothing further about installation.</p>
+              <p>Once you have successfully installed a servlet container, you 
+                are ready to test GeoServer. &nbsp;If you have correctly configured 
+                your build file, from the GeoServer root directory you can type:</p>
+              <blockquote> 
+                <p>ant warTest</p>
+              </blockquote>
+              <p>Which will build a .WAR file and place it in the application 
+                directory of your servlet container. &nbsp;A .WAR file is a Web 
+                Application Archive file, which is essentially a .JAR file with 
+                extra information for a servlet container. &nbsp;After you run 
+                warTest, your servlet container should auto-expand it and run 
+                your servlets correctly. &nbsp;The easiest way to test this is 
+                to browse the application URL, followed by GetCapabilities and 
+                see if it returns a GetCapabilities XML document. &nbsp;For example, 
+                from a browser on your server, if you were using port 81 you would 
+                type:</p>
+              <blockquote> 
+                <p>http://localhost:81/geoserver/GetCapabilities</p>
+              </blockquote>
+              <p>Now, you should enter some data into your PostGIS database and 
+                configure GeoServer to serve it. &nbsp;There are two configuration 
+                steps to do this.&nbsp;&nbsp;First, you should go to your root 
+                web application directory and edit the following file: data/configuration.xml. 
+                &nbsp;You should change the database, username, password, and 
+                database port to your PostGIS database.</p>
+              <p>Next, you should go to your root web application directory and 
+                navigate to the following file: data/featureTypes/.&nbsp;&nbsp;For 
+                every table in your PostGIS database, you should create a directory 
+                which matches the table name exactly. &nbsp;This directory should 
+                contain two files: info.xml and schema.xml. &nbsp;The schema.xml 
+                document is the feature type schema and its structure is defined 
+                in the WFS specification. &nbsp;The info.xml file is used by GeoServer 
+                and its fields are identical to those returned per feature type 
+                by the GetCapabilities document defined by the WFS specification.&nbsp;&nbsp;The 
+                SRS is currently the most important field and its value should 
+                correspond to an approved <a href="http://www.epsg.org">EPSG</a> 
+                code. &nbsp;The 'rail2' directory is included as an example, but 
+                should be deleted before you do any testing (unless you also have 
+                a table called 'rail2').</p>
+              <p>That is it!&nbsp;&nbsp;You should now be ready to build and test 
+                GeoServer.</p>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <!-- #EndEditable --> </td>
+  </tr>
+</table>
+</body><!-- #EndTemplate --></html>

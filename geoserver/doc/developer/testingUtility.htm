@@ -1,0 +1,316 @@
+<html><!-- #BeginTemplate "/Templates/main.dwt" -->
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Rob Hranac" name="author">
+<!-- #BeginEditable "doctitle" --> 
+<title>the GeoServer Project :: Documentation</title>
+<!-- #EndEditable --> 
+<style type="text/css">
+<!--
+.title {  font-family: Arial, Helvetica, sans-serif; font-size: 14pt; color: #FFFFFF; font-weight: bold}
+.navigation {  font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #333366}
+.header { font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: bold; color: #333366 }
+.finePrint { font-family: Arial, Helvetica, sans-serif; font-size: 9px; font-weight: lighter; color: #999999}
+.navigationSub { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: normal; color: #333366 }
+.titleSection { font-family: Arial, Helvetica, sans-serif; font-size: 14pt; color: #333366; font-weight: bold }
+.modifyMe {  color: #FF0000}
+-->
+</style>
+</head>
+<body vlink="#333366" alink="#333366" link="#333366" text="#000000" bgcolor="#ffffff">
+<table cellspacing="5" width="100%" border="0">
+  <tr> 
+    <td colspan="2">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td><a href="http://geoserver.sourceforge.net"><img border="0" align="left" src="http://geoserver.sourceforge.net/html/images/logo.gif"></a></td>
+          <td align="right" valign="top"><font color="#333366"><strong class="header">Documentation</strong></font></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="2"> 
+      <hr size="1" noshade>
+    </td>
+  </tr>
+  <tr> 
+    <td valign="top" width="188" height="272"> 
+      <title></title>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" height="100%">
+        <tr>
+          <td valign="top"> 
+            <table cellspacing="5" border="0">
+              <tr> 
+                <th align="left" colspan="2" height="8"><font color="#333366"><strong class="navigation">User</strong></font></th>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="../user/install.htm">Install</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="../user/schemaTutorial.htm">Schema 
+                  Tutorial</a></font></td>
+              </tr>
+            </table>
+            <table cellspacing="5" border="0">
+              <tr> 
+                <th align="left" colspan="2" height="8"><font color="#333366"><strong class="navigation">Developer 
+                  </strong></font></th>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="build.htm">Build</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><a href="testingUtility.htm">Testing 
+                  Utility</a></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><a href="license.htm">License</a></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center" height="16"></td>
+                <td width="165" height="16" class="navigationSub"><font size="-1"><a href="http://geoserver.sourceforge.net/documentation/javadocs/index.html">API</a></font></td>
+              </tr>
+              <tr> 
+                <td width="11" align="center"></td>
+                <td width="165" class="navigationSub"><font size="-1"><a href="http://www.opengis.org/techno/rfc13info.htm">WFS 
+                  Specification</a></font></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td valign="bottom"> 
+            <p><span class="finePrint">Java, Servlets, J2EE, EJB, JDBC, JNDI, 
+              JTA, Sun, Sun Microsystems are trademarks or registered trademarks 
+              of Sun Microsystems, Inc. in the United States and in other countries. 
+              XML, XML Schema, XSLT and related standards are trademarks or registered 
+              trademarks of MIT, INRIA, Keio or others, and a product of the World 
+              Wide Web Consortium. All other product names mentioned herein are 
+              trademarks of their respective owners.</span></p>
+            <p>&nbsp;</p>
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+    <td valign="top" width="961" height="272">
+<table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td class="titleSection"><!-- #BeginEditable "Title"  -->Testing Utility 
+            Documentation <!-- #EndEditable --></td>
+        </tr>
+      </table>
+      <!-- #BeginEditable "main" --> 
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Introduction</td>
+        </tr>
+        <tr> 
+          <td height="104"> 
+            <blockquote> 
+              <p>The WFS Tester is an open source, command-line Java utility that 
+                will pass structured requests to a WFS, receive a response, and 
+                make minimal assessments of the response body. &nbsp;It could 
+                be described as the world's stupidest WFS client. &nbsp;It is 
+                useful to those who would like to run either structured regression 
+                or ad-hoc tests on installed web feature servers. &nbsp;If you 
+                want to get and use the WFS Tester, you must download it seperately 
+                from the GeoServer download page.</p>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Running the Utility</td>
+        </tr>
+        <tr> 
+          <td height="158"> 
+            <blockquote> 
+              <p>The WFS Tester is found in the <i>wfsTester/libraries</i> directory 
+                and is labeled <i>wfsTester.jar.</i> &nbsp;To run the utility, 
+                you should type:</p>
+              <blockquote> 
+                <p> java -cp <i>$GEOSERVER_ROOT</i>/libraries/wfsTester.jar org.vfny.wfsTest.utilities.InterfaceTest 
+                  <i>[flags...]</i></p>
+              </blockquote>
+              <p>where <i>$GEOSERVER_ROOT</i> is the root directory of your geoserver 
+                installation<br>
+                and possible <i>[flags...]</i> are:</p>
+              <blockquote> 
+                <table width="100%" border="0" cellspacing="3" cellpadding="3">
+                  <tr align="left" valign="top"> 
+                    <td width="6%" height="24"><b>Flag</b></td>
+                    <td width="41%" height="24"><b>Options</b></td>
+                    <td width="53%" height="24"><b>Description</b></td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="6%" height="2"> -f</td>
+                    <td width="41%" height="2">[root test data dir] [host file] 
+                      [test specification file]</td>
+                    <td width="53%" height="2">interface test</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="6%">-v</td>
+                    <td width="41%">&nbsp;</td>
+                    <td width="53%">verbose output</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="6%">--help</td>
+                    <td width="41%">&nbsp;</td>
+                    <td width="53%">help</td>
+                  </tr>
+                </table>
+              </blockquote>
+              <p>Example:</p>
+              <blockquote> 
+                <p>java -cp org.vfny.wfsTest.utilities.InterfaceTest -vf /home/rob/wfs/wfsTest/misc/data 
+                  geoserver.xml test1.xml</p>
+              </blockquote>
+              <p></p>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Specifying Hosts</td>
+        </tr>
+        <tr> 
+          <td height="312"> 
+            <blockquote> 
+              <p>The host specification files may be found in <i>dataDirectory/hosts,</i> 
+                where <i>dataDirectory</i> is the user-specified data directory.</p>
+              <blockquote> 
+                <table width="100%" border="0" cellspacing="3" cellpadding="3">
+                  <tr align="left" valign="top"> 
+                    <td width="17%" height="24"><b>Attribute</b></td>
+                    <td height="24"><b>Description</b></td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%" height="18">hostName</td>
+                    <td height="18">A descriptive host name.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%">ip</td>
+                    <td>The request URI.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%">port</td>
+                    <td>The host port; may leave empty.<i></i></td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%" height="2">directory</td>
+                    <td height="2">The subdirectory under which responses occur; 
+                      this value is <i>geoserver </i>for all GeoServer installations<i>.</i></td>
+                  </tr>
+                </table>
+              </blockquote>
+              <p>Example:</p>
+              <blockquote> 
+                <p>&lt;testHost xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;hostName&gt;VFNY GeoServer (external)&lt;/hostName&gt; 
+                  <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;ip&gt;beta.vfny.org&lt;/ip&gt; <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;port&gt;81&lt;/port&gt; <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;directory&gt;geoserver&lt;/directory&gt; 
+                  <br>
+                  &lt;/testHost&gt;</p>
+              </blockquote>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Specifying Tests</td>
+        </tr>
+        <tr> 
+          <td height="233"> 
+            <blockquote> 
+              <p>The test specification files may be found in <i>dataDirectory/tests,</i> 
+                where <i>dataDirectory</i> is the user-specified data directory.</p>
+              <blockquote> 
+                <table width="100%" border="0" cellspacing="3" cellpadding="3">
+                  <tr align="left" valign="top"> 
+                    <td width="17%" height="24"><b>Attribute</b></td>
+                    <td height="24"><b>Description</b></td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%" height="18">testTitle</td>
+                    <td height="18">A descriptive title for the test; displayed 
+                      while running.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%">requestInterface</td>
+                    <td>The request interface to be tested: GetCapabilities, DescribeFeatureType, 
+                      or GetFeature.</td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%">requestFile</td>
+                    <td>Name of the text file containing the request (KVP or XML), 
+                      found in <i>dataDirectory/requests.</i></td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%" height="2">targetSchemaFile</td>
+                    <td height="2">Name of the schema file with which to validate 
+                      the response, found in <i>dataDirectory/schemas.</i></td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%">targetOutputFile</td>
+                    <td>Name of the text file containing exact target output, 
+                      found in <i>dataDirectory/output.</i></td>
+                  </tr>
+                  <tr align="left" valign="top"> 
+                    <td width="17%">isPost</td>
+                    <td>Value indicating whether or not the request is POST or 
+                      GET; may be 'true' or 'false'.</td>
+                  </tr>
+                </table>
+              </blockquote>
+              <p>Example:</p>
+              <blockquote>
+                <p>&lt;testSpecification xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+                  &gt;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;testTitle&gt;Test GetFeature (subway)&lt;/testTitle&gt; 
+                  <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;requestInterface&gt;GetFeature&lt;/requestInterface&gt; 
+                  <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;requestFile&gt;getFeature4.txt&lt;/requestFile&gt; 
+                  <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;targetSchemaFile /&gt; <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;targetOutputFile /&gt; <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;isPost&gt;true&lt;/isPost&gt; <br>
+                  &lt;/testSpecification&gt;</p>
+              </blockquote>
+              <p>&nbsp;</p>
+            </blockquote>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" cellpadding="5" cellspacing="5" border="0">
+        <tr> 
+          <td bgcolor="#333366" class="title">Conclusion</td>
+        </tr>
+        <tr> 
+          <td height="2"> 
+            <blockquote> 
+              <p>Keep in mind that this is only a helper utility and should not 
+                in any way be considered a definitive indication of specification 
+                compliance. &nbsp;There are plans to further develop the parsing 
+                capabilities of this tool. &nbsp;If you would like to contribute 
+                to its development, its source code is availible on CVS.</p>
+              </blockquote>
+          </td>
+        </tr>
+      </table>
+      <!-- #EndEditable --> </td>
+  </tr>
+</table>
+</body><!-- #EndTemplate --></html>
