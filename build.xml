@@ -333,7 +333,6 @@
       run this manually -->
   <target name="prepareEmbedded" depends="init" unless="server.built">
      <antcall target="war"/>
-     <mkdir dir="${dir.server}/work"/>
     <mkdir dir="${dir.server}/geoserver"/>
      <unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/"/>
   </target> 
@@ -489,6 +488,7 @@
       </fileset>
     </copy>
 
+     <mkdir dir="${dir.webinf}/work"/>
     <!-- war file -->
     <war warfile="${dir.build}/geoserver.war" 
          webxml="${dir.webinf}/web.xml" 
@@ -850,9 +850,12 @@
   	<zip destfile="${basedir}/geoserver-${name.release}-bin.zip">
 	  <zipfileset dir="${dir.build}" prefix="geoserver">
 	    <include name="**/*"/>
+            <exclude name="bin/*"/>
             <exclude name="geoserver.war"/>
             <exclude name="org/**"/>
 	  </zipfileset>
+          <zipfileset dir="${dir.build}" prefix="geoserver"
+                      filemode="755" includes="bin/*"/>
 	</zip>
 	
     <copy file="${basedir}/geoserver-${name.release}-bin.zip" 
