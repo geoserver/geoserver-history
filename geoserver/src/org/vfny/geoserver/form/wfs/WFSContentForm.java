@@ -183,7 +183,9 @@ public class WFSContentForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if (serviceLevel != WFSDTO.BASIC && serviceLevel != WFSDTO.TRANSACTION) {
+        if (serviceLevel != WFSDTO.BASIC &&
+            serviceLevel != WFSDTO.TRANSACTIONAL &&
+            serviceLevel != WFSDTO.COMPLETE) {
             errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
         }
         

@@ -14,16 +14,39 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.5 2004/02/12 00:43:20 dmzwiers Exp $
+ * @version $Id: WFSDTO.java,v 1.6 2004/02/19 08:58:21 jive Exp $
  */
 public final class WFSDTO implements DataTransferObject {
+	/** ServiceLevel bit used to indicate Basic support */
+	public static final int SERVICE_BASIC = 1;
+
+	/** ServiceLevel bit used to indicate Transaction Insert support */
+	public static final int SERVICE_INSERT = 2;
+
+	/** ServiceLevel bit used to indicate Transaction Update support */
+	public static final int SERVICE_UPDATE = 4;
+
+	/** ServiceLevel bit used to indicate Transaction Delete support */
+	public static final int SERVICE_DELETE = 8;
+
+	/** ServiceLevel bit used to indicate Locking support */
+	public static final int SERVICE_LOCKING = 16;
+
+	/** ServiceLevel mask equivilent to basic WFS conformance */
+	public static final int BASIC = 1;
+
+	/** ServiceLevel mask for transactional WFS conformance. */
+	public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT
+	        | SERVICE_UPDATE | SERVICE_DELETE;
+
+	/** ServiceLevel mask equivilent to complete WFS conformance */
+	public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
+
+	
     /** The service parameters for this instance. */
     private ServiceDTO service;
     private boolean gmlPrefixing;
-    private int serviceLevel;
-    
-    public static final int BASIC = 1;
-    public static final int TRANSACTION = 2;
+    private int serviceLevel;   
 
     /**
      * WFS Data Transfer Object constructor.  does nothing

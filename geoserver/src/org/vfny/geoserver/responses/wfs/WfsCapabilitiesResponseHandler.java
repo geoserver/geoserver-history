@@ -25,7 +25,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.14 2004/02/17 22:42:32 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.15 2004/02/19 08:58:19 jive Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -127,7 +127,8 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     private void handleCapability(WFS config, String capabilityName)
         throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
-        if("Transaction".equals(capabilityName) && config.getServiceLevel()!=WFSDTO.TRANSACTION){
+        if("Transaction".equals(capabilityName) &&
+        	(config.getServiceLevel() | WFSDTO.TRANSACTIONAL) == 0){
         	return;
         }
         indent();
@@ -189,22 +190,35 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     private void handleFeatureTypes(Service serviceConfig)
         throws SAXException {
         WFS config = (WFS) serviceConfig;
-
+         
+        if( !config.isEnabled() ){
+            // should we return anything if we are disabled?
+        }
         startElement("FeatureTypeList");
 
         indent();
         startElement("Operations");
         indent();
-        startElement("Query");
-        endElement("Query");
-        startElement("Insert");
-        endElement("Insert");
-        startElement("Update");
-        endElement("Update");
-        startElement("Delete");
-        endElement("Delete");
-        startElement("Lock");
-        endElement("Lock");
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_BASIC ) != 0 ){        
+          startElement("Query");
+          endElement("Query");
+        }
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_INSERT ) != 0 ){
+          startElement("Insert");
+          endElement("Insert");
+        }
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_UPDATE ) != 0 ){        
+          startElement("Update");
+          endElement("Update");
+        }
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_DELETE ) != 0 ){        
+          startElement("Delete");
+          endElement("Delete");
+        }
+        if(( config.getServiceLevel() | WFSDTO.SERVICE_LOCKING ) != 0 ){        
+          startElement("Lock");
+          endElement("Lock");
+        }
         unIndent();
         endElement("Operations");
 

@@ -26,7 +26,7 @@ import org.vfny.geoserver.servlets.WFService;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: Transaction.java,v 1.7 2004/02/17 22:42:33 dmzwiers Exp $
+ * @version $Id: Transaction.java,v 1.8 2004/02/19 08:58:21 jive Exp $
  */
 public class Transaction extends WFService {
     /**
@@ -59,10 +59,10 @@ public class Transaction extends WFService {
     }
     
     protected boolean isServiceEnabled(HttpServletRequest req){
-    	boolean r = Requests.getWFS(req).isEnabled();
-    	if(r){
-    		return (Requests.getWFS(req).getServiceLevel()==WFSDTO.TRANSACTION);
-    	}
-    	return false;
+    	if( !Requests.getWFS(req).isEnabled() ){
+    		return false;
+        }
+        int serviceLevel = Requests.getWFS(req).getServiceLevel();
+        return ( serviceLevel | WFSDTO.TRANSACTIONAL) != 0;    	
     }
 }
