@@ -7,6 +7,11 @@ package org.vfny.geoserver.requests;
 import java.util.*;
 import java.util.logging.Logger;
 import org.geotools.filter.Filter;
+import org.geotools.feature.SchemaException;
+import org.geotools.data.QueryImpl;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.vfny.geoserver.responses.WfsException;
 
 /**
  * Provides an internal, generic representation of a query component to a 
@@ -18,6 +23,8 @@ import org.geotools.filter.Filter;
  * @version $version$
  */
 public class Query {
+
+    //back this by geotools query?  Have a get datasource query?
 
     /** Standard logging instance for the class */
     private static final Logger LOGGER = 
@@ -89,6 +96,43 @@ public class Query {
     /** Passes the Post method to the Get method, with no modifications. */ 
     public int getDatastoreType() { return 1; }
     
+    public org.geotools.data.Query getDataSourceQuery(FeatureType schema, 
+						      int maxFeatures) 
+	throws WfsException{
+	AttributeType[] props = null;
+	List strippedNames = new ArrayList();
+	if (propertyNames != null) {
+	    
+	    for(int i = 0; i < propertyNames.size(); i++) {
+		String curPropName = propertyNames.get(i).toString();
+		String[] splitName = curPropName.split("[.:/]");
+		String newPropName = curPropName;
+		if (splitName.length == 1) {
+		    newPropName = splitName[0];
+		} else {
+		    //REVISIT: move this code to geotools?
+		    //REVISIT: not sure what to do if there are multiple
+		    //delimiters.  
+		    //REVISIT: should we examine the first value?  See
+		    //if the namespace or typename matches up right?
+		    //this is currently very permissive, just grabs
+		    //the value of the end.
+		    newPropName = splitName[splitName.length - 1];
+		}
+		strippedNames.add(newPropName);
+	    }
+	    try {
+		props = QueryImpl.getValidProperties(schema, strippedNames);
+	    } catch (SchemaException e) {
+		throw new WfsException(e, "problem with properties", handle);
+	    }
+	}
+	QueryImpl query = new QueryImpl(null, this.filter, maxFeatures,
+					props, this.handle);
+	
+	return query;
+    }
+
     /*************************************************************************
      * OVERRIDES OF toString AND equals METHODS.                             *
      *************************************************************************/
