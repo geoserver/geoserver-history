@@ -1,30 +1,24 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<StyledLayerDescriptor version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<!-- a named layer is the basic building block of an sld document -->
-<NamedLayer>
-<Name>A Test Layer</Name>
-<title>The title of the layer</title>
-<abstract>
-A styling layer used for the unit tests of sldstyler
-</abstract>
-<!-- with in a layer you have Named Styles -->
-<UserStyle>
-    <!-- again they have names, titles and abstracts -->
-  <Name>normal</Name>
-    <!-- FeatureTypeStyles describe how to render different features -->
-    <!-- a feature type for polygons -->
-    <FeatureTypeStyle>
-      <FeatureTypeName>feature</FeatureTypeName>
-      <Rule>
-        <!-- like a linesymbolizer but with a fill too -->
-        <PolygonSymbolizer>
-            <Stroke/>
-        </PolygonSymbolizer>
-        <LineSymbolizer/>
-        <PointSymbolizer/>
-      </Rule>
-    </FeatureTypeStyle>
-</UserStyle>
-</NamedLayer>
-</StyledLayerDescriptor>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<sld:NamedLayer xmlns:sld="http://www.opengis.net/sld">
+    <sld:UserStyle>
+        <sld:Name>Default Styler</sld:Name>
+        <sld:Title>Default Styler</sld:Title>
+        <sld:Abstract></sld:Abstract>
+        <sld:FeatureTypeStyle>
+            <sld:FeatureTypeName>Feature</sld:FeatureTypeName>
+            <sld:Rule>
+                <sld:Name>name</sld:Name>
+                <sld:Abstract>Abstract</sld:Abstract>
+                <sld:Title>title</sld:Title>
+                <sld:PolygonSymbolizer>
+                    <sld:Fill/>
+                    <sld:Stroke/>
+                </sld:PolygonSymbolizer>
+                <sld:PointSymbolizer>
+                    <sld:Graphic>
+                    </sld:Graphic>
+                </sld:PointSymbolizer>
+            </sld:Rule>
+        </sld:FeatureTypeStyle>
+    </sld:UserStyle>
+</sld:NamedLayer>

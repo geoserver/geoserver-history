@@ -206,7 +206,7 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
 
         BufferedImage image = this.jaiMap.getImage();
 
-        showImage(fSource.getSchema().getTypeName(), SHOW_TIMEOUT, image);
+        showImage(fSource.getSchema().getTypeName(), 1000, image);
     }
 
     /**
