@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -35,7 +36,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.13 2004/01/08 18:05:41 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.14 2004/01/08 18:25:11 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -118,11 +119,16 @@ public class Data extends Abstract
 			}
 		}
 		// s contains all the unchecked values.
-		/*i = s.iterator();
+		List tmp = new LinkedList();
+		i = s.iterator();
 		while(i.hasNext()){
-			i.remove();
-		}*/
+			tmp.add(i.next());
+		}
+		for(int j=0;j<tmp.size();j++)
+			dataStores.remove(tmp.get(j));
 			
+			
+		List tmp2 = new LinkedList();
 		if(featureTypes == null)
 			featureTypes = new HashMap();
 		s = featureTypes.keySet();
@@ -131,15 +137,26 @@ public class Data extends Abstract
 		i = config.getFeaturesTypes().keySet().iterator();
 		while(i.hasNext()){
 			Object key = i.next();
+			String nm = ((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key)).getName();
+			if(tmp2.contains(nm)){
+				throw new ConfigurationException("FeatureTypeInfo.getName() must be unique! ( "+nm+" )");
+			}else{
+				tmp2.add(nm);
+			}
 			s.remove(key);
 			if(!featureTypes.containsKey(key))
-				featureTypes.put(((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key)).getName(),new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), this));
+				featureTypes.put(nm,new FeatureTypeInfo((FeatureTypeInfoDTO)config.getFeaturesTypes().get(key), this));
 		}
 		// s contains all the unchecked values.
-		/*i = s.iterator();
+		tmp = new LinkedList();
+		i = s.iterator();
 		while(i.hasNext()){
-			i.remove();
-		}*/
+			tmp.add(i.next());
+		}
+		for(int j=0;j<tmp.size();j++)
+			featureTypes.remove(tmp.get(j));
+
+
 
 		if(nameSpaces == null)
 			nameSpaces = new HashMap();
@@ -157,10 +174,15 @@ public class Data extends Abstract
 			}
 		}
 		// s contains all the unchecked values.
-		/*i = s.iterator();
+		tmp = new LinkedList();
+		i = s.iterator();
 		while(i.hasNext()){
-			i.remove();
-		}*/
+			tmp.add(i.next());
+		}
+		for(int j=0;j<tmp.size();j++)
+			nameSpaces.remove(tmp.get(j));
+
+
 
 		if(styles == null)
 			styles = new HashMap();
@@ -179,10 +201,13 @@ public class Data extends Abstract
 				}
 		}
 		// s contains all the unchecked values.
-		/*i = s.iterator();
+		tmp = new LinkedList();
+		i = s.iterator();
 		while(i.hasNext()){
-			i.remove();
-		}*/
+			tmp.add(i.next());
+		}
+		for(int j=0;j<tmp.size();j++)
+			styles.remove(tmp.get(j));
 	}
 
     /**
