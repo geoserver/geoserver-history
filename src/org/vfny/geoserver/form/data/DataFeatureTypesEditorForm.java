@@ -23,7 +23,7 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataFeatureTypesForm extends ActionForm {
+public class DataFeatureTypesEditorForm extends ActionForm {
 	
 	private String name;
 	private String SRS;
@@ -39,7 +39,7 @@ public class DataFeatureTypesForm extends ActionForm {
 	
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
-		
+
 		action="";
 		
 		ServletContext context = getServlet().getServletContext();
