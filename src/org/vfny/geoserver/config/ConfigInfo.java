@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.Iterator;
 import java.util.Set;
 import javax.servlet.ServletContext;
@@ -199,6 +200,8 @@ public class ConfigInfo {
     public void setCapabilitiesDir(String capabilitiesDir) { 
         this.capabilitiesDir = capabilitiesDir;
     }
+
+    public Level getLogLevel() { return wfsGlobal.getLogLevel(); }
     
     /**
      * gets the default namespace prefix.  This is really more for backwards
