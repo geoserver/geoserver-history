@@ -93,8 +93,8 @@ public class Transaction
         /** create temporary response string */
         String tempResponse;
 
-	LOGGER.info("we got a request!");
-	LOGGER.finer("send it to the kvp reader dude.");
+	LOGGER.finer("incoming transaction request");
+
         
         // implements the main request/response logic
         try {
