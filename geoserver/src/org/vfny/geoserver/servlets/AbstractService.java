@@ -94,12 +94,14 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.22 2004/06/03 19:33:42 cholmesny Exp $
+ * @version $Id: AbstractService.java,v 1.23 2004/09/08 17:34:38 cholmesny Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
+
+	protected HttpServletRequest curRequest;
 
     /** DOCUMENT ME! */
 
@@ -189,6 +191,7 @@ public abstract class AbstractService extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         // implements the main request/response logic
+        this.curRequest = request;
         Request serviceRequest = null;
 
         if (!isServiceEnabled(request)) {
@@ -199,7 +202,7 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             String qString = request.getQueryString();
-
+            LOGGER.fine("reading request: " + qString);
             //Map requestParams = KvpRequestReader.parseKvpSet(qString);
             Map requestParams = new HashMap();
             String paramName;
@@ -268,8 +271,10 @@ public abstract class AbstractService extends HttpServlet {
     public void doPost(HttpServletRequest request,
         HttpServletResponse response, Reader requestXml)
         throws ServletException, IOException {
+		this.curRequest = request;
         Request serviceRequest = null;
 
+		//TODO: This isn't a proper ogc service response.
         if (!isServiceEnabled(request)) {
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 
@@ -358,7 +363,7 @@ public abstract class AbstractService extends HttpServlet {
             LOGGER.finer("execution succeed");
         } catch (ServiceException serviceException) {
             LOGGER.warning("service exception while executing request: "
-                + serviceException.getMessage());
+                + serviceRequest + "\ncause: " + serviceException.getMessage());
             serviceResponse.abort(s);
             sendError(response, serviceException);
 
@@ -632,16 +637,16 @@ public abstract class AbstractService extends HttpServlet {
         LOGGER.info("Had an undefined error: " + t.getMessage());
 
         //TODO: put the stack trace in the logger.
-        t.printStackTrace();
+        //t.printStackTrace();
 
-        String pre = "UNCAUGHT EXCEPTION";
+        //String pre = "UNCAUGHT EXCEPTION";
         ExceptionHandler exHandler = getExceptionHandler();
-        ServiceException se = exHandler.newServiceException(t, pre, null);
+        ServiceException se = exHandler.newServiceException(t);
 
-        //sendError(response, se);
-        GeoServer geoServer = (GeoServer) this.getServletConfig()
-                                              .getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
-        send(response, se.getXmlResponse(geoServer.isVerboseExceptions()));
+        sendError(response, se);
+        //GeoServer geoServer = (GeoServer) this.getServletConfig()
+        //                                      .getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
+        //send(response, se.getXmlResponse(geoServer.isVerboseExceptions()));
     }
 
     /**
@@ -651,9 +656,13 @@ public abstract class AbstractService extends HttpServlet {
      * @param se DOCUMENT ME!
      */
     protected void sendError(HttpServletResponse response, ServiceException se) {
-        send(response, se.getXmlResponse());
+		GeoServer geoServer = (GeoServer) this.getServletConfig()
+											  .getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
+		
+		send(response, se.getXmlResponse(geoServer.isVerboseExceptions(), curRequest));
+        // send(response, se.getXmlResponse());
     }
-
+    
     /**
      * DOCUMENT ME!
      *
@@ -891,7 +900,7 @@ class BufferStrategy implements AbstractService.ServiceStrategy {
  * completes.
  *
  * @author $author$
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 class FileStrategy implements AbstractService.ServiceStrategy {
     /** Buffer size used to copy safe to response.getOutputStream() */
