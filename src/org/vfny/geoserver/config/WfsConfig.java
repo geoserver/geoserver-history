@@ -28,7 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * the future, such as for a WMS or WCS.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsConfig.java,v 1.16 2003/09/16 00:48:41 cholmesny Exp $
+ * @version $Id: WfsConfig.java,v 1.17 2003/09/17 01:59:15 cholmesny Exp $
  */
 public class WfsConfig implements java.io.Serializable {
     public static final String NAMESPACE_TAG = "Namespace";
@@ -49,6 +49,7 @@ public class WfsConfig implements java.io.Serializable {
     public static final String LOG_TAG = "LoggingLevel";
     public static final String DELIMIT_TAG = "PrefixDelimiter";
     public static final String DEFAULT_PREFIX_DELIMITER = "--";
+    public static final String SCHEMA_BASE_TAG = "SchemaBaseUrl";
 
     /** Standard logging in stance for class */
     private static final Logger LOGGER = Logger.getLogger(
@@ -61,6 +62,7 @@ public class WfsConfig implements java.io.Serializable {
     private int numDecimals = 4;
     private String charSet = "UTF-8";
     private boolean useCharSetPG = false;
+    private String schemaBaseUrl = null;
 
     /** The holds the mappings between prefixes and uri's */
     private Map nameSpaces = new HashMap();
@@ -168,6 +170,7 @@ public class WfsConfig implements java.io.Serializable {
             wfsConfig.setMaxFeatures(findTextFromTag(configElem, MAX_TAG));
             wfsConfig.setNumDecimals(findTextFromTag(configElem, DECIMAL_TAG));
             wfsConfig.setCharSet(findTextFromTag(configElem, CHARSET_TAG));
+            wfsConfig.setSchemaUrl(findTextFromTag(configElem, SCHEMA_BASE_TAG));
 
             String delimiter = findTextFromTag(configElem, DELIMIT_TAG);
             LOGGER.finer("delimiter is " + delimiter);
@@ -483,6 +486,34 @@ public class WfsConfig implements java.io.Serializable {
      */
     public String getCharSet() {
         return this.charSet;
+    }
+
+    /**
+     * Sets the base schema url.
+     *
+     * @param baseUrl The url to use as the base for schema locations.
+     */
+    void setSchemaUrl(String baseUrl) {
+        if ((baseUrl != null) && !baseUrl.equals("")) {
+            this.schemaBaseUrl = baseUrl;
+
+            if (!schemaBaseUrl.endsWith("/")) {
+                schemaBaseUrl += "/";
+            }
+        }
+    }
+
+    /**
+     * Gets the base schema url.
+     *
+     * @return The url to use as the base for schema locations.
+     */
+    public String getSchemaUrl() {
+        if (schemaBaseUrl != null) {
+            return schemaBaseUrl;
+        } else {
+            return getBaseUrl() + "/data/capabilities/";
+        }
     }
 
     /**
