@@ -49,7 +49,7 @@ public class FeatureSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String CONFIG_DIR = 
-        System.getProperty("user.dir") + "/misc/documents/configuration.xml";
+        System.getProperty("user.dir") + "/misc/unit/config/";
 
     /** Unit test data directory */
     private static final String TYPE_DIR = 
@@ -89,8 +89,8 @@ public class FeatureSuite extends TestCase {
         FeatureRequest request = new FeatureRequest();
         request.addQuery(query);       
 
-        String gml = FeatureResponse.getXmlResponse(request);
-        LOGGER.finest(gml);
+        //String gml = FeatureResponse.getXmlResponse(request);
+        //LOGGER.finest(gml);
         // run test
         //assertTrue(runXmlTest(baseRequest, "10", true));
     }
