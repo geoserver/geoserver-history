@@ -39,5 +39,25 @@
         <%= Runtime.getRuntime().freeMemory()/1024 %>K
       </td>      
     </tr>
+    <tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.jvm"/>">
+			<bean:message key="label.jvm"/>:
+		</span>
+      </td>
+      <td class="datum">
+        <%= System.getProperty("java.vendor") %> : <%= System.getProperty("java.version") %>
+      </td>      
+    </tr>
+    <tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.jai"/>">
+			<bean:message key="label.jai"/>:
+		</span>
+      </td>
+      <td class="datum">
+        <%= ClassLoader.getSystemClassLoader().getResource("javax/media/jai/buildVersion") != null %>
+      </td>      
+    </tr>
   </tbody>
 </table>
