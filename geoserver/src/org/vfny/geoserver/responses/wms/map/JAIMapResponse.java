@@ -301,7 +301,7 @@ public class JAIMapResponse extends GetMapDelegate {
             LOGGER.fine("map setup");
 
             BufferedImage image = new BufferedImage(width, height,
-                    BufferedImage.TYPE_INT_RGB);
+                    BufferedImage.TYPE_INT_ARGB);
 
             //LOGGER.fine("setting up renderer");
             //java.awt.Graphics g = image.getGraphics();
