@@ -16,6 +16,7 @@ import org.vfny.geoserver.responses.WfsException;
  * internal Delete type request object.
  * 
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  * @version $VERSION$
  */
 public class DeleteKvpReader 
@@ -33,12 +34,17 @@ public class DeleteKvpReader
     /**
      * Returns Delete request object.
      * @return Delete request objects
+     * @tasks REVISIT: What to do if typename is not specified?  filter
+     * and bbox should fail, but the spec says that typename is optional
+     * for featureid.  But it also has all examples with feature id's
+     * having the typename appended, which is the case for oracle, but
+     * not for all dbs.  So we need clarification on the spec. (ch)
      */
     public TransactionRequest getRequest()
         throws WfsException {
 
         TransactionRequest parentRequest = new TransactionRequest();
-        boolean releaseAll = false;
+        boolean releaseAll = true;
 
         // set global request parameters
         LOGGER.finest("setting global request parameters");
@@ -51,6 +57,7 @@ public class DeleteKvpReader
 
         // declare tokenizers for repeating elements
         LOGGER.finest("setting query request parameters");
+	//TODO: error checking here, make sure filter and bbox have a typename.
         List typeList = readFlat((String) kvpPairs.get("TYPENAME"), 
                                  INNER_DELIMETER);
         LOGGER.finest("type list size: " + typeList.size());
