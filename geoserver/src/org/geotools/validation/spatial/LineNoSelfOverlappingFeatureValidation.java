@@ -25,15 +25,17 @@ import org.geotools.feature.FeatureType;
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.ValidationResults;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
 
 
 /**
- * IsValidFeatureValidation purpose.
+ * LineNoSelfIntersectFeatureValidation purpose.
  * <p>
- * Tests to see if a geometry is valid by calling Geometry.isValid().
- * The geometry is first tested to see if it is null, and if it is null, 
- * then it is tested to see if it is allowed to be null by calling isNillable().
+ * Tests to see if a geometry 
  * <p>
  * Capabilities:
  * <ul>
@@ -41,14 +43,15 @@ import com.vividsolutions.jts.geom.Geometry;
  * </ul>
  * Example Use:
  * <pre><code>
- * IsValidFeatureValidation x = new IsValidFeatureValidation("isValidRoads", "Tests to see if a geometry is valid", new String[] {"road"});
+ * LineNoSelfIntersectFeatureValidation x = new IsValidGeometryFeatureValidation("noSelfIntersectRoads", "Tests to see if a 
+ * geometry intersects itself", new String[] {"road"});
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: IsValidFeatureValidation.java,v 1.1.2.1 2003/11/25 06:10:53 jive Exp $
+ * @author $Author: sploreg $ (last modification)
+ * @version $Id: LineNoSelfOverlappingFeatureValidation.java,v 1.1.2.1 2003/11/26 07:01:28 sploreg Exp $
  */
-public class IsValidFeatureValidation implements FeatureValidation {
+public class LineNoSelfOverlappingFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
     private static final Logger LOGGER = Logger.getLogger(
             "org.geotools.validation");
@@ -60,17 +63,17 @@ public class IsValidFeatureValidation implements FeatureValidation {
 	
 
 	/**
-	 * IsValidFeatureValidation constructor.
+	 * IsValidGeometryFeatureValidation constructor.
 	 * <p>
 	 * Description
 	 * </p>
 	 * 
 	 */
-	public IsValidFeatureValidation() {
+	public LineNoSelfOverlappingFeatureValidation() {
 	}
 	
 	/**
-	 * IsValidFeatureValidation constructor.
+	 * IsValidGeometryFeatureValidation constructor.
 	 * <p>
 	 * Initializes allinformation needed to perform the validation.
 	 * </p>
@@ -78,7 +81,7 @@ public class IsValidFeatureValidation implements FeatureValidation {
 	 * @param description The description of this validation.
 	 * @param typeNames The TypeNames that this validation is tested on.
 	 */
-	public IsValidFeatureValidation(String name, String description, String[] typeNames) {
+	public LineNoSelfOverlappingFeatureValidation(String name, String description, String[] typeNames) {
 		this.name = name;
 		this.description = description;
 		this.typeNames = typeNames;
@@ -195,30 +198,69 @@ public class IsValidFeatureValidation implements FeatureValidation {
 	public boolean validate(
 		Feature feature,
 		FeatureType type,
-		ValidationResults results) {
+		ValidationResults results){
 		
 		LOGGER.setLevel(Level.ALL);   
 		
-
 		Geometry geom =  feature.getDefaultGeometry();
-        if( geom == null ){
-            if (type.getDefaultGeometry().isNillable()) {
-                LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+") passed" );                
-                return true;                
-            }
-            else {
-                String message = "Geometry was null but is not nillable.";
-                results.error(feature, message );
-                LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+"):"+message );                
-                return false;
-            }                       
-        }
-		if (!geom.isValid()) {
-            String message = "Not a valid geometry. isValid() failed";
-            LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+"):"+message );            
-			results.error(feature, message );
+        if( geom == null )
+        {
+			results.error(feature, "Geometry is null - cannot validate.");
 			return false;
-		}
+        }
+        
+    	if (geom instanceof LineString)
+    	{
+    		if (geom.getNumPoints() < 2)
+    		{
+				results.error(feature, "LineString contains too few points - cannot validate.");
+    			return false;
+    		}
+    		
+    		GeometryFactory gf = new GeometryFactory();
+    		
+			// get the LineString out of the Geometry
+			LineString ls = (LineString)geom;
+			int numPoints = ls.getNumPoints();
+			
+			// break up the LineString into line segments
+			LineString[] segments = new LineString[numPoints-1];
+			for (int i=0; i<numPoints-1; i++)
+			{
+				Coordinate[] coords = new Coordinate[] {ls.getCoordinateN(i), 
+														ls.getCoordinateN(i+1)};
+				segments[i] = gf.createLineString(coords);
+			}
+			
+			// overlap all of the line segments with each other
+			for (int i=0; i<segments.length; i++)	// for each line segment
+			{
+				for (int j=0; j<segments.length; j++)	// test with every other line segment
+				{
+					if (i!=j && (i-1 != j) && (i+1 != j))	// if they aren't the same segment
+					{
+						// generate two points out of segment[i]
+						Point p1 = gf.createPoint(segments[i].getCoordinateN(0));
+						Point p2 = gf.createPoint(segments[i].getCoordinateN(0));
+						if (p1.touches(segments[j]) && p2.touches(segments[j]))	// if they overlap
+						{
+							// log the error and return
+							String message = "LineString overlapped itself.";
+							results.error(feature, message );
+							LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+"):"+message );                
+							return false;
+						}
+					}	
+				}
+			}
+    	}
+    	else
+    	{
+			results.error(feature, "Geometry not a LineString - cannot validate.");
+			return false;
+    	}
+            
+
         LOGGER.log( Level.FINEST, getName()+"("+feature.getID()+") passed" );
        
 		return true;
