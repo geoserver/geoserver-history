@@ -1,19 +1,3 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2002, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
- */
 package org.vfny.geoserver.responses.wms.map;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -89,19 +73,12 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
     private static final boolean INTERACTIVE = true;
 
     /** DOCUMENT ME! */
-    private static final int DEFAULT_STROKE_WIDTH = 3;
-
-    /** DOCUMENT ME! */
-    private static final String DEFAULT_STROKE_COLOR = "#000000";
-
-    /** DOCUMENT ME! */
-    private static final String DEFAULT_FILL_COLOR = "#0000FF";
-
-    /** DOCUMENT ME! */
     private static final StyleFactory sFac = StyleFactory.createStyleFactory();
 
     /** DOCUMENT ME! */
     private static final int SHOW_TIMEOUT = 200;
+    
+    private static final Color BG_COLOR = Color.white;
 
     /** DOCUMENT ME! */
     private JAIMapProducer jaiMap;
@@ -173,18 +150,21 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
      */
     private void testDefaultStyle(FeatureSource fSource)
         throws Exception {
-        System.out.println("****  Rendering "
+        /*System.out.println("****  Rendering "
             + fSource.getSchema().getTypeName() + "   *********");
+            */
 
         FeatureReader r = fSource.getFeatures().reader();
-
+        /*
         while (r.hasNext()) {
             System.out.println(r.next().getDefaultGeometry());
         }
+        */
 
         Style style = getStyle("default.sld");
 
         Envelope env = getBlueLakeBounds();
+        env.expandToInclude(fSource.getBounds());
         int w = 400;
         int h = (int) Math.round((env.getHeight() * w) / env.getWidth());
 
@@ -198,15 +178,18 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
         map.setAreaOfInterest(env);
         map.setMapWidth(w);
         map.setMapHeight(h);
-        map.setBgColor(Color.white);
-        map.setTransparent(true);
+        map.setBgColor(BG_COLOR);
+        map.setTransparent(false);
 
         this.jaiMap.setOutputFormat("image/png");
         this.jaiMap.produceMap(map);
 
         BufferedImage image = this.jaiMap.getImage();
 
-        showImage(fSource.getSchema().getTypeName(), 1000, image);
+        String typeName = fSource.getSchema().getTypeName();
+        showImage(typeName, SHOW_TIMEOUT, image);
+        assertNotBlank("testDefaultStyle " + typeName, image);
+        
     }
 
     /**
@@ -230,8 +213,8 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
         int h = (int) Math.round((env.getHeight() * w) / env.getWidth());
         map.setMapWidth(w);
         map.setMapHeight(h);
-        map.setBgColor(Color.white);
-        map.setTransparent(true);
+        map.setBgColor(BG_COLOR);
+        map.setTransparent(false);
 
         map.addLayer(ds.getFeatureSource(FORESTS_TYPE),
             getDefaultStyle(FORESTS_TYPE));
@@ -263,6 +246,7 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
 
         BufferedImage image = this.jaiMap.getImage();
         showImage("Blue Lake", 500, image);
+        assertNotBlank("testBlueLake", image);
     }
 
     /**
@@ -324,67 +308,6 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
         for (int i = 0; i < typeNames.length; i++) {
             fSource = ds.getFeatureSource(typeNames[i]);
             testDefaultStyle(fSource);
-        }
-    }
-
-    /**
-     * bounds may be null
-     *
-     * @param testName DOCUMENT ME!
-     * @param renderer DOCUMENT ME!
-     * @param timeOut DOCUMENT ME!
-     * @param bounds DOCUMENT ME!
-     *
-     * @throws Exception DOCUMENT ME!
-     */
-    private void showRender(String testName, Object renderer, long timeOut,
-        Envelope bounds) throws Exception {
-        int w = 500;
-        int h = (int) Math.round((bounds.getHeight() * w) / bounds.getWidth());
-        final BufferedImage image = new BufferedImage(w, h,
-                BufferedImage.TYPE_INT_RGB);
-        Graphics g = image.getGraphics();
-        g.setColor(Color.white);
-        g.fillRect(0, 0, w, h);
-        render(renderer, g, new Rectangle(w, h), bounds);
-
-        showImage(testName, timeOut, image);
-
-        if (true) {
-            LOGGER.warning(
-                "dont forget to remove this and check the generated image");
-
-            return;
-        }
-
-        // java.net.URL base = TestData.getResource(this, ".");
-        java.io.File base = TestData.file(this, ".");
-        java.io.File file = new java.io.File(base,
-                testName + "_"
-                + renderer.getClass().getName().replace('.', '_') + ".png");
-        java.io.FileOutputStream out = new java.io.FileOutputStream(file);
-        boolean fred = javax.imageio.ImageIO.write(image, "PNG", out);
-        out.close();
-
-        if (!fred) {
-            System.out.println("Failed to write image to " + file.toString());
-        }
-
-        java.io.File fileExemplar = new java.io.File(base.getPath()
-                + "/exemplars",
-                testName + "_"
-                + renderer.getClass().getName().replace('.', '_') + ".png");
-
-        FileInputStream inExemplar = new FileInputStream(fileExemplar);
-        FileInputStream inTest = new FileInputStream(file);
-
-        BufferedImage imageTest = ImageIO.read(inTest);
-        BufferedImage imageExemplar = ImageIO.read(inExemplar);
-
-        for (int y = 0; y < imageExemplar.getHeight(); y++) {
-            for (int x = 0; x < imageExemplar.getWidth(); x++) {
-                assertEquals(imageExemplar.getRGB(x, y), imageTest.getRGB(x, y));
-            }
         }
     }
 
@@ -460,5 +383,25 @@ public class JAIMapResponseTest extends AbstractCiteDataTest {
                     renderer.worldToScreenTransform(bounds, rect));
             }
         }
+    }
+    
+    
+    /**
+     * Just asserts that the passed image is not completely blank.
+     * @param image
+     */
+    private void assertNotBlank(String testName, BufferedImage image){
+    	int pixelsDiffer = 0;
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                if(image.getRGB(x, y) !=  BG_COLOR.getRGB() )
+                	++pixelsDiffer;
+            }
+        }
+        
+        LOGGER.info(testName + ": pixel count=" +
+        		(image.getWidth() * image.getHeight()) +
+        		" non bg pixels: " + pixelsDiffer);
+        assertTrue(testName + " image is comlpetely blank",  0 < pixelsDiffer);
     }
 }
