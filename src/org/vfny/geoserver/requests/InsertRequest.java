@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.requests;
 
-//import java.io.*;
-//import java.util.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.List;
@@ -16,9 +14,14 @@ import org.geotools.feature.Feature;
 import org.vfny.geoserver.responses.WfsException;
 
 /**
- * 
+ * Represents a request for an insert operation.  Does some type checking
+ * by making sure that all features added have the same schema names 
+ * (which is also the type name).  
+ * TODO: add increased typechecking, make sure schemas match one another.
+ *
  * @version $VERSION$
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  */
 public class InsertRequest 
     extends SubTransactionRequest {
@@ -28,12 +31,18 @@ public class InsertRequest
     private static final Logger LOGGER =  
         Logger.getLogger("org.vfny.geoserver.requests");
 
+    /** Indicates that this is an insert request. */
     public static final short operationType = INSERT;
 
+    /** The list of features to be inserted.*/
     public List features;
 
+    /** flag to tell is all locked features should be released. */
     private boolean releaseAll;
     
+    /** Specifies the table of features */
+    protected String typeName = null;
+
     /** Empty constructor. */
     public InsertRequest() { features = new ArrayList();}
 
@@ -47,27 +56,111 @@ public class InsertRequest
     public void setReleaseAll(boolean releaseAll) { 
         this.releaseAll = releaseAll; }
 
-    public void addFeature(Feature feature) {
-	features.add(feature);
+    /** 
+     * Adds a feature to this insert request.  Currently fairly permissive,
+     * just checks that the typenames match.
+     * The datasource will eventually complain, but it would be nice to
+     * do some more type-checking, to make sure the schemas match.
+     *
+     * @param feature To be inserted into the database.
+     * @throws WfsException if added typeName does not match the set typeNames.
+     */
+    public void addFeature(Feature feature) throws WfsException {
+	if (typeName == null) {
+	    features.add(feature);
+	    typeName = feature.getSchema().getTypeName();
+	} else {
+	    String addTypeName = feature.getSchema().getTypeName();
+	    if(typeName.equals(addTypeName)){
+		features.add(feature);
+	    } else {
+		throw new WfsException("features do not match- added typeName: "
+				       + addTypeName + ", set typeName: " +
+				       typeName, handle);
+	    }
+	}
+
     }
 
+    /** 
+     * Convenience method to add an array of features.  See addFeature.
+     *
+     * @param features array of features to be inserted.
+     * @throws WfsException if the typeNames don't match.
+     */
+    public void addFeatures(Feature[] features) throws WfsException {
+	for (int i = 0; i < features.length; i++) {
+	    addFeature(features[i]);
+	}
+    }
+    
+    /**
+     * Returns the type name of the features held in this request.
+     *
+     * @return the typeName.
+     */
+    public String getTypeName(){
+	return typeName;
+    }
+
+    /**
+     * Sets the name.  This method should generally not be used, as
+     * features that are added set their own name and throw exceptions
+     * if they don't match the typename.  But this can be set before
+     * adding features if you want to ensure that they all match this
+     * name.
+     * @param typeName the name of the schema of the added features.
+    public void setTypeName(String typeName) {
+	if (this.typeName == null || this.typeName.equals(typeName)) {
+	    this.typeName = typeName;
+	} else {
+	    //throw exception?  do nothing?  We should not
+	    //be setting a different type name if the typeName of
+	    //the schemas is different.  To throw exception we must
+	    //modify SubTransactionRequest.
+	}
+    }
+
+    /**
+     * Returns the features contained in this request.
+     *
+     * @return the array of features.
+     */
+    public Feature[] getFeatures(){
+	return (Feature [])features.toArray(new Feature[0]);
+    }
+
+    /**
+     * Filters can not be added to an insert request.
+     *
+     * @throws WfsException if called at all.
+     */
     public void setFilter(Filter filter)
         throws WfsException {
         throw new WfsException("Attempted to add filter (" + filter + 
                                ") to update request: " + handle);
     }
 
+    /** returns the insert short. */
     public short getOpType() { return operationType; }
    
+    /**
+     * gets the string representation of this request.
+     */
     public String toString() {
 	StringBuffer iRequest = new StringBuffer("Handle: " + handle);
-	iRequest.append("\nReleaseAll: " + releaseAll + "\n");
+	iRequest.append("\nReleaseAll: " + releaseAll);
+	iRequest.append("\nTypeName: " + typeName + "\n");
 	for (int i = 0; i < features.size(); i++) {
 	    iRequest.append(features.get(i).toString() + "\n");
 	}
 	return iRequest.toString();
     } 
 
+    /**
+     * This method is currently broken, because geotools has not
+     * yet implemented equals methods for features.
+     */
      public boolean equals(Object obj) {
 	if (obj != null && obj.getClass() == this.getClass()){
 	    InsertRequest testInsert = (InsertRequest)obj;
