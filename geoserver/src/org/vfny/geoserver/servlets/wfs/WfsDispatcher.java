@@ -14,9 +14,18 @@ import org.vfny.geoserver.servlets.Dispatcher;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.Reader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.BufferedOutputStream;
+import java.io.InputStreamReader;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
@@ -49,6 +58,13 @@ public class WfsDispatcher extends Dispatcher {
             "org.vfny.geoserver.servlets.wfs");
     private static int sequence = 123;
 
+    private static final String DEFAULT_ENCODING = "UTF-8";
+
+    private static final String ENCODING_HEADER_ARG = "Content-Type";
+
+    private static final Pattern ENCODING_PATTERN = 
+        Pattern.compile("encoding\\s*\\=\\s*\"([^\"]+)\"");
+
     /** Temporary file used to store the request */
     private File temp;
 
@@ -74,7 +90,7 @@ public class WfsDispatcher extends Dispatcher {
         int targetRequest = 0;
 
         try {
-            BufferedReader tempReader = new BufferedReader(request.getReader());
+            InputStream is = new BufferedInputStream(request.getInputStream());
 
             // REVISIT: Should do more than sequence here
             // (In case we are running two GeoServers at once)
@@ -83,19 +99,27 @@ public class WfsDispatcher extends Dispatcher {
             sequence++;
             temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
 
-            FileWriter out = new FileWriter(temp);
+            FileOutputStream fos = new FileOutputStream(temp);
+            BufferedOutputStream out = new BufferedOutputStream(fos);
+
             int c;
 
-            while ((c = tempReader.read()) != -1) {
+            while (-1 != (c = is.read())) {
                 out.write(c);
             }
 
-            tempReader.close();
+            is.close();
+            out.flush();
             out.close();
 
-            BufferedReader disReader = new BufferedReader(new FileReader(temp));
-            BufferedReader requestReader = new BufferedReader(new FileReader(
-                        temp));
+            String req_enc = guessRequestEncoding(request);
+            BufferedReader disReader = new BufferedReader(
+                                        new InputStreamReader(
+                                         new FileInputStream(temp), req_enc));
+
+            BufferedReader requestReader = new BufferedReader(
+                                         new InputStreamReader(
+                                          new FileInputStream(temp), req_enc));
 
             if (disReader != null) {
                 DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
@@ -244,4 +268,71 @@ public class WfsDispatcher extends Dispatcher {
             response.getWriter().write(tempResponse);
         }
     }
+
+    /**
+     * Gets the request encoding by taking a couple guesses.  First it tries
+     * to get the encoding specified in the actual XML sent, which is likely
+     * the most accurate.  We are willing to take the speed hit to be more
+     * sure of the right encoding.  If that is not present we take a shot
+     * at the encoding used to send the http request.  If that is not found
+     * then we just go ahead with the default encoding.  Thanks to Artie Konin
+     * for this work, it's right on.
+     *
+     * @param request The http request object to guess the encoding of.
+     * @return A string of the best guess of the encoding of the request.
+     */
+    protected String guessRequestEncoding(HttpServletRequest request) {
+        String defaultEncoding = DEFAULT_ENCODING;
+        String encoding = getXmlEncoding();
+        if (encoding == null) {
+            encoding = request.getHeader(ENCODING_HEADER_ARG);
+            if (encoding == null) {
+                encoding = defaultEncoding;
+            } else {
+                if (encoding.indexOf("=") == -1) {
+                    encoding = defaultEncoding;
+                } else {
+       	            int encodingIndex = encoding.lastIndexOf("=") + 1;
+                    encoding = encoding.substring(encodingIndex).trim();
+                }
+            }
+        }
+        return encoding;
+    }
+
+    /**
+     * Gets the encoding of the xml request made to the dispatcher.  This
+     * works by reading the temp file where we are storing the request, 
+     * looking to match the header specified encoding that should be present
+     * on all xml files.  This call should only be made after the temp file
+     * has been set.  If no encoding is found, or if an IOError is encountered
+     * then null shall be returned.
+     *
+     * @return The encoding specified in the xml header of the file stored
+     *         in 'temp'.
+     */
+    protected String getXmlEncoding() {
+        try {            
+            StringWriter sw = new StringWriter(60);
+            BufferedReader in = new BufferedReader(new FileReader(temp));
+            
+            int c;
+            while ((-1 != (c = in.read())) && (0x3E != c)) {
+                sw.write(c);
+            }
+            in.close();
+           
+            Matcher m = ENCODING_PATTERN.matcher(sw.toString());
+            if (m.find()) {
+                String result = m.group(1);
+		LOGGER.info("got match: " + result);
+		return result;
+                //return m.toMatchResult().group(1);
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            return null;
+        }
+    } 
 }
