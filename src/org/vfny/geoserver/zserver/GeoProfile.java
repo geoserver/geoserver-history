@@ -44,7 +44,7 @@ public class GeoProfile {
     //the value to match here and a line in isFGDCnum
     public static final String MATCH_PREFIX = ".*";
 
-
+    public static final String BOUNDING_MATCH = MATCH_PREFIX + "bounding";
  
 
 
@@ -58,6 +58,10 @@ public class GeoProfile {
      public static boolean isDateRange(int relation) {
 	return (relation >= 14 && relation <= 18);
     }  
+
+    public static boolean isBoundingField(String searchField) {
+	return searchField.matches(BOUNDING_MATCH);
+    }
 
     /**
      * Checks to see if the given name should be stored
