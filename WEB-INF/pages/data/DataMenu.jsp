@@ -1,11 +1,24 @@
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<span class="dataMenu">
+<logic:empty name="GeoServer.ApplicationState" property="dataStoreErrorKeys">
+<bean:message key="message.dataOkay"/>
+</logic:empty>
 
-<html:link forward="config.data.store"><bean:message key="label.dataStores"/></html:link><br>
-<html:link forward="config.data.namespace"><bean:message key="label.namespaces"/></html:link><br>
-<html:link forward="config.data.style"><bean:message key="label.styles"/></html:link><br>
-<html:link forward="config.data.type"><bean:message key="label.featureTypes"/></html:link><br>
-
-</span>
+<logic:notEmpty name="GeoServer.ApplicationState" property="dataStoreErrorKeys">
+  <table class="info">
+    <tr>
+      <td class="label">	
+  		<logic:iterate id="key" indexId="ctr" name="GeoServer.ApplicationState" property="dataStoreErrorKeys">
+  			<nobr><%= key %></nobr><br>
+  		</logic:iterate>
+      </td>
+      <td class="datum">
+        <logic:iterate id="value" indexId="ctr" name="GeoServer.ApplicationState" property="dataStoreErrorValues">
+          <nobr><%= value %></nobr><br>
+        </logic:iterate>
+      </td>
+    </tr>	
+  </table>
+</logic:notEmpty>

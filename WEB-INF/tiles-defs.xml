@@ -99,6 +99,7 @@
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config:config.validation"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+        <put name="actionForwards" value="config.validation.suite.doit"/>
    	</definition>   	
 
    	<definition name="config.validation.test" extends=".mainLayout">
@@ -114,7 +115,8 @@
    		<put name="body" value="/WEB-INF/pages/validation/TestEditor.jsp"/>
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config:config.validation:config.validation.suite:config.validation.test"/>
-   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="actionForwards" value="config.validation.test.doit"/>
     </definition>
    	
    	<!-- CONFIG WFS -->
@@ -203,6 +205,8 @@
    		<put name="layer" value="data"/>   				
         <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="menuForwards"
+             value="config.data.store.new"/>   		
    	</definition>
    	
    	<definition name="config.data.store.new" extends=".mainLayout">
@@ -210,7 +214,7 @@
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresNew.jsp"/>
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
         <put name="layer" value="data"/>   				   		
-        <put name="locationForwards" value="welcome:config:config.data:config.data.store:config.data.store"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.store"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
@@ -231,6 +235,8 @@
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="menuForwards"
+             value="config.data.namespace.new"/> 
    	</definition>   	
 
    	<definition name="config.data.namespace.new" extends=".mainLayout">
@@ -269,6 +275,8 @@
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+        <put name="menuForwards"
+             value="config.data.type.new"/>
    	</definition>   	
    	
 	<definition name="config.data.type.new" extends=".mainLayout">

@@ -2,31 +2,31 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table border=1 width=100%>
-<tr><td>
-<table border=0 width=100%>
-	<html:form action="/config/data/featureTypeSelect">
-
-	<tr><td align="right" valign="top">
+<html:form action="/config/data/featureTypeSelect">
+  <table class="info">
+	<tr>
+      <td class="label">
 		<bean:message key="label.featureTypes"/>:
-	</td><td>
+	  </td>
+      <td class="datum">
 		<html:select property="selectedFeatureTypeName">
 			<html:options property="typeNames"/>
 		</html:select>
-		
-	</td></tr>
-	<tr><td>&nbsp;</td>
-	<td align="left" valign="top">
+      </td>
+    </tr>
+	<tr>
+      <td class="label">&nbsp;</td>
+      <td class="datum">
 
 		<html:submit property="buttonAction">
 			<bean:message key="label.edit"/>
 		</html:submit>
+
 		<html:submit property="buttonAction">
 			<bean:message key="label.delete"/>
 		</html:submit>
 					
-	</td></tr>
-	</html:form>
-</table>
-</td></tr>
-</table>
+	  </td>
+    </tr>
+  </table>
+</html:form>
