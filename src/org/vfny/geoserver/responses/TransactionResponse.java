@@ -112,13 +112,6 @@ public class TransactionResponse {
 	    }
 	}
 	
-	//HACK: fails to unlock locks with different typeNames.  Right now it
-	//only unlocks the last typename.  Need to think this through, as
-	//we don't want to unlock right after each transaction either, in case
-	//the transaction does not go all the way through.
-	//Or is better default action for now to have it release even if 
-	//transaction does not complete?
-	//repository.unlock(subRequest.getTypeName(), lockId);
 	repository.unlock(request);
 	try {
 	    con.commit();
@@ -179,25 +172,29 @@ public class TransactionResponse {
 	
 
 	    //this hasn't been tested with more than 15,000 features...not sure
-       //if things will mess up with more, and this means 100,000 is the limit 
+	    //if things will mess up with more, and this means 100,000 is the limit 
+	    //TODO: although this will never be null since connection already 
+	    //checked it this code should be made clearer...use typeInfo 
+	    //connection and getNewDatasource.
 	    String typeName = sub.getTypeName();
-	    //if (sub.getOpType() == SubTransactionRequest.INSERT) {
-	    //this is for our insert fid hack...we only want the fid from data
-	    //FeatureType schema = 
-	    //    FeatureTypeFactory.create(new AttributeType[0]);
-	    // int srid = ((PostgisDataSource)data).querySRID(con, typeName);
-		 //HACK: this should be fixed in the datasource...
-	    // ((FeatureTypeFlat)schema).setSRID(srid);
-		 //data = new PostgisDataSource(con, typeName, schema, 100000);
-		//} else {
-	    data = new PostgisDataSource(con, typeName);
+	    typeName = repository.getType(typeName).getName();
 	    if (sub.getOpType() == SubTransactionRequest.INSERT) {
-	    //this is for our insert fid hack...we only want the fid from data
+		//this is for our insert fid hack...we only want the fid from data
 		FeatureType schema = 
 		    FeatureTypeFactory.create(new AttributeType[0]);
-		data.setSchema(schema);
+		// int srid = ((PostgisDataSource)data).querySRID(con, typeName);
+		 //HACK: this should be fixed in the datasource...
+		// ((FeatureTypeFlat)schema).setSRID(srid);
+		data = new PostgisDataSource(con, typeName, schema, 100000);
+	    } else {
+		data = new PostgisDataSource(con, typeName);
+		//if (sub.getOpType() == SubTransactionRequest.INSERT) {
+		//this is for our insert fid hack...we only want the fid from data
+		//FeatureType schema = 
+		//    FeatureTypeFactory.create(new AttributeType[0]);
+		//data.setSchema(schema);
 	    }
-		//}
+	
 	} catch (DataSourceException e) {
 	    String message = "Problem creating datasource: " 
 			+ e.getMessage() +", " + e.getCause();
