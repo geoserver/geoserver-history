@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
@@ -28,9 +29,13 @@ import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.10 2004/03/14 16:09:21 groldan Exp $
+ * @version $Id: GetMapResponse.java,v 1.11 2004/03/14 23:29:30 groldan Exp $
  */
 public class GetMapResponse implements Response {
+
+    private static final Logger LOGGER = Logger.getLogger(
+      GetMapResponse.class.getPackage().getName());
+
     /** DOCUMENT ME! */
     private static final List delegates = new LinkedList();
     private static final List supportedMimeTypes = new LinkedList();
@@ -66,6 +71,7 @@ public class GetMapResponse implements Response {
         GetMapRequest getMapReq = (GetMapRequest) request;
         this.delegate = getDelegate(getMapReq);
         delegate.execute(request);
+        LOGGER.entering(getClass().getName(), "execute", new Object[]{request});
     }
 
     /**
@@ -87,6 +93,7 @@ public class GetMapResponse implements Response {
     }
 
     public String getContentEncoding(){
+        LOGGER.finer("returning content encoding null");
         return null;
     }
     /**
@@ -97,6 +104,7 @@ public class GetMapResponse implements Response {
      */
     public void abort(Service gs) {
         if (delegate != null) {
+            LOGGER.fine("asking delegate for aborting the process");
             delegate.abort(gs);
         }
     }
@@ -122,7 +130,7 @@ public class GetMapResponse implements Response {
             throw new IllegalStateException(
                 "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
         }
-
+        LOGGER.finer("asking delegate for write to " + out);
         delegate.writeTo(out);
     }
 
@@ -143,6 +151,7 @@ public class GetMapResponse implements Response {
     private static GetMapDelegate getDelegate(GetMapRequest request)
         throws WmsException {
         String requestFormat = request.getFormat();
+        LOGGER.finer("request format is " + requestFormat);
         GetMapDelegate delegate = null;
         Class delegateClass = null;
 
@@ -151,7 +160,7 @@ public class GetMapResponse implements Response {
 
             if (delegate.canProduce(requestFormat)) {
                 delegateClass = delegate.getClass();
-
+                LOGGER.finer("found GetMapDelegate " + delegateClass);
                 break;
             }
         }
