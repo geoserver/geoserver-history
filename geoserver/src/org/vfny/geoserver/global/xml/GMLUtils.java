@@ -30,8 +30,8 @@ import java.util.Map;
  * Utility class defining GML constants, and utility functions.
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GMLUtils.java,v 1.10 2004/01/21 00:36:42 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: GMLUtils.java,v 1.11 2004/01/21 01:58:20 jive Exp $
  */
 public class GMLUtils {
     /** Mappings by schema */
@@ -239,7 +239,7 @@ public class GMLUtils {
         if (schema.endsWith("PropertyType")) {
             // should we add this as pointProperty for PointPropertyType?
             //
-            properties.put(mapping.schema, mapping);
+            properties.put(mapping.reference, mapping);
         }
 
         return mapping;
@@ -626,35 +626,60 @@ public class GMLUtils {
      * Used to store Java/GML type mappings for use with GMLUtils.
      *
      * @author jgarnett, Refractions Research, Inc.
-     * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.10 2004/01/21 00:36:42 dmzwiers Exp $
+     * @author $Author: jive $ (last modification)
+     * @version $Id: GMLUtils.java,v 1.11 2004/01/21 01:58:20 jive Exp $
      */
     public static class Mapping {
-        public final String prefix; // gml or xs
-        public final String schema; // int or PointPropertyType 
+        // XML Land
+        public final String prefix;    // xs  or gml
+        public final String reference;    // int or pointPropertyType
+        public final String extension; // int or PointPropertyType
+        
+        // Java Land
         public final String name; // pointProperty - onlyed used by PropertyType
         public final Class type; // Java class that best represents this
 
         public Mapping(String xmlSchema) {
             this(xmlSchema, Object.class);
         }
-
         public Mapping(String xmlSchema, Class type) {
             String[] split = xmlSchema.split(":");
             this.prefix = split[0];
-            this.schema = split[1];
-
-            if (schema.endsWith("Type")) {
-                name = schema.substring(0, schema.length() - 4);
+            this.extension = split[1];
+            if (extension.endsWith("Type")) {
+                name = Character.toLowerCase( extension.charAt(0)) +
+                       extension.substring(1, extension.length() - 4);
+                reference = name;
             } else {
                 name = "";
+                reference = extension;
             }
-
             this.type = type;
         }
-
+        /**
+         * XMLSchema reference prefix:schmea element.
+         * <p>
+         * Example: gml:pointProperty
+         * </p>
+         * @return reference prefix:schema
+         */
+        public String toReference(){
+            return prefix + ":" + reference;
+        }
+        /**
+         * 
+         * XMLSchema extension prefix:schmea complexType or simpleType.
+         * <p>
+         * Example: gml:PointProperty
+         * </p>
+         * @return extension prefix:extension
+         */
+        public String toExtension(){
+            return prefix + ":" + extension;
+        }
+        
         public String toString() {
-            return prefix + ":" + schema;
+            return prefix + ":" + reference;
         }
     }
 }
