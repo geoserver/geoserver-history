@@ -26,14 +26,17 @@
 	<classpathentry kind="lib" path="lib/jakarta-oro.jar"/>
 	<classpathentry kind="lib" path="lib/struts.jar"/>
 	<classpathentry kind="lib" path="lib/jsde_sdk-8.3.jar"/>
-	<classpathentry kind="lib" path="lib/vecmath-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-arcsde.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-graph.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-main.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-postgis.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-property.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-shapefile.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-validation.jar"/>
-	<classpathentry kind="lib" path="lib/opengis-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/geoapi.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-oracle-spatial.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-reprojection.jar"/>
+	<classpathentry kind="lib" path="lib/vecmath-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/opengis-css.jar"/>
+	<classpathentry kind="lib" path="lib/opengis-legacy.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
