@@ -158,7 +158,7 @@ public class DescribeResponse {
             
             // assign temp variables; convenience/confusion lesseners only
             currentFeatureType = file[i].getName();
-            currentFileName = targetDirectoryName + "/" + currentFeatureType + 
+            currentFileName = targetDirectoryName + currentFeatureType + "/" +
                 config.SCHEMA_FILE;
             
             // actual work of writing out file is delegated to private function
@@ -196,6 +196,7 @@ public class DescribeResponse {
       * @param featureTypeName The name of the feature type.
       */
     public String writeFile(String inputFileName) {        
+	LOGGER.finest("writing file " + inputFileName);
         String finalOutput = new String();        
         try {
             File inputFile = new File(inputFileName);
