@@ -22,7 +22,7 @@ import java.util.Map;
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
  * 
- * <p>
+ * <prefix>Example:<code>
  * DataStoreInfoDTO dsiDto = new DataStoreInfoDTO();
  * dsiDto.setIde("myDataStore");
  * dsiDto.setEnabled(true);
@@ -30,10 +30,10 @@ import java.util.Map;
  * Map m = new HashMap();
  * m.put("key","param");
  * dsiDto.setConnectionParams(m);
- * </p>
+ * </code></prefix>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.1.2.3 2004/01/09 08:42:13 jive Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.1.2.4 2004/01/09 09:34:19 jive Exp $
  */
 public final class DataStoreInfoDTO implements DataStructure {
     /** unique datasore identifier */
@@ -42,10 +42,10 @@ public final class DataStoreInfoDTO implements DataStructure {
     /** unique namespace to refer to this datastore */
     private String nameSpaceId;
 
-    /** wether this data store is enabled */
+    /** true if this data store is enabled */
     private boolean enabled;
 
-    /** a short description about this data store */
+    /** The title of this data store */
     private String title;
 
     /** a short description about this data store */
@@ -68,7 +68,12 @@ public final class DataStoreInfoDTO implements DataStructure {
      * @see defaultSettings()
      */
     public DataStoreInfoDTO() {
-        defaultSettings();
+		id = "";
+		nameSpaceId = "";
+		enabled = false;
+		title = "";
+		_abstract = "";
+		connectionParams = new HashMap();
     }
 
     /**
@@ -82,40 +87,24 @@ public final class DataStoreInfoDTO implements DataStructure {
      *
      * @param ds The datastore to copy.
      */
-    public DataStoreInfoDTO(DataStoreInfoDTO ds) {
-        if (ds == null) {
-            defaultSettings();
-
-            return;
+    public DataStoreInfoDTO(DataStoreInfoDTO dto) {
+        if (dto == null) {
+        	throw new NullPointerException("Non-Null DataStoreDTO is requried");
         }
 
-        id = ds.getId();
-        nameSpaceId = ds.getNameSpaceId();
-        enabled = ds.isEnabled();
-        _abstract = ds.getAbstract();
+        id = dto.getId();
+        nameSpaceId = dto.getNameSpaceId();
+        enabled = dto.isEnabled();
+        _abstract = dto.getAbstract();
 
+        connectionParams = new HashMap( dto.getConnectionParams() );
+        /*
         try {
-            connectionParams = CloneLibrary.clone(ds.getConnectionParams()); //clone?
+            connectionParams = CloneLibrary.clone(dto.getConnectionParams()); //clone?
         } catch (Exception e) {
             connectionParams = new HashMap();
         }
-    }
-
-    /**
-     * defaultSettings purpose.
-     * 
-     * <p>
-     * This method creates default values for the class. This method  should
-     * noly be called by class constructors.
-     * </p>
-     */
-    private void defaultSettings() {
-        id = "";
-        nameSpaceId = "";
-        enabled = false;
-        title = "";
-        _abstract = "";
-        connectionParams = new HashMap();
+        */
     }
 
     /**
@@ -192,13 +181,9 @@ public final class DataStoreInfoDTO implements DataStructure {
 	}
 
     /**
-     * getAbstract purpose.
+     * Short description of DataStore
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return Short description
      */
     public String getAbstract() {
         return _abstract;
@@ -218,7 +203,7 @@ public final class DataStoreInfoDTO implements DataStructure {
     }
 
     /**
-     * Tests if the DataStore represented by this Object should be enabled. 
+     * Value is <code>true</code> if the DataStore should be enabled. 
      *
      * @return ture if DataStore shoudl be enabled
      */
@@ -227,64 +212,48 @@ public final class DataStoreInfoDTO implements DataStructure {
     }
 
     /**
-     * getId purpose.
-     * 
+     * Unique identifier representing this DataStore.
      * <p>
-     * Description ...
+     * This value is used to refer to this DataStore by FeatureTypeInfoDTO.
      * </p>
-     *
-     * @return
+     * @return an identifier, non null
      */
     public String getId() {
         return id;
     }
 
     /**
-     * getNameSpace purpose.
+     * Namespace <code>prefix</code> for this DataStore.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return <code>prefix</code> used for GML encoding
      */
     public String getNameSpaceId() {
         return nameSpaceId;
     }
 
     /**
-     * getTitle purpose.
+     * Title for DataStore, used in error messages & configuration.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
+     * @return Title dor the DataStore
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * setAbstract purpose.
+     * Updates the DataStore abstract.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
+     * @param description
      */
-    public void setAbstract(String string) {
-        if (string != null) {
-            _abstract = string;
-        }
+    public void setAbstract(String description) {
+        _abstract = description;
     }
 
     /**
-     * setConnectionParams purpose.
+     * Provide DataStore connectin parameters. 
      * 
      * <p>
-     * Description ...
+     * Map is limited to text based keys and values
      * </p>
      *
      * @param map
@@ -317,10 +286,8 @@ public final class DataStoreInfoDTO implements DataStructure {
      *
      * @param string
      */
-    public void setId(String string) {
-        if (string != null) {
-            id = string;
-        }
+    public void setId(String identifier) {
+        id = identifier;        
     }
 
     /**
@@ -332,10 +299,8 @@ public final class DataStoreInfoDTO implements DataStructure {
      *
      * @param support
      */
-    public void setNameSpaceId(String support) {
-        if (support != null) {
-            nameSpaceId = support;
-        }
+    public void setNameSpaceId(String prefix) {
+        nameSpaceId = prefix;        
     }
 
     /**
@@ -347,9 +312,7 @@ public final class DataStoreInfoDTO implements DataStructure {
      *
      * @param string
      */
-    public void setTitle(String string) {
-        if (string != null) {
-            title = string;
-        }
+    public void setTitle(String dataStoreTitle) {
+        title = dataStoreTitle;        
     }
 }
