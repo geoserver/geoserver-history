@@ -4,12 +4,10 @@
  */
 package org.vfny.geoserver.config;
 
-import org.geotools.feature.*;
-import org.geotools.data.*;
-import org.w3c.dom.*;
-
 import com.sun.jndi.toolkit.url.Uri;
-
+import org.geotools.data.*;
+import org.geotools.feature.*;
+import org.w3c.dom.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.*;
@@ -21,7 +19,7 @@ import java.util.logging.*;
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.1.2.5 2003/11/17 09:00:21 jive Exp $
+ * @version $Id: GlobalConfig.java,v 1.1.2.6 2003/11/17 22:25:36 cholmesny Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -65,48 +63,70 @@ public class GlobalConfig extends AbstractConfig {
 
     /**
      * Used to aquire a GlobalCongif for testing against
+     * 
      * <p>
      * The provided config Map recognizes:
+     * 
      * <ul>
-     * <li>global.maxFeatures: int (default 2000 )</li>
-     * <li>global.level: Level (default same as org.vfny.geoserver)</li>
-     * <li>global.verbose: boolean (default true)</li>
-     * <li>global.numDecimals: int (default 8)</li>
-     * <li>global.base: URL (default httpd:/localhost:8080/)</li>
-     * <li>global.schemaBase (default httpd:/localhost:8080/schema)</li>
-     * <li>global.charset: Charset (default ISO-8859-1)</li>
+     * <li>
+     * global.maxFeatures: int (default 2000 )
+     * </li>
+     * <li>
+     * global.level: Level (default same as org.vfny.geoserver)
+     * </li>
+     * <li>
+     * global.verbose: boolean (default true)
+     * </li>
+     * <li>
+     * global.numDecimals: int (default 8)
+     * </li>
+     * <li>
+     * global.base: URL (default httpd:/localhost:8080/)
+     * </li>
+     * <li>
+     * global.schemaBase (default httpd:/localhost:8080/schema)
+     * </li>
+     * <li>
+     * global.charset: Charset (default ISO-8859-1)
+     * </li>
      * </ul>
-     * <p>
-     * In general this is expected to be used by testcases, in which case
-     * the actual java objects can be supplied. And then only if you
-     * really need to branch off from the defaults.
      * </p>
      * 
+     * <p>
+     * In general this is expected to be used by testcases, in which case the
+     * actual java objects can be supplied. And then only if you really need
+     * to branch off from the defaults.
+     * </p>
+     *
+     * @param config DOCUMENT ME!
      */
-    public GlobalConfig( Map config ){
-        
-        maxFeatures = get( config, "global", 20000 );
-        loggingLevel = get( config, "global.level", Logger.getLogger(
-        "org.vfny.geoserver.config").getLevel() );
-        verbose = get( config, "global.verbose", true );
-        numDecimals = get( config, "global.numDecimal", 8 );
-        charSet = get( config, "global.charset", Charset.forName("foo") );
+    public GlobalConfig(Map config) {
+        maxFeatures = get(config, "global", 20000);
+        loggingLevel = get(config, "global.level",
+                Logger.getLogger("org.vfny.geoserver.config").getLevel());
+        verbose = get(config, "global.verbose", true);
+        numDecimals = get(config, "global.numDecimal", 8);
+        charSet = get(config, "global.charset", Charset.forName("foo"));
+
         try {
-            baseUrl = get( config, "global.base", new URL("http","localhost",8080,"") ).toExternalForm();
-        }
-        catch ( MalformedURLException ignore ){
+            baseUrl = get(config, "global.base",
+                    new URL("http", "localhost", 8080, "")).toExternalForm();
+        } catch (MalformedURLException ignore) {
             baseUrl = "localhost";
         }
+
         try {
-            schemaBaseUrl = get( config, "global.schameBase", new URL("http","localhost",8080,"schema")).toString();
-        }
-        catch ( MalformedURLException ignore ){
+            schemaBaseUrl = get(config, "global.schameBase",
+                    new URL("http", "localhost", 8080, "schema")).toString();
+        } catch (MalformedURLException ignore) {
             baseUrl = "localhost/schema";
         }
-        contactConfig = new ContactConfig( config );
-        
+
+        contactConfig = new ContactConfig(config);
+
         globalConfig = this;
     }
+
     /**
      * Creates a new GlobalConfig object.
      *
@@ -168,12 +188,20 @@ public class GlobalConfig extends AbstractConfig {
         //TODO: better checking.
         this.baseUrl = getChildText(globalConfigElem, "URL", false);
 
+        if (!baseUrl.endsWith("/")) {
+            this.baseUrl = baseUrl + "/";
+        }
+
         String schemaBaseUrl = getChildText(globalConfigElem, "SchemaBaseUrl");
 
         if (schemaBaseUrl != null) {
             this.schemaBaseUrl = schemaBaseUrl;
+
+            if (!schemaBaseUrl.endsWith("/")) {
+                this.schemaBaseUrl = schemaBaseUrl + "/";
+            }
         } else {
-            this.schemaBaseUrl = baseUrl + "/data/capabilities/";
+            this.schemaBaseUrl = baseUrl + "data/capabilities/";
         }
 
         globalConfig = this;
@@ -183,6 +211,8 @@ public class GlobalConfig extends AbstractConfig {
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     *
+     * @throws java.lang.IllegalStateException DOCUMENT ME!
      */
     public static GlobalConfig getInstance() {
         if (globalConfig == null) {
