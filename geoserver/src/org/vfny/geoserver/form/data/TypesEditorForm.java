@@ -39,8 +39,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * Form used to work with FeatureType information.
  * 
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.9 2004/04/05 23:39:25 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: TypesEditorForm.java,v 1.10 2004/04/05 23:50:20 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -153,7 +153,16 @@ public class TypesEditorForm extends ActionForm {
         
         System.out.println("rest based on schemaBase: "+type.getSchemaBase());
         
-
+        // Generate ReadOnly list of Attribtues
+        //
+        DataStoreConfig dataStoreConfig = config.getDataStore( dataStoreId );
+        FeatureType featureType = null;        
+        try {
+            DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
+            featureType = dataStore.getSchema( name );                            
+        } catch (IOException e) {
+            // DataStore unavailable!
+        }
         if( (type.getSchemaBase() == null || "--".equals(type.getSchemaBase())) 
                 || type.getSchemaAttributes() == null ){
             //We are using the generated attributes
@@ -163,15 +172,8 @@ public class TypesEditorForm extends ActionForm {
             
             // Generate ReadOnly list of Attribtues
             //
-            DataStoreConfig dataStoreConfig = config.getDataStore( dataStoreId );
-            try {
-				DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
-                FeatureType featureType = dataStore.getSchema( name );                
-                List generated = DataTransferObjectFactory.generateAttributes( featureType );
-                this.attributes = attribtuesDisplayList( generated );
-			} catch (IOException e) {
-				// DataStore unavailable!
-			}
+            List generated = DataTransferObjectFactory.generateAttributes( featureType );
+            this.attributes = attribtuesDisplayList( generated );			
         }
         else {
         	this.schemaBase = type.getSchemaBase();
@@ -182,7 +184,7 @@ public class TypesEditorForm extends ActionForm {
             //
             List schemaAttribtues = DataTransferObjectFactory.generateRequiredAttribtues(schemaBase);
             attributes.addAll( attribtuesDisplayList( schemaAttribtues ));
-            attributes.addAll( attribtuesFormList( type.getSchemaAttributes() ));
+            attributes.addAll( attribtuesFormList( type.getSchemaAttributes(), featureType ));
         }
         StringBuffer buf = new StringBuffer();
         for (Iterator i = type.getKeywords().iterator(); i.hasNext();) {
@@ -235,10 +237,11 @@ public class TypesEditorForm extends ActionForm {
      * @param list
      * @return
      */
-    private List attribtuesFormList( List dtoList ){
+    private List attribtuesFormList( List dtoList, FeatureType schema ){
         List list = new ArrayList();
         for( Iterator i=dtoList.iterator(); i.hasNext();){            
-            list.add( new AttributeForm( (AttributeTypeInfoConfig) i.next() ) );
+            AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) i.next(); 
+            list.add( new AttributeForm( config, schema.getAttributeType( config.getName() ) ) );
         }
         return list;
     }
