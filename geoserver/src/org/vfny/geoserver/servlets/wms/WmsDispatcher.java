@@ -37,7 +37,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.7 2004/07/15 21:13:13 jmacgill Exp $
+ * @version $Id: WmsDispatcher.java,v 1.8 2004/09/08 17:35:15 cholmesny Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
@@ -132,11 +132,8 @@ public class WmsDispatcher extends Dispatcher {
             dispatched = null;
         }
 
-        //TODO: catch the servlet exceptions from the other servlets.
         if ((dispatched != null) && !isPost) {
             dispatched.init(servletConfig); //only needed for init hack, see
-
-            //dispatcher.init()
             dispatched.service(request, response);
         } else {
             String message;
@@ -156,7 +153,7 @@ public class WmsDispatcher extends Dispatcher {
             GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
             
             WmsException wmse = new WmsException(message);
-            String tempResponse = wmse.getXmlResponse(geoServer.isVerboseExceptions());
+            String tempResponse = wmse.getXmlResponse(geoServer.isVerboseExceptions(), request);
 
             response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);
