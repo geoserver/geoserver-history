@@ -737,6 +737,8 @@
                includes="**/*.class"/>               
       <fileset dir="${dir.geotools}/svgsupport/target/classes/"
                includes="**/*.class"/>   
+      <fileset dir="${dir.geotools}/opengis/target/classes/"
+               includes="**/*.class"/> 
     </jar>
     
     <!-- Looks like initial GeoAPI work?! -->
