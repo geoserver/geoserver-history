@@ -13,12 +13,16 @@ import org.w3c.dom.Element;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.1.2.4 2003/11/12 02:19:14 cholmesny Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.5 2003/11/14 03:19:53 cholmesny Exp $
  */
 public class WFSConfig extends ServiceConfig {
-    
+    public static final String WFS_FOLDER = "wfs/1.0.0/";
+    public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFS-basic.xsd";
+    public static final String WFS_CAP_LOC = WFS_FOLDER
+        + "WFS-capabilities.xsd";
+    private GlobalConfig global = GlobalConfig.getInstance();
     private String describeUrl;
-    
+
     /**
      * Creates a new WFSConfig object.
      *
@@ -33,20 +37,32 @@ public class WFSConfig extends ServiceConfig {
 
     /**
      * Gets the base url of a describe request.
+     *
+     * @return DOCUMENT ME!
+     *
      * @task REVISIT: consider using the /wfs? base, as it makes things a bit
-     * clearer.  Right now, however, I'm getting problems with the & in 
-     * returned xml, having to put a &amp; in, and not sure if clients
-     * will process it correctly.
+     *       clearer.  Right now, however, I'm getting problems with the & in
+     *       returned xml, having to put a &amp; in, and not sure if clients
+     *       will process it correctly.
      */
     public String getDescribeBaseUrl() {
-	if (this.describeUrl == null) {
-	    this.describeUrl = GlobalConfig.getInstance().getBaseUrl() +
-		"DescribeFeatureType?typeName=";
-	}
-	return describeUrl;
+        if (this.describeUrl == null) {
+            this.describeUrl = global.getBaseUrl()
+                + "DescribeFeatureType?typeName=";
+        }
+
+        return describeUrl;
     }
 
     public String getDescribeUrl(String typeName) {
-	return getDescribeBaseUrl() + typeName;
+        return getDescribeBaseUrl() + typeName;
+    }
+
+    public String getWfsBasicLocation() {
+        return global.getSchemaBaseUrl() + WFS_BASIC_LOC;
+    }
+
+    public String getWfsCapLocation() {
+        return global.getSchemaBaseUrl() + WFS_CAP_LOC;
     }
 }
