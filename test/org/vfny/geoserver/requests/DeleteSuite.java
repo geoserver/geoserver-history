@@ -23,6 +23,8 @@ import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.LiteralExpression;
 import org.geotools.resources.Geotools;
+import org.geotools.resources.MonolineFormatter;
+import org.vfny.geoserver.config.ConfigInfo;
 
 /**
  * Tests the Delete request handling.
@@ -44,9 +46,17 @@ public class DeleteSuite extends TestCase {
     /** Holds mappings between HTTP and ASCII encodings */
     private static FilterFactory factory = FilterFactory.createFilterFactory();
 
+         /** Unit test data directory */
+    private static final String CONFIG_DIR = 
+        System.getProperty("user.dir") + "/misc/unit/config/";
+
+    //classes complain if we don't set up a valid config info.
+    private static ConfigInfo config = ConfigInfo.getInstance(CONFIG_DIR);
+
     /* Initializes the logger. */
     static {
-        Geotools.init("Log4JFormatter", Level.FINEST);
+        Geotools.init("Log4JFormatter", Level.FINE);
+	MonolineFormatter.init("org.vfny.geoserver", Level.FINE);
     }
     
     /** Constructor with super. */
@@ -212,10 +222,9 @@ public class DeleteSuite extends TestCase {
 
         // make base comparison objects
         GeometryFilter filter = factory.
-            createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+            createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
         AttributeExpression leftExpression = 
             factory.createAttributeExpression(null); 
-        leftExpression.setAttributePath("@");
         // Creates coordinates for the linear ring
         Coordinate[] coords = new Coordinate[5];
         coords[0] = new Coordinate(10,10);
@@ -227,7 +236,6 @@ public class DeleteSuite extends TestCase {
         Polygon polygon = new Polygon(outerShell, new PrecisionModel(), 0);
         LiteralExpression rightExpression = 
             factory.createLiteralExpression(polygon); 
-        filter.addLeftGeometry(leftExpression);
         filter.addRightGeometry(rightExpression);
 
         internalRequest1.setFilter(filter);
