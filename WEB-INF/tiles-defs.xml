@@ -8,23 +8,15 @@
 
    	<definition name=".mainLayout" page="/WEB-INF/pages/layouts/mainLayout.jsp">
 		<put name="title" value="GeoServer"/>
-		<put name="locationText" value=""/>
-		<put name="header" value=".headLayout"/>
-		<put name="sidebar" value=".sidebarLayout"/>
-		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
 		
 		<!-- it would seem that tile-inheritance prevents one from over-riding
 		     parameters, so I will mash all layouts together here as one -->
 
 		<!-- HEADER -->		     
    		<put name="logo" value="/WEB-INF/pages/logo.jsp"/>
-   		<!--  
-   			Currently removed due to time constraints (it's incomplete)
-   			
-   			<put name="location" value="/WEB-INF/pages/location.jsp"/> 
-   		-->
-   		<put name="location" value="/WEB-INF/pages/blank.jsp"/>
    		<put name="menu" value="/WEB-INF/pages/menu.jsp"/>
+   		<put name="serviceName" value="/WEB-INF/pages/serviceName.jsp"/>
+   		<put name="contact" value="/WEB-INF/pages/contact.jsp"/>
 
 		<!-- SIDEBAR -->
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
@@ -32,10 +24,10 @@
    		<put name="messages" value="/WEB-INF/pages/messages.jsp"/>
    		<put name="actions"	value="/WEB-INF/pages/blank.jsp"/>
 
-   	</definition>
-   	
-   	<definition name=".bodyLayout" page="/WEB-INF/pages/layouts/bodyLayout.jsp">
-   		<put name="tabs" value=".tabsLayout"/>		     
+		<!-- BODY -->
+   		<put name="location" value="/WEB-INF/pages/blank.jsp"/>
+		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
+
    	</definition>
    	
    	<definition name="main.welcome" extends=".mainLayout">
@@ -72,36 +64,42 @@
    		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigMenu.jsp"/>
 		<put name="title" value="title.wfs.menu"/>
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
+		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>
    	</definition>
 
    	<definition name="wfs.description" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigDescription.jsp"/>
 		<put name="title" value="title.wfs.description"/>
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
+		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>		
    	</definition>
    	
    	<definition name="wfs.content" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/wfs/WFSConfigContent.jsp"/>
 		<put name="title" value="title.wfs.content"/>   		
 		<put name="status" value="/WEB-INF/pages/wfs/status.jsp"/>
+		<put name="serviceName" value="/WEB-INF/pages/wfs/serviceName.jsp"/>		
    	</definition>
    	
    	<definition name="wms.menu" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/wms/WMSConfigMenu.jsp"/>
 		<put name="title" value="title.wms.menu"/>   		
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
+		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>		
    	</definition>
 
    	<definition name="wms.description" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/wms/WMSConfigDescription.jsp"/>
 		<put name="title" value="title.wms.description"/>   		
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>
+		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>			
    	</definition>
    	   	
    	<definition name="wms.content" extends=".mainLayout">
    		<put name="body" value="/WEB-INF/pages/wms/WMSConfigContent.jsp"/>
 		<put name="title" value="title.wms.content"/>   		
 		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>		
+		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>			
    	</definition>
 
    	<definition name="data.menu" extends=".mainLayout">
