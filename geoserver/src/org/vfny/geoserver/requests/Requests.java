@@ -71,7 +71,9 @@ public final class Requests {
 			UserContainer user = (UserContainer) session.getAttribute( UserContainer.SESSION_KEY );
 			if( user == null ){
 				user = new UserContainer( request.getLocale() );
-				session.setAttribute( UserContainer.SESSION_KEY, user );
+                user.setUsername("Administrator");
+                
+                session.setAttribute( UserContainer.SESSION_KEY, user );
 			}
 			return user;                
 		}
