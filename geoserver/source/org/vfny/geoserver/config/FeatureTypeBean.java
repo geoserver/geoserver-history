@@ -7,82 +7,106 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.log4j.Category;
+
 import org.exolab.castor.xml.*;
 
 import org.vfny.geoserver.config.featureType.*;
 
+
 /**
  * Reads all necessary feature type information to abstract away from servlets.
  * 
- * @author Vision for New York
- * @author Rob Hranac 
- * @version 0.9 alpha, 11/01/01
- *
+ * @author Rob Hranac, Vision for New York
+ * @version $0.9 beta, 11/01/01$
  */
 public class FeatureTypeBean {
  		
-		private FeatureType responseFeatureType;
-		//private String featureTypeName;
 
-		// initializes log file
+		/** Standard log file instance */
 		private Category _log = Category.getInstance(FeatureTypeBean.class.getName());
 
+
+		/** Castor-specified type to hold all the  */
+		private FeatureType responseFeatureType;
+
+
+	 /**
+		* Initializes the database and request handler.
+		*
+		*/ 
 		public FeatureTypeBean() {
 		}
 
+
+	 /**
+		* Initializes the database and request handler.
+		*
+		* @param featureTypeName The query from the request object.
+		*/ 
 		public FeatureTypeBean(String featureTypeName) {
 				readFeatureTypeInformation(featureTypeName);
 		}
 
 
-		public String getName() {
-				return responseFeatureType.getName();
-		}
+		/** Fetches the feature type name (also the table name)  */
+		public String getName() { return responseFeatureType.getName();	}
 
-		public String getAbstract() {
-				return responseFeatureType.getAbstract();
-		}
 
-		public String getSrs() {
-				return responseFeatureType.getSRS();
-		}
+		/** Fetches the feature type abstract */
+		public String getAbstract() { return responseFeatureType.getAbstract();	}
 
-		public String getKeywords() {
-				return responseFeatureType.getKeywords();
-		}
 
-		public String getBoundingBox() {
-				return responseFeatureType.getLatLonBoundingBox().toString();
-		}
+		/** Fetches the feature type spatial reference system */
+		public String getSrs() { return responseFeatureType.getSRS();	}
 
-		public String getMetadataUrl() {
-				return responseFeatureType.getMetadataURL().toString();
-		}
 
-		public String getDatabaseName() {
-				return responseFeatureType.getDatabaseName().toString();
-		}
+		/** Fetches the user-defined feature type keywords  */
+		public String getKeywords() { return responseFeatureType.getKeywords(); }
 
-		public String getHost() {
-				return responseFeatureType.getHost().toString();
-		}
 
-		public String getPort() {
-				return responseFeatureType.getPort().toString();
-		}
+		/** Fetches the user-defined bounding box  */
+		public String getBoundingBox() { return responseFeatureType.getLatLonBoundingBox().toString();	}
 
-		public String getUser() {
-				return responseFeatureType.getUser().toString();
-		}
 
-		public String getPassword() {
-				return responseFeatureType.getPassword().toString();
-		}
+		/** Fetches the user-defined metadata URL  */
+		public String getMetadataUrl() { return responseFeatureType.getMetadataURL().toString(); }
 
+
+		/** Fetches the user-defined database name  */
+		public String getDatabaseName() { return responseFeatureType.getDatabaseName().toString(); }
+
+
+		/** Fetches the user-defined feature type keywords  */
+		public String getHost() { return responseFeatureType.getHost().toString(); }
+
+
+		/** Fetches the user-defined port for the database  */
+		public String getPort() { return responseFeatureType.getPort().toString(); }
+
+
+		/** Fetches the user-defined user for the database */
+		public String getUser() { return responseFeatureType.getUser().toString(); }
+
+
+		/** Fetches the user-defined password for the database */
+		public String getPassword() { return responseFeatureType.getPassword().toString(); }
+
+
+	 /**
+		* Reads feature type information
+		*
+		* @param featureTypeName The query from the request object.
+		*/ 
 		public void setReadFeature(String featureTypeName) {
 				readFeatureTypeInformation(featureTypeName);
 		}
 
+
+	 /**
+		* Returns a capabilities XML fragment for a specific feature type.
+		*
+		* @param version The version of the request (0.0.14 or 0.0.15)
+		*/ 
 		public String getCapabilitiesXml(String version) {
 
 				if( version.equals("0.0.14") )
@@ -92,6 +116,12 @@ public class FeatureTypeBean {
 
 		}
 
+
+	 /**
+		* Reads feature type information
+		*
+		* @param featureTypeName The query from the request object.
+		*/ 
 		private void readFeatureTypeInformation(String featureTypeName) {
 
 
@@ -116,14 +146,22 @@ public class FeatureTypeBean {
 
 		}
 
+
+	 /**
+		* Generates v0.0.14 capabilities document fragment for a feature type.
+		*
+		*/ 
 		private String getCapabilitiesXmlv14() {
 
+
+				// SHOULD CHANGE TO STRING BUFFER
+				// ALSO MAKE TERSE VERSION CAPABILITY
 				String tempResponse = "    <FeatureType>\n";
 				tempResponse = tempResponse + "      <Name>" + responseFeatureType.getName() + "</Name>\n";
 				tempResponse = tempResponse + "      <Title>" + responseFeatureType.getTitle() + "</Title>\n";
 				tempResponse = tempResponse + "      <Abstract>" + responseFeatureType.getAbstract() + "</Abstract>\n";
 				tempResponse = tempResponse + "      <Keywords>" + responseFeatureType.getKeywords() + "</Keywords>\n";
-				tempResponse = tempResponse + "      <SRS>" + responseFeatureType.getSRS() + "</SRS>\n";
+				tempResponse = tempResponse + "      <SRS>http://www.opengis.net/gml/srs/epsg#" + responseFeatureType.getSRS() + "</SRS>\n";
 				tempResponse = tempResponse + "      <Operations>\n";
 				tempResponse = tempResponse + "        <Query/>\n";
 				tempResponse = tempResponse + "      </Operations>\n";
@@ -140,15 +178,23 @@ public class FeatureTypeBean {
 		}
 
 
+
+	 /**
+		* Generates v0.0.15 capabilities document fragment for a feature type.
+		*
+		*/ 
 		private String getCapabilitiesXmlv15() {
 
+				// SHOULD CHANGE TO STRING BUFFER
+				// ALSO MAKE TERSE VERSION CAPABILITY
 				String tempResponse = "        <wfsfl:FeatureType>\n";
 				tempResponse = tempResponse + "            <wfsfl:Name>" + responseFeatureType.getName() + "</wfsfl:Name>\n";
-				tempResponse = tempResponse + "            <wfsfl:SRS srsName=\"" + responseFeatureType.getSRS() + "\"/>\n";
+				tempResponse = tempResponse + "            <wfsfl:SRS srsName=\"http://www.opengis.net/gml/srs/epsg#" + responseFeatureType.getSRS() + "\"/>\n";
 				tempResponse = tempResponse + "            <wfsfl:LatLonBoundingBox minx=\"" + responseFeatureType.getLatLonBoundingBox().getMinx();
 				tempResponse = tempResponse + "\" miny=\"" + responseFeatureType.getLatLonBoundingBox().getMiny();
 				tempResponse = tempResponse + "\" maxx=\"" + responseFeatureType.getLatLonBoundingBox().getMaxx();
 				tempResponse = tempResponse + "\" maxy=\"" + responseFeatureType.getLatLonBoundingBox().getMaxy() + "\"/>\n";
+				tempResponse = tempResponse + "            <wfsfl:Operations><wfsfl:Query/></wfsfl:Operations>\n";
 				tempResponse = tempResponse + "        </wfsfl:FeatureType>\n";
 				
 				return tempResponse;
