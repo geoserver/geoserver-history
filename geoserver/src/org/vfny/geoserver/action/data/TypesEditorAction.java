@@ -193,7 +193,7 @@ public class TypesEditorAction extends ConfigAction {
         sync( form, config );
 
         DataConfig dataConfig = (DataConfig) getDataConfig();        
-        dataConfig.addFeatureType( config.getName(), config );
+        dataConfig.addFeatureType( config.getDataStoreId()+":"+config.getName(), config );
 
         // Don't think reset is needed (as me have moved on to new page)
         // form.reset(mapping, request);
