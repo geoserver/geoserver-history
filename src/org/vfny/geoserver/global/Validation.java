@@ -11,12 +11,12 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
+import org.geotools.validation.*;
+import java.io.*;
+import org.geotools.validation.spatial.*;
+import org.geotools.validation.attributes.*;
 
 
 /**
@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: Validation.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: Validation.java,v 1.3 2004/01/20 22:47:21 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
@@ -87,7 +87,7 @@ public class Validation extends GlobalLayerSupertype {
      * @param config
      * @param catalog
      */
-    /*  public Validation(Map config ) throws ConfigurationException {
+      public Validation(Map config ) throws ConfigurationException {
        LOGGER.info("loading validation configuration");
        List tests = get( config, "validation", Collections.EMPTY_LIST );
        List plugInNames = new ArrayList();
@@ -124,7 +124,7 @@ public class Validation extends GlobalLayerSupertype {
                processor.addValidation( (IntegrityValidation) validation );
            }
        }
-       }*/
+       }
     /*
      * Validation constructor.
      * <p>
@@ -132,7 +132,7 @@ public class Validation extends GlobalLayerSupertype {
      * </p>
      * @param dir Validation Directory
      */
-    /* public Validation(File dir) {
+     public Validation(File dir) {
        if( dir.exists() ){
            LOGGER.info("Default isValidALL and uniqueFID enabled");
            // XML not supported yet - lets use a couple Validations
@@ -140,19 +140,19 @@ public class Validation extends GlobalLayerSupertype {
                new IsValidGeometryFeatureValidation(
                    "isValidALL",
                    "Tests to see if a geometry is valid",
-                    Validation.ALL
+                   org.geotools.validation.Validation.ALL
                )
            );
            processor.addValidation(
                new UniqueFIDIntegrityValidation(
                    "uniqueFID",
                    "Checks if each feature has a unique ID",
-                   Validation.ALL,
+                   org.geotools.validation.Validation.ALL,
                    "FID"
                )
            );
        }
-       }*/
+       }
 
     /**
      * Default constructor which does nothing at this time.
@@ -325,7 +325,7 @@ class PlugIn extends GlobalLayerSupertype {
         PropertyDescriptor property;
 
         for (Iterator i = config.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Entry) i.next();
+            Map.Entry entry = (Map.Entry) i.next();
             property = propertyInfo((String) entry.getKey());
 
             if (property == null) {
