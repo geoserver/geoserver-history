@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.6 2004/01/14 22:54:27 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.7 2004/01/15 23:45:21 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -71,7 +71,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         String locationAtt = XSI_PREFIX + ":schemaLocation";
         String locationDef = WFS_URI + " "
-            + request.getGeoServer().getSchemaBaseUrl() + "wfs/1.0.0/"+ "WFS-capabilities.xsd";
+            + request.getBaseUrl() + "wfs/1.0.0/"+ "WFS-capabilities.xsd";
         attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
         startElement("WFS_Capabilities", attributes);
     }
@@ -99,11 +99,11 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         throws SAXException {
         WFS config = (WFS) serviceConfig;
 
-        cReturn();
+//        cReturn();
 
         startElement("Capability");
 
-        indent();
+//        indent();
         startElement("Request");
 
         handleCapability(config, "GetCapabilities");
@@ -114,7 +114,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleCapability(config, "GetFeatureWithLock");
 
         endElement("Request");
-        unIndent();
+//        unIndent();
         endElement("Capability");
 
         handleFeatureTypes(config);
@@ -124,16 +124,16 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
 
-        indent();
+//        indent();
         startElement(capabilityName);
-        indent();
+//        indent();
 
         if (capabilityName.equals("DescribeFeatureType")) {
             String schemaLanguage = "SchemaDescriptionLanguage";
             startElement(schemaLanguage);
             handleSingleElem("XMLSCHEMA", "");
             endElement(schemaLanguage);
-            cReturn();
+//            cReturn();
         }
 
         if (capabilityName.startsWith("GetFeature")) {
@@ -141,7 +141,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             startElement(resultFormat);
             handleSingleElem("GML2", "");
             endElement(resultFormat);
-            cReturn();
+//            cReturn();
         }
 
         startElement("DCPType");
@@ -156,7 +156,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         endElement("HTTP");
         endElement("DCPType");
 
-        cReturn();
+//        cReturn();
 
         attributes = new AttributesImpl();
         url = baseUrl + capabilityName;
@@ -167,9 +167,9 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         endElement("Post");
         endElement("HTTP");
         endElement("DCPType");
-        unIndent();
+//        unIndent();
         endElement(capabilityName);
-        unIndent();
+//        unIndent();
     }
 
     private void handleFeatureTypes(Service serviceConfig)
@@ -178,9 +178,9 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         startElement("FeatureTypeList");
 
-        indent();
+//        indent();
         startElement("Operations");
-        indent();
+//        indent();
         startElement("Query");
         endElement("Query");
         startElement("Insert");
@@ -191,7 +191,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         endElement("Delete");
         startElement("Lock");
         endElement("Lock");
-        unIndent();
+//        unIndent();
         endElement("Operations");
 
         Collection featureTypes = request.getGeoServer().getData().getFeatureTypeInfos().values();
@@ -203,11 +203,11 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             //can't handle ones that aren't enabled.
             //and they shouldn't be handled, as they won't function.
             if (ftype.isEnabled()) {
-                startElement("FeatureTypeConfig");
+                startElement("FeatureType");
                 handleFeatureType(ftype);
-                unIndent();
-                endElement("FeatureTypeConfig");
-                cReturn();
+ //               unIndent();
+                endElement("FeatureType");
+//                cReturn();
             }
         }
 
@@ -245,65 +245,65 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         //would only really matter if we're going to be producing capabilities
         //documents that aren't qualified, and I don't see any reason to
         //do that.
-        indent();
+//        indent();
         startElement(ogc + "Filter_Capabilities");
-        indent();
+//        indent();
         startElement(ogc + "Spatial_Capabilities");
-        indent();
+//        indent();
         startElement(ogc + "Spatial_Operators");
-        cReturn();
+//        cReturn();
         handleSingleElem(ogc + "Disjoint");
-        cReturn();
+//        cReturn();
         handleSingleElem(ogc + "Equals");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "DWithin");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Beyond");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Intersect");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Touches");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Crosses");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Within");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Contains");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Overlaps");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "BBOX");
-        unIndent();
+  //      unIndent();
         endElement(ogc + "Spatial_Operators");
-        unIndent();
+ //       unIndent();
         endElement(ogc + "Spatial_Capabilities");
-        cReturn();
+ //       cReturn();
         startElement(ogc + "Scalar_Capabilities");
-        indent();
+ //       indent();
         handleSingleElem(ogc + "Logical_Operators");
-        indent();
+ //       indent();
         startElement(ogc + "Comparison_Operators");
-        indent();
+ //       indent();
         handleSingleElem(ogc + "Simple_Comparisons");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Between");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "Like");
-        cReturn();
+ //       cReturn();
         handleSingleElem(ogc + "NullCheck");
-        unIndent();
+ //       unIndent();
         endElement(ogc + "Comparison_Operators");
-        cReturn();
+ //       cReturn();
         startElement(ogc + "Arithmetic_Operators");
-        indent();
+//        indent();
         handleSingleElem(ogc + "Simple_Arithmetic");
-        unIndent();
+ //       unIndent();
         endElement(ogc + "Arithmetic_Operators");
-        unIndent();
+ //       unIndent();
         endElement(ogc + "Scalar_Capabilities");
-        unIndent();
+ //       unIndent();
         endElement(ogc + "Filter_Capabilities");
-        unIndent();
+  //      unIndent();
     }
 
     protected String getBboxElementName() {

@@ -14,7 +14,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: XmlResponseHandler.java,v 1.3 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: XmlResponseHandler.java,v 1.4 2004/01/15 23:45:21 dmzwiers Exp $
  */
 public abstract class XmlResponseHandler implements ResponseHandler {
     /** blank attributes to be used when none are needed. */
@@ -146,20 +146,20 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void indent() throws SAXException {
+/*    protected void indent() throws SAXException {
         ++indentLevel;
         cReturn();
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void unIndent() throws SAXException {
+/*    protected void unIndent() throws SAXException {
         --indentLevel;
         cReturn();
-    }
+    }*/
 
     /**
      * Handles a tab call - does nothing.
@@ -168,22 +168,22 @@ public abstract class XmlResponseHandler implements ResponseHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void indent(int level) throws SAXException {
+/*    protected void indent(int level) throws SAXException {
         while (level > 0) {
             contentHandler.ignorableWhitespace(tab, 0, TAB_SIZE);
             --level;
         }
-    }
+    }*/
 
     /**
      * Handles a carraige return call - does nothing.
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void cReturn() throws SAXException {
+  /*  protected void cReturn() throws SAXException {
         contentHandler.characters(cr, 0, cr.length);
         indent(indentLevel);
-    }
+    }*/
 
     /**
      * DOCUMENT ME!
@@ -203,7 +203,8 @@ public abstract class XmlResponseHandler implements ResponseHandler {
             tab = new char[TAB_SIZE];
             java.util.Arrays.fill(tab, 0, TAB_SIZE, ' ');
         } else {
-            tab = new char[0];
+            tab = new char[1];
+            tab[0] = ' ';
         }
     }
 }

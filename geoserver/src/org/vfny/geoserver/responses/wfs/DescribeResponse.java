@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.7 2004/01/15 21:53:07 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.8 2004/01/15 23:45:21 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -184,7 +184,7 @@ public class DescribeResponse implements Response {
 
             //this is not always necessary, but it doesn't seem to hurt...
             tempResponse.append("\n\n<xs:import namespace="
-			+ GML_URL + "gml/2.1.2/feature.xsd\"/>\n\n");
+			+ GML_URL + " schemaLocation=\"gml/2.1.2/feature.xsd\"/>\n\n");
             tempResponse.append(generateSpecifiedTypes(requestedTypes,wfsRequest.getGeoServer()));
         } else {
             //the featureTypes do not have all the same prefixes.

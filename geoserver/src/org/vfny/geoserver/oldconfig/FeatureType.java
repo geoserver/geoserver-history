@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.3 $ $Date: 2004/01/12 21:01:30 $
+ * @version $Revision: 1.4 $ $Date: 2004/01/15 23:45:21 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
  *       castor generated FeatureTypeInfo, but it is now unclear if we _really_
@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
 class FeatureType
 {
   /** DOCUMENT ME! */
-  public static final String ROOT_TAG = "FeatureTypeConfig";
+  public static final String ROOT_TAG = "FeatureType";
 
   /** DOCUMENT ME! */
   public static final String OLD_ROOT_TAG = "featureType";

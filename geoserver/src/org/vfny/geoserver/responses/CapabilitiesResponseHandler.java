@@ -21,7 +21,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.6 2004/01/13 21:15:54 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.7 2004/01/15 23:45:21 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -44,7 +44,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      */
     public void handleDocument(Service config) throws SAXException {
         startDocument(config);
-        indent();
+//        indent();
         handleService(config);
         //endService(config);
         handleCapabilities(config);
@@ -60,16 +60,16 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     protected void handleService(Service config)
         throws SAXException {
         startElement("Service");
-		indent();
+//		indent();
 		handleSingleElem("Name", config.getName());
-		cReturn();
+//		cReturn();
 		handleSingleElem("Title", config.getTitle());
-		cReturn();
+//		cReturn();
 		handleSingleElem("Abstract", config.getAbstract());
-		cReturn();
+//		cReturn();
 		handleKeywords(config.getKeywords());
-		cReturn();
-		unIndent();
+//		cReturn();
+//		unIndent();
         handleOnlineResouce(config);
 
         String fees = config.getFees();
@@ -79,7 +79,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         }
 
         handleSingleElem("Fees", fees);
-        cReturn();
+//        cReturn();
 
         String accessConstraints = config.getAccessConstraints();
 
@@ -88,9 +88,6 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         }
 
         handleSingleElem("AccessConstraints", accessConstraints);
-        indent();
-
-        unIndent();
 
         endElement("Service");
     }
@@ -165,16 +162,16 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
                 + ftype.getName() + ": " + ex.getMessage(), ex);
         }
 
-		indent();
+//		indent();
 		handleSingleElem("Name", ftype.getName());
-		cReturn();
+//		cReturn();
 		handleSingleElem("Title", ftype.getTitle());
-		cReturn();
+//		cReturn();
 		handleSingleElem("Abstract", ftype.getAbstract());
-		cReturn();
+//		cReturn();
 		handleKeywords(ftype.getKeywords());
-		cReturn();
-		unIndent();
+//		cReturn();
+//		unIndent();
 
         //indent();
 
@@ -182,7 +179,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
          * @task REVISIT: should getSRS() return the full URL?
          */
         handleSingleElem("SRS", EPSG + ftype.getSRS());
-        cReturn();
+//        cReturn();
 
         String minx = String.valueOf(bbox.getMinX());
         String miny = String.valueOf(bbox.getMinY());

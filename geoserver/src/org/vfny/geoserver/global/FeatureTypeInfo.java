@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
+import org.geotools.data.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -24,7 +24,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureTypeMetaData;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
+import org.geotools.feature.*;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.7 2004/01/15 21:53:06 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.8 2004/01/15 23:45:21 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -76,6 +76,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
     
     /** will be lazily generated*/
     private String xmlSchemaFrag;
+    
+    /** will be lazily created*/
+    private FeatureType ft;
+    private FeatureSource fs;
     
 	/**
 	 * FeatureTypeInfo constructor.
@@ -248,14 +252,12 @@ e.printStackTrace();
             throw new IOException("featureType: " + getName(true)
                 + " does not have a properly configured " + "datastore");
         }
-
-        DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(ftc.getName());
-        FeatureType schema = dataStore.getSchema( ftc.getName() );
-        FeatureSource mappedSource =
-            GeoServerFeatureLocking.create(realSource, schema, ftc.getDefinitionQuery());
-
-        return mappedSource;
+        if(fs == null){
+        	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
+        	FeatureSource realSource = dataStore.getFeatureSource(ftc.getName());
+            fs = GeoServerFeatureLocking.create(realSource, getFeatureType(), ftc.getDefinitionQuery());
+        }
+        return fs;
     }
 
 	/**
@@ -688,9 +690,27 @@ System.out.println("getSchema"+ftc.getName());
      * @throws IOException
      */
     public FeatureType getFeatureType() throws IOException {
-    	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-    	FeatureType schema = dataStore.getSchema( ftc.getName() );
-        return schema;
+    	if(ft==null){
+    		DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
+    		ft = dataStore.getSchema( ftc.getName());
+    		List attribs = ftc.getSchema();
+    		if( attribs.size() != 0 ){
+    			Object[] list = new Object[ attribs.size() ];
+    			
+    			for( int i=0;i<list.length;i++ ){
+    				AttributeTypeInfoDTO at = (AttributeTypeInfoDTO) attribs.get(i);
+    				list[i]=at.getName();               
+    			}
+    			AttributeType[] at = new AttributeType[ftc.getSchema().size()];
+    			for(int i=0;i<at.length;i++)
+    				at[i] = AttributeTypeMetaData(((AttributeTypeInfoDTO)ftc.getSchema().get(i)).getType()).getAttributeType();
+    			try{
+    			ft = FeatureTypeFactory.newFeatureType(at,ftc.getSchemaBase(),data.getDataStoreInfo( ftc.getDataStoreId() ).getNameSpace().getPrefix());
+    			}catch(SchemaException e){}//use default
+    			
+    		}
+    	}
+        return ft;
     }
 
     /**
@@ -729,8 +749,7 @@ System.out.println("getSchema"+ftc.getName());
         }
         List list = new ArrayList(  );
         try{
-        DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
-        FeatureType schema = dataStore.getSchema( ftc.getName() );
+        FeatureType schema = getFeatureType();
         AttributeType[] types = schema.getAttributeTypes();
          list = new ArrayList( types.length );
         for( int i=0; i<types.length; i++){
