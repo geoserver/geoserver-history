@@ -26,7 +26,7 @@ import org.vfny.geoserver.responses.WfsException;
  * XML docs.
  *
  *@author Chris Holmes, TOPP
- *@version $Id: FeatureWithLock.java,v 1.1 2003/07/03 21:16:35 cholmesny Exp $
+ *@version $Id: FeatureWithLock.java,v 1.2 2003/07/15 19:19:32 cholmesny Exp $
  */
 public class FeatureWithLock
     extends HttpServlet {
@@ -64,11 +64,12 @@ public class FeatureWithLock
             //if(response != null) wfs.printStackTrace(response.getWriter());
             wfs.printStackTrace();
         }
-        catch (Exception e) {
-            tempResponse = e.getMessage();
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
             LOGGER.info("Had an undefined error: " + e.getMessage());
-            if(response != null) e.printStackTrace(response.getWriter());
-            e.printStackTrace();
+	    e.printStackTrace();
         }
         
 	
@@ -104,7 +105,13 @@ public class FeatureWithLock
         catch (WfsException wfs) {
             tempResponse = wfs.getXmlResponse();
         }
-        
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
+            LOGGER.info("Had an undefined error: " + e.getMessage());
+	    e.printStackTrace();
+        }
         // set content type and return response, whatever it is 
         response.setContentType(MIME_TYPE);
         response.getWriter().write( tempResponse );        

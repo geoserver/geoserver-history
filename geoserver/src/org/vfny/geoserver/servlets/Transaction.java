@@ -64,32 +64,33 @@ public class Transaction
         
         
         // catches all errors; client should never see a stack trace 
-	    } catch (WfsTransactionException wte) {
-		LOGGER.info("Caught a WfsTransactionException: " + 
-			    wte.getMessage());
-		if (wfsRequest != null) {
-		    wte.setHandle(wfsRequest.getHandle());
-		}
-		if (LOGGER.isLoggable(Level.FINER)){
-		    wte.printStackTrace();
-		}
-		tempResponse =  wte.getXmlResponse();
+	} catch (WfsTransactionException wte) {
+	    LOGGER.info("Caught a WfsTransactionException: " + 
+			wte.getMessage());
+	    if (wfsRequest != null) {
+		wte.setHandle(wfsRequest.getHandle());
 	    }
+	    if (LOGGER.isLoggable(Level.FINER)){
+		wte.printStackTrace();
+	    }
+	    tempResponse =  wte.getXmlResponse();
+	}
         
         // catches all errors; client should never see a stack trace 
-	    catch (WfsException wfs) {
-		tempResponse = wfs.getXmlResponse();
-		LOGGER.info("Threw a wfs exception: " + wfs.getMessage());
-		if (LOGGER.isLoggable(Level.FINER)){
-		    wfs.printStackTrace();
-		}
+	catch (WfsException wfs) {
+	    tempResponse = wfs.getXmlResponse();
+	    LOGGER.info("Threw a wfs exception: " + wfs.getMessage());
+	    if (LOGGER.isLoggable(Level.FINER)){
+		wfs.printStackTrace();
 	    }
-	    catch (Exception e) {
-		tempResponse = e.getMessage();
-		LOGGER.info("Had an undefined error: " + e.getMessage());
-		e.printStackTrace(response.getWriter());
-		e.printStackTrace();
-	    }
+	}
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
+            LOGGER.info("Had an undefined error: " + e.getMessage());
+	    e.printStackTrace();
+        }
         
         response.setContentType(MIME_TYPE);
         response.getWriter().write( tempResponse );
@@ -124,6 +125,13 @@ public class Transaction
         // catches all errors; client should never see a stack trace 
         catch (WfsException wfs) {
             tempResponse = wfs.getXmlResponse();
+        }
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
+            LOGGER.info("Had an undefined error: " + e.getMessage());
+	    e.printStackTrace();
         }
         
         // set content type and return response, whatever it is 

@@ -68,12 +68,13 @@ public class Lock
 		//}
 		tempResponse =  we.getXmlResponse();
 	    }
-	 catch (Exception e) {
-            tempResponse = e.getMessage();
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
             LOGGER.info("Had an undefined error: " + e.getMessage());
-            e.printStackTrace(response.getWriter());
-            e.printStackTrace();
-	 }
+	    e.printStackTrace();
+        }
         
         response.setContentType(MIME_TYPE);
         response.getWriter().write( tempResponse );
@@ -108,6 +109,13 @@ public class Lock
         // catches all errors; client should never see a stack trace 
         catch (WfsException wfs) {
             tempResponse = wfs.getXmlResponse();
+        }
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
+            LOGGER.info("Had an undefined error: " + e.getMessage());
+	    e.printStackTrace();
         }
         
         // set content type and return response, whatever it is 
