@@ -33,7 +33,7 @@ import java.util.logging.*;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: KvpRequestReader.java,v 1.1.2.1 2003/11/04 22:44:41 cholmesny Exp $
+ * @version $Id: KvpRequestReader.java,v 1.1.2.2 2003/11/11 02:47:36 cholmesny Exp $
  */
 abstract public class KvpRequestReader {
     /** Class logger */
@@ -56,7 +56,7 @@ abstract public class KvpRequestReader {
     private static FilterFactory factory = FilterFactory.createFilterFactory();
 
     /** KVP pair listing; stores all data from the KVP request */
-    private Map kvpPairs = new HashMap();
+    protected Map kvpPairs = new HashMap();
 
     /**
      * Constructor with kvp request parameters.
@@ -87,7 +87,7 @@ abstract public class KvpRequestReader {
      * @return DOCUMENT ME!
      */
     protected boolean keyExists(String key) {
-        return kvpPairs.containsValue(key);
+        return kvpPairs.containsKey(key);
     }
 
     /**
@@ -369,7 +369,7 @@ abstract public class KvpRequestReader {
     public static Map parseKvpSet(String qString) {
         // uses the request cleaner to remove HTTP junk
         String cleanRequest = clean(qString);
-        LOGGER.finer("clean request is " + cleanRequest);
+        LOGGER.fine("clean request is " + cleanRequest);
 
         Map kvpPairs = new HashMap();
 
@@ -415,6 +415,8 @@ abstract public class KvpRequestReader {
                 }
             }
         }
+
+        LOGGER.fine("returning parsed " + kvpPairs);
 
         return kvpPairs;
     }
