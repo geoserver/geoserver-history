@@ -36,7 +36,7 @@ import com.vividsolutions.jts.geom.Point;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.4 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: SVGEncoder.java,v 1.5 2004/01/15 21:53:06 dmzwiers Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -369,7 +369,7 @@ public class SVGEncoder {
         int nLayers = layers.length;
 
         for (int i = 0; i < nLayers; i++) {
-            Class geometryClass = layers[i].getSchema().getDefaultGeometry()
+            Class geometryClass = layers[i].getFeatureType().getDefaultGeometry()
                                            .getType();
 
             if ((geometryClass == MultiPoint.class)
@@ -789,7 +789,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(

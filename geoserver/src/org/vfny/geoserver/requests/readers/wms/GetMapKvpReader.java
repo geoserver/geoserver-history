@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.3 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.4 2004/01/15 21:53:06 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -229,7 +229,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             List atts = readFlat(rawAtts, ",");
             byFeatureTypes.set(i, atts);
 
-            FeatureType schema = layers[i].getSchema();
+            //FeatureType schema = layers[i].getSchema();
+            try{
+            FeatureType schema = layers[i].getFeatureType();
 
             //verify that propper attributes has been requested
             for (Iterator attIt = atts.iterator(); attIt.hasNext();) {
@@ -252,6 +254,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
             LOGGER.finest("attributes requested for " + schema.getTypeName()
                 + " checked: " + rawAtts);
+            }catch(java.io.IOException e){throw new WmsException(e);}
         }
 
         return byFeatureTypes;

@@ -31,6 +31,7 @@ import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.xml.GMLUtils;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -47,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.6 2004/01/15 19:36:41 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.7 2004/01/15 21:53:06 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -121,14 +122,14 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
      * </p>
      * @return FeatureType
      */
-    public FeatureType getSchema() {
+    /*public FeatureType getSchema() {
     	try{
         	return getSchema(ftc.getSchema());
     	}catch(Exception e){
 e.printStackTrace();
     		return null;
     	}
-    }
+    }*/
 
     /**
      * getDataStore purpose.
@@ -248,9 +249,11 @@ e.printStackTrace();
                 + " does not have a properly configured " + "datastore");
         }
 
-        FeatureSource realSource = getRealFeatureSource();
+        DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
+        FeatureSource realSource = dataStore.getFeatureSource(ftc.getName());
+        FeatureType schema = dataStore.getSchema( ftc.getName() );
         FeatureSource mappedSource =
-            GeoServerFeatureLocking.create(realSource, getSchema(), ftc.getDefinitionQuery());
+            GeoServerFeatureLocking.create(realSource, schema, ftc.getDefinitionQuery());
 
         return mappedSource;
     }
@@ -263,14 +266,14 @@ e.printStackTrace();
 	 * @return FeatureSource the feature source represented by this info class
 	 * @see getFeatureSource()
 	 */
-    private FeatureSource getRealFeatureSource()
+    /*private FeatureSource getRealFeatureSource()
         throws NoSuchElementException, IllegalStateException, IOException {
     	DataStoreInfo dsi = getDataStoreInfo();
     	//dsi.getNameSpace().getPrefix()+":"+
         FeatureSource realSource = dsi.getDataStore().getFeatureSource(ftc.getName());
 
         return realSource;
-    }
+    }*/
 
     /**
      * getBoundingBox purpose.
@@ -281,8 +284,9 @@ e.printStackTrace();
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
-		FeatureSource source = getRealFeatureSource();
-		return source.getBounds();
+    	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
+    	FeatureSource realSource = dataStore.getFeatureSource(ftc.getName());
+		return realSource.getBounds();
     }
 
     /**
@@ -390,7 +394,7 @@ e.printStackTrace();
 	 * @task TODO: if the default geometry attribute was not declared as
 	 *       exposed should we expose it anyway? I think yes.
 	 */
-	private FeatureType getSchema(List attrElems)
+	/*private FeatureType getSchema(List attrElems)
 		throws ConfigurationException, IOException {
 		FeatureType schema = getRealFeatureSource().getSchema();
 System.out.println("FeatureTypeInfo:getSchema"+(schema==null));
@@ -426,7 +430,7 @@ System.out.println("getSchema"+ftc.getName());
 		}
 
 		return filteredSchema;
-	}
+	}*/
     
 	/** Get XMLSchema for this FeatureType.
 	 * <p>
@@ -442,7 +446,9 @@ System.out.println("getSchema"+ftc.getName());
 		if(xmlSchemaFrag == null){
 			StringWriter sw = new StringWriter();
 			try{
-				XMLConfigWriter.storeFeatureSchema(ftc,sw);
+				FeatureTypeInfoDTO dto = getGeneratedDTO();
+//System.out.println("getXMLSchema - generated base = "+dto.getSchemaBase());
+				XMLConfigWriter.storeFeatureSchema(dto,sw);
 			}catch(ConfigurationException e){}
 			xmlSchemaFrag = sw.toString();
 		}
@@ -467,6 +473,8 @@ System.out.println("getSchema"+ftc.getName());
 			// generate stuff
 			DataStore dataStore = data.getDataStoreInfo( dto.getDataStoreId() ).getDataStore();
 			FeatureType schema = dataStore.getSchema( dto.getName() );
+			dto.setSchemaBase( GMLUtils.ABSTRACTFEATURETYPE.toString() );
+			dto.setSchemaName( dto.getDataStoreId().toUpperCase()+"_"+schema.getTypeName().toUpperCase()+"_TYPE" );
 			dto.setSchema( DataTransferObjectFactory.generateAttributes( schema ) );
 		}
 		return dto;
@@ -680,7 +688,9 @@ System.out.println("getSchema"+ftc.getName());
      * @throws IOException
      */
     public FeatureType getFeatureType() throws IOException {
-        return getSchema();
+    	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
+    	FeatureType schema = dataStore.getSchema( ftc.getName() );
+        return schema;
     }
 
     /**
@@ -717,11 +727,16 @@ System.out.println("getSchema"+ftc.getName());
             }
             return list;
         }
-        AttributeType[] types = getSchema().getAttributeTypes();
-        List list = new ArrayList( types.length );
+        List list = new ArrayList(  );
+        try{
+        DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
+        FeatureType schema = dataStore.getSchema( ftc.getName() );
+        AttributeType[] types = schema.getAttributeTypes();
+         list = new ArrayList( types.length );
         for( int i=0; i<types.length; i++){
             list.add( types[i].getName() );
         }
+        }catch(IOException e){}
         return list;        
     }
     
@@ -734,8 +749,9 @@ System.out.println("getSchema"+ftc.getName());
      * 
      * @param attributeName
      * @return
+     * @throws IOException from the DataStore.
      */
-    public synchronized AttributeTypeMetaData AttributeTypeMetaData(String attributeName) {
+    public synchronized AttributeTypeMetaData AttributeTypeMetaData(String attributeName){
         if( attributeInfo == null ){
             attributeInfo = new HashMap();
         }
@@ -748,13 +764,18 @@ System.out.println("getSchema"+ftc.getName());
                 AttributeTypeInfoDTO dto = (AttributeTypeInfoDTO) i.next();
                 info = new AttributeTypeInfo( dto ); 
             }
-            FeatureType schema = getSchema();
-            info.sync( schema.getAttributeType( attributeName ));                        
+            DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
+            try{
+            FeatureType schema = dataStore.getSchema( ftc.getName() );
+            info.sync( schema.getAttributeType( attributeName ));
+            }catch(IOException e){}
         }
         else {
-            // will need to generate from Schema
-            FeatureType schema = getSchema();
-            info = new AttributeTypeInfo( schema.getAttributeType( attributeName ));
+            // will need to generate from Schema 
+        	DataStore dataStore = data.getDataStoreInfo( ftc.getDataStoreId() ).getDataStore();
+        	try{
+        	FeatureType schema = dataStore.getSchema( ftc.getName() );
+            info = new AttributeTypeInfo( schema.getAttributeType( attributeName ));       }catch(IOException e){}
         }
         attributeInfo.put( attributeName, info );
         
