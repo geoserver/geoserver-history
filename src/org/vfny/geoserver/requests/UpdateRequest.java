@@ -127,8 +127,8 @@ public class UpdateRequest extends SubTransactionRequest {
 		curName = ((Property)properties.get(i)).getName();
 		curType = schema.getAttributeType(curName);
 		if (curType == null) {
-		    String message = "Could not find property named: " + curName
-			+ " in feature type " + schema.getTypeName();
+		    String message = "Could not find property named: " 
+			+ curName + " in schema: " + schema.getTypeName();
 		    throw new SchemaException(message);
 		}
 		retArr[i] = curType;
