@@ -16,13 +16,14 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.1.2.2 2003/11/07 23:06:28 cholmesny Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.1.2.3 2003/11/14 03:19:21 cholmesny Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";
 
     /** DOCUMENT ME! */
     protected static final ServerConfig server = ServerConfig.getInstance();
+    protected static final CatalogConfig catalog = server.getCatalog();
 
     /**
      * Creates a new CapabilitiesResponseHandler object.
@@ -59,8 +60,26 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         throws SAXException {
         startElement("Service");
         handleConfig((BasicConfig) config);
-        indent();
         handleOnlineResouce(config);
+
+        String fees = config.getFees();
+
+        if ((fees == null) || "".equals(fees)) {
+            fees = "NONE";
+        }
+
+        handleSingleElem("Fees", fees);
+        cReturn();
+
+        String accessConstraints = config.getAccessConstraints();
+
+        if ((accessConstraints == null) || "".equals(accessConstraints)) {
+            accessConstraints = "NONE";
+        }
+
+        handleSingleElem("AccessConstraints", accessConstraints);
+        indent();
+
         unIndent();
     }
 
