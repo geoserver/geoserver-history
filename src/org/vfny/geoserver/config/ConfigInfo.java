@@ -11,10 +11,10 @@ import java.util.logging.Logger;
 import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.Servlet;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.vfny.geoserver.config.configuration.GlobalConfiguration;
+//import org.exolab.castor.xml.Unmarshaller;
+//import org.exolab.castor.xml.MarshalException;
+//import org.exolab.castor.xml.ValidationException;
+//import org.vfny.geoserver.config.configuration.GlobalConfiguration;
 
 /**
  * Reads all necessary configuration data and abstracts it away from the 
@@ -168,6 +168,9 @@ public class ConfigInfo {
     /** Returns user-specified access constraints for this service */
     public String getAccessConstraints(){return global.getAccessConstraints();}
 
+    public boolean formatOutput(){
+	return global.isVerbose();
+    }
     /** Returns fixed version number for this service */
     public String getFreeFsVersion() { return "0.9b"; }        
     /** Returns the current time as a string. */
