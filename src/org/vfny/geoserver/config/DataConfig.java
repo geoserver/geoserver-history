@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.8 2004/01/19 18:31:30 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.9 2004/01/20 00:23:07 emperorkefka Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -43,6 +43,8 @@ import org.vfny.geoserver.global.dto.StyleDTO;
 public class DataConfig {
     public static final String CONFIG_KEY = "Config.Data";
     public static final String SEPARATOR  = ":::";
+    public static final String SELECTED_FEATURE_TYPE = "selectedFeatureType";
+    public static final String SELECTED_ATTRIBUTE_TYPE = "selectedAttributeType";
 
     /**
      * A set of datastores and their names.

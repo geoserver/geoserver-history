@@ -6,8 +6,11 @@
 
 <table border=0 width=100% height=100%>
 	<tr>
-		<td valign="top" align="left" colspan=2>
+		<td valign="top" align="left">
 			<tiles:insert attribute="ftSelect"/>
+		</td>
+		<td valign="top" align="left">
+			<tiles:insert attribute="ftNew"/>
 		</td>
 	</tr>
 <logic:present name="selectedFeatureType" scope="session">

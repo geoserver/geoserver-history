@@ -36,11 +36,10 @@ public class DataAttributeTypesEditorForm extends ActionForm {
 		super.reset(arg0, request);
 		
 		String selectedAttributeType = (String) request.getSession().getAttribute("selectedAttributeType");
-		String selectedFeatureType = (String)request.getSession().getAttribute("selectedFeatureType");
-		
+				
 		ServletContext context = getServlet().getServletContext();
 		DataConfig dataConfig = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
-		FeatureTypeConfig ftConfig = dataConfig.getFeatureTypeConfig(selectedFeatureType);
+		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
 		AttributeTypeInfoConfig config = ftConfig.getAttributeFromSchema(selectedAttributeType);
 		
 		nillible = config.isNillable();

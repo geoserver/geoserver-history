@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 
 import org.vfny.geoserver.form.data.DataFeatureTypesSelectForm;
 
@@ -35,9 +37,23 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
 		DataFeatureTypesSelectForm form = (DataFeatureTypesSelectForm) incomingForm;
 
 		String selectedFeatureType = form.getSelectedFeatureTypeName();
+		String buttonAction = form.getButtonAction();
+
+		DataConfig dataConfig = (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+		FeatureTypeConfig ftConfig = dataConfig.getFeatureTypeConfig(selectedFeatureType);
 		
-		request.getSession().setAttribute("selectedFeatureType", form.getSelectedFeatureTypeName());
-		System.out.println("request.getsession(.setAttrib(selectedFeatureType) now = "+form.getSelectedFeatureTypeName());
-		return mapping.findForward("dataConfigFeatureTypes");
+		if ("edit".equals(buttonAction)) {
+			request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE,ftConfig);
+            System.out.println("SKAG    "+request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE).getClass());
+			return mapping.findForward("dataConfigFeatureTypes");
+			
+		} else if ("delete".equals(buttonAction)){
+			dataConfig.removeFeatureType(selectedFeatureType);
+            request.getSession().removeAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+			return mapping.findForward("dataConfigFeatureTypes");
+		}
+		
+		
+		throw new ServletException("Action must equal either 'edit' or 'delete'");
 	}
 }
