@@ -4,16 +4,14 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.CapabilitiesKvpReader;
 import org.vfny.geoserver.requests.readers.wfs.CapabilitiesXmlReader;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -21,7 +19,7 @@ import org.vfny.geoserver.requests.readers.wfs.CapabilitiesXmlReader;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesSuite.java,v 1.5 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: CapabilitiesSuite.java,v 1.6 2004/01/21 18:42:26 jive Exp $
  */
 public class CapabilitiesSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.

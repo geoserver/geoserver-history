@@ -1,25 +1,31 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.global.dto;
 
+import junit.framework.TestCase;
 import java.net.URL;
 
-import junit.framework.TestCase;
 
 /**
  * ServiceDTOTest JUnit Test.
- * 
+ *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ServiceDTOTest.java,v 1.2 2004/01/12 21:01:30 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: ServiceDTOTest.java,v 1.3 2004/01/21 18:42:26 jive Exp $
  */
 public class ServiceDTOTest extends TestCase {
     ServiceDTO dto;
+
     /**
      * Constructor for ServiceDTOTest.
-     * @param arg0
+     *
+     * @param name
      */
     public ServiceDTOTest(String name) {
         super(name);
@@ -30,7 +36,7 @@ public class ServiceDTOTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         dto = new ServiceDTO();
         dto.setAbstract("abstract");
         dto.setAccessConstraints("NONE");
@@ -40,7 +46,7 @@ public class ServiceDTOTest extends TestCase {
         dto.setMaintainer("junit");
         dto.setName("TestService");
         dto.setOnlineResource(new URL("http://localhost/"));
-        dto.setTitle("Title");        
+        dto.setTitle("Title");
     }
 
     /*
@@ -52,15 +58,14 @@ public class ServiceDTOTest extends TestCase {
     }
 
     public void testHashCode() {
-        assertEquals( 0, new ServiceDTO().hashCode() );
-        assertTrue( 0 != dto.hashCode() );
+        assertEquals(0, new ServiceDTO().hashCode());
+        assertTrue(0 != dto.hashCode());
     }
 
     /*
      * Test for void ServiceDTO()
      */
     public void testServiceDTO() {
-        
     }
 
     /*
@@ -134,5 +139,4 @@ public class ServiceDTOTest extends TestCase {
 
     public void testSetMaintainer() {
     }
-
 }

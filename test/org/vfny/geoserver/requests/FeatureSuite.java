@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.CompareFilter;
@@ -19,11 +20,8 @@ import org.vfny.geoserver.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.requests.readers.wfs.GetFeatureKvpReader;
 import org.vfny.geoserver.requests.readers.wfs.GetFeatureXmlReader;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -31,7 +29,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureSuite.java,v 1.8 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: FeatureSuite.java,v 1.9 2004/01/21 18:42:26 jive Exp $
  */
 public class FeatureSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.

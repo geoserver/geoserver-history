@@ -4,26 +4,23 @@
  */
 package org.vfny.geoserver.zserver;
 
-import java.util.Properties;
-import java.util.logging.Logger;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.apache.lucene.search.Query;
-
 import com.k_int.util.RPNQueryRep.AttrPlusTermNode;
 import com.k_int.util.RPNQueryRep.ComplexNode;
 import com.k_int.util.RPNQueryRep.QueryNode;
 import com.k_int.util.RPNQueryRep.RootNode;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.lucene.search.Query;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 
 /**
  * Tests the RPNConverter helper methods.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RPNConverterSuite.java,v 1.5 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: RPNConverterSuite.java,v 1.6 2004/01/21 18:42:26 jive Exp $
  */
 public class RPNConverterSuite extends TestCase {
     // Initializes the logger. Uncomment to see log messages.

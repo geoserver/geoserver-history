@@ -4,27 +4,26 @@
  */
 package org.vfny.geoserver.zserver;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.lucene.document.DateField;
+import org.apache.lucene.document.Document;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.apache.lucene.document.DateField;
-import org.apache.lucene.document.Document;
 
 
 /**
  * Tests the XMLDocument converter.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: XMLDocumentSuite.java,v 1.4 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: XMLDocumentSuite.java,v 1.5 2004/01/21 18:42:26 jive Exp $
  */
 public class XMLDocumentSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/
+
     //static {
     //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
     //}

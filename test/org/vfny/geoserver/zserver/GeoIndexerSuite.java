@@ -4,21 +4,20 @@
  */
 package org.vfny.geoserver.zserver;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import java.io.File;
 import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Logger;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 
 /**
  * Tests the GeoIndexer helper methods.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: GeoIndexerSuite.java,v 1.5 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: GeoIndexerSuite.java,v 1.6 2004/01/21 18:42:26 jive Exp $
  */
 public class GeoIndexerSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/

@@ -6,7 +6,6 @@ package org.vfny.geoserver.requests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.CompareFilter;
@@ -20,7 +19,7 @@ import org.vfny.geoserver.requests.wfs.UpdateRequest;
  * Tests the Update request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: UpdateSuite.java,v 1.5 2004/01/12 21:01:28 dmzwiers Exp $
+ * @version $Id: UpdateSuite.java,v 1.6 2004/01/21 18:42:26 jive Exp $
  *
  * @task TODO: Bring back tests 4 and 6, they are broken due to reading of the
  *       same literals in different ways - string/double/int.
