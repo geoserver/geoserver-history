@@ -33,8 +33,8 @@ import java.util.Set;
  * </code>
  * </p>
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceTranslator.java,v 1.4 2004/03/08 21:49:20 dmzwiers Exp $
+ * @author $Author: cholmesny $ (last modification)
+ * @version $Id: NameSpaceTranslator.java,v 1.5 2004/03/14 05:26:55 cholmesny Exp $
  */
 public abstract class NameSpaceTranslator{
 	/** the prefix for this translator instance*/
@@ -194,7 +194,7 @@ public abstract class NameSpaceTranslator{
 		Iterator i = elems.iterator();
 		while(i.hasNext()){
 			NameSpaceElement nse = (NameSpaceElement)i.next();
-			if(nse!=null && type.equals(nse.getClass()))
+			if(nse!=null && type.equals(nse.getJavaClass()))
 					r.add(nse);
 		}
 		return r;
