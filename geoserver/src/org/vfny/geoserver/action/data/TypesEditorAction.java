@@ -180,8 +180,8 @@ public class TypesEditorAction extends ConfigAction {
 	 */
 	private Envelope getBoundingBox(TypesEditorForm typeForm) {
 		return new Envelope(Double.parseDouble(typeForm.getMinX()), 
-                            Double.parseDouble(typeForm.getMinY()),
                             Double.parseDouble(typeForm.getMaxX()),
+                            Double.parseDouble(typeForm.getMinY()),
                             Double.parseDouble(typeForm.getMaxY()));
 	}
 
