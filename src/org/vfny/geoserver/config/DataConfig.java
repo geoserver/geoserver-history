@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +14,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Arrays;
 
+import org.geotools.data.DataStore;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -32,7 +35,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.3 2004/01/14 18:29:51 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.4 2004/01/15 00:37:11 emperorkefka Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -40,6 +43,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  */
 public class DataConfig {
     public static final String CONFIG_KEY = "Config.Data";
+    public static final String SEPARATOR  = "::";
 
     /**
      * A set of datastores and their names.
@@ -652,7 +656,36 @@ public class DataConfig {
         return (StyleConfig) styles.remove(key);
     }
     
-    public SortedSet getFeatureTypeKeySet(){
-    	return Collections.unmodifiableSortedSet(new TreeSet(featuresTypes.keySet()));
+    /**
+     * 
+     * @return a set of all "DataStoreId.TypeName"
+     */
+    public SortedSet getFeatureTypeIdentifiers(){
+    	
+    	TreeSet set = new TreeSet();
+    	
+    	for (Iterator iter = dataStores.values().iterator(); iter.hasNext();) {
+			DataStoreConfig dataStoreConfig = (DataStoreConfig) iter.next();
+			
+			try {
+				DataStore dataStore = dataStoreConfig.findDataStore();
+				
+				String[] typeNames = dataStore.getTypeNames();
+				
+				for (int i = 0; i < typeNames.length; i++) {
+					typeNames[i] = dataStoreConfig.getId()+SEPARATOR+typeNames[i];
+				}
+				
+				List typeNamesList = Arrays.asList(typeNames);
+				
+				set.addAll(typeNamesList);
+				
+			} catch (Throwable ignore) {
+				continue;
+			}
+			
+		}
+    	
+    	return Collections.unmodifiableSortedSet(set);
     }
 }
