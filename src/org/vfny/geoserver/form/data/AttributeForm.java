@@ -147,8 +147,11 @@ public class AttributeForm {
     	List elements = DataTransferObjectFactory.getElements(name, attributeType.getType());
         List list = new ArrayList( elements.size() );
         for( Iterator i=elements.iterator(); i.hasNext(); ){
-            NameSpaceElement element = (NameSpaceElement) i.next();;
-            list.add( element.getTypeRefName() );      
+            NameSpaceElement element = (NameSpaceElement) i.next();
+
+            if (!element.isAbstract()) {
+            	list.add( element.getTypeRefName() );
+            }
         }
         return list;
     }
