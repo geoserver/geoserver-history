@@ -543,8 +543,7 @@
       <lib dir="${dir.lib}">
         <exclude name="**/junit.jar" />
         <exclude name="**/servlet.jar" />
-        <!--exclude name="**/xercesImpl.jar" /-->
-        <!--exclude name="**/xml-apis.jar" /-->
+        <exclude name="**/gt2-oracle-spatial.jar"/>
         <exclude name="**/xalan.jar" />
         <exclude name="*catalina*/**/*" />
       </lib>
@@ -637,7 +636,7 @@
     </style>
     
     <copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
-    <copy todir="${dir.doc}/developer" file="${dir.doc}/developer/**/*.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/developer" file="${dir.doc}/../developer/**/*.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
@@ -655,7 +654,7 @@
         <fileset dir="${dir.doc}/../docbook-xsl/images"/>
     </copy>-->
     <copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
-    <copy todir="${dir.doc}/user" file="${dir.doc}/user/**/*.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/**/*.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
