@@ -23,6 +23,7 @@ class TestGetThread extends Thread{
 		return result;
 	}
 	
+	private static final boolean concurrent = false;
 	public void run(){
 		try{
 			HttpURLConnection hc = null;
@@ -34,6 +35,7 @@ class TestGetThread extends Thread{
 			hc.connect();
 			t2 = new Date();
     		BufferedReader br = new BufferedReader(new InputStreamReader(hc.getInputStream()));
+    		if(concurrent)yield();
     		while(br.ready())
     			br.readLine();
 			result = hc.getResponseCode();
