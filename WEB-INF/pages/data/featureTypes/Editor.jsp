@@ -50,7 +50,7 @@
               </span>
             </td>
             <td>
-              <html:text property="latLonBoundingBoxMinX" size="15"/>
+              <html:text property="minX" size="15"/>
             </td>
             <td style="white-space: nowrap;">
               <span class="help" title="<bean:message key="help.type.miny"/>">
@@ -58,7 +58,7 @@
               </span>
             </td>
             <td>
-              <html:text property="latLonBoundingBoxMinY" size="15"/>
+              <html:text property="minY" size="15"/>
             </td>
           </tr>
           <tr>
@@ -68,7 +68,7 @@
               </span>
             </td>
             <td>
-              <html:text property="latLonBoundingBoxMaxX" size="15"/>
+              <html:text property="maxX" size="15"/>
             </td>
             <td style="white-space: nowrap;">
               <span class="help" title="<bean:message key="help.type.maxy"/>">
@@ -76,7 +76,7 @@
               </span>
             </td>
             <td>
-              <html:text property="latLonBoundingBoxMaxX" size="15"/>
+              <html:text property="maxX" size="15"/>
             </td>
           </tr>
         </table>
@@ -134,7 +134,7 @@
       </td>
 	  <td class="datum">
 
-		<html:submit>
+		<html:submit property="action">
 			<bean:message key="label.submit"/>
 		</html:submit>
 		

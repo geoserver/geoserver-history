@@ -6,7 +6,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 /**
  * Present Attribute information to user input.
  */
-class AttributeDisplay {
+public class AttributeDisplay {
     
     private String name;    
     private boolean nillible;
@@ -62,4 +62,10 @@ class AttributeDisplay {
 	public String getSelectedType() {
 		return selectedType;
 	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return name+":"+selectedType;
+    }
 }

@@ -1,11 +1,12 @@
 package org.vfny.geoserver.form.data;
 
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 
 /**
  * Present Attribute information for user input.
  */
-class AttributeForm {
+public class AttributeForm {
     
     private String name;    
     private boolean nillible;
@@ -17,10 +18,31 @@ class AttributeForm {
     public AttributeForm( AttributeTypeInfoConfig config ){
         name = config.getName();
         nillible = config.isNillable();
+        
         minOccurs = String.valueOf( config.getMinOccurs() );
         maxOccurs = String.valueOf( config.getMaxOccurs() );
         selectedType = config.getType();
         fragment = config.getFragment();
+    }
+    public AttributeTypeInfoDTO toDTO(){
+        AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
+        dto.setName( name );
+        dto.setNillable( nillible );
+        dto.setMinOccurs( Integer.parseInt( minOccurs ) );
+        dto.setMaxOccurs( Integer.parseInt( maxOccurs ) );
+        
+        if( AttributeTypeInfoConfig.TYPE_FRAGMENT.equals(selectedType) ){
+            dto.setComplex( true );
+            dto.setType( fragment );
+        }
+        else {
+            dto.setComplex( false );
+            dto.setType( selectedType );                        
+        }        
+        return dto;        
+    }
+    public AttributeTypeInfoConfig toConfig(){
+        return new AttributeTypeInfoConfig( toDTO() );
     }
     /**
      * @return Returns the fragment.
