@@ -73,6 +73,14 @@
     <servlet-class>org.vfny.geoserver.servlets.wfs.Capabilities</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>GetFeatureInfo</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wms.GetFeatureInfo</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DescribeLayer</servlet-name>
+    <servlet-class>org.vfny.geoserver.servlets.wms.DescribeLayer</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>WMSGetCapabilities</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.wms.Capabilities</servlet-class>
   </servlet>
@@ -132,6 +140,14 @@
   <servlet-mapping>
     <servlet-name>GetMap</servlet-name>
     <url-pattern>/wms/GetMap</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DescribeLayer</servlet-name>
+    <url-pattern>/wms/DescribeLayer</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>GetFeatureInfo</servlet-name>
+    <url-pattern>/wms/GetFeatureInfo</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
    <servlet-name>TestWfsPost</servlet-name>
