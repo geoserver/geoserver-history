@@ -629,11 +629,11 @@ The document tree is shown below.</programlisting></para>
     and write the XML request just as the WFS specification does it.</para>
 
     <para>The web administration tool also now includes a 'Demo' section,
-    which has a number of sample requests. To use one of the sample request
+    which has a number of sample requests. To issue one of the sample request
     use the pull down request box, select one and hit the 'Change' button.
     Unfortunately we haven't yet figured out javascript within jsps and
     struts, or we would have it change automatically. After hitting change
-    then his 'Submit', and GeoServer will return the request. You may modify
+    then hit 'Submit', and GeoServer will return the request. You may modify
     the requests to work with your server. And you may even put your own
     requests in the geoserver/data/demo directory. These requests make a great
     reference for how to make WFS and WMS requests. And please let us know if
