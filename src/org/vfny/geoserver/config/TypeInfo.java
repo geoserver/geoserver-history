@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TypeInfo.java,v 1.21 2003/09/12 17:01:36 cholmesny Exp $
+ * @version $Id: TypeInfo.java,v 1.22 2003/09/19 17:15:30 cholmesny Exp $
  */
 public class TypeInfo {
     /** Class logger */
@@ -402,7 +402,7 @@ public class TypeInfo {
 
             tempResponse.append("      </Operations>\n");
         }
-
+	if (internalType.getLatLonBoundingBox() != null) {
         tempResponse.append("      <" + latLonName + " minx=\""
             + internalType.getLatLonBoundingBox().getMinx() + "\" ");
         tempResponse.append("miny=\""
@@ -411,6 +411,7 @@ public class TypeInfo {
             + internalType.getLatLonBoundingBox().getMaxx() + "\" ");
         tempResponse.append("maxy=\""
             + internalType.getLatLonBoundingBox().getMaxy() + "\"/>\n");
+	}
 
         //tempResponse.append("      <MetaDataURL";
         //tempResponse.append(" type=\"" + internalType.getMetadataURL().getType();
@@ -436,6 +437,7 @@ public class TypeInfo {
         tempResponse.append("            <wfsfl:SRS srsName=\""
             + "http://www.opengis.net/gml/srs/epsg#" + internalType.getSRS()
             + "\"/>\n");
+	if (internalType.getLatLonBoundingBox() != null) {
         tempResponse.append("            <wfsfl:LatLonBoundingBox minx=\""
             + internalType.getLatLonBoundingBox().getMinx());
         tempResponse.append("\" miny=\""
@@ -444,6 +446,7 @@ public class TypeInfo {
             + internalType.getLatLonBoundingBox().getMaxx());
         tempResponse.append("\" maxy=\""
             + internalType.getLatLonBoundingBox().getMaxy() + "\"/>\n");
+	}
         tempResponse.append(
             "            <wfsfl:Operations><wfsfl:Query/></wfsfl:"
             + "Operations>\n");
