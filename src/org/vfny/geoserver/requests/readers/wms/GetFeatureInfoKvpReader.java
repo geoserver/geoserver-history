@@ -84,6 +84,10 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
         String format = getValue("INFO_FORMAT");
         if (format == null) {
         	//HACK: how we define the default info format?
+                //Not sure I understand the question.  If we don't like it here
+                //then put it as the default in the FeatureInfoRequest.  If
+                //we want to allow users to be able to set it then we can put
+                //it as a config parameter in the WMS service section. -ch
         	format = "text/plain";
         }
         request.setInfoFormat(format);
