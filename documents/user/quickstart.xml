@@ -25,7 +25,7 @@
     </listitem>
 
     <listitem>
-      <para>Install geoserver.war in your Servlet Container&#39;s webapps
+      <para>Install geoserver.war in your Servlet Container's webapps
       directory.</para>
 
       <para>If you are updating an existing installation remember to back up
@@ -34,7 +34,8 @@
 
     <listitem>
       <para>You may run a simple test by starting your container and entering
-      this address (localhost and the port refer to your Servlet Container):</para>
+      this address (localhost and the port refer to your Servlet
+      Container):</para>
 
       <para><programlisting>http://localhost:8080/geoserver/wfs/GetCapabilities</programlisting></para>
 
@@ -49,7 +50,8 @@
       <programlisting>http://locahost:8080/geoserver/</programlisting>
 
       <para>Your Servlet Container will compile all the JSP pages, this
-      process should take a minuet or two. This is a one time only delay.</para>
+      process should take a minuet or two. This is a one time only
+      delay.</para>
 
       <para>To interact with the configuration system you will need to login
       with the user name <constant>admin</constant> and the password
@@ -65,5 +67,7 @@
   url="https://sourceforge.net/mail/?group_id=25086">mailing list</ulink>. We
   also strongly encourage you to submit bugs and improvements you would like
   to see to our <ulink
-  url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">tracker</ulink>.</para>
+  url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">tracker</ulink>.
+  Should you require help, hover over the area of interest and a messge will
+  appear.</para>
 </article>
