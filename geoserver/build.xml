@@ -19,9 +19,8 @@
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
   <property name="dir.build" value="${basedir}/build"/>
-  <property name="dir.doc" value="${basedir}/doc"/>
+  <property name="dir.doc" value="${basedir}/documents"/>
   <property name="dir.lib" value="${basedir}/lib"/>
-  <property name="dir.misc" value="${basedir}/misc"/>
   <property name="dir.server" value="${basedir}/server"/>
   <property name="dir.src" value="${basedir}/src"/>
   <property name="dir.test" value="${basedir}/test"/>
@@ -30,9 +29,7 @@
   <property name="dir.webinf" value="${basedir}/WEB-INF"/>
 
   <!-- secondary directories -->
-  <property name="dir.changelog" value="${dir.misc}/changelog"/>
   <property name="dir.data" value="${dir.conf}"/>
-  <!--<property name="dir.styles" value="${dir.misc}/wms/styles"/>-->
   <property name="dir.testsJar" 
   value="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
   <property name="dir.testApp" value="${dir.server}/webapps/ROOT/WEB-INF"/>
@@ -320,7 +317,7 @@
          in the conf directory, since whenever you start with this it blows
          away changes the ui might have done. -->
     <antcall target="war">
-      <!--param name="conf.path" value="${basedir}/misc/cite/confCite${test.type}.zip"/-->
+      <!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
     </antcall>
     
     <unwar src="${basedir}/geoserver.war" dest="${dir.server}/webapps/ROOT/"/>
@@ -424,7 +421,7 @@
   
   <target name="misc_conf" depends="init" if="test.type">
     <antcall target="build-war">
-      <param name="conf.path" value="${basedir}/misc/cite/conf${test.type}.zip"/>
+      <param name="conf.path" value="${basedir}/cite/conf${test.type}.zip"/>
     </antcall>
   </target>
   
@@ -435,7 +432,7 @@
         <include name="**/*"/>
       </fileset>
     </copy>
-    <zip destfile="${basedir}/misc/cite/confUser.zip">
+    <zip destfile="${basedir}/cite/confUser.zip">
       <fileset dir="${basedir}">
 	    <include name="data/**/*"/>
 	  </fileset>
@@ -443,10 +440,10 @@
     <delete dir="${basedir}/data" failonerror="false"/>
     
     <antcall target="build-war">
-      <param name="conf.path" value="${basedir}/misc/cite/confUser.zip"/>
+      <param name="conf.path" value="${basedir}/cite/confUser.zip"/>
     </antcall>
     
-    <delete file="${basedir}/misc/cite/confUser.zip" failonerror="false"/>
+    <delete file="${basedir}/cite/confUser.zip" failonerror="false"/>
   </target>
 
 <!-- ====================================================================== -->
@@ -467,7 +464,7 @@
             failonerror="false"/>
     <mkdir dir="${basedir}/data"/>
     <copy todir="${basedir}/data" >
-      <fileset dir="${dir.misc}/documents">
+      <fileset dir="${basedir}/documents">
         <include name="license.txt"/>
         <include name="geoserver.log"/>
         <include name="z3950-geo.map"/>
@@ -478,7 +475,7 @@
     <!-- populate base directory -->
     <mkdir dir="${basedir}/data/capabilities"/>
     <copy todir="${basedir}/data/capabilities">
-      <fileset dir="${dir.misc}/capabilities">
+      <fileset dir="${basedir}/capabilities">
         <include name="*"/>
       </fileset>
     </copy>
@@ -486,28 +483,28 @@
     <mkdir dir="${basedir}/data/capabilities/wfs"/>
     <mkdir dir="${basedir}/data/capabilities/wfs/1.0.0"/>
     <copy todir="${basedir}/data/capabilities/wfs/1.0.0">
-      <fileset dir="${dir.misc}/capabilities/wfs">
+      <fileset dir="${basedir}/capabilities/wfs">
         <include name="*"/>
       </fileset>
     </copy>
 
     <mkdir dir="${basedir}/data/capabilities/filter/1.0.0"/>
     <copy todir="${basedir}/data/capabilities/filter/1.0.0">
-      <fileset dir="${dir.misc}/capabilities/filter">
+      <fileset dir="${basedir}/capabilities/filter">
         <include name="*"/>
       </fileset>
     </copy>
     
     <mkdir dir="${basedir}/data/capabilities/gml/2.1.2"/>
     <copy todir="${basedir}/data/capabilities/gml/2.1.2">
-      <fileset dir="${dir.misc}/capabilities/gml">
+      <fileset dir="${basedir}/capabilities/gml">
         <include name="*"/>
       </fileset>
     </copy>
     
     <mkdir dir="${basedir}/data/capabilities/validate"/>
     <copy todir="${basedir}/data/capabilities/validate">
-      <fileset dir="${dir.misc}/capabilities/validate">
+      <fileset dir="${basedir}/capabilities/validate">
         <include name="*"/>
       </fileset>
     </copy>
@@ -515,7 +512,7 @@
     <unzip src="${conf.path}" dest="${basedir}"/>
 
     <copy todir="${dir.build}">
-      <fileset dir="${dir.misc}/documents">
+      <fileset dir="${basedir}/documents">
         <include name="log4j.properties"/>
       </fileset>
     </copy>
@@ -555,7 +552,7 @@
       <!-- directories -->
       <fileset dir="${basedir}">
         <include name="data/**"/>
-        <include name="documentation/**"/>
+        <include name="documents/api/**"/>
         <exclude name="**/catalog.xml"/>
         <exclude name="**/services.xml"/>
       </fileset>
@@ -582,7 +579,7 @@
              destdir="${dir.doc}/api"
              private="true"
              windowtitle="GeoServer Documentation"
-             stylesheetfile="${dir.misc}/documents/stylesheet.css"
+             stylesheetfile="${basedir}/documents/stylesheet.css"
              overview="${dir.src}/overview.html">
       <package name="org.vfny.geoserver.*"/>
       <package name="org.geotools.*"/>      
@@ -602,19 +599,19 @@
       <!-- link documents -->
       <link offline="true" 
             href="http://java.sun.com/xml/jaxb" 
-            packagelistLoc="${dir.misc}/packageLists/jax-b"/>
+            packagelistLoc="${dir.doc}/package-lists/jax-b"/>
       <link offline="true" 
             href="http://java.sun.com/products/jdk/1.2/docs/api/" 
-            packagelistLoc="${dir.misc}/packageLists/jdk"/>
+            packagelistLoc="${dir.doc}/package-lists/jdk"/>
       <link offline="true" 
             href="http://java.sun.com/j2ee/sdk_1.2.1/techdocs/api/" 
-            packagelistLoc="${dir.misc}/packageLists/servlet"/>
+            packagelistLoc="${dir.doc}/package-lists/servlet"/>
       <link offline="true" 
             href="http://java.sun.com/xml/sax" 
-            packagelistLoc="${dir.misc}/packageLists/xerces"/>
+            packagelistLoc="${dir.doc}/package-lists/xerces"/>
       <link offline="true" 
             href="http://jakarta.apache.org/log4j/docs/api/" 
-            packagelistLoc="${dir.misc}/packageLists/log4j"/>
+            packagelistLoc="${dir.doc}/package-lists/log4j"/>
     </javadoc>
   </target>
 
@@ -629,7 +626,6 @@
     <delete file="${basedir}/geoserver-${name.release}-src.tar" 
             failonerror="false"/>
     <delete dir="${dir.build}" failonerror="false"/>
-    <!--<delete dir="${dir.release}" failonerror="false"/>-->
     
     <mkdir dir="${dir.build}"/>
     
@@ -641,7 +637,7 @@
 	  </fileset>
     </copy>
     <copy todir="${dir.build}">
-	  <fileset dir="${dir.misc}/documents">
+	  <fileset dir="${basedir}/documents">
         <include name="license.txt"/>
 	  </fileset>
     </copy>
@@ -666,9 +662,11 @@
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
     </copy>
-    <copy todir="${dir.build}/doc">
+    <copy todir="${dir.build}/documents">
 	  <fileset dir="${dir.doc}">
 	    <include name="**/*"/>
+	    <exclude name="*api*/*"/>
+	    <exclude name="*api*/**/*"/>
 	    <exclude name="*CVS*/*"/>
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
@@ -687,8 +685,15 @@
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
     </copy>
-    <copy todir="${dir.build}/misc">
-	  <fileset dir="${dir.misc}">
+    <copy todir="${dir.build}/capabilities/">
+	  <fileset dir="${basedir}/capabilities">
+	    <include name="**/*"/>
+	    <exclude name="*CVS*/*"/>
+	    <exclude name="**/*CVS*/*"/>
+	  </fileset>
+    </copy>
+    <copy todir="${dir.build}/cite/">
+	  <fileset dir="${basedir}/cite">
 	    <include name="**/*"/>
 	    <exclude name="*CVS*/*"/>
 	    <exclude name="**/*CVS*/*"/>
@@ -727,7 +732,7 @@
   
   <target name="release-binary" depends="clean">
     <antcall target="build-war">
-      <param name="conf.path" value="${basedir}/misc/cite/confUserBasic.zip"/>
+      <param name="conf.path" value="${basedir}/cite/confUserBasic.zip"/>
     </antcall>
     <copy file="${basedir}/geoserver.war" 
           todir="${dir.release}"/>
