@@ -6,9 +6,11 @@ package org.vfny.geoserver.global.xml;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -28,8 +30,8 @@ import com.vividsolutions.jts.geom.Polygon;
  * Utility class defining GML constants, and utility functions.
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GMLUtils.java,v 1.6 2004/01/18 00:33:21 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: GMLUtils.java,v 1.7 2004/01/20 04:17:42 emperorkefka Exp $
  */
 public class GMLUtils {
     /** Mappings by schema */
@@ -276,6 +278,18 @@ public class GMLUtils {
         return null;
     }
     
+    /**
+     * @return a list of good mappings
+     */
+    public static List schemaList( String name, Class type){
+        List list = new ArrayList();
+        Mapping find = schema( name, type );
+        if( find != null ){
+        	list.add( find.toString() ); // ie xs:string
+        }
+        return list;
+    }
+    
     public static boolean isXMLSchemaElement(String s) {
     	return search(xmlSchemaTypes, s);
     }
@@ -345,8 +359,8 @@ System.out.println("FALSE"+a[i]+"$$"+s+"$$");
      * GMLUtils.
      * 
      * @author jgarnett, Refractions Research, Inc.
-     * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: GMLUtils.java,v 1.6 2004/01/18 00:33:21 dmzwiers Exp $
+     * @author $Author: emperorkefka $ (last modification)
+     * @version $Id: GMLUtils.java,v 1.7 2004/01/20 04:17:42 emperorkefka Exp $
      */
     public static class Mapping {
         public final String prefix; // gml or xs
