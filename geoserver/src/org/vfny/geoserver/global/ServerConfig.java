@@ -31,7 +31,7 @@ import org.vfny.geoserver.config.xml.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.4 2004/01/02 17:53:27 dmzwiers Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.5 2004/01/02 17:59:20 dmzwiers Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -430,7 +430,7 @@ public class ServerConfig extends AbstractConfig {
      * @task TODO - implement this in WfsConfig, so users can configure how
      *       much is printed in return messages.
      */
-    public boolean isPrintStack() {
+    /*public boolean isPrintStack() {
         return false;
-    }
+    }*/
 }
