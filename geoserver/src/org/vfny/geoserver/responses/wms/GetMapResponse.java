@@ -20,7 +20,7 @@ import java.util.*;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: GetMapResponse.java,v 1.3 2003/12/26 21:59:01 cholmesny Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
@@ -153,7 +153,7 @@ public class GetMapResponse implements Response {
      * iterates over the registered Map producers and fills a list with
      * all the map formats' MIME types that the producers can handle
      */
-    private static List getMapFormats()
+    static List getMapFormats()
     {
       return supportedMimeTypes;
     }
