@@ -18,7 +18,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.9 2004/04/05 11:51:15 cholmesny Exp $
+ * @version $Id: GeoServerDTO.java,v 1.10 2004/04/07 13:42:48 cholmesny Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
 	
@@ -48,6 +48,8 @@ public final class GeoServerDTO implements DataTransferObject {
 		public static final String AdminUserName = "admin";
 		public static final String AdminPassword = "geoserver";
 	}
+	
+	
 	
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = Defaults.MaxFeatures;
@@ -181,6 +183,8 @@ public final class GeoServerDTO implements DataTransferObject {
             contact = new ContactDTO();
         }
     }
+
+
 
     /**
      * Implement clone.
@@ -499,5 +503,18 @@ public final class GeoServerDTO implements DataTransferObject {
     public void setAdminPassword(String password) {
         this.adminPassword = password;
     }
+	
+	public String toString() {
+		StringBuffer dto = new StringBuffer("[GeoServerDTO: \n");
+		dto.append("   maxFeatures - " + maxFeatures);
+		dto.append("\n   verbose - " + verbose);
+		dto.append("\n   numDecimals - " + numDecimals);
+		dto.append("\n   charSet - " + charSet);
+		dto.append("\n   loggingLevel - " + loggingLevel);
+		dto.append("\n   adminUserName - " + adminUserName);
+		dto.append("\n   adminPassword - " + adminPassword);
+		dto.append("\n   contact - " + contact);
+		return dto.toString();
+	}
 
 }
