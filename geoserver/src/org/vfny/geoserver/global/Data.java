@@ -22,6 +22,7 @@ import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
@@ -48,7 +49,7 @@ import java.util.logging.Logger;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.36 2004/03/15 08:16:13 jive Exp $
+ * @version $Id: Data.java,v 1.37 2004/03/30 11:13:31 cholmesny Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -503,13 +504,13 @@ SCHEMA:
     }
 
     private List createAttrDTOsFromSchema(FeatureType featureType) {
-        List attrList = new ArrayList(featureType.getAttributeCount());
+        List attrList = DataTransferObjectFactory.generateAttributes(featureType);
 
-        for (int index = 0; index < featureType.getAttributeCount(); index++) {
-            AttributeType attrib = featureType.getAttributeType(index);
-            attrList.add(new AttributeTypeInfoDTO(attrib));
-        }
-
+        /*   new ArrayList(featureType.getAttributeCount());
+           for (int index = 0; index < featureType.getAttributeCount(); index++) {
+               AttributeType attrib = featureType.getAttributeType(index);
+               attrList.add(new AttributeTypeInfoDTO(attrib));
+           }*/
         return attrList;
     }
 
@@ -1095,47 +1096,58 @@ SCHEMA:
 
     /**
      * The number of connections currently held.
+     * 
      * <p>
-     * We will need to modify DataStore to provide access to the current
-     * count of its connection pool (if appropriate). Right now we are
-     * asumming a one DataStore equals One "Connection".
+     * We will need to modify DataStore to provide access to the current count
+     * of its connection pool (if appropriate). Right now we are asumming a
+     * one DataStore equals One "Connection".
      * </p>
+     * 
      * <p>
-     * This is a good compromize since I just want to indicate the amount
-     * of resources currently tied up by GeoServer.
+     * This is a good compromize since I just want to indicate the amount of
+     * resources currently tied up by GeoServer.
      * </p>
+     *
      * @return Number of available connections.
      */
-    public int getConnectionCount(){
+    public int getConnectionCount() {
         int count = 0;
+
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
-            }            
-            DataStore dataStore;            
+            }
+
+            DataStore dataStore;
+
             try {
                 dataStore = meta.getDataStore();
             } catch (Throwable notAvailable) {
                 continue; // not available
             }
+
             // TODO: All DataStore to indicate number of connections
             count += 1;
         }
+
         return count;
     }
+
     /**
      * Count locks currently held.
+     * 
      * <p>
      * Not sure if this should be the number of features locked, or the number
      * of FeatureLocks in existence (a FeatureLock may lock several features.
      * </p>
+     *
      * @return number of locks currently held
-     * 
      */
-    public int getLockCount(){
+    public int getLockCount() {
         int count = 0;
+
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
@@ -1144,55 +1156,71 @@ SCHEMA:
             }
 
             DataStore dataStore;
+
             try {
                 dataStore = meta.getDataStore();
             } catch (IllegalStateException notAvailable) {
                 continue; // not available
-            } catch (Throwable huh){
+            } catch (Throwable huh) {
                 continue; // not even working
             }
+
             LockingManager lockingManager = dataStore.getLockingManager();
+
             if (lockingManager == null) {
                 continue; // locks not supported
             }
+
             // TODO: implement LockingManger.getLockSet()
             // count += lockingManager.getLockSet();             
         }
+
         return count;
     }
+
     /**
      * Release all feature locks currently held.
+     * 
      * <p>
      * This is the implementation for the Admin "free lock" action, transaction
      * locks are not released.
      * </p>
+     *
      * @return Number of locks released
      */
-    public int lockReleaseAll(){
+    public int lockReleaseAll() {
         int count = 0;
+
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
                 continue; // disabled
-            }                
+            }
+
             DataStore dataStore;
+
             try {
                 dataStore = meta.getDataStore();
             } catch (IllegalStateException notAvailable) {
                 continue; // not available
-            } catch (Throwable huh){
+            } catch (Throwable huh) {
                 continue; // not even working
-            }            
+            }
+
             LockingManager lockingManager = dataStore.getLockingManager();
+
             if (lockingManager == null) {
                 continue; // locks not supported
             }
+
             // TODO: implement LockingManger.releaseAll()
             //count += lockingManager.releaseAll();            
         }
+
         return count;
     }
+
     /**
      * Release lock by authorization
      *
