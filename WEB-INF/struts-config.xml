@@ -376,7 +376,7 @@
         property="pathnames"
         value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
   </plug-in>
- <!--
+
   <plug-in className="org.vfny.geoserver.global.ApplicationState">
   </plug-in>
   
@@ -385,6 +385,6 @@
   
   <plug-in className="org.vfny.geoserver.config.ConfigPlugIn">
   </plug-in>  
--->
+
 </struts-config>
 
