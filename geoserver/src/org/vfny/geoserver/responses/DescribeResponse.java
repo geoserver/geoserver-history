@@ -176,7 +176,7 @@ public class DescribeResponse {
 	retBuffer.append(config.getNSUri(prefix) + "\"");
 	retBuffer.append("\n        schemaLocation=\"" + config.getUrl() + 
 			 "/DescribeFeatureType?" //HACK: bad hard code here.
-			 + "request=DescribeFeatureType&typeName=");
+			 + "typeName=");
 	 Iterator nameIter = typeNames.iterator();
 	 boolean first = true;
 	    while (nameIter.hasNext()){
