@@ -16,7 +16,6 @@ import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.requests.wfs.*;
 import org.vfny.geoserver.responses.*;
-import org.vfny.geoserver.servlets.wfs.FeatureWithLock;
 
 import java.io.*;
 import java.util.*;
@@ -29,7 +28,7 @@ import javax.xml.transform.TransformerException;
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.11 2003/11/14 03:57:10 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.12 2003/11/14 18:25:14 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -37,11 +36,10 @@ public class FeatureResponse implements Response {
             "org.vfny.geoserver.responses");
 
     /** DOCUMENT ME! */
-    private static final ServerConfig config = ServerConfig.getInstance();
-    private FeatureResults[] features;
-    private FeatureTransformer transformer;
+    private static final ServerConfig config = ServerConfig.getInstance();        
 
-    // set by execute2, used by write2
+    // set by execute, used by write
+    private FeatureTransformer transformer;    
     private FeatureRequest request;
     private List resultList;
     
@@ -60,39 +58,6 @@ public class FeatureResponse implements Response {
         return config.getGlobalConfig().getMimeType();
     }
 
-    /**
-     * Origional writeToMethod
-     *
-     * @param out DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws WfsException DOCUMENT ME!
-     */
-    public void writeToBackup(OutputStream out) throws ServiceException {
-        try {
-            if ((transformer == null) || (features == null)) {
-                throw new IllegalStateException(
-                    "execute has not been called prior to writeTo");
-            }
-
-            //FeatureCollection coll = features[0].collection();
-            //Feature firstF = coll.features().next();
-            //LOGGER.info("first feature is " + firstF);
-            //LOGGER.info("schema is " + firstF.getFeatureType());
-            transformer.transform(features, out);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-            //REVISIT: This fails mightily if it fails here, since
-            //get output stream is already called.
-            //TODO: user config option to have better error reporting, at 
-            //the expense of performance.  Then use a ByteBufferOutputStream
-            // to buffer the response, write it to the passed in output
-            //stream if no problems, if there are then exception can still
-            //get thrown.
-            throw new WfsException(ex);
-        }
-    }
     /**
      * Jody here with one pass replacement for writeTo.
      * <p>
@@ -119,9 +84,11 @@ public class FeatureResponse implements Response {
         // including the lockID
         //
         // execute should also fail if all of the locks could not be aquired
+        FeatureResults featureResults[] = (FeatureResults[])
+            resultList.toArray(new FeatureResults[resultList.size()]);
         
         try {
-            transformer.transform( resultList, out );        
+            transformer.transform( featureResults, out );        
         }
         catch( TransformerException gmlException){
             ServiceException serviceException =
@@ -131,6 +98,14 @@ public class FeatureResponse implements Response {
             throw serviceException;                
         }
     }
+    
+    /**
+     * Executes FeatureRequest
+     */
+    public void execute(Request req) throws ServiceException {
+        execute( (FeatureRequest) req );
+    }    
+
     
     /**
      * Jody here with a replacement for execute that make use
@@ -143,6 +118,13 @@ public class FeatureResponse implements Response {
      * The idea is to grab the FeatureSources during execute, and use them
      * during writeTo
      * </p>
+     * @task TODO: split this up a bit more?  Also get the proper namespace
+     *       declrations and schema locations.  Right now we're back up to
+     *       where we were with 1.0., as we can return two FeatureTypes in the
+     *       same namespace.  CITE didn't check for two in different
+     *       namespaces, and gml builder just couldn't deal.  Now we should be
+     *       able to, we just need to get the reporting right, use the
+     *       AllSameType function as  Describe does.
      * @param req
      * @throws ServiceException
      */
@@ -243,18 +225,14 @@ public class FeatureResponse implements Response {
             if( featureLock != null && !lockFailedFids.isEmpty() ){
                 // I think we need to release and fail when lockAll fails
                 //
-                for (int i = 1, n = locks.size(); i < n; i++) {
-                    curLock = (LockRequest.Lock) locks.get(i);
-
-                    String curTypeName = curLock.getFeatureType();
-                    Filter curFilter = curLock.getFilter();
-                    //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
-
-                    FeatureTypeConfig meta = catalog.getFeatureType( curTypeName );
-                    NameSpace namespace = meta.getDataStore().getNameSpace();                
-                    FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
-                    FeatureResults features = source.getFeatures( curFilter );
-                
+                for (Iterator it = request.getQueries().iterator();
+                       it.hasNext() && (maxFeatures > 0);) {
+                      
+                    query = (Query) it.next();                                                                   
+                    meta = catalog.getFeatureType( query.getTypeName() );
+                    namespace = meta.getDataStore().getNameSpace();                
+                    source = (FeatureLocking) meta.getFeatureSource();
+                    
                     Transaction t = new DefaultTransaction();
                     source.setTransaction( t );
                     t.addAuthorization( featureLock.getAuthorization() );
@@ -267,9 +245,6 @@ public class FeatureResponse implements Response {
                 );
             }
             
-            features = (FeatureResults[])
-                results.toArray(new FeatureResults[results.size()]);
-
             System.setProperty("javax.xml.transform.TransformerFactory",
                 "org.apache.xalan.processor.TransformerFactoryImpl");
 
@@ -295,125 +270,7 @@ public class FeatureResponse implements Response {
                             request.getHandle());
         }                     
     }
-    public void execute(Request req) throws ServiceException {
-        execute( (FeatureRequest) req );
-    }    
-    /**
-     * DOCUMENT ME!
-     *
-     * @param req DOCUMENT ME!
-     *
-     * @throws WfsException DOCUMENT ME!
-     * @throws WfsException DOCUMENT ME!
-     *
-     * @task TODO: split this up a bit more?  Also get the proper namespace
-     *       declrations and schema locations.  Right now we're back up to
-     *       where we were with 1.0., as we can return two FeatureTypes in the
-     *       same namespace.  CITE didn't check for two in different
-     *       namespaces, and gml builder just couldn't deal.  Now we should be
-     *       able to, we just need to get the reporting right, use the
-     *       AllSameType function as  Describe does.
-     */
-    public void executeBackup(Request req) throws ServiceException {
-        FeatureRequest request = (FeatureRequest) req;
-        LOGGER.finest("write xml response. called request is: " + request);
-
-        String outputFormat = request.getOutputFormat();
-        
-        if (!"GML2".equalsIgnoreCase(outputFormat)) {
-            throw new WfsException("output format: " + outputFormat + " not "
-                + "supported by geoserver");
-        }
-
-        String lockId = null;
-
-        //REVISIT: this could probably be done more efficiently, with maybe
-        //just one run through, and may need to be with the next spec version
-        //but this should work for now, do locking, and then do getting.
-        
-        
-        if (request instanceof FeatureWithLockRequest) {
-            LockRequest lock = ((FeatureWithLockRequest) request).asLockRequest();
-            lockId = LockResponse.performLock(lock, false);
-        }
-
-        int maxFeatures = request.getMaxFeatures();
-        LOGGER.info("request is " + request);
-
-        //Kinda hacky, might be better to put maxFeatures in FeatureTransformer
-        //for real.  Could consider having an easier one for just one Query.
-        //Query curQuery = request.getQuery(0);
-        
-        ArrayList results = new ArrayList(request.getQueryCount());
-        CatalogConfig catalog = config.getCatalog();
-        StringBuffer typeNames = new StringBuffer();
-        FeatureTypeConfig meta = null;
-
-        transformer = new FeatureTransformer();
-
-        FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
-
-        try {
-            for (Iterator it = request.getQueries().iterator();
-                    it.hasNext() && (maxFeatures > 0);) {
-                Query curQuery = (Query) it.next();
-                String typeName = curQuery.getTypeName();
-                meta = catalog.getFeatureType(curQuery.getTypeName());
-
-                FeatureResults curResult = getFeatures(curQuery, meta,
-                        maxFeatures);
-                results.add(curResult);
-                typeNames.append(typeName);
-                maxFeatures -= curResult.getCount();
-
-                if (it.hasNext() && (maxFeatures > 0)) {
-                    typeNames.append(",");
-                }
-
-                NameSpace namespace = meta.getDataStore().getNameSpace();
-
-                //This doesn't seem to be working.
-                ftNames.declareNamespace(curResult.reader().getFeatureType(),
-                    namespace.getPrefix(), namespace.getUri());
-
-                //ftNames.declareDefaultNamespace(namespace.getPrefix(),
-                //			     namespace.getUri());
-            }
-        } catch (IOException ioe) {
-            throw new ServiceException(ioe, "problem with FeatureResults",
-                request.getHandle());
-        }
-
-        //results.trimToSize();
-        features = (FeatureResults[]) results.toArray(new FeatureResults[results
-                .size()]);
-
-        System.setProperty("javax.xml.transform.TransformerFactory",
-            "org.apache.xalan.processor.TransformerFactoryImpl");
-
-        //HACK! Should not just use the last meta.
-        FeatureType schema = meta.getSchema();
-
-        transformer.setIndentation(2);
-        transformer.setGmlPrefixing(true); //TODO: make this a user config
-
-        ServerConfig config = ServerConfig.getInstance();
-        WFSConfig wfsConfig = config.getWFSConfig();
-        String wfsSchemaLoc = config.getGlobalConfig().getSchemaBaseUrl()
-            + "wfs/1.0.0/WFS-basic.xsd";
-        String fSchemaLoc = wfsConfig.getDescribeUrl(typeNames.toString());
-        NameSpace namespace = meta.getDataStore().getNameSpace();
-        transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
-        transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
-
-        //ftNames.declareNamespace(schema, namespace.getPrefix(), namespace.getUri());
-        //        transformer.getFeatureTypeNamespaces().declareDefaultNamespace(namespace
-        //.getPrefix(), namespace.getUri());
-        //transformer.setPrettyPrint(config.getGlobalConfig().isVerbose());
-        //transformer.setDefaultNamespace(config.getCatalog().getDefaultNameSpace()
-        //                                  .getUri());
-    }
-
+    
     /**
      * Convenience method to get the handle information from a query, if it
      * exists.
