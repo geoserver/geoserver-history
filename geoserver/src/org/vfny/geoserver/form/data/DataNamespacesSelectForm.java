@@ -6,6 +6,7 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.Iterator;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +23,8 @@ import org.vfny.geoserver.requests.Requests;
  * DataNamespacesSelectForm
  * <p>
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataNamespacesSelectForm.java,v 1.4 2004/03/15 08:16:11 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataNamespacesSelectForm.java,v 1.5 2004/04/03 00:24:28 emperorkefka Exp $
  */
 public class DataNamespacesSelectForm extends ActionForm {
     /** namespace the user selected (value is a prefix) */
@@ -49,8 +50,10 @@ public class DataNamespacesSelectForm extends ActionForm {
         DataConfig config = ConfigRequests.getDataConfig(request);        
         namespaces = new TreeSet(config.getNameSpaces().keySet());
         String def = config.getDefaultNameSpace().getPrefix();
-        namespaces.remove(def);
-        namespaces.add(def+"*");
+        if (namespaces.contains(def)) {
+        	namespaces.remove(def);
+        	namespaces.add(def+"*");
+        }
     }
 
     public ActionErrors validate(ActionMapping mapping,
