@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.1.2.7 2004/01/08 23:44:48 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.1.2.8 2004/01/09 02:36:13 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
     /** Default constant */
@@ -217,8 +217,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         }
 
         FeatureSource realSource = getRealFeatureSource();
-        FeatureSource mappedSource = new DEFQueryFeatureLocking(realSource,
-                getSchema(), ftc.getDefinitionQuery());
+        FeatureSource mappedSource =
+            GeoServerFeatureLocking.create(realSource, getSchema(), ftc.getDefinitionQuery());
 
         return mappedSource;
     }
