@@ -3,9 +3,7 @@
    xmlns="http://www.openplans.org"
    xmlns:gml="http://www.opengis.net/gml">
     <Insert handle="insert 1">
-      <gml:featureMember>
-        <geom_test fid="44">
-   <geom_test.gid>44</geom_test.gid>
+   <geom_test fid="44">
    <geom_test.geom>
     <gml:Polygon gid="geom" srsName="http://www.opengis.net/gml/srs/epsg.xml#2035">
      <gml:outerBoundaryIs>
@@ -18,6 +16,6 @@
    </geom_test.geom>
    <geom_test.name>insert polygon</geom_test.name>
   </geom_test>
- </gml:featureMember>  
+   
 </Insert>
  </Transaction>
