@@ -243,7 +243,7 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
       new data, use the new data and write the new data. Although in practice
       many of these processes are completed concurently and closely depend
       upon each other, we are going to pretend we live in a perfect linear
-      world. </para>
+      world.</para>
 
       <section>
         <title>DTO Extension</title>
@@ -267,30 +267,80 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
         <itemizedlist>
           <listitem>
             <para>Update default construtor</para>
+
+            <programlisting>public WFSDTO(){
+<emphasis role="bold"><emphasis role="bold">    serviceLevel = WFSDTO.BASIC;</emphasis></emphasis>
+}</programlisting>
           </listitem>
         </itemizedlist>
 
         <itemizedlist>
           <listitem>
             <para>Update parametarized constructor used to clone</para>
+
+            <programlisting>public WFSDTO(WFSDTO other) {
+    if (other == null) {
+        throw new NullPointerException("Data Transfer Object required");
+    }
+
+    service = (ServiceDTO) new ServiceDTO(other.getService());
+    gmlPrefixing = other.isGmlPrefixing();
+    <emphasis role="bold">serviceLevel = WFSDTO.getServiceLevel();</emphasis>
+}</programlisting>
           </listitem>
         </itemizedlist>
 
         <itemizedlist>
           <listitem>
             <para>Update equals method</para>
+
+            <programlisting>public boolean equals(Object other) {
+    if ((other == null) || !(other instanceof WFSDTO)) {
+        return false;
+    }
+
+    WFSDTO dto = (WFSDTO) other;
+
+    return (<emphasis role="bold">serviceLevel == dto.getServiceLevel() &amp;&amp;</emphasis> (service == null) ? (dto.getService() == null) 
+        : service.equals(dto.getService()));
+}</programlisting>
           </listitem>
         </itemizedlist>
 
         <itemizedlist>
           <listitem>
             <para>Generate getter and setter methods</para>
+
+            <programlisting><emphasis role="bold">public int getServiceLevel(){
+    return serviceLevel;
+}
+
+public void setServiceLevel(int serviceLevel){
+    this.serviceLevel = serviceLevel;
+}</emphasis></programlisting>
           </listitem>
         </itemizedlist>
 
         <itemizedlist>
           <listitem>
             <para>Document the changes in the source code</para>
+
+            <programlisting><emphasis role="bold">/**
+ * represents a basic level of service
+ *  see the OGC spec for more details
+ */
+public static int BASIC = 1;
+
+/** 
+ * represents a transaction level of service
+ * see the OGC spec for more details
+ */
+public static int TRANSACTION = 2;
+
+/**
+ * the level of service for this WFS provider
+ */
+private int serviceLevel = BASIC;</emphasis></programlisting>
           </listitem>
         </itemizedlist>
       </section>
@@ -317,6 +367,21 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
           <listitem>
             <para>Ensure you have not affected the Element references around
             you new addition</para>
+
+            <programlisting>// UNSAFE !!!
+<emphasis role="bold">elem</emphasis> = ReaderUtils.getChildElement(elem, "xs:sequence");
+NodeList nl = elem.getElementsByTagName("xs:element");
+for (int i = 0; i &lt; nl.getLength(); i++) {
+    // one element now
+    <emphasis role="bold">elem</emphasis> = (Element) nl.item(i);
+
+
+// SAFER
+<emphasis role="bold">elem</emphasis> = ReaderUtils.getChildElement(elem, "xs:sequence");
+NodeList nl = elem.getElementsByTagName("xs:element");
+for (int i = 0; i &lt; nl.getLength(); i++) {
+    // one element now
+    Element <emphasis role="bold">element</emphasis> = (Element) nl.item(i);</programlisting>
           </listitem>
         </itemizedlist>
 
@@ -330,6 +395,12 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
         <itemizedlist>
           <listitem>
             <para>Document the changes in the source code</para>
+
+            <programlisting>elem = ReaderUtils.getChildElement(elem, "xs:sequence");
+NodeList nl = elem.getElementsByTagName("xs:element");
+for (int i = 0; i &lt; nl.getLength(); i++) {
+    <emphasis role="bold">// Create a new reference to walk through all the child nodes</emphasis>
+    Element element = (Element) nl.item(i);</programlisting>
           </listitem>
         </itemizedlist>
 
@@ -337,6 +408,17 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
           <listitem>
             <para>Ensure you have included informative error messages where
             appropriate.</para>
+
+            <programlisting>// Bad 
+catch(ConfigurationException e){
+   throw new ConfigurationException(<emphasis role="bold">"io error"</emphasis>);
+}
+
+
+// Good
+catch(ConfigurationException e){
+   throw new ConfigurationException(<emphasis role="bold">"Error occured in "+schemaFile+"\n"+e.getMessage(),e</emphasis>);
+}</programlisting>
           </listitem>
         </itemizedlist>
       </section>
@@ -350,23 +432,40 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
         update a few methods listed below to keep the class up-to-date. You
         are now into the application. Carefully do whatever your plans for
         this data included. Test, test and test again. When all looks good,
-        move on to the next stage. </para>
+        move on to the next stage.</para>
 
         <itemizedlist>
           <listitem>
             <para>Update default construtor</para>
+
+            <programlisting>WFS() {
+    super(new ServiceDTO());
+    <emphasis role="bold">serviceLevel = WFSDTO.BASIC; // use the DTO def, as it permutates the whole app</emphasis>
+}</programlisting>
           </listitem>
         </itemizedlist>
 
         <itemizedlist>
           <listitem>
             <para>Update parametarized constructor used to clone</para>
+
+            <programlisting>public WFS(WFSDTO config) {
+    super(config.getService());
+    gmlPrefixing = config.isGmlPrefixing();
+    <emphasis role="bold">serviceLevel = config.getServiceLevel();</emphasis>
+}</programlisting>
           </listitem>
         </itemizedlist>
 
         <itemizedlist>
           <listitem>
             <para>Update load method used to import DTO objects</para>
+
+            <programlisting>public void load (WFSDTO config) {
+    super.load(config.getService());
+    gmlPrefixing = config.isGmlPrefixing();
+<emphasis role="bold">    serviceLevel = config.getServiceLevel();</emphasis>
+}</programlisting>
           </listitem>
         </itemizedlist>
 
@@ -374,6 +473,25 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
           <listitem>
             <para>Update toDTO method used to export data as a DTO
             object</para>
+
+            <programlisting>public Object toDTO() {
+    WFSDTO dto = new WFSDTO();
+    dto.setService((ServiceDTO)super.toDTO());
+    dto.setGmlPrefixing(gmlPrefixing);
+    <emphasis role="bold">dto.setServiceLevel(serviceLevel);</emphasis>
+
+    return dto;
+}</programlisting>
+          </listitem>
+        </itemizedlist>
+
+        <itemizedlist>
+          <listitem>
+            <para>Add accessor method</para>
+
+            <programlisting><emphasis role="bold">public int getServiceLevel(){
+    return serviceLevel;
+}</emphasis></programlisting>
           </listitem>
         </itemizedlist>
 
@@ -387,6 +505,11 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
         <itemizedlist>
           <listitem>
             <para>Document the changes in the source code</para>
+
+            <programlisting><emphasis role="bold">/**
+ * the level of service for this WFS provider
+ */
+private int serviceLevel = WFSDTO.BASIC;</emphasis></programlisting>
           </listitem>
         </itemizedlist>
       </section>
@@ -398,7 +521,17 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
         the write methods for your new data. Try to use the element write
         methods provided. Also you should be careful to match tags ... .
         Remember to test this code as well, because this code will break the
-        application as badly as the reader next time you run it. </para>
+        application as badly as the reader next time you run it.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Add calls to write the data</para>
+
+            <programlisting><emphasis role="bold">if ((wfs.getTitle() != null) &amp;&amp; (wfs.getTitle() != WFSDTO.BASIC)) {
+    cw.textTag("serviceLevel", wfs.getServiceLevel()+"");
+}</emphasis></programlisting>
+          </listitem>
+        </itemizedlist>
 
         <itemizedlist>
           <listitem>
@@ -410,6 +543,11 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
         <itemizedlist>
           <listitem>
             <para>Document the changes in the source code</para>
+
+            <programlisting><emphasis role="bold">// write the service level if not basic (our default)</emphasis> 
+if ((wfs.getTitle() != null) &amp;&amp; (wfs.getTitle() != WFSDTO.BASIC)) {
+    cw.textTag("serviceLevel", wfs.getServiceLevel()+"");
+}</programlisting>
           </listitem>
         </itemizedlist>
 
@@ -417,6 +555,17 @@ http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
           <listitem>
             <para>Ensure you have included informative error messages where
             appropriate.</para>
+
+            <programlisting>// Bad 
+catch(ConfigurationException e){
+   throw new ConfigurationException(<emphasis role="bold">"io error"</emphasis>);
+}
+
+
+// Good
+catch(ConfigurationException e){
+   throw new ConfigurationException(<emphasis role="bold">"Error occured in WFS service configuration output.\n"+e.getMessage(),e</emphasis>);
+}</programlisting>
           </listitem>
         </itemizedlist>
       </section>
