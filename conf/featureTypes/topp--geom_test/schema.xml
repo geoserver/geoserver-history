@@ -1,25 +1,25 @@
+<!-- This is a sample of a more restrictive schema.xml file.  The one
+     returned by DescribeFeatureType automatically (if no schema.xml 
+     file was present) would not have the restriction of 15 characters
+     for the string.  But if such restrictions are not needed then it
+     is recommended to just leave out the schema.xml file -->
+
 <xs:complexType name="geom_test_Type">
     <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
         <xs:sequence>
 
-            <xs:element name="geom_test.name" nillable="true" minOccurs="0" maxOccurs="1">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:maxLength value="15"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element name="gid" type="xs:int" minOccurs="0" maxOccurs="1"/>
 
-            <xs:element name="geom_test.gid" nillable="true" minOccurs="0" maxOccurs="1">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:maxLength value="10"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element name="geom" type="gml:PolygonPropertyType" nillable="false" minOccurs="1" maxOccurs="1"/>
 
-            <xs:element name="geom_test.geom" type="gml:PolygonPropertyType" nillable="false" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="name" nillable="true" minOccurs="0" maxOccurs="1">
+              <xs:simpleType>
+                 <xs:restriction base="xs:string">
+                    <xs:maxLength value="15"/>
+                 </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
 
          </xs:sequence>
     </xs:extension>
