@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.geotools.data.DataStoreFinder;
 import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.oldconfig.*;
@@ -21,7 +20,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.13.4.4 2003/12/03 21:24:29 cholmesny Exp $
+ * @version $Id: FreefsLog.java,v 1.13.4.5 2003/12/04 19:30:36 cholmesny Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -42,15 +41,8 @@ public class FreefsLog extends HttpServlet {
         System.setProperty("java.util.prefs.syncInterval", "5000000");
 
         String root = this.getServletContext().getRealPath("/");
-        String path = root + CONFIG_DIR;
-        LOGGER.finer("init with path: " + path);
-        LOGGER.info("datastores:");
-
-        Iterator iter = DataStoreFinder.getAvailableDataSources();
-
-        while (iter.hasNext()) {
-            LOGGER.info(iter.next() + " is an available DataSource");
-        }
+        String path = root; // + CONFIG_DIR;
+        LOGGER.fine("init with path: " + path);
 
         try {
             ServerConfig.load(path);

@@ -5,9 +5,11 @@
 package org.vfny.geoserver.config;
 
 import org.geotools.data.Catalog;
+import org.geotools.data.DataStoreFinder;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.io.*;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.*;
 import javax.xml.parsers.*;
@@ -17,7 +19,7 @@ import javax.xml.parsers.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.8 2003/11/26 06:49:24 jive Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.9 2003/12/04 19:28:25 cholmesny Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -25,6 +27,12 @@ public class ServerConfig extends AbstractConfig {
             "org.vfny.geoserver.config");
 
     //  private ZServerConfig zServerConfig;
+
+    /** Default name for configuration directory */
+    private static final String CONFIG_DIR = "WEB-INF/";
+
+    /** Default name for configuration directory */
+    private static final String DATA_DIR = "data/";
 
     /** server configuration singleton */
     private static ServerConfig serverConfig;
@@ -40,10 +48,9 @@ public class ServerConfig extends AbstractConfig {
 
     /** DOCUMENT ME! */
     private GlobalConfig globalConfig;
-    
+
     /** Validation Configuration */
     private ValidationConfig validationConfig;
-    
     private String rootDir;
 
     /**
@@ -56,39 +63,61 @@ public class ServerConfig extends AbstractConfig {
     private ServerConfig(String rootDir) throws ConfigurationException {
         this.rootDir = rootDir;
 
-        //TODO: change these to META-INF.
-        String configFile = rootDir + "services.xml";
-        String catalogFile = rootDir + "catalog.xml";
+        String configDir = rootDir + CONFIG_DIR;
+        String configFile = configDir + "services.xml";
+        String catalogFile = configDir + "catalog.xml";
+        LOGGER.fine("loading config file: " + configFile);
+
         Element configElem = loadConfig(configFile);
-        Element catalogElem = loadConfig(catalogFile);        
-        String featureTypeDir = rootDir + "featureTypes";
-        
+        Element catalogElem = loadConfig(catalogFile);
+        String dataDir = rootDir + DATA_DIR;
+        String featureTypeDir = dataDir + "featureTypes";
+
+        Iterator iter = DataStoreFinder.getAvailableDataSources();
+
+        while (iter.hasNext()) {
+            LOGGER.config(iter.next() + " is an available DataSource");
+        }
+
         load(configElem, catalogElem, featureTypeDir);
-        
-        validationConfig = new ValidationConfig( new File( rootDir, "validation" ));        
+
+        validationConfig = new ValidationConfig(new File(dataDir, "validation"));
     }
+
     /**
      * Creates a new ServerConfig Object for JUnit testing.
+     * 
      * <p>
      * Configure based on provided Map, and Catalog.
      * </p>
+     * 
      * <p>
      * ServerConfig understands the followin entries in config map:
+     * 
      * <ul>
-     * <li>dir: File (default to current directory</li>
+     * <li>
+     * dir: File (default to current directory
+     * </li>
      * </ul>
-     * @param catalog
+     * </p>
+     *
+     * @param gt2catalog
+     * @param gt2catalog DOCUMENT ME!
+     *
+     * @throws ConfigurationException DOCUMENT ME!
      */
-    private ServerConfig(Map config, Catalog gt2catalog) throws ConfigurationException {
-        this.rootDir = get( config, "dir", new File(".") ).toString();
-        
-        globalConfig = new GlobalConfig( config );
+    private ServerConfig(Map config, Catalog gt2catalog)
+        throws ConfigurationException {
+        this.rootDir = get(config, "dir", new File(".")).toString();
 
-        featureServerConfig = new WFSConfig( config );
-        mapServerConfig = new WMSConfig( config );
-        catalog = new CatalogConfig( config, gt2catalog );
-        validationConfig = new ValidationConfig( config );
-    }        
+        globalConfig = new GlobalConfig(config);
+
+        featureServerConfig = new WFSConfig(config);
+        mapServerConfig = new WMSConfig(config);
+        catalog = new CatalogConfig(config, gt2catalog);
+        validationConfig = new ValidationConfig(config);
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -124,14 +153,16 @@ public class ServerConfig extends AbstractConfig {
     public CatalogConfig getCatalog() {
         return catalog;
     }
+
     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public ValidationConfig getValidationConfig(){
+    public ValidationConfig getValidationConfig() {
         return validationConfig;
     }
+
     /**
      * DOCUMENT ME!
      *
@@ -158,7 +189,6 @@ public class ServerConfig extends AbstractConfig {
     public static void load(String rootDir) throws ConfigurationException {
         serverConfig = new ServerConfig(rootDir);
     }
-
 
     /**
      * DOCUMENT ME!
@@ -204,20 +234,26 @@ public class ServerConfig extends AbstractConfig {
 
     /**
      * Sets everything up based on provided gt2 Catalog.
+     * 
      * <p>
      * This is a quick hack to allow for basic JUnit testing.
      * </p>
+     * 
      * <p>
      * We need to get GeoServer to push more functionality into gt2 Catalog
-     * interface. Right now they have similar goals in life, we should
-     * set things up so GeoServer config classes can implement the Catalog
-     * interface, and expand the Catalog interface to the point
-     * it is useful.
+     * interface. Right now they have similar goals in life, we should set
+     * things up so GeoServer config classes can implement the Catalog
+     * interface, and expand the Catalog interface to the point it is useful.
      * </p>
-     * @author jgarnett
+     *
+     * @param config DOCUMENT ME!
+     * @param catalog DOCUMENT ME!
+     *
+     * @throws ConfigurationException DOCUMENT ME!
      */
-    public static void load( Map config, Catalog catalog ) throws ConfigurationException{
-        serverConfig = new ServerConfig( config, catalog );
+    public static void load(Map config, Catalog catalog)
+        throws ConfigurationException {
+        serverConfig = new ServerConfig(config, catalog);
     }
 
     /**
