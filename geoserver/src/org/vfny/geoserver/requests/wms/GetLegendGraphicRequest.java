@@ -58,13 +58,21 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * default legend graphic width, in pixels, to apply if no WIDTH parameter
      * was passed
      */
-    private static final int DEFAULT_WIDTH = 20;
+    public static final int DEFAULT_WIDTH = 20;
 
     /**
      * default legend graphic height, in pixels, to apply if no WIDTH parameter
      * was passed
      */
-    private static final int DEFAULT_HEIGHT = 20;
+    public static final int DEFAULT_HEIGHT = 20;
+
+    /**
+     * The default image format in which to produce a legend graphic. Not
+     * really used when performing user requests, since FORMAT is a mandatory
+     * parameter, but by now serves as a default for expressing LegendURL
+     * layer attribute in GetCapabilities.
+     */
+    public static final String DEFAULT_FORMAT = "image/png";
 
     /** The featuretype of the requested LAYER */
     private FeatureType layer;
