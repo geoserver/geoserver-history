@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.feature.Feature;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
@@ -27,7 +29,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.7 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: TransactionHandler.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {
@@ -98,7 +100,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      *
      * @return The request constructed by this handler.
      */
-    public TransactionRequest getRequest() {
+    public TransactionRequest getRequest(HttpServletRequest req) {
+    	request.setHttpServletRequest(req);
         return request;
     }
 

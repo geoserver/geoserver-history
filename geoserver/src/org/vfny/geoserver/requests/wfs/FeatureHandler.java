@@ -6,6 +6,8 @@ package org.vfny.geoserver.requests.wfs;
 
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
 import org.vfny.geoserver.requests.Query;
@@ -27,7 +29,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * </p>
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureHandler.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: FeatureHandler.java,v 1.7 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler {
@@ -59,7 +61,8 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
      *
      * @return The request read by this handler.
      */
-    public FeatureRequest getRequest() {
+    public FeatureRequest getRequest(HttpServletRequest req) {
+    	request.setHttpServletRequest(req);
         return request;
     }
 

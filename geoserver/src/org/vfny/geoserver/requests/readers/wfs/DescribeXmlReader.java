@@ -72,8 +72,9 @@ public class DescribeXmlReader extends XmlRequestReader {
         }
 
         LOGGER.finer("about to return ");
-        LOGGER.finer("returning " + contentHandler.getRequest());
+        LOGGER.finer("returning " + contentHandler.getRequest(req));
 
-        return contentHandler.getRequest();
+        Request r = contentHandler.getRequest(req);
+        return r;
     }
 }

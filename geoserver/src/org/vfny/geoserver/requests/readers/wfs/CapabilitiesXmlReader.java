@@ -26,7 +26,7 @@ import org.xml.sax.helpers.ParserAdapter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesXmlReader.java,v 1.7 2004/02/13 01:07:08 dmzwiers Exp $
+ * @version $Id: CapabilitiesXmlReader.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
  *
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */
@@ -65,7 +65,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             throw new WfsException(e, "Some sort of issue creating parser",
                 getClass().getName());
         }
-
-        return currentRequest.getRequest();
+        Request r = currentRequest.getRequest(req);
+        return r;
     }
 }

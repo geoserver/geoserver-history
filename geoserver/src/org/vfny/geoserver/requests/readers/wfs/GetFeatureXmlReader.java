@@ -29,7 +29,7 @@ import org.xml.sax.helpers.ParserAdapter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: GetFeatureXmlReader.java,v 1.7 2004/02/13 01:07:08 dmzwiers Exp $
+ * @version $Id: GetFeatureXmlReader.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class GetFeatureXmlReader extends XmlRequestReader {
     /**
@@ -84,6 +84,7 @@ public class GetFeatureXmlReader extends XmlRequestReader {
                 XmlRequestReader.class.getName());
         }
 
-        return contentHandler.getRequest();
+        Request r = contentHandler.getRequest(req);
+        return r;
     }
 }

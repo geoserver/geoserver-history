@@ -6,6 +6,8 @@ package org.vfny.geoserver.requests.wfs;
 
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
 import org.xml.sax.Attributes;
@@ -25,7 +27,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * </p>
  *
  * @author Chris Holmes, TOPP
- * @version $Id: LockHandler.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: LockHandler.java,v 1.7 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class LockHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler {
@@ -67,7 +69,8 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
      *
      * @return The lock request found by this handler.
      */
-    public LockRequest getRequest() {
+    public LockRequest getRequest(HttpServletRequest req) {
+    	request.setHttpServletRequest(req);
         return request;
     }
 
