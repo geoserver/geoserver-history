@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.11 2004/01/16 01:49:23 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.12 2004/01/16 19:33:39 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -476,6 +476,7 @@ System.out.println("getSchema"+ftc.getName());
 			}catch(ConfigurationException e){}
 			xmlSchemaFrag = sw.toString();
 		}
+System.out.println("FeatureTypeInfo:getXMLSchema:"+xmlSchemaFrag);
 		return xmlSchemaFrag;
 	}
 	/**
