@@ -25,7 +25,7 @@
   <!-- secondary directories -->
   <property name="dir.jsp" value="${dir.misc}/jsp"/>
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
-  <property name="dir.data" value="${dir.misc}/testData"/>
+  <property name="dir.data" value="${dir.misc}/data"/>
   <property name="dir.testsJar" 
   value="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
   <property name="dir.testApp" value="${dir.server}/webapps/ROOT/WEB-INF"/>
@@ -222,6 +222,7 @@
         <include name="license.txt"/>
         <include name="geoserver.log"/>
         <include name="configuration.xml"/>
+        <include name="z3950-geo.map"/>
       </fileset>
     </copy>
 
@@ -257,7 +258,11 @@
     </java>
     <!-- remove the classes forcing the server to build new class,
          so changes to the code actually are reflected in test server. -->
-    <delete dir="${dir.testApp}/classes/org"/>
+     <delete>
+       <fileset dir="${dir.testApp}/classes/org"> 
+         <exclude name="**/servlets/*"/>
+       </fileset>
+    </delete>
     <!-- builds servlets to test server -->
     <javac srcdir="${dir.src}" 
            destdir="${dir.testApp}/classes/" 
@@ -344,6 +349,7 @@
         <include name="license.txt"/>
         <include name="geoserver.log"/>
         <include name="configuration.xml"/>
+        <include name="z3950-geo.map"/>
       </fileset>
     </copy>
 
