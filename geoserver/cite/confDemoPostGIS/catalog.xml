@@ -50,6 +50,7 @@
       <style id="blue" filename="blue.sld" default="true"/>
       <style id="blueFill" filename="blue-fill.sld" default="true"/>
       <style id="green" filename="green.sld" default="true"/>
+		<style id="raster" filename="raster.sld" />
       <style id="gray" filename="gray.sld" default="true"/>
       <style id="red" filename="red.sld" default="true"/>
   </styles>

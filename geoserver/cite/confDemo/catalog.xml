@@ -90,6 +90,7 @@
 	<styles>
 		<style filename="red.sld" id="red" />
 		<style filename="blue-fill.sld" id="blueFill" />
+		<style id="raster" filename="raster.sld" />
 		<style filename="NamedPlaces.sld" id="cite_named_places" />
 		<style filename="MapNeatline.sld" id="cite_map_neatline" />
 		<style filename="Buildings.sld" id="cite_buildings" />

@@ -121,6 +121,7 @@
       <style id="dotty" filename="funkypolyshp.sld"/>
       <style id="green" filename="green.sld"/>
       <style id="maleVsFemale" filename="usa_ratio.sld"/>
+		<style id="raster" filename="raster.sld" />
       <style id="normal" filename="normal.sld" default="true"/>
   </styles>
 
