@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
  <featureType datastore="bc.shp">
          <!-- the name of the featureType in the dataStore, for shapefile it 
-             should match the filename. -->
+             must match the filename. -->
         <name>bc_roads</name>
 
          <!-- EPSG code for the FeatureType -->
