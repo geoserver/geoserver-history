@@ -26,11 +26,11 @@ import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
- * Represents a FeatureType, its user config and autodefined information.
+ * Represents a FeatureTypeConfig, its user config and autodefined information.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -70,7 +70,7 @@ public class FeatureTypeConfig extends BasicConfig {
     private int numDecimals = DEFAULT_NUM_DECIMALS;
 
     /**
-     * GT2 based configuration, Config map supplies extra info.
+     * GT2 based configuration, ModelConfig map supplies extra info.
      * 
      * <p>
      * We need to make an GeometryAttributeType that knows about SRID
@@ -141,7 +141,7 @@ public class FeatureTypeConfig extends BasicConfig {
         this.dataStore = catalog.getDataStore(dataStoreId);
 
         if (dataStore == null) {
-            msg = "FeatureType " + getName(true)
+            msg = "FeatureTypeConfig " + getName(true)
                 + " is congfigured from a datastore named " + dataStoreId
                 + " wich was not found. Check your config files.";
             throw new ConfigurationException(msg);
@@ -245,7 +245,7 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
-     * Indicates if this FeatureType is enabled.  For now just gets whether the
+     * Indicates if this FeatureTypeConfig is enabled.  For now just gets whether the
      * backing datastore is enabled.
      *
      * @return <tt>true</tt> if this FeatureTypeConfig is enabled.
@@ -469,7 +469,7 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
-     * creates a FeatureType schema from the list of defined exposed
+     * creates a FeatureTypeConfig schema from the list of defined exposed
      * attributes, or the full schema if no exposed attributes were defined
      *
      * @param attsElem DOCUMENT ME!
@@ -507,7 +507,7 @@ public class FeatureTypeConfig extends BasicConfig {
             attributes[i] = schema.getAttributeType(attName);
 
             if (attributes[i] == null) {
-                throw new ConfigurationException("the FeatureType " + getName()
+                throw new ConfigurationException("the FeatureTypeConfig " + getName()
                     + " does not contains the configured attribute " + attName
                     + ". Check your catalog configuration");
             }
@@ -570,7 +570,7 @@ public class FeatureTypeConfig extends BasicConfig {
      *       file (or rather doesn't, as I haven't got it working yet), and
      *       then limits the styles to those.  I think that instead what it
      *       should do is analyze the styles of catalog, see if they match
-     *       this FeatureType, and if they do then load the styles.
+     *       this FeatureTypeConfig, and if they do then load the styles.
      */
     private void loadStyles(Element styles, CatalogConfig catalog)
         throws ConfigurationException {
@@ -590,7 +590,7 @@ public class FeatureTypeConfig extends BasicConfig {
                if (node instanceof Element) {
                    Element elem = (Element) node;
                    String id = getElementText(elem, true);
-                   Style style = catalog.getStyle(id);
+                   StyleConfig style = catalog.getStyle(id);
                    if (style == null) {
                        LOGGER.warning("Problem loading styles for " + getName(true) +
                                       ", requested id " + id + " is not available in loaded "

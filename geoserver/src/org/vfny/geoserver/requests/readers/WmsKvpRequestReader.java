@@ -6,7 +6,7 @@ import org.vfny.geoserver.global.ServerConfig;
 
 
 /**
- * Base class for all WMS KvpRequestReaders, wich just adds the
+ * Base class for all WMSConfig KvpRequestReaders, wich just adds the
  * getRequestVersion() method wich returns the spec version a client
  * has requested or the default implementation version of this server
  * if no version has been requested, either by the "VERSION" parameter
@@ -14,7 +14,7 @@ import org.vfny.geoserver.global.ServerConfig;
  * to recognize it
  *
  * @author Gabriel Roldán
- * @version $Id: WmsKvpRequestReader.java,v 1.2.2.2 2003/12/30 23:08:28 dmzwiers Exp $
+ * @version $Id: WmsKvpRequestReader.java,v 1.2.2.3 2003/12/31 23:37:03 dmzwiers Exp $
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader
 {

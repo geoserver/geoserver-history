@@ -17,7 +17,7 @@ import org.vfny.geoserver.responses.wfs.WfsTransactionException;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionRequest.java,v 1.2.2.1 2003/12/30 23:00:39 dmzwiers Exp $
+ * @version $Id: TransactionRequest.java,v 1.2.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class TransactionRequest extends WFSRequest {
     public static final String TRANSACTION_REQUEST_TYPE = "Transaction";
@@ -35,7 +35,7 @@ public class TransactionRequest extends WFSRequest {
     /**
      * Release lockID when the transaction completes.
      * <p>
-     * WFS Specification Definition of ALL:
+     * WFSConfig Specification Definition of ALL:
      * </p>
      * <p>
      * <i>    A value of ALL indicates that the locks on all feature instances
@@ -49,7 +49,7 @@ public class TransactionRequest extends WFSRequest {
     /**
      * Release lockID when the transaction completes.
      * <p>
-     * WFS Specification Definition of SOME:
+     * WFSConfig Specification Definition of SOME:
      * </p>
      * <i>    A value of SOME indicates that only the locks on feature instances
      * modified by the transaction should be released. The other, unmodified,
@@ -81,7 +81,7 @@ public class TransactionRequest extends WFSRequest {
     protected String handle = null;
 
     /**
-     * Create a WFS Transaction request. 
+     * Create a WFSConfig Transaction request. 
      */
     public TransactionRequest() {
         super( TRANSACTION_REQUEST_TYPE );        

@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
  * Represents the various service elements used by OGC
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ServiceConfigOld.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: ServiceConfigOld.java,v 1.2.2.3 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public class ServiceConfigOld
     implements java.io.Serializable
@@ -41,7 +41,7 @@ public class ServiceConfigOld
   public static final String FEES_TAG = "Fees";
   public static final String ACCESS_TAG = "AccessConstraints";
   public static final String ROOT_TAG = "ServiceConfiguration";
-  public static final String CAPABILITIES_TAG = "Service";
+  public static final String CAPABILITIES_TAG = "ServiceConfig";
   public static final String OLD_ROOT_TAG = "GlobalConfiguration";
   public static final String VERBOSE_TAG = "Verbose";
 
@@ -162,7 +162,7 @@ public class ServiceConfigOld
 
       if ( (name == null) || (title == null) || (url == null)) {
         String message = "<Name>, <Title>, and <OnlineResource> are all "
-            + "required for a proper a valid Service section.";
+            + "required for a proper a valid ServiceConfig section.";
 
         //REVISIT: if we don't throw exception then the user will just have
         //an invalid Capabilities document.  Is that what we want?
@@ -452,7 +452,7 @@ public class ServiceConfigOld
     StringBuffer tempResponse = new StringBuffer();
 
     // Set service section of Response, based on Configuration input
-    tempResponse.append("\n  <Service>\n");
+    tempResponse.append("\n  <ServiceConfig>\n");
     tempResponse.append("    <Name>" + name + "</Name>\n");
     tempResponse.append("    <Title>" + title + "</Title>\n");
     tempResponse.append("    <Abstract>" + servAbstract + "</Abstract>\n");
@@ -474,7 +474,7 @@ public class ServiceConfigOld
     tempResponse.append("    <Fees>" + fees + "</Fees>\n");
     tempResponse.append("    <AccessConstraints>" + accessConstraints
                         + "</AccessConstraints>\n");
-    tempResponse.append("  </Service>\n");
+    tempResponse.append("  </ServiceConfig>\n");
 
     // Concatenate into XML output stream
     return tempResponse.toString();

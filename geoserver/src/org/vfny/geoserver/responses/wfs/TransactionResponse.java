@@ -59,7 +59,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: TransactionResponse.java,v 1.2.2.3 2003/12/31 23:36:46 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -127,7 +127,7 @@ public class TransactionResponse implements Response {
      * </p>
      * 
      * <p>
-     * The specification allows a WFS to implement PARTIAL sucess if it is
+     * The specification allows a WFSConfig to implement PARTIAL sucess if it is
      * unable to rollback all the requested changes.  This implementation is
      * able to offer full Rollback support and will not require the use of
      * PARTIAL success.
@@ -557,7 +557,7 @@ public class TransactionResponse implements Response {
         // 
         // Lets deal with the locks
         //
-        // Q: Why talk to Catalog you ask
+        // Q: Why talk to CatalogConfig you ask
         // A: Only class that knows all the DataStores
         //
         // We really need to ask all DataStores to release/refresh

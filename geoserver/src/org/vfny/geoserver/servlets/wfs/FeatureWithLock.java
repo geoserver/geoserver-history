@@ -16,12 +16,12 @@ import org.vfny.geoserver.servlets.WFService;
 
 
 /**
- * Implements the WFS GetFeatureWithLock interface, which responds to requests
+ * Implements the WFSConfig GetFeatureWithLock interface, which responds to requests
  * for GML, locking the features as well. This servlet accepts a
  * getFeatureWithLock request and returns GML2.1 structured XML docs.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureWithLock.java,v 1.2.2.1 2003/12/30 23:00:47 dmzwiers Exp $
+ * @version $Id: FeatureWithLock.java,v 1.2.2.2 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public class FeatureWithLock extends WFService {
     /**

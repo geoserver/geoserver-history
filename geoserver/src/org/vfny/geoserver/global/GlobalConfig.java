@@ -10,15 +10,15 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.w3c.dom.Element;
+import org.vfny.geoserver.config.*;
 
 
 /**
- * Global server configuration parameters
+ * GlobalConfig server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -41,7 +41,7 @@ public class GlobalConfig extends AbstractConfig {
 
     /**
      * Sets the max number of decimal places past the zero returned in a
-     * GetFeature response.  Default is 4 should it be moved to FeatureType
+     * GetFeature response.  Default is 4 should it be moved to FeatureTypeConfig
      * level?
      */
     private int numDecimals = 8;
@@ -49,7 +49,7 @@ public class GlobalConfig extends AbstractConfig {
     /**
      * Sets the global character set.  This could use some more testing from
      * international users, but what it does is sets the encoding globally for
-     * all postgis database connections (the charset tag in FeatureType), as
+     * all postgis database connections (the charset tag in FeatureTypeConfig), as
      * well as specifying the encoding in the return xml header and mime type.
      * The default is UTF-8.  Also be warned that GeoServer does not check if
      * the CharSet is valid before attempting to use it, so it will fail
@@ -204,6 +204,17 @@ public class GlobalConfig extends AbstractConfig {
         }
 
         globalConfig = this;
+    }
+    
+    public GlobalConfig(org.vfny.geoserver.config.GlobalConfig config){
+    	baseUrl = config.getBaseUrl();
+    	charSet = config.getCharSet();
+    	contactConfig = new ContactConfig(config.getContact());
+    	loggingLevel = config.getLoggingLevel();
+    	maxFeatures = config.getMaxFeatures();
+    	numDecimals = config.getNumDecimals();
+    	schemaBaseUrl = config.getSchemaBaseUrl();
+    	verbose = config.isVerbose();
     }
 
     /**

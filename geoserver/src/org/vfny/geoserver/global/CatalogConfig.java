@@ -35,11 +35,11 @@ import org.w3c.dom.NodeList;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class CatalogConfig extends AbstractConfig
 /**
- * implements Catalog
+ * implements CatalogConfig
  */
  {
     /** DOCUMENT ME! */
@@ -69,14 +69,14 @@ public class CatalogConfig extends AbstractConfig
     private Map featureTypes;
 
     /**
-     * Configure based on gt2 Catalog.
+     * Configure based on gt2 CatalogConfig.
      * 
      * <p>
-     * Quick hack for JUnit test cases, really the gt2 Catalog interface should
+     * Quick hack for JUnit test cases, really the gt2 CatalogConfig interface should
      * be implemented by CatalogConfig. And whatever methods  GeoServer needs
-     * to get its job done is what gt2 Catalog needs to provide.
+     * to get its job done is what gt2 CatalogConfig needs to provide.
      * </p>
-     * Right now a Map is provided to set anything that gt2 Catalog cannot.
+     * Right now a Map is provided to set anything that gt2 CatalogConfig cannot.
      * 
      * <p>
      * Given a namespace foo in the catalog the config map defines:
@@ -113,11 +113,11 @@ public class CatalogConfig extends AbstractConfig
                 defaultNameSpace = ns;
             }
 
-            LOGGER.config("Added NameSpace: " + ns);
+            LOGGER.config("Added NameSpaceConfig: " + ns);
             nameSpaces.put(name, ns);
         }
 
-        LOGGER.info("loading DataStore configuration");
+        LOGGER.info("loading DataStoreConfig configuration");
 
         Iterator iter = DataStoreFinder.getAvailableDataStores();
 
@@ -128,7 +128,7 @@ public class CatalogConfig extends AbstractConfig
         // gt2 currently assumes one datastore per namespace
         //
         // I know this is wrong, please feed our requirements into the gt2
-        // Catalog        
+        // CatalogConfig        
         dataStores = new HashMap(spaceNames.length);
 
         DataStoreConfig dsConfig;
@@ -148,7 +148,7 @@ public class CatalogConfig extends AbstractConfig
         // just use the default style
         styles.put("normal", "styles/normal.sld");
 
-        LOGGER.info("loading FeatureType configuration");
+        LOGGER.info("loading FeatureTypeConfig configuration");
         featureTypes = new HashMap();
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -221,7 +221,7 @@ public class CatalogConfig extends AbstractConfig
     /**
      * searches a DataStoreConfig by its id attribute
      *
-     * @param id the DataStore id looked for
+     * @param id the DataStoreConfig id looked for
      *
      * @return the DataStoreConfig with id attribute equals to <code>id</code>
      *         or null if there no exists
@@ -323,7 +323,7 @@ public class CatalogConfig extends AbstractConfig
         FeatureTypeConfig ftype = (FeatureTypeConfig) featureTypes.get(typeName);
 
         if (ftype == null) {
-            throw new NoSuchElementException("there is no FeatureType named "
+            throw new NoSuchElementException("there is no FeatureTypeConfig named "
                 + typeName + " configured in this server");
         }
 
@@ -433,7 +433,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws ConfigurationException DOCUMENT ME!
      *
-     * @task TODO: load styles as SLD Style objects.
+     * @task TODO: load styles as SLD StyleConfig objects.
      * @task REVISIT: Do we want to load all up front?  Or do them dynamicall?
      *       What would be real nice for all these that we do up front now,
      *       like datastores, that we we used to do dynamically, is to give
@@ -539,7 +539,7 @@ public class CatalogConfig extends AbstractConfig
             } catch (ConfigurationException cfge) {
                 //HACK: should use a logger.
                 cfge.printStackTrace(System.out);
-                LOGGER.warning("could not add FeatureType at " + currentFile
+                LOGGER.warning("could not add FeatureTypeConfig at " + currentFile
                     + " due to " + cfge);
             }
         }
@@ -708,7 +708,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws IOException
      *
-     * @see org.geotools.data.Catalog#lockRefresh(java.lang.String,
+     * @see org.geotools.data.CatalogConfig#lockRefresh(java.lang.String,
      *      org.geotools.data.Transaction)
      */
     public boolean lockRefresh(String lockID, Transaction t)
@@ -754,7 +754,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @throws IOException
      *
-     * @see org.geotools.data.Catalog#lockRelease(java.lang.String,
+     * @see org.geotools.data.CatalogConfig#lockRelease(java.lang.String,
      *      org.geotools.data.Transaction)
      */
     public boolean lockRelease(String lockID, Transaction t)
@@ -797,7 +797,7 @@ public class CatalogConfig extends AbstractConfig
      *
      * @return true if lockID exists
      *
-     * @see org.geotools.data.Catalog#lockExists(java.lang.String)
+     * @see org.geotools.data.CatalogConfig#lockExists(java.lang.String)
      */
     public boolean lockExists(String lockID) {
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {

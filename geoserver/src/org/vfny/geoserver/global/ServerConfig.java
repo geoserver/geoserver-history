@@ -23,12 +23,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import org.vfny.geoserver.config.*;
+
 
 /**
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -103,7 +105,7 @@ public class ServerConfig extends AbstractConfig {
      * Creates a new ServerConfig Object for JUnit testing.
      * 
      * <p>
-     * Configure based on provided Map, and Catalog.
+     * Configure based on provided Map, and CatalogConfig.
      * </p>
      * 
      * <p>
@@ -132,18 +134,31 @@ public class ServerConfig extends AbstractConfig {
         catalog = new CatalogConfig(config, gt2catalog);
         validationConfig = new ValidationConfig(config);
     }
+    
+	public ServerConfig(ModelConfig config)
+		throws ConfigurationException {
+			
+		//this.rootDir = rootDir;	//check for removal
+
+		globalConfig = new GlobalConfig(config.getGlobal());
+
+		featureServerConfig = new WFSConfig(config.getWfs());
+		mapServerConfig = new WMSConfig(config.getWms());
+		catalog = new CatalogConfig(config.getCatalog());
+		validationConfig = new ValidationConfig(config);
+	}
 
     /**
      * Gets the directory where geoserver data is stored.
      *
      * @return DOCUMENT ME!
      */
-    public String getDataDir() {
-        return dataDir;
-    }
+    //public String getDataDir() {
+    //    return dataDir;
+    //}
 
     /**
-     * Gets the config for the WMS.
+     * Gets the config for the WMSConfig.
      *
      * @return DOCUMENT ME!
      */
@@ -214,6 +229,17 @@ public class ServerConfig extends AbstractConfig {
         serverConfig = new ServerConfig(rootDir);
     }
 
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param config DOCUMENT ME!
+	 *
+	 * @throws ConfigurationException DOCUMENT ME!
+	 */
+	public static void load(ModelConfig config) throws ConfigurationException {
+		serverConfig = new ServerConfig(config);
+	}
+
     /**
      * DOCUMENT ME!
      *
@@ -257,17 +283,17 @@ public class ServerConfig extends AbstractConfig {
     }
 
     /**
-     * Sets everything up based on provided gt2 Catalog.
+     * Sets everything up based on provided gt2 CatalogConfig.
      * 
      * <p>
      * This is a quick hack to allow for basic JUnit testing.
      * </p>
      * 
      * <p>
-     * We need to get GeoServer to push more functionality into gt2 Catalog
+     * We need to get GeoServer to push more functionality into gt2 CatalogConfig
      * interface. Right now they have similar goals in life, we should set
-     * things up so GeoServer config classes can implement the Catalog
-     * interface, and expand the Catalog interface to the point it is useful.
+     * things up so GeoServer config classes can implement the CatalogConfig
+     * interface, and expand the CatalogConfig interface to the point it is useful.
      * </p>
      *
      * @param config DOCUMENT ME!
@@ -304,9 +330,9 @@ public class ServerConfig extends AbstractConfig {
 
             String serviceType = elem.getAttribute("type");
 
-            if ("WFS".equalsIgnoreCase(serviceType)) {
+            if ("WFSConfig".equalsIgnoreCase(serviceType)) {
                 featureServerConfig = new WFSConfig(elem);
-            } else if ("WMS".equalsIgnoreCase(serviceType)) {
+            } else if ("WMSConfig".equalsIgnoreCase(serviceType)) {
                 mapServerConfig = new WMSConfig(elem);
             } else if ("Z39.50".equalsIgnoreCase(serviceType)) {
                 //...

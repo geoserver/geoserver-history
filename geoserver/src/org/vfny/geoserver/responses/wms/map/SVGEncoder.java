@@ -36,7 +36,7 @@ import com.vividsolutions.jts.geom.Point;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.3.2.2 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: SVGEncoder.java,v 1.3.2.3 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -65,7 +65,7 @@ public class SVGEncoder {
     /** temporary holding of the geometry currently being encoded */
     private Geometry currentGeometry = null;
 
-    /** temporary holding of the FeatureType currently being encoded */
+    /** temporary holding of the FeatureTypeConfig currently being encoded */
     private FeatureType featureType;
 
     /** the writer used to wrap the output stream */
@@ -152,7 +152,7 @@ public class SVGEncoder {
 
     /**
      * If <code>collect == true</code>, then all the geometries will be grouped
-     * in a single SVG element by FeatureType requested. The effect is like a
+     * in a single SVG element by FeatureTypeConfig requested. The effect is like a
      * union operation upon the geometries of the whole FeatureResults
      * resulting in a single geometry collection.
      * 
@@ -789,7 +789,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.3.2.2 $
+ * @version $Revision: 1.3.2.3 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(

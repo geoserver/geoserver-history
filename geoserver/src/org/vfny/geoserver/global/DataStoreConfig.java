@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: DataStoreConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class DataStoreConfig extends AbstractConfig {
     
@@ -44,10 +44,10 @@ public class DataStoreConfig extends AbstractConfig {
     /** a short description about this data store */
     private String _abstract;
 
-    /** connection parameters to create the DataStore */
+    /** connection parameters to create the DataStoreConfig */
     private Map connectionParams;
 
-    /** DataStore we are representing */
+    /** DataStoreConfig we are representing */
     private DataStore dataStore = null;
     /**
      * Creates a new DataStoreConfig object.
@@ -59,7 +59,7 @@ public class DataStoreConfig extends AbstractConfig {
      */
     public DataStoreConfig(Element dsElem, CatalogConfig catalog)
         throws ConfigurationException {
-        LOGGER.finer("creating a new DataStore configuration");
+        LOGGER.finer("creating a new DataStoreConfig configuration");
         this.id = getAttribute(dsElem, "id", true);
 
         String namespacePrefix = getAttribute(dsElem, "namespace", true);
@@ -80,7 +80,7 @@ public class DataStoreConfig extends AbstractConfig {
         LOGGER.info("created " + toString());
     }
     /**
-     * Configuration based on gt2 Catalog information.
+     * Configuration based on gt2 CatalogConfig information.
      * <p>
      * For the namespace food the config map defines:
      * </p>
@@ -95,7 +95,7 @@ public class DataStoreConfig extends AbstractConfig {
      * @param config2
      */
     public DataStoreConfig(Map config, DataStore store, NameSpace namespace ) {
-        LOGGER.finer("creating a new DataStore configuration");
+        LOGGER.finer("creating a new DataStoreConfig configuration");
         String name = namespace.getPrefix();
         id = get( config, name+".id", name );
         nameSpace = namespace;
@@ -122,7 +122,7 @@ public class DataStoreConfig extends AbstractConfig {
      */
     private void loadConnectionParams(Element connElem)
         throws ConfigurationException {
-        LOGGER.fine("loading connection parameters for DataStore "
+        LOGGER.fine("loading connection parameters for DataStoreConfig "
             + nameSpace.getPrefix());
         this.connectionParams = new HashMap();
 
@@ -143,15 +143,15 @@ public class DataStoreConfig extends AbstractConfig {
     }
 
     /**
-     * By now just uses DataStoreFinder to find a new instance of a DataStore
+     * By now just uses DataStoreFinder to find a new instance of a DataStoreConfig
      * capable of process <code>connectionParams</code>. In the future we can
      * see if it is better to cache or pool DataStores for performance, but
-     * definitely we shouldn't maintain a single DataStore as instance
+     * definitely we shouldn't maintain a single DataStoreConfig as instance
      * variable for synchronizing reassons
      * <p>
      * <p>
-     * JG: Umm we actually require a single DataStore for for locking &
-     * transaction support to work. DataStore is expected
+     * JG: Umm we actually require a single DataStoreConfig for for locking &
+     * transaction support to work. DataStoreConfig is expected
      * to be thread aware (that is why it has Transaction Support).
      * </p>
      * @return DOCUMENT ME!
@@ -160,7 +160,7 @@ public class DataStoreConfig extends AbstractConfig {
      *         the passed parameters
      * @throws IllegalStateException if this DataStoreConfig is disabled by
      *         configuration
-     * @throws NoSuchElementException if no DataStore is found
+     * @throws NoSuchElementException if no DataStoreConfig is found
      * @throws DataSourceException DOCUMENT ME!
      */
     public synchronized DataStore getDataStore()

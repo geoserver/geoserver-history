@@ -25,9 +25,9 @@ import org.xml.sax.helpers.ParserAdapter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesXmlReader.java,v 1.2.2.1 2003/12/30 23:00:38 dmzwiers Exp $
+ * @version $Id: CapabilitiesXmlReader.java,v 1.2.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  *
- * @task TODO: see if it must be refactored to read WMS GetCapabilities too
+ * @task TODO: see if it must be refactored to read WMSConfig GetCapabilities too
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
     /**

@@ -26,20 +26,20 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * This class represents a FeatureType element in a Capabilities document along
+ * This class represents a FeatureTypeConfig element in a Capabilities document along
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.2.2.2 $ $Date: 2003/12/30 23:08:27 $
+ * @version $Revision: 1.2.2.3 $ $Date: 2003/12/31 23:36:45 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
- *       castor generated FeatureType, but it is now unclear if we _really_
+ *       castor generated FeatureTypeConfig, but it is now unclear if we _really_
  *       need this internal class, or if a TypeInfo can just hold it all.
  */
 class FeatureType
 {
   /** DOCUMENT ME! */
-  public static final String ROOT_TAG = "FeatureType";
+  public static final String ROOT_TAG = "FeatureTypeConfig";
 
   /** DOCUMENT ME! */
   public static final String OLD_ROOT_TAG = "featureType";
@@ -72,7 +72,7 @@ class FeatureType
   public static final String MAXY_ATT = "maxy";
 
   /** DOCUMENT ME! */
-  public static final String STYLE_TAG = "Style";
+  public static final String STYLE_TAG = "StyleConfig";
 
   /** DOCUMENT ME! */
   public static final String STYLE_ID_ATTR = "id";
@@ -140,12 +140,12 @@ class FeatureType
   }
 
   /**
-   * static factory, reads a FeatureType from an xml file, using the default
+   * static factory, reads a FeatureTypeConfig from an xml file, using the default
    * root tag.
    *
    * @param featureTypeFile the path to the configuration file.
    *
-   * @return the FeatureType object constructed from the xml elements of the
+   * @return the FeatureTypeConfig object constructed from the xml elements of the
    *         file.
    *
    * @throws ConfigurationException If anything goes wrong reading the xml.
@@ -157,14 +157,14 @@ class FeatureType
   }
 
   /**
-   * static factory, reads a FeatureType from an xml file, using the passed
+   * static factory, reads a FeatureTypeConfig from an xml file, using the passed
    * in root tag.
    *
    * @param featureTypeFile the path to the configuration file.
    * @param rootTag the tag of the element whose children are the appropriate
    *        configuration elements.
    *
-   * @return the FeatureType object constructed from the xml elements of the
+   * @return the FeatureTypeConfig object constructed from the xml elements of the
    *         file.
    *
    * @throws ConfigurationException if there are any problems.
@@ -595,7 +595,7 @@ class FeatureType
    */
   public String toString()
   {
-    StringBuffer returnString = new StringBuffer("\nconfig.FeatureType:");
+    StringBuffer returnString = new StringBuffer("\nconfig.FeatureTypeConfig:");
     returnString.append("\n   [name: " + name + "] ");
     returnString.append("\n   [title: " + title + "] ");
     returnString.append("\n   [abstract: " + ftAbstract + "] ");

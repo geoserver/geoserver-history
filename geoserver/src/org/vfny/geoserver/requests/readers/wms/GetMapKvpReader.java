@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.2.2.3 2003/12/31 23:36:46 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -167,7 +167,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * <li>
      * FILTERS if present, must contain a list of filters, exactly one per
      * feature type requested, in the same format as for the <i>FILTER</i>
-     * parameter in WFS's GetFeature request.
+     * parameter in WFSConfig's GetFeature request.
      * </li>
      * <li>
      * ATTRIBUTES wich attributes of each layer will be sent as XML attributes

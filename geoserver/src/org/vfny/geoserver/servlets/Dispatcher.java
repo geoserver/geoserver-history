@@ -35,9 +35,9 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.7.2.2 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: Dispatcher.java,v 1.7.2.3 2003/12/31 23:36:45 dmzwiers Exp $
  *
- * @task TODO: rework to work too for WMS servlets, and to get the servlets
+ * @task TODO: rework to work too for WMSConfig servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
  */
 public class Dispatcher extends HttpServlet {
@@ -87,7 +87,7 @@ public class Dispatcher extends HttpServlet {
 
     //HACK! This is just to fix instances where the first request is a 
     //dispatcher, and the strategy hasn't been inited yet.  This can be
-    //fixed in two ways, one by having Dispatcher extend Abstract Service,
+    //fixed in two ways, one by having Dispatcher extend Abstract ServiceConfig,
     //which it should do, and two by having the configuration of the strategy
     //done in user configuration instead of in the web.xml file.  Both should
     //be done.

@@ -7,14 +7,14 @@ package org.vfny.geoserver.global;
 import java.util.Map;
 
 import org.w3c.dom.Element;
-
+import org.vfny.geoserver.config.*;
 
 /**
  * default configuration for services
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -49,6 +49,14 @@ public abstract class ServiceConfig extends BasicConfig {
         enabled = get( config, "service.enabled", true );
         serviceType = get( config, "service.type", "Test");
         onlineResource = get( config, "service.onlineResources", "localhost" );                        
+    }
+    
+    public ServiceConfig(org.vfny.geoserver.config.ServiceConfig config){
+    	super(config);
+    	enabled = config.isEnabled();
+    	onlineResource = config.getOnlineResource();
+    	// serviceType --- won't need this
+    	// URL --- not used
     }
     /**
      * DOCUMENT ME!

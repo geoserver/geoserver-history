@@ -24,13 +24,13 @@ import org.xml.sax.SAXException;
 
 /**
  * This class represents the global geoserver configuration options that are
- * not part of the Service element of a capabilities response.  They are
+ * not part of the ServiceConfig element of a capabilities response.  They are
  * currently part of the same config file, but making a seperate class allows
  * us to easily seperate the elements out to different configuration files in
- * the future, such as for a WMS or WCS.
+ * the future, such as for a WMSConfig or WCS.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: OldWfsConfig.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: OldWfsConfig.java,v 1.2.2.3 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public class OldWfsConfig
     implements java.io.Serializable

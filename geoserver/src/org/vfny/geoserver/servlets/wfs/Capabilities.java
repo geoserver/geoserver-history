@@ -16,12 +16,12 @@ import org.vfny.geoserver.servlets.WFService;
 
 
 /**
- * Implements the WFS GetCapabilities interface, which tells clients what the
+ * Implements the WFSConfig GetCapabilities interface, which tells clients what the
  * server can do.
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: Capabilities.java,v 1.2.2.1 2003/12/30 23:00:47 dmzwiers Exp $
+ * @version $Id: Capabilities.java,v 1.2.2.2 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public class Capabilities extends WFService {
     /**

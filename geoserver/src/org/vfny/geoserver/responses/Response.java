@@ -26,7 +26,7 @@ import org.vfny.geoserver.requests.Request;
  * the execution process generates the response content itself; just that it
  * performs any query or processing that should generate a trapable error.
  * This is specially usefull for streamed responses such as wfs GetFeature or
- * WMS GetMap, where the execution process can be used to parse parameters,
+ * WMSConfig GetMap, where the execution process can be used to parse parameters,
  * execute queries upon the corresponding data sources and leave things ready
  * to generate a streamed response when the consumer calls writeTo.
  * </p>
@@ -34,7 +34,7 @@ import org.vfny.geoserver.requests.Request;
  * <p></p>
  *
  * @author Gabriel Roldán
- * @version $Id: Response.java,v 1.2.2.1 2003/12/30 23:00:45 dmzwiers Exp $
+ * @version $Id: Response.java,v 1.2.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public interface Response {
     /**
@@ -78,7 +78,7 @@ public interface Response {
      * that an inconsistence in the work flow that may result in an
      * inconsistence between the response content and the content type
      * declared for it, if such an implementation can return different
-     * contents based on the request that has originated it. i.e. a WMS GetMap
+     * contents based on the request that has originated it. i.e. a WMSConfig GetMap
      * response will return different content encodings based on the FORMAT
      * requested, so it would be impossible to it knowing the exact MIME
      * response type if it has not processed the request yet.
@@ -125,7 +125,7 @@ public interface Response {
      * ByteArrayOutputStream
      * </p>
      * JG: Consider using a Writer here? GR: I don't think so, because not all
-     * responses will be char sequences, such as an image in a WMS GetImage
+     * responses will be char sequences, such as an image in a WMSConfig GetImage
      * response.
      *
      * @param out

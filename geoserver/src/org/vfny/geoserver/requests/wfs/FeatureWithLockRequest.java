@@ -13,7 +13,7 @@ import org.vfny.geoserver.requests.Query;
 
 
 /**
- * Implements the WFS GetFeatureWithLock interface, which  responds to requests
+ * Implements the WFSConfig GetFeatureWithLock interface, which  responds to requests
  * for GML and locks the features. It extends GetFeature with the ability to
  * turn itself into a lock request, and with an expiry element.  The
  * lockAction didn't make it in to the 1.0 spec, as far as I can tell, but
@@ -21,7 +21,7 @@ import org.vfny.geoserver.requests.Query;
  * should be trivial, as it's already a part of lockRequest.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureWithLockRequest.java,v 1.2.2.1 2003/12/30 23:00:39 dmzwiers Exp $
+ * @version $Id: FeatureWithLockRequest.java,v 1.2.2.2 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public class FeatureWithLockRequest extends FeatureRequest {
     /** Standard logging instance for class */

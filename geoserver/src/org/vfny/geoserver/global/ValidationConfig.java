@@ -29,6 +29,8 @@ import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
 import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
 
+import org.vfny.geoserver.config.*;
+
 /**
  * ValidationConfig sets up the Tests used for the VWFS.
  * 
@@ -58,7 +60,7 @@ import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: ValidationConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
@@ -79,7 +81,7 @@ public class ValidationConfig extends AbstractConfig {
     Map plugIns;
     
     /**
-     * Configure based on gt2 Catalog.
+     * Configure based on gt2 CatalogConfig.
      * <p>
      * Configuration based on the following:
      * <ul>
@@ -162,6 +164,9 @@ public class ValidationConfig extends AbstractConfig {
         }        
     }
     
+    public ValidationConfig(ModelConfig config){
+    	// do nothing yet.
+    }
     
     /**
      * getProcessor purpose.

@@ -58,13 +58,13 @@ import org.vfny.geoserver.responses.ResponseUtils;
  * 
  * <p>
  * Java Exception have recently developed the ability to contain other
- * exceptions. By calling initCause on your Service Exception you can get the
+ * exceptions. By calling initCause on your ServiceConfig Exception you can get the
  * real exception included in the stacktrace above.
  * </p>
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.3.2.2 2003/12/30 23:08:28 dmzwiers Exp $
+ * @version $Id: ServiceException.java,v 1.3.2.3 2003/12/31 23:36:46 dmzwiers Exp $
  *
  * @task TODO: print directly to an output stream for getXmlResponse.
  */
@@ -228,7 +228,7 @@ public class ServiceException extends Exception {
      *
      * @return The ServiceExceptionReport of this error.
      *
-     * @task REVISIT: adapt it to handle WMS too
+     * @task REVISIT: adapt it to handle WMSConfig too
      */
     public String getXmlResponse(boolean printStackTrace) {
         String indent = "   ";

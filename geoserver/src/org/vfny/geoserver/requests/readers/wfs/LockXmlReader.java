@@ -24,11 +24,11 @@ import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
- * reads in a Lock WFS request from an XML stream
+ * reads in a Lock WFSConfig request from an XML stream
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: LockXmlReader.java,v 1.2.2.1 2003/12/30 23:00:37 dmzwiers Exp $
+ * @version $Id: LockXmlReader.java,v 1.2.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class LockXmlReader extends XmlRequestReader {
     /**

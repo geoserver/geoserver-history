@@ -78,7 +78,7 @@ import org.vfny.geoserver.responses.Response;
  * specific content type; and that Response.getContentType is called AFTER
  * Response.execute, since the MIME type can depend on any request parameter
  * or another kind of desission making during the execute process. (i.e.
- * FORMAT in WMS GetMap)
+ * FORMAT in WMSConfig GetMap)
  * </p>
  * 
  * <p>
@@ -89,7 +89,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.3.2.2 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.3.2.3 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -406,7 +406,7 @@ public abstract class AbstractService extends HttpServlet {
             return;
         }
 
-        LOGGER.info("Service handled");
+        LOGGER.info("ServiceConfig handled");
     }
 
     /**
@@ -474,7 +474,7 @@ public abstract class AbstractService extends HttpServlet {
      * Some errors know how to write themselves out WfsTransactionException for
      * instance. It looks like this might be is handled by
      * getExceptionHandler().newServiceException( t, pre, null ). I still
-     * would not mind seeing a check for Service Exception here.
+     * would not mind seeing a check for ServiceConfig Exception here.
      * </p>
      * 
      * <p>
@@ -607,7 +607,7 @@ public abstract class AbstractService extends HttpServlet {
          * Complete opperation in the negative.
          * 
          * <p>
-         * Gives Service a chance to clean up resources
+         * Gives ServiceConfig a chance to clean up resources
          * </p>
          */
         public void abort();
@@ -678,7 +678,7 @@ class SpeedStratagy implements AbstractService.ServiceStratagy {
 
 
 /**
- * A safe Service stratagy that buffers output until writeTo completes.
+ * A safe ServiceConfig stratagy that buffers output until writeTo completes.
  * 
  * <p>
  * This stratagy wastes memory, for saftey. It represents a middle ground
@@ -741,10 +741,10 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
 
 
 /**
- * A safe Service stratagy that uses a temporary file until writeTo completes.
+ * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.3.2.2 $
+ * @version $Revision: 1.3.2.3 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

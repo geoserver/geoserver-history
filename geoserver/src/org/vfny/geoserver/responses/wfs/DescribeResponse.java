@@ -37,7 +37,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.3.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.3.2.3 2003/12/31 23:36:48 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -343,7 +343,7 @@ public class DescribeResponse implements Response {
     }
 
     /**
-     * Transforms a FeatureType into gml, with no headers.
+     * Transforms a FeatureTypeConfig into gml, with no headers.
      *
      * @param schema the schema to transform.
      *

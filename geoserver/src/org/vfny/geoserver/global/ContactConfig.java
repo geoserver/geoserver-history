@@ -30,10 +30,10 @@ import org.w3c.dom.NodeList;
  * &lt;/ContactInformation&gt;<br></code>
  *
  * @author Gabriel Roldán
- * @version $Id: ContactConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: ContactConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  *
  * @task REVISIT: may be it will be necessary to create a real contact
- *       hierarchy if we plan to add Catalog service.
+ *       hierarchy if we plan to add CatalogConfig service.
  */
 public class ContactConfig extends AbstractConfig {
     private String contactPerson;

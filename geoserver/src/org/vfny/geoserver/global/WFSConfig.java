@@ -7,21 +7,22 @@ package org.vfny.geoserver.global;
 import java.util.Map;
 
 import org.w3c.dom.Element;
+import org.vfny.geoserver.config.wfs.*;
 
 
 /**
- * Represents a configuration of the WFS service.  Inherits most everything
+ * Represents a configuration of the WFSConfig service.  Inherits most everything
  * from ServiceConfig.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
-    public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFS-basic.xsd";
+    public static final String WFS_BASIC_LOC = WFS_FOLDER + "WFSConfig-basic.xsd";
     public static final String WFS_CAP_LOC = WFS_FOLDER
-        + "WFS-capabilities.xsd";
+        + "WFSConfig-capabilities.xsd";
     private GlobalConfig global = GlobalConfig.getInstance();
     private String describeUrl;
 
@@ -40,6 +41,12 @@ public class WFSConfig extends ServiceConfig {
     public WFSConfig(Map config ) {
         super( config );
         URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
+    }
+    
+    public WFSConfig(org.vfny.geoserver.config.wfs.WFSConfig config){
+    	super(config.getService());
+    	describeUrl = config.getDescribeUrl();
+		URL = GlobalConfig.getInstance().getBaseUrl() + "wfs/";
     }
     /**
      * Gets the base url of a describe request.

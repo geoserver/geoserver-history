@@ -24,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.3 2003/12/31 23:37:02 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = ServerConfig.getInstance()
@@ -82,7 +82,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException DOCUMENT ME!
      */
     protected void startService(ServiceConfig config) throws SAXException {
-        startElement("Service");
+        startElement("ServiceConfig");
     }
 
     /**
@@ -93,7 +93,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException DOCUMENT ME!
      */
     protected void endService(ServiceConfig config) throws SAXException {
-        endElement("Service");
+        endElement("ServiceConfig");
     }
 
     /**
@@ -156,8 +156,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     }
 
     /**
-     * calls super.handleFeatureType to add common FeatureType content such as
-     * Name, Title and LatLonBoundingBox, and then writes WMS specific layer
+     * calls super.handleFeatureType to add common FeatureTypeConfig content such as
+     * Name, Title and LatLonBoundingBox, and then writes WMSConfig specific layer
      * properties as Styles, Scale Hint, etc.
      *
      * @param ftype DOCUMENT ME!
@@ -333,7 +333,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     }
 
     /**
-     * Overrides BasicConfig.handleKeywords to write the keywords list in WMS
+     * Overrides BasicConfig.handleKeywords to write the keywords list in WMSConfig
      * style
      *
      * @param kwords DOCUMENT ME!
@@ -363,7 +363,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     }
 
     /**
-     * Overrides CapabilitiesResponseHandler.handlerOnlineResource to write WMS
+     * Overrides CapabilitiesResponseHandler.handlerOnlineResource to write WMSConfig
      * style service online resource
      *
      * @param config DOCUMENT ME!

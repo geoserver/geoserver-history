@@ -21,12 +21,12 @@ import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
- * reads a WMS GetCapabilities request from an XML stream
+ * reads a WMSConfig GetCapabilities request from an XML stream
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesXmlReader.java,v 1.2.2.1 2003/12/30 23:00:49 dmzwiers Exp $
+ * @version $Id: CapabilitiesXmlReader.java,v 1.2.2.2 2003/12/31 23:36:46 dmzwiers Exp $
  *
- * @task TODO: see if it must be refactored to read WMS GetCapabilities too
+ * @task TODO: see if it must be refactored to read WMSConfig GetCapabilities too
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
     /**

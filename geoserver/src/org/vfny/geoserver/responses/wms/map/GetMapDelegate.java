@@ -39,7 +39,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.4.2.2 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: GetMapDelegate.java,v 1.4.2.3 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -179,7 +179,7 @@ public abstract class GetMapDelegate implements Response {
      * @param filter The additional filter to process with.
      * @param requestExtent The extent to filter out.
      * @param ffactory A filterFactory to create new filters.
-     * @param schema The FeatureType of the request of this filter.
+     * @param schema The FeatureTypeConfig of the request of this filter.
      *
      * @return A custom filter of the bbox and any optional custom filters.
      *
@@ -222,7 +222,7 @@ public abstract class GetMapDelegate implements Response {
 
     /**
      * Tries to guesss exactly wich property names are needed to query for a
-     * given FeatureType and the Filter that will be applied to it. By this
+     * given FeatureTypeConfig and the Filter that will be applied to it. By this
      * way, only the needed propertied will be queried to the underlying
      * FeatureSource in the hope that it will speed up the query
      * 

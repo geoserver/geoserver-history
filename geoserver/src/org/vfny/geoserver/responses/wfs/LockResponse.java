@@ -41,7 +41,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: LockResponse.java,v 1.2.2.3 2003/12/31 23:36:50 dmzwiers Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -189,9 +189,9 @@ public class LockResponse implements Response {
             } catch (IllegalAttributeException e) {
                 // TODO: JG - I really dont like this
                 // reader says it will throw this if the attribtues do not match
-                // the FeatureType
+                // the FeatureTypeConfig
                 // I figure if this is thrown we are poorly configured or
-                // the DataStore needs some quality control
+                // the DataStoreConfig needs some quality control
                 //
                 // should rollback the lock as well :-(
                 throw new WfsException("Lock request " + curFilter
@@ -284,7 +284,7 @@ public class LockResponse implements Response {
         returnXml.append(".net/wfs ");
         returnXml.append(ServerConfig.getInstance().getWFSConfig()
                                      .getSchemaBaseUrl());
-        returnXml.append("wfs/1.0.0/WFS-transaction.xsd\">");
+        returnXml.append("wfs/1.0.0/WFSConfig-transaction.xsd\">");
         returnXml.append(nl);
         returnXml.append(indent + "<LockId>" + lockId + "</LockId>" + nl);
 

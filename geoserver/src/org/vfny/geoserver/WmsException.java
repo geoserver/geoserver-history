@@ -10,7 +10,7 @@ package org.vfny.geoserver;
  * this before returning to clients.
  *
  * @author Gabriel Roldán
- * @version $Id: WmsException.java,v 1.3 2003/12/26 17:46:10 cholmesny Exp $
+ * @version $Id: WmsException.java,v 1.3.2.1 2003/12/31 23:36:46 dmzwiers Exp $
  */
 public class WmsException extends ServiceException {
     /**
@@ -68,7 +68,7 @@ public class WmsException extends ServiceException {
      *
      * @return The ServiceExceptionReport of this error.
      *
-     * @task REVISIT: adapt it to handle WMS too
+     * @task REVISIT: adapt it to handle WMSConfig too
      */
     public String getXmlResponse(boolean printStackTrace) {
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\"");

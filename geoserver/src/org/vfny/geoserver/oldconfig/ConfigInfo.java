@@ -70,7 +70,7 @@ public class ConfigInfo
   /**
    * Constructor that reads in configuration information from FreeFS
    * configuration file.  This information is primarily used in the
-   * 'Service' section of the return document.
+   * 'ServiceConfig' section of the return document.
    *
    * @param rootDir the directory holding all the configuration information.
    */
@@ -143,7 +143,7 @@ public class ConfigInfo
 
   /**
    * constructs a ServiceConfig object, which encapsulates the values used
-   * for the Service section of a capabilities object.
+   * for the ServiceConfig section of a capabilities object.
    *
    * @param configFile The file that contains the service tags.
    *
@@ -529,7 +529,7 @@ public class ConfigInfo
    * Retrieves the appropriate xml to go in the service section of a
    * capabilities document.
    *
-   * @param wfsName Name of the WFS
+   * @param wfsName Name of the WFSConfig
    *
    * @return An xml string of the service section of a capabilities document.
    */

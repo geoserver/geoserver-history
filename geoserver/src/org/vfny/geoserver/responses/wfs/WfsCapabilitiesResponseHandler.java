@@ -24,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.3 2003/12/31 23:36:46 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -202,10 +202,10 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             //can't handle ones that aren't enabled.
             //and they shouldn't be handled, as they won't function.
             if (ftype.isEnabled()) {
-                startElement("FeatureType");
+                startElement("FeatureTypeConfig");
                 handleFeatureType(ftype);
                 unIndent();
-                endElement("FeatureType");
+                endElement("FeatureTypeConfig");
                 cReturn();
             }
         }

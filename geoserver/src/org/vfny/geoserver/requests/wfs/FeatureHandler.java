@@ -27,7 +27,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * </p>
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureHandler.java,v 1.2.2.1 2003/12/30 23:00:39 dmzwiers Exp $
+ * @version $Id: FeatureHandler.java,v 1.2.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler {
@@ -180,7 +180,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     /**
      * Gets a filter and adds it to the appropriate query (or queries).
      *
-     * @param filter (OGC WFS) Filter from (SAX) filter.
+     * @param filter (OGC WFSConfig) Filter from (SAX) filter.
      */
     public void filter(Filter filter) {
         LOGGER.finest("found filter: " + filter.toString());

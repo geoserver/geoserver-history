@@ -9,19 +9,21 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
+import org.vfny.geoserver.config.wms.*;
+
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMSConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class WMSConfig extends ServiceConfig {
-    /** WMS version spec implemented */
+    /** WMSConfig version spec implemented */
     private static final String WMS_VERSION = "1.1.1";
 
-    /** WMS spec specifies this fixed service name */
-    private static final String FIXED_SERVICE_NAME = "OGC:WMS";
+    /** WMSConfig spec specifies this fixed service name */
+    private static final String FIXED_SERVICE_NAME = "OGC:WMSConfig";
 
     /** DOCUMENT ME!  */
     private static final String[] EXCEPTION_FORMATS = {
@@ -45,6 +47,11 @@ public class WMSConfig extends ServiceConfig {
         super( config );
         URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
     }
+    public WMSConfig(org.vfny.geoserver.config.wms.WMSConfig config){
+    	super(config.getService());
+    	updateTime = config.getUpdateTime();
+    	URL = GlobalConfig.getInstance().getBaseUrl() + "/wms";
+    }
     /**
      * DOCUMENT ME!
      *
@@ -56,7 +63,7 @@ public class WMSConfig extends ServiceConfig {
 
     /**
      * overrides getName() to return the fixed service name as specified by OGC
-     * WMS 1.1 spec
+     * WMSConfig 1.1 spec
      *
      * @return DOCUMENT ME!
      */
@@ -66,7 +73,7 @@ public class WMSConfig extends ServiceConfig {
 
     /**
      * returns a GMT time string that represents the last modification time of
-     * the capabilities aspects of the WMS service
+     * the capabilities aspects of the WMSConfig service
      *
      * @return DOCUMENT ME!
      */

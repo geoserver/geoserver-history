@@ -15,7 +15,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DispatcherKvpReader.java,v 1.3.2.1 2003/12/30 23:00:51 dmzwiers Exp $
+ * @version $Id: DispatcherKvpReader.java,v 1.3.2.2 2003/12/31 23:37:03 dmzwiers Exp $
  */
 public class DispatcherKvpReader {
     /** Class logger */
@@ -71,9 +71,9 @@ public class DispatcherKvpReader {
         if (serviceType != null) {
             serviceType = serviceType.toUpperCase();
 
-            if (serviceType.equals("WFS")) {
+            if (serviceType.equals("WFSConfig")) {
                 return Dispatcher.WFS_SERVICE;
-            } else if (serviceType.equals("WMS")) {
+            } else if (serviceType.equals("WMSConfig")) {
                 return Dispatcher.WMS_SERVICE;
             } else {
                 return Dispatcher.UNKNOWN;

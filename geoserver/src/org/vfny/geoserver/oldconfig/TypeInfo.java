@@ -20,12 +20,12 @@ import org.vfny.geoserver.global.ConfigurationException;
  * Reads all necessary feature type information to abstract away from servlets.
  * <p>
  * TODO: Currently holds featureDSource and transactionDS, We switching over to
- * DataStore api so this will need to be removed.
+ * DataStoreConfig api so this will need to be removed.
  * </p>
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán, Dominion t.i.
- * @version $Id: TypeInfo.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: TypeInfo.java,v 1.2.2.3 2003/12/31 23:36:45 dmzwiers Exp $
  */
 public class TypeInfo
 {
@@ -203,7 +203,7 @@ public class TypeInfo
    */
   public String getMetadataUrl()
   {
-    return null; //not implemented in new FeatureType internal type yet.
+    return null; //not implemented in new FeatureTypeConfig internal type yet.
   }
 
   /**
@@ -382,12 +382,12 @@ public class TypeInfo
    *
    * @param version 0.0.14 or 1.0.0
    *
-   * @return the FeatureType element for the capabilites document.
+   * @return the FeatureTypeConfig element for the capabilites document.
    */
   private String getCapabilitiesXmlv14(String version)
   {
     // MAKE TERSE VERSION CAPABILITY
-    StringBuffer tempResponse = new StringBuffer("    <FeatureType>\n");
+    StringBuffer tempResponse = new StringBuffer("    <FeatureTypeConfig>\n");
     String name = internalType.getName();
     String latLonName = "LatLonBoundingBox";
     boolean supportsAdd = false;
@@ -465,7 +465,7 @@ public class TypeInfo
     //tempResponse.append(" type=\"" + internalType.getMetadataURL().getType();
     //tempResponse.append("\" format=\"" + internalType.getMetadataURL().getFormat();
     //tempResponse.append("\">" + internalType.getMetadataURL().getUrl() + "</MetaDataURL>\n";
-    tempResponse.append("    </FeatureType>\n");
+    tempResponse.append("    </FeatureTypeConfig>\n");
 
     return tempResponse.toString();
   }
@@ -473,14 +473,14 @@ public class TypeInfo
   /**
    * Generates v0.0.15 capabilities document fragment for a feature type.
    *
-   * @return the 0.0.15 capabilities FeatureType element for this feature.
+   * @return the 0.0.15 capabilities FeatureTypeConfig element for this feature.
    */
   private String getCapabilitiesXmlv15()
   {
     // SHOULD CHANGE TO STRING BUFFER
     // ALSO MAKE TERSE VERSION CAPABILITY
     StringBuffer tempResponse = new StringBuffer(
-        "        <wfsfl:FeatureType>\n");
+        "        <wfsfl:FeatureTypeConfig>\n");
     tempResponse.append("            <wfsfl:Name>" + internalType.getName()
                         + "</wfsfl:Name>\n");
     tempResponse.append("            <wfsfl:SRS srsName=\""
@@ -503,7 +503,7 @@ public class TypeInfo
     tempResponse.append(
         "            <wfsfl:Operations><wfsfl:Query/></wfsfl:"
         + "Operations>\n");
-    tempResponse.append("        </wfsfl:FeatureType>\n");
+    tempResponse.append("        </wfsfl:FeatureTypeConfig>\n");
 
     return tempResponse.toString();
   }

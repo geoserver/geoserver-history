@@ -40,7 +40,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * definition query configured for it.
  *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.2 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
     /** DOCUMENT ME!  */
@@ -103,13 +103,13 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
     }
 
     /**
-     * creates a list of FeatureType's attribute names based on the attributes
+     * creates a list of FeatureTypeConfig's attribute names based on the attributes
      * requested by <code>query</code> and making sure they not contain any
      * non exposed attribute.
      *
      * <p>
      * Exposed attributes are those configured in the "attributes" element of
-     * the FeatureType's configuration
+     * the FeatureTypeConfig's configuration
      * </p>
      *
      * @param query DOCUMENT ME!
@@ -147,7 +147,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
     }
 
     /**
-     * If a definition query has been configured for the FeatureType, makes and
+     * If a definition query has been configured for the FeatureTypeConfig, makes and
      * return a new Filter that contains both the query's filter and the
      * layer's definition one, by logic AND'ing them.
      *
@@ -184,7 +184,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
             ((FeatureLocking) source).setFeatureLock(lock);
         } else {
             throw new UnsupportedOperationException(
-                "FeatureType does not supports locking");
+                "FeatureTypeConfig does not supports locking");
         }
     }
 
@@ -203,7 +203,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
             return ((FeatureLocking) source).lockFeatures(query);
         } else {
             throw new DataSourceException(
-                "FeatureType does not supports locking");
+                "FeatureTypeConfig does not supports locking");
         }
     }
 
@@ -211,7 +211,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
 	if (source instanceof PostgisFeatureLocking) {
 	    return ((PostgisFeatureLocking) source).lockFeature(feature);
 	} else {
-            throw new DataSourceException("FeatureType does not supports locking");
+            throw new DataSourceException("FeatureTypeConfig does not supports locking");
         }
     }
 
@@ -231,7 +231,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           return ((FeatureLocking) source).lockFeatures(filter);
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports locking");
+              "FeatureTypeConfig does not supports locking");
       }
     }
 
@@ -248,7 +248,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           return ((FeatureLocking) source).lockFeatures();
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports locking");
+              "FeatureTypeConfig does not supports locking");
       }
     }
 
@@ -263,7 +263,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           ((FeatureLocking) source).lockFeatures();
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports locking");
+              "FeatureTypeConfig does not supports locking");
       }
     }
 
@@ -281,7 +281,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           ((FeatureLocking) source).unLockFeatures(filter);
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports locking");
+              "FeatureTypeConfig does not supports locking");
       }
     }
 
@@ -299,7 +299,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           ((FeatureLocking) source).lockFeatures(query);
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports locking");
+              "FeatureTypeConfig does not supports locking");
       }
     }
 
@@ -318,7 +318,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           return ((FeatureStore) source).addFeatures(reader);
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports writing");
+              "FeatureTypeConfig does not supports writing");
       }
     }
 
@@ -336,7 +336,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           ((FeatureStore) source).removeFeatures(filter);
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports writing");
+              "FeatureTypeConfig does not supports writing");
       }
     }
 
@@ -361,7 +361,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           ((FeatureStore) source).modifyFeatures(type, value, filter);
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports writing");
+              "FeatureTypeConfig does not supports writing");
       }
     }
 
@@ -382,7 +382,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           ((FeatureStore) source).modifyFeatures(type, value, filter);
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports writing");
+              "FeatureTypeConfig does not supports writing");
       }
     }
 
@@ -399,7 +399,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           ((FeatureStore) source).setFeatures(reader);
       } else {
           throw new DataSourceException(
-              "FeatureType does not supports write operations");
+              "FeatureTypeConfig does not supports write operations");
       }
     }
 
@@ -413,7 +413,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           ((FeatureStore) source).setTransaction(transaction);
       } else {
           throw new UnsupportedOperationException(
-              "FeatureType does not supports write operations");
+              "FeatureTypeConfig does not supports write operations");
       }
     }
 
@@ -428,7 +428,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
           return ((FeatureStore) source).getTransaction();
       } else {
           throw new UnsupportedOperationException(
-              "FeatureType does not supports write operations");
+              "FeatureTypeConfig does not supports write operations");
       }
     }
 

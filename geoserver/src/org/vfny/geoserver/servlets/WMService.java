@@ -9,14 +9,14 @@ import org.vfny.geoserver.WmsExceptionHandler;
 
 
 /**
- * base servlet class for all WFS requests
+ * base servlet class for all WFSConfig requests
  *
  * @author Gabriel Roldán
- * @version $Id: WMService.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WMService.java,v 1.2.2.1 2003/12/31 23:36:45 dmzwiers Exp $
  */
 abstract public class WMService extends AbstractService {
     /**
-     * returns a Web Map Service exception handler
+     * returns a Web Map ServiceConfig exception handler
      *
      * @return WmsExceptionHandler
      */

@@ -52,8 +52,8 @@ import com.vividsolutions.jts.geom.Point;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: LineNoSelfOverlappingFeatureValidation.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: LineNoSelfOverlappingFeatureValidation.java,v 1.2.2.1 2003/12/31 23:36:55 dmzwiers Exp $
  */
 public class LineNoSelfOverlappingFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
@@ -196,10 +196,10 @@ public class LineNoSelfOverlappingFeatureValidation implements FeatureValidation
 	 * when clearly they do.
 	 * 
 	 * </p>
-	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureType, org.geotools.validation.ValidationResults)
+	 * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature, org.geotools.feature.FeatureTypeConfig, org.geotools.validation.ValidationResults)
 	 * 
  	 * @param feature The Feature to be validated
-	 * @param type The FeatureType of the feature
+	 * @param type The FeatureTypeConfig of the feature
 	 * @param results The storage for error messages.
 	 * @return True if the feature does not overlap itself.
 	 */

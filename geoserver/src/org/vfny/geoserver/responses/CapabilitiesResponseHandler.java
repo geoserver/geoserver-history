@@ -22,7 +22,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.2 2003/12/30 23:08:26 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.3 2003/12/31 23:36:44 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -64,7 +64,7 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      */
     protected void handleService(ServiceConfig config)
         throws SAXException {
-        startElement("Service");
+        startElement("ServiceConfig");
         handleConfig((BasicConfig) config);
         handleOnlineResouce(config);
 
@@ -119,7 +119,7 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      * @throws SAXException DOCUMENT ME!
      */
     protected void endService(ServiceConfig config) throws SAXException {
-        endElement("Service");
+        endElement("ServiceConfig");
     }
 
     /**
@@ -133,7 +133,7 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
         throws SAXException;
 
     /**
-     * Default handle of a FeatureType content that writes the latLongBBox as
+     * Default handle of a FeatureTypeConfig content that writes the latLongBBox as
      * well as the BasicConfig's parameters
      *
      * @param ftype DOCUMENT ME!
@@ -144,7 +144,7 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
     protected void handleFeatureType(FeatureTypeConfig ftype)
         throws SAXException {
         if (!ftype.isEnabled()) {
-            throw new IllegalArgumentException("FeatureType " + ftype
+            throw new IllegalArgumentException("FeatureTypeConfig " + ftype
                 + " is not " + "enabled, check config.");
         }
 

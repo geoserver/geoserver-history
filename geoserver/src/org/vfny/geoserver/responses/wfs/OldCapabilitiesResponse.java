@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.2.2.3 2003/12/31 23:36:52 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */
@@ -54,7 +54,7 @@ public class OldCapabilitiesResponse {
     private static final String FILTER_FILE = config.getCapabilitiesDir()
         + "filter.xml";
 
-    /** Service metadata file */
+    /** ServiceConfig metadata file */
     private static final String SERVICE_METADATA_FILE = config
         .getCapabilitiesDir() + "serviceMetadata.xml";
 
@@ -69,13 +69,13 @@ public class OldCapabilitiesResponse {
     private static final String OGC_XMLNS_URL = "http://www.opengis.net/ogc";
     private static final String CAP_LOC = config.getWFSConfig()
                                                 .getSchemaBaseUrl()
-        + "wfs/1.0.0/WFS-capabilities.xsd";
+        + "wfs/1.0.0/WFSConfig-capabilities.xsd";
     private static final String SCHEMA_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
     /** Version of the response */
     private String version;
 
-    /** Service requested */
+    /** ServiceConfig requested */
     private String service;
 
     /** Version information for the server. */
@@ -329,7 +329,7 @@ public class OldCapabilitiesResponse {
     /**
      * Adds feature type metadata to the XML output stream.
      *
-     * @param responseVersion The expected version of the WFS response.
+     * @param responseVersion The expected version of the WFSConfig response.
      *
      * @throws WfsException For IO problems.
      */

@@ -11,7 +11,7 @@ package org.vfny.geoserver.requests;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.5 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: Request.java,v 1.5.2.1 2003/12/31 23:36:44 dmzwiers Exp $
  */
 abstract public class Request {
     /** Request service */
@@ -24,7 +24,7 @@ abstract public class Request {
     protected String version = new String();
 
     /**
-     * Service indentifying constructor.
+     * ServiceConfig indentifying constructor.
      *
      * @param serviceType Name of services (like wms)
      */
@@ -33,7 +33,7 @@ abstract public class Request {
     }
 
     /**
-     * Service & Request indentifying constructor.
+     * ServiceConfig & Request indentifying constructor.
      *
      * @param serviceType Name of services (like wfs)
      * @param requestType Name of request (like Transaction)

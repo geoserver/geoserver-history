@@ -16,14 +16,14 @@ import org.vfny.geoserver.servlets.WFService;
 
 
 /**
- * Implements the WFS GetFeature interface, which responds to requests for GML.
+ * Implements the WFSConfig GetFeature interface, which responds to requests for GML.
  * This servlet accepts a getFeatures request and returns GML2.1 structured
  * XML docs.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: Feature.java,v 1.2.2.1 2003/12/30 23:00:47 dmzwiers Exp $
+ * @version $Id: Feature.java,v 1.2.2.2 2003/12/31 23:36:46 dmzwiers Exp $
  */
 public class Feature extends WFService {
     /**
