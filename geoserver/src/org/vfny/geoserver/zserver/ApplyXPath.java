@@ -56,6 +56,8 @@
  */
 // This file uses 4 space indents, no tabs.
 
+
+
 package org.vfny.geoserver.zserver;
 
 import java.io.StringWriter;
@@ -86,6 +88,13 @@ import javax.xml.transform.stream.*;
 import javax.xml.transform.dom.*;
 
 import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
+import java.io.IOException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.util.logging.Logger;
 
 /**
  *  Very basic utility for applying an XPath epxression to an xml file and printing information
@@ -103,65 +112,78 @@ public class ApplyXPath
   protected String filename = null;
   protected String xpath = null;
 
-    public static String[] apply(String filename, String xpath) throws Exception {
+
+    /** Standard logging instance */
+    private static final Logger LOGGER = 
+        Logger.getLogger("org.vfny.geoserver.zserver");
+
+    /** Returns a an array of strings for the xpath, instead of printing them out. */
+    public static String[] apply(String filename, String xpath) throws FileNotFoundException{
 	ArrayList stringList = new ArrayList();
 
 	if ((filename != null) && (filename.length() > 0)
 	    && (xpath != null) && (xpath.length() > 0))
 	    {
-		// Tell that we're loading classes and parsing, so the time it 
-		// takes to do this doesn't get confused with the time to do 
-		// the actual query and serialization.
-		//System.out.println("Loading classes, parsing "+filename+", and setting up serializer");
-		
 		// Set up a DOM tree to query.
 		InputSource in = new InputSource(new FileInputStream(filename));
-		DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-		dfactory.setNamespaceAware(true);
-		Document doc = dfactory.newDocumentBuilder().parse(in);
-		
-		// Set up an identity transformer to use as serializer.
-		Transformer serializer = TransformerFactory.newInstance().newTransformer();
-		serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		
-		// Use the simple XPath API to select a nodeIterator.
-		//System.out.println("Querying DOM using "+xpath);
-		NodeIterator nl = XPathAPI.selectNodeIterator(doc, xpath);
-
-		StringWriter sw = new StringWriter();
-		
-		String trimmed;
-		
-		// Serialize the found nodes to System.out.
-		//System.out.println("<output>");
-		
-		
-		
-		Node n;
-		while ((n = nl.nextNode())!= null)
-		    {         
-			if (isTextNode(n)) {
-			    // DOM may have more than one node corresponding to a 
-			    // single XPath text node.  Coalesce all contiguous text nodes
-			    // at this level
-			    StringBuffer sb = new StringBuffer(n.getNodeValue());
-			    for (
-				 Node nn = n.getNextSibling(); 
-				 isTextNode(nn);
-				 nn = nn.getNextSibling()
-				 ) {
-				sb.append(nn.getNodeValue());
+		try {
+		    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+		    dfactory.setNamespaceAware(true);
+		    Document doc = dfactory.newDocumentBuilder().parse(in);
+		    
+		    // Set up an identity transformer to use as serializer.
+		    Transformer serializer = TransformerFactory.newInstance().newTransformer();
+		    serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		    
+		    // Use the simple XPath API to select a nodeIterator.
+		    //System.out.println("Querying DOM using "+xpath);
+		    NodeIterator nl = XPathAPI.selectNodeIterator(doc, xpath);
+		    
+		    StringWriter sw = new StringWriter();
+		    
+		    String trimmed;
+		    
+		    Node n;
+		    while ((n = nl.nextNode())!= null)
+			{         
+			    if (isTextNode(n)) {
+				// DOM may have more than one node corresponding to a 
+				// single XPath text node.  Coalesce all contiguous text nodes
+				// at this level
+				//REVISIT: not sure if this is the action we want, as it could
+				//be better to somehow store certain values seperately, instead
+				//of just massing them all together.  
+				StringBuffer sb = new StringBuffer(n.getNodeValue());
+				for (
+				     Node nn = n.getNextSibling(); 
+				     isTextNode(nn);
+				     nn = nn.getNextSibling()
+				     ) {
+				    sb.append(nn.getNodeValue());
+				}
+				stringList.add(sb.toString() + " ");
 			    }
-			    stringList.add(sb.toString() + " ");
-			    
+			    else {
+				serializer.transform(new DOMSource(n), new StreamResult(sw));
+				sw.flush();
+			    }
 			}
-			else {
-			    serializer.transform(new DOMSource(n), new StreamResult(sw));
-			    sw.flush();
-			}
-			//System.out.println();
-		    }
-		//System.out.println("</output>");
+		} catch (ParserConfigurationException e) {
+		    LOGGER.severe("Problem with Parser configuration, make " +
+				  "sure xerces jars are in classpath " + e);
+		} catch (SAXException e) {
+		    LOGGER.severe("Problem with SAX, make " +
+				  "sure xerces jars are in classpath " + e);
+		} catch (TransformerConfigurationException e) {
+		    LOGGER.severe("Problem with Transformer configuration," +
+				  " make sure xalan is in classpath " + e);
+		} catch (TransformerException e) {
+		     LOGGER.severe("Problem with Transformer, make sure" +
+				  "xalan jar is in classpath " + e);
+		} catch (IOException e) {
+		     LOGGER.severe("Problem with Transformer, make sure" +
+				  "xalan jar is in classpath " + e);
+		}
 	    }	
 
 	//TODO: figure out why String[] cast won't work?  Is it just java,
@@ -171,8 +193,6 @@ public class ApplyXPath
 	for(int i = 0; i < stringList.size(); i++) {
 	    strArr[i] = (String) objArr[i];
 	}
-	
-	
 	
 	return strArr;
 	//return (String [])stringList.toArray();
@@ -267,6 +287,7 @@ public class ApplyXPath
     }
         
     ApplyXPath app = new ApplyXPath();
+    
     app.doMain(args);
   }	
   

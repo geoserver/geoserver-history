@@ -1,5 +1,16 @@
+/* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root 
+ * application directory.
+ */
 package org.vfny.geoserver.zserver;
 
+
+/**
+ * Helper class that for various parts of the GeoProfile
+ *
+ *@author Chris Holmes, TOPP
+ *@version $VERSION$
+ */
 public class GeoProfile {
 
     //maybe make non-static, initialize with props files?
@@ -29,6 +40,13 @@ public class GeoProfile {
 
     public static final String TRUNCATE = "1";
 
+    //matches for numbers.  To add more numbers put
+    //the value to match here and a line in isFGDCnum
+    public static final String MATCH_PREFIX = ".*";
+
+
+ 
+
 
     /**
      * Returns true if the relation is one of BEFORE,
@@ -41,20 +59,71 @@ public class GeoProfile {
 	return (relation >= 14 && relation <= 18);
     }  
 
-    //TODO: make elegant...or get from props file.
+    /**
+     * Checks to see if the given name should be stored
+     * as a number.  Only checks the end of the string, 
+     * so the xpath leading up to it does not matter.  
+     * 
+     * @param name the name to test.
+     * @return true if it should be stored as a number.
+     */
     public static boolean isFGDCnum(String name) {
-	if(name.equals("//metadata/idinfo/spdom/bounding/eastbc") 
-	   || name.equals("//metadata/idinfo/spdom/bounding/westbc") 
-	   || name.equals("//metadata/idinfo/spdom/bounding/northbc") 
-	   || name.equals("//metadata/idinfo/spdom/bounding/southbc")
-	   || name.equals("extent")) {
+	//To add more follow the same format, this covers
+	//all that isite does.
+	if(name.matches(MATCH_PREFIX + "eastbc") 
+	   || name.matches(MATCH_PREFIX + "westbc") 
+	   || name.matches(MATCH_PREFIX + "northbc") 
+	   || name.matches(MATCH_PREFIX + "southbc")
+	   || name.matches(MATCH_PREFIX + "extent")
+	   || name.matches(MATCH_PREFIX + "attrmres") 
+	   || name.matches(MATCH_PREFIX + "denflat") 
+	   || name.matches(MATCH_PREFIX + "feast") 
+	   || name.matches(MATCH_PREFIX + "fnorth") 
+	   || name.matches(MATCH_PREFIX + "latprjo") 
+	   || name.matches(MATCH_PREFIX + "numdata") 
+	   || name.matches(MATCH_PREFIX + "rdommax") 
+	   || name.matches(MATCH_PREFIX + "rdommin") 
+	   || name.matches(MATCH_PREFIX + "srcscale") 
+	   || name.matches(MATCH_PREFIX + "stdparll") 
+	   || name.matches(MATCH_PREFIX + "cloud") 
+	   || name.matches(MATCH_PREFIX + "numstop")) {
 	    return true;
 	} else {
 	    return false;
 	}
 
     }
-    
+
+    /**
+     * Computes the extent given the bounding coordinates.
+     *
+     * @param eastbc The eastern bounding coordinate.
+     * @param westbc The western bounding coordinate.
+     * @param northbc The northern bounding coordinate.
+     * @param southbc The southern bounding coordinate.
+     * @return the extent, null if any of the bounds are null.
+     */
+    public static Double computeExtent(String eastbc, String westbc,
+				       String northbc, String southbc) {
+	if (eastbc != null && westbc != null && northbc != null && 
+	    southbc != null) {
+	    try {
+		double east = Double.parseDouble(eastbc);
+		double west = Double.parseDouble(westbc);
+		double north = Double.parseDouble(northbc);
+		double south = Double.parseDouble(southbc);
+		//revisit: this computation isn't super accurate, won't return
+		//same results each time, based on the inaccuracy of doubles.
+		Double extent = new Double((north - south) * (east - west));
+		return extent;
+	    } catch (NumberFormatException e) {
+		return null; //REVISIT: is this what we want?
+	    } 
+	} else {
+	    return null;
+	}
+    }
+  
     //this just goes off of XML name ending in date.
     //REVISIT: props file?
     public static boolean isFGDCdate(String name) {
