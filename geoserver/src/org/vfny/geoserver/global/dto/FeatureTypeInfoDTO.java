@@ -33,7 +33,7 @@ import java.util.List;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.11 2004/03/14 05:20:50 cholmesny Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.12 2004/04/07 18:50:44 jive Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -74,9 +74,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private List keywords;
 
     /**
-     * configuration information.
-     *
-     * @task TODO figure out what this is used for exactly
+     * Used to limit the number of decimals used in GML representations.
      */
     private int numDecimals;
 

@@ -6,12 +6,7 @@ package org.vfny.geoserver.global.dto;
 
 //import org.geotools.feature.AttributeType;
 //import org.geotools.feature.DefaultAttributeType.Geometric;
-import org.vfny.geoserver.global.xml.NameSpaceElement;
-import org.vfny.geoserver.global.xml.NameSpaceTranslator;
-import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
-import java.util.Set;
 import java.util.logging.Logger;
-
 
 /**
  * Represents most of a xs:element for an XMLSchema.
@@ -50,7 +45,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.14 2004/04/06 17:51:44 jive Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.15 2004/04/07 18:50:44 jive Exp $
  */
 public class AttributeTypeInfoDTO implements DataTransferObject {
     /** For debugging */
