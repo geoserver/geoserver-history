@@ -4,11 +4,6 @@ $Id: RUNNING.txt,v 1.3 2004/09/22 13:31:18 cholmesny Exp $
                Running The GeoServer Binary Distribution
                =========================================
 
-Note: This is 1.2.2 release is the second attempt at a binary distribution.
-We would greatly appreciate feedback on if it works properly.  GeoServer 
-itself is quite stable, but the startup and shutdown scripts may need 
-a bit of debugging.
-
 This release of GeoServer comes with a built-in Jetty servlet container, 
 so that it can be run directly with out the need to download and configure
 extra software.  GeoServer 1.2 fully implements the Web Feature Service (WFS)
