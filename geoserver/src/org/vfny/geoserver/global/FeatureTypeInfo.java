@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.14 2004/01/17 01:00:20 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.15 2004/01/18 01:08:13 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -281,7 +281,9 @@ e.printStackTrace();
     	for(int i = 0;i<attributes.length;i++){
     		AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO)ftc.getSchema().get( i ); 
     		String xpath = attributeDTO.getName();
-    		attributes[i] = ft.getAttributeType(xpath);   		
+    		attributes[i] = ft.getAttributeType(xpath);   	
+    		if(attributes[i]==null)
+    			throw new NullPointerException("Error finding "+xpath+" specified in you schema.xml file for "+ftc.getName()+"FeatureType.");
     	}
     	FeatureType myType = FeatureTypeFactory.newFeatureType(attributes,ftc.getName());
     	
@@ -500,7 +502,7 @@ e.printStackTrace();
 			// generate stuff
 			FeatureType schema = getFeatureType();
 			dto.setSchemaBase( GMLUtils.ABSTRACTFEATURETYPE.toString() );
-			dto.setSchemaName(schema.getTypeName().toUpperCase()+"_TYPE" );
+			dto.setSchemaName(schema.getTypeName());//.toUpperCase()+"_TYPE" );
 			dto.setSchema( DataTransferObjectFactory.generateAttributes( schema ) );
 		}
 		return dto;
