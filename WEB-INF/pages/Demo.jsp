@@ -5,7 +5,7 @@
 <table class="info">
   <tbody>
     <tr>
-      <td class="label">Demo:</td>
+      <td class="label">request:</td>
       <td class="datum">
         <html:form action="/demoSubmit">
         
