@@ -52,6 +52,11 @@
 				</tr>
 				<tr>
 					<td valign="top" align="left">
+						<tiles:insert attribute="actions"/>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" align="left">
 						<tiles:insert attribute="messages"/>
 					</td>
 				</tr>

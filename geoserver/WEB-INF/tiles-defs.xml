@@ -30,6 +30,7 @@
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
    		<put name="buttons" value="/WEB-INF/pages/buttons.jsp"/>
    		<put name="messages" value="/WEB-INF/pages/messages.jsp"/>
+   		<put name="actions"	value="/WEB-INF/pages/blank.jsp"/>
 
    	</definition>
    	
@@ -228,7 +229,8 @@
    	<definition name="data.featureTypes" extends=".mainLayout">
    		<put name="body" value="data.featureTypes.tabLayout"/>
 		<put name="title" value="title.data.featureTypes"/> 
-		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		  		
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
+		<put name="actions" value="/WEB-INF/pages/data/featureTypeActions.jsp"/>	  		
    	</definition>   	
    	
    	<definition name="data.featureTypes.main" page="/WEB-INF/pages/layouts/featureTypesLayout.jsp">
