@@ -23,11 +23,11 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.1 2003/11/04 22:54:55 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.2 2003/11/06 23:48:42 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
-    private static final Logger LOG = Logger.getLogger(
+    private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
 
     /** DOCUMENT ME! */
@@ -65,8 +65,20 @@ public class FeatureResponse implements Response {
                     "execute has not been called prior to writeTo");
             }
 
-            transformer.transform(features, out);
+            //FeatureCollection coll = features.collection();
+            //Feature firstF = coll.features().next();
+            //LOGGER.info("first feature is " + firstF);
+            //LOGGER.info("schema is " + firstF.getFeatureType());
+            transformer.transform(features.reader(), out);
         } catch (Exception ex) {
+            //ex.printStackTrace();
+            //REVISIT: This fails mightily if it fails here, since
+            //get output stream is already called.
+            //TODO: user config option to have better error reporting, at 
+            //the expense of performance.  Then use a ByteBufferOutputStream
+            // to buffer the response, write it to the passed in output
+            //stream if no problems, if there are then exception can still
+            //get thrown.
             throw new WfsException(ex);
         }
     }
@@ -81,7 +93,7 @@ public class FeatureResponse implements Response {
      */
     public void execute(Request req) throws ServiceException {
         FeatureRequest request = (FeatureRequest) req;
-        LOG.finest("write xml response. called request is: " + request);
+        LOGGER.finest("write xml response. called request is: " + request);
 
         String outputFormat = request.getOutputFormat();
 
@@ -118,9 +130,16 @@ public class FeatureResponse implements Response {
             "org.apache.xalan.processor.TransformerFactoryImpl");
 
         transformer = new FeatureTransformer();
-        transformer.setPrettyPrint(config.getGlobalConfig().isVerbose());
-        transformer.setDefaultNamespace(config.getCatalog().getDefaultNameSpace()
-                                              .getUri());
+
+        FeatureType schema = meta.getSchema();
+        NameSpace namespace = meta.getDataStore().getNameSpace();
+        transformer.setIndentation(2);
+        transformer.getFeatureTypeNamespaces().declareDefaultNamespace(namespace
+            .getPrefix(), namespace.getUri());
+
+        //transformer.setPrettyPrint(config.getGlobalConfig().isVerbose());
+        //transformer.setDefaultNamespace(config.getCatalog().getDefaultNameSpace()
+        //                                  .getUri());
     }
 
     /**
@@ -154,7 +173,7 @@ public class FeatureResponse implements Response {
      */
     private static FeatureResults getFeatures(Query query,
         FeatureTypeConfig meta, int maxFeatures) throws WfsException {
-        LOG.finest("about to get query: " + query);
+        LOGGER.finest("about to get query: " + query);
 
         List propertyNames = null;
 
@@ -166,7 +185,7 @@ public class FeatureResponse implements Response {
 
         try {
             FeatureSource data = meta.getFeatureSource();
-            LOG.finest("filter is " + query.getFilter());
+            LOGGER.finest("filter is " + query.getFilter());
 
             if (!query.allRequested()) {
                 AttributeType[] mandatoryProps = meta.getSchema()
@@ -184,7 +203,7 @@ public class FeatureResponse implements Response {
                 getLocator(query));
         }
 
-        LOG.finest("successfully retrieved collection");
+        LOGGER.finest("successfully retrieved collection");
 
         return features;
     }
