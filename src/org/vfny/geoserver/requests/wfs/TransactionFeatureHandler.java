@@ -1,19 +1,3 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2002, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
- */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -38,7 +22,7 @@ import java.util.logging.*;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.3 2004/01/03 00:03:17 cholmesny Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -109,6 +93,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             //(not sure if that'd work, but something to that effect
             FeatureTypeConfig fType = catalog.getFeatureType(localName,
                     namespaceURI);
+
+            //LOGGER.info("feature type is: " +
             String internalTypeName = null;
 
             if (fType != null) {
@@ -139,10 +125,17 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                     || (localName.equals("pointMember")))) {
                 LOGGER.finest("inside feature " + internalTypeName);
 
+                //REVISIT: Is it possible to have attributes be feature
+                //attributes?  We certainly don't return any, and I've never 
+                //seen it happen.  This loop has only caused greif, perhaps
+                //we should get rid of it.
                 for (int i = 0; i < atts.getLength(); i++) {
                     String name = atts.getLocalName(i);
-                    attributes.add(atts.getValue(i));
-                    attributeNames.add(name);
+
+                    if (!name.equals("fid") && !name.equals("schemaLocation")) {
+                        attributes.add(atts.getValue(i));
+                        attributeNames.add(name);
+                    }
                 }
 
                 if (!typeName.equalsIgnoreCase(internalTypeName)) {
@@ -267,7 +260,6 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             if ((tempValue != null) && !tempValue.toString().trim().equals("")) {
                 attributes.add(tempValue);
                 attributeNames.add(attName);
-
             }
 
             int index = attName.lastIndexOf('/');
