@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * definition query configured for it.
  *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.3 2004/01/05 23:12:06 cholmesny Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.4 2004/01/06 01:39:20 cholmesny Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
     /** DOCUMENT ME! */
@@ -57,6 +57,7 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
      * @return DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
+     * @throws DataSourceException DOCUMENT ME!
      */
     private Query makeDefinitionQuery(Query query) throws IOException {
         if (query == Query.ALL) {
@@ -113,18 +114,6 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
             int queriedAttCount = queriedAtts.length;
             List allowedAtts = new LinkedList();
 
-            for (int i = 0; i < queriedAttCount; i++) {
-                if (schema.getAttributeType(queriedAtts[i]) != null) {
-                    allowedAtts.add(queriedAtts[i]);
-                } else {
-                    //REVISIT: I think an exception should be thrown here, 
-                    //asking for a property that is not present normally
-                    //causes an exception to be thrown.
-                    LOGGER.info("queried a not allowed property: "
-                        + queriedAtts[i] + ". Ommitting it from query");
-                }
-            }
-
             if (mandatoryAtts != null) {
                 for (Iterator i = mandatoryAtts.iterator(); i.hasNext();) {
                     String attName = (String) i.next();
@@ -132,6 +121,20 @@ public class DEFQueryFeatureLocking implements FeatureLocking {
                     if (!allowedAtts.contains(attName)) {
                         allowedAtts.add(attName);
                     }
+                }
+            }
+
+            for (int i = 0; i < queriedAttCount; i++) {
+                if (schema.getAttributeType(queriedAtts[i]) != null) {
+                    if (!allowedAtts.contains(queriedAtts[i])) {
+                        allowedAtts.add(queriedAtts[i]);
+                    }
+                } else {
+                    //REVISIT: I think an exception should be thrown here, 
+                    //asking for a property that is not present normally
+                    //causes an exception to be thrown.
+                    LOGGER.info("queried a not allowed property: "
+                        + queriedAtts[i] + ". Ommitting it from query");
                 }
             }
 
