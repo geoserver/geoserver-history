@@ -76,7 +76,9 @@ public class TransactionResponse {
 	for(int i = 0, n = request.getSubRequestSize(); i < n; i++) {  
 	    subRequest = request.getSubRequest(i);
 	    Collection addedFids = getSub(request.getSubRequest(i), con);
-	    response.addInsertResult(subRequest.getHandle(), addedFids);
+	      if (addedFids != null) {
+		  response.addInsertResult(subRequest.getHandle(), addedFids);
+	      }
 	}
 	
 	try {
@@ -99,7 +101,7 @@ public class TransactionResponse {
 	//HACK: fails if types are in different databases
         if (meta == null) {
 	    throw new WfsTransactionException("Couldnt find Feature Type: -" +
-				      subRequest.getTypeName() + "-, feature information"
+			subRequest.getTypeName() + "-, feature information"
 				      + " is not in the data folder.", 
 				      subRequest.getHandle(), transHandle);
 	}
