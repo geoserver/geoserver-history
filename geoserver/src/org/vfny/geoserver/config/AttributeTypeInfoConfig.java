@@ -44,21 +44,32 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  * </p>
  * 
  * <p>
- * For complex types such as  <code>{element
- * name='test'}{xs:complexContent}{xs:extension
- * base="gml:AbstractFeatureType"}{xs:sequence}{xs:element name="id"
- * type="xs:string" minOccurs="0"/}{xs:element ref="gml:pointProperty"
- * minOccurs="0"/}{/xs:sequence}{/xs:extension}{/xs:complexContent}{/element}</code>
- * The type contains a similar XML fragment.
+ * For complex types such as:<pre><code>
+ * {element name='test'
+ *   {xs:complexContent}
+ *     {xs:extension base="gml:AbstractFeatureType"}
+ *       {xs:sequence}
+ *         {xs:element name="id"
+ *                     type="xs:string"
+ *                     minOccurs="0"/}
+ *         {xs:element ref="gml:pointProperty"
+ *                     minOccurs="0"/}
+ *       {/xs:sequence}
+ *     {/xs:extension}
+ *  {/xs:complexContent}
+ * {/element}
+ * </code></pre>
+ * The type will be equals to "(xml fragment)" and
+ * fragment contains a similar to above.
  * </p>
  * 
  * <p>
  * minOccurs, maxOccurs and nillable are all attributes for all cases. There is
- * more stuff in the XMLSchema spec but we don't care.
+ * more stuff in the XMLSchema spec but we don't care to parse it out right now.
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.16 2004/01/31 00:27:27 jive Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.17 2004/02/05 00:44:35 jive Exp $
  */
 public class AttributeTypeInfoConfig {
     /** Value of getType() used to indicate that fragement is in use */
