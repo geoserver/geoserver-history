@@ -6,6 +6,7 @@ import java.util.Map;
 import org.geotools.data.*;
 import org.geotools.data.memory.*;
 import org.geotools.feature.IllegalAttributeException;
+import org.geotools.validation.spatial.IsValidFeatureValidation;
 
 import org.vfny.geoserver.requests.wfs.*;
 import org.vfny.geoserver.config.*;
@@ -18,7 +19,7 @@ import org.vfny.geoserver.config.*;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: FeatureValidationTest.java,v 1.1.2.3 2003/11/23 07:41:08 jive Exp $
+ * @version $Id: FeatureValidationTest.java,v 1.1.2.4 2003/11/25 18:13:58 jive Exp $
  */
 public class FeatureValidationTest extends DataTestCase {
     MemoryDataStore store;

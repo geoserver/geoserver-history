@@ -1,15 +1,12 @@
 package org.geotools.validation;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.geotools.data.*;
 import org.geotools.data.memory.*;
-import org.geotools.feature.IllegalAttributeException;
+import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
+import org.geotools.validation.spatial.IsValidFeatureValidation;
 
-import org.vfny.geoserver.requests.wfs.*;
-import org.vfny.geoserver.config.*;
 
 /**
  * IntegrityValidationTest purpose.
@@ -19,7 +16,7 @@ import org.vfny.geoserver.config.*;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: IntegrityValidationTest.java,v 1.1.2.2 2003/11/23 08:03:39 jive Exp $
+ * @version $Id: IntegrityValidationTest.java,v 1.1.2.3 2003/11/25 18:17:41 jive Exp $
  */
 public class IntegrityValidationTest extends DataTestCase {
     MemoryDataStore store;
@@ -80,27 +77,7 @@ public class IntegrityValidationTest extends DataTestCase {
    	
    	
    	
-   	public void testUniqueFID2() throws Exception
-   	{
-        RoadValidationResults validationResults = new RoadValidationResults();
-                
-        UniqueFIDIntegrityValidation validator = new UniqueFIDIntegrityValidation("isValidRoad", "Tests to see if a road is valid", IsValidFeatureValidation.ALL, "FID");
-        validationResults.setValidation(validator);
-                
-		roadFeatures[0] = roadFeatures[1];
-        FeatureSource badDog = DataUtilities.source( roadFeatures );
-        FeatureReader r = badDog.getFeatures().reader();
-        while( r.hasNext() ){
-            System.out.println( r.next() );
-        }
-        r.close();
-        
-        HashMap layers = new HashMap();
-        layers.put("road", badDog );        
-        
-        assertTrue( !validator.validate(layers, null, validationResults) );
-   		
-   	}
+
    	   	
 
 }
