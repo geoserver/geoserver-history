@@ -42,5 +42,11 @@
         <put name="title"  value="WFS Config - Description" />
         <!--<put name="body"   value=".aPage.body" />-->
     </definition>
-
+   
+   	<definition name="test" page="/WEB-INF/pages/WFSConfigDescription.jsp">
+		<put name="title" value="DEFAULT TITLE"/>
+		<put name="header" value="/WEB-INF/pages/header.jsp"/>
+		<put name="sidebar" value="/WEB-INF/pages/sidebar.jsp"/>
+   	</definition>
+    
 </tiles-definitions>

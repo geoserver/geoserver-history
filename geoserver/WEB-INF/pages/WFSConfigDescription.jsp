@@ -5,7 +5,7 @@
 <html:html locale="true">
 
 <head>
-<title><bean:message key="welcome.title"/></title>
+<title><tiles:getAsString name="title"/></title>
 <html:base/>
 </head>
 
@@ -16,27 +16,7 @@
 <tiles:insert attribute="header"/>
 </tr>
 <tr>
-	<td width=192>
-		<table border=1 width=100%>
-			<tr>
-				<td>
-					Status
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Try Out<BR>
-					Save<BR>
-					Load<BR>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Actions
-				</td>
-			</tr>
-		</table>
-	</td>
+<tiles:insert attribute="sidebar"/>
 	<td colspan=2>
 		<table border=1 width=100%>
 			<tr><td>
