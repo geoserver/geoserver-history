@@ -23,8 +23,8 @@
 
   <!-- If you don't have your own conf directory uncomment on of the following -->
   <!--property name="test.type" value="UserBasic"/-->
-  <property name="test.type" value="Demo"/>
-  <!--<property name="test.type" value="DemoPostGIS"/>-->
+  <!--property name="test.type" value="Demo"/-->
+  <property name="test.type" value="DemoPostGIS"/>
   <!--<property name="test.type" value="CitePostGis"/>-->
   <!--<property name="test.type" value="CiteShapeFiles"/>--> 
         
@@ -103,7 +103,7 @@
 <!-- ====================================================================== -->
 <!-- HELP / INDEX OF TARGETS                                                -->
 <!-- ====================================================================== -->
-  <target name="help">
+  <target name="help" description="descirbe targets defined by this build.xml file">
     <echo message="GeoServer Build File..."/>
     <echo message=""/>
     <echo message=" COMPILATION TARGETS"/>
@@ -382,7 +382,8 @@
 <!-- BUILD TARGETS                                                          -->
 <!-- ====================================================================== -->
 
-  <target name="war" depends="init, all">
+  <target name="war" depends="init, all"
+      description="generate geoserver.war (with your choice of conf directory)">
     <!-- only one of the two will execute -->
     <antcall target="user_conf"/>
     <antcall target="misc_conf"/>
@@ -732,7 +733,8 @@
     <delete file="${basedir}/license.txt" failonerror="true"/>
   </target>
   
-  <target name="release-binary" depends="clean">
+  <target name="release-binary" depends="clean"
+    description="Genearte the Geoserver.war binary release (includes UserBasic)">
     <antcall target="build-war">
       <param name="conf.path" value="${basedir}/cite/confUserBasic"/>
     </antcall>
