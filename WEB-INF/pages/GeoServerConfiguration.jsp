@@ -90,7 +90,7 @@
       </td>
 	  <td class="datum">
 		<html:select property="loggingLevel">
-			<html:option value="ALL"/>
+			<html:option value="OFF"/>
 			<html:option value="SEVERE"/>
 			<html:option value="WARNING"/>
 			<html:option value="INFO"/>
@@ -98,7 +98,7 @@
 			<html:option value="FINE"/>
 			<html:option value="FINER"/>
 			<html:option value="FINEST"/>
-			<html:option value="OFF"/>			
+			<html:option value="ALL"/>			
 		</html:select>
 	  </td>
     </tr>	
