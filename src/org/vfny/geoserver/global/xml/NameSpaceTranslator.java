@@ -33,8 +33,8 @@ import java.util.Set;
  * </code>
  * </p>
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceTranslator.java,v 1.2 2004/02/09 18:00:02 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: NameSpaceTranslator.java,v 1.3 2004/03/02 21:56:44 jive Exp $
  */
 public abstract class NameSpaceTranslator{
 	/** the prefix for this translator instance*/
@@ -55,9 +55,9 @@ public abstract class NameSpaceTranslator{
 	}
 	
 	/**
-	 * getAssociatedTypes purpose.
-	 * <p>
-	 * Looks for Elements who's Class objects, or the parents of the 
+	 * Retrive all elements that can be used with the provided type.
+     * <p>
+     * Looks for Elements who's Class objects, or the parents of the 
 	 * Class object are compatible with this class object.
 	 * </p>
 	 * @param type Class the class to attempt to find related elements for.
@@ -81,9 +81,8 @@ public abstract class NameSpaceTranslator{
 	}
 	
 	/**
-	 * getAssociatedTypes purpose.
-	 * <p>
 	 * Looks for Elements who's name is the same or a super set of this name.
+     * <p>
 	 * (ie. name.indexOf(type)!=-1)
 	 * </p>
 	 * @param type String the class to attempt to find related elements for.
@@ -202,10 +201,8 @@ public abstract class NameSpaceTranslator{
 	}
 	
 	/**
-	 * getElement purpose.
-	 * <p>
 	 * Gets an element definition by name.
-	 * </p>
+	 * 
 	 * @param name The name of the element definition
 	 * @return NameSpaceElement
 	 */
