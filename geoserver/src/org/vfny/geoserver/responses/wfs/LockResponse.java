@@ -35,14 +35,14 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.LockRequest;
 import org.vfny.geoserver.responses.Response;
-
+import org.vfny.geoserver.global.dto.*;
 
 /**
  * Handles a Lock request and creates a LockResponse string.
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.13 2004/03/31 05:08:02 cholmesny Exp $
+ * @version $Id: LockResponse.java,v 1.14 2004/04/05 12:07:36 cholmesny Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -80,7 +80,10 @@ public class LockResponse implements Response {
             throw new WfsException("bad request, expected LockRequest, got "
                 + req);
         }
-
+		if( (req.getWFS().getServiceLevel() & WFSDTO.SERVICE_LOCKING ) == 0 ){
+			 // could we catch this during the handler, rather than during execution?
+			 throw new WfsException("Locking support is not enabled");
+		}
         request = (LockRequest) req;
         xmlResponse = getXmlResponse(request);
     }
