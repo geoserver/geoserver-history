@@ -6,7 +6,6 @@ package org.vfny.geoserver.requests.wfs;
 
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
-import org.vfny.geoserver.*;
 import org.vfny.geoserver.requests.*;
 import java.util.*;
 import java.util.logging.*;
@@ -21,7 +20,7 @@ import java.util.logging.*;
  * should be trivial, as it's already a part of lockRequest.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureWithLockRequest.java,v 1.1.2.2 2003/11/12 19:58:14 jive Exp $
+ * @version $Id: FeatureWithLockRequest.java,v 1.1.2.3 2003/11/12 20:02:16 jive Exp $
  */
 public class FeatureWithLockRequest extends FeatureRequest {
     /** Standard logging instance for class */
@@ -45,6 +44,12 @@ public class FeatureWithLockRequest extends FeatureRequest {
      * The getAuthorization() value is based on getHandle(), with a default
      * of "GeoServer" if the user has not provided a handle.
      * </p>
+     * The FeatureLock produced is based on expiry:
+     * <ul>
+     * <li>negative expiry: reports if lock is available</li>
+     * <li>zero expiry: perma lock that never expires!</li>
+     * <li>postive expiry: lock expires in a number of minuets</li>
+     * </ul>
      * @return
      */
     public FeatureLock toFeatureLock(){
