@@ -20,7 +20,7 @@ import java.util.logging.*;
  * support those.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureRequest.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: FeatureRequest.java,v 1.3 2003/12/19 02:57:52 cholmesny Exp $
  */
 public class FeatureRequest extends WFSRequest {
     /** Standard logging instance for class */
@@ -31,18 +31,18 @@ public class FeatureRequest extends WFSRequest {
      * The maximum returned if the user requests no limit of features at all,
      * but the other request parameters don't restrict to below 500.
      */
-    protected static final int SOFT_MAX_FEATURES = ServerConfig.getInstance()
-                                                               .getGlobalConfig()
-                                                               .getMaxFeatures();
+    //protected static final int SOFT_MAX_FEATURES = ServerConfig.getInstance()
+    //                                                           .getGlobalConfig()
+    //                                                           .getMaxFeatures();
 
     /**
      * This is the maximum that is returned if the user specifically requests
      * more than the soft max.
      */
-    protected static final int HARD_MAX_FEATURES = SOFT_MAX_FEATURES + 1000;
+    //protected static final int HARD_MAX_FEATURES = SOFT_MAX_FEATURES + 1000;
 
     /** Creates a max features constraint for the entire request */
-    protected int maxFeatures = SOFT_MAX_FEATURES;
+    protected int maxFeatures = Integer.MAX_VALUE;//SOFT_MAX_FEATURES;
 
     /** Specifies the output format */
     protected String outputFormat = "GML2";
@@ -177,9 +177,9 @@ public class FeatureRequest extends WFSRequest {
             this.maxFeatures = maxFeatures;
         }
 
-        if (maxFeatures > HARD_MAX_FEATURES) {
-            this.maxFeatures = HARD_MAX_FEATURES;
-        }
+        //if (maxFeatures > HARD_MAX_FEATURES) {
+	//  this.maxFeatures = HARD_MAX_FEATURES;
+        //}
     }
 
     /**
