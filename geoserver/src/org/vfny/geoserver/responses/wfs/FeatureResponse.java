@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.1.2.14 2003/11/14 23:54:16 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.15 2003/11/16 07:38:48 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -163,7 +163,7 @@ public class FeatureResponse implements Response {
      */
     public void execute( FeatureRequest request ) throws ServiceException {
         LOGGER.finest("execute FeatureRequest response. Called request is: " + request);
-	this.request = request;
+	    this.request = request;
         if( request instanceof FeatureWithLockRequest){
             featureLock = ((FeatureWithLockRequest)request).toFeatureLock();
             String authorization = featureLock.getAuthorization();        

@@ -15,11 +15,15 @@ import java.util.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionRequest.java,v 1.1.2.3 2003/11/12 04:19:06 jive Exp $
+ * @version $Id: TransactionRequest.java,v 1.1.2.4 2003/11/16 07:38:52 jive Exp $
  */
 public class TransactionRequest extends WFSRequest {
+    public static final String TRANSACTION_REQUEST_TYPE = "Transaction";
+        
+    /** Assume this is a list of SubTransactionRequest */
     protected List subRequests = new ArrayList();
     
+    /** Assume null value means no lockID specified */
     protected String lockId = null;
     
     /** Replaced with releaseAction */ 
@@ -57,7 +61,7 @@ public class TransactionRequest extends WFSRequest {
      * been operated upon. </i>
      * </p>
      */    
-    public final static ReleaseAction SOME = new ReleaseAction("NONE");
+    public final static ReleaseAction SOME = new ReleaseAction("SOME");
     
     /**
      * Control how locked features are treated when a transaction is completed.
@@ -65,25 +69,36 @@ public class TransactionRequest extends WFSRequest {
     protected ReleaseAction releaseAction = ALL;
     
     /**
-     * Specifices the user-defined name for the entire get feature request
+     * Specifices the user-defined name for the entire transaction request.
+     * <p>
+     * Note that SubTransactionRequests are allowed there own handle as well,
+     * if they don't have one we should try and describe their position
+     * in a relative way.
+     * </p>
      */
     protected String handle = null;
 
     /**
-     * Empty constructor.
+     * Create a WFS Transaction request. 
      */
     public TransactionRequest() {
-        super();
-        setRequest("Transaction");
+        super( TRANSACTION_REQUEST_TYPE );        
     }
 
     /**
      * Adds a delete, insert, or update request to this transaction.
-     *
+     * <p>
+     * If subRequest does not yet have a handle we will invent one here
+     * and give it one, the alternative is have subRequest known about its
+     * parent Transaction in order to generate a handle.
+     * </p>
      * @param subRequest To be part of this transaction request.
      */
     public void addSubRequest(SubTransactionRequest subRequest) {
         subRequests.add(subRequest);
+        if( subRequest.getHandle() == null ){
+            subRequest.setHandle( getHandle()+" "+subRequest.getTypeName()+" "+subRequests.size() );
+        }
     }
 
     /**
@@ -139,8 +154,8 @@ public class TransactionRequest extends WFSRequest {
             }
         }
         else {
-            // TODO: set to default?
-            // this.releaseAction = ALL;
+            // TODO: Review this please - should we restore the default here?
+            this.releaseAction = ALL;
         }
     }
 

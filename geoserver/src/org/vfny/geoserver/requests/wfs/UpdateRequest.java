@@ -6,7 +6,6 @@ package org.vfny.geoserver.requests.wfs;
 
 import org.geotools.feature.*;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.requests.*;
 import java.util.*;
 import java.util.logging.*;
 
@@ -18,11 +17,9 @@ import java.util.logging.*;
  * added to the property list by calling add Property.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: UpdateRequest.java,v 1.1.2.1 2003/11/04 22:48:26 cholmesny Exp $
+ * @version $Id: UpdateRequest.java,v 1.1.2.2 2003/11/16 07:38:52 jive Exp $
  */
 public class UpdateRequest extends SubTransactionRequest {
-    /** SubTransaction type. */
-    public static final short operationType = UPDATE;
 
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
@@ -204,7 +201,7 @@ public class UpdateRequest extends SubTransactionRequest {
      * @return The short representation of UPDATE.
      */
     public short getOpType() {
-        return operationType;
+        return UPDATE;
     }
 
     /**

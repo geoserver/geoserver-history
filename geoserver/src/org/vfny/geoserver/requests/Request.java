@@ -7,11 +7,11 @@ package org.vfny.geoserver.requests;
 /**
  * Defines a general Request type and provides accessor methods for universal
  * request information.
- *
+ * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.3.4.1 2003/11/04 22:40:23 cholmesny Exp $
+ * @version $Id: Request.java,v 1.3.4.2 2003/11/16 07:38:52 jive Exp $
  */
 abstract public class Request {
     /** Request service */
@@ -24,12 +24,23 @@ abstract public class Request {
     protected String version = new String();
 
     /**
-     * Service indentifying constructor
+     * Service indentifying constructor.
      *
-     * @param serviceType DOCUMENT ME!
+     * @param serviceType Name of services (like wms)
      */
     protected Request(String serviceType) {
         this.service = serviceType;
+    }
+
+    /**
+     * Service & Request indentifying constructor.
+     *
+     * @param serviceType Name of services (like wfs)
+     * @param requestType Name of request (like Transaction)
+     */
+    protected Request(String serviceType, String requestType) {
+        this.service = serviceType;
+        this.request = requestType;
     }
 
     /**
@@ -52,7 +63,10 @@ abstract public class Request {
 
     /**
      * Gets requested request type.
-     *
+     * <p>
+     * TODO: Could this bre renamed getType() for clarity?
+     * </p>
+     * 
      * @return The type of request.
      */
     public String getRequest() {
@@ -64,8 +78,8 @@ abstract public class Request {
      *
      * @param reqeust The type of request.
      */
-    public void setRequest(String reqeust) {
-        this.request = request;
+    public void setRequest(String requestType) {
+        this.request = requestType;
     }
 
     /**

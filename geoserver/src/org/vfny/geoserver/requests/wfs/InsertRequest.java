@@ -21,15 +21,12 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: InsertRequest.java,v 1.1.2.1 2003/11/04 22:48:26 cholmesny Exp $
+ * @version $Id: InsertRequest.java,v 1.1.2.2 2003/11/16 07:38:52 jive Exp $
  */
 public class InsertRequest extends SubTransactionRequest {
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
-
-    /** Indicates that this is an insert request. */
-    public static final short operationType = INSERT;
 
     /** The list of features to be inserted. */
     private FeatureCollection features;
@@ -163,7 +160,7 @@ public class InsertRequest extends SubTransactionRequest {
      * @return the short representation of INSERT.
      */
     public short getOpType() {
-        return operationType;
+        return INSERT;
     }
 
     /**

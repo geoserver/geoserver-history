@@ -10,7 +10,6 @@ import org.geotools.filter.*;
 import org.geotools.filter.Filter;
 import org.geotools.gml.*;
 import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.responses.wfs.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -23,18 +22,27 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.1.2.2 2003/11/12 03:42:26 jive Exp $
+ * @version $Id: TransactionHandler.java,v 1.1.2.3 2003/11/16 07:38:52 jive Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {
-    private static final short UNKNOWN = 0;
-    private static final short INSERT = 1;
-    private static final short DELETE = 2;
-    private static final short UPDATE = 3;
-    private static final short PROPERTY_NAME = 4;
-    private static final short VALUE = 5;
-    private static final short PROPERTY = 6;
-    private static final short LOCKID = 7;
+
+    //private static final short UNKNOWN = 0;
+    private static final State UNKNOWN = new State("UNKNOWN");
+    //private static final short INSERT = 1;
+    private static final State INSERT = new State("Insert");
+    //private static final short DELETE = 2;
+    private static final State DELETE = new State("Delete");       
+    //private static final short UPDATE = 3;
+    private static final State UPDATE = new State("Update");    
+    //private static final short PROPERTY_NAME = 4;
+    private static final State PROPERTY_NAME = new State("Name");
+    //private static final short VALUE = 5;
+    private static final State VALUE = new State("Value");
+    //private static final short PROPERTY = 6;
+    private static final State PROPERTY = new State("Property");
+    //private static final short LOCKID = 7;
+    private static final State LOCKID = new State("LockId");    
 
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
@@ -47,7 +55,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     private SubTransactionRequest subRequest = null;
 
     /** Tracks tag we are currently inside: helps maintain state. */
-    private short state = UNKNOWN;
+    private State state = UNKNOWN;
 
     /** holds the property name for an update request. */
     private String curPropertyName;
@@ -78,30 +86,21 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     }
 
     /**
-     * Gets the short representation of the element we're on.
+     * Convert to the State representation of the element we're on.
      *
      * @param stateName the localName of an element.
      *
-     * @return the short representation of the localName.
+     * @return the State representation of the localName.
      */
-    private static short setState(String stateName) {
-        if (stateName.equals("Insert")) {
-            return INSERT;
-        } else if (stateName.equals("Delete")) {
-            return DELETE;
-        } else if (stateName.equals("Update")) {
-            return UPDATE;
-        } else if (stateName.equals("Name")) {
-            return PROPERTY_NAME;
-        } else if (stateName.equals("Value")) {
-            return VALUE;
-        } else if (stateName.equals("Property")) {
-            return PROPERTY;
-        } else if (stateName.equals("LockId")) {
-            return LOCKID;
-        } else {
-            return UNKNOWN;
-        }
+    private static State toState(String stateName) {
+        if(INSERT.isTag(stateName)) return INSERT;
+        if(DELETE.isTag(stateName)) return DELETE;
+        if(UPDATE.isTag(stateName)) return UPDATE;
+        if(PROPERTY_NAME.isTag(stateName)) return PROPERTY_NAME;
+        if(VALUE.isTag(stateName)) return VALUE;
+        if(PROPERTY.isTag(stateName)) return PROPERTY;
+        if(LOCKID.isTag(stateName)) return LOCKID;
+        return UNKNOWN;
     }
 
     /**
@@ -119,7 +118,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
         LOGGER.finest("at start element: " + localName);
 
         // at start of element, set insidetag flag to whatever tag we're inside
-        state = setState(localName);
+        state = toState(localName);
 
         // if at a query element, empty the current query, set insideQuery
         //  flag, and get query typeNames
@@ -177,7 +176,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
 
         // as we leave query, set insideTag to "NULL" (otherwise the stupid
         //  characters method picks up external chars)
-        state = setState(localName);
+        state = toState(localName);
 
         // set insideQuery flag as we leave the query and add the query to the
         //  return list
@@ -289,5 +288,18 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
         if (state == VALUE) {
             curPropertyValue = geometry;
         }
+    }
+}
+/** Represents state in Transaction Handler */
+class State {
+    String state;    
+    public State(String tag){
+        state = tag;
+    }
+    public boolean isTag( String tag ){
+        return state.equals( tag );
+    }
+    public String toString(){
+        return state;
     }
 }

@@ -10,6 +10,7 @@ import java.util.logging.*;
 
 
 /**
+ * Defines a WFS Delete request, an element of TransactionRequest.
  * <p>
  * Defines a WFS delete request, which is a type transaction request.  Full
  * transaction requests may contain one or more delete requests.  Note that
@@ -32,18 +33,12 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DeleteRequest.java,v 1.1.2.1 2003/11/04 22:48:26 cholmesny Exp $
+ * @version $Id: DeleteRequest.java,v 1.1.2.2 2003/11/16 07:38:52 jive Exp $
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
-
-    /** Specifies the output format */
-    protected static final String operation = "Delete";
-
-    /** specifies the op type, will always be delete. */
-    protected static short operationType = DELETE;
+            "org.vfny.geoserver.requests.wfs");    
 
     /** Specifies the output format */
     protected String typeName = null;
@@ -51,7 +46,6 @@ public class DeleteRequest extends SubTransactionRequest {
     /** Specifies the features to lock. */
     protected Filter filter = null;
 
-    /** Specifices the user-defined name for the entire get feature request */
     protected boolean releaseAll = true;
 
     /**
@@ -120,7 +114,7 @@ public class DeleteRequest extends SubTransactionRequest {
      * @return the string "Delete"
      */
     public String getOperation() {
-        return operation;
+        return "Delete";
     }
 
     /**
@@ -129,7 +123,7 @@ public class DeleteRequest extends SubTransactionRequest {
      * @return the short representation of delete.
      */
     public short getOpType() {
-        return operationType;
+        return DELETE;
     }
 
     /**
