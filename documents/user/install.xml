@@ -25,11 +25,11 @@
     of the installation process, but the documentation to install these
     components is quite good. Our testing has occurred on JDK 1.4.1 or 1.4.2,
     Tomcat 5.0.19, Resin 2.1.13 or Jetty 4.1.27, and PostGIS 0.8.1 with GEOS
-    on top of Postgresql 7.4. <ulink url="http://ant.apache.org"></ulink>The
-    latest stable versions of these components should work fine. This document
-    assumes you are working with the downloaded
-    <emphasis>geoserver.war</emphasis> file. If you wish to work with the
-    source download please consult the developers build document</para>
+    on top of Postgresql 7.4. The latest stable versions of these components
+    should work fine. This document assumes you are working with the
+    downloaded <emphasis>geoserver.war</emphasis> file. If you wish to work
+    with the source download please consult the developers build
+    document</para>
 
     <para>GeoServer has an active user community that you can engage by
     joining the GeoServer <ulink
@@ -55,7 +55,10 @@
     against JDK1.4.2. If your not sure if you have java, or not sure what
     version, type <emphasis>java -version</emphasis> from the command line. If
     the command doesn't work or if the version is less than 1.4 then you'll
-    have to download, install, and set JAVA_HOME</para>
+    have to download, install, and set JAVA_HOME. &nbsp;If you wish to use the
+    visualization portion of GeoServer we recommend you install the Java
+    Advanced Imaging API, which can be downloaded <ulink
+    url="http://java.sun.com/products/java-media/jai/downloads/download-1_1_2.html">here</ulink>.</para>
   </sect1>
 
   <sect1 id="servlet">
@@ -63,11 +66,11 @@
 
     <para>Several good open source, free servlet containers and a bevy of
     commercial ones exist on the market. We recommend <ulink
-    url="http://www.caucho.com">Jetty</ulink> (open source, free to
-    non-commercial users) or <ulink
+    url="http://jetty.mortbay.org/jetty/index.html">Jetty</ulink> (open
+    source, free) or <ulink
     url="http://jakarta.apache.org/tomcat/index.html">Tomcat</ulink> (open
-    source, free). Most GeoServer testing has occurred on Tomcat, which is
-    remarkably simple to set up and administer. The servlet containers should
+    source, free). Most GeoServer testing has occurred on Tomcat 5, which is
+    remarkably simple to set up and administer.. The servlet containers should
     have good documentation, so we shall say nothing further here about the
     install. We do recommend sticking with the latest stable versions. For
     more information on GeoServer working with specific containers see our
@@ -96,11 +99,11 @@
     and don't care so much about advanced features and speed, then we
     recommend the Shapefile format, with installation information <ulink
     url="advanced.html#shapefile">here</ulink>. If you have an existing Oracle
-    spatial installation, and would like to use GeoServer to serve that data
-    as GML, then check out the install information <ulink
+    spatial or ArcSDE installation, and would like to use GeoServer to serve
+    that data as GML, then check out the install information <ulink
     url="advanced.html#oracle">here</ulink>. Be sure to fully read this
-    installation document before trying out Oracle or Shapefile DataStores,
-    even if you are not going to use PostGIS.</para>
+    installation document before trying out Oracle, ArcSDE or Shapefile
+    DataStores, even if you are not going to use PostGIS.</para>
 
     <para>Installing Postgresql and PostGIS is the most complicated part of
     setting up a GeoServer site and for this reason, we will supplement the
