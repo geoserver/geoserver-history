@@ -25,7 +25,7 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.form.data.DataFeatureTypesForm;
+import org.vfny.geoserver.form.data.DataFeatureTypesEditorForm;
 
 /**
  * @author rgould
@@ -33,14 +33,14 @@ import org.vfny.geoserver.form.data.DataFeatureTypesForm;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataFeatureTypesAction extends ConfigAction {
+public class DataFeatureTypesEditorAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
 		ActionForm form,
 		HttpServletRequest request,
 		HttpServletResponse response)
 		throws IOException, ServletException {
-			
-		DataFeatureTypesForm featureTypesForm = (DataFeatureTypesForm) form;
+		
+		DataFeatureTypesEditorForm featureTypesForm = (DataFeatureTypesEditorForm) form;
 		
 		String name = featureTypesForm.getName();
 		String SRS = featureTypesForm.getSRS();
@@ -54,21 +54,11 @@ public class DataFeatureTypesAction extends ConfigAction {
 		DataConfig dataConfig = (DataConfig) getDataConfig();			
 		FeatureTypeConfig config = null;		
 		
-		if (action.equals("edit") || action.equals("submit")) {
-			//config = (FeatureTypeConfig) dataConfig.getFeatureTypeConfig(featureTypesForm.getSelectedFeatureType());
-		} else if (action.equals("new")) {
-			config = new FeatureTypeConfig();
-		}
-		
-		//If they push edit, simply forward them back so the information is repopulated.
 		if (action.equals("edit")) {
-			featureTypesForm.reset(mapping, request);
-			return mapping.findForward("dataConfigFeatureTypes");
+			//config = (FeatureTypeConfig) dataConfig.getFeatureTypeConfig(featureTypesForm.getSelectedFeatureType());
 		}
 		
-		if (action.equals("delete")) {
-			dataConfig.removeFeatureType(featureTypesForm.getSelectedFeatureType());
-		} else {
+		 else {
 			
 			config.setAbstract(_abstract);
 			config.setName(name);
