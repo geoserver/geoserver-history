@@ -38,8 +38,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: sploreg $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.7 2004/04/30 02:48:37 sploreg Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: ValidationTestDoIt.java,v 1.8 2004/06/25 23:11:24 emperorkefka Exp $
  */
 public class ValidationTestDoIt extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
@@ -58,7 +58,7 @@ public class ValidationTestDoIt extends ConfigAction {
 		TestValidationResults vr = runTransactions(dataStores,gv,context);
 		
 		request.getSession().setAttribute(TestValidationResults.CURRENTLY_SELECTED_KEY,vr);
-		return  mapping.findForward("config.validation.suite");
+		return  mapping.findForward("config.validation.displayResults");
 	}
 
     private TestValidationResults runTransactions(Map dsm, ValidationProcessor v, ServletContext sc) {

@@ -134,6 +134,15 @@
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
         <put name="actionForwards" value="config.validation.test.doit"/>
     </definition>
+    
+   	<definition name="config.validation.displayResults" extends=".mainLayout">
+   		<put name="key" value="config.validation.displayResults"/>
+   		<put name="body" value="/WEB-INF/pages/validation/displayResults.jsp"/>
+   		<put name="layer" value="configuration"/>
+        <put name="locationForwards" value="welcome:config:config.validation"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
+        <put name="actionForwards" value="config.validation.suite.doit"/>
+   	</definition>     
    	
    	<!-- CONFIG WFS -->
    	<definition name="config.wfs" extends=".mainLayout">
