@@ -2,78 +2,80 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table class="control">
+<table class="state" width="100%">
   <tbody>
     <tr>
-      <td class="module">
-        <html:link forward="admin">
-		  <bean:message key="label.server"/>
-        </html:link>
+      <td>
+        GeoServer
+<logic:equal name="GeoServer.ApplicationState" property="appChanged" value="true">
+        *
+</logic:equal>
       </td>
-      <td class="module">
-        <html:link forward="config.validation">
-		  <bean:message key="label.validation"/>
-		</html:link>
+      <td align="right">
+<logic:notEmpty name="GeoServer.ApplicationState" property="appTimestamp">
+        <bean:write name="GeoServer.ApplicationState"
+                    property="appTimestamp"
+                    format="MMM d, h:mm a"/>
+</logic:notEmpty>
+<logic:empty name="GeoServer.ApplicationState" property="appTimestamp">
+        --
+</logic:empty>
+      </td>      
+    </tr>
+    <tr>
+      <td>
+        Configuration        
+<logic:equal name="GeoServer.ApplicationState" property="configChanged" value="true">
+        *
+</logic:equal>        
+      </td>
+      <td align="right">
+<logic:notEmpty name="GeoServer.ApplicationState" property="configTimestamp">
+        <bean:write name="GeoServer.ApplicationState"
+              property="configTimestamp"
+              format="MMM d, h:mm a"/>
+</logic:notEmpty>
+<logic:empty name="GeoServer.ApplicationState" property="configTimestamp">
+        --
+</logic:empty>
       </td>
     </tr>
     <tr>
-      <td
-<logic:equal name="GeoServer.ApplicationState" property="wfsEdited" value="true">
-          class="edited"
-</logic:equal>
-          >
-        <html:link forward="config.wfs">
-          <bean:message key="label.wfs"/>
-<logic:equal name="GeoServer.ApplicationState" property="wfsChanged" value="true">
-          *
-</logic:equal>                    
-        </html:link>
+      <td>
+        XML        
       </td>
-      <td 
-<logic:equal name="GeoServer.ApplicationState" property="wmsEdited" value="true">
-          class="edited"
-</logic:equal>
-          >
-        <html:link forward="config.wms">
-          <bean:message key="label.wms"/>
-<logic:equal name="GeoServer.ApplicationState" property="wmsChanged" value="true">
-          *
-</logic:equal>                    
-        </html:link>
-      </td>
-    </tr>
-    <tr>
-	  <td colspan=2	    
-	<logic:equal name="GeoServer.ApplicationState" property="dataEdited" value="true">
-          class="edited"
- 	</logic:equal>
- 	      >
-        <html:link forward="config.data">
-          <bean:message key="label.data"/>
-<logic:equal name="GeoServer.ApplicationState" property="dataChanged" value="true">
-          *
-</logic:equal>                    
-        </html:link> 	      
-      </td>
-    </tr>
-    <tr style="valign: bottom; height: 2em;">
-      <td colspan=2>
-        <html:form action="/admin/saveToGeoServer">
-			<html:submit>
-				<bean:message key="label.apply"/>
-			</html:submit>
-		</html:form>
-		<html:form action="/admin/saveToXML">	
-			<html:submit>
-				<bean:message key="label.save"/>
-			</html:submit>
-		</html:form>
-		<html:form action="/admin/loadFromXML">			
-			<html:submit>
-				<bean:message key="label.load"/>
-			</html:submit>
-		</html:form>      
+      <td align="right">
+<logic:notEmpty name="GeoServer.ApplicationState" property="xmlTimestamp">
+        <bean:write name="GeoServer.ApplicationState"
+                    property="xmlTimestamp"
+                    format="MMM d, h:mm a"/>
+</logic:notEmpty>
+<logic:empty name="GeoServer.ApplicationState" property="xmlTimestamp">
+        --
+</logic:empty>
       </td>
     </tr>
   </tbody>
-<table>
+</table>
+
+<table class="control">
+  <tbody>
+    <tr>
+      <html:form action="/admin/saveToGeoServer">
+        <html:submit>
+          <bean:message key="label.apply"/>
+        </html:submit>
+      </html:form>
+      <html:form action="/admin/saveToXML">	
+        <html:submit>
+          <bean:message key="label.save"/>
+        </html:submit>
+      </html:form>
+      <html:form action="/admin/loadFromXML">			
+        <html:submit>
+          <bean:message key="label.load"/>
+        </html:submit>
+      </html:form>
+    </tr>
+  </tbody>
+</table>

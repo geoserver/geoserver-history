@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -36,24 +38,21 @@ import org.geotools.validation.dto.TestSuiteDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.11 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: ApplicationState.java,v 1.12 2004/02/25 21:24:45 jive Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
     public static final String WEB_CONTAINER_KEY = "GeoServer.ApplicationState";
 
-    /** true if the configuration has been changed (but not applied) */
-    private boolean wmsEdited;
-    private boolean wfsEdited;
-    private boolean dataEdited;
-    private boolean validationEdited;
+    /** Non null if configuration has been edited (but not applied) */
+    private Date configTimestamp;
     
-    /** true if the geoserve setup has been changed (but not saved) */
-    private boolean wmsChanged;
-    private boolean wfsChanged;
-    private boolean dataChanged;
-    private boolean validationChanged;
-
+    /** Non null if the geoserve setup has been changed (but not saved) */
+    private Date appTimestamp;
+    
+    /** Non null if the modification date of the xml files is known */
+    private Date xmlTimestamp;
+    
     /** magic, be very careful with this array. defined below in loadStatus() */
     private int[] geoserverStatus = new int[13];
     private Map geoserverNSErrors;
@@ -92,8 +91,11 @@ public class ApplicationState implements PlugIn {
     public void init(ActionServlet actionServlet, ModuleConfig moduleConfig)
         throws ServletException {
         actionServlet.getServletContext().setAttribute(WEB_CONTAINER_KEY, this);
-
         sc = actionServlet.getServletContext();
+        
+        configTimestamp = getXmlTimestamp();
+        appTimestamp = configTimestamp;
+        
         geoserverStatus[0]=-1;
     }
 
@@ -103,49 +105,60 @@ public class ApplicationState implements PlugIn {
      * @return <code>true</code> if Configuration needs changing.
      */
     public boolean isConfigChanged() {
-        return wmsEdited || wfsEdited || dataEdited || validationEdited;
-    }
+        return configTimestamp != null &&
+               (appTimestamp == null ||
+                configTimestamp.after( appTimestamp ) );
+    }    
     public void setConfigChanged(boolean edited ){
-    	wmsEdited = edited;
-    	wfsEdited = edited;
-    	dataEdited = edited;
-    	validationEdited = edited;
+        if( edited ){
+            configTimestamp = new Date();
+        }
+        else {
+            configTimestamp = xmlTimestamp;
+        }
     }
+    /** Validation is part of the Configuration Process */
+    private boolean isValidationChanged(){
+        return isConfigChanged();
+    }    
     /**
      * True if the user has changed GeoServer and not yet saved the changes.
      *
      * @return <code>true</code> if GeoServer has been changed (but not saved)
      */
-    public boolean isGeoServerChanged() {
-        return wmsChanged || wfsChanged || dataChanged || validationChanged;
+    public boolean isAppChanged() {
+        return appTimestamp != null &&
+               ( xmlTimestamp == null ||
+                 appTimestamp.after( xmlTimestamp ) );
     }    
-    public void setGeoServerChanged(boolean changed){
-    	wmsChanged = changed;
-    	wfsChanged = changed;
-    	dataChanged = changed;
-    	validationChanged = changed;
+    public void setAppChanged(boolean changed){
+        if( changed ){
+            appTimestamp = configTimestamp;
+        }
+        else {
+            appTimestamp = xmlTimestamp;
+        };
     }
     /**
-     * Notification that Global has been updated from XML config files
+     * Notification that Config has been updated from XML config files
      */
     public void notifyLoadXML() {
     	// Correct, this represents a load into config from xml
-        setConfigChanged( false );
+        setConfigChanged( false );        
     }
 
     /**
      * Notification that Global has been updated from Configuration
      */
     public void notifyToGeoServer() {
-    	setGeoServerChanged( true );
-        setConfigChanged( false );
+    	setAppChanged( true );        
     }
 
     /**
      * Notification that Global has been saved to XML config files.
      */
     public void notifiySaveXML() {
-        setGeoServerChanged( false );
+        resetXMLTimestamp();
     }
 
     /**
@@ -156,74 +169,76 @@ public class ApplicationState implements PlugIn {
     }
     /** Q: what is this supposed to do? */
     public int getWfsGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0)){
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0)){
     		loadStatus();
     	}
     	return geoserverStatus[1];
     }
     /** q: What foul manner of magic is this? */
     public int getWfsBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[2];
     }
     /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
     public int getWfsDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[3];
     }
     /** Q: scary magic */
     public int getWmsGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[4];
     }
     /** Q: scary magic */
     public int getWmsBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[5];
     }
     /** Q: scary magic */
     public int getWmsDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[6];
     }
     
     public int getDataGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[7];
     }
     
     public int getDataBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+
+                                 (isConfigChanged() ? 2 : 0)+
+                                 (isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[8];
     }
     
     public int getDataDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[9];
     }
     
     public int getGeoserverGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return (int)((geoserverStatus[1] + geoserverStatus[4] + geoserverStatus[7])/3.0);
     }
     
     public int getGeoserverBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return (int)((geoserverStatus[2] + geoserverStatus[5] + geoserverStatus[8])/3.0);
     }
     
     public int getGeoserverDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return (int)((geoserverStatus[3] + geoserverStatus[6] + geoserverStatus[9])/3.0);
     }
@@ -255,7 +270,7 @@ public class ApplicationState implements PlugIn {
     	// bit 2: isConfigChanged
     	//
     	// And all this madness is a cut and paste mistake?
-    	geoserverStatus[0] = (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0);
+    	geoserverStatus[0] = (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0);
     	Data dt = (Data) sc.getAttribute(Data.WEB_CONTAINER_KEY);
     	GeoValidator gv = (GeoValidator) sc.getAttribute(GeoValidator.WEB_CONTAINER_KEY);
     	if (dt == null || gv==null)
@@ -408,7 +423,7 @@ public class ApplicationState implements PlugIn {
      */
     public Map getNameSpaceErrors(){
     	if(geoserverNSErrors==null ||
-    	   geoserverStatus[0] == (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	   geoserverStatus[0] == (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverNSErrors;
     }
@@ -429,7 +444,7 @@ public class ApplicationState implements PlugIn {
      * @return
      */
     public Map getDataStoreErrors(){
-    	if(geoserverDSErrors==null || geoserverStatus[0] == (isConfigChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    	if(geoserverDSErrors==null || geoserverStatus[0] == (isConfigChanged() ? 1 : 0)+(isAppChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverDSErrors;
     }
@@ -452,7 +467,7 @@ public class ApplicationState implements PlugIn {
      */
     public Map getValidationErrors(){
     	if(geoserverNSErrors==null ||
-    			geoserverStatus[0] == (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    			geoserverStatus[0] == (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverVPErrors;
     }
@@ -480,100 +495,35 @@ public class ApplicationState implements PlugIn {
     public List getWMSErrorKeys(){
     	return getNameSpaceErrorKeys();
     }
-	/**
-	 * @return Returns the dataChanged.
-	 */
-	public boolean isDataChanged() {
-		return dataChanged;
-	}
-	/**
-	 * @param dataChanged The dataChanged to set.
-	 */
-	public void setDataChanged(boolean dataChanged) {
-		this.dataChanged = dataChanged;
-	}
-	/**
-	 * @return Returns the dataEdited.
-	 */
-	public boolean isDataEdited() {
-		return dataEdited;
-	}
-	/**
-	 * @param dataEdited The dataEdited to set.
-	 */
-	public void setDataEdited(boolean dataEdited) {
-		this.dataEdited = dataEdited;
-	}
-	/**
-	 * @return Returns the validationChanged.
-	 */
-	public boolean isValidationChanged() {
-		return validationChanged;
-	}
-	/**
-	 * @param validationChanged The validationChanged to set.
-	 */
-	public void setValidationChanged(boolean validationChanged) {
-		this.validationChanged = validationChanged;
-	}
-	/**
-	 * @return Returns the validationEdited.
-	 */
-	public boolean isValidationEdited() {
-		return validationEdited;
-	}
-	/**
-	 * @param validationEdited The validationEdited to set.
-	 */
-	public void setValidationEdited(boolean validationEdited) {
-		this.validationEdited = validationEdited;
-	}
-	/**
-	 * @return Returns the wfsChanged.
-	 */
-	public boolean isWfsChanged() {
-		return wfsChanged;
-	}
-	/**
-	 * @param wfsChanged The wfsChanged to set.
-	 */
-	public void setWfsChanged(boolean wfsChanged) {
-		this.wfsChanged = wfsChanged;
-	}
-	/**
-	 * @return Returns the wfsEdited.
-	 */
-	public boolean isWfsEdited() {
-		return wfsEdited;
-	}
-	/**
-	 * @param wfsEdited The wfsEdited to set.
-	 */
-	public void setWfsEdited(boolean wfsEdited) {
-		this.wfsEdited = wfsEdited;
-	}
-	/**
-	 * @return Returns the wmsChanged.
-	 */
-	public boolean isWmsChanged() {
-		return wmsChanged;
-	}
-	/**
-	 * @param wmsChanged The wmsChanged to set.
-	 */
-	public void setWmsChanged(boolean wmsChanged) {
-		this.wmsChanged = wmsChanged;
-	}
-	/**
-	 * @return Returns the wmsEdited.
-	 */
-	public boolean isWmsEdited() {
-		return wmsEdited;
-	}
-	/**
-	 * @param wmsEdited The wmsEdited to set.
-	 */
-	public void setWmsEdited(boolean wmsEdited) {
-		this.wmsEdited = wmsEdited;
-	}
+    /**
+     * Access appTimestamp property.
+     * 
+     * @return Returns the appTimestamp.
+     */
+    public Date getAppTimestamp() {
+        return appTimestamp;
+    }
+    /**
+     * Access configTimestamp property.
+     * 
+     * @return Returns the configTimestamp.
+     */
+    public Date getConfigTimestamp() {
+        return configTimestamp;
+    }
+    /**
+     * Access xmlTimestamp property.
+     * 
+     * @return Returns the xmlTimestamp.
+     */
+    public Date getXmlTimestamp() {
+        if( xmlTimestamp == null){
+            resetXMLTimestamp();
+        }
+        return xmlTimestamp;    
+    }
+    private void resetXMLTimestamp(){
+        File serviceFile = new File(sc.getRealPath("/WEB-INF/service.xml"));
+        xmlTimestamp = new Date( serviceFile.lastModified() );        
+    }    
 }

@@ -53,7 +53,7 @@ public class SaveXMLAction extends ConfigAction {
 		ActionForward r1 = saveGeoserver(mapping,form,request,response);
 		ActionForward r2 = saveValidation(mapping,form,request,response);
 
-		return mapping.findForward("welcome");
+		return mapping.findForward("config");
 	}
 	
     private ActionForward saveGeoserver(ActionMapping mapping,
@@ -76,7 +76,7 @@ public class SaveXMLAction extends ConfigAction {
         // We need to stash the current page?
         // or can we use null or something?
         //
-        return mapping.findForward("welcome");
+        return mapping.findForward("config");
     }
     
     private ActionForward saveValidation(ActionMapping mapping,
@@ -130,6 +130,6 @@ public class SaveXMLAction extends ConfigAction {
     	// We need to stash the current page?
     	// or can we use null or something?
     	//
-    	return mapping.findForward("welcome");
+    	return mapping.findForward("config.validation");
     }
 }

@@ -58,7 +58,7 @@ public class LoadXMLAction extends ConfigAction {
 		ActionForward r1 = loadValidation(mapping,form,request,response);
 		ActionForward r2 = loadGeoserver(mapping,form,request,response);
 
-		return mapping.findForward("welcome");
+		return mapping.findForward("config");
 	}
 	
 	private ActionForward loadGeoserver(ActionMapping mapping,
@@ -116,7 +116,7 @@ public class LoadXMLAction extends ConfigAction {
 		//
 		System.out.println("request:"+request.getServletPath());
 		System.out.println("forward:"+mapping.getForward());
-		return mapping.findForward("welcome");
+		return mapping.findForward("config");
 	}
 	
     private ActionForward loadValidation(ActionMapping mapping,
@@ -144,8 +144,8 @@ public class LoadXMLAction extends ConfigAction {
         } catch (Exception e) {
         	// LOG error
         	e.printStackTrace();
-        	return mapping.findForward("welcome");
+        	return mapping.findForward("config.validation");
         }
-        return mapping.findForward("welcome");
+        return mapping.findForward("config.validation");
     }
 }
