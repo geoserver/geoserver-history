@@ -66,14 +66,14 @@ public class FeatureResponse {
         throws WfsException {
         
         TypeInfo meta = repository.getType(query.getTypeName());
+	
         PostgisConnection db = new PostgisConnection (meta.getHost(),
                                                       meta.getPort(),
                                                       meta.getDatabaseName()); 
         db.setLogin(meta.getUser(), meta.getPassword());
-        DataSource data = new PostgisDataSource(db, meta.getName());
-
-        FeatureCollection collection = null;
-        try {
+	FeatureCollection collection = null;
+	try {
+	    DataSource data = new PostgisDataSource(db, meta.getName());
             collection = data.getFeatures(query.getFilter());
         } catch(DataSourceException e) {
             throw new WfsException(e.getMessage());
@@ -84,16 +84,16 @@ public class FeatureResponse {
         FeatureType schema = features[0].getSchema();
         AttributeType[] attributeTypes = schema.getAttributeTypes();
         Object[] attributes;
-
+	int geometryPosition = schema.getDefaultGeometry().getPosition();
         GMLBuilder gml = new GMLBuilder(true);
 
         LOG.finest("about to create gml");
         LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
-        gml.initializeGeometry(attributeTypes[schema.attributeTotal() - 1].
+        gml.initializeGeometry(attributeTypes[geometryPosition].
                                getType(), 
                                meta.getName(), 
                                meta.getSrs(), 
-                               attributeTypes[schema.attributeTotal() - 1].
+                               attributeTypes[geometryPosition].
                                getName());
         gml.startFeatureType(meta.getName(), meta.getSrs());
 
@@ -105,17 +105,21 @@ public class FeatureResponse {
             attributes = features[i].getAttributes();
             LOG.finest("feature: " + features[i].toString());
             LOG.finest("att total: " + schema.attributeTotal());
-            for(int j = 0, n = schema.attributeTotal() - 1; j < n; j++) {
+            for(int j = 0, n = schema.attributeTotal(); j < n; j++) {
                 LOG.finest("sent attribute: " + attributes[j].toString());
+		if (j == geometryPosition) {
+		    LOG.finest("geometry att: " + attributes[j].getClass());
+		    LOG.finest("att name: " + attributeTypes[j].getName());
+            gml.addGeometry((Geometry) attributes[j], 
+			    attributeTypes[j].getName());
+		LOG.finest("added geometry: " + ((Geometry) attributes[j]).toString());
+		} else {
                 gml.addAttribute(attributeTypes[j].getName(), 
                                  attributes[j].toString());
-            }
-            LOG.finest("geometry att: " + attributes[schema.attributeTotal() - 1].getClass());
-            LOG.finest("att name: " + attributeTypes[schema.attributeTotal() - 1].getName());
-            gml.addGeometry((Geometry) attributes[schema.attributeTotal() - 1],
-                            attributeTypes[schema.attributeTotal() - 1].
-                            getName());
-            LOG.finest("added geometry: " + ((Geometry) attributes[schema.attributeTotal() - 1]).toString());
+		}
+	    }
+            
+            
             gml.endFeature();
             LOG.finest("ended feature");
         }
