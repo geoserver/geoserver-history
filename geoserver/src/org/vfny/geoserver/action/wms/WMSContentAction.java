@@ -63,6 +63,6 @@ public final class WMSContentAction extends ConfigAction {
         config.setEnabledFeatures(set);
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("wmsConfigDescription");
+        return mapping.findForward("wmsConfigContent");
     }
 }

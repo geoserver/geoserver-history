@@ -33,7 +33,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestSelectAction.java,v 1.3 2004/02/05 17:33:19 dmzwiers Exp $
+ * @version $Id: ValidationTestSelectAction.java,v 1.4 2004/02/25 00:38:53 dmzwiers Exp $
  */
 public class ValidationTestSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -55,12 +55,7 @@ public class ValidationTestSelectAction extends ConfigAction {
         ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
         TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession().getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
         
-        if (edit.equals(buttonAction)) {
-            TestConfig testConfig = (TestConfig) suiteConfig.getTests().get(selectedTest);
-            request.getSession().setAttribute(TestConfig.CURRENTLY_SELECTED_KEY, testConfig);
-            
-            return mapping.findForward("validationTestEditor");            
-        } else if (delete.equals(buttonAction)) {
+                if (delete.equals(buttonAction)) {
             
             Map tests = suiteConfig.getTests();
             tests.remove(selectedTest);
@@ -70,9 +65,16 @@ public class ValidationTestSelectAction extends ConfigAction {
             request.getSession().removeAttribute(TestConfig.CURRENTLY_SELECTED_KEY);
             
             return mapping.findForward("validationTest");
+        }else{
+        	//if (edit.equals(buttonAction)) {
+                TestConfig testConfig = (TestConfig) suiteConfig.getTests().get(selectedTest);
+                if(testConfig == null)
+                    throw new ServletException(
+                        "Action must be a MessageResource key value of either 'label.edit' or 'label.delete'");
+                request.getSession().setAttribute(TestConfig.CURRENTLY_SELECTED_KEY, testConfig);
+                
+                return mapping.findForward("validationTestEditor");            
         }
         
-        throw new ServletException(
-            "Action must be a MessageResource key value of either 'label.edit' or 'label.delete'");
     }
 }

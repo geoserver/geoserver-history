@@ -70,7 +70,7 @@ public class DataStylesAction extends ConfigAction {
         if (action.equals(edit)) {
             stylesForm.reset(mapping, request);
 
-            return mapping.findForward("dataConfigStyles");
+            return mapping.findForward("config.data.styles");
         }
 
         if (action.equals(delete)) {
@@ -88,6 +88,6 @@ public class DataStylesAction extends ConfigAction {
 
         stylesForm.reset(mapping, request);
 
-        return mapping.findForward("dataConfigStyles");
+        return mapping.findForward("config.data.styles");
     }
 }

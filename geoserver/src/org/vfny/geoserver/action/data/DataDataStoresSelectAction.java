@@ -27,8 +27,8 @@ import org.vfny.geoserver.global.UserContainer;
  * Select a DataStore for editing.
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.10 2004/02/12 22:07:59 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataDataStoresSelectAction.java,v 1.11 2004/02/25 00:38:53 dmzwiers Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -54,14 +54,14 @@ public class DataDataStoresSelectAction extends ConfigAction {
            
             getUserContainer(request).setDataStoreConfig(dsConfig);
 
-            return mapping.findForward("dataConfigDataStoresEditor");
+            return mapping.findForward("config.data.stores.editor");
         } else if (deleteLabel.equals(buttonAction)) {
             dataConfig.removeDataStore(form.getSelectedDataStoreId());
             getUserContainer(request).setDataStoreConfig(null);
 
             form.reset(mapping, request);
 
-            return mapping.findForward("dataConfigDataStoresSelect");
+            return mapping.findForward("config.data.stores");
         }
         
         throw new ServletException(

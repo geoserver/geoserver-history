@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.UserContainer;
  * 
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestSuiteSelectAction.java,v 1.3 2004/02/05 17:33:19 dmzwiers Exp $
+ * @version $Id: ValidationTestSuiteSelectAction.java,v 1.4 2004/02/25 00:38:53 dmzwiers Exp $
  */
 public class ValidationTestSuiteSelectAction extends ConfigAction {
 
@@ -69,7 +69,7 @@ public class ValidationTestSuiteSelectAction extends ConfigAction {
             
             request.getSession().removeAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
             
-            return mapping.findForward("validationTestSuite");
+            return mapping.findForward("suite");
         }
 
         throw new ServletException(

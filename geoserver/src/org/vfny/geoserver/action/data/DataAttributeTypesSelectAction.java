@@ -60,7 +60,7 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
                 config);
             form.reset(mapping, request);
             getApplicationState().notifyConfigChanged();
-            return mapping.findForward("dataConfigFeatureTypes");
+            return mapping.findForward("config.data.types");
         }
 
         if (action.equals(delete)) {
@@ -71,7 +71,7 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
             ftConfig.setSchemaAttributes(list);
             getApplicationState().notifyConfigChanged();
 
-            return mapping.findForward("dataConfigFeatureTypes");
+            return mapping.findForward("config.data.types");
         }
 
         if (action.equals(moveUp) || action.equals(moveDown)) {
@@ -89,11 +89,11 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
             int targetIndex = list.indexOf(config);
 
             if ((targetIndex == 0) && action.equals(moveUp)) {
-                return mapping.findForward("dataConfigFeatureTypes");
+                return mapping.findForward("config.data.types");
             }
 
             if ((targetIndex == (list.size() - 1)) && action.equals(moveDown)) {
-                return mapping.findForward("dataConfigFeatureTypes");
+                return mapping.findForward("config.data.types");
             }
 
             //retrieve the object currently where this one wants to go
@@ -103,7 +103,7 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
             list.set(targetIndex, temp);
             getApplicationState().notifyConfigChanged();
 
-            return mapping.findForward("dataConfigFeatureTypes");
+            return mapping.findForward("config.data.types");
         }
 
         throw new ServletException(
