@@ -7,7 +7,7 @@
 <table border=0 width=100%>
 	<html:form action="DataConfigFeatureTypesSelect">
 
-	<tr><td>
+	<tr><td align="right" valign="top">
 		<bean:message key="label.featureTypes"/>:
 	</td><td>
 		<html:select property="selectedFeatureTypeName">
@@ -16,7 +16,7 @@
 		
 	</td></tr>
 	<tr><td>&nbsp;</td>
-	<td>
+	<td align="left" valign="top">
 
 		<html:submit>
 			<bean:message key="label.edit"/>

@@ -11,8 +11,8 @@
 		<bean:message key="label.attributeTypeName"/>:
 	</td>
 	<td align="left">
-		<html:select property="selectedDescription">
-			<html:options property="dataStoreDescriptions"/>
+		<html:select property="selectedNewAttributeType">
+			<html:options property="newAttributeTypes"/>
 		</html:select>
 	</td></tr>
 
