@@ -48,7 +48,7 @@
 	<tr><td align="right">
 		<bean:write name="dataDataStoresEditorForm" property='<%= "paramKey[" + ctr + "]"%>'/>
 	</td><td colspan=2 align="left">
-		<html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
+		<html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>
 	</td></tr>
 	</logic:notEqual>	
 </logic:iterate>	

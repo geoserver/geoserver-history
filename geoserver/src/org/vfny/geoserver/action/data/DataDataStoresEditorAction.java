@@ -44,11 +44,11 @@ public class DataDataStoresEditorAction extends ConfigAction {
 		String namespace = dataStoresForm.getNamespaceId();
 		String description = dataStoresForm.getDescription();
 
-        
-
 		// After extracting params into a map
 		Map aMap = new HashMap();
-		
+        
+        aMap.putAll(dataStoresForm.getParams());
+        		
 		// Test to see if they work
 		DataStoreFinder.getDataStore( aMap );
 						
