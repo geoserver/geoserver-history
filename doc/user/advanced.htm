@@ -243,7 +243,7 @@
 	    metadata.  Eventually we hope to come up with a 
 	    configuration tool to integrate metadata preperation, but
 	    for now you must use the mp tool.  Information on preparing
-	    metadata is available <a href=http://www.fgdc.gov/clearinghouse/tutorials/metadata.html>here</a>
+	    metadata is available <a href=http://www.fgdc.gov/clearinghouse/tutorials/metadata.html>here</a>.  
 	    </p>
 
 	    <p>It is best to prepare your metadata in text, html, xml and
@@ -252,11 +252,16 @@
 	    metadata, and then rename each of the files metadata, with
 	    their appropriate suffixes (metadata.xml, metadata.html, 
 	    etc.).  Then copy these files to the appropriate featureType
-	    directories in the data folder.  The zserver module will 
-	    automatically detect them, and start running on port 5210.
-	    For now the only way to change the port is in the source
-	    code (FreefsLog.java).  This will be configurable in the 
-	    future.  The best way to test to make sure it is working
+	    directories in the data folder.  To make GeoServer run the
+	    zserver module, add the <ZServer> tag to the configuration.xml
+	    file.  The zserver runs on port 5210 by default, but that
+	    is now user configurable with the Port tag.  If you would like
+	    your zserver to run on port 3210, then the appropriate tags 
+	    would be:<br>
+	      <i> &nbsp;&nbsp;&nbsp;&nbsp;&lt;ZServer&gt;<br>
+	      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Port&gt;3210&lt;/Port&gt;
+	     <br> &nbsp;&nbsp;&nbsp;&nbsp;&lt;/ZServer&gt;</i><br>
+	    The best way to test to make sure it is working
 	    is to download Isite and use its client applications.  A 
 	    test query of 'rail' on either title or everything should 
 	    return the test document.  Only the US's FGDC metadata is 
