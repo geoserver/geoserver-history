@@ -59,8 +59,8 @@ public class WfsException extends Exception {
      * Empty constructor.
      * @param message The message for the .
      */
-    public WfsException (Exception e) {
-        super( e.getMessage() );
+    public WfsException (Throwable e) {
+        super( e );
         LOGGER.fine( this.getMessage() );             
     }
     
@@ -82,8 +82,8 @@ public class WfsException extends Exception {
      * @param message The message for the .
      * @param locator The message for the .
      */
-    public WfsException (Exception e, String preMessage, String locator) {
-        super( e.getMessage() );
+    public WfsException (Throwable e, String preMessage, String locator) {
+        super( e );
         this.preMessage = preMessage;               
         this.locator = locator;
         LOGGER.fine( "> [" + this.locator + "]:\n  " + 
@@ -95,10 +95,14 @@ public class WfsException extends Exception {
 	return (testString == null) || testString.equals("");
     }
 
+    public String getXmlResponse() {
+	return getXmlResponse(false);
+    }
+
     /**
      * Return request type.
      */
-    public String getXmlResponse () {
+    public String getXmlResponse (boolean printStackTrace) {
 	String indent = "   ";
        StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>\n");
 	returnXml.append("<ServiceExceptionReport\n");
@@ -122,6 +126,15 @@ public class WfsException extends Exception {
 	    returnXml.append(this.preMessage + ": ");
 	} 
 	returnXml.append(this.getMessage() + "\n");
+	if (printStackTrace  ) {
+	    Throwable cause = getCause();
+	    StackTraceElement[] trace = cause == null ? 
+		getStackTrace() : cause.getStackTrace();
+	    for (int i = 0; i < trace.length; i++){
+		String line = indent + indent + "at " + trace[i].toString();
+		returnXml.append(GMLBuilder.encodeXML(line) + "\n");
+	    }
+	}
 	returnXml.append(indent + "</ServiceException>\n");
 	returnXml.append("</ServiceExceptionReport>");
 	LOGGER.fine("return wfs exception is " + returnXml);
