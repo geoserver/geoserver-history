@@ -54,7 +54,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.21 2004/01/20 06:33:59 jive Exp $
+ * @version $Id: Data.java,v 1.22 2004/01/20 18:22:03 dmzwiers Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -136,12 +136,13 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         // Step 1: load dataStores and Namespaces
         dataStores = loadDataStores( config );
         nameSpaces = loadNamespaces( config );
+
+        // Step 2: set up styles
+        styles = loadStyles( config ); 
         
-        // Step 2: load featureTypes
+        // Step 3: load featureTypes
         featureTypes = loadFeatureTypes( config );
-        
-        // Step 3: set up styles
-        styles = loadStyles( config );                
+                       
     }
     
     /**
@@ -259,6 +260,14 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             else {
                 LOGGER.finest( key+" datastore found :"+dataStoreInfo );
             }
+            
+            Style s = getStyle(featureTypeDTO.getDefaultStyle());
+            if(s==null){
+            	LOGGER.severe("FeatureTypeInfo "+key+" ignored - Style '"+featureTypeDTO.getDefaultStyle()+"' not found!");
+            	continue SCHEMA;
+            }
+             
+            
             // Check attributes configured correctly against schema
             String typeName = featureTypeDTO.getName();
             try {
@@ -774,7 +783,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         //HACK: but I'm not sure if we can get the GeoServer instance.  This is one thing
         //that will benefit from splitting up of config loading from representation.
         //
-        url = fileName.toURL();
+        url = (fileName).toURL();
 
         SLDStyle stylereader = new SLDStyle(styleFactory, url);
         Style[] layerstyle = stylereader.readXML();
