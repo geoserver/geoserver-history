@@ -43,16 +43,36 @@
 		<b><bean:message key="label.connectionParameters"/>
 	</td></tr>
 
-<logic:iterate id="param" indexId="ctr" name="dataDataStoresEditorForm" property="paramKeys">
-	<logic:notEqual name="dataDataStoresEditorForm" property='<%= "paramKey[" + ctr + "]"%>' value="dbtype">
-	<tr><td align="right">
-		<span class="help" title="<bean:write name="dataDataStoresEditorForm" property='<%= "paramHelp[" + ctr + "]" %>'/>">
-			<bean:write name="dataDataStoresEditorForm" property='<%= "paramKey[" + ctr + "]"%>'/>
-		</span>
-	</td><td colspan=2 align="left">
-		<html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>
-	</td></tr>
-	</logic:notEqual>	
+<logic:iterate id="param"
+               indexId="ctr"
+               name="dataDataStoresEditorForm"
+               property="paramKeys">
+	<logic:notEqual name="dataDataStoresEditorForm"
+	                property='<%= "paramKey[" + ctr + "]"%>'
+	                value="dbtype">
+  	<tr>
+  		<td align="right">
+			<span class="help"
+		          title="<bean:write name="dataDataStoresEditorForm"
+			      property='<%= "paramHelp[" + ctr + "]" %>'/>">
+	        	<bean:write name="dataDataStoresEditorForm"
+        	            	property='<%= "paramKey[" + ctr + "]"%>'/>
+			</span>
+		</td>
+		<td colspan=2 align="left">
+			<logic:notEqual name="dataDataStoresEditorForm"
+	    	        	    property='<%= "paramKey[" + ctr + "]"%>'
+			                value="passwd">
+				<html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>
+			</logic:notEqual>
+			<logic:equal name="dataDataStoresEditorForm"
+	        		     property='<%= "paramKey[" + ctr + "]"%>'
+			             value="passwd">
+				<html:password property='<%= "paramValues[" + ctr + "]"%>' size="12" maxlength="10"/>
+			</logic:equal>			             
+		</td>
+	</tr>
+	</logic:notEqual>
 </logic:iterate>	
 	
 	<tr><td align="right">&nbsp;</td><td colspan=2>
