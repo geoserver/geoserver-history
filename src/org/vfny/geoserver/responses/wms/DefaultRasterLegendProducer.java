@@ -4,17 +4,8 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import java.awt.Canvas;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
@@ -34,20 +25,51 @@ import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import java.awt.Canvas;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
- * DOCUMENT ME!
+ * Template {@linkPlain
+ * org.vfny.geoserver.responses.wms.GetLegendGraphicProducer} based on
+ * GeoTools' {@link
+ * http://svn.geotools.org/geotools/trunk/gt/module/main/src/org/geotools/renderer/lite/StyledShapePainter.java
+ * StyledShapePainter} that produces a BufferedImage with the appropiate
+ * legend graphic for a given GetLegendGraphic WMS request.
+ * 
+ * <p>
+ * It should be enough for a subclass to implement {@linkPlain
+ * org.vfny.geoserver.responses.wms.GetLegendGraphicProducer#writeTo(OutputStream)}
+ * and <code>getContentType()</code> in order to encode the BufferedImage
+ * produced by this class to the appropiate output format.
+ * </p>
+ * 
+ * <p>
+ * This class takes literally the fact that the arguments <code>WIDTH</code>
+ * and <code>HEIGHT</code> are just <i>hints</i> about the desired dimensions
+ * of the produced graphic, and the need to produce a legend graphic
+ * representative enough of the SLD style for which it is being generated.
+ * Thus, if no <code>RULE</code> parameter was passed and the style has more
+ * than one applicable Rule for the actual scale factor, there will be
+ * generated a legend graphic of the specified width, but with as many stacked
+ * graphics as applicable rules were found, providing by this way a
+ * representative enough legend.
+ * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
 public abstract class DefaultRasterLegendProducer
     implements GetLegendGraphicProducer {
-    /** DOCUMENT ME! */
+    /** shared package's logger */
     private static final Logger LOGGER = Logger.getLogger(DefaultRasterLegendProducer.class.getPackage()
                                                                                            .getName());
 
@@ -84,22 +106,51 @@ public abstract class DefaultRasterLegendProducer
     /** The image produced at <code>produceLegendGraphic</code> */
     private BufferedImage legendGraphic;
 
-    /** DOCUMENT ME! */
+    /**
+     * set to <code>true</code> when <code>abort()</code> gets called,
+     * indicates that the rendering of the legend graphic should stop
+     * gracefully as soon as possible
+     */
     private boolean renderingStopRequested;
 
     /**
-     *
+     * Just a holder to avoid creating many polygon shapes from inside
+     * <code>getSampleShape()</code>
+     */
+    private Shape sampleRect;
+
+    /**
+     * Just a holder to avoid creating many line shapes from inside
+     * <code>getSampleShape()</code>
+     */
+    private Shape sampleLine;
+
+    /**
+     * Just a holder to avoid creating many point shapes from inside
+     * <code>getSampleShape()</code>
+     */
+    private Shape samplePoint;
+
+    /**
+     * Default constructor. Subclasses may provide its own with a String
+     * parameter to establish its desired output format, if they support more
+     * than one (e.g. a JAI based one)
      */
     public DefaultRasterLegendProducer() {
         super();
     }
 
     /**
-     * DOCUMENT ME!
+     * Takes a GetLegendGraphicRequest and produces a BufferedImage that then
+     * can be used by a subclass to encode it to the appropiate output format.
      *
-     * @param request DOCUMENT ME!
+     * @param request the "parsed" request, where "parsed" means that it's
+     *        values are already validated so this method must not take care
+     *        of verifying the requested layer exists and the like.
      *
-     * @throws WmsException DOCUMENT ME!
+     * @throws WmsException if there are problems creating a "sample" feature
+     *         instance for the FeatureType <code>request</code> returns as
+     *         the required layer (which should not occur).
      */
     public void produceLegendGraphic(GetLegendGraphicRequest request)
         throws WmsException {
@@ -146,9 +197,9 @@ public abstract class DefaultRasterLegendProducer
                         symbolizer, scaleRange);
                 Shape shape = getSampleShape(symbolizer, w, h);
 
-
                 shapePainter.paint(graphics, shape, style2d, scaleDenominator);
             }
+
             legendsStack.add(image);
         }
 
@@ -156,13 +207,16 @@ public abstract class DefaultRasterLegendProducer
     }
 
     /**
-     * DOCUMENT ME!
+     * Recieves a list of <code>BufferedImages</code> and produces a new one
+     * which holds all  the images in <code>imageStack</code> one above the
+     * other.
      *
-     * @param imageStack DOCUMENT ME!
+     * @param imageStack the list of BufferedImages, one for each applicable
+     *        Rule
      *
-     * @return DOCUMENT ME!
+     * @return the stack image with all the images on the argument list.
      *
-     * @throws IllegalArgumentException DOCUMENT ME!
+     * @throws IllegalArgumentException if the list is empty
      */
     private static BufferedImage mergeLegends(List imageStack) {
         if (imageStack.size() == 0) {
@@ -185,8 +239,8 @@ public abstract class DefaultRasterLegendProducer
                 if (i == 0) {
                     w = img.getWidth();
                     h = img.getHeight();
-                    
-                    finalLegend = new BufferedImage(w,imgCount * h,
+
+                    finalLegend = new BufferedImage(w, imgCount * h,
                             BufferedImage.TYPE_INT_ARGB);
                     finalGraphics = finalLegend.createGraphics();
                 }
@@ -216,24 +270,36 @@ public abstract class DefaultRasterLegendProducer
      * @throws IllegalArgumentException if an unknown symbolizer impl was
      *         passed in.
      */
-    private static Shape getSampleShape(Symbolizer symbolizer, int legendWidth,
+    private Shape getSampleShape(Symbolizer symbolizer, int legendWidth,
         int legendHeight) {
         Shape sampleShape;
         float hpad = (legendWidth * hpaddingFactor);
         float vpad = (legendHeight * vpaddingFactor);
 
         if (symbolizer instanceof LineSymbolizer) {
-            sampleShape = new Line2D.Float(hpad, legendHeight - vpad, legendWidth - hpad,
-            		vpad);
+            if (this.sampleLine == null) {
+                this.sampleLine = new Line2D.Float(hpad, legendHeight - vpad,
+                        legendWidth - hpad, vpad);
+            }
+
+            sampleShape = this.sampleLine;
         } else if (symbolizer instanceof PolygonSymbolizer) {
-            sampleShape = new Rectangle2D.Float(hpad, vpad, legendWidth - hpad,
-                    legendHeight - vpad);
+            if (this.sampleRect == null) {
+                this.sampleRect = new Rectangle2D.Float(hpad, vpad,
+                        legendWidth - hpad, legendHeight - vpad);
+            }
+
+            sampleShape = this.sampleRect;
         } else if (symbolizer instanceof PointSymbolizer
                 || symbolizer instanceof TextSymbolizer) {
-            Coordinate coord = new Coordinate(legendWidth / 2, legendHeight / 2);
-            Shape samplePoint = new LiteShape(geomFac.createPoint(coord), null,
-                    false);
-            sampleShape = samplePoint;
+            if (this.samplePoint == null) {
+                Coordinate coord = new Coordinate(legendWidth / 2,
+                        legendHeight / 2);
+                this.samplePoint = new LiteShape(geomFac.createPoint(coord),
+                        null, false);
+            }
+
+            sampleShape = this.samplePoint;
         } else {
             throw new IllegalArgumentException("Unknown symbolizer: "
                 + symbolizer);
