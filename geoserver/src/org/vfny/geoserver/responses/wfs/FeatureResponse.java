@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.10 2003/11/14 03:14:31 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.11 2003/11/14 03:57:10 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -153,16 +153,6 @@ public class FeatureResponse implements Response {
         if( request instanceof FeatureWithLockRequest){
             featureLock = ((FeatureWithLockRequest)request).toFeatureLock();                        
         }
-        // I wonder if the FeatureLocking api should just take the
-        // provided lock and try and lock features on during
-        // the getFeatures operation?
-        // Pros:
-        // - we would not need two passes
-        // - the FeatureSource implementors can have a shot at optimization
-        // Cons:
-        // - expected to report the fids we did not lock
-        //   (the geotools2 locking api just reports number locked) 
-        //        
         String authorization = featureLock.getAuthorization();
         
         LOGGER.finest("We will lock using:"+authorization );
@@ -212,26 +202,32 @@ public class FeatureResponse implements Response {
                 
                 if( featureLock != null){
                     // geotools2 locking code
-                    source.setFeatureLock( featureLock );                    
-                    for( FeatureReader reader= features.reader(); reader.hasNext(); ){
-                        feature = reader.next();
-                        fid = feature.getID();
-                                        
-                        fidFilter = filterFactory.createFidFilter( fid );
-                        numberLocked = source.lockFeatures( fidFilter );
-                    
-                        if( numberLocked == 1){
-                            LOGGER.finest("Lock "+fid+" (authID:"+featureLock.getAuthorization()+")" );
-                            lockedFids.add( fid );
+                    source.setFeatureLock( featureLock );
+                    FeatureReader reader = null;
+                    try {                    
+                        for( reader= features.reader(); reader.hasNext(); ){
+                            feature = reader.next();
+                            fid = feature.getID();
+                                            
+                            fidFilter = filterFactory.createFidFilter( fid );
+                            numberLocked = source.lockFeatures( fidFilter );
+                        
+                            if( numberLocked == 1){
+                                LOGGER.finest("Lock "+fid+" (authID:"+featureLock.getAuthorization()+")" );
+                                lockedFids.add( fid );
+                            }
+                            else if ( numberLocked == 0 ){
+                                LOGGER.finest("Lock "+fid+" conflict (authID:"+featureLock.getAuthorization()+")" );                            
+                                lockFailedFids.add( fid );
+                            }
+                            else {
+                                LOGGER.warning("Lock "+numberLocked+" "+fid+" (authID:"+featureLock.getAuthorization()+") duplicated FeatureID!" );
+                                lockedFids.add( fid );
+                            }                    
                         }
-                        else if ( numberLocked == 0 ){
-                            LOGGER.finest("Lock "+fid+" conflict (authID:"+featureLock.getAuthorization()+")" );                            
-                            lockFailedFids.add( fid );
-                        }
-                        else {
-                            LOGGER.warning("Lock "+numberLocked+" "+fid+" (authID:"+featureLock.getAuthorization()+") duplicated FeatureID!" );
-                            lockedFids.add( fid );
-                        }                    
+                    }
+                    finally {
+                        if( reader != null ) reader.close();
                     }
                     if( !lockedFids.isEmpty() ){
                         Transaction t = new DefaultTransaction();
@@ -243,17 +239,34 @@ public class FeatureResponse implements Response {
                     }
                 }
             }
-            if( featureLock != null ){
-                if( lockedFids.isEmpty() ){
-                    // empty LockResponse says this is an error
-                    // we may wish to return an empty FeatureCollection
-                                    
+            
+            if( featureLock != null && !lockFailedFids.isEmpty() ){
+                // I think we need to release and fail when lockAll fails
+                //
+                for (int i = 1, n = locks.size(); i < n; i++) {
+                    curLock = (LockRequest.Lock) locks.get(i);
+
+                    String curTypeName = curLock.getFeatureType();
+                    Filter curFilter = curLock.getFilter();
+                    //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
+
+                    FeatureTypeConfig meta = catalog.getFeatureType( curTypeName );
+                    NameSpace namespace = meta.getDataStore().getNameSpace();                
+                    FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
+                    FeatureResults features = source.getFeatures( curFilter );
+                
+                    Transaction t = new DefaultTransaction();
+                    source.setTransaction( t );
+                    t.addAuthorization( featureLock.getAuthorization() );
+                    source.releaseLock( featureLock.getAuthorization() );
+                    t.commit();
+                    source.setTransaction( Transaction.AUTO_COMMIT );
                 }
-                if( !lockFailedFids.isEmpty()){
-                    // TODO: figure out how to error!
-                    throw new ServiceException("Could not aquire all locks:"+lockFailedFids);
-                }
+                throw new WfsException(
+                    "Could not aquire locks for:" + lockFailedFids
+                );
             }
+            
             features = (FeatureResults[])
                 results.toArray(new FeatureResults[results.size()]);
 

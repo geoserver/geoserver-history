@@ -4,7 +4,10 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import org.geotools.data.*;
+import org.geotools.filter.*;
 import org.geotools.filter.Filter;
+import org.geotools.feature.*;
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.oldconfig.*;
@@ -22,7 +25,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: LockResponse.java,v 1.1.2.1 2003/11/04 22:54:55 cholmesny Exp $
+ * @version $Id: LockResponse.java,v 1.1.2.2 2003/11/14 03:57:10 jive Exp $
  *
  * @task TODO: implement response streaming in writeTo instead of the current
  *       response String generation
@@ -91,11 +94,10 @@ public class LockResponse implements Response {
      *       cross that bridge when we come to it.
      */
     public static String performLock(LockRequest request, boolean getXml)
-        throws WfsException {
+        throws WfsException, IOException {
         LOGGER.finer("about to do Lock response on:" + request);
 
         List locks = request.getLocks();
-
         if (locks.size() == 0) {
             throw new WfsException("A LockFeature request must contain at "
                 + "least one LOCK element");
@@ -103,25 +105,97 @@ public class LockResponse implements Response {
 
         LockRequest.Lock curLock = (LockRequest.Lock) locks.get(0);
         boolean lockAll = request.getLockAll();
-        String lockId = null;
-        String curTypeName = curLock.getFeatureType();
-        Filter curFilter = curLock.getFilter();
-        lockId = repository.lock(curTypeName, curFilter, lockAll,
-                request.getExpiry());
-
+        
+        FeatureLock featureLock = request.toFeatureLock();
+        Set lockedFids = new HashSet();
+        Set lockFailedFids = new HashSet();
+        ServerConfig config = ServerConfig.getInstance();
+        CatalogConfig catalog = config.getCatalog(); 
+        FilterFactory filterFactory = FilterFactory.createFilterFactory();                
         for (int i = 1, n = locks.size(); i < n; i++) {
             curLock = (LockRequest.Lock) locks.get(i);
-            curTypeName = curLock.getFeatureType();
-            curFilter = curLock.getFilter();
-            repository.addToLock(curTypeName, curFilter, lockAll, lockId);
+            
+            String curTypeName = curLock.getFeatureType();
+            Filter curFilter = curLock.getFilter();
+            //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
+            
+            FeatureTypeConfig meta = catalog.getFeatureType( curTypeName );
+            NameSpace namespace = meta.getDataStore().getNameSpace();                
+            FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
+            FeatureResults features = source.getFeatures( curFilter );
+            source.setFeatureLock( featureLock );
+            FeatureReader reader = null;            
+            try {                    
+                for( reader= features.reader(); reader.hasNext(); ){
+                    Feature feature = reader.next();
+                    String fid = feature.getID();
+                                    
+                    Filter fidFilter = filterFactory.createFidFilter( fid );
+                    int numberLocked = source.lockFeatures( fidFilter );
+                
+                    if( numberLocked == 1){
+                        LOGGER.finest("Lock "+fid+" (authID:"+featureLock.getAuthorization()+")" );
+                        lockedFids.add( fid );
+                    }
+                    else if ( numberLocked == 0 ){
+                        LOGGER.finest("Lock "+fid+" conflict (authID:"+featureLock.getAuthorization()+")" );                            
+                        lockFailedFids.add( fid );
+                    }
+                    else {
+                        LOGGER.warning("Lock "+numberLocked+" "+fid+" (authID:"+featureLock.getAuthorization()+") duplicated FeatureID!" );
+                        lockedFids.add( fid );
+                    }                    
+                }
+            } catch (IllegalAttributeException e) {
+                // TODO: JG - I really dont like this
+                // reader says it will throw this if the attribtues do not match
+                // the FeatureType
+                // I figure if this is thrown we are poorly configured or
+                // the DataStore needs some quality control
+                //
+                // should rollback the lock as well :-(
+                throw new WfsException("Lock request "+curFilter+" did not match "+curTypeName );
+            }
+            finally {
+                if( reader != null ) reader.close();
+            }            
         }
-
+        if( lockAll && !lockFailedFids.isEmpty() ){
+            // I think we need to release and fail when lockAll fails
+            //
+            for (int i = 1, n = locks.size(); i < n; i++) {
+                curLock = (LockRequest.Lock) locks.get(i);
+    
+                String curTypeName = curLock.getFeatureType();
+                Filter curFilter = curLock.getFilter();
+                //repository.addToLock(curTypeName, curFilter, lockAll, lockId);
+    
+                FeatureTypeConfig meta = catalog.getFeatureType( curTypeName );
+                NameSpace namespace = meta.getDataStore().getNameSpace();                
+                FeatureLocking source = (FeatureLocking) meta.getFeatureSource();
+                FeatureResults features = source.getFeatures( curFilter );
+                            
+                Transaction t = new DefaultTransaction();
+                source.setTransaction( t );
+                t.addAuthorization( featureLock.getAuthorization() );
+                source.releaseLock( featureLock.getAuthorization() );
+                t.commit();
+                source.setTransaction( Transaction.AUTO_COMMIT );
+            }
+            throw new WfsException(
+                "Could not aquire locks for:" + lockFailedFids
+            );
+        }
         if (getXml) {
-            return generateXml(lockId, lockAll,
-                repository.getLockedFeatures(lockId),
-                repository.getNotLockedFeatures(lockId));
+            return generateXml( featureLock.getAuthorization(), lockAll,
+                lockedFids,
+                lockFailedFids
+            );
+//            return generateXml(lockId, lockAll,
+//                repository.getLockedFeatures(lockId),
+//                repository.getNotLockedFeatures(lockId));
         } else {
-            return lockId;
+            return featureLock.getAuthorization();
         }
     }
 
@@ -137,7 +211,14 @@ public class LockResponse implements Response {
      */
     private static String getXmlResponse(LockRequest request)
         throws WfsException {
-        return performLock(request, true);
+        try {
+            return performLock(request, true);                
+        }
+        catch( IOException ioException ){
+            WfsException wfsException = new WfsException( "Problem aquiring lock");
+            wfsException.initCause( ioException );
+            throw wfsException;
+        }        
     }
 
     /**
