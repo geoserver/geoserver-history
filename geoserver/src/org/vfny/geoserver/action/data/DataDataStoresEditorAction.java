@@ -44,6 +44,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
 		String namespace = dataStoresForm.getNamespaceId();
 		String description = dataStoresForm.getDescription();
 
+        
+
 		// After extracting params into a map
 		Map aMap = new HashMap();
 		
@@ -64,7 +66,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
 		config.setNameSpaceId(namespace);
 		config.setAbstract(description);
 		
-		//Do configuration parameters here.
+		config.setConnectionParams(aMap);
 		dataConfig.addDataStore(config);
         
         request.getSession().removeAttribute("selectedDataStoreId");			

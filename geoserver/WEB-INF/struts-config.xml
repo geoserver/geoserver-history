@@ -28,8 +28,14 @@
     		type="org.vfny.geoserver.form.wms.WMSContentForm"/>
 
     	<form-bean
-    		name="dataDataStoresForm"
-    		type="org.vfny.geoserver.form.data.DataDataStoresForm"/>
+    		name="dataDataStoresSelectForm"
+    		type="org.vfny.geoserver.form.data.DataDataStoresSelectForm"/>
+    	<form-bean
+    		name="dataDataStoresNewForm"
+    		type="org.vfny.geoserver.form.data.DataDataStoresNewForm"/>
+    	<form-bean
+    		name="dataDataStoresEditorForm"
+    		type="org.vfny.geoserver.form.data.DataDataStoresEditorForm"/>
     		
     	<form-bean
     		name="dataNamespacesForm"
@@ -209,11 +215,28 @@
 
         <action
         	path="/DataConfigDataStoresSubmit"
-        	type="org.vfny.geoserver.action.data.DataDataStoresAction"
-        	name="dataDataStoresForm"
+        	type="org.vfny.geoserver.action.data.DataDataStoresEditorAction"
+        	name="dataDataStoresEditorForm"
         	scope="request"
         	validate="true"
         	input="data.dataStores"/>
+        	
+        <action
+        	path="/DataConfigDataStoresSelect"
+        	type="org.vfny.geoserver.action.data.DataDataStoresSelectAction"
+        	name="dataDataStoresSelectForm"
+        	scope="request"
+        	validate="true"
+        	input="data.dataStores"/>
+
+        <action
+        	path="/DataConfigDataStoresNew"
+        	type="org.vfny.geoserver.action.data.DataDataStoresNewAction"
+        	name="dataDataStoresNewForm"
+        	scope="request"
+        	validate="true"
+        	input="data.dataStores"/>        	
+        	        	
         <action
         	path="/DataConfigNamespacesSubmit"
         	type="org.vfny.geoserver.action.data.DataNamespacesAction"

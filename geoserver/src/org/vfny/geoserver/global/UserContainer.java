@@ -35,14 +35,16 @@ import javax.servlet.http.HttpSessionBindingListener;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: UserContainer.java,v 1.1.2.3 2004/01/09 17:15:30 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: UserContainer.java,v 1.1.2.4 2004/01/12 07:04:28 emperorkefka Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";
 
     /** User's locale */
     private Locale locale;
+    
+    private String dataStoreID;
 
     /** User name for this user */
     public String username;
@@ -105,4 +107,26 @@ public class UserContainer implements HttpSessionBindingListener {
     private void cleanUp() {
         locale = null;
     }
+	/**
+	 * getDataStoreID purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getDataStoreID() {
+		return dataStoreID;
+	}
+
+	/**
+	 * setDataStoreID purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setDataStoreID(String string) {
+		dataStoreID = string;
+	}
+
 }
