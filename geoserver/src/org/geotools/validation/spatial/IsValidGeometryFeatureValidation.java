@@ -16,7 +16,6 @@
 */ 
 package org.geotools.validation.spatial;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,8 +44,8 @@ import com.vividsolutions.jts.geom.Geometry;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: IsValidGeometryFeatureValidation.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: IsValidGeometryFeatureValidation.java,v 1.3 2003/12/16 23:13:23 jive Exp $
  */
 public class IsValidGeometryFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
