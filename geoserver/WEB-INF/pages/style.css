@@ -52,28 +52,40 @@ td.gutter {
 td.sidebar {
  vertical-align: top;
 }
+
 tr.bar {
  background: #99C;
  color: #ccc;
  vertical-align: center;
  height: 1.5em;
 }
+.bar a:visited,
+.bar a:link {
+ color: #fff;
+ text-decoration: none;
+}
+.bar a:hover {
+ color: #fff;
+ text-decoration: underline;
+}
+
 td.locator {
  white-space: nowrap;
  border: black 1px;
 }
+
 span.locator {
  font-size: 90%;
 }
-td.login {
- font-size: 90%;
+
+td.loginStatus {
  vertical-align:center;
  text-align: right;
  white-space: nowrap;
  border: black 1px;
 }
 span.loginStatus {
- font-size: 100%;
+ font-size: 90%;
 }
 title {
  font-size: 140%;
