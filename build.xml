@@ -66,6 +66,7 @@
   
   <property name="test.name" value="config.ConfigSuite"/>
   <!--<property name="test.type" value="CitePostGis"/>-->
+  <!--<property name="test.type" value="CiteShapeFiles"/>-->
 
   <!-- paths -->
   <path id="path.lib">
