@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,9 @@ import java.util.Map;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
+import org.geotools.validation.dto.PlugInDTO;
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -32,7 +36,7 @@ import javax.servlet.ServletException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.7 2004/02/02 17:49:03 dmzwiers Exp $
+ * @version $Id: ApplicationState.java,v 1.8 2004/02/03 18:39:38 dmzwiers Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
@@ -51,9 +55,10 @@ public class ApplicationState implements PlugIn {
     private boolean validationChanged;
 
     /** magic, be very careful with this array. defined below in loadStatus() */
-    private int[] geoserverStatus = new int[10];
+    private int[] geoserverStatus = new int[13];
     private Map geoserverNSErrors;
     private Map geoserverDSErrors;
+    private Map geoserverVPErrors;
     
     private ServletContext sc;
     /**
@@ -152,58 +157,76 @@ public class ApplicationState implements PlugIn {
     }
     /** Q: what is this supposed to do? */
     public int getWfsGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)){
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0)){
     		loadStatus();
     	}
     	return geoserverStatus[1];
     }
     /** q: What foul manner of magic is this? */
     public int getWfsBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[2];
     }
     /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
     public int getWfsDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[3];
     }
     /** Q: scary magic */
     public int getWmsGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[4];
     }
     /** Q: scary magic */
     public int getWmsBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[5];
     }
     /** Q: scary magic */
     public int getWmsDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[6];
     }
     
     public int getDataGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[7];
     }
     
     public int getDataBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[8];
     }
     
     public int getDataDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverStatus[9];
+    }
+    
+    public int getGeoserverGood(){
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return (int)((geoserverStatus[1] + geoserverStatus[4] + geoserverStatus[7])/3.0);
+    }
+    
+    public int getGeoserverBad() {
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return (int)((geoserverStatus[2] + geoserverStatus[5] + geoserverStatus[8])/3.0);
+    }
+    
+    public int getGeoserverDisabled() {
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return (int)((geoserverStatus[3] + geoserverStatus[6] + geoserverStatus[9])/3.0);
     }
     
     /**
@@ -233,7 +256,7 @@ public class ApplicationState implements PlugIn {
     	// bit 2: isConfigChanged
     	//
     	// And all this madness is a cut and paste mistake?
-    	geoserverStatus[0] = (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0);
+    	geoserverStatus[0] = (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0);
     	GeoServer gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
     	if (gs == null)
     		return;
@@ -243,6 +266,9 @@ public class ApplicationState implements PlugIn {
     	
     	// setup geoserverDSErrors
     	geoserverDSErrors = gs.getData().statusDataStores();
+
+    	// setup geoserverVPErrors
+    	Map tmpVP = gs.getProcessor().getErrors();
     	
     	int g = 0;
     	int b = 0;
@@ -306,6 +332,50 @@ public class ApplicationState implements PlugIn {
     		geoserverStatus[2] = geoserverStatus[5] = (int)(100.0*b/(g+b+d));
     		geoserverStatus[3] = geoserverStatus[6] = (int)(100.0*d/(g+b+d));
     	}
+
+    	//datastores
+    	i = tmpVP.keySet().iterator();
+    	g = 0;b = 0;d = 0;
+    	while(i.hasNext()){
+    		Object key = i.next();
+    		Object o = tmpVP.get(key);
+    		if(o.equals(Boolean.TRUE)){
+    			g++;
+    			i.remove();
+    			//geoserverDSErrors.remove(key);
+    		}else{
+    			if(o.equals(Boolean.FALSE)){
+    				d++;
+    				i.remove();
+    				//geoserverDSErrors.remove(key);
+    			}else{
+    				b++;
+    			}}
+    	}
+
+    	if(g+b+d==0){
+    		geoserverStatus[10] = 100;
+    		geoserverStatus[11] = 0;
+    		geoserverStatus[12] = 0;
+    	}else{
+    		geoserverStatus[10] = (int)(100.0*g/(g+b+d));
+    		geoserverStatus[11] = (int)(100.0*b/(g+b+d));
+    		geoserverStatus[12] = (int)(100.0*d/(g+b+d));
+    	}
+    	
+    	geoserverVPErrors = new HashMap();
+    	i = tmpVP.entrySet().iterator();
+    	while(i.hasNext()){
+    		Map.Entry e = (Map.Entry)i.next();
+    		Object dto = e.getKey();
+    		if(dto instanceof PlugInDTO){
+    			geoserverVPErrors.put("PlugIn:"+((PlugInDTO)dto).getName(),e.getValue());
+    		}else{if(dto instanceof TestDTO){
+    			geoserverVPErrors.put("Test:"+((TestDTO)dto).getName(),e.getValue());
+    		}else{if(dto instanceof TestSuiteDTO){
+    			geoserverVPErrors.put("TestSuite:"+((TestSuiteDTO)dto).getName(),e.getValue());
+    		}}}
+    	}
     }
         
     public Exception getDataStoreError(String key){
@@ -324,6 +394,10 @@ public class ApplicationState implements PlugIn {
     	return (Exception) getNameSpaceErrors().get( key );
     }
     
+    public Exception getValidationError(String key){
+    	return (Exception) getValidationErrors().get( key );
+    }
+    
     /**
      * Namespace Exceptions by prefix:typeName.
      * <p>
@@ -334,7 +408,7 @@ public class ApplicationState implements PlugIn {
      */
     public Map getNameSpaceErrors(){
     	if(geoserverNSErrors==null ||
-    	   geoserverStatus[0] == (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
+    	   geoserverStatus[0] == (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverNSErrors;
     }
@@ -355,7 +429,7 @@ public class ApplicationState implements PlugIn {
      * @return
      */
     public Map getDataStoreErrors(){
-    	if(geoserverDSErrors==null || geoserverStatus[0] == (isConfigChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverDSErrors==null || geoserverStatus[0] == (isConfigChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
     		loadStatus();
     	return geoserverDSErrors;
     }
@@ -366,6 +440,29 @@ public class ApplicationState implements PlugIn {
     /** Flattened for your JSP pleasure */    
     public List getDataStoreErrorValues(){
     	return new LinkedList(getDataStoreErrors().values());
+    }
+    
+    /**
+     * Validation Exceptions by obejct type : name where object type is one of TestSuite, Test, PlugIn
+     * <p>
+     * This only includes problems! If this map is null or isEmpty
+     * status is "ready".
+     * </p>
+     * @return
+     */
+    public Map getValidationErrors(){
+    	if(geoserverNSErrors==null ||
+    			geoserverStatus[0] == (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverVPErrors;
+    }
+    /** Flattened for your JSP pleasure */
+    public List getValidationErrorKeys(){
+    	return new LinkedList(getValidationErrors().keySet());
+    }
+    /** Flattened for your JSP pleasure */
+    public List getValidationErrorValues(){
+    	return new LinkedList(getValidationErrors().values());
     }
     
     public Map getWFSErrors(){
