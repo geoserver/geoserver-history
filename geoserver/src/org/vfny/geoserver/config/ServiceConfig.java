@@ -54,6 +54,8 @@ public class ServiceConfig implements java.io.Serializable {
 
     public static final String OLD_ROOT_TAG = "GlobalConfiguration";
 
+    public static final String VERBOSE_TAG = "Verbose";
+
     /** Regular Expression to split values from spaces or commas */
     public static final String WHITE_SPACE_OR_COMMA = "[\\s,]+";
 
@@ -83,6 +85,10 @@ public class ServiceConfig implements java.io.Serializable {
      /** Describes any access constraints imposed by the service provider*/
     private String accessConstraints;
     
+    /** determines whether spaces and line feeds should be added to output*/
+    //put in wfs-config?  Maybe if we have some more config options.
+    private boolean verbose = false;
+    
     /**
      * Constructor with the minimum required service elements.
      *
@@ -99,11 +105,29 @@ public class ServiceConfig implements java.io.Serializable {
 		     title + ", and " + onlineResource);
     } 
 
+    /**
+     * static factory, reads a ServiceConfig from an xml file, using
+     * the default root tag.
+     *
+     * @param configFile the path to the configuration file.
+     * @return the ServiceConfig object constructed from the xml elements
+     * of the file.
+     */
     public static ServiceConfig getInstance(String configFile) 
     throws ConfigurationException {
 	return getInstance(configFile, ROOT_TAG);
     }
 
+    /**
+     * static factory, reads a ServiceConfig from an xml file, using
+     * the passed in root tag.
+     *
+     * @param configFile the path to the configuration file.
+     * @param rootTag the tag of the element whose children are the appropriate
+     * configuration elements.
+     * @return the ServiceConfig object constructed from the xml elements
+     * of the file.
+     */
     public static ServiceConfig getInstance(String configFile, String rootTag) 
 	throws ConfigurationException{
 	ServiceConfig servConfig = null;
@@ -143,6 +167,9 @@ public class ServiceConfig implements java.io.Serializable {
 	    servConfig.setFees(findTextFromTag(configElem, FEES_TAG));
 	    servConfig.setAccessConstraints(findTextFromTag(configElem, ACCESS_TAG));
 	    servConfig.setKeywords(getKeywords(configElem));
+	    if (configElem.getElementsByTagName(VERBOSE_TAG).item(0) != null){
+		servConfig.setVerbose(true);
+	    }
 
 	    fis.close();
 
@@ -165,6 +192,11 @@ public class ServiceConfig implements java.io.Serializable {
 	return servConfig;
     }
 
+    /**
+     * Searches for keyword elements beneath the given root element.
+     * They can be comma delimited or in different keyword elements, both
+     * beneath the Keywords element.
+     */
     static List getKeywords(Element root) {
 	List keywords = new ArrayList();
 	//try to get text in Keywords element.
@@ -203,6 +235,15 @@ public class ServiceConfig implements java.io.Serializable {
 	    }
 	}
 	return retString;
+    }
+
+    /** returns true if the Verbose tag is present in the config file. */
+    public boolean isVerbose(){
+	return verbose;
+    }
+
+    void setVerbose(boolean verbose){
+	this.verbose = verbose;
     }
 
     /** 
@@ -255,7 +296,7 @@ public class ServiceConfig implements java.io.Serializable {
      * 
      * @param abstract
      */
-    public void setAbstract(String _abstract)
+    void setAbstract(String _abstract)
     {
         this._abstract = _abstract;
     } 
@@ -264,7 +305,7 @@ public class ServiceConfig implements java.io.Serializable {
      * 
      * @param accessConstraints
      */
-    public void setAccessConstraints(String accessConstraints)
+    void setAccessConstraints(String accessConstraints)
     {
         this.accessConstraints = accessConstraints;
     } 
@@ -273,7 +314,7 @@ public class ServiceConfig implements java.io.Serializable {
      * 
      * @param fees Indicates the fees imposed by the service provider for usage
      */
-    public void setFees(String fees)
+    void setFees(String fees)
     {
         this.fees = fees;
     } 
@@ -282,7 +323,7 @@ public class ServiceConfig implements java.io.Serializable {
      * 
      * @param keywords
      */
-    public void setKeywords(List keywords)
+    void setKeywords(List keywords)
     {
         this.keywords = keywords;
     } 
@@ -292,7 +333,7 @@ public class ServiceConfig implements java.io.Serializable {
      *
      * @param keyword the word to add.
      */
-    public void addKeyword(String keyword) {
+    void addKeyword(String keyword) {
 	this.keywords.add(keyword);
     }
 
@@ -301,7 +342,7 @@ public class ServiceConfig implements java.io.Serializable {
      * 
      * @param name
      */
-    public void setName(String name)
+    void setName(String name)
     {
         this.name = name;
     } 
@@ -310,7 +351,7 @@ public class ServiceConfig implements java.io.Serializable {
      * 
      * @param onlineResource
      */
-    public void setOnlineResource(String onlineResource)
+    void setOnlineResource(String onlineResource)
     {
         this.onlineResource = onlineResource;
     } 
@@ -319,7 +360,7 @@ public class ServiceConfig implements java.io.Serializable {
      * 
      * @param title
      */
-    public void setTitle(String title)
+    void setTitle(String title)
     {
         this.title = title;
     } 
