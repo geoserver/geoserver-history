@@ -34,7 +34,7 @@ import javax.xml.transform.TransformerException;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.6 2004/03/27 10:48:16 cholmesny Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.7 2004/03/31 05:15:30 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
@@ -156,8 +156,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
 
-        String wfsSchemaLoc = request.getBaseUrl()
-            + "data/capabilities/wfs/1.0.0/WFS-basic.xsd";
+        String wfsSchemaLoc = request.getSchemaBaseUrl()
+            + "wfs/1.0.0/WFS-basic.xsd";
 
         //String fSchemaLoc = request.getBaseUrl() + "wfs/"
         //    + "DescribeFeatureType?typeName=" + typeNames.toString();
