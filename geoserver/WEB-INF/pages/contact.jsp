@@ -9,7 +9,7 @@
         <bean:write name="Config.Global" property="contact.contactParty"/>
       </logic:notEmpty>      
       <logic:empty name="Config.Global" property="contact.contactParty">
-        info
+        <bean:message key="label.info"/>
       </logic:empty>      
 	</html:link>
 </span>
