@@ -6,6 +6,7 @@ package org.vfny.geoserver.config;
 
 import org.geotools.feature.AttributeType;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.xml.GMLUtils;
 
 /**
  * Allows editing of AttributeTypeInfo.
@@ -50,7 +51,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.8 2004/01/14 09:59:51 jive Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.9 2004/01/14 11:34:04 jive Exp $
  */
 public class AttributeTypeInfoConfig {
     
@@ -134,8 +135,16 @@ public class AttributeTypeInfoConfig {
         name = attributeType.getName();
         minOccurs = 1;
         maxOccurs = 1;
-        type = TYPE_FRAGMENT;
-        fragment = "";
+        
+        GMLUtils.Mapping mapping = GMLUtils.schema( name, attributeType.getType() );
+        if( mapping == null ){
+            type = TYPE_FRAGMENT;
+            fragment = "<!-- define "+attributeType.getType()+"-->";            
+        }
+        else {
+            type = mapping.toString();
+            fragment = "";            
+        }        
     }
     
     /**
