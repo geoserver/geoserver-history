@@ -664,6 +664,7 @@
     <copy todir="${dir.build}">
 	  <fileset dir="${basedir}/documents">
         <include name="license.txt"/>
+        <include name="README.txt"/>
 	  </fileset>
     </copy>
     <copy todir="${dir.build}/src">
