@@ -22,6 +22,7 @@ import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import java.net.URI;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -217,7 +218,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	            		org.geotools.data.jdbc.FeatureTypeInfo fti = 
 	            			new org.geotools.data.jdbc.FeatureTypeInfo(
 	            				typeName, ft, new NullFIDMapper(), false);
-	            				((JDBCDataStore) datastore).getFeatureTypeHandler().setFeatureTypeInfo(fti);
+	            		((JDBCDataStore) datastore).getFeatureTypeHandler().setFeatureTypeInfo(fti);
             		} catch (IOException e) {
             			LOGGER.severe("Could not set FeatureType schema " + typeName + 
             				" in data store");
@@ -308,9 +309,24 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         FeatureType featuretype = null;
     	if (types.length > 0) {
     		try {
-    			featuretype = FeatureTypeFactory.newFeatureType(types, typeName, 
-	        			((JDBCDataStore)(data.getDataStoreInfo(dataStoreId).getDataStore())).getNameSpaceURI());
-    		} catch (SchemaException e) {}
+    			LOGGER.fine("Building geotools feature type " + typeName
+    					+ " with namespace " + getNameSpace().getURI()
+						+ " from schema.xml");
+//    			featuretype = FeatureTypeFactory.newFeatureType(types, typeName, 
+//	        			((JDBCDataStore)(data.getDataStoreInfo(dataStoreId).getDataStore())).getNameSpaceURI());
+
+    			featuretype = FeatureTypeFactory.newFeatureType(types, typeName, new URI(getNameSpace().getURI()));
+    		
+    		}
+    		catch (SchemaException e) {
+    			LOGGER.severe("Could not create geotools feature type " +  typeName);
+				return null;
+    		}
+    		catch (java.net.URISyntaxException e) {
+    			LOGGER.severe("Could not create URI for namespace " +  getNameSpace().getURI());
+    			LOGGER.severe("Could not create geotools feature type " +  typeName);
+    			return null;
+    		}
     	}
     	
     	return featuretype;

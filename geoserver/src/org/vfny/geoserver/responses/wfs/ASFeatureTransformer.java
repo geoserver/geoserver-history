@@ -731,6 +731,8 @@ public class ASFeatureTransformer extends TransformerBase {
 	            currentPrefix = getNamespaceSupport().getPrefix(f.getFeatureType()
 	                                                             .getNamespace().toString());
 	
+	            LOGGER.fine("currentPrefix = " + currentPrefix);
+	            
 	            if (currentPrefix == null) {
 	                currentPrefix = types.findPrefix(f.getFeatureType());
 	            }
