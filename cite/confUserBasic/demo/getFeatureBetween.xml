@@ -13,8 +13,8 @@
 <Filter>
 <PropertyIsBetween>
 <PropertyName>topp:LENGTH</PropertyName>
-<LowerBoundary>600</LowerBoundary>
-<UpperBoundary>2000</UpperBoundary>
+<LowerBoundary><Literal>600</Literal></LowerBoundary>
+<UpperBoundary><Literal>2000</Literal></UpperBoundary>
 </PropertyIsBetween>
 </Filter>
   </wfs:Query>
