@@ -10,7 +10,10 @@ package org.vfny.geoserver.global.dto;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -35,8 +38,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.12 2004/03/02 20:08:34 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataTransferObjectFactory.java,v 1.13 2004/03/02 22:29:43 dmzwiers Exp $
  */
 public class DataTransferObjectFactory {
     /**
@@ -282,6 +285,48 @@ public class DataTransferObjectFactory {
  
      */
     public List getElements(String name, Class type){
-        return null; // fix me
+    	NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
+    	NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+    	List result = new LinkedList();
+    	
+    	if(name==null || name == "")
+    		throw new NullPointerException("Element name must be defined.");
+    	if(type==null)
+    		throw new NullPointerException("Element type must be defined.");
+    	
+    	Set s = xs.getElements(type);s.addAll(gml.getElements(type)); 
+    	Iterator i = s.iterator();
+    	while(i.hasNext()){
+        	NameSpaceElement element = (NameSpaceElement)i.next();
+        	if(name.equals(element.getTypeDefName()))
+        		if(!result.contains(element)) result.add(element);
+            if(name.equals(element.getTypeRefName()))
+        		if(!result.contains(element)) result.add(element);
+            if(name.equals(element.getQualifiedTypeDefName()))
+        		if(!result.contains(element)) result.add(element);
+            if(name.equals(element.getQualifiedTypeRefName()))
+        		if(!result.contains(element)) result.add(element);
+    	}
+    	
+    	i = s.iterator();
+    	while(i.hasNext()){
+        	NameSpaceElement element = (NameSpaceElement)i.next();
+        	// add the rest afterwards
+        	if(!result.contains(element)) result.add(element);
+    	}
+    	
+    	// order may not be exact here.
+    	s = xs.getAssociatedTypes(type);s.addAll(gml.getAssociatedTypes(type));
+    	i = s.iterator();
+    	while(i.hasNext()){
+        	NameSpaceElement element = (NameSpaceElement)i.next();
+        	// add the rest afterwards
+        	if(!result.contains(element)) result.add(element);
+    	}
+    	
+    	NameSpaceElement element = xs.getElement("string");
+    	if(!result.contains(element)) result.add(element);
+    	
+        return result; // fix me
     }    
 }
