@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: RequestKvpReader.java,v 1.8 2003/09/15 16:34:54 cholmesny Exp $
+ * @version $Id: RequestKvpReader.java,v 1.8.2.1 2003/10/30 21:52:41 cholmesny Exp $
  */
 abstract public class RequestKvpReader {
     /** Class logger */
@@ -181,6 +181,12 @@ abstract public class RequestKvpReader {
                 LOGGER.finer("looking at featureId" + fid);
 
                 int pos = fid.indexOf(".");
+		if (pos < 1) {
+		    String mesg = "FEATUREID kvp must be of form tablename.id"
+			+", such as rail.324";
+		    throw new WfsException(mesg);
+		}
+
                 String typeName = fid.substring(0, fid.indexOf("."));
                 LOGGER.finer("adding typename: " + typeName + " from fid");
                 typeList.add(typeName);
@@ -307,10 +313,22 @@ abstract public class RequestKvpReader {
             while (i.hasNext()) {
                 List ids = (List) i.next();
                 ListIterator innerIterator = ids.listIterator();
-
+		
                 while (innerIterator.hasNext()) {
                     FidFilter fidFilter = factory.createFidFilter();
-                    fidFilter.addFid((String) innerIterator.next());
+		    String rawFid = (String) innerIterator.next();
+		    //TODO: put these reg-exp clean-up stuff in a common
+		    //utility, or have geotools deal with them.
+		    String[] splitName = rawFid.split("[:]");
+		    String fidValue = rawFid;
+		    
+		    if (splitName.length == 1) {
+			fidValue = splitName[0];
+		    } else {
+			fidValue = splitName[splitName.length - 1];
+		    }
+		    
+		    fidFilter.addFid(fidValue);
                     filters.add(fidFilter);
                     LOGGER.finest("added fid filter: " + fidFilter);
                 }
