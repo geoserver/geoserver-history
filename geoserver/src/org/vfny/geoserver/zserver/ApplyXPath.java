@@ -60,14 +60,28 @@
 
 package org.vfny.geoserver.zserver;
 
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.logging.Logger;
 import java.io.StringWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Properties;
-import org.apache.xerces.parsers.DOMParser;
-import org.apache.xpath.XPathAPI;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.DOMBuilder;
+import java.io.IOException;
+
+// Imported JAVA API for XML Parsing 1.0 classes
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException; 
+
+// Imported Serializer classes
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.DocumentFragment;
@@ -76,36 +90,31 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xpath.XPathAPI;
+import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.utils.DOMBuilder;
 
-// Imported JAVA API for XML Parsing 1.0 classes
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException; 
-
-// Imported Serializer classes
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
-import javax.xml.transform.dom.*;
-
-import java.util.ArrayList;
-import java.io.FileNotFoundException;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
-import java.io.IOException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.util.logging.Logger;
 
 /**
- *  Very basic utility for applying an XPath epxression to an xml file and printing information
- /  about the execution of the XPath object and the nodes it finds.
+ *  Very basic utility for applying an XPath epxression to an xml file and 
+ *  printing information about the execution of the XPath object and the 
+ *  nodes it finds.
  *  Takes 2 arguments:
  *     (1) an xml filename
  *     (2) an XPath expression to apply to the file
  *  Examples:
  *     java ApplyXPath foo.xml /
  *     java ApplyXPath foo.xml /doc/name[1]/@last
- * @see XPathAPI
+ * 
+ * From xalan source, in the samples section of the source tree.  See
+ * http://xml.apache.org/xalan-j/samples.html#applyxpath
+ *
+ * Modified:
+ * @author Chris Holmes, TOPP
+ * @version $VERSION$
+ * Added method to return an array of the results, instead of 
+ * just printing to the output.
  */
 public class ApplyXPath
 {
@@ -117,76 +126,72 @@ public class ApplyXPath
     private static final Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.zserver");
 
-    /** Returns a an array of strings for the xpath, instead of printing them out. */
-    public static String[] apply(String filename, String xpath) throws FileNotFoundException{
+    /**
+     * Applies the xpath to the file, getting an array of strings
+     * of the values.  
+     * @param filename the name of XML file to be analyzed.
+     * @param xpath the string of the xpath to query the xml with.
+     * @return an array of the values of the xpath.
+     */
+    public static String[] apply(String filename, String xpath) 
+	throws FileNotFoundException{
 	ArrayList stringList = new ArrayList();
-
 	if ((filename != null) && (filename.length() > 0)
-	    && (xpath != null) && (xpath.length() > 0))
-	    {
-		// Set up a DOM tree to query.
-		InputSource in = new InputSource(new FileInputStream(filename));
-		try {
-		    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-		    dfactory.setNamespaceAware(true);
-		    Document doc = dfactory.newDocumentBuilder().parse(in);
-		    
-		    // Set up an identity transformer to use as serializer.
-		    Transformer serializer = TransformerFactory.newInstance().newTransformer();
-		    serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		    
-		    // Use the simple XPath API to select a nodeIterator.
-		    //System.out.println("Querying DOM using "+xpath);
-		    NodeIterator nl = XPathAPI.selectNodeIterator(doc, xpath);
-		    
-		    StringWriter sw = new StringWriter();
-		    
-		    String trimmed;
-		    
-		    Node n;
-		    while ((n = nl.nextNode())!= null)
-			{         
-			    if (isTextNode(n)) {
-				// DOM may have more than one node corresponding to a 
-				// single XPath text node.  Coalesce all contiguous text nodes
-				// at this level
-				//REVISIT: not sure if this is the action we want, as it could
-				//be better to somehow store certain values seperately, instead
-				//of just massing them all together.  
-				StringBuffer sb = new StringBuffer(n.getNodeValue());
-				for (
-				     Node nn = n.getNextSibling(); 
-				     isTextNode(nn);
-				     nn = nn.getNextSibling()
-				     ) {
-				    sb.append(nn.getNodeValue());
-				}
-				stringList.add(sb.toString() + " ");
-			    }
-			    else {
-				serializer.transform(new DOMSource(n), new StreamResult(sw));
-				sw.flush();
-			    }
+	    && (xpath != null) && (xpath.length() > 0)) { 
+	    // Set up a DOM tree to query.
+	    InputSource in = new InputSource(new FileInputStream(filename));
+	    try {
+		DocumentBuilderFactory dfactory = 
+		    DocumentBuilderFactory.newInstance();
+		dfactory.setNamespaceAware(true);
+		Document doc = dfactory.newDocumentBuilder().parse(in);
+		
+		// Set up an identity transformer to use as serializer.
+		Transformer serializer = 
+		    TransformerFactory.newInstance().newTransformer();
+		serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
+					     "yes");
+		// Use the simple XPath API to select a nodeIterator.
+		//System.out.println("Querying DOM using "+xpath);
+		NodeIterator nl = XPathAPI.selectNodeIterator(doc, xpath);
+		StringWriter sw = new StringWriter();
+		String trimmed;
+		Node n;
+		while ((n = nl.nextNode())!= null){         
+		    if (isTextNode(n)) {
+			StringBuffer sb = new StringBuffer(n.getNodeValue());
+			for (Node nn = n.getNextSibling(); isTextNode(nn);
+			     nn = nn.getNextSibling()){
+			 
+			    sb.append(nn.getNodeValue());
 			}
-		} catch (ParserConfigurationException e) {
-		    LOGGER.severe("Problem with Parser configuration, make " +
-				  "sure xerces jars are in classpath " + e);
-		} catch (SAXException e) {
-		    LOGGER.severe("Problem with SAX, make " +
-				  "sure xerces jars are in classpath " + e);
-		} catch (TransformerConfigurationException e) {
-		    LOGGER.severe("Problem with Transformer configuration," +
-				  " make sure xalan is in classpath " + e);
-		} catch (TransformerException e) {
-		     LOGGER.severe("Problem with Transformer, make sure" +
-				  "xalan jar is in classpath " + e);
-		} catch (IOException e) {
-		     LOGGER.severe("Problem with Transformer, make sure" +
-				  "xalan jar is in classpath " + e);
+			stringList.add(sb.toString() + " ");
+		    }
+		    else {
+			serializer.transform(new DOMSource(n), 
+					     new StreamResult(sw));
+			sw.flush();
+		    }
 		}
-	    }	
+	    } catch (ParserConfigurationException e) {
+		LOGGER.severe("Problem with Parser configuration, make " +
+			      "sure xerces jars are in classpath " + e);
+	    } catch (SAXException e) {
+		LOGGER.severe("Problem with SAX, make " +
+			      "sure xerces jars are in classpath " + e);
+	    } catch (TransformerConfigurationException e) {
+		LOGGER.severe("Problem with Transformer configuration," +
+			      " make sure xalan is in classpath " + e);
+	    } catch (TransformerException e) {
+		LOGGER.severe("Problem with Transformer, make sure" +
+			      "xalan jar is in classpath " + e);
+	    } catch (IOException e) {
+		LOGGER.severe("Problem with Transformer, make sure" +
+			      "xalan jar is in classpath " + e);
+	    }
+	}	
 
-	//TODO: figure out why String[] cast won't work?  Is it just java,
+	//TODO3: figure out why String[] cast won't work?  Is it just java,
 	//or are we getting objects in our array that aren't strings.
 	Object[] objArr = stringList.toArray();
 	String[] strArr = new String[objArr.length];
@@ -195,13 +200,17 @@ public class ApplyXPath
 	}
 	
 	return strArr;
-	//return (String [])stringList.toArray();
     }
     
 	
 
 
-  /** Process input args and execute the XPath.  */
+  /** 
+   * Process input args and execute the XPath.  Prints to
+   * System output.
+   *
+   * @param args a String array containing the filename and xpath 
+   */
   public void doMain(String[] args)
     throws Exception
   {
@@ -209,12 +218,12 @@ public class ApplyXPath
     xpath = args[1];
 
     if ((filename != null) && (filename.length() > 0)
-        && (xpath != null) && (xpath.length() > 0))
-    {
-      // Tell that we're loading classes and parsing, so the time it 
-      // takes to do this doesn't get confused with the time to do 
-      // the actual query and serialization.
-	//System.out.println("Loading classes, parsing "+filename+", and setting up serializer");
+        && (xpath != null) && (xpath.length() > 0)) {
+	// Tell that we're loading classes and parsing, so the time it 
+	// takes to do this doesn't get confused with the time to do 
+	// the actual query and serialization.
+	System.out.println("Loading classes, parsing "+filename+
+			   ", and setting up serializer");
       
       // Set up a DOM tree to query.
       InputSource in = new InputSource(new FileInputStream(filename));
@@ -223,7 +232,8 @@ public class ApplyXPath
       Document doc = dfactory.newDocumentBuilder().parse(in);
       Document out = dfactory.newDocumentBuilder().newDocument();
       // Set up an identity transformer to use as serializer.
-      Transformer serializer = TransformerFactory.newInstance().newTransformer();
+      Transformer serializer = 
+	  TransformerFactory.newInstance().newTransformer();
       serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
       // Use the simple XPath API to select a nodeIterator.
@@ -250,46 +260,47 @@ public class ApplyXPath
 	    }
 	    System.out.print(sb);
 	    
-	}
-	else {
+	} else {
 	    out.importNode(n, true);
 	    System.out.println("out is " + n);
-	  serializer.transform(new DOMSource(n), new StreamResult(System.out));
-	  //serializer.transform(new DOMSource(n.getParentNode()), new StreamResult(System.out)); 
+	    serializer.transform(new DOMSource(n), 
+				 new StreamResult(System.out));
 	}
         System.out.println();
       }
       System.out.println("</output>");
-    }
-    else
-    {
+    } else {
       System.out.println("Bad input args: " + filename + ", " + xpath);
     }
   }
   
-  /** Decide if the node is text, and so must be handled specially */
-  static boolean isTextNode(Node n) {
-    if (n == null)
-      return false;
-    short nodeType = n.getNodeType();
-    return nodeType == Node.CDATA_SECTION_NODE || nodeType == Node.TEXT_NODE;
-  }
-
-  /** Main method to run from the command line.    */
-  public static void main (String[] args)
-    throws Exception
-  {
-    if (args.length != 2)
-    {
-      System.out.println("java ApplyXPath filename.xml xpath\n"
-                         + "Reads filename.xml and applies the xpath; prints the nodelist found.");
-      return;
+    /** Decide if the node is text, and so must be handled specially */
+    static boolean isTextNode(Node n) {
+	if (n == null)
+	    return false;
+	short nodeType = n.getNodeType();
+	return (nodeType == Node.CDATA_SECTION_NODE || 
+	    nodeType == Node.TEXT_NODE);
     }
+
+  /** 
+   * Main method to run from the command line.    
+   * Used as utility to make sure xpaths are functioning correctly.
+   *
+   */
+    public static void main (String[] args)
+	throws Exception {
+	if (args.length != 2) {
+		System.out.println("java ApplyXPath filename.xml xpath\n"
+				   + "Reads filename.xml and applies the " +
+				   "xpath; prints the nodelist found.");
+		return;
+	}
         
-    ApplyXPath app = new ApplyXPath();
-    
-    app.doMain(args);
-  }	
+	ApplyXPath app = new ApplyXPath();
+	
+	app.doMain(args);
+    }	
   
-} // end of class ApplyXPath
+} 
 
