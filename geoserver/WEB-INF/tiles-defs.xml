@@ -11,75 +11,65 @@
 
 <tiles-definitions>
 
-    <definition name=".mainLayout" path="/layouts/main.jsp">
-        <put name="title"  value="GeoServer Configuration" />
-        <put name="header" value=".header" />
-        <put name="sidebar"   value=".sideBar" />
-        <put name="body"   value=".body" />
-    </definition>
-
-    <definition name=".header" path="/tiles/layouts/header.jsp" >
-        <put name="logo" value="/tiles/header/logo.jsp" />
-        <put name="location" value="/tiles/head/location.jsp" />
-        <put name="menu" value="/tiles/header/menu.jsp" />
-    </definition>
-    
-    <definition name=".sideBar" path="/tiles/layouts/sidebar.jsp" >
-    	<put name="status" value="/tiles/sidebar/status.jsp"/>
-    	<put name="buttons" value="/tiles/sidebar/buttons.jsp"/>
-    	<put name="actions" value="/tiles/sidebar/actions.jsp"/>
-    </definition>
-    
-    <definition name=".body" path="/tiles/layouts/body.jsp" >
-    	<put name="tabs" value="/tiles/body/tabs.jsp" />
-    	<put name="selector" value="/tiles/body/selector.jsp" />
-    	<put name="editor" value="/tiles/body/editor.jsp" />
-    </definition>
-    
-    
-
-    <definition name="wfs.Description" extends=".mainLayout">
-        <put name="title"  value="WFS Config - Description" />
-        <!--<put name="body"   value=".aPage.body" />-->
-    </definition>
-   
-   	<definition name="test" page="/WEB-INF/pages/mainLayout.jsp">
-		<put name="title" value="DEFAULT TITLE"/>
-		<put name="header" value="headTest"/>
-		<put name="sidebar" value="sidebarTest"/>
-		<put name="body" value="bodyTest"/>
+   	<definition name=".mainLayout" page="/WEB-INF/pages/mainLayout.jsp">
+		<put name="title" value="GeoServer"/>
+		<put name="header" value=".headLayout"/>
+		<put name="sidebar" value=".sidebarLayout"/>
+		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
    	</definition>
    	
-   	<definition name="headTest" page="/WEB-INF/pages/headerLayout.jsp">
+   	<definition name=".headLayout" page="/WEB-INF/pages/headerLayout.jsp">
    		<put name="logo" value="/WEB-INF/pages/logo.jsp"/>
    		<put name="location" value="/WEB-INF/pages/location.jsp"/>
    		<put name="menu" value="/WEB-INF/pages/menu.jsp"/>
    	</definition>
    	
-   	<definition name="sidebarTest" page="/WEB-INF/pages/sidebarLayout.jsp">
+   	<definition name=".sidebarLayout" page="/WEB-INF/pages/sidebarLayout.jsp">
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
    		<put name="buttons" value="/WEB-INF/pages/buttons.jsp"/>
    		<put name="actions" value="/WEB-INF/pages/actions.jsp"/>
    	</definition>
    	
-   	<definition name="bodyTest" page="/WEB-INF/pages/bodyLayout.jsp">
-   		<put name="tabs" value="tabTest"/>
-<!--   		<put name="selector" value="/WEB-INF/pages/blank.jsp"/>
-   		<put name="editor" value="/WEB-INF/pages/WFSConfigDescription.jsp"/> 
-   	-->
+   	<definition name=".bodyLayout" page="/WEB-INF/pages/bodyLayout.jsp">
+   		<put name="tabs" value=".tabsLayout"/>
+   	</definition>
+
+   	<definition name="wfs.description" extends=".mainLayout">
+   		<put name="body" value="wfs.description.tabLayout"/>
    	</definition>
    	
-   	<definition name="tabTest" page="/WEB-INF/pages/tabsLayout.jsp">
+   	<definition name="wfs.description.tab">
+   		<put name="body" value="wfs.description.tabLayout"/>
+   	</definition>   	
+   	
+   	<definition name="wfs.description.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
    		<put name="selectedIndex" value="0"/>
    		<put name="parameterName" value="selected"/>
    		<putList name="tabList">
    			<item value="Description"
-   				link="WFSConfigDescription.jsp"
+   				link="/WEB-INF/pages/WFSConfigDescription.jsp"
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    			<item value="Content"
-   				link="WFSConfigContent.jsp"
+   				link="/geoserver/WFSConfigContent.do"
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    		</putList>
    	</definition>
-    
+   	
+   	<definition name="wfs.content" extends=".mainLayout">
+   		<put name="body" value="wfs.content.tabLayout"/>
+   	</definition>
+
+   	<definition name="wfs.content.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
+   		<put name="selectedIndex" value="1"/>
+   		<put name="parameterName" value="selected"/>
+   		<putList name="tabList">
+   			<item value="Description"
+   				link="/geoserver/WFSConfigDescription.do"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   			<item value="Content"
+   				link="/WEB-INF/pages/WFSConfigContent.jsp"
+   				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+   		</putList>
+   	</definition>
+  
 </tiles-definitions>

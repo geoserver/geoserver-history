@@ -62,12 +62,12 @@
     	<form-bean
     		name="wfsDescriptionForm"
     		type="org.vfny.geoserver.form.wfs.WFSDescriptionForm"/>
+    		
+    	<form-bean
+    		name="wfsContentForm"
+    		type="org.vfny.geoserver.form.wfs.WFSContentForm"/>
 
-    <!-- sample form bean descriptor for an ActionForm
-        <form-bean
-            name="inputForm"
-            type="app.InputForm"/>
-    end sample -->
+
 
     <!-- sample form bean descriptor for a DynaActionForm
         <form-bean
@@ -118,6 +118,10 @@
        		path="/WFSConfigMenu.do"/>
        		
        	<forward
+       		name="wfsConfigContent"
+       		path="/WFSConfigContent.do"/>
+       		
+       	<forward
        		name="baseStyle"
        		path="/style.css"/>
 
@@ -145,14 +149,32 @@
         <action
         	path="/WFSConfigMenu"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="/WEB-INF/pages/tiletest.jsp"/>
+        	parameter="wfs.description"/>
+        
+        <action
+        	path="/WFSConfigDescription"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wfs.description"/>
+        <action
+        	path="/WFSConfigContent"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="wfs.content"/>
+        	
         <action
         	path="/WFSConfigDescriptionSubmit"
         	type="org.vfny.geoserver.action.wfs.WFSDescriptionAction"
         	name="wfsDescriptionForm"
         	scope="request"
         	validate="true"
-        	input="/WEB-INF/pages/tiletest.jsp"/>
+        	input="wfs.description"/>
+        	
+        <action
+        	path="/WFSConfigContentSubmit"
+        	type="org.vfny.geoserver.actions.wfs.WFSContentAction"
+        	name="wfsContentForm"
+        	scope="request"
+        	validate="true"
+        	input="wfs.content"/>
 
 
     <!-- sample input and input submit actions
@@ -228,9 +250,8 @@
   
   <plug-in className="org.vfny.geoserver.form.wfs.WFSDescriptionForm">
   </plug-in>
-  <!--
-  <plug-in className="org.vfny.geoserver.global.GeoServer">
-  </plug-in>
--->
+  
+  <plug-in className="org.vfny.geoserver.form.wfs.WFSContentForm">
+  </plug-in>  
 </struts-config>
 

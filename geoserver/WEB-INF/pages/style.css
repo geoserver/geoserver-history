@@ -197,3 +197,7 @@ color: #000000;
 border: solid 2px #000000;
 font-size: 10px;
 }
+span.help {
+	border-bottom: 1px dashed #6666cc; /*copy gecko's behaviour to IE*/
+	cursor: help;
+}

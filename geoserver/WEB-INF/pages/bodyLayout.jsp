@@ -6,11 +6,5 @@
 	<tr><td>
 		<tiles:insert attribute="tabs"/>
 	</td></tr>
-	<tr><td>
-		<tiles:insert attribute="selector"/>
-	</td></tr>
-	<tr><td>
-		<tiles:insert attribute="editor"/>	
-	</td></tr>
 </table>
 
