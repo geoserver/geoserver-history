@@ -12,7 +12,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.SchemaException;
 import org.vfny.geoserver.responses.WfsException;
-
+import org.vfny.geoserver.responses.WfsTransactionException;
 
 /**
  * This class represents an update request.  An update request consists
@@ -57,7 +57,7 @@ public class UpdateRequest extends SubTransactionRequest {
      * @param propertyName The name of the attribute that will be changed.
      * @param value The value to be changed.
      */
-     public void addProperty(String propertyName, String value) {
+     public void addProperty(String propertyName, Object value) {
     	properties.add(new Property(propertyName, value));
     }
 
@@ -89,9 +89,9 @@ public class UpdateRequest extends SubTransactionRequest {
     }
 
     /** Gets the list of property values. */
-    public String[] getValues(){
+    public Object[] getValues(){
 	int arrSize = properties.size();
-	String[] retArr = new String[arrSize];
+	Object[] retArr = new String[arrSize];
 	for (int i = 0; i < arrSize; i++) {
 	    retArr[i] = ((Property)properties.get(i)).getValue();
 	}
@@ -121,10 +121,18 @@ public class UpdateRequest extends SubTransactionRequest {
 	throws SchemaException {
 	int arrSize = properties.size();
 	AttributeType[] retArr = new AttributeType[arrSize];
-	for (int i = 0; i < arrSize; i++) {
-	    retArr[i] = schema.getAttributeType
-		(((Property)properties.get(i)).getName());
-	}
+	String curName;
+	AttributeType curType;
+	    for (int i = 0; i < arrSize; i++) {
+		curName = ((Property)properties.get(i)).getName();
+		curType = schema.getAttributeType(curName);
+		if (curType == null) {
+		    String message = "Could not find property named: " + curName
+			+ " in feature type " + schema.getTypeName();
+		    throw new SchemaException(message);
+		}
+		retArr[i] = curType;
+	    }
 	return retArr;
     }
 	
@@ -194,17 +202,17 @@ public class UpdateRequest extends SubTransactionRequest {
 	private String name;
 
 	/** The new value that it should be changed to. */
-	private String value;
+	private Object value;
 
 	/** constructor.*/
-	public Property(String name, String value) {
+	public Property(String name, Object value) {
 	    this.name = name;
 	    this.value = value;
 	}
 
-	public void setValue(String value) { this.value = value; }
+	public void setValue(Object value) { this.value = value; }
 
-	public String getValue() { return value; }
+	public Object getValue() { return value; }
 
 	public void setName(String name) {this.name = name; }
 
