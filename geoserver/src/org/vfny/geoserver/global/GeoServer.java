@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServlet;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.2 2004/01/05 23:26:25 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.1.2.3 2004/01/05 23:57:30 dmzwiers Exp $
  */
 public class GeoServer extends Abstract implements org.apache.struts.action.PlugIn{
 	
@@ -286,6 +286,8 @@ public class GeoServer extends Abstract implements org.apache.struts.action.Plug
 
 	private static ServletContext sc = null;
 	public static GeoServer getInstance(){
+		if(sc==null)
+			return null;
 		return (GeoServer)sc.getAttribute(NAME);
 	}
 
