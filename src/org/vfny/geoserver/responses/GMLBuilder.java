@@ -111,15 +111,15 @@ public class GMLBuilder {
     private static Map gmlMap = new HashMap();
     
     static {
-	gmlMap.put("pointproperty", "gml:pointProperty");
-	gmlMap.put("geometryproperty", "gml:geometryProperty");
-	gmlMap.put("polygonproperty", "gml:polygonProperty");
-	gmlMap.put("linestringproperty", "gml:lineStringProperty");
-	gmlMap.put("multipointproperty", "gml:multiPointProperty");
-	gmlMap.put("multilinestringproperty", "gml:multiLineStringProperty");
-	gmlMap.put("multipolygonproperty", "gml:multiPolygonProperty");
-	gmlMap.put("description", "gml:description");
-	gmlMap.put("name", "gml:name");
+	gmlMap.put("pointProperty", "gml:pointProperty");
+	gmlMap.put("geometryProperty", "gml:geometryProperty");
+	gmlMap.put("polygonProperty", "gml:polygonProperty");
+	gmlMap.put("lineStringProperty", "gml:lineStringProperty");
+	gmlMap.put("multiPointProperty", "gml:multiPointProperty");
+	gmlMap.put("multiLineStringProperty", "gml:multiLineStringProperty");
+	gmlMap.put("multiPolygonProperty", "gml:multiPolygonProperty");
+	gmlMap.put("gmldescription", "gml:description");
+	gmlMap.put("gmlname", "gml:name");
     }
 
     /**
