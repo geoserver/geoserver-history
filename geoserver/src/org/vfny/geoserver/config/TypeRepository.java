@@ -40,6 +40,7 @@ public class TypeRepository {
     /** Castor-specified type to hold all the  */
     private static TypeRepository repository = null;
 
+    /** the singleton that has all the user and service configuration. */
     private static ConfigInfo config = ConfigInfo.getInstance();
 
     /** to generate the lockIds.*/
@@ -160,6 +161,13 @@ public class TypeRepository {
 	return new ArrayList(types.keySet());
     }
 
+    public void closeTypeResources() {
+	for(Iterator i = getAllTypeNames().iterator(); i.hasNext();){
+	    String curType = i.next().toString(); 
+	    getType(curType).close();
+	}
+    }
+
         /**
      * This function lists all files in HTML for the meta-data pages.
      * 
@@ -209,6 +217,10 @@ public class TypeRepository {
      * Locking methods.
      ********************************************************************/
 
+    public boolean isLocked(String typeName) throws WfsException {
+	return isLocked(typeName, null, null);
+    }
+
     /**
      * Inidicates whether a featureType has been locked.
      * @param typeName the name of the featureType to check for a lock.
@@ -229,7 +241,7 @@ public class TypeRepository {
 	//LOG.finer("locked features = " + lockedFeatures);
 	for (Iterator i = features.iterator(); i.hasNext();){
 	    String curFid = i.next().toString();
-	    //LOG.finer("checking feature: " + curFid);
+	    LOG.fine("checking feature: " + curFid);
 	    if (lockedFeatures.containsKey(curFid)){
 		if (lockId == null) {
 		    return true;
@@ -326,7 +338,7 @@ public class TypeRepository {
 	}
 	//locks.put(lockId, lock); - now done in InternalLock constructor.
 	//lockedFeatures.put(typeName, lock);
-	LOG.finer("locked " + typeName + " with: " + lock);
+	LOG.fine("locked " + typeName + " with: " + lock);
 	return lockId;
         
     }
