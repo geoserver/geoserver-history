@@ -18,15 +18,15 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.2"
+  Name "GeoServer 1.3.0-beta"
   OutFile "geoserver-1.3.0-beta.exe"
 
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\GeoServer 1.2"
+  InstallDir "$PROGRAMFILES\GeoServer 1.3"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\GeoServer-1.2" ""
+  InstallDirRegKey HKCU "Software\GeoServer-1.3" ""
 
 ;--------------------------------
 ;Variables
@@ -42,7 +42,7 @@
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-      installation of GeoServer 1.2 \r\n \r\nNote that this is the first \
+      installation of GeoServer 1.3 \r\n \r\nNote that this is the first \
       attempt by the GeoServer project to create \
       a Windows executable installer.  \
       Please report any problems or suggestions for improvement to \
@@ -59,7 +59,7 @@
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\GeoServer 1.2" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\GeoServer 1.3" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
   
   !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
@@ -148,7 +148,7 @@ Function echoJava
      like GeoServer to use another JDK then hit Cancel and set the JAVA_HOME \ 
      environment variable the location of your preferred JDK.  If your JDK \
      is not version 1.4 then please download and install a new one from \ 
-     http://java.sun.com/j2se/1.4."
+     http://java.sun.com/j2se/1.4.  NOTE: this must be JDK/SDK - not a JRE."
 
 FunctionEnd
 
@@ -190,7 +190,7 @@ Function findJavaPath
     computer. Please download one from http://java.sun.com/j2se/1.4. If there \
     is already a JDK 1.4 or greater installed on this computer, set an \
     environment variable JAVA_HOME to the pathname of the directory where it \
-    is installed."
+    is installed.   NOTE: this must be JDK/SDK - not a JRE."
 
     Abort
 
@@ -221,7 +221,7 @@ Section "Uninstall"
   
   IfFileExists "$INSTDIR" 0 Removed
      MessageBox MB_YESNO|MB_ICONQUESTION \
-          "Remove all files in your GeoServer 1.2 directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
+          "Remove all files in your GeoServer 1.3 directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
      Delete "$INSTDIR\*.*" ;
      RMDIR /r "$INSTDIR"
      Sleep 500
@@ -251,6 +251,6 @@ Section "Uninstall"
     StrCmp $MUI_TEMP $SMPROGRAMS startMenuDeleteLoopDone startMenuDeleteLoop
   startMenuDeleteLoopDone:
 
-  DeleteRegKey /ifempty HKCU "Software\GeoServer-1.2"
+  DeleteRegKey /ifempty HKCU "Software\GeoServer-1.3"
 
 SectionEnd
