@@ -43,5 +43,15 @@
 
 		<!-- Must always be postgis. -->
 		<dbtype>postgis</dbtype> 
+
+                <!-- optional param.  Only set to true if your postgis install
+                     has GEOS installed, or else things will go seriously 
+                     wrong.  Run 'select postgis_version(), and if there is
+                     it says somewhere USE_GEOS=1, then you can safely
+                     use this.  If you have geos it is recommended to use
+                     it, as its much faster for spatial queries.  In the
+                     future we will auto detect it, but for now adding it
+                     to info.xml files shall have to suffice. -->
+                <usegeos>false</usegeos>
 	</DatasourceParams>
 </featureType>
