@@ -62,7 +62,7 @@ public class DataAttributeTypesNewAction extends ConfigAction {
         AttributeTypeInfoConfig atiConfig = new AttributeTypeInfoConfig(attributeType);
 
         request.getSession().setAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE,
-            atiConfig);
+            atiConfig); 
 
         return mapping.findForward("dataConfigFeatureTypes");
     }

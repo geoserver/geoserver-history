@@ -63,6 +63,7 @@ public class DataAttributeTypesEditorAction extends ConfigAction {
         list.remove(atiConfig);
         list.add(atiConfig);
         ftConfig.setSchemaAttributes(list);
+        getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("dataConfigFeatureTypes");
     }

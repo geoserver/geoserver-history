@@ -32,8 +32,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </p>
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ValidationTestSelectAction.java,v 1.2 2004/02/05 00:01:51 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationTestSelectAction.java,v 1.3 2004/02/05 17:33:19 dmzwiers Exp $
  */
 public class ValidationTestSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -65,6 +65,7 @@ public class ValidationTestSelectAction extends ConfigAction {
             Map tests = suiteConfig.getTests();
             tests.remove(selectedTest);
             suiteConfig.setTests(tests);
+            getApplicationState().notifyConfigChanged();
             
             request.getSession().removeAttribute(TestConfig.CURRENTLY_SELECTED_KEY);
             

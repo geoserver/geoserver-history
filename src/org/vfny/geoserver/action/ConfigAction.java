@@ -18,6 +18,7 @@ import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
+import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.UserContainer;
 
 
@@ -71,8 +72,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ConfigAction.java,v 1.6 2004/02/05 00:01:50 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ConfigAction.java,v 1.7 2004/02/05 17:33:20 dmzwiers Exp $
  */
 public class ConfigAction extends GeoServerAction {
 	/**
@@ -162,5 +163,14 @@ public class ConfigAction extends GeoServerAction {
      */
     protected ValidationConfig getValidationConfig() {
     	return (ValidationConfig) getServlet().getServletContext().getAttribute(ValidationConfig.CONFIG_KEY);
+    }
+
+    /**
+     * Access Catalog Configuration Model from the WebContainer.
+     *
+     * @return Configuration model for Catalog information.
+     */
+    protected ApplicationState getApplicationState() {
+    	return (ApplicationState) getServlet().getServletContext().getAttribute(ApplicationState.WEB_CONTAINER_KEY);
     }
 }

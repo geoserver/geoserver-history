@@ -27,8 +27,8 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresNewAction.java,v 1.6 2004/02/05 00:01:50 emperorkefka Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: DataDataStoresNewAction.java,v 1.7 2004/02/05 17:33:20 dmzwiers Exp $
  */
 public class DataDataStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -47,6 +47,7 @@ public class DataDataStoresNewAction extends ConfigAction {
                 newForm.getSelectedDescription());
 
         getDataConfig().addDataStore(newDataStoreConfig);
+        getApplicationState().notifyConfigChanged();
 
         request.getSession().setAttribute("selectedDataStoreId",
             newForm.getDataStoreID());

@@ -58,6 +58,7 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
         } else if (delete.equals(buttonAction)) {
             dataConfig.removeFeatureType(selectedFeatureType);
             request.getSession().removeAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+            getApplicationState().notifyConfigChanged();
 
             return mapping.findForward("dataConfigFeatureTypes");
         }

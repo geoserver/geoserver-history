@@ -77,6 +77,7 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
         dataConfig.addFeatureType(name, config);
 
         featureTypesForm.reset(mapping, request);
+        getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("dataConfigFeatureTypes");
     }
