@@ -33,7 +33,7 @@ public class TransactionSuite extends TestCase {
 
     /* Initializes the logger. */
     static {
-        Geotools.init("Log4JFormatter", Level.INFO);
+        Geotools.init("Log4JFormatter", Level.FINE);
     }
     
     /** Class logger */
@@ -67,15 +67,11 @@ public class TransactionSuite extends TestCase {
         repo = TypeRepository.getInstance();
     }
 
-    /*************************************************************************
-     * XML TESTS                                                             *
-     *************************************************************************
-     * XML GetFeature parsing tests.  Each test reads from a specific XML    *
-     * file and compares it to the base request defined in the test itself.  *
-     * Tests are run via the static methods in this suite.  The tests        *
-     * themselves are quite generic, so documentation is minimal.            *
-     *************************************************************************/
-    public void test1() throws Exception {        
+    //Need a public postgis database to test against as things stand right
+    //now.  Or figure out a way to get responses without actually
+    //doing a delete?
+
+    /*    public void test1() throws Exception {        
         // make base comparison objects
         
         TransactionRequest request = new TransactionRequest();
@@ -89,10 +85,7 @@ public class TransactionSuite extends TestCase {
         String response = TransactionResponse.getXmlResponse(request);
         LOGGER.fine("Our response is " + response);
         
-	
-	// run test
-        //assertTrue(runXmlTest(baseRequest, "10", true));
-    }
+	}*/
 
     public void testNoInfo() {
 	     TransactionRequest request = new TransactionRequest();
