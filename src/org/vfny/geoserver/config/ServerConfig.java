@@ -19,7 +19,7 @@ import javax.xml.parsers.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.3 2003/12/17 22:13:44 cholmesny Exp $
+ * @version $Id: ServerConfig.java,v 1.4 2003/12/18 00:18:28 dmzwiers Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -312,6 +312,8 @@ public class ServerConfig extends AbstractConfig {
 
     /**
      * saves the server configuration to <code>dest</code> as an XML stream
+     *
+     *	TODO method body
      *
      * @param dest DOCUMENT ME!
      */

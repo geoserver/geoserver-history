@@ -8,7 +8,7 @@ package org.vfny.geoserver.config;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: NameSpace.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: NameSpace.java,v 1.3 2003/12/18 00:18:28 dmzwiers Exp $
  */
 public class NameSpace {
     /** DOCUMENT ME!  */
@@ -47,9 +47,12 @@ public class NameSpace {
     }
 
     /**
-     * DOCUMENT ME!
+     * 
+     * Does not appear to be used in geoserver.
+     * 
+     * 12/17/03 dz
      *
-     * @return DOCUMENT ME!
+     * @return true when default namespace.
      */
     public boolean isDefault() {
         return _default;

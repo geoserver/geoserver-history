@@ -12,8 +12,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.data.Catalog;
-import org.geotools.data.DataStore;
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.Validation;
@@ -49,8 +47,8 @@ import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ValidationConfig.java,v 1.3 2003/12/18 00:18:28 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
