@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.*;
 import org.geotools.feature.*;
 import org.geotools.filter.*;
+import org.geotools.styling.*;
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.requests.Request;
@@ -22,7 +23,7 @@ import java.util.*;
  * Subclasses should implement one or more output format
  *
  * @author Gabriel Roldán
- * @version $revision$
+ * @version $Id: GetMapDelegate.java,v 1.3 2003/12/17 22:34:26 cholmesny Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -56,7 +57,7 @@ public abstract class GetMapDelegate implements Response {
         this.request = request;
 
         FeatureTypeConfig[] layers = request.getLayers();
-        List styles = request.getStyles();
+        Style[] styles = buildStyles(request.getStyles(), layers);
         Filter[] filters = request.getFilters();
         List attributes = request.getAttributes();
 
@@ -90,21 +91,22 @@ public abstract class GetMapDelegate implements Response {
      * @throws WmsException DOCUMENT ME!
      */
     protected abstract void execute(FeatureTypeConfig[] requestedLayers,
-        FeatureResults[] resultLayers, List styles) throws WmsException;
+        FeatureResults[] resultLayers, Style[] styles)
+        throws WmsException;
 
     /**
      * DOCUMENT ME!
      *
      * @param layers DOCUMENT ME!
      * @param filters DOCUMENT ME!
+     * @param attributes DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
      * @throws WmsException DOCUMENT ME!
      */
     private Query[] buildQueries(FeatureTypeConfig[] layers, Filter[] filters,
-                                 List attributes)
-        throws WmsException {
+        List attributes) throws WmsException {
         int nLayers = layers.length;
         int numFilters = (filters == null) ? 0 : filters.length;
         int numAttributes = attributes.size();
@@ -115,25 +117,27 @@ public abstract class GetMapDelegate implements Response {
         FilterFactory ffactory = FilterFactory.createFilterFactory();
 
         try {
-            Filter finalLayerFilter, customFilter;
+            Filter finalLayerFilter;
+            Filter customFilter;
             Query layerQuery;
 
             for (int i = 0; i < nLayers; i++) {
                 FeatureType schema = layers[i].getSchema();
-                if(numFilters == nLayers)
-                  customFilter = filters[i];
-                else
-                  customFilter = null;
+
+                if (numFilters == nLayers) {
+                    customFilter = filters[i];
+                } else {
+                    customFilter = null;
+                }
 
                 finalLayerFilter = buildFilter(customFilter, requestExtent,
                         ffactory, schema);
 
-                List layerProperties = numAttributes == nLayers?
-                        (List)attributes.get(i) : Collections.EMPTY_LIST;
+                List layerProperties = (numAttributes == nLayers)
+                    ? (List) attributes.get(i) : Collections.EMPTY_LIST;
 
-                String[] props = guessProperties(layers[i],
-                                                 finalLayerFilter,
-                                                 layerProperties);
+                String[] props = guessProperties(layers[i], finalLayerFilter,
+                        layerProperties);
                 layerQuery = new DefaultQuery(finalLayerFilter, props);
                 queries[i] = layerQuery;
             }
@@ -147,9 +151,18 @@ public abstract class GetMapDelegate implements Response {
     }
 
     /**
-     * builds the filter for a layer containing at leas the BBOX filter
-     * defined by the extent queries (BBOX param), and optionally AND'ed
-     * with the customized filter for that layer (from FILTERS param)
+     * builds the filter for a layer containing at leas the BBOX filter defined
+     * by the extent queries (BBOX param), and optionally AND'ed with the
+     * customized filter for that layer (from FILTERS param)
+     *
+     * @param filter DOCUMENT ME!
+     * @param requestExtent DOCUMENT ME!
+     * @param ffactory DOCUMENT ME!
+     * @param schema DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IllegalFilterException DOCUMENT ME!
      */
     private Filter buildFilter(Filter filter, Envelope requestExtent,
         FilterFactory ffactory, FeatureType schema)
@@ -174,19 +187,31 @@ public abstract class GetMapDelegate implements Response {
         return finalLayerFilter;
     }
 
+    protected Style[] buildStyles(List styleNames, FeatureTypeConfig[] layers)
+        throws WmsException {
+        Style[] styles = new Style[styleNames.size()];
+        int i = 0;
+
+        for (Iterator it = styleNames.iterator(); it.hasNext(); i++) {
+            styles[i] = layers[i].getStyle((String) it.next());
+        }
+
+        return styles;
+    }
+
     /**
      * tryies to guesss exactly wich property names are needed to query for a
      * given FeatureType and the Filter that will be applied to it. By this
      * way, only the needed propertied will be queried to the underlying
      * FeatureSource in the hope that it will speed up the query
-     *
+     * 
      * <p>
      * Note that just the attributes exposed by the FeatureTypeConfig will be
      * taken in count. a FeatureTypeConfig exposes all it's attributes except
      * if the subset of desiref exposed attributes are specified in the
      * catalog configuration.
      * </p>
-     *
+     * 
      * <p>
      * This method guarantiees that at lest the default geometry attribute of
      * <code>layer</code> will be returned.
@@ -194,6 +219,7 @@ public abstract class GetMapDelegate implements Response {
      *
      * @param layer DOCUMENT ME!
      * @param filter DOCUMENT ME!
+     * @param attributes DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
@@ -203,14 +229,17 @@ public abstract class GetMapDelegate implements Response {
      *       AttributeExpression's?). I think that the style should be taken
      *       in count too.
      */
-    private String[] guessProperties(FeatureTypeConfig layer, Filter filter, List attributes) {
+    private String[] guessProperties(FeatureTypeConfig layer, Filter filter,
+        List attributes) {
         FeatureType type = layer.getSchema();
         List atts = new ArrayList(attributes);
         String geom_name = type.getDefaultGeometry().getName();
-        if(!atts.contains(geom_name))
-            atts.add(geom_name);
 
-        String[] properties = (String[])atts.toArray(new String[atts.size()]);
+        if (!atts.contains(geom_name)) {
+            atts.add(geom_name);
+        }
+
+        String[] properties = (String[]) atts.toArray(new String[atts.size()]);
 
         return properties;
     }
