@@ -43,9 +43,6 @@ public final class WFSDescriptionAction extends ConfigAction {
 			String keywords = descriptionForm.getKeywords();
 			String _abstract = descriptionForm.get_abstract();
 
-//			HttpSession session = request.getSession();
-//			session.setAttribute("wfsDescription", form);
-			
 			WFSConfig config = getWFSConfig();
 			config.setName(name);
 			config.setTitle(title);
