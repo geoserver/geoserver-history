@@ -357,9 +357,9 @@ public class XMLConfigWriter {
 			cw.valueTag("gmlPrefixing", gml + "");
         }
         
-        if (srsXmlStyle) {
+        //if (srsXmlStyle) {
 			cw.valueTag("srsXmlStyle", srsXmlStyle + "");
-        }
+			//}
 
         if (serviceLevel != 0) {
             cw.valueTag("serviceLevel", serviceLevel + "");
