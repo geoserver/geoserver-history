@@ -38,7 +38,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.15 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.16 2004/02/16 21:42:10 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -320,11 +320,13 @@ public class DescribeResponse implements Response {
 
             if (!validTypes.contains(meta)) {
                 //FeatureType ft = meta.getSchema();
-                //File inputFile = new File(currentFile);
-                //FeatureType ft2 = meta.getSchema();
-                //generatedType = generateFromSchema(ft2);
+                //File inputFile = new File(currentFile); 
+            	//generatedType = meta.getXMLSchema();
                 try {
-                    generatedType = meta.getXMLSchema();
+                	FeatureType ft2 = meta.getFeatureType();
+                	String gType2 = generateFromSchema(ft2);
+                	if(gType2 != null && gType2!="")
+                		generatedType = gType2;
                 } catch (IOException e) {
                     generatedType = "";
                 }

@@ -21,7 +21,7 @@ import org.geotools.filter.Filter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: Query.java,v 1.15 2004/02/09 23:29:44 dmzwiers Exp $
+ * @version $Id: Query.java,v 1.16 2004/02/16 21:42:10 dmzwiers Exp $
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?
@@ -67,6 +67,10 @@ public class Query {
      */
     public List getPropertyNames() {
         return propertyNames;
+    }
+    
+    public void setPropertyNames(List l){
+    	propertyNames = l;
     }
 
     /**
@@ -247,7 +251,7 @@ public class Query {
         String[] props = null;
 
         if ((propertyNames != null) && (propertyNames.size() > 0)) {
-            props = (String[]) propertyNames.toArray(new String[0]);
+            props = (String[]) propertyNames.toArray(new String[propertyNames.size()]);
         }
 
         if (filter == null) {

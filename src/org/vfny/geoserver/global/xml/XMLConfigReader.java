@@ -63,7 +63,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.32 2004/02/12 00:43:20 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.33 2004/02/16 21:42:09 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -1114,7 +1114,7 @@ public class XMLConfigReader {
             reader.close();
         } catch (FileNotFoundException e) {
         	LOGGER.log(Level.FINEST, e.getMessage(), e);
-        	throw new ConfigurationException("Could not open schmea file:"
+        	throw new ConfigurationException("Could not open schema file:"
         			+ schemaFile, e);
         } catch (Exception erk) {
             throw new ConfigurationException("Could not parse schema file:"
@@ -1148,8 +1148,9 @@ public class XMLConfigReader {
 
         elem = ReaderUtils.getChildElement(elem, "xs:complexContent");
         elem = ReaderUtils.getChildElement(elem, "xs:extension");
-        featureTypeInfoDTO.setSchemaBase(ReaderUtils.getAttribute(elem, "base",
-                true));
+        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+        NameSpaceElement nse = gml.getElement(ReaderUtils.getAttribute(elem, "base",true));
+        featureTypeInfoDTO.setSchemaBase(nse.getTypeDefName());
         elem = ReaderUtils.getChildElement(elem, "xs:sequence");
 
         NodeList nl = elem.getElementsByTagName("xs:element");
@@ -1167,7 +1168,7 @@ public class XMLConfigReader {
             NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
             if ((ref != null) && (ref != "")) {
                 ati.setComplex(false);
-                NameSpaceElement nse = nst1.getElement(ref);
+                nse = nst1.getElement(ref);
                 if(nse == null)
                 	nse = nst2.getElement(ref);
                 
@@ -1179,13 +1180,14 @@ public class XMLConfigReader {
                 ati.setName(name);
 
                 if ((type != null) && (type != "")) {
-                    int t = type.indexOf(":");
 
-                    if (t != -1) {
-                        type = type.substring(t + 1);
-                    }
-
-                    ati.setType(type);
+                	nse = nst1.getElement(type);
+                	if(nse == null)
+                		nse = nst2.getElement(type);
+                	
+                	String tmp = nse.getTypeRefName();
+                	
+                    ati.setType(tmp);
                     ati.setComplex(false);
                 } else {
                     Element tmp = ReaderUtils.getFirstChildElement(elem);
@@ -1215,7 +1217,7 @@ public class XMLConfigReader {
             ati.setMaxOccurs(ReaderUtils.getIntAttribute(elem, "maxOccurs",
                     false, 1));
             ati.setMinOccurs(ReaderUtils.getIntAttribute(elem, "minOccurs",
-                    false, 0));
+                    false, 1));
             list.add(ati);
         }
 

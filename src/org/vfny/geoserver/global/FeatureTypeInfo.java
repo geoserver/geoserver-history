@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.26 2004/02/13 22:22:50 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.27 2004/02/16 21:42:11 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype
     implements FeatureTypeMetaData {
@@ -307,16 +307,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
             //(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
             return realSource;
         } else {
-            try {
-                return reTypeSource(realSource, (FeatureTypeInfoDTO)toDTO());
-            } catch (SchemaException e) {
-                throw new DataSourceException("Could not make FeatureSource attributes don't match",
-                    e);
-            }
+             return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
+                		getDefinitionQuery());
         }
     }
 
-    public static FeatureSource reTypeSource(FeatureSource source,
+    /*public static FeatureSource reTypeSource(FeatureSource source,
         FeatureTypeInfoDTO ftc) throws SchemaException {
         AttributeType[] attributes = new AttributeType[ftc.getSchemaAttributes()
                                                           .size()];
@@ -343,7 +339,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
 
         return GeoServerFeatureLocking.create(source, myType,
             ftc.getDefinitionQuery());
-    }
+    }*/
 
     /**
      * getBoundingBox purpose.
@@ -425,7 +421,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      *
      * @throws IOException DOCUMENT ME!
      */
-    public synchronized String getXMLSchema() throws IOException {
+   /* public synchronized String getXMLSchema(){
         if (xmlSchemaFrag == null) {
             StringWriter sw = new StringWriter();
 
@@ -434,13 +430,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
                 XMLConfigWriter.storeFeatureSchema(dto, sw);
             } catch (ConfigurationException e) {
             	e.printStackTrace();
+            } catch (IOException e) {
+            	e.printStackTrace();
+            	xmlSchemaFrag = null;
             }
             xmlSchemaFrag = sw.toString();
+            try{
             sw.close();
+            }catch(IOException e){}
         }
 
         return xmlSchemaFrag;
-    }
+    }*/
 
     /**
      * Will return our delegate with all information filled out
@@ -705,29 +706,80 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
      * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
      */
     public FeatureType getFeatureType() throws IOException {
+    	return getFeatureType(getFeatureSource());
+    }
+    private FeatureType getFeatureType(FeatureSource fs) throws IOException {
     	if(ft == null){
     		int count = 0;
-    		ft = getFeatureSource().getSchema();
-    		AttributeType[] attributes = new AttributeType[schema.size()];
+    		ft = fs.getSchema();
+    		String[] baseNames = getRequiredBaseAttributes();
+    		AttributeType[] attributes = new AttributeType[schema.size()+baseNames.length];
+    		for(;count<baseNames.length;count++){
+    			attributes[count] = ft.getAttributeType(baseNames[count]);
+    		}
             for (Iterator i = schema.iterator(); i.hasNext();) {
-            	String attName = ((AttributeTypeInfo)i.next()).getAttributeName();
+            	AttributeTypeInfo ati = (AttributeTypeInfo)i.next();
+            	String attName = ati.getName();
             	attributes[count] = ft.getAttributeType(attName);
-
             	if (attributes[count] == null) {
                 throw new IOException("the FeatureType " + getName()
                     + " does not contains the configured attribute " + attName
-                    + ". Check your catalog configuration");
+                    + ". Check your schema configuration");
             	}
+            	count++;
             }
             try {
             	ft = FeatureTypeFactory.newFeatureType(attributes,
-            		getName());
+            		name);
         	} catch (SchemaException ex) {
         	} catch (FactoryConfigurationError ex) {
         	}
     		
     	}
     	return ft;
+    }
+    
+    private String[] getRequiredBaseAttributes(){
+    	if("AbstractFeatureType".equals(schemaBase)){
+    		return new String[] {"description","name"};
+    	}
+    	if("AbstractFeatureCollectionBaseType".equals(schemaBase)){
+    		return new String[] {"description","name"};
+    	}
+    	if("GeometryPropertyType".equals(schemaBase)){
+    		return new String[] {"geometry"};
+    	}
+    	if("FeatureAssociationType".equals(schemaBase)){
+    		return new String[] {"feature"};
+    	}
+    	if("BoundingShapeType".equals(schemaBase)){
+    		return new String[] {"box"};
+    	}
+    	if("PointPropertyType".equals(schemaBase)){
+    		return new String[] {"point"};
+    	}
+    	if("PolygonPropertyType".equals(schemaBase)){
+    		return new String[] {"polygon"};
+    	}
+    	if("LineStringPropertyType".equals(schemaBase)){
+    		return new String[] {"lineString"};
+    	}
+    	if("MultiPointPropertyType".equals(schemaBase)){
+    		return new String[] {"multiPoint"};
+    	}
+    	if("MultiLineStringPropertyType".equals(schemaBase)){
+    		return new String[] {"multiLineString"};
+    	}
+    	if("MultiPolygonPropertyType".equals(schemaBase)){
+    		return new String[] {"multiPolygonString"};
+    	}
+    	if("MultiGeometryPropertyType".equals(schemaBase)){
+    		return new String[] {"multiGeometry"};
+    	}
+    	if("NullType".equals(schemaBase)){
+    		return new String[] {};
+    	}
+    	return new String[] {};
     }
 
     /**
@@ -782,6 +834,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype
         }
 
         return list;
+    }
+    
+    public List getAttributes(){
+    	return schema;
     }
 
     /**
