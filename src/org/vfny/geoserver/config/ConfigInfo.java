@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.servlet.ServletContext;
 import javax.servlet.Servlet;
+import org.geotools.data.DataSourceFinder;
 
 /**
  * Reads all necessary configuration data and abstracts it away from the 
@@ -76,8 +77,10 @@ public class ConfigInfo {
 	String cfgFile = rootDir + CONFIG_FILE;
 	wfsGlobal = readWfsTags(cfgFile);
 	serviceGlobal = readServiceTags(cfgFile);
-	
-
+	Iterator iter = DataSourceFinder.getAvailableDataSources(); 
+	while (iter.hasNext()) {
+	    LOG.finer(iter.next() + " is an available DataSource");
+	}
     }
     
     /** Returns root webserver application directory 
@@ -90,11 +93,11 @@ public class ConfigInfo {
      */
     public static ConfigInfo getInstance() { 
         if(config == null) {
-	    LOG.finer("getInstance with configDir argument should be passed" + 
-		      " in first!!");
+        LOG.finer("getInstance with configDir argument should be passed" + 
+              " in first!!");
             String configFile = guessRootDir() + CONFIG_DIR + CONFIG_FILE;
-	    
-	    config = new ConfigInfo(configFile);
+        
+        config = new ConfigInfo(configFile);
         }
         return config;
     }    
@@ -109,9 +112,9 @@ public class ConfigInfo {
      */
     public static ConfigInfo getInstance(String configDir) { 
         LOG.finer("called get instance with file " + configDir);
-	if(config == null) {
-	    LOG.finest("creating new configInfo");
-	    config = new ConfigInfo(configDir);
+    if(config == null) {
+        LOG.finest("creating new configInfo");
+        config = new ConfigInfo(configDir);
         }
         return config;
     }    
@@ -121,13 +124,13 @@ public class ConfigInfo {
      * used for the Service section of a capabilities object.
      */
     private static ServiceConfig readServiceTags(String configFile) {
-	ServiceConfig service = null;
-	try {
-	    service = ServiceConfig.getInstance(configFile);
-	} catch (ConfigurationException ce){
-	    LOG.warning("problem reading config file: " + ce.getMessage());
-	} 
-	return service;
+    ServiceConfig service = null;
+    try {
+        service = ServiceConfig.getInstance(configFile);
+    } catch (ConfigurationException ce){
+        LOG.warning("problem reading config file: " + ce.getMessage());
+    } 
+    return service;
     }
 
     /**
@@ -138,13 +141,13 @@ public class ConfigInfo {
      * easily split up in later versions.
      */
     private static WfsConfig readWfsTags(String configFile) {
-	WfsConfig wfs = null;
-	try {
-	    wfs = WfsConfig.getInstance(configFile);
-	} catch (ConfigurationException ce){
-	    LOG.warning("problem reading config file: " + ce.getMessage());
-	} 
-	return wfs;
+    WfsConfig wfs = null;
+    try {
+        wfs = WfsConfig.getInstance(configFile);
+    } catch (ConfigurationException ce){
+        LOG.warning("problem reading config file: " + ce.getMessage());
+    } 
+    return wfs;
     }
 
     /**
@@ -156,13 +159,13 @@ public class ConfigInfo {
      * have its own file, but for now not many fields are read.
      */
     private static ZServerConfig readZTags(String configFile) {
-	ZServerConfig zConfig = null;
-	try {
-	    zConfig = ZServerConfig.getInstance(configFile);
-	} catch (ConfigurationException ce){
-	    LOG.warning("problem reading config file: " + ce.getMessage());
-	} 
-	return zConfig;
+    ZServerConfig zConfig = null;
+    try {
+        zConfig = ZServerConfig.getInstance(configFile);
+    } catch (ConfigurationException ce){
+        LOG.warning("problem reading config file: " + ce.getMessage());
+    } 
+    return zConfig;
     }
 
     /** Returns root webserver application directory 
@@ -182,19 +185,19 @@ public class ConfigInfo {
     public String getAbstract() { return serviceGlobal.getAbstract(); }    
     /** Returns user-specified keywords for this service  */
     public String getKeywords() { 
-	StringBuffer keywords = new StringBuffer();
-	Iterator keywordIter = serviceGlobal.getKeywords().iterator();
-	while (keywordIter.hasNext()) {
-	    keywords.append(keywordIter.next().toString());
-	    if (keywordIter.hasNext()){
-		keywords.append(", ");
-	    }
-	}
-	return keywords.toString(); 
+    StringBuffer keywords = new StringBuffer();
+    Iterator keywordIter = serviceGlobal.getKeywords().iterator();
+    while (keywordIter.hasNext()) {
+        keywords.append(keywordIter.next().toString());
+        if (keywordIter.hasNext()){
+        keywords.append(", ");
+        }
+    }
+    return keywords.toString(); 
     }    
     /** Returns URL for this service */
     public String getOnlineResource(){ 
-	return serviceGlobal.getOnlineResource(); 
+    return serviceGlobal.getOnlineResource(); 
     }
     /** Returns URL for this service */
     //REVIST: should this be different from onlineResource?  Re-add url field?
@@ -206,10 +209,10 @@ public class ConfigInfo {
     public String getFees() { return serviceGlobal.getFees(); }
     /** Returns user-specified access constraints for this service */
     public String getAccessConstraints(){
-	return serviceGlobal.getAccessConstraints();
+    return serviceGlobal.getAccessConstraints();
     }
     public boolean formatOutput(){
-	return wfsGlobal.isVerbose();
+    return wfsGlobal.isVerbose();
     }
     /** Returns fixed version number for this service */
     public String getFreeFsVersion() { return "0.9b"; }        
@@ -233,7 +236,7 @@ public class ConfigInfo {
     public Level getLogLevel() { return wfsGlobal.getLogLevel(); }
     
     public String getFilePrefixDelimiter() { 
-	return wfsGlobal.getFilePrefixDelimiter(); 
+    return wfsGlobal.getFilePrefixDelimiter(); 
     }
 
     /** Returns the number of decimal places to return in GetFeature 
@@ -245,12 +248,12 @@ public class ConfigInfo {
 
     /** Returns the declared xml header with the correct character set.*/
     public String getXmlHeader() { 
-	return "<?xml version=\"1.0\" encoding=\"" + getCharSet() + "\"?>";
+    return "<?xml version=\"1.0\" encoding=\"" + getCharSet() + "\"?>";
     }
 
     /** Returns the mimeType to set, using the charset from getCharSet*/
     public String getMimeType() {
-	return "text/xml; charset=" + getCharSet();
+    return "text/xml; charset=" + getCharSet();
     }
 
     /** Returns if the charset parameter for databases should be set to
@@ -268,7 +271,7 @@ public class ConfigInfo {
      * a properly prepended prefix.
      */
     public String getDefaultNSPrefix(){
-	return wfsGlobal.getDefaultPrefix();
+    return wfsGlobal.getDefaultPrefix();
     }
 
     /**
@@ -279,7 +282,7 @@ public class ConfigInfo {
      * @return the uri corresponding to the prefix.
      */
     public String getNSUri(String prefix){
-	return wfsGlobal.getUriFromPrefix(prefix);
+    return wfsGlobal.getUriFromPrefix(prefix);
     }
  
     /**
@@ -291,7 +294,7 @@ public class ConfigInfo {
      * prefix and its associated uri.
      */
     public String getXmlnsDeclaration(String prefix){
-	return "xmlns:" + prefix + "=\"" + getNSUri(prefix) + "\"";
+    return "xmlns:" + prefix + "=\"" + getNSUri(prefix) + "\"";
     }
 
     /**
@@ -300,14 +303,14 @@ public class ConfigInfo {
      * @return the array of xmlns declarations.
      */
     public String[] getAllXmlns(){
-	Set prefixSet = wfsGlobal.getNamespaces().keySet();
-	String[] retStrings = new String[prefixSet.size()];
-	Iterator prefixIter = prefixSet.iterator();
-	int i = 0;
-	while(prefixIter.hasNext()){
-	    retStrings[i++] = getXmlnsDeclaration((String)prefixIter.next());
-	}
-	return retStrings;
+    Set prefixSet = wfsGlobal.getNamespaces().keySet();
+    String[] retStrings = new String[prefixSet.size()];
+    Iterator prefixIter = prefixSet.iterator();
+    int i = 0;
+    while(prefixIter.hasNext()){
+        retStrings[i++] = getXmlnsDeclaration((String)prefixIter.next());
+    }
+    return retStrings;
     }
 
     /** 
@@ -316,39 +319,39 @@ public class ConfigInfo {
      */
     public String getServiceXml(String wfsName) {
            
-	return serviceGlobal.getWfsXml();
-	
+    return serviceGlobal.getWfsXml();
+    
     }
 
     void addPrefixNamespace(String prefix) {
-	//Map namespaces = wfsGlobal.getNamespaces();
-	if (getNSUri(prefix) == null) {
-	    String defaultURI = getOnlineResource();
-	    defaultURI += defaultURI.endsWith("/") ? "" : "/";
-	    String namespace = defaultURI + prefix;
-	    wfsGlobal.addNamespace(prefix, namespace);
-	}
+    //Map namespaces = wfsGlobal.getNamespaces();
+    if (getNSUri(prefix) == null) {
+        String defaultURI = getOnlineResource();
+        defaultURI += defaultURI.endsWith("/") ? "" : "/";
+        String namespace = defaultURI + prefix;
+        wfsGlobal.addNamespace(prefix, namespace);
+    }
     }
 
     public Properties getZServerProps() {
-	Properties retProps = null;
-	if (runZServer()) {
-	    retProps = zGlobal.getProps();
-	} 
-	return retProps;
+    Properties retProps = null;
+    if (runZServer()) {
+        retProps = zGlobal.getProps();
+    } 
+    return retProps;
     }
 
-		//this should be configInfo.getTypeDir, but the constructor
-		//of ConfigInfo calls this method, so the configInfo won't
-		//yet be initialized.  Perhaps lazy initialization of zserver
-		//variables in config info, this zserver config will then 
-		//be able to get the correct typedirs for sure.
+        //this should be configInfo.getTypeDir, but the constructor
+        //of ConfigInfo calls this method, so the configInfo won't
+        //yet be initialized.  Perhaps lazy initialization of zserver
+        //variables in config info, this zserver config will then 
+        //be able to get the correct typedirs for sure.
 
     public boolean runZServer() {
-	if (zGlobal == null) {
-	    zGlobal = readZTags(rootDir + CONFIG_FILE);
-	}
-	return (zGlobal != null && zGlobal.run());
+    if (zGlobal == null) {
+        zGlobal = readZTags(rootDir + CONFIG_FILE);
+    }
+    return (zGlobal != null && zGlobal.run());
     }
 
     /**
@@ -361,7 +364,7 @@ public class ConfigInfo {
      * much is printed in return messages.
      */
     public boolean isPrintStack() {
-	return false;
+    return false;
     }
 
 }
