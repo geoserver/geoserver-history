@@ -802,6 +802,11 @@
 		<include name="RUNNING.txt" />
 	</fileset>
 </copy>
+	<copy todir="${dir.build}">
+		<fileset dir="${basedir}/bin">
+		<include name="**/*" />
+		</fileset>
+</copy>
 <copy todir="${dir.build}/documents/" failonerror="false">
 	<fileset dir="${dir.doc}">
 		<include name="**/*" />
