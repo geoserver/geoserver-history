@@ -6,6 +6,7 @@ package org.vfny.geoserver.requests.wms;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.Filter;
+import org.geotools.styling.Style;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.WMSRequest;
 import java.awt.Color;
@@ -196,7 +197,7 @@ public class GetMapRequest extends WMSRequest {
     /**
      * DOCUMENT ME!
      *
-     * @param styles DOCUMENT ME!
+     * @param styles List&lt;org.geotools.styling.Style&gt;
      */
     public void setStyles(List styles) {
         this.mandatoryParams.styles = styles;
