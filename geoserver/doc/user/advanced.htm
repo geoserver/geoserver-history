@@ -153,6 +153,19 @@
 	      configuration.xml: 
 	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;MaxFeatures&gt;3000 &lt;/MaxFeatures&gt;</i>
 	      </li>
+	      <br>
+	       <li>PrefixDelimiter allows the user to change the default
+	       delimiter (the <i>--</i> of <i>topp--road</i>) between the namespace prefix and the feature 
+	       name in the featureType folder.  Most users will not need this at all, the
+	       <i>--</i> should work fine in most situations.  If your operating system doesn't like
+	       it, or if you have features that have a -- in their name, then switching
+	       the prefix delimiter is recommended.  Any text string can be used, GeoServer
+	       just looks for the first instance of it in the name of the folder.  This tag
+	       is also useful for those who used the topp:road convention of 0.94.  We did
+	       away with it because resin did not like directories with a ':' in their name.
+	       But if you'd still like to use it, you can just add a line to your configuration.xml:
+	      <br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;PrefixDelimiter&gt;:&lt;/PrefixDelimiter&gt;</i>
+	      </li>
 	     </ul>
 	    </blockquote>
           </td>
@@ -202,7 +215,7 @@
 	       <p>
 	     </blockquote>
 	     Then insert folders in the featureTypes folder named
-	     <i>topp:road</i> and <i>ns02:rail</i>.  The info.xml and schema.xml files in these
+	     <i>topp--road</i> and <i>ns02--rail</i>.  The info.xml and schema.xml files in these
 	     folders are the same as normal namespace files.  GeoServer uses the prefix
 	     to determine which Namespace element to map it to.
 	    </blockquote>
