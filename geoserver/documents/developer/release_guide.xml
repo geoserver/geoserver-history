@@ -251,4 +251,28 @@
     we did not do any direct announcing there, so I am not sure what the
     policy is on submitting stuff to them.</para>
   </sect1>
+  <sect1>
+    <title>Making .exe installer</title>
+    NOTE: as some point we should move to a java-based (platform independed)
+          installer as this is only good for windows.
+ <itemizedlist>
+ 
+ <listitem> 1. modify documents/geoserver.nsi so that the info in it correct (ie. version numbers) </listitem>
+ <listitem>    + quickly read through the document and make any documentation changes </listitem>
+ <listitem> 2. build a release (ant release-all) as above </listitem>
+ <listitem> 3. make a new temporary directory </listitem>
+ <listitem> 4. uncompress the release/geoserver-1.3.0-beta-src.tar.gz  (or whatever you released) to your temp directory </listitem>
+ <listitem> 5. move documents/geoserver.nsi up one directory ("geoserver/") </listitem>
+ <listitem> 6. move the "server/" directory from your development directory geoserver/ </listitem>
+   <listitem>    + make sure you deployed the correct configuration! </listitem>
+ <listitem> 7. move RUNNING.txt from the documentation/ directory up one level to the geoserver/ directory </listitem>
+ <listitem> 8. download and install the nullsoft installer </listitem>
+ <listitem> 9. run the installer and load the geoserver.nsi file </listitem>
+ </itemizedlist>
+In your temporary directory, you should see a "geoserver-1.3.0-beta.exe"!
+
+You should install and test this!
+          
+     
+  </sect1>
 </article>
