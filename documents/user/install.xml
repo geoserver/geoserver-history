@@ -71,8 +71,10 @@
     have good documentation, so we shall say nothing further here about the
     install. We do recommend sticking with the latest stable versions. For
     more information on GeoServer working with specific containers see our
-    <ulink url="???">Servlet Container Reports</ulink>, and please add
-    additional feedback to the page (it's a wiki). </para>
+    <ulink
+    url="http://docs.codehaus.org/display/GEOS/GeoServer+Servlet+Container+Reports#GeoServer+Servlet+Container+Reports-Servlet%20Container%20Reports">Servlet
+    Container Reports</ulink>, and please add additional feedback to the page
+    (it's a wiki).</para>
   </sect1>
 
   <sect1 id="database">
@@ -130,10 +132,11 @@ gmake install</programlisting>Configuring with Java is no longer required, as
     geometry columns, and insert a few features. If you are a windows user a
     good page on installing PostGIS is available <ulink
     url="http://www.gasai.com/gisapps/WindowsHowTo.html">here</ulink>. You can
-    also try out the PostGIS installer on the <ulink url="???">dcmms
-    sourceforge project</ulink>, which we've had success with as well. When
-    starting PostGIS be sure to run it with the -i option to allow other
-    applications (i.e. GeoServer) to connect to it.</para>
+    also try out the PostGIS installer on the <ulink
+    url="http://dcmms.sourceforge.net/postgis_installer.php">dcmms sourceforge
+    project</ulink>, which we've had success with as well. When starting
+    PostGIS be sure to run it with the -i option to allow other applications
+    (i.e. GeoServer) to connect to it.</para>
   </sect1>
 
   <sect1 id="geoserver">
@@ -181,13 +184,13 @@ The document tree is shown below.</programlisting></para>
     specific descriptions and contents. Contents will allow you to enable or
     disable each Service and WFS will also let you specify the transaction
     level - that is if users should be able to access the transaction
-    operations. </para>
+    operations.</para>
 
     <para>Be sure to always hit the submit button, and to then test your
     changes in GeoServer hit 'Apply' on the right. The changes you put in will
     take effect immediately. If you like the changes then hit 'Save' and they
     will be stored to disk permanently. If you do not like the changes you can
-    roll back to the last saved ones by hitting 'Load'. </para>
+    roll back to the last saved ones by hitting 'Load'.</para>
 
     <para>If you want to avoid the web admin tool then directly editing the
     files shall work just as well. Your work flow will just be a bit
@@ -335,7 +338,7 @@ The document tree is shown below.</programlisting></para>
     distinguishes your features from others on the Internet. This is not
     necessary if you are only working with the WMS. Defining a namespace as
     the 'default' allows you to request featureTypes without prepending the
-    namespace prefix, but is not used for much else. </para>
+    namespace prefix, but is not used for much else.</para>
 
     <para>Next you need to create a DataStore. This is the GeoServer
     terminology for the source of data. It can be a database or a file, and
@@ -345,7 +348,7 @@ The document tree is shown below.</programlisting></para>
     parameters. Note that you must pick one namespace for each DataStore. If
     you really want different featureTypes in the same DataStore to be in
     different name spaces you can get around this by defining two DataStores
-    with the same parameters and different names and name spaces. </para>
+    with the same parameters and different names and name spaces.</para>
 
     <para>After creating the DataStore you may upload SLD files to serve as
     the Styles for GeoServer's WMS. For more on SLD see the <ulink
@@ -363,14 +366,14 @@ The document tree is shown below.</programlisting></para>
     available. The 'generate' button currently only works if the data itself
     is stored in Lat Long (EPSG:4326 - which you should set for the SRS if
     your data is in Lat Long). Soon we will support transformation from the
-    Spatial Reference System specified into Lat Long. </para>
+    Spatial Reference System specified into Lat Long.</para>
 
     <para>After hitting submit you should be able to hit 'Apply', and then the
     GetCapabilities request given earlier should include your newly added
     FeatureType. If you are just working with the web interface, you can skip
     to the next section (the file information will soon be ported to the
-    developers documentation), though some of the tables may prove helpful.
-    </para>
+    developers documentation), though some of the tables may prove
+    helpful.</para>
 
     <para>If working with files, data to geoserver is now centralized in the
     <emphasis>catalog.xml</emphasis> file, located in
@@ -595,9 +598,9 @@ The document tree is shown below.</programlisting></para>
     url="http://www.esri.com/data/download/census2000_tigerline/index.html">here</ulink>.
     The GeoServer also includes support for using shapefiles directly,
     information about this option is available in the <ulink
-    url="advanced.html">advanced</ulink> section. Using the shapefiles directly
-    sacrifices a lot of speed and flexibility, so converting them to PostGIS
-    is the recommended way, but the option is available for easier set
+    url="advanced.html">advanced</ulink> section. Using the shapefiles
+    directly sacrifices a lot of speed and flexibility, so converting them to
+    PostGIS is the recommended way, but the option is available for easier set
     up.</para>
   </sect1>
 
@@ -623,7 +626,7 @@ The document tree is shown below.</programlisting></para>
     There are also a number of samples in the Demo section of the web
     administration tool. To use of the TestWfsPost servlet just make sure that
     the request is going to the right location (it defaults to GetFeature),
-    and write the XML request just as the WFS specification does it. </para>
+    and write the XML request just as the WFS specification does it.</para>
 
     <para>The web administration tool also now includes a 'Demo' section,
     which has a number of sample requests. To use one of the sample request
