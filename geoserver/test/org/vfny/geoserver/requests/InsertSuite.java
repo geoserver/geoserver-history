@@ -17,14 +17,13 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import org.geotools.resources.Geotools;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureFactory;
-import org.geotools.feature.FlatFeatureFactory;
-import org.geotools.feature.FeatureTypeFlat;
-import org.geotools.feature.AttributeTypeDefault;
 import org.geotools.feature.AttributeType;
+import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.SchemaException;
-import org.geotools.feature.IllegalFeatureException;
+import org.geotools.feature.IllegalAttributeException;
 import org.vfny.geoserver.config.TypeRepository;
 import org.vfny.geoserver.config.TypeInfo;
 import org.vfny.geoserver.config.ConfigInfo;
@@ -65,11 +64,6 @@ public class InsertSuite extends TestCase {
 
     private FeatureFactory featureFactory;
 
-    /* Initializes the logger. */
-    static {
-        Geotools.init("Log4JFormatter", Level.FINEST);
-    }
-    
     /** Constructor with super. */
     public InsertSuite (String testName) { super(testName); }
 
@@ -82,16 +76,14 @@ public class InsertSuite extends TestCase {
 	
 
 	AttributeType[] atts = { 
-	    new AttributeTypeDefault("fid", Integer.class),
-	    new AttributeTypeDefault("geom", Polygon.class),
-	    new AttributeTypeDefault("name", String.class)};
+	    AttributeTypeFactory.newAttributeType("fid", Integer.class),
+	    AttributeTypeFactory.newAttributeType("geom", Polygon.class),
+	    AttributeTypeFactory.newAttributeType("name", String.class)};
 	try {
-	schema = (new FeatureTypeFlat(atts)).setTypeName("rail");
+	schema = FeatureTypeFactory.newFeatureType(atts, "rail");
 	} catch (SchemaException e) {
 	    LOGGER.finer("problem with creating schema");
 	}
-
-	featureFactory = new FlatFeatureFactory(schema);
 
 
 	Coordinate[] points = { new Coordinate(15, 15),
@@ -110,9 +102,9 @@ public class InsertSuite extends TestCase {
 	Object[] attributes = { featureId, the_geom, name };
 	try{
 	    
-	testFeature = featureFactory.create(attributes, 
+	testFeature = schema.create(attributes, 
 						String.valueOf(featureId));
-	} catch (IllegalFeatureException ife) {
+	} catch (IllegalAttributeException ife) {
 	    LOGGER.warning("problem in setup " + ife);
 	}
 
