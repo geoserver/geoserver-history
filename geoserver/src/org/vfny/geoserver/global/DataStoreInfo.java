@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.11 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.12 2004/02/17 22:01:55 dmzwiers Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype
     implements DataStoreMetaData {
@@ -182,7 +182,14 @@ public class DataStoreInfo extends GlobalLayerSupertype
             throw new IllegalStateException(
                 "this datastore is not enabled, check your configuration");
         }
-
+        Map m = getParams();
+        if(m.containsKey("dbtype")){
+        	String val = (String)m.get("dbtype");
+        	if(val!=null && val.equals("postgis")){
+        		m = new HashMap(m);
+        		m.put("charset",data.getGeoServer().getCharSet().toString());
+        	}
+        }
         if (dataStore == null) {
             try {
             	dataStore = DataStoreFinder.getDataStore( getParams() );
