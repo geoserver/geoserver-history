@@ -53,6 +53,8 @@ public class SaveXMLAction extends ConfigAction {
 		ActionForward r1 = saveGeoserver(mapping,form,request,response);
 		ActionForward r2 = saveValidation(mapping,form,request,response);
 
+        getApplicationState( request ).notifiySaveXML();
+        
 		return mapping.findForward("config");
 	}
 	
@@ -71,8 +73,7 @@ public class SaveXMLAction extends ConfigAction {
         } catch (ConfigurationException e) {
         	e.printStackTrace();
             throw new ServletException(e);
-        }
-        getApplicationState( request ).notifiySaveXML();	
+        }        	
         // We need to stash the current page?
         // or can we use null or something?
         //

@@ -38,7 +38,7 @@ import org.geotools.validation.dto.TestSuiteDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.13 2004/02/25 21:37:20 jive Exp $
+ * @version $Id: ApplicationState.java,v 1.14 2004/02/25 23:55:38 jive Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
@@ -109,14 +109,6 @@ public class ApplicationState implements PlugIn {
                (appTimestamp == null ||
                 configTimestamp.after( appTimestamp ) );
     }    
-    public void setConfigChanged(boolean edited ){
-        if( edited ){
-            configTimestamp = new Date();
-        }
-        else {
-            configTimestamp = getXmlTimestamp();
-        }
-    }
     /** Validation is part of the Configuration Process */
     private boolean isValidationChanged(){
         return isConfigChanged();
@@ -129,42 +121,35 @@ public class ApplicationState implements PlugIn {
     public boolean isAppChanged() {
         return appTimestamp != null &&
                appTimestamp.after( getXmlTimestamp() );
-    }    
-    public void setAppChanged(boolean changed){
-        if( changed ){
-            appTimestamp = configTimestamp;
-        }
-        else {
-            appTimestamp = getXmlTimestamp();
-        };
-    }
+    }        
     /**
      * Notification that Config has been updated from XML config files
      */
     public void notifyLoadXML() {
     	// Correct, this represents a load into config from xml
-        setConfigChanged( false );        
+        appTimestamp = xmlTimestamp;
+        configTimestamp = xmlTimestamp;           
     }
 
     /**
      * Notification that Global has been updated from Configuration
      */
     public void notifyToGeoServer() {
-    	setAppChanged( true );        
+        appTimestamp = new Date();    	
     }
 
     /**
      * Notification that Global has been saved to XML config files.
      */
     public void notifiySaveXML() {
-        resetXMLTimestamp();
+        xmlTimestamp = new Date();
     }
 
     /**
      * Notification that the User has changed the Configuration
      */
     public void notifyConfigChanged() {
-        setConfigChanged( true );
+        configTimestamp = new Date();
     }
     /** Q: what is this supposed to do? */
     public int getWfsGood(){

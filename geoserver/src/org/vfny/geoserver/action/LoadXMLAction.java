@@ -97,7 +97,7 @@ public class LoadXMLAction extends ConfigAction {
 			// throw new ServletException( new ConfigurationException( "An error occured loading the initial configuration" ));
 		}
 		// Update GeoServer
-		
+        
 		try {
 			getWFS(request).load(wfsDTO);
 			getWMS(request).load(wmsDTO);
@@ -109,8 +109,15 @@ public class LoadXMLAction extends ConfigAction {
 			return mapping.findForward("welcome");			
 //			throw new ServletException( configException );			
 		}
-
-		getApplicationState( request ).notifyLoadXML();		
+        
+        // Update Config
+        getGlobalConfig().update(geoserverDTO);
+        getDataConfig().update(dataDTO);
+        getWFSConfig().update(wfsDTO);
+        getWMSConfig().update(wmsDTO);
+                
+		getApplicationState( request ).notifyLoadXML();
+        
 		// We need to stash the current page?
 		// or can we use null or something?
 		//
