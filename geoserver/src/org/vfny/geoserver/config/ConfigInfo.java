@@ -351,4 +351,17 @@ public class ConfigInfo {
 	return (zGlobal != null && zGlobal.run());
     }
 
+    /**
+     * Gets if full stack traces should be reported in the ogc service
+     * exceptions.
+     *
+     * @return <tt>true</tt> if the full stack trace should be printed for
+     * every service exception, <tt>false</tt> otherwise.
+     * @task TODO - implement this in WfsConfig, so users can configure how 
+     * much is printed in return messages.
+     */
+    public boolean isPrintStack() {
+	return false;
+    }
+
 }
