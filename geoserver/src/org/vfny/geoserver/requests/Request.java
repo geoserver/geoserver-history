@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.requests;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Defines a general Request type and provides accessor methods for universal
  * request information.
@@ -16,10 +19,24 @@ package org.vfny.geoserver.requests;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.5.2.2 2004/01/06 00:57:55 jive Exp $
+ * @version $Id: Request.java,v 1.5.2.3 2004/01/06 08:41:05 jive Exp $
  */
 abstract public class Request {
-    /** Request service */
+	/**
+	 * Servlet Request responsible for generating this GeoServer Request.
+	 * <p>
+	 * For all current GeoServer requests this may be safely cast to an HttpServletRequest. 
+	 * </p>
+	 */
+	protected ServletRequest servletRequest;
+	
+    /**
+     * Request service
+     * <p>
+     * @todo Explain! What does this mean? Is it the Name of the Service being requested?
+     * Is it look 
+     * </p>
+     */
     protected String service;
 
     /** Request type */
@@ -36,7 +53,7 @@ abstract public class Request {
     protected Request(String serviceType) {
         this.service = serviceType;
     }
-
+    
     /**
      * ServiceConfig & Request indentifying constructor.
      *
@@ -48,6 +65,7 @@ abstract public class Request {
         this.request = requestType;
     }
 
+     
     /**
      * Gets requested service.
      *
@@ -124,7 +142,9 @@ abstract public class Request {
 
         return equals;
     }
-
+    /**
+     * Generate a hashCode based on this Request Object.
+     */
     public int hashCode() {
         int result = 17;
         result = (23 * result) + ((request == null) ? 0 : request.hashCode());
@@ -133,4 +153,51 @@ abstract public class Request {
 
         return result;
     }
+
+    /**
+     * Retrive the ServletRequest that generated this GeoServer request.
+     * <p>
+     * The ServletRequest is often used to:
+     * </p>
+	 * <ul>
+	 * <li>Access the Sesssion and WebContainer by execute opperations
+	 *     </li>
+	 * <li>Of special importance is the use of the ServletRequest to locate the GeoServer Application
+	 *     </li> 
+	 * </p>
+	 * <p>
+	 * This method is called by AbstractServlet during the processing of a Request.
+	 * </p>
+	 * @return Returns the servletRequest.
+	 */
+	public ServletRequest getServletRequest() {
+		return servletRequest;
+	}
+	/**
+	 * Convience method casting getServletRequest() into a HttpServletRequest.
+	 *  
+	 * @return Returns the servletRequest as an HttpServletRequest
+	 * @throws ClassCastException If the servletRequest is not an HttpServletRequest
+	 */
+	public HttpServletRequest getHttpServletRequest() throws ClassCastException {
+		return (HttpServletRequest) getServletRequest();
+	}
+	
+	/**
+	 * Sets the servletRequest that generated this GeoServer request.
+	 * <p>
+	 * The ServletRequest is often used to:
+	 * </p>
+	 * <ul>
+	 * <li>Access the Sesssion and WebContainer by execute opperations
+	 *     </li>
+	 * <li>Of special importance is the use of the ServletRequest to locate the GeoServer Application
+	 *     </li> 
+	 * </p>
+	 * @param servletRequest The servletRequest to set.
+	 */
+	public void setServletRequest(ServletRequest servletRequest) {
+		this.servletRequest = servletRequest;
+	}
+
 }
