@@ -44,11 +44,12 @@ public class LoginEditAction extends ConfigAction {
         
         global.setAdminUserName(username);
         global.setAdminPassword(password);
-
+		getApplicationState().notifyConfigChanged();
+		getServlet().getServletContext().setAttribute(GlobalConfig.CONFIG_KEY, global);
         String forward = (String) request.getAttribute("forward");
 
         if (forward == null) {
-        	forward = "welcome";
+        	forward = "config";
         }
 
         return mapping.findForward(forward);
