@@ -39,7 +39,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2.3"/>
+  <property name="name.release" value="1.2.4"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
@@ -660,9 +660,11 @@
     </style>
     
     <copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css"/>
-    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/DataStoreUserGuide.pdf" failonerror="false"/>
+    <copy todir="${dir.doc}/images">
+      <fileset dir="${dir.doc}/../images/"/>
+    </copy>
+    
     <copy todir="${dir.doc}/user" file="${dir.doc}/../user/ValidationUserGuide.pdf" failonerror="false"/>
-    <copy todir="${dir.doc}/user" file="${dir.doc}/../user/FeatureTypeUserGuide.pdf" failonerror="false"/>
 
     <!-- Convert docbook to html -->
     <style
