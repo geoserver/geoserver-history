@@ -40,7 +40,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.6 2004/01/13 23:46:53 jive Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.7 2004/01/16 20:05:34 dmzwiers Exp $
  */
 public class AttributeTypeInfoDTO  implements DataTransferObject {
 		
@@ -94,7 +94,7 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 		minOccurs = dto.getMinOccurs();
 		maxOccurs = dto.getMaxOccurs();
 		nillable = dto.isNillable();
-		isComplex = dto.isRef();
+		isComplex = dto.isComplex();
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 		r = r && minOccurs == dto.getMinOccurs();
 		r = r && maxOccurs == dto.getMaxOccurs();
 		r = r && nillable == dto.isNillable();
-		r = r && isComplex == dto.isRef();
+		r = r && isComplex == dto.isComplex();
 		return r;
 	}
 	
@@ -161,7 +161,7 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 	 * </p>
 	 * @return true when either a ref or XMLSchema type.
 	 */
-	public boolean isRef() {
+	public boolean isComplex() {
 		return isComplex;
 	}
 

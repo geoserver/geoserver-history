@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.6 2004/01/15 19:04:19 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.7 2004/01/16 20:05:34 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -542,7 +542,7 @@ public class XMLConfigWriter {
 				m.put("nillable",""+ati.isNillable());
 				m.put("minOccurs",""+ati.getMinOccurs());
 				m.put("maxOccurs",""+ati.getMaxOccurs());
-				if(ati.isRef()){
+				if(ati.isComplex()){
 					if(ati.getName() == null || ati.getName()==""){
 						m.put("ref",ati.getType());
 					}else{
@@ -571,7 +571,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.6 2004/01/15 19:04:19 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.7 2004/01/16 20:05:34 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
