@@ -29,7 +29,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.14 2004/02/19 21:51:11 cholmesny Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.15 2004/02/20 22:23:45 jive Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     private static final String CAP_VERSION = WMS.getVersion();
@@ -96,7 +96,20 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      * @throws SAXException For any problems.
      */
     protected void endService(Service config) throws SAXException {
-    	String tmp = "";
+    	handleContact(config);
+    	super.endService(config);
+    }
+
+    /**
+     * handleContact purpose.
+     * <p>
+     * Description ...
+     * </p>
+     * @param config
+     * @throws SAXException
+     */
+    private void handleContact(Service config) throws SAXException {
+        String tmp = "";
     	tmp = config.getGeoServer().getContactPerson();
     	if(tmp!=null && tmp!=""){
     		startElement("Contact");
@@ -152,7 +165,6 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         		handleSingleElem("ContactElectronicMailAddress",tmp);
         	endElement("Contact");
     	}
-    	super.endService(config);
     }
 
     /**

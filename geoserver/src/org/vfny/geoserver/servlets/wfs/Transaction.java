@@ -26,7 +26,7 @@ import org.vfny.geoserver.servlets.WFService;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: Transaction.java,v 1.9 2004/02/19 09:01:17 jive Exp $
+ * @version $Id: Transaction.java,v 1.10 2004/02/20 22:23:45 jive Exp $
  */
 public class Transaction extends WFService {
     /**
@@ -56,21 +56,5 @@ public class Transaction extends WFService {
      */
     protected XmlRequestReader getXmlRequestReader() {
         return new TransactionXmlReader();
-    }
-
-    /**
-     * Only checks against WFS.isEnabled and WFS.serviceLevel.
-     * <p>
-     * Should this look at the request and see if any insert,delete,update
-     * opperations exist where they are disallowed by serviceLevel
-     * restrictions? 
-     * </p>
-     */
-    protected boolean isServiceEnabled(HttpServletRequest req){
-    	if( !Requests.getWFS(req).isEnabled() ){
-    		return false;
-        }
-        int serviceLevel = Requests.getWFS(req).getServiceLevel();
-        return ( serviceLevel | WFSDTO.TRANSACTIONAL) != 0;    	
     }
 }
