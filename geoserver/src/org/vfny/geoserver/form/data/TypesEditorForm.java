@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.2 2004/03/02 10:06:42 jive Exp $
+ * @version $Id: TypesEditorForm.java,v 1.3 2004/03/02 16:09:01 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -144,12 +144,9 @@ public class TypesEditorForm extends ActionForm {
             DataStoreConfig dataStoreConfig = config.getDataStore( dataStoreId );
             try {
 				DataStore dataStore = dataStoreConfig.findDataStore();
-                FeatureType featureType = dataStore.getSchema( name );
-                List generated = DataTransferObjectFactory.generateAttributes( featureType );                        
-                for( Iterator i=type.getSchemaAttributes().iterator(); i.hasNext();){
-                    AttributeTypeInfoConfig attribute = (AttributeTypeInfoConfig) i.next();
-                    this.attributes.add( new AttributeDisplay( attribute ) );
-                }
+                FeatureType featureType = dataStore.getSchema( name );                
+                List generated = DataTransferObjectFactory.generateAttributes( featureType );
+                this.attributes = attribtuesDisplayList( generated );
 			} catch (IOException e) {
 				// DataStore unavailable!
 			}
@@ -161,10 +158,10 @@ public class TypesEditorForm extends ActionForm {
             // Need to add read only AttributeDisplay for each attribute
             // defined by schemaBase
             //
-            for( Iterator i=type.getSchemaAttributes().iterator(); i.hasNext();){
-                AttributeTypeInfoConfig attribute = (AttributeTypeInfoConfig) i.next();
-                this.attributes.add( new AttributeForm( attribute ) );
-            }
+            //
+            List schemaAttribtues = DataTransferObjectFactory.generateAttribtues( schemaBase );
+            attributes.addAll( attribtuesDisplayList( schemaAttribtues ));
+            attributes.addAll( attribtuesFormList( type.getSchemaAttributes() ));
         }
         StringBuffer buf = new StringBuffer();
         for (Iterator i = type.getKeywords().iterator(); i.hasNext();) {
@@ -177,7 +174,32 @@ public class TypesEditorForm extends ActionForm {
         }
         this.keywords = buf.toString();
     }
-
+    /**
+     * Create a List of AttributeDisplay based on AttributeTypeInfoDTO.
+     * 
+     * @param list
+     * @return
+     */
+    private List attribtuesDisplayList( List dtoList ){
+        List list = new ArrayList();
+        for( Iterator i=dtoList.iterator(); i.hasNext();){
+            list.add( new AttributeDisplay( (AttributeTypeInfoConfig) i.next() ) );
+        }
+        return list;
+    }
+    /**
+     * Create a List of AttributeForm based on AttributeTypeInfoDTO.
+     * 
+     * @param list
+     * @return
+     */
+    private List attribtuesFormList( List dtoList ){
+        List list = new ArrayList();
+        for( Iterator i=dtoList.iterator(); i.hasNext();){            
+            list.add( new AttributeDisplay( (AttributeTypeInfoConfig) i.next() ) );
+        }
+        return list;
+    }    
     public ActionErrors validate(ActionMapping mapping,
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
