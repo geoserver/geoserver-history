@@ -13,6 +13,7 @@ import java.util.logging.*;
 /**
  * Represents a standard OGC service exception.  Able to turn itself into the
  * proper xml response.
+ * 
  * <p>
  * JG - here is my guess on what the parameters do:
  * </p>
@@ -30,28 +31,40 @@ import java.util.logging.*;
  *   [/ServiceException]
  * [/ServiceExceptionReport]     
  * </code></pre>
+ * 
  * <p>
  * Where:
  * </p>
+ * 
  * <ul>
- * <li>code: is a diagnostic code</li>
- * <li>locator: is the java class that caused the problem</li>
- * <li>preMessage: is your chance to place things in user terms</li>
- * <li>message: is the exception message</li>
- * <li>stack trace: is the exception strack trace</li>
+ * <li>
+ * code: is a diagnostic code
+ * </li>
+ * <li>
+ * locator: is the java class that caused the problem
+ * </li>
+ * <li>
+ * preMessage: is your chance to place things in user terms
+ * </li>
+ * <li>
+ * message: is the exception message
+ * </li>
+ * <li>
+ * stack trace: is the exception strack trace
+ * </li>
  * </ul>
+ * 
  * <p>
  * Java Exception have recently developed the ability to contain other
- * exceptions. By calling initCause on your Service Exception you can get
- * the real exception included in the stacktrace above.
+ * exceptions. By calling initCause on your Service Exception you can get the
+ * real exception included in the stacktrace above.
  * </p>
- * 
+ *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceException.java,v 1.1.2.4 2003/11/16 07:39:37 jive Exp $
+ * @version $Id: ServiceException.java,v 1.1.2.5 2003/11/19 02:45:24 cholmesny Exp $
  */
-public class ServiceException extends Exception
-{
+public class ServiceException extends Exception {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
@@ -63,19 +76,19 @@ public class ServiceException extends Exception
     protected String locator = new String();
 
     /**
-     * the standard exception that was thrown
-     * JG - this does not appear to be used anywhere?
+     * the standard exception that was thrown JG - this does not appear to be
+     * used anywhere?
      */
+
     //protected Exception standardException = new Exception();
 
-    /**  Diagnostic code  */
+    /** Diagnostic code */
     protected String code = new String();
 
     /**
      * Empty constructor.
      */
-    public ServiceException()
-    {
+    public ServiceException() {
         super();
     }
 
@@ -84,28 +97,28 @@ public class ServiceException extends Exception
      *
      * @param message The message for the .
      */
-    public ServiceException(String message)
-    {
+    public ServiceException(String message) {
         super(message);
 
         LOGGER.fine(this.getMessage());
     }
+
     /**
      * This should be the most used entry point.
-     * 
+     *
      * @param message User message
      * @param cause The origional exception that caused failure
      */
-    public ServiceException(String message, Throwable cause){
-        super( message, cause );
+    public ServiceException(String message, Throwable cause) {
+        super(message, cause);
     }
+
     /**
      * Empty constructor.
      *
      * @param e The message for the .
      */
-    public ServiceException(Throwable e)
-    {
+    public ServiceException(Throwable e) {
         super(e);
 
         LOGGER.fine(this.getMessage());
@@ -117,8 +130,7 @@ public class ServiceException extends Exception
      * @param message The message for the .
      * @param locator The message for the .
      */
-    public ServiceException(String message, String locator)
-    {
+    public ServiceException(String message, String locator) {
         super(message);
 
         this.locator = locator;
@@ -133,8 +145,7 @@ public class ServiceException extends Exception
      * @param preMessage The message to tack on the front.
      * @param locator The message for the .
      */
-    public ServiceException(Throwable e, String preMessage, String locator)
-    {
+    public ServiceException(Throwable e, String preMessage, String locator) {
         super(e);
 
         this.preMessage = preMessage;
@@ -147,8 +158,7 @@ public class ServiceException extends Exception
      *
      * @param code The diagnostic code.
      */
-    public void setCode(String code)
-    {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -159,8 +169,7 @@ public class ServiceException extends Exception
      *
      * @return DOCUMENT ME!
      */
-    protected boolean isEmpty(String testString)
-    {
+    protected boolean isEmpty(String testString) {
         return (testString == null) || testString.equals("");
     }
 
@@ -169,9 +178,36 @@ public class ServiceException extends Exception
      *
      * @return DOCUMENT ME!
      */
-    public String getXmlResponse()
-    {
+    public String getXmlResponse() {
         return getXmlResponse(true);
+    }
+
+    public String getXmlMessage(boolean printStackTrace) {
+        String indent = "   ";
+        StringBuffer mesg = new StringBuffer();
+
+        if (!isEmpty(this.preMessage)) {
+            mesg.append(this.preMessage + ": ");
+        }
+
+        mesg.append(ResponseUtils.encodeXML(this.getMessage()) + "\n");
+
+        if (printStackTrace) {
+            Throwable cause = getCause();
+
+            StackTraceElement[] trace = (cause == null) ? getStackTrace()
+                                                        : cause.getStackTrace();
+
+            for (int i = 0; i < trace.length; i++) {
+                String line = indent + indent + "at " + trace[i].toString();
+
+                mesg.append(line + "\n");
+
+                mesg.append(ResponseUtils.encodeXML(line) + "\n");
+            }
+        }
+
+        return mesg.toString();
     }
 
     /**
@@ -183,8 +219,7 @@ public class ServiceException extends Exception
      *
      * @task REVISIT: adapt it to handle WMS too
      */
-    public String getXmlResponse(boolean printStackTrace)
-    {
+    public String getXmlResponse(boolean printStackTrace) {
         String indent = "   ";
 
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>\n");
@@ -211,41 +246,16 @@ public class ServiceException extends Exception
         //REVISIT: handle multiple service exceptions?  must refactor class.
         returnXml.append(indent + "<ServiceException");
 
-        if (!isEmpty(this.code))
-        {
+        if (!isEmpty(this.code)) {
             returnXml.append(" code=\"" + this.code + "\"");
         }
 
-        if (!isEmpty(this.locator))
-        {
+        if (!isEmpty(this.locator)) {
             returnXml.append(" locator=\"" + this.locator + "\"");
         }
 
         returnXml.append(">\n" + indent + indent);
-
-        if (!isEmpty(this.preMessage))
-        {
-            returnXml.append(this.preMessage + ": ");
-        }
-
-        returnXml.append(this.getMessage() + "\n");
-
-        if (printStackTrace)
-        {
-            Throwable cause = getCause();
-
-            StackTraceElement[] trace = (cause == null) ? getStackTrace()
-                                                        : cause.getStackTrace();
-
-            for (int i = 0; i < trace.length; i++)
-            {
-                String line = indent + indent + "at " + trace[i].toString();
-
-                returnXml.append(line + "\n");
-
-                returnXml.append(ResponseUtils.encodeXML(line) + "\n");
-            }
-        }
+        returnXml.append(getXmlMessage(printStackTrace));
 
         returnXml.append(indent + "</ServiceException>\n");
 
