@@ -19,7 +19,7 @@ import org.apache.struts.config.ModuleConfig;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class WFSContentForm extends ActionForm implements PlugIn {
+public class WFSContentForm extends ActionForm{// implements PlugIn {
 	
 	private String serviceType;
 	private boolean enabled;
@@ -32,19 +32,19 @@ public class WFSContentForm extends ActionForm implements PlugIn {
 	/* (non-Javadoc)
 	 * @see org.apache.struts.action.PlugIn#destroy()
 	 */
-	public void destroy() {
+	/*public void destroy() {
 		// TODO Auto-generated method stub
 
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet, org.apache.struts.config.ModuleConfig)
 	 */
-	public void init(ActionServlet servlet, ModuleConfig config)
+	/*public void init(ActionServlet servlet, ModuleConfig config)
 		throws ServletException {
 		// TODO Auto-generated method stub
 
-	}
+	}*/
 
 	/**
 	 * @return

@@ -271,13 +271,10 @@
         value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
   </plug-in>
   
-  <plug-in className="org.vfny.geoserver.form.wfs.WFSDescriptionForm">
-  </plug-in>
-  
-  <plug-in className="org.vfny.geoserver.form.wfs.WFSContentForm">
+  <plug-in className="org.vfny.geoserver.global.GeoServerPlugIn">
   </plug-in>  
   
-  <plug-in className="org.vfny.geoserver.global.GeoServerPlugIn">
+  <plug-in className="org.vfny.geoserver.config.ConfigPlugIn">
   </plug-in>  
 </struts-config>
 

@@ -10,8 +10,6 @@
  */
 package org.vfny.geoserver.form.wfs;
 
-import java.net.URL;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +36,7 @@ import org.vfny.geoserver.config.WFSConfig;
  * @author User To change the template for this generated type comment go to
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WFSDescriptionForm extends ActionForm implements PlugIn {
+public final class WFSDescriptionForm extends ActionForm{
     private String name;
     private String title;
     private String accessConstraints;
@@ -166,7 +164,7 @@ public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 	super.reset(arg0, arg1);
 	ServletContext context = getServlet().getServletContext();
 	WFSConfig config =
-		(WFSConfig) context.getAttribute("GeoServer.WFSConfig");
+		(WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
 		
 	name = config.getName();
 	this._abstract = config.getAbstract();
@@ -176,32 +174,17 @@ public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 /* (non-Javadoc)
  * @see org.apache.struts.action.PlugIn#destroy()
  */
-public void destroy() {
+/*public void destroy() {
 	// TODO Auto-generated method stub
 	
-}
+}*/
 /* (non-Javadoc)
  * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet, org.apache.struts.config.ModuleConfig)
  */
-public void init(ActionServlet actionServlet, ModuleConfig moduleConfig ) throws ServletException {
-	// TODO Auto-generated method stub
+/*public void init(ActionServlet actionServlet, ModuleConfig moduleConfig ) throws ServletException {
 	WFSConfig config = new WFSConfig();
-	//config.setDescribeUrl("http://localhost:8080/wfs");
-	config.setAbstract("Hello Richard? Testing? 1 2 3 Testing?");
-	config.setAccessConstraints("none");
-	config.setEnabled( true );
-	config.setFees("A small fish");
-	String [] keywords = {"GeoServer","Configuration","STRUTS","test"};
-	config.setKeywords( keywords );
-	config.setMaintainer("Refractions Research");
-	config.setName("WFS");
-	try{
-		config.setOnlineResource(new URL("http://vwfs.refractions.net/"));
-	}catch(Exception e){}
-	config.setTitle("Sample WFS Configuration");
-	
-	actionServlet.getServletContext().setAttribute( "GeoServer.WFSConfig", config ); 	
-}
+	config = (WFSConfig)actionServlet.getServletContext().getAttribute(WFSConfig.CONFIG_KEY);
+}*/
 
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
 		ActionErrors errors = new ActionErrors();

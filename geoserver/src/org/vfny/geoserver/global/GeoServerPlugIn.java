@@ -17,17 +17,27 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
 /**
  * GeoServerPlugIn purpose.
  * <p>
- * Description of GeoServerPlugIn ...
+ * Used to load the config into GeoServer. Is a pre-Condition for ConfigPlugIn. 
+ * This is started by struts.
  * <p>
+ * @see org.vfny.geoserver.config.ConfigPlugIn
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.1.2.2 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: GeoServerPlugIn.java,v 1.1.2.3 2004/01/08 01:31:59 dmzwiers Exp $
  */
 public class GeoServerPlugIn implements PlugIn {
-	public GeoServerPlugIn(){}
+	
+	/**
+	 * To allow for this class to be used as a precondition, and be pre-inited.
+	 * @see org.vfny.geoserver.config.ConfigPlugIn
+	 */
+	private boolean started = false;
+	
 	public void destroy(){}
 	
 	public void init(ActionServlet as, ModuleConfig mc) throws javax.servlet.ServletException{
+		if(started)
+			return;
 		ServletContext sc = as.getServletContext();
 		String rootDir = sc.getRealPath("/");
     	
@@ -44,5 +54,6 @@ public class GeoServerPlugIn implements PlugIn {
 			sc.setAttribute(GeoServer.SESSION_KEY,null);
 			throw new ServletException(e);
 		}
+		started = true;
 	}
 }
