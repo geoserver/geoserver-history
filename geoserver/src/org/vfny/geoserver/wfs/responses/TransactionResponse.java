@@ -3,7 +3,7 @@
  * application directory.
  */
 package org.vfny.geoserver.wfs.responses;
- 
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -478,6 +478,7 @@ public class TransactionResponse implements Response {
                 	build = new WfsTransResponse(WfsTransResponse.FAILED,
                             transactionRequest.getGeoServer().isVerbose());
                 	 // add in exception details here??
+                	    build.setMessage(e.getLocalizedMessage());
                 	response = build;
                 	// DJB: it looks like the transaction is rolled back in writeTo()
                 	return;

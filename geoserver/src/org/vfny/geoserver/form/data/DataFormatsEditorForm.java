@@ -18,9 +18,9 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.geotools.data.coverage.grid.GridFormatFactorySpi;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.crs.GeographicCRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
@@ -212,12 +212,31 @@ public class DataFormatsEditorForm extends ActionForm {
 							CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) getParamValue(i));
 							value = crs;
 						} else {
-							CoordinateReferenceSystem crs = GeographicCRS.WGS84;
+							CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
 							value = crs;
 						}
-    				} else if( key.equalsIgnoreCase("envelope") ) {
-    					
-    				} else {
+					} else if( key.equalsIgnoreCase("envelope") ) {
+						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
+							String tmp = (String) getParamValue(i);
+							if( tmp.indexOf("[") > 0 && tmp.indexOf("]") > tmp.indexOf("[") ) {
+								tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
+								tmp = tmp.replaceAll(",","");
+								String[] strCoords = tmp.split(" ");
+								double[] coords = new double[strCoords.length];
+								if( strCoords.length == 4 ) {
+									for( int iT=0; iT<4; iT++) {
+										coords[iT] = Double.parseDouble(strCoords[iT].trim());
+									}
+									
+									value = (org.opengis.spatialschema.geometry.Envelope) 
+											new GeneralEnvelope(
+												new double[] {coords[0], coords[1]},
+												new double[] {coords[2], coords[3]}
+											);
+								}
+							}
+						}
+					} else {
                     	Class[] clArray = {getParamValue(i).getClass()};
                     	Object[] inArray = {getParamValue(i)};
                     	value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);

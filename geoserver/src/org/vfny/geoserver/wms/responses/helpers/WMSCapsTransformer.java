@@ -535,15 +535,17 @@ public class WMSCapsTransformer extends TransformerBase {
             /**
              * @task REVISIT: should getSRS() return the full URL?
              */
-            element("SRS", EPSG + "4326");
-
             Envelope bbox = coverage.getEnvelope();
 
             handleLatLonBBox(bbox);
 
-            LOGGER.fine(coverage.getCrs().toString());
+            String authority = "";
+            if( coverage.getCrs().getName() != null && coverage.getCrs().getName().getAuthority() != null ) {
+            	authority = coverage.getCrs().getIdentifiers()[0].toString();
+            	element("SRS", authority);
+            }
             
-            handleBBox(bbox, EPSG + "4326");
+            handleBBox(bbox, authority);
 
             //add the layer style
             start("Style");

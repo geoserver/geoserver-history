@@ -6,15 +6,28 @@
 package org.vfny.geoserver.action.data;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.opengis.coverage.grid.*;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.stream.StreamGridCoverageExchange;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.crs.GeographicCRS;
 import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridCoverageExchange;
+import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.InvalidParameterValueException;
 import org.opengis.parameter.ParameterDescriptor;
@@ -24,26 +37,12 @@ import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
-import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.form.data.DataCoveragesNewForm;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.UserContainer;
-
-import com.vividsolutions.jts.geom.Envelope;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -120,11 +119,30 @@ public class DataCoveragesNewAction extends ConfigAction {
 								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
 								value = crs;
 							} else {
-								CoordinateReferenceSystem crs = GeographicCRS.WGS84;
+								CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
 								value = crs;
 							}
 						} else if( key.equalsIgnoreCase("envelope") ) {
-							
+							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
+								String tmp = (String) dfConfig.getParameters().get(key);
+								if( tmp.indexOf("[") > 0 && tmp.indexOf("]") > tmp.indexOf("[") ) {
+									tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
+									tmp = tmp.replaceAll(",","");
+									String[] strCoords = tmp.split(" ");
+									double[] coords = new double[strCoords.length];
+									if( strCoords.length == 4 ) {
+										for( int iT=0; iT<4; iT++) {
+											coords[iT] = Double.parseDouble(strCoords[iT].trim());
+										}
+										
+										value = (org.opengis.spatialschema.geometry.Envelope) 
+												new GeneralEnvelope(
+													new double[] {coords[0], coords[1]},
+													new double[] {coords[2], coords[3]}
+												);
+									}
+								}
+							}
 						} else {
 							Class[] clArray = {String.class};
 							Object[] inArray = {dfConfig.getParameters().get(key)};

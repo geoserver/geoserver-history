@@ -13,7 +13,6 @@ import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -28,8 +27,8 @@ import javax.media.jai.RenderedOp;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.stream.StreamGridCoverageExchange;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.crs.GeographicCRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageExchange;
 import org.opengis.coverage.grid.GridCoverageReader;
@@ -196,12 +195,31 @@ public class CoverageResponse implements Response {
 								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
 								value = crs;
 							} else {
-								CoordinateReferenceSystem crs = GeographicCRS.WGS84;
+								CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
 								value = crs;
 							}
-	    				} else if( key.equalsIgnoreCase("envelope") ) {
-	    					
-	    				} else {
+						} else if( key.equalsIgnoreCase("envelope") ) {
+							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
+								String tmp = (String) dfConfig.getParameters().get(key);
+								if( tmp.indexOf("[") > 0 && tmp.indexOf("]") > tmp.indexOf("[") ) {
+									tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
+									tmp = tmp.replaceAll(",","");
+									String[] strCoords = tmp.split(" ");
+									double[] coords = new double[strCoords.length];
+									if( strCoords.length == 4 ) {
+										for( int iT=0; iT<4; iT++) {
+											coords[iT] = Double.parseDouble(strCoords[iT].trim());
+										}
+										
+										value = (org.opengis.spatialschema.geometry.Envelope) 
+												new GeneralEnvelope(
+													new double[] {coords[0], coords[1]},
+													new double[] {coords[2], coords[3]}
+												);
+									}
+								}
+							}
+						} else {
 							Class[] clArray = {String.class};
 							Object[] inArray = {dfConfig.getParameters().get(key)};
 							value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
