@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite xmlns="testSuiteSchema" 
+xmlns:gml="http://www.opengis.net/gml" 
+xmlns:ogc="http://www.opengis.net/ogc" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd">
+  <name>RoadTestSuite</name>
+  <description>This test suite checks each road name to see 
+       that they are of appropriate length and checks to 
+       see if they are on the list of possible road names.
+       It also checks to see if any roads are contained in
+       a specified box.
+  </description>
+  <test>
+    <name>NameInList</name>
+    <description>Checks to see if the road name is in the list of
+              possible names.</description>
+    <plugin>nameLookup</plugin>
+    <argument>
+      <name>LUTLocation</name>
+      <anyURI>
+        ../www/LUTs/roadnames/
+      </anyURI>
+    </argument>
+    <argument>
+      <name>LUTName</name>
+      <string>
+        RoadNameLUT.xls
+      </string>
+    </argument>
+  </test>
+  <test>
+    <name>RoadsInbox</name>
+    <description>Checks to see if there are any roads in a given
+       box</description>
+    <plugin>Constraint</plugin>
+    <argument>
+      <name>passFilter</name>
+      <filter>
+        <ogc:Not>
+          <ogc:Disjoint>
+            <ogc:PropertyName></ogc:PropertyName>
+            <gml:Box>
+              <gml:coordinates>-57.9118,46.2023 
+                   -46.6873,51.8145</gml:coordinates>
+            </gml:Box>
+          </ogc:Disjoint>        
+        </ogc:Not>    
+      </filter>
+    </argument>
+  </test>
+</suite>
