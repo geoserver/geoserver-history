@@ -18,8 +18,15 @@ import org.apache.struts.action.ActionMapping;
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class DataAttributeTypesSelectForm extends ActionForm {
+	
+	private String buttonAction;
+	private String selectedAttributeType;
+	
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
+		
+		buttonAction ="";
+		selectedAttributeType="";
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -27,4 +34,32 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 		
 		return errors;
 	}
+	/**
+	 * @return Returns the buttonAction.
+	 */
+	public String getButtonAction() {
+		return buttonAction;
+	}
+
+	/**
+	 * @param buttonAction The buttonAction to set.
+	 */
+	public void setButtonAction(String buttonAction) {
+		this.buttonAction = buttonAction;
+	}
+
+	/**
+	 * @return Returns the selectedAttributeType.
+	 */
+	public String getSelectedAttributeType() {
+		return selectedAttributeType;
+	}
+
+	/**
+	 * @param selectedAttributeType The selectedAttributeType to set.
+	 */
+	public void setSelectedAttributeType(String selectedAttributeType) {
+		this.selectedAttributeType = selectedAttributeType;
+	}
+
 }

@@ -17,6 +17,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 
+import org.vfny.geoserver.form.data.DataFeatureTypesSelectForm;
+
 /**
  * @author User
  *
@@ -25,11 +27,16 @@ import org.vfny.geoserver.action.ConfigAction;
  */
 public class DataFeatureTypesSelectAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
-			ActionForm form,
+			ActionForm incomingForm,
 			HttpServletRequest request,
 			HttpServletResponse response)
 	throws IOException, ServletException {
 		
+		DataFeatureTypesSelectForm form = (DataFeatureTypesSelectForm) incomingForm;
+
+		String selectedFeatureType = form.getSelectedFeatureTypeName();
+		
+		request.getSession().setAttribute("selectedFeatureType", form.getSelectedFeatureTypeName());
 		return mapping.findForward("dataConfigFeatureTypes");
 	}
 }

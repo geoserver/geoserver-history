@@ -33,7 +33,7 @@
    	<definition name=".bodyLayout" page="/WEB-INF/pages/bodyLayout.jsp">
    		<put name="tabs" value=".tabsLayout"/>
    	</definition>
-
+   	
    	<definition name="wfs.description" extends=".mainLayout">
    		<put name="body" value="wfs.description.tabLayout"/>
    	</definition>
@@ -181,6 +181,14 @@
    	<definition name="data.featureTypes" extends=".mainLayout">
    		<put name="body" value="data.featureTypes.tabLayout"/>
    	</definition>   	
+   	
+   	<definition name="data.featureTypes.main" page="/WEB-INF/pages/featureTypesLayout.jsp">
+   		<put name="ftSelect" value="/WEB-INF/pages/DataConfigFeatureTypeSelect.jsp"/>
+  		<put name="ftEditor" value="/WEB-INF/pages/DataConfigFeatureTypeEditor.jsp"/>
+   		<put name="atSelect" value="/WEB-INF/pages/DataConfigAttributeTypeSelect.jsp"/>
+   		<put name="atNew"    value="/WEB-INF/pages/DataConfigAttributeTypeNew.jsp"/>
+   		<put name="atEditor" value="/WEB-INF/pages/DataConfigAttributeTypeEditor.jsp"/>
+   	</definition>
 
    	<definition name="data.featureTypes.tabLayout" page="/WEB-INF/pages/tabsLayout.jsp">
    		<put name="selectedIndex" value="3"/>
@@ -196,7 +204,7 @@
    				link="/geoserver/DataConfigStyles.do"
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    			<item value="FeatureTypes"
-   				link="/WEB-INF/pages/DataConfigFeatureTypes.jsp"
+   				link="data.featureTypes.main"
    				classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
    		</putList>
    	</definition>

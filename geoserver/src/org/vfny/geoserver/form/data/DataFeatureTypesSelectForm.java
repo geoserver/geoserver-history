@@ -19,8 +19,13 @@ import org.apache.struts.action.ActionMapping;
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class DataFeatureTypesSelectForm extends ActionForm {
+	
+	private String selectedFeatureTypeName;
+	
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
+		
+		selectedFeatureTypeName="";
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -28,4 +33,19 @@ public class DataFeatureTypesSelectForm extends ActionForm {
 		
 		return errors;
 	}	
+
+	/**
+	 * @return Returns the selectedFeatureTypeName.
+	 */
+	public String getSelectedFeatureTypeName() {
+		return selectedFeatureTypeName;
+	}
+
+	/**
+	 * @param selectedFeatureTypeName The selectedFeatureTypeName to set.
+	 */
+	public void setSelectedFeatureTypeName(String selectedFeatureTypeName) {
+		this.selectedFeatureTypeName = selectedFeatureTypeName;
+	}
+
 }
