@@ -13,16 +13,15 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * StyleConfig purpose.
  * 
  * <p>
- * Defines the style ids to be used by the wms.  The files  must be contained
- * in geoserver/misc/wms/styles.  We're  working on finding a better place for
- * them, but for now  that's where you must put them if you want them on the
- * server.
+ * Defines the style ids to be used by the wms.
+ * The files  must be contained in geoserver/misc/wms/styles.
+ * We're  working on finding a better place for them,
+ * but for now  that's where you must put them if you want them
+ * on the server.
  * </p>
  * 
- * <p></p>
- *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleConfig.java,v 1.6 2004/02/09 23:30:04 dmzwiers Exp $
+ * @version $Id: StyleConfig.java,v 1.7 2004/02/28 07:45:13 jive Exp $
  */
 public class StyleConfig {
     /** The syle id. */
@@ -50,6 +49,21 @@ public class StyleConfig {
     }
 
     /**
+     * Simple copy constructor.
+     * <p>
+     * Used to duplicate a StyleConfig during editing.
+     * </p>
+     * @param style StyleConfig to copy
+     */
+    public StyleConfig( StyleConfig style ){
+        if (style == null) {
+            throw new NullPointerException("Non null StyleConfig required");
+        }
+        id = style.getId();
+        filename = new File(style.getFilename().toString());
+        _default = style.isDefault();        
+    }
+    /**
      * StyleConfig constructor.
      * 
      * <p>
@@ -63,7 +77,7 @@ public class StyleConfig {
      */
     public StyleConfig(StyleDTO style) {
         if (style == null) {
-            throw new NullPointerException("");
+            throw new NullPointerException("Non null StyleDTO required");
         }
 
         id = style.getId();

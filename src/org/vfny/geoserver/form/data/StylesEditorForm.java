@@ -1,0 +1,158 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
+/*
+ * Created on Jan 8, 2004
+ *
+ * To change the template for this generated file go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
+ */
+package org.vfny.geoserver.form.data;
+
+import java.io.File;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.config.ConfigRequests;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.requests.Requests;
+
+
+/**
+ * DOCUMENT ME!
+ *
+ * @author rgould To change the template for this generated type comment go to
+ *         Window>Preferences>Java>Code Generation>Code and Comments
+ */
+public class StylesEditorForm extends ActionForm {
+    
+    private String styleID;
+    private String filename;
+
+    private boolean _default;
+    private boolean defaultChecked = false;
+    private boolean defaultInitial;
+    
+	
+    public void reset(ActionMapping arg0, HttpServletRequest request) {
+        super.reset(arg0, request);
+        DataConfig config = ConfigRequests.getDataConfig( request );
+
+        UserContainer user = Requests.getUserContainer( request );
+        StyleConfig style = user.getStyle();
+        if (style == null) {
+            // Should not happen (unless they bookmark)
+            styleID = "";
+            _default = config.getStyles().isEmpty();
+            filename = "";
+        }
+        else {
+            styleID = style.getId();
+            _default = style.isDefault();
+            filename = style.getFilename().getPath();
+        }
+        defaultChecked = false;
+        defaultInitial = _default;
+    }
+
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
+        ActionErrors errors = new ActionErrors();
+
+        if ((styleID == null) || styleID.equals("")) {
+            errors.add("styleID",
+            new ActionError("error.styleID.required", styleID));
+        } else if (!Pattern.matches("^\\w*$", styleID)) {
+            errors.add("styleID",
+            new ActionError("error.styleID.invalid", styleID));
+        }        
+        if ((filename == null) || filename.equals("")) {
+            errors.add("filename",
+            new ActionError("error.file.required", styleID));
+        } else {
+            Requests.getApplicationState(request);
+            
+            File test = new File( filename );
+            if( !test.exists() ){
+                errors.add("filename",
+                        new ActionError("error.file.nonexistent", filename));
+            }
+        }    
+        return errors;
+    }
+
+    /**
+     * Access _default property.
+     * 
+     * @return Returns the _default.
+     */
+    public boolean isDefault() {
+        return _default;
+    }
+    /**
+     * Set _default to _default.
+     *
+     * @param _default The _default to set.
+     */
+    public void setDefault(boolean _default) {
+        defaultChecked = true;
+        this._default = _default;
+    }
+    /**
+     * Access filename property.
+     * 
+     * @return Returns the filename.
+     */
+    public String getFilename() {
+        return filename;
+    }
+    /**
+     * Set filename to filename.
+     *
+     * @param filename The filename to set.
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+    /**
+     * Access styleID property.
+     * 
+     * @return Returns the styleID.
+     */
+    public String getStyleID() {
+        return styleID;
+    }
+    /**
+     * Set styleID to styleID.
+     *
+     * @param styleID The styleID to set.
+     */
+    public void setStyleID(String styleID) {
+        this.styleID = styleID;
+    }
+    /**
+     * Does the magic with _default & defaultChecked.
+     * <p>
+     * Because of the way that STRUTS works, if the user does not check the default box,
+     * or unchecks it, setDefault() is never called, thus we must monitor setDefault()
+     * to see if it doesn't get called. This must be accessible, as ActionForms need to
+     * know about it -- there is no way we can tell whether we are about to be passed to
+     * an ActionForm or not.
+     * </p>
+     * @return true if default shoudl be selected 
+     */
+    public boolean isDefaultValue(){
+        if( defaultChecked ){            
+            return _default;
+        }
+        return defaultInitial;        
+    }
+}

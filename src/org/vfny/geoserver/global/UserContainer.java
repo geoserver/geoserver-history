@@ -16,6 +16,7 @@ import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
+import org.vfny.geoserver.config.StyleConfig;
 
 
 /**
@@ -44,8 +45,8 @@ import org.vfny.geoserver.config.NameSpaceConfig;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: UserContainer.java,v 1.8 2004/02/18 19:32:51 emperorkefka Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: UserContainer.java,v 1.9 2004/02/28 07:45:14 jive Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";
@@ -59,12 +60,10 @@ public class UserContainer implements HttpSessionBindingListener {
     /** Selected dataStoreId */
     private String dataStoreID;
 
+    /** Selected prefix */
+    private String prefix;
     /**
-     * Selected DataStoreConfig held in session for creation.
-     * 
-     * <p>
-     * Pending: Make the change over to UserContainer.
-     * </p>
+     * Selected DataStoreConfig held in session for creation/editing.
      */
     private DataStoreConfig dataStoreConfig;
 
@@ -77,8 +76,14 @@ public class UserContainer implements HttpSessionBindingListener {
      */
     private DataStore dataStore;
     
+    /**
+     * Cached NamespaceConfig held in session for creation/editing.
+     */
     private NameSpaceConfig namespaceConfig;
 
+    /** Selected styleId */
+    private StyleConfig style;
+    
     /**
      * Selected FeatureType Config held in session for editing/creation.
      * 
@@ -377,5 +382,36 @@ public class UserContainer implements HttpSessionBindingListener {
 	public void setNamespaceConfig(NameSpaceConfig namespaceConfig) {
 		this.namespaceConfig = namespaceConfig;
 	}
-
+    /**
+     * Access prefix property.
+     * 
+     * @return Returns the prefix.
+     */
+    public String getPrefix() {
+        return prefix;
+    }
+    /**
+     * Set prefix to prefix.
+     *
+     * @param prefix The prefix to set.
+     */
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+    /**
+     * Access style property.
+     * 
+     * @return Returns the style.
+     */
+    public StyleConfig getStyle() {
+        return style;
+    }
+    /**
+     * Set style to style.
+     *
+     * @param style The style to set.
+     */
+    public void setStyle(StyleConfig style) {
+        this.style = style;
+    }
 }

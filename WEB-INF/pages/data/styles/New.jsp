@@ -7,7 +7,9 @@
 <table class="info">
   <tr>
     <td class="label">
-      <bean:message key="label.styleID"/>:
+        <span class="help" title="<bean:message key="help.styleID"/>">
+          <bean:message key="label.styleID"/>:
+        </span>      
 	</td>
     <td class="datum">
 	  <html:text property="styleID" size="60"/>

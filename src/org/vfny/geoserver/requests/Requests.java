@@ -105,31 +105,16 @@ public final class Requests {
     }
 
     /**
-     * Aquire ValidationProcessor from Web Container.
+     * Get base url used - assumed to be http://server:port/geoserver/
      * 
-     * <p>
-     * In ValidationProcessor is create by a STRUTS plug-in and is available
-     * through the Web container.
-     * </p>
-     * 
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock ValidationProcessor.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return ValidationProcessor instance for the current Web Application
+     * @param httpServletRequest
+     * @return http://server:port/geoserver/
      */
-    /*public static ValidationProcessor getValidationProcessor(HttpServletRequest request) {
-        return  getWFS(request).getValidation();
-    }*/
-
     public static String getBaseUrl(HttpServletRequest httpServletRequest) {
         return "http://" + httpServletRequest.getServerName() + ":"
         + httpServletRequest.getServerPort() + "/geoserver/";
     }
-
+    
     /**
      * Aquire type safe session information in a UserContainer.
      * 

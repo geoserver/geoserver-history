@@ -25,15 +25,11 @@ import org.vfny.geoserver.form.data.DataNamespacesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
 
 /**
- * DataNamespacesSelectAction purpose.
-
- * <pre><code>
- * DataNamespacesSelectAction x = new DataNamespacesSelectAction(...);
- * </code></pre>
+ * Select Namespaces for editing.
  * 
  * @author rgould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataNamespacesSelectAction.java,v 1.4 2004/02/25 23:32:34 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataNamespacesSelectAction.java,v 1.5 2004/02/28 07:45:13 jive Exp $
  */
 public class DataNamespacesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -48,6 +44,7 @@ public class DataNamespacesSelectAction extends ConfigAction {
         
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
+        
         String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
         String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
 
@@ -58,7 +55,6 @@ public class DataNamespacesSelectAction extends ConfigAction {
         getUserContainer(request).setNamespaceConfig(config);
 
         if (action.equals(delete)) {
-
             dataConfig.removeNameSpace(namespacesForm.getSelectedNamespace());
             getApplicationState().notifyConfigChanged();
             

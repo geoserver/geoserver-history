@@ -7,7 +7,6 @@ package org.vfny.geoserver.form.data;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;

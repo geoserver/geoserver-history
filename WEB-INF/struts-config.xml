@@ -46,6 +46,7 @@
     		name="dataDataStoresEditorForm"
     		type="org.vfny.geoserver.form.data.DataDataStoresEditorForm"/>
     		
+    	<!-- DATA Namespace -->
     	<form-bean
     		name="dataNamespacesSelectForm"
     		type="org.vfny.geoserver.form.data.DataNamespacesSelectForm"/>
@@ -57,11 +58,19 @@
     		type="org.vfny.geoserver.form.data.DataNamespacesEditorForm"/>
     	
     		
-
+		<!-- DATA Styles -->
     	<form-bean
-    		name="dataStylesForm"
-    		type="org.vfny.geoserver.form.data.DataStylesForm"/>
+    		name="stylesSelectForm"
+    		type="org.vfny.geoserver.form.data.StylesSelectForm"/>
+    	<form-bean
+    		name="stylesNewForm"
+    		type="org.vfny.geoserver.form.data.StylesNewForm"/>
+    	<form-bean
+    		name="stylesEditorForm"
+    		type="org.vfny.geoserver.form.data.StylesEditorForm"/>
     		
+
+		<!-- DATA FeatureType -->
     	<form-bean
     		name="dataFeatureTypesSelectForm"
     		type="org.vfny.geoserver.form.data.DataFeatureTypesSelectForm"/>
@@ -253,7 +262,13 @@
         <!-- CONFIG data style -->
        	<forward
        		name="config.data.style"
-       		path="/config/data/style.do"/>
+       		path="/config/data/styleSelect.do"/>
+       	<forward
+       		name="config.data.style.new"
+       		path="/config/data/styleNew.do"/>
+       	<forward
+       		name="config.data.style.editor"
+       		path="/config/data/styleEditor.do"/>
 
         <!-- CONFIG data type -->       		
        	<forward
@@ -357,7 +372,7 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.wfs.content"/>
         	
-        <!-- CONFIG WMS -->       	
+        <!-- CONFIG WMS -->
         <action
         	path="/config/wms/index"
         	type="org.apache.struts.actions.ForwardAction"
@@ -426,7 +441,7 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.store.editor"/>        	
         	
-       <!-- DATA NAMESPACES -->        	
+       <!-- DATA Namespaces -->        	
         <action
         	path="/config/data/namespace"
         	type="org.apache.struts.actions.ForwardAction"
@@ -445,6 +460,14 @@
         	path="/config/data/style"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.style"/>
+        <action
+        	path="/config/data/styleNew"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.style.new"/>
+        <action
+        	path="/config/data/styleEditor"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.style.editor"/>
         	
 		<!-- DATA featuretypes -->
         <action
@@ -459,6 +482,7 @@
         	path="/config/data/featureTypeEditor"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.type.editor"/>        	        	
+
 <!-- Submit Actions -->    
 
 		<action
@@ -532,6 +556,7 @@
         	validate="true"
         	input="/config/data/storeNew.do"/>        	
       
+		<!-- DATA Namespaces Actions -->
         <action
         	path="/config/data/namespaceSelect"
         	type="org.vfny.geoserver.action.data.DataNamespacesSelectAction"
@@ -554,14 +579,16 @@
         	validate="true"
         	input="/config/data/namespaceEditor.do"/>
         	
-        	
+		<!-- DATA Styles Actions -->        	
         <action
-        	path="/config/data/styleSubmit"
-        	type="org.vfny.geoserver.action.data.DataStylesAction"
-        	name="dataStylesForm"
+        	path="/config/data/styleSelect"
+        	type="org.vfny.geoserver.action.data.StylesSelectAction"
+        	name="stylesSelectForm"
         	scope="request"
         	validate="true"
         	input="/config/data/style.do"/>
+        	
+		<!-- DATA FeatureType Actions -->
         <action
         	path="/config/data/featureTypeSubmit"
         	type="org.vfny.geoserver.action.data.DataFeatureTypesEditorAction"
