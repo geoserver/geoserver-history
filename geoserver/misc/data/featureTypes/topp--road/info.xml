@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <featureType>
 	<Name>road</Name>
-	<Title>NYC Road Centerlines</Title>
-	<Abstract>This is some random road features of New York City</Abstract>
+	<Title>Random Road Centerlines</Title>
+	<Abstract>This is some random road features</Abstract>
 	<Keywords>road, New York City, TOPP</Keywords>
 	<SRS>32118</SRS>
-	<Operations/>
 	<LatLonBoundingBox minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
 	<MetadataURL>
          <url>none</url>
          <format>XML</format>
          <type>FGDC</type>
         </MetadataURL>
-	<DatasourceParams>
-         <table>road</table>
-         <dbtype>postgis</dbtype>
-         <host>beta.openplans.org</host>
-	 <port>5432</port>
-	 <database>topp</database>
-	 <user>tester</user>
-	 <passwd>tester</passwd>
-        </DatasourceParams>
+        <DatasourceParams>
+         <filename>road.shp</filename>
+        </DatasourceParams>		
 </featureType>
