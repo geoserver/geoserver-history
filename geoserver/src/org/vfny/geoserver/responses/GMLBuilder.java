@@ -6,6 +6,7 @@ package org.vfny.geoserver.responses;
 
 import java.io.*;
 import java.util.*;
+import java.net.URLEncoder;
 import java.util.logging.Logger;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -128,8 +129,14 @@ public class GMLBuilder {
      */ 
     public GMLBuilder(boolean verbose) {
         this.verbose = verbose;
+	StringBuffer decimalPattern = new StringBuffer();
+	for (int i = 0; i < configInfo.getNumDecimals(); i++) {
+	    decimalPattern.append("#");
+	}
+	String numPattern = "#." + decimalPattern.toString();
+	//should end up something like #.##### - 234.2342
 	if (coordFormatter instanceof DecimalFormat) {
-	    ((DecimalFormat)coordFormatter).applyPattern("#.################");
+	    ((DecimalFormat)coordFormatter).applyPattern(numPattern);
 	}
         finalResult.append(XML_HEADER);
 	if (verbose){
@@ -227,7 +234,80 @@ public class GMLBuilder {
     public String getGML () {
         return finalResult.toString();
     }
+
+
+         /**
+     * Parses the passed string, and encodes the special characters (used in
+     * xml for special purposes) with the appropriate codes.
+     * e.g. '<' is changed to '&lt;'
+     * @return the encoded string. Returns null, if null is passed as argument
+     * @task REVISIT: Once we write directly to out, as we should, this 
+     * method should be simpler, as we can just write strings with escapes
+     * directly to out, replacing as we iterate of chars to write them.
+     */
+    public static String encodeXML(String inData)
+    {
+        //return null, if null is passed as argument
+        if(inData == null)
+            return null;
+        
+        //if no special characters, just return
+        //(for optimization. Though may be an overhead, but for most of the
+        //strings, this will save time)
+        if((inData.indexOf('&') == -1)
+            && (inData.indexOf('<') == -1)
+            && (inData.indexOf('>') == -1)
+            && (inData.indexOf('\'') == -1)
+            && (inData.indexOf('\"') == -1))
+        {
+            return inData;
+        }
+        
+        //get the length of input String
+        int length = inData.length();
+        //create a StringBuffer of double the size (size is just for guidance
+        //so as to reduce increase-capacity operations. The actual size of
+        //the resulting string may be even greater than we specified, but is
+        //extremely rare)
+        StringBuffer buffer = new StringBuffer(2 * length);
+        
+        char charToCompare;
+        //iterate over the input String
+        for(int i=0; i < length; i++)
+        {
+            charToCompare = inData.charAt(i);
+            //if the ith character is special character, replace by code
+            if(charToCompare == '&')
+            {
+                buffer.append("&amp;");
+            }
+            else if(charToCompare == '<')
+            {
+                buffer.append("&lt;");
+            }
+            else if(charToCompare == '>')
+            {
+                buffer.append("&gt;");
+            }
+            else if(charToCompare == '\"')
+            {
+                buffer.append("&quot;");
+            }
+            else if(charToCompare == '\'')
+            {
+                buffer.append("&apos;");
+            }
+            else
+            {
+                buffer.append(charToCompare);
+            }
+        }
+        
+    //return the encoded string
+    return buffer.toString();
+    }
     
+
 
     /**
      * Handles the feature type writing tasks for the main class.
@@ -391,6 +471,11 @@ public class GMLBuilder {
          * @param value Attribute value as string
          */ 
         public void write( String name, String value ) { 
+
+	    value = encodeXML(value);
+	    //is this necessary?  Will column names have < and > ?
+	    //I guess it is possible for them to have an apostrophe
+	    name= encodeXML(name);
 	    //should check if mandatory here, 
             if (value != null && !value.equals("")) {
 		String gmlName = (String)gmlMap.get(name);
@@ -412,6 +497,9 @@ public class GMLBuilder {
 	    }
         
 	}
+	
+	
+
     }
     /**
      * Handles the geometry writing tasks for the main class.
