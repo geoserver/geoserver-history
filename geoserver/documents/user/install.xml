@@ -674,7 +674,53 @@ The document tree is shown below.</programlisting></para>
     <title>Visualizing your Data</title>
 
     <para>GeoServer includes an integrated Web Map Service (WMS). For more
-    information about using it to visualize your data please see the <ulink
-    url="???">WMS</ulink> section.</para>
+    information about setting it up see <ulink url="???">WMS</ulink> section.
+    But using the web administration interface should be pretty self
+    explanatory, just make sure that you have Java Advanced Imaging (JAI)
+    installed, it can be downloaded <ulink
+    url="http://java.sun.com/products/java-media/jai/downloads/download-1_1_2.html">here</ulink>
+    and the Image I/O extension <ulink
+    url="http://java.sun.com/products/java-media/jai/downloads/download-iio.html">here</ulink>.
+    The trickiest part is figuring out the correct GetMap request to issue to
+    the WMS. A sample request is as follows:<programlisting> <ulink
+          url="http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/png">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=topp:bc_roads&amp;bbox=489153,5433000,529000,5460816
+&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/png</ulink></programlisting>To
+    adapt it to your data the two parameters to change are 'layers' and
+    'bbox'. The layers param should be changed to the FeatureType that you
+    successfully added to GeoServer. Do a GetCapabilities
+    request:<programlisting> <ulink
+          url="http://localhost:8080/geoserver/wms?request=GetCapabilities">http://localhost:8080/geoserver/wms?request=GetCapabilities</ulink></programlisting></para>
+
+    <para>Your featureType should show up as one of the layers there. The name
+    there should be the one used to use in the layers param of the GetMap
+    request. If the Capabilities document does not contain it then try adding
+    it again. If it does the next thing to do is to obtain the bounding box
+    for the feature. The easiest way to do this is to issue a GetFeature
+    request to the wfs using your featureType, for example:</para>
+
+    <para><programlisting> <ulink
+          url=" http://localhost:8080/geoserver/wfs/GetFeature?typeName=topp:bc_roads">http://localhost:8080/geoserver/wfs/GetFeature?typename=topp:my_data</ulink></programlisting></para>
+
+    <para>The response is a FeatureCollection, which will include a boundedBy
+    element as follows:<programlisting> &lt;gml:boundedBy&gt;
+   &lt;gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#27354"&gt;
+    &lt;gml:coordinates decimal="." cs="," ts=" "&gt;
+        -73.933217,40.78587 -73.768722,40.914404
+    &lt;/gml:coordinates&gt;
+   &lt;/gml:Box&gt;
+&lt;/gml:boundedBy&gt;</programlisting>These values will be the boundingBox of
+    all data in the featureType. If you have a very large table then you may
+    want to not use the full bounding box, but this should give a good
+    guideline of where the features are actually contained. The coordinates
+    values can be used almost directly in the bbox param - you just need to
+    make sure to change the middle space to a comma. Currently the srs param
+    is ignored, GeoServer simply returns data as it is stored. Future versions
+    wil do coordinate transformation based on the srs parameter. You can also
+    change the other params to adjust the format, height and width of the
+    image returned, as well as the style, if you have properly added the SLD
+    files. So the final request for my_data will look like
+    this:<programlisting> <ulink
+          url="http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=bc_roads&amp;bbox=489153,5433000,529000,5460816&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/png">http://localhost:8080/geoserver/wms?request=GetMap&amp;layers=topp:my_data&amp;bbox=-73.933217,40.78587,-73.768722,40.914404
+&amp;width=400&amp;height=200&amp;srs=EPSG:27354&amp;styles=normal&amp;Format=image/png</ulink></programlisting></para>
   </sect1>
 </article>
