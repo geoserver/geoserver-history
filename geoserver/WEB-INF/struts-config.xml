@@ -146,6 +146,9 @@
         <forward
         	name="validationTest"
         	path="/config/validation/testSelect.do"/>
+        <forward
+        	name="config.validation.test"
+        	path="/config/validation/testSelect.do"/>
 
         <forward
         	name="validationTestEditor"
