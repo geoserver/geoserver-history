@@ -10,14 +10,6 @@
  */
 package org.geotools.validation.xml;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import org.geotools.filter.ExpressionDOMParser;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterDOMParser;
-import org.geotools.gml.producer.GeometryTransformer;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
@@ -25,7 +17,18 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.xml.transform.TransformerException;
+
+import org.geotools.filter.ExpressionDOMParser;
+import org.geotools.filter.Filter;
+import org.geotools.filter.FilterDOMParser;
+import org.geotools.gml.producer.GeometryTransformer;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -54,7 +57,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
  */
 class ArgHelper {
     private static final Mapping[] argumentTypeMappings = {
@@ -160,7 +163,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected interface Mapping {
         /**
@@ -238,7 +241,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      *
      * @see Mapping
      */
@@ -347,7 +350,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class GeometryMapping implements Mapping {
         /**
@@ -434,7 +437,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class EnvelopeMapping implements Mapping {
         /**
@@ -566,7 +569,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class ShortMapping implements Mapping {
         /**
@@ -661,7 +664,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class IntegerMapping implements Mapping {
         /**
@@ -755,7 +758,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class LongMapping implements Mapping {
         /**
@@ -849,7 +852,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class FloatMapping implements Mapping {
         /**
@@ -943,7 +946,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class DoubleMapping implements Mapping {
         /**
@@ -1037,7 +1040,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class DateMapping implements Mapping {
         /**
@@ -1143,7 +1146,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class URIMapping implements Mapping {
         /**
@@ -1242,7 +1245,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class BooleanMapping implements Mapping {
         /**
@@ -1336,7 +1339,7 @@ class ArgHelper {
      *
      * @author dzwiers, Refractions Research, Inc.
      * @author $Author: dmzwiers $ (last modification)
-     * @version $Id: ArgHelper.java,v 1.6 2004/01/21 00:26:10 dmzwiers Exp $
+     * @version $Id: ArgHelper.java,v 1.7 2004/01/21 00:35:56 dmzwiers Exp $
      */
     protected static class StringMapping implements Mapping {
         /**

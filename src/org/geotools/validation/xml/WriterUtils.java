@@ -20,12 +20,13 @@
  */
 package org.geotools.validation.xml;
 
-import org.vfny.geoserver.global.ConfigurationException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.vfny.geoserver.global.ConfigurationException;
 
 
 /**
@@ -38,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterUtils.java,v 1.3 2004/01/21 00:26:10 dmzwiers Exp $
+ * @version $Id: WriterUtils.java,v 1.4 2004/01/21 00:35:56 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -21,19 +25,13 @@ import java.util.Map;
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
- * 
- * <prefix>Example:<code>
- * DataStoreInfoDTO dsiDto = new DataStoreInfoDTO();
- * dsiDto.setIde("myDataStore");
- * dsiDto.setEnabled(true);
- * dsiDto.setTile("My Data Store");
- * Map m = new HashMap();
- * m.put("key","param");
- * dsiDto.setConnectionParams(m);
- * </code></prefix>
+ * Example:<code> DataStoreInfoDTO dsiDto = new DataStoreInfoDTO();
+ * dsiDto.setIde("myDataStore"); dsiDto.setEnabled(true); dsiDto.setTile("My
+ * Data Store"); Map m = new HashMap(); m.put("key","param");
+ * dsiDto.setConnectionParams(m); </code>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreInfoDTO.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: DataStoreInfoDTO.java,v 1.3 2004/01/21 00:37:56 dmzwiers Exp $
  */
 public final class DataStoreInfoDTO implements DataTransferObject {
     /** unique datastore identifier */
@@ -53,8 +51,10 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Connection parameters to create the DataStoreInfo
+     * 
      * <p>
      * Limitied to Strings for both Keys and Values.
+     * </p>
      */
     private Map connectionParams;
 
@@ -64,9 +64,9 @@ public final class DataStoreInfoDTO implements DataTransferObject {
      * <p>
      * does nothing
      * </p>
-     *
      */
-    public DataStoreInfoDTO() {}
+    public DataStoreInfoDTO() {
+    }
 
     /**
      * DataStoreInfo constructor.
@@ -77,11 +77,13 @@ public final class DataStoreInfoDTO implements DataTransferObject {
      * are cloned.
      * </p>
      *
-     * @param ds The datastore to copy.
+     * @param dto The datastore to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public DataStoreInfoDTO(DataStoreInfoDTO dto) {
         if (dto == null) {
-        	throw new NullPointerException("Non-Null DataStoreDTO is requried");
+            throw new NullPointerException("Non-Null DataStoreDTO is requried");
         }
 
         id = dto.getId();
@@ -89,14 +91,15 @@ public final class DataStoreInfoDTO implements DataTransferObject {
         enabled = dto.isEnabled();
         _abstract = dto.getAbstract();
 
-        connectionParams = new HashMap( dto.getConnectionParams() );
+        connectionParams = new HashMap(dto.getConnectionParams());
+
         /*
-        try {
-            connectionParams = CloneLibrary.clone(dto.getConnectionParams()); //clone?
-        } catch (Exception e) {
-            connectionParams = new HashMap();
-        }
-        */
+           try {
+               connectionParams = CloneLibrary.clone(dto.getConnectionParams()); //clone?
+           } catch (Exception e) {
+               connectionParams = new HashMap();
+           }
+         */
     }
 
     /**
@@ -129,8 +132,10 @@ public final class DataStoreInfoDTO implements DataTransferObject {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-    	if(obj == null || !(obj instanceof DataStoreInfoDTO))
-    		return false;
+        if ((obj == null) || !(obj instanceof DataStoreInfoDTO)) {
+            return false;
+        }
+
         DataStoreInfoDTO ds = (DataStoreInfoDTO) obj;
         boolean r = true;
         r = r && (id == ds.getId());
@@ -147,34 +152,34 @@ public final class DataStoreInfoDTO implements DataTransferObject {
         return r;
     }
 
-	/**
-	 * Implement hashCode.
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 * 
-	 * @return Service hashcode or 0
-	 */
-	public int hashCode() {
-		int r = 1;
-		
-		if (id != null) {
-			r *= id.hashCode();
-		}
+    /**
+     * Implement hashCode.
+     *
+     * @return Service hashcode or 0
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int r = 1;
 
-		if (nameSpaceId != null) {
-			r *= nameSpaceId.hashCode();
-		}
+        if (id != null) {
+            r *= id.hashCode();
+        }
 
-		if (_abstract != null) {
-			r *= _abstract.hashCode();
-		}
-		
-		return r;
-	}
+        if (nameSpaceId != null) {
+            r *= nameSpaceId.hashCode();
+        }
+
+        if (_abstract != null) {
+            r *= _abstract.hashCode();
+        }
+
+        return r;
+    }
 
     /**
      * Short description of DataStore
-     * 
+     *
      * @return Short description
      */
     public String getAbstract() {
@@ -195,7 +200,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Value is <code>true</code> if the DataStore should be enabled. 
+     * Value is <code>true</code> if the DataStore should be enabled.
      *
      * @return ture if DataStore shoudl be enabled
      */
@@ -205,9 +210,11 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Unique identifier representing this DataStore.
+     * 
      * <p>
      * This value is used to refer to this DataStore by FeatureTypeInfoDTO.
      * </p>
+     *
      * @return an identifier, non null
      */
     public String getId() {
@@ -216,7 +223,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Namespace <code>prefix</code> for this DataStore.
-     * 
+     *
      * @return <code>prefix</code> used for GML encoding
      */
     public String getNameSpaceId() {
@@ -225,7 +232,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Title for DataStore, used in error messages & configuration.
-     * 
+     *
      * @return Title dor the DataStore
      */
     public String getTitle() {
@@ -234,7 +241,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Updates the DataStore abstract.
-     * 
+     *
      * @param description
      */
     public void setAbstract(String description) {
@@ -242,7 +249,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Provide DataStore connectin parameters. 
+     * Provide DataStore connectin parameters.
      * 
      * <p>
      * Map is limited to text based keys and values
@@ -271,28 +278,28 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Sets the unique identifier for this DataStoreInfoDTO.
-     * 
+     *
      * @param identifier non<code>null</code> identifier for DataStore
      */
     public void setId(String identifier) {
-        id = identifier;        
+        id = identifier;
     }
 
     /**
-     * Sets the Namespace prefix for the DataStore. 
-     * 
+     * Sets the Namespace prefix for the DataStore.
+     *
      * @param prefix Namespace prefix used by DataStore
      */
     public void setNameSpaceId(String prefix) {
-        nameSpaceId = prefix;        
+        nameSpaceId = prefix;
     }
 
     /**
      * Set title used to identify this DataStore to the user.
-     * 
+     *
      * @param dataStoreTitle Title used to identify DataStore to user
      */
     public void setTitle(String dataStoreTitle) {
-        title = dataStoreTitle;        
+        title = dataStoreTitle;
     }
 }

@@ -1,97 +1,106 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geotools.validation;
 
 /**
- * Validation An interfaces used to define a type ov validation test that
- * is performed on Features.
+ * Validation An interfaces used to define a type ov validation test that is
+ * performed on Features.
+ * 
  * <p>
  * Validation provides functionality for a ValidationProcessor to hand <br>
- * each Validation test a list of FeatureTypes that it is supposed to validate.
- * The validation test takes it upon itself to validate the data when it is called.
- * <p>
- * Capabilities:
- * <ul>
- * </li></li>
- * </ul>
- * Example Use:
- * <pre><code>
- * </code></pre>
+ * each Validation test a list of FeatureTypes that it is supposed to
+ * validate. The validation test takes it upon itself to validate the data
+ * when it is called.
+ * </p>
  * 
+ * <p></p>
+ *
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: Validation.java,v 1.3 2004/01/12 21:01:32 dmzwiers Exp $
+ * @version $Id: Validation.java,v 1.4 2004/01/21 00:35:23 dmzwiers Exp $
  */
-public interface Validation
-{
-	
-	static final String ALL[] = null;	// test all featureTypes
-	
-	
-	/**
-	 * setName
-	 * <p>
-	 * Sets the name of the validation.
-	 * </p>
-	 * @param name the name of the validation.
-	 */
-	void 	setName( String name );
-	
-	/**
-	 * getName
-	 * <p>
-	 * Returns the name of the validation.
-	 * </p>
-	 * @return the name of the validation.
-	 */
-	String 	getName();
-	
-	
-	
-	/**
-	 * setDescription
-	 * <p>
-	 * Sets the description of the validation.
-	 * </p>
-	 * @param description of the validation
-	 */
-	void 	setDescription( String description );
-	
-	/**
-	 * getDescription
-	 * <p>
-	 * Returns the description of the validation.
-	 * </p>
-	 * @return the description of the validation.
-	 */
-	String 	getDescription();
-	
-	
-	
-	/**
-	 * getPriority
-	 * <p>
-	 * Returns thepriority (time cost) of the validation test
-	 * </p>
-	 * @return The priority (time cost) of the validation test
-	 */
-	int 	getPriority();
-	
-	
-	
-	/**
-	 * setTypeNames
-	 * <p>
-	 * Sets the FeatureTypeInfo names that this validation test is run against.
-	 * </p>
-	 * @param names FeatureTypeInfo names that this validation test is run against.
-	 */
-	void 	setTypeNames(String[] names);
-	
-	/**
-	 * getTypeNames
-	 * <p>
-	 * Returns the FeatureTypeInfo names that this validation test is run against.
-	 * </p>
-	 * @return the FeatureTypeInfo names that this validation test is run against.
-	 */
-	String[] getTypeNames();
+public interface Validation {
+    static final String[] ALL = null; // test all featureTypes
+
+    /**
+     * setName
+     * 
+     * <p>
+     * Sets the name of the validation.
+     * </p>
+     *
+     * @param name the name of the validation.
+     */
+    void setName(String name);
+
+    /**
+     * getName
+     * 
+     * <p>
+     * Returns the name of the validation.
+     * </p>
+     *
+     * @return the name of the validation.
+     */
+    String getName();
+
+    /**
+     * setDescription
+     * 
+     * <p>
+     * Sets the description of the validation.
+     * </p>
+     *
+     * @param description of the validation
+     */
+    void setDescription(String description);
+
+    /**
+     * getDescription
+     * 
+     * <p>
+     * Returns the description of the validation.
+     * </p>
+     *
+     * @return the description of the validation.
+     */
+    String getDescription();
+
+    /**
+     * getPriority
+     * 
+     * <p>
+     * Returns thepriority (time cost) of the validation test
+     * </p>
+     *
+     * @return The priority (time cost) of the validation test
+     */
+    int getPriority();
+
+    /**
+     * setTypeNames
+     * 
+     * <p>
+     * Sets the FeatureTypeInfo names that this validation test is run against.
+     * </p>
+     *
+     * @param names FeatureTypeInfo names that this validation test is run
+     *        against.
+     */
+    void setTypeNames(String[] names);
+
+    /**
+     * getTypeNames
+     * 
+     * <p>
+     * Returns the FeatureTypeInfo names that this validation test is run
+     * against.
+     * </p>
+     *
+     * @return the FeatureTypeInfo names that this validation test is run
+     *         against.
+     */
+    String[] getTypeNames();
 }

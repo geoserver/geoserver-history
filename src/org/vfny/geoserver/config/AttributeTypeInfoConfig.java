@@ -51,7 +51,7 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.13 2004/01/16 20:05:34 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.14 2004/01/21 00:35:23 dmzwiers Exp $
  */
 public class AttributeTypeInfoConfig {
     
@@ -294,7 +294,6 @@ public class AttributeTypeInfoConfig {
      * to be nillable.
      * </p>
      * Common Min..Max Occurs values:
-     * </p>
      * <ul>
      * <li><b>0</b>..1: attribute is optional</li>
      * <li><b>1</b>..1: attribute is required (usual for Simple Features)</li>
@@ -327,7 +326,8 @@ public class AttributeTypeInfoConfig {
      * <p>
      * If getType is equals to <code>TYPE_FRAGMENT</code> please consult getFragment()
      * to examin the actual user's definition.
-     * </p>
+     * <p>
+     * 
      * </p>
      * Other than that getType should be one of the constants defined by
      * GMLUtils.

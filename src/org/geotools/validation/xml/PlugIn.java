@@ -10,7 +10,6 @@
  */
 package org.geotools.validation.xml;
 
-import org.geotools.validation.Validation;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -21,6 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.geotools.validation.Validation;
 
 
 /**

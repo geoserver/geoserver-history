@@ -36,7 +36,6 @@ import com.vividsolutions.jts.geom.Geometry;
  * <p>
  * Capabilities:
  * <ul>
- * </li></li>
  * </ul>
  * Example Use:
  * <pre><code>
@@ -45,7 +44,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: IsValidGeometryFeatureValidation.java,v 1.4 2004/01/12 21:01:31 dmzwiers Exp $
+ * @version $Id: IsValidGeometryFeatureValidation.java,v 1.5 2004/01/21 00:35:23 dmzwiers Exp $
  */
 public class IsValidGeometryFeatureValidation implements FeatureValidation {
     /** The logger for the validation module. */
