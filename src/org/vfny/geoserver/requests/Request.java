@@ -21,7 +21,7 @@ import org.vfny.geoserver.global.WMS;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.15 2004/03/31 05:04:39 cholmesny Exp $
+ * @version $Id: Request.java,v 1.16 2004/09/08 17:36:35 cholmesny Exp $
  */
 abstract public class Request {
 	/**
@@ -210,7 +210,7 @@ abstract public class Request {
 	 * @return the base url of the schemas.  Will be getBaseUrl() + data/capabilities.
 	 */
 	public String getSchemaBaseUrl(){
-		return getBaseUrl() + "data/capabilities/";
+		return Requests.getSchemaBaseUrl( getHttpServletRequest() );
 	}
 	
 	/**
