@@ -399,7 +399,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         //raw list of attributes for each feature type requested
-        List byFeatureTypes = super.readFlat(rawAtts, "|");
+        List byFeatureTypes = readFlat(rawAtts, "|");
         int nLayers = layers.length;
 
         if (byFeatureTypes.size() != nLayers) {
@@ -589,7 +589,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String rawFilters = getValue("FILTER");
 
         if (rawFilters != null) {
-            filtersList = super.readFilters(null, rawFilters, null);
+            filtersList = readFilters(null, rawFilters, null);
 
             if ((filtersList.size() > 0) && (filtersList.size() != numLayers)) {
                 throw new WmsException("Number of layers and filters do not match",

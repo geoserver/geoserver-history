@@ -35,9 +35,6 @@ public class InsertRequest extends SubTransactionRequest {
     /** flag to tell is all locked features should be released. */
     private boolean releaseAll;
 
-    /** Specifies the table of features */
-    protected String typeName = null;
-
     /**
      * Empty constructor.
      */

@@ -65,7 +65,7 @@ public class FeatureWithLockRequest extends FeatureRequest {
      * @return
      */
     public FeatureLock toFeatureLock() {
-        String handle = getHandle();
+        //String handle = getHandle();
 
         if ((handle == null) || (handle.length() == 0)) {
             handle = "GeoServer";
@@ -95,18 +95,18 @@ public class FeatureWithLockRequest extends FeatureRequest {
      *       a lot faster, even if it's not as pretty.
      */
     public LockRequest asLockRequest() {
-        LockRequest request = new LockRequest();
-        request.setExpiry(expiry);
+        LockRequest lockRequest = new LockRequest();
+        lockRequest.setExpiry(expiry);
 
         for (Iterator i = queries.iterator(); i.hasNext();) {
             Query curQuery = (Query) i.next();
-            request.addLock(curQuery.getTypeName(), curQuery.getFilter(),
+            lockRequest.addLock(curQuery.getTypeName(), curQuery.getFilter(),
                 curQuery.getHandle());
         }
 
-        LOGGER.finest("returning: " + super.toString() + " as " + request);
+        LOGGER.finest("returning: " + super.toString() + " as " + lockRequest);
 
-        return request;
+        return lockRequest;
     }
 
     /**
