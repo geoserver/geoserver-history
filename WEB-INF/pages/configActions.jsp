@@ -48,7 +48,7 @@
           class="edited"
  	</logic:equal>
  	      >
-        <html:link forward="data">
+        <html:link forward="config.data">
           <bean:message key="label.data"/>
 <logic:equal name="GeoServer.ApplicationState" property="dataChanged" value="true">
           *
