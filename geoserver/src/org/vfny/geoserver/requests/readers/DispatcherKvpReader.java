@@ -15,7 +15,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DispatcherKvpReader.java,v 1.9 2004/07/20 19:36:53 cholmesny Exp $
+ * @version $Id: DispatcherKvpReader.java,v 1.10 2004/07/20 20:13:49 cholmesny Exp $
  */
 public class DispatcherKvpReader {
     /** Class logger */
@@ -37,7 +37,7 @@ public class DispatcherKvpReader {
             responseType = responseType.toUpperCase();
 
             if (responseType.equals("GETCAPABILITIES") 
-                || response.equals("CAPABILITIES") {
+                || responseType.equals("CAPABILITIES")) {
                 return Dispatcher.GET_CAPABILITIES_REQUEST;
             } else if (responseType.equals("DESCRIBEFEATURETYPE")) {
                 return Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
