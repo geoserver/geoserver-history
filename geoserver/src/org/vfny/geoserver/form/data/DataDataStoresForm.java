@@ -44,10 +44,6 @@ public class DataDataStoresForm extends ActionForm {
 	
 	private String action;
 	
-	public DataDataStoresForm () {
-		System.out.println("Konstruktor");
-	}
-	
 	/*
 	 * Because of the way that STRUTS works, if the user does not check the enabled box,
 	 * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()

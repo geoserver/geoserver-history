@@ -6,6 +6,8 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.TreeSet;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +15,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 
 /**
  * @author rgould
@@ -28,16 +31,45 @@ public class DataFeatureTypesForm extends ActionForm {
 	private String latlonBoundingBox;
 	private String keywords;
 	private String _abstract;
+
+	private TreeSet featureTypes;
 	
+	private String action;	
 	private String selectedFeatureType;	
 	
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
 		
+		action="";
+		
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+
+		featureTypes = new TreeSet( config.getFeaturesTypes().keySet());
+				
+		FeatureTypeConfig ftConfig;
 		
+		selectedFeatureType = (String) context.getAttribute("selectedFeatureType");		
+		
+		ftConfig = config.getFeatureTypeConfig(selectedFeatureType);		
+		if (ftConfig == null) {
+			selectedFeatureType = (String) featureTypes.first();
+			ftConfig = config.getFeatureTypeConfig(selectedFeatureType);
+		}
+		
+		_abstract = ftConfig.getAbstract();
+		latlonBoundingBox = ftConfig.getLatLongBBox().toString();
+		name = ftConfig.getName();
+		SRS = Integer.toString(ftConfig.getSRS());
+		title = ftConfig.getTitle();
+		
+		String out = "";
+		for (int i = 0; i < ftConfig.getKeywords().size(); i++) {
+			out = out + ftConfig.getKeywords().get(i);// + System.getProperty("line.separator");
+		}
+
+		this.keywords = out;
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -127,6 +159,43 @@ public class DataFeatureTypesForm extends ActionForm {
 	 */
 	public void setTitle(String string) {
 		title = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSelectedFeatureType() {
+		return selectedFeatureType;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setAction(String string) {
+		action = string;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setSelectedFeatureType(String string) {
+		ServletContext context = getServlet().getServletContext();
+		context.setAttribute("selectedFeatureType", string);		
+		selectedFeatureType = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public TreeSet getFeatureTypes() {
+		return featureTypes;
 	}
 
 }

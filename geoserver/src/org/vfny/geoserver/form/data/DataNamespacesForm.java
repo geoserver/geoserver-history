@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.NameSpaceConfig;
 
 /**
  * @author rgould
@@ -30,6 +31,7 @@ public class DataNamespacesForm extends ActionForm {
 	private String prefix;
 	
 	private String selectedNamespace;
+	private String action;
 	
 	private TreeSet namespaces;	
 
@@ -50,15 +52,27 @@ public class DataNamespacesForm extends ActionForm {
 		super.reset(arg0, arg1);
 		
 		defaultChecked = false; 
-		
+		action = "";
+				
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 			
 		namespaces = new TreeSet(config.getNameSpaces().keySet());
 		
-	//	Namespace nsConfig			
+		NameSpaceConfig nsConfig;
 		
+		selectedNamespace = (String) context.getAttribute("selectedNamespace");	
+			
+		nsConfig = config.getNameSpace(selectedNamespace);		
+		if (nsConfig == null) {
+			nsConfig = config.getNameSpace( (String) namespaces.first());
+		}
+		
+		_default = nsConfig.isDefault();
+		namespaceID = selectedNamespace;
+		prefix = nsConfig.getPrefix();
+		URI = nsConfig.getUri();
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -135,6 +149,42 @@ public class DataNamespacesForm extends ActionForm {
 	 */
 	public void setDefaultChecked(boolean b) {
 		defaultChecked = b;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSelectedNamespace() {
+		return selectedNamespace;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setSelectedNamespace(String string) {
+		ServletContext context = getServlet().getServletContext();
+		context.setAttribute("selectedNamespace", string);			
+		selectedNamespace = string;
+	}
+	/**
+	 * @return
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setAction(String string) {
+		action = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public TreeSet getNamespaces() {
+		return namespaces;
 	}
 
 }

@@ -6,6 +6,8 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.TreeSet;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +15,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.StyleConfig;
 
 /**
  * @author rgould
@@ -26,7 +29,10 @@ public class DataStylesForm extends ActionForm {
 	private boolean _default;
 	private String filename;
 	
-	private String selectedStyle;	
+	private String selectedStyle;
+	private String action;	
+	
+	private TreeSet styles;
 	
 	/*
 	 * Because of the way that STRUTS works, if the user does not check the default box,
@@ -45,11 +51,28 @@ public class DataStylesForm extends ActionForm {
 		super.reset(arg0, arg1);
 		
 		defaultChecked = false;
+		action = "";
 		
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
+		styles = new TreeSet(config.getStyles().keySet());
+
+				
+		StyleConfig sConfig;
+		
+		selectedStyle = (String) context.getAttribute("selectedStyle");
+
+		sConfig = config.getStyle(selectedStyle);		
+		if (sConfig == null) {
+			sConfig = config.getStyle( (String) styles.first());
+		}
+		
+		styleID = sConfig.getId();
+		_default = sConfig.isDefault();
+		filename = sConfig.getFilename().getPath();
+				
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -98,6 +121,57 @@ public class DataStylesForm extends ActionForm {
 	 */
 	public void setStyleID(String string) {
 		styleID = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isDefaultChecked() {
+		return defaultChecked;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSelectedStyle() {
+		return selectedStyle;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setAction(String string) {
+		action = string;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setDefaultChecked(boolean b) {
+		defaultChecked = b;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setSelectedStyle(String string) {
+		ServletContext context = getServlet().getServletContext();
+		context.setAttribute("selectedStyle", string);		
+		selectedStyle = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public TreeSet getStyles() {
+		return styles;
 	}
 
 }
