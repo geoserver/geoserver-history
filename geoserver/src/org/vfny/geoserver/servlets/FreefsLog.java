@@ -20,6 +20,7 @@ import java.util.logging.Level;
  * Initializes all logging functions.
  * 
  * @author Rob Hranac, Vision for New York
+ * @author Chris Holmes, TOPP
  * @version 0.9 beta, 11/01/01
  *
  */
@@ -38,28 +39,16 @@ public class FreefsLog extends HttpServlet {
    
 
     /**
-     * Initializes logging.
+     * Initializes logging and config.
      *
      */ 
     public void init() {
-	Geotools.init("Log4JFormatter", Level.FINEST);
+	Geotools.init("Log4JFormatter", Level.INFO);
 	String root = this.getServletContext().getRealPath("/");
 	String path = root + CONFIG_DIR;
-	LOG.info("init with path" + path);
+	LOG.finest("init with path" + path);
 	ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
 
-
-	
-	//this.getServletContext().log("you are an idiot");
-        /*
-        String prefix =  getServletContext().getRealPath("/");
-        String file = getInitParameter("log4j-init-file");
-        
-        // if the log4j-init-file is not set, then no point in trying
-        if(file != null) {
-            PropertyConfigurator.configure(prefix + file);
-        }
-        */
     }
     
     
