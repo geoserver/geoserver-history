@@ -16,7 +16,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.DataAttributeTypesSelectForm;
 /**
  * @author User

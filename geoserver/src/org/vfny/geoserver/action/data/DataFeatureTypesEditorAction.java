@@ -50,7 +50,7 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
 		String _abstract = featureTypesForm.get_abstract();
 		
 		DataConfig dataConfig = (DataConfig) getDataConfig();			
-		FeatureTypeConfig config = null;		
+		FeatureTypeConfig config = null; //TODO - RETRIEVE featuretype config		
 		
 		config.setAbstract(_abstract);
 		config.setName(name);
@@ -59,7 +59,7 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
 		// Errrrrrrrrrrrr config.setLatLongBBox(new Envelope());
 		
 		List list = new ArrayList();
-		String[] array = keywords != null ? keywords.split("\n") : new String[0];
+		String[] array = keywords != null ? keywords.split(System.getProperty("line.separator")) : new String[0];
 		
 		for (int i = 0; i < array.length;i++) {
 			list.add(array[i]);
@@ -68,7 +68,7 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
 		config.setKeywords(list);
 		
 		//config.setKeywords()			
-		dataConfig.addFeatureType(name, config);
+		//TODO save somehow - dataConfig.addFeatureType(name, config);
 			
 		featureTypesForm.reset(mapping, request);
 			
