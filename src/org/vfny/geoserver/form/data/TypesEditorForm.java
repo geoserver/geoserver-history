@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.13 2004/04/07 22:36:25 jive Exp $
+ * @version $Id: TypesEditorForm.java,v 1.14 2004/04/07 23:31:25 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -285,7 +285,7 @@ public class TypesEditorForm extends ActionForm {
      * <p>
      * If the user has chosen -- then this list will be <code>null</code>.
      * </p>
-     * @return List of user supplied AttributeTypeInfoDTO, or <code>null</code>
+     * @return List of user supplied AttributeTypeInfoConfig, or <code>null</code>
      */
     public List toSchemaAttributes(){
         if( schemaBase == null || schemaBase.equals("--")){

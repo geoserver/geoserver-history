@@ -35,8 +35,7 @@ public class AttributeForm {
         fragment = config.getFragment();
         
         attributeType = attribute;
-    }
-    
+    }   
     public AttributeTypeInfoDTO toDTO(){
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
         dto.setName( name );
@@ -153,6 +152,7 @@ public class AttributeForm {
             	list.add( element.getTypeRefName() );
             }
         }
+        list.add( AttributeTypeInfoConfig.TYPE_FRAGMENT );
         return list;
     }
 }
