@@ -100,7 +100,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Chris Holmes
  * @author Jody Garnett
 =======
- * @version $Id: AbstractService.java,v 1.8 2004/01/16 19:33:38 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.9 2004/01/20 06:31:36 jive Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -205,7 +205,6 @@ public abstract class AbstractService extends HttpServlet {
                 paramName = (String) pnames.nextElement();
                 paramValue = request.getParameter(paramName);
                 requestParams.put(paramName.toUpperCase(), paramValue);
-System.out.println("AbstractService : paramName="+paramName.toUpperCase()+": paramValue="+paramValue);
             }
 
             KvpRequestReader requestReader = getKvpReader(requestParams);
@@ -761,7 +760,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
