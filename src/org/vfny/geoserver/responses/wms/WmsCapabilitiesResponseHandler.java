@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.responses.wms;
 
+import org.geotools.styling.Style;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -11,6 +12,7 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -28,7 +30,7 @@ import java.util.List;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.18 2004/05/22 05:12:48 cholmesny Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.19 2004/06/12 12:20:58 groldan Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     /** DOCUMENT ME! */
@@ -296,6 +298,14 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     protected void handleFeatureType(FeatureTypeInfo ftype)
         throws SAXException {
         super.handleFeatureType(ftype);
+        
+        //add the layer style
+        startElement("Style");
+        Style ftStyle = ftype.getDefaultStyle();
+        handleSingleElem("Name", ftStyle.getName());
+        handleSingleElem("Title", ftStyle.getTitle());
+        handleSingleElem("Abstract", ftStyle.getAbstract());
+        endElement("Style");
     }
 
     /**
