@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <datastores>
+    <!--
+    a datastore configuration element serves as a common data source connection
+    parameters repository for all featuretypes it holds.
+    -->
+    <datastore id="bizkaia.sde" enabled="false" namespace="cgf"><!-- enabled is optional, defaults to true -->
+      <description>My local SDE testing database</description>
+      <connectionParams>
+        <parameter name="dbtype" value="arcsde"/>
+        <parameter name="server" value="localhost"/>
+        <parameter name="port" value="5151"/>
+        <parameter name="instance" value="sde"/>
+        <parameter name="user" value="sde"/>
+        <parameter name="password" value="carto"/>
+      </connectionParams>
+    </datastore>
+
+    <datastore id="ny.shp" enabled="false" namespace="cdf">
+      <description>New York sample shapefiles</description>
+      <connectionParams>
+        <parameter name="dir" value="/data/featureTypes/ny"/>
+      </connectionParams>
+    </datastore>
+  <datastore id="rail.postgis" enabled="true" namespace="topp"><!-- enabled is optional, defaults to true -->
+      <description>My local postgis testing database</description>
+      <connectionParams>
+        <parameter name="dbtype" value="postgis"/>
+        <parameter name="host" value="localhost"/>
+        <parameter name="port" value="5432"/>
+        <parameter name="database" value="testdb"/>
+        <parameter name="user" value="postgres"/>
+        <parameter name="passwd" value="postgres"/>
+      </connectionParams>
+    </datastore>  
+
+</datastores>
+
+  
+
+  <namespaces>
+  <namespace default="true" 
+	           uri="http://www.openplans.org/topp" 
+	           prefix="topp"/>
+	<namespace uri="http://www.opengis.net/cite/data"
+	           prefix="cdf"/>
+	<namespace uri="http://www.opengis.net/cite/geometry"
+	           prefix="cgf"/>
+  </namespaces>
+  <featureTypes>
+    <!-- name is the name of the featuretype as can be retrieved and queried
+      by it's DataStore
+    TODO: I think we should add a kind of optional definition query element,
+    containing a filter to restrict the featuretype content. i.e. to register 2
+    different FeatureTypes, both from the same datastore type but each one defined
+    by an attribute filter, as can be altimetry lines for 1:50000 and altimetry
+    lines for 1:5000, wich are diferentiated by the SCALE attribute code.
+    -->
+    <featureType datastore="cgf"><!-- this element should change its name
+         or element, datastore equal to a namespace prefix makes no sense -->
+     <name>BIZKAIA</name>
+        <SRS>-1</SRS><!-- native wich EPGS code for the FeatureType -->
+      <title>BIZKAIA</title>
+                <abstract>Bizkaia Municipalities Polygon Boundaries</abstract>
+        <keywords>bizkaia</keywords>
+        <latLonBoundingBox dynamic="true"/>
+      <!-- the list of exposed attributes. If the list is empty or not present
+      at all, all the FeatureType's attributes are exposed, if is present,
+      only those oattributes in this list will be exposed by the services -->
+      <attributes>
+        <attribute name="CODPROV"/>
+        <attribute name="CODMUN"/>
+        <attribute name="SHAPE"/>
+      </attributes>
+      <!-- the list of styles this FeatureType can be represented by.
+        at least must contain the "default" attribute -->
+      <styles default="normal">
+        <style id="green"/>
+        <style id="highlight"/>
+      </styles>
+    </featureType>
+
+    <featureType datastore="cdf">
+      <name>road</name> 
+       <SRS>32118</SRS><!-- native wich EPGS code for the FeatureType -->
+      <title>Random Road Centerlines</title>
+                <abstract>This is some random road features</abstract>
+        <keywords>road, New York City, TOPP</keywords>
+        <latLonBoundingBox dynamic="false"  minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
+      <!-- the list of exposed attributes. If the list is empty or not present
+      at all, all the FeatureType's attributes are exposed, if is present,
+      only those oattributes in this list will be exposed by the services -->
+ <attributes/>
+      <!-- the list of styles this FeatureType can be represented by.
+        at least must contain the "default" attribute -->
+      <styles default="normal"/>
+    </featureType>
+    <featureType datastore="topp">
+        <name>geom_test</name>
+        <SRS>32118</SRS><!-- native wich EPGS code for the FeatureType -->
+      <title>test postgis</title>
+                <abstract>This is some random road features</abstract>
+        <keywords>road, New York City, TOPP</keywords>
+        <latLonBoundingBox dynamic="false"  minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
+      <!-- the list of exposed attributes. If the list is empty or not present
+      at all, all the FeatureType's attributes are exposed, if is present,
+      only those oattributes in this list will be exposed by the services -->
+ <attributes/>
+      <!-- the list of styles this FeatureType can be represented by.
+        at least must contain the "default" attribute -->
+      <styles default="normal"/>
+    </featureType>
+  </featureTypes>
+
+  <styles>
+                <style id="thick outline" filename="styles/polyshp.sld"/>
+                <style id="dotty" filename="styles/funkypolyshp.sld"/>
+                <style id="green" filename="styles/green.sld"/>
+                <style id="population" filename="styles/popshade.sld"/>
+                <style id="highlight" filename="styles/usa_penn.sld"/>
+                <style id="bbox" filename="styles/usa_central.sld"/>
+                <style id="maleVsFemale" filename="styles/usa_ratio.sld"/>
+                <style id="normal" filename="styles/normal.sld" default="true"/>
+                <style id="manualVsWorkers" filename="styles/usa_math.sld"/>
+  </styles>
+
+</catalog>
