@@ -4,40 +4,39 @@
  */
 package org.vfny.geoserver.responses.wms.featureInfo;
 
-import java.nio.charset.Charset;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
-
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
- * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo
- * and the feature delegate to do most of the work, just implements an html
- * based writeTo method.  
- *<p>
- * In the future James suggested that we allow some sort of template system,
- * so that one can control the formatting of the html output, since now
- * we just hard code some minimal header stuff. See 
+ * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo and
+ * the feature delegate to do most of the work, just implements an html based
+ * writeTo method.
+ * 
+ * <p>
+ * In the future James suggested that we allow some sort of template system, so
+ * that one can control the formatting of the html output, since now we just
+ * hard code some minimal header stuff. See
  * http://jira.codehaus.org/browse/GEOS-196
+ * </p>
  *
  * @author James Macgill, PSU
  * @version $Id: HTMLTableFeatureInfoResponse.java,v 1.1 2004/07/19 22:32:22 jmacgill Exp $
  */
 public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
-    
     /**
      *
      */
@@ -45,42 +44,47 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         format = "text/html";
         supportedFormats = Collections.singletonList(format);
     }
-        
+
     /**
      * Writes the image to the client.
      *
      * @param out The output stream to write to.
      *
-     * @throws org.vfny.geoserver.ServiceException DOCUMENT ME!
-     * @throws java.io.IOException DOCUMENT ME!
+     * @throws org.vfny.geoserver.ServiceException For problems with geoserver
+     * @throws java.io.IOException For problems writing the output.
      */
     public void writeTo(OutputStream out)
-    throws org.vfny.geoserver.ServiceException, java.io.IOException {
+        throws org.vfny.geoserver.ServiceException, java.io.IOException {
         Charset charSet = getRequest().getGeoServer().getCharSet();
         OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
         PrintWriter writer = new PrintWriter(osw);
         writer.println("<html><body>");
+
         try {
-            for(int i = 0; i < results.size(); i++){
-                FeatureResults fr = (FeatureResults)results.get(i);
+            for (int i = 0; i < results.size(); i++) {
+                FeatureResults fr = (FeatureResults) results.get(i);
                 FeatureType schema = fr.getSchema();
-                
+
                 writer.println("<table border='1'>");
-                writer.println("<tr><th colspan="+ schema.getAttributeCount() +" scope='col'>" + schema.getTypeName() + " </th></tr>");
+                writer.println("<tr><th colspan=" + schema.getAttributeCount()
+                    + " scope='col'>" + schema.getTypeName() + " </th></tr>");
                 writer.println("<tr>");
-                for(int j = 0; j < schema.getAttributeCount(); j++){
-                    writer.println("<td>" + schema.getAttributeType(j).getName() + "</td>");
+
+                for (int j = 0; j < schema.getAttributeCount(); j++) {
+                    writer.println("<td>"
+                        + schema.getAttributeType(j).getName() + "</td>");
                 }
+
                 writer.println("</tr>");
-                
-                
+
                 //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
                 FeatureReader reader = fr.reader();
-                
-                while(reader.hasNext()){
+
+                while (reader.hasNext()) {
                     Feature f = reader.next();
                     AttributeType[] types = schema.getAttributeTypes();
                     writer.println("<tr>");
+
                     for (int j = 0; j < types.length; j++) {
                         if (Geometry.class.isAssignableFrom(types[j].getType())) {
                             writer.println("<td>");
@@ -92,17 +96,17 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
                             writer.println("</td>");
                         }
                     }
+
                     writer.println("</tr>");
                 }
+
                 writer.println("</table>");
                 writer.println("<p>");
             }
         } catch (IllegalAttributeException ife) {
             writer.println("Unable to generate information " + ife);
         }
-        
+
         writer.flush();
-        
     }
-    
 }

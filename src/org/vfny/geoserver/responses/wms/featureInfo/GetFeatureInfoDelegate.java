@@ -4,10 +4,7 @@
  */
 package org.vfny.geoserver.responses.wms.featureInfo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
@@ -26,38 +23,46 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetFeatureInfoRequest;
 import org.vfny.geoserver.responses.Response;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
- * Base class for GetFeatureInfo delegates responsible of creating GetFeatureInfo
- * responses in different formats.
+ * Base class for GetFeatureInfo delegates responsible of creating
+ * GetFeatureInfo responses in different formats.
+ * 
  * <p>
  * Subclasses should implement one or more output formats, wich will be
- * returned in a list of mime type strings in <code>getSupportedFormats</code>.
- * For example, a subclass can be created to write one of the following output formats:
+ * returned in a list of mime type strings in
+ * <code>getSupportedFormats</code>. For example, a subclass can be created to
+ * write one of the following output formats:
+ * 
  * <ul>
- * <li>text/plain
- * <li>text/html
- * </li>application/vnd.ogc.gml
+ * <li>
+ * text/plain
+ * </li>
+ * <li>
+ * text/html
+ * </li>
  * </ul>
  * </p>
+ * 
  * <p>
  * This abstract class takes care of executing the request in the sense of
- * taking the GetFeatureInfo request parameters such as query_layers, bbox, x, y, etc., and the
- * optional parameter FILTER, create the gt2 query objects for each
- * featuretype and executing it. This process leads to a set of FeatureResults
- * objects and its metadata, wich will be given to the
- * <code>execute(FeatureTypeInfo[] , FeatureResults[])</code> method,
- * that a subclass should implement as a matter of setting up any
- * resource/state it needs to later encoding.
+ * taking the GetFeatureInfo request parameters such as query_layers, bbox, x,
+ * y, etc., and the optional parameter FILTER, create the gt2 query objects
+ * for each featuretype and executing it. This process leads to a set of
+ * FeatureResults objects and its metadata, wich will be given to the
+ * <code>execute(FeatureTypeInfo[] , FeatureResults[])</code> method, that a
+ * subclass should implement as a matter of setting up any resource/state it
+ * needs to later encoding.
  * </p>
- *
+ * 
  * <p>
  * So, it should be enough to a subclass to implement the following methods in
  * order to produce the requested output format:
- *
+ * 
  * <ul>
  * <li>
  * execute(FeatureTypeInfo[], FeatureResults[], int, int)
@@ -100,18 +105,20 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Executes a GetFeatureInfo request.  Builds the proper objects from the request
-     * names.
+     * Executes a GetFeatureInfo request.  Builds the proper objects from the
+     * request names.
      *
      * @param request A valid GetMapRequest.
      *
      * @throws WmsException If anything goes wrong.
      */
-    protected void execute(GetFeatureInfoRequest request) throws WmsException {
+    protected void execute(GetFeatureInfoRequest request)
+        throws WmsException {
         this.request = request;
-        
+
         //use the layer of the QUERY_LAYERS parameter, not the LAYERS one
         FeatureTypeInfo[] layers = request.getQueryLayers();
+
         //get the filters of the "GetMap" portion of the request
         Filter[] filters = request.getGetMapRequest().getFilters();
 
@@ -138,29 +145,25 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *        to be processed.
      * @param queries Matching array of queries from the queries of the
      *        requested layers, already setted up with the bbox filter from
-	 *		  the BBOX parameter of the GetMap request and to retrieve the
-	 *		  specified attributes in the ATTRIBUTES request parameter.
-	 * @param x the X coordinate in pixels where the identification must be done
-	 * relative to the image dimensions
-	 * 
-	 * @param x the X coordinate in pixels where the identification must be done
-	 * relative to the image dimensions
-	 * 
-	 * @param y the Y coordinate in pixels where the identification must be done
-	 * relative to the image dimensions
+     *        the BBOX parameter of the GetMap request and to retrieve the
+     *        specified attributes in the ATTRIBUTES request parameter.
+     * @param x the X coordinate in pixels where the identification must be
+     *        done relative to the image dimensions
+     * @param y the Y coordinate in pixels where the identification must be
+     *        done relative to the image dimensions
      *
      * @throws WmsException For any problems executing.
      */
     protected abstract void execute(FeatureTypeInfo[] requestedLayers,
-        Query[] queries, int x, int y)
-        throws WmsException;
+        Query[] queries, int x, int y) throws WmsException;
 
     /**
      * Creates the array of queries to be executed for the request.
-	 * <p>
-	 *  Each query is setted up to retrieve the features that matches the
-	 *  BBOX specified in the GetMap request
-	 * </p>
+     * 
+     * <p>
+     * Each query is setted up to retrieve the features that matches the BBOX
+     * specified in the GetMap request
+     * </p>
      *
      * @param layers The layers to request against.
      * @param filters The matching filters to process with.
@@ -169,7 +172,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws WmsException If the custom filter can't be constructed.
      */
-    private Query[] buildQueries(FeatureTypeInfo[] layers, Filter[] filters) throws WmsException {
+    private Query[] buildQueries(FeatureTypeInfo[] layers, Filter[] filters)
+        throws WmsException {
         int nLayers = layers.length;
         int numFilters = (filters == null) ? 0 : filters.length;
         Query[] queries = new Query[nLayers];
@@ -251,14 +255,14 @@ public abstract class GetFeatureInfoDelegate implements Response {
      * given FeatureTypeInfo and the Filter that will be applied to it. By
      * this way, only the needed propertied will be queried to the underlying
      * FeatureSource in the hope that it will speed up the query
-     *
+     * 
      * <p>
      * Note that just the attributes exposed by the FeatureTypeInfo will be
      * taken in count. a FeatureTypeInfo exposes all it's attributes except if
      * the subset of desiref exposed attributes are specified in the catalog
      * configuration.
      * </p>
-     *
+     * 
      * <p>
      * This method guarantiees that at lest the default geometry attribute of
      * <code>layer</code> will be returned.
@@ -266,7 +270,6 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @param layer The layer to process.
      * @param filter The filter to process with.
-     * @param attributes The attributes to return.
      *
      * @return An array of the propertyNames needed.
      *
@@ -278,7 +281,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *       AttributeExpression's?). I think that the style should be taken
      *       in count too.
      */
-    private String[] guessProperties(FeatureTypeInfo layer, Filter filter) throws java.io.IOException {
+    private String[] guessProperties(FeatureTypeInfo layer, Filter filter)
+        throws java.io.IOException {
         FeatureType type = layer.getFeatureType();
         List atts = new ArrayList();
         String geom_name = type.getDefaultGeometry().getName();
@@ -303,9 +307,9 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Evaluates if this GetFeatureInfo producer can generate the map format specified by
-     * <code>mapFormat</code>, where <code>mapFormat</code> is the MIME type of
-     * the requested response.
+     * Evaluates if this GetFeatureInfo producer can generate the map format
+     * specified by <code>mapFormat</code>, where <code>mapFormat</code> is
+     * the MIME type of the requested response.
      *
      * @param mapFormat the MIME type of the output map format requiered
      *
