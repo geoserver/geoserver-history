@@ -57,7 +57,7 @@ public class DataNamespacesForm extends ActionForm {
 			
 		namespaces = new TreeSet(config.getNameSpaces().keySet());
 		
-		Namespace nsConfig			
+	//	Namespace nsConfig			
 		
 	}
 	
