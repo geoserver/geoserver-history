@@ -43,36 +43,4 @@
 
 </table>
 <table border="0">
-<%
-try {
-org.vfny.geoserver.action.validation.TestValidationResults tvr =
-	(org.vfny.geoserver.action.validation.TestValidationResults) session.getAttribute(org.vfny.geoserver.action.validation.TestValidationResults.CURRENTLY_SELECTED_KEY);
-if(tvr!=null && tvr.getErrors().size()>0){
-%>
-<table border="0">
-<tr><td>ERRORS</td></tr>
-<%if(tvr.isRun()){%>
-<tr><td>RUN COMPLETED</td></tr>
-<%}else{%>
-<tr><td>RUN NOT COMPLETED</td></tr>
-<%
-}
-java.util.Iterator i = tvr.getErrors().entrySet().iterator();
-while(i.hasNext()){
-  java.util.Map.Entry m = (java.util.Map.Entry)i.next();  
-  org.geotools.feature.Feature feature = (org.geotools.feature.Feature) m.getKey();
-  String fid = feature != null ? feature.getID() : "(problem)";
-  Object msg = m.getValue();
-  String message = msg != null ? m.toString() : "an error has occured";
-  %>
-<tr><td><%=fid%></td><td><pre><code><%=message%></code></pre></td></tr>
-  <%
-} // while
-%>
-</table>
-<%
-} // if
-} catch( NullPointerException bad){
-	bad.printStackTrace();
-}
-%>
+

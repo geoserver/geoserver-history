@@ -204,6 +204,9 @@
         <forward
         	name="validationTestEditor"
         	path="/config/validation/testEdit.do"/>
+        <forward
+        	name="config.validation.displayResults"
+        	path="/config/validation/displayResults.do"/>
         	
         <!-- CONFIG wfs -->
         
@@ -449,6 +452,11 @@
         	path="/config/validation/testEdit"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.validation.test.editor"/>
+
+        <action
+        	path="/config/validation/displayResults"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.validation.displayResults"/>
         	        	
         <!-- DATA -->
         <action
