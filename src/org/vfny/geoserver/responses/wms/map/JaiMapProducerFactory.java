@@ -4,18 +4,12 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import org.geotools.renderer.lite.LiteRenderer2;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.vfny.geoserver.responses.wms.GetMapProducer;
 import org.vfny.geoserver.responses.wms.GetMapProducerFactorySpi;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+import org.vfny.geoserver.responses.wms.helpers.JAISupport;
 
 
 /**
@@ -28,9 +22,6 @@ public class JaiMapProducerFactory implements GetMapProducerFactorySpi {
     /** DOCUMENT ME!  */
     private static final Logger LOGGER = Logger.getLogger(JaiMapProducerFactory.class.getPackage()
                                                                                      .getName());
-
-    /** The formats supported by this map delegate. */
-    private static Set supportedFormats = null;
 
     /**
      *
@@ -60,59 +51,7 @@ public class JaiMapProducerFactory implements GetMapProducerFactorySpi {
      *         ImageIO extension.
      */
     public Set getSupportedFormats() {
-        if (supportedFormats == null) {
-            //LiteRenderer renderer = null;
-            String[] mimeTypes = null;
-
-            LiteRenderer2 testRenderer = null;
-
-            try {
-                testRenderer = new LiteRenderer2();
-                mimeTypes = ImageIO.getWriterMIMETypes();
-            } catch (NoClassDefFoundError ncdfe) {
-                supportedFormats = Collections.EMPTY_SET;
-                LOGGER.warning("could not find jai: " + ncdfe);
-
-                //this will occur if JAI is not present, so please do not
-                //delete, or we get really nasty messages on getCaps for wms.
-            }
-
-            if ((testRenderer == null) || (mimeTypes == null)) {
-                LOGGER.info("renderer was null, so jai not found");
-                supportedFormats = Collections.EMPTY_SET;
-            } else {
-                supportedFormats = new HashSet();
-
-                List formatsList = Arrays.asList(mimeTypes);
-
-                for (Iterator it = formatsList.iterator(); it.hasNext();) {
-                    String curFormat = it.next().toString();
-
-                    if (!curFormat.equals("")) {
-                        supportedFormats.add(curFormat);
-                    }
-                }
-
-                if (LOGGER.isLoggable(Level.CONFIG)) {
-                    StringBuffer sb = new StringBuffer(
-                            "Supported JAIMapResponse's MIME Types: [");
-
-                    for (Iterator it = supportedFormats.iterator();
-                            it.hasNext();) {
-                        sb.append(it.next());
-
-                        if (it.hasNext()) {
-                            sb.append(", ");
-                        }
-                    }
-
-                    sb.append("]");
-                    LOGGER.config(sb.toString());
-                }
-            }
-        }
-
-        return supportedFormats;
+        return JAISupport.getSupportedFormats();
     }
 
     /**
@@ -121,7 +60,7 @@ public class JaiMapProducerFactory implements GetMapProducerFactorySpi {
      * @return DOCUMENT ME!
      */
     public boolean isAvailable() {
-        return getSupportedFormats().size() > 0;
+        return JAISupport.isJaiAvailable();
     }
 
     /**
@@ -133,7 +72,7 @@ public class JaiMapProducerFactory implements GetMapProducerFactorySpi {
      * @return true if class can produce a map in the passed format
      */
     public boolean canProduce(String mapFormat) {
-        return getSupportedFormats().contains(mapFormat);
+        return JAISupport.getSupportedFormats().contains(mapFormat);
     }
 
     /**
