@@ -20,13 +20,13 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,9 +40,19 @@ import javax.imageio.stream.ImageOutputStream;
  * Generates a map using the geotools jai rendering classes.  Currently does a
  * fairly poor job of taking advantage of the streaming architecture, but I'm
  * not sure there's a better way to handle it.
+ * 
+ * <p>
+ * Ok, so Andrea is going to get the streaming stuff working better for us
+ * with the LiteRenderer.  Until then we _should_ be using lite with feature
+ * collections, but we are using StyledMapRenderer because lite has this
+ * silly batik dependancy.
+ * </p>
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.17 2004/04/16 18:05:59 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.18 2004/04/17 15:04:49 cholmesny Exp $
+ *
+ * @task TODO: replace StyledMapRenderer with LiteRenderer when batik depend is
+ *       gone.  Get Lite working with streaming architecture.
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -91,9 +101,13 @@ public class JAIMapResponse extends GetMapDelegate {
      */
     public List getSupportedFormats() {
         if (supportedFormats == null) {
-            //StyledMapRenderer renderer = null;
+            StyledMapRenderer renderer = null;
+
             try {
-                renderer = new LiteRenderer();
+                //change to LiteRenderer when it works w/o batik.
+                renderer = new StyledMapRenderer(null);
+
+                //renderer = new LiteRenderer();
             } catch (NoClassDefFoundError ncdfe) {
                 supportedFormats = Collections.EMPTY_LIST;
                 LOGGER.warning("could not find jai: " + ncdfe);
@@ -212,7 +226,7 @@ public class JAIMapResponse extends GetMapDelegate {
      *         wrtting to the output stream
      */
     public String getContentEncoding() {
-        return null;
+        return format;
     }
 
     /**
@@ -283,16 +297,24 @@ public class JAIMapResponse extends GetMapDelegate {
             //I tried to change to lite renderer, but still looks like no
             //success with actually printing features... time to study more
             //rendering code.  ch
-            //StyledMapRenderer renderer = new StyledMapRenderer(null);
-            LiteRenderer renderer = new LiteRenderer(map);
+            StyledMapRenderer renderer = new StyledMapRenderer(null);
+
+            //LiteRenderer renderer = new LiteRenderer(map);
+            Envelope dataArea = map.getLayerBounds();
+            Rectangle paintArea = new Rectangle(width, height);
+            AffineTransform at = worldToScreenTransform(dataArea, paintArea);
 
             synchronized (renderer) {
-                //renderer.setMapContext(map);
-                //renderer.setOutput((Graphics2D) image.getGraphics(),
-                //new java.awt.Rectangle(width, height));
-                renderer.paint((Graphics2D) image.getGraphics(),
-                    new java.awt.Rectangle(width, height), new AffineTransform());
+                //this is for styled, remove when literender's batik issue
+                //is resolved.
+                renderer.setMapContext(map);
+                renderer.paint((Graphics2D) image.getGraphics(), paintArea, at,
+                    false);
 
+                //end styled.
+                //works with lite, comment back in when we use lite again.
+                //renderer.paint((Graphics2D) image.getGraphics(),
+                //  paintArea, at);
                 LOGGER.fine("called renderer");
             }
 
@@ -302,5 +324,27 @@ public class JAIMapResponse extends GetMapDelegate {
             exp.printStackTrace();
             throw new WmsException(null, "Internal error : " + exp.getMessage());
         }
+    }
+
+    /**
+     * Sets up the affine transform.  Stolen from liteRenderer code.
+     *
+     * @param mapExtent the map extent
+     * @param screenSize the screen size
+     *
+     * @return a transform that maps from real world coordinates to the screen
+     */
+    public AffineTransform worldToScreenTransform(Envelope mapExtent,
+        Rectangle screenSize) {
+        double scaleX = screenSize.getWidth() / mapExtent.getWidth();
+        double scaleY = screenSize.getHeight() / mapExtent.getHeight();
+
+        double tx = -mapExtent.getMinX() * scaleX;
+        double ty = (mapExtent.getMinY() * scaleY) + screenSize.getHeight();
+
+        AffineTransform at = new AffineTransform(scaleX, 0.0d, 0.0d, -scaleY,
+                tx, ty);
+
+        return at;
     }
 }
