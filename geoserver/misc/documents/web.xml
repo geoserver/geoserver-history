@@ -3,6 +3,10 @@
 <web-app>
   <display-name>GeoServer</display-name>
   <description>Web Mapping and Feature Services</description>
+  <context-param>
+    <param-name>serviceStratagy</param-name>
+    <param-value>SPEED</param-value>
+  </context-param>
   <servlet>
     <servlet-name>DescribeFeatureType</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.wfs.Describe</servlet-class>
