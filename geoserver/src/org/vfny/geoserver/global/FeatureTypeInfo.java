@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: FeatureTypeInfo.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfo.java,v 1.3 2004/01/14 22:54:26 dmzwiers Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureTypeMetaData {
     /** Default constant */
@@ -253,7 +253,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements FeatureType
 	 */
     private FeatureSource getRealFeatureSource()
         throws NoSuchElementException, IllegalStateException, IOException {
-        FeatureSource realSource = getDataStoreInfo().getDataStore().getFeatureSource(ftc.getName());
+    	DataStoreInfo dsi = getDataStoreInfo();
+    	//dsi.getNameSpace().getPrefix()+":"+
+        FeatureSource realSource = dsi.getDataStore().getFeatureSource(ftc.getName());
 
         return realSource;
     }
