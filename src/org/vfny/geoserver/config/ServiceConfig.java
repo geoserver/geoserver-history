@@ -227,16 +227,21 @@ public class ServiceConfig implements java.io.Serializable {
      *
      * @param root the node whose descendants should be searched.
      * @param tag the tag to match.
+     * @return the text of the first descendant node that matches the tag name,
+     * an empty string if nothing is found.
      */
+    //should be in sort of config utility class, as others use it as well.
     static String findTextFromTag(Element root, String tag){
-	String retString = null;
+	String retString = new String();
 	Node firstElement = root.getElementsByTagName(tag).item(0);
 	if (firstElement != null) {
 	    Node text = firstElement.getFirstChild();
 	    if (text instanceof org.w3c.dom.Text){
 		retString = ((Text)text).getData();
+		
 	    }
 	}
+	LOGGER.finest("tag " + tag + " found text: " + retString);
 	return retString;
     }
 
