@@ -12,8 +12,10 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.xerces.parsers.SAXParser;
+import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.util.requests.DispatcherHandler;
 import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wcs.WcsException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -37,6 +39,8 @@ import org.xml.sax.XMLReader;
  * </p>
  *
  * @author Chris Holmes
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: DispatcherXmlReader.java,v 1.1 2004/03/30 04:37:32 cholmesny Exp $
  *
  * @task REVISIT: This might be better implemented to extend XmlRequestReader,
@@ -67,7 +71,7 @@ public class DispatcherXmlReader {
      * @throws WfsException DOCUMENT ME!
      */
     public void read(Reader reader, HttpServletRequest req)
-        throws WfsException {
+        throws ServiceException {
         //InputSource requestSource = new InputSource((Reader) tempReader);
         InputSource requestSource = new InputSource(reader);
 
@@ -80,11 +84,11 @@ public class DispatcherXmlReader {
             parser.setContentHandler(currentRequest);
             parser.parse(requestSource);
         } catch (SAXException e) {
-            throw new WfsException(e,
+            throw new ServiceException(e,
                 "XML get capabilities request parsing error",
                 DispatcherXmlReader.class.getName());
         } catch (IOException e) {
-            throw new WfsException(e,
+            throw new ServiceException(e,
                 "XML get capabilities request input error",
                 DispatcherXmlReader.class.getName());
         }

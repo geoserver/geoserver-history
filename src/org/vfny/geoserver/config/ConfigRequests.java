@@ -27,10 +27,31 @@ import javax.servlet.http.HttpSession;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
+ * @author jive
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: ConfigRequests.java,v 1.4 2004/01/31 00:27:27 jive Exp $
  */
 public class ConfigRequests {
+    /**
+     * Access Web Coverage Server Configuration Model from the WebContainer.
+     * 
+     * <p>
+     * Note that this represents the Configuration and not the state of the Web
+     * Feature Server.
+     * </p>
+     *
+     * @param request DOCUMENT ME!
+     *
+     * @return Configuration information for the Web Coverage Server
+     */
+    public static WCSConfig getWCSConfig(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        ServletContext context = session.getServletContext();
+
+        return (WCSConfig) context.getAttribute(WCSConfig.CONFIG_KEY);
+    }
+
     /**
      * Access Web Map Server Configuration Model from the WebContainer.
      * 

@@ -64,6 +64,29 @@ Service level configuration
       -->
   </global>
   <services>
+
+      <service type="WCS" enabled="true">
+      <!-- Service elements, needed for the capabilities document -->
+      <!-- Title and OnlineResource are the two required -->
+      <name>My GeoServer WCS</name>
+      <title>My GeoServer WCS</title>
+      <abstract>
+This is a description of your Web Coverage Server.
+     </abstract>
+      <keywords>
+        <keyword>WCS</keyword>
+        <keyword>WMS</keyword>
+        <keyword>GEOSERVER</keyword>
+      </keywords>
+      <metadataLink about="http://geoserver.sourceforge.net/html/index.php" type="undef" metadataType="other">
+	NONE
+      </metadataLink>
+      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
+      <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
+    </service>
+    
     <service type="WFS" enabled="true">
       <!-- Service elements, needed for the capabilities document -->
       <!-- Title and OnlineResource are the two required -->

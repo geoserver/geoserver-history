@@ -4,19 +4,17 @@
  */
 package org.vfny.geoserver.action;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.form.DemoForm;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -47,6 +45,8 @@ import org.vfny.geoserver.form.DemoForm;
  *
  * @author Richard Gould
  * @author Jody Garnett
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class DemoAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -59,12 +59,12 @@ public class DemoAction extends GeoServerAction {
         String baseUrl = org.vfny.geoserver.util.Requests.getBaseUrl(request);
 
         if (demo.equals("")) {
-            demoForm.setUrl(baseUrl + "wfs");
+            demoForm.setUrl(baseUrl);
             demoForm.setBody("");
         }
 
         String url = org.vfny.geoserver.util.Requests.getBaseUrl(request)
-            + "wfs";
+            + (demo.indexOf("Coverage") > 0 ? "wcs" : "wfs");
 
         File file = new File(dir, demo);
         BufferedReader reader = new BufferedReader(new FileReader(file));

@@ -6,6 +6,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
     xmlns:iso19119="http://www.opengis.net/iso19119"
+    xmlns:wcsfl="http://www.opengis.net/wcsfl"
     xmlns:wfsfl="http://www.opengis.net/wfsfl"
     xmlns:wmsll="http://www.opengis.net/wmsll"
     xmlns:filter="http://www.opengis.net/filter">

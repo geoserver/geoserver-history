@@ -9,10 +9,14 @@ import java.util.Locale;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
+import org.opengis.coverage.grid.*;
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataStore;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.config.CoverageConfig;
+import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
@@ -45,7 +49,9 @@ import org.vfny.geoserver.config.StyleConfig;
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
+ * @author jive
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: UserContainer.java,v 1.10 2004/03/09 05:38:18 jive Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {
@@ -57,16 +63,31 @@ public class UserContainer implements HttpSessionBindingListener {
     /** User's locale */
     private Locale locale;
 
+    /** Selected dataFormatId */
+    private String dataFormatID;
+
     /** Selected dataStoreId */
     private String dataStoreID;
 
     /** Selected prefix */
     private String prefix;
     /**
+     * Selected DataFormatConfig held in session for creation/editing.
+     */
+    private DataFormatConfig dataFormatConfig;
+    /**
      * Selected DataStoreConfig held in session for creation/editing.
      */
     private DataStoreConfig dataStoreConfig;
 
+    /**
+     * Cached Format being worked on.
+     * 
+     * <p>
+     * This should agree with the value of dataFormatConfig.
+     * </p>
+     */
+    private Format dataFormat;
     /**
      * Cached DataStore being worked on.
      * 
@@ -93,6 +114,8 @@ public class UserContainer implements HttpSessionBindingListener {
      */
     private FeatureTypeConfig featureTypeConfig;
 
+    private CoverageConfig coverageConfig;
+
     /**
      * Cached FeatureType being worked on.
      * 
@@ -103,6 +126,8 @@ public class UserContainer implements HttpSessionBindingListener {
      * <p></p>
      */
     private FeatureType featureType;
+
+    private GridCoverage2D coverage;
 
     /**
      * Selected AttributeType being worked on.
@@ -414,4 +439,64 @@ public class UserContainer implements HttpSessionBindingListener {
     public void setStyle(StyleConfig style) {
         this.style = style;
     }
+	/**
+	 * @return Returns the dataFormat.
+	 */
+	public Format getDataFormat() {
+		return dataFormat;
+	}
+	/**
+	 * @param dataFormat The dataFormat to set.
+	 */
+	public void setDataFormat(Format dataFormat) {
+		this.dataFormat = dataFormat;
+	}
+	/**
+	 * @return Returns the dataFormatConfig.
+	 */
+	public DataFormatConfig getDataFormatConfig() {
+		return dataFormatConfig;
+	}
+	/**
+	 * @param dataFormatConfig The dataFormatConfig to set.
+	 */
+	public void setDataFormatConfig(DataFormatConfig dataFormatConfig) {
+		this.dataFormatConfig = dataFormatConfig;
+	}
+	/**
+	 * @return Returns the dataFormatID.
+	 */
+	public String getDataFormatID() {
+		return dataFormatID;
+	}
+	/**
+	 * @param dataFormatID The dataFormatID to set.
+	 */
+	public void setDataFormatID(String dataFormatID) {
+		this.dataFormatID = dataFormatID;
+	}
+	/**
+	 * @return Returns the coverageConfig.
+	 */
+	public CoverageConfig getCoverageConfig() {
+		return coverageConfig;
+	}
+	/**
+	 * @param coverageConfig The coverageConfig to set.
+	 */
+	public void setCoverageConfig(CoverageConfig coverageConfig) {
+		this.coverageConfig = coverageConfig;
+	}
+	/**
+	 * @return Returns the coverage.
+	 */
+	public GridCoverage2D getCoverage() {
+		return coverage;
+	}
+	/**
+	 * @param coverage The coverage to set.
+	 */
+	public void setCoverage(GridCoverage2D coverage) {
+		this.coverage = coverage;
+	}
 }

@@ -7,6 +7,8 @@ package org.vfny.geoserver.global.dto;
 import java.net.URL;
 import java.util.Arrays;
 
+import org.vfny.geoserver.global.MetaDataLink;
+
 
 /**
  * Data Transfer Object representing GeoServer Service information.
@@ -30,6 +32,8 @@ import java.util.Arrays;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: ServiceDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class ServiceDTO implements DataTransferObject {
@@ -131,6 +135,10 @@ public final class ServiceDTO implements DataTransferObject {
      */
     private String maintainer;
 
+    
+    private MetaDataLink metadataLink;
+
+
     /**
      * ServiceConfig constructor.
      * 
@@ -175,6 +183,7 @@ public final class ServiceDTO implements DataTransferObject {
         accessConstraints = dto.getAccessConstraints();
         maintainer = dto.getMaintainer();
         onlineResource = dto.getOnlineResource();
+        metadataLink = dto.getMetadataLink();
     }
 
     /**
@@ -242,6 +251,11 @@ public final class ServiceDTO implements DataTransferObject {
             return false;
         }
 
+        if ((metadataLink != null) ? (!metadataLink.equals(dto.metadataLink))
+                : (dto.metadataLink != null)) {
+        	return false;
+        }
+        
         return true;
     }
 
@@ -259,7 +273,8 @@ public final class ServiceDTO implements DataTransferObject {
         | ((keywords != null) ? keywords.hashCode() : 0)
         | ((fees != null) ? fees.hashCode() : 0)
         | ((accessConstraints != null) ? accessConstraints.hashCode() : 0)
-        | ((maintainer != null) ? maintainer.hashCode() : 0);
+        | ((maintainer != null) ? maintainer.hashCode() : 0)
+        | ((metadataLink != null) ? metadataLink.hashCode() : 0);
     }
 
     /**
@@ -502,4 +517,16 @@ public final class ServiceDTO implements DataTransferObject {
     public void setMaintainer(String string) {
         maintainer = string;
     }
+	/**
+	 * @return Returns the metadataLink.
+	 */
+	public MetaDataLink getMetadataLink() {
+		return metadataLink;
+	}
+	/**
+	 * @param metadataLink The metadataLink to set.
+	 */
+	public void setMetadataLink(MetaDataLink metadataLink) {
+		this.metadataLink = metadataLink;
+	}
 }

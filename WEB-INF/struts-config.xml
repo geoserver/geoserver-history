@@ -33,6 +33,14 @@
     		type="org.vfny.geoserver.form.global.GeoServerConfigurationForm"/>
     
     	<form-bean
+    		name="wcsDescriptionForm"
+    		type="org.vfny.geoserver.form.wcs.WCSDescriptionForm"/>
+    		
+    	<form-bean
+    		name="wcsContentForm"
+    		type="org.vfny.geoserver.form.wcs.WCSContentForm"/>
+
+    	<form-bean
     		name="wfsDescriptionForm"
     		type="org.vfny.geoserver.form.wfs.WFSDescriptionForm"/>
     		
@@ -47,6 +55,16 @@
     	<form-bean
     		name="wmsContentForm"
     		type="org.vfny.geoserver.form.wms.WMSContentForm"/>
+
+    	<form-bean
+    		name="dataFormatsSelectForm"
+    		type="org.vfny.geoserver.form.data.DataFormatsSelectForm"/>
+    	<form-bean
+    		name="dataFormatsNewForm"
+    		type="org.vfny.geoserver.form.data.DataFormatsNewForm"/>
+    	<form-bean
+    		name="dataFormatsEditorForm"
+    		type="org.vfny.geoserver.form.data.DataFormatsEditorForm"/>
 
     	<form-bean
     		name="dataDataStoresSelectForm"
@@ -108,6 +126,17 @@
     		name="validationTestSuiteNewForm"
 	   		type="org.vfny.geoserver.form.validation.ValidationTestSuiteNewForm"/>
     		
+		<!-- DATA Coverage -->
+    	<form-bean
+    		name="dataCoveragesSelectForm"
+    		type="org.vfny.geoserver.form.data.DataCoveragesSelectForm"/>
+    	<form-bean
+    		name="dataCoveragesNewForm"
+    		type="org.vfny.geoserver.form.data.DataCoveragesNewForm"/>
+    	<form-bean
+    		name="coveragesEditorForm"
+    		type="org.vfny.geoserver.form.data.CoveragesEditorForm"/>
+
 		<form-bean
 			name="blankBean"
 			type="org.apache.struts.action.DynaActionForm"/>
@@ -211,6 +240,25 @@
         	name="config.validation.displayResults"
         	path="/config/validation/displayResults.do"/>
         	
+        <!-- CONFIG wcs -->
+        
+       	<forward
+       		name="config.wcs"
+       		path="/config/wcs/index.do"/>
+        <forward
+       		name="config.wcs.description"
+       		path="/config/wcs/description.do"/>
+       	<forward
+       		name="config.wcs.content"
+       		path="/config/wcs/content.do"/>
+       		
+       	<forward
+       		name="wcsConfigDescription"
+       		path="/config/wcs/description.do"/>
+       	<forward
+       		name="wcsConfigContent"
+       		path="/config/wcs/content.do"/>
+
         <!-- CONFIG wfs -->
         
        	<forward
@@ -252,6 +300,17 @@
        	<forward
        		name="config.data"
        		path="/config/data/index.do"/>
+
+        <!-- CONFIG data formats -->
+       	<forward
+       		name="config.data.format"
+       		path="/config/data/format.do"/>
+       	<forward
+       		name="config.data.format.new"
+       		path="/config/data/formatNew.do"/>
+       	<forward
+       		name="config.data.format.editor"
+       		path="/config/data/formatEditor.do"/>
 
         <!-- CONFIG data store -->
        	<forward
@@ -306,6 +365,17 @@
        	<forward
        		name="config.data.calculateBoundingBox"
        		path="/config/data/calculateBoundingBox.do"/>
+
+        <!-- CONFIG data coverage -->
+       	<forward
+       		name="config.data.coverage"
+       		path="/config/data/coverageSelect.do"/>
+       	<forward
+       		name="config.data.coverage.new"
+       		path="/config/data/coverageNew.do"/>
+       	<forward
+       		name="config.data.coverage.editor"
+       		path="/config/data/coverageEditor.do"/>
 
     </global-forwards>
 
@@ -390,6 +460,25 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.server.login"/>
 
+        <!-- CONFIG WCS -->        	
+        <action
+        	path="/config/wcs/index"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wcs"/>    	
+        <action
+        	path="/config/wcs"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wcs"/>
+
+        <action
+        	path="/config/wcs/description"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wcs.description"/>
+
+        <action
+        	path="/config/wcs/content"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wcs.content"/>
 
         <!-- CONFIG WFS -->        	
         <action
@@ -471,6 +560,20 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data"/>      
         	
+       <!-- DATA FORMATS -->
+        <action
+        	path="/config/data/format"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.format"/>
+        <action	
+        	path="/config/data/formatNew"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.format.new"/>
+        <action
+        	path="/config/data/formatEditor"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.format.editor"/>        	
+
        <!-- DATA STORES -->
         <action
         	path="/config/data/store"
@@ -527,6 +630,20 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.type.editor"/>        	        	
 
+		<!-- DATA coverages -->
+        <action
+        	path="/config/data/coverageSelect"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.coverage"/>
+        <action
+        	path="/config/data/coverageNew"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.coverage.new"/>
+        <action
+        	path="/config/data/coverageEditor"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.coverage.editor"/>        	        	
+
 <!-- Submit Actions -->    
 		<!-- Welcome Actions -->
 		<action
@@ -572,6 +689,23 @@
         	scope="request"
         	validate="true"
         	input="/config/server.do"/>
+
+       	<!-- WCS Actions -->
+        <action
+        	path="/config/wcs/descriptionSubmit"
+        	type="org.vfny.geoserver.action.wcs.WCSDescriptionAction"
+        	name="wcsDescriptionForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/wcs/description.do"/>
+        	
+        <action
+        	path="/config/wcs/contentSubmit"
+        	type="org.vfny.geoserver.action.wcs.WCSContentAction"
+        	name="wcsContentForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/wcs/content.do"/>
         	
        	<!-- WFS Actions -->
         <action
@@ -606,6 +740,31 @@
         	validate="true"
         	input="/config/wms/content.do"/>
 
+       	<!-- DATA Formats Actions -->
+        <action
+        	path="/config/data/formatSubmit"
+        	type="org.vfny.geoserver.action.data.DataFormatsEditorAction"
+        	name="dataFormatsEditorForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/formatEditor.do"/>
+        	
+        <action
+        	path="/config/data/formatSelect"
+        	type="org.vfny.geoserver.action.data.DataFormatsSelectAction"
+        	name="dataFormatsSelectForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/formatSelect.do"/>
+
+        <action
+        	path="/config/data/formatNewSubmit"
+        	type="org.vfny.geoserver.action.data.DataFormatsNewAction"
+        	name="dataFormatsNewForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/formatNew.do"/>        	
+      
        	<!-- DATA Stores Actions -->
         <action
         	path="/config/data/storeSubmit"
@@ -699,8 +858,31 @@
         	scope="request"
         	validate="true"
         	input="/config/data/typeEditor.do"/>
+
+		<!-- DATA Coverage Actions -->
+        <action
+        	path="/config/data/coverageSelectSubmit"
+        	type="org.vfny.geoserver.action.data.DataCoveragesSelectAction"
+        	name="dataCoveragesSelectForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/coverageSelect.do"/>
+         <action
+        	path="/config/data/coverageNewSubmit"
+        	type="org.vfny.geoserver.action.data.DataCoveragesNewAction"
+        	name="dataCoveragesNewForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/coverageNew.do"/>        	
+        <action
+        	path="/config/data/coverageEditorSubmit"
+        	type="org.vfny.geoserver.action.data.CoveragesEditorAction"
+        	name="coveragesEditorForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/coverageEditor.do"/>
+
 		 <!-- DATA Validation -->
- 
          <action
         	path="/config/validation/testSuiteSelect"
         	type="org.vfny.geoserver.action.validation.ValidationTestSuiteSelectAction"

@@ -38,6 +38,8 @@ import org.geotools.validation.dto.TestSuiteDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: ApplicationState.java,v 1.15 2004/04/03 13:13:03 cholmesny Exp $
  */
 public class ApplicationState implements PlugIn {
@@ -150,6 +152,25 @@ public class ApplicationState implements PlugIn {
      */
     public void notifyConfigChanged() {
         configTimestamp = new Date();
+    }
+    /** Q: what is this supposed to do? */
+    public int getWcsGood(){
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0)){
+    		loadStatus();
+    	}
+    	return geoserverStatus[4];
+    }
+    /** q: What foul manner of magic is this? */
+    public int getWcsBad() {
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverStatus[5];
+    }
+    /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
+    public int getWcsDisabled() {
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverStatus[6];
     }
     /** Q: what is this supposed to do? */
     public int getWfsGood(){
@@ -464,6 +485,14 @@ public class ApplicationState implements PlugIn {
     	return new LinkedList(getValidationErrors().values());
     }
     
+    public Map getWCSErrors(){
+    	return getNameSpaceErrors();
+    }
+    
+    public List getWCSErrorKeys(){
+    	return getNameSpaceErrorKeys();
+    }
+
     public Map getWFSErrors(){
     	return getNameSpaceErrors();
     }

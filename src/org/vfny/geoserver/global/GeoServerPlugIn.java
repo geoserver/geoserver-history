@@ -1,7 +1,3 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -33,6 +29,8 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: GeoServerPlugIn.java,v 1.9 2004/02/20 00:28:19 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
@@ -92,6 +90,9 @@ public class GeoServerPlugIn implements PlugIn {
             Data dt = new Data(f,gs);
             sc.setAttribute(Data.WEB_CONTAINER_KEY, dt);
             
+            WCS wcs = new WCS();
+            sc.setAttribute(WCS.WEB_CONTAINER_KEY, wcs);
+
             WFS wfs = new WFS();
             sc.setAttribute(WFS.WEB_CONTAINER_KEY, wfs);
             
@@ -103,12 +104,15 @@ public class GeoServerPlugIn implements PlugIn {
 
             if (cr.isInitialized()) {
                 gs.load(cr.getGeoServer());
+                wcs.load(cr.getWcs());
                 wfs.load(cr.getWfs());
                 wms.load(cr.getWms());
                 dt.load(cr.getData());
                 
+                wcs.setGeoServer(gs);
                 wfs.setGeoServer(gs);
                 wms.setGeoServer(gs);
+                wcs.setData(dt);
                 wfs.setData(dt);
                 wms.setData(dt);
             } else {
@@ -140,6 +144,7 @@ public class GeoServerPlugIn implements PlugIn {
         } catch (ConfigurationException e) {
             sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, null);
             sc.setAttribute(Data.WEB_CONTAINER_KEY, null);
+            sc.setAttribute(WCS.WEB_CONTAINER_KEY, null);
             sc.setAttribute(WFS.WEB_CONTAINER_KEY, null);
             sc.setAttribute(WMS.WEB_CONTAINER_KEY, null);
             sc.setAttribute(GeoValidator.WEB_CONTAINER_KEY, null);

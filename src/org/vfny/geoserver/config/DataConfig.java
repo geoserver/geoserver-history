@@ -21,9 +21,12 @@ import javax.servlet.ServletContext;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultRepository;
 import org.geotools.data.Repository;
+import org.opengis.coverage.grid.Format;
+import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.FormatInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 
@@ -39,6 +42,8 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: DataConfig.java,v 1.17 2004/06/29 17:19:12 jive Exp $
  *
  * @see DataSource
@@ -50,6 +55,14 @@ public class DataConfig {
     public static final String SEPARATOR = ":::";
     public static final String SELECTED_FEATURE_TYPE = "selectedFeatureType";
     public static final String SELECTED_ATTRIBUTE_TYPE = "selectedAttributeType";
+    public static final String SELECTED_COVERAGE = "selectedCoverage";
+
+    /**
+     * A set of dataFormatConfig by dataFormatId.
+     * 
+     * @see org.vfny.geoserver.config.data.FormatInfo
+     */
+    private Map dataFormats;
 
     /**
      * A set of dataStoreConfig by dataStoreId.
@@ -72,6 +85,8 @@ public class DataConfig {
      * @see org.vfny.geoserver.global.dto.FeatureTypeInfoConfig
      */
     private Map featuresTypes;
+    
+    private Map coverages;
 
     /**
      * A set of styles and their names.
@@ -97,10 +112,12 @@ public class DataConfig {
      * @see defaultSettings()
      */
     public DataConfig() {
+        dataFormats = new HashMap();
         dataStores = new HashMap();
         nameSpaces = new HashMap();
         styles = new HashMap();
         featuresTypes = new HashMap();
+        coverages = new HashMap();
         defaultNameSpace = new NameSpaceConfig();
     }
 
@@ -183,6 +200,16 @@ public class DataConfig {
 
         Iterator i = null;
 
+        i = data.getFormats().keySet().iterator();
+        dataFormats = new HashMap();
+
+        while (i.hasNext()) {
+            Object key = i.next();
+            dataFormats.put(key,
+                new DataFormatConfig(
+                    (FormatInfoDTO) data.getFormats().get(key)));
+        }
+
         i = data.getDataStores().keySet().iterator();
         dataStores = new HashMap();
 
@@ -219,6 +246,18 @@ public class DataConfig {
                 new FeatureTypeConfig(f));
         }
 
+        i = data.getCoverages().keySet().iterator();
+        coverages = new HashMap();
+
+        while (i.hasNext()) {
+            Object key = i.next();
+
+            CoverageInfoDTO c = (CoverageInfoDTO) data.getCoverages()
+                                                            .get(key);
+            coverages.put(c.getFormatId() +":"+ c.getName(),
+                new CoverageConfig(c));
+        }
+
         i = data.getStyles().keySet().iterator();
         styles = new HashMap();
 
@@ -233,6 +272,15 @@ public class DataConfig {
         DataDTO dt = new DataDTO();
         HashMap tmp = null;
         Iterator i = null;
+
+        tmp = new HashMap();
+        dt.setFormats(tmp);
+        i = dataFormats.keySet().iterator();
+
+        while (i.hasNext()) {
+            Object key = i.next();
+            tmp.put(key, ((DataFormatConfig) dataFormats.get(key)).toDTO());
+        }
 
         tmp = new HashMap();
         dt.setDataStores(tmp);
@@ -250,6 +298,15 @@ public class DataConfig {
         while (i.hasNext()) {
             Object key = i.next();
             tmp.put(key, ((FeatureTypeConfig) featuresTypes.get(key)).toDTO());
+        }
+
+        tmp = new HashMap();
+        dt.setCoverages(tmp);
+        i = coverages.keySet().iterator();
+
+        while (i.hasNext()) {
+            Object key = i.next();
+            tmp.put(key, ((CoverageConfig) coverages.get(key)).toDTO());
         }
 
         tmp = new HashMap();
@@ -298,6 +355,46 @@ public class DataConfig {
             throw new NoSuchElementException(
                 "Could not find FeatureTypeConfig '" + key + "'.");
         }
+    }
+
+    /**
+     * getDataFormats purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public Map getDataFormats() {
+        return dataFormats;
+    }
+    /**
+     * List of DataFormatIds
+     *
+     * @return DOCUMENT ME!
+     */
+    public List listDataFormatIds() {
+        return new ArrayList(dataFormats.keySet());
+    }
+
+    public List getDataFormatIds() {
+        return listDataFormatIds();
+    }
+
+    /**
+     * getDataFormats purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param key DOCUMENT ME!
+     *
+     * @return
+     */
+    public DataFormatConfig getDataFormat(String key) {
+        return (DataFormatConfig) dataFormats.get(key);
     }
 
     /**
@@ -382,6 +479,10 @@ public class DataConfig {
         return (FeatureTypeConfig) featuresTypes.get(key);
     }
 
+    public CoverageConfig getCoverageConfig(String key) {
+        return (CoverageConfig) coverages.get(key);
+    }
+
     /**
      * getNameSpaces purpose.
      * 
@@ -436,6 +537,57 @@ public class DataConfig {
      */
     public StyleConfig getStyle(String key) {
         return (StyleConfig) styles.get(key);
+    }
+
+    /**
+     * setFormats purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param map
+     */
+    public void setFormats(Map map) {
+        if (map != null) {
+            dataFormats = map;
+        }
+    }
+
+    /**
+     * Add a new DataFormatConfig for the user to edit
+     * 
+     * <p>
+     * The DataFormatCondig will be added under its id name
+     * </p>
+     *
+     * @param dataFormatConfig
+     */
+    public void addDataFormat(DataFormatConfig dataFormatConfig) {
+        if (dataFormats == null) {
+            dataFormats = new HashMap();
+        }
+
+        dataFormats.put(dataFormatConfig.getId(), dataFormatConfig);
+    }
+
+    /**
+     * setDataFormats purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param key
+     *
+     * @return DOCUMENT ME!
+     */
+    public DataFormatConfig removeDataFormat(String key) {
+        if (dataFormats == null) {
+            dataFormats = new HashMap();
+        }
+
+        return (DataFormatConfig) dataFormats.remove(key);
     }
 
     /**
@@ -539,6 +691,16 @@ public class DataConfig {
         }
     }
 
+    public void addCoverage(String key, CoverageConfig cv) {
+        if (coverages == null) {
+            coverages = new HashMap();
+        }
+
+        if ((key != null) && (cv != null)) {
+            coverages.put(key, cv);
+        }
+    }
+
     /**
      * setFeatures purpose.
      * 
@@ -556,6 +718,14 @@ public class DataConfig {
         }
 
         return (FeatureTypeConfig) featuresTypes.remove(key);
+    }
+
+    public CoverageConfig removeCoverage(String key) {
+        if (coverages == null) {
+            coverages = new HashMap();
+        }
+
+        return (CoverageConfig) coverages.remove(key);
     }
 
     /**
@@ -699,7 +869,19 @@ public class DataConfig {
 
         return Collections.unmodifiableSortedSet(set);
     }
-    
+
+    public SortedSet getCoverageIdentifiers(ServletContext sc) {
+        TreeSet set = new TreeSet();
+
+        for (Iterator iter = dataFormats.values().iterator(); iter.hasNext();) {
+            DataFormatConfig dataFormatConfig = (DataFormatConfig) iter.next();
+
+            set.add(dataFormatConfig.getId());
+        }
+
+        return Collections.unmodifiableSortedSet(set);
+    }
+
     /**
      * To DataRepository for ValidationProcessor.
      * <p>
@@ -716,4 +898,22 @@ public class DataConfig {
     	}    	
     	return repository;
     }    
+	/**
+	 * @return Returns the coverages.
+	 */
+	public Map getCoverages() {
+		return coverages;
+	}
+	/**
+	 * @param coverages The coverages to set.
+	 */
+	public void setCoverages(Map coverages) {
+		this.coverages = coverages;
+	}
+	/**
+	 * @param dataFormats The dataFormats to set.
+	 */
+	public void setDataFormats(Map dataFormats) {
+		this.dataFormats = dataFormats;
+	}
 }

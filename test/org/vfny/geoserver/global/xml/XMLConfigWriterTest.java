@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
@@ -52,7 +53,7 @@ public class XMLConfigWriterTest extends TestCase {
 
     public void testStoreBlank() {
         try {
-            XMLConfigWriter.store(new WMSDTO(), new WFSDTO(),
+            XMLConfigWriter.store(new WCSDTO(), new WMSDTO(), new WFSDTO(),
                 new GeoServerDTO(), root1);
         } catch (ConfigurationException e) {
             fail(e.toString());
@@ -62,7 +63,7 @@ public class XMLConfigWriterTest extends TestCase {
     public void testRoundTrip() {
         try {
             XMLConfigReader cr = new XMLConfigReader(root2);
-            XMLConfigWriter.store(cr.getWms(), cr.getWfs(), cr.getGeoServer(),
+            XMLConfigWriter.store(cr.getWcs(), cr.getWms(), cr.getWfs(), cr.getGeoServer(),
                 cr.getData(), root3);
         } catch (ConfigurationException e) {
             fail(e.toString());

@@ -51,6 +51,29 @@
 </ul>
 
 <h2>
+  <bean:write name="WCS" property="title"/>
+</h2>
+<pre><code><bean:write name="WCS" property="abstract"/>
+</code></pre>
+<ul>
+  <li>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/GetCapabilities">
+      getCapabilities
+    </a>
+  </li>
+  <li>
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/DescribeCoverage?coverage=Arc_Sample">
+	  describeCoverage
+	</a>
+  </li>
+  <li>
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/GetCoverage?sourcecoverage=Arc_Sample&outputformat=png">
+  	  getCoverage
+  	</a>
+  </li>
+</ul>
+
+<h2>
   <bean:write name="WFS" property="title"/>
 </h2>
 <pre><code><bean:write name="WFS" property="abstract"/>
