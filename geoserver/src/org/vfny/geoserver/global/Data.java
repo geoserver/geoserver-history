@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: Data.java,v 1.1.2.10 2004/01/07 22:46:02 dmzwiers Exp $
+ * @version $Id: Data.java,v 1.1.2.11 2004/01/07 23:27:58 dmzwiers Exp $
  */
 public class Data extends Abstract
 /**
@@ -75,6 +75,13 @@ public class Data extends Abstract
     // we create instances of everything at the start to support the datastore connections
     public Data(DataDTO config) throws ConfigurationException {
 		load(config);
+    }
+    
+    Data(){
+    	nameSpaces = new HashMap();
+    	styles = new HashMap();
+    	featureTypes = new HashMap();
+    	dataStores = new HashMap();
     }
 	
 	/**

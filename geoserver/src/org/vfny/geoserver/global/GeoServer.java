@@ -17,7 +17,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: GeoServer.java,v 1.1.2.8 2004/01/07 21:23:08 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.1.2.9 2004/01/07 23:27:58 dmzwiers Exp $
  */
 public class GeoServer extends Abstract{// implements org.apache.struts.action.PlugIn{
 	
@@ -217,11 +217,11 @@ public class GeoServer extends Abstract{// implements org.apache.struts.action.P
 	 *
 	 */
 	public GeoServer(){
-		wms = null;
-		wfs = null;
-		data = null;
-		validation = null;
-		geoServer = null;
+		wms = new WMS();
+		wfs = new WFS();
+		data = new Data();
+		validation = new Validation();
+		geoServer = new GeoServerDTO();
 	}
 
     /**

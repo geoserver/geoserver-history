@@ -4,13 +4,13 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.global.dto.WMSDTO;
+import org.vfny.geoserver.global.dto.*;
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WMS.java,v 1.1.2.4 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: WMS.java,v 1.1.2.5 2004/01/07 23:27:58 dmzwiers Exp $
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -32,6 +32,11 @@ public class WMS extends Service {
     	this.config = config;
     	//URL = GeoServer.getInstance().getBaseUrl() + "/wms";
     }
+    
+	WMS(){
+		super(new ServiceDTO());
+		config = new WMSDTO();
+	}
 
 	Object toDTO(){
 		return config;

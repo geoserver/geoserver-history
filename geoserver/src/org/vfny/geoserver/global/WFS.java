@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.*;
 
 /**
  * Represents a configuration of the WFS service.  Inherits most everything
@@ -12,7 +12,7 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFS.java,v 1.1.2.4 2004/01/06 23:03:12 dmzwiers Exp $
+ * @version $Id: WFS.java,v 1.1.2.5 2004/01/07 23:27:58 dmzwiers Exp $
  */
 public class WFS extends Service {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -25,6 +25,11 @@ public class WFS extends Service {
     	super(config.getService());
 		//URL = GeoServer.getInstance().getBaseUrl() + "wfs/";
 		this.config = config;
+    }
+    
+    WFS(){
+    	super(new ServiceDTO());
+    	config = new WFSDTO();
     }
 
     Object toDTO(){
