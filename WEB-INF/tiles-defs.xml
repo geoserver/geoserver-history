@@ -34,8 +34,8 @@
         <put name="actionForwards" value="admin"/>
    	</definition>
 
-   	<definition name="welcome.login" extends=".mainLayout">
-   		<put name="key" value="welcome.login"/>
+   	<definition name="admin.login" extends=".mainLayout">
+   		<put name="key" value="admin.login"/>
    		<put name="body" value="/WEB-INF/pages/Login.jsp"/>   		
    		<put name="layer" value="application"/>
         <put name="locationForwards" value=""/>        
@@ -69,7 +69,7 @@
 
 	<!-- CONFIG VALIDATION -->   	
    	<definition name="config.validation" extends=".mainLayout">
-   		<put name="key" value="validation"/>
+   		<put name="key" value="config.validation"/>
    		<put name="body" value="/WEB-INF/pages/validation/Validation.jsp"/>
    		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome:config"/>
@@ -77,26 +77,26 @@
    	</definition> 
    		
    	<definition name="config.validation.suite" extends=".mainLayout">
-   		<put name="key" value="validation.suite"/>
+   		<put name="key" value="config.validation.suite"/>
    		<put name="body" value="/WEB-INF/pages/validation/SelectTestSuite.jsp"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:validation"/>
+        <put name="locationForwards" value="welcome:config:config.validation"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition>   	
 
    	<definition name="config.validation.test" extends=".mainLayout">
-   		<put name="key" value="validation.test"/>
+   		<put name="key" value="config.validation.test"/>
    		<put name="body" value="/WEB-INF/pages/validation/SelectTest.jsp"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:validation:validation.suite"/>
+        <put name="locationForwards" value="welcome:config:config.validation:config.validation.suite"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
    	</definition>     	
 
    	<definition name="config.validation.test.editor" extends=".mainLayout">
-   		<put name="key" value="validation.test.editor"/>
+   		<put name="key" value="config.validation.test.editor"/>
    		<put name="body" value="/WEB-INF/pages/validation/TestEditor.jsp"/>
    		<put name="layer" value="configuration"/>
-        <put name="locationForwards" value="welcome:config:validation:validation.suite:validation.test"/>
+        <put name="locationForwards" value="welcome:config:validation:config.validation.suite:config.validation.test"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>        
     </definition>
    	
@@ -164,7 +164,7 @@
     
     <!-- CONFIG DATA -->
    	<definition name="config.data" extends=".mainLayout">
-   		<put name="key" value="data"/>
+   		<put name="key" value="config.data"/>
 		<put name="body" value="/WEB-INF/pages/data/DataMenu.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>
@@ -174,105 +174,105 @@
 
 	<!-- datastores -->
    	<definition name="config.data.stores" extends=".mainLayout">
-   		<put name="key" value="data.stores"/>
+   		<put name="key" value="config.data.stores"/>
 		<put name="body" value="data.dataStores.main"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				
-        <put name="locationForwards" value="welcome:config:data"/>
+        <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	
    	<definition name="config.data.store" extends=".mainLayout">
-        <put name="key" value="data.store"/>
+        <put name="key" value="config.data.store"/>
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresSelect.jsp"/>
         <put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				   		
-        <put name="locationForwards" value="welcome:config:data:data.stores"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.stores"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	
    	<definition name="config.data.store.new" extends=".mainLayout">
-        <put name="key" value="data.store.new"/>
+        <put name="key" value="config.data.store.new"/>
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresNew.jsp"/>
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
         <put name="layer" value="data"/>   				   		
-        <put name="locationForwards" value="welcome:config:data:data.stores:data.store"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.stores:config.data.store"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
    	<definition name="config.data.store.editor" extends=".mainLayout">
-        <put name="key" value="data.store.editor"/>   	
+        <put name="key" value="config.data.store.editor"/>   	
    		<put name="body" value="/WEB-INF/pages/data/DataConfigDataStoresEditor.jsp"/>
    		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:data.stores:data.store"/>
+        <put name="locationForwards" value="welcome:config:data:config.data.stores:config.data.store"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
 
 	<!-- namespace -->   	
    	<definition name="config.data.namespace" extends=".mainLayout">
-   		<put name="key" value="data.namespace"/>
+   		<put name="key" value="config.data.namespace"/>
 		<put name="body" value="/WEB-INF/pages/data/namespaces/Select.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data"/>
+        <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
    	<definition name="config.data.namespace.new" extends=".mainLayout">
-   		<put name="key" value="data.namespace.new"/>
+   		<put name="key" value="config.data.namespace.new"/>
    		<put name="body" value="/WEB-INF/pages/data/namespaces/New.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:data.namespace"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.namespace"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
    	
    	<definition name="config.data.namespaces.editor" extends=".mainLayout">
-   		<put name="key" value="data.namespaces.editor"/>
+   		<put name="key" value="config.data.namespaces.editor"/>
    		<put name="body" value="/WEB-INF/pages/data/namespaces/Editor.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   						
-        <put name="locationForwards" value="welcome:config:data:data.namespace"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.namespace"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
 	<!-- styles -->
    	<definition name="config.data.styles" extends=".mainLayout">
-   		<put name="key" value="data.styles"/>
+   		<put name="key" value="config.data.styles"/>
    		<put name="body" value="/WEB-INF/pages/data/DataConfigStyles.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data"/>
+        <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
 
 	<!-- featuretypes -->   	
    	<definition name="config.data.type" extends=".mainLayout">
-   		<put name="key" value="data.type"/> 
+   		<put name="key" value="config.data.type"/> 
 		<put name="body" value="/WEB-INF/pages/data/featureTypes/Select.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data"/>
+        <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>   	
    	
 	<definition name="config.data.type.new" extends=".mainLayout">
-   		<put name="key" value="data.type.new"/> 
+   		<put name="key" value="config.data.type.new"/> 
 		<put name="body" value="/WEB-INF/pages/data/featureTypes/New.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
         <put name="actionForwards" value="calculateBoundingBox"/>		
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:data.type"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.type"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
 
 	<definition name="config.data.type.editor" extends=".mainLayout">
-   		<put name="key" value="data.type.editor"/>
+   		<put name="key" value="config.data.type.editor"/>
    		<put name="body" value="/WEB-INF/pages/data/featureTypes/Editor.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
-        <put name="locationForwards" value="welcome:config:data:data.type"/>
+        <put name="locationForwards" value="welcome:config:config.data:config.data.type"/>
         <put name="actionForwards" value="admin:calculateBoundingBox"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
