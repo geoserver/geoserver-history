@@ -10,6 +10,8 @@ import java.sql.*;
 import java.util.logging.Logger;
 import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.requests.*;
+import org.vfny.geoserver.config.TypeInfo;
+import org.vfny.geoserver.config.TypeRepository;
 
 /**
  * Handles a DescribeFeatureType request and creates a DescribeFeatureType 
@@ -44,7 +46,7 @@ public class DescribeResponse {
      * Constructor with request.
      * @param wfsRequest The DescribeFeatureType reqeuset object.
      */      
-    public DescribeResponse(DescribeRequest wfsRequest) {
+    public DescribeResponse(DescribeRequest wfsRequest) throws WfsException {
         
         // generates response, using general function 
         xmlResponse  = generateTypes( wfsRequest );
@@ -66,7 +68,8 @@ public class DescribeResponse {
      * types.
      * @param wfsRequest The request object.
      */ 
-    private String generateTypes(DescribeRequest wfsRequest) {
+    private String generateTypes(DescribeRequest wfsRequest) 
+	throws WfsException {
         
         List requestedTables = wfsRequest.getFeatureTypes();
         //_log.info("these are the reqeusted feature types: " + requestedTables.toString() ); 
@@ -103,8 +106,9 @@ public class DescribeResponse {
      *
      * @param requestedTables The requested table names.
      */ 
-    private String generateSpecifiedTypes(List requestedTables) {
-        
+    private String generateSpecifiedTypes(List requestedTables) 
+	throws WfsException{
+        TypeRepository repository = TypeRepository.getInstance();
         String tempResponse = new String();             
         String currentFile = new String();
 	String curTypeName = new String();
@@ -117,6 +121,11 @@ public class DescribeResponse {
             // set the current file
             // print type data for the table object
             curTypeName = requestedTables.get(i).toString();
+	    TypeInfo meta = repository.getType(curTypeName);
+	    if (meta == null) {
+		throw new WfsException("Feature Type " + curTypeName + " does "
+				       + "not exist on this server");
+	    }
 	    currentFile = config.getTypeDir() + curTypeName + 
 		"/" + config.SCHEMA_FILE;
 	    generatedType = writeFile(currentFile);
@@ -126,6 +135,7 @@ public class DescribeResponse {
 		validTypes.add(curTypeName);
 	    } 
        }
+
         
         // Loop through requested tables again to add elements
         // NOT VERY EFFICIENT - PERHAPS THE MYSQL ABSTRACTION CAN FIX THIS; 
@@ -146,7 +156,8 @@ public class DescribeResponse {
      * Add feature type info. 
      * @param targetDirectoryName The directory in which to search for files.
      */
-    private String generateAllTypes(String targetDirectoryName) {
+    private String generateAllTypes(String targetDirectoryName) 
+	throws WfsException {
         
         // holds final response variable
         StringBuffer tempResponse = new StringBuffer();
@@ -208,7 +219,7 @@ public class DescribeResponse {
       *
       * @param featureTypeName The name of the feature type.
       */
-    public String writeFile(String inputFileName) {        
+    public String writeFile(String inputFileName) throws WfsException {        
 	LOGGER.finest("writing file " + inputFileName);
         String finalOutput = new String();        
         try {
@@ -222,7 +233,13 @@ public class DescribeResponse {
                 finalOutput = finalOutput + tempOutput;
             }
         }
-        catch (Exception e) {}
+        catch (IOException e) {
+	    //REVISIT: should things fail if there are featureTypes that 
+	    //don't have schemas in the right place?  Because as it is now
+	    //a describe all will choke if there is one ft with no schema.xml
+	  throw new WfsException("problem writing featureType information " +
+	  		   " from " + inputFileName);
+	}
         return finalOutput;       
     }
     
