@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +19,8 @@ import java.util.TreeSet;
 import javax.servlet.ServletContext;
 
 import org.geotools.data.DataStore;
+import org.geotools.data.DefaultRepository;
+import org.geotools.data.Repository;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -36,7 +39,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.16 2004/06/18 08:37:24 jive Exp $
+ * @version $Id: DataConfig.java,v 1.17 2004/06/29 17:19:12 jive Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -49,8 +52,8 @@ public class DataConfig {
     public static final String SELECTED_ATTRIBUTE_TYPE = "selectedAttributeType";
 
     /**
-     * A set of datastores and their names.
-     *
+     * A set of dataStoreConfig by dataStoreId.
+     * 
      * @see org.vfny.geoserver.config.data.DataStoreInfo
      */
     private Map dataStores;
@@ -696,4 +699,21 @@ public class DataConfig {
 
         return Collections.unmodifiableSortedSet(set);
     }
+    
+    /**
+     * To DataRepository for ValidationProcessor.
+     * <p>
+     * This repository is limited to the FeatureTypes currently defined.
+     * @throws IOException 
+     */
+    public Repository toRepository(ServletContext context ) throws IOException {
+    	DefaultRepository repository = new DefaultRepository();
+    	for( Iterator i=dataStores.entrySet().iterator(); i.hasNext(); ){
+    		Map.Entry entry = (Map.Entry) i.next();
+    		String dataStoreId = (String) entry.getKey();
+    		DataStoreConfig dataStoreConfig = (DataStoreConfig) entry.getValue();    		
+    		repository.register( dataStoreId, dataStoreConfig.findDataStore( context ) );	
+    	}    	
+    	return repository;
+    }    
 }
