@@ -30,8 +30,8 @@ import javax.servlet.ServletContext;
  * A collecitno of utilties for dealing with GeotTools DataStore.
  *
  * @author Richard Gould, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.8 2004/03/09 01:37:40 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: DataStoreUtils.java,v 1.9 2004/04/20 04:59:00 jive Exp $
  */
 public abstract class DataStoreUtils {
     public static DataStore aquireDataStore(Map params, ServletContext sc)
@@ -200,29 +200,21 @@ public abstract class DataStoreUtils {
         Param[] params = factory.getParametersInfo();
 
         for (int i = 0; i < params.length; i++) {
-            String key = params[i].key;
+            Param param = params[i];
+            String key = param.key;
             String value = null;
 
-            if (params[i].required) {
-                value = "";
-            }
-
-            String description = factory.getDescription();
-
-            if ("dbtype".equals(key)) {
-                if ("PostGIS spatial database".equals(description)) {
-                    value = "postgis";
+            if (param.required ) {
+                if( param.sample != null){
+                    // Required params may have nice sample values
+                    //
+                    value = param.text( param.sample );
                 }
-
-                if ("Oracle Spatial Database".equals(description)) {
-                    value = "oracle";
-                }
-
-                if ("ESRI ArcSDE 8.x".equals(description)) {
-                    value = "arcsde";
+                if (value == null ) {
+                    // or not
+                    value = "";
                 }
             }
-
             if (value != null) {
                 defaults.put(key, value);
             }
