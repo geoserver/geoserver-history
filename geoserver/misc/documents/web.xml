@@ -7,6 +7,25 @@
     <param-name>serviceStratagy</param-name>
     <param-value>SPEED</param-value>
   </context-param>
+  
+   <servlet>
+    <servlet-name>action</servlet-name>
+    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>/WEB-INF/struts-config.xml</param-value>
+    </init-param>
+    <init-param>
+      <param-name>debug</param-name>
+      <param-value>2</param-value>
+    </init-param>
+    <init-param>
+      <param-name>detail</param-name>
+      <param-value>2</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  
   <servlet>
     <servlet-name>DescribeFeatureType</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.wfs.Describe</servlet-class>
@@ -60,25 +79,6 @@
    <servlet-name>TestWfsPost</servlet-name>
    <servlet-class>org.vfny.geoserver.servlets.wfs.TestWfsPost</servlet-class>
   </servlet>
-
-  <servlet>
-    <servlet-name>action</servlet-name>
-    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
-    <init-param>
-      <param-name>config</param-name>
-      <param-value>/WEB-INF/struts-config.xml</param-value>
-    </init-param>
-    <init-param>
-      <param-name>debug</param-name>
-      <param-value>2</param-value>
-    </init-param>
-    <init-param>
-      <param-name>detail</param-name>
-      <param-value>2</param-value>
-    </init-param>
-    <load-on-startup>2</load-on-startup>
-  </servlet>
-
 
   <servlet-mapping>
     <servlet-name>WfsDispatcher</servlet-name>
