@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # Start Script for GEOSERVER
 #
-# $Id: shutdown.sh,v 1.2 2002/11/14 18:27:41 robhranac Exp $
+# $Id: shutdown.sh,v 1.3 2003/01/21 23:55:35 cholmesny Exp $
 # -----------------------------------------------------------------------------
 
 # Make sure prerequisite environment variables are set
@@ -55,6 +55,7 @@ GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/common/lib/naming-resources.ja
 GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/common/lib/servlet.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/common/lib/tools.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/common/lib/log4j.jar
-GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/embedded.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/embedded.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/geotools.jar
 
 exec "$_RUNJAVA" -classpath "$GEOSERVER_PATH" org.vfny.geoserver.EmbeddedTomcat "stop" &

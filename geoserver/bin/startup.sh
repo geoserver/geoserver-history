@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # Start Script for GEOSERVER
 #
-# $Id: startup.sh,v 1.2 2002/08/22 19:49:54 robhranac Exp $
+# $Id: startup.sh,v 1.3 2003/01/21 23:55:35 cholmesny Exp $
 # -----------------------------------------------------------------------------
 
 # Make sure prerequisite environment variables are set
@@ -54,6 +54,14 @@ GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/common/lib/naming-resources.ja
 GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/common/lib/servlet.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/common/lib/tools.jar
 GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/common/lib/log4j.jar
-GEOSERVER_PATH="$GEOSERVER_PATH":"$CATALINA_HOME"/embedded.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/embedded.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/geotools.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/a2jruntime.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/jdbcPostgres.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/jts-1.0.0.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/xalan.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/xerces.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/lucene.jar
+GEOSERVER_PATH="$GEOSERVER_PATH":"$GEOSERVER_HOME"/lib/castor.jar
 
 exec "$_RUNJAVA" -classpath "$GEOSERVER_PATH" org.vfny.geoserver.EmbeddedTomcat "start" &
