@@ -47,7 +47,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/07 00:51:42 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.6 2004/01/09 18:27:29 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -232,10 +232,12 @@ public class XMLConfigWriter {
 		ServiceDTO s = null;
 		String u = null;
 		String t = "";
+		boolean gml = false;
 		if(obj instanceof WFSDTO){
 			WFSDTO w = (WFSDTO)obj;
 			s = w.getService();
 			t = "WFS";
+			gml = w.isGmlPrefixing();
 		}else
 		if(obj instanceof WMSDTO){
 			WMSDTO w = (WMSDTO)obj;
@@ -268,6 +270,8 @@ public class XMLConfigWriter {
 			cw.textTag("fees",s.getFees());
 		if(s.getAccessConstraints()!=null && s.getAccessConstraints()!="")
 			cw.textTag("accessConstraints",s.getAccessConstraints());
+		if(gml)
+			cw.valueTag("gmlPrefixing",gml+"");
 		if(s.getMaintainer()!=null && s.getMaintainer()!="")
 			cw.textTag("maintainer",s.getMaintainer());
 		cw.closeTag("service");
@@ -530,7 +534,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/07 00:51:42 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.6 2004/01/09 18:27:29 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -608,7 +612,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.1.2.5 2004/01/07 00:51:42 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.6 2004/01/09 18:27:29 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

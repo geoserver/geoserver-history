@@ -69,7 +69,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.12 2004/01/09 17:39:50 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.13 2004/01/09 18:27:29 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -397,6 +397,7 @@ public class XMLConfigReader {
 	 */
 	protected void loadWFS(Element wfsElement) throws ConfigurationException{
 		wfs = new WFSDTO();
+		wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(ReaderUtils.getChildElement(wfsElement,"gmlPrefixing"), "value",false));
 		ServiceDTO s = loadService(wfsElement);
 		wfs.setService(s);
 	}
@@ -865,7 +866,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.12 2004/01/09 17:39:50 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.13 2004/01/09 18:27:29 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

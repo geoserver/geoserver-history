@@ -14,12 +14,13 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.1.2.4 2004/01/09 09:52:44 jive Exp $
+ * @version $Id: WFSDTO.java,v 1.1.2.5 2004/01/09 18:27:30 dmzwiers Exp $
  */
 public final class WFSDTO implements DataTransferObject {
 
     /** The service parameters for this instance. */
     private ServiceDTO service;
+    private boolean gmlPrefixing;
 
     /**
      * WFS Data Transfer Object constructor.
@@ -43,6 +44,7 @@ public final class WFSDTO implements DataTransferObject {
             throw new NullPointerException("Data Transfer Object required");            
         }
         service = (ServiceDTO) new ServiceDTO( other.getService() );
+        gmlPrefixing = other.isGmlPrefixing();
     }
 
     /**
@@ -111,4 +113,26 @@ public final class WFSDTO implements DataTransferObject {
         }
         service = dto;    
     }
+	/**
+	 * isGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public boolean isGmlPrefixing() {
+		return gmlPrefixing;
+	}
+
+	/**
+	 * setGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param b
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
+
 }

@@ -21,11 +21,12 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.2.2.8 2004/01/09 08:04:08 jive Exp $
+ * @version $Id: WFSConfig.java,v 1.2.2.9 2004/01/09 18:27:29 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
 
+	private boolean gmlPrefixing;
     /**
      * This is a set of <code>dataStoreID.typeName</code> that is  enabled for
      * use with WMS.
@@ -75,6 +76,7 @@ public class WFSConfig extends ServiceConfig {
      */
     public WFSConfig(WFSDTO w) {
         super(w.getService());
+		gmlPrefixing = w.isGmlPrefixing();
     }
 
     /**
@@ -95,6 +97,7 @@ public class WFSConfig extends ServiceConfig {
 			throw new NullPointerException("WFS Data Transfer Object required");
         }
         super.update(dto.getService());
+        gmlPrefixing = dto.isGmlPrefixing();
     }
 
     /**
@@ -111,7 +114,7 @@ public class WFSConfig extends ServiceConfig {
     public WFSDTO toDTO() {
         WFSDTO wfsDto = new WFSDTO();
         wfsDto.setService((ServiceDTO) super.toServDTO());
-
+		wfsDto.setGmlPrefixing(gmlPrefixing);
         return wfsDto;
     }
 
@@ -127,6 +130,28 @@ public class WFSConfig extends ServiceConfig {
 	 */
 	public void setEnabledFeatures(Set set) {
 		enabledFeatures = set;
+	}
+
+	/**
+	 * isGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public boolean isGmlPrefixing() {
+		return gmlPrefixing;
+	}
+
+	/**
+	 * setGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param b
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
 	}
 
 }
