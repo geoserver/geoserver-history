@@ -2,11 +2,19 @@
 # -----------------------------------------------------------------------------
 # Start Script for GEOSERVER
 #
-# $Id: test.sh,v 1.1 2002/08/22 15:40:40 robhranac Exp $
+# $Id: test.sh,v 1.2 2003/01/23 21:59:32 cholmesny Exp $
 # -----------------------------------------------------------------------------
 
-cd ~/wfs/geoserver
-sh bin/stop.sh
-ant testPrep
-sh bin/start.sh
-cd bin
+if [ -z "$GEOSERVER_HOME" ]; then
+  echo "The GEOSERVER_HOME environment variable is not defined"
+  echo "This environment variable is needed to run this program"
+  exit 1
+fi
+if [ ! -r "$GEOSERVER_HOME"/bin/startup.sh ]; then
+  echo "The GEOSERVER_HOME environment variable is not defined correctly"
+  echo "This environment variable is needed to run this program"
+  exit 1
+fi
+cd $GEOSERVER_HOME
+ant stop
+ant test
