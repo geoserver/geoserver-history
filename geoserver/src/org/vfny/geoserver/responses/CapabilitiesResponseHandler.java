@@ -4,24 +4,22 @@
  */
 package org.vfny.geoserver.responses;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.13 2004/03/14 15:59:21 groldan Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.14 2004/04/16 10:55:43 cholmesny Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -78,6 +76,8 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
             fees = "NONE";
         }
 
+        handleContact(config);
+
         handleSingleElem("Fees", fees);
         cReturn();
 
@@ -93,8 +93,11 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     }
 
     protected void startService(Service config) throws SAXException {
-    	startElement("Service");
+        startElement("Service");
     }
+
+    protected abstract void handleContact(Service config)
+        throws SAXException;
 
     /**
      * DOCUMENT ME!
@@ -202,8 +205,8 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
 
     protected void handleLatLongBbox(AttributesImpl bboxAtts)
         throws SAXException {
-      startElement("LatLongBoundingBox", bboxAtts);
-      endElement("LatLongBoundingBox");
+        startElement("LatLongBoundingBox", bboxAtts);
+        endElement("LatLongBoundingBox");
     }
 
     /**

@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.22 2004/03/31 05:08:02 cholmesny Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.23 2004/04/16 10:55:43 cholmesny Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -148,13 +148,13 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
             String resultFormat = "ResultFormat";
             startElement(resultFormat);
             handleSingleElem("GML2", "");
+
             //So cite does not even like this.  Which is really lame, since it
             //validates according to our definition for now, and because the cite
             //tests have a bunch of other valid types (perhaps from galdos?). 
             //So I think perhaps we should just have it as a capability that 
             //is not advertised in the capabilities section for now.  And we 
             //should try to get the cite team to add it to their section. ch
-            
             //handleSingleElem("GML2-GZIP", "");
             endElement(resultFormat);
             cReturn();
@@ -263,7 +263,16 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         endElement("FeatureTypeList");
     }
-    
+
+    /**
+     * Handles contact.  Wfs does not yet have contact info, so for now do
+     * nothing.
+     *
+     * @param config the service.
+     */
+    protected void handleContact(Service config) {
+        return;
+    }
 
     /**
      * DOCUMENT ME!
