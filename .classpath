@@ -33,7 +33,7 @@
 	<classpathentry kind="lib" path="lib/jsde_concurrent-9.0.jar"/>
 	<classpathentry kind="lib" path="lib/jsde_jpe_sdk-9.0.jar"/>
 	<classpathentry kind="lib" path="lib/jsde_sdk-9.0.jar"/>
-	<classpathentry kind="lib" path="lib/JTS-1.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/JTS-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/ki-jzkit-iface.jar"/>
 	<classpathentry kind="lib" path="lib/ki-jzkit-z3950.jar"/>
