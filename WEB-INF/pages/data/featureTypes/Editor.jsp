@@ -6,7 +6,9 @@
   <table class="info">
 	<tr>
       <td class="label">
-        <bean:message key="label.name"/>:
+		<span class="help" title="<bean:message key="help.type.name"/>">
+          <bean:message key="label.name"/>:
+        </span>
       </td>
       <td class="datum">
 		<bean:write name="dataFeatureTypesEditorForm" property="name"/>
@@ -14,7 +16,9 @@
     </tr>
 	<tr>
       <td class="label">
-		<bean:message key="label.SRS"/>:
+		<span class="help" title="<bean:message key="help.type.srs"/>">
+          <bean:message key="label.SRS"/>:
+        </span>
       </td>
 	  <td class="datum">
 		<html:text property="SRS" size="60"/>
@@ -22,7 +26,9 @@
 
     <tr>
       <td class="label">
-		<bean:message key="label.title"/>:
+		<span class="help" title="<bean:message key="help.type.title"/>">
+          <bean:message key="label.title"/>:
+        </span>
 	  </td>
 	  <td class="datum">
 		<html:text property="title" size="60"/>
@@ -30,14 +36,49 @@
 
     <tr>
       <td class="label">
-		<bean:message key="label.latLonBoundingBox"/>:
+		<span class="help" title="<bean:message key="help.type.bbox"/>">
+          <bean:message key="label.bbox"/>:
+        </span>
 	  </td>
 	  <td class="datum">
-		<html:text property="latLonBoundingBoxMinX" size="30"/>
-		<html:text property="latLonBoundingBoxMinY" size="30"/>
-        <br/>
-		<html:text property="latLonBoundingBoxMaxX" size="30"/>
-		<html:text property="latLonBoundingBoxMaxY" size="30"/>
+        <table border=0>
+          <tr>
+            <td style="white-space: nowrap;">
+              <span class="help" title="<bean:message key="help.type.minx"/>">
+                <bean:message key="label.type.minx"/>:
+              </span>
+            </td>
+            <td>
+              <html:text property="latLonBoundingBoxMinX" size="15"/>
+            </td>
+            <td style="white-space: nowrap;">
+              <span class="help" title="<bean:message key="help.type.miny"/>">
+                <bean:message key="label.type.miny"/>:
+              </span>
+            </td>
+            <td>
+              <html:text property="latLonBoundingBoxMinY" size="15"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="white-space: nowrap;">
+              <span class="help" title="<bean:message key="help.type.maxx"/>">
+                <bean:message key="label.type.maxx"/>:
+              </span>
+            </td>
+            <td>
+              <html:text property="latLonBoundingBoxMaxX" size="15"/>
+            </td>
+            <td style="white-space: nowrap;">
+              <span class="help" title="<bean:message key="help.type.maxy"/>">
+                <bean:message key="label.type.maxy"/>:
+              </span>
+            </td>
+            <td>
+              <html:text property="latLonBoundingBoxMaxX" size="15"/>
+            </td>
+          </tr>
+        </table>
 	  </td>
     </tr>
 
