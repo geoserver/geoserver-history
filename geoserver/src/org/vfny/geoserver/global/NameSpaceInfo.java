@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.4 2004/01/20 03:26:40 emperorkefka Exp $
+ * @version $Id: NameSpaceInfo.java,v 1.5 2004/01/20 06:30:01 jive Exp $
  */
 public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMetaData{
     /**
@@ -280,9 +280,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
     }
 
     /**
-     * Implement getTypeNames.
+     * This should be a list of available typeNames for the namespace.
      * <p>
-     * Description ...
+     * Makes use of data to get the list of all FeatureTypes, returns the
+     * names that match this prefix. This is just the typeName and not the
+     * full prefix:typeName.
      * </p>
      * @see org.geotools.data.NamespaceMetaData#getTypeNames()
      * 
@@ -290,12 +292,12 @@ public class NameSpaceInfo extends GlobalLayerSupertype implements NamespaceMeta
      */
     public Set getTypeNames() {
         Set set = new HashSet();
-        System.out.println("getTypeNames data:"+data );
-        System.out.println("getTypeNames data getFeatureTypeInfo:"+data.getFeatureTypeInfos() );
-                
+        
         for( Iterator i=data.getFeatureTypeInfos().values().iterator(); i.hasNext(); ){
             FeatureTypeInfo type = (FeatureTypeInfo) i.next();
-            if( type.getNameSpace() == this ) set.add( type ); 
+            if( type.getNameSpace() == this ) {
+                set.add( type.getName() ); 
+            }            
         }
         return set;
     }
