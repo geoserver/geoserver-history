@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.vfny.geoserver.config.*;
 import org.vfny.geoserver.oldconfig.*;
 
@@ -18,7 +19,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.13.4.1 2003/11/04 23:29:20 cholmesny Exp $
+ * @version $Id: FreefsLog.java,v 1.13.4.2 2003/11/06 00:07:46 cholmesny Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -77,8 +78,8 @@ public class FreefsLog extends HttpServlet {
      */
     public void destroy() {
         super.destroy();
-        TypeRepository.getInstance().closeTypeResources();
 
+        ConnectionPoolManager.getInstance().closeAll();
         LOGGER.finer("shutting down zserver");
 
         if (server != null) {
