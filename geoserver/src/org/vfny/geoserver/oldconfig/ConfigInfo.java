@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataSourceFinder;
-import org.vfny.geoserver.config.old.ConfigurationException;
+import org.vfny.geoserver.global.ConfigurationException;
 
 /**
  * Reads all necessary configuration data and abstracts it away from the

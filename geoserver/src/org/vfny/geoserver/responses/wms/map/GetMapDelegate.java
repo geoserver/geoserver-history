@@ -25,7 +25,7 @@ import org.geotools.filter.LogicFilter;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
@@ -39,7 +39,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.4.2.1 2003/12/30 23:00:46 dmzwiers Exp $
+ * @version $Id: GetMapDelegate.java,v 1.4.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;

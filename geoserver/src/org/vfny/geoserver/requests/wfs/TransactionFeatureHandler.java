@@ -30,9 +30,9 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.gml.GMLFilterFeature;
-import org.vfny.geoserver.config.old.CatalogConfig;
-import org.vfny.geoserver.config.old.FeatureTypeConfig;
-import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.FeatureTypeConfig;
+import org.vfny.geoserver.global.ServerConfig;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.2.2.1 2003/12/30 23:00:39 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.2.2.2 2003/12/30 23:08:28 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {

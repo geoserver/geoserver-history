@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config.old;
+package org.vfny.geoserver.global;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
  * Global server configuration parameters
  *
  * @author Gabriel Roldán
- * @version $Id: GlobalConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public class GlobalConfig extends AbstractConfig {
     /** DOCUMENT ME! */

@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.vfny.geoserver.config.old.ConfigurationException;
-import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.ServerConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
  * used to configure the zserver module.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ZServerConfig.java,v 1.2.2.1 2003/12/30 23:00:43 dmzwiers Exp $
+ * @version $Id: ZServerConfig.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
  */
 public class ZServerConfig
     implements java.io.Serializable

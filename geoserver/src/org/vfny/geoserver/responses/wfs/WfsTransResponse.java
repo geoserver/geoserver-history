@@ -13,8 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.config.old.GlobalConfig;
-import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.global.GlobalConfig;
+import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.responses.ResponseUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * then write itself out to xml for a response.
  *
  * @author Chris Holmes
- * @version $Id: WfsTransResponse.java,v 1.2.2.1 2003/12/30 23:00:42 dmzwiers Exp $
+ * @version $Id: WfsTransResponse.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */

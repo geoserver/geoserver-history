@@ -25,7 +25,7 @@ import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.4.2.1 2003/12/30 23:00:47 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.4.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */

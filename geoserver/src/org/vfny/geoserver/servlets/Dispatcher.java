@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 
@@ -35,7 +35,7 @@ import org.vfny.geoserver.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.7.2.1 2003/12/30 23:00:42 dmzwiers Exp $
+ * @version $Id: Dispatcher.java,v 1.7.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded

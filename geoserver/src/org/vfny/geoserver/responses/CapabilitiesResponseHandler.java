@@ -6,11 +6,11 @@ package org.vfny.geoserver.responses;
 
 import java.io.IOException;
 
-import org.vfny.geoserver.config.old.BasicConfig;
-import org.vfny.geoserver.config.old.CatalogConfig;
-import org.vfny.geoserver.config.old.FeatureTypeConfig;
-import org.vfny.geoserver.config.old.ServerConfig;
-import org.vfny.geoserver.config.old.ServiceConfig;
+import org.vfny.geoserver.global.BasicConfig;
+import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.FeatureTypeConfig;
+import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.ServiceConfig;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -22,7 +22,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.1 2003/12/30 23:00:45 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.3.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";

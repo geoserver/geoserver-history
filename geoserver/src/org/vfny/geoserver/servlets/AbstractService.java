@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
@@ -89,7 +89,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author Jody Garnett
- * @version $Id: AbstractService.java,v 1.3.2.1 2003/12/30 23:00:42 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.3.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -744,7 +744,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe Service stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.3.2.1 $
+ * @version $Revision: 1.3.2.2 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */

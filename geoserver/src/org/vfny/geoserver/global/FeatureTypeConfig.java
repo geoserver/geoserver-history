@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config.old;
+package org.vfny.geoserver.global;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */

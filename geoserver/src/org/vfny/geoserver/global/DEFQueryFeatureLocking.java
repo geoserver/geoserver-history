@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config.old;
+package org.vfny.geoserver.global;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -40,7 +40,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * definition query configured for it.
  *
  * @author Gabriel Roldán
- * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.1 2003/12/30 23:00:43 dmzwiers Exp $
+ * @version $Id: DEFQueryFeatureLocking.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public class DEFQueryFeatureLocking implements FeatureLocking {
     /** DOCUMENT ME!  */

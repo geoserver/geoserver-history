@@ -14,7 +14,7 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DataSourceFinder;
 import org.geotools.data.DataSourceMetaData;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.config.old.ConfigurationException;
+import org.vfny.geoserver.global.ConfigurationException;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
@@ -25,7 +25,7 @@ import org.vfny.geoserver.config.old.ConfigurationException;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán, Dominion t.i.
- * @version $Id: TypeInfo.java,v 1.2.2.1 2003/12/30 23:00:43 dmzwiers Exp $
+ * @version $Id: TypeInfo.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
  */
 public class TypeInfo
 {

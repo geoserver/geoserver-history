@@ -33,11 +33,11 @@ import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.config.old.CatalogConfig;
-import org.vfny.geoserver.config.old.FeatureTypeConfig;
-import org.vfny.geoserver.config.old.NameSpace;
-import org.vfny.geoserver.config.old.ServerConfig;
-import org.vfny.geoserver.config.old.WFSConfig;
+import org.vfny.geoserver.global.CatalogConfig;
+import org.vfny.geoserver.global.FeatureTypeConfig;
+import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.WFSConfig;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
@@ -50,7 +50,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2.2.1 2003/12/30 23:00:41 dmzwiers Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */

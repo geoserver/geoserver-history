@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config.old;
+package org.vfny.geoserver.global;
 
 import java.io.File;
 import java.io.FileReader;
@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */

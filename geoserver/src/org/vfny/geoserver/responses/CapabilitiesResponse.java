@@ -19,8 +19,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WfsException;
-import org.vfny.geoserver.config.old.ServerConfig;
-import org.vfny.geoserver.config.old.ServiceConfig;
+import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.ServiceConfig;
 import org.vfny.geoserver.requests.Request;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -33,7 +33,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponse.java,v 1.21.2.1 2003/12/30 23:00:45 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponse.java,v 1.21.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponse extends XMLFilterImpl
     implements Response, XMLReader {

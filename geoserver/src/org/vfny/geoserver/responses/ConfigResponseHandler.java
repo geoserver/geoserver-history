@@ -7,7 +7,7 @@ package org.vfny.geoserver.responses;
 import java.util.Iterator;
 import java.util.List;
 
-import org.vfny.geoserver.config.old.BasicConfig;
+import org.vfny.geoserver.global.BasicConfig;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
  * Streams out a BasicConfig element
  *
  * @author Gabriel Roldán
- * @version $Id: ConfigResponseHandler.java,v 1.2.2.1 2003/12/30 23:00:46 dmzwiers Exp $
+ * @version $Id: ConfigResponseHandler.java,v 1.2.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public abstract class ConfigResponseHandler extends XmlResponseHandler {
     /**

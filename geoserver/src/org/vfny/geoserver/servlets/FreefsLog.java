@@ -27,8 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geotools.data.jdbc.ConnectionPoolManager;
-import org.vfny.geoserver.config.old.ConfigurationException;
-import org.vfny.geoserver.config.old.ServerConfig;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.ServerConfig;
 import org.vfny.geoserver.zserver.GeoZServer;
 
 
@@ -37,7 +37,7 @@ import org.vfny.geoserver.zserver.GeoZServer;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.15.2.1 2003/12/30 23:00:42 dmzwiers Exp $
+ * @version $Id: FreefsLog.java,v 1.15.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */

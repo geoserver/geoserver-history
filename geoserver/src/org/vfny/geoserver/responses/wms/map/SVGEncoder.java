@@ -20,7 +20,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.global.FeatureTypeConfig;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -36,7 +36,7 @@ import com.vividsolutions.jts.geom.Point;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.3.2.1 2003/12/30 23:00:47 dmzwiers Exp $
+ * @version $Id: SVGEncoder.java,v 1.3.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -789,7 +789,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.3.2.1 $
+ * @version $Revision: 1.3.2.2 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(

@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.responses;
 
-import org.vfny.geoserver.config.old.ServiceConfig;
+import org.vfny.geoserver.global.ServiceConfig;
 import org.xml.sax.SAXException;
 
 
@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: ResponseHandler.java,v 1.2.2.1 2003/12/30 23:00:45 dmzwiers Exp $
+ * @version $Id: ResponseHandler.java,v 1.2.2.2 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public interface ResponseHandler {
     void handleDocument(ServiceConfig config) throws SAXException;

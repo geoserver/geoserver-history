@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.vfny.geoserver.config.old.FeatureTypeConfig;
-import org.vfny.geoserver.config.old.NameSpace;
-import org.vfny.geoserver.config.old.ServerConfig;
-import org.vfny.geoserver.config.old.ServiceConfig;
-import org.vfny.geoserver.config.old.WFSConfig;
+import org.vfny.geoserver.global.FeatureTypeConfig;
+import org.vfny.geoserver.global.NameSpace;
+import org.vfny.geoserver.global.ServerConfig;
+import org.vfny.geoserver.global.ServiceConfig;
+import org.vfny.geoserver.global.WFSConfig;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -24,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.1 2003/12/30 23:00:41 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.2 2003/12/30 23:08:27 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";

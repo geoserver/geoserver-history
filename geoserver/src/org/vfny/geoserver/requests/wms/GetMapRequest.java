@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.config.old.FeatureTypeConfig;
+import org.vfny.geoserver.global.FeatureTypeConfig;
 import org.vfny.geoserver.requests.WMSRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * specify any filter, it's position in the list of filters may be empty.
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapRequest.java,v 1.3.2.1 2003/12/30 23:00:51 dmzwiers Exp $
+ * @version $Id: GetMapRequest.java,v 1.3.2.2 2003/12/30 23:08:28 dmzwiers Exp $
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config.old;
+package org.vfny.geoserver.global;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: BasicConfig.java,v 1.1.2.1 2003/12/30 23:00:43 dmzwiers Exp $
+ * @version $Id: BasicConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
  */
 public class BasicConfig extends AbstractConfig {
     /** DOCUMENT ME! */

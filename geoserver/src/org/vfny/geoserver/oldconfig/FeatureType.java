@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.vfny.geoserver.config.old.ConfigurationException;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.2.2.1 $ $Date: 2003/12/30 23:00:43 $
+ * @version $Revision: 1.2.2.2 $ $Date: 2003/12/30 23:08:27 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
  *       castor generated FeatureType, but it is now unclear if we _really_

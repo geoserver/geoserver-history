@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config.old;
+package org.vfny.geoserver.global;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
@@ -58,7 +58,7 @@ import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.1.2.1 2003/12/30 23:00:42 dmzwiers Exp $
+ * @version $Id: ValidationConfig.java,v 1.1.2.1 2003/12/30 23:08:26 dmzwiers Exp $
  *
  * @see http://vwfs.refractions.net/docs/Validating_Web_Feature_Server.pdf
  */
