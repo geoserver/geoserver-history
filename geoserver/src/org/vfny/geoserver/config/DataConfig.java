@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.config;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +34,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.5 2004/01/15 21:55:15 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.6 2004/01/15 22:09:16 jive Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
