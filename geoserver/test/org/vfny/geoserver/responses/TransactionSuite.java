@@ -42,7 +42,7 @@ public class TransactionSuite extends TestCase {
 
     /** Unit test data directory */
     private static final String CONFIG_DIR = 
-        System.getProperty("user.dir") + "/misc/documents/configuration.xml";
+        System.getProperty("user.dir") + "/misc/unit/config/";
 
     /** Unit test data directory */
     private static final String TYPE_DIR = 
@@ -87,7 +87,7 @@ public class TransactionSuite extends TestCase {
         
 	}*/
 
-    public void testNoInfo() {
+    public void testNoInfo() throws Exception {
 	     TransactionRequest request = new TransactionRequest();
 	     request.setHandle("no info");
         DeleteRequest delete = new DeleteRequest();
