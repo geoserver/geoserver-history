@@ -13,11 +13,11 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: ServiceConfig.java,v 1.10 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: ServiceConfig.java,v 1.11 2004/01/07 16:28:19 cholmesny Exp $
  */
 public abstract class ServiceConfig extends BasicConfig {
     /** DOCUMENT ME! */
-    private boolean enabled;
+    private boolean enabled = true;
 
     /** DOCUMENT ME! */
     private String serviceType;
@@ -31,24 +31,36 @@ public abstract class ServiceConfig extends BasicConfig {
     public ServiceConfig(Element serviceRoot) throws ConfigurationException {
         super(serviceRoot);
         this.serviceType = getAttribute(serviceRoot, "type", true);
-        this.enabled = getBooleanAttribute(serviceRoot, "enabled", true);
+        this.enabled = getBooleanAttribute(serviceRoot, "enabled", false);
         this.onlineResource = getChildText(serviceRoot, "onlineResource", true);
 
         //this.URL = getChildText(serviceRoot, "URL");
     }
-    /** Quick config for JUnit tests.
+
+    /**
+     * Quick config for JUnit tests.
+     * 
      * <ul>
-     * <li>service.enabled: boolean (default true)</li>
-     * <li>service.type: String (default test)</li>
-     * <li>service.onlineResources (default localhost)</li>
+     * <li>
+     * service.enabled: boolean (default true)
+     * </li>
+     * <li>
+     * service.type: String (default test)
+     * </li>
+     * <li>
+     * service.onlineResources (default localhost)
+     * </li>
      * </ul>
+     *
+     * @param config DOCUMENT ME!
      */
-    public ServiceConfig(Map config ){
-        super( config );
-        enabled = get( config, "service.enabled", true );
-        serviceType = get( config, "service.type", "Test");
-        onlineResource = get( config, "service.onlineResources", "localhost" );                        
+    public ServiceConfig(Map config) {
+        super(config);
+        enabled = get(config, "service.enabled", true);
+        serviceType = get(config, "service.type", "Test");
+        onlineResource = get(config, "service.onlineResources", "localhost");
     }
+
     /**
      * DOCUMENT ME!
      *
