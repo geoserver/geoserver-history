@@ -14,7 +14,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.8 2004/04/05 11:49:58 cholmesny Exp $
+ * @version $Id: WFSDTO.java,v 1.9 2004/09/09 16:51:58 cholmesny Exp $
  */
 public final class WFSDTO implements DataTransferObject {
     /** ServiceLevel bit used to indicate Basic support */
@@ -45,6 +45,7 @@ public final class WFSDTO implements DataTransferObject {
     /** The service parameters for this instance. */
     private ServiceDTO service;
     private boolean gmlPrefixing = false;
+	private boolean srsXmlStyle = true;
     private int serviceLevel = COMPLETE; //if not set then it should be complete.   
 
     /**
@@ -176,6 +177,28 @@ public final class WFSDTO implements DataTransferObject {
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
     }
+    
+	/**
+	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+	 * style.  
+	 *
+	 * @return <tt>true</tt> if the srs is reported with the xml style
+	 */
+	public boolean isSrsXmlStyle() {
+		return srsXmlStyle;
+	}
+
+	/**
+	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+	 * style.  
+	 *
+	 * @param doXmlStyle whether the srs style should be xml or not.
+	 */
+	public void setSrsXmlStyle(boolean doXmlStyle) {
+		this.srsXmlStyle = doXmlStyle;
+	}
 
     /**
      * Access serviceLevel property.
