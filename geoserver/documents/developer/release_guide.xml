@@ -276,4 +276,8 @@ You should install and test this!
           
      
   </sect1>
+  <sect1>
+  <title>Release on JIRA</title>
+     Go to 'administer project' then 'manage versions' then click the appropriate "release" button.
+  </sect1>
 </article>
