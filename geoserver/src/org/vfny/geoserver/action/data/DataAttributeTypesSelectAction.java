@@ -16,9 +16,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataAttributeTypesSelectForm;
+
 /**
- * @author User
+ * @author rgould
  *
  * To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Generation - Code and Comments
@@ -32,16 +36,21 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
 		
 		DataAttributeTypesSelectForm form = (DataAttributeTypesSelectForm) incomingForm; 
 		String action = form.getButtonAction();
-		
+        
+        DataConfig dataConfig = (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+        FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+        AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) ftConfig.getAttributeFromSchema((String) request.getSession().getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE));
+        
 		//SAVE SELECTED ATTRIBUTE AND FORWARD TO EDITOR
 		if (action.equals("edit")) {
-			request.getSession().setAttribute("selectedAttributeType", form.getSelectedAttributeType());
+			request.getSession().setAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE, form.getSelectedAttributeType());
 			form.reset(mapping, request);
 			return mapping.findForward("dataConfigFeatureTypes");
 		}
 		
 		if (action.equals("delete")) {
 			//dataConfig.removeFeatureType(featureTypesForm.getSelectedFeatureType());
+            request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
 			return mapping.findForward("dataConfigFeatureTypes");
 		}
 		

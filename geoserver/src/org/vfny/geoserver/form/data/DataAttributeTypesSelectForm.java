@@ -52,9 +52,10 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+        System.out.println("ABSCOND!");
 
-		FeatureTypeConfig ftConfig = config.getFeatureTypeConfig((String) request.getSession().getAttribute("selectedFeatureType"));		
-		
+		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);		
+		System.out.println("Return!!" +ftConfig);
 		
 		return Collections.unmodifiableSortedSet(new TreeSet(
 					ftConfig.getSchema()

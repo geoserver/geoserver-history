@@ -32,25 +32,23 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 	
 	public void reset(ActionMapping arg0, HttpServletRequest request) {
 		super.reset(arg0, request);
+        System.out.println("SKAG RESET 0");
 
 		ServletContext context = getServlet().getServletContext();
+        System.out.println("SKAG RESET 1");
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+        System.out.println("SKAG RESET 2");
 
-		String featureTypeName = (String) request.getSession().getAttribute("selectedFeatureType");
-		System.out.println("Editor form: "+featureTypeName);
-		int index = featureTypeName.indexOf(DataConfig.SEPARATOR);
-		
-		String newFeatureTypeName = featureTypeName.substring(index+DataConfig.SEPARATOR.length());
-		System.out.println("Editor form: "+featureTypeName);
-		FeatureTypeConfig ftConfig = config.getFeatureTypeConfig(featureTypeName);		
-		if (ftConfig == null)
-			System.out.println("NULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULLNULL");
-		
-		ftConfig =config.getFeatureTypeConfig(newFeatureTypeName); 
-		if (ftConfig == null)
-			System.out.println("NULLNULLNULLNUBORKBORKBORKBORKBORKBORKBORBORBOKRBOKRBOKRBBOBRKOBROBOKRBOBK");
-		
+		System.out.println("0");
+        request.getSession();
+        System.out.println(request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE).getClass());
+        System.out.println("1");
+        
+		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+        System.out.println("2");
+        System.out.println(ftConfig);
+        
 		_abstract = ftConfig.getAbstract();
 		latlonBoundingBox = ftConfig.getLatLongBBox().toString();
 		name = ftConfig.getName();
@@ -61,7 +59,7 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 		for (int i = 0; i < ftConfig.getKeywords().size(); i++) {
 			out = out + ftConfig.getKeywords().get(i);// + System.getProperty("line.separator");
 		}
-
+System.out.println("SKAGGGGG");
 		this.keywords = out;
 	}
 	

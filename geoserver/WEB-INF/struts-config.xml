@@ -49,6 +49,9 @@
     		name="dataFeatureTypesSelectForm"
     		type="org.vfny.geoserver.form.data.DataFeatureTypesSelectForm"/>
     	<form-bean
+    		name="dataFeatureTypesNewForm"
+    		type="org.vfny.geoserver.form.data.DataFeatureTypesNewForm"/>
+    	<form-bean
     		name="dataFeatureTypesEditorForm"
     		type="org.vfny.geoserver.form.data.DataFeatureTypesEditorForm"/>
 
@@ -282,7 +285,14 @@
         	scope="request"
         	validate="true"
         	input="data.featureTypes"/>   
-        	
+         <action
+        	path="/DataConfigFeatureTypesNew"
+        	type="org.vfny.geoserver.action.data.DataFeatureTypesNewAction"
+        	name="dataFeatureTypesNewForm"
+        	scope="request"
+        	validate="true"
+        	input="data.featureTypes"/>   
+        	       	
         <action
         	path="/DataConfigAttributeTypesSelect"
         	type="org.vfny.geoserver.action.data.DataAttributeTypesSelectAction"

@@ -208,6 +208,7 @@
    	
    	<definition name="data.featureTypes.main" page="/WEB-INF/pages/layouts/featureTypesLayout.jsp">
    		<put name="ftSelect" value="/WEB-INF/pages/data/DataConfigFeatureTypeSelect.jsp"/>
+   		<put name="ftNew"    value="/WEB-INF/pages/data/DataConfigFeatureTypeNew.jsp"/>
   		<put name="ftEditor" value="/WEB-INF/pages/data/DataConfigFeatureTypeEditor.jsp"/>
    		<put name="atSelect" value="/WEB-INF/pages/data/DataConfigAttributeTypeSelect.jsp"/>
    		<put name="atNew"    value="/WEB-INF/pages/data/DataConfigAttributeTypeNew.jsp"/>

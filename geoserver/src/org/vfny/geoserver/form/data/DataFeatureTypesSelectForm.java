@@ -6,6 +6,7 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.Set;
 import java.util.SortedSet;
 
 import javax.servlet.ServletContext;
@@ -25,6 +26,7 @@ import org.vfny.geoserver.config.DataConfig;
 public class DataFeatureTypesSelectForm extends ActionForm {
 	
 	private String selectedFeatureTypeName;
+	private String buttonAction;
 	
 	public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 		super.reset(arg0, arg1);
@@ -52,12 +54,30 @@ public class DataFeatureTypesSelectForm extends ActionForm {
 		this.selectedFeatureTypeName = selectedFeatureTypeName;
 	}
 	
-	public SortedSet getTypeNames() {
+	public Set getTypeNames() {
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);	
 		
-		return config.getFeatureTypeIdentifiers();
+		return config.getFeaturesTypes().keySet();
+	}
+
+	/**
+	 * Access buttonAction property.
+	 * 
+	 * @return Returns the buttonAction.
+	 */
+	public String getButtonAction() {
+		return buttonAction;
+	}
+
+	/**
+	 * Set buttonAction to buttonAction.
+	 *
+	 * @param buttonAction The buttonAction to set.
+	 */
+	public void setButtonAction(String buttonAction) {
+		this.buttonAction = buttonAction;
 	}
 
 }
