@@ -5,7 +5,9 @@
 package org.vfny.geoserver.responses.wms.featureInfo;
 
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,12 +23,10 @@ import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
- * Generates a map using the geotools jai rendering classes.  Uses the Lite
- * renderer, loading the data on the fly, which is quite nice.  Thanks Andrea
- * and Gabriel.  The word is that we should eventually switch over to
- * StyledMapRenderer and do some fancy stuff with caching layers, but  I think
- * we are a ways off with its maturity to try that yet.  So Lite treats us
- * quite well, as it is stateless and therefor loads up nice and fast.
+ * Generates a FeatureInfoResponse of type text.  This simply reports the 
+ * attributes of the feature requested as a text string.  This class just
+ * performs the writeTo, the GetFeatureInfoDelegate and abstract feature info
+ * class handle the rest.
  *
  * @author Chris Holmes, TOPP
  * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill Exp $
@@ -51,7 +51,10 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
      */
     public void writeTo(OutputStream out)
     throws org.vfny.geoserver.ServiceException, java.io.IOException {
-        PrintWriter writer = new PrintWriter(out);
+        Charset charSet = getRequest().getGeoServer().getCharSet();
+        OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
+	//                                 getRequest().getGeoServer().getCharSet());
+        PrintWriter writer = new PrintWriter(osw);
         try {
             for(int i = 0; i < results.size(); i++){
                 FeatureResults fr = (FeatureResults)results.get(i);
