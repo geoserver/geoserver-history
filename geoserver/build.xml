@@ -695,7 +695,7 @@
 	    <exclude name="**/*CVS*/*"/>
 	  </fileset>
     </copy>
-    <copy todir="${dir.build/misc}">
+    <copy todir="${dir.build}/misc">
 	  <fileset dir="${dir.misc}">
 	    <include name="**/*"/>
 	    <exclude name="*CVS*/*"/>
