@@ -44,7 +44,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.18 2004/04/16 06:28:55 jive Exp $
+ * @version $Id: TypesEditorForm.java,v 1.19 2004/04/16 07:06:53 jive Exp $
  */
 public class TypesEditorForm extends ActionForm {
 
@@ -186,6 +186,7 @@ public class TypesEditorForm extends ActionForm {
             //We are using the generated attributes
             
             this.schemaBase = "--";
+            this.schemaName = typeName+"_Type";
             this.attributes = new LinkedList();
             
             // Generate ReadOnly list of Attribtues
@@ -196,7 +197,8 @@ public class TypesEditorForm extends ActionForm {
         }
         else {
         	this.schemaBase = type.getSchemaBase();
-            this.attributes = new LinkedList();
+            this.schemaName = type.getSchemaName();            
+            this.attributes = new LinkedList();            
             //
             // Need to add read only AttributeDisplay for each required attribute
             // defined by schemaBase
@@ -449,7 +451,7 @@ public class TypesEditorForm extends ActionForm {
      * 
      * @return Returns the name.
      */
-    public String typeName() {
+    public String getTypeName() {
         return typeName;
     }
     /**
@@ -625,4 +627,16 @@ public class TypesEditorForm extends ActionForm {
     	return addList;
     }
 
+    /**
+     * @return Returns the schemaName.
+     */
+    public String getSchemaName() {
+        return schemaName;
+    }
+    /**
+     * @param schemaName The schemaName to set.
+     */
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
+    }
 }

@@ -17,7 +17,7 @@
         </span>
       </td>
       <td class="datum">
-		<bean:write name="typesEditorForm" property="name"/>
+		<bean:write name="typesEditorForm" property="typeName"/>
       </td>
     </tr>
 	<tr>
@@ -50,7 +50,8 @@
 	  </td>
 	  <td class="datum">
 		<html:text property="title" size="60"/>
-	</td></tr>
+	  </td>
+	</tr>
 
     <tr>
       <td class="label">
@@ -141,14 +142,27 @@
       </td>
     </tr>
 
-          <% boolean first = true;
-             org.vfny.geoserver.form.data.AttributeDisplay attributeDisplay = null;;
-             org.vfny.geoserver.form.data.AttributeForm attributeForm = null; 
+  <% boolean first = true;
+     org.vfny.geoserver.form.data.AttributeDisplay attributeDisplay = null;;
+     org.vfny.geoserver.form.data.AttributeForm attributeForm = null; 
+     
+     org.vfny.geoserver.form.data.TypesEditorForm form = 
+             (org.vfny.geoserver.form.data.TypesEditorForm) request.getAttribute("typesEditorForm");
+     java.util.List attributes = (java.util.List) form.getAttributes();
+     int attributesSize = attributes.size(); %>
              
-             org.vfny.geoserver.form.data.TypesEditorForm form = 
-                     (org.vfny.geoserver.form.data.TypesEditorForm) request.getAttribute("typesEditorForm");
-             java.util.List attributes = (java.util.List) form.getAttributes();
-             int attributesSize = attributes.size(); %>
+    <% if (!("--".equals(form.getSchemaBase())) ) { %>
+    <tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.type.schemaName"/>">
+          <bean:message key="label.schemaName"/>:
+        </span>
+	  </td>
+	  <td class="datum">
+		<html:text property="schemaName" size="60"/>
+	  </td>
+	</tr>
+    <% } %>    
 
 <logic:iterate id="attribute" indexId="index" name="typesEditorForm" property="attributes">
 	<tr>

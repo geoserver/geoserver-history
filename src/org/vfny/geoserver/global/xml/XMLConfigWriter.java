@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.27 2004/04/15 20:59:29 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.28 2004/04/16 07:08:37 jive Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -601,9 +601,11 @@ public class XMLConfigWriter {
             if (ft != null) {
                 File dir2 = WriterUtils.initWriteFile(new File(dir,
                             ft.getDirName()), true);
+                
                 storeFeature(ft, dir2);
-
+                
                 if (ft.getSchemaAttributes() != null) {
+                    LOGGER.info( ft.getKey() +" writing schema.xml w/ "+ft.getSchemaAttributes().size() );
                     storeFeatureSchema(ft, dir2);
                 }
             }
@@ -745,16 +747,21 @@ public class XMLConfigWriter {
 
     protected static void storeFeatureSchema(FeatureTypeInfoDTO fs, File dir)
         throws ConfigurationException {
-        if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {
-            return;
-        }
 
         if ((fs.getSchemaBase() == null) || (fs.getSchemaBase() == "")) {
+            LOGGER.info( "No schema base" );
+            System.out.println( fs.getKey() + " has not schemaBase");            
             return;
         }
-
+        
+        if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {                   
+            // Should assume Null?
+            LOGGER.info( "No schema name" ); // Do we even have a field for this?
+            System.out.println( fs.getKey() + " has not schemaName");
+            return;
+        }
+        
         File f = WriterUtils.initWriteFile(new File(dir, "schema.xml"), false);
-
         try {
             FileWriter fw = new FileWriter(f);
             storeFeatureSchema(fs, fw);
@@ -857,7 +864,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.27 2004/04/15 20:59:29 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.28 2004/04/16 07:08:37 jive Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */
