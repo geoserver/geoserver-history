@@ -62,7 +62,7 @@ public class DescribeResponse {
 
     private static final String GML_IMPORT =  
 	"\n\n<xs:import namespace=\"http://www.opengis.net/gml\""
-       + " schemaLocation=\"http://schemas.opengis.net/gml/2.0/feature.xsd\"/>\n\n";
+       + " schemaLocation=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\"/>\n\n";
 
     
     /** Fixed return footer information */
@@ -139,14 +139,14 @@ public class DescribeResponse {
 	    tempResponse.append("\n  xmlns:" + nsPrefix + 
 				"=\"" + targetNs +"\"");
 	    tempResponse.append(GML_NAMESPACE);
-	    tempResponse.append(XS_NAMESPACE + DEFAULT_NAMESPACE);
+	    tempResponse.append(XS_NAMESPACE);
 	    tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
 	    //this is not always necessary, but it doesn't seem to hurt...
 	    tempResponse.append(GML_IMPORT);
 	    tempResponse.append(generateSpecifiedTypes(requestedTypes));
 	} else {
 	    //the featureTypes do not have all the same prefixes.
-	    tempResponse.append(DEFAULT_NAMESPACE + XS_NAMESPACE);
+	    tempResponse.append(XS_NAMESPACE);
 	    tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
 	    Set prefixes = new HashSet();
 	    Iterator nameIter = requestedTypes.iterator();
@@ -183,7 +183,7 @@ public class DescribeResponse {
      */
     private StringBuffer getNSImport(String prefix, List typeNames){
 	LOGGER.finer("prefix is " + prefix);
-	StringBuffer retBuffer = new StringBuffer("\n  <import namespace=\"");
+	StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
 	String namespace = config.getNSUri(prefix);
 	retBuffer.append(namespace + "\"");
 	retBuffer.append("\n        schemaLocation=\"" + config.getUrl() + 
