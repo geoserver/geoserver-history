@@ -11,7 +11,7 @@
 </logic:notPresent>
 
 <h3><bean:message key="welcome.heading"/></h3>
-<p><html:link forward="mainmenu"><bean:message key="welcome.message"/></html:link></p>
+<p><html:link forward="mainmenu"><bean:message key="label.mainMenu"/></html:link></p>
 
 <H2>Contact Information</h2><BR>
 
