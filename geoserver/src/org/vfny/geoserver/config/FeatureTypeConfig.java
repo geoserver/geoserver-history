@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.4 2003/12/18 00:18:28 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.5 2004/01/02 23:01:24 cholmesny Exp $
  */
 public class FeatureTypeConfig extends BasicConfig {
     /** DOCUMENT ME! */
@@ -49,13 +49,13 @@ public class FeatureTypeConfig extends BasicConfig {
     private Map styles;
     private CatalogConfig catalog;
 
-    /** 
-     * defaultStyle is not currently written to, and there are not any subclasses.
-     * 12/17/03 dz 
+    /**
+     * defaultStyle is not currently written to, and there are not any
+     * subclasses. 12/17/03 dz
      */
     private String defaultStyle;
-    
-	/** DOCUMENT ME! */
+
+    /** DOCUMENT ME! */
     private String pathToSchemaFile;
     private String prefix;
     private int numDecimals = DEFAULT_NUM_DECIMALS;
@@ -430,8 +430,8 @@ public class FeatureTypeConfig extends BasicConfig {
     }
 
     /**
-     * defaultStyle is not currently written to, and there are not any subclasses.
-     * 12/17/03 dz 
+     * defaultStyle is not currently written to, and there are not any
+     * subclasses. 12/17/03 dz
      *
      * @return String defaultStyle
      */
@@ -539,17 +539,16 @@ public class FeatureTypeConfig extends BasicConfig {
 
         if (!dynamic) {
             double minx = getDoubleAttribute(bboxElem, "minx", true);
-            double miny = getDoubleAttribute(bboxElem, "minx", true);
-            double maxx = getDoubleAttribute(bboxElem, "minx", true);
-            double maxy = getDoubleAttribute(bboxElem, "minx", true);
+            double miny = getDoubleAttribute(bboxElem, "miny", true);
+            double maxx = getDoubleAttribute(bboxElem, "maxx", true);
+            double maxy = getDoubleAttribute(bboxElem, "maxy", true);
             this.latLongBBox = new Envelope(minx, miny, maxx, maxy);
         }
     }
 
     /**
-     * DOCUMENT ME!
-     * 
-     * does not appear to have any affect except to create an empty hashmap (dz)
+     * DOCUMENT ME!  does not appear to have any affect except to create an
+     * empty hashmap (dz)
      *
      * @param styles DOCUMENT ME!
      * @param catalog DOCUMENT ME!
@@ -567,7 +566,7 @@ public class FeatureTypeConfig extends BasicConfig {
         throws ConfigurationException {
         NodeList stylesList = null;
         int numStyles = 0;
-        LOGGER.info("loading styles " + styles);
+        LOGGER.info("loading styles " + styles + ", " + this.styles);
 
         //HACK: we need to shake out catalog and config and whatnot.
         this.styles = catalog.getStyles();
