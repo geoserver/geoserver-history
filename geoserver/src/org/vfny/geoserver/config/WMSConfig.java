@@ -30,7 +30,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.2.2.4 2004/01/07 22:48:13 emperorkefka Exp $
+ * @version $Id: WMSConfig.java,v 1.2.2.5 2004/01/08 17:36:40 dmzwiers Exp $
  */
 public class WMSConfig extends ServiceConfig{
 
@@ -67,37 +67,12 @@ public class WMSConfig extends ServiceConfig{
 	/**
 	 * WMS constructor.
 	 * <p>
-	 * Creates a copy of the WMS provided. If the WMS provided 
-	 * is null then default values are used. All the data structures are cloned. 
-	 * </p>
-	 * @param f The WMS to copy.
-	 */
-	public WMSConfig(WMSConfig w){
-		super(w);
-	}
-
-	/**
-	 * WMS constructor.
-	 * <p>
 	 * Creates a copy of the WMSDTO provided. All the data structures are cloned. 
 	 * </p>
 	 * @param f The WMSDTO to copy.
 	 */
 	public WMSConfig(WMSDTO w){
 		super(w.getService());
-	}
-
-	/**
-	 * Implement clone.
-	 * <p>
-	 * creates a clone of this object
-	 * </p>
-	 * @see java.lang.Object#clone()
-	 * 
-	 * @return A copy of this WMS
-	 */
-	public Object clone(){
-		return new WMSConfig(this);
 	}
 
 	/**
@@ -110,11 +85,10 @@ public class WMSConfig extends ServiceConfig{
 	 * @param dto an instance of WMSDTO
 	 * @return false when obj null, or not correct class instance.
 	 */
-	public boolean updateDTO(Object dto){
-	 if(dto==null || !(dto instanceof WMSDTO))
-		return false;
-	 WMSDTO s = (WMSDTO)dto;
-	 return super.updateDTO(s.getService());
+	public void update(WMSDTO dto){
+	 if(dto==null)
+	 throw new NullPointerException("WMS Data Transfer Object required");
+	  super.update(dto.getService());
 	}
 	
 	/**
@@ -126,9 +100,9 @@ public class WMSConfig extends ServiceConfig{
 	 * 
 	 * @return a copy of the data in a ServiceDTO object
 	 */
-	public Object toDTO(){
+	public WMSDTO toDTO(){
 		WMSDTO wmsDto = new WMSDTO();
-		wmsDto.setService((ServiceDTO)super.toDTO());
+		wmsDto.setService((ServiceDTO)super.toServDTO());
 		return wmsDto;
 	}
 }

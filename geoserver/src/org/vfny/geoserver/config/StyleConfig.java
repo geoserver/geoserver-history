@@ -30,9 +30,9 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleConfig.java,v 1.1.2.2 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: StyleConfig.java,v 1.1.2.3 2004/01/08 17:36:40 dmzwiers Exp $
  */
-public class StyleConfig implements DataStructure {
+public class StyleConfig{
 	
 	/**
 	 * The syle id.
@@ -65,22 +65,6 @@ public class StyleConfig implements DataStructure {
 	/**
 	 * StyleConfig constructor.
 	 * <p>
-	 * Creates a copy of the StyleConfig provided. All the data structures are cloned. 
-	 * </p>
-	 * @param style The style to copy.
-	 */
-	public StyleConfig(StyleConfig style){
-		if(style == null){
-			throw new NullPointerException("");
-		}
-		id = style.getId();
-		filename = new File(style.getFilename().toString());
-		_default = style.isDefault();
-	}
-
-	/**
-	 * StyleConfig constructor.
-	 * <p>
 	 * Creates a copy of the StyleDTO provided. All the data structures are cloned. 
 	 * </p>
 	 * @param style The style to copy.
@@ -95,19 +79,6 @@ public class StyleConfig implements DataStructure {
 	}
 
 	/**
-	 * Implement clone.
-	 * <p>
-	 * creates a clone of this object
-	 * </p>
-	 * @see java.lang.Object#clone()
-	 * 
-	 * @return A copy of this StyleConfig
-	 */
-	public Object clone(){
-		return new StyleConfig(this);
-	}
-
-	/**
 	 * Implement loadDTO.
 	 * <p>
 	 * Stores the data provided for the specified StyleDTO object
@@ -117,14 +88,13 @@ public class StyleConfig implements DataStructure {
 	 * @param obj a StyleDTO object
 	 * @return true when obj is valid and stored.
 	 */
-	public boolean updateDTO(Object obj){
-		if(obj == null || !(obj instanceof StyleDTO))
-			return false;
+	public void update(StyleDTO obj){
+		if(obj == null)
+			throw new NullPointerException("Style Data Transfer Object required");
 		StyleDTO sDto = (StyleDTO)obj;
 		id = sDto.getId();
 		filename = new File(sDto.getFilename().toString());
 		_default = sDto.isDefault();
-		return true;
 	}
 	
 	/**
@@ -135,7 +105,7 @@ public class StyleConfig implements DataStructure {
 	 * @see org.vfny.geoserver.config.DataStructure#toDTO()
 	 * @return a copy of this classes data in a StyleDTO object.
 	 */
-	public Object toDTO(){
+	public StyleDTO toDTO(){
 		StyleDTO sDto = new StyleDTO();
 		sDto.setDefault(_default);
 		sDto.setFilename(new File(filename.toString()));

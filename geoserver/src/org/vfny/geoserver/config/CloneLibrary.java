@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.1.2.2 2004/01/03 00:19:20 dmzwiers Exp $
+ * @version $Id: CloneLibrary.java,v 1.1.2.3 2004/01/08 17:36:39 dmzwiers Exp $
  */
 public final class CloneLibrary {
 	
@@ -124,18 +124,12 @@ public final class CloneLibrary {
 		return result;
 	}
 	
-	/**
-	 * clone purpose.
-	 * <p>
-	 * used to check class type and clone it.
-	 * </p>
-	 * @param ds the DataStructure to clone.
-	 * @return a clone of the parameter
-	 */
-	private static Object clone(DataStructure ds){
-		return ds.clone();
-	}
-	
+	/** Clone a string array */
+    public static String[] clone( String[] array ){
+        String copy[] = new String[ array.length ];
+        System.arraycopy( array, 0, copy, 0, array.length );
+        return copy;
+    }
 	/**
 	 * clone purpose.
 	 * <p>

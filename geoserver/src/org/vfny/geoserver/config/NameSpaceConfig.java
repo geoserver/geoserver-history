@@ -25,9 +25,9 @@ import org.vfny.geoserver.global.dto.NameSpaceDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceConfig.java,v 1.1.2.2 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: NameSpaceConfig.java,v 1.1.2.3 2004/01/08 17:36:40 dmzwiers Exp $
  */
-public class NameSpaceConfig implements DataStructure {
+public class NameSpaceConfig{
 	//public static final String PREFIX_DELIMITER = ":";
 	
 	/**
@@ -66,23 +66,6 @@ public class NameSpaceConfig implements DataStructure {
 	 * </p>
 	 * @param f The namespace to copy.
 	 */
-	public NameSpaceConfig(NameSpaceConfig ns){
-		if(ns == null){
-			throw new NullPointerException("");
-		}
-		prefix = ns.getPrefix();
-		uri = ns.getUri();
-		_default = ns.isDefault();
-	}
-
-	/**
-	 * NameSpaceConfig constructor.
-	 * <p>
-	 * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig provided 
-	 * is null then default values are used. All the data structures are cloned. 
-	 * </p>
-	 * @param f The namespace to copy.
-	 */
 	public NameSpaceConfig(NameSpaceDTO ns){
 		if(ns == null){
 			throw new NullPointerException("");
@@ -90,19 +73,6 @@ public class NameSpaceConfig implements DataStructure {
 		prefix = ns.getPrefix();
 		uri = ns.getUri();
 		_default = ns.isDefault();
-	}
-
-	/**
-	 * Implement clone.
-	 * <p>
-	 * creates a clone of this object
-	 * </p>
-	 * @see java.lang.Object#clone()
-	 * 
-	 * @return A copy of this NameSpaceConfig
-	 */
-	public Object clone(){
-		return new NameSpaceConfig(this);
 	}
 
 	/**
@@ -115,14 +85,13 @@ public class NameSpaceConfig implements DataStructure {
 	 * @param dto An NameSpaceDTO object
 	 * @return true when the instance provided is valid and stored.
 	 */
-	public boolean updateDTO(Object dto){
-		if(dto == null || !(dto instanceof NameSpaceDTO))
-			return false;
+	public void update(NameSpaceDTO dto){
+		if(dto == null)
+			throw new NullPointerException("NameSpace Data Transfer Object required");
 		NameSpaceDTO ns = (NameSpaceDTO)dto;
 		prefix = ns.getPrefix();
 		uri = ns.getUri();
 		_default = ns.isDefault();
-		return true;
 	}
 	
 	/**
@@ -134,7 +103,7 @@ public class NameSpaceConfig implements DataStructure {
 	 * 
 	 * @return a NameSpaceDTO which representts the data in this class.
 	 */
-	public Object toDTO(){
+	public NameSpaceDTO toDTO(){
 		NameSpaceDTO nsDto = new NameSpaceDTO();
 		nsDto.setDefault(_default);
 		nsDto.setPrefix(prefix);

@@ -19,9 +19,9 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.3.2.8 2004/01/07 23:10:54 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.3.2.9 2004/01/08 17:36:40 dmzwiers Exp $
  */
-public class GlobalConfig implements DataStructure {
+public class GlobalConfig{
 	public static final String CONFIG_KEY = "Config.Global";
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = 20000;
@@ -151,35 +151,6 @@ public class GlobalConfig implements DataStructure {
 		contact = null;
     }
 
-    /**
-     * GlobalConfig constructor.
-     * 
-     * <p>
-     * Creates a copy of the GlobalConfig object provided.  Charset is not cloned, everything
-     * else is.
-     * </p>
-     *
-     * @param g
-     */
-    public GlobalConfig(GlobalConfig g) {
-        if (g == null) {
-			throw new NullPointerException();
-        }
-
-        maxFeatures = g.getMaxFeatures();
-        verbose = g.isVerbose();
-        numDecimals = g.getNumDecimals();
-        charSet = g.getCharSet();
-        baseUrl = g.getBaseUrl();
-        schemaBaseUrl = g.getSchemaBaseUrl();
-
-        if (g.getContact() != null) {
-            contact = (ContactConfig) (g.getContact().clone());
-        } else {
-            contact = new ContactConfig();
-        }
-    }
-
 	/**
 	 * GlobalConfig constructor.
 	 * 
@@ -219,11 +190,10 @@ public class GlobalConfig implements DataStructure {
 	 * @param obj A valid GeoServerDTO object to populate this object from
 	 * @return true when the parameter is valid and stored.
 	 */
-	public boolean updateDTO(Object obj) {
-		if (obj == null || !(obj instanceof GeoServerDTO)) {
-			return false;
+	public void update(GeoServerDTO g) {
+		if (g == null) {
+			throw new NullPointerException("GeoServer Data Transfer Object required");
 		}
-		GeoServerDTO g = (GeoServerDTO)obj;
 
 		maxFeatures = g.getMaxFeatures();
 		verbose = g.isVerbose();
@@ -237,25 +207,8 @@ public class GlobalConfig implements DataStructure {
 		} else {
 			contact = new ContactConfig();
 		}
-		return true;
 	}
 
-    /**
-     * Implement clone.
-     * 
-     * <p>
-     * Charset is not cloned, everything else is. Strings are reference  copied
-     * because of the Hashtable implementation in memory.
-     * </p>
-     *
-     * @return A new GlobalConfig object which is a copy of this object.
-     *
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        return new GlobalConfig(this);
-    }
-    
     /**
      * Implement toDTO.
      * <p>
@@ -265,7 +218,7 @@ public class GlobalConfig implements DataStructure {
      * 
      * @return a copy of the data in a GeoServerDTO representation
      */
-    public Object toDTO(){
+    public GeoServerDTO toDTO(){
     	GeoServerDTO g = new GeoServerDTO();
 		 g.setMaxFeatures(maxFeatures);
 		 g.setVerbose(verbose);

@@ -30,9 +30,9 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.4.2.3 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.4.2.4 2004/01/08 17:36:40 dmzwiers Exp $
  */
-public class FeatureTypeConfig implements DataStructure{
+public class FeatureTypeConfig{
 	
 	/**
 	 * The Id of the datastore which should be used to get this featuretype.
@@ -125,35 +125,6 @@ public class FeatureTypeConfig implements DataStructure{
 	/**
 	 * FeatureTypeInfo constructor.
 	 * <p>
-	 * Creates a copy of the FeatureTypeInfo provided. All the data structures are cloned. 
-	 * </p>
-	 * @param f The featuretype to copy.
-	 */
-	public FeatureTypeConfig(FeatureTypeConfig f){
-		if(f==null){
-			throw new NullPointerException();
-		}
-		dataStoreId = f.getDataStoreId();
-		latLongBBox = CloneLibrary.clone(f.getLatLongBBox());
-		SRS = f.getSRS();
-		schema = f.getSchema();
-		name = f.getName();
-		title = f.getTitle();
-		_abstract = f.getAbstract();
-		numDecimals = f.getNumDecimals();
-		definitionQuery = f.getDefinitionQuery();
-		try{
-			keywords = CloneLibrary.clone(f.getKeywords()); //clone?
-		}catch(Exception e){
-			keywords = new LinkedList();
-		}
-		defaultStyle = f.getDefaultStyle();
-		dirName = f.getDirName();
-	}
-
-	/**
-	 * FeatureTypeInfo constructor.
-	 * <p>
 	 * Creates a copy of the FeatureTypeInfoDTO provided. All the data structures are cloned. 
 	 * </p>
 	 * @param f The FeatureTypeInfoDTO to copy.
@@ -181,19 +152,6 @@ public class FeatureTypeConfig implements DataStructure{
 	}
 
 	/**
-	 * Implement clone.
-	 * <p>
-	 * creates a clone of this object
-	 * </p>
-	 * @see java.lang.Object#clone()
-	 * 
-	 * @return A copy of this FeatureTypeInfo
-	 */
-	public Object clone(){
-		return new FeatureTypeConfig(this);
-	}
-
-	/**
 	 * load purpose.
 	 * <p>
 	 * Loads the new data into this instance object from an FeatureTypeInfoDTO.
@@ -201,11 +159,10 @@ public class FeatureTypeConfig implements DataStructure{
 	 * @param obj an instance of FeatureTypeInfoDTO to load.
 	 * @return true when the parameter is valid and stored.
 	 */
-	public boolean updateDTO(Object obj){
-		if(obj==null || !(obj instanceof FeatureTypeInfoDTO)){
-			return false;
+	public void update(FeatureTypeInfoDTO f){
+		if(f==null){
+			throw new NullPointerException("FeatureTypeInfo Data Transfer Object required");
 		}
-		FeatureTypeInfoDTO f = (FeatureTypeInfoDTO)obj;
 		dataStoreId = f.getDataStoreId();
 		latLongBBox = CloneLibrary.clone(f.getLatLongBBox());
 		SRS = f.getSRS();
@@ -222,7 +179,6 @@ public class FeatureTypeConfig implements DataStructure{
 		}
 		defaultStyle = f.getDefaultStyle();
 		dirName = f.getDirName();
-		return true;
 	}
 	
 	/**
@@ -234,7 +190,7 @@ public class FeatureTypeConfig implements DataStructure{
 	 * 
 	 * @return a representation of this object as a FeatureTypeInfoDTO
 	 */
-	public Object toDTO(){
+	public FeatureTypeInfoDTO toDTO(){
 		FeatureTypeInfoDTO f = new FeatureTypeInfoDTO();
 		f.setDataStoreId(dataStoreId);
 		f.setLatLongBBox(CloneLibrary.clone(latLongBBox));

@@ -22,7 +22,7 @@ import java.util.TreeSet;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.2.2.5 2004/01/08 07:54:31 emperorkefka Exp $
+ * @version $Id: WFSConfig.java,v 1.2.2.6 2004/01/08 17:36:39 dmzwiers Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
@@ -80,37 +80,8 @@ public class WFSConfig extends ServiceConfig {
      *
      * @param w The WFS to copy.
      */
-    public WFSConfig(WFSConfig w) {
-        super(w);
-    }
-
-    /**
-     * WFS constructor.
-     * 
-     * <p>
-     * Creates a copy of the WFS provided. If the WFS provided  is null then
-     * default values are used. All the data structures are cloned.
-     * </p>
-     *
-     * @param w The WFS to copy.
-     */
     public WFSConfig(WFSDTO w) {
         super(w.getService());
-    }
-
-    /**
-     * Implement clone.
-     * 
-     * <p>
-     * creates a clone of this object
-     * </p>
-     *
-     * @return A copy of this WFS
-     *
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        return new WFSConfig(this);
     }
 
     /**
@@ -126,14 +97,11 @@ public class WFSConfig extends ServiceConfig {
      *
      * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
      */
-    public boolean updateDTO(Object dto) {
-        if ((dto == null) || !(dto instanceof WFSDTO)) {
-            return false;
+    public void update(WFSDTO dto) {
+        if (dto == null) {
+			throw new NullPointerException("WFS Data Transfer Object required");
         }
-
-        WFSDTO s = (WFSDTO) dto;
-
-        return super.updateDTO(s.getService());
+        super.update(dto.getService());
     }
 
     /**
@@ -147,9 +115,9 @@ public class WFSConfig extends ServiceConfig {
      *
      * @see org.vfny.geoserver.config.DataStructure#toDTO()
      */
-    public Object toDTO() {
+    public WFSDTO toDTO() {
         WFSDTO wfsDto = new WFSDTO();
-        wfsDto.setService((ServiceDTO) super.toDTO());
+        wfsDto.setService((ServiceDTO) super.toServDTO());
 
         return wfsDto;
     }

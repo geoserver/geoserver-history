@@ -42,7 +42,7 @@ import org.vfny.geoserver.global.dto.ContactDTO;
  * </p>
  * 
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactConfig.java,v 1.2.2.6 2004/01/08 02:13:15 jive Exp $
+ * @version $Id: ContactConfig.java,v 1.2.2.7 2004/01/08 17:36:40 dmzwiers Exp $
  */
 public class ContactConfig {
     
@@ -132,6 +132,23 @@ public class ContactConfig {
         contactFacsimile = dto.getContactFacsimile();
         contactEmail = dto.getContactEmail();        
     }
+    
+	public ContactDTO toDTO(){
+		ContactDTO dto  = new ContactDTO();
+		 dto.setContactPerson(contactPerson);
+		 dto.setContactOrganization(contactOrganization);
+		 dto.setContactPosition(contactPosition);
+		 dto.setAddressType(addressType);
+		 dto.setAddress(address);
+		 dto.setAddressCity(addressCity);
+		 dto.setAddressState(addressState);
+		 dto.setAddressPostalCode(addressPostalCode);
+		 dto.setAddressCountry(addressCountry);
+		 dto.setContactVoice(contactVoice);
+		 dto.setContactFacsimile(contactFacsimile);
+		 dto.setContactEmail(contactEmail);
+		 return dto;        
+	}
     /**
      * getAddress purpose.
      * 

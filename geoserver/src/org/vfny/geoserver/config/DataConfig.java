@@ -40,9 +40,9 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.3 2004/01/07 23:10:54 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.4 2004/01/08 17:36:40 dmzwiers Exp $
  */
-public class DataConfig implements DataStructure{
+public class DataConfig{
 	public static final String CONFIG_KEY = "Config.Data";
 	
 	/**
@@ -88,38 +88,6 @@ public class DataConfig implements DataStructure{
 		styles = new HashMap();
 		featuresTypes = new HashMap();
 		defaultNameSpace = new NameSpaceConfig();
-	}
-	
-	/**
-	 * Data constructor.
-	 * <p>
-	 * Creates a copy of the Data provided. If the Data provided 
-	 * is null then default values are used. All the datastructures are cloned. 
-	 * </p>
-	 * @param c The catalog to copy.
-	 */
-	public DataConfig(DataConfig c){
-		try{
-			dataStores = CloneLibrary.clone(c.getDataStores());
-		}catch(Exception e){
-			dataStores = new HashMap();
-		}
-		try{
-			nameSpaces = CloneLibrary.clone(c.getNameSpaces());
-		}catch(Exception e){
-			nameSpaces = new HashMap();
-		}
-		try{
-			featuresTypes = CloneLibrary.clone(c.getFeaturesTypes());
-		}catch(Exception e){
-			featuresTypes = new HashMap();
-		}
-		try{
-			styles = CloneLibrary.clone(c.getStyles());
-		}catch(Exception e){
-			styles = new HashMap();
-		}
-		defaultNameSpace = (NameSpaceConfig)c.getDefaultNameSpace().clone();
 	}
 	
 	/**
@@ -176,10 +144,9 @@ public class DataConfig implements DataStructure{
 	 * @param obj An instance of DataDTO to populate this object
 	 * @return true when a valid parameter is passed and stored.
 	 */
-	public boolean updateDTO(Object obj){
-		if(obj == null || !(obj instanceof DataDTO))
-			return false;
-		DataDTO data = (DataDTO)obj;
+	public void update(DataDTO data){
+		if(data == null)
+			throw new NullPointerException("Data Data Transfer Object required");
 		Iterator i = null;
 		
 		i = data.getDataStores().keySet().iterator();
@@ -211,10 +178,9 @@ public class DataConfig implements DataStructure{
 			Object key = i.next();
 			styles.put(key,new StyleConfig((StyleDTO)data.getStyles().get(key)));
 		}
-		return true;
 	}
 	
-	public Object toDTO(){
+	public DataDTO toDTO(){
 		DataDTO dt = new DataDTO();
 		HashMap tmp = null;
 		Iterator i = null;
@@ -254,19 +220,6 @@ public class DataConfig implements DataStructure{
 		dt.setNameSpaces(tmp);
 		
 		return dt;
-	}
-	
-	/**
-	 * Implement clone.
-	 * <p>
-	 * creates a clone of this object
-	 * </p>
-	 * @see java.lang.Object#clone()
-	 * 
-	 * @return A copy of this Data
-	 */
-	public Object clone(){
-		return new DataConfig(this);
 	}
 	
 	public List getFeatureTypeConfigKeys(){

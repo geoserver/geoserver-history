@@ -28,9 +28,9 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.2.2.3 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: DataStoreConfig.java,v 1.2.2.4 2004/01/08 17:36:39 dmzwiers Exp $
  */
-public class DataStoreConfig implements DataStructure{
+public class DataStoreConfig{
 
 	  /** unique datasore identifier */
 	  private String id;
@@ -69,28 +69,6 @@ public class DataStoreConfig implements DataStructure{
 	/**
 	 * DataStoreInfo constructor.
 	 * <p>
-	 * Creates a copy of the DataStoreInfo provided. All the datastructures are cloned. 
-	 * </p>
-	 * @param ds The datastore to copy.
-	 */
-	  public DataStoreConfig(DataStoreConfig ds){
-	  	if(ds == null){
-			throw new NullPointerException();
-	  	}
-	  	id = ds.getId();
-		nameSpaceId = ds.getNameSpaceId();
-	  	enabled = ds.isEnabled();
-	  	_abstract = ds.getAbstract();
-	  	try{
-	  		connectionParams = CloneLibrary.clone(ds.getConnectionParams()); //clone?
-	  	}catch(Exception e){
-	  		connectionParams = new HashMap();  	
-	  	}
-	  }
-	
-	/**
-	 * DataStoreInfo constructor.
-	 * <p>
 	 * Creates a copy of the DataStoreInfoDTO provided. All the datastructures are cloned. 
 	 * </p>
 	 * @param ds The datastore to copy.
@@ -111,19 +89,6 @@ public class DataStoreConfig implements DataStructure{
 	  }
 
 	/**
-	 * Implement clone.
-	 * <p>
-	 * creates a clone of this object
-	 * </p>
-	 * @see java.lang.Object#clone()
-	 * 
-	 * @return A copy of this DataStoreInfo
-	 */
-	  public Object clone(){
-	  	return new DataStoreConfig(this);
-	  }
-	
-	/**
 	 * Implement loadDTO.
 	 * <p>
 	 * Populates the data fields with the DataStoreInfoDTO provided.
@@ -133,11 +98,10 @@ public class DataStoreConfig implements DataStructure{
 	 * @param obj the DataStoreInfoDTO to use.
 	 * @return true when the param is valid and stored.
 	 */
-	  public boolean updateDTO(Object obj){
-		if(obj == null || !(obj instanceof DataStoreInfoDTO)){
-			return false;
+	  public void update(DataStoreInfoDTO ds){
+		if(ds == null){
+			throw new NullPointerException("DataStoreInfo Data Transfer Object required");
 		}
-		DataStoreInfoDTO ds = (DataStoreInfoDTO)obj;
 		id = ds.getId();
 		nameSpaceId = ds.getNameSpaceId();
 		enabled = ds.isEnabled();
@@ -147,7 +111,6 @@ public class DataStoreConfig implements DataStructure{
 		}catch(Exception e){
 			connectionParams = new HashMap();  	
 		}
-		return true;
 	  }
 	  
 	  /**
@@ -159,7 +122,7 @@ public class DataStoreConfig implements DataStructure{
 	   * 
 	   * @return The data represented as a DataStoreInfoDTO
 	   */
-	  public Object toDTO(){
+	  public DataStoreInfoDTO toDTO(){
 		DataStoreInfoDTO ds = new DataStoreInfoDTO();
 		ds.setId(id);
 		ds.setNameSpaceId(nameSpaceId);

@@ -28,9 +28,9 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceConfig.java,v 1.10.2.5 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: ServiceConfig.java,v 1.10.2.6 2004/01/08 17:36:39 dmzwiers Exp $
  */
-public class ServiceConfig implements DataStructure{
+public class ServiceConfig{
 	
 	/**
 	 * Represents when the web service is enabled/disabled. True when enabled.
@@ -102,37 +102,6 @@ public class ServiceConfig implements DataStructure{
 	/**
 	 * ServiceConfig constructor.
 	 * <p>
-	 * This is equivalent to calling the clone method. All non-primary datatypes are cloned with the 
-	 * exception of Strings (which have a singleton hash table in memory representation).   
-	 * </p>
-	 * @param s The ServiceConfig object to copy into the new ServiceConfig object. 
-	 * @see clone()
-	 */
-	public ServiceConfig(ServiceConfig s){
-	 if(s == null){
-		throw new NullPointerException("");
-	 }
-	 
-	 enabled = s.isEnabled();
-	 name = s.getName();
-	 title = s.getTitle();
-	 _abstract = s.getAbstract();
-	 try{
-	 	keywords = new String[s.getKeywords().length];
-	 	for(int i=0;i<keywords.length;i++)
-	 		keywords[i] = s.getKeywords()[i];
-	 }catch(Exception e){
-	 	// should only happen for null
-	 	keywords = new String[0];
-	 }
-	 fees = s.getFees();
-	 accessConstraints = s.getAccessConstraints();
-	 maintainer = s.getMaintainer();
-	}
-	
-	/**
-	 * ServiceConfig constructor.
-	 * <p>
 	 * This is equivalent to calling the load method. When a null value is passed in, 
 	 * the default values are used. All non-primary datatypes are cloned with the 
 	 * exception of Strings (which have a singleton hash table in memory representation).   
@@ -143,8 +112,7 @@ public class ServiceConfig implements DataStructure{
 	 if(s == null){
 	 	throw new NullPointerException("");
 	 }
-	 if(!updateDTO(s))
-	 	throw new NullPointerException("Service(ServiceDTO) load error");
+	 update(s);
 	}
 	
 	/**
@@ -157,9 +125,9 @@ public class ServiceConfig implements DataStructure{
 	 * @param dto an instance of ServiceDTO
 	 * @return false when obj null, or not correct class instance.
 	 */
-	public boolean updateDTO(Object dto){
-	 if(dto==null || !(dto instanceof ServiceDTO))
-	 	return false;
+	public void update(ServiceDTO dto){
+	 if(dto==null)
+	 	throw new NullPointerException("Service Data Transfer Object required");
 	 ServiceDTO s = (ServiceDTO)dto;
 	 enabled = s.isEnabled();
 	 name = s.getName();
@@ -176,7 +144,6 @@ public class ServiceConfig implements DataStructure{
 	 fees = s.getFees();
 	 accessConstraints = s.getAccessConstraints();
 	 maintainer = s.getMaintainer();
-	 return true;
 	}
 	
 	/**
@@ -188,7 +155,8 @@ public class ServiceConfig implements DataStructure{
 	 * 
 	 * @return a copy of the data in a ServiceDTO object
 	 */
-	public Object toDTO(){
+	// name needed to not match as the DTOs do not follow the same inheritance struture.
+	public ServiceDTO toServDTO(){
 		ServiceDTO sDto = new ServiceDTO();
 		sDto.setAbstract(_abstract);
 		sDto.setAccessConstraints(accessConstraints);
@@ -205,16 +173,6 @@ public class ServiceConfig implements DataStructure{
 		return sDto;
 	}
 	
-	/**
-	 * Implements clone.
-	 * @see java.lang.Object#clone()
-	 * 
-	 * @return An instance of a ServiceConfig object which represents a copy of the existing ServiceConfig Object. 
-	 */
-	public Object clone(){
-		return new ServiceConfig(this);
-	}
-
 	/**
 	 * getName purpose.
 	 * 
