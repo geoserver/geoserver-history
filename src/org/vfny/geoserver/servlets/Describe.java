@@ -61,6 +61,13 @@ public class Describe
         } catch (WfsException wfs) {
             tempResponse = wfs.getXmlResponse();
         }
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
+            LOGGER.info("Had an undefined error: " + e.getMessage());
+	    e.printStackTrace();
+        }
         
         // set content type and return response, whatever it is 
         response.setContentType(MIME_TYPE);
@@ -93,7 +100,13 @@ public class Describe
 	catch (WfsException wfs) {
 	    tempResponse = wfs.getXmlResponse();
 	}
-        
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
+            LOGGER.info("Had an undefined error: " + e.getMessage());
+	    e.printStackTrace();
+        }        
         // set content type and return response, whatever it is 
         response.setContentType(MIME_TYPE);
         response.getWriter().write( tempResponse );
