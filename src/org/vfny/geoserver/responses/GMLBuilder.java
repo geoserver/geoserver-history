@@ -7,6 +7,8 @@ package org.vfny.geoserver.responses;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
+import java.math.BigDecimal;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.MultiPoint;
@@ -77,16 +79,31 @@ public class GMLBuilder {
     private int maxFeatures = 1000;
     
     /** Sets level of indendation and documentation for response **/
-    private boolean verbose = true;
-        
+    private boolean verbose;
 
+    private static final String XML_HEADER = "<?xml version='1.0' encoding='UTF-8'?>";
+    
+    private final String FEATURE_COLL_INIT = "<wfs:FeatureCollection " 
+	+ "xmlns=\"" + configInfo.getUrl() + "/myns\" " +
+	"xmlns:gml=\"http://www.opengis.net/gml\" xmlns:wfs=\"" +
+	"http://www.opengis.net/wfs\">";
+
+    private final String FEATURE_COLL_INIT_V = "<wfs:FeatureCollection\n " 
+	+ "  xmlns=\"" + configInfo.getUrl() + "/myns\"\n" + 
+	"   xmlns:gml=\"http://www.opengis.net/gml\"\n   xmlns:wfs=\"" +
+	"http://www.opengis.net/wfs\">"; 
+    
     /**
      * Constructor to set verbosity
      * @param verbose Sets level of indendation and documentation for response
      */ 
     public GMLBuilder(boolean verbose) {
         this.verbose = verbose;
-        finalResult.append("<?xml version='1.0' encoding='UTF-8'?>");
+        finalResult.append(XML_HEADER);
+	//"<?xml version='1.0' encoding='UTF-8'?>"
+	if (verbose){
+	    finalResult.append("\n");
+	}
     }
     
     
@@ -107,8 +124,13 @@ public class GMLBuilder {
      * Adds the xml namespaces and FeatureCollection tag.
      */
     public void startFeatureCollection(String srs) {
+	//hashmap of srs's, each holds its own string buffer, so we can
+	//have multiple fcs, then they all combine at the end?
 	featureTypeWriter.start(srs);        
+	//for now we'll just hack - put all in the first srs.
     }
+
+
 
     /**
      * Adds a feature type end tag
@@ -183,6 +205,13 @@ public class GMLBuilder {
      */
     private class FeatureTypeWriter {
               
+	private int boxInsertPos; //= FEATURE_COLL_INIT.length() + 
+	//XML_HEADER.length();
+
+	private Geometry envelope;
+
+	private String srs;
+
         /** No argument contructor. */ 
         public FeatureTypeWriter() {}        
         
@@ -192,60 +221,45 @@ public class GMLBuilder {
          * @param srs Spactial reference system for the bounding box
          */ 
         public void start(String srs) {
-            
+            this.srs = srs;
             if(verbose) {
-                finalResult.append("<wfs:FeatureCollection xmlns:gml=\"" + 
-                                   "http://www.opengis.net/gml\" xmlns:wfs=\""
-				   + "http://www.opengis.net/wfs\" scope=\"" + 
-                                   configInfo.getUrl() + "\">");
-                
-                /*
-                if( bbox.isSet() ) {
-                    finalResult.append("\n <gml:boundedBy>");
-                    finalResult.append("\n  <gml:Box>");
-                    //finalResult.append("\n  <gml:Box srsName=\"http://www.opengis.net/gml/srs/epsg#" + srs + "\">");
-                    finalResult.append("\n   <gml:coordinates>" + bbox.getCoordinates() + "</gml:coordinates>");
-                    finalResult.append("\n  </gml:Box>");
-                    finalResult.append("\n </gml:boundedBy>");
-                }
-                */
+                finalResult.append(FEATURE_COLL_INIT_V);
+                boxInsertPos = finalResult.length();
+
             } else {
-//                finalResult.append("<?xml version='1.0' encoding='UTF-8'?>");
-                finalResult.append("<wfs:FeatureCollection xmlns:gml=\"" + 
-                                   "http://www.opengis.net/gml\" xmlns:wfs=\""
-				   + "http://www.opengis.net/wfs\" scope=\"" + 
-                                   configInfo.getUrl() + "\">");
-                
-                // append bounding box preamble to response, if a bounding box was requested
-                /*
-                if( bbox.isSet() ) {
-                    finalResult.append("<gml:boundedBy>");
-                    finalResult.append("<gml:Box>");
-                    //finalResult.append("<gml:Box srsName=\"http://www.opengis.net/gml/srs/epsg#\">");
-                    finalResult.append("<gml:coordinates>" + bbox.getCoordinates() + "</gml:coordinates>");
-                    finalResult.append("</gml:Box>");
-                    finalResult.append("</gml:boundedBy>");
-                }
-                */
-            }
-        }
+                finalResult.append(FEATURE_COLL_INIT);
+	    }
+	    boxInsertPos = finalResult.length();
+	}
+    
         
         
         /**
          * Writes an end tag for the feature collection/type.
          */ 
         public void end() {
-            if( verbose ) {
-                finalResult.append( "</wfs:FeatureCollection>" );
-            } else {
-                finalResult.append("</wfs:FeatureCollection>" );
-            }
-        }
-        
-        
+	    Envelope geomEnv = geometryWriter.getEnvelope();
+	    StringBuffer bbox =  new StringBuffer();
+	    if (verbose) bbox.append("\n   ");
+	    bbox.append("<gml:boundedBy>");
+	    if (verbose) bbox.append("\n    ");
+	    bbox.append("<gml:Box>");
+	    if (verbose) bbox.append("\n     ");
+	    bbox.append("<gml:coordinates>");
+	    bbox.append(geomEnv.getMinX() + "," + geomEnv.getMinY() + " ");
+	    bbox.append(geomEnv.getMaxX() + "," + geomEnv.getMaxY());
+	    bbox.append("</gml:coordinates>");
+	    if (verbose) bbox.append("\n    ");
+	    bbox.append("</gml:Box>");
+	    if (verbose) bbox.append("\n   ");
+	    bbox.append("</gml:boundedBy>");
+	    finalResult.insert(boxInsertPos, bbox.toString());
+	    if (verbose) finalResult.append("\n\n");
+	    finalResult.append( "</wfs:FeatureCollection>" );
+	}
+	
+    
     }
-    
-    
     /**
      * Handles the feature member writing tasks for the main class.
      *
@@ -273,11 +287,11 @@ public class GMLBuilder {
         public void initialize( String featureType ) {
             
             if(verbose) {
-                featureMemberStart1 = "<gml:featureMember><"  + 
+                featureMemberStart1 = "\n   <gml:featureMember>\n    <"  + 
                     featureType + " fid=\"";
                 featureMemberStart2 = "\">";                                
-                featureMemberEnd = "</"  + featureType + 
-                    "></gml:featureMember>";
+                featureMemberEnd = "\n    </"  + featureType + 
+                    ">\n   </gml:featureMember>";
             } else {                
                 featureMemberStart1 = "<gml:featureMember><"  + 
                     featureType + " fid=\"";
@@ -325,7 +339,7 @@ public class GMLBuilder {
          * @param featureType Feature collection type
          */ 
         public void initialize( String featureType ) {            
-            attribute1 = "<";
+            attribute1 = verbose ? "\n      <" :"<";
             attribute2 = ">";
             attribute3 = "</";
             attribute4 = ">";
@@ -364,6 +378,8 @@ public class GMLBuilder {
         /** Internal representation of OGC SF MultiGeometry **/
         private static final int MULTIGEOMETRY = 7;        
 
+	private static final String GEOM_OFFSET = "\n        ";
+
         /** XML fragment for any geometry type **/
         private String abstractGeometryStart1;        
         /** XML fragment for any geometry type **/
@@ -389,7 +405,9 @@ public class GMLBuilder {
         
         /** Memory for last geometry initialized **/
         private int geometryType = -1;
-                
+
+	private Envelope envelope = new Envelope();
+
         /** Empty constructor */ 
         public GeometryWriter() {}
                 
@@ -446,16 +464,16 @@ public class GMLBuilder {
             // initialize the GML return parameter (if verbose)
             if(verbose) {
                 // the start tags for the geometry (up to coordinates)
-                abstractGeometryStart1 = "<" + 
-                    tagName + "><gml:" + geometryName + " gid=\"";
+                abstractGeometryStart1 = "\n      <" + 
+                    tagName + ">\n       <gml:" + geometryName + " gid=\"";
                 abstractGeometryStart2 = "\" srsName=\"http://www.opengis.net"
                     + "/gml/srs/epsg.xml#" + srs + "\">";
                
                 // post-coordinate end tags
-                abstractGeometryEnd = "</gml:" + geometryName + 
-                    "></" + tagName + ">";
+                abstractGeometryEnd = "\n       </gml:" + geometryName + 
+                    ">\n      </" + tagName + ">";
                 // coordinates start tags
-                coordinatesStart = "<gml:coordinates decimal=\".\" cs=\",\" " +
+                coordinatesStart = "\n         <gml:coordinates decimal=\".\" cs=\",\" " +
                     "ts=\" \">";                             
                 // coordinate end tags
                 coordinatesEnd = "</gml:coordinates>";
@@ -478,6 +496,15 @@ public class GMLBuilder {
                 coordinatesEnd = "</gml:coordinates>";
             }
         }
+
+	public Envelope getEnvelope(){
+	    return envelope;
+	}
+
+	//call this automatically in init geometry?  
+	public void resetEnvelope(){
+	    envelope.init();
+	}
         
         /**
          * Passes off geometry writing duties to correct method.
@@ -485,8 +512,9 @@ public class GMLBuilder {
          * @param gid Feature collection type
          */ 
         private void writeGeometry(Geometry geometry, String gid) {
-            
-            switch(geometryType) {                                
+	    //user option to just use user defined bbox for whole dataset?
+	    envelope.expandToInclude(geometry.getEnvelopeInternal());
+	    switch(geometryType) {                                
             case POINT:
                 writePoint((Point) geometry, gid);
                 break;
@@ -506,7 +534,7 @@ public class GMLBuilder {
                 writeMultiPolygon((GeometryCollection) geometry, gid);
                 break;
             case MULTIGEOMETRY:
-                writeMultiGeometry((GeometryCollection) geometry, gid);
+               writeMultiGeometry((GeometryCollection) geometry, gid);
                 break;
             }
         }
@@ -528,8 +556,10 @@ public class GMLBuilder {
          * @param geometry OGC SF Point type
          */ 
         private void writePoint(Point geometry) {            
+	    if (verbose) finalResult.append(GEOM_OFFSET);
             finalResult.append( "<gml:" +geometry.getGeometryType()+">");
             writeCoordinates(geometry);
+	    if (verbose) finalResult.append(GEOM_OFFSET);
             finalResult.append( "</gml:" + geometry.getGeometryType() + 
                                 ">" );
         }
@@ -543,8 +573,10 @@ public class GMLBuilder {
             finalResult.append(abstractGeometryStart1 + gid + 
                                abstractGeometryStart2 );
             for( int i = 0 ; i < geometry.getNumGeometries() ; i++ ) {
+		if (verbose) finalResult.append(GEOM_OFFSET);
                 finalResult.append("<gml:pointMember>");
                 writePoint( (Point) geometry.getGeometryN(i) );
+		if (verbose) finalResult.append(GEOM_OFFSET);
                 finalResult.append("</gml:pointMember>");
             }
             finalResult.append( abstractGeometryEnd );
@@ -567,9 +599,11 @@ public class GMLBuilder {
          * @param geometry OGC SF LineString type
          */ 
         private void writeLineString(LineString geometry) {            
+	    if (verbose) finalResult.append(GEOM_OFFSET);
             finalResult.append( "<gml:" + geometry.getGeometryType() + 
                                 ">");
             writeCoordinates(geometry);
+	    if (verbose) finalResult.append(GEOM_OFFSET);
             finalResult.append( "</gml:" + geometry.getGeometryType() + 
                                 ">");
         }
@@ -583,8 +617,10 @@ public class GMLBuilder {
             finalResult.append(abstractGeometryStart1 + gid + 
                                abstractGeometryStart2);
             for(int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
-                finalResult.append("<gml:lineStringMember>");
+                if (verbose) finalResult.append(GEOM_OFFSET);
+		finalResult.append("<gml:lineStringMember>");
                 writeLineString( (LineString) geometry.getGeometryN(i) );
+		if (verbose) finalResult.append(GEOM_OFFSET);
                 finalResult.append("</gml:lineStringMember>");
             }
             finalResult.append( abstractGeometryEnd );
@@ -596,6 +632,25 @@ public class GMLBuilder {
          * @param gid Geometric ID
          */ 
         private void writePolygon(Polygon geometry, String gid) {
+	    if (verbose) {
+		 finalResult.append(abstractGeometryStart1 + gid + 
+                               abstractGeometryStart2 );
+		 finalResult.append(GEOM_OFFSET + "<gml:outerBoundaryIs>" +
+				    GEOM_OFFSET +" <gml:LinearRing>");
+		 writeCoordinates(geometry.getExteriorRing());
+		 finalResult.append(GEOM_OFFSET + " </gml:LinearRing>" + 
+			    GEOM_OFFSET + "</gml:outerBoundaryIs>");            
+		 if (geometry.getNumInteriorRing() > 0) {
+		     finalResult.append("\n         <gml:innerBoundaryIs>");
+		     for( int i = 0 ; i < geometry.getNumInteriorRing() ; i++ ) {
+			 finalResult.append("\n          <gml:LinearRing>");
+                    writeCoordinates( geometry.getInteriorRingN(i) );
+                    finalResult.append("\n          </gml:LinearRing>");
+		     }
+		     finalResult.append("\n        </gml:innerBoundaryIs>");
+		 }
+		 finalResult.append( abstractGeometryEnd );
+	    } else {
 
             finalResult.append(abstractGeometryStart1 + gid + 
                                abstractGeometryStart2 );
@@ -605,17 +660,21 @@ public class GMLBuilder {
             finalResult.append("</gml:LinearRing></gml:" + 
                                "outerBoundaryIs>");            
             if (geometry.getNumInteriorRing() > 0) {
-                finalResult.append("<gml:innerBoundaryIs>");
+                if (verbose) finalResult.append(GEOM_OFFSET);
+		finalResult.append("<gml:innerBoundaryIs>");
                 for( int i = 0 ; i < geometry.getNumInteriorRing() ; i++ ) {
+		    if (verbose) finalResult.append(GEOM_OFFSET + " ");
                     finalResult.append("<gml:LinearRing>");
                     writeCoordinates( geometry.getInteriorRingN(i) );
+		    if (verbose) finalResult.append(GEOM_OFFSET + " ");
                     finalResult.append("</gml:LinearRing>");
                 }
                 finalResult.append("</gml:innerBoundaryIs>");
             }
             finalResult.append( abstractGeometryEnd );
-        }
-                
+	    }
+	}
+
         /**
          * Writes an internal (terse, without GID) Polygon geometry.
          * @param geometry OGC SF Polygon type
@@ -651,8 +710,10 @@ public class GMLBuilder {
             finalResult.append( abstractGeometryStart1 + gid + 
                                 abstractGeometryStart2);
             for(int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
+		if (verbose) finalResult.append(GEOM_OFFSET);
                 finalResult.append("<gml:polygonMember>");
                 writePolygon((Polygon) geometry.getGeometryN(i));
+		if (verbose) finalResult.append(GEOM_OFFSET);
                 finalResult.append("</gml:polygonMember>");
             }            
             finalResult.append( abstractGeometryEnd );
@@ -669,18 +730,24 @@ public class GMLBuilder {
                                 abstractGeometryStart2 );            
             for(int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
                 if( geometry.getGeometryType().equals("Point") ) {
+		    if (verbose) finalResult.append(GEOM_OFFSET);
                     finalResult.append("<gml:pointMember>");
                     writePoint( (Point) geometry.getGeometryN(i) );
+		    if (verbose) finalResult.append(GEOM_OFFSET);
                     finalResult.append("</gml:pointMember>");
                 }
                 if( geometry.getGeometryType().equals("LineString") ) {
+		    if (verbose) finalResult.append(GEOM_OFFSET);
                     finalResult.append("<gml:lineStringMember>");
                     writeLineString( (LineString) geometry.getGeometryN(i) );
+		    if (verbose) finalResult.append(GEOM_OFFSET);
                     finalResult.append("</gml:lineStringMember>");
                 }
                 if( geometry.getGeometryType().equals("Polygon") ) {
+		    if (verbose) finalResult.append(GEOM_OFFSET);
                     finalResult.append("<gml:polygonMember>");
                     writePolygon( (Polygon) geometry.getGeometryN(i) );
+		    if (verbose) finalResult.append(GEOM_OFFSET);
                     finalResult.append("</gml:polygonMember>");
                 }
             }            
@@ -695,11 +762,18 @@ public class GMLBuilder {
         private void writeCoordinates(Geometry geometry) {            
             int dimension = geometry.getDimension();
             Coordinate[] tempCoordinates = geometry.getCoordinates(); 
-                        
+ 
             finalResult.append( coordinatesStart );            
             for(int i = 0, n = geometry.getNumPoints(); i < n; i++) {
-                finalResult.append( tempCoordinates[i].x + coordinateDelimeter
-                                    + tempCoordinates[i].y + tupleDelimeter);
+		double xCoord = tempCoordinates[i].x;
+		double yCoord = tempCoordinates[i].y;
+		//		BigDecimal xCoord = new BigDecimal(tempCoordinates[i].x);
+		//xCoord = xCoord.setScale(10,  BigDecimal.ROUND_HALF_UP);
+		//BigDecimal yCoord = new BigDecimal(tempCoordinates[i].y).setScale(15);
+		//yCoord = yCoord.setScale(10,  BigDecimal.ROUND_HALF_UP);
+		finalResult.append( xCoord + coordinateDelimeter + yCoord + 
+				    tupleDelimeter);
+		//+ BigDecimal.valueOf((long)tempCoordinates[i].y, 15) + tupleDelimeter);
             }
             finalResult.deleteCharAt( finalResult.length() - 1 );            
             finalResult.append( coordinatesEnd );
