@@ -33,7 +33,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2.0-rc2"/>
+  <property name="name.release" value="1.2.0-rc1"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
@@ -73,6 +73,7 @@
   <!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
   <!--<available file="${basedir}/conf" type="dir" property="conf.folder.present"/>
   <available file="${basedir}/server/geoserver" type="dir" property="server.built"/>-->
+  
 
   <!-- paths -->
   <path id="path.lib">
@@ -117,6 +118,8 @@
     <echo message="    unit-all:     compiles and runs all unit tests"/>
     <echo message="    test:         builds and runs the built-in server"/>
     <echo message="    run:          runs the built-in server"/>
+    <echo message=" prepareEmbedded  prepares built-in server, must be run"/>
+    <echo message="                  before run is called"/>
     <echo message="    test-ext:     builds war to external server"/>
     <echo message="                    -param: dir.container=[server_path]"/>
     <echo message="                    -param: test.type=CitePostGis"/>
@@ -317,13 +320,19 @@
 
   </target>
     
+  <!-- prepares embedded server, server.built isn't working, so users must
+      run this manually -->
   <target name="prepareEmbedded" depends="init" unless="server.built">
+     <antcall target="war"/>
      <mkdir dir="${dir.server}/work"/>
+    <mkdir dir="${dir.server}/geoserver"/>
      <unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/"/>
   </target> 
 
   <!-- runs the server -->
-  <target name="run" depends="init, prepareEmbedded">
+  <target name="run" depends="init">
+    <echo message="Please be sure that either prepareEmbedded or"/>
+    <echo message="test has been run before using this target"/>
     
     <java classname="org.mortbay.jetty.Server"
           dir="${basedir}"
