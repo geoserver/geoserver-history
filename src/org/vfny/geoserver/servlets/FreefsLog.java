@@ -20,19 +20,16 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.12 2003/09/15 23:07:16 cholmesny Exp $
+ * @version $Id: FreefsLog.java,v 1.13 2003/09/16 01:05:57 cholmesny Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlet");
+            "org.vfny.geoserver.servlets");
 
     /** Default name for configuration directory */
     private static final String CONFIG_DIR = "data/";
 
-    /** The logger for the filter module. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets");
     private GeoZServer server;
 
     /**
