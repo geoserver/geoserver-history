@@ -53,7 +53,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.12 2004/01/17 20:26:32 jive Exp $
+ * @version $Id: Data.java,v 1.13 2004/01/17 21:06:21 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -170,7 +170,7 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         while (i.hasNext()) {
             FeatureTypeInfoDTO featureTypeDTO = (FeatureTypeInfoDTO) i.next();
             if( featureTypeDTO == null ){
-                System.out.println("Ignore null FeatureTypeInfo DTO!");
+                System.err.println("Ignore null FeatureTypeInfo DTO!");
                 continue;
             }
             String key = featureTypeDTO.getKey(); // dataStoreId:typeName
@@ -180,27 +180,31 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             System.out.println( key+" looking up :"+dataStoreId );
             DataStoreInfo dataStoreInfo = (DataStoreInfo) dataStores.get( dataStoreId);
             
-            System.out.println( key+" datastore found :"+dataStoreInfo );
             if( dataStoreInfo == null ){
-                System.out.println( key + " IGNORE FeatureTypeInfo as DataStore is missing!");
+                System.err.println( key + " IGNORE FeatureTypeInfo as DataStore '"+dataStoreId+"' could not be found!");
                 continue;
+            }
+            else {
+                System.out.println( key+" datastore found :"+dataStoreInfo );
             }
             String prefix = dataStoreInfo.getNamesSpacePrefix();
             String typeName = featureTypeDTO.getName();
-            System.out.println( key + " creating FeatureTypeInfo for "+prefix+":"+typeName );            
-            FeatureTypeInfo featureTypeInfo = new FeatureTypeInfo( featureTypeDTO, this );
-            String key2 = prefix + ":" + typeName;
             
+            String key2 = prefix + ":" + typeName;
             if( featureTypes.containsKey( key2 )){
-                System.out.println( key + " IGNORE FeatureTypeInfo as "+key2+" is already registerd");
+                System.err.println( key + " FeatureTypeInfo '"+key2+"' is already registerd! IGNORE new "+typeName);
             }
             else {
+                System.out.println( key + " FeatureTypeInfo '"+key2+"' is created..." );
+                
+                FeatureTypeInfo featureTypeInfo = new FeatureTypeInfo( featureTypeDTO, this );                                
                 featureTypes.put( key2, featureTypeInfo);
-                System.out.println( key+" datastore found :"+dataStoreInfo );                
+                System.out.println( key+" FeatureTypeInfo '"+key2+"' registered :"+dataStoreInfo );                
+                                
             }
         }
         
-            styles = new HashMap();
+        styles = new HashMap();
 
         if (config.getStyles() == null) {
             throw new NullPointerException("");
@@ -211,15 +215,53 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         while (i.hasNext()) {
             Object key = i.next();
 
-                try {
-                    styles.put(key,
-                        loadStyle(
-                            ((StyleDTO) config.getStyles().get(key))
-                            .getFilename()));
-                } catch (IOException e) {
-                    LOGGER.fine("Error loading style:" + key.toString());
-                }
-
+            try {
+                styles.put(key,
+                    loadStyle(
+                        ((StyleDTO) config.getStyles().get(key))
+                        .getFilename()));
+            } catch (IOException e) {
+                LOGGER.fine("Error loading style:" + key.toString());
+            }
+        }
+        //
+        // Devel Sanity Checks!
+        // 
+        // These should be removed from a production system
+        // and the capability made available with
+        // check status actions
+        //
+        try {
+            System.out.println("----DATASTORE STATUS CHECK----");
+            Map map=statusDataStores();
+        }
+        catch (Throwable ignore ){
+            //
+        }
+        try {
+            System.out.println("----NAMESPACE STATUS CHECK----");
+            Map map=statusNamespaces();
+        }
+        catch (Throwable ignore ){
+            //
+        }        
+    }
+    static final void outputStatus(Map status ){
+        for( Iterator i=status.entrySet().iterator(); i.hasNext();){
+            Map.Entry entry = (Map.Entry) i.next();
+            String key = (String)entry.getKey();
+            Object value = entry.getValue();
+            
+            if( value == Boolean.TRUE){
+                System.out.println( key +": ready" );
+            }
+            else if (value instanceof Throwable ){
+                Throwable t = (Throwable) value;
+                System.out.println( key +": "+t.getMessage() );                
+            }
+            else {
+                System.out.println( key +": '"+value+"'" );                
+            }
         }
     }
     
