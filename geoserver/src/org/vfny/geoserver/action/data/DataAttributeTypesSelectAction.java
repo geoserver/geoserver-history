@@ -7,6 +7,8 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +41,7 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
         
         DataConfig dataConfig = (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
         FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
-        AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) ftConfig.getAttributeFromSchema((String) request.getSession().getAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE));
+        AttributeTypeInfoConfig config = ftConfig.getAttributeFromSchema(form.getSelectedAttributeType());
         
 		//SAVE SELECTED ATTRIBUTE AND FORWARD TO EDITOR
 		if (action.equals("edit")) {
@@ -49,8 +51,10 @@ public class DataAttributeTypesSelectAction extends ConfigAction {
 		}
 		
 		if (action.equals("delete")) {
-			//dataConfig.removeFeatureType(featureTypesForm.getSelectedFeatureType());
-            request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
+			request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
+            List list = ftConfig.getSchemaAttributes();
+            list.remove(config);
+            ftConfig.setSchemaAttributes(list);
 			return mapping.findForward("dataConfigFeatureTypes");
 		}
 		

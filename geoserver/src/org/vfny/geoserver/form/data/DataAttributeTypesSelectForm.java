@@ -53,14 +53,12 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 	}
 	
 	public SortedSet getAttributeTypes() {
-		try {
+
 		ServletContext context = getServlet().getServletContext();
 		DataConfig config =
 			(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
-        System.out.println("ABSCOND!");
 
 		FeatureTypeConfig ftConfig = (FeatureTypeConfig) request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE);		
-		System.out.println("Return!!" +ftConfig);
         
         List list = ftConfig.getSchemaAttributes();
         SortedSet set = new TreeSet();
@@ -71,11 +69,8 @@ public class DataAttributeTypesSelectForm extends ActionForm {
 		}
 		
 		return Collections.unmodifiableSortedSet(set);
-        } catch (Throwable t) {
-         t.printStackTrace();   
-        }
-        return null;
-	}
+    }
+        
 	/**
 	 * @return Returns the buttonAction.
 	 */
