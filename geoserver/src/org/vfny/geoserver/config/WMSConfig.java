@@ -30,7 +30,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.2.2.5 2004/01/08 17:36:40 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.2.2.6 2004/01/09 01:20:43 emperorkefka Exp $
  */
 public class WMSConfig extends ServiceConfig{
 
@@ -51,7 +51,13 @@ public class WMSConfig extends ServiceConfig{
 	 * Cool?
 	 * </p>
 	 */
-	private Set enabled = new TreeSet(); // keep sorted
+	private Set enabledFeatures = new TreeSet(); // keep sorted
+	
+	/**
+	 * A string representing the update time of the WMS
+	 *
+	 */
+	private String updateTime;
 	
 	/**
 	 * WMS constructor.
@@ -105,4 +111,32 @@ public class WMSConfig extends ServiceConfig{
 		wmsDto.setService((ServiceDTO)super.toServDTO());
 		return wmsDto;
 	}
+	/**
+	 * @return
+	 */
+	public String getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setUpdateTime(String string) {
+		updateTime = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public Set getEnabledFeatures() {
+		return enabledFeatures;
+	}
+
+	/**
+	 * @param set
+	 */
+	public void setEnabledFeatures(Set set) {
+		enabledFeatures = set;
+	}
+
 }
