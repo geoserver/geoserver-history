@@ -146,7 +146,7 @@ public class TypeRepository {
 
     private static boolean isInfoFile(File testFile, ConfigInfo config){
         String testName = testFile.getAbsolutePath();
-        int start = testName.length() - 9;
+        int start = testName.length() - config.INFO_FILE.length();
         int end = testName.length();
         return testName.substring(start, end).equals(config.INFO_FILE);
     }
