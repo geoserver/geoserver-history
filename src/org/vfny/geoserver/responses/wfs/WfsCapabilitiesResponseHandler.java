@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.4 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.5 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -147,7 +147,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         startElement("DCPType");
         startElement("HTTP");
 
-        String baseUrl = request.getGeoServer().getBaseUrl() + "wfs/";
+        String baseUrl = request.getBaseUrl() + "wfs/";
         String url = baseUrl + capabilityName + "?";
         attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
 

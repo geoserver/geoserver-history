@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.4 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.5 2004/01/13 21:15:54 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -200,7 +200,7 @@ public class DescribeResponse implements Response {
             while (prefixIter.hasNext()) {
                 //iterate through prefixes, and add the types that have that prefix.
                 String prefix = prefixIter.next().toString();
-                tempResponse.append(getNSImport(prefix, requestedTypes,wfsRequest.getGeoServer()));
+                tempResponse.append(getNSImport(prefix, requestedTypes,wfsRequest));
             }
         }
 
@@ -222,14 +222,14 @@ public class DescribeResponse implements Response {
      *
      * @return The namespace element.
      */
-    private StringBuffer getNSImport(String prefix, List typeNames, GeoServer gs) {
+    private StringBuffer getNSImport(String prefix, List typeNames, Request r) {
         LOGGER.finer("prefix is " + prefix);
 
         StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
-        String namespace = gs.getData().getNameSpace(prefix).getUri();
+        String namespace = r.getGeoServer().getData().getNameSpace(prefix).getUri();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\""
-            + gs.getBaseUrl() + "wfs/DescribeFeatureType?typeName=");
+            + r.getBaseUrl() + "wfs/DescribeFeatureType?typeName=");
 
         Iterator nameIter = typeNames.iterator();
 
@@ -239,7 +239,7 @@ public class DescribeResponse implements Response {
 
             if (typeName.startsWith(prefix)
                     || ((typeName.indexOf(':') == -1)
-                    && prefix.equals(gs.getData().getDefaultNameSpace()
+                    && prefix.equals(r.getGeoServer().getData().getDefaultNameSpace()
                                                .getPrefix()))) {
                 retBuffer.append(typeName + ",");
             }

@@ -19,7 +19,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.2 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: GeoServer.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public class GeoServer extends GlobalLayerSupertype { // implements org.apache.struts.action.PlugIn{
 
@@ -150,19 +150,6 @@ public class GeoServer extends GlobalLayerSupertype { // implements org.apache.s
      */
     public String getAddressType() {
         return notNull(geoServer.getContact().getAddressType());
-    }
-
-    /**
-     * getBaseUrl purpose.
-     * 
-     * <p>
-     * Returns the server base rl.
-     * </p>
-     *
-     * @return String the server base rl.
-     */
-    public String getBaseUrl() {
-        return geoServer.getBaseUrl();
     }
 
     /**

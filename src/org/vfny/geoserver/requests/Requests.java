@@ -51,6 +51,10 @@ public final class Requests {
 		return (GeoServer) context.getAttribute( GeoServer.WEB_CONTAINER_KEY );		
 	}
 	
+	public static String getBaseUrl(HttpServletRequest httpServletRequest){
+		return "http://"+httpServletRequest.getServerName()+":"+httpServletRequest.getServerPort()+"/geoserver/";
+	}
+	
 	/**
 	 * Aquire type safe session information in a UserContainer.  
 	 * <p>

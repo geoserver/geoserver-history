@@ -73,7 +73,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.2 2004/01/12 21:01:31 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.3 2004/01/13 21:15:53 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -334,7 +334,7 @@ public class XMLConfigReader {
 		}
 
 		LOGGER.config("charSet is " + geoServer.getCharSet());
-		geoServer.setBaseUrl(ReaderUtils.getChildText(globalElem, "URL", true));
+		//geoServer.setBaseUrl(ReaderUtils.getChildText(globalElem, "URL", true));
 
 		String schemaBaseUrl = ReaderUtils.getChildText(globalElem, "SchemaBaseUrl");
 		
@@ -822,12 +822,13 @@ public class XMLConfigReader {
 			String ref = ReaderUtils.getAttribute(elem,"ref",false);
 			String type = ReaderUtils.getAttribute(elem,"type",false);
 			if(ref != null && ref != ""){
-				ati.setRef(true);
+				ati.setComplex(false);
 				ati.setType(ref);
 			}else{
 				ati.setName(name);
 				if(type!=null && type!=""){
 					ati.setType(type);
+					ati.setComplex(false);
 				}else{
 					Element tmp = ReaderUtils.getFirstChildElement(elem);
 					OutputFormat format = new OutputFormat((Document)tmp);
@@ -844,6 +845,7 @@ public class XMLConfigReader {
 						throw new ConfigurationException(e);
 					}
 					ati.setType(sw.toString());
+					ati.setComplex(true);
 				}
 			}
 			ati.setNillable(ReaderUtils.getBooleanAttribute(elem,"nillable",false));
@@ -907,7 +909,7 @@ public class XMLConfigReader {
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.2 2004/01/12 21:01:31 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.3 2004/01/13 21:15:53 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**

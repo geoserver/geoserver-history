@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.2 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: GeoServerDTO.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
     /** Sets the max number of Features returned by GetFeature */
@@ -79,25 +79,6 @@ public final class GeoServerDTO implements DataTransferObject {
      * </p>
      */
     private Charset charSet = Charset.forName("ISO-8859-1");
-
-    /**
-     * The base URL where this servlet will run.
-     * 
-     * <p>
-     * If running locally then <code>http://localhost:8080</code> (or whatever
-     * port you're running on) should work.
-     * </p>
-     * 
-     * <p>
-     * If you are serving to the world then this must be the location where the
-     * geoserver servlets appear
-     * </p>
-     * 
-     * <p>
-     * JG - can we figure this out at runtime?
-     * </p>
-     */
-    private String baseUrl = "";
 
     /**
      * Define a base url for the location of the wfs schemas.
@@ -170,7 +151,6 @@ public final class GeoServerDTO implements DataTransferObject {
         verbose = g.isVerbose();
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
-        baseUrl = g.getBaseUrl();
         schemaBaseUrl = g.getSchemaBaseUrl();
 
         if (g.getContact() != null) {
@@ -226,7 +206,6 @@ public final class GeoServerDTO implements DataTransferObject {
             return false;
         }
 
-        r = r && (baseUrl == g.getBaseUrl());
         r = r && (schemaBaseUrl == g.getSchemaBaseUrl());
 
         if (contact != null) {
@@ -244,24 +223,9 @@ public final class GeoServerDTO implements DataTransferObject {
     		i *= maxFeatures;
 		if(numDecimals!=0)
 			i *= numDecimals;
-		if(baseUrl!=null)
-			i *= baseUrl.hashCode();
 		if(schemaBaseUrl!=null)
 			i *= schemaBaseUrl.hashCode();
     	return i;
-    }
-
-    /**
-     * getBaseUrl purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getBaseUrl() {
-        return baseUrl;
     }
 
     /**
@@ -354,19 +318,6 @@ public final class GeoServerDTO implements DataTransferObject {
      */
     public boolean isVerbose() {
         return verbose;
-    }
-
-    /**
-     * setBaseUrl purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param url
-     */
-    public void setBaseUrl(String url) {
-        baseUrl = url;
     }
 
     /**

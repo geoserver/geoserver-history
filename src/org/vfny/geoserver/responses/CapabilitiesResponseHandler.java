@@ -21,7 +21,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.5 2004/01/12 21:01:27 dmzwiers Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.6 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -46,7 +46,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         startDocument(config);
         indent();
         handleService(config);
-        endService(config);
+        //endService(config);
         handleCapabilities(config);
     }
 
@@ -91,6 +91,8 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         indent();
 
         unIndent();
+
+        endElement("Service");
     }
 
     /**

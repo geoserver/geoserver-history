@@ -13,6 +13,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -28,11 +29,12 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author dzwiers
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.5 2004/01/12 21:01:29 dmzwiers Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.6 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
 	private static final String CAP_VERSION = WMS.getVersion();
 	private GeoServer server = null;
+	private String baseUrl = "";
     protected String BBOX_ELEM_NAME = "LatLonBoundingBox";
 
     /**
@@ -40,9 +42,10 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @param handler DOCUMENT ME!
      */
-    public WmsCapabilitiesResponseHandler(ContentHandler handler, GeoServer gs) {
+    public WmsCapabilitiesResponseHandler(ContentHandler handler, Request r) {
         super(handler);
-        server = gs;
+        server = r.getGeoServer();
+        baseUrl = r.getBaseUrl();
     }
 
     /**
@@ -288,7 +291,6 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         indent();
         startElement("Get");
 
-        String baseUrl = server.getBaseUrl().toString();
         String url = baseUrl + "?";
         handleOnlineResource(url);
         endElement("Get");
