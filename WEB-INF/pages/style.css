@@ -75,6 +75,23 @@ td.login {
 span.loginStatus {
  font-size: 100%;
 }
-td.content {
+title {
+ font-size: 140%;
+ font-weight: bold;
+}
+td.application {
  vertical-align: top;
+ background-color: rgb(250,250,250);
+}
+td.maintenance {
+ vertical-align: top;
+ background-color: rgb(153,153,102);
+}
+td.service {
+ vertical-align: top;
+ background-color: rgb(102, 102, 153);
+}
+td.data {
+ vertical-align: top;
+ background-color: rgb(153, 153, 153);
 }
