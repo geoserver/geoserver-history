@@ -20,7 +20,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.8 2004/02/09 23:30:04 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.9 2004/04/03 13:16:18 cholmesny Exp $
  */
 public class GlobalConfig {
     public static final String CONFIG_KEY = "Config.Global";
@@ -130,13 +130,9 @@ public class GlobalConfig {
      */
     private Level loggingLevel = null;
 
-    /* Default name for configuration directory */
-
-    //private static final String CONFIG_DIR = "WEB-INF/";
-
-    /* Default name for configuration directory */
-
-    //private static final String DATA_DIR = "data/";
+    private String adminUserName;
+    
+    private String adminPassword;
 
     /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
@@ -154,7 +150,7 @@ public class GlobalConfig {
         maxFeatures = 20000;
         verbose = true;
         numDecimals = 8;
-        charSet = Charset.forName("ISO-8859-1");
+        charSet = Charset.forName("UTF-8");
         baseUrl = null;
         schemaBaseUrl = null;
         contact = null;
@@ -183,6 +179,8 @@ public class GlobalConfig {
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
+        adminUserName = g.getAdminUserName();
+        adminPassword = g.getAdminPassword();
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -488,5 +486,26 @@ public class GlobalConfig {
      */
     public void setLoggingLevel(Level level) {
         loggingLevel = level;
+    }
+    
+    //Login variables.  No setting of these yet, since I'm not advanced enough
+    //to make a new form to set the username and password.  I leave that as an
+    //exercise to the reader :)  For now users can just set it by hand in the
+    //WEB-INF/services.xml file. ch
+    
+    /**
+     * Gets the user name of the administrator. 
+     * @return The user name to be checked for on login. 
+     */
+    public String getAdminUserName(){
+    	return adminUserName;
+    }
+    
+	/**
+	  * Gets the password of the administrator. 
+	  * @return The password to be checked for on login. 
+	  */
+    public String getAdminPassword(){
+    	return adminPassword;
     }
 }
