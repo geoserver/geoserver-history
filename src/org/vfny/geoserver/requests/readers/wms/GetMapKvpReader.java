@@ -4,16 +4,7 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.geotools.styling.Style;
@@ -24,12 +15,21 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Builds a GetMapRequest object given by a set of CGI parameters supplied in the constructor.
+ * Builds a GetMapRequest object given by a set of CGI parameters supplied in
+ * the constructor.
+ * 
  * <p>
  * Mandatory parameters:
  * 
@@ -73,7 +73,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </li>
  * </ul>
  * </p>
- * 
+ *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetMapKvpReader.java,v 1.12 2004/09/16 22:20:54 cholmesny Exp $
  */
@@ -84,11 +84,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /** the request wich will be built by getRequest method */
     private GetMapRequest request;
-    
+
     /**
-     * Indicates wether STYLES parameter must be parsed. Defaults to 
-     * <code>true</code>, but can be set to false, for example, when
-     * parsing a GetFeatureInfo request
+     * Indicates wether STYLES parameter must be parsed. Defaults to
+     * <code>true</code>, but can be set to false, for example, when parsing a
+     * GetFeatureInfo request
      */
     private boolean stylesRequired = true;
 
@@ -100,17 +100,23 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     public GetMapKvpReader(Map kvpPairs) {
         super(kvpPairs);
     }
-    
+
     /**
      * Sets wether the STYLES parameter must be parsed
+     *
      * @param parseStyles
      */
-    public void setStylesRequired(boolean parseStyles){
-    	this.stylesRequired = parseStyles;
+    public void setStylesRequired(boolean parseStyles) {
+        this.stylesRequired = parseStyles;
     }
-    
-    public boolean isStylesRquired(){
-    	return this.stylesRequired;
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public boolean isStylesRquired() {
+        return this.stylesRequired;
     }
 
     /**
@@ -135,6 +141,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         FeatureTypeInfo[] layers = parseMandatoryParameters(request);
         parseOptionalParameters(request);
+
         return request;
     }
 
@@ -159,20 +166,34 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @param request DOCUMENT ME!
      *
+     * @throws WmsException DOCUMENT ME!
+     *
      * @task TODO: implement parsing of transparent, exceptions and bgcolor
      */
-    private void parseOptionalParameters(GetMapRequest request) {
+    private void parseOptionalParameters(GetMapRequest request)
+        throws WmsException {
         String crs = getValue("SRS");
 
         if (crs != null) {
             request.setCrs(crs);
         }
 
-	String transparentValue = getValue("TRANSPARENT");
+        String transparentValue = getValue("TRANSPARENT");
         boolean transparent = (transparentValue == null) ? false
-	    : Boolean.valueOf(transparentValue).booleanValue();
+                                                         : Boolean.valueOf(transparentValue)
+                                                                  .booleanValue();
         request.setTransparent(transparent);
-	
+
+        String bgcolor = getValue("BGCOLOR");
+
+        if (bgcolor != null) {
+            try {
+                request.setBgColor(Color.decode(bgcolor));
+            } catch (NumberFormatException nfe) {
+                throw new WmsException("BGCOLOR " + bgcolor
+                    + " incorrectly specified (0xRRGGBB format expected)");
+            }
+        }
     }
 
     /**
@@ -214,10 +235,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         FeatureTypeInfo[] layers = parseLayers();
         request.setLayers(layers);
 
-        if(isStylesRquired()){
-	        List styleNames = parseStyles(layers);
-	        request.setStyles(styleNames);
+        if (isStylesRquired()) {
+            List styleNames = parseStyles(layers);
+            request.setStyles(styleNames);
         }
+
         try {
             int width = Integer.parseInt(getValue("WIDTH"));
             int height = Integer.parseInt(getValue("HEIGHT"));
@@ -240,6 +262,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         return layers;
     }
+
     /**
      * creates a list of requested attributes, wich must be a valid attribute
      * name or one of the following special attributes:
@@ -364,13 +387,15 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             double maxx = Double.parseDouble(bboxValues[2].toString());
             double maxy = Double.parseDouble(bboxValues[3].toString());
             bbox = new Envelope(minx, maxx, miny, maxy);
+
             if (minx > maxx) {
-                throw new WmsException("illegal bbox, minX: " + minx + " is " +
-                                       "greater than maxX: " + maxx);
+                throw new WmsException("illegal bbox, minX: " + minx + " is "
+                    + "greater than maxX: " + maxx);
             }
+
             if (miny > maxy) {
-                throw new WmsException("illegal bbox, minY: " + miny + " is " +
-                                       "greater than maxY: " + maxy);
+                throw new WmsException("illegal bbox, minY: " + miny + " is "
+                    + "greater than maxY: " + maxy);
             }
         } catch (NumberFormatException ex) {
             throw new WmsException(ex,
@@ -396,10 +421,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * @param layers the requested feature types
      *
      * @return a full <code>List</code> of the style names requested for the
-     * requiered layers with no null style names. 
+     *         requiered layers with no null style names.
      *
-     * @throws WmsException if some of the requested styles does not exist or its
-     * number if greater than zero and distinct of the number of requested layers
+     * @throws WmsException if some of the requested styles does not exist or
+     *         its number if greater than zero and distinct of the number of
+     *         requested layers
      */
     private List parseStyles(FeatureTypeInfo[] layers)
         throws WmsException {
@@ -411,8 +437,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         if ("".equals(rawStyles)) {
             LOGGER.finer("Assigning default style to all the requested layers");
             styles = new ArrayList(layers.length);
-            for(int i = 0; i < numLayers; i++)
-            	styles.add(layers[i].getDefaultStyle().getName());
+
+            for (int i = 0; i < numLayers; i++)
+                styles.add(layers[i].getDefaultStyle().getName());
         } else {
             styles = readFlat(rawStyles, INNER_DELIMETER);
 
@@ -428,7 +455,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             configuredStyles = request.getWMS().getData().getStyles();
 
             String st;
-            
+
             for (int i = 0; i < numLayers; i++) {
                 st = (String) styles.get(i);
 
@@ -438,48 +465,26 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                             + " style not recognized by this server",
                             "StyleNotDefined");
                     }
-                }else{ //use the layer's default style
-                	LOGGER.finer("applying default style to " + layers[i].getName());
-                	Style defStyle = layers[i].getDefaultStyle();
-                	if(defStyle == null){
-                		String msg = "No default style has been defined for " + layers[i].getName();
-                		LOGGER.warning(msg);
-                		throw new WmsException(msg, getClass().getName() + "::parseStyles()");
-                	}
-                	styles.set(i, defStyle.getName());
+                } else { //use the layer's default style
+                    LOGGER.finer("applying default style to "
+                        + layers[i].getName());
+
+                    Style defStyle = layers[i].getDefaultStyle();
+
+                    if (defStyle == null) {
+                        String msg = "No default style has been defined for "
+                            + layers[i].getName();
+                        LOGGER.warning(msg);
+                        throw new WmsException(msg,
+                            getClass().getName() + "::parseStyles()");
+                    }
+
+                    styles.set(i, defStyle.getName());
                 }
             }
         }
 
         return styles;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param numLayers DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
-     */
-    private Filter[] parseFilters(int numLayers) throws ServiceException {
-        List filtersList = Collections.EMPTY_LIST;
-        String rawFilters = getValue("FILTER");
-
-        if (rawFilters != null) {
-            filtersList = readFilters(null, rawFilters, null);
-
-            if ((filtersList.size() > 0) && (filtersList.size() != numLayers)) {
-                throw new WmsException("Number of layers and filters do not match",
-                    "GetMapKvpReader.parseFilters()");
-            }
-        }
-
-        Filter[] filters = new Filter[filtersList.size()];
-
-        return (Filter[]) filtersList.toArray(filters);
     }
 
     /**
@@ -513,8 +518,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             }
         } catch (NoSuchElementException ex) {
             throw new WmsException(ex,
-                layerName + ": no such layer on this server",
-                "LayerNotDefined");
+                layerName + ": no such layer on this server", "LayerNotDefined");
         }
 
         return featureTypes;
