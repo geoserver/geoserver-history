@@ -6,6 +6,10 @@
 
   <sect1 id="welcome">
     <title>Welcome</title>
+    
+     <para>There is more help available at the <ulink url="http://docs.codehaus.org/display/GEOS/Home">Geoserver WIKI</ulink>. 
+   IT IS STRONGLY RECOMMENDED YOU VISIT HERE BECAUSE USERS UPDATE THESE PAGES! </para>
+    
 
     <para>The GeoServer project is a Java implementation of the 1.0 Web
     Feature Server specification from the <ulink
@@ -65,7 +69,7 @@
   <sect1 id="servlet">
     <title>Installing a Servlet Container</title>
 
-    <para>If you downloaded the binary (geoserver-1.2.*-bin.zip) or windows
+    <para>If you downloaded the binary (geoserver-1.3.*-bin.zip) or windows
     (.exe) release of GeoServer you do not need to install a servlet
     container, as GeoServer now includes an embedded Jetty servlet container.
     But if you want to use your servlet container then the war install works

@@ -114,4 +114,24 @@
 <bean:message key="text.welcome4"/>
 </p>
 
+<h2>
+  <bean:message key="text.welcome.mapbuilder"/>
+</h2>
 
+<p>
+<bean:message key="text.welcome.mapbuilder.detail"/>
+</p>
+<ul>
+  <li>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>data/mbdemos/demo/wfs-t/index.html">
+      Mapbuilder/Geoserver (Tasmania)
+    </a>
+  </li>
+  <li>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>data/mbdemos/demo/cite/index.html">
+      Mapbuilder/Geoserver (CITE)
+    </a>
+  </li>
+</ul>
+
+<br>

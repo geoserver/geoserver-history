@@ -11,24 +11,9 @@
 
 ;
 ; 
-;
-;  Check the documentation/developer/release guide - but here's a quick howto:
-;1. modify documents/geoserver.nsi so that the info in it correct (ie. version numbers)
-;    + quickly read through the document and make any documentation changes
-;2. build a release (ant release-all) as above
-;3. make a new temporary directory
-;4. uncompress the release/geoserver-1.3.0-beta-src.tar.gz  (or whatever you released) to your temp directory
-;5. move documents/geoserver.nsi up one directory ("geoserver/")
-;6. move the "server/" directory from your development directory geoserver/
-;     + make sure you deployed the correct configuration!
-;7.  DELETE THE DIRECTORY server/geoserver/WEB-INF/work   You'll get JSP compile errors if you dont do this!
-;8. move RUNNING.txt from the documentation/ directory up one level to the geoserver/ directory
-;9. download and install the nullsoft installer
-;10. run the installer and load the geoserver.nsi file
-;
-;In your temporary directory, you should see a "geoserver-1.3.0-beta.exe"!
-;
-;You should install and test this!
+
+;    HOW TO USE THE NULL SOFT INSTALLER IS IN THE DOCUMENTATION/DEVELOPER/RELEASEGUIDE!!
+;    it has a step-by-step guide.
 ;
 ;
 
@@ -42,8 +27,8 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-beta"
-  OutFile "geoserver-1.3.0-beta.exe"
+  Name "GeoServer 1.3.0-beta2"
+  OutFile "geoserver-1.3.0-beta2.exe"
 
 
   ;Default installation folder
@@ -139,7 +124,7 @@ Section "GeoServer Section" SecGeoServer
                    "http://127.0.0.1:8080/geoserver/"
 
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
-                   "$2\bin\java.exe" '-jar start.jar'\
+                   "$2\bin\java.exe" '-Xmx300m -jar start.jar'\
                    "$INSTDIR\server\geoserver\images\gs.ico" 0 SW_SHOWNORMAL
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Stop GeoServer.lnk" \
                    "$2\bin\java.exe" '-jar stop.jar'\
