@@ -111,7 +111,16 @@ public class SaveXMLAction extends ConfigAction {
     			throw new ServletException(e);
     		}
     	}
-    	// TODO add deletes of plug ins here
+    	// deletes of plug ins here
+    	File[] pluginFL = plugInDir.listFiles();
+    	for(int j=0;j<pluginFL.length;j++){
+    		String flName = pluginFL[j].getName();
+    		flName = flName.substring(0,flName.length()-4);
+    		if(plugIns.get(flName)==null){
+    			// delete this
+    			pluginFL[j].delete();
+    		}
+    	}
     	
     	
     	i = testSuites.keySet().iterator();
@@ -128,7 +137,16 @@ public class SaveXMLAction extends ConfigAction {
     			throw new ServletException(e);
     		}
     	}
-		// TODO add deletes of testSuites here
+		// deletes of testSuites here
+		File[] testsFL = validationDir.listFiles();
+		for(int j=0;j<testsFL.length;j++){
+			String flName = testsFL[j].getName();
+			flName = flName.substring(0,flName.length()-4);
+			if(testSuites.get(flName)==null){
+				// delete this
+				testsFL[j].delete();
+			}
+		}
     	
     	getApplicationState( request ).notifiySaveXML();	
     	// We need to stash the current page?
