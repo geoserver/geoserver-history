@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.2 2004/01/12 21:01:31 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public class XMLConfigWriter {
 	/**
@@ -119,7 +119,7 @@ public class XMLConfigWriter {
 	protected static void storeServices(WriterHelper cw, WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer) throws ConfigurationException{
 		LOGGER.fine("In method storeServices");
 		cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		cw.comment("ServiceConfig level configuration");
+		cw.comment("Service level configuration");
 		cw.openTag("serverConfiguration");
 		
 		GeoServerDTO g = geoServer;
@@ -132,13 +132,13 @@ public class XMLConfigWriter {
 					"Increasing statements logged.");
 				cw.textTag("loggingLevel",g.getLoggingLevel().toString());
 			}
-			if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
+			/*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
 				cw.comment("The base URL where this servlet will run.  If running locally\n"+
 	        		"then http://localhost:8080 (or whatever port you're running on)\n"+
         			"should work.  If you are serving to the world then this must be\n"+
         			"the location where the geoserver servlets appear");
         		cw.textTag("URL",g.getBaseUrl());
-			}
+			}*/
         	cw.comment("Sets the max number of Features returned by GetFeature");
     	    cw.valueTag("maxFeatures",""+g.getMaxFeatures());
 	        cw.comment("Whether newlines and indents should be returned in \n"+
@@ -567,7 +567,7 @@ public class XMLConfigWriter {
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.2 2004/01/12 21:01:31 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
  */
 class WriterUtils{
 	/**
@@ -645,7 +645,7 @@ class WriterUtils{
 	 * <p>
 	 * 
 	 * @author dzwiers, Refractions Research, Inc.
-	 * @version $Id: XMLConfigWriter.java,v 1.2 2004/01/12 21:01:31 dmzwiers Exp $
+	 * @version $Id: XMLConfigWriter.java,v 1.3 2004/01/13 21:15:54 dmzwiers Exp $
 	 */
 	class WriterHelper{
 		/**

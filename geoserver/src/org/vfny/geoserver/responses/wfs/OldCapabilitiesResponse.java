@@ -31,7 +31,7 @@ import org.vfny.geoserver.responses.XmlOutputStream;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: OldCapabilitiesResponse.java,v 1.3 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: OldCapabilitiesResponse.java,v 1.4 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public class OldCapabilitiesResponse {
     /** Standard logging instance for class */
@@ -40,6 +40,8 @@ public class OldCapabilitiesResponse {
 
     /** Configuration information for the server. */
     private static GeoServer config = null;
+    
+    private static String baseUrl = "";
 
     /** XML Tag Type: start */
     private static final int TAG_START = 1;
@@ -90,6 +92,7 @@ public class OldCapabilitiesResponse {
         version = request.getVersion();
         service = request.getService();
 		config = request.getGeoServer();
+		baseUrl = request.getBaseUrl();
         if (version == null) {
             version = ""; //so we don\"t get a null pointer exception
         }
@@ -300,7 +303,7 @@ public class OldCapabilitiesResponse {
      * @return The requested capability in the capability document format.
      */
     private String tempReturnCapability(String request) {
-        String url = config.getBaseUrl() + "wfs/";
+        String url = baseUrl + "wfs/";
         String tempCapability = new String();
 
         tempCapability = "\n      <" + request + ">";

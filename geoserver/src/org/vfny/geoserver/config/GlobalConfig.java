@@ -19,7 +19,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.4 2004/01/12 23:55:27 dmzwiers Exp $
+ * @version $Id: GlobalConfig.java,v 1.5 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public class GlobalConfig{
 	public static final String CONFIG_KEY = "Config.Global";
@@ -170,7 +170,6 @@ public class GlobalConfig{
 		verbose = g.isVerbose();
 		numDecimals = g.getNumDecimals();
 		charSet = g.getCharSet();
-		baseUrl = g.getBaseUrl();
 		schemaBaseUrl = g.getSchemaBaseUrl();
 
 		if (g.getContact() != null) {
@@ -199,7 +198,6 @@ public class GlobalConfig{
 		verbose = g.isVerbose();
 		numDecimals = g.getNumDecimals();
 		charSet = g.getCharSet();
-		baseUrl = g.getBaseUrl();
 		schemaBaseUrl = g.getSchemaBaseUrl();
 
 		if (g.getContact() != null) {
@@ -224,7 +222,6 @@ public class GlobalConfig{
 		 g.setVerbose(verbose);
 		 g.setNumDecimals(numDecimals);
 		 g.setCharSet(charSet);
-		 g.setBaseUrl(baseUrl);
 		 g.setSchemaBaseUrl(schemaBaseUrl);
 		 g.setContact((ContactDTO)contact.toDTO());
     	return g;

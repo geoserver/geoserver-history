@@ -20,7 +20,7 @@ import org.vfny.geoserver.global.GeoServer;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.6 2004/01/12 21:01:31 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.7 2004/01/13 21:15:54 dmzwiers Exp $
  */
 abstract public class Request {
 	/**
@@ -188,6 +188,10 @@ abstract public class Request {
 	
 	public String getRootDir(){
 		return httpServletRequest.getSession().getServletContext().getRealPath("/");
+	}
+	
+	public String getBaseUrl(){
+		return Requests.getBaseUrl( getHttpServletRequest() );
 	}
 	/**
 	 * Tests if user is Logged into GeoServer.

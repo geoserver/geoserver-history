@@ -13,7 +13,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * <p>
  * We have three types of information to store:
  * <ol>
- * <li>Schema defined types: <code>isRef=true name="foo"</code>
+ * <li>Schema defined types: <code>isComplex=true name="foo"</code>
  *   Example:<pre><code>
  *     {xs:element name="geom_test.geom"
  *                 type="gml:PolygonPropertyType"
@@ -22,7 +22,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  *                 maxOccurs="1"/}
  *   </code></pre>
  *   </li>
- * <li>References: <code>isRef=true name="gml:xyz"</code>
+ * <li>References: <code>isComplex=true name="gml:xyz"</code>
  *   Example:<pre><code>
  *     {xs:element type="gml:PolygonPropertyType"
  *                 nillable="false"
@@ -30,7 +30,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  *                 maxOccurs="1"/}
  *   </code></pre>
  *   </li>
- * <li>Extensions:<br> isRef=false name="foo" type="XML fragment"
+ * <li>Extensions:<br> isComplex=false name="foo" type="XML fragment"
  *   Extension on an exsiting type.
  *   Example:<pre><code>
  *     {xs:element name="foo" 
@@ -49,15 +49,15 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * </ol>
  * <p>
  * If the type represented is either a reference or a Schema defined type
- * then isRef should be true. 
+ * then isComplex should be true. 
  * </p> 
  * <p>
- * If isRef is true then we have one of two situations.
+ * If isComplex is true then we have one of two situations.
  * If the name is not specified then the type represents a "ref='gml:xyz'"
  * , otherwise it's of the form "name='foo'" and "type='bar'". 
  * </p>
  * <p>
- * The third case isRef is false, "name='foo'" and type contains an XML 
+ * The third case isComplex is false, "name='foo'" and type contains an XML 
  * fragment defining the type.
  * </p>
  * <p>
@@ -65,7 +65,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.5 2004/01/13 21:12:20 jive Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.6 2004/01/13 21:15:32 dmzwiers Exp $
  */
 public class AttributeTypeInfoConfig {
 	/** attribute name*/
@@ -79,7 +79,7 @@ public class AttributeTypeInfoConfig {
 	/** if is ref and a name is specified, then treat like a simple type (same thing ...) otherwise this is a complex type. */
 	private String type;
 	/** name and ref are mutualy exclusive. type overrides ref. */
-	private boolean isRef;
+	private boolean isComplex;
 
 	/**
 	 * AttributeTypeInfoConfig constructor.
@@ -91,7 +91,7 @@ public class AttributeTypeInfoConfig {
 	public AttributeTypeInfoConfig(){
 		name = type = "";
 		minOccurs = 0;maxOccurs = 1;
-		nillable = isRef = false;
+		nillable = isComplex = false;
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class AttributeTypeInfoConfig {
 		minOccurs = dto.getMinOccurs();
 		maxOccurs = dto.getMaxOccurs();
 		nillable = dto.isNillable();
-		isRef = dto.isRef();
+		isComplex = dto.isRef();
 	}
 	
 	/**
@@ -123,23 +123,25 @@ public class AttributeTypeInfoConfig {
 		minOccurs = 1; //TODO extract this correctly
 		maxOccurs = 1; //TODO extract this correctly
 		nillable = dto.isNillable();
-		isRef = !dto.isNested();
+		isComplex = dto.isNested();
 	}
 
 	/**
-	 * isRef purpose.
+	 * isComplex purpose.
 	 * <p>
 	 * Returns is this is a reference element type or a document defined type.
 	 * </p>
 	 * @return true when either a ref or XMLSchema type.
 	 */
-	public boolean isRef() {
-		return isRef;
+	public boolean isComplex() {
+		return isComplex;
 	}
 
 	/**
+	 * getMaxOccurs purpose.
+	 * <p>
 	 * The max number of occurences for this element.
-     * 
+	 * </p>
 	 * @return max number of occurences
 	 */
 	public int getMaxOccurs() {
@@ -147,8 +149,10 @@ public class AttributeTypeInfoConfig {
 	}
 
 	/**
-	 * The min number of occurences for this element
-	 * 
+	 * getMinOccurs purpose.
+	 * <p>
+	 * the min number of occurences for this element
+	 * </p>
 	 * @return min number of occurences
 	 */
 	public int getMinOccurs() {
@@ -156,19 +160,11 @@ public class AttributeTypeInfoConfig {
 	}
 
 	/**
-	 * Attribute name property.
+	 * getName purpose.
 	 * <p>
-	 * May be used directly to lookup AttribtueType in FeatureType as an
-     * XPATH expression:
+	 * returns the element name
 	 * </p>
-     * <pre><code>
-     * AttributeType type = featureType.getAttribtue( attributeTypeConfig.getName() );
-     * </code></pre>
-     * <p>
-     * May also be used to identify the element name in a XMLSchema document
-     * genrated by describe type (or our XML based persistence). 
-     * </p>
-	 * @return Attribute the element name
+	 * @return the element name
 	 */
 	public String getName() {
 		return name;
@@ -188,9 +184,9 @@ public class AttributeTypeInfoConfig {
 	/**
 	 * getType purpose.
 	 * <p>
-	 * returns the element type. This is an XML fragment if isRef() returns false.
+	 * returns the element type. This is an XML fragment if isComplex() returns false.
 	 * </p>
-	 * @return the element type. This is an XML fragment if isRef() returns false.
+	 * @return the element type. This is an XML fragment if isComplex() returns false.
 	 */
 	public String getType() {
 		return type;
@@ -203,8 +199,8 @@ public class AttributeTypeInfoConfig {
 	 * </p>
 	 * @param b true when this is a reference type element.
 	 */
-	public void setRef(boolean b) {
-		isRef = b;
+	public void setComplex(boolean b) {
+		isComplex = b;
 	}
 
 	/**
@@ -259,41 +255,33 @@ public class AttributeTypeInfoConfig {
 	 * </p>
 	 * @param type of attribute (as a XML fragment when isComplex() returns false)
 	 */
-	public void setType(String type) {
-		this.type = type;
+	public void setType(String string) {
+		type = string;
 	}
 	
 	/**
-	 * Update AttributeTypeInfo based on a new Data Transfer Object.
+	 * update purpose.
 	 * <p>
 	 * Loads the specified data into this class.
 	 * </p>
 	 * @param dto AttributeTypeInfoDTO the data source.
 	 */
 	public void update(AttributeTypeInfoDTO dto){
-		isRef = dto.isRef();
+		isComplex = dto.isRef();
 		maxOccurs = dto.getMaxOccurs();
 		minOccurs = dto.getMinOccurs();
 		name = dto.getName();
 		nillable = dto.isNillable();
 		type = dto.getName();
 	}
-
-    /**
-     * Package up Configuration as a Data Transfer Object
-     * <p>
-     * The resulting DTO object can be used to write a backup to disk
-     * using global.dto, or used to configure the live GeoSever application
-     * using global.
-     * </p>
-     */    
+	
 	public AttributeTypeInfoDTO toDto(){
 		AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
 		dto.setMaxOccurs(maxOccurs);
 		dto.setMinOccurs(minOccurs);
 		dto.setName(name);
 		dto.setNillable(nillable);
-		dto.setRef(isRef);
+		dto.setComplex(isComplex);
 		dto.setType(type);
 		return dto;
 	}

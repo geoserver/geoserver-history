@@ -13,11 +13,26 @@ package org.vfny.geoserver.global.dto;
  * references and extentions on types. If the type represented is either 
  * a reference or a Schema defined type  then isRef should be true. 
  * <p>
- * If isRef is true then we have one of two situations. If the name is 
- * not specified then the type represents a "<code>ref='gml:xyz'</code>", otherwise 
- * it's of the form "<code>name='foo'</code>" and "<code>type='bar'</code>".<br> 
- * The third case isRef is false, "<code>name='foo'</code>" and type contains an XML 
- * fragment defining the type.
+ * Non-complex types are of the form 
+ * <code>{element name='test' type='xs:string'/}</code> or 
+ * <code>{element name='test' type='gml:PointType'/}</code>. 
+ * These cases have their type name stored in this.type
+ * </p>
+ * <p>
+ * For complex types such as 
+ * <code>
+ * {element name='test'}
+ *  {xs:complexContent}
+ *    {xs:extension base="gml:AbstractFeatureType"}
+ *      {xs:sequence}
+ *         {xs:element name="id" type="xs:string" minOccurs="0"/}
+ *         {xs:element ref="gml:pointProperty" minOccurs="0"/}
+ *      {/xs:sequence}
+ *    {/xs:extension}
+ *  {/xs:complexContent}
+ * {/element}
+ * </code>
+ * The type contains a similar XML fragment.
  * </p>
  * <p>
  * minOccurs, maxOccurs and nillable are all attributes for all cases. There is
@@ -25,7 +40,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.4 2004/01/13 20:44:51 jive Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.5 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public class AttributeTypeInfoDTO  implements DataTransferObject {
 		
@@ -134,7 +149,7 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 		dto.setMinOccurs(minOccurs);
 		dto.setName(name);
 		dto.setNillable(nillable);
-		dto.setRef(isRef);
+		dto.setComplex(isComplex);
 		dto.setType(type);
 		return dto;
 	}
@@ -147,7 +162,7 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 	 * @return true when either a ref or XMLSchema type.
 	 */
 	public boolean isRef() {
-		return isRef;
+		return isComplex;
 	}
 
 	/**
@@ -212,8 +227,8 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 	 * </p>
 	 * @param b true when this is a reference type element.
 	 */
-	public void setRef(boolean b) {
-		isRef = b;
+	public void setComplex(boolean b) {
+		isComplex = b;
 	}
 
 	/**

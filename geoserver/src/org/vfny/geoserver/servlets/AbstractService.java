@@ -100,7 +100,7 @@ import org.vfny.geoserver.responses.Response;
  * @author Chris Holmes
  * @author Jody Garnett
 =======
- * @version $Id: AbstractService.java,v 1.5 2004/01/12 21:01:26 dmzwiers Exp $
+ * @version $Id: AbstractService.java,v 1.6 2004/01/13 21:15:54 dmzwiers Exp $
  */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
@@ -192,7 +192,7 @@ public abstract class AbstractService extends HttpServlet {
         HttpServletResponse response) throws ServletException, IOException {
         // implements the main request/response logic
         Request serviceRequest = null;
-
+System.out.println(this.getClass().getName() + ":" + request.getRequestURL().toString());
         try {
             String qString = request.getQueryString();
 
@@ -759,7 +759,7 @@ class BufferStratagy implements AbstractService.ServiceStratagy {
  * A safe ServiceConfig stratagy that uses a temporary file until writeTo completes.
  *
  * @author $author$
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 class FileStratagy implements AbstractService.ServiceStratagy {
     /** Buffer size used to copy safe to response.getOutputStream() */
