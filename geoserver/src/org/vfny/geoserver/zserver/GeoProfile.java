@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.zserver;
 
+import java.util.logging.Logger;
 
 /**
  * Helper class that for various parts of the GeoProfile
@@ -12,6 +13,10 @@ package org.vfny.geoserver.zserver;
  *@version $VERSION$
  */
 public class GeoProfile {
+
+       /** Standard logging instance for class */
+    private static final Logger LOGGER = 
+        Logger.getLogger("org.vfny.geoserver.zserver");
 
     //maybe make non-static, initialize with props files?
     //then this will hold all the property maps, like for the 
@@ -40,10 +45,17 @@ public class GeoProfile {
 
     public static final String TRUNCATE = "1";
 
+
+    public static final String FULL_SET = "F";
+    public static final String SUMMARY_SET = "S";
+    public static final String BREIF_SET = "B";
+    
+
     //matches for numbers.  To add more numbers put
     //the value to match here and a line in isFGDCnum
     public static final String MATCH_PREFIX = ".*";
 
+    
     public static final String BOUNDING_MATCH = MATCH_PREFIX + "bounding";
  
 
@@ -64,8 +76,8 @@ public class GeoProfile {
     }
 
     /**
-     * Checks to see if the given name should be stored
-     * as a number.  Only checks the end of the string, 
+     * Checks to see if the given name should be 
+     * a number.  Only checks the end of the string, 
      * so the xpath leading up to it does not matter.  
      * 
      * @param name the name to test.
@@ -119,6 +131,8 @@ public class GeoProfile {
 		//revisit: this computation isn't super accurate, won't return
 		//same results each time, based on the inaccuracy of doubles.
 		Double extent = new Double((north - south) * (east - west));
+		//but this computation is also inaccurate based
+		//on the world projection.
 		return extent;
 	    } catch (NumberFormatException e) {
 		return null; //REVISIT: is this what we want?
@@ -127,16 +141,32 @@ public class GeoProfile {
 	    return null;
 	}
     }
-  
-    //this just goes off of XML name ending in date.
+
+     /**
+     * Checks to see if the given name should be computed as a
+     * a date.  Only checks the end of the string, 
+     * so the xpath leading up to it does not matter.  
+     * 
+     * @param name the name to test.
+     * @return true if it should be used as a date.
+     */
     //REVISIT: props file?
     public static boolean isFGDCdate(String name) {
-	int strlen = name.length();
-	if (strlen > 3) {
-	    String tail = name.substring(strlen - 4, strlen);
-	    return tail.equals("date");
+	if (name.matches(MATCH_PREFIX + "begdate") 
+	    || name.matches(MATCH_PREFIX + "enddate") 
+	    || name.matches(MATCH_PREFIX + "metad") 
+	    || name.matches(MATCH_PREFIX + "pubdate")
+	    || name.matches(MATCH_PREFIX + "procdate")
+	    || name.matches(MATCH_PREFIX + "begdatea") 
+	    || name.matches(MATCH_PREFIX + "enddatea") 
+	    || name.matches(MATCH_PREFIX + "formverd") 
+	    || name.matches(MATCH_PREFIX + "metrd") 
+	    || name.matches(MATCH_PREFIX + "caldate") 
+	    || name.matches(MATCH_PREFIX + "metfrd")) {
+	    return true;
+	} else {
+	    return false;
 	}
-	return false;
     }
 
     public class Diag {
