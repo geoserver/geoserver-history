@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import org.geotools.feature.FeatureType;
+import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.vfny.geoserver.*;
 import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.oldconfig.*;
 import org.vfny.geoserver.requests.*;
 import org.vfny.geoserver.requests.readers.*;
 import org.vfny.geoserver.requests.wfs.*;
@@ -14,6 +15,7 @@ import org.vfny.geoserver.responses.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -22,7 +24,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: DescribeResponse.java,v 1.3 2003/12/16 19:22:19 cholmesny Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -111,11 +113,13 @@ public class DescribeResponse implements Response {
     }
 
     /**
-     * DOCUMENT ME!
+     * Writes the describe response to the output stream.
      *
-     * @param out DOCUMENT ME!
+     * @param out Where to write to.
      *
-     * @throws WfsException DOCUMENT ME!
+     * @throws WfsException For any io exceptions.  Needs to be a buffer
+     * or file strategy, if on SPEED it's already too late at this point and
+     * the client is going to get some odd errors.
      */
     public void writeTo(OutputStream out) throws WfsException {
         try {
@@ -246,11 +250,16 @@ public class DescribeResponse implements Response {
     }
 
     /**
-     * Internal method to print just the requested types.
+     * Internal method to print just the requested types.  They should all be
+     * in the same namespace, that handling should be done before.  This will
+     * not do any namespace handling, just prints up either what's in the 
+     * schema file, or if it's not there then generates the types from their
+     * FeatureTypes.  Also appends the global element so that the types can
+     * substitute as features.
      *
      * @param requestedTypes The requested table names.
      *
-     * @return DOCUMENT ME!
+     * @return A string of the types printed.
      *
      * @throws WfsException DOCUMENT ME!
      *
@@ -290,10 +299,17 @@ public class DescribeResponse implements Response {
 
             if (!validTypes.contains(meta)) {
                 currentFile = meta.getSchemaFile();
-                generatedType = writeFile(currentFile);
+
+                File inputFile = new File(currentFile);
+
+                if (inputFile.exists()) {
+                    generatedType = writeFile(currentFile);
+                } else {
+                    generatedType = generateFromSchema(meta.getSchema());
+                }
 
                 if (!generatedType.equals("")) {
-                    tempResponse = tempResponse + writeFile(currentFile);
+                    tempResponse = tempResponse + generatedType;
                     validTypes.add(meta);
                 }
             }
@@ -311,6 +327,34 @@ public class DescribeResponse implements Response {
         tempResponse = tempResponse + "\n\n";
 
         return tempResponse;
+    }
+
+    /**
+     * Transforms a FeatureType into gml, with no headers.
+     *
+     * @param schema the schema to transform.
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws WfsException DOCUMENT ME!
+     *
+     * @task REVISIT: when this class changes to writing directly to out this
+     *       can just take a writer and write directly to it.
+     */
+    private String generateFromSchema(FeatureType schema)
+        throws WfsException {
+        try {
+            StringWriter writer = new StringWriter();
+            FeatureTypeTransformer t = new FeatureTypeTransformer();
+            t.setIndentation(4);
+            t.setOmitXMLDeclaration(true);
+            t.transform(schema, writer);
+
+            return writer.getBuffer().toString();
+        } catch (TransformerException te) {
+            LOGGER.warning(te.toString());
+            throw new WfsException("problem transforming type", te);
+        }
     }
 
     /**
@@ -419,11 +463,11 @@ public class DescribeResponse implements Response {
 
         return ftConf.getPrefix();
     }
+
     /* (non-Javadoc)
      * @see org.vfny.geoserver.responses.Response#abort()
      */
     public void abort() {
         // nothing to undo
     }
-
 }
