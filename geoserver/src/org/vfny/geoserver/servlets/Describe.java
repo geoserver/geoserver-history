@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.requests.XmlRequestReader;
 import org.vfny.geoserver.requests.DescribeRequest;
 import org.vfny.geoserver.requests.DescribeKvpReader;
@@ -36,7 +37,8 @@ public class Describe
         Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Stores global MIME type */
-    private static final String MIME_TYPE = "text/xml; charset=UTF-8";
+    private static final String MIME_TYPE = 
+	ConfigInfo.getInstance().getMimeType();
 
     /**
      * Handles XML request objects and returns appropriate response.

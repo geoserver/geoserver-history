@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.vfny.geoserver.config.TypeInfo;
+import org.vfny.geoserver.config.ConfigInfo;
 import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.FeatureKvpReader;
 import org.vfny.geoserver.requests.XmlRequestReader;
@@ -34,7 +35,7 @@ public class Feature
         Logger.getLogger("org.vfny.geoserver.servlets");
     
     /** Specifies MIME type */
-    private static final String MIME_TYPE = "text/xml; charset=UTF-8";
+    private static final String MIME_TYPE = ConfigInfo.getInstance().getMimeType();
 
     /**
      * Reads the XML request from the client, turns it into a generic request 
@@ -69,6 +70,7 @@ public class Feature
             e.printStackTrace();
         }
         
+	
                 // set content type and return response, whatever it is 
         response.setContentType(MIME_TYPE);
         response.getWriter().write( tempResponse );
