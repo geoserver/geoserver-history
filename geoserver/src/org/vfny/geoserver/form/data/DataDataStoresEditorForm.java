@@ -11,9 +11,12 @@ import java.util.TreeSet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -100,10 +103,41 @@ public class DataDataStoresEditorForm extends ActionForm {
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
 		ActionErrors errors = new ActionErrors();
-		
+
+        ServletContext context = getServlet().getServletContext();
+        DataConfig config =(DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+        DataStoreConfig dsConfig = config.getDataStore( dataStoreId );
+        		
+        DataStoreFactorySpi factory = dsConfig.getFactory();
+        Map params = new HashMap( paramKeys.size() );
+        
+        // Convert Params into the kind of Map we actually need
+        //
+        for( int i=0; i< paramKeys.size();i++){
+            String key = (String) paramKeys.get(i);
+            Param param = DataStoreUtils.find( factory, key );
+            String text = (String) paramValues.get(i);
+            if(( text == null || text.length() == 0 ) && param.required ){
+                errors.add( "paramValue["+i+"]",
+                    new ActionError("error.dataStoreEditor.param.required", key )
+                );
+            }
+            Object value = param.setAsText( text );
+            if( value == null ){
+                errors.add( "paramValue["+i+"]",
+                    new ActionError("error.dataStoreEditor.param.parse", key, param.type )
+                );
+            }
+            params.put( key, value );
+        }
+        // Factory will provide even more stringent checking
+        //
+        factory.canProcess( getParams() );
+     
+        
 		return errors;
 	}
-
+    
     public Map getParams(){
         Map map = new HashMap();
         for( int i=0; i< paramKeys.size();i++){

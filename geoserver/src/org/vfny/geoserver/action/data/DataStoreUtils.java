@@ -19,7 +19,7 @@ import java.util.Map;
  * 
  * @author Richard Gould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.1.2.3 2004/01/12 06:31:00 jive Exp $
+ * @version $Id: DataStoreUtils.java,v 1.1.2.4 2004/01/12 09:42:16 jive Exp $
  */
 public abstract class DataStoreUtils {
     
@@ -138,7 +138,35 @@ public abstract class DataStoreUtils {
                 defaults.put( key, value );
             }            
         }        
-        return defaults;
+        return defaults;            
+    }
+    
+    /**
+     * Convert map to real values based on factory Params.
+     * <p>
+     * The resulting map should still be checked with factory.acceptsMap( map )
+     * </p>
+     * @param factory
+     * @param params
+     * @return Map with real values that may be acceptable to Factory
+     */
+    public static Map toConnectionParams( DataStoreFactorySpi factory, Map params ){
+        Map map = new HashMap( params.size() );
+        
+        // Convert Params into the kind of Map we actually need
+        for( Iterator i = params.entrySet().iterator(); i.hasNext(); ){
+            Map.Entry entry = (Map.Entry) i.next();
             
+            String key = (String) entry.getKey();
+            Param param = DataStoreUtils.find( factory, key );
+            Object value = entry.getValue();
+            
+            if( value != null &&
+                param.type != String.class && value instanceof String ){
+                value = param.setAsText( (String) value );
+            }
+            params.put( key, value );
+        }
+        return map;        
     }
 }
