@@ -23,20 +23,35 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesEditorForm;
 import org.vfny.geoserver.global.UserContainer;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.Style;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.StyledLayerDescriptor;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 
 
 /**
- * DOCUMENT ME!
+ * This class takes care of processing new sld files.  It makes use of a nice 
+ * upload button, checks to make sure the file isn't already in the system,
+ * does a bit of validation, and then adds it to data config.
  *
- * @author rgould To change the template for this generated type comment go to
- *         Window>Preferences>Java>Code Generation>Code and Comments
+ * @author rgould 
+ * @author Chris Holmes, Fulbright
+ * @task REVISIT: Still need to do the nice text box to edit the sld file directly.
+ *       This will probably involve some trickiness - the work flow I am thinking is
+ *       that an upload would just put it into the big style text box.  On a submit
+ *       the text box would then be validated and written out to the file location.
+ * @task TODO: write to a temp file before validation.  Right now we delete the file
+ *       in the style directory.
  */
 public class StylesEditorAction extends ConfigAction {
     
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        
+
+	DataConfig config = (DataConfig) getDataConfig();        
         StylesEditorForm stylesForm = (StylesEditorForm) form;
         FormFile file= stylesForm.getSldFile() ;
         final String filename = file.getFileName();
@@ -48,11 +63,43 @@ public class StylesEditorAction extends ConfigAction {
             return mapping.findForward("config.data.style");            
         }
         File rootDir= new File(getServlet().getServletContext().getRealPath("/"));
+	//All styles are stored in the data/styles directory.  When we move to
+	//the geoserver_home this call will need to change.
         File styleDir= new File(rootDir, "data/styles");
         // send content of FormFile to /styles :
         // there nothing to keep the styles in memory for XMLConfigWriter.store() 
         InputStreamReader isr= new InputStreamReader(file.getInputStream()) ;
-        FileWriter fw= new FileWriter( new File(styleDir,filename) ) ;
+	File newSldFile = new File(styleDir, filename);
+	//here we do a check to see if the file we are trying to upload is
+	//overwriting another style file. 
+        LOGGER.fine("new sld file is: " + newSldFile + ", exists: " +
+		    newSldFile.exists());
+	if (newSldFile.exists()) {
+	    StyleConfig styleForID = config.getStyle(styleID);
+	    if (styleForID == null) {
+		//if there is already a file at the location (file.exists()), and
+		//the system does not have a record of this styleId then it means
+		//we are trying to add a new sld at a location that would overwrite
+		//another's sld file.
+		doFileExistsError(newSldFile, request);
+		return mapping.findForward("config.data.style.editor");
+	    } else {
+		//if the system has a record of the file, then we need to check if this
+		//update is being performed on the correct style id, so we see if the
+		//file in the system is the same as this one.  
+		File oldFile = styleForID.getFilename();
+		LOGGER.fine("old file: " + oldFile + ", newFile: " + newSldFile);
+		if (!oldFile.equals(newSldFile)) {
+		    doFileExistsError(newSldFile, request);
+		    return mapping.findForward("config.data.style.editor");
+		}
+	    }
+	}
+
+	//When we have time we should put this in a temp file, to be safe, before
+	//we do the validation, and only write to the real style directory when we
+	//have things set.  If only java had a nice file copy utility.
+        FileWriter fw= new FileWriter( newSldFile ) ;
         char[] tampon= new char[1024] ;
         int charsRead ;
         while ((charsRead= isr.read(tampon,0,1024))!=-1) {
@@ -62,12 +109,76 @@ public class StylesEditorAction extends ConfigAction {
         fw.close() ;
         isr.close() ;
         style.setFilename( new File(styleDir,filename) );
-        style.setId(styleID);
+        
+	style.setId(styleID);
+
+        StyleFactory factory = StyleFactory.createStyleFactory();
+	SLDParser styleReader = new SLDParser(factory, newSldFile.toURL());
+	Style[] readStyles = null;
+	Style newStyle;
+	try {
+	    readStyles = styleReader.readXML();
+	    if (readStyles.length == 0) {
+		//I think our style parser does pretty much no error reporting.
+		//This is one of the many reasons we need a new SLD parser.
+		//We could add new exceptions to it, but it's really just 
+		//patching a sinking ship.  One option that we could do
+		//here is do a xerces validating parse, to make sure the
+		//sld matches the schema before we try to pass it to our
+		//crappy parser.
+		String message = "The xml was valid, but couldn't get a Style"
+		    + " from it.  Make sure your style validates against " +
+		    " the SLD schema";
+		doStyleParseError(message, newSldFile, request);
+		return mapping.findForward("config.data.style.editor");
+	    }
+	    newStyle = readStyles[0];
+	    LOGGER.fine("sld is " + newStyle);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    String message = e.getCause() == null ?
+		 e.getLocalizedMessage() : e.getCause().getLocalizedMessage();
+	    doStyleParseError(message, newSldFile, request);
+	 return mapping.findForward("config.data.style.editor");
+	}
+	if (newStyle == null) {
+	    throw new RuntimeException("new style equals null"); //I don't 
+	    //think this will ever happen, our SLD parser won't return a null.
+	}   
 
         // Do configuration parameters here
-        DataConfig config = (DataConfig) getDataConfig();        
+
         config.addStyle( style.getId(), style );
         getApplicationState().notifyConfigChanged();
         return mapping.findForward("config.data.style");
     }
+
+    
+    /*
+     * Called when there is trouble parsing the file.  Note that we
+     * also delete the file here, so it doesn't stick on the system.
+     * Would be a bit better to write to a temp file before putting
+     * it in the style directory, but so it goes.
+     */
+    private void doStyleParseError(String message, File newSldFile,
+					    HttpServletRequest request) {
+	LOGGER.fine("parse error message is: " + message);
+	 ActionErrors errors = new ActionErrors();
+	 errors.add(ActionErrors.GLOBAL_ERROR,
+		    new ActionError("error.style.noParse", message));
+	 saveErrors(request, errors);
+	 newSldFile.delete();
+
+    }
+
+    /*
+     * reports an error for an attempt to upload an sld file that is already
+     * in the system.*/
+    private void doFileExistsError(File file, HttpServletRequest request) {
+	ActionErrors errors = new ActionErrors();
+	errors.add(ActionErrors.GLOBAL_ERROR,
+		   new ActionError("error.style.sldFileExists", file.getName()));
+	saveErrors(request, errors);
+    }
+
 }
