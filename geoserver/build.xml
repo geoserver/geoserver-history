@@ -361,7 +361,7 @@
     
     <antcall target="all"/>
     
-    <copy file="lib/geoserver.Jar" todir="${dir.server}/geoserver/WEB-INF/lib"/> 
+    <copy file="lib/geoserver.jar" todir="${dir.server}/geoserver/WEB-INF/lib"/> 
     
     <java classname="org.mortbay.jetty.Server"
           dir="${basedir}"
