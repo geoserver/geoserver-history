@@ -15,7 +15,7 @@ import org.w3c.dom.Element;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WFSConfig.java,v 1.1.2.7 2003/11/17 22:17:54 cholmesny Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.8 2003/11/22 02:02:18 cholmesny Exp $
  */
 public class WFSConfig extends ServiceConfig {
     public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -53,7 +53,7 @@ public class WFSConfig extends ServiceConfig {
      */
     public String getDescribeBaseUrl() {
         if (this.describeUrl == null) {
-            this.describeUrl = global.getBaseUrl()
+            this.describeUrl = URL
                 + "DescribeFeatureType?typeName=";
         }
 
