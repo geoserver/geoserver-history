@@ -7,3 +7,15 @@
 - initialize datasores at startup time
 - creo q no escribe los poligonos con anillos interiores
 - manejar multiples queries (queries sobre multiples datasources)
+
+- get transactions working again.
+- revisit configuration files.
+- getBounds working with postgis.
+- roll the geotools files in the geoserver source tree back into geotools.
+  (FeatureTransformer and FeatureResultsIteration
+- roll web-inf hiding of configuration here (on 1.0.1 branch)
+- locking.
+- MaxFeatures working.
+- test with resin 3
+- get zserver working with resin.
+- TEST, TEST, TEST! more unit tests in geoserver, full cite suite.
