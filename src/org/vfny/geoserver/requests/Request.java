@@ -21,7 +21,7 @@ import org.vfny.geoserver.global.WMS;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: Request.java,v 1.13 2004/02/09 23:29:44 dmzwiers Exp $
+ * @version $Id: Request.java,v 1.14 2004/03/30 04:40:42 cholmesny Exp $
  */
 abstract public class Request {
 	/**
@@ -30,11 +30,10 @@ abstract public class Request {
 	protected HttpServletRequest httpServletRequest;
 	
     /**
-     * Request service
-     * <p>
-     * @todo Explain! What does this mean? Is it the Name of the Service being requested?
-     * Is it look 
-     * </p>
+     * The service type of the request.  In other words, is it a WMS
+     * or a WFS.  This is a standard element of a request.  It now has
+     * a practical purpose in GeoServer, as a GetCapabilities request
+     * can be WMS or WFS, this element tells which it is.
      */
     protected String service;
 
@@ -88,8 +87,12 @@ abstract public class Request {
      * <p>
      * TODO: Could this bre renamed getType() for clarity?
      * </p>
+     * <p>
+     * Um, no.  getType() is less clear.  getRequest makes sense because
+     * this is directly modeled off of the XML and KVP Requests that a
+     * wfs or wms makes, and they all contain an element called Request.
      * 
-     * @return The type of request.
+     * @return The name of the request.
      */
     public String getRequest() {
         return this.request;
@@ -188,18 +191,30 @@ abstract public class Request {
 		return httpServletRequest.getSession().getServletContext().getRealPath("/");
 	}
 	
+
+   /**
+    * Gets the base url that made this request.  This is used to return the
+    * referenced schemas and whatnot relative to the request.  
+    * @return The url that the client used to make the request.
+    */
 	public String getBaseUrl(){
 		return Requests.getBaseUrl( getHttpServletRequest() );
 	}
 	
-	public boolean isCGIRequest(){
+	/**
+	 * Whether this request was sent through one of the dispatchers, or if
+	 * it went directly through the servlet.  This is used by the capabilities
+	 * response, since we give back a dispatched capabilities document to clients
+	 * who request it with a dispatcher.
+	 * @return true if the request came through a dispatcher.
+	 */
+	public boolean isDispatchedRequest(){
 		HttpServletRequest hsr = getHttpServletRequest();
-		if(!"GET".equals(hsr.getMethod()))
-			return false;
 		// will happen if the dispatcher was called, as opposed to using the /wfs url.
 		String uri = hsr.getRequestURI();
-		if(uri==null)
-		uri = uri.toLowerCase();;
+		if(uri!=null) {
+		uri = uri.toLowerCase();
+		}
 		// will happen if the dispatcher was called, as opposed to using the /wfs url.
 		if(uri.endsWith("/wfs") || uri.endsWith("/wms"))
 			return true;
