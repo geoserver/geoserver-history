@@ -508,10 +508,11 @@ public class XMLConfigReader {
 
         Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
                 false);
-
+	LOGGER.info("reading srsXmlStyle: " + elem);
         if (elem != null) {
             wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
                     false, true));
+	    LOGGER.info("set srsXmlStyle to " +ReaderUtils.getBooleanAttribute(elem, "value", false, true));
         }
 
         String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
@@ -1195,7 +1196,7 @@ public class XMLConfigReader {
         schemaFile = ReaderUtils.checkFile(schemaFile, false);
 
         Element elem = null;
-
+        dto.setSchemaFile(schemaFile);
         if ((schemaFile == null)
                 || (!schemaFile.exists() || !schemaFile.canRead())) {
             System.err.println("File does not exist for schema for "

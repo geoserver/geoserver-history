@@ -324,16 +324,19 @@ public class DescribeResponse implements Response {
             }
 
             if (!validTypes.contains(meta)) {
-                //FeatureType ft = meta.getSchema();
-                //File inputFile = new File(currentFile);
-                //generatedType = meta.getXMLSchema();
-                try {
-                    FeatureType ft2 = meta.getFeatureType();
-                    String gType2 = generateFromSchema(ft2);
 
-                    if ((gType2 != null) && (gType2 != "")) {
-                        generatedType = gType2;
-                    }
+                File schemaFile = meta.getSchemaFile();
+                   try {
+                       if (schemaFile.exists() && schemaFile.canRead()) {
+                           generatedType = writeFile(schemaFile);
+                       } else {
+                           FeatureType ft2 = meta.getFeatureType();
+                           String gType2 = generateFromSchema(ft2);
+
+                            if ((gType2 != null) && (gType2 != "")) {
+                                generatedType = gType2;
+                            }
+                       }
                 } catch (IOException e) {
                     generatedType = "";
                 }
@@ -413,13 +416,13 @@ public class DescribeResponse implements Response {
      *
      * @throws WfsException For io problems reading the file.
      */
-    public String writeFile(String inputFileName) throws WfsException {
-        LOGGER.finest("writing file " + inputFileName);
+    public String writeFile(File inputFile) throws WfsException {
+        LOGGER.finest("writing file " + inputFile);
 
         String finalOutput = new String();
 
         try {
-            File inputFile = new File(inputFileName);
+	    // File inputFile = new File(inputFileName);
             FileInputStream inputStream = new FileInputStream(inputFile);
             byte[] fileBuffer = new byte[inputStream.available()];
             int bytesRead;
@@ -433,7 +436,7 @@ public class DescribeResponse implements Response {
             //don't have schemas in the right place?  Because as it is now
             //a describe all will choke if there is one ft with no schema.xml
             throw new WfsException("problem writing featureType information "
-                + " from " + inputFileName);
+                + " from " + inputFile);
         }
 
         return finalOutput;
