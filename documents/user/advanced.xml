@@ -113,7 +113,7 @@
 
     <para>GeoServer also offers Oracle Spatial support, contributed and
     maintained by Sean Geoghegan. It includes support of all OGC filters,
-    connection pooling, and transactional capabilities. </para>
+    connection pooling, and transactional capabilities.</para>
 
     <para>We are not sure if Oracle works with GeoServer 1.2.0-rc1, as Sean is
     away from the project, and the rest of the core developers do not have
@@ -122,11 +122,13 @@
     have success with installing oracle let us know. We apologize greatly for
     not having oracle ready for this release, as we know it is a popular
     datastore, but it is not very accessible for most of us open source
-    developers so is harder to support. The GeoServer Project personally
-    recommends switching to PostGIS, as it is a very solid database with
-    excellent spatial support, and is much easier for us to debug. And it will
-    save you on licensing costs. But we will try to support Oracle, because we
-    are all about interoperability.</para>
+    developers so is harder to support (right before going to press with this
+    we've heard a report of success with oracle, using 10g, so it is
+    _possible_, just might be a bit difficult). The GeoServer Project
+    personally recommends switching to PostGIS, as it is a very solid database
+    with excellent spatial support, and is much easier for us to debug. And it
+    will save you on licensing costs. But we will try to support Oracle,
+    because we are all about interoperability.</para>
 
     <para>To use the Oracle Datastore the <emphasis>catalog.xml</emphasis>
     file must have the following values for the connectionParams:</para>
