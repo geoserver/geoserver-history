@@ -32,7 +32,7 @@ import org.geotools.validation.spatial.LinesNotIntersectValidation;
  * 
  * @author bowens, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationPlugInTester.java,v 1.6 2004/02/25 20:05:10 dmzwiers Exp $
+ * @version $Id: ValidationPlugInTester.java,v 1.7 2004/04/16 00:00:57 dmzwiers Exp $
  */
 public class ValidationPlugInTester extends DataTestCase {
 
@@ -80,207 +80,207 @@ public class ValidationPlugInTester extends DataTestCase {
 	}
 		
 		
-	public void testLineNoSelfIntersectFV_CorrectData()
-	{
-		// the visitor
-		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
-			 
-		/*LineNoSelfIntersectValidation selfIntersectValidatorRoads 
-					= new LineNoSelfIntersectValidation("RoadSelfIntersect", 
-							"Tests to see if a road intersects itself, which is bad!", 
-							new String[] {"road"});*/
-		
-		try {
-			//processor.addValidation(selfIntersectValidatorRoads);
-		} catch (Exception e) {
-			assertTrue(false);
-		}
-		
-		try {
-			processor.runFeatureTests(this.roadType, DataUtilities.collection(this.roadFeatures), roadValidationResults);
-		} catch (Exception e1) {
-			assertTrue(false);
-		}
-		
-		System.out.println("NoLineSelfIntersect - correct");
-		String[] messages = roadValidationResults.getFailedMessages();
-		for (int i=0; i<messages.length; i++)
-			System.out.println(messages[i]);
-		assertTrue(roadValidationResults.getFailedMessages().length == 0);
-		
-	}
-	
-	public void testLineNoSelfIntersectFV_IncorrectData()
-	{
-		// the visitor
-		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
-		 
-		/*LineNoSelfIntersectValidation selfIntersectValidatorRoads 
-					= new LineNoSelfIntersectValidation("RoadSelfIntersect", 
-							"Tests to see if a road intersects itself, which is bad!", 
-							new String[] {"road"});*/
-	
-		try {
-			//processor.addValidation(selfIntersectValidatorRoads);
-		} catch (Exception e) {
-			assertTrue(false);
-		}
-	
-		// produce a broken road (newRoad)
-		try {
-			this.newRoad = this.roadType.create(new Object[] {
-				new Integer(2), line(new int[] { 3, 6, 3, 8, 5, 8, 5, 7, 2, 7}), "r4"
-			}, "road.rd4");
-		} catch (IllegalAttributeException e) {}
-		
-		try {
-			processor.runFeatureTests(this.roadType, DataUtilities.collection(new Feature[] {this.newRoad}), roadValidationResults);
-			}
-		catch (Exception e1) {
-			assertTrue(false);
-		}
-	
-		System.out.println("NoLineSelfIntersect - incorrect");
-		String[] messages = roadValidationResults.getFailedMessages();
-		for (int i=0; i<messages.length; i++)
-			System.out.println(messages[i]);
-		assertTrue(roadValidationResults.getFailedMessages().length > 0);
-	
-	}
-	
-	
-	public void testLineNoSelfOverlapFV_CorrectData()
-	{
-		// the visitor
-		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
-		 
-		LineNoSelfOverlappingValidation selfOverlappingValidatorRoads 
-					= new LineNoSelfOverlappingValidation();
-        selfOverlappingValidatorRoads.setName("RoadSelfIntersect");
-        selfOverlappingValidatorRoads.setDescription("Tests to see if a road intersects itself, which is bad!");
-        selfOverlappingValidatorRoads.setLineTypeRef("road");
-	
-		try {
-			processor.addValidation(selfOverlappingValidatorRoads);
-		} catch (Exception e) {
-			assertTrue(false);
-		}
-	
-		try {
-			processor.runFeatureTests(this.roadType, DataUtilities.collection(this.roadFeatures), roadValidationResults);
-		} catch (Exception e1) {
-			assertTrue(false);
-		}
-		
-		System.out.println("NoLineSelfOverlap - correct");
-		String[] messages = roadValidationResults.getFailedMessages();
-		for (int i=0; i<messages.length; i++)
-			System.out.println(messages[i]);
-		assertTrue(roadValidationResults.getFailedMessages().length == 0);
-	
-	}
-	
-	public void testLineNoSelfOverlapFV_IncorrectData()
-	{
-		// the visitor
-		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
-	 
-        LineNoSelfOverlappingValidation selfOverlappingValidatorRoads 
-        = new LineNoSelfOverlappingValidation();
-        selfOverlappingValidatorRoads.setName("RoadSelfIntersect");
-        selfOverlappingValidatorRoads.setDescription("Tests to see if a road intersects itself, which is bad!");
-        selfOverlappingValidatorRoads.setLineTypeRef("road");
-        
-
-		try {
-			processor.addValidation(selfOverlappingValidatorRoads);
-		} catch (Exception e) {
-			assertTrue(false);
-		}
-
-		// produce a broken road (newRoad)
-		try {
-			this.newRoad = this.roadType.create(new Object[] {
-				new Integer(2), line(new int[] { 7, 7, 8, 7, 9, 7, 9, 6, 8, 6, 8, 7, 7, 7}), "r4"
-			}, "road.rd4");
-		} catch (IllegalAttributeException e) {}
-	
-		try {
-			processor.runFeatureTests(this.roadType, DataUtilities.collection(new Feature[] {this.newRoad}), roadValidationResults);
-			}
-		catch (Exception e1) {
-			assertTrue(false);
-		}
-
-		System.out.println("NoLineSelfOverlap - incorrect");
-		String[] messages = roadValidationResults.getFailedMessages();
-		for (int i=0; i<messages.length; i++)
-			System.out.println(messages[i]);
-		assertTrue(roadValidationResults.getFailedMessages().length > 0);
-
-	}
-	
-	
-	public void testLineIsSingleSegmentFV_CorrectData()
-	{
-		// the visitor
-		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
-		 
-		/*LineMustBeASinglePartValidation singleSegmentLineValidatorRoads 
-					= new LineMustBeASinglePartValidation("RoadSelfIntersect", 
-							"Tests to see if a road intersects itself, which is bad!", 
-							new String[] {"road"});
-	
-		try {
-			processor.addValidation(singleSegmentLineValidatorRoads);
-		} catch (Exception e) {
-			assertTrue(false);
-		}*/
-	
-		try {
-			processor.runFeatureTests(this.roadType, DataUtilities.collection(new Feature[] {this.newRoad}), roadValidationResults);
-		} catch (Exception e1) {
-			assertTrue(false);
-		}
-		
-		System.out.println("LineIsSingleSegment - correct");
-		String[] messages = roadValidationResults.getFailedMessages();
-		for (int i=0; i<messages.length; i++)
-			System.out.println(messages[i]);
-		assertTrue(roadValidationResults.getFailedMessages().length == 0);
-	
-	}
-	
-	public void testLineIsSingleSegmentFV_IncorrectData()
-	{
-		// the visitor
-		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
-	 /*
-		LineMustBeASinglePartValidation singleSegmentLineValidatorRoads 
-					= new LineMustBeASinglePartValidation("RoadSelfIntersect", 
-							"Tests to see if a road intersects itself, which is bad!", 
-							new String[] {"road"});
-
-		try {
-			processor.addValidation(singleSegmentLineValidatorRoads);
-		} catch (Exception e) {
-			assertTrue(false);
-		}*/
-	
-		try {
-			processor.runFeatureTests(this.roadType, DataUtilities.collection(this.roadFeatures), roadValidationResults);
-			}
-		catch (Exception e1) {
-			assertTrue(false);
-		}
-
-		System.out.println("LineIsSingleSegment - incorrect");
-		String[] messages = roadValidationResults.getFailedMessages();
-		for (int i=0; i<messages.length; i++)
-			System.out.println(messages[i]);
-		assertTrue(roadValidationResults.getFailedMessages().length > 0);
-
-	}
+//	public void testLineNoSelfIntersectFV_CorrectData()
+//	{
+//		// the visitor
+//		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
+//			 
+//		/*LineNoSelfIntersectValidation selfIntersectValidatorRoads 
+//					= new LineNoSelfIntersectValidation("RoadSelfIntersect", 
+//							"Tests to see if a road intersects itself, which is bad!", 
+//							new String[] {"road"});*/
+//		
+//		try {
+//			//processor.addValidation(selfIntersectValidatorRoads);
+//		} catch (Exception e) {
+//			assertTrue(false);
+//		}
+//		
+//		try {
+//			processor.runFeatureTests(this.roadType, DataUtilities.collection(this.roadFeatures), roadValidationResults);
+//		} catch (Exception e1) {
+//			assertTrue(false);
+//		}
+//		
+//		System.out.println("NoLineSelfIntersect - correct");
+//		String[] messages = roadValidationResults.getFailedMessages();
+//		for (int i=0; i<messages.length; i++)
+//			System.out.println(messages[i]);
+//		assertTrue(roadValidationResults.getFailedMessages().length == 0);
+//		
+//	}
+//	
+//	public void testLineNoSelfIntersectFV_IncorrectData()
+//	{
+//		// the visitor
+//		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
+//		 
+//		/*LineNoSelfIntersectValidation selfIntersectValidatorRoads 
+//					= new LineNoSelfIntersectValidation("RoadSelfIntersect", 
+//							"Tests to see if a road intersects itself, which is bad!", 
+//							new String[] {"road"});*/
+//	
+//		try {
+//			//processor.addValidation(selfIntersectValidatorRoads);
+//		} catch (Exception e) {
+//			assertTrue(false);
+//		}
+//	
+//		// produce a broken road (newRoad)
+//		try {
+//			this.newRoad = this.roadType.create(new Object[] {
+//				new Integer(2), line(new int[] { 3, 6, 3, 8, 5, 8, 5, 7, 2, 7}), "r4"
+//			}, "road.rd4");
+//		} catch (IllegalAttributeException e) {}
+//		
+//		try {
+//			processor.runFeatureTests(this.roadType, DataUtilities.collection(new Feature[] {this.newRoad}), roadValidationResults);
+//			}
+//		catch (Exception e1) {
+//			assertTrue(false);
+//		}
+//	
+//		System.out.println("NoLineSelfIntersect - incorrect");
+//		String[] messages = roadValidationResults.getFailedMessages();
+//		for (int i=0; i<messages.length; i++)
+//			System.out.println(messages[i]);
+//		assertTrue(roadValidationResults.getFailedMessages().length > 0);
+//	
+//	}
+//	
+//	
+//	public void testLineNoSelfOverlapFV_CorrectData()
+//	{
+//		// the visitor
+//		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
+//		 
+//		LineNoSelfOverlappingValidation selfOverlappingValidatorRoads 
+//					= new LineNoSelfOverlappingValidation();
+//        selfOverlappingValidatorRoads.setName("RoadSelfIntersect");
+//        selfOverlappingValidatorRoads.setDescription("Tests to see if a road intersects itself, which is bad!");
+//        selfOverlappingValidatorRoads.setLineTypeRef("road");
+//	
+//		try {
+//			processor.addValidation(selfOverlappingValidatorRoads);
+//		} catch (Exception e) {
+//			assertTrue(false);
+//		}
+//	
+//		try {
+//			processor.runFeatureTests(this.roadType, DataUtilities.collection(this.roadFeatures), roadValidationResults);
+//		} catch (Exception e1) {
+//			assertTrue(false);
+//		}
+//		
+//		System.out.println("NoLineSelfOverlap - correct");
+//		String[] messages = roadValidationResults.getFailedMessages();
+//		for (int i=0; i<messages.length; i++)
+//			System.out.println(messages[i]);
+//		assertTrue(roadValidationResults.getFailedMessages().length == 0);
+//	
+//	}
+//	
+//	public void testLineNoSelfOverlapFV_IncorrectData()
+//	{
+//		// the visitor
+//		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
+//	 
+//        LineNoSelfOverlappingValidation selfOverlappingValidatorRoads 
+//        = new LineNoSelfOverlappingValidation();
+//        selfOverlappingValidatorRoads.setName("RoadSelfIntersect");
+//        selfOverlappingValidatorRoads.setDescription("Tests to see if a road intersects itself, which is bad!");
+//        selfOverlappingValidatorRoads.setLineTypeRef("road");
+//        
+//
+//		try {
+//			processor.addValidation(selfOverlappingValidatorRoads);
+//		} catch (Exception e) {
+//			assertTrue(false);
+//		}
+//
+//		// produce a broken road (newRoad)
+//		try {
+//			this.newRoad = this.roadType.create(new Object[] {
+//				new Integer(2), line(new int[] { 7, 7, 8, 7, 9, 7, 9, 6, 8, 6, 8, 7, 7, 7}), "r4"
+//			}, "road.rd4");
+//		} catch (IllegalAttributeException e) {}
+//	
+//		try {
+//			processor.runFeatureTests(this.roadType, DataUtilities.collection(new Feature[] {this.newRoad}), roadValidationResults);
+//			}
+//		catch (Exception e1) {
+//			assertTrue(false);
+//		}
+//
+//		System.out.println("NoLineSelfOverlap - incorrect");
+//		String[] messages = roadValidationResults.getFailedMessages();
+//		for (int i=0; i<messages.length; i++)
+//			System.out.println(messages[i]);
+//		assertTrue(roadValidationResults.getFailedMessages().length > 0);
+//
+//	}
+//	
+//	
+//	public void testLineIsSingleSegmentFV_CorrectData()
+//	{
+//		// the visitor
+//		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
+//		 
+//		/*LineMustBeASinglePartValidation singleSegmentLineValidatorRoads 
+//					= new LineMustBeASinglePartValidation("RoadSelfIntersect", 
+//							"Tests to see if a road intersects itself, which is bad!", 
+//							new String[] {"road"});
+//	
+//		try {
+//			processor.addValidation(singleSegmentLineValidatorRoads);
+//		} catch (Exception e) {
+//			assertTrue(false);
+//		}*/
+//	
+//		try {
+//			processor.runFeatureTests(this.roadType, DataUtilities.collection(new Feature[] {this.newRoad}), roadValidationResults);
+//		} catch (Exception e1) {
+//			assertTrue(false);
+//		}
+//		
+//		System.out.println("LineIsSingleSegment - correct");
+//		String[] messages = roadValidationResults.getFailedMessages();
+//		for (int i=0; i<messages.length; i++)
+//			System.out.println(messages[i]);
+//		assertTrue(roadValidationResults.getFailedMessages().length == 0);
+//	
+//	}
+//	
+//	public void testLineIsSingleSegmentFV_IncorrectData()
+//	{
+//		// the visitor
+//		RoadNetworkValidationResults roadValidationResults = new RoadNetworkValidationResults();
+//	 /*
+//		LineMustBeASinglePartValidation singleSegmentLineValidatorRoads 
+//					= new LineMustBeASinglePartValidation("RoadSelfIntersect", 
+//							"Tests to see if a road intersects itself, which is bad!", 
+//							new String[] {"road"});
+//
+//		try {
+//			processor.addValidation(singleSegmentLineValidatorRoads);
+//		} catch (Exception e) {
+//			assertTrue(false);
+//		}*/
+//	
+//		try {
+//			processor.runFeatureTests(this.roadType, DataUtilities.collection(this.roadFeatures), roadValidationResults);
+//			}
+//		catch (Exception e1) {
+//			assertTrue(false);
+//		}
+//
+//		System.out.println("LineIsSingleSegment - incorrect");
+//		String[] messages = roadValidationResults.getFailedMessages();
+//		for (int i=0; i<messages.length; i++)
+//			System.out.println(messages[i]);
+//		assertTrue(roadValidationResults.getFailedMessages().length > 0);
+//
+//	}
 
 
 	public void testLinesIntersectIV_CorrectData()
