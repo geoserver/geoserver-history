@@ -38,7 +38,7 @@
 	<!-- ====================================================================== -->
 
 	<!-- release version -->
-	<property name="name.release" value="1.2.3" />
+	<property name="name.release" value="1.3.0-beta" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
