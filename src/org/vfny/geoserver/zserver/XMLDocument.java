@@ -20,74 +20,94 @@ import java.io.FilenameFilter;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Collection;
-
+import java.util.logging.Logger;
 //import org.vfny.zServer.search.GeoProfile;
 
 /**
-* A utility for making lucene document from an XML source and a set of
-xpaths
-* based on Document example from Lucene
+* A utility for making lucene document from an XML source and a mapping of attributes
+* consisting of a use number and the xpath of the name.
+* Based on Document example from Lucene.  Taken from the lucene mailing list: 
+* http://www.mail-archive.com/lucene-user@jakarta.apache.org/msg00346.html and 
+* modified to work with the Geo Profile.
+* email details:
+* From: carlson
+* Subject: Re: Indexing other documents type than html and txt (XML)
+* Date: Thu, 29 Nov 2001 09:03:53 -0800 
+*
+* @author carlson
+* @author Chris Holmes, TOPP
+* 
 *
 */
 public class XMLDocument
 {
+
+    public static final String WHITE_SPACE = "[\\s]+";
+
+     /** Standard logging instance for class */
+    private static final Logger LOGGER = 
+        Logger.getLogger("org.vfny.geoserver.zserver");
+
+    /** To compute the extent with */
     private static String westbc;
+
+    /** To compute the extent with */
     private static String eastbc;
+    
+    /** To compute the extent with */
     private static String northbc;
+    
+    /** To compute the extent with */
     private static String southbc;
 
         private XMLDocument() { }
 
          /**
+	  * Converts an xml file to a lucene document, using the values
+	  * of the attribute map as the xpaths.  These xpaths also serve
+	  * as the name of the fields for conversions later.
+	  *
           * @param file Document that to be converted to a lucene document
-          * @param propertyList properties where the key is the field
-name and the value is the
-          * XML xpath.
+          * @param attrMap mappings of attribute numbers to xpaths.  
           * @throws FileNotFoundException
           * @throws Exception
           * @return lucene document
           */
-        public static Document Document (File file, Properties propertyList)
+        public static Document Document (File file, Properties attrMap)
 	    throws java.io.FileNotFoundException, Exception
         {
                 Document doc = new Document();
-		System.out.println("processing file: " + file);
+		LOGGER.info("processing file: " + file);
                 // add path
 		String xmlPath = file.getPath();
                 doc.add(Field.Keyword("path", xmlPath));
-		System.out.println("adding path " + xmlPath);
-		//TODO: Checking to make sure these files exist!
+		//TODO: Checking to make sure these files exist!  The metadata folder
+		//should contain them.
 		doc.add(Field.UnIndexed("sutrs", changeExtension(xmlPath, "txt")));
 		doc.add(Field.UnIndexed("html", changeExtension(xmlPath, "html")));
 		doc.add(Field.UnIndexed("sgml", changeExtension(xmlPath, "sgml")));	
 		
-
-                //add date modified
-                doc.add(Field.Keyword("modified", 
-				      DateField.timeToString(file.lastModified())));
-		//If Lucene has to/can return the Breif, Summary and Full records it
-		//could probably be done really easy by just storing them as unindexed
-		//fields, then Hits can get the B, S or F field as needed, and return
-		//all the right data.  Damn lucene is good.  
-		doc.add(Field.UnIndexed("url", file.getPath()));
+                //add date modified for reindexing.
+                doc.add(Field.Keyword("modified", DateField.timeToString(file.lastModified())));
+		//doc.add(Field.UnIndexed("url", file.getPath()));
 
 		doc.add(Field.Text("true", "true"));  //used for searching not equals, since
 		//lucene does not support it, we have to do a boolean query with
 		//something always true, which will be this field.
-
-		Date today = new Date();
-		doc.add(Field.Text("date added", DateField.dateToString(today)));
+		//Date today = new Date();
+		//doc.add(Field.Text("date added", DateField.dateToString(today)));
                 //add field list in property list
-		Collection values = propertyList.values();
-		Set valueSet = new HashSet(values);
+		Collection values = attrMap.values();
+		Set valueSet = new HashSet(values); //only one copy of each of the values.
 		Iterator e = valueSet.iterator();
 		 while (e.hasNext())
                  {
+
 		     String key = (String) e.next();
+		     //LOGGER.info("reading " + key);
 		     //Object xpath = e.next();
-		     if (key.charAt(0) == '/') {
-			String xpath = key + "/text()";
-			//System.out.println("xpath is " + xpath);
+		     if (key.charAt(0) == '/') { //if it is in fact an xpath
+			 String xpath = key + "/text()"; //grab just the text inside the element.
 			String[] valueArray = ApplyXPath.apply(file.getPath(),xpath);
 			StringBuffer value = new StringBuffer("");
 			for (int i=0; i < valueArray.length; i++)
@@ -98,7 +118,8 @@ name and the value is the
 			doc.add(Field.Text(key,textValue));
 		     }
 		 }
-		 
+
+		 //LOGGER.info("doc is " + doc);
 		 doc.add(Field.Text("extent", computeExtent()));
                  return doc;
         }
@@ -106,13 +127,14 @@ name and the value is the
 
 
          /**
+	  * 
           * @return lucene document
           * @param fieldNames field names for the lucene document
           * @param file Document that to be converted to a lucene document
           * @param xpaths XML xpaths for the information you want to get
           * @throws Exception
           */
-         public static Document Document(File file, java.lang.String[]
+    /* public static Document Document(File file, java.lang.String[]
 fieldNames, java.lang.String[] xpaths)  throws java.io.FileNotFoundException , Exception
          {
              if (fieldNames.length != xpaths.length)
@@ -120,16 +142,16 @@ fieldNames, java.lang.String[] xpaths)  throws java.io.FileNotFoundException , E
                  throw new IllegalArgumentException ("String arrays are not equal size");
              }
 
-             Properties propertyList = new Properties();
+             Properties attrMap = new Properties();
 
              // generate properties from the arrays
              for (int i=0;i<fieldNames.length;i++) {
-                 propertyList.setProperty(fieldNames[i],xpaths[i]);
+                 attrMap.setProperty(fieldNames[i],xpaths[i]);
              }
 
-             Document doc = Document (file, propertyList);
+             Document doc = Document (file, attrMap);
              return doc;
-         }
+	     }*/
 
          /**
           * @param path path of the Document that to be converted to a
@@ -139,38 +161,41 @@ lucene document
           * @throws Exception
           * @return
           */
-         public static Document Document(String path, String[]
+    /*  public static Document Document(String path, String[]
 fieldNames, String[] xpaths)
          throws Exception
          {
              File file = new File(path);
              Document doc = Document (file, fieldNames, xpaths);
              return doc;
-         }
+	     }*/
 
          /**
+	  * Convenience method, turns the string into a file.
           * @param path path of document you want to convert to a lucene
 document
-          * @param propertyList properties where the key is the field
+          * @param attrMap properties where the key is the field
 name and the value is the
           * XML xpath.
           * @throws Exception
           * @return lucene document
           */
          public static Document Document(String path, Properties
-propertyList)
+attrMap)
          throws Exception
          {
              File file = new File(path);
-             Document doc = Document (file, propertyList);
-             return doc;
+             Document doc = Document(file, attrMap);
+	     return doc;
          }
 
          /**
+	  * Convenience method, turns the documentPath into a file, and
+	  * the propertyPath into a Property object.
           * @param documentPath path of the Document that to be converted
 to a lucene document
-          * @param propertyPath path of file containing properties where
-the key is the field name and the value is the
+          * @param propertyPath path of file containing mapping of attribute
+	  * use numbers to xpaths.
           * XML xpath.
           * @throws Exception
           * @return
@@ -182,38 +207,39 @@ propertyPath)
 	     
              File file = new File(documentPath);
              FileInputStream fis = new FileInputStream(propertyPath);
-             Properties propertyList = new Properties();
-             propertyList.load(fis);
-             Document doc = Document (file, propertyList);
+             Properties attrMap = new Properties();
+             attrMap.load(fis);
+             Document doc = Document (file, attrMap);
              return doc;
          }
 
          /**
-          * @param documentFile Document that to be converted to a lucene
-document
-          * @param propertyFile file containing properties where the key
-is the field name and the value is the
+          * @param documentFile Document that to be converted to a lucene document.
+          * @param attrMapFile file containing mappings with xpath values.
           * XML xpath.
           * @throws Exception
           * @return
           */
          public static Document Document(File documentFile, File
-propertyFile)
+attrMapFile)
          throws Exception
          {
-             FileInputStream fis = new FileInputStream(propertyFile);
-             Properties propertyList = new Properties();
-             propertyList.load(fis);
-             Document doc = Document (documentFile, propertyList);
+             FileInputStream fis = new FileInputStream(attrMapFile);
+             Properties attrMap = new Properties();
+             attrMap.load(fis);
+             Document doc = Document (documentFile, attrMap);
              return doc;
          }
 
-         private static String filter(String key, StringBuffer value) {
+    /*      private static String filter(String key, StringBuffer value) {
              String newValue;
              newValue = value.toString();
              return newValue;
-         }
+	     }*/
 
+    /**
+     * main used to create an index from a directory full of xml files.
+     */
     public static void main(String[] args) throws Exception
     {
 	
@@ -235,12 +261,8 @@ propertyFile)
 		new IndexWriter(args[0], new ZServAnalyzer(), true);
 	    XMLFilenameFilter xmlFilter = new XMLFilenameFilter();
 	    File[] xmlFiles = xmlDir.listFiles(xmlFilter);
-	    //TODO: use a file filter so we only pick up actual xml files
-	    //possibly later add checks to make sure xml are fgdc compliant
-	    
-	        for (int i = 0; i < xmlFiles.length; i++) {
+	    for (int i = 0; i < xmlFiles.length; i++) {
 		Document doc = XMLDocument.Document(xmlFiles[i], propsFile);
-		//System.out.println(doc);
 		indexWriter.addDocument(doc);
 	    }
 	    indexWriter.close();
@@ -270,9 +292,14 @@ propertyFile)
 		}*/
     }
 
+    /**
+     * Saves the bounding coordinates to compute the extent.
+     *
+     * @param value the value of the field.
+     * @param key the name of the field.
+     */
     private static void grabBoundingCoords(String value, String key) {
 	int strlen = key.length();		
-	//System.out.println(key + " is " + value);
 	if (strlen > 7) {
 	    String tail = key.substring(strlen - 7, strlen);
 	    if (tail.equals("/eastbc")) {
@@ -287,45 +314,46 @@ propertyFile)
 	}
     }      
 
+    /**
+     * Computes the extent with the bounding coords set with grabBoundingCoords.
+     * Basically a wrapper for the GeoProfile computeExtent method, converting
+     * the returned value to a lucene NumericField string.
+     */
     private static String computeExtent() {
 	try {
-	    double east = Double.parseDouble(eastbc);
-	    double west = Double.parseDouble(westbc);
-	    double north = Double.parseDouble(northbc);
-	    double south = Double.parseDouble(southbc);
-	    Double extent = new Double((north - south) * (east - west));
-	    //System.out.println(north + " - " + south + " * " + east + " - " + west +
-	    //" = " + extent);
-	    return NumericField.numberToString(extent);
+	    Double extent = GeoProfile.computeExtent(eastbc, westbc,
+						     northbc, southbc);
+	    return (extent != null) ? NumericField.numberToString(extent) : "";
 	} catch (NumberFormatException e) {
 	    return null; //REVISIT: is this what we want?
 	}
     }
+
+
     /**
-     * If the given value is a date or number formats it to the proper searchable
-     * lucene searchable string.  If not just returns the value.
+     * Formats the value to a NumberField number if needed, strips
+     * the newline characters.  
      *
      * @param value to be formatted to a date or number.
      * @param key should contain the fgdc metadata xml name of this value.
      * @return the properly formated string
      */
-
     private static String formatValue(String value, String key){
 	//int strlen = key.length();
 	String retString;
 	if (GeoProfile.isFGDCnum(key)) { //need to add extent...
 	    grabBoundingCoords(value, key);
-
-	    
 	    try {
 		retString = NumericField.numberToString(value);
 	    } catch (NumberFormatException e) {
-		retString = NumericField.numberToString("0"); //maybe clean up number like we do in search?
+		retString = NumericField.numberToString("0"); 
+		//maybe clean up number like we do in search?
 	    }  
-	    //System.out.println(key + " is " + retString);
 	} else {
 	    if (!key.equals("/")) { //if key is not / (for any text field)
-		retString = stripAndTrim(value); //to get rid of new lines and trailing whitespace.
+		retString = stripAndTrim(value); 
+		//to get rid of new lines and trailing whitespace for presentation.
+
 	    } else {
 		retString = value;
 	    }
@@ -342,70 +370,41 @@ propertyFile)
      * @return the clean string.
      */
     private static String stripAndTrim(String value) {
-	String[] cleanArr = value.split("[\\s]+");
+	String[] cleanArr = value.split(WHITE_SPACE);
 	String retString = "";
 	for (int i=0; i < cleanArr.length; i++) {
 	    retString += cleanArr[i] + " ";
 	}
 	return retString.trim();
     }
+ 
 
     /**
-     * Turns a z39.50 Date String to a lucene searchable date
-     * string.
-     *
-     * @param zDateString in the z39.50 format.
-     * @return the date in the lucene date format.
+     * removes the xml from a path and puts a new extension on.
+     * @param file the full path to an xml file.
+     * @param newExt the new 3 or 4 char ending.
+     * @return the file string with the last 3 chars changed to newExt.
      */
-    private static String formatDate(String zDateString) {
-        int strLen = zDateString.length();
-	if (strLen < 8) {
-	    //zDateString += "*";
-	}
-	return zDateString;
-	/*From the GEO profile annex A
-	 * (http://www.blueangeltech.com/standards/GeoProfile/annex_a.htm):
-	 * A Date String is a character string that represents a single date 
-	 * using CCYYMMDD format, or a beginning and ending date range using 
-	 * CCYYMMDD/CCYYMMDD format, where CC, YY, MM, DD are the two-digit 
-	 * representation of the century, year, month, and day, respectively. 
-	 * The month (MM) and day (DD) are optional. */
-	//I think geo profile only uses single dates: CHECK THIS!
-	/*strLen = zDateString.length();
-	String year;
-	String month;
-	String day;
-	year = zDateString.substring(0,4);
-	if (strLen < 6) { //just the year (CCYY)
-	    month = "01";
-	} else {
-	    month = zDateString.substring(4,6);
-	} 
-	if (strLen < 8){
-	    day = "01";
-	} else {
-	    day = zDateString.substring(6,8);
-	}
-	return year + month + day;*/
-
-	/*Calendar cal = new Calender();
-	cal.set(Integer.parseInt(year), 
-		Integer.parseInt(month), 
-		Integer.parseInt(date));
-		return DateField.dateToString(cal.getTime());*/
-    }
-
-
-
     private static String changeExtension(String file, String newExt){
 	return((file.substring(0, file.length() - 3)) + newExt);
     }
 
+    /**
+     * A filename filter that accepts all files that end with 'xml'
+     *
+     */
     private static class XMLFilenameFilter implements FilenameFilter {
-
+	
+    /** no argument constructor */
 	public XMLFilenameFilter(){
 	}
 	
+    /**
+     * Tells whether or not to accept the given name.
+     * @param dir The directory where the file to test resides.
+     * @param name The name of the file.
+     * @return true if the name ends in xml, false otherwise.
+     */ 
 	public boolean accept(File dir, String name){
 	    int strln = name.length();
 	    //TODO: use reg-exps, faster, also filter out files starting
