@@ -820,17 +820,21 @@
 <!--copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/-->
 <unwar src="${dir.build}/geoserver.war" dest="${dir.build}/server/geoserver/" />
 
-<zip destfile="${basedir}/geoserver-${name.release}-bin.zip">
-	<zipfileset dir="${dir.build}" prefix="geoserver">
+	
+<tar destfile="${basedir}/geoserver-${name.release}-bin.tar">
+	<tarfileset dir="${dir.build}" prefix="geoserver">
 		<include name="**/*" />
-		<exclude name="bin/*" />
 		<exclude name="geoserver.war" />
 		<exclude name="org/**" />
-	</zipfileset>
-	<zipfileset dir="${dir.build}" prefix="geoserver" filemode="755" includes="bin/*" />
-</zip>
+	</tarfileset>
+</tar>
 
-<copy file="${basedir}/geoserver-${name.release}-bin.zip" todir="${dir.release}" />
+<gzip src="${basedir}/geoserver-${name.release}-bin.tar" zipfile="${basedir}/geoserver-${name.release}-bin.tar.gz" />
+
+<copy file="${basedir}/geoserver-${name.release}-bin.tar.gz" todir="${dir.release}" />
+	<delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
+	<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
+
 <delete dir="${dir.build}" failonerror="false" />
 <delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
 
