@@ -23,7 +23,7 @@ import java.util.logging.*;
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.4 2003/11/12 02:15:55 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.5 2003/11/13 02:42:47 cholmesny Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -91,13 +91,14 @@ public class FeatureResponse implements Response {
      *
      * @throws WfsException DOCUMENT ME!
      * @throws WfsException DOCUMENT ME!
+     *
      * @task TODO: split this up a bit more?  Also get the proper namespace
-     * declrations and schema locations.  Right now we're back up to where
-     * we were with 1.0.*, as we can return two FeatureTypes in the same
-     * namespace.  CITE didn't check for two in different namespaces, and
-     * gml builder just couldn't deal.  Now we should be able to, we just
-     * need to get the reporting right, use the AllSameType function as 
-     * Describe does.
+     *       declrations and schema locations.  Right now we're back up to
+     *       where we were with 1.0., as we can return two FeatureTypes in the
+     *       same namespace.  CITE didn't check for two in different
+     *       namespaces, and gml builder just couldn't deal.  Now we should be
+     *       able to, we just need to get the reporting right, use the
+     *       AllSameType function as  Describe does.
      */
     public void execute(Request req) throws ServiceException {
         FeatureRequest request = (FeatureRequest) req;
@@ -177,15 +178,13 @@ public class FeatureResponse implements Response {
         FeatureType schema = meta.getSchema();
 
         transformer.setIndentation(2);
+        transformer.setGmlPrefixing(true); //TODO: make this a user config
 
-        //transformer.setMaxFeatures(maxFeatures);
         ServerConfig config = ServerConfig.getInstance();
         WFSConfig wfsConfig = config.getWFSConfig();
         String wfsSchemaLoc = config.getGlobalConfig().getSchemaBaseUrl()
             + "wfs/1.0.0/WFS-basic.xsd";
-        String fSchemaLoc = wfsConfig.getURL()
-            + "?request=DescribeFeatureType&" //HACK: bad hard code here.
-            + "typeName=" + typeNames;
+        String fSchemaLoc = wfsConfig.getDescribeUrl(typeNames.toString());
         NameSpace namespace = meta.getDataStore().getNameSpace();
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
         transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
