@@ -4,15 +4,21 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*; // Logging// Preferences
-// Logging
-// Preferences
-import java.util.logging.*;
-import java.util.prefs.*;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
+import java.util.prefs.Preferences;
 
-import org.geotools.io.*; // Writer
-// Writer
-import org.geotools.resources.*;
+import org.geotools.io.LineWriter;
+import org.geotools.resources.Utilities;
 
 /**
  * <code>Log4JFormatter</code> looks like:
@@ -107,7 +113,7 @@ public class Log4JFormatter
   {
     this.base = base.trim();
     this.margin = getHeaderWidth();
-    this.startMillis = System.currentTimeMillis();
+	Log4JFormatter.startMillis = System.currentTimeMillis();
 
     final StringWriter str = new StringWriter();
     writer = new LineWriter(str);

@@ -4,21 +4,27 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.xml.parsers.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.logging.Logger;
 
-import org.vfny.geoserver.config.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.GeoServer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * This class represents the global geoserver configuration options that are
  * used to configure the zserver module.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ZServerConfig.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: ZServerConfig.java,v 1.2.2.5 2004/01/06 22:05:10 dmzwiers Exp $
  */
 public class ZServerConfig
     implements java.io.Serializable
@@ -43,13 +49,13 @@ public class ZServerConfig
       "org.vfny.geoserver.config");
 
   /** The configuration singleton. */
-  private static ServerConfig cfgInfo = ServerConfig.getInstance();
+  private static GeoServer cfgInfo = ConfigInfo.getInstance().getGeoServer();
 
   /** The port to run zserver on.  Default is 5210 */
   private String port = "5210";
 
   /** The folder where the metadata files are. */
-  private String dataFolder = cfgInfo.getTypeDir();
+  private String dataFolder = ConfigInfo.getInstance().getRootDir() + "featureTypes/";
 
   /** The location of the mapping between field names and numbers. */
   private String fieldmap;
@@ -159,7 +165,7 @@ public class ZServerConfig
 
       if ( (runZserver == null) || !runZserver.equals("false")) {
         String port = findTextFromTag(configElem, PORT_TAG);
-        String rootDir = cfgInfo.getRootDir();
+        String rootDir = ConfigInfo.getInstance().getRootDir();
         String fieldMap = rootDir + GEO_MAP_FILE;
         String database = rootDir + "zserver-index";
 

@@ -4,7 +4,12 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
@@ -20,15 +25,14 @@ import org.geotools.filter.LogicFilter;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
-import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -37,7 +41,7 @@ import java.util.List;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: GetMapDelegate.java,v 1.4 2003/12/17 23:46:29 cholmesny Exp $
+ * @version $Id: GetMapDelegate.java,v 1.4.2.7 2004/01/06 23:03:13 dmzwiers Exp $
  */
 public abstract class GetMapDelegate implements Response {
     private GetMapRequest request;
@@ -71,15 +75,15 @@ public abstract class GetMapDelegate implements Response {
     protected void execute(GetMapRequest request) throws WmsException {
         this.request = request;
 
-        FeatureTypeConfig[] layers = request.getLayers();
-        Style[] styles = buildStyles(request.getStyles(), layers);
+        FeatureTypeInfo[] layers = request.getLayers();
+        Style[] styles = buildStyles(request.getStyles(), request.getGeoServer());
         Filter[] filters = request.getFilters();
         List attributes = request.getAttributes();
 
         Query[] queries = buildQueries(layers, filters, attributes);
         int nLayers = layers.length;
         FeatureResults[] resultLayers = new FeatureResults[nLayers];
-        FeatureTypeConfig ftype = null;
+        FeatureTypeInfo ftype = null;
         Filter filter = null;
         FeatureResults features = null;
 
@@ -109,7 +113,7 @@ public abstract class GetMapDelegate implements Response {
      *
      * @throws WmsException For any problems executing.
      */
-    protected abstract void execute(FeatureTypeConfig[] requestedLayers,
+    protected abstract void execute(FeatureTypeInfo[] requestedLayers,
         FeatureResults[] resultLayers, Style[] styles)
         throws WmsException;
 
@@ -124,7 +128,7 @@ public abstract class GetMapDelegate implements Response {
      *
      * @throws WmsException If the custom filter can't be constructed.
      */
-    private Query[] buildQueries(FeatureTypeConfig[] layers, Filter[] filters,
+    private Query[] buildQueries(FeatureTypeInfo[] layers, Filter[] filters,
         List attributes) throws WmsException {
         int nLayers = layers.length;
         int numFilters = (filters == null) ? 0 : filters.length;
@@ -177,7 +181,7 @@ public abstract class GetMapDelegate implements Response {
      * @param filter The additional filter to process with.
      * @param requestExtent The extent to filter out.
      * @param ffactory A filterFactory to create new filters.
-     * @param schema The FeatureType of the request of this filter.
+     * @param schema The FeatureTypeInfo of the request of this filter.
      *
      * @return A custom filter of the bbox and any optional custom filters.
      *
@@ -206,13 +210,14 @@ public abstract class GetMapDelegate implements Response {
         return finalLayerFilter;
     }
 
-    protected Style[] buildStyles(List styleNames, FeatureTypeConfig[] layers)
+	protected Style[] buildStyles(List styleNames,GeoServer gs)
         throws WmsException {
         Style[] styles = new Style[styleNames.size()];
         int i = 0;
-
+        Data gc = gs.getData();
+        
         for (Iterator it = styleNames.iterator(); it.hasNext(); i++) {
-            styles[i] = layers[i].getStyle((String) it.next());
+        	styles[i] = gc.getStyle((String) it.next());
         }
 
         return styles;
@@ -220,13 +225,13 @@ public abstract class GetMapDelegate implements Response {
 
     /**
      * Tries to guesss exactly wich property names are needed to query for a
-     * given FeatureType and the Filter that will be applied to it. By this
+     * given FeatureTypeInfo and the Filter that will be applied to it. By this
      * way, only the needed propertied will be queried to the underlying
      * FeatureSource in the hope that it will speed up the query
      * 
      * <p>
-     * Note that just the attributes exposed by the FeatureTypeConfig will be
-     * taken in count. a FeatureTypeConfig exposes all it's attributes except
+     * Note that just the attributes exposed by the FeatureTypeInfo will be
+     * taken in count. a FeatureTypeInfo exposes all it's attributes except
      * if the subset of desiref exposed attributes are specified in the
      * catalog configuration.
      * </p>
@@ -248,7 +253,7 @@ public abstract class GetMapDelegate implements Response {
      *       AttributeExpression's?). I think that the style should be taken
      *       in count too.
      */
-    private String[] guessProperties(FeatureTypeConfig layer, Filter filter,
+    private String[] guessProperties(FeatureTypeInfo layer, Filter filter,
         List attributes) {
         FeatureType type = layer.getSchema();
         List atts = new ArrayList(attributes);

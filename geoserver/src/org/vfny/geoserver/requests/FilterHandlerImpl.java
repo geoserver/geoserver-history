@@ -4,20 +4,19 @@
  */
 package org.vfny.geoserver.requests;
 
-import org.geotools.filter.*;
+import java.util.logging.Logger;
+
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.wfs.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.util.logging.*;
+import org.geotools.filter.FilterHandler;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 
 /**
  * Minimal class to implement the FilterHandler interface.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FilterHandlerImpl.java,v 1.3 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: FilterHandlerImpl.java,v 1.3.2.4 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler,
     FilterHandler {

@@ -20,15 +20,15 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.geotools.data.jdbc.ConnectionPoolManager;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.oldconfig.*;
+import java.util.logging.Logger;
 
-//Logging system
-import org.vfny.geoserver.zserver.*;
-import java.util.Iterator;
-import java.util.logging.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.vfny.geoserver.zserver.GeoZServer;
 
 
 /**
@@ -36,7 +36,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.15 2003/12/16 21:04:16 cholmesny Exp $
+ * @version $Id: FreefsLog.java,v 1.15.2.8 2004/01/08 23:44:48 dmzwiers Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -50,25 +50,20 @@ public class FreefsLog extends HttpServlet {
     /**
      * Initializes logging and config.
      */
-    public void init() {
+    public void init() throws ServletException{
         //HACK: java.util.prefs are awful.  See
         //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
 
-        String root = this.getServletContext().getRealPath("/");
-        String path = root; // + CONFIG_DIR;
-        LOGGER.fine("init with path: " + path);
+		//if(GeoServer.getInstance()==null){
+		//	(new GeoServer()).init(this);
+		//}
 
-        try {
-            ServerConfig.load(path);
-        } catch (ConfigurationException ex) {
-            LOGGER.severe("Can't initialize server: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-
-        /*
-           ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
+        
+           /*ServletContext sc = getServletContext();
+           GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+           ConfigInfo cfgInfo = ConfigInfo.getInstance(path, gs);
                    if (cfgInfo.runZServer()) {
               try {
                   server = new GeoZServer(cfgInfo.getZServerProps());
@@ -76,8 +71,8 @@ public class FreefsLog extends HttpServlet {
               } catch (java.io.IOException e) {
                   LOGGER.info("zserver module could not start: " + e.getMessage());
               }
-                   }
-         */
+                   }*/
+         
     }
 
     /**

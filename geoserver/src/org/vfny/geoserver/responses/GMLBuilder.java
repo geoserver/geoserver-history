@@ -4,12 +4,28 @@
  */
 package org.vfny.geoserver.responses;
 
-import com.vividsolutions.jts.geom.*;
-import org.vfny.geoserver.oldconfig.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import org.vfny.geoserver.oldconfig.ConfigInfo;
+import org.vfny.geoserver.oldconfig.TypeInfo;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -68,7 +84,7 @@ public class GMLBuilder {
     private static final String WFS_URI = "http://www.opengis.net/wfs";
     private static final String XMLNS_WFS = "xmlns:wfs=\"" + WFS_URI + "\"";
     private static final String WFS_LOC = configInfo.getSchemaBaseUrl()
-        + "wfs/1.0.0/WFS-basic.xsd";
+        + "wfs/1.0.0/GlobalWFS-basic.xsd";
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
     private static final String XS_NAMESPACE = "xmlns:xs=" + SCHEMA_URI;
     private static Map gmlMap = new HashMap();

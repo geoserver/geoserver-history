@@ -1,607 +1,566 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2003, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
  */
 package org.vfny.geoserver.config;
 
-import com.vividsolutions.jts.geom.*;
-import org.geotools.data.*;
-import org.geotools.factory.*;
-import org.geotools.feature.*;
-import org.geotools.filter.*;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.WmsException;
-import org.w3c.dom.*;
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.global.dto.*;
 
+import com.vividsolutions.jts.geom.Envelope;
 /**
- * Represents a FeatureType, its user config and autodefined information.
- *
- * @author Gabriel Roldán
- * @author Chris Holmes
- * @version $Id: FeatureTypeConfig.java,v 1.4 2003/12/18 00:18:28 dmzwiers Exp $
+ * FeatureTypeInfo purpose.
+ * <p>
+ * Description of FeatureTypeInfo ...
+ * <p>
+ * 
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: FeatureTypeConfig.java,v 1.4.2.7 2004/01/10 06:13:31 emperorkefka Exp $
  */
-public class FeatureTypeConfig extends BasicConfig {
-    /** DOCUMENT ME! */
-    private static final int DEFAULT_NUM_DECIMALS = 8;
+public class FeatureTypeConfig{
+	
+	/**
+	 * The Id of the datastore which should be used to get this featuretype.
+	 */
+	private String dataStoreId;
+	
+	/**
+	 * A bounding box for this featuretype
+	 */
+	private Envelope latLongBBox;
+	
+	/**
+	 * native wich EPGS code for the FeatureTypeInfo
+	 */
+	private int SRS;
+	
+	/**
+	 * Copy of the featuretype schema as a string.
+	 * <p>
+	 * This is an ordered list of AttributeTypeInfoConfig.
+	 * </p>
+	 */
+	private List schema;
+	
+	/**
+	 * The featuretype name.
+	 */
+	private String name;
+	
+	/** the schema name */
+	private String schemaName;
+	
+	/** the schema base */
+	private String schemaBase;
+	
+	/**
+	 * The featuretype directory name. This is used to write to, and is 
+	 * stored because it may be longer than the name, as this often includes 
+	 * information about the source of the featuretype.
+	 */
+	private String dirName;
+	
+	/**
+	 * The featuretype title
+	 */
+	private String title;
+	
+	/**
+	 * The feature type abstract, short explanation of this featuretype.
+	 */
+	private String _abstract;
+	
+	/**
+	 * A list of keywords to associate with this featuretype. 
+	 */
+	private List keywords;
+	
+	/**
+	 * configuration information.
+	 * @TODO figure out what this is used for exactly
+	 */
+	private int numDecimals;
+	
+	/**
+	 * the list of exposed attributes. If the list is empty or not present
+	 * at all, all the FeatureTypeInfo's attributes are exposed, if is present,
+	 * only those oattributes in this list will be exposed by the services
+	 */
+	private Filter definitionQuery = null;
+	
+	/**
+	 * The default style name.
+	 */
+	private String defaultStyle;
 
-    /** DOCUMENT ME! */
-    private DataStoreConfig dataStore;
+	/**
+	 * FeatureTypeInfo constructor.
+	 * <p>
+	 * Creates a FeatureTypeInfo to represent an instance with default data.
+	 * </p>
+	 * @see defaultSettings()
+	 */
+	public FeatureTypeConfig(){
+		dataStoreId = "";
+		latLongBBox = new Envelope();
+		SRS = 0;
+		schema = new ArrayList();
+		defaultStyle = "";
+		name = "";
+		title = "";
+		_abstract = "";
+		keywords = new LinkedList();
+		numDecimals = 8;
+		definitionQuery = null;
+		dirName = schemaName = schemaBase = "";
+	}
 
-    /** DOCUMENT ME! */
-    private Envelope bbox;
+	/**
+	 * FeatureTypeInfo constructor.
+	 * <p>
+	 * Creates a copy of the FeatureTypeInfoDTO provided. All the data structures are cloned. 
+	 * </p>
+	 * @param f The FeatureTypeInfoDTO to copy.
+	 */
+	public FeatureTypeConfig(FeatureTypeInfoDTO f){
+		if(f==null){
+			throw new NullPointerException();
+		}
+		dataStoreId = f.getDataStoreId();
+		latLongBBox = new Envelope( f.getLatLongBBox() );
+		SRS = f.getSRS();
+		schema = f.getSchema();
+		name = f.getName();
+		title = f.getTitle();
+		_abstract = f.getAbstract();
+		numDecimals = f.getNumDecimals();
+		definitionQuery = f.getDefinitionQuery();
+		try{
+			keywords = new ArrayList( f.getKeywords() ); 
+		}catch(Exception e){
+			keywords = new LinkedList();
+		}
+		defaultStyle = f.getDefaultStyle();
+		dirName = f.getDirName();
+		schemaName = f.getSchemaName();
+		schemaBase = f.getSchemaBase();
+	}
 
-    /** DOCUMENT ME! */
-    private Envelope latLongBBox;
+	/**
+	 * load purpose.
+	 * <p>
+	 * Loads the new data into this instance object from an FeatureTypeInfoDTO.
+	 * </p>
+	 * @param obj an instance of FeatureTypeInfoDTO to load.
+	 * @return true when the parameter is valid and stored.
+	 */
+	public void update(FeatureTypeInfoDTO f){
+		if(f==null){
+			throw new NullPointerException("FeatureTypeInfo Data Transfer Object required");
+		}
+		dataStoreId = f.getDataStoreId();
+		latLongBBox = new Envelope(f.getLatLongBBox());
+		SRS = f.getSRS();
+		schema = new ArrayList();
+		for(int i=0;i<f.getSchema().size();i++)
+			schema.add(new AttributeTypeInfoConfig((AttributeTypeInfoDTO)f.getSchema().get(i)));
+		name = f.getName();
+		title = f.getTitle();
+		_abstract = f.getAbstract();
+		numDecimals = f.getNumDecimals();
+		definitionQuery = f.getDefinitionQuery();
+		try{
+			keywords = new ArrayList(f.getKeywords());
+		}catch(Exception e){
+			keywords = new LinkedList();
+		}
+		defaultStyle = f.getDefaultStyle();
+		dirName = f.getDirName();
+		schemaName = f.getSchemaName();
+		schemaBase = f.getSchemaBase();
+	}
+	
+	/**
+	 * Implement toDTO.
+	 * <p>
+	 * Creates a represetation of this object as a FeatureTypeInfoDTO
+	 * </p>
+	 * @see org.vfny.geoserver.config.DataStructure#toDTO()
+	 * 
+	 * @return a representation of this object as a FeatureTypeInfoDTO
+	 */
+	public FeatureTypeInfoDTO toDTO(){
+		FeatureTypeInfoDTO f = new FeatureTypeInfoDTO();
+		f.setDataStoreId(dataStoreId);
+		f.setLatLongBBox( new Envelope(latLongBBox));
+		f.setSRS(SRS);
+		List s = new ArrayList();
+		for(int i=0;i<schema.size();i++)
+			s.add(schema.get(i));
+		f.setSchema(s);
+		f.setName(name);
+		f.setTitle(title);
+		f.setAbstract(_abstract);
+		f.setNumDecimals(numDecimals);
+		f.setDefinitionQuery(definitionQuery);
+		try{
+			f.setKeywords( new ArrayList(keywords));
+		}catch(Exception e){
+			// do nothing, defaults already exist.
+		}
+		f.setDefaultStyle(defaultStyle);
+		f.setDirName(dirName);
+		f.setSchemaBase(schemaBase);
+		f.setSchemaName(schemaName);
+		return f;
+	}
+	
+	/**
+	 * getAbstract purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getAbstract() {
+		return _abstract;
+	}
 
-    /** DOCUMENT ME! */
-    private String SRS;
+	/**
+	 * getDataStore purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getDataStoreId() {
+		return dataStoreId;
+	}
 
-    /** DOCUMENT ME! */
-    private Filter definitionQuery = Filter.NONE;
+	/**
+	 * getKeywords purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public List getKeywords() {
+		return keywords;
+	}
 
-    /** DOCUMENT ME! */
-    private FeatureType schema;
+	/**
+	 * getLatLongBBox purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public Envelope getLatLongBBox() {
+		return latLongBBox;
+	}
 
-    /** DOCUMENT ME! */
-    private Map styles;
-    private CatalogConfig catalog;
+	/**
+	 * getName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /** 
-     * defaultStyle is not currently written to, and there are not any subclasses.
-     * 12/17/03 dz 
-     */
-    private String defaultStyle;
+	/**
+	 * getSRS purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public int getSRS() {
+		return SRS;
+	}
+
+	/**
+	 * getTitle purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * setAbstract purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setAbstract(String string) {
+		_abstract = string;
+	}
+
+	/**
+	 * setDataStore purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param store
+	 */
+	public void setDataStoreId(String store) {
+		dataStoreId = store;
+	}
+
+	/**
+	 * setKeywords purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param list
+	 */
+	public void setKeywords(List list) {
+		keywords = list;
+	}
+
+	/**
+	 * setKeywords purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param list
+	 */
+	public boolean addKeyword(String key) {
+		if(keywords == null)
+			keywords = new LinkedList();
+		return keywords.add(key);
+	}
+
+	/**
+	 * setKeywords purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param list
+	 */
+	public boolean removeKeyword(String key) {
+		return keywords.remove(key);
+	}
+
+	/**
+	 * setLatLongBBox purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param envelope
+	 */
+	public void setLatLongBBox(Envelope envelope) {
+		latLongBBox = envelope;
+	}
+
+	/**
+	 * setName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setName(String string) {
+		name = string;
+	}
+
+	/**
+	 * setSRS purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param i
+	 */
+	public void setSRS(int i) {
+		SRS = i;
+	}
+
+	/**
+	 * setTitle purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setTitle(String string) {
+		title = string;
+	}
+
+	/**
+	 * getNumDecimals purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public int getNumDecimals() {
+		return numDecimals;
+	}
+
+	/**
+	 * setNumDecimals purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param i
+	 */
+	public void setNumDecimals(int i) {
+		numDecimals = i;
+	}
+
+	/**
+	 * getDefinitionQuery purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public Filter getDefinitionQuery() {
+		return definitionQuery;
+	}
+
+	/**
+	 * setDefinitionQuery purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param filter
+	 */
+	public void setDefinitionQuery(Filter filter) {
+		definitionQuery = filter;
+	}
+
+	/**
+	 * getDefaultStyle purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getDefaultStyle() {
+		return defaultStyle;
+	}
+
+	/**
+	 * setDefaultStyle purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setDefaultStyle(String string) {
+		defaultStyle = string;
+	}
+
+	/**
+	 * getSchema purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public List getSchema() {
+		return schema;
+	}
+
+	/**
+	 * setSchema purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param schemaElements
+	 */
+	public void setSchema(List schemaElements) {
+		this.schema = schemaElements;
+	}
+
+	/**
+	 * getDirName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getDirName() {
+		return dirName;
+	}
+
+	/**
+	 * setDirName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setDirName(String string) {
+		dirName = string;
+	}
+
     
-	/** DOCUMENT ME! */
-    private String pathToSchemaFile;
-    private String prefix;
-    private int numDecimals = DEFAULT_NUM_DECIMALS;
-
-    /**
-     * GT2 based configuration, Config map supplies extra info.
-     * 
-     * <p>
-     * We need to make an GeometryAttributeType that knows about SRID
-     * </p>
-     * 
-     * <ul>
-     * <li>
-     * datastore.featuretype.srid: int (default 0)
-     * </li>
-     * <li>
-     * datastore.featuretype.numDecimals: int (default 8)
-     * </li>
-     * <li>
-     * datastore.featuretype.bbxo: Envelope (default calcuated)
-     * </li>
-     * </ul>
-     * 
-     *
-     * @param config
-     * @param type
-     * @param dataStoreConfig
-     */
-    public FeatureTypeConfig(Map config, FeatureType type,
-        DataStoreConfig dataStoreConfig) {
-        super(config);
-
-        String key = type.getNamespace() + "." + type.getTypeName();
-        SRS = String.valueOf(get(config, key + ".srid", 0));
-        dataStore = dataStoreConfig;
-        numDecimals = get(config, key + ".numDecimals", 8);
-        schema = type;
-        styles = new HashMap(0);
-
-        if (type.getDefaultGeometry() == null) {
-            latLongBBox = new Envelope();
-        } else if (config.containsKey(key + ".bbox")) {
-            latLongBBox = (Envelope) config.get(key + ".bbox");
-        } else {
-            try {
-                FeatureSource access = dataStore.getDataStore()
-                                                .getFeatureSource(type
-                        .getTypeName());
-                latLongBBox = access.getBounds();
-
-                if (latLongBBox == null) {
-                    latLongBBox = access.getFeatures().getBounds();
-                }
-            } catch (IOException io) {
-                latLongBBox = new Envelope();
-            }
-        }
-    }
-
-    /**
-     * Creates a new FeatureTypeConfig object.
-     *
-     * @param catalog DOCUMENT ME!
-     * @param fTypeRoot DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-    public FeatureTypeConfig(CatalogConfig catalog, Element fTypeRoot)
-        throws ConfigurationException {
-        super(fTypeRoot);
-
-        String msg = null;
-        String dataStoreId = getAttribute(fTypeRoot, "datastore", true);
-        this.dataStore = catalog.getDataStore(dataStoreId);
-
-        if (dataStore == null) {
-            msg = "FeatureType " + getName(true)
-                + " is congfigured from a datastore named " + dataStoreId
-                + " wich was not found. Check your config files.";
-            throw new ConfigurationException(msg);
-        }
-
-        this.SRS = getChildText(fTypeRoot, "SRS", true);
-
-        if (dataStore.isEnabled()) {
-            try {
-                this.schema = getSchema(getChildElement(fTypeRoot, "attributes"));
-            } catch (Exception ex) {
-                throw new ConfigurationException("Error obtaining schema for "
-                    + getName() + ": " + ex.getMessage(), ex);
-            }
-
-            loadStyles(getChildElement(fTypeRoot, "styles"), catalog);
-            loadLatLongBBox(getChildElement(fTypeRoot, "latLonBoundingBox"));
-        } else {
-            LOGGER.info("featureType " + getName() + " is not enabled");
-        }
-
-        Element numDecimalsElem = getChildElement(fTypeRoot, "numDecimals",
-                false);
-
-        if (numDecimalsElem != null) {
-            this.numDecimals = getIntAttribute(numDecimalsElem, "value", false,
-                    DEFAULT_NUM_DECIMALS);
-        }
-
-        loadDefinitionQuery(fTypeRoot);
-    }
-
-    private void loadDefinitionQuery(Element typeRoot)
-        throws ConfigurationException {
-        Element defQNode = getChildElement(typeRoot, "definitionQuery", false);
-        Filter filter = null;
-
-        if (defQNode != null) {
-            LOGGER.fine("definitionQuery element found, looking for Filter");
-
-            Element filterNode = getChildElement(defQNode, "Filter", false);
-
-            if ((filterNode != null)
-                    && ((filterNode = getFirstChildElement(filterNode)) != null)) {
-                this.definitionQuery = FilterDOMParser.parseFilter(filterNode);
-
-                return;
-            }
-
-            LOGGER.fine("No Filter definition query found");
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public int getNumDecimals() {
-        return numDecimals;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public FeatureType getSchema() {
-        return schema;
-    }
-
-    /**
-     * gets the string of the path to the schema file.  This is set during
-     * feature reading, the schema file should be in the same folder as the
-     * feature type info, with the name schema.xml.  This function does not
-     * guarantee that the schema file actually exists, it just gives the
-     * location where it _should_ be located.
-     *
-     * @return The path to the schema file.
-     */
-    public String getSchemaFile() {
-        return pathToSchemaFile;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param pathToSchema DOCUMENT ME!
-     */
-    public void setSchemaFile(String pathToSchema) {
-        this.pathToSchemaFile = pathToSchema;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public DataStoreConfig getDataStore() {
-        return this.dataStore;
-    }
-
-    /**
-     * Indicates if this FeatureType is enabled.  For now just gets whether the
-     * backing datastore is enabled.
-     *
-     * @return <tt>true</tt> if this FeatureTypeConfig is enabled.
-     *
-     * @task REVISIT: Consider adding more fine grained control to config
-     *       files, so users can indicate specifically if they want the
-     *       featureTypes enabled, instead of just relying on if the datastore
-     *       is.
-     */
-    public boolean isEnabled() {
-        return (this.dataStore != null) && (this.dataStore.isEnabled());
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getPrefix() {
-        if (this.prefix == null) {
-            this.prefix = getDataStore().getNameSpace().getPrefix();
-        }
-
-        return prefix;
-    }
-
-    /**
-     * Gets the namespace for this featureType.  This isn't _really_ necessary,
-     * but I'm putting it in in case we change namespaces,  letting
-     * FeatureTypes set their own namespaces instead of being dependant on
-     * datasources.  This method will allow us to make that change more easily
-     * in the future.
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalStateException DOCUMENT ME!
-     */
-    public NameSpace getNameSpace() {
-        if (!isEnabled()) {
-            throw new IllegalStateException("This featureType is not "
-                + "enabled");
-        }
-
-        return getDataStore().getNameSpace();
-    }
-
-    /**
-     * overrides getName to return full type name with namespace prefix
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getName() {
-        //getDataStore().getNameSpace().getPrefix() is causing too many null
-        //pointers on unitialized stuff.  figure out a more elegant way to
-        //handle this.
-        return new StringBuffer(getPrefix()).append(NameSpace.PREFIX_DELIMITER)
-                                            .append(super.getName()).toString();
-    }
-
-    /**
-     * Convenience method for those who just want to report the name of the
-     * featureType instead of requiring the full name for look up.  If
-     * allowShort is true then just the localName, with no prefix, will be
-     * returned if the dataStore is not enabled.  If allow short is false then
-     * a full getName will be returned, with potentially bad results.
-     *
-     * @param allowShort DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getName(boolean allowShort) {
-        if (allowShort && (!isEnabled() || (getDataStore() == null))) {
-            return getShortName();
-        } else {
-            return getName();
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getShortName() {
-        return super.getName();
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    public FeatureSource getFeatureSource() throws IOException {
-        if (!isEnabled() || (dataStore.getDataStore() == null)) {
-            throw new IOException("featureType: " + getName(true)
-                + " does not have a properly configured " + "datastore");
-        }
-
-        FeatureSource realSource = getRealFeatureSource();
-        FeatureSource mappedSource = new DEFQueryFeatureLocking(realSource,
-                getSchema(), this.definitionQuery);
-
-        return mappedSource;
-    }
-
-    private FeatureSource getRealFeatureSource()
-        throws NoSuchElementException, IllegalStateException, IOException {
-        FeatureSource realSource = dataStore.getDataStore().getFeatureSource(super
-                .getName());
-
-        return realSource;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    public Envelope getBoundingBox() throws IOException {
-        if (bbox == null) {
-            loadBoundingBoxes();
-        }
-
-        return bbox;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Filter getDefinitionQuery() {
-        return this.definitionQuery;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    public Envelope getLatLongBoundingBox() throws IOException {
-        if (latLongBBox == null) {
-            loadBoundingBoxes();
-        }
-
-        return latLongBBox;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getSRS() {
-        return SRS;
-    }
-
-    /**
-     **/
-    public String getOperations() {
-        //get this from the datasource?
-        return null;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Map getStyles() {
-        return this.styles;
-    }
-
-    //HACK: should not have access to all catalog styles, but first we need
-    //to figure out the loading of styles.
-    public Style getStyle(String styleName) throws WmsException {
-        Style style = (Style) styles.get(styleName);
-        LOGGER.info("got style " + style + " from " + styles);
-
-        if (style == null) {
-            throw new WmsException("style named " + styleName + " not found");
-        }
-
-        return style;
-    }
-
-    /**
-     * defaultStyle is not currently written to, and there are not any subclasses.
-     * 12/17/03 dz 
-     *
-     * @return String defaultStyle
-     */
-    public String getDefaultStyle() {
-        return this.defaultStyle;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws IllegalStateException DOCUMENT ME!
-     */
-    private void loadBoundingBoxes() throws IOException {
-        if (!isEnabled()) {
-            throw new IllegalStateException("This featureType is not "
-                + "enabled");
-        }
-
-        FeatureSource source = getRealFeatureSource();
-        this.bbox = source.getBounds();
-
-        if (this.latLongBBox == null) {
-            this.latLongBBox = getLatLongBBox(getSRS(), bbox);
-        }
-    }
-
-    /**
-     * creates a FeatureType schema from the list of defined exposed
-     * attributes, or the full schema if no exposed attributes were defined
-     *
-     * @param attsElem DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     *
-     * @task TODO: if the default geometry attribute was not declared as
-     *       exposed should we expose it anyway? I think yes.
-     */
-    private FeatureType getSchema(Element attsElem)
-        throws ConfigurationException, IOException {
-        NodeList exposedAttributes = null;
-        FeatureType schema = getRealFeatureSource().getSchema();
-        FeatureType filteredSchema = null;
-
-        if (attsElem != null) {
-            exposedAttributes = attsElem.getElementsByTagName("attribute");
-        }
-
-        if ((exposedAttributes == null) || (exposedAttributes.getLength() == 0)) {
-            return schema;
-        }
-
-        int attCount = exposedAttributes.getLength();
-        AttributeType[] attributes = new AttributeType[attCount];
-        Element attElem;
-        String attName;
-
-        for (int i = 0; i < attCount; i++) {
-            attElem = (Element) exposedAttributes.item(i);
-            attName = getAttribute(attElem, "name", true);
-            attributes[i] = schema.getAttributeType(attName);
-
-            if (attributes[i] == null) {
-                throw new ConfigurationException("the FeatureType " + getName()
-                    + " does not contains the configured attribute " + attName
-                    + ". Check your catalog configuration");
-            }
-        }
-
-        try {
-            filteredSchema = FeatureTypeFactory.newFeatureType(attributes,
-                    getName());
-        } catch (SchemaException ex) {
-        } catch (FactoryConfigurationError ex) {
-        }
-
-        return filteredSchema;
-    }
-
-    /**
-     * here we must make the transformation. Crhis: do you know how to do it? I
-     * don't know.  Ask martin or geotools devel.  This will be better when
-     * our geometries actually have their srs objects.  And I think that we
-     * may need some MS Access database, not sure, but I saw some stuff about
-     * that on the list.  Hopefully they'll do it all in java soon.  I'm sorta
-     * tempted to just have users define for now.
-     *
-     * @param fromSrId DOCUMENT ME!
-     * @param bbox DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    private static Envelope getLatLongBBox(String fromSrId, Envelope bbox) {
-        //Envelope latLongBBox = null;
-        //return latLongBBox;
-        return bbox;
-    }
-
-    private void loadLatLongBBox(Element bboxElem)
-        throws ConfigurationException {
-        boolean dynamic = getBooleanAttribute(bboxElem, "dynamic", false);
-
-        if (!dynamic) {
-            double minx = getDoubleAttribute(bboxElem, "minx", true);
-            double miny = getDoubleAttribute(bboxElem, "minx", true);
-            double maxx = getDoubleAttribute(bboxElem, "minx", true);
-            double maxy = getDoubleAttribute(bboxElem, "minx", true);
-            this.latLongBBox = new Envelope(minx, miny, maxx, maxy);
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     * 
-     * does not appear to have any affect except to create an empty hashmap (dz)
-     *
-     * @param styles DOCUMENT ME!
-     * @param catalog DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     *
-     * @task TODO: I'm not sure this class is necessary, or if it's doing what
-     *       we want.  Right now it reads in the style elements in an info.xml
-     *       file (or rather doesn't, as I haven't got it working yet), and
-     *       then limits the styles to those.  I think that instead what it
-     *       should do is analyze the styles of catalog, see if they match
-     *       this FeatureType, and if they do then load the styles.
-     */
-    private void loadStyles(Element styles, CatalogConfig catalog)
-        throws ConfigurationException {
-        NodeList stylesList = null;
-        int numStyles = 0;
-        LOGGER.info("loading styles " + styles);
-
-        //HACK: we need to shake out catalog and config and whatnot.
-        this.styles = catalog.getStyles();
-
-        /*if (styles != null) {
-           stylesList = styles.getElementsByTagName("style");
-           numStyles = stylesList.getLength();
-           this.styles = new HashMap(numStyles);
-           for (int i = 0; i < numStyles; i++) {
-               Node node = stylesList.item(i);
-               if (node instanceof Element) {
-                   Element elem = (Element) node;
-                   String id = getElementText(elem, true);
-                   Style style = catalog.getStyle(id);
-                   if (style == null) {
-                       LOGGER.warning("Problem loading styles for " + getName(true) +
-                                      ", requested id " + id + " is not available in loaded "
-                                      + "styles: " + catalog.getStyles());
-                   } else {
-                       LOGGER.config("featureType " + getName(true) + " added style " + id);
-                       this.styles.put(id, style);
-                       String defaultVal = getAttribute(elem, "default", false);
-                       if (defaultVal != null && defaultVal.equals("true")) {
-                           this.defaultStyle = id;
-                       }
-                   }
-               }
-           }
-        
-           }
-        
-           //TODO: programatically provide a good default.
-           if (numStyles == 0) {
-               this.styles = new HashMap(numStyles + 1);
-               }*/
-    }
+	/**
+	 * getSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	/**
+	 * setSchemaName purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSchemaName(String string) {
+		schemaName = string;
+	}
+
+	/**
+	 * getSchemaBase purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public String getSchemaBase() {
+		return schemaBase;
+	}
+
+	/**
+	 * setSchemaBase purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param string
+	 */
+	public void setSchemaBase(String string) {
+		schemaBase = string;
+	}
 }

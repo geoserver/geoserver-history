@@ -4,32 +4,38 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.responses.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WmsCapabilitiesResponseHandler.java,v 1.3.2.10 2004/01/07 22:44:05 dmzwiers Exp $
  */
 public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
-    private static final String CAP_VERSION = ServerConfig.getInstance()
-                                                          .getWMSConfig()
-                                                          .getVersion();
-
+    private static final String CAP_VERSION = WMS.getVersion();
+	private GeoServer server = null;
     /**
      * Creates a new WmsCapabilitiesResponseHandler object.
      *
      * @param handler DOCUMENT ME!
      */
-    public WmsCapabilitiesResponseHandler(ContentHandler handler) {
+    public WmsCapabilitiesResponseHandler(ContentHandler handler, GeoServer gs) {
         super(handler);
+        server = gs;
     }
 
     /**
@@ -39,14 +45,18 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void startDocument(ServiceConfig config)
+    protected void startDocument(Service config)
         throws SAXException {
-        WMSConfig wmsConfig = (WMSConfig) config;
+        WMS wmsConfig = (WMS) config;
 
         AttributesImpl atts = new AttributesImpl();
+
+        //handleSingleElem("!DOCTYPE WMT_MS_Capabilities SYSTEM \"http://www.digitalearth.gov/wmt/xml/capabilities_1_1_1.dtd\"", null);
+        //atts.addAttribute("WMT_MS_Capabilities
+        //atts = new AttributesImpl();
         atts.addAttribute("", "version", "version", "", CAP_VERSION);
-        atts.addAttribute("", "", "updateSequence", "updateSequence",
-            wmsConfig.getUpdateTime());
+        //atts.addAttribute("", "", "updateSequence", "updateSequence",
+        //    wmsConfig.getUpdateTime());
         startElement("WMT_MS_Capabilities", atts);
     }
 
@@ -57,7 +67,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void endDocument(ServiceConfig config) throws SAXException {
+    public void endDocument(Service config) throws SAXException {
+        unIndent();
         endElement("WMT_MS_Capabilities");
     }
 
@@ -68,8 +79,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void startService(ServiceConfig config) throws SAXException {
-        startElement("Service");
+    protected void startService(Service config) throws SAXException {
+        startElement("ServiceConfig");
     }
 
     /**
@@ -79,8 +90,8 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void endService(ServiceConfig config) throws SAXException {
-        endElement("Service");
+    protected void endService(Service config) throws SAXException {
+        endElement("ServiceConfig");
     }
 
     /**
@@ -90,7 +101,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void handleService(ServiceConfig config) throws SAXException {
+    public void handleService(Service config) throws SAXException {
         super.handleService(config);
         indent();
         handleContactInformation(config);
@@ -104,9 +115,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleCapabilities(ServiceConfig serviceConfig)
+    protected void handleCapabilities(Service serviceConfig)
         throws SAXException {
-        WMSConfig config = (WMSConfig) serviceConfig;
+        WMS config = (WMS) serviceConfig;
 
         cReturn();
 
@@ -120,29 +131,30 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
         endElement("Capability");
 
-        handleLayers(config);
+        //        handleLayers(config);
     }
 
-    protected void handleLayers(WMSConfig config) throws SAXException {
-        CatalogConfig catalog = server.getCatalog();
-        Collection ftypes = catalog.getFeatureTypes().values();
-        FeatureTypeConfig layer;
+    protected void handleLayers(WMS config) throws SAXException {
+        Data catalog = server.getData();
+        Collection ftypes = catalog.getFeatureTypeInfos().values();
+        FeatureTypeInfo layer;
 
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
-            layer = (FeatureTypeConfig) it.next();
-            if(layer.isEnabled())
-            {
-              startElement("Layer");
-              indent();
-              handleFeatureType(layer);
-              unIndent();
-              endElement("Layer");
+            layer = (FeatureTypeInfo) it.next();
+
+            if (layer.isEnabled()) {
+                cReturn();
+                startElement("Layer");
+                indent();
+                handleFeatureType(layer);
+                unIndent();
+                endElement("Layer");
             }
         }
     }
 
     /**
-     * calls super.handleFeatureType to add common FeatureType content such as
+     * calls super.handleFeatureType to add common FeatureTypeInfo content such as
      * Name, Title and LatLonBoundingBox, and then writes WMS specific layer
      * properties as Styles, Scale Hint, etc.
      *
@@ -150,12 +162,12 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleFeatureType(FeatureTypeConfig ftype)
+    protected void handleFeatureType(FeatureTypeInfo ftype)
         throws SAXException {
         super.handleFeatureType(ftype);
     }
 
-    protected void handleSLD(WMSConfig config) throws SAXException {
+    protected void handleSLD(WMS config) throws SAXException {
         AttributesImpl sldAtts = new AttributesImpl();
         String supportsSLD = config.supportsSLD() ? "1" : "0";
         String supportsUserLayer = config.supportsUserLayer() ? "1" : "0";
@@ -166,19 +178,24 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         sldAtts.addAttribute("", "UserLayer", "UserLayer", "", supportsUserLayer);
         sldAtts.addAttribute("", "UserStyle", "UserStyle", "", supportsUserStyle);
         sldAtts.addAttribute("", "RemoteWFS", "RemoteWFS", "", supportsRemoteWFS);
-
+        cReturn();
         startElement("UserDefinedSymbolization", sldAtts);
         endElement("UserDefinedSymbolization");
     }
 
-    protected void handleVendorSpecifics(WMSConfig config)
+    protected void handleVendorSpecifics(WMS config)
         throws SAXException {
         startElement("VendorSpecificCapabilities");
         endElement("VendorSpecificCapabilities");
     }
 
-    protected void handleRequest(WMSConfig config) throws SAXException {
+    protected void handleRequest(WMS config) throws SAXException {
         startElement("Request");
+        indent();
+        handleCapability(config, "GetCapabilities");
+        cReturn();
+        handleCapability(config, "GetMap");
+        unIndent();
 
         /*
            handleCapability(config, "GetCapabilities");
@@ -191,7 +208,70 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         endElement("Request");
     }
 
-    protected void handleExceptions(WMSConfig config) throws SAXException {
+    protected void handleCapability(WMS config, String capabilityName)
+        throws SAXException {
+        boolean isPost = false;
+        startElement(capabilityName);
+        indent();
+
+        if (capabilityName.equals("GetCapabilities")) {
+            //HACK - hardcode.  Also, do we actually return this mime-type?
+            handleSingleElem("Format", "application/vnd.ogc.wms_xml");
+            cReturn();
+            isPost = true;
+        }
+
+        if (capabilityName.startsWith("GetMap")) {
+            Iterator formats = GetMapResponse.getMapFormats().iterator();
+
+            while (formats.hasNext()) {
+                handleSingleElem("Format", (String) formats.next());
+                cReturn();
+            }
+        }
+
+        startElement("DCPType");
+        indent();
+        startElement("HTTP");
+        indent();
+        startElement("Get");
+
+        String baseUrl = server.getBaseUrl() + "wms/";
+        String url = baseUrl + "?";
+        handleOnlineResource(url);
+        endElement("Get");
+
+        if (isPost) {
+            startElement("Post");
+
+            String postUrl = baseUrl;
+            handleOnlineResource(postUrl);
+            endElement("Post");
+        }
+
+        unIndent();
+        endElement("HTTP");
+        unIndent();
+        endElement("DCPType");
+        unIndent();
+        endElement(capabilityName);
+    }
+
+    protected void handleOnlineResource(String url) throws SAXException {
+        AttributesImpl attributes = new AttributesImpl();
+        attributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
+            "http://www.w3.org/1999/xlink");
+        attributes.addAttribute("", "xlink:type", "xlink:type", "", "simple");
+        attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
+
+        indent();
+        startElement("OnlineResource", attributes);
+        endElement("OnlineResource");
+        unIndent();
+    }
+
+    protected void handleExceptions(WMS config) throws SAXException {
+        cReturn();
         startElement("Exception");
         indent();
 
@@ -199,11 +279,15 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         for (int i = 0; i < formats.length; i++) {
             handleSingleElem("Format", formats[i]);
-            cReturn();
+
+            if (i < (formats.length - 1)) {
+                cReturn();
+            }
         }
 
         unIndent();
         endElement("Exception");
+        cReturn();
     }
 
     /**
@@ -213,9 +297,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleContactInformation(ServiceConfig config)
+    protected void handleContactInformation(Service config)
         throws SAXException {
-        ContactConfig contact = server.getGlobalConfig().getContactInformation();
+		GeoServer contact = server;
         startElement("ContactInformation");
         indent();
         startElement("ContactPersonPrimary");
@@ -247,7 +331,7 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     }
 
     /**
-     * Overrides BasicConfig.handleKeywords to write the keywords list in WMS
+     * Overrides GlobalBasic.handleKeywords to write the keywords list in WMS
      * style
      *
      * @param kwords DOCUMENT ME!
@@ -264,6 +348,10 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
                 startElement("Keyword");
                 characters(String.valueOf(it.next()));
                 endElement("Keyword");
+
+                if (it.hasNext()) {
+                    cReturn();
+                }
             }
 
             unIndent();
@@ -280,9 +368,9 @@ public class WmsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleOnlineResouce(ServiceConfig config)
+    protected void handleOnlineResouce(Service config)
         throws SAXException {
-        String url = config.getOnlineResource();
+        String url = config.getOnlineResource().toString();
         AttributesImpl olAtts = new AttributesImpl();
         String xlinkNs = "http://www.w3c.org/1999/xlink";
 

@@ -4,20 +4,27 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.io.*;
-import javax.xml.parsers.*;
+import java.io.IOException;
+import java.io.Reader;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.requests.CapabilitiesHandler;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
  * reads a WMS GetCapabilities request from an XML stream
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesXmlReader.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: CapabilitiesXmlReader.java,v 1.2.2.4 2004/01/05 22:14:42 dmzwiers Exp $
  *
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */

@@ -4,14 +4,21 @@
  */
 package org.vfny.geoserver.responses.wms;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import org.vfny.geoserver.responses.Response;
-import org.vfny.geoserver.responses.wms.map.*;
-import java.io.*;
-import java.util.*;
+import org.vfny.geoserver.responses.wms.map.GetMapDelegate;
+import org.vfny.geoserver.responses.wms.map.JAIMapResponse;
+import org.vfny.geoserver.responses.wms.map.SVGMapResponse;
 
 
 /**
@@ -20,7 +27,7 @@ import java.util.*;
  * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: GetMapResponse.java,v 1.3.2.3 2004/01/06 23:03:14 dmzwiers Exp $
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
@@ -69,20 +76,20 @@ public class GetMapResponse implements Response {
      *
      * @throws IllegalStateException if a GetMapDelegate is not setted yet
      */
-    public String getContentType() throws IllegalStateException {
+    public String getContentType(GeoServer gs) throws IllegalStateException {
         if (delegate == null) {
             throw new IllegalStateException("No request has been proceced");
         }
 
-        return delegate.getContentType();
+        return delegate.getContentType(gs);
     }
 
     /**
      * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
      */
-    public void abort() {
+    public void abort(GeoServer gs) {
         if (delegate != null) {
-            delegate.abort();
+            delegate.abort(gs);
         }
     }
 
@@ -153,7 +160,7 @@ public class GetMapResponse implements Response {
      * iterates over the registered Map producers and fills a list with
      * all the map formats' MIME types that the producers can handle
      */
-    private static List getMapFormats()
+    static List getMapFormats()
     {
       return supportedMimeTypes;
     }

@@ -10,7 +10,7 @@ package org.vfny.geoserver;
  * this before returning to clients.
  *
  * @author Gabriel Roldán
- * @version $Id: WmsException.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: WmsException.java,v 1.3.2.3 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class WmsException extends ServiceException {
     /**
@@ -21,7 +21,7 @@ public class WmsException extends ServiceException {
     }
 
     /**
-     *  constructor with exception message
+     * constructor with exception message
      *
      * @param message The message for the exception
      */
@@ -59,5 +59,32 @@ public class WmsException extends ServiceException {
      */
     public WmsException(Throwable e, String preMessage, String locator) {
         super(e, preMessage, locator);
+    }
+
+    /**
+     * Return request type.
+     *
+     * @param printStackTrace whether the stack trace should be included.
+     *
+     * @return The ServiceExceptionReport of this error.
+     *
+     * @task REVISIT: adapt it to handle WMS too
+     */
+    public String getXmlResponse(boolean printStackTrace) {
+        StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\"");
+        returnXml.append(" encoding=\"UTF-8\" standalone=\"no\" ?>");
+        returnXml.append(
+            "<!DOCTYPE ServiceExceptionReport SYSTEM \"http://www.digitalearth.gov/wmt/xml/exception_1_1_0.dtd\"> ");
+        returnXml.append("<ServiceExceptionReport version=\"1.1.0\">");
+
+        // Write exception code
+        returnXml.append("    <ServiceException"
+            + ((code != null) ? (" code=\"" + code + "\"") : "") + ">"
+            + getXmlMessage(printStackTrace) + "</ServiceException>");
+
+        // Write footer
+        returnXml.append("  </ServiceExceptionReport>");
+
+        return returnXml.toString();
     }
 }

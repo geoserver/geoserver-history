@@ -4,11 +4,16 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.util.*;
-import java.util.logging.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.geotools.data.*;
-import org.vfny.geoserver.config.*;
+import org.geotools.data.DataSourceFinder;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.GeoServer;
 
 /**
  * Reads all necessary configuration data and abstracts it away from the
@@ -66,7 +71,7 @@ public class ConfigInfo
   /**
    * Constructor that reads in configuration information from FreeFS
    * configuration file.  This information is primarily used in the
-   * 'Service' section of the return document.
+   * 'ServiceConfig' section of the return document.
    *
    * @param rootDir the directory holding all the configuration information.
    */
@@ -104,6 +109,7 @@ public class ConfigInfo
    */
   public static ConfigInfo getInstance()
   {
+	geoServer = null;
     if (config == null) {
       LOGGER.finer("getInstance with configDir argument should be passed"
                    + " in first!!");
@@ -115,7 +121,7 @@ public class ConfigInfo
 
     return config;
   }
-
+	private static GeoServer geoServer = null;
   /**
    * Returns root webserver application directory.  This should always be
    * called before the no argument getInstance, as that method just attempts
@@ -125,8 +131,9 @@ public class ConfigInfo
    *
    * @return the configuration information for that directory.
    */
-  public static ConfigInfo getInstance(String configDir)
+  public static ConfigInfo getInstance(String configDir, GeoServer gs)
   {
+  	geoServer = gs;
     LOGGER.finer("called get instance with file " + configDir);
 
     if (config == null) {
@@ -136,10 +143,14 @@ public class ConfigInfo
 
     return config;
   }
+  
+  public GeoServer getGeoServer(){
+  	return geoServer;
+  }
 
   /**
    * constructs a ServiceConfig object, which encapsulates the values used
-   * for the Service section of a capabilities object.
+   * for the ServiceConfig section of a capabilities object.
    *
    * @param configFile The file that contains the service tags.
    *

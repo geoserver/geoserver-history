@@ -23,6 +23,7 @@
   <property name="dir.test" value="${basedir}/test"/>
   <property name="dir.conf" value="${basedir}/conf"/>
   <property name="dir.release" value="${basedir}/release"/>
+  <property name="dir.webinf" value="${basedir}/WEB-INF"/>
 
   <!-- secondary directories -->
   <property name="dir.changelog" value="${dir.misc}/changelog"/>
@@ -35,7 +36,7 @@
 
   <!-- external directories -->
   <!-- pc example -->
-  <property name="dir.container" value="C:\java\resin-2.1.9\webapps"/>
+  <property name="dir.container" value="C:\java\resin-3.0.4\webapps"/>
   <property name="dir.geotools" 
             value="C:\java\workspace\geotools\geotools-src"/>
             
@@ -195,7 +196,7 @@
            destdir="${dir.build}" 
            includes="**/*.java" 
            classpathref="path.build" 
-           deprecation="on"
+           deprecation="off"
            debug="on"/>
     <antcall target="all"/>
     <junit fork="false"
@@ -225,10 +226,6 @@
           <include name="*.jar"/>
         </fileset>
       </classpath>
-      <test fork="true" 
-            name="org.vfny.geoserver.config.ConfigSuite"/>
-      <test fork="true" 
-            name="org.vfny.geoserver.config.TypeSuite"/>
     </junit>
   </target>    
 
@@ -501,7 +498,6 @@
         <include name="filterCapabilities.xsd"/>
       </fileset>
     </copy>
- 
     
     <mkdir dir="${basedir}/data/capabilities/gml/2.1.2"/>
     <copy todir="${basedir}/data/capabilities/gml/2.1.2">
@@ -544,10 +540,17 @@
         <exclude name="**/EmbeddedTomcat.class" />
       </classes>
 
+	  <classes dir="${dir.webinf}">
+		<include name="ApplicationResources.properties"/>
+	  </classes>
+            
       <!--webinf dir="${dir.conf}"/-->
       <webinf dir="${dir.conf}">
         <include name="services.xml"/>
         <include name="catalog.xml"/>
+      </webinf>
+      
+      <webinf dir="${dir.webinf}">
       </webinf>
       
       <!--webinf dir="${dir.data}"/>
@@ -565,6 +568,15 @@
         <include name="data/**"/>
         <include name="documentation/**"/>
       </fileset>
+      
+      <fileset dir="${dir.webinf}/pages">
+      	<include name="index.jsp"/>
+      	<include name="style.css"/>
+      </fileset>
+      <fileset dir="${dir.webinf}">
+      	<include name="images/**"/>
+      </fileset>
+      
     </war>
 
     <!-- clean-up -->
@@ -580,7 +592,8 @@
              private="true"
              windowtitle="GeoServer Documentation"
              classpathref="path.build"
-             stylesheetfile="${dir.misc}/documents/stylesheet.css">
+             stylesheetfile="${dir.misc}/documents/stylesheet.css"
+             overview="${dir.src}/overview.html">
       <package name="org.vfny.geoserver.*"/>
       <doctitle>
         <![CDATA[<h1>GeoServer Documentation</h1>]]>

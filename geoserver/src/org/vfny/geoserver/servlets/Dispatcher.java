@@ -4,16 +4,18 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.servlets.wfs.*;
-import java.io.*;
+import java.io.IOException;
 import java.util.Map;
-import java.util.logging.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.vfny.geoserver.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
 
 
 /**
@@ -32,7 +34,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.7 2003/12/17 01:12:58 cholmesny Exp $
+ * @version $Id: Dispatcher.java,v 1.7.2.8 2004/01/06 23:03:13 dmzwiers Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
@@ -43,11 +45,10 @@ public class Dispatcher extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** DOCUMENT ME! */
-    private static final ServerConfig config = ServerConfig.getInstance();
+    //private static final GeoServer config = GeoServer.getInstance();
 
     /** Specifies MIME type */
-    protected static final String MIME_TYPE = config.getGlobalConfig()
-                                                    .getMimeType();
+    //protected static final String MIME_TYPE = config.getMimeType();
 
     /** Map metadata request type */
     public static String META_REQUEST = "GetMeta";
@@ -84,7 +85,7 @@ public class Dispatcher extends HttpServlet {
 
     //HACK! This is just to fix instances where the first request is a 
     //dispatcher, and the strategy hasn't been inited yet.  This can be
-    //fixed in two ways, one by having Dispatcher extend Abstract Service,
+    //fixed in two ways, one by having Dispatcher extend Abstract ServiceConfig,
     //which it should do, and two by having the configuration of the strategy
     //done in user configuration instead of in the web.xml file.  Both should
     //be done.

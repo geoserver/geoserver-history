@@ -4,10 +4,12 @@
  */
 package org.vfny.geoserver.requests.readers.wfs;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import java.util.*;
+import java.util.Map;
+
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.requests.CapabilitiesRequest;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
 
 
 /**
@@ -16,7 +18,7 @@ import java.util.*;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesKvpReader.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: CapabilitiesKvpReader.java,v 1.2.2.3 2004/01/02 17:53:27 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
@@ -36,7 +38,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      * @throws ServiceException DOCUMENT ME!
      */
     public Request getRequest() throws ServiceException {
-        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WFS");
+        CapabilitiesRequest currentRequest = new CapabilitiesRequest("GlobalWFS");
         currentRequest.setVersion(getValue("VERSION"));
 
         //service is set in the constructor

@@ -4,30 +4,35 @@
  */
 package org.vfny.geoserver.config;
 
-import org.geotools.data.*;
-import org.w3c.dom.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFinder;
+import org.vfny.geoserver.action.data.DataStoreUtils;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
- * DOCUMENT ME!
+ * DataStoreInfo purpose.
+ * 
+ * <p>
+ * Used to describe a datastore, typically one specified in the catalog.xml
+ * config file.
+ * </p>
+ * 
+ * <p></p>
  *
- * @author Gabriel Roldán
- * @version $Id: DataStoreConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: DataStoreConfig.java,v 1.2.2.9 2004/01/12 09:42:30 jive Exp $
  */
-public class DataStoreConfig extends AbstractConfig {
-    
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.config");
-
+public class DataStoreConfig {
     /** unique datasore identifier */
     private String id;
 
     /** unique namespace to refer to this datastore */
-    private NameSpace nameSpace;
+    private String nameSpaceId;
 
     /** wether this data store is enabled */
     private boolean enabled;
@@ -38,199 +43,299 @@ public class DataStoreConfig extends AbstractConfig {
     /** a short description about this data store */
     private String _abstract;
 
-    /** connection parameters to create the DataStore */
+    /** connection parameters to create the DataStoreInfo */
     private Map connectionParams;
 
-    /** DataStore we are representing */
-    private DataStore dataStore = null;
+    /** Config ONLY! DataStoreFactory used to test params */
+    private DataStoreFactorySpi factory;
+
     /**
-     * Creates a new DataStoreConfig object.
-     *
-     * @param dsElem DOCUMENT ME!
-     * @param catalog DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-    public DataStoreConfig(Element dsElem, CatalogConfig catalog)
-        throws ConfigurationException {
-        LOGGER.finer("creating a new DataStore configuration");
-        this.id = getAttribute(dsElem, "id", true);
-
-        String namespacePrefix = getAttribute(dsElem, "namespace", true);
-        this.nameSpace = catalog.getNameSpace(namespacePrefix);
-
-        if (this.nameSpace == null) {
-            String msg = "there is no namespace defined for datatasore '"
-                + namespacePrefix + "'";
-            throw new ConfigurationException(msg);
-        }
-
-        //Huh?  Doesn't this just set this always to true?
-        //this.enabled = true || getBooleanAttribute(dsElem, "enabled", false);
-        this.enabled = getBooleanAttribute(dsElem, "enabled", false);
-        this.title = getChildText(dsElem, "title", false);
-        this._abstract = getChildText(dsElem, "abstract", false);
-        loadConnectionParams(getChildElement(dsElem, "connectionParams", true));
-        LOGGER.info("created " + toString());
-    }
-    /**
-     * Configuration based on gt2 Catalog information.
+     * Create a new DataStoreConfig
+     * 
      * <p>
-     * For the namespace food the config map defines:
+     * Creates a DataStoreInfo to represent an instance with default data.
      * </p>
-     * <ul>
-     * <li>foo.id: String (default foo)</li>
-     * <li>foo.enabled: boolean (default true)</li>
-     * <li>foo.title: String</li>
-     * <li>foo.abstract: String</li>
-     * </ul>
-     * @param config
-     * @param store
-     * @param config2
-     */
-    public DataStoreConfig(Map config, DataStore store, NameSpace namespace ) {
-        LOGGER.finer("creating a new DataStore configuration");
-        String name = namespace.getPrefix();
-        id = get( config, name+".id", name );
-        nameSpace = namespace;
-        enabled = get( config, name+".enabled", true );
-        title = get( config, name+".title" );
-        _abstract = get( config, name+".abstract" );
-        dataStore = store;
-    }
-    /**
-     * DOCUMENT ME!
      *
-     * @return DOCUMENT ME!
+     * @param dataStoreId Description of DataStore (see DataStoreUtils)
+     * @param factoryDescription DOCUMENT ME!
+     *
+     * @see defaultSettings()
      */
-    public String getId() {
-        return this.id;
+    public DataStoreConfig(String dataStoreId, String factoryDescription) {
+        this(dataStoreId, DataStoreUtils.aquireFactory(factoryDescription));
+    }
+
+    public DataStoreConfig(String dataStoreId, DataStoreFactorySpi factory) {
+        this.factory = factory;
+        id = dataStoreId;
+        nameSpaceId = "";
+        enabled = false;
+        title = "";
+        _abstract = "";
+        connectionParams = DataStoreUtils.defaultParams(factory);
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param connElem DOCUMENT ME!
-     *
-     * @throws ConfigurationException DOCUMENT ME!
-     */
-    private void loadConnectionParams(Element connElem)
-        throws ConfigurationException {
-        LOGGER.fine("loading connection parameters for DataStore "
-            + nameSpace.getPrefix());
-        this.connectionParams = new HashMap();
-
-        NodeList paramElems = connElem.getElementsByTagName("parameter");
-        int pCount = paramElems.getLength();
-        Element param;
-        String paramKey;
-        String paramValue;
-
-        for (int i = 0; i < pCount; i++) {
-            param = (Element) paramElems.item(i);
-            paramKey = getAttribute(param, "name", true);
-            paramValue = getAttribute(param, "value", true);
-            connectionParams.put(paramKey, paramValue);
-            LOGGER.finer("added parameter " + paramKey + ": '" + paramValue
-                + "'");
-        }
-    }
-
-    /**
-     * By now just uses DataStoreFinder to find a new instance of a DataStore
-     * capable of process <code>connectionParams</code>. In the future we can
-     * see if it is better to cache or pool DataStores for performance, but
-     * definitely we shouldn't maintain a single DataStore as instance
-     * variable for synchronizing reassons
+     * DataStoreInfo constructor.
+     * 
      * <p>
-     * <p>
-     * JG: Umm we actually require a single DataStore for for locking &
-     * transaction support to work. DataStore is expected
-     * to be thread aware (that is why it has Transaction Support).
+     * Creates a copy of the DataStoreInfoDTO provided. All the datastructures
+     * are cloned.
      * </p>
-     * @return DOCUMENT ME!
      *
-     * @throws IOException if a datastore is found but can not be created for
-     *         the passed parameters
-     * @throws IllegalStateException if this DataStoreConfig is disabled by
-     *         configuration
-     * @throws NoSuchElementException if no DataStore is found
-     * @throws DataSourceException DOCUMENT ME!
+     * @param dto The datastore to copy.
      */
-    public synchronized DataStore getDataStore()
-        throws IOException, IllegalStateException, NoSuchElementException {
-        if (!isEnabled()) {
-            throw new IllegalStateException(
-                "this datastore is not enabled, check your configuration files");
-        }
-        if( dataStore == null ){
-            try {
-                dataStore = DataStoreFinder.getDataStore(connectionParams);
-		LOGGER.fine("connection established by " + toString());
-            } catch (Throwable ex) {
-                throw new DataSourceException("can't create the datastore " +
-                                            getId() + ": " +
-                                            ex.getClass().getName() + ": " +
-                                            ex.getMessage(), ex);
-            }
-            if (dataStore == null) {
-		LOGGER.fine("failed to establish connection with " + toString());
-                throw new NoSuchElementException(
-                    "No datastore found capable of managing " + toString());
-            }
-        }
-        return dataStore;
+    public DataStoreConfig(DataStoreInfoDTO dto) {
+        reset(dto);
     }
 
     /**
-     * DOCUMENT ME!
+     * Called to update Config class based on DTO information
      *
-     * @return DOCUMENT ME!
+     * @param dto DOCUMENT ME!
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
-    public String getTitle() {
-        return title;
+    public void reset(DataStoreInfoDTO dto) {
+        if (dto == null) {
+            throw new NullPointerException("Non null DataStoreInfoDTO required");
+        }
+
+        factory = DataStoreUtils.aquireFactory(dto.getConnectionParams());
+
+        id = dto.getId();
+        nameSpaceId = dto.getNameSpaceId();
+        enabled = dto.isEnabled();
+        _abstract = dto.getAbstract();
+        connectionParams = new HashMap(dto.getConnectionParams());
     }
 
     /**
-     * DOCUMENT ME!
+     * Implement loadDTO.
+     * 
+     * <p>
+     * Populates the data fields with the DataStoreInfoDTO provided.
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @param ds the DataStoreInfoDTO to use.
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     *
+     * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
+     */
+    public void update(DataStoreInfoDTO ds) {
+        if (ds == null) {
+            throw new NullPointerException(
+                "DataStoreInfo Data Transfer Object required");
+        }
+
+        id = ds.getId();
+        nameSpaceId = ds.getNameSpaceId();
+        enabled = ds.isEnabled();
+        _abstract = ds.getAbstract();
+
+        try {
+            connectionParams = new HashMap(ds.getConnectionParams()); //clone?
+        } catch (Exception e) {
+            connectionParams = new HashMap();
+        }
+    }
+
+    /**
+     * Implement toDTO.
+     * 
+     * <p>
+     * Create a DataStoreInfoDTO from the current config object.
+     * </p>
+     *
+     * @return The data represented as a DataStoreInfoDTO
+     *
+     * @see org.vfny.geoserver.config.DataStructure#toDTO()
+     */
+    public DataStoreInfoDTO toDTO() {
+        DataStoreInfoDTO ds = new DataStoreInfoDTO();
+        ds.setId(id);
+        ds.setNameSpaceId(nameSpaceId);
+        ds.setEnabled(enabled);
+        ds.setAbstract(_abstract);
+
+        try {
+            ds.setConnectionParams(new HashMap(connectionParams));
+        } catch (Exception e) {
+            // default already created  	
+        }
+
+        return ds;
+    }
+
+    /**
+     * getAbstract purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
      */
     public String getAbstract() {
         return _abstract;
     }
 
     /**
-     * DOCUMENT ME!
+     * getConnectionParams purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
+     */
+    public Map getConnectionParams() {
+        return connectionParams;
+    }
+
+    /**
+     * isEnabled purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
      */
     public boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * DOCUMENT ME!
+     * getId purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
-    public NameSpace getNameSpace() {
-        return nameSpace;
+    public String getId() {
+        return id;
     }
 
     /**
-     * DOCUMENT ME!
+     * getNameSpace purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
      *
-     * @return DOCUMENT ME!
+     * @return
      */
-    public String toString() {
-        return new StringBuffer("DataStoreConfig[namespace=").append(nameSpace
-            .getPrefix()).append(", enabled=").append(enabled)
-                                                             .append(", abstract=")
-                                                             .append(_abstract)
-                                                             .append(", connection parameters=")
-                                                             .append(connectionParams)
-                                                             .append("]")
-                                                             .toString();
+    public String getNameSpaceId() {
+        return nameSpaceId;
     }
+
+    /**
+     * getTitle purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * setAbstract purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setAbstract(String string) {
+        if (string != null) {
+            _abstract = string;
+        }
+    }
+
+    /**
+     * setConnectionParams purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param map
+     */
+    public void setConnectionParams(Map map) {
+        connectionParams = map;
+    }
+
+    /**
+     * setEnabled purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param b
+     */
+    public void setEnabled(boolean b) {
+        enabled = b;
+    }
+
+    /**
+     * setNameSpace purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param support
+     */
+    public void setNameSpaceId(String support) {
+        if (support != null) {
+            nameSpaceId = support;
+        }
+    }
+
+    /**
+     * setTitle purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setTitle(String string) {
+        if (string != null) {
+            title = string;
+        }
+    }
+
+    // Access to Dyanmic Content
+
+    /**
+     * It would be nice if we did not throw this away - but life is too short
+     *
+     * @return Real DataStore generated by this DataStoreConfig
+     *
+     * @throws IOException If DataStore could not be aquired
+     */
+    public DataStore findDataStore() throws IOException {
+        return DataStoreFinder.getDataStore(connectionParams);
+    }
+    
+    /**
+     * Get DataStoreFactorySpi used for this DataStoreConfig.
+     * @return DataStoreFactorySpi that this DataStoreConfig matches
+     */
+    public DataStoreFactorySpi getFactory() {
+        return factory;
+    }
+
 }

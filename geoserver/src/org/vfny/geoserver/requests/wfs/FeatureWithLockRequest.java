@@ -4,11 +4,12 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
+import java.util.Iterator;
+import java.util.logging.Logger;
+
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
-import org.vfny.geoserver.requests.*;
-import java.util.*;
-import java.util.logging.*;
+import org.vfny.geoserver.requests.Query;
 
 
 /**
@@ -20,7 +21,7 @@ import java.util.logging.*;
  * should be trivial, as it's already a part of lockRequest.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureWithLockRequest.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: FeatureWithLockRequest.java,v 1.2.2.4 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class FeatureWithLockRequest extends FeatureRequest {
     /** Standard logging instance for class */

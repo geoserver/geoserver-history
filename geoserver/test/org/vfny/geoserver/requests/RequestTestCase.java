@@ -4,11 +4,6 @@
  */
 package org.vfny.geoserver.requests;
 
-import junit.framework.TestCase;
-import org.geotools.filter.FilterFactory;
-import org.vfny.geoserver.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.wfs.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,16 +11,22 @@ import java.io.Reader;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import junit.framework.TestCase;
+
+import org.geotools.filter.FilterFactory;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+
 
 /**
  * Abstract test case to run request tests.  Subclasses must implement
- * getXmlReader and getKvpReader to be able to call the runXmlTest and 
- * runKvpTest.  If one of the readers does not exist it is fine to just 
- * return null, as long as that test runner is not called by the client
- * at all.
+ * getXmlReader and getKvpReader to be able to call the runXmlTest and
+ * runKvpTest.  If one of the readers does not exist it is fine to just
+ * return null, as long as that test runner is not called by the client at
+ * all.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: RequestTestCase.java,v 1.2 2003/12/19 03:39:11 cholmesny Exp $
+ * @version $Id: RequestTestCase.java,v 1.3.2.1 2003/12/31 00:36:51 dmzwiers Exp $
  */
 public abstract class RequestTestCase extends TestCase {
     //Initializes the logger. Uncomment to see log messages.
@@ -83,6 +84,8 @@ public abstract class RequestTestCase extends TestCase {
 
         // Compare parsed request to base request
         if (match) {
+            assertEquals(baseRequest, request);
+
             return baseRequest.equals(request);
         } else {
             return !baseRequest.equals(request);
@@ -90,10 +93,12 @@ public abstract class RequestTestCase extends TestCase {
     }
 
     /**
-     * This should return the appropriate xml reader to be used in running
-     * the tests.
+     * This should return the appropriate xml reader to be used in running the
+     * tests.
+     *
+     * @return DOCUMENT ME!
      */
-    protected abstract XmlRequestReader getXmlReader(); 
+    protected abstract XmlRequestReader getXmlReader();
 
     /**
      * Handles actual XML test running details.
@@ -119,17 +124,19 @@ public abstract class RequestTestCase extends TestCase {
 
         // Compare parsed request to base request
         if (match) {
-	    assertEquals(baseRequest, request);
+            assertEquals(baseRequest, request);
+
             return baseRequest.equals(request);
         } else {
             return !baseRequest.equals(request);
         }
     }
 
-     /**
-     * This should return the appropriate xml reader to be used in running
-     * the tests.
+    /**
+     * This should return the appropriate xml reader to be used in running the
+     * tests.
+     *
+     * @return DOCUMENT ME!
      */
     protected abstract KvpRequestReader getKvpReader(Map kvps);
-
 }

@@ -4,21 +4,26 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.responses.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import java.io.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Handles a Wfs specific sections of the capabilities response.
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: WfsCapabilitiesResponseHandler.java,v 1.2.2.11 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler {
     protected static final String WFS_URI = "http://www.opengis.net/wfs";
@@ -26,13 +31,15 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
     protected static final String XSI_PREFIX = "xsi";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
+	protected Request request;
     /**
      * Creates a new WfsCapabilitiesResponseHandler object.
      *
      * @param handler DOCUMENT ME!
      */
-    public WfsCapabilitiesResponseHandler(ContentHandler handler) {
+    public WfsCapabilitiesResponseHandler(ContentHandler handler,Request request) {
         super(handler);
+        this.request = request;
     }
 
     /**
@@ -42,13 +49,13 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void startDocument(ServiceConfig config)
+    protected void startDocument(Service config)
         throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "version", "version", "", CUR_VERSION);
         attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
 
-        NameSpace[] namespaces = catalog.getNameSpaces();
+        NameSpaceInfo[] namespaces = request.getGeoServer().getData().getNameSpaces();
 
         for (int i = 0; i < namespaces.length; i++) {
             String prefixDef = "xmlns:" + namespaces[i].getPrefix();
@@ -64,7 +71,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
 
         String locationAtt = XSI_PREFIX + ":schemaLocation";
         String locationDef = WFS_URI + " "
-            + ServerConfig.getInstance().getWFSConfig().getWfsCapLocation();
+            + request.getGeoServer().getSchemaBaseUrl() + "wfs/1.0.0/"+ "GlobalWFS-capabilities.xsd";
         attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
         startElement("WFS_Capabilities", attributes);
     }
@@ -76,7 +83,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void endDocument(ServiceConfig config) throws SAXException {
+    public void endDocument(Service config) throws SAXException {
         handleFilters();
         endElement("WFS_Capabilities");
     }
@@ -88,9 +95,9 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
      *
      * @throws SAXException DOCUMENT ME!
      */
-    protected void handleCapabilities(ServiceConfig serviceConfig)
+    protected void handleCapabilities(Service serviceConfig)
         throws SAXException {
-        WFSConfig config = (WFSConfig) serviceConfig;
+        WFS config = (WFS) serviceConfig;
 
         cReturn();
 
@@ -113,7 +120,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         handleFeatureTypes(config);
     }
 
-    private void handleCapability(WFSConfig config, String capabilityName)
+    private void handleCapability(WFS config, String capabilityName)
         throws SAXException {
         AttributesImpl attributes = new AttributesImpl();
 
@@ -140,7 +147,7 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         startElement("DCPType");
         startElement("HTTP");
 
-        String baseUrl = config.getURL();
+        String baseUrl = request.getGeoServer().getBaseUrl() + "wfs/";
         String url = baseUrl + capabilityName + "?";
         attributes.addAttribute("", "onlineResource", "onlineResource", "", url);
 
@@ -165,9 +172,9 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
     }
 
-    private void handleFeatureTypes(ServiceConfig serviceConfig)
+    private void handleFeatureTypes(Service serviceConfig)
         throws SAXException {
-        WFSConfig config = (WFSConfig) serviceConfig;
+        WFS config = (WFS) serviceConfig;
 
         startElement("FeatureTypeList");
 
@@ -187,19 +194,19 @@ public class WfsCapabilitiesResponseHandler extends CapabilitiesResponseHandler 
         unIndent();
         endElement("Operations");
 
-        Collection featureTypes = server.getCatalog().getFeatureTypes().values();
-        FeatureTypeConfig ftype;
+        Collection featureTypes = request.getGeoServer().getData().getFeatureTypeInfos().values();
+        FeatureTypeInfo ftype;
 
         for (Iterator it = featureTypes.iterator(); it.hasNext();) {
-            ftype = (FeatureTypeConfig) it.next();
+            ftype = (FeatureTypeInfo) it.next();
 
             //can't handle ones that aren't enabled.
             //and they shouldn't be handled, as they won't function.
             if (ftype.isEnabled()) {
-                startElement("FeatureType");
+                startElement("FeatureTypeConfig");
                 handleFeatureType(ftype);
                 unIndent();
-                endElement("FeatureType");
+                endElement("FeatureTypeConfig");
                 cReturn();
             }
         }

@@ -4,22 +4,26 @@
  */
 package org.vfny.geoserver.servlets.wms;
 
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.readers.wms.*;
+import java.io.IOException;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.readers.wms.GetMapKvpReader;
 import org.vfny.geoserver.responses.Response;
 import org.vfny.geoserver.responses.wms.GetMapResponse;
-import org.vfny.geoserver.servlets.*;
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import org.vfny.geoserver.servlets.WMService;
 
 /**
  * WMS service wich returns request and response handlers to manage a GetMap
  * request
  *
  * @author Gabriel Roldán
- * @version $Id: GetMap.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: GetMap.java,v 1.2.2.4 2004/01/05 22:14:43 dmzwiers Exp $
  */
 public class GetMap extends WMService {
     /**

@@ -61,8 +61,8 @@ import org.geotools.validation.ValidationResults;
  * </p>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: sploreg $ (last modification)
- * @version $Id: RangeFeatureValidation.java,v 1.3 2003/12/16 23:08:05 sploreg Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: RangeFeatureValidation.java,v 1.3.2.3 2004/01/05 22:14:44 dmzwiers Exp $
  */
 public class RangeFeatureValidation implements FeatureValidation {
     private String[] names;
@@ -99,7 +99,7 @@ public class RangeFeatureValidation implements FeatureValidation {
      * @throws Exception
      *
      * @see org.geotools.validation.FeatureValidation#validate(org.geotools.feature.Feature,
-     *      org.geotools.feature.FeatureType,
+     *      org.geotools.feature.FeatureTypeInfo,
      *      org.geotools.validation.ValidationResults)
      */
     public boolean validate(Feature feature, FeatureType type,

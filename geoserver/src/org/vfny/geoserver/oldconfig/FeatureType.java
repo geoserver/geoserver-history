@@ -4,30 +4,42 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.xml.parsers.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
-import org.vfny.geoserver.config.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.vfny.geoserver.global.ConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
- * This class represents a FeatureType element in a Capabilities document along
+ * This class represents a FeatureTypeInfo element in a Capabilities document along
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.2 $ $Date: 2003/12/16 18:46:08 $
+ * @version $Revision: 1.2.2.5 $ $Date: 2004/01/05 22:14:41 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
- *       castor generated FeatureType, but it is now unclear if we _really_
+ *       castor generated FeatureTypeInfo, but it is now unclear if we _really_
  *       need this internal class, or if a TypeInfo can just hold it all.
  */
 class FeatureType
 {
   /** DOCUMENT ME! */
-  public static final String ROOT_TAG = "FeatureType";
+  public static final String ROOT_TAG = "FeatureTypeConfig";
 
   /** DOCUMENT ME! */
   public static final String OLD_ROOT_TAG = "featureType";
@@ -60,7 +72,7 @@ class FeatureType
   public static final String MAXY_ATT = "maxy";
 
   /** DOCUMENT ME! */
-  public static final String STYLE_TAG = "Style";
+  public static final String STYLE_TAG = "StyleConfig";
 
   /** DOCUMENT ME! */
   public static final String STYLE_ID_ATTR = "id";
@@ -128,12 +140,12 @@ class FeatureType
   }
 
   /**
-   * static factory, reads a FeatureType from an xml file, using the default
+   * static factory, reads a FeatureTypeInfo from an xml file, using the default
    * root tag.
    *
    * @param featureTypeFile the path to the configuration file.
    *
-   * @return the FeatureType object constructed from the xml elements of the
+   * @return the FeatureTypeInfo object constructed from the xml elements of the
    *         file.
    *
    * @throws ConfigurationException If anything goes wrong reading the xml.
@@ -145,14 +157,14 @@ class FeatureType
   }
 
   /**
-   * static factory, reads a FeatureType from an xml file, using the passed
+   * static factory, reads a FeatureTypeInfo from an xml file, using the passed
    * in root tag.
    *
    * @param featureTypeFile the path to the configuration file.
    * @param rootTag the tag of the element whose children are the appropriate
    *        configuration elements.
    *
-   * @return the FeatureType object constructed from the xml elements of the
+   * @return the FeatureTypeInfo object constructed from the xml elements of the
    *         file.
    *
    * @throws ConfigurationException if there are any problems.
@@ -583,7 +595,7 @@ class FeatureType
    */
   public String toString()
   {
-    StringBuffer returnString = new StringBuffer("\nconfig.FeatureType:");
+    StringBuffer returnString = new StringBuffer("\nconfig.FeatureTypeConfig:");
     returnString.append("\n   [name: " + name + "] ");
     returnString.append("\n   [title: " + title + "] ");
     returnString.append("\n   [abstract: " + ftAbstract + "] ");

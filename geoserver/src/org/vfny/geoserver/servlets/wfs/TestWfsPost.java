@@ -1,10 +1,19 @@
 
 package org.vfny.geoserver.servlets.wfs;
 
-import java.io.*;
-import java.net.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.URL;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /** Simple tester for WFS post requests. Can be called two ways. If
  *  called with no parameters, it displays the form, otherwise it displays
@@ -49,7 +58,7 @@ public class TestWfsPost extends HttpServlet {
     /** Returns a short description of the servlet.
      */
     public String getServletInfo() {
-        return "Tests a WFS post request using a form entry.";
+        return "Tests a GlobalWFS post request using a form entry.";
     }
     
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

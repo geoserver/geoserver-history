@@ -4,27 +4,24 @@
  */
 package org.vfny.geoserver.requests;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import junit.framework.TestCase;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FidFilter;
-import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.LiteralExpression;
 import org.vfny.geoserver.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.requests.readers.wfs.*;
-import org.vfny.geoserver.requests.wfs.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.Map;
-import java.util.logging.Logger;
+import org.vfny.geoserver.requests.readers.wfs.LockKvpReader;
+import org.vfny.geoserver.requests.readers.wfs.LockXmlReader;
+import org.vfny.geoserver.requests.wfs.LockRequest;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 
 /**
@@ -32,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: LockSuite.java,v 1.5 2003/12/19 02:31:56 cholmesny Exp $
+ * @version $Id: LockSuite.java,v 1.5.2.4 2004/01/06 22:05:11 dmzwiers Exp $
  */
 public class LockSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
@@ -127,7 +124,7 @@ public class LockSuite extends RequestTestCase {
      */
     public void testKVP1() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFS&" + "TYPENAME=rail";
+            + "SERVICE=GlobalWFS&" + "TYPENAME=rail";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest();
@@ -142,7 +139,7 @@ public class LockSuite extends RequestTestCase {
      */
     public void testKVP2() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFS&" + "TYPENAME=rail&" + "featureID=123";
+            + "SERVICE=GlobalWFS&" + "TYPENAME=rail&" + "featureID=123";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest();
@@ -162,7 +159,7 @@ public class LockSuite extends RequestTestCase {
      */
     public void testKVP3() throws Exception {
         String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFS&" + "TYPENAME=rail,roads";
+            + "SERVICE=GlobalWFS&" + "TYPENAME=rail,roads";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest();
@@ -177,7 +174,7 @@ public class LockSuite extends RequestTestCase {
      * Example 13 from the WFS 1.0 specification.
      */
     public void testKVP4() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=GlobalWFS&"
             + "REQUEST=LockFEATURE&" + "LOCKACTION=all&"
             + "TYPENAME=rail,roads&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";

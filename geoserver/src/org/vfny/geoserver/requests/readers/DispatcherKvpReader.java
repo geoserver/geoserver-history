@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.requests.readers;
 
-import org.vfny.geoserver.servlets.*;
-import java.util.*;
-import java.util.logging.*;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import org.vfny.geoserver.servlets.Dispatcher;
 
 
 /**
@@ -14,7 +15,7 @@ import java.util.logging.*;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: DispatcherKvpReader.java,v 1.3 2003/12/17 01:15:35 cholmesny Exp $
+ * @version $Id: DispatcherKvpReader.java,v 1.3.2.3 2004/01/02 17:53:29 dmzwiers Exp $
  */
 public class DispatcherKvpReader {
     /** Class logger */
@@ -70,9 +71,9 @@ public class DispatcherKvpReader {
         if (serviceType != null) {
             serviceType = serviceType.toUpperCase();
 
-            if (serviceType.equals("WFS")) {
+            if (serviceType.equals("GlobalWFS")) {
                 return Dispatcher.WFS_SERVICE;
-            } else if (serviceType.equals("WMS")) {
+            } else if (serviceType.equals("GlobalWMS")) {
                 return Dispatcher.WMS_SERVICE;
             } else {
                 return Dispatcher.UNKNOWN;

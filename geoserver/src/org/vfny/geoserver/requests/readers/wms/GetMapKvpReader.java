@@ -4,24 +4,31 @@
  */
 package org.vfny.geoserver.requests.readers.wms;
 
-import java.util.*;
-import java.util.logging.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
-import org.geotools.feature.*;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.readers.*;
-import org.vfny.geoserver.requests.wms.*;
-import com.vividsolutions.jts.geom.*;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
+import org.vfny.geoserver.requests.wms.GetMapRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.2.2.9 2004/01/07 22:44:05 dmzwiers Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
@@ -50,7 +57,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String version = getRequestVersion();
         request.setVersion(version);
 
-        FeatureTypeConfig[] layers = parseMandatoryParameters(request);
+        FeatureTypeInfo[] layers = parseMandatoryParameters(request);
         parseOptionalParameters(request);
         parseCustomParameters(request, layers);
 
@@ -122,9 +129,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private FeatureTypeConfig[] parseMandatoryParameters(GetMapRequest request)
+    private FeatureTypeInfo[] parseMandatoryParameters(GetMapRequest request)
         throws WmsException {
-        FeatureTypeConfig[] layers = parseLayers();
+        FeatureTypeInfo[] layers = parseLayers();
         request.setLayers(layers);
 
         List styles = parseStyles(layers.length);
@@ -184,7 +191,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * @throws ServiceException DOCUMENT ME!
      */
     private void parseCustomParameters(GetMapRequest request,
-        FeatureTypeConfig[] layers) throws ServiceException {
+        FeatureTypeInfo[] layers) throws ServiceException {
         Filter[] filters = parseFilters(layers.length);
         request.setFilters(filters);
 
@@ -198,7 +205,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         request.setWriteSvgHeader(writeSvgHeader);
     }
 
-    private List parseAttributes(FeatureTypeConfig[] layers)
+    private List parseAttributes(FeatureTypeInfo[] layers)
         throws WmsException {
         String rawAtts = getValue("ATTRIBUTES");
         LOGGER.finer("parsing attributes " + rawAtts);
@@ -306,7 +313,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             throw new WmsException(msg, getClass().getName());
         }
 
-        Map configuredStyles = config.getCatalog().getStyles();
+        Map configuredStyles = null;
+		try{
+			configuredStyles = getRequest().getGeoServer().getData().getStyles();
+		}catch(ServiceException e){
+			throw new WmsException(e);
+		}
         String st;
 
         for (Iterator it = styles.iterator(); it.hasNext();) {
@@ -353,7 +365,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private FeatureTypeConfig[] parseLayers() throws WmsException {
+    private FeatureTypeInfo[] parseLayers() throws WmsException {
         List layers = layers = readFlat(getValue("LAYERS"), INNER_DELIMETER);
         int layerCount = layers.size();
 
@@ -362,15 +374,20 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 getClass().getName());
         }
 
-        FeatureTypeConfig[] featureTypes = new FeatureTypeConfig[layerCount];
-        CatalogConfig catalog = config.getCatalog();
+        FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
+        Data catalog = null;
+        try{
+        	catalog = getRequest().getGeoServer().getData();
+        }catch(ServiceException e){
+        	throw new WmsException(e);
+        }
         String layerName = null;
-        FeatureTypeConfig ftype = null;
+        FeatureTypeInfo ftype = null;
 
         try {
             for (int i = 0; i < layerCount; i++) {
                 layerName = (String) layers.get(i);
-                ftype = catalog.getFeatureType(layerName);
+                ftype = catalog.getFeatureTypeInfo(layerName);
                 featureTypes[i] = ftype;
             }
         } catch (NoSuchElementException ex) {

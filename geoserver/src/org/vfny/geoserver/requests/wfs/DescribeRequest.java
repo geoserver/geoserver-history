@@ -4,10 +4,12 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.requests.*;
-import java.util.*;
-import java.util.logging.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**
@@ -15,7 +17,7 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeRequest.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: DescribeRequest.java,v 1.2.2.1 2003/12/30 23:00:39 dmzwiers Exp $
  */
 public class DescribeRequest extends WFSRequest {
     /** Class logger */

@@ -4,11 +4,14 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import java.util.*;
-import java.util.logging.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.logging.Logger;
+
+import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.requests.WFSRequest;
 
 
 /**
@@ -20,7 +23,7 @@ import java.util.logging.*;
  * support those.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: FeatureRequest.java,v 1.3 2003/12/19 02:57:52 cholmesny Exp $
+ * @version $Id: FeatureRequest.java,v 1.3.2.5 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class FeatureRequest extends WFSRequest {
     /** Standard logging instance for class */
@@ -31,7 +34,7 @@ public class FeatureRequest extends WFSRequest {
      * The maximum returned if the user requests no limit of features at all,
      * but the other request parameters don't restrict to below 500.
      */
-    //protected static final int SOFT_MAX_FEATURES = ServerConfig.getInstance()
+    //protected static final int SOFT_MAX_FEATURES = GeoServer.getInstance()
     //                                                           .getGlobalConfig()
     //                                                           .getMaxFeatures();
 

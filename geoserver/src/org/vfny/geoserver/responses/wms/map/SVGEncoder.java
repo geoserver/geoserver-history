@@ -4,24 +4,39 @@
  */
 package org.vfny.geoserver.responses.wms.map;
 
-import com.vividsolutions.jts.geom.*;
-import org.geotools.data.*;
-import org.geotools.feature.*;
-import org.geotools.filter.*;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import java.io.*;
-import java.net.*;
-import java.text.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
+
+import org.geotools.data.DataSourceException;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
 
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version $Id: SVGEncoder.java,v 1.3 2003/12/17 22:35:03 cholmesny Exp $
+ * @version $Id: SVGEncoder.java,v 1.3.2.5 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
@@ -50,7 +65,7 @@ public class SVGEncoder {
     /** temporary holding of the geometry currently being encoded */
     private Geometry currentGeometry = null;
 
-    /** temporary holding of the FeatureType currently being encoded */
+    /** temporary holding of the FeatureTypeInfo currently being encoded */
     private FeatureType featureType;
 
     /** the writer used to wrap the output stream */
@@ -137,7 +152,7 @@ public class SVGEncoder {
 
     /**
      * If <code>collect == true</code>, then all the geometries will be grouped
-     * in a single SVG element by FeatureType requested. The effect is like a
+     * in a single SVG element by FeatureTypeInfo requested. The effect is like a
      * union operation upon the geometries of the whole FeatureResults
      * resulting in a single geometry collection.
      * 
@@ -244,7 +259,7 @@ public class SVGEncoder {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void encode(final FeatureTypeConfig[] layers,
+    public void encode(final FeatureTypeInfo[] layers,
         final FeatureResults[] results, final Style[] styles,
         final OutputStream out) throws IOException {
         this.writer = new SVGWriter(out);
@@ -283,13 +298,13 @@ public class SVGEncoder {
         }
     }
 
-    private void writeLayers(FeatureTypeConfig[] layers,
+    private void writeLayers(FeatureTypeInfo[] layers,
         FeatureResults[] results, Style[] styles)
         throws IOException, AbortedException {
         int nLayers = results.length;
         int nConfigs = ((layers != null) && (layers.length >= nLayers))
             ? nLayers : 0;
-        FeatureTypeConfig layerConfig = null;
+        FeatureTypeInfo layerConfig = null;
         int defMaxDecimals = writer.getMaximunFractionDigits();
 
         for (int i = 0; i < nLayers; i++) {
@@ -342,7 +357,7 @@ public class SVGEncoder {
         }
     }
 
-    private void writeDefs(FeatureTypeConfig[] layers)
+    private void writeDefs(FeatureTypeInfo[] layers)
         throws IOException {
         if (layers == null) {
             LOGGER.warning(
@@ -774,7 +789,7 @@ public class SVGEncoder {
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.2.5 $
  */
 class SVGWriter extends OutputStreamWriter {
     private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(

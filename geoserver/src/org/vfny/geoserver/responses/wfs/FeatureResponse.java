@@ -4,24 +4,45 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
-import org.geotools.data.*;
-import org.geotools.feature.*;
-import org.geotools.filter.FidFilter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.gml.producer.*;
-import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.requests.*;
-import org.vfny.geoserver.requests.Query;
-import org.vfny.geoserver.requests.wfs.*;
-import org.vfny.geoserver.responses.*;
-
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
+
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLocking;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Transaction;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.filter.FidFilter;
+import org.geotools.filter.FilterFactory;
+import org.geotools.gml.producer.FeatureTransformer;
+import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.requests.Query;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.wfs.FeatureRequest;
+import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
+import org.vfny.geoserver.responses.Response;
 
 
 /**
@@ -29,7 +50,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.2 2003/12/16 18:46:10 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.2.2.11 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -95,8 +116,8 @@ public class FeatureResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    public String getContentType() {
-        return ServerConfig.getInstance().getGlobalConfig().getMimeType();
+    public String getContentType(GeoServer gs) {
+        return gs.getMimeType();
     }
 
     /**
@@ -195,9 +216,9 @@ public class FeatureResponse implements Response {
         // - if we fail to aquire all the locks we will need to fail and
         //   itterate through the the FeatureSources to release the locks 
         //
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();        
-        FeatureTypeConfig meta = null;
-        NameSpace namespace;       
+        Data catalog = request.getGeoServer().getData();        
+        FeatureTypeInfo meta = null;
+        NameSpaceInfo namespace;       
         Query query;
         int maxFeatures = request.getMaxFeatures();
 
@@ -220,8 +241,8 @@ public class FeatureResponse implements Response {
                        it.hasNext() && (maxFeatures > 0);) {
                       
                 query = (Query) it.next();                                                                   
-                meta = catalog.getFeatureType( query.getTypeName() );
-                namespace = meta.getDataStore().getNameSpace();                
+                meta = catalog.getFeatureTypeInfo( query.getTypeName() );
+                namespace = meta.getDataStoreInfo().getNameSpace();                
                 source = (FeatureLocking) meta.getFeatureSource();
         
                 typeNames.append( query.getTypeName() );
@@ -303,11 +324,11 @@ public class FeatureResponse implements Response {
             FeatureType schema = meta.getSchema();
             transformer.setIndentation(2);
 
-            ServerConfig config = ServerConfig.getInstance();
-            WFSConfig wfsConfig = config.getWFSConfig();
-            String wfsSchemaLoc = wfsConfig.getWfsBasicLocation();
-            String fSchemaLoc = wfsConfig.getDescribeUrl(typeNames.toString());
-            namespace = meta.getDataStore().getNameSpace();
+            GeoServer config = request.getGeoServer();
+            WFS wfsConfig = config.getWFS();
+            String wfsSchemaLoc = config.getSchemaBaseUrl() + "wfs/1.0.0/" + "GlobalWFS-basic.xsd";
+            String fSchemaLoc = config.getBaseUrl() + "wfs/"+ "DescribeFeatureType?typeName="+typeNames.toString();
+            namespace = meta.getDataStoreInfo().getNameSpace();
             transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
             transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
 	    transformer.setGmlPrefixing(true); //TODO: make this a user config
@@ -363,7 +384,7 @@ public class FeatureResponse implements Response {
      * @throws WfsException For any problems with the DataSource.
      */
     private static FeatureResults getFeatures(Query query,
-        FeatureTypeConfig meta, int maxFeatures) throws WfsException {
+        FeatureTypeInfo meta, int maxFeatures) throws WfsException {
         LOGGER.finest("about to get query: " + query);
 
         List propertyNames = null;
@@ -405,7 +426,7 @@ public class FeatureResponse implements Response {
      * 
      * @see org.vfny.geoserver.responses.Response#abort()
      */
-    public void abort() {
+    public void abort(GeoServer gs) {
         if( request == null ){
             return; // request was not attempted
         }
@@ -413,7 +434,7 @@ public class FeatureResponse implements Response {
             return; // we have no locks
         }
         
-        CatalogConfig catalog = ServerConfig.getInstance().getCatalog();            
+        Data catalog = gs.getData();            
         // I think we need to release and fail when lockAll fails
         //
         catalog.lockRelease( featureLock.getAuthorization() );        

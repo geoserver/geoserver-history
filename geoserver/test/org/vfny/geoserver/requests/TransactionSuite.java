@@ -4,40 +4,34 @@
  */
 package org.vfny.geoserver.requests;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.AttributeTypeFactory;
+
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.IllegalAttributeException;
-import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
-import org.vfny.geoserver.config.ConfigInfo;
-import org.vfny.geoserver.config.TypeRepository;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.logging.Logger;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.readers.wfs.DeleteKvpReader;
+import org.vfny.geoserver.requests.readers.wfs.TransactionXmlReader;
+import org.vfny.geoserver.requests.wfs.TransactionRequest;
 
 
 /**
  * Tests the get feature request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionSuite.java,v 1.4 2003/09/19 19:06:05 cholmesny Exp $
+ * @version $Id: TransactionSuite.java,v 1.6.2.5 2004/01/07 21:36:14 dmzwiers Exp $
  *
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.
  */
-public class TransactionSuite extends TestCase {
+public class TransactionSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -48,24 +42,11 @@ public class TransactionSuite extends TestCase {
     protected static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Unit test data directory */
-    private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/requests";
-
     /** Holds mappings between HTTP and ASCII encodings */
     protected static FilterFactory factory = FilterFactory.createFilterFactory();
-
-    /** Unit test data directory */
-    private static final String TYPE_DIR = System.getProperty("user.dir")
-        + "/misc/unit/featureTypes";
-
-    /** Unit test data directory */
-    private static final String CONFIG_DIR = System.getProperty("user.dir")
-        + "/misc/unit/config/";
-    private ConfigInfo config;
-    private TypeRepository repo;
     protected FeatureType schema;
     protected Feature testFeature;
+    protected GeoServer config;
 
     /**
      * Constructor with super.
@@ -82,19 +63,20 @@ public class TransactionSuite extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("All transaction tests");
-        suite.addTestSuite(UpdateSuite.class);
 
-        suite.addTestSuite(InsertSuite.class);
-        suite.addTestSuite(DeleteSuite.class);
-
+        //suite.addTestSuite(UpdateSuite.class);
+        //suite.addTestSuite(InsertSuite.class);
+        //suite.addTestSuite(DeleteSuite.class);
         return suite;
     }
 
-    public void setUp() {
-        config = ConfigInfo.getInstance(CONFIG_DIR);
-        config.setTypeDir(TYPE_DIR);
-        repo = TypeRepository.getInstance();
+    public void setUp() throws Exception {
+        Map values = new HashMap();
+        /*GeoServer.load(values, new DefaultCatalog());
 
+        //config = ConfigInfo.getInstance(CONFIG_DIR);
+        //config.setTypeDir(TYPE_DIR);
+        //repo = TypeRepository.getInstance();
         AttributeType[] atts = {
             AttributeTypeFactory.newAttributeType("fid", Integer.class),
             AttributeTypeFactory.newAttributeType("geom", Polygon.class),
@@ -125,40 +107,44 @@ public class TransactionSuite extends TestCase {
             testFeature = schema.create(attributes, String.valueOf(featureId));
         } catch (IllegalAttributeException ife) {
             LOGGER.warning("problem in setup " + ife);
-        }
+        }*/
+    }
+
+    protected XmlRequestReader getXmlReader() {
+        return new TransactionXmlReader();
+    }
+
+    protected KvpRequestReader getKvpReader(Map kvps) {
+        return new DeleteKvpReader(kvps);
     }
 
     /**
      * Handles actual XML test running details.
      *
      * @param baseRequest Base request, for comparison.
-     * @param fileName File name to parse.
-     * @param match Whether or not base request and parse request should match.
+     * @param testRequest File name to parse.
      *
      * @return <tt>true</tt> if the test passed.
-     *
-     * @throws Exception If there is any problem running the test.
      */
-    static boolean runXmlTest(TransactionRequest baseRequest, String fileName,
-        boolean match) throws Exception {
-        // Read the file and parse it
-        File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
-        Reader inputStream = new FileReader(inputFile);
-        TransactionRequest request = XmlRequestReader.readTransaction(new BufferedReader(
-                    inputStream));
-        LOGGER.finer("base request: " + baseRequest);
-        LOGGER.finer("read request: " + request);
-        LOGGER.fine("XML " + fileName + " test passed: "
-            + baseRequest.equals(request));
 
-        // Compare parsed request to base request
-        if (match) {
-            return assertEquals(baseRequest, request);
-        } else {
-            return !(assertEquals(baseRequest, request));
-        }
-    }
-
+    /*static boolean runXmlTest(TransactionRequest baseRequest, String fileName,
+       boolean match) throws Exception {
+       // Read the file and parse it
+       File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
+       Reader inputStream = new FileReader(inputFile);
+       TransactionRequest request = XmlRequestReader.readTransaction(new BufferedReader(
+                   inputStream));
+       LOGGER.finer("base request: " + baseRequest);
+       LOGGER.finer("read request: " + request);
+       LOGGER.fine("XML " + fileName + " test passed: "
+           + baseRequest.equals(request));
+       // Compare parsed request to base request
+       if (match) {
+           return assertEquals(baseRequest, request);
+       } else {
+           return !(assertEquals(baseRequest, request));
+       }
+       }*/
     protected static boolean assertEquals(TransactionRequest baseRequest,
         TransactionRequest testRequest) {
         return baseRequest.equals(testRequest);

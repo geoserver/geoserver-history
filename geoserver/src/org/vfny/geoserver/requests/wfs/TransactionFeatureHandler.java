@@ -20,25 +20,30 @@
  */
 package org.vfny.geoserver.requests.wfs;
 
-import com.vividsolutions.jts.geom.*;
-import org.geotools.feature.*;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
+
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.AttributeTypeFactory;
+import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.gml.*;
-import org.vfny.geoserver.*;
-import org.vfny.geoserver.config.CatalogConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.config.ServerConfig;
-import org.vfny.geoserver.oldconfig.*;
-import org.xml.sax.*;
-import java.util.*;
-import java.util.logging.*;
+import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.gml.GMLFilterFeature;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.requests.Request;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.2.2.9 2004/01/09 21:27:52 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -67,16 +72,18 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private TransactionFilterHandler parent;
 
     //private TypeRepository typeRepo = TypeRepository.getInstance();
-    private CatalogConfig catalog = ServerConfig.getInstance().getCatalog();
+
+	private Data catalog = null;
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.
      *
      * @param parent The parent of this filter.
      */
-    public TransactionFeatureHandler(TransactionFilterHandler parent) {
+    public TransactionFeatureHandler(TransactionFilterHandler parent, Request r) {
         super(parent);
         this.parent = parent;
+        catalog = r.getGeoServer().getData();
     }
 
     /**
@@ -107,7 +114,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             //featureTypes?  Like add a 
             //!namespaceURI.equals("http://www.opengis.net/gml"); 
             //(not sure if that'd work, but something to that effect
-            FeatureTypeConfig fType = catalog.getFeatureType(localName,
+            FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName,
                     namespaceURI);
             String internalTypeName = null;
 
@@ -209,7 +216,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * a coordinates (or coord) element, it uses internal methods to set the
      * current state of the coordinates reader appropriately.
      *
-     * @param namespaceURI Namespace of the element.
+     * @param namespaceURI NameSpaceInfo of the element.
      * @param localName Local name of the element.
      * @param qName Full name of the element, including namespace prefix.
      *
@@ -222,7 +229,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             insideInsert = false;
         }
 
-        FeatureTypeConfig fType = catalog.getFeatureType(localName, namespaceURI);
+        FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName, namespaceURI);
         String internalTypeName = null;
 
         if (fType != null) {

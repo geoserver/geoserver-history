@@ -4,24 +4,33 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.xml.parsers.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.vfny.geoserver.config.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.vfny.geoserver.global.ConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * This class represents the global geoserver configuration options that are
- * not part of the Service element of a capabilities response.  They are
+ * not part of the ServiceConfig element of a capabilities response.  They are
  * currently part of the same config file, but making a seperate class allows
  * us to easily seperate the elements out to different configuration files in
  * the future, such as for a WMS or WCS.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: OldWfsConfig.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: OldWfsConfig.java,v 1.2.2.5 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public class OldWfsConfig
     implements java.io.Serializable

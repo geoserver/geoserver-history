@@ -17,8 +17,8 @@ package org.geotools.validation;
  * </code></pre>
  * 
  * @author bowens, Refractions Research, Inc.
- * @author $Author: cholmesny $ (last modification)
- * @version $Id: Validation.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: Validation.java,v 1.2.2.3 2004/01/05 22:14:41 dmzwiers Exp $
  */
 public interface Validation
 {
@@ -80,18 +80,18 @@ public interface Validation
 	/**
 	 * setTypeNames
 	 * <p>
-	 * Sets the FeatureType names that this validation test is run against.
+	 * Sets the FeatureTypeInfo names that this validation test is run against.
 	 * </p>
-	 * @param names FeatureType names that this validation test is run against.
+	 * @param names FeatureTypeInfo names that this validation test is run against.
 	 */
 	void 	setTypeNames(String[] names);
 	
 	/**
 	 * getTypeNames
 	 * <p>
-	 * Returns the FeatureType names that this validation test is run against.
+	 * Returns the FeatureTypeInfo names that this validation test is run against.
 	 * </p>
-	 * @return the FeatureType names that this validation test is run against.
+	 * @return the FeatureTypeInfo names that this validation test is run against.
 	 */
 	String[] getTypeNames();
 }

@@ -4,24 +4,28 @@
  */
 package org.vfny.geoserver.oldconfig;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.File;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
 
-import org.geotools.data.*;
-import org.vfny.geoserver.config.*;
-import org.vfny.geoserver.*;
+import org.geotools.data.DataSource;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.DataSourceFinder;
+import org.geotools.data.DataSourceMetaData;
+import org.vfny.geoserver.WfsException;
+import org.vfny.geoserver.global.ConfigurationException;
 
 /**
  * Reads all necessary feature type information to abstract away from servlets.
  * <p>
  * TODO: Currently holds featureDSource and transactionDS, We switching over to
- * DataStore api so this will need to be removed.
+ * DataStoreInfo api so this will need to be removed.
  * </p>
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán, Dominion t.i.
- * @version $Id: TypeInfo.java,v 1.2 2003/12/16 18:46:08 cholmesny Exp $
+ * @version $Id: TypeInfo.java,v 1.2.2.6 2004/01/09 21:27:51 dmzwiers Exp $
  */
 public class TypeInfo
 {
@@ -64,7 +68,7 @@ public class TypeInfo
   }
 
   /**
-   * gets the Namespace prefix used internally for this featureType.
+   * gets the NameSpaceInfo prefix used internally for this featureType.
    *
    * @return The namespace prefix used internally.
    */
@@ -199,7 +203,7 @@ public class TypeInfo
    */
   public String getMetadataUrl()
   {
-    return null; //not implemented in new FeatureType internal type yet.
+    return null; //not implemented in new FeatureTypeInfo internal type yet.
   }
 
   /**
@@ -378,12 +382,12 @@ public class TypeInfo
    *
    * @param version 0.0.14 or 1.0.0
    *
-   * @return the FeatureType element for the capabilites document.
+   * @return the FeatureTypeInfo element for the capabilites document.
    */
   private String getCapabilitiesXmlv14(String version)
   {
     // MAKE TERSE VERSION CAPABILITY
-    StringBuffer tempResponse = new StringBuffer("    <FeatureType>\n");
+    StringBuffer tempResponse = new StringBuffer("    <FeatureTypeConfig>\n");
     String name = internalType.getName();
     String latLonName = "LatLonBoundingBox";
     boolean supportsAdd = false;
@@ -461,7 +465,7 @@ public class TypeInfo
     //tempResponse.append(" type=\"" + internalType.getMetadataURL().getType();
     //tempResponse.append("\" format=\"" + internalType.getMetadataURL().getFormat();
     //tempResponse.append("\">" + internalType.getMetadataURL().getUrl() + "</MetaDataURL>\n";
-    tempResponse.append("    </FeatureType>\n");
+    tempResponse.append("    </FeatureTypeConfig>\n");
 
     return tempResponse.toString();
   }
@@ -469,14 +473,14 @@ public class TypeInfo
   /**
    * Generates v0.0.15 capabilities document fragment for a feature type.
    *
-   * @return the 0.0.15 capabilities FeatureType element for this feature.
+   * @return the 0.0.15 capabilities FeatureTypeInfo element for this feature.
    */
   private String getCapabilitiesXmlv15()
   {
     // SHOULD CHANGE TO STRING BUFFER
     // ALSO MAKE TERSE VERSION CAPABILITY
     StringBuffer tempResponse = new StringBuffer(
-        "        <wfsfl:FeatureType>\n");
+        "        <wfsfl:FeatureTypeConfig>\n");
     tempResponse.append("            <wfsfl:Name>" + internalType.getName()
                         + "</wfsfl:Name>\n");
     tempResponse.append("            <wfsfl:SRS srsName=\""
@@ -499,7 +503,7 @@ public class TypeInfo
     tempResponse.append(
         "            <wfsfl:Operations><wfsfl:Query/></wfsfl:"
         + "Operations>\n");
-    tempResponse.append("        </wfsfl:FeatureType>\n");
+    tempResponse.append("        </wfsfl:FeatureTypeConfig>\n");
 
     return tempResponse.toString();
   }
