@@ -32,7 +32,7 @@ import javax.servlet.ServletException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.6 2004/02/02 08:56:45 jive Exp $
+ * @version $Id: ApplicationState.java,v 1.7 2004/02/02 17:49:03 dmzwiers Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
@@ -125,6 +125,7 @@ public class ApplicationState implements PlugIn {
      */
     public void notifyLoadXML() {
     	setGeoServerChanged( true );  // REVISIT: is this right? JG expected false
+    	// Correct, this represents a load into config from xml
         setConfigChanged( false );
     }
 
@@ -151,56 +152,56 @@ public class ApplicationState implements PlugIn {
     }
     /** Q: what is this supposed to do? */
     public int getWfsGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0)){
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)){
     		loadStatus();
     	}
     	return geoserverStatus[1];
     }
     /** q: What foul manner of magic is this? */
     public int getWfsBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverStatus[2];
     }
     /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
     public int getWfsDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverStatus[3];
     }
     /** Q: scary magic */
     public int getWmsGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverStatus[4];
     }
     /** Q: scary magic */
     public int getWmsBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverStatus[5];
     }
     /** Q: scary magic */
     public int getWmsDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverStatus[6];
     }
     
     public int getDataGood(){
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverStatus[7];
     }
     
     public int getDataBad() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverStatus[8];
     }
     
     public int getDataDisabled() {
-    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverStatus[0] != (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverStatus[9];
     }
@@ -232,7 +233,7 @@ public class ApplicationState implements PlugIn {
     	// bit 2: isConfigChanged
     	//
     	// And all this madness is a cut and paste mistake?
-    	geoserverStatus[0] = (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0);
+    	geoserverStatus[0] = (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0);
     	GeoServer gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
     	if (gs == null)
     		return;
@@ -333,7 +334,7 @@ public class ApplicationState implements PlugIn {
      */
     public Map getNameSpaceErrors(){
     	if(geoserverNSErrors==null ||
-    	   geoserverStatus[0] == (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	   geoserverStatus[0] == (isGeoServerChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverNSErrors;
     }
@@ -354,7 +355,7 @@ public class ApplicationState implements PlugIn {
      * @return
      */
     public Map getDataStoreErrors(){
-    	if(geoserverDSErrors==null || geoserverStatus[0] == (isGeoServerChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
+    	if(geoserverDSErrors==null || geoserverStatus[0] == (isConfigChanged() ? 1 : 0)+(isGeoServerChanged() ? 2 : 0))
     		loadStatus();
     	return geoserverDSErrors;
     }
