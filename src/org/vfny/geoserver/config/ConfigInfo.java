@@ -172,7 +172,7 @@ public class ConfigInfo {
     //REVISIT: put getDescribeURL and getFeatureURL, ect.?  Would be good for
     //DescribeResponse with multiple types, to keep it consistent with 
     //capabilities.
-    public String getUrl(){ return serviceGlobal.getOnlineResource(); }
+    public String getUrl(){ return wfsGlobal.getBaseUrl(); }
     /** Returns user-specified fees for this service */
     public String getFees() { return serviceGlobal.getFees(); }
     /** Returns user-specified access constraints for this service */
