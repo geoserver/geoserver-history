@@ -17,7 +17,7 @@
     you will need a lot of permissions on different systems to put a release
     out. If you are attempting a release you should be in close contact with a
     project admin who can help guide you through the process and give you the
-    appropriate permissions. </para>
+    appropriate permissions.</para>
   </sect1>
 
   <sect1>
@@ -31,10 +31,10 @@
     your machine. It should be checked out with the -P option to prune out of
     date directories, as the GeoServer source tree has undergone quite a bit
     of refactoring, and we do not want our end users to wade through a bunch
-    of similarly named directories. </para>
+    of similarly named directories.</para>
 
-    <para>There are a number of different tests that should be performed.
-    </para>
+    <para>There are a number of different tests that should be
+    performed.</para>
 
     <itemizedlist>
       <listitem>
@@ -103,7 +103,7 @@
     maintaining a high quality of releases is very important to the success of
     GeoServer, and generally the tests will reveal a few errors that were not
     present before. And even if none are found it allows you to feel much more
-    confident in the quality of the release. </para>
+    confident in the quality of the release.</para>
   </sect1>
 
   <sect1>
@@ -123,38 +123,25 @@
     potential funders can see that it is in fact being widely used. Next
     generally comes a list of the bug fixes and new features in this release,
     followed by known bugs and information as to where to submit bugs and
-    feature requests. </para>
-  </sect1>
-
-  <sect1>
-    <title>Documentation</title>
-
-    <para>Next the documentation needs to be created. This is an easy step,
-    just run: <programlisting>ant document</programlisting><action>Make sure
-    the javadoc version is in line with the release of GeoServer going out
-    (Jody, how do you do this?). The document ant target will create the
-    javadocs and transform the docbook documents into html. (oh wait, this may
-    not be necessary if we have the release docs... though it could be nice to
-    have the generated docs in the source tree. If not we should note in the
-    readme.)</action></para>
+    feature requests.</para>
   </sect1>
 
   <sect1>
     <title>Creating the Release</title>
 
-    <para>After the documentation and readme are done and GeoServer is
-    extensively tested it is time to build the release. If there were any bugs
-    found and fixed in the testing then the source should be completely
-    rechecked out, to insure that all the changes actually made it into cvs.
-    Then just run <programlisting>ant release-all</programlisting><action>Make
+    <para>After the readme is done and GeoServer is extensively tested it is
+    time to build the release. If there were any bugs found and fixed in the
+    testing then the source should be completely rechecked out, to insure that
+    all the changes actually made it into cvs. Then just run <programlisting>ant release-all</programlisting><action>Make
     sure that the name.release is set to what you would like to call the
     release. The script will automatically prepend geoserver on - so a
     name.release of 1.2.0 will generate geoserver-1.2.0.war,
-    geoserver-1.2.0-src.tar.gz, etc. Once the release is created it is very
-    important to test it completely again. Even going so far as to running
-    cite tests, and doing hand and unit tests while cite is running, and
-    checking up on the documentation and readmes. This ensures that the
-    release actually built is exactly as it should be.</action></para>
+    geoserver-1.2.0-src.tar.gz, geoserver-1.2.0-docs.tar.gz, etc. Once the
+    release is created it is very important to test it completely again. Even
+    going so far as to running cite tests, and doing hand and unit tests while
+    cite is running, and checking up on the documentation and readmes. This
+    ensures that the release actually built is exactly as it should
+    be.</action></para>
 
     <para><action></action></para>
   </sect1>
@@ -182,7 +169,7 @@
 
       <listitem>
         <para>Upload the release notes - just use the readme as release notes.
-        Be sure to click to preserver the formating. </para>
+        Be sure to click to preserver the formating.</para>
       </listitem>
 
       <listitem>
