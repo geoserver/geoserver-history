@@ -22,8 +22,8 @@ import org.geotools.validation.ValidationResults;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestValidationResults.java,v 1.5 2004/04/21 00:26:33 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: TestValidationResults.java,v 1.6 2004/04/21 08:16:22 jive Exp $
  */
 public class TestValidationResults implements ValidationResults{
 	public static final String CURRENTLY_SELECTED_KEY = "TestValidationResults";
@@ -32,27 +32,43 @@ public class TestValidationResults implements ValidationResults{
 	
 	//HACK for JODY cause he messed up and then whined alot.
 	boolean run = false;
-	public void setValidation(Validation v){this.v = v;run=true;}
+    
+	public void setValidation(Validation v){
+        this.v = v;run=true;
+    }
 	
+	private String toMessage( String message ) {
+        StringBuffer buf = new StringBuffer();
+        buf.append( v.getName() );
+        buf.append( ": " );
+        buf.append( message );
+        buf.append( "\n" );
+        buf.append( v.getDescription() );
+        
+        return buf.toString();        
+    }
+    
 	Map errors = new HashMap();
 	public Map getErrors(){return errors;}
 	public void error(Feature f,String s){
+        String message = toMessage( s );
 		Logger logger = Logger.getLogger("org.vfny.geoserver");
 		if(logger.getLevel().equals(Level.FINEST)){
-			logger.warning(s);
+			logger.warning( message );
 		}
-		errors.put(f,s);
+		errors.put(f, message );
 	}
 	
 	Map warning = new HashMap();
 	public Map getWarnings(){return warning;}
+    
 	public void warning(Feature f,String s){
-	Logger logger = Logger.getLogger("org.vfny.geoserver");
-	if(logger.getLevel().equals(Level.FINEST)){
-		logger.warning(s);
-	}
-	warning.put(f,s);
-	errors.put(f,s);
+        String message = toMessage( s );
+        Logger logger = Logger.getLogger("org.vfny.geoserver");
+        if(logger.getLevel().equals(Level.FINEST)){
+            logger.warning( message );
+        }
+        warning.put(f, message );        
 	}
 	
 	/**
