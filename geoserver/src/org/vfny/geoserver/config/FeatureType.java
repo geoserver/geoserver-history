@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
  * This class represents a FeatureType element in a Capabilities document
  * along with additional information about the datasource backend.  
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.5 $ $Date: 2003/06/05 21:12:32 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/12 19:45:19 $
  * @tasks REVISIT: consider merging this into TypeInfo.  This class replaces
  * the castor generated FeatureType, but it is now unclear if we _really_ 
  * need this internal class, or if a TypeInfo can just hold it all.
@@ -55,6 +55,8 @@ class FeatureType {
     public static final String OLD_LAT_BBOX_TAG = "LatLonBoundingBox";
 
     public static final String PARAMS_TAG = "DatasourceParams";
+
+    public static final String MANDATORY_TAG = "MandatoryAtts";
 
     public static final String MINX_ATT = "minx";
     public static final String MINY_ATT = "miny";
@@ -91,6 +93,8 @@ class FeatureType {
     /** Holds the parameters for the datasource backend holding this feature*/
     //put in different place? - to differentiate between service info and data.
     private Map dsParams;
+
+    private String[] mandatoryAtts = new String[0];
 
     private static ConfigInfo cfgInfo = ConfigInfo.getInstance();
 
@@ -170,7 +174,7 @@ class FeatureType {
 	    featureType.setKeywords(ServiceConfig.getKeywords(featureElem));
 	    featureType.setLatLonBoundingBox(LatLonBoundingBox.getBBox(featureElem));
 	    featureType.setDataParams(getDataParams(featureElem, featureTypeFile));
-
+	    featureType.setMandatoryAtts(findTextFromTag(featureElem, MANDATORY_TAG));
 	    fis.close();
 
 	} catch (IOException ioe) {
@@ -410,6 +414,26 @@ class FeatureType {
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    /**
+     * Sets that feature type attributes that should be returned with 
+     * each request.  This is a bit of a hack, it really should take 
+     * place in the schema, but we can't read schemas yet, so this
+     * will have to suffice.
+     *
+     * @param atts The contents of the MandatoryAtts tag, should be a
+     * a list of property names.
+     */
+    void setMandatoryAtts(String atts) {
+	if (!atts.equals("")){
+	    String[] splitAtts = atts.split("[, ]");
+	    this.mandatoryAtts = splitAtts;
+	}
+    }
+
+    public String[] getMandatoryAtts(){
+	return this.mandatoryAtts;
     }
 
       /**
