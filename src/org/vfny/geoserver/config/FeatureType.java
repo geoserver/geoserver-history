@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,7 +37,7 @@ import org.xml.sax.SAXException;
  * This class represents a FeatureType element in a Capabilities document
  * along with additional information about the datasource backend.  
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.3 $ $Date: 2003/04/28 17:20:38 $
+ * @version $Revision: 1.4 $ $Date: 2003/05/30 22:07:56 $
  * @tasks REVISIT: consider merging this into TypeInfo.  This class replaces
  * the castor generated FeatureType, but it is now unclear if we _really_ 
  * need this internal class, or if a TypeInfo can just hold it all.
@@ -167,7 +168,7 @@ class FeatureType {
 				(featureElem, ServiceConfig.TITLE_TAG));
 	    featureType.setKeywords(ServiceConfig.getKeywords(featureElem));
 	    featureType.setLatLonBoundingBox(LatLonBoundingBox.getBBox(featureElem));
-	    featureType.setDataParams(getDataParams(featureElem));
+	    featureType.setDataParams(getDataParams(featureElem, featureTypeFile));
 
 	    fis.close();
 
@@ -207,7 +208,7 @@ class FeatureType {
      * just having the filename as a config item and constructing the full
      * filename ourselves.
      */
-     private static Map getDataParams(Element root){
+     private static Map getDataParams(Element root, String featureTypeFile){
 	Map params = new HashMap();
 	//try to get text in Keywords element.
 	Element paramElem = (Element)root.getElementsByTagName(PARAMS_TAG).item(0);
@@ -228,8 +229,24 @@ class FeatureType {
 		LOGGER.finer(param + " is the node and the name is " + name);
 		Node text = param.getFirstChild();
 		if (text instanceof org.w3c.dom.Text){
-		    LOGGER.finer("setting property with " + ((Text)text).getData());
-		    params.put(name.toLowerCase(), ((Text)text).getData());
+		    String value = ((Text)text).getData();
+		    LOGGER.finer("setting property with " + value);
+		    //all urls have a :, so check for that, if it is just the 
+		    //file name it won't have a colon (unless user names it
+		    //something with a colon).  Better delimiter?
+		    if (name.equals("filename")) {
+			File featureTypeDir = 
+			    new File(featureTypeFile).getParentFile();
+			try {
+			    value = new File(featureTypeDir, value).toURL().toString();
+			} catch (java.net.MalformedURLException murle) {
+			    LOGGER.info("problem reading datasource info for " +
+					featureTypeFile + ": " + murle);
+			}
+			name = "url";
+		    }
+		    
+		    params.put(name.toLowerCase(), value);
 		}
 	    }
 	}
