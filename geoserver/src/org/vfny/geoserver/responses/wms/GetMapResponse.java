@@ -77,7 +77,7 @@ public class GetMapResponse implements Response {
         this.delegate = getDelegate(outputFormat);
 
         final FeatureTypeInfo[] layers = request.getLayers();
-        final Style[] styles = buildStyles(request.getStyles(), request.getWMS());
+        final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
 
         final WMSMapContext map = new WMSMapContext();
 
@@ -107,7 +107,6 @@ public class GetMapResponse implements Response {
                     "Internal error : " + exp.getMessage());
             }
 
-            checkStyle(style, source);
             layer = new DefaultMapLayer(source, style);
 
             Filter definitionFilter = layers[i].getDefinitionQuery();
@@ -252,55 +251,4 @@ public class GetMapResponse implements Response {
         return mapFormats;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param styleNames DOCUMENT ME!
-     * @param gs DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws WmsException DOCUMENT ME!
-     */
-    protected Style[] buildStyles(List styleNames, WMS gs)
-        throws WmsException {
-        Style[] styles = new Style[styleNames.size()];
-        int i = 0;
-        Data gc = gs.getData();
-
-        for (Iterator it = styleNames.iterator(); it.hasNext(); i++) {
-            styles[i] = gc.getStyle((String) it.next());
-        }
-
-        return styles;
-    }
-
-    /**
-     * Checks to make sure that the style passed in can process the
-     * FeatureSource.
-     *
-     * @param style The style to check
-     * @param source The source requested.
-     *
-     * @throws WmsException DOCUMENT ME!
-     */
-    private void checkStyle(Style style, FeatureSource source)
-        throws WmsException {
-        FeatureType fType = source.getSchema();
-        StyleAttributeExtractor sae = new StyleAttributeExtractor();
-        sae.visit(style);
-
-        String[] styleAttributes = sae.getAttributeNames();
-
-        for (int i = 0; i < styleAttributes.length; i++) {
-            String attName = styleAttributes[i];
-
-            if (fType.getAttributeType(attName) == null) {
-                throw new WmsException(
-                    "The requested Style can not be used with "
-                    + "this featureType.  The style specifies an attribute of "
-                    + attName + " and the featureType definition is: " + fType);
-            }
-        }
-    }
 }

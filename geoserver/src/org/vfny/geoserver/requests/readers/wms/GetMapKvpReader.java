@@ -6,8 +6,10 @@ package org.vfny.geoserver.requests.readers.wms;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
+import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
+import org.geotools.styling.StyleAttributeExtractor;
+import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.Data;
@@ -16,6 +18,9 @@ import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -35,22 +40,34 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * <ul>
  * <li>
- * LAYERS
+ * LAYERS layer names, as exposed by the capabilities document, to compose a
+ * map with, in the order they may appear, being the first layer the one at
+ * the bottom of the layer stack and the last one the one at the top.
  * </li>
  * <li>
- * STYLES
+ * STYLES list of named styles known by this server and applicable to the
+ * requested layers. It can be empty or contain exactly as many style names as
+ * layers was requested, in which case empty strings could be used to denote
+ * that the default layer style should be used. (exaple:
+ * <code>LAYERS=buildings,roads,railroads&STYLES=,centerline,</code>. This
+ * example says create a map with roads layer using its default style, roads
+ * with "centerline" style, and railroads with its default style.
  * </li>
  * <li>
- * BBOX
+ * BBOX Area of interest for which to contruct the map image, in the Coordinate
+ * Reference System given by the SRS parameter.
  * </li>
  * <li>
- * FORMAT
+ * FORMAT MIME type of the resulting map, must be one of the advertised in the
+ * capabilities document.
  * </li>
  * <li>
- * WIDTH
+ * WIDTH desired map witdth in output units (pixels). UNITS support should be
+ * added to the spec, and UNITS and DPI parameters added.
  * </li>
  * <li>
- * HEIGHT
+ * HEIGHT desired map height in output units (pixels). UNITS support should be
+ * added to the spec, and UNITS and DPI parameters added.
  * </li>
  * </ul>
  * </p>
@@ -63,32 +80,48 @@ import javax.servlet.http.HttpServletRequest;
  * SRS
  * </li>
  * <li>
- * TRANSPARENT
+ * TRANSPARENT boolean indicatin wether to create a map with transparent
+ * background or not (if transparency is supported by the requested output
+ * format).
  * </li>
  * <li>
- * EXCEPTIONS
+ * EXCEPTIONS MIME type of the exception report.
  * </li>
  * <li>
- * BGCOLOR
+ * BGCOLOR map background color, in <code>0xRRGGBB</code> format.
+ * </li>
+ * <li>
+ * SLD client supplies a URL for a remote SLD document through this parameter.
+ * This parameter takes precedence over STYLES. If present, replaces the
+ * LAYERS and STYLES parameters, since they're defined in the remote document
+ * itself.
+ * </li>
+ * <li>
+ * SLD_BODY client spplies the SLD document itseld through this parameter,
+ * properly encoded  for an HTTP query string. This parameter takes
+ * precendence over STYLES and SLD. If present, replaces the LAYERS and STYLES
+ * parameters, since they're defined in the inline document itself.
  * </li>
  * </ul>
  * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetMapKvpReader.java,v 1.12 2004/09/16 22:20:54 cholmesny Exp $
+ *
+ * @task TODO: parse and respect SRS parameter (needs reprojection support)
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers.wms");
 
-    /** the request wich will be built by getRequest method */
-    private GetMapRequest request;
-
     /**
      * Indicates wether STYLES parameter must be parsed. Defaults to
      * <code>true</code>, but can be set to false, for example, when parsing a
-     * GetFeatureInfo request
+     * GetFeatureInfo request, which shares most of the getmap parameter but
+     * not STYLES.
+     *
+     * @task TODO: refactor this so it dont stay _so_ ugly
      */
     private boolean stylesRequired = true;
 
@@ -133,13 +166,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     public Request getRequest(HttpServletRequest httpRequest)
         throws ServiceException {
-        request = new GetMapRequest();
+        GetMapRequest request = new GetMapRequest();
         request.setHttpServletRequest(httpRequest);
 
         String version = getRequestVersion();
         request.setVersion(version);
 
-        FeatureTypeInfo[] layers = parseMandatoryParameters(request);
+        parseMandatoryParameters(request);
         parseOptionalParameters(request);
 
         return request;
@@ -207,7 +240,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * LAYERS
      * </li>
      * <li>
-     * STYLES
+     * STYLES ommited if SLD or SLD_BODY parameters are supplied
      * </li>
      * <li>
      * BBOX
@@ -226,20 +259,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @param request DOCUMENT ME!
      *
-     * @return DOCUMENT ME!
-     *
      * @throws WmsException DOCUMENT ME!
      */
-    private FeatureTypeInfo[] parseMandatoryParameters(GetMapRequest request)
+    private void parseMandatoryParameters(GetMapRequest request)
         throws WmsException {
-        FeatureTypeInfo[] layers = parseLayers();
-        request.setLayers(layers);
-
-        if (isStylesRquired()) {
-            List styleNames = parseStyles(layers);
-            request.setStyles(styleNames);
-        }
-
         try {
             int width = Integer.parseInt(getValue("WIDTH"));
             int height = Integer.parseInt(getValue("HEIGHT"));
@@ -260,7 +283,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         Envelope bbox = parseBbox();
         request.setBbox(bbox);
 
-        return layers;
+        //let styles and layers parsing for the end to give more trivial parameters 
+        //a chance to fail before incurring in retrieving the SLD or SLD_BODY
+        parseLayersAndStyles(request);
     }
 
     /**
@@ -407,7 +432,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Parses the list of style names requested for each requested layer.
+     * Parses the list of style names requested for each requested layer and
+     * looks up the actual Style objects, which are returned in an ordered
+     * list.
      * 
      * <p>
      * A client _may_ request teh default Style using a null value (as in
@@ -418,6 +445,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * "STYLES=,,," is valid.
      * </p>
      *
+     * @param request DOCUMENT ME!
      * @param layers the requested feature types
      *
      * @return a full <code>List</code> of the style names requested for the
@@ -427,60 +455,66 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *         its number if greater than zero and distinct of the number of
      *         requested layers
      */
-    private List parseStyles(FeatureTypeInfo[] layers)
-        throws WmsException {
+    private List parseStylesParam(GetMapRequest request,
+        FeatureTypeInfo[] layers) throws WmsException {
         String rawStyles = getValue("STYLES");
-        List styles = null;
+        List styles = styles = new ArrayList(layers.length);
 
         int numLayers = layers.length;
 
         if ("".equals(rawStyles)) {
             LOGGER.finer("Assigning default style to all the requested layers");
-            styles = new ArrayList(layers.length);
 
             for (int i = 0; i < numLayers; i++)
-                styles.add(layers[i].getDefaultStyle().getName());
+                styles.add(layers[i].getDefaultStyle());
         } else {
-            styles = readFlat(rawStyles, INNER_DELIMETER);
+            List styleNames = readFlat(rawStyles, INNER_DELIMETER);
 
-            if (numLayers != styles.size()) {
+            if (numLayers != styleNames.size()) {
                 String msg = numLayers + " layers requested, but found "
-                    + styles.size() + " styles specified. "
+                    + styleNames.size() + " styles specified. "
                     + "Since SLD parameter is not yet implemented, the STYLES parameter "
                     + "is mandatory and MUST have exactly one value per requested layer";
                 throw new WmsException(msg, getClass().getName());
             }
 
-            Map configuredStyles = null;
-            configuredStyles = request.getWMS().getData().getStyles();
+            final Map configuredStyles = request.getWMS().getData().getStyles();
 
-            String st;
+            String currStyleName;
+            Style currStyle;
 
             for (int i = 0; i < numLayers; i++) {
-                st = (String) styles.get(i);
+                currStyleName = (String) styleNames.get(i);
 
-                if ((st != null) && !("".equals(st))) {
-                    if (!configuredStyles.containsKey(st)) {
-                        throw new WmsException(st
-                            + " style not recognized by this server",
-                            "StyleNotDefined");
+                if ((null == currStyleName) || "".equals(currStyleName)) {
+                    currStyle = layers[i].getDefaultStyle();
+                } else {
+                    if (!configuredStyles.containsKey(currStyleName)) {
+                        throw new WmsException(currStyleName
+                            + " style does not exists", "StyleNotDefined");
                     }
-                } else { //use the layer's default style
-                    LOGGER.finer("applying default style to "
-                        + layers[i].getName());
 
-                    Style defStyle = layers[i].getDefaultStyle();
+                    currStyle = (Style) configuredStyles.get(currStyleName);
 
-                    if (defStyle == null) {
+                    if (currStyle == null) {
                         String msg = "No default style has been defined for "
                             + layers[i].getName();
-                        LOGGER.warning(msg);
                         throw new WmsException(msg,
-                            getClass().getName() + "::parseStyles()");
+                            "GetMapKvpReader::parseStyles()");
                     }
-
-                    styles.set(i, defStyle.getName());
                 }
+
+                try {
+                    checkStyle(currStyle, layers[i].getFeatureType());
+                } catch (IOException e) {
+                    throw new WmsException(
+                        "Error obtaining FeatureType for layer "
+                        + layers[i].getName());
+                }
+
+                LOGGER.fine("establishing " + currStyleName +
+                		" style for " + layers[i].getName());
+                styles.add(currStyle);
             }
         }
 
@@ -488,22 +522,125 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * DOCUMENT ME!
+     * Checks to make sure that the style passed in can process the
+     * FeatureType.
      *
-     * @return DOCUMENT ME!
+     * @param style The style to check
+     * @param fType The source requested.
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private FeatureTypeInfo[] parseLayers() throws WmsException {
-        List layers = layers = readFlat(getValue("LAYERS"), INNER_DELIMETER);
-        int layerCount = layers.size();
+    private void checkStyle(Style style, FeatureType fType)
+        throws WmsException {
+        StyleAttributeExtractor sae = new StyleAttributeExtractor();
+        sae.visit(style);
+
+        String[] styleAttributes = sae.getAttributeNames();
+
+        for (int i = 0; i < styleAttributes.length; i++) {
+            String attName = styleAttributes[i];
+
+            if (fType.getAttributeType(attName) == null) {
+                throw new WmsException(
+                    "The requested Style can not be used with "
+                    + "this featureType.  The style specifies an attribute of "
+                    + attName + " and the featureType definition is: " + fType);
+            }
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param request DOCUMENT ME!
+     *
+     * @throws WmsException DOCUMENT ME!
+     */
+    private void parseLayersAndStyles(GetMapRequest request)
+        throws WmsException {
+        String sldParam = getValue("SLD");
+        String sldBodyParam = getValue("SLD_BODY");
+        FeatureTypeInfo[] featureTypes = null;
+        List styles = null;
+
+        if (sldBodyParam != null) {
+            LOGGER.fine("Getting layers and styles from SLD_BODY");
+            parseSldBodyParam(request);
+        } else if (sldParam != null) {
+            LOGGER.fine("Getting layers and styles from reomte SLD");
+            parseSldParam(request);
+        } else {
+            featureTypes = parseLayersParam(request);
+
+            if (isStylesRquired()) {
+                styles = parseStylesParam(request, featureTypes);
+            }
+        }
+
+        request.setLayers(featureTypes);
+
+        if (isStylesRquired()) {
+            request.setStyles(styles);
+        }
+    }
+
+    /**
+     * Sample SLD_BODY content: <code>&lt;StyledLayerDescriptor
+     * version="1.0.0"&gt; &lt;NamedLayer> &lt;Name>Rivers&lt;/Name>
+     * &lt;NamedStyle> &lt;Name>CenterLine&lt;/Name> &lt;/NamedStyle>
+     * &lt;/NamedLayer> &lt;NamedLayer> &lt;Name>Roads&lt;/Name>
+     * &lt;NamedStyle> &lt;Name>CenterLine&lt;/Name> &lt;/NamedStyle>
+     * &lt;/NamedLayer> &lt;NamedLayer> &lt;Name>Houses&lt;/Name>
+     * &lt;NamedStyle> &lt;Name>Outline&lt;/Name> &lt;/NamedStyle>
+     * &lt;/NamedLayer> &lt;/StyledLayerDescriptor&gt; </code> It also can
+     * contain user defined symbolization.
+     *
+     * @param request DOCUMENT ME!
+     *
+     * @throws WmsException DOCUMENT ME!
+     */
+    private void parseSldBodyParam(GetMapRequest request)
+        throws WmsException {
+        InputStream in = new StringBufferInputStream(getValue("SLD_BODY"));
+        StyleFactory sf = StyleFactory.createStyleFactory();
+        SLDParser parser = new SLDParser(sf, in);
+        parser.parseSLD().getStyledLayers();
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param request DOCUMENT ME!
+     *
+     * @throws WmsException DOCUMENT ME!
+     */
+    private void parseSldParam(GetMapRequest request) throws WmsException {
+    }
+
+    /**
+     * Parses the requested layers given by the LAYERS request parameter and
+     * looks up their corresponding FeatureTypeInfo objects in the server.
+     *
+     * @param request
+     *
+     * @return
+     *
+     * @throws WmsException
+     */
+    private FeatureTypeInfo[] parseLayersParam(GetMapRequest request)
+        throws WmsException {
+        FeatureTypeInfo[] featureTypes;
+        String layersParam = getValue("LAYERS");
+        List layerNames = layerNames = readFlat(layersParam, INNER_DELIMETER);
+        int layerCount = layerNames.size();
 
         if (layerCount == 0) {
             throw new WmsException("No LAYERS has been requested",
                 getClass().getName());
         }
 
-        FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
+        featureTypes = new FeatureTypeInfo[layerCount];
+
         Data catalog = null;
         catalog = request.getWMS().getData();
 
@@ -512,7 +649,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         try {
             for (int i = 0; i < layerCount; i++) {
-                layerName = (String) layers.get(i);
+                layerName = (String) layerNames.get(i);
                 ftype = catalog.getFeatureTypeInfo(layerName);
                 featureTypes[i] = ftype;
             }
