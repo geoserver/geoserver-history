@@ -282,21 +282,21 @@
         <action
         	path="/DataConfigAttributeTypesSelect"
         	type="org.vfny.geoserver.action.data.DataAttributeTypesSelectAction"
-        	name="dataFeatureTypesSelectForm"
+        	name="dataAttributeTypesSelectForm"
         	scope="request"
         	validate="true"
         	input="data.featureTypes"/>   
         <action
         	path="/DataConfigAttributeTypesNew"
         	type="org.vfny.geoserver.action.data.DataAttributeTypesNewAction"
-        	name="dataFeatureTypesNewForm"
+        	name="dataAttributeTypesNewForm"
         	scope="request"
         	validate="true"
         	input="data.featureTypes"/>
         <action
         	path="/DataConfigAttributeTypesSubmit"
         	type="org.vfny.geoserver.action.data.DataAttributeTypesEditorAction"
-        	name="dataFeatureTypesEditorForm"
+        	name="dataAttributeTypesEditorForm"
         	scope="request"
         	validate="true"
         	input="data.featureTypes"/>

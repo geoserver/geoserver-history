@@ -5,11 +5,14 @@
 package org.vfny.geoserver.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
@@ -29,7 +32,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataConfig.java,v 1.2 2004/01/12 23:55:27 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.3 2004/01/14 18:29:51 emperorkefka Exp $
  *
  * @see DataSource
  * @see FeatureTypeInfo
@@ -53,9 +56,9 @@ public class DataConfig {
     private Map nameSpaces;
 
     /**
-     * A set of featuretypes and their names.
-     *
-     * @see org.vfny.geoserver.config.data.FeatureTypeInfo
+     * FeatureTypesInfoConfig referenced by key "<code>dataStoreID.typeName</code>"
+     * 
+     * @see org.vfny.geoserver.global.dto.FeatureTypeInfoConfig
      */
     private Map featuresTypes;
 
@@ -647,5 +650,9 @@ public class DataConfig {
         }
 
         return (StyleConfig) styles.remove(key);
+    }
+    
+    public SortedSet getFeatureTypeKeySet(){
+    	return Collections.unmodifiableSortedSet(new TreeSet(featuresTypes.keySet()));
     }
 }

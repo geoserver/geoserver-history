@@ -49,35 +49,26 @@ public class DataFeatureTypesEditorAction extends ConfigAction {
 		String keywords = featureTypesForm.getKeywords();
 		String _abstract = featureTypesForm.get_abstract();
 		
-		String action = featureTypesForm.getAction();
-		
 		DataConfig dataConfig = (DataConfig) getDataConfig();			
 		FeatureTypeConfig config = null;		
 		
-		if (action.equals("edit")) {
-			//config = (FeatureTypeConfig) dataConfig.getFeatureTypeConfig(featureTypesForm.getSelectedFeatureType());
-		}
+		config.setAbstract(_abstract);
+		config.setName(name);
+		config.setSRS(Integer.parseInt(SRS));
+		config.setTitle(title);
+		// Errrrrrrrrrrrr config.setLatLongBBox(new Envelope());
 		
-		 else {
-			
-			config.setAbstract(_abstract);
-			config.setName(name);
-			config.setSRS(Integer.parseInt(SRS));
-			config.setTitle(title);
-			// Errrrrrrrrrrrr config.setLatLongBBox(new Envelope());
-			
-			List list = new ArrayList();
-			String[] array = keywords != null ? keywords.split("\n") : new String[0];
-			
-			for (int i = 0; i < array.length;i++) {
-				list.add(array[i]);
-			}
+		List list = new ArrayList();
+		String[] array = keywords != null ? keywords.split("\n") : new String[0];
 		
-			config.setKeywords(list);
-			
-			//config.setKeywords()			
-			dataConfig.addFeatureType(name, config);
+		for (int i = 0; i < array.length;i++) {
+			list.add(array[i]);
 		}
+	
+		config.setKeywords(list);
+		
+		//config.setKeywords()			
+		dataConfig.addFeatureType(name, config);
 			
 		featureTypesForm.reset(mapping, request);
 			

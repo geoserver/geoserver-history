@@ -51,7 +51,7 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.9 2004/01/14 11:34:04 jive Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.10 2004/01/14 18:29:51 emperorkefka Exp $
  */
 public class AttributeTypeInfoConfig {
     
@@ -307,5 +307,34 @@ public class AttributeTypeInfoConfig {
     public void setType(String type) {
         this.type = type;
     }
+    /**
+     * XML Fragment used to define stuff.
+     * <p>
+     * This property is only used with getType() is equals to "(xml fragment)".
+     * </p>
+     * <p>
+     * baseGMLTypes can only be used in your XML fragment.
+     * </p>
+     
+     * @return Returns the fragment.
+     */
+    public String getFragment() {
+    	return fragment;
+    }
 
+    /**
+     * XML Fragment used to define stuff.
+     * <p>
+     * This property is only used with getType() is equals to "(xml fragment)".
+     * </p>
+     * <p>
+     * baseGMLTypes can only be used in your XML fragment.
+     * </p>
+     * @param fragment The fragment to set.
+     */
+    
+    
+    public void setFragment(String fragment) {
+    	this.fragment = fragment;
+    }
 }
