@@ -4,11 +4,23 @@
  */
 package org.vfny.geoserver.requests;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.AttributeTypeFactory;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
 import org.vfny.geoserver.config.ConfigInfo;
+import org.vfny.geoserver.config.TypeRepository;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,7 +32,7 @@ import java.util.logging.Logger;
  * Tests the get feature request handling.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionSuite.java,v 1.3 2003/09/16 03:32:10 cholmesny Exp $
+ * @version $Id: TransactionSuite.java,v 1.4 2003/09/19 19:06:05 cholmesny Exp $
  *
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.
@@ -44,13 +56,16 @@ public class TransactionSuite extends TestCase {
     protected static FilterFactory factory = FilterFactory.createFilterFactory();
 
     /** Unit test data directory */
+    private static final String TYPE_DIR = System.getProperty("user.dir")
+        + "/misc/unit/featureTypes";
+
+    /** Unit test data directory */
     private static final String CONFIG_DIR = System.getProperty("user.dir")
         + "/misc/unit/config/";
-
-    //classes complain if we don't set up a valid config info.
-    static {
-        ConfigInfo.getInstance(CONFIG_DIR);
-    }
+    private ConfigInfo config;
+    private TypeRepository repo;
+    protected FeatureType schema;
+    protected Feature testFeature;
 
     /**
      * Constructor with super.
@@ -69,13 +84,48 @@ public class TransactionSuite extends TestCase {
         TestSuite suite = new TestSuite("All transaction tests");
         suite.addTestSuite(UpdateSuite.class);
 
-        //suite.addTestSuite(InsertSuite.class);
+        suite.addTestSuite(InsertSuite.class);
         suite.addTestSuite(DeleteSuite.class);
 
         return suite;
     }
 
     public void setUp() {
+        config = ConfigInfo.getInstance(CONFIG_DIR);
+        config.setTypeDir(TYPE_DIR);
+        repo = TypeRepository.getInstance();
+
+        AttributeType[] atts = {
+            AttributeTypeFactory.newAttributeType("fid", Integer.class),
+            AttributeTypeFactory.newAttributeType("geom", Polygon.class),
+            AttributeTypeFactory.newAttributeType("name", String.class)
+        };
+
+        try {
+            schema = FeatureTypeFactory.newFeatureType(atts, "rail");
+        } catch (SchemaException e) {
+            LOGGER.finer("problem with creating schema");
+        }
+
+        Coordinate[] points = {
+            new Coordinate(15, 15), new Coordinate(15, 25),
+            new Coordinate(25, 25), new Coordinate(25, 15),
+            new Coordinate(15, 15)
+        };
+        PrecisionModel precModel = new PrecisionModel();
+        int srid = 2035;
+        LinearRing shell = new LinearRing(points, precModel, srid);
+        Polygon the_geom = new Polygon(shell, precModel, srid);
+
+        Integer featureId = new Integer(44);
+        String name = "insert polygon";
+        Object[] attributes = { featureId, the_geom, name };
+
+        try {
+            testFeature = schema.create(attributes, String.valueOf(featureId));
+        } catch (IllegalAttributeException ife) {
+            LOGGER.warning("problem in setup " + ife);
+        }
     }
 
     /**
