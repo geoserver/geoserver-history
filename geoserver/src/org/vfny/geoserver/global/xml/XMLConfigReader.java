@@ -62,7 +62,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.9 2004/01/15 23:39:52 jive Exp $
+ * @version $Id: XMLConfigReader.java,v 1.10 2004/01/15 23:45:42 jive Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -874,8 +874,6 @@ public class XMLConfigReader {
         } else {
             attributeList = Collections.EMPTY_LIST;
         }
-
-        dto.setSchema(loadSchema(schemaFile, dto));
         LOGGER.finer("added featureType " + dto.getName());
 
         return dto;
