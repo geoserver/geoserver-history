@@ -479,12 +479,20 @@
     </copy>
  
     
+    
     <mkdir dir="${basedir}/data/capabilities/gml/2.1.2"/>
     <copy todir="${basedir}/data/capabilities/gml/2.1.2">
       <fileset dir="${dir.misc}/documents/schemas">
         <include name="feature.xsd"/>
         <include name="geometry.xsd"/>
         <include name="xlinks.xsd"/>
+      </fileset>
+    </copy>
+
+     <mkdir dir="${basedir}/data/styles"/>
+    <copy todir="${basedir}/data/styles">
+      <fileset dir="${dir.misc}/wms/styles">
+        <include name="**"/>
       </fileset>
     </copy>
 
@@ -516,7 +524,12 @@
       <lib dir="${dir.lib}">
         <exclude name="**/junit.jar" />
         <exclude name="**/servlet.jar" />
+        <exclude name="**/catalina/**"/>
       </lib>
+
+      <fileset dir="${basedir}/misc/wms/">
+        <include name="capabilities.xml"/>
+      </fileset>
 
       <!-- directories -->
       <fileset dir="${basedir}">
