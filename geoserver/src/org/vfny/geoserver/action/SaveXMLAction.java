@@ -11,7 +11,10 @@
 package org.vfny.geoserver.action;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -21,6 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.geotools.validation.dto.PlugInDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
+import org.geotools.validation.xml.XMLWriter;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
@@ -34,7 +40,19 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
  */
 public class SaveXMLAction extends ConfigAction {
 	
-    public ActionForward execute(ActionMapping mapping,
+	public ActionForward execute(ActionMapping mapping,
+			ActionForm form,
+			//UserContainer user,
+			HttpServletRequest request,
+			HttpServletResponse response)
+	throws IOException, ServletException {
+		ActionForward r1 = saveGeoserver(mapping,form,request,response);
+		ActionForward r2 = saveValidation(mapping,form,request,response);
+
+		return mapping.findForward("welcome");
+	}
+	
+    private ActionForward saveGeoserver(ActionMapping mapping,
     		                     ActionForm form,
 								 //UserContainer user,
 								 HttpServletRequest request,
@@ -56,5 +74,62 @@ public class SaveXMLAction extends ConfigAction {
         // or can we use null or something?
         //
         return mapping.findForward("welcome");
+    }
+    
+    private ActionForward saveValidation(ActionMapping mapping,
+    		ActionForm form,
+			//UserContainer user,
+			HttpServletRequest request,
+			HttpServletResponse response)
+	throws IOException, ServletException {
+    	GeoServer gs = getGeoServer(request);
+    	ServletContext sc = request.getSession().getServletContext();
+    	File rootDir = new File(sc.getRealPath("/"));
+    	File plugInDir = new File(rootDir, "data/plugIns");
+    	File validationDir = new File(rootDir, "data/validation");
+
+    	Map plugIns = gs.toPlugInDTO();
+    	Map testSuites = gs.toTestSuiteDTO();
+    	
+    	Iterator i = null;
+    	
+    	i = plugIns.keySet().iterator();
+    	while(i.hasNext()){
+    		PlugInDTO dto = null;
+    		Object key = null;
+    		try {
+    			key = i.next();
+    			dto = (PlugInDTO)plugIns.get(key);
+    			FileWriter fw = new FileWriter(new File(plugInDir,dto.getName().replaceAll(" ","")+".xml"));
+    			XMLWriter.writePlugIn(dto,fw);
+    			fw.close();
+    		} catch (Exception e) {
+    			e.printStackTrace();
+System.err.println("KEY="+key);
+System.err.println(dto.getClass());
+    			throw new ServletException(e);
+    		}
+    	}
+    	
+    	i = testSuites.keySet().iterator();
+    	while(i.hasNext()){
+    		TestSuiteDTO dto = null;
+    		try {
+    			dto = (TestSuiteDTO)testSuites.get(i.next());
+    			FileWriter fw = new FileWriter(new File(validationDir,dto.getName().replaceAll(" ","")+".xml"));
+    			XMLWriter.writeTestSuite(dto,fw);
+    			fw.close();
+    		} catch (Exception e) {
+    			System.err.println(dto.getClass());
+    			e.printStackTrace();
+    			throw new ServletException(e);
+    		}
+    	}
+    	
+    	getApplicationState( request ).notifiySaveXML();	
+    	// We need to stash the current page?
+    	// or can we use null or something?
+    	//
+    	return mapping.findForward("welcome");
     }
 }

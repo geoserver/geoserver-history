@@ -34,7 +34,7 @@ import org.geotools.validation.xml.ValidationException;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestConfig.java,v 1.2 2004/02/03 00:38:55 dmzwiers Exp $
+ * @version $Id: TestConfig.java,v 1.3 2004/02/03 20:09:15 dmzwiers Exp $
  */
 public class TestConfig{
     
@@ -239,9 +239,7 @@ public class TestConfig{
 
     		while (i.hasNext()) {
     			String key = (String) i.next();
-
-    			//TODO clone value.
-    			args.put(key, this.args.get(key));
+    			args.put(key, ((ArgumentConfig)this.args.get(key)).toDTO());
     		}
     	}
     	dto.setArgs(args);

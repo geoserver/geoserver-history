@@ -31,8 +31,8 @@ import org.geotools.validation.xml.ValidationException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: PlugInConfig.java,v 1.1 2004/01/31 00:27:24 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: PlugInConfig.java,v 1.2 2004/02/03 20:09:15 dmzwiers Exp $
  */
 public class PlugInConfig{
 	
@@ -220,8 +220,7 @@ public class PlugInConfig{
     		while (i.hasNext()) {
     			String key = (String) i.next();
 
-    			//TODO clone value.
-    			args.put(key, this.args.get(key));
+    			args.put(key, ((ArgumentConfig)this.args.get(key)).toDTO());
     		}
     	}
     	dto.setArgs(args);

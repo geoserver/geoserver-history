@@ -27,6 +27,9 @@ import org.vfny.geoserver.global.dto.WMSDTO;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +46,20 @@ import javax.servlet.http.HttpServletResponse;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class UpdateGSAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping,
+
+	public ActionForward execute(ActionMapping mapping,
+			ActionForm form,
+			// UserContainer user,
+			HttpServletRequest request,
+			HttpServletResponse response)
+	throws IOException, ServletException {
+		ActionForward r1 = updateGeoserver(mapping,form,request,response);
+		ActionForward r2 = updateValidation(mapping,form,request,response);
+		
+		return mapping.findForward("welcome");
+	}
+	
+    public ActionForward updateGeoserver(ActionMapping mapping,
     							 ActionForm form,
 								 // UserContainer user,
 								 HttpServletRequest request,
@@ -71,5 +87,33 @@ public class UpdateGSAction extends ConfigAction {
         getApplicationState( request ).notifyToGeoServer();
         
         return mapping.findForward("welcome");
+    }
+    
+    public ActionForward updateValidation(ActionMapping mapping,
+    		ActionForm form,
+			// UserContainer user,
+			HttpServletRequest request,
+			HttpServletResponse response)
+	throws IOException, ServletException {
+    	GeoServer gs;
+    	ServletContext sc = request.getSession().getServletContext();
+    	gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+
+    	try {
+    		Map plugins = new HashMap();
+    		Map testSuites = new HashMap(); 
+    		if(getValidationConfig().toDTO(plugins,testSuites))
+    			gs.load( testSuites,plugins );
+    		else
+    			throw new ConfigurationException("ValidationConfig experienced an error exporting Data Transpher Objects.");
+    	} catch (ConfigurationException e) {
+    		e.printStackTrace();
+    		throw new ServletException(e);
+    	}
+
+    	// We need to stay on the same page!
+    	getApplicationState( request ).notifyToGeoServer();
+    	
+    	return mapping.findForward("welcome");
     }
 }
