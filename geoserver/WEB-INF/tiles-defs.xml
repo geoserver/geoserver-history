@@ -270,7 +270,7 @@
    		<put name="key" value="config.data.type.new"/> 
 		<put name="body" value="/WEB-INF/pages/data/featureTypes/New.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
-        <put name="actionForwards" value="calculateBoundingBox"/>		
+        <put name="actionForwards" value="config.data.calculateBoundingBox"/>		
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config:config.data:config.data.type"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
@@ -282,7 +282,7 @@
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>
    		<put name="layer" value="data"/>
         <put name="locationForwards" value="welcome:config:config.data:config.data.type"/>
-        <put name="actionForwards" value="admin:calculateBoundingBox"/>
+        <put name="actionForwards" value="admin:config.data.calculateBoundingBox"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
    	   	
