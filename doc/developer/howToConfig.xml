@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>GeoServer Developer How To</title>
+
+  <para>When adding your lastest, greatest ideas into the GeoServer framework
+  there is one stop over point that most developement shares: the User.</para>
+
+  <para>There are two places in which the User may interact with GeoServer:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>configuration files</para>
+    </listitem>
+
+    <listitem>
+      <para>user interface</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>This document provides a detailed walkthrough on how to add your own
+  information to the GeoServer configuration system.</para>
+
+  <para>A quick checklist for those that never read the whole document:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Configuration files can be added to without problem</para>
+    </listitem>
+
+    <listitem>
+      <para>The new configuration information must be optional</para>
+    </listitem>
+
+    <listitem>
+      <para>Write up a propsal to the email list for review/comment:</para>
+
+      <programlisting>Be sure to include:
+name: name of configuration information
+description: what the information is needed for
+xml fragment: example extention to an existing configuration file</programlisting>
+    </listitem>
+
+    <listitem>
+      <para>Wait for a sanity check from a project lead, or at least a biz
+      day.</para>
+    </listitem>
+
+    <listitem>
+      <para>Extend a configuraiton file</para>
+    </listitem>
+
+    <listitem>
+      <para>Extend appropriate DTO class, along with XMLReader and XMLWriter</para>
+    </listitem>
+
+    <listitem>
+      <para>Update appropriate class in global</para>
+    </listitem>
+
+    <listitem>
+      <para>Update appropriate class in config, along with form and jsp</para>
+    </listitem>
+  </orderedlist>
+
+  <para>Note duplication of information is never cool: if you have one watch
+  you know what time it is, if you have two watches you are never quite sure.
+  This is most often a problem with schema.xml. XMLSchema is so powerful, and
+  so difficult to parse, that we often wish for an easier way.</para>
+
+  <para>The GeoServer configuration system, is not so much a starting point
+  for your GeoServer development as an ending point. Welcome to the final leg
+  of your GeoServer developement, we thank you for your support.</para>
+
+  <section>
+    <title>Configuration Files</title>
+
+    <para>GeoServer makes use of a series of xml files to store configuration
+    information:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>services.xml:used to define the common GeoServer configuration
+        options in addition to WFS and WMS services</para>
+      </listitem>
+
+      <listitem>
+        <para>catalog.xml: used to configure the data subsystem</para>
+      </listitem>
+
+      <listitem>
+        <para>info.xml (&#38; associated schema.xml): used to define which
+        FeatureTypes are available through the data subsystem</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>One of your first chalanges will be to decide which xml file you
+    option belongs in. Lets start by considering our example.</para>
+
+    <para>Example Configuration issue from Jira:</para>
+
+    <programlisting><emphasis role="bold">Jira Task:</emphasis> GEOS-58: Ability to turn off Transactions
+<emphasis role="bold">Description:</emphasis>
+Users have requested the ability to turn &#39;off&#39; transaction capabilities, so that users of their
+WFS&#39;s can not modify their databases. I&#39;m not sure if this is in 1.2 yet or not, but we should
+get the fix in there, and in a 1.1.1 bug fix release. It should be pretty easy to implement, just
+have a configuration setting to turn it off, and transactions check with that global value before
+letting a transaction go through. </programlisting>
+
+    <para>This task is to do with the Web Feature Server Functionality of
+    GeoServer. So we will want to work with the services.xml file and add an
+    additional option to the wfs section.</para>
+
+    <section>
+      <title>Figure out how to Extend a Configuration File</title>
+
+      <para>Extentions should allways be addative, and optional. We do not
+      wish to break existing installations of GeoServer.</para>
+
+      <para>For our example we will add a &#34;serviceLevel&#34; tag to the
+      wfs section of services.xml. The OGC allows considerable varience in the
+      capabilities of a Web Feature Server while still remaining complient
+      with their specification.</para>
+
+      <table>
+        <title>Web Feature Server Complient Levels of Service</title>
+
+        <tgroup cols="3">
+          <tbody>
+            <row>
+              <entry>OGC Complient</entry>
+
+              <entry>Opperations</entry>
+
+              <entry>Allowable value</entry>
+            </row>
+
+            <row>
+              <entry>Basic Web Feature Server</entry>
+
+              <entry>GetCapabilities DescribeFeatureType GetFeature</entry>
+
+              <entry><literal>basic</literal></entry>
+            </row>
+
+            <row>
+              <entry>Transaction Web Feature Server</entry>
+
+              <entry>Transaction</entry>
+
+              <entry>transactional</entry>
+            </row>
+
+            <row>
+              <entry>Transaction WFS with Optional Locking</entry>
+
+              <entry>LockFeature GetFeatureWithLock</entry>
+
+              <entry>complete</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>Extension to services.xml for WFS Level of Service:</para>
+
+      <programlisting>&#60;wfs&#62;
+ ...
+ &#60;serviceLevel&#62;Basic&#60;/serviceLevel
+ ...
+&#60;/wfs&#62;</programlisting>
+
+      <para>There is almost a conflict here with the FeatureType configuration
+      files, not all FeatureTypes are editable and as such will not allow the
+      Transaction opperation. As noted in the GEOS-58 task an acceptable
+      workaround is to restrict write access for the GeoServer at the
+      DataStore level (this can be acomplished by changing file, or database
+      permissions).</para>
+    </section>
+
+    <section>
+      <title>Submit Idea to the Email Lists</title>
+
+      <para>Next up we can submit our idea to the email list, the following
+      email can serve as an example. Although it includes additional
+      recomendations for the DTO and User Interface.</para>
+
+      <para>Sample email:</para>
+
+      <programlisting><emphasis>subject:</emphasis> Configuration proposal for Transactions control
+
+Request for a new configuration information:
+1) name: serviceLevel
+2) requirement: needed to control level of WFS service (see GEOS-58
+3) configuration file: service.xml
+4) sample xml fragements:
+&#60;wfs&#62;
+ ...
+ &#60;serviceLevel&#62;Basic&#60;/serviceLevel
+ ...
+&#60;/wfs&#62;
+
+Where serviceLevel can be one of:
+
+Basic
+-----
+Operations: GetCapabilities
+           DescribeFeatureType
+           GetFeature
+OGC: Basic Web Feature Server
+
+Transactional
+-------------
+Opperations: Transaction
+OGC: Transactional Web Feature Server
+
+Complete
+--------
+Opperations: LockFeature
+
+5) DTO modifications: serviceType enum of Basic/Transaction/Complete
+6) UI modifications: select drop down on the WFSCondig screen
+
+For additional information See:
+http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-93
+http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-58 </programlisting>
+
+      <para>And then we get to wait for Chris Holmes, or some other friendly
+      GeoServer maintainer for approval. As long as you are simply extending a
+      configuration file with optional content, we may as well go onto the
+      next section while we wait.</para>
+
+      <para>We just won&#39;t commit quite yet.</para>
+    </section>
+
+    <section>
+      <title>Extending XML Reader &#38; XML Writer</title>
+
+      <para>Over to you David !</para>
+    </section>
+  </section>
+</article>
