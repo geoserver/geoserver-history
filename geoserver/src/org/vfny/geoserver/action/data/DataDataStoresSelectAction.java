@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -26,8 +27,8 @@ import javax.servlet.http.HttpServletResponse;
  * Select a DataStore for editing.
  *
  * @author User, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.5 2004/02/02 15:06:18 jive Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: DataDataStoresSelectAction.java,v 1.6 2004/02/02 23:27:26 emperorkefka Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -44,12 +45,10 @@ public class DataDataStoresSelectAction extends ConfigAction {
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
         
-        String editLabel = messages.getMessage(locale, "label.edit");
-        String deleteLabel = messages.getMessage(locale, "label.delete");
+        String editLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        String deleteLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
         
-        if (editLabel.equals(buttonAction)
-        	|| editLabel.equalsIgnoreCase( buttonAction ) // HACK: temp hack!
-        	) {
+        if (editLabel.equals(buttonAction)) {
             dsConfig = (DataStoreConfig) dataConfig.getDataStore(form
                     .getSelectedDataStoreId());
 
@@ -59,9 +58,7 @@ public class DataDataStoresSelectAction extends ConfigAction {
                 form.getSelectedDataStoreId());
 
             return mapping.findForward("dataConfigDataStores");
-        } else if (deleteLabel.equals(buttonAction)
-        		|| deleteLabel.equalsIgnoreCase( buttonAction ) // HACK: temp hack!
-        	) {
+        } else if (deleteLabel.equals(buttonAction)) {
             dataConfig.removeDataStore(form.getSelectedDataStoreId());
             request.getSession().removeAttribute("selectedDataStoreId");
 

@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.DataStylesForm;
@@ -51,10 +52,10 @@ public class DataStylesAction extends ConfigAction {
         
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
-        String edit = messages.getMessage(locale, "label.edit");
-        String delete = messages.getMessage(locale, "label.delete");
-        String _new = messages.getMessage(locale, "label.new");
-        String submit = messages.getMessage(locale, "label.submit");        
+        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        String _new = HTMLEncoder.decode(messages.getMessage(locale, "label.new"));
+        String submit = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));        
 
         if (action.equals(edit) || action.equals(submit)) {
             config = (StyleConfig) dataConfig.getStyle(stylesForm

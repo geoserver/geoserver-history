@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesSelectForm;
@@ -44,8 +45,8 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
         
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
-        String edit = messages.getMessage(locale, "label.edit");
-        String delete = messages.getMessage(locale, "label.delete");
+        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
 
         if (edit.equals(buttonAction)) {
             request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE,
