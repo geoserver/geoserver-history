@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.1.2.7 2003/11/14 01:53:49 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.1.2.8 2003/11/14 02:58:51 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
@@ -131,6 +131,7 @@ public class FeatureResponse implements Response {
             throw serviceException;                
         }
     }
+    
     /**
      * Jody here with a replacement for execute that make use
      * of geotools2 locking.
@@ -191,28 +192,31 @@ public class FeatureResponse implements Response {
                        it.hasNext() && (maxFeatures > 0);) {
                       
                 query = (Query) it.next();                                                                   
-                meta = catalog.getFeatureType(query.getTypeName());
+                meta = catalog.getFeatureType( query.getTypeName() );
                 namespace = meta.getDataStore().getNameSpace();                
                 source = (FeatureLocking) meta.getFeatureSource();
         
                 typeNames.append( query.getTypeName() );
                 if (it.hasNext() && (maxFeatures > 0)) {
                     typeNames.append(",");
-                }                
+                }
+                                
                 // This doesn't seem to be working?
                 ftNames.declareNamespace( source.getSchema(), namespace.getPrefix(), namespace.getUri() );
-                                                
-                source.setFeatureLock( featureLock );
-    
+                
                 // Run through features and record FeatureIDs
                 // Lock FeatureIDs as required
                 FeatureResults features = source.getFeatures( query.toDataQuery( maxFeatures ) );
-                for( FeatureReader reader= features.reader(); reader.hasNext(); ){
-                    feature = reader.next();
-                    fid = feature.getID();
-                    maxFeatures--;
+                maxFeatures -= features.getCount();
+                results.add( features );
+                
+                if( featureLock != null){
+                    // geotools2 locking code
+                    source.setFeatureLock( featureLock );                    
+                    for( FeatureReader reader= features.reader(); reader.hasNext(); ){
+                        feature = reader.next();
+                        fid = feature.getID();
                                         
-                    if( featureLock != null ){                    
                         fidFilter = filterFactory.createFidFilter( fid );
                         numberLocked = source.lockFeatures( fidFilter );
                     
@@ -227,14 +231,28 @@ public class FeatureResponse implements Response {
                         else {
                             LOGGER.warning("Lock "+numberLocked+" "+fid+" (authID:"+featureLock.getAuthorization()+") duplicated FeatureID!" );
                             lockedFids.add( fid );
-                        }                                        
-                    }                    
+                        }                    
+                    }
+                    if( !lockedFids.isEmpty() ){
+                        Transaction t = new DefaultTransaction();
+                        source.setTransaction( t );
+                        t.addAuthorization( featureLock.getAuthorization() );
+                        source.releaseLock( featureLock.getAuthorization() );
+                        t.commit();
+                        source.setTransaction( Transaction.AUTO_COMMIT );
+                    }
                 }
-                results.add( features );
             }
-            if( !lockedFids.isEmpty()){
-                // TODO: figure out how to error!
-                
+            if( featureLock != null ){
+                if( lockedFids.isEmpty() ){
+                    // empty LockResponse says this is an error
+                    // we may wish to return an empty FeatureCollection
+                                    
+                }
+                if( !lockFailedFids.isEmpty()){
+                    // TODO: figure out how to error!
+                    throw new ServiceException("Could not aquire all locks:"+lockFailedFids);
+                }
             }
             features = (FeatureResults[])
                 results.toArray(new FeatureResults[results.size()]);
