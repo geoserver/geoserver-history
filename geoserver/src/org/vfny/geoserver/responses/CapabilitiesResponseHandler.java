@@ -16,7 +16,7 @@ import java.util.*;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldán
- * @version 0.1
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.1.2.2 2003/11/07 23:06:28 cholmesny Exp $
  */
 public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -114,9 +114,15 @@ public abstract class CapabilitiesResponseHandler extends ConfigResponseHandler 
      * @param ftype DOCUMENT ME!
      *
      * @throws SAXException DOCUMENT ME!
+     * @throws IllegalStateException if a non-enabled ftype is passed in.
      */
     protected void handleFeatureType(FeatureTypeConfig ftype)
         throws SAXException {
+        if (!ftype.isEnabled()) {
+            throw new IllegalStateException("FeatureType " + ftype + " is not "
+                + "enabled, check config.");
+        }
+
         Envelope bbox = null;
 
         try {
