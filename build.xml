@@ -8,7 +8,7 @@
 <!-- under the PROPERTIES section.                                          -->
 <!-- ====================================================================== -->
 
-<project name="geoserver" default="clean" basedir=".">
+<project name="geoserver" default="unit" basedir=".">
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
@@ -197,7 +197,7 @@
         </fileset>
       </classpath>
       <test fork="true" 
-            name="org.vfny.geoserver.responses.FeatureSuite"/>
+            name="org.vfny.geoserver.requests.FeatureSuite"/>
     </junit>
   </target>
 
@@ -210,17 +210,57 @@
     <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF/lib"/>
     <mkdir dir="${dir.server}/webapps/ROOT/WEB-INF/classes"/>
 
+    <copy todir="${dir.testApp}/" >
+      <fileset dir="${dir.misc}/documents">
+        <include name="web.xml"/>
+      </fileset>
+    </copy>
+
+    <mkdir dir="${dir.server}/webapps/ROOT/data"/>
+    <copy todir="${dir.server}/webapps/ROOT/data">
+      <fileset dir="${dir.misc}/documents">
+        <include name="license.txt"/>
+        <include name="geoserver.log"/>
+        <include name="configuration.xml"/>
+      </fileset>
+    </copy>
+
+    <!-- populate base directory -->
+    <mkdir dir="${dir.server}/webapps/ROOT/data/capabilities"/>
+    <copy todir="${dir.server}/webapps/ROOT/data/capabilities">
+      <fileset dir="${dir.misc}/documents">
+        <include name="filter.xml"/>
+        <include name="operations.xml"/>
+        <include name="serviceMetadata.xml"/>
+        <include name="additionalCapabilities.xml"/>
+        <include name="operationsSignatures.xml"/>
+        <include name="vfnyWfsWsdl.xml"/>
+        <include name="OGC_Capabilities.xsd"/>
+        <include name="feature.xsd"/>
+        <include name="geometry.xsd"/>
+      </fileset>
+    </copy>
+
+    <!-- make feature types directory and populate -->
+    <mkdir dir="${dir.server}/webapps/ROOT/data/featureTypes"/>
+    <copy todir="${dir.server}/webapps/ROOT/data">
+    <fileset dir="${dir.data}"/>
+    </copy>
+
     <!-- stops a running server -->
     <java classname="org.vfny.geoserver.EmbeddedTomcat" 
-          classpathref="path.catalina" 
+          classpathref="path.build" 
           fork="true">
       <arg value="stop"/>
       <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
       <jvmarg value="-DCATALINA_HOME=${basedir}/libraries/catalina"/>
     </java>
+    <!-- remove the classes forcing the server to build new class,
+         so changes to the code actually are reflected in test server. -->
+    <delete dir="${dir.testApp}/classes/org"/>
     <!-- builds servlets to test server -->
     <javac srcdir="${dir.src}" 
-           destdir="${dir.testApp}/classes" 
+           destdir="${dir.testApp}/classes/" 
            includes="**/servlets/*.java" 
            classpathref="path.build"/>
     <!-- builds embedded jar -->
@@ -239,7 +279,7 @@
     </jar>
     <!-- starts the test server -->
     <java classname="org.vfny.geoserver.EmbeddedTomcat" 
-          classpathref="path.catalina" 
+          classpathref="path.build" 
           fork="true">
       <arg value="start"/>
       <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
@@ -249,10 +289,10 @@
 
 <!-- STOP SERVER -->
 <!-- deploys application to test server -->
-  <target name="stop" depends="init, all">
+  <target name="stop" depends="init">
     <!-- stops a running server -->
     <java classname="org.vfny.geoserver.EmbeddedTomcat" 
-          classpathref="path.catalina" 
+          classpathref="path.build" 
           fork="true">
       <arg value="stop"/>
       <jvmarg value="-DGEOSERVER_HOME=${basedir}"/>
@@ -363,7 +403,6 @@
 
     <!-- clean-up -->
     <delete file="${dir.build}/log4j.properties" failonerror="true"/>
-    <delete file="${basedir}/geoserver.war" failonerror="true"/>
     <delete dir="${basedir}/data" failonerror="true"/>
   </target>
 
