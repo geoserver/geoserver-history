@@ -189,7 +189,7 @@ public final class WFSDescriptionForm extends ActionForm {
         String out = "";
 
         for (int i = 0; i < config.getKeywords().length; i++) {
-            out = out + config.getKeywords()[i]; // + System.getProperty("line.separator");
+            out = out + config.getKeywords()[i] + System.getProperty("line.separator");
         }
 
         this.keywords = out;
