@@ -33,15 +33,19 @@ public class Feature
     /** Class logger */
     private static Logger LOGGER = 
         Logger.getLogger("org.vfny.geoserver.servlets");
+
+    private static final ConfigInfo config = ConfigInfo.getInstance();
     
     /** Specifies MIME type */
-    private static final String MIME_TYPE = ConfigInfo.getInstance().getMimeType();
+    private static final String MIME_TYPE = config.getMimeType();
 
     /**
      * Reads the XML request from the client, turns it into a generic request 
      * object, generates a generic response object, and writes to client.
      * @param request The servlet request object.
      * @param response The servlet response object.
+     * @task TODO: implement these to run in threads so we can report memory
+     * errors in wfsExceptions, instead of nasty servlet exceptions.
      */ 
     public void doPost(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException {
@@ -58,16 +62,17 @@ public class Feature
         
         // catches all errors; client should never see a stack trace 
         catch (WfsException wfs) {
-            tempResponse = wfs.getXmlResponse();
+            tempResponse = wfs.getXmlResponse(config.isPrintStack());
             LOGGER.info("Threw a wfs exception: " + wfs.getMessage());
             //if(response != null) wfs.printStackTrace(response.getWriter());
             wfs.printStackTrace();
         }
-        catch (Exception e) {
-            tempResponse = e.getMessage();
+        catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+       	    tempResponse = wfse.getXmlResponse(true);
             LOGGER.info("Had an undefined error: " + e.getMessage());
-            if(response != null) e.printStackTrace(response.getWriter());
-            e.printStackTrace();
+	    e.printStackTrace();
         }
         
 	
@@ -76,7 +81,6 @@ public class Feature
         response.getWriter().write( tempResponse );
         
     }
-    
     
     /**
      * Handles all Get requests.
@@ -101,7 +105,14 @@ public class Feature
         
         // catches all errors; client should never see a stack trace 
         catch (WfsException wfs) {
-            tempResponse = wfs.getXmlResponse();
+            tempResponse = wfs.getXmlResponse(config.isPrintStack());
+        }
+	catch (Throwable e) {
+	    WfsException wfse = new WfsException(e, "UNCAUGHT EXCEPTION",
+						 null);
+	    tempResponse = wfse.getXmlResponse(true);
+            LOGGER.info("Had an undefined error: " + e.getMessage());
+            e.printStackTrace();
         }
         
         // set content type and return response, whatever it is 
