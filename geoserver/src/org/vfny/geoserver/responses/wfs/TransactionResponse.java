@@ -61,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Handles a Transaction request and creates a TransactionResponse string.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionResponse.java,v 1.14 2004/03/02 17:25:15 jive Exp $
+ * @version $Id: TransactionResponse.java,v 1.15 2004/03/03 00:15:23 dmzwiers Exp $
  */
 public class TransactionResponse implements Response {
     /** Standard logging instance for class */
@@ -310,7 +310,7 @@ public class TransactionResponse implements Response {
             }
 
             if (element instanceof InsertRequest) {
-                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_INSERT ) == 0 ){
+                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_INSERT ) != 0 ){
                     // could we catch this during the handler, rather than during execution?
                     throw new ServiceException("Transaction INSERT support is not enabled");
                 }
@@ -336,7 +336,7 @@ public class TransactionResponse implements Response {
             }
 
             if (element instanceof UpdateRequest) {
-                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_UPDATE ) == 0 ){
+                if( (request.getWFS().getServiceLevel() & WFSDTO.SERVICE_UPDATE ) != 0 ){
                     // could we catch this during the handler, rather than during execution?
                     throw new ServiceException("Transaction Update support is not enabled");
                 }
