@@ -40,7 +40,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.12 2004/01/11 02:30:35 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.13 2004/01/12 05:19:04 jive Exp $
  */
 public class DataConfig{
 	public static final String CONFIG_KEY = "Config.Data";
@@ -226,6 +226,7 @@ public class DataConfig{
 	public List getFeatureTypeConfigKeys(){
 		return new ArrayList( featuresTypes.keySet() );
 	}
+    
 	/**
 	 * Lookup FeatureTypeConfig for things like WMS.
 	 * 
@@ -240,6 +241,7 @@ public class DataConfig{
 			throw new NoSuchElementException("Could not find FeatureTypeConfig '"+key+"'." );
 		}
 	}
+    
 	/**
 	 * getDataStores purpose.
 	 * <p>
@@ -251,6 +253,10 @@ public class DataConfig{
 		return dataStores;
 	}
 	
+    /** List of DataStoreIds */
+    public List listDataStoreIds() {
+        return new ArrayList( dataStores.keySet() );        
+    }
 	/**
 	 * getDataStores purpose.
 	 * <p>
