@@ -16,10 +16,12 @@ import java.util.List;
 
 
 /**
- * DOCUMENT ME!
+ * Base class for the handling of the WFS and WMS capabilities responses.
+ * Attempts to put the functionality that both use here, but in practice it
+ * ends up being closer to WFS, with WMS over-writing.
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesResponseHandler.java,v 1.14 2004/04/16 10:55:43 cholmesny Exp $
+ * @version $Id: CapabilitiesResponseHandler.java,v 1.15 2004/09/05 17:17:58 cholmesny Exp $
  */
 public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     private static final String EPSG = "EPSG:";
@@ -27,18 +29,19 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     /**
      * Creates a new CapabilitiesResponseHandler object.
      *
-     * @param contentHandler DOCUMENT ME!
+     * @param contentHandler The content handler to recieve SAX calls.
      */
     public CapabilitiesResponseHandler(ContentHandler contentHandler) {
         super(contentHandler);
     }
 
     /**
-     * DOCUMENT ME!
+     * Turns the Service passed in into a series of SAX production calls for
+     * the content handler passed in.
      *
-     * @param config DOCUMENT ME!
+     * @param config The service to transform.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     public void handleDocument(Service config) throws SAXException {
         startDocument(config);
@@ -50,11 +53,11 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     }
 
     /**
-     * DOCUMENT ME!
+     * Handles the service section of the capabilities document.
      *
-     * @param config DOCUMENT ME!
+     * @param config The OGC service to transform.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     protected void handleService(Service config) throws SAXException {
         startService(config);
@@ -100,11 +103,11 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         throws SAXException;
 
     /**
-     * DOCUMENT ME!
+     * Handles an online resource section.
      *
-     * @param config DOCUMENT ME!
+     * @param config The service to get the online resource from.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     protected void handleOnlineResource(Service config)
         throws SAXException {
@@ -116,7 +119,7 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
     }
 
     /**
-     * DOCUMENT ME!
+     * 
      *
      * @param config DOCUMENT ME!
      *
@@ -126,22 +129,22 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
         throws SAXException;
 
     /**
-     * DOCUMENT ME!
+     * Ends the service section.
      *
-     * @param config DOCUMENT ME!
+     * @param config The service for configuration information.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException for any errors.
      */
     protected void endService(Service config) throws SAXException {
         endElement("Service");
     }
 
     /**
-     * DOCUMENT ME!
+     * Handles the capabilities section of the capabilities document.
      *
-     * @param config DOCUMENT ME!
+     * @param config The service for configuration information.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException for any errors.
      */
     protected abstract void handleCapabilities(Service config)
         throws SAXException;
@@ -150,9 +153,9 @@ public abstract class CapabilitiesResponseHandler extends XmlResponseHandler {
      * Default handle of a FeatureTypeInfo content that writes the latLongBBox
      * as well as the GlobalBasic's parameters
      *
-     * @param ftype DOCUMENT ME!
+     * @param ftype The FeatureType configuration to report capabilities on.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      * @throws IllegalArgumentException if a non-enabled ftype is passed in.
      */
     protected void handleFeatureType(FeatureTypeInfo ftype)
