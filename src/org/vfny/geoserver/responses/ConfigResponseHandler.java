@@ -10,27 +10,31 @@ import java.util.*;
 
 
 /**
- * Streams out a BasicConfig element
+ * Streams out a BasicConfig element.  Also serves as a super class for others
+ * printing out the basic configuration elements.
  *
  * @author Gabriel Roldán
- * @version $Id: ConfigResponseHandler.java,v 1.2 2003/12/16 18:46:09 cholmesny Exp $
+ * @author Chris Holmes
+ * @version $Id: ConfigResponseHandler.java,v 1.3 2004/01/02 23:37:49 cholmesny Exp $
  */
 public abstract class ConfigResponseHandler extends XmlResponseHandler {
     /**
      * Creates a new ConfigResponseHandler object.
      *
-     * @param contentHandler DOCUMENT ME!
+     * @param contentHandler The handler to send content to.
      */
     public ConfigResponseHandler(ContentHandler contentHandler) {
         super(contentHandler);
     }
 
     /**
-     * DOCUMENT ME!
+     * Handles a config element, sends content for all the common information
+     * of configs.
      *
-     * @param config DOCUMENT ME!
+     * @param config A configuration to have its name, title, abstract and
+     *        keywords printed for.
      *
-     * @throws SAXException DOCUMENT ME!
+     * @throws SAXException For any errors.
      */
     public void handleConfig(BasicConfig config) throws SAXException {
         indent();
@@ -46,24 +50,17 @@ public abstract class ConfigResponseHandler extends XmlResponseHandler {
     }
 
     /**
-     * Handles a keyword list.
+     * Handles a keyword list.  This implementation should generally be
+     * overriden, but some subclasses may be able to use it.
      *
      * @param kwords The list of key words.
      *
-     * @throws SAXException DOCUMENT ME!
-     *
-     * @task REVISIT: I don't think this is currently right for wms or wfs
-     *       service elements.  I'm just subclassing for WfsCapabilities
-     *       response. It should be Keywords instead of Keyword.  For WMS I
-     *       think it should be KeywordList or something to that effect, with
-     *       individual keywords delimited by keyword elements.  So I'm not
-     *       sure what should go here by default, perhaps should just remain
-     *       abstract.
+     * @throws SAXException If anything goes wrong.
      */
     protected void handleKeywords(List kwords) throws SAXException {
-        startElement("Keywords");
+        if ((kwords != null) && (kwords.size() > 0)) {
+            startElement("Keywords");
 
-        if (kwords != null) {
             for (Iterator it = kwords.iterator(); it.hasNext();) {
                 characters(it.next().toString());
 
@@ -71,8 +68,8 @@ public abstract class ConfigResponseHandler extends XmlResponseHandler {
                     characters(", ");
                 }
             }
-        }
 
-        endElement("Keywords");
+            endElement("Keywords");
+        }
     }
 }
