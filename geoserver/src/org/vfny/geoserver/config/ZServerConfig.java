@@ -21,7 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * used to configure the zserver module.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: ZServerConfig.java,v 1.3 2003/09/10 20:22:29 cholmesny Exp $
+ * @version $Id: ZServerConfig.java,v 1.4 2003/09/10 20:32:39 cholmesny Exp $
  */
 public class ZServerConfig implements java.io.Serializable {
     /** The tag for which port to run zserver on. */
@@ -200,11 +200,13 @@ public class ZServerConfig implements java.io.Serializable {
      * @return the Properties to run the zserver.
      */
     public Properties getProps() {
-        Properties zserverProps = new Properties();
-        zserverProps.put("port", port);
-        zserverProps.put("datafolder", dataFolder);
-        zserverProps.put("fieldmap", fieldmap);
-        zserverProps.put("database", database);
+        if (zserverProps == null) {
+            zserverProps = new Properties();
+            zserverProps.put("port", port);
+            zserverProps.put("datafolder", dataFolder);
+            zserverProps.put("fieldmap", fieldmap);
+            zserverProps.put("database", database);
+        }
 
         return zserverProps;
     }
