@@ -16,8 +16,10 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -38,7 +40,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.1 2004/01/07 22:48:13 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.2 2004/01/07 22:52:12 emperorkefka Exp $
  */
 public class DataConfig implements DataStructure{
 	
@@ -266,6 +268,9 @@ public class DataConfig implements DataStructure{
 		return new DataConfig(this);
 	}
 	
+	public List getFeatureTypeConfigKeys(){
+		return new ArrayList( featuresTypes.keySet() );
+	}
 	/**
 	 * Lookup FeatureTypeConfig for things like WMS.
 	 * 
