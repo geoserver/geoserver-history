@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.26 2004/02/02 19:41:49 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.27 2004/02/03 00:13:46 emperorkefka Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -694,7 +694,7 @@ public class XMLConfigReader {
 
         ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled", false));
         ds.setTitle(ReaderUtils.getChildText(dsElem, "title", false));
-        ds.setAbstract(ReaderUtils.getChildText(dsElem, "abstract", false));
+        ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
         LOGGER.fine("loading connection parameters for DataStoreDTO "
             + ds.getNameSpaceId());
         ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(
