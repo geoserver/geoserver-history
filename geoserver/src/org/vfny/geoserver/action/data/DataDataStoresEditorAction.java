@@ -72,10 +72,7 @@ System.out.println("lalalala DataStoresAction.exexcute!");
 		if (action.equals("edit") || action.equals("submit")) {
 			config = (DataStoreConfig) dataConfig.getDataStore(dataStoresForm.getSelectedDataStore());
             
-            //if the config comes back null, we are creating a new DataStore.
-            if (config == null) {
-                config = new DataStoreConfig(selectedDataStoreType);
-            }
+            
 		} /* else if (action.equals("new")) {
             System.out.println("### NEW ### requested, reset, forward, dsType: " + selectedDataStoreType);
             //Return them back to the form page so they can create a new dataStore.
@@ -100,14 +97,12 @@ System.out.println("lalalala DataStoresAction.exexcute!");
 			System.out.println("Delete requested on " + dataStoresForm.getSelectedDataStore());
 		} else {
 */			
-			config.setId(dataStoreID);
 			config.setEnabled(enabled);
 			config.setNameSpaceId(namespace);
 			config.setAbstract(description);
 		
 			//Do configuration parameters here.
 		
-			dataConfig.addDataStore(dataStoreID, config);
 //		}
 			
 		dataStoresForm.reset(mapping, request);				

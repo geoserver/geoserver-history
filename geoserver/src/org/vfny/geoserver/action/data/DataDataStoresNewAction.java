@@ -5,7 +5,6 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.geotools.data.DataStoreFactorySpi;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresNewForm;
@@ -27,7 +25,7 @@ import org.vfny.geoserver.form.data.DataDataStoresNewForm;
  * 
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresNewAction.java,v 1.1.2.3 2004/01/12 06:21:40 jive Exp $
+ * @version $Id: DataDataStoresNewAction.java,v 1.1.2.4 2004/01/12 06:31:20 jive Exp $
  */
 public class DataDataStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
@@ -39,8 +37,8 @@ public class DataDataStoresNewAction extends ConfigAction {
         DataDataStoresNewForm newForm = (DataDataStoresNewForm) form;
         DataStoreConfig newDataStoreConfig;
         
-        newDataStoreConfig = new DataStoreConfig( newForm.getSelectedDescription() );
-        newDataStoreConfig.setId( newForm.getDataStoreID() );
+        newDataStoreConfig =
+            new DataStoreConfig( newForm.getDataStoreID(),newForm.getSelectedDescription() );
         
         getDataConfig().addDataStore( newDataStoreConfig );
         
