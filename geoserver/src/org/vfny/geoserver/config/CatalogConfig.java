@@ -6,6 +6,7 @@ package org.vfny.geoserver.config;
 
 import org.geotools.data.Catalog;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
@@ -13,15 +14,16 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
-import org.geotools.data.DataStoreFinder;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.*;
+import org.geotools.styling.*;
 import org.vfny.geoserver.WfsException;
 import org.vfny.geoserver.requests.wfs.*;
 import org.vfny.geoserver.responses.wfs.*;
 import org.w3c.dom.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,15 +34,20 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.2 2003/12/16 18:46:07 cholmesny Exp $
+ * @version $Id: CatalogConfig.java,v 1.3 2003/12/17 22:16:18 cholmesny Exp $
  */
-public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
+public class CatalogConfig extends AbstractConfig
+/**
+ * implements Catalog
+ */
+ {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
 
     /** Default name of feature type information */
     public static final String INFO_FILE = "info.xml";
+    static StyleFactory styleFactory = StyleFactory.createStyleFactory();
 
     /** The holds the mappings between prefixes and uri's */
     private Map nameSpaces;
@@ -110,11 +117,13 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
         }
 
         LOGGER.info("loading DataStore configuration");
-	Iterator iter = DataStoreFinder.getAvailableDataStores();
+
+        Iterator iter = DataStoreFinder.getAvailableDataStores();
 
         while (iter.hasNext()) {
             LOGGER.fine(iter.next() + " is an available DataSource");
         }
+
         // gt2 currently assumes one datastore per namespace
         //
         // I know this is wrong, please feed our requirements into the gt2
@@ -159,13 +168,16 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
                                 type, dataStoreConfig);
                         featureTypes.put(typeNames[t], typeConfig);
                     } catch (IOException e) {
-			
-			LOGGER.log(Level.CONFIG, "problem loading type " + typeNames[t], e); 
+                        LOGGER.log(Level.CONFIG,
+                            "problem loading type " + typeNames[t], e);
+
                         // type was not available?
                     }
                 }
             } catch (IOException e) {
-		LOGGER.log(Level.CONFIG, "problem loading datastore " + dataStoreConfig, e); 
+                LOGGER.log(Level.CONFIG,
+                    "problem loading datastore " + dataStoreConfig, e);
+
                 // datastore not available                
             }
         }
@@ -175,17 +187,18 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
      * Creates a new CatalogConfig object.
      *
      * @param root DOCUMENT ME!
-     * @param featureTypeDir DOCUMENT ME!
+     * @param dataDir DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      */
-    public CatalogConfig(Element root, String featureTypeDir)
+    public CatalogConfig(Element root, String dataDir)
         throws ConfigurationException {
         LOGGER.info("loading catalog configuration");
         loadNameSpaces(getChildElement(root, "namespaces", true));
         loadDataStores(getChildElement(root, "datastores", true));
-        loadStyles(getChildElement(root, "styles", false));
+        loadStyles(getChildElement(root, "styles", false), dataDir + "styles/");
 
+        String featureTypeDir = dataDir + "featureTypes";
         File startDir = new File(featureTypeDir);
         this.featureTypes = new HashMap();
         loadFeatureTypes(startDir);
@@ -278,6 +291,10 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
      */
     public Map getStyles() {
         return this.styles;
+    }
+
+    public Style getStyle(String id) {
+        return (Style) styles.get(id);
     }
 
     /**
@@ -411,12 +428,18 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
      * DOCUMENT ME!
      *
      * @param stylesElem DOCUMENT ME!
+     * @param styleDir DOCUMENT ME!
      *
      * @throws ConfigurationException DOCUMENT ME!
      *
      * @task TODO: load styles as SLD Style objects.
+     * @task REVISIT: Do we want to load all up front?  Or do them dynamicall?
+     *       What would be real nice for all these that we do up front now,
+     *       like datastores, that we we used to do dynamically, is to give
+     *       users the option of when they want to load them...
      */
-    private void loadStyles(Element stylesElem) throws ConfigurationException {
+    private void loadStyles(Element stylesElem, String styleDir)
+        throws ConfigurationException {
         styles = new HashMap();
 
         NodeList stylesList = null;
@@ -429,7 +452,7 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
             //no styles where defined, just add a default one
             styles.put("normal", "styles/normal.sld");
 
-            return;
+            //return;
         }
 
         int styleCount = stylesList.getLength();
@@ -440,9 +463,44 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
 
             String stId = getAttribute(styleElem, "id", true);
             String stFile = getAttribute(styleElem, "filename", true);
-            styles.put(stId, stFile);
+
+            //File file = new File(stFile);
+            try {
+                Style style = loadStyle(stFile, styleDir);
+                LOGGER.fine("loaded style, id: " + stId + ", style: " + style);
+                styles.put(stId, style);
+            } catch (java.io.IOException fnfe) {
+                LOGGER.warning("could not load style at " + stFile + ": "
+                    + fnfe.getMessage());
+
+                //throw new ConfigurationException(fnfe);
+            }
+
+            //styles.put(stId, stFile);
         }
     }
+
+    //TODO: detect if a user put a full url, instead of just one to be resolved, and
+    //use that instead.
+    public Style loadStyle(String fileName, String base)
+        throws IOException {
+        URL url;
+
+        //HACK: but I'm not sure if we can get the ServerConfig instance.  This is one thing
+        //that will benefit from splitting up of config loading from representation.
+        url = new File(base + fileName).toURL();
+
+        SLDStyle stylereader = new SLDStyle(styleFactory, url);
+        Style[] layerstyle = stylereader.readXML();
+
+        return layerstyle[0];
+    }
+
+    //} else {
+    //url = file.toURL();
+    //}
+    //LOGGER.fine("pulling default style from "+url.toString());
+    //LOGGER.fine("loading sld from " + url);
 
     /**
      * DOCUMENT ME!
@@ -478,9 +536,9 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
                 featureTypes.put(ft.getName(), ft);
                 LOGGER.finer("added featureType " + ft.getName());
             } catch (ConfigurationException cfge) {
-		//HACK: should use a logger.
-		cfge.printStackTrace(System.out);
-		LOGGER.warning("could not add FeatureType at " + currentFile
+                //HACK: should use a logger.
+                cfge.printStackTrace(System.out);
+                LOGGER.warning("could not add FeatureType at " + currentFile
                     + " due to " + cfge);
             }
         }
@@ -525,7 +583,6 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
         return testName.substring(start, end).equals(INFO_FILE);
     }
 
-    
     /**
      * Release lock by authorization
      *
@@ -533,180 +590,241 @@ public class CatalogConfig extends AbstractConfig /**implements Catalog**/ {
      */
     public void lockRelease(String lockID) {
         boolean refresh = false;
+
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-            if (!meta.isEnabled()) continue; // disabled
-    
-            DataStore dataStore;                
+
+            if (!meta.isEnabled()) {
+                continue; // disabled
+            }
+
+            DataStore dataStore;
+
             try {
                 dataStore = meta.getDataStore();
-            }
-            catch(IOException notAvailable){
+            } catch (IOException notAvailable) {
                 continue; // not available
             }
+
             LockingManager lockingManager = dataStore.getLockingManager();
-            if( lockingManager == null ) continue; // locks not supported
-    
-            Transaction t = new DefaultTransaction("Refresh "+meta.getNameSpace() );
+
+            if (lockingManager == null) {
+                continue; // locks not supported
+            }
+
+            Transaction t = new DefaultTransaction("Refresh "
+                    + meta.getNameSpace());
+
             try {
-                t.addAuthorization( lockID );
-                if( lockingManager.release( lockID, t ) ){
+                t.addAuthorization(lockID);
+
+                if (lockingManager.release(lockID, t)) {
                     refresh = true;
                 }
             } catch (IOException e) {
-                LOGGER.log( Level.WARNING, e.getMessage(), e );
-            }
-            finally {
+                LOGGER.log(Level.WARNING, e.getMessage(), e);
+            } finally {
                 try {
                     t.close();
                 } catch (IOException closeException) {
-                    LOGGER.log(Level.FINEST, closeException.getMessage(), closeException);
+                    LOGGER.log(Level.FINEST, closeException.getMessage(),
+                        closeException);
                 }
             }
         }
-        if( !refresh ){
+
+        if (!refresh) {
             // throw exception? or ignore...
         }
     }
 
     /**
      * Refresh lock by authorization
+     * 
      * <p>
      * Should use your own transaction?
      * </p>
+     *
      * @param lockID
      */
-    public void lockRefresh(String lockID){
+    public void lockRefresh(String lockID) {
         boolean refresh = false;
+
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-            if (!meta.isEnabled()) continue; // disabled
-            
-            DataStore dataStore;                
+
+            if (!meta.isEnabled()) {
+                continue; // disabled
+            }
+
+            DataStore dataStore;
+
             try {
                 dataStore = meta.getDataStore();
-            }
-            catch(IOException notAvailable){
+            } catch (IOException notAvailable) {
                 continue; // not available
             }
+
             LockingManager lockingManager = dataStore.getLockingManager();
-            if( lockingManager == null ) continue; // locks not supported
-            
-            Transaction t = new DefaultTransaction("Refresh "+meta.getNameSpace() );
+
+            if (lockingManager == null) {
+                continue; // locks not supported
+            }
+
+            Transaction t = new DefaultTransaction("Refresh "
+                    + meta.getNameSpace());
+
             try {
-                t.addAuthorization( lockID );
-                if( lockingManager.refresh( lockID, t ) ){
+                t.addAuthorization(lockID);
+
+                if (lockingManager.refresh(lockID, t)) {
                     refresh = true;
                 }
             } catch (IOException e) {
-                LOGGER.log( Level.WARNING, e.getMessage(), e );
-            }
-            finally {
+                LOGGER.log(Level.WARNING, e.getMessage(), e);
+            } finally {
                 try {
                     t.close();
                 } catch (IOException closeException) {
-                    LOGGER.log(Level.FINEST, closeException.getMessage(), closeException);
+                    LOGGER.log(Level.FINEST, closeException.getMessage(),
+                        closeException);
                 }
             }
         }
-        if( !refresh ){
+
+        if (!refresh) {
             // throw exception? or ignore...
         }
     }
 
     /**
      * Implement lockRefresh.
-     * 
-     * @see org.geotools.data.Catalog#lockRefresh(java.lang.String, org.geotools.data.Transaction)
-     * 
-     * @param arg0
-     * @param arg1
+     *
+     * @param lockID
+     * @param t
+     *
      * @return true if lock was found and refreshed
+     *
      * @throws IOException
+     *
+     * @see org.geotools.data.Catalog#lockRefresh(java.lang.String,
+     *      org.geotools.data.Transaction)
      */
-    public boolean lockRefresh(String lockID, Transaction t) throws IOException {
+    public boolean lockRefresh(String lockID, Transaction t)
+        throws IOException {
         boolean refresh = false;
+
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-            if (!meta.isEnabled()) continue; // disabled
-            
-            DataStore dataStore;                
+
+            if (!meta.isEnabled()) {
+                continue; // disabled
+            }
+
+            DataStore dataStore;
+
             try {
                 dataStore = meta.getDataStore();
-            }
-            catch(IOException notAvailable){
+            } catch (IOException notAvailable) {
                 continue; // not available
             }
+
             LockingManager lockingManager = dataStore.getLockingManager();
-            if( lockingManager == null ) continue; // locks not supported
-            
-            if( lockingManager.refresh( lockID, t ) ){
+
+            if (lockingManager == null) {
+                continue; // locks not supported
+            }
+
+            if (lockingManager.refresh(lockID, t)) {
                 refresh = true;
             }
         }
+
         return refresh;
     }
 
     /**
      * Implement lockRelease.
-     * 
-     * @see org.geotools.data.Catalog#lockRelease(java.lang.String, org.geotools.data.Transaction)
-     * 
+     *
      * @param lockID
      * @param t
+     *
      * @return true if the lock was found and released
+     *
      * @throws IOException
+     *
+     * @see org.geotools.data.Catalog#lockRelease(java.lang.String,
+     *      org.geotools.data.Transaction)
      */
-    public boolean lockRelease(String lockID, Transaction t) throws IOException {
+    public boolean lockRelease(String lockID, Transaction t)
+        throws IOException {
         boolean release = false;
+
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-            if (!meta.isEnabled()) continue; // disabled
-            
-            DataStore dataStore;                
+
+            if (!meta.isEnabled()) {
+                continue; // disabled
+            }
+
+            DataStore dataStore;
+
             try {
                 dataStore = meta.getDataStore();
-            }
-            catch(IOException notAvailable){
+            } catch (IOException notAvailable) {
                 continue; // not available
             }
+
             LockingManager lockingManager = dataStore.getLockingManager();
-            if( lockingManager == null ) continue; // locks not supported
-            
-            if( lockingManager.release( lockID, t ) ){
+
+            if (lockingManager == null) {
+                continue; // locks not supported
+            }
+
+            if (lockingManager.release(lockID, t)) {
                 release = true;
             }
         }
+
         return release;
     }
 
     /**
      * Implement lockExists.
-     * 
-     * @see org.geotools.data.Catalog#lockExists(java.lang.String)
-     * 
+     *
      * @param lockID
+     *
      * @return true if lockID exists
+     *
+     * @see org.geotools.data.Catalog#lockExists(java.lang.String)
      */
     public boolean lockExists(String lockID) {
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
-            if (!meta.isEnabled()) continue; // disabled
-            
-            DataStore dataStore;                
+
+            if (!meta.isEnabled()) {
+                continue; // disabled
+            }
+
+            DataStore dataStore;
+
             try {
                 dataStore = meta.getDataStore();
-            }
-            catch(IOException notAvailable){
+            } catch (IOException notAvailable) {
                 continue; // not available
             }
+
             LockingManager lockingManager = dataStore.getLockingManager();
-            if( lockingManager == null ) continue; // locks not supported
-            
-            if( lockingManager.exists( lockID ) ){
+
+            if (lockingManager == null) {
+                continue; // locks not supported
+            }
+
+            if (lockingManager.exists(lockID)) {
                 return true;
             }
         }
+
         return false;
     }
 }
