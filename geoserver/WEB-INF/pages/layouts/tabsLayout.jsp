@@ -71,7 +71,7 @@ These attribute must be passed to the tile.
   <a href="<%=href%>" >
   <% } %>
   
-  <%=tab.getValue()%>
+  <bean:message key="<%=tab.getValue()%>"/>
   
   <% if (index != selectedIndex) { %>
   </a>

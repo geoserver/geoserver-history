@@ -15,12 +15,12 @@
 		</html:select>
 	</td></tr>
 	<tr><td>&nbsp;</td><td valign="top" align="left">
-		<html:submit property="buttonAction" value="edit">
+		<html:submit property="buttonAction">
 			<bean:message key="label.edit"/>
 		</html:submit>
 	</td></tr>
 	<tr><td>&nbsp;</td><td valign="top" align="left">
-		<html:submit property="buttonAction" value="delete">
+		<html:submit property="buttonAction">
 			<bean:message key="label.delete"/>
 		</html:submit>
 	</td></tr>
