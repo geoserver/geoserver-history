@@ -30,6 +30,7 @@
   defined.  But then we need some way to make sure that typeNames don't 
   collide.
 - GetCapabilities should not choke if datastores are not enabled.
+  (probably need an enabled thing in featureTypes).
 - Use IanS's new gml producer.
 
 - Evaluate using cactus (http://jakarta.apache.org/cactus) to make server-side unit tests
@@ -38,7 +39,7 @@
 - figure out how to configure hierarchy layers for wms
 - create wms services, and isolate wms map creation from request processing, allowing
 
-- FeatureTransformer handle null atts.
+xxx- FeatureTransformer handle null atts.DONE
 - Put namespace prefix stripper in common utility.  Have kvpRequestReader 
   and query use it.
 - Make option to buffer the output stream responses so that we can properly
