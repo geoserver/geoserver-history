@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite xmlns="testSuiteSchema" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns:ogc="http://www.opengis.net/ogc" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+	xs:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd">
+	<name>OrphanCheck</name>
+	<description>Orphan Check Description</description>
+	<test>
+		<name>Orphan</name>
+		<description>Orphan</description>
+		<plugin>Orphan</plugin>
+		<argument >
+			<name>typeName</name>
+			<string>Inserts</string>
+		</argument>
+	</test>
+</suite>
