@@ -186,17 +186,17 @@
    		<put name="body" value="data.featureTypes.main"/>
 		<put name="title" value="title.data.featureTypes"/> 
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>	
-		<put name="actions" value="/WEB-INF/pages/data/featureTypeActions.jsp"/>	  		
+		<put name="actions" value="/WEB-INF/pages/data/featureTypes/featureTypeActions.jsp"/>	  		
    		<put name="layer" value="data"/>   						
    	</definition>   	
    	
    	<definition name="data.featureTypes.main" page="/WEB-INF/pages/layouts/featureTypesLayout.jsp">
-   		<put name="ftSelect" value="/WEB-INF/pages/data/DataConfigFeatureTypeSelect.jsp"/>
-   		<put name="ftNew"    value="/WEB-INF/pages/data/DataConfigFeatureTypeNew.jsp"/>
-  		<put name="ftEditor" value="/WEB-INF/pages/data/DataConfigFeatureTypeEditor.jsp"/>
-   		<put name="atSelect" value="/WEB-INF/pages/data/DataConfigAttributeTypeSelect.jsp"/>
-   		<put name="atNew"    value="/WEB-INF/pages/data/DataConfigAttributeTypeNew.jsp"/>
-   		<put name="atEditor" value="/WEB-INF/pages/data/DataConfigAttributeTypeEditor.jsp"/>
+   		<put name="ftSelect" value="/WEB-INF/pages/data/featureTypes/Select.jsp"/>
+   		<put name="ftNew"    value="/WEB-INF/pages/data/featureTypes/New.jsp"/>
+  		<put name="ftEditor" value="/WEB-INF/pages/data/featureTypes/Editor.jsp"/>
+   		<put name="atSelect" value="/WEB-INF/pages/data/featureTypes/attributeTypes/Select.jsp"/>
+   		<put name="atNew"    value="/WEB-INF/pages/data/featureTypes/attributeTypes/New.jsp"/>
+   		<put name="atEditor" value="/WEB-INF/pages/data/featureTypes/attributeTypes/Editor.jsp"/>
    		<put name="layer" value="data"/>   				   		
    	</definition>
 
