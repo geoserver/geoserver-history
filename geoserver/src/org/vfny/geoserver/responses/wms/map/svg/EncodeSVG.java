@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 /**
  *
  * @author Gabriel Roldán
- * @version $Id: EncodeSVG.java,v 1.1 2004/03/14 16:15:22 groldan Exp $
+ * @version $Id: EncodeSVG.java,v 1.2 2004/03/14 23:27:03 groldan Exp $
  */
 
 public class EncodeSVG
@@ -164,7 +164,7 @@ public class EncodeSVG
               if(config.isWriteHeader())
                 writeDefs(layerInfo);
 
-              writeFeatures(featureReader, styleName);
+              writer.writeFeatures(featureReader, styleName);
               writer.write("</g>\n");
           } catch (IOException ex) {
               throw ex;
@@ -183,57 +183,6 @@ public class EncodeSVG
                   featureReader.close();
               }
           }
-      }
-  }
-
-  private void writeFeatures(FeatureReader reader, String style)
-      throws IOException, AbortedException {
-      Feature ft;
-
-      try {
-          FeatureType featureType = reader.getFeatureType();
-          Class gtype = featureType.getDefaultGeometry().getType();
-
-          boolean doCollect = config.isCollectGeometries() &&
-                gtype != Point.class && gtype != MultiPoint.class;
-
-          writer.setGeometryType(gtype);
-
-          writer.setPointsAsCircles("#circle".equals(style));
-
-          if(style != null && !"#circle".equals(style) && style.startsWith("#"))
-            style = style.substring(1);
-          else
-            style = null;
-
-          writer.setAttributeStyle(style);
-
-          if(doCollect)
-          {
-            writer.write("<path ");
-            writer.write("d=\"");
-          }
-
-          while (reader.hasNext()) {
-              if (abortProcess) {
-                  throw new AbortedException("writing features");
-              }
-
-              ft = reader.next();
-              writer.writeFeature(ft);
-              ft = null;
-          }
-
-          if(doCollect)
-          {
-            writer.write("\"/>\n");
-          }
-
-          LOGGER.fine("encoded " + featureType.getTypeName());
-      } catch (NoSuchElementException ex) {
-          throw new DataSourceException(ex.getMessage(), ex);
-      } catch (IllegalAttributeException ex) {
-          throw new DataSourceException(ex.getMessage(), ex);
       }
   }
 }
