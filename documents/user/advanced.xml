@@ -232,8 +232,7 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
     machines. If you have an ArcSDE installation it would be great if you
     could provide feedback on the datastore. To use the ArcSDE Datastore the
     <emphasis>catalog.xml</emphasis> file must have the following values for
-    the connectionParams:rail
-    http://openplans.org:8080/GeoServer/wfs?request=GetFeature&amp;typename=topp:rail</para>
+    the connectionParams:</para>
 
     <informaltable>
       <tgroup cols="2">
@@ -249,7 +248,7 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
 
         <tbody>
           <row>
-            <entry>host</entry>
+            <entry>server</entry>
 
             <entry>The machine which the ArcSDE instance is running
             on.</entry>
@@ -269,7 +268,7 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
           </row>
 
           <row>
-            <entry>passwd</entry>
+            <entry>password</entry>
 
             <entry>The password to connect with.</entry>
           </row>
@@ -297,7 +296,7 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
 &lt;catalog&gt;
   &lt;!-- defines the datastores, more than one is possible --&gt;
   &lt;datastores&gt;
-    &lt;datastore id="remote.oracle" enabled="true" namespace="topp"&gt;
+    &lt;datastore id="arcsde.sig" enabled="true" namespace="topp"&gt;
       &lt;connectionParams&gt;
         &lt;parameter name="server" value="localhost"/&gt;
         &lt;parameter name="port" value="5151"/&gt;
@@ -309,10 +308,20 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
     &lt;/datastore&gt;
   ...
   &lt;/datastores&gt;
-  ... rail
-http://openplans.org:8080/GeoServer/wfs?request=GetFeature&amp;typename=topp:rail
+  ... 
 
 &lt;/catalog&gt;</programlisting>
+
+    <para>One more thing to note is that in the info.xml file the &lt;name&gt;
+    parameter of the featureType may need to be the full qualified type name.
+    It should be &lt;instance&gt;.&lt;table_owner&gt;.&lt;table_name&gt;, so
+    in the example above a table called roads should be named
+    sde.testsde.roads. But some users have also reported success without the
+    instance prepended. Also make sure that the port number specified is the
+    same as in the services file
+    (%(%(%systemRoot%\system32\drivers\etc\services in windows), it should
+    contain a line like (if yours is different then change the port param of
+    your datastore definition:<programlisting>esri_sde        5151/tcp</programlisting></para>
   </sect1>
 
   <sect1 id="international">
