@@ -116,17 +116,25 @@ public class DataDataStoresEditorForm extends ActionForm {
         for( int i=0; i< paramKeys.size();i++){
             String key = (String) paramKeys.get(i);
             Param param = DataStoreUtils.find( factory, key );
+            if( param == null ){
+                errors.add( "paramValue["+i+"]",
+                    new ActionError("error.dataStoreEditor.param.missing", key, factory.getDescription() )
+                );
+                continue;
+            }
             String text = (String) paramValues.get(i);
             if(( text == null || text.length() == 0 ) && param.required ){
                 errors.add( "paramValue["+i+"]",
                     new ActionError("error.dataStoreEditor.param.required", key )
                 );
+                continue;                
             }
             Object value = param.setAsText( text );
             if( value == null ){
                 errors.add( "paramValue["+i+"]",
                     new ActionError("error.dataStoreEditor.param.parse", key, param.type )
                 );
+                continue;
             }
             params.put( key, value );
         }
