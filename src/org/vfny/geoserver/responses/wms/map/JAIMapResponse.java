@@ -17,7 +17,6 @@ import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -41,7 +40,7 @@ import javax.imageio.stream.ImageOutputStream;
  * not sure there's a better way to handle it.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.14 2004/04/07 22:31:14 dmzwiers Exp $
+ * @version $Id: JAIMapResponse.java,v 1.15 2004/04/11 04:30:06 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -57,7 +56,6 @@ public class JAIMapResponse extends GetMapDelegate {
     //this is not necessary, just change the call to getRequest.getFormat, I just
     //can't test right now, must run.
     private String format;
-
 
     public JAIMapResponse() {
     }
@@ -87,7 +85,25 @@ public class JAIMapResponse extends GetMapDelegate {
      */
     public List getSupportedFormats() {
         if (supportedFormats == null) {
-			StyledMapRenderer renderer = new StyledMapRenderer(null);
+            StyledMapRenderer renderer = null;
+
+            try {
+                renderer = new StyledMapRenderer(null);
+            } catch (NoClassDefFoundError ncdfe) {
+                supportedFormats = Collections.EMPTY_LIST;
+
+                //this will occur if JAI is not present, so please do not
+                //delete, or we get really nasty messages on getCaps for wms.
+            } catch (ExceptionInInitializerError eiie) {
+                supportedFormats = Collections.EMPTY_LIST;
+
+                //TODO: This is a weird one, it seems to be caused by a null
+                //pointer in units?  Uncomment and investigate further, must run
+                //a jvm withough JAI installed, and call wms/GetCaps.
+                //this will occur if JAI is not present, so please do not
+                //delete, or we get really nasty messages on getCaps for wms.
+            }
+
             if (renderer == null) {
                 supportedFormats = Collections.EMPTY_LIST;
             } else {
@@ -215,7 +231,7 @@ public class JAIMapResponse extends GetMapDelegate {
         try {
             LOGGER.fine("setting up map");
 
-			DefaultMapContext map = new DefaultMapContext();
+            DefaultMapContext map = new DefaultMapContext();
             Style[] layerstyle = null;
             StyleBuilder sb = new StyleBuilder();
 
@@ -240,12 +256,14 @@ public class JAIMapResponse extends GetMapDelegate {
                 g.fillRect(0, 0, width, height);
             }
 
-			StyledMapRenderer renderer = new StyledMapRenderer(null);
+            StyledMapRenderer renderer = new StyledMapRenderer(null);
+
             synchronized (renderer) {
-				renderer.setMapContext(map);
-				renderer.paint((Graphics2D)image.getGraphics(),
-				new java.awt.Rectangle(width, height),new AffineTransform(),false);
-            	
+                renderer.setMapContext(map);
+                renderer.paint((Graphics2D) image.getGraphics(),
+                    new java.awt.Rectangle(width, height),
+                    new AffineTransform(), false);
+
                 LOGGER.fine("called renderer");
             }
 
