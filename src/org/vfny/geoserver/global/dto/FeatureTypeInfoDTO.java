@@ -8,13 +8,11 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.config.DataConfig;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -39,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.9 2004/02/09 23:29:47 dmzwiers Exp $
+ * @version $Id: FeatureTypeInfoDTO.java,v 1.10 2004/03/12 10:02:05 cholmesny Exp $
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -142,6 +140,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         }
 
         defaultStyle = dto.getDefaultStyle();
+
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
@@ -520,6 +519,18 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * @return
      */
     public String getDefaultStyle() {
+        //HACK: So our UI doesn't seem to allow the setting of styles or 
+        //default styles or anything, despite the fact that shit chokes when none
+        //is present.  This is making it so the beta release can not have any data
+        //stores added to it.  This is a hacky ass way to get around it, just 
+        //write out a normal style if it is null.  This can obviously be done 
+        //better, and I have no idea why this default style shit is required - wfs
+        //does not care about a style.  Should be able to seamlessly at least do
+        //something for wms.
+        if ((defaultStyle == null) || defaultStyle.equals("")) {
+            defaultStyle = "normal";
+        }
+
         return defaultStyle;
     }
 
