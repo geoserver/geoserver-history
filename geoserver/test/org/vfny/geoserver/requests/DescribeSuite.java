@@ -82,7 +82,7 @@ public class DescribeSuite extends TestCase {
 
         // instantiates an XML request reader, returns request object
         DescribeRequest request = 
-            XmlRequestReader.readDescribeFeatureType(readFile("1.xml"));
+            XmlRequestReader.readDescribeFeatureType(readFile("4.xml"));
 
         LOGGER.info("XML 1 test passed: " + baseRequest[0].equals(request));
         LOGGER.finer("base request: " + baseRequest[0].toString());
@@ -98,13 +98,14 @@ public class DescribeSuite extends TestCase {
 
         // instantiates an XML request reader, returns request object
         DescribeRequest request = 
-            XmlRequestReader.readDescribeFeatureType(readFile("2.xml"));
+            XmlRequestReader.readDescribeFeatureType(readFile("5.xml"));
 
         LOGGER.info("XML 2 test passed: " + baseRequest[1].equals(request));
         LOGGER.finer("base request: " + baseRequest[1].toString());
         LOGGER.finer("read request: " + request.toString());
         assertTrue(baseRequest[1].equals(request));
     }
+
 
     /**
      * Checks to make sure that a standard KVP request is handled correctly.
