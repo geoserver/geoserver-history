@@ -1,11 +1,15 @@
+<%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
-<%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
 
 <html:html locale="true">
 
+<bean:define id="titleKey">
+	<tiles:getAsString name='title'/>
+</bean:define>
+
 <head>
-<title><tiles:getAsString name="title"/></title>
+<title><bean:message key="<%= titleKey %>"/></title>
 <html:base/>
 <LINK rel="stylesheet" type="text/css" href="<html:rewrite forward='baseStyle'/>">
 </head>
