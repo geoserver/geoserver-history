@@ -15,11 +15,11 @@ import java.util.logging.Logger;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: ConfigSuite.java,v 1.8 2003/09/09 21:02:25 cholmesny Exp $
+ * @version $Id: ConfigSuite.java,v 1.9 2003/09/10 19:52:02 cholmesny Exp $
  */
 public class ConfigSuite extends TestCase {
     /* Initializes the logger.  It's going to be initted anyways, might as
-     well do so now*/
+       well do so now*/
     static {
         Log4JFormatter.init("org.vfny.geoserver", Level.FINER);
         Log4JFormatter.init("org.geotools", Level.FINER);
@@ -60,22 +60,6 @@ public class ConfigSuite extends TestCase {
         config = ConfigInfo.getInstance(CONFIG_DIR);
         config.setTypeDir(TYPE_DIR);
         repo = TypeRepository.getInstance();
-    }
-
-    public void test1() throws Exception {
-        LOGGER.fine(repo.toString());
-        LOGGER.fine("has two types: " + (repo.typeCount() == 3));
-        assertTrue(repo.typeCount() == 3);
-
-        String prefix = config.getDefaultNSPrefix();
-        LOGGER.fine("has roads: " + (repo.getType(prefix + ":roads") != null));
-        assertTrue(repo.getType(prefix + ":roads") != null);
-        LOGGER.fine("has rail: " + (repo.getType(prefix + ":rail") != null));
-        assertTrue(repo.getType(prefix + ":rail") != null);
-        LOGGER.fine("has ns01:rail: " + (repo.getType("ns01:rail") != null));
-        assertTrue(repo.getType("ns01:rail") != null);
-        LOGGER.fine("no cows: " + (repo.getType("cows") == null));
-        assertTrue(repo.getType("cows") == null);
     }
 
     public void testServiceConfig() throws Exception {
