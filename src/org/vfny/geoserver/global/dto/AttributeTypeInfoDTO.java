@@ -25,22 +25,37 @@ package org.vfny.geoserver.global.dto;
  * </p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.3 2004/01/13 01:04:01 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoDTO.java,v 1.4 2004/01/13 20:44:51 jive Exp $
  */
 public class AttributeTypeInfoDTO  implements DataTransferObject {
 		
 	/** attribute name*/
 	private String name;
-	/** attribute min occurs*/
+	
+    /** attribute min occurs*/
 	private int minOccurs;
-	/** attribute max occurs*/
+	
+    /** attribute max occurs*/
 	private int maxOccurs;
-	/** true when nillable */
+	
+    /** true when nillable */
 	private boolean nillable;
-	/** if is ref and a name is specified, then treat like a simple type (same thing ...) otherwise this is a complex type. */
+	
+    /** if is ref and a name is specified, then treat like a simple type (same thing ...) otherwise this is a complex type. */
 	private String type;
-	/** name and ref are mutualy exclusive. type overrides ref. */
-	private boolean isRef;
+    
+	/**
+     * This is true when type is complex.
+     * <p>
+     * This is used to denote that type proerty is an XML fragment, rather
+     * than type a type declaration. type declaration must be from
+     * GMLUtils.xmlSchemaType or gmlTypes but not baseGMLTypes. 
+     * </p>
+     * <p>
+     * baseGMLTypes can only be used in your XML fragment.
+     * </p>
+     */
+	private boolean isComplex;
 
 	/**
 	 * AttributeTypeInfoDTO constructor.
@@ -64,7 +79,7 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 		minOccurs = dto.getMinOccurs();
 		maxOccurs = dto.getMaxOccurs();
 		nillable = dto.isNillable();
-		isRef = dto.isRef();
+		isComplex = dto.isRef();
 	}
 
 	/**
@@ -87,7 +102,7 @@ public class AttributeTypeInfoDTO  implements DataTransferObject {
 		r = r && minOccurs == dto.getMinOccurs();
 		r = r && maxOccurs == dto.getMaxOccurs();
 		r = r && nillable == dto.isNillable();
-		r = r && isRef == dto.isRef();
+		r = r && isComplex == dto.isRef();
 		return r;
 	}
 	
