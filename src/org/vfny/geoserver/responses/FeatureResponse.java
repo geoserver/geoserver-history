@@ -18,10 +18,8 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.data.DataSource;
 import org.geotools.data.DataSourceException;
-//port org.geotools.data.Query;
+//import org.geotools.data.Query;
 import org.geotools.data.QueryImpl;
-    //import org.geotools.data.postgis.PostgisConnectionFactory;
-    //import org.geotools.data.postgis.PostgisDataSource;
 import org.vfny.geoserver.requests.FeatureRequest;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.config.TypeInfo;
@@ -33,7 +31,7 @@ import org.vfny.geoserver.config.ConfigInfo;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $VERSION$
+ * @version $Id: FeatureResponse.java,v 1.20 2003/06/12 19:43:51 cholmesny Exp $
  */
 public class FeatureResponse {
 
@@ -112,22 +110,12 @@ public class FeatureResponse {
         LOG.finest("about to create gml");
         LOG.finest("initializing..." + attributeTypes[schema.attributeTotal() - 1].getClass().toString());
 	gml.initializeFeatureType(typeName);
-	/*if (geometryAttr != null) {
-	    gml.initializeGeometry(attributeTypes[geometryPosition].
-                               getType(), 
-                               typeName, 
-			       meta.getSrs(),  
-                               attributeTypes[geometryPosition].
-                               getName());
-			       }*/
         for(int i = 0, m = features.length; i < m; i++) {
-	    //if (geometryAttr != null) {
-	    //}
 	    String fid = features[i].getId();
             LOG.finest("fid: " + fid);
             gml.startFeature(fid);
             attributes = features[i].getAttributes();
-            LOG.finest("feature: " + features[i].toString());
+            LOG.finer("feature: " + features[i].toString());
             LOG.finest("att total: " + schema.attributeTotal());
             for(int j = 0, n = schema.attributeTotal(); j < n; j++) {
                 //LOG.finest("sent attribute: " + attributes[j].toString());
@@ -142,13 +130,8 @@ public class FeatureResponse {
 			gml.initializeGeometry(attributes[j].getClass(), 
 					   typeName, 
 					   meta.getSrs(),  
-					   attributeTypes[geometryPosition].
+					   attributeTypes[j].
 					   getName());
-		
-		    //LOG.finest("geometry att: " + attributes[j].getClass());
-
-		    
-		    
 			gml.addGeometry((Geometry) attributes[j], 
 					fid + "." + attributeTypes[j].getName());
 		    }
@@ -194,7 +177,6 @@ public class FeatureResponse {
 				   int maxFeatures) throws WfsException {
         
 	LOG.finest("about to get query: " + query);
-      
 	List propertyNames = null;
 	if (!query.allRequested()) {
 	    propertyNames = query.getPropertyNames();
@@ -203,6 +185,13 @@ public class FeatureResponse {
 	try {
 	DataSource data = meta.getDataSource();
 	LOG.finest("filter is " + query.getFilter());
+	if (!query.allRequested()) {
+	    String[] mandatoryProps = meta.getMandatoryProps();
+	    for (int i = 0; i < mandatoryProps.length; i++) {
+		query.addPropertyName(mandatoryProps[i]);
+	    }
+	}
+	//query.addPropertyName("mandatoryString");
 	org.geotools.data.Query dsQuery = 
 	    query.getDataSourceQuery(data.getSchema(), maxFeatures);
 	collection = data.getFeatures(dsQuery);
