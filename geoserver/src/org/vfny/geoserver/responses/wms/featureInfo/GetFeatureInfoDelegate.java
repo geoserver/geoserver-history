@@ -200,7 +200,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
                         ffactory, schema);
 
                 String[] props = guessProperties(layers[i], finalLayerFilter);
-                layerQuery = new DefaultQuery(finalLayerFilter, props);
+                layerQuery = new DefaultQuery(schema.getTypeName(), finalLayerFilter, props);
                 queries[i] = layerQuery;
             }
         } catch (IllegalFilterException ex) {
