@@ -40,7 +40,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: DataConfig.java,v 1.1.2.10 2004/01/10 02:13:22 emperorkefka Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.11 2004/01/10 06:13:32 emperorkefka Exp $
  */
 public class DataConfig{
 	public static final String CONFIG_KEY = "Config.Data";
@@ -516,7 +516,8 @@ public class DataConfig{
 		List list = new ArrayList();
 		list.add("postgis");
 		list.add("shapefile");
-		
+		list.add("oracle");
+		list.add("arcsde");
 		return list;
 	}
 	

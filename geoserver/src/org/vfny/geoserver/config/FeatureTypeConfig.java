@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.4.2.6 2004/01/09 23:10:12 dmzwiers Exp $
+ * @version $Id: FeatureTypeConfig.java,v 1.4.2.7 2004/01/10 06:13:31 emperorkefka Exp $
  */
 public class FeatureTypeConfig{
 	
@@ -52,6 +52,9 @@ public class FeatureTypeConfig{
 	
 	/**
 	 * Copy of the featuretype schema as a string.
+	 * <p>
+	 * This is an ordered list of AttributeTypeInfoConfig.
+	 * </p>
 	 */
 	private List schema;
 	

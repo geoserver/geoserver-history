@@ -30,13 +30,7 @@
 		<BR>
 			
 	</td></tr>
-	
-	<tr><td align="right">
-		<bean:message key="label.namespaceID"/>:
-	</td><td colspan=2 align="left">
-		<html:text property="namespaceID" size="60"/>
-	</td></tr>
-	
+
 	<tr><td align="right">
 		<bean:message key="label.default"/>:
 	</td><td colspan=2 align="left">

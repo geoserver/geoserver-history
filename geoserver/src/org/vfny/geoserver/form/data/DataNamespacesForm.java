@@ -25,7 +25,6 @@ import org.vfny.geoserver.config.NameSpaceConfig;
  */
 public class DataNamespacesForm extends ActionForm {
 	
-	private String namespaceID;
 	private String URI;
 	private boolean _default;
 	private String prefix;
@@ -70,7 +69,6 @@ public class DataNamespacesForm extends ActionForm {
 		}
 		
 		_default = nsConfig.isDefault();
-		namespaceID = selectedNamespace;
 		prefix = nsConfig.getPrefix();
 		URI = nsConfig.getUri();
 	}
@@ -85,13 +83,6 @@ public class DataNamespacesForm extends ActionForm {
 	 */
 	public boolean is_default() {
 		return _default;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getNamespaceID() {
-		return namespaceID;
 	}
 
 	/**
@@ -114,13 +105,6 @@ public class DataNamespacesForm extends ActionForm {
 	public void set_default(boolean b) {
 		defaultChecked = true;
 		_default = b;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setNamespaceID(String string) {
-		namespaceID = string;
 	}
 
 	/**

@@ -9,6 +9,7 @@ package org.vfny.geoserver.action.data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesForm;
 
@@ -62,7 +67,7 @@ public class DataFeatureTypesAction extends ConfigAction {
 		}
 		
 		if (action.equals("delete")) {
-			dataConfig.removeDataStore(featureTypesForm.getSelectedFeatureType());
+			dataConfig.removeFeatureType(featureTypesForm.getSelectedFeatureType());
 		} else {
 			
 			config.setAbstract(_abstract);
@@ -89,4 +94,18 @@ public class DataFeatureTypesAction extends ConfigAction {
 		return mapping.findForward("dataConfigFeatureTypes");
 	}
 
+	DataStore aquireDataStore( String dataStoreID ) throws IOException{
+		DataConfig dataConfig = getDataConfig();
+		DataStoreConfig dataStoreConfig = dataConfig.getDataStore( dataStoreID );
+		
+		Map params = dataStoreConfig.getConnectionParams();
+		
+		return DataStoreFinder.getDataStore( params );
+	}
+	FeatureType getSchema( String dataStoreID, String typeName ) throws IOException{
+		DataStore dataStore = aquireDataStore( dataStoreID );
+		FeatureType type;
+				
+		return dataStore.getSchema( typeName );
+	}
 }

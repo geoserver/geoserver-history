@@ -61,7 +61,7 @@ public class DataStylesAction extends ConfigAction {
 			}
 		
 			if (action.equals("delete")) {
-				dataConfig.removeDataStore(stylesForm.getSelectedStyle());
+				dataConfig.removeStyle(stylesForm.getSelectedStyle());
 			} else {
 				
 				config.setFilename(new File(filename));

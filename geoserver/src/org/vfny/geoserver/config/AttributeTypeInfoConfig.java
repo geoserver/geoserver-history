@@ -5,27 +5,67 @@
 package org.vfny.geoserver.config;
 
 import org.vfny.geoserver.global.dto.*;
-/**
- * AttributeTypeInfoConfig purpose.
+/*
+ * Represent configuration of an AttributeType.
  * <p>
  * Represents most of a xs:element for an XMLSchema.
- * 
- * we have three types of information to store, Schema defined types, 
- * references and extentions on types. If the type represented is either 
- * a reference or a Schema defined type  then isRef should be true. 
- * 
- * If isRef is true then we have one of two situations. If the name is 
- * not specified then the type represents a "ref='gml:xyz'", otherwise 
- * it's of the form "name='foo'" and "type='bar'". 
- * 
+ * </p>
+ * <p>
+ * We have three types of information to store:
+ * <ol>
+ * <li>Schema defined types: <code>isRef=true name="foo"</code>
+ *   Example:<pre><code>
+ *     {xs:element name="geom_test.geom"
+ *                 type="gml:PolygonPropertyType"
+ *                 nillable="false"
+ *                 minOccurs="1"
+ *                 maxOccurs="1"/}
+ *   </code></pre>
+ *   </li>
+ * <li>References: <code>isRef=true name="gml:xyz"</code>
+ *   Example:<pre><code>
+ *     {xs:element type="gml:PolygonPropertyType"
+ *                 nillable="false"
+ *                 minOccurs="1"
+ *                 maxOccurs="1"/}
+ *   </code></pre>
+ *   </li>
+ * <li>Extensions:<br> isRef=false name="foo" type="XML fragment"
+ *   Extension on an exsiting type.
+ *   Example:<pre><code>
+ *     {xs:element name="foo" 
+ *                 nillable="false"
+ *                 minOccurs="1"
+ *                 maxOccurs="1"/}
+ *       {xs:simpleType}
+ * 	       {xs:restriction base="xs:string"}
+ * 		     {xs:maxLength value="15"/}
+ * 	       </xs:restriction}
+ *       </xs:simpleType}
+ *     {/xs:element}
+ *   </code></pre>
+ *   </li>  
+ * </li>
+ * </ol>
+ * <p>
+ * If the type represented is either a reference or a Schema defined type
+ * then isRef should be true. 
+ * </p> 
+ * <p>
+ * If isRef is true then we have one of two situations.
+ * If the name is not specified then the type represents a "ref='gml:xyz'"
+ * , otherwise it's of the form "name='foo'" and "type='bar'". 
+ * </p>
+ * <p>
  * The third case isRef is false, "name='foo'" and type contains an XML 
  * fragment defining the type.
- * 
+ * </p>
+ * <p>
  * minOccurs, maxOccurs and nillable are all attributes for all cases.
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.1.2.1 2004/01/09 23:10:12 dmzwiers Exp $
+ * @version $Id: AttributeTypeInfoConfig.java,v 1.1.2.2 2004/01/10 06:13:31 emperorkefka Exp $
  */
 public class AttributeTypeInfoConfig {
 	/** attribute name*/

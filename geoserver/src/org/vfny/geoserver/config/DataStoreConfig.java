@@ -16,9 +16,14 @@
  */
 package org.vfny.geoserver.config;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.factory.FactoryFinder;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 /**
@@ -28,7 +33,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.2.2.5 2004/01/09 08:40:49 jive Exp $
+ * @version $Id: DataStoreConfig.java,v 1.2.2.6 2004/01/10 06:13:31 emperorkefka Exp $
  */
 public class DataStoreConfig{
 
@@ -273,5 +278,11 @@ public class DataStoreConfig{
 		if(string != null)
 		title = string;
 	}
-
+	
+	// Access to Dyanmic Content
+	/** It would be nice if we did not throw this away - but life is too short */
+	public DataStore findDataStore() throws IOException  {
+		return DataStoreFinder.getDataStore( connectionParams );
+	}
+	
 }

@@ -35,7 +35,6 @@ public class DataNamespacesAction extends ConfigAction {
 			
 		DataNamespacesForm namespacesForm = (DataNamespacesForm) form;
 	
-		String namespaceID = namespacesForm.getNamespaceID();
 		String URI = namespacesForm.getURI();
 		String prefix = namespacesForm.getPrefix();
 
@@ -62,7 +61,7 @@ public class DataNamespacesAction extends ConfigAction {
 		}
 
 		if (action.equals("delete")) {
-			dataConfig.removeDataStore(namespacesForm.getSelectedNamespace());
+			dataConfig.removeNameSpace(namespacesForm.getSelectedNamespace());
 		} else {
 			
 			config.setDefault(_default);
@@ -71,7 +70,7 @@ public class DataNamespacesAction extends ConfigAction {
 			
 			//Do configuration parameters here.
 		
-			dataConfig.addNameSpace(namespaceID, config);
+			dataConfig.addNameSpace(prefix, config);
 		}
 			
 		namespacesForm.reset(mapping, request);				
