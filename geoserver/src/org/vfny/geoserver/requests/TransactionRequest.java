@@ -14,6 +14,7 @@ import org.geotools.filter.Filter;
  * requests.
  *
  * @author Rob Hranac, TOPP
+ * @author Chris Holmes, TOPP
  * @version $version$
  */
 public class TransactionRequest 
@@ -27,8 +28,10 @@ public class TransactionRequest
         
     protected String lockId = null;
 
-    protected boolean releaseAll = false;
+    protected boolean releaseAll = true;
 
+   /** Specifices the user-defined name for the entire get feature request */
+    protected String handle = null;
 
     /** Empty constructor. */ 
     public TransactionRequest () { setRequest("Transaction"); }
@@ -37,16 +40,41 @@ public class TransactionRequest
     /*************************************************************************
      * SIMPLE GET AND SET METHODS                                            *
      *************************************************************************/
+
+    /** adds a delete, insert, or update request to this transaction. */
     public void addSubRequest(SubTransactionRequest subRequest) {
         subRequests.add(subRequest);
     }
 
+    /** 
+     * Gets the request held at position i.
+     *
+     * @param i the position of the operation request to get.
+     * @return the request at i.
     public SubTransactionRequest getSubRequest(int i) {
         return (SubTransactionRequest) subRequests.get(i);
     }
 
+    /** Gets the number of delete, update, and insert operations*/
     public int getSubRequestSize() {
         return subRequests.size();
     }
+
+    /** Sets the  user-defined name for the entire Transaction request. */
+    public void setHandle(String handle) { this.handle = handle; }
+    
+    /** Returns the user-defined name for the entire Transaction request. */ 
+    public String getHandle() { return handle; }
+
+
+    public String toString() {
+	StringBuffer tRequest = new StringBuffer("Lock Id: " + lockId + "\n");
+	tRequest.append("release all: " + releaseAll + "\n");
+	for (int i = 0; i < subRequests.size(); i++) {
+	    tRequest.append(subRequests.get(i).toString() + "\n");
+	}
+	return tRequest.toString();
+    }    
+
 
 }
