@@ -15,7 +15,10 @@ import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 import javax.xml.transform.TransformerException;
 
@@ -31,7 +34,7 @@ import javax.xml.transform.TransformerException;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.5 2004/03/16 23:33:34 groldan Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.6 2004/03/27 10:48:16 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
@@ -112,19 +115,36 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         FeatureTypeInfo meta = null;
         NameSpaceInfo namespace;
         int resCount = results.getResultsetsCount();
+        Map ftNamespaces = new HashMap(resCount);
 
         for (int resIndex = 0; resIndex < resCount; resIndex++) {
             features = results.getFeatures(resIndex);
             meta = results.getTypeInfo(resIndex);
             namespace = meta.getDataStoreInfo().getNameSpace();
-            ftNames.declareNamespace(features.getSchema(),
-                namespace.getPrefix(), namespace.getUri());
-            typeNames.append(namespace.getPrefix() + ":"
-                + meta.getFeatureType().getTypeName());
 
-            if ((resIndex < (resCount - 1)) && (maxFeatures > 0)) {
-                typeNames.append(",");
+            String uri = namespace.getUri();
+            ftNames.declareNamespace(features.getSchema(),
+                namespace.getPrefix(), uri);
+
+            if (ftNamespaces.containsKey(uri)) {
+                String location = (String) ftNamespaces.get(uri);
+                ftNamespaces.put(uri, location + "," + meta.getName());
+
+                //namespace.getPrefix() + 
+                //":" + meta.getFeatureType().getTypeName())
+            } else {
+                ftNamespaces.put(uri,
+                    request.getBaseUrl() + "wfs/"
+                    + "DescribeFeatureType?typeName=" + meta.getName());
             }
+
+            //ftNames.declareNamespace(features.getSchema(),
+            //    namespace.getPrefix(), namespace.getUri());
+            //typeNames.append(namespace.getPrefix() + ":"
+            //    + meta.getFeatureType().getTypeName());
+            //if ((resIndex < (resCount - 1)) && (maxFeatures > 0)) {
+            //    typeNames.append(",");
+            //}
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
@@ -136,13 +156,19 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
 
-        String wfsSchemaLoc = request.getBaseUrl() + 
-        "data/capabilities/wfs/1.0.0/WFS-basic.xsd";
-        String fSchemaLoc = request.getBaseUrl() + "wfs/"
-            + "DescribeFeatureType?typeName=" + typeNames.toString();
+        String wfsSchemaLoc = request.getBaseUrl()
+            + "data/capabilities/wfs/1.0.0/WFS-basic.xsd";
+
+        //String fSchemaLoc = request.getBaseUrl() + "wfs/"
+        //    + "DescribeFeatureType?typeName=" + typeNames.toString();
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
-        namespace = meta.getDataStoreInfo().getNameSpace();
-        transformer.addSchemaLocation(namespace.getUri(), fSchemaLoc);
+
+        //namespace = meta.getDataStoreInfo().getNameSpace();
+        for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
+            String uri = (String) it.next();
+            transformer.addSchemaLocation(uri, (String) ftNamespaces.get(uri));
+        }
+
         transformer.setGmlPrefixing(true); //TODO: make this a user config
 
         FeatureLock featureLock = results.getFeatureLock();
