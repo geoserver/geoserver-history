@@ -29,7 +29,7 @@
     formats of the Geotools renderer (png, graymap, jpeg, jpeg2000, tiff,
     bitmap, and others). SVG is an XML-based language for web graphics, which
     has the potential to be more compact than other image formats. As it is
-    xml it can also be fed to style sheets for complex presentation. </para>
+    xml it can also be fed to style sheets for complex presentation.</para>
 
     <para>We would love to hear your feedback on the WMS, bugs and problems
     you might have, as well as features that you would like to see added. The
@@ -48,18 +48,20 @@
     url="http://java.sun.com/products/java-media/jai/downloads/download-1_1_2.html">here</ulink>
     and the Image I/O extension <ulink
     url="http://java.sun.com/products/java-media/jai/downloads/download-iio.html">here</ulink>.
-    Currently the WMS will fail with nasty errors if they are not present, the
-    next version of GeoServer will include better reporting, not advertising
-    the image types if they are not available.</para>
+    If they are not present then GeoServer will not advertise them in the
+    capabilities document. </para>
   </sect1>
 
   <sect1>
     <title>Configuration</title>
 
     <para>Most of the WMS configuration is the same as that specified in the
-    <ulink url="install.htm">installation</ulink> document. The
-    <emphasis>services.xml</emphasis> file will have an additional section
-    that mirrors the WFS service type:<programlisting>&lt;services&gt;
+    <ulink url="install.htm">installation</ulink> document. The web interface
+    can be used to configure the WMS, but styles are still a bit buggy, so it
+    may be best to just stick with the files. Either way the styles will need
+    to be added to the styles directory. The <emphasis>services.xml</emphasis>
+    file will have an additional section that mirrors the WFS service
+    type:<programlisting>&lt;services&gt;
   &lt;service type="WMS" enabled="true"&gt;
     &lt;name&gt;GeoServer WMS&lt;/name&gt;
     &lt;title&gt;The TOPP Basemap Server&lt;/title&gt;
@@ -90,16 +92,15 @@
 &lt;/catalog&gt;</programlisting></para>
 
     <para>Each id will be the name of the style in a client request. Each
-    filename must be found in the
-    <emphasis>geoserver/misc/wms/styles</emphasis> directory (this will
-    probably move in future versions), which is copied to the webapp in the
-    data/styles directory. Styles still need some work, as all styles can be
-    requested for all featureTypes, even if they don't apply. The included
-    green style should work for all polygons, and the blue style should work
-    for all linestrings. In the future GeoServer hopes to have each
-    featureType be able to figure out which styles apply to it, and only
-    return those styles. Right now it will fail in the renderer if the style
-    can not be applied</para>
+    filename must be found in the <emphasis>data/styles</emphasis> directory
+    (if working with the war, if working from source then in conf/styles/),
+    which is copied to the webapp in the data/styles directory. Styles still
+    need some work, as all styles can be requested for all featureTypes, even
+    if they don't apply. The included green style should work for all
+    polygons, and the blue style should work for all linestrings. In the
+    future GeoServer hopes to have each featureType be able to figure out
+    which styles apply to it, and only return those styles. Right now it will
+    fail in the renderer if the style can not be applied</para>
   </sect1>
 
   <sect1>
@@ -128,6 +129,7 @@
     <emphasis>styles=blue</emphasis> instead of
     <emphasis>styles=normal</emphasis>. Other formats are also available,
     check the capabilities document. For SVG just issue
-    <emphasis>Format=image/svg</emphasis>.</para>
+    <emphasis>Format=image/svg</emphasis>. Note that these urls are also
+    available in the web interface, on the demo page.</para>
   </sect1>
 </article>
