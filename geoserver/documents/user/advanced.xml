@@ -83,8 +83,8 @@
 
     <para>To use Shapefiles instead of PostGIS, modify the datastore element
     of <emphasis>catalog.xml</emphasis> with different connectionParams. Check
-    the user install page <ulink url="install.htm#data">here</ulink>, for more
-    information on that set up. To use Shapefiles include the url to the
+    the user install page <ulink url="install.html#data">here</ulink>, for
+    more information on that set up. To use Shapefiles include the url to the
     location of the .shp file as follows:<programlisting>&lt;connectionParams&gt;
   &lt;parameter name="url" value="file:/home/chris/road.shp"&gt;
 &lt;/connectionParams&gt;</programlisting></para>
@@ -113,23 +113,23 @@
 
     <para>GeoServer also offers Oracle Spatial support, contributed and
     maintained by Sean Geoghegan. It includes support of all OGC filters,
-    connection pooling, and transactional capabilities.</para>
+    connection pooling, and transactional capabilities. Please check the
+    <ulink
+    url="http://docs.codehaus.org/display/GEOS/Installing+Oracle#Installing+Oracle-Oracle%20Installation%20Information">wiki</ulink>
+    for the latest information on oracle. </para>
 
-    <para>We are not quite sure if Oracle works with GeoServer 1.2.0-rc2, as
-    Sean is away from the project, and the rest of the core developers do not
-    have convenient oracle dbs to hit. Please check the <ulink
-    url="???">wiki</ulink> for the latest information on oracle. And if you
-    have success with installing oracle let us know. We apologize greatly for
-    not having oracle ready for this release, as we know it is a popular
-    datastore, but it is not very accessible for most of us open source
-    developers so is harder to support (right before going to press with this
-    we've heard a report of success with oracle, using 10g, so it is
-    _possible_, just might be a bit difficult). The GeoServer Project
-    personally recommends switching to PostGIS, as it is a very solid database
-    with excellent spatial support, and is much easier for us to debug. And it
-    will save you on licensing costs. But we will do our best to support
-    Oracle, even though they spend way too much time trying to sell us
-    application servers. </para>
+    <para>The oracle datastore has been substantially improved since RC1. We
+    have cleaned up a few little annoying bugs, and done some good testing. We
+    are no longer dependant on the sdoapi jar, thanks to some work done by
+    Refractions Research. There is still one jar file that we can not
+    distribute, but it is readily available from the oracle technology network
+    <ulink
+    url="http://otn.oracle.com/software/tech/java/sqlj_jdbc/index.html">here</ulink>.
+    It is the jdbc driver, generally called classes12. Just place the jar in
+    the webapps/geoserver/WEB-INF/lib/ directory of a geoserver war install
+    (or in geoserver/lib of a source installation that you are building from).
+    Once the jar is in the directory then oracle should be an option from the
+    drop down menu when creating a new datastore. </para>
 
     <para>To use the Oracle Datastore the <emphasis>catalog.xml</emphasis>
     file must have the following values for the connectionParams:</para>
@@ -196,40 +196,31 @@
       </tgroup>
     </informaltable>
 
-    <para>Two additional jars must also be place in geoserver/lib, along with
-    the gt2 oracle spatial jar. As Oracle is not open source we can not
-    distribute these, but you should be able to find them, either somewhere
-    within your oracle install, or on the <ulink
-    url="http://otn.oracle.com/">Oracle Technology Network</ulink>. The two
-    jars you need are classes12.jar, which contains the jdbc classes, and
-    sdoapi.jar, which contains the spatial api jars. If you recieve an
-    uncaught exception - NoClassDefFoundError, then you probably have the jar
-    in the wrong place or the wrong jars. Users have had the best luck with
-    the jars distributed with their oracle installations, others seem to be
-    more prone to errors. Unfortunately it is no longer possible to get the
-    sdoapi jars that work with GeoTools and GeoServer from the Oracle
-    Technology Network, at least not anywhere we found. They updated
-    everything for 10g, and we are trying to catch up. Refractions wrote a
-    replacement for sdoapi.jar, included in 1.2.0-rc2; we would love feedback
-    on successes. Indeed, we very much value feedback from oracle, as it is
-    very hard for us to test. </para>
+    <para>The oracle spatial table you are using must have a correct entry in
+    the USER_SDO_GEOM_METADATA table. And whatever table you use MUST have a
+    primary key declared, it will not work otherwise. We have also seen
+    problems using spatial filters when a spatial index is not defined, so if
+    everything but spatial filters work it may just be that the spatial index
+    is not defined for the table.</para>
 
-    <para>A few other little notes from users: The oracle spatial table you
-    are using must have a correct entry in USER_SDO_GEOM_METADATA view. And
-    whatever table you use MUST have a primary key declared, it will not work
-    otherwise.</para>
-
-    <para>Also note that the name element in the <emphasis>info.xml</emphasis>
-    file to specify the featureType must be all capitalized, for some reason
-    the JDBC driver does not recognize the table otherwise. This also means
+    <para>A nice little tool to help out figuring out if your oracle instance
+    can be connected to and what the parameters are is lsnrctl. If you can run
+    it I believe that means that your oracle instance will accept a connection
+    from geoserver. And it is also useful for figuring out the hostname - mine
+    would not accept 'localhost' or '127.0.0.1' (this is with 10g and windows
+    xp), it needed the name of my computer, which was given by the lsnrctl
+    program, with the services command. The 'status' command will also tell if
+    geoserver is connected to your oracle instance. Also note that if you are
+    working directly with the geoserver configuration files the name element
+    in the info.xml file to specify the featureType must be all capitalized,
+    as the JDBC driver does not recognize the table otherwise. This also means
     that when you request the features from GeoServer you must use upper
     cases. If specifying attributes in the schema.xml file they must also be
-    all capitalized (this has not been tested extensively, so we would
-    probably just recommend not using a schema.xml file, and GeoServer will
-    generate it automatically). It does not matter what case is used inside of
-    oracle, this is only an issue with the driver that connects GeoServer to
-    the database. Also, The <emphasis>catalog.xml</emphasis> file for an
-    Oracle datastore should look as follows:</para>
+    all capitalized. Oracle does not use cases, but things seem to work better
+    all around if all upper case letters are used</para>
+
+    <para>Also, The <emphasis>catalog.xml</emphasis> file for an Oracle
+    datastore should look as follows:</para>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 &lt;catalog&gt;
@@ -255,9 +246,11 @@ schema  &lt;!-- defines the datastores, more than one is possible --&gt;
     <title>ArcSDE Support</title>
 
     <para>GeoServer 1.1.0 adds ArcSDE as a datastore, contributed by Gabriel
-    Roldán. He has tested it extensively, but it could use more tests on other
-    machines. If you have an ArcSDE installation it would be great if you
-    could provide feedback on the datastore. To use the ArcSDE Datastore the
+    Roldán. He has tested it extensively, and other developers have tested,
+    mostly against version 8.3. It could use more tests on other machines,
+    especially different versions of ArcSDE. If you have an ArcSDE
+    installation it would be great if you could provide feedback on the
+    datastore. To use the ArcSDE Datastore the
     <emphasis>catalog.xml</emphasis> file must have the following values for
     the connectionParams:</para>
 
