@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * now will just use the second
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.17 2004/04/16 22:11:17 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.18 2004/04/18 03:51:15 cholmesny Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -146,16 +146,20 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                 LOGGER.fine("inside feature " + internalTypeName);
 
                 //This is for feature attributes as xml attributes.  Is this
-                //valid in the xmlspec?  
-                for (int i = 0; i < atts.getLength(); i++) {
-                    String name = atts.getLocalName(i);
-                    String attString = atts.getValue(i);
-                    AttributeType type = curFeatureType.getAttributeType(name);
-                    Object value = type.parse(attString);
-                    attributes[curFeatureType.find(type)] = value;
-                    attributeNames.add(name);
-                }
-
+                //valid in the xmlspec?  Commenting out for now as its messing
+                //up fids.  Change it back if for some reason we allow clients
+                //to specify their fid, but to do that we'd need to change the
+                //code anyways (store the fid and create the feature with it).
+                /* for (int i = 0; i < atts.getLength(); i++) {
+                   String name = atts.getLocalName(i);
+                   String attString = atts.getValue(i);
+                   LOGGER.info("getting attribute type for " + name);
+                   AttributeType type = curFeatureType.getAttributeType(name);
+                   Object value = type.parse(attString);
+                   attributes[curFeatureType.find(type)] = value;
+                   attributeNames.add(name);
+                   }*/
+                   
                 if (!typeName.equalsIgnoreCase(internalTypeName)) {
                     if (attName.equals("")) {
                         LOGGER.finest("setting attName to " + localName);
@@ -339,13 +343,13 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void geometry(Geometry geometry) {
         if (insideFeature) {
-			curAttributeType = curFeatureType.getDefaultGeometry();
+            curAttributeType = curFeatureType.getDefaultGeometry();
+
             if (attName.equals("")) {
                 attributeNames.add("geometry");
             } else {
                 attributeNames.add(attName);
             }
-
 
             int position = curFeatureType.find(curAttributeType);
             attributes[position] = geometry;
