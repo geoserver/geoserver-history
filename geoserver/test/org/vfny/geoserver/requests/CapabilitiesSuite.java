@@ -4,13 +4,19 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.Reader;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.vfny.geoserver.requests.CapabilitiesRequest;
+import org.vfny.geoserver.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.requests.readers.wfs.CapabilitiesKvpReader;
+import org.vfny.geoserver.requests.readers.wfs.CapabilitiesXmlReader;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -18,22 +24,19 @@ import java.util.logging.Logger;
  * Tests the get capabilities request handling.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: CapabilitiesSuite.java,v 1.3 2003/09/16 03:33:31 cholmesny Exp $
+ * @author Chris Holmes, TOPP
+ * @version $Id: CapabilitiesSuite.java,v 1.4 2003/12/19 03:38:40 cholmesny Exp $
  */
-public class CapabilitiesSuite extends TestCase {
+public class CapabilitiesSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
-        //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
-	//java.util.logging.Level.FINE);
+    //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
+    //java.util.logging.Level.FINE);
     //}
 
     /** Standard logging instance */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
-
-    /** The unit test data directory */
-    private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/misc/unit/requests";
 
     /** Base request for comparison */
     private CapabilitiesRequest[] baseRequest = new CapabilitiesRequest[10];
@@ -54,32 +57,21 @@ public class CapabilitiesSuite extends TestCase {
     }
 
     public void setUp() {
-        baseRequest[0] = new CapabilitiesRequest();
-        baseRequest[0].setService("WFS");
-        baseRequest[0].setVersion("0.0.15");
+        baseRequest[0] = new CapabilitiesRequest("WFS");
 
-        baseRequest[1] = new CapabilitiesRequest();
-        baseRequest[1].setVersion("0.0.15");
+        //baseRequest[0].setService("WFS");
+        baseRequest[0].setVersion("1.0.0");
+
+        baseRequest[1] = new CapabilitiesRequest("WFS");
+        baseRequest[1].setVersion("0.0.14");
     }
 
-     /**
-     * Gets a BufferedReader from the file to be passed as if it were from
-     * a servlet.
-     *
-     * @param filename The file containing the request.
-     *
-     * @return A BufferedReader of the input of the file.
-     *
-     * @throws Exception If anything goes wrong.
-     */
-    private static BufferedReader readFile(String filename)
-        throws Exception {
-        LOGGER.finer("about to read: " + DATA_DIRECTORY + "/" + filename);
+    protected XmlRequestReader getXmlReader() {
+        return new CapabilitiesXmlReader();
+    }
 
-        File inputFile = new File(DATA_DIRECTORY + "/" + filename);
-        Reader inputStream = new FileReader(inputFile);
-
-        return new BufferedReader(inputStream);
+    protected KvpRequestReader getKvpReader(Map kvps) {
+        return new CapabilitiesKvpReader(kvps);
     }
 
     /**
@@ -88,13 +80,7 @@ public class CapabilitiesSuite extends TestCase {
      * @throws Exception If anything goes wrong.
      */
     public void testXml1() throws Exception {
-        // instantiates an XML request reader, returns request object
-        Object request = XmlRequestReader.readGetCapabilities(readFile("2.xml"));
-
-        LOGGER.fine("XML 1 test passed: " + baseRequest[1].equals(request));
-        LOGGER.finer("base request: " + baseRequest[1].toString());
-        LOGGER.finer("read request: " + request.toString());
-        assertTrue(baseRequest[1].equals(request));
+        assertTrue(runXmlTest(baseRequest[0], "2", true));
     }
 
     /**
@@ -105,13 +91,14 @@ public class CapabilitiesSuite extends TestCase {
      */
     public void testXml2() throws Exception {
         // instantiates an XML request reader, returns request object
-        CapabilitiesRequest request = XmlRequestReader.readGetCapabilities(readFile(
-                    "3.xml"));
+        assertTrue(runXmlTest(baseRequest[1], "3", true));
 
-        LOGGER.fine("XML 2 test passed: " + !baseRequest[1].equals(request));
-        LOGGER.finer("base request: " + baseRequest[1].toString());
-        LOGGER.finer("read request: " + request.toString());
-        assertTrue(!baseRequest[1].equals(request));
+        /*CapabilitiesRequest request = XmlRequestReader.readGetCapabilities(readFile(
+           "3.xml"));
+           LOGGER.fine("XML 2 test passed: " + !baseRequest[1].equals(request));
+           LOGGER.finer("base request: " + baseRequest[1].toString());
+           LOGGER.finer("read request: " + request.toString());
+           assertTrue(!baseRequest[1].equals(request));*/
     }
 
     /**
@@ -120,16 +107,10 @@ public class CapabilitiesSuite extends TestCase {
      * @throws Exception If anything goes wrong.
      */
     public void testKvp1() throws Exception {
-        CapabilitiesKvpReader reader = new CapabilitiesKvpReader(
-                "service=WFS&version=0.0.15");
-        CapabilitiesRequest request = reader.getRequest();
-
-        LOGGER.fine("KVP 1 test passed: " + baseRequest[0].equals(request));
-        LOGGER.finer("base request: " + baseRequest[0].toString());
-        LOGGER.finer("read request: " + request.toString());
-        assertTrue(baseRequest[0].equals(request));
-        request.setService("WMS");
-        assertTrue(!baseRequest[0].equals(request));
+        String requestString = ("service=WFS&version=1.0.0");
+        assertTrue(runKvpTest(baseRequest[0], requestString, true));
+        baseRequest[0].setService("WMS");
+        assertTrue(runKvpTest(baseRequest[0], requestString, false));
     }
 
     /**
@@ -139,13 +120,7 @@ public class CapabilitiesSuite extends TestCase {
      * @throws Exception If anything goes wrong.
      */
     public void testKvp2() throws Exception {
-        CapabilitiesKvpReader reader = new CapabilitiesKvpReader(
-                "service=WFS&version=0.0.14");
-        CapabilitiesRequest request = reader.getRequest();
-
-        LOGGER.fine("KVP 2 test passed: " + !baseRequest[0].equals(request));
-        LOGGER.finer("base request: " + baseRequest[0].toString());
-        LOGGER.finer("read request: " + request.toString());
-        assertTrue(!baseRequest[0].equals(request));
+        String requestString = ("service=WFS&version=0.0.14");
+        assertTrue(runKvpTest(baseRequest[1], requestString, true));
     }
 }
