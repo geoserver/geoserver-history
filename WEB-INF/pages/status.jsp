@@ -3,6 +3,8 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <table class="status">
+
+<logic:equal name="WFS" property="enabled" value="true">
 	<tr>
 		<td class="module">
 			<bean:message key="config.wfs.label"/>:
@@ -12,71 +14,93 @@
 			  <tbody>
 		        <tr>
 		        <logic:notEqual name="GeoServer.ApplicationState" property="wfsGood" value="0">
-		    	    <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="wfsGood"/>%; background-color: green;">
-		    	    </td>
+		    	    <td class="good"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="wfsGood"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="wfsGood"/>%"
+		    	        />
 		    	</logic:notEqual>
 		        <logic:notEqual name="GeoServer.ApplicationState" property="wfsBad" value="0">		    	
-		            <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="wfsBad"/>%; background-color: red;">
-		            </td>
+		    	    <td class="bad"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="wfsBad"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="wfsBad"/>%"
+		    	        />
 		    	</logic:notEqual>		            
 		        <logic:notEqual name="GeoServer.ApplicationState" property="wfsDisabled" value="0">		    	
-		            <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="wfsDisabled"/>%; background-color: gray;">
-		            </td>     
+		    	    <td class="disabled"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="wfsDisabled"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="wfsDisabled"/>%"
+		    	        />
 		    	</logic:notEqual>		                   
 		        </tr>
 		      </tbody>
 		     </table>
 		</td>
 	</tr>
+</logic:equal>
 
+<logic:equal name="WMS" property="enabled" value="true">
 	<tr>
 		<td class="module">
 			<bean:message key="config.wms.label"/>:
 		</td>
 		<td class="health">
 			<table class="progress">
-			    <tbody>
+			  <tbody>
 		        <tr>
 		        <logic:notEqual name="GeoServer.ApplicationState" property="wmsGood" value="0">
-		    	    <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="wmsGood"/>%; background-color: green;">
-		    	    </td>
+		    	    <td class="good"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="wmsGood"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="wmsGood"/>%"
+		    	        />
 		    	</logic:notEqual>
 		        <logic:notEqual name="GeoServer.ApplicationState" property="wmsBad" value="0">		    	
-		            <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="wmsBad"/>%; background-color: red;">
-		            </td>
+		    	    <td class="bad"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="wmsBad"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="wmsBad"/>%"
+		    	        />
 		    	</logic:notEqual>		            
 		        <logic:notEqual name="GeoServer.ApplicationState" property="wmsDisabled" value="0">		    	
-		            <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="wmsDisabled"/>%; background-color: gray;">
-		            </td>     
+		    	    <td class="disabled"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="wmsDisabled"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="wmsDisabled"/>%"
+		    	        />
 		    	</logic:notEqual>		                   
 		        </tr>
-		        </tbody>
+		      </tbody>
+		     </table>
 		     </table>
 		</td>
 	</tr>
+</logic:equal>
 
 	<tr>
 		<td class="module">
 			<bean:message key="data.label"/>:
 		</td>
 		<td class="health">
-			<table class="progress">
-			    <tbody>
+            <table class="progress">
+			  <tbody>
 		        <tr>
 		        <logic:notEqual name="GeoServer.ApplicationState" property="dataGood" value="0">
-		    	    <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="dataGood"/>%; background-color: green;">
-		    	    </td>
+		    	    <td class="good"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="dataGood"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="dataGood"/>%"
+		    	        />
 		    	</logic:notEqual>
 		        <logic:notEqual name="GeoServer.ApplicationState" property="dataBad" value="0">		    	
-		            <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="dataBad"/>%; background-color: red;">
-		            </td>
+		    	    <td class="bad"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="dataBad"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="dataBad"/>%"
+		    	        />
 		    	</logic:notEqual>		            
-		        <logic:notEqual name="GeoServer.ApplicationState" property="dataDisabled" value="0">		    	
-		            <td style="vertical-align: top; width: <bean:write name="GeoServer.ApplicationState" property="dataDisabled"/>%; background-color: gray;">
-		            </td>     
+		        <logic:notEqual name="GeoServer.ApplicationState" property="wfsDisabled" value="0">		    	
+		    	    <td class="disabled"
+		    	        width="<bean:write name="GeoServer.ApplicationState" property="dataDisabled"/>%"
+		    	        title="<bean:write name="GeoServer.ApplicationState" property="dataDisabled"/>%"
+		    	        />
 		    	</logic:notEqual>		                   
 		        </tr>
-		        </tbody>
+		      </tbody>
 		     </table>
 		</td>
 	</tr>
