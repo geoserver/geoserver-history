@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -13,7 +25,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
@@ -31,16 +42,6 @@ import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.wfs.FeatureRequest;
 import org.vfny.geoserver.requests.wfs.FeatureWithLockRequest;
 import org.vfny.geoserver.responses.Response;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -48,7 +49,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
- * @version $Id: FeatureResponse.java,v 1.13 2004/01/19 23:44:35 jive Exp $
+ * @version $Id: FeatureResponse.java,v 1.14 2004/01/19 23:45:25 jive Exp $
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
