@@ -1,4 +1,8 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
+<span style="visible:false">
+  <tiles:insert value="/WEB-INF/pages/sidebarApplication.jsp"/>
+  <tiles:insert value="/WEB-INF/pages/Welcome.jsp"/>
+</span>
 <logic:redirect forward="welcome"/>
 
 <%--
