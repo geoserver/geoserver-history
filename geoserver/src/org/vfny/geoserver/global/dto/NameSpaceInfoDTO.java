@@ -2,10 +2,6 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.vfny.geoserver.global.dto;
 
 /**
@@ -32,7 +28,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfoDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id: NameSpaceInfoDTO.java,v 1.5 2004/04/16 16:16:37 cholmesny Exp $
  */
 public final class NameSpaceInfoDTO implements DataTransferObject {
     //public static final String PREFIX_DELIMITER = ":";
@@ -44,7 +40,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     private String uri;
 
     /** Whether this is the default namespace. */
-    private boolean _default;
+    private boolean _default = false;
 
     /**
      * NameSpaceConfig constructor.
@@ -217,4 +213,8 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     public void setUri(String string) {
         uri = string;
     }
+    
+	public String toString() {
+		 return "xmlns:" + getPrefix() + "=\"" + getUri() + "\", isDefault=" + _default;
+	 }
 }
