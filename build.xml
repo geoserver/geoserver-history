@@ -39,7 +39,7 @@
 <!-- ====================================================================== -->
 
   <!-- release version -->
-  <property name="name.release" value="1.2.2"/>
+  <property name="name.release" value="1.2.3"/>
 
   <!-- primary directories -->
   <property name="dir.bin" value="${basedir}/bin"/>
@@ -832,7 +832,7 @@
             <include name="RUNNING.txt"/>
 	  </fileset>
     </copy>
-      <copy todir="${dir.build}/documents/">
+      <copy todir="${dir.build}/documents/" failonerror="false">
 	  <fileset dir="${dir.doc}">
 	    <include name="**/*"/>
             <exclude name="api/**"/>
