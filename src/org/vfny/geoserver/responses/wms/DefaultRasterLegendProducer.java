@@ -4,13 +4,20 @@
  */
 package org.vfny.geoserver.responses.wms;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.renderer.lite.LiteShape;
+import org.geotools.renderer.lite.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
 import org.geotools.renderer.style.SLDStyleFactory;
 import org.geotools.renderer.style.Style2D;
@@ -25,17 +32,12 @@ import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.requests.wms.GetLegendGraphicRequest;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -84,7 +86,7 @@ public abstract class DefaultRasterLegendProducer
      * Singleton shape painter to serve all legend requests. We can use a
      * single shape painter instance as long as it remains thread safe.
      */
-    private static final StyledShapePainter shapePainter = new StyledShapePainter();
+    private static final StyledShapePainter shapePainter = new StyledShapePainter(null);
 
     /**
      * used to create sample point shapes with LiteShape (not lines nor
@@ -124,19 +126,19 @@ public abstract class DefaultRasterLegendProducer
      * Just a holder to avoid creating many polygon shapes from inside
      * <code>getSampleShape()</code>
      */
-    private Shape sampleRect;
+    private LiteShape2 sampleRect;
 
     /**
      * Just a holder to avoid creating many line shapes from inside
      * <code>getSampleShape()</code>
      */
-    private Shape sampleLine;
+    private LiteShape2 sampleLine;
 
     /**
      * Just a holder to avoid creating many point shapes from inside
      * <code>getSampleShape()</code>
      */
-    private Shape samplePoint;
+    private LiteShape2 samplePoint;
 
     /**
      * Default constructor. Subclasses may provide its own with a String
@@ -204,7 +206,7 @@ public abstract class DefaultRasterLegendProducer
                 Symbolizer symbolizer = symbolizers[sIdx];
                 Style2D style2d = styleFactory.createStyle(sampleFeature,
                         symbolizer, scaleRange);
-                Shape shape = getSampleShape(symbolizer, w, h);
+                LiteShape2 shape = getSampleShape(symbolizer, w, h);
 
                 shapePainter.paint(graphics, shape, style2d, scaleDenominator);
             }
@@ -279,23 +281,38 @@ public abstract class DefaultRasterLegendProducer
      * @throws IllegalArgumentException if an unknown symbolizer impl was
      *         passed in.
      */
-    private Shape getSampleShape(Symbolizer symbolizer, int legendWidth,
+    private LiteShape2 getSampleShape(Symbolizer symbolizer, int legendWidth,
         int legendHeight) {
-        Shape sampleShape;
-        float hpad = (legendWidth * hpaddingFactor);
-        float vpad = (legendHeight * vpaddingFactor);
+        LiteShape2 sampleShape;
+        final float hpad = (legendWidth * hpaddingFactor);
+        final float vpad = (legendHeight * vpaddingFactor);
 
         if (symbolizer instanceof LineSymbolizer) {
             if (this.sampleLine == null) {
-                this.sampleLine = new Line2D.Float(hpad, legendHeight - vpad,
-                        legendWidth - hpad, vpad);
+                Coordinate[] coords = {
+                        new Coordinate(hpad, legendHeight - vpad),
+                        new Coordinate(legendWidth - hpad, vpad)
+                    };
+                LineString geom = geomFac.createLineString(coords);
+                this.sampleLine = new LiteShape2(geom, null, false);
             }
 
             sampleShape = this.sampleLine;
         } else if (symbolizer instanceof PolygonSymbolizer) {
             if (this.sampleRect == null) {
-                this.sampleRect = new Rectangle2D.Float(hpad, vpad,
-                        legendWidth - 2 * hpad, legendHeight - 2 * vpad);
+                final float w = legendWidth - (2 * hpad);
+                final float h = legendHeight - (2 * vpad);
+
+                Coordinate[] coords = {
+                        new Coordinate(hpad, vpad),
+                        new Coordinate(hpad, vpad + h),
+                        new Coordinate(hpad + w, vpad + h),
+                        new Coordinate(hpad + w, vpad),
+                        new Coordinate(hpad, vpad)
+                    };
+                LinearRing shell = geomFac.createLinearRing(coords);
+                Polygon geom = geomFac.createPolygon(shell, null);
+                this.sampleRect = new LiteShape2(geom, null, false);
             }
 
             sampleShape = this.sampleRect;
@@ -304,7 +321,7 @@ public abstract class DefaultRasterLegendProducer
             if (this.samplePoint == null) {
                 Coordinate coord = new Coordinate(legendWidth / 2,
                         legendHeight / 2);
-                this.samplePoint = new LiteShape(geomFac.createPoint(coord),
+                this.samplePoint = new LiteShape2(geomFac.createPoint(coord),
                         null, false);
             }
 
@@ -379,9 +396,9 @@ public abstract class DefaultRasterLegendProducer
                      * for producing the legend, since wether or not the rule
                      * has an else filter, the legend is drawn only if the
                      * scale denominator lies inside the rule's scale range.
-                          if (r.hasElseFilter()) {
-                              ruleList.add(r);
-                          }
+                              if (r.hasElseFilter()) {
+                                  ruleList.add(r);
+                              }
                      */
                 }
             }
