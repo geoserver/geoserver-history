@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.13 2003/09/16 01:05:57 cholmesny Exp $
+ * @version $Id: FreefsLog.java,v 1.13.2.1 2003/10/30 23:21:24 cholmesny Exp $
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -43,9 +43,9 @@ public class FreefsLog extends HttpServlet {
 
         String root = this.getServletContext().getRealPath("/");
         String path = root + CONFIG_DIR;
-        LOGGER.finer("init with path: " + path);
+        LOGGER.finer("init with path: " + root);
 
-        ConfigInfo cfgInfo = ConfigInfo.getInstance(path);
+        ConfigInfo cfgInfo = ConfigInfo.getInstance(root);
 
         if (cfgInfo.runZServer()) {
             try {
