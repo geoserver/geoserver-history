@@ -115,6 +115,10 @@ public final class Requests {
         + httpServletRequest.getServerPort() + "/geoserver/";
     }
     
+    public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest) {
+    	return getBaseUrl(httpServletRequest) + "data/capabilities";
+    }
+    
     /**
      * Aquire type safe session information in a UserContainer.
      * 
