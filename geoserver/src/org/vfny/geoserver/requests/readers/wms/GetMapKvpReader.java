@@ -5,7 +5,6 @@
 package org.vfny.geoserver.requests.readers.wms;
 
 import com.vividsolutions.jts.geom.Envelope;
-
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.ServiceException;
@@ -15,21 +14,21 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
 import org.vfny.geoserver.requests.readers.WmsKvpRequestReader;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 
 
 /**
+ * Builds a GetMapRequest object given by a set of CGI parameters supplied in the constructor.
  * <p>
  * Mandatory parameters:
- *
+ * 
  * <ul>
  * <li>
  * LAYERS
@@ -51,10 +50,10 @@ import javax.servlet.http.HttpServletRequest;
  * </li>
  * </ul>
  * </p>
- *
+ * 
  * <p>
  * Optional parameters:
- *
+ * 
  * <ul>
  * <li>
  * SRS
@@ -70,10 +69,10 @@ import javax.servlet.http.HttpServletRequest;
  * </li>
  * </ul>
  * </p>
- *
+ * 
  * <p>
  * Customized parameters:
- *
+ * 
  * <ul>
  * <li>
  * FILTER if present, must contain a list of filters, exactly one per feature
@@ -88,7 +87,7 @@ import javax.servlet.http.HttpServletRequest;
  * attributes for each layer requested must be specified, separated by "|"
  * (pipe), and each attribute separated by "," (comma). The following special
  * attributes are allowed to be queried:
- *
+ * 
  * <ul>
  * <li>
  * <b>#FID</b>: a map producer capable of handling attributes will write the
@@ -103,7 +102,7 @@ import javax.servlet.http.HttpServletRequest;
  * d="..."/&gt;</code>
  * </li>
  * </ul>
- *
+ * 
  * </li>
  * <li>
  * SVGHEADER expected <code>"true"</code> or <code>"false"</code>, tells wether
@@ -111,7 +110,7 @@ import javax.servlet.http.HttpServletRequest;
  * </li>
  * </ul>
  * </p>
- *
+ * 
  * <p>
  * <strong>NOTE:</strong> if you want to request one of the special attributes
  * (#FID or #BOUNDS), and you're making the request through HTTP GET method
@@ -123,7 +122,7 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author Gabriel Roldán
- * @version $Id: GetMapKvpReader.java,v 1.9 2004/03/14 16:01:32 groldan Exp $
+ * @version $Id: GetMapKvpReader.java,v 1.10 2004/07/10 01:19:09 groldan Exp $
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */
@@ -171,7 +170,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Parses the optional parameters:
-     *
+     * 
      * <ul>
      * <li>
      * SRS
@@ -186,7 +185,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * BGCOLOR
      * </li>
      * </ul>
-     *
+     * 
      *
      * @param request DOCUMENT ME!
      *
@@ -202,10 +201,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Parses the mandatory GetMap request parameters:
-     *
+     * 
      * <p>
      * Mandatory parameters:
-     *
+     * 
      * <ul>
      * <li>
      * LAYERS
@@ -239,8 +238,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         FeatureTypeInfo[] layers = parseLayers();
         request.setLayers(layers);
 
-        List styles = parseStyles(layers.length);
-        request.setStyles(styles);
+        List styleNames = parseStyles(layers);
+        request.setStyles(styleNames);
 
         try {
             int width = Integer.parseInt(getValue("WIDTH"));
@@ -267,7 +266,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * parses the following custom parameters for the GetMap request handling:
-     *
+     * 
      * <ul>
      * <li>
      * FILTER if present, must contain a list of filters, exactly one per
@@ -288,7 +287,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * SVG map
      * </li>
      * </ul>
-     *
+     * 
      *
      * @param request DOCUMENT ME!
      * @param layers DOCUMENT ME!
@@ -337,7 +336,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     /**
      * creates a list of requested attributes, wich must be a valid attribute
      * name or one of the following special attributes:
-     *
+     * 
      * <ul>
      * <li>
      * <b>#FID</b>: a map producer capable of handling attributes (such as
@@ -348,7 +347,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * SVGMapResponse), will write the bounding box of each feature
      * </li>
      * </ul>
-     *
+     * 
      *
      * @param layers info about the requested map layers
      *
@@ -468,38 +467,65 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * DOCUMENT ME!
+     * Parses the list of style names requested for each requested layer.
+     * 
+     * <p>
+     * A client _may_ request teh default Style using a null value (as in
+     * "STYLES="). If  several layers are requested with a mixture of named
+     * and default styles,  the STYLES parameter includes null values between
+     * commas (as in  "STYLES=style1,,style2,,").  If all layers are to be
+     * shown using the default style, either the  form "STYLES=" or
+     * "STYLES=,,," is valid.
+     * </p>
      *
-     * @param numLayers DOCUMENT ME!
+     * @param layers the requested feature types
      *
-     * @return DOCUMENT ME!
+     * @return a full <code>List</code> of the style names requested for the
+     * requiered layers with no null style names. 
      *
-     * @throws WmsException DOCUMENT ME!
+     * @throws WmsException if some of the requested styles does not exist or its
+     * number if greater than zero and distinct of the number of requested layers
      */
-    private List parseStyles(int numLayers) throws WmsException {
-        List styles = readFlat(getValue("STYLES"), INNER_DELIMETER);
+    private List parseStyles(FeatureTypeInfo[] layers)
+        throws WmsException {
+        String rawStyles = getValue("STYLES");
+        List styles = null;
 
-        if (numLayers != styles.size()) {
-            String msg = numLayers + " layers requested, but found "
-                + styles.size() + " styles specified. "
-                + "Since SLD parameter is not yet implemented, the STYLES parameter "
-                + "is mandatory and MUST have exactly one value per requested layer";
-            throw new WmsException(msg, getClass().getName());
-        }
+        int numLayers = layers.length;
 
-        Map configuredStyles = null;
-        configuredStyles = request.getWMS().getData().getStyles();
+        if ("".equals(rawStyles)) {
+            LOGGER.finer("Assigning default style to all the requested layers");
+            styles = new ArrayList(layers.length);
+            for(int i = 0; i < numLayers; i++)
+            	styles.add(layers[i].getDefaultStyle().getName());
+        } else {
+            styles = readFlat(rawStyles, INNER_DELIMETER);
 
-        String st;
+            if (numLayers != styles.size()) {
+                String msg = numLayers + " layers requested, but found "
+                    + styles.size() + " styles specified. "
+                    + "Since SLD parameter is not yet implemented, the STYLES parameter "
+                    + "is mandatory and MUST have exactly one value per requested layer";
+                throw new WmsException(msg, getClass().getName());
+            }
 
-        for (Iterator it = styles.iterator(); it.hasNext();) {
-            st = (String) it.next();
+            Map configuredStyles = null;
+            configuredStyles = request.getWMS().getData().getStyles();
 
-            if ((st != null) && !("".equals(st))) {
-                if (!configuredStyles.containsKey(st)) {
-                    throw new WmsException(st
-                        + " style not recognized by this server",
-                        getClass().getName());
+            String st;
+            
+            for (int i = 0; i < numLayers; i++) {
+                st = (String) styles.get(i);
+
+                if ((st != null) && !("".equals(st))) {
+                    if (!configuredStyles.containsKey(st)) {
+                        throw new WmsException(st
+                            + " style not recognized by this server",
+                            getClass().getName());
+                    }
+                }else{ //use the layer's default style
+                	LOGGER.finer("applying default style to " + layers[i].getName());
+                	styles.set(i, layers[i].getDefaultStyle().getName());
                 }
             }
         }
