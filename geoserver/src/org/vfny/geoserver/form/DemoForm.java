@@ -20,7 +20,7 @@ import org.apache.struts.action.ActionMapping;
  * 
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DemoForm.java,v 1.2 2004/04/16 00:14:36 jive Exp $
+ * @version $Id: DemoForm.java,v 1.3 2004/04/16 07:25:20 jive Exp $
  */
 public class DemoForm extends ActionForm {
     private String action;
@@ -51,8 +51,6 @@ public class DemoForm extends ActionForm {
             for( int i=0; i<files.length;i++){
                 File file = files[i];                
                 demoList.add( file.getName() );
-                System.out.println( "Demo "+file );
-                                
             }            
         }        
     }
