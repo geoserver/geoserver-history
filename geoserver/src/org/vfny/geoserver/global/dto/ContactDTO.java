@@ -37,6 +37,8 @@ package org.vfny.geoserver.global.dto;
  * </code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: ContactDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class ContactDTO implements DataTransferObject {
@@ -76,6 +78,9 @@ public final class ContactDTO implements DataTransferObject {
     /** The contact email address. */
     private String contactEmail;
 
+    /** The contact online resource. */
+    private String onlineResource;
+
     /**
      * ContactConfig constructor.
      * 
@@ -114,6 +119,7 @@ public final class ContactDTO implements DataTransferObject {
         contactVoice = c.getContactVoice();
         contactFacsimile = c.getContactFacsimile();
         contactEmail = c.getContactEmail();
+        onlineResource = c.getOnlineResource();
     }
 
     /**
@@ -164,7 +170,8 @@ public final class ContactDTO implements DataTransferObject {
         && ((addressCountry == c.getAddressCountry())
         && ((contactVoice == c.getContactVoice())
         && ((contactFacsimile == c.getContactFacsimile())
-        && (contactEmail == c.getContactEmail()))))))))))));
+        && ((onlineResource == c.getOnlineResource())
+        && (contactEmail == c.getContactEmail())))))))))))));
     }
 
     public int hashCode() {
@@ -524,4 +531,19 @@ public final class ContactDTO implements DataTransferObject {
             contactVoice = string;
         }
     }
+    
+	/**
+	 * @return Returns the onlineResource.
+	 */
+	public String getOnlineResource() {
+		return onlineResource;
+	}
+	/**
+	 * @param onlineResource The onlineResource to set.
+	 */
+	public void setOnlineResource(String onlineResource) {
+        if (onlineResource != null) {
+    		this.onlineResource = onlineResource;
+        }
+	}
 }

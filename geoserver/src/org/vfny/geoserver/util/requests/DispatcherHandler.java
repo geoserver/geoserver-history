@@ -25,6 +25,8 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * </p>
  *
  * @author Chris Holmes, TOPP
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: DispatcherHandler.java,v 1.5 2004/07/15 21:13:12 jmacgill Exp $
  */
 public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
@@ -75,6 +77,10 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
             // if at a query element, empty the current query, set insideQuery flag, and get query typeNames
             if (localName.equals("GetCapabilities")) {
                 this.requestType = Dispatcher.GET_CAPABILITIES_REQUEST;
+            } else if (localName.equals("DescribeCoverage")) {
+                this.requestType = Dispatcher.DESCRIBE_COVERAGE_REQUEST;
+            } else if (localName.equals("GetCoverage")) {
+                this.requestType = Dispatcher.GET_COVERAGE_REQUEST;
             } else if (localName.equals("DescribeFeatureType")) {
                 this.requestType = Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
             } else if (localName.equals("GetFeature")) {
@@ -98,7 +104,9 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
             if (atts.getLocalName(i).equals("service")) {
                 String service = atts.getValue(i);
 
-                if (service.equals("WFS")) {
+                if (service.equals("WCS")) {
+                    this.serviceType = Dispatcher.WCS_SERVICE;
+                } else if (service.equals("WFS")) {
                     this.serviceType = Dispatcher.WFS_SERVICE;
                 } else if (service.equals("WMS")) {
                     this.serviceType = Dispatcher.WMS_SERVICE;

@@ -27,13 +27,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.servlets.Dispatcher;
 import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wfs.WfsException;
 
 
 /**
@@ -133,11 +133,11 @@ public class WfsDispatcher extends Dispatcher {
             LOGGER.fine("post got request " + targetRequest);
 
             doResponse(requestReader, request, response, targetRequest);
-        } catch (WfsException wfs) {
+        } catch (ServiceException e) {
             HttpSession session = request.getSession();
             ServletContext context = session.getServletContext();
             GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-            String tempResponse = wfs.getXmlResponse(geoServer.isVerboseExceptions(), request);
+            String tempResponse = e.getXmlResponse(geoServer.isVerboseExceptions(), request);
 
             response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);
@@ -262,8 +262,8 @@ public class WfsDispatcher extends Dispatcher {
             ServletContext context = session.getServletContext();
             GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
             
-            WfsException wfse = new WfsException(message);
-            String tempResponse = wfse.getXmlResponse(geoServer.isVerboseExceptions(), request);
+            ServiceException se = new ServiceException(message);
+            String tempResponse = se.getXmlResponse(geoServer.isVerboseExceptions(), request);
 
             response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 
@@ -33,6 +34,8 @@ import org.vfny.geoserver.global.WMS;
  * </p>
  *
  * @author Jody Garnett
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public final class Requests {
     /**
@@ -52,7 +55,31 @@ public final class Requests {
      *
      * @return GeoServer instance for the current Web Application
      */
-    /*public static GeoServer getGeoServer(HttpServletRequest request) {
+    /**
+     * Aquire WCS from Web Container.
+     * 
+     * <p>
+     * In WCS is create by a STRUTS plug-in and is available through the
+     * Web container.
+     * </p>
+     * 
+     * <p>
+     * Test cases may seed the request object with a Mock WebContainer and a
+     * Mock GeoServer.
+     * </p>
+     *
+     * @param request HttpServletRequest used to aquire servlet context
+     *
+     * @return WCS instance for the current Web Application
+     */
+    public static WCS getWCS(HttpServletRequest request) {
+    	ServletRequest req = request;
+    	HttpSession session = request.getSession();
+    	ServletContext context = session.getServletContext();
+
+    	return (WCS) context.getAttribute(WCS.WEB_CONTAINER_KEY);
+    }
+	/*public static GeoServer getGeoServer(HttpServletRequest request) {
         return (GeoServer) getWFS(request).getGeoServer();
     }*/
     /**

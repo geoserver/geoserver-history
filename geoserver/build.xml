@@ -474,6 +474,14 @@
 		<mkdir dir="${basedir}/data/capabilities" />
 		<copy todir="${basedir}/data/capabilities">
 			<fileset dir="${basedir}/capabilities">
+        <include name="*"/>
+      </fileset>
+    </copy>
+
+    <mkdir dir="${basedir}/data/capabilities/wcs"/>
+    <mkdir dir="${basedir}/data/capabilities/wcs/1.0.0"/>
+    <copy todir="${basedir}/data/capabilities/wcs/1.0.0">
+      <fileset dir="${basedir}/capabilities/wcs">
 				<include name="*" />
 			</fileset>
 		</copy>
@@ -907,6 +915,10 @@
 	
 <!-- added by DJB to be more complete. -->
 	<copy failonerror="false" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
+	
+	<copy failonerror="false" toFile="${dir.lib}/gt2-arcgrid.jar" file="${dir.maven}/gt2/jars/arcgrid-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-image.jar" file="${dir.maven}/gt2/jars/image-${version.geotools}.jar" />
+	
 	<copy failonerror="false" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-${version.geotools}.jar" />

@@ -96,6 +96,8 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
  * @author Gabriel Rold?n
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: AbstractService.java,v 1.23 2004/09/08 17:34:38 cholmesny Exp $
  */
 public abstract class AbstractService extends HttpServlet {
@@ -392,7 +394,9 @@ public abstract class AbstractService extends HttpServlet {
 
         Service s = null;
 
-        if ("WFS".equals(serviceRequest.getService())) {
+        if ("WCS".equals(serviceRequest.getService())) {
+            s = serviceRequest.getWCS();
+        } else if ("WFS".equals(serviceRequest.getService())) {
             s = serviceRequest.getWFS();
         } else {
             s = serviceRequest.getWMS();

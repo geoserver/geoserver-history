@@ -46,6 +46,8 @@ import org.vfny.geoserver.global.dto.ContactDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  * @version $Id: ContactConfig.java,v 1.8 2004/02/20 17:03:11 jive Exp $
  */
 public class ContactConfig {
@@ -84,6 +86,9 @@ public class ContactConfig {
 
     /** The contact email address. */
     private String contactEmail;
+
+    /** The contact online resource. */
+    private String onlineResource;
 
     /**
      * Default ContactConfig constructor.
@@ -141,6 +146,7 @@ public class ContactConfig {
         contactVoice = dto.getContactVoice();
         contactFacsimile = dto.getContactFacsimile();
         contactEmail = dto.getContactEmail();
+        onlineResource = dto.getOnlineResource();
     }
 
     public ContactDTO toDTO() {
@@ -157,6 +163,7 @@ public class ContactConfig {
         dto.setContactVoice(contactVoice);
         dto.setContactFacsimile(contactFacsimile);
         dto.setContactEmail(contactEmail);
+        dto.setOnlineResource(onlineResource);
 
         return dto;
     }
@@ -496,4 +503,19 @@ public class ContactConfig {
             contactVoice = string;
         }
     }
+
+    /**
+	 * @return Returns the onlineResource.
+	 */
+	public String getOnlineResource() {
+		return onlineResource;
+	}
+	/**
+	 * @param onlineResource The onlineResource to set.
+	 */
+	public void setOnlineResource(String onlineResource) {
+        if (onlineResource != null) {
+    		this.onlineResource = onlineResource;
+        }
+	}
 }

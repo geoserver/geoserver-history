@@ -25,6 +25,7 @@ import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
@@ -36,6 +37,9 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
  * <p>
  * This is a propert ConfigAction - you need to be logged in for this to work.
  * </p>
+ *
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class SaveXMLAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -58,7 +62,8 @@ public class SaveXMLAction extends ConfigAction {
         File rootDir = new File(sc.getRealPath("/"));
 
         try {
-            XMLConfigWriter.store((WMSDTO) getWMS(request).toDTO(),
+            XMLConfigWriter.store((WCSDTO) getWCS(request).toDTO(),
+            	(WMSDTO) getWMS(request).toDTO(),
                 (WFSDTO) getWFS(request).toDTO(),
                 (GeoServerDTO) getWFS(request).getGeoServer().toDTO(),
                 (DataDTO) getWFS(request).getData().toDTO(), rootDir);

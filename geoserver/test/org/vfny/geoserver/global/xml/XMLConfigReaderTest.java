@@ -77,7 +77,8 @@ public class XMLConfigReaderTest extends TestCase {
         try {
             // pass incorrect feature dir to avoid running this portion
             cfe.loadCatalogWrapper(new File(root1, "catalog.xml"),
-                new File(root1, "catalog.xml"));
+                new File(root1, "catalog.xml"),
+				new File(root1, "catalog.xml"));
         } catch (ConfigurationException e) {
             fail(e.toString());
         }
@@ -201,9 +202,9 @@ class XMLConfigReaderExpose extends XMLConfigReader {
         loadServices(f);
     }
 
-    public void loadCatalogWrapper(File f1, File f2)
+    public void loadCatalogWrapper(File f1, File f2, File f3)
         throws ConfigurationException {
-        loadCatalog(f1, f2);
+        loadCatalog(f1, f2, f3);
     }
 
     public void loadFeatureTypesWrapper(File f) throws ConfigurationException {

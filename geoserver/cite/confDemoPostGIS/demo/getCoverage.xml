@@ -1,0 +1,21 @@
+<GetCoverage service="WCS" version="1.0.0"
+  xmlns="http://www.opengis.net/wcs"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:gml="http://www.opengis.net/gml"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/wcs
+                      http://schemas.opengis.net/wcs/1.0.0/describeCoverage.xsd">
+	<sourceCoverage>Arc_Sample</sourceCoverage>
+	<domainSubset>
+		<spatialSubset>
+			<gml:Envelope>
+				<gml:pos>9.420000076293944 42.21</gml:pos>
+				<gml:pos>11.819999694824217 43.0</gml:pos>
+			</gml:Envelope>
+		</spatialSubset>
+	</domainSubset>
+	<output>
+		<format>ArcGrid</format>
+	</output>
+</GetCoverage>
