@@ -53,7 +53,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.10 2004/01/16 23:52:07 jive Exp $
+ * @version $Id: Data.java,v 1.11 2004/01/17 01:11:36 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -166,14 +166,32 @@ public class Data extends GlobalLayerSupertype implements Catalog {
             throw new NullPointerException("");
         }
 
-        i = config.getFeaturesTypes().keySet().iterator();
+        i = config.getFeaturesTypes().values().iterator();
 
         while (i.hasNext()) {
-            Object key = i.next();
-            FeatureTypeInfoDTO fti = (FeatureTypeInfoDTO) config.getFeaturesTypes().get(key);
-            DataStoreInfo dsi = (DataStoreInfo)dataStores.get(fti.getDataStoreId());
-            featureTypes.put(dsi.getNamesSpacePrefix() + ":" + fti.getName(),
-                    new FeatureTypeInfo(fti,this));
+            FeatureTypeInfoDTO featureTypeDTO = (FeatureTypeInfoDTO) i.next();
+            if( featureTypeDTO == null ){
+                System.out.println("Ignore null FeatureTypeInfo DTO!");
+                continue;
+            }
+            String key = featureTypeDTO.getKey();
+            System.out.println( key+" loading feature type info dto:"+featureTypeDTO );
+            
+            String dataStoreId = featureTypeDTO.getDataStoreId();
+            System.out.println( key+" looking up :"+dataStoreId );
+            DataStoreInfo dataStoreInfo = (DataStoreInfo) dataStores.get( dataStoreId);
+            
+            System.out.println( key+" datastore found :"+dataStoreInfo );
+            if( dataStoreInfo == null ){
+                System.out.println( key + " Ignore FeatureTypeInfo as DataStore is missing!");
+                continue;
+            }
+            String prefix = dataStoreInfo.getNamesSpacePrefix();
+            String typeName = featureTypeDTO.getName();
+            System.out.println( key + " creating FeatureTypeInfo for "+prefix+":"+typeName );            
+            FeatureTypeInfo featureTypeInfo = new FeatureTypeInfo( featureTypeDTO, this );
+            
+            featureTypes.put( prefix + ":" + typeName, featureTypeInfo);
         }
         
             styles = new HashMap();
