@@ -23,10 +23,11 @@ import org.geotools.validation.ValidationResults;
 
 
 /**
- * RangeFeatureValidation purpose.
+ * RangeFeatureValidation validates that a number is within a given range.
  * 
  * <p>
- * Description of RangeFeatureValidation ...
+ * RangeFeatureValidation is a quick and simple class the checks that the given
+ * number resides within a given range.
  * </p>
  * 
  * <p>
@@ -34,19 +35,34 @@ import org.geotools.validation.ValidationResults;
  * 
  * <ul>
  * <li>
- * a
+ * Default max value is Integer.MAX_VALUE;
+ * </li>
+ * <li>
+ * Default min value is Integer.MIN_VALUE;
+ * </li>
+ * <li>
+ * If only one boundary of the range is set, only that boundary is checked.
+ * </li>
+ * <li>
+ * The value of the integer is contained in the field specified by path.
  * </li>
  * </ul>
  * 
  * Example Use:
  * <pre><code>
- * RangeFeatureValidation x = new RangeFeatureValidation(...);
+ * RangeFeatureValidation x = new RangeFeatureValidation();
+ * 
+ * x.setMin(3);
+ * x.setMax(5);
+ * x.setPath("id");
+ * 
+ * boolean result = x.validate(feature, featureType, results);
  * </code></pre>
  * </p>
  *
  * @author rgould, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: RangeFeatureValidation.java,v 1.2 2003/12/16 22:30:17 jive Exp $
+ * @author $Author: sploreg $ (last modification)
+ * @version $Id: RangeFeatureValidation.java,v 1.3 2003/12/16 23:08:05 sploreg Exp $
  */
 public class RangeFeatureValidation implements FeatureValidation {
     private String[] names;
