@@ -28,7 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * with additional information about the datasource backend.
  *
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.7 $ $Date: 2003/09/05 21:17:18 $
+ * @version $Revision: 1.8 $ $Date: 2003/09/19 17:36:00 $
  *
  * @task REVISIT: consider merging this into TypeInfo.  This class replaces the
  *       castor generated FeatureType, but it is now unclear if we _really_
@@ -101,7 +101,7 @@ class FeatureType {
      * @return the FeatureType object constructed from the xml elements of the
      *         file.
      *
-     * @throws ConfigurationException DOCUMENT ME!
+     * @throws ConfigurationException If anything goes wrong reading the xml.
      */
     public static FeatureType getInstance(String featureTypeFile)
         throws ConfigurationException {
@@ -267,6 +267,17 @@ class FeatureType {
                 }
             }
 
+            //HACK: this should be done in geotools, password should not
+            //be a required field.
+            if (params.get("dbtype") != null) {
+                LOGGER.finest("has dbtype");
+
+                if (params.get("passwd") == null) {
+                    LOGGER.finest("passwd is null");
+                    params.put("passwd", "");
+                }
+            }
+
             if (cfgInfo.useCharSetForDB()
                     && findTextFromTag(root, "charset").equals("")) {
                 params.put("charset", cfgInfo.getCharSet());
@@ -280,18 +291,6 @@ class FeatureType {
      **/
     public String getAbstract() {
         return this.ftAbstract;
-    }
-
-    /**
-     **/
-    public String getDatabaseName() {
-        return (String) dsParams.get("database");
-    }
-
-    /**
-     **/
-    public String getHost() {
-        return dsParams.get("host").toString();
     }
 
     /**
@@ -321,18 +320,6 @@ class FeatureType {
 
     /**
      **/
-    public String getPassword() {
-        return (String) dsParams.get("passwd");
-    }
-
-    /**
-     **/
-    public String getPort() {
-        return (String) dsParams.get("port");
-    }
-
-    /**
-     **/
     public String getSRS() {
         return this.srs;
     }
@@ -341,12 +328,6 @@ class FeatureType {
      **/
     public String getTitle() {
         return this.title;
-    }
-
-    /**
-     **/
-    public String getUser() {
-        return (String) dsParams.get("user");
     }
 
     public Map getDataParams() {
@@ -358,7 +339,7 @@ class FeatureType {
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets the abstract contained in this featureType xml file.
      *
      * @param ftAbstract
      */
@@ -367,7 +348,7 @@ class FeatureType {
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets the keywords contained in this featureType xml file.
      *
      * @param keywords
      */
@@ -376,7 +357,7 @@ class FeatureType {
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets the latLon bounding box contained in this featureType xml file.
      *
      * @param latLongBBox
      */
@@ -385,7 +366,7 @@ class FeatureType {
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets the name of this featureType.
      *
      * @param name
      */
