@@ -1,3 +1,19 @@
+/*
+ *    Geotools2 - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2002, Geotools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -22,27 +38,33 @@ import java.util.logging.*;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionHandler.java,v 1.1.2.3 2003/11/16 07:38:52 jive Exp $
+ * @version $Id: TransactionHandler.java,v 1.1.2.4 2003/12/09 03:04:59 cholmesny Exp $
  */
 public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     FilterHandler, GMLHandlerFeature {
-
     //private static final short UNKNOWN = 0;
     private static final State UNKNOWN = new State("UNKNOWN");
+
     //private static final short INSERT = 1;
     private static final State INSERT = new State("Insert");
+
     //private static final short DELETE = 2;
-    private static final State DELETE = new State("Delete");       
+    private static final State DELETE = new State("Delete");
+
     //private static final short UPDATE = 3;
-    private static final State UPDATE = new State("Update");    
+    private static final State UPDATE = new State("Update");
+
     //private static final short PROPERTY_NAME = 4;
     private static final State PROPERTY_NAME = new State("Name");
+
     //private static final short VALUE = 5;
     private static final State VALUE = new State("Value");
+
     //private static final short PROPERTY = 6;
     private static final State PROPERTY = new State("Property");
+
     //private static final short LOCKID = 7;
-    private static final State LOCKID = new State("LockId");    
+    private static final State LOCKID = new State("LockId");
 
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
@@ -70,6 +92,12 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     private List curFeatures;
 
     /**
+     * Flag to alert signal we are within a Property element.  The state
+     * thing was not giving enough information.
+     */
+    private boolean inProperty = false;
+
+    /**
      * Empty constructor.
      */
     public TransactionHandler() {
@@ -93,13 +121,34 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      * @return the State representation of the localName.
      */
     private static State toState(String stateName) {
-        if(INSERT.isTag(stateName)) return INSERT;
-        if(DELETE.isTag(stateName)) return DELETE;
-        if(UPDATE.isTag(stateName)) return UPDATE;
-        if(PROPERTY_NAME.isTag(stateName)) return PROPERTY_NAME;
-        if(VALUE.isTag(stateName)) return VALUE;
-        if(PROPERTY.isTag(stateName)) return PROPERTY;
-        if(LOCKID.isTag(stateName)) return LOCKID;
+        if (INSERT.isTag(stateName)) {
+            return INSERT;
+        }
+
+        if (DELETE.isTag(stateName)) {
+            return DELETE;
+        }
+
+        if (UPDATE.isTag(stateName)) {
+            return UPDATE;
+        }
+
+        if (PROPERTY_NAME.isTag(stateName)) {
+            return PROPERTY_NAME;
+        }
+
+        if (VALUE.isTag(stateName)) {
+            return VALUE;
+        }
+
+        if (PROPERTY.isTag(stateName)) {
+            return PROPERTY;
+        }
+
+        if (LOCKID.isTag(stateName)) {
+            return LOCKID;
+        }
+
         return UNKNOWN;
     }
 
@@ -158,6 +207,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
                     }
                 }
             }
+        } else if (state == PROPERTY) {
+            inProperty = true;
         }
     }
 
@@ -204,6 +255,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
                     + " to " + curPropertyValue);
                 curPropertyName = new String();
                 curPropertyValue = null;
+                inProperty = false;
             } else {
                 throw new SAXException("<property> element should only occur "
                     + "within a <update> element.");
@@ -285,21 +337,28 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     public void geometry(Geometry geometry) {
         LOGGER.finer("recieved geometry " + geometry);
 
-        if (state == VALUE) {
+        if (inProperty) {
             curPropertyValue = geometry;
         }
     }
 }
-/** Represents state in Transaction Handler */
+
+
+/**
+ * Represents state in Transaction Handler
+ */
 class State {
-    String state;    
-    public State(String tag){
+    String state;
+
+    public State(String tag) {
         state = tag;
     }
-    public boolean isTag( String tag ){
-        return state.equals( tag );
+
+    public boolean isTag(String tag) {
+        return state.equals(tag);
     }
-    public String toString(){
+
+    public String toString() {
         return state;
     }
 }
