@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author Chris Holmes
- * @version $Id: CatalogConfig.java,v 1.1.2.5 2003/11/17 09:00:24 jive Exp $
+ * @version $Id: CatalogConfig.java,v 1.1.2.6 2003/11/19 19:05:31 cholmesny Exp $
  */
 public class CatalogConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -59,89 +59,108 @@ public class CatalogConfig extends AbstractConfig {
 
     /**
      * Configure based on gt2 Catalog.
+     * 
      * <p>
-     * Quick hack for JUnit test cases, really the gt2 Catalog interface
-     * should be implemented by CatalogConfig. And whatever methods 
-     * GeoServer needs to get its job done is what gt2 Catalog needs
-     * to provide.
+     * Quick hack for JUnit test cases, really the gt2 Catalog interface should
+     * be implemented by CatalogConfig. And whatever methods  GeoServer needs
+     * to get its job done is what gt2 Catalog needs to provide.
      * </p>
-     * Right now a Map is provided to set anything that gt2 Catalog
-     * cannot.
+     * Right now a Map is provided to set anything that gt2 Catalog cannot.
+     * 
      * <p>
      * Given a namespace foo in the catalog the config map defines:
+     * 
      * <ul>
-     * <li>foo.uri: String (default foo)</li>
-     * <li>foo.default: boolean (default false, true if only one namespace)</li>
+     * <li>
+     * foo.uri: String (default foo)
+     * </li>
+     * <li>
+     * foo.default: boolean (default false, true if only one namespace)
+     * </li>
      * </ul>
-     * 
-     * 
+     * </p>
+     *
+     * @param config DOCUMENT ME!
      * @param catalog
      */
-    public CatalogConfig( Map config, Catalog catalog ){
-        
-        LOGGER.info("loading catalog configuration");       
-        String spaceNames[] = catalog.getNameSpaces();        
-        nameSpaces = new HashMap( spaceNames.length );
+    public CatalogConfig(Map config, Catalog catalog) {
+        LOGGER.info("loading catalog configuration");
+
+        String[] spaceNames = catalog.getNameSpaces();
+        nameSpaces = new HashMap(spaceNames.length);
+
         for (int i = 0; i < spaceNames.length; i++) {
             String name = spaceNames[i];
-            
-            String uri = get( config, name+".uri", name );
-            boolean defaultNS = get( config, name+".default", spaceNames.length == 1 );
-            
-            NameSpace ns = new NameSpace( name, uri, defaultNS );
-            
-            if( defaultNS ){
+
+            String uri = get(config, name + ".uri", name);
+            boolean defaultNS = get(config, name + ".default",
+                    spaceNames.length == 1);
+
+            NameSpace ns = new NameSpace(name, uri, defaultNS);
+
+            if (defaultNS) {
                 defaultNameSpace = ns;
             }
-            
-            LOGGER.config("added namespace " + ns);            
-            nameSpaces.put( name, ns );
+
+            LOGGER.config("added namespace " + ns);
+            nameSpaces.put(name, ns);
         }
+
         LOGGER.info("loading DataStore configuration");
+
         // gt2 currently assumes one datastore per namespace
         //
         // I know this is wrong, please feed our requirements into the gt2
         // Catalog        
-        dataStores = new HashMap( spaceNames.length );
-        
+        dataStores = new HashMap(spaceNames.length);
+
         DataStoreConfig dsConfig;
-        
+
         for (int i = 0; i < spaceNames.length; i++) {
-            DataStore store = catalog.getDataStore( spaceNames[i] );
-            NameSpace nameSpace = (NameSpace) nameSpaces.get( spaceNames[i] );
-            DataStoreConfig dataStoreConfig = new DataStoreConfig( config, store, nameSpace );
-            
-            dataStores.put( dataStoreConfig.getId(), dataStoreConfig );
+            DataStore store = catalog.getDataStore(spaceNames[i]);
+            NameSpace nameSpace = (NameSpace) nameSpaces.get(spaceNames[i]);
+            DataStoreConfig dataStoreConfig = new DataStoreConfig(config,
+                    store, nameSpace);
+
+            dataStores.put(dataStoreConfig.getId(), dataStoreConfig);
         }
-        LOGGER.info("loading style configuration");        
+
+        LOGGER.info("loading style configuration");
         styles = new HashMap();
+
         // just use the default style
         styles.put("normal", "styles/normal.sld");
 
         LOGGER.info("loading FeatureType configuration");
         featureTypes = new HashMap();
-        for( Iterator i=dataStores.values().iterator(); i.hasNext();){
+
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig dataStoreConfig = (DataStoreConfig) i.next();
+
             try {
                 DataStore store = dataStoreConfig.getDataStore();
-            
-                String typeNames[] = store.getTypeNames();
-                for( int t=0; t<typeNames.length; t++){
+
+                String[] typeNames = store.getTypeNames();
+
+                for (int t = 0; t < typeNames.length; t++) {
                     FeatureType type;
+
                     try {
                         type = store.getSchema(typeNames[t]);
-                        FeatureTypeConfig typeConfig = new FeatureTypeConfig( config, type, dataStoreConfig  );                
-                        featureTypes.put( typeNames[t], typeConfig );                    
+
+                        FeatureTypeConfig typeConfig = new FeatureTypeConfig(config,
+                                type, dataStoreConfig);
+                        featureTypes.put(typeNames[t], typeConfig);
                     } catch (IOException e) {
                         // type was not available?
-                    }                
+                    }
                 }
-            }
-            catch( IOException e ){
+            } catch (IOException e) {
                 // datastore not available                
             }
         }
     }
+
     /**
      * Creates a new CatalogConfig object.
      *
@@ -181,7 +200,7 @@ public class CatalogConfig extends AbstractConfig {
      * @param id the DataStore id looked for
      *
      * @return the DataStoreConfig with id attribute equals to <code>id</code>
-     * or null if there no exists
+     *         or null if there no exists
      */
     public DataStoreConfig getDataStore(String id) {
         return (DataStoreConfig) dataStores.get(id);
@@ -197,12 +216,15 @@ public class CatalogConfig extends AbstractConfig {
     public List getDataStores(NameSpace ns) {
         List dataStoresNs = new ArrayList();
         DataStoreConfig dsc;
-        for(Iterator it = dataStores.values().iterator(); it.hasNext();)
-        {
-          dsc = (DataStoreConfig)it.next();
-          if(dsc.getNameSpace().equals(ns))
-            dataStoresNs.add(dsc);
+
+        for (Iterator it = dataStores.values().iterator(); it.hasNext();) {
+            dsc = (DataStoreConfig) it.next();
+
+            if (dsc.getNameSpace().equals(ns)) {
+                dataStoresNs.add(dsc);
+            }
         }
+
         return dataStoresNs;
     }
 
@@ -281,37 +303,28 @@ public class CatalogConfig extends AbstractConfig {
     }
 
     /**
-     * Checks that the collection of featureTypeNames all have the same prefix.
-     * Used to determine if their schemas are all in the same namespace or if
-     * imports need to be done.
+     * Gets a FeatureTypeConfig from a local type name (ie unprefixed), and a
+     * uri.  This method is slow, use getFeatureType(String typeName), where
+     * possible.  For not he only user should be TransactionFeatureHandler.
      *
-     * @param featureTypeNames list of featureTypes, generally from a
-     *        DescribeFeatureType request.
+     * @param localName DOCUMENT ME!
+     * @param uri DOCUMENT ME!
      *
-     * @return true if all the typenames in the collection have the same
-     *         prefix.
-     *
-     * @throws WfsException if any of the names do not exist in this
-     *         repository.
-     *
-     * @task HACK: returns true just to get things working.
+     * @return DOCUMENT ME!
      */
-    public boolean allSameType(Collection featureTypeNames)
-        throws WfsException {
-        return true;
+    public FeatureTypeConfig getFeatureType(String localName, String uri) {
+        for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
+            FeatureTypeConfig fType = (FeatureTypeConfig) it.next();
 
-        /*   Iterator nameIter = featureTypeNames.iterator();
-           boolean sameType = true;
-           if (!nameIter.hasNext()) {
-               return false;
-           }
-           String firstPrefix = getPrefix(nameIter.next().toString());
-           while (nameIter.hasNext()) {
-               if (!firstPrefix.equals(getPrefix(nameIter.next().toString()))) {
-                   return false;
-               }
-           }
-           return sameType;*/
+            if (fType.isEnabled()) {
+                if (fType.getShortName().equals(localName)
+                        && fType.getNameSpace().getUri().equals(uri)) {
+                    return fType;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -502,70 +515,73 @@ public class CatalogConfig extends AbstractConfig {
 
     /**
      * Release lock by authorization
-     * @param string
+     *
+     * @param authorization
      */
-    public void lockRelease( String authorization ) {
-        for( Iterator i=dataStores.values().iterator();i.hasNext();){
+    public void lockRelease(String authorization) {
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
+
             try {
                 DataStore dataStore = meta.getDataStore();
-                FeatureSource source = dataStore.getFeatureSource( dataStore.getTypeNames()[0] );
-            
+                FeatureSource source = dataStore.getFeatureSource(dataStore
+                        .getTypeNames()[0]);
+
                 // Any FeatureSourceWill do, we just need access to
                 // the high-level api
                 // TODO: consider moving refresh, release to DataStore
                 //
-                if( source instanceof FeatureLocking ){
+                if (source instanceof FeatureLocking) {
                     FeatureLocking locking = (FeatureLocking) source;
-                    Transaction t = new DefaultTransaction();                    
-                    locking.setTransaction( t );
+                    Transaction t = new DefaultTransaction();
+                    locking.setTransaction(t);
+
                     try {
-                        t.addAuthorization( authorization );
-                        locking.releaseLock( authorization );
-                    }
-                    finally {
+                        t.addAuthorization(authorization);
+                        locking.releaseLock(authorization);
+                    } finally {
                         t.close();
                     }
-                } 
+                }
+            } catch (IOException huh) {
+                LOGGER.warning("Could not refresh lock for " + meta.toString());
             }
-            catch( IOException huh){
-                LOGGER.warning("Could not refresh lock for "+meta.toString() );                                   
-            }
-        }        
+        }
     }
 
     /**
      * Refresh lock by authorization
+     *
      * @param authorization
      */
-    public void lockRefresh( String authorization ) {
-        
-        for( Iterator i=dataStores.values().iterator();i.hasNext();){
+    public void lockRefresh(String authorization) {
+        for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreConfig meta = (DataStoreConfig) i.next();
+
             try {
                 DataStore dataStore = meta.getDataStore();
-                FeatureSource source = dataStore.getFeatureSource( dataStore.getTypeNames()[0] );
-                
+                FeatureSource source = dataStore.getFeatureSource(dataStore
+                        .getTypeNames()[0]);
+
                 // Any FeatureSourceWill do, we just need access to
                 // the high-level api
                 // TODO: consider moving refresh, release to DataStore?
                 //
-                if( source instanceof FeatureLocking ){
+                if (source instanceof FeatureLocking) {
                     FeatureLocking locking = (FeatureLocking) source;
-                    Transaction t = new DefaultTransaction();                    
-                    locking.setTransaction( t );
+                    Transaction t = new DefaultTransaction();
+                    locking.setTransaction(t);
+
                     try {
-                        t.addAuthorization( authorization );
-                        locking.refreshLock( authorization );
-                    }
-                    finally {
+                        t.addAuthorization(authorization);
+                        locking.refreshLock(authorization);
+                    } finally {
                         t.close();
                     }
-                } 
+                }
+            } catch (IOException huh) {
+                LOGGER.warning("Could not refresh lock for " + meta.toString());
             }
-            catch( IOException huh){
-                LOGGER.warning("Could not refresh lock for "+meta.toString() );                                   
-            }
-        }        
+        }
     }
 }
