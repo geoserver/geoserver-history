@@ -10,6 +10,7 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -135,7 +136,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
      * @task REVISIT: cache these?
      */
     protected Map getParams() {
-        Map params = new HashMap(connectionParams);
+        Map params = Collections.synchronizedMap(new HashMap(connectionParams));
 
         for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
