@@ -1,10 +1,3 @@
-// Title:       GeoSearchable
-// Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
-// @author:     Ian Ibbotson (ian.ibbotson@k-int.com)
-// Company:     KI
-// @author:     Chris Holmes, TOPP
-
-
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -24,119 +17,122 @@
 
 package org.vfny.geoserver.zserver;
 
-import java.util.Hashtable;
 import java.util.Properties;
-import java.util.Vector;
-import java.util.Enumeration;
 import java.util.Observer;
-
-import java.util.Collection;
-import java.util.Iterator;  
-import javax.naming.*;  
-
-// Information Retrieval Interfaces
-import com.k_int.IR.*;
-
-// For logging
-import com.k_int.util.LoggingFacade.*;
-
-// For RPN Query representation
-import com.k_int.util.RPNQueryRep.*;
-
+import java.util.logging.Logger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+// Information Retrieval Interfaces
+import com.k_int.IR.IRQuery;
+import com.k_int.IR.SearchTask;
+
 /**
- * An implementation of searchable derived from DemoSearchable.
+ * An implementation of searchable derived from DemoSearchable, which was
  * A sample implementation of searchable that returns random numbers of hits
- * and random result records
+ * and random result records.
+ * @author Chris Holmes, TOPP
+ * @version $VERSION$
+ *
+ * modified (simplified) from DemoSearchable: 
+ * Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
+ * @author:     Ian Ibbotson (ian.ibbotson@k-int.com)
+ * Company:     KI
+ *
+ * REVISIT: get rid of this class.  It may have a better purpose with
+ * other z39.50 implementations, but for our purposes it really does
+ * not do much.  Probably would make the most sense to just have our
+ * ZServerAssociation create its own tasks.
  */
-public class GeoSearchable implements com.k_int.IR.Searchable, com.k_int.IR.Scanable
+public class GeoSearchable implements com.k_int.IR.Searchable
 {
   private Properties properties = null;
-  private static LoggingContext cat = LogContextFactory.getContext("com.k-int.z3950.server.demo");
 
-  private Context naming_context = null;
+       /** Standard logging instance for class */
+    private static final Logger LOGGER = 
+        Logger.getLogger("org.vfny.geoserver.zserver");
 
+
+    /**
+     * no argument constructo.
+     */
   public GeoSearchable()
   {
-    cat.debug("New GeoSearchable");
+      LOGGER.finer("created GeoSearchable object");
   }
 
+    /**
+     * inits the server with these properties.
+     */
   public void init(Properties p)
   {
     this.properties = p;
   }
 
-  public void init(Properties p, Context naming_context)
+    /*  public void init(Properties p, Context naming_context)
   {
     init(p);
     this.naming_context = naming_context;
-  }
+    }*/
   
-  public void destroy()
-  {
-  }
+    /** destroy the searchable object. Shut down the searchable object 
+     * entirely. Release all held resources, make the object ready for 
+     * GC. Try to release in here instead of on finalize.
+     */
+    public void destroy() {
+    
+    }
 
+    /** 
+     * Provide information about the type of Searchable 
+     * object this realisation is 
+     * @return the type of searchable object.
+     */
   public int getManagerType()
   {
     return com.k_int.IR.Searchable.SPECIFIC_SOURCE;
   }
 
-  // Evaluate the enquiry, waiting at most will_wait_for seconds for a response
+    
+    /** Create a SearchTask. Evaluate the query with the Tasks evaluate method.
+     *  @param q The query to get results for.
+     *  @param user_data not currently used, needed to implement interface.
+     *  @return the search task with q as the query.
+     */
   public SearchTask createTask(IRQuery q, 
                                Object user_data)
   {
     return this.createTask(q,user_data,null);
   }
 
+    /**
+     * Create the search task.   Evaluate the query with 
+     * the Tasks evaluate method.
+     * @param q The query to get results for.
+     * @param user_data not used (use null).
+     * @param observers not implemented (use null).
+     * @return the search task with q as the query.
+     */
   public SearchTask createTask(IRQuery q, 
                                Object user_data,
                                Observer[] observers)
   {
-      System.out.println("requesting creation the task");
-      
-      //String attrMapFile = properties.getProperty("fieldmap");
-      //Properties attrMap =  getAttrMap(attrMapFile);
-      GeoSearchTask retval = new GeoSearchTask(this,null,q, properties);
+      /* Implementation notes: If there is a need for user_data,
+       * then create a new constructor for GeoSearchTask that uses it.
+       * As for observers, check out SearchTask, which GeoSearchTask
+       * extends. */
+      GeoSearchTask retval = new GeoSearchTask(this,q);
     return retval;
   }
-    //TODO: phase the scan stuff out...
-  public boolean isScanSupported()
-  {
-    return true;
-  }
 
-    /* COMPLETELY UNTESTED.  GeoProfile does not require scan for conformance.  Should
-       remove this code... */
-  public ScanInformation doScan(ScanRequestInfo req)
-  {
-
-    try
-    {
-      java.io.StringWriter sw = new java.io.StringWriter();
-      com.k_int.util.RPNQueryRep.PrefixQueryVisitor.visit(req.term_list_and_start_point,sw);
-      cat.debug("Incoming scan request: "+sw.toString()+" req: "+req.number_of_terms_requested);
+    /**
+     * gets the properties of the server.
+     * @return a property class holding the server's information.
+     */
+    public Properties getServerProps() {
+	return properties;
     }
-    catch(java.io.IOException ioe)
-    {
-      cat.warn("Cannot parse scan start position",ioe);
-    }
-
-    Vector scan_entries = new Vector();
-    scan_entries.add(new TermInformation("one",1));
-    scan_entries.add(new TermInformation("Two",2));
-    scan_entries.add(new TermInformation("Three",3));
-    scan_entries.add(new TermInformation("Four",4));
-    scan_entries.add(new TermInformation("Five",5));
-    scan_entries.add(new TermInformation("Six",6));
-
-    ScanInformation result = new ScanInformation(scan_entries,1);
-
-    return result;
-  }
-
 
 }

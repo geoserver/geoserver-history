@@ -1,11 +1,3 @@
-// Title:       DemoSearchTask
-// @version:    $Id: GeoSearchTask.java,v 1.1 2002/11/15 22:25:33 cholmesny Exp $
-// Copyright:   Copyright (C) 2001 Knowledge Integration Ltd.
-// @author:     Ian Ibbotson (ibbo@k-int.com)
-// Company:     KI
-// Description: 
-//
-
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -25,22 +17,30 @@
 
 package org.vfny.geoserver.zserver;
 
-import com.k_int.IR.*;
-import com.k_int.IR.Syntaxes.*;
-import com.k_int.IR.QueryModels.*;
-import com.k_int.util.RPNQueryRep.*;
-import java.util.*;
+import java.util.Properties;
+import java.util.logging.Logger;
+import java.util.Vector;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
+// Imported JAVA API for XML Parsing 1.0 classes
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException; 
 
-// For constructing a dummy result record
-import com.k_int.IR.*;
 import org.w3c.dom.*;
-import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xerces.dom.DOMImplementationImpl;
+import org.xml.sax.InputSource;
+
+import com.k_int.IR.*;
+import com.k_int.IR.Syntaxes.DOMTree;
+import com.k_int.IR.Syntaxes.SUTRS;
+import com.k_int.IR.QueryModels.RPNTree;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.StopAnalyzer;
-//import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -49,96 +49,135 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.index.Term;
 
-// Imported JAVA API for XML Parsing 1.0 classes
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException; 
+/**
+ * An extension of SearchTask that implements InformationFragmentSource.
+ * Thus this class does handles the query, and gets the results.  To
+ * access the results some form of getInformationFragmentSource must
+ * be called. 
+ * @author Chris Holmes, TOPP
+ * @version $VERSION$
+ *
+ * based on DemoSearchTask: 
+ * Copyright:   Copyright (C) 1999-2001 Knowledge Integration Ltd.
+ * @author:     Ian Ibbotson (ian.ibbotson@k-int.com)
+ * Company:     KI
+ *
+ */
+public class GeoSearchTask extends SearchTask 
+    implements InformationFragmentSource {
 
-import org.xml.sax.InputSource;
+    /** Standard logging instance for class */
+    private static final Logger LOGGER = 
+        Logger.getLogger("org.vfny.geoserver.zserver");
+    
+    /** Task status codes. */
+    private static String[] private_status_types = 
+    { "Idle", "Searching", "Search complete", "Requesting records", 
+      "All records returned" };
+    
+    /** Default record format, a full xml. */
+    private static RecordFormatSpecification defaultSpec = 
+	new RecordFormatSpecification("xml", null, GeoProfile.FULL_SET);
 
-import java.util.Properties;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+    /** The status of the search. */
+    public int geo_search_status = 0;
 
-public class GeoSearchTask extends SearchTask implements InformationFragmentSource
-{
-  private static String[] private_status_types = { "Idle", "Searching", "Search complete", "Requesting records", "All records returned" };
-  public int geo_search_status = 0;
-  private int fragment_count = 0;
-  private GeoSearchable source = null;
-  private java.util.Random random = new java.util.Random();
+    /** The number of records */
+    private int fragment_count = 0;
+
+    /** The searchable object that created this task. */
+    private GeoSearchable source = null;
+
+    /** The jzkit representation of the query to evaluate */
     private IRQuery q;
+
+    /** The lucene structure of records returned from a search. */
     private Hits hits;
+
+    /** The mapping of use attribute names to numbers. */
     private Properties attrMap;
+
+    /** The properties passed into to start the server */
     private Properties serverProps;
 
-  public GeoSearchTask(GeoSearchable source, Observer[] observers)
-  {
-    super(observers);
-    this.source = source;
-    setTaskStatusCode(TASK_IDLE);
-  }
+    /** The name of the database passed in with the IRQuery */
+    private String dbName;
 
-    public GeoSearchTask(GeoSearchable source, Observer[] observers, 
-			 IRQuery q, Properties serverProps){
-	this(source, observers);
+
+    /**
+     * Constructer to create a search task.  
+     * @param source The class that created this task.
+     * @param q the query to evaluate.
+     */
+    public GeoSearchTask(GeoSearchable source, IRQuery q){	
 	this.q = q;
-	this.serverProps = serverProps;
+	this.serverProps = source.getServerProps();
 	String attrMapFile = serverProps.getProperty("fieldmap");
 	attrMap =  getAttrMap(attrMapFile);
     }
 
-
+    /**
+     * Gets the task status code.
+     *
+     * @return the int representation of the status code.
+     */
   public int getPrivateTaskStatusCode()
   {
     return geo_search_status;
   }
 
+    /**
+     * Sets the task status.
+     * @param i the status.
+     */
   public void setPrivateTaskStatusCode(int i)
   {
     this.geo_search_status = i;
   }
 
+    /**
+     * Converts an int of a status code to the
+     * string representation
+     *
+     * @param code the number of the code.
+     * @return the string representation of code.
+     */
   public String lookupPrivateStatusCode(int code)
   {
     return private_status_types[code];
   }
 
+    /**
+     * Performs the evaluation.  To access the results
+     * getFragment must be called.  
+     * @param timeout not implemented, needed for interface.
+     * @return the status task code.
+     */
     public int evaluate(int timeout) throws SearchException
-  {
-
-      
-      try {
+    {
+	setTaskStatusCode(TASK_EXECUTING_SYNC);
+	//REVISIT: Implement the use of timeout, possibly a timer, if
+	//time is exceeded then throw a new TimeoutExceededException.
+	//Not that necessary now, as searches should be pretty quick.
+	try {
 
 	  Vector databases = resolveDBs(q.collections);
+	  dbName = q.collections.get(0).toString();
 	  //can only deal with one database now, so just get the first
 	  //path string from the collections vector.
+	  LOGGER.finer("using database at " + databases.get(0).toString());
 	  Searcher searcher = new IndexSearcher(databases.get(0).toString());
-	  Analyzer analyzer = new StopAnalyzer();
+	  // Analyzer analyzer = new StopAnalyzer();
 
-
-	  
-	  
-	  // Random number of records.. Set up the result set
-	  System.out.println("Evaluation: query is: db - " + q.collections.firstElement() + "query" + q.query); 
+	  LOGGER.finer("Evaluating Query: " + q.query); 
 	  RPNTree rpnQuery = (RPNTree) q.query;
-	  //attrMap = 
-	  //  getProperties(new File("/home/chris/zServer/props/geo.props"));
-	  //bad hard code...change!	
-	  
-	  //      Query indexQuery = RPN2LuceneQuery.convertRPN(rpnQuery.toRPN(), attrMap);
 	  RPNConverter converter = new RPNConverter(attrMap);
 	  Query indexQuery = converter.toLuceneQuery(rpnQuery.toRPN());
-	  // System.out.println("query is " + indexQuery + "bool" + ((org.apache.lucene.search.BooleanQuery)indexQuery).toString("title"));
-	  
-	  
+	  LOGGER.finer("internal query is " + indexQuery.toString("field"));
 	  hits = searcher.search(indexQuery);
-	  System.out.println(hits.length() + " total matching documents");
+	  LOGGER.finer(hits.length() + " total matching documents");
 	  
-	  
+	  //Log the first ten hits for diagnostic purposes.
 	  final int HITS_PER_PAGE = 10;
 	  for (int start = 0; start < hits.length(); start += HITS_PER_PAGE) {
 	      int end = Math.min(hits.length(), start + HITS_PER_PAGE);
@@ -146,280 +185,210 @@ public class GeoSearchTask extends SearchTask implements InformationFragmentSour
 		  org.apache.lucene.document.Document doc = hits.doc(i);
 		  String path = doc.get("path");
 		  if (path != null) {
-		      System.out.println(i + ". " + path);
-		      System.out.println("Title: " + doc.get("title"));
-		  } else {
-		      String url = doc.get("url");
-		      if (url != null) {
-			  System.out.println(i + ". " + url);
-			  System.out.println("   - " + doc.get("title"));
-		      } else {
-			  System.out.println(i + ". " + "No path nor URL for this document");
-		      }
-		  }
+		      LOGGER.finer(i + ". " + path);		      
+		  } 
 	      }
 	      break;
 	  }
-	  
       } catch (java.io.IOException e) {
-	  System.out.println("Io except " + e.getMessage());
-      }
-      
+	  LOGGER.warning("Io except " + e.getMessage());
+	    throw new SearchException("could not complete search" + 
+				      "...server error");
+      }	
       setFragmentCount(hits.length());
       setTaskStatusCode(TASK_COMPLETE);
-      
-      
-      return(getTaskStatusCode());   
-      
+      return(getTaskStatusCode());         
   }
  
-  // Allow access to the set of objects based on a handle system (DOI?)
-  public InformationFragment getFragment(String handle)
-  {
-    return getFragment(handle, InformationFragmentSource.default_spec);
-  }
- 
-  // Allow access to the set of objects based on a handle system (DOI?)
-  public InformationFragment getFragment(String handle, RecordFormatSpecification spec)
-  {
-    return null;
-  }
- 
-  // Get a result record from this query
-  public InformationFragment getFragment(int index)
-  {
-    return getFragment(index, InformationFragmentSource.default_spec);
-  }
-
-  // Get a result record from this query
-  public InformationFragment getFragment(int index, RecordFormatSpecification spec)
-  {
-      System.out.println("spec is " + spec); 
+    /** 
+     * Retrieves the record at the specified index in the specified format.
+     * 	Position based access to the result set. Implementation must
+     * be 1 based: IE, First record in result set is 1 not 0.
+     *
+     * @param index the index of the record to be returned.
+     * @param spec the preferred return format.
+     * @return the record in the specified format.
+     */
+  public InformationFragment getFragment(int index, 
+					 RecordFormatSpecification spec) {
       //If multiple dbs are implemented then change the first two arguments of
       //the return records.
       if (spec.getFormat().getName().equals("xml")) {
-	  return new DOMTree("DefaultDB", "DefaultCollection", null, getXmlRecordForHit(index, spec), spec);
-      } else { //we can use SUTRS information fragment for html and sgml.
-	  return new SUTRS("DefaultDB", "DefaultCollection", null, getRecordForHit(index, spec), spec);
+	  return new DOMTree(dbName, "DefaultCollection", 
+			     null, getXmlRecordForHit(index, spec), spec);
+      } else { //we can use SUTRS information fragment for html and sgml
+	  //they all store info the same.
+	  return new SUTRS(dbName, "DefaultCollection", 
+			   null, getRecordForHit(index, spec), spec);
       }      
-
   }
 
-  public InformationFragment[] getFragment(int starting_fragment, int count)
-  {
-    return getFragment(starting_fragment, count, InformationFragmentSource.default_spec);
-  }
-
+    /** 
+     * Retrieves an array of records, from the starting fragment to 
+     * the count.
+     * Position based range access to the result set. Implementation must
+     * be 1 based: IE, First record in result set is 1 not 0.
+     * Local mappings (e.g to vector) must account for this!
+     * @param starting_fragment the position of the first record returned.
+     * @param count the number of records to be returned.
+     * @param spec the preferred return format.
+     * @return an array of records of size count.
+     */
   public InformationFragment[] getFragment(int starting_fragment, 
 		                           int count,
 					   RecordFormatSpecification spec)
   {
     InformationFragment result[] = new InformationFragment[count];
-    for ( int i=0; i<count; i++ )
-    {
-// System.out.println("spec is " + spec + " format name: " + /*spec.getFormatName() +*/
-	//			 " schema: " + spec.getSchema() + "setname: " + spec.getSetname());
+    for ( int i=0; i<count; i++ ) {
 	result[i] = getFragment(i+starting_fragment, spec);
-
-	/*      result[i] = new DOMTree("DummyDB",
-		              "DummyCollection",
-			      null,
-			      getRecordForHit(i+starting_fragment, spec),
-			      spec); */
-			      //new RecordFormatSpecification("xml","meta","f"));
     }
     return result;
   }
 
-  public void store(int id, InformationFragment fragment)
-  {
-  }
-
-  public void setFragmentCount(int i)
-  {
+    /**
+     * Sets the number of fragments (records) of this task.
+     * @param i the number to set.
+     */
+  public void setFragmentCount(int i) {
     fragment_count = i;
-    FragmentSourceEvent e = new FragmentSourceEvent(FragmentSourceEvent.FRAGMENT_COUNT_CHANGE, new Integer(i));
+    FragmentSourceEvent e = new FragmentSourceEvent
+	(FragmentSourceEvent.FRAGMENT_COUNT_CHANGE, new Integer(i));
     setChanged();
     notifyObservers(e);
   }
 
-  public int getFragmentCount()
-  {
-    return fragment_count;
-  } 
+    /**
+     * gets the fragment count.
+     * @return the number of records found by evaluate.
+     */
+    public int getFragmentCount() {
+	return fragment_count;
+    } 
 
 
-
-    private String getRecordForHit(int n, RecordFormatSpecification spec){
+    /**
+     * Retrieves a html, sgml or sutrs record for a hit.  All are accessed
+     * and stored the same way, this method just opens and reads in the
+     * file where they should be stored.  If the metadata directory
+     * does not hold the requested file this simply returns null, the server
+     * should then return an appropriate diagnostic.
+     *
+     * @param n The number of the record requested.
+     * @param spec should hold the format type (html, sgml or sutrs) 
+     * and the setname (B, S, F)
+     * @return the string representation of the record.
+     */
+    private String getRecordForHit(int n, RecordFormatSpecification spec) {
 	String setname = spec.getSetname().toString();
 	String reqFormat = spec.getFormat().getName();
-	System.out.println("reqFomrat is " + reqFormat);
+	LOGGER.finer("reqFomrat is " + reqFormat);
 	String retStr = null;
 	try {
 	    org.apache.lucene.document.Document hit = hits.doc((n - 1));
-	    if (setname.equals("B")){
-		//HACK: change this hardcode.
-		retStr = (hit.get("//metadata/idinfo/citation/citeinfo/title"));
-		System.out.println("return = " + retStr);
-	    } else if (setname.equals("S")) {
+	    if (setname.equals(GeoProfile.FULL_SET)){
+		String filename = hit.get(reqFormat); 
+		//our index stores the paths where the files should
+		//be according to their name in the RecordFormatSpecification.
+		RandomAccessFile file = null;
+		try {
+		    file = new RandomAccessFile(filename, "r");
+		} catch (FileNotFoundException e) {
+		    LOGGER.warning("Please make sure " + reqFormat + 
+				   " is stored at " + filename);
+		    return null; //REVISIT: give better diagnostic, such 
+		    //as 'Requested file not found', need to figure out how 
+		    //to make this happen, probably throw a new exception...
+		}
+		int len = (int)file.length();
+		byte[] retArr = new byte[len];
+		file.read(retArr);
+		retStr =  (new String(retArr));		
+	    } else if (setname.equals(GeoProfile.SUMMARY_SET)) {
 		GeoSummary summary = new GeoSummary(hit, attrMap);
 		if (reqFormat.equals("html")) {
 		    retStr = summary.getHtmlSummary();
 		} else {
+		    //Isite just uses text summary for sgml.
 		retStr = summary.getTextSummary();
-		}
-	    } else {
-		String filename = hit.get(reqFormat); //TODO: check to make sure it's supported
-		RandomAccessFile file = new RandomAccessFile(filename, "r");
-		int len = (int)file.length();
-		byte[] retArr = new byte[len];
-		file.read(retArr);
-		retStr =  (new String(retArr));
+		} //REVISIT: implement "A" setname?  
+		//Would be easy with GeoSummary class.
+	    } else { //breif default for now. 
+		//REVISIT: return diagnostic for unrecognized setname.
+		retStr = (hit.get(attrMap.getProperty
+				  (GeoProfile.Attribute.TITLE)));
+		//Isite ref. implementation of z39.50 server 
+		//just returns the title string.
+		LOGGER.finer("return breif: " + retStr);
 	    }
-	} catch (Exception e) {
-	    System.out.println("problem getting " + reqFormat + " record " + e.getMessage());
-	}
+	    } catch (IOException e) {
+		LOGGER.warning("File problem getting " + 
+			       reqFormat + " record " + e.getMessage());
+	    }
 	return retStr;
     }
 
-    
+    /**
+     * Retrieves the xml record.  If a full record is requested then it just
+     * parses the stored file.  If a breif or summary then GeoSummary is 
+     * used to construct it.
+     *
+     * @param n The number of the record requested.
+     * @param spec should hold the setname (B, S, F). 
+     * Xml is assumed for the format type.
+     * @return the xml document
+     */
  private Document getXmlRecordForHit(int n, RecordFormatSpecification spec)
   {
       String setname = spec.getSetname().toString();
       String reqFormat = spec.getFormat().getName().toString();
       Document retval = null;
+      String filename = null;
       try {
       org.apache.lucene.document.Document hit = hits.doc((n - 1));
-      String filename = hit.get("path");
+      filename = hit.get("path");
 
-      //TODO: handle default of F and B...figure out summary!
-
-      if (setname.equals("F")){
+      if (setname.equals(GeoProfile.FULL_SET)){
 	  InputSource in = new InputSource(new FileInputStream(filename));
-	  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+	  DocumentBuilderFactory dfactory = 
+	      DocumentBuilderFactory.newInstance();
 	  dfactory.setNamespaceAware(true);
 	  retval = dfactory.newDocumentBuilder().parse(in);
-      } else if (setname.equals("S")) {
+      } else if (setname.equals(GeoProfile.SUMMARY_SET)) {
 	  GeoSummary summary = new GeoSummary(hit, attrMap);
 	  retval = summary.getXmlSummary();
-      } else {
-	  DOMImplementation dom_impl = org.apache.xerces.dom.DOMImplementationImpl.getDOMImplementation();
-	  retval = new org.apache.xerces.dom.DocumentImpl();
-	  Element root = retval.createElement("metadata");
-	  retval.appendChild( root );
-	  Element id = retval.createElement("idinfo");
-	  root.appendChild(id);
-	  Element citation = retval.createElement("citdation");
-	  id.appendChild(citation);
-	  Element citeinfo = retval.createElement("citeinfo");
-	  citation.appendChild(citeinfo);
-	  //HACK: change this hardcode
-	  addElement(retval, citation, "title", hit.get("//metadata/idinfo/citation/citeinfo/title"));
-	  //-----------
-	  Element root2 = retval.createElement("metadata");
-	  retval.appendChild( root2 );
-	  Element id2 = retval.createElement("idinfo");
-	  root2.appendChild(id2);
-	  Element citation2 = retval.createElement("citation");
-	  id2.appendChild(citation2);
-	  Element citeinfo2 = retval.createElement("citeinfo");
-	  citation2.appendChild(citeinfo2);
-	  //HACK: change this hardcode
-	  addElement(retval, citation2, "pubdate", hit.get("//metadata/idinfo/citation/citeinfo/pubdate"));
-      }   
-      /*if (setname.equals("F")) {
-      /addElement(retval, root, "publish", hit.get("publish"));
-	addElement(retval, root, "originator", hit.get("origin"));
-	addElement(retval, root, "subject", hit.get("summary"));
-	addElement(retval, root, "coverage", "Dummy Coverage "+n);
-	} */
-
-      } catch (Exception e) {
-	  //TODO: catch each exception...should be 4.  Deal with gracefully
-	  System.out.println("exception: " + e.getMessage());
+      } else { //breif default for now.  
+	  //REVISIT: return diagnostic for unrecognized setname.
+	  GeoSummary sum = new GeoSummary();
+	  sum.setTitle(hit.get(attrMap.getProperty
+			       (GeoProfile.Attribute.TITLE)));
+	  retval = sum.getXmlSummary();
+      }
+      } catch (java.io.IOException e) {
+	  LOGGER.warning("IOException when reading hits in GeoSearchTask: " 
+			 + e);
+      } catch (javax.xml.parsers.ParserConfigurationException pce) {
+	  LOGGER.warning("XML parser not properly configured, " + 
+			 "could not get xml from file" + pce);
+      } catch (org.xml.sax.SAXException se) {
+	  LOGGER.warning("problems parsing xml file at " + 
+			 filename + " :" + se);
       }
       return retval;
   }
 
-  private Document getDummyRecordForHit(int n)
-  {
-      Document retval = null;
-      try {
-	  if (n > 5) n = 2;
-      org.apache.lucene.document.Document hit = hits.doc((n - 1));
-      String filename = hit.get("path");
-
-      //InputSource in = new InputSource(new FileInputStream(filename));
-      //DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-      //dfactory.setNamespaceAware(true);
-      //retval = dfactory.newDocumentBuilder().parse(in);
-		
-
-      DOMImplementation dom_impl = org.apache.xerces.dom.DOMImplementationImpl.getDOMImplementation();
-      retval = new org.apache.xerces.dom.DocumentImpl();
-      Element root = retval.createElement("meta");
-    retval.appendChild( root );
-    addElement(retval, root, "title", hit.get("title"));
-    addElement(retval, root, "creator", hit.get("publish"));
-    addElement(retval, root, "originator", hit.get("origin"));
-    addElement(retval, root, "subject", hit.get("summary"));
-    addElement(retval, root, "coverage", "Dummy Coverage "+n);
-      
-
-      } catch (Exception e) {
-	  //TODO: catch each exception...should be 4.  Deal with gracefully
-	  System.out.println("exception: " + e.getMessage());
-      }
-      return retval;
-  }
-
-  private void addElement(Document d, Element parent, String elem_name, Object value)
-  {
-    if ( value != null )
-    {
-      Element new_element = d.createElement(elem_name);
-      parent.appendChild(new_element);
-      new_element.appendChild(d.createTextNode(value.toString()));
-    }
-  }
-
-  public InformationFragmentSource getTaskResultSet()
-  {
-    return this;
-  }
-
-  public void destroy()
-  {
-  }
-
-  /** From SearchTask abstract base class */
-  public void destroyTask()
-  {
-  }
-
-  // public String getStatusReport()
-  // {
-  //   return "Dummy Result Set : "+getFragmentCount();
-  // }
-
-  public AsynchronousEnumeration elements()
-  {
-    return new DefaultSourceEnumeration(this);
-  }
-
-  public IRStatusReport getStatusReport()
-  {
-    return new IRStatusReport("Demo",
-                              "Demo",
-                              "Demo",
-                              private_status_types[geo_search_status],
-                              getFragmentCount(),
-                              getFragmentCount(),
-                              null,
-			      getLastStatusMessages());
-  }
-
-    private Properties getProperties(File propFile) {
+    /**
+     * Gets the attribute map given it's path.
+     *
+     * @param pathToPropFile the string representation of the path.
+     * @return a Properties object of the attribute mappings.
+     */
+    private Properties getAttrMap(String pathToPropFile) {
+	//TODO: put default behavior in, good way might be to
+	//have call the Properties constructor with defaults.
+	//Question is where to store the defaults...in the same
+	//directory as this file?  As a class that just creates
+	//the default props?
+	File propFile = new File(pathToPropFile);
 	//add defaults for any field?
 	Properties propertyList = null;
 	try {
@@ -428,13 +397,13 @@ public class GeoSearchTask extends SearchTask implements InformationFragmentSour
 	    propertyList.load(fis);
 	    return propertyList;
 	} catch (FileNotFoundException e) {
-	    System.out.println("File not found: " + e.getMessage());
+	    LOGGER.warning("File not found: " + e.getMessage());
 	} catch (IOException e) {
-	    System.out.println("IO exception: " + e.getMessage());
+	    LOGGER.warning("IO exception: " + e.getMessage());
 	}
     
     return propertyList;
-    }
+    }  
 
     /**
      * Turns a vector of database names into the paths to their
@@ -458,6 +427,57 @@ public class GeoSearchTask extends SearchTask implements InformationFragmentSour
 	return paths;
     }
 
+    
+  public InformationFragmentSource getTaskResultSet()
+  {
+    return this;
+  }
+
+    public IRQuery getQuery() {
+	return q;
+    }
+
+ /** Release all resources and shut down the object */
+  public void destroy()
+  {
+  }
+
+  /** From SearchTask abstract base class */
+  public void destroyTask()
+  {
+  }
+
+    /** Enumerate all the items availabe from this fragment source */
+  public AsynchronousEnumeration elements()
+  {
+    return new DefaultSourceEnumeration(this);
+  }
+
+    //needed to fully implement InformationFragmentSource interface.
+  public IRStatusReport getStatusReport()
+  {
+      return null;
+  }
+
+    /**    private Properties getProperties(File propFile) {
+	//add defaults for any field?
+	Properties propertyList = null;
+	try {
+	    FileInputStream fis = new FileInputStream(propFile);
+	    propertyList = new Properties();
+	    propertyList.load(fis);
+	    return propertyList;
+	} catch (FileNotFoundException e) {
+	    LOGGER.warning("File not found: " + e.getMessage());
+	} catch (IOException e) {
+	    LOGGER.warning("IO exception: " + e.getMessage());
+	}
+    
+    return propertyList;
+    }*/
+
+
+
 
 
     /**
@@ -467,54 +487,49 @@ public class GeoSearchTask extends SearchTask implements InformationFragmentSour
      * @param pathToPropFile the location of the mapping file.
      * @return the mapping of attribute numbers to the attribute xpaths.
      */
-    private Properties getAttrMap(String pathToPropFile) {
-	//TODO: put default behavior in, good way might be to
-	//have call the Properties constructor with defaults.
-	//Question is where to store the defaults...in the same
-	//directory as this file?  As a class that just creates
-	//the default props?
-	File propFile = new File(pathToPropFile);
-	//add defaults for any field?
-	Properties propertyList = null;
-	try {
-	    FileInputStream fis = new FileInputStream(propFile);
-	    propertyList = new Properties();
-	    propertyList.load(fis);
-	    return propertyList;
-	} catch (FileNotFoundException e) {
-	    System.out.println("File not found: " + e.getMessage());
-	} catch (IOException e) {
-	    System.out.println("IO exception: " + e.getMessage());
-	}
     
-    return propertyList;
-    }      
 
+// needed to implement  InformationFragmentSource
+    public InformationFragment getFragment(String handle)
+    {
+	return null;
+    }
+ 
+  // needed to implement InformationFragmentSource -- never called.
+    public InformationFragment getFragment(String handle, 
+					   RecordFormatSpecification spec)
+    {
+	return null;
+    }
 
-    /*    private byte[] getOldRecordForHit(int n, RecordFormatSpecification spec){
-	String setname = spec.getSetname().toString();
-	String reqFormat = spec.getFormat().getName();
-	System.out.println("reqFomrat is " + reqFormat);
-	byte[] retArr = null;
-	try {
-	    org.apache.lucene.document.Document hit = hits.doc((n - 1));
-	    if (setname.equals("B")){
-		retArr = (hit.get("title")).getBytes();
-		System.out.println("return = " + hit.get("title"));
-	    } else {
-		String filename = hit.get(reqFormat); //TODO: check to make sure it's supported
-		RandomAccessFile file = new RandomAccessFile(filename, "r");
-		int len = (int)file.length();
-		retArr = new byte[len];
-		file.read(retArr);
-	    }
-	} catch (Exception e) {
-	    System.out.println("problem getting html record " + e.getMessage());
-	}
-	return retArr;
-    }*/
+     /** Position based range access to the result set. Implementation must
+    * be 1 based: IE, First record in result set is 1 not 0.
+    * Local mappings (e.g to vector) must account for this!
+    * Records should be returned in the format suggested by the 
+    * default_record_syntax property
+    *
+    * deprecated : Please use getFragment(starting_fragment,count,spec);
+    *
+    */
+  public InformationFragment[] getFragment(int starting_fragment, int count)
+  {
+    return getFragment(starting_fragment, count, 
+		       this.defaultSpec);
+  }
 
+      /** Position based access to the result set. Implementation must
+    * be 1 based: IE, First record in result set is 1 not 0.
+    * Local mappings (e.g to vector) must account for this!
+    * Records should be returned in the format suggested by the 
+    * default_record_syntax property
+    *
+    * deprecated : Please use getFragment(starting_fragment,count,spec);
+    *
+    */
+  public InformationFragment getFragment(int index)
+  {
+    return getFragment(index, this.defaultSpec);
+  }
 
-
-
+    
 }
