@@ -4,48 +4,123 @@
  */
 package org.vfny.geoserver.responses.wfs;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.WmsException;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.responses.CapabilitiesResponse;
-import org.vfny.geoserver.responses.CapabilitiesResponseHandler;
-import org.vfny.geoserver.responses.ResponseHandler;
-import org.xml.sax.ContentHandler;
+import org.vfny.geoserver.requests.CapabilitiesRequest;
+import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.responses.Response;
 
 
 /**
- * DOCUMENT ME!
+ * Processes a WFS GetCapabilities request.
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldan, Axios Engineering
  * @version $Id: WFSCapabilitiesResponse.java,v 1.7 2004/09/05 17:18:31 cholmesny Exp $
  */
-public class WFSCapabilitiesResponse extends CapabilitiesResponse {
+public class WFSCapabilitiesResponse implements Response {
+    /** package's logger */
+    private static final Logger LOGGER = Logger.getLogger(WFSCapabilitiesResponse.class.getPackage()
+                                                                                       .getName());
+
+    /**
+     * Byte array holding the raw content of the capabilities document,
+     * generated in <code>execute()</code>
+     */
+    private byte[] rawResponse;
+
     /**
      * DOCUMENT ME!
      *
-     * @return DOCUMENT ME!
+     * @param request DOCUMENT ME!
+     *
+     * @throws ServiceException DOCUMENT ME!
+     * @throws IllegalArgumentException DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
-    protected Service getGlobalService() {
-        return request.getWFS();
+    public void execute(Request request) throws ServiceException {
+        if (!(request instanceof CapabilitiesRequest)) {
+            throw new IllegalArgumentException("Not a GetCapabilities Request");
+        }
+
+        WFSCapsTransformer transformer = new WFSCapsTransformer();
+            
+        transformer.setIndentation(2);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            transformer.transform(request, out);
+        } catch (TransformerException e) {
+            throw new WmsException(e);
+        }
+
+        this.rawResponse = out.toByteArray();
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns the fixed capabilities MIME type  (application/vnd.ogc.wms_xml)
+     * as specified in whe WMS spec, version 1.1.1, section 6.5.3, table 3.
      *
-     * @param contentHandler DOCUMENT ME!
+     * @param gs DOCUMENT ME!
      *
-     * @return DOCUMENT ME!
+     * @return the capabilities document MIME type.
+     *
+     * @throws IllegalStateException if the response was not yet produced.
      */
-    protected ResponseHandler getResponseHandler(ContentHandler contentHandler) {
-        CapabilitiesResponseHandler cr = new WfsCapabilitiesResponseHandler(contentHandler,
-                request);
-        cr.setPrettyPrint(request.getWFS().getGeoServer().isVerbose());
+    public String getContentType(GeoServer gs) throws IllegalStateException {
+        if (rawResponse == null) {
+            throw new IllegalStateException(
+                "execute() not called or not succeed.");
+        }
 
-        return cr;
+        return gs.getMimeType();
     }
 
-    /* (non-Javadoc)
-     * @see org.vfny.geoserver.responses.Response#abort()
+    /**
+     * Just returns <code>null</code>, since no special encoding is applyed to
+     * the output data.
+     *
+     * @return <code>null</code>
      */
-    public void abort(Service s) {
-        // nothing to undo
+    public String getContentEncoding() {
+        return null;
+    }
+
+    /**
+     * Writes the capabilities document generated in <code>execute()</code> to
+     * the given output stream.
+     *
+     * @param out the capabilities document destination
+     *
+     * @throws ServiceException never, since the whole content was aquired in
+     *         <code>execute()</code>
+     * @throws IOException if it is thrown while writing to <code>out</code>
+     * @throws IllegalStateException if <code>execute()</code> was not
+     *         called/succeed before this method is called.
+     */
+    public void writeTo(OutputStream out) throws ServiceException, IOException {
+        if (rawResponse == null) {
+            throw new IllegalStateException("");
+        }
+
+        out.write(rawResponse);
+    }
+
+    /**
+     * Does nothing, since no processing is done after <code>execute()</code>
+     * has returned.
+     *
+     * @param gs the service instance
+     */
+    public void abort(Service gs) {
     }
 }
