@@ -4,15 +4,16 @@
 
 <logic:present name="selectedFeatureType" scope="session">
 
-<table width=100%>
-	<tr><td class="head"><font class="pn-title"> <bean:message key="label.actions"/></font></td></tr>
-	<tr><td class="main">
-		<html:form action="CalculateBoundingBox">
-			<html:submit>
-				<bean:message key="label.calculateBoundingBox"/>
-			</html:submit>
-		</html:form>
-	</tr></td>
-</table>
+<span class="actions">
+	<span class="actionsTitle">
+		<bean:message key="label.actions"/>
+	</span>
+
+	<html:form action="CalculateBoundingBox">
+		<html:submit>
+			<bean:message key="label.calculateBoundingBox"/>
+		</html:submit>
+	</html:form>
+</span>
 
 </logic:present>

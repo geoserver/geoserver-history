@@ -14,7 +14,6 @@
 
 		<!-- HEADER -->		     
    		<put name="logo" value="/WEB-INF/pages/logo.jsp"/>
-   		<put name="menu" value="/WEB-INF/pages/menu.jsp"/>
    		<put name="serviceName" value="/WEB-INF/pages/serviceName.jsp"/>
    		<put name="contact" value="/WEB-INF/pages/contact.jsp"/>
 
@@ -25,8 +24,10 @@
    		<put name="actions"	value="/WEB-INF/pages/blank.jsp"/>
 
 		<!-- BODY -->
-   		<put name="location" value="/WEB-INF/pages/blank.jsp"/>
+   		<put name="location" value="/WEB-INF/pages/location.jsp"/>
+   		<put name="loginStatus" value="/WEB-INF/pages/loginStatus.jsp"/>
 		<put name="body" value="/WEB-INF/pages/blank.jsp"/>
+
 
    	</definition>
    	

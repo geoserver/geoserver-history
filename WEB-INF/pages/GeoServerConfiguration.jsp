@@ -2,7 +2,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table border=0><tr><td>
+<span class="geoserverConfiguration">
 <BR>
 	<html:link forward="wfsConfigMenu"><bean:message key="label.wfsConfig"/></html:link><BR>
 <BR>

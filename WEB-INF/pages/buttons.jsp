@@ -2,56 +2,54 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table width=100%>
-		<tr><td class="main" align="center" valign="center">
-			<html:link forward="mainmenu"><bean:message key="label.server"/></html:link>
-		</td><td class="main" align="center" valign="center>
-			<html:link forward="validation"><bean:message key="label.validation"/></html:link>
-		</td></tr>
+<span class="buttons">
+	<span class="buttonLabel">
+		<html:link forward="mainmenu"><bean:message key="label.server"/></html:link><br>
+		<html:link forward="validation"><bean:message key="label.validation"/></html:link>
+	</span>
+	
 	<logic:equal name="GeoServer.ApplicationState" property="configChanged" value="true">
-		<tr><td class="changed" align="center" valign="center">
+		<span class="configChanged">
 	</logic:equal>
 	<logic:notEqual name="GeoServer.ApplicationState" property="configChanged" value="true">
-		<tr><td class="main" align="center" valign="center">
+		<span class="configUnchanged">
 	</logic:notEqual>
 			<html:link forward="wfsConfigMenu"><bean:message key="label.wfs"/></html:link><logic:equal name="GeoServer.ApplicationState" property="geoServerChanged" value="true">*</logic:equal>
+	</span>
+	
 	<logic:equal name="GeoServer.ApplicationState" property="configChanged" value="true">		
-		</td><td class="changed" align="center" valign="center">
+		<span class="configChanged">
 	</logic:equal>
 	<logic:notEqual name="GeoServer.ApplicationState" property="configChanged" value="true">
-		</td><td class="main" align="center" valign="center">
+		<span class="configUnchanged">
 	</logic:notEqual>	
 			<html:link forward="wmsConfigMenu"><bean:message key="label.wms"/></html:link><logic:equal name="GeoServer.ApplicationState" property="geoServerChanged" value="true">*</logic:equal>
-		</td></tr>
+	</span>
+	
 	<logic:equal name="GeoServer.ApplicationState" property="configChanged" value="true">
-		<tr><td class="changed" align="center" valign="center" colspan=2>
+		<span class="configChanged">
 	</logic:equal>
 	<logic:notEqual name="GeoServer.ApplicationState" property="configChanged" value="true">
-		<tr><td class="main" align="center" valign="center" colspan=2>
+		<span class="configUnchanged">
 	</logic:notEqual>
 		<html:link forward="dataConfigMenu"><bean:message key="label.data"/></html:link><logic:equal name="GeoServer.ApplicationState" property="geoServerChanged" value="true">*</logic:equal>
-	</td></tr>
-	<tr><td class="main" align="center" valign="center" colspan=2>
-		<table border=0>
-		<tr><td align="center" valign="center">
+	</span>
+	
+	<span class="saveButtons">
 		<html:form action="SaveToGeoServer">
 			<html:submit>
 				<bean:message key="label.apply"/>
 			</html:submit>
 		</html:form>
-		</td><td>
 		<html:form action="SaveToXML">	
 			<html:submit>
 				<bean:message key="label.save"/>
 			</html:submit>
 		</html:form>
-		</td><td>
 		<html:form action="LoadFromXML">			
 			<html:submit>
 				<bean:message key="label.load"/>
 			</html:submit>
 		</html:form>	
-		</td></tr>
-		</table>
-	</td></tr>
-</table>
+	</span>
+</span>
