@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * now will just use the second
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.13 2004/04/05 11:55:12 cholmesny Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.14 2004/04/06 12:11:34 cholmesny Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -203,7 +203,6 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-
         String rawAttribute = new String(ch, start, length);
         LOGGER.fine("we are inside attribute: " + insideAttribute
             + ", curAttType is " + curAttributeType + " curFeatureT: "
@@ -252,7 +251,6 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
         if (fType != null) {
             internalTypeName = fType.getName();
         }
-
 
         if (typeName.equals(internalTypeName)) {
             //AttributeType[] attDef = new AttributeType[attributes.size()];
