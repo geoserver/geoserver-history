@@ -33,7 +33,7 @@ public class ConfigSuite extends TestCase {
     
     /** Class logger */
     private static final Logger LOGGER =  
-        Logger.getLogger("org.vfny.geoserver.requests");
+        Logger.getLogger("org.vfny.geoserver.config");
 
     /** Unit test data directory */
     private static final String CONFIG_DIR = 
@@ -43,6 +43,12 @@ public class ConfigSuite extends TestCase {
     private static final String TYPE_DIR = 
         System.getProperty("user.dir") + "/misc/testData/featureTypes";
 
+    private static final String OTHER_ROOT_DIR = "NewNameConfiguration";
+
+    private static final String TEST_URI = "http://www.openplans.org/rail";
+
+    private static final String BAD_CONFIG_FILE = 
+	System.getProperty("user.dir") + "/misc/unit/requests/1.xml";
 
     private ConfigInfo config;
     private TypeRepository repo;
@@ -111,13 +117,15 @@ public class ConfigSuite extends TestCase {
     public void testServiceConfig() throws Exception {
 	ServiceConfig config = 
 	    ServiceConfig.getInstance(CONFIG_DIR + "service-config1.xml");
-	LOGGER.fine("config is " + config + ", matches " + testConfig(config));
+	LOGGER.fine("config is " + config + ", matches " + doConfigTest(config));
+	assertTrue(doConfigTest(config));
     }
 
     public void testServiceConfigOld() throws Exception {
 	ServiceConfig config = 
 	    ServiceConfig.getInstance(CONFIG_DIR + "service-config2.xml");
-	LOGGER.fine("config is " + config + ", matches " + testConfig(config));
+	LOGGER.fine("config is " + config + ", matches " + doConfigTest(config));
+	assertTrue(doConfigTest(config));
     }
 
     public void testNoConfigFile() {
@@ -131,18 +139,13 @@ public class ConfigSuite extends TestCase {
 	}
     }
 
-    public void testBadConfigFile() {
-	try {
-	    ServiceConfig config = 
-	    ServiceConfig.getInstance(TYPE_DIR + "/rail/info.xml");
-	    //should throw error here.
-	    fail();
-	} catch (ConfigurationException e) {
-	    LOGGER.fine("successfully caught config exception: " + e.getMessage());
-	}
+    public void testFeatureTypeFile() throws Exception {
+	FeatureType featureT = 
+	    FeatureType.getInstance(CONFIG_DIR + "info.xml");
+	LOGGER.fine("config is " + featureT);
     }
 
-     private boolean testConfig(ServiceConfig servConfig){
+     private boolean doConfigTest(ServiceConfig servConfig){
 	 LOGGER.fine("title: " + servConfig.getTitle() + ", Fees: " + servConfig.getFees());
 	 return (servConfig.getName().equals("FreeFS") &&
 		 servConfig.getTitle().equals("TOPP GeoServer") &&
@@ -150,7 +153,49 @@ public class ConfigSuite extends TestCase {
 		 servConfig.getFees().equals("none") &&
 		 servConfig.getKeywords().get(0).equals("WFS") &&
 		 servConfig.getKeywords().get(1).equals("OGC") &&
-		 servConfig.getOnlineResource().equals("http://beta.openplans.org/geoserver"));
+		 servConfig.getOnlineResource().equals
+		 ("http://beta.openplans.org/geoserver"));
         }
+
+    public void testWfsConfig() throws Exception{
+	WfsConfig config = 
+	    WfsConfig.getInstance(CONFIG_DIR + "wfs-config1.xml");
+	LOGGER.fine("config is " + config); 
+	assertTrue(config.isVerbose());
+	assertEquals(TEST_URI, config.getUriFromPrefix("rail"));
+	assertEquals(TEST_URI,
+		     config.getUriFromPrefix(config.getDefaultPrefix()));
+	//assertTrue(doConfigTest(config));
+    }
+
+    public void testWfsConfig2() throws Exception{
+	WfsConfig config = 
+	    WfsConfig.getInstance(CONFIG_DIR + "wfs-config2.xml", 
+				  OTHER_ROOT_DIR);
+	LOGGER.fine("config is " + config); 
+	assertTrue(!config.isVerbose());
+	assertEquals(TEST_URI, config.getUriFromPrefix("rail"));
+	assertEquals("http://beta.openplans.org/geoserver/myns", 
+		     config.getUriFromPrefix(config.getDefaultPrefix()));
+		     
+    }
+
+    public void testConfigInfo() throws Exception{
+	LOGGER.fine(config.getTitle() + ", " +
+		    config.getKeywords() + ", " +
+		    config.getUrl() + ", " +
+		    config.formatOutput() + ", " +
+		    config.getDefaultNSPrefix() + ", " +
+		    config.getNSUri("rail") + ", ");
+	assertEquals("The Open Planning Project test server", 
+		     config.getTitle());
+	assertEquals("WFS, CITE, New York", config.getKeywords());
+	assertEquals("http://beta.openplans.org/geoserver",
+		     config.getUrl());
+	assertTrue(config.formatOutput());
+	assertEquals(config.getDefaultNSPrefix(), WfsConfig.DEFAULT_PREFIX);
+	assertEquals(TEST_URI, config.getNSUri("rail"));
+	
+    }
 
 }
