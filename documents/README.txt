@@ -7,7 +7,7 @@ execution remains in doc/usr/install.htm. All previous users should consult the
 documentation for 1.1.0, as some of the configuration information has changed.
 The major changes from a user's point of view is the added configuration
 support, with a Struts based configuration tool
-(http://localhost:8080/geoserver/Welcome.do).
+(http://localhost:8080/geoserver/).
 
 There were also a number of code organization and design changes surrounding
 the configuration portion of GeoServer. Although this will not affect response
