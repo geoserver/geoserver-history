@@ -57,6 +57,8 @@ public class WfsConfig implements java.io.Serializable {
 
     public static final String URL_TAG = "URL";
 
+    public static final String MAX_TAG = "MaxFeatures";
+
     public static final String DEFAULT_PREFIX = "myns";
 
     public static final String LOG_TAG = "LoggingLevel";
@@ -67,7 +69,7 @@ public class WfsConfig implements java.io.Serializable {
 
     private Level logLevel = Logger.getLogger("").getLevel();
     
-    
+    private int maxFeatures = 2000;
 
     private String defaultPrefix;
 
@@ -147,6 +149,8 @@ public class WfsConfig implements java.io.Serializable {
 	    String baseUrl = findTextFromTag(configElem, URL_TAG);
 	    wfsConfig.setBaseUrl(baseUrl);
 
+	    wfsConfig.setMaxFeatures(findTextFromTag(configElem, MAX_TAG));
+				     
 	    HashMap namespaces = new HashMap();
 	    NodeList namespaceElems = 
 		configElem.getElementsByTagName(NAMESPACE_TAG);
@@ -211,6 +215,21 @@ public class WfsConfig implements java.io.Serializable {
 	return ServiceConfig.findTextFromTag(root, tag);
     }
 
+    void setMaxFeatures(String max){
+	LOGGER.finer("setting max features with " + max);
+	//if (!max.equals("")){
+	    try {
+		this.maxFeatures = Integer.parseInt(max);
+	    } catch (NumberFormatException e){
+		LOGGER.info("could not parse maxFeatures: " + max + ", " +
+			       "using default: " + this.maxFeatures);
+	    }
+	    //}
+    }
+
+    public int getMaxFeatures(){
+	return this.maxFeatures;
+    }
 
     void setLogLevel(String level){
 	try {
