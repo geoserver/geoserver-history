@@ -147,7 +147,8 @@
         	type="org.vfny.geoserver.action.wfs.WFSDescriptionAction"
         	name="wfsDescriptionForm"
         	scope="request"
-        	validate="false"/>
+        	validate="true"
+        	input="/WEB-INF/pages/tiletest.jsp"/>
 
 
     <!-- sample input and input submit actions
@@ -219,6 +220,9 @@
     <set-property
         property="pathnames"
         value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+  </plug-in>
+  
+  <plug-in className="org.vfny.geoserver.form.wfs.WFSDescriptionForm">
   </plug-in>
 
 </struts-config>

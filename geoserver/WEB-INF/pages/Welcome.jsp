@@ -18,7 +18,7 @@
 
 <h3><bean:message key="welcome.heading"/></h3>
 <p><html:link forward="mainmenu"><bean:message key="welcome.message"/></html:link></p>
-
+<html:errors/>
 <logic:present name="test">
 <b>
 	<bean:write name="test" property="name"/><BR>
