@@ -17,21 +17,21 @@
 
 
 --uncomment these if you want to reset everything.
---drop table "Nulls";
---drop table "Points";
---drop table "Other";
---drop table "Lines";
---drop table "Polygons";
---drop table "MLines";
---drop table "MPolygons";
---drop table "MPoints";
---drop table "Seven";
---drop table "Fifteen";
---drop table "Updates";
---drop table "Inserts";
---drop table "Deletes";
---drop table "Locks";
---delete from "geometry_columns" where srid=32615;
+drop table "Nulls";
+drop table "Points";
+drop table "Other";
+drop table "Lines";
+drop table "Polygons";
+drop table "MLines";
+drop table "MPolygons";
+drop table "MPoints";
+drop table "Seven";
+drop table "Fifteen";
+drop table "Updates";
+drop table "Inserts";
+drop table "Deletes";
+drop table "Locks";
+delete from "geometry_columns" where srid=32615;
 
 
 
@@ -280,28 +280,28 @@ CREATE TABLE "Other" (
 
 
 COPY "geometry_columns" FROM stdin;
-	public	Nulls	pointProperty	2	32615	POINT	17539	3	\N
- 	public	Nulls	boundedBy	2	32615	POLYGON	17539	4	\N
- 	public	Points	pointProperty	2	32615	POINT	17539	5	\N
- 	public	Other	pointProperty	2	32615	POINT	17539	6	\N
-	public	Lines	lineStringProperty	2	32615	LINESTRING	17539	7	\N
- 	public	Polygons	polygonProperty	2	32615	POLYGON	17539	8	\N
-	public	MPolygons	multiPolygonProperty	2	32615	MULTIPOLYGON	17539	9	\N
-	public	MPoints	multiPointProperty	2	32615	MULTIPOINT	17539	10	\N
-	public	MLines	multiLineStringProperty	2	32615	MULTILINESTRING	17539	11	\N
- 	public	Other	boundedBy	2	32615	POLYGON	17539	12	\N
- 	public	Seven	pointProperty	2	32615	POINT	17539	13	\N
- 	public	Seven	boundedBy	2	32615	POLYGON	17539	14	\N
- 	public	Fifteen	pointProperty	2	32615	POINT	17539	15	\N
- 	public	Fifteen	boundedBy	2	32615	POLYGON	17539	16	\N
- 	public	Updates	pointProperty	2	32615	POINT	17539	17	\N
- 	public	Updates	boundedBy	2	32615	POLYGON	17539	18	\N
- 	public	Inserts	pointProperty	2	32615	POINT	17539	19	\N
- 	public	Inserts	boundedBy	2	32615	POLYGON	17539	20	\N
- 	public	Deletes	pointProperty	2	32615	POINT	17539	21	\N
- 	public	Deletes	boundedBy	2	32615	POLYGON	17539	22	\N
- 	public	Locks	pointProperty	2	32615	POINT	17539	21	\N
- 	public	Locks	boundedBy	2	32615	POLYGON	17539	22	\N
+	public	Nulls	pointProperty	2	32615	POINT
+ 	public	Nulls	boundedBy	2	32615	POLYGON
+ 	public	Points	pointProperty	2	32615	POINT
+ 	public	Other	pointProperty	2	32615	POINT
+	public	Lines	lineStringProperty	2	32615	LINESTRING
+ 	public	Polygons	polygonProperty	2	32615	POLYGON
+	public	MPolygons	multiPolygonProperty	2	32615	MULTIPOLYGON
+	public	MPoints	multiPointProperty	2	32615	MULTIPOINT
+	public	MLines	multiLineStringProperty	2	32615	MULTILINESTRING
+ 	public	Other	boundedBy	2	32615	POLYGON
+ 	public	Seven	pointProperty	2	32615	POINT
+ 	public	Seven	boundedBy	2	32615	POLYGON
+ 	public	Fifteen	pointProperty	2	32615	POINT
+ 	public	Fifteen	boundedBy	2	32615	POLYGON
+ 	public	Updates	pointProperty	2	32615	POINT
+ 	public	Updates	boundedBy	2	32615	POLYGON
+ 	public	Inserts	pointProperty	2	32615	POINT
+ 	public	Inserts	boundedBy	2	32615	POLYGON
+ 	public	Deletes	pointProperty	2	32615	POINT
+ 	public	Deletes	boundedBy	2	32615	POLYGON
+ 	public	Locks	pointProperty	2	32615	POINT
+ 	public	Locks	boundedBy	2	32615	POLYGON
 \.
 --
 -- Data for TOC Entry ID 39 (OID 113496)
