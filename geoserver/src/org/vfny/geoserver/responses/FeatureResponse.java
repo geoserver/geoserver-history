@@ -21,6 +21,8 @@ import org.geotools.data.DataSourceException;
 //import org.geotools.data.Query;
 import org.geotools.data.QueryImpl;
 import org.vfny.geoserver.requests.FeatureRequest;
+import org.vfny.geoserver.requests.FeatureWithLockRequest;
+import org.vfny.geoserver.requests.LockRequest;
 import org.vfny.geoserver.requests.Query;
 import org.vfny.geoserver.config.TypeInfo;
 import org.vfny.geoserver.config.TypeRepository;
@@ -31,7 +33,7 @@ import org.vfny.geoserver.config.ConfigInfo;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: FeatureResponse.java,v 1.21 2003/07/03 14:08:38 cholmesny Exp $
+ * @version $Id: FeatureResponse.java,v 1.22 2003/07/03 20:47:28 cholmesny Exp $
  */
 public class FeatureResponse {
 
@@ -54,7 +56,16 @@ public class FeatureResponse {
 	    throw new WfsException("output format: " + outputFormat + " not " +
 				   "supported by geoserver");
 	}
-        TypeRepository repository = TypeRepository.getInstance();
+	String lockId = null;
+        //REVISIT: this could probably be done more efficiently, with maybe
+	//just one run through, and may need to be with the next spec version
+	//but this should work for now, do locking, and then do getting.
+	if (request instanceof FeatureWithLockRequest) {
+	    LockRequest lock = ((FeatureWithLockRequest)request).asLockRequest();
+	    lockId = LockResponse.performLock(lock, false);
+	}
+
+	TypeRepository repository = TypeRepository.getInstance();
 	ConfigInfo configInfo = ConfigInfo.getInstance();
         StringBuffer result = new StringBuffer();
 	int maxFeatures = request.getMaxFeatures();
@@ -73,7 +84,7 @@ public class FeatureResponse {
 	    String srid = meta.getSrs();
 	    String typeName = meta.getFullName();
 	    if (i == 0){ //HACK: different srids can go in same collection.
-		gml.startFeatureCollection(srid, meta);
+		gml.startFeatureCollection(srid, meta, lockId);
 		featureTypes.add(typeName);
 	    } else {
 		//HACK: Yet another hack.  I hereby nominate GMLBuilder as
