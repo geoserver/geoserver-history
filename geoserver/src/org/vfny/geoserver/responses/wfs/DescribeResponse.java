@@ -36,7 +36,7 @@ import org.vfny.geoserver.responses.Response;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: DescribeResponse.java,v 1.10 2004/01/16 19:33:39 dmzwiers Exp $
+ * @version $Id: DescribeResponse.java,v 1.11 2004/01/18 01:29:03 dmzwiers Exp $
  *
  * @task TODO: implement the response streaming in writeTo instead of the
  *       current String generation
@@ -284,10 +284,6 @@ public class DescribeResponse implements Response {
         Set validTypes = new HashSet();
 
         // Loop through requested tables to add element types
-
-Iterator ii = requestedTypes.iterator();
-while(ii.hasNext())
-	System.out.println("DescribeResponse:generateSpecifiedTypes:"+ii.next().toString());
         
         for (int i = 0; i < requestedTypes.size(); i++) {
             // set the current file
@@ -297,7 +293,7 @@ while(ii.hasNext())
             //TypeInfo meta = repository.getFeatureType(curTypeName);
             FeatureTypeInfo meta = gs.getData().getFeatureTypeInfo(curTypeName);
 
-            curTypeName = meta.getName();
+            //curTypeName = meta.getName();
 
             if (meta == null) {
                 throw new WfsException("Feature Type " + curTypeName + " does "
@@ -379,7 +375,7 @@ while(ii.hasNext())
         //String tableName = typeName.substring(prefixDelimPos + 1);
         //  }
         return "\n  <xs:element name='" + type.getShortName() + "' type='"
-        + type.getName() + "_Type' substitutionGroup='gml:_Feature'/>";
+        + type.getShortName() + "_Type' substitutionGroup='gml:_Feature'/>";
     }
 
     /**
