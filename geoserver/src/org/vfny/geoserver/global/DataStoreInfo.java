@@ -7,8 +7,11 @@ package org.vfny.geoserver.global;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.data.DataStoreMetaData;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
@@ -19,9 +22,9 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Roldán
  * @author dzwiers
- * @version $Id: DataStoreInfo.java,v 1.1.2.7 2004/01/09 21:27:51 dmzwiers Exp $
+ * @version $Id: DataStoreInfo.java,v 1.1.2.8 2004/01/12 13:27:05 jive Exp $
  */
-public class DataStoreInfo extends GlobalLayerSupertype {
+public class DataStoreInfo extends GlobalLayerSupertype implements DataStoreMetaData {
     /** for logging */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.config");
@@ -35,6 +38,8 @@ public class DataStoreInfo extends GlobalLayerSupertype {
     /** The dataStore information for this object */
     private DataStoreInfoDTO dsc;
 
+    /** Storage for metadata */
+    private Map meta;
     /**
      * DataStoreInfo constructor.
      * 
@@ -48,6 +53,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
     public DataStoreInfo(DataStoreInfoDTO config, Data data) {
         dsc = config;
         this.data = data;
+        meta = new HashMap();
     }
 
     /**
@@ -84,8 +90,6 @@ public class DataStoreInfo extends GlobalLayerSupertype {
      * future we can see if it is better to cache or pool DataStores for
      * performance, but definitely we shouldn't maintain a single
      * DataStoreInfo as instance variable for synchronizing reassons
-     * 
-     * <p></p>
      * 
      * <p>
      * JG: Umm we actually require a single DataStoreInfo for for locking &
@@ -200,4 +204,40 @@ public class DataStoreInfo extends GlobalLayerSupertype {
                                                              .append(dsc
             .getConnectionParams()).append("]").toString();
     }
+
+    /**
+     * Implement containsMetaData.
+     * 
+     * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
+     * 
+     * @param key
+     * @return
+     */
+    public boolean containsMetaData(String key) {
+        return meta.containsKey( key );
+    }
+
+    /**
+     * Implement putMetaData.
+     * 
+     * @see org.geotools.data.MetaData#putMetaData(java.lang.String, java.lang.Object)
+     * 
+     * @param key
+     * @param value
+     */
+    public void putMetaData(String key, Object value) {
+        meta.put( key, value );
+    }
+
+    /**
+     * Implement getMetaData.
+     * 
+     * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
+     * 
+     * @param key
+     * @return
+     */
+    public Object getMetaData(String key) {
+        return meta.get( key );
+    }    
 }
