@@ -43,16 +43,30 @@ import org.vfny.geoserver.global.*;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.1 2003/12/31 20:05:32 dmzwiers Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
  */
 public class XMLConfigReader {
+	/**
+	 * Used internally to create log information to detect errors.
+	 */
 	private static final Logger LOGGER = Logger.getLogger(
 			"org.vfny.geoserver.config");
+			
+	/**
+	 * The main data structure to contain the results. 
+	 */
 	private Config model = null;
 	
+	/**
+	 * The root directory from which the configuration is loaded.
+	 */
 	private File root;
 	
+	/**
+	 * Is set to true after the model is loaded into memory. 
+	 */
 	private boolean initialized = false;
+	
 	/**
 	 * XMLConfigReader constructor.
 	 * <p>
@@ -105,19 +119,24 @@ public class XMLConfigReader {
 		return model;
 	}
 	
-	protected void load() throws ConfigException{
-		
+	/**
+	 * load purpose.
+	 * <p>
+	 * Main load routine, sets up file handles for various other portions of the load procedure.
+	 * </p>
+	 * @throws ConfigException
+	 */
+	protected void load() throws ConfigException{	
 		root = ReaderUtils.initFile(root,true);
 		File configDir = ReaderUtils.initFile(new File(root,"WEB-INF/"),true);
-		File configFile = ReaderUtils.initFile(new File(configDir,"services.org.vfny.geoserver.config.org.vfny.geoserver.config.xml"),false);
+		File configFile = ReaderUtils.initFile(new File(configDir,"services.xml"),false);
 		
 		loadServices(configFile);
 
-		File catalogFile = ReaderUtils.initFile(new File(configDir,"catalog.org.vfny.geoserver.config.org.vfny.geoserver.config.xml"),false);
+		File catalogFile = ReaderUtils.initFile(new File(configDir,"catalog.xml"),false);
 		File dataDir = ReaderUtils.initFile(new File(root,"data/"),true);
 		File featureTypeDir = ReaderUtils.initFile(new File(dataDir,"featureTypes/"),true);
-		File styleDir = ReaderUtils.initFile(new File(dataDir,"styles/"),true);
-		loadCatalog(catalogFile,featureTypeDir,styleDir);
+		loadCatalog(catalogFile,featureTypeDir);
 		
 		
 		// Future additions
@@ -125,6 +144,14 @@ public class XMLConfigReader {
 		// loadValidation(validationDir);	
 	}
 	
+	/**
+	 * loadServices purpose.
+	 * <p>
+	 * loads services.xml into memory with the assistance of other class methods.
+	 * </p>
+	 * @param configFile services.xml
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected void loadServices(File configFile) throws ConfigException{
 		LOGGER.fine("loading config file: " + configFile);
 		Element configElem = ReaderUtils.loadConfig(configFile);
@@ -154,7 +181,16 @@ public class XMLConfigReader {
 		}
 	}
 	
-	protected void loadCatalog(File catalogFile, File featureTypeDir, File styleDir) throws ConfigException {
+	/**
+	 * loadCatalog purpose.
+	 * <p>
+	 * loads catalog.xml into memory with the assistance of other class methods.
+	 * </p>
+	 * @param catalogFile catalog.xml
+	 * @param featureTypeDir the directory containing the info.xml files for the featuretypes.
+	 * @throws ConfigException When an error occurs.
+	 */
+	protected void loadCatalog(File catalogFile, File featureTypeDir) throws ConfigException {
 		LOGGER.fine("loading catalog file: " + catalogFile);
 		Element catalogElem = ReaderUtils.loadConfig(catalogFile);
 		
@@ -163,12 +199,19 @@ public class XMLConfigReader {
 		c.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(catalogElem, "namespaces", true)));
 		setDefaultNS(c);
 		c.setDataStores(loadDataStores(ReaderUtils.getChildElement(catalogElem, "datastores", true),c.getNameSpaces()));
-		c.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem, "styles", false), styleDir));
+		c.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem, "styles", false)));
 		c.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
 
 		model.setCatalog(c);
 	}
 	
+	/**
+	 * setDefaultNS purpose.
+	 * <p>
+	 * Finds and sets the default namespace. The namespaces in catalog must already be loaded.
+	 * </p>
+	 * @param c The catalog into which we will store the default namespace.
+	 */
 	protected void setDefaultNS(Catalog c){
 		Iterator i = c.getNameSpaces().values().iterator();
 		while(i.hasNext()){
@@ -180,6 +223,15 @@ public class XMLConfigReader {
 		}
 	}
 	
+	/**
+	 * getLoggingLevel purpose.
+	 * <p>
+	 * Parses the LoggingLevel from a DOM tree and converts the level into a Level Object.
+	 * </p>
+	 * @param globalConfigElem
+	 * @return The logging Level
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Level getLoggingLevel(Element globalConfigElem) throws ConfigException{
 		Level level = Logger.getLogger("org.vfny.geoserver").getLevel();
 		Element levelElem = ReaderUtils.getChildElement(globalConfigElem, "loggingLevel");
@@ -200,6 +252,15 @@ public class XMLConfigReader {
 		return level;
 	}
 	
+	/**
+	 * loadGlobal purpose.
+	 * <p>
+	 * Converts a DOM tree into a Global configuration.
+	 * </p>
+	 * @param globalElem A DOM tree representing a complete global configuration.
+	 * @return A complete Global object loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Global loadGlobal(Element globalElem) throws ConfigException{
 		Global g = new Global();
 		LOGGER.fine("parsing global configuration parameters");
@@ -264,6 +325,15 @@ public class XMLConfigReader {
 		return g;
 	}
 	
+	/**
+	 * loadContact purpose.
+	 * <p>
+	 * Converts a DOM tree into a Contact
+	 * </p>
+	 * @param contactInfoElement a DOM tree to convert into a Contact.
+	 * @return The resulting Contact object from the DOM tree.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Contact loadContact(Element contactInfoElement) throws ConfigException{
 		Contact c = new Contact();
 		if (contactInfoElement == null) {
@@ -298,20 +368,51 @@ public class XMLConfigReader {
 		return c;
 	}
 	
+	/**
+	 * loadWFS purpose.
+	 * <p>
+	 * Converts a DOM tree into a WFS object.
+	 * </p>
+	 * @param wfsElement a DOM tree to convert into a WFS object.
+	 * @param g A reference to the already loaded Global object. Used to get the baseUrl
+	 * @return A complete WFS object loaded from the DOM tree provided.
+	 * @see Global#getBaseUrl()
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected WFS loadWFS(Element wfsElement, Global g) throws ConfigException{
 		WFS w = new WFS();
 		w.setService(loadService(wfsElement));
 		w.setDescribeUrl(g.getBaseUrl().toString() + "wfs/");
 		return w;
 	}
-	
+
+	/**
+	 * loadWMS purpose.
+	 * <p>
+	 * Converts a DOM tree into a WMS object.
+	 * </p>
+	 * @param wmsElement a DOM tree to convert into a WMS object.
+	 * @param g A reference to the already loaded Global object. Used to get the baseUrl
+	 * @return A complete WMS object loaded from the DOM tree provided.
+	 * @see Global#getBaseUrl()
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected WMS loadWMS(Element wmsElement, Global g) throws ConfigException{
 		WMS w = new WMS();
 		w.setService(loadService(wmsElement));
 		w.setDescribeUrl(g.getBaseUrl().toString() + "wms/");
 		return w;
 	}
-	
+
+	/**
+	 * loadService purpose.
+	 * <p>
+	 * Converts a DOM tree into a Service object.
+	 * </p>
+	 * @param serviceRoot a DOM tree to convert into a Service object.
+	 * @return A complete Service object loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Service loadService(Element serviceRoot) throws ConfigException{
 		Service s = new Service();
 
@@ -327,7 +428,16 @@ public class XMLConfigReader {
 		
 		return s;
 	}
-	
+
+	/**
+	 * loadNameSpaces purpose.
+	 * <p>
+	 * Converts a DOM tree into a Map of NameSpaces.
+	 * </p>
+	 * @param nsRoot a DOM tree to convert into a Map of NameSpaces.
+	 * @return A complete Map of NameSpaces loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Map loadNameSpaces(Element nsRoot) throws ConfigException{
 
 		NodeList nsList = nsRoot.getElementsByTagName("namespace");
@@ -346,8 +456,17 @@ public class XMLConfigReader {
 		}
 		return nameSpaces;
 	}
-	
-	protected Map loadStyles(Element stylesElem, File styleDir) throws ConfigException{
+
+	/**
+	 * loadStyles purpose.
+	 * <p>
+	 * Converts a DOM tree into a Map of Styles.
+	 * </p>
+	 * @param stylesElem a DOM tree to convert into a Map of Styles.
+	 * @return A complete Map of Styles loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
+	protected Map loadStyles(Element stylesElem) throws ConfigException{
 		Map styles = new HashMap();
 
 		NodeList stylesList = null;
@@ -373,7 +492,16 @@ public class XMLConfigReader {
 		}
 		return styles;
 	}
-	
+
+	/**
+	 * loadDataStores purpose.
+	 * <p>
+	 * Converts a DOM tree into a Map of DataStores.
+	 * </p>
+	 * @param stylesElem a DOM tree to convert into a Map of DataStores.
+	 * @return A complete Map of DataStores loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Map loadDataStores(Element dsRoot, Map nameSpaces) throws ConfigException {
 		Map dataStores = new HashMap();
 
@@ -395,7 +523,17 @@ public class XMLConfigReader {
 		}
 		return dataStores;
 	}
-	
+
+	/**
+	 * loadDataStore purpose.
+	 * <p>
+	 * Converts a DOM tree into a DataStore object.
+	 * </p>
+	 * @param dsElem a DOM tree to convert into a DataStore object.
+	 * @param nameSpaces the map of pre-loaded namespaces to check for inconsistencies.
+	 * @return A complete DataStore object loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected DataStore loadDataStore(Element dsElem, Map nameSpaces) throws ConfigException {
 		DataStore ds = new DataStore();
 		
@@ -419,7 +557,16 @@ public class XMLConfigReader {
 		LOGGER.info("created " + toString());
 		return ds;
 	}
-	
+
+	/**
+	 * loadConnectionParams purpose.
+	 * <p>
+	 * Converts a DOM tree into a Map of Strings which represent connection parameters.
+	 * </p>
+	 * @param stylesElem a DOM tree to convert into a Map of Strings which represent connection parameters.
+	 * @return A complete Map of Strings which represent connection parameters loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Map loadConnectionParams(Element connElem) throws ConfigException {
 		Map connectionParams = new HashMap();
 
@@ -438,7 +585,16 @@ public class XMLConfigReader {
 		}
 		return connectionParams;
 	}
-	
+
+	/**
+	 * loadFeatureTypes purpose.
+	 * <p>
+	 * Converts a DOM tree into a Map of FeatureTypes.
+	 * </p>
+	 * @param featureTypeDir a DOM tree to convert into a Map of FeatureTypes.
+	 * @return A complete Map of FeatureTypes loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Map loadFeatureTypes(File featureTypeDir) throws ConfigException {
 		LOGGER.finest("examining: " + featureTypeDir.getAbsolutePath());
 		LOGGER.finest("is dir: " + featureTypeDir.isDirectory());
@@ -454,7 +610,17 @@ public class XMLConfigReader {
 		}
 		return featureTypes;
 	}
-	
+
+	/**
+	 * loadDataStore purpose.
+	 * <p>
+	 * Converts a intoFile tree into a FeatureType object. Uses loadFeaturePt2(Element) to interpret the XML.
+	 * </p>
+	 * @param infoFile a File to convert into a FeatureType object. (info.xml)
+	 * @return A complete FeatureType object loaded from the File handle provided.
+	 * @throws ConfigException When an error occurs.
+	 * @see loadFeaturePt2(Element)
+	 */
 	protected FeatureType loadFeature(File infoFile) throws ConfigException{
 		if (isInfoFile(infoFile)) {
 			Element featureElem = ReaderUtils.loadConfig(infoFile);
@@ -473,7 +639,16 @@ public class XMLConfigReader {
 		}
 		throw new ConfigException("Invalid Info file.");
 	}
-	
+
+	/**
+	 * loadFeaturePt2 purpose.
+	 * <p>
+	 * Converts a DOM tree into a FeatureType object.
+	 * </p>
+	 * @param fTypeRoot a DOM tree to convert into a FeatureType object.
+	 * @return A complete FeatureType object loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected FeatureType loadFeaturePt2(Element fTypeRoot) throws ConfigException{
 		FeatureType ft = new FeatureType();
 
@@ -495,7 +670,16 @@ public class XMLConfigReader {
 		ft.setDefinitionQuery(loadDefinitionQuery(fTypeRoot));
 		return ft;
 	}
-	
+
+	/**
+	 * getKeyWords purpose.
+	 * <p>
+	 * Converts a DOM tree into a List of Strings representing keywords.
+	 * </p>
+	 * @param keywordsElem a DOM tree to convert into a List of Strings representing keywords.
+	 * @return A complete List of Strings representing keywords loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected List getKeyWords(Element keywordsElem) {
 		NodeList klist = keywordsElem.getElementsByTagName("keyword");
 		int kCount = klist.getLength();
@@ -513,7 +697,16 @@ public class XMLConfigReader {
 
 		return keywords;
 	}
-	
+
+	/**
+	 * loadLatLongBBox purpose.
+	 * <p>
+	 * Converts a DOM tree into a Envelope object.
+	 * </p>
+	 * @param bboxElem a DOM tree to convert into a Envelope object.
+	 * @return A complete Envelope object loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected Envelope loadLatLongBBox(Element bboxElem) throws ConfigException {
 		boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem, "dynamic", false);
 
@@ -527,6 +720,15 @@ public class XMLConfigReader {
 		return new Envelope();
 	}
 
+	/**
+	 * loadDefinitionQuery purpose.
+	 * <p>
+	 * Converts a DOM tree into a Filter object.
+	 * </p>
+	 * @param typeRoot a DOM tree to convert into a Filter object.
+	 * @return A complete Filter object loaded from the DOM tree provided.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected org.geotools.filter.Filter loadDefinitionQuery(Element typeRoot) throws ConfigException {
 		Element defQNode = ReaderUtils.getChildElement(typeRoot, "definitionQuery", false);
 		org.geotools.filter.Filter filter = null;
@@ -548,6 +750,14 @@ public class XMLConfigReader {
 		return filter;
 	}
 	
+	/**
+	 * isInfoFile purpose.
+	 * <p>
+	 * Used to perform safety checks on info.xml file handles.
+	 * </p>
+	 * @param testFile The file to test.
+	 * @return true if the file is an info.xml file.
+	 */
 	protected static boolean isInfoFile(File testFile) {
 		String testName = testFile.getAbsolutePath();
 		int start = testName.length() - "info.org.vfny.geoserver.config.org.vfny.geoserver.config.xml".length();
@@ -555,7 +765,17 @@ public class XMLConfigReader {
 
 		return testName.substring(start, end).equals("info.org.vfny.geoserver.config.org.vfny.geoserver.config.xml");
 	}
-	
+
+	/**
+	 * loadSchema purpose.
+	 * <p>
+	 * Parses a schema file into a singular string.
+	 * @TODO parse the schema file into a data structure.
+	 * </p>
+	 * @param path a schema.xml file to be read into a String
+	 * @return A string representation of the file contents.
+	 * @throws ConfigException When an error occurs.
+	 */
 	protected String loadSchema(File path) throws ConfigException{
 		path = ReaderUtils.initFile(path, false);
 		StringBuffer sb = new StringBuffer();
@@ -573,13 +793,40 @@ public class XMLConfigReader {
 	
 }
 
-
+/**
+ * ReaderUtils purpose.
+ * <p>
+ * This class is intended to be used as a library of XML relevant operation for the XMLConfigReader class.
+ * <p>
+ * @see XMLConfigReader
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: XMLConfigReader.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+ */
 class ReaderUtils{
+	/**
+	 * Used internally to create log information to detect errors.
+	 */
 	private static final Logger LOGGER = Logger.getLogger(
 			"org.vfny.geoserver.config");
 	
+	/**
+	 * ReaderUtils constructor.
+	 * <p>
+	 * Static class, this should never be called.
+	 * </p>
+	 *
+	 */
 	private ReaderUtils(){}
 	
+	/**
+	 * loadConfig purpose.
+	 * <p>
+	 * Parses the specified file into a DOM tree.
+	 * </p>
+	 * @param configFile The file to parse int a DOM tree.
+	 * @return the resulting DOM tree
+	 * @throws ConfigException
+	 */
 	public static Element loadConfig(File configFile)
 		throws ConfigException {
 		try {
@@ -622,6 +869,16 @@ class ReaderUtils{
 		}
 	}
 	
+	/**
+	 * initFile purpose.
+	 * <p>
+	 * Checks to ensure the file is valid. Returns the file passed in to allow this to wrap file creations. 
+	 * </p>
+	 * @param f A file Handle to test.
+	 * @param isDir true when the File passed in is expected to be a directory, false when the handle is expected to be a file.
+	 * @return the File handle passed in
+	 * @throws ConfigException When the file does not exist or is not the type specified.
+	 */
 	public static File initFile(File f, boolean isDir) throws ConfigException{
 		if(!f.exists()){
 			throw new ConfigException("Path specified does not have a valid file.\n"+f+"\n\n");
@@ -636,6 +893,18 @@ class ReaderUtils{
 		return f;
 	}
 	
+	/**
+	 * getChildElement purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the first child element of the specified name. 
+	 * An exception occurs when the node is required and not found.
+	 * </p>
+	 * @param root The root element to look for children in.
+	 * @param name The name of the child element to look for.
+	 * @param mandatory true when an exception should be thrown if the child element does not exist.
+	 * @return The child element found, null if not found.
+	 * @throws ConfigException When a child element is required and not found.
+	 */
 	public static Element getChildElement(Element root, String name, boolean mandatory) throws ConfigException {
 		Node child = root.getFirstChild();
 
@@ -656,11 +925,39 @@ class ReaderUtils{
 
 		return null;
 	}
-	
-	public static Element getChildElement(Element root, String name) throws ConfigException{
-		return getChildElement(root, name, false);
+
+	/**
+	 * getChildElement purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the first child element of the specified name. 
+	 * </p>
+	 * @param root The root element to look for children in.
+	 * @param name The name of the child element to look for.
+	 * @return The child element found, null if not found.
+	 * @see getChildElement(Element,String,boolean)
+	 */
+	public static Element getChildElement(Element root, String name){
+		try{
+			return getChildElement(root, name, false);
+		}catch(ConfigException e){
+			//will never be here.
+			return null;
+		}
 	}
-	
+
+	/**
+	 * getIntAttribute purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the first child integer attribute of the specified name. 
+	 * An exception occurs when the node is required and not found.
+	 * </p>
+	 * @param root The root element to look for children in.
+	 * @param attName The name of the attribute to look for.
+	 * @param mandatory true when an exception should be thrown if the attribute element does not exist.
+	 * @param defaultValue a default value to return incase the attribute was not found. mutually exclusive with the ConfigException thrown.
+	 * @return The int value if the attribute was found, the default otherwise.
+	 * @throws ConfigException When a attribute element is required and not found.
+	 */
 	public static int getIntAttribute(Element elem, String attName, boolean mandatory, int defaultValue) throws ConfigException {
 		String attValue = getAttribute(elem, attName, mandatory);
 
@@ -680,9 +977,20 @@ class ReaderUtils{
 			}
 		}
 	}
-	
-	public static String getAttribute(Element elem, String attName,
-		boolean mandatory) throws ConfigException {
+
+	/**
+	 * getIntAttribute purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the first child integer attribute of the specified name. 
+	 * An exception occurs when the node is required and not found.
+	 * </p>
+	 * @param root The root element to look for children in.
+	 * @param attName The name of the attribute to look for.
+	 * @param mandatory true when an exception should be thrown if the attribute element does not exist.
+	 * @return The value if the attribute was found, the null otherwise.
+	 * @throws ConfigException When a child attribute is required and not found.
+	 */
+	public static String getAttribute(Element elem, String attName, boolean mandatory) throws ConfigException {
 		Attr att = elem.getAttributeNode(attName);
 
 		String value = null;
@@ -704,13 +1012,34 @@ class ReaderUtils{
 
 		return value;
 	}
-	
+
+	/**
+	 * getBooleanAttribute purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the first child integer attribute of the specified name. 
+	 * An exception occurs when the node is required and not found.
+	 * </p>
+	 * @param root The root element to look for children in.
+	 * @param attName The name of the attribute to look for.
+	 * @param mandatory true when an exception should be thrown if the attribute element does not exist.
+	 * @return The value if the attribute was found, the false otherwise.
+	 * @throws ConfigException When a child attribute is required and not found.
+	 */
 	public static boolean getBooleanAttribute(Element elem, String attName, boolean mandatory) throws ConfigException {
 		String value = getAttribute(elem, attName, mandatory);
 
 		return Boolean.valueOf(value).booleanValue();
 	}
-	
+
+	/**
+	 * getChildText purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the first child text value of the specified element name. 
+	 * </p>
+	 * @param root The root element to look for children in.
+	 * @param childName The name of the attribute to look for.
+	 * @return The value if the child was found, the null otherwise.
+	 */
 	public static String getChildText(Element root, String childName) {
 		try {
 			return getChildText(root, childName, false);
@@ -718,9 +1047,20 @@ class ReaderUtils{
 			return null;
 		}
 	}
-	
-	public static String getChildText(Element root, String childName,
-		boolean mandatory) throws ConfigException {
+
+	/**
+	 * getChildText purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the first child text value of the specified element name. 
+	 * An exception occurs when the node is required and not found.
+	 * </p>
+	 * @param root The root element to look for children in.
+	 * @param childName The name of the attribute to look for.
+	 * @param mandatory true when an exception should be thrown if the text does not exist.
+	 * @return The value if the child was found, the null otherwise.
+	 * @throws ConfigException When a child attribute is required and not found.
+	 */
+	public static String getChildText(Element root, String childName, boolean mandatory) throws ConfigException {
 		Element elem = getChildElement(root, childName, mandatory);
 
 		if (elem != null) {
@@ -736,7 +1076,15 @@ class ReaderUtils{
 			return null;
 		}
 	}
-	
+
+	/**
+	 * getChildText purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the text value of the specified element name. 
+	 * </p>
+	 * @param elem The root element to look for children in.
+	 * @return The value if the text was found, the null otherwise.
+	 */
 	public static String getElementText(Element elem) {
 		try {
 			return getElementText(elem, false);
@@ -745,8 +1093,18 @@ class ReaderUtils{
 		}
 	}
 
-	public static String getElementText(Element elem, boolean mandatory)
-		throws ConfigException {
+	/**
+	 * getChildText purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the text value of the specified element name. 
+	 * An exception occurs when the node is required and not found.
+	 * </p>
+	 * @param elem The root element to look for children in.
+	 * @param mandatory true when an exception should be thrown if the text does not exist.
+	 * @return The value if the text was found, the null otherwise.
+	 * @throws ConfigException When text is required and not found.
+	 */
+	public static String getElementText(Element elem, boolean mandatory) throws ConfigException {
 		String value = null;
 
 		LOGGER.finer("getting element text for " + elem);
@@ -783,7 +1141,15 @@ class ReaderUtils{
 
 		return value;
 	}
-	
+
+	/**
+	 * getKeyWords purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns a list of keywords that were found.
+	 * </p>
+	 * @param keywordsElem The root element to look for children in.
+	 * @return The list of keywords that were found.
+	 */
 	public static List getKeyWords(Element keywordsElem) {
 		NodeList klist = keywordsElem.getElementsByTagName("keyword");
 		int kCount = klist.getLength();
@@ -799,7 +1165,15 @@ class ReaderUtils{
 		}
 		return keywords;
 	}
-	
+
+	/**
+	 * getFirstChildElement purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the element which represents the first child. 
+	 * </p>
+	 * @param elem The root element to look for children in.
+	 * @return The element if a child was found, the null otherwise.
+	 */
 	public static Element getFirstChildElement(Element root){
 	  Node child = root.getFirstChild();
 
@@ -812,9 +1186,20 @@ class ReaderUtils{
 	  }
 	  return null;
 	}
-	
-	public static double getDoubleAttribute(Element elem, String attName,
-		boolean mandatory) throws ConfigException {
+
+	/**
+	 * getDoubleAttribute purpose.
+	 * <p>
+	 * Used to help with XML manipulations. Returns the first child integer attribute of the specified name. 
+	 * An exception occurs when the node is required and not found.
+	 * </p>
+	 * @param root The root element to look for children in.
+	 * @param attName The name of the attribute to look for.
+	 * @param mandatory true when an exception should be thrown if the attribute element does not exist.
+	 * @return The double value if the attribute was found, the NaN otherwise.
+	 * @throws ConfigException When a attribute element is required and not found.
+	 */
+	public static double getDoubleAttribute(Element elem, String attName, boolean mandatory) throws ConfigException {
 		String value = getAttribute(elem, attName, mandatory);
 
 		double d = Double.NaN;

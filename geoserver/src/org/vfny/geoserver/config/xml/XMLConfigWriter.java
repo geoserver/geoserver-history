@@ -29,26 +29,41 @@ import com.vividsolutions.jts.geom.*;
 /**
  * XMLConfigWriter purpose.
  * <p>
- * Description of XMLConfigWriter ...
+ * This class is intended to store a configuration to be written and complete the output to XML.
  * <p>
- * Capabilities:
- * <ul>
- * </li></li>
- * </ul>
- * Example Use:
- * <pre><code>
- * XMLConfigWriter x = new XMLConfigWriter(...);
- * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.1.2.1 2003/12/31 20:05:32 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
  */
 public class XMLConfigWriter {
+	/**
+	 * Used internally to create log information to detect errors.
+	 */
 	private static final Logger LOGGER = Logger.getLogger(
 			"org.vfny.geoserver.config");
+		
+	/**
+	 * The main data structure to contain the results. 
+	 */
 	private Config model;
+	
+	/**
+	 * XMLConfigWriter constructor.
+	 * <p>
+	 * Should never be called.
+	 * </p>
+	 *
+	 */
 	private XMLConfigWriter(){}
 	
+	/**
+	 * XMLConfigWriter constructor.
+	 * <p>
+	 * Stores the specified model in the new object. Throws the exception if the parameter is null.
+	 * </p>
+	 * @param model The model to be written
+	 * @throws ConfigException is thrown when the parameter is null.
+	 */
 	public XMLConfigWriter(Config model) throws ConfigException{
 		if(model == null){
 			throw new ConfigException("Config was null");
@@ -97,14 +112,50 @@ public class XMLConfigWriter {
 		//storeStyles(styleDir);
 	}
 	
+	/**
+	 * WriterHelper purpose.
+	 * <p>
+	 * Used to provide assitance writing xml to a Writer.
+	 * <p>
+	 * 
+	 * @author dzwiers, Refractions Research, Inc.
+	 * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+	 */
 	protected class WriterHelper{
+		/**
+		 * The output writer.
+		 */
 		protected Writer writer;
+		
+		/**
+		 * WriterHelper constructor.
+		 * <p>
+		 * Should never be called.
+		 * </p>
+		 *
+		 */
 		protected WriterHelper(){}
+		
+		/**
+		 * WriterHelper constructor.
+		 * <p>
+		 * Stores the specified writer to use for output.
+		 * </p>
+		 * @param writer the writer which will be used for outputing the xml.
+		 */
 		public WriterHelper(Writer writer){
 			LOGGER.fine("In constructor WriterHelper");
 			this.writer = writer;
 		}
 		
+		/**
+		 * write purpose.
+		 * <p>
+		 * Writes the String specified to the stored output writer.
+		 * </p>
+		 * @param s The String to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void write(String s)throws ConfigException{
 			try{
 				writer.write(s);
@@ -113,7 +164,15 @@ public class XMLConfigWriter {
 				throw new ConfigException(e);
 			}
 		}
-		
+
+		/**
+		 * writeln purpose.
+		 * <p>
+		 * Writes the String specified to the stored output writer.
+		 * </p>
+		 * @param s The String to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void writeln(String s)throws ConfigException{
 			try{
 				writer.write(s+"\n");
@@ -122,11 +181,28 @@ public class XMLConfigWriter {
 				throw new ConfigException(e);
 			}
 		}
-		
+
+		/**
+		 * openTag purpose.
+		 * <p>
+		 * Writes an open xml tag with the name specified to the stored output writer.
+		 * </p>
+		 * @param tagName The tag name to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void openTag(String tagName)throws ConfigException{
 			writeln("<"+tagName+">");
 		}
-		
+
+		/**
+		 * openTag purpose.
+		 * <p>
+		 * Writes an open xml tag with the name and attributes specified to the stored output writer.
+		 * </p>
+		 * @param tagName The tag name to write.
+		 * @param attributes The tag attributes to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void openTag(String tagName, Map attributes)throws ConfigException{
 			write("<"+tagName+" ");
 			Iterator i = attributes.keySet().iterator();
@@ -136,19 +212,54 @@ public class XMLConfigWriter {
 			}
 			writeln(">");
 		}
-		
+
+		/**
+		 * closeTag purpose.
+		 * <p>
+		 * Writes an close xml tag with the name specified to the stored output writer.
+		 * </p>
+		 * @param tagName The tag name to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void closeTag(String tagName)throws ConfigException{
 			writeln("</"+tagName+">");
 		}
-		
+
+		/**
+		 * textTag purpose.
+		 * <p>
+		 * Writes a text xml tag with the name and text specified to the stored output writer.
+		 * </p>
+		 * @param tagName The tag name to write.
+		 * @param data The text data to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void textTag(String tagName, String data)throws ConfigException{
 			writeln("<"+tagName+">"+data+"</"+tagName+">");
 		}
-		
+
+		/**
+		 * valueTag purpose.
+		 * <p>
+		 * Writes an xml tag with the name and value specified to the stored output writer.
+		 * </p>
+		 * @param tagName The tag name to write.
+		 * @param value The text data to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void valueTag(String tagName, String value)throws ConfigException{
 			writeln("<"+tagName+" value = \""+value+"\" />");
 		}
-		
+
+		/**
+		 * attrTag purpose.
+		 * <p>
+		 * Writes an xml tag with the name and attributes specified to the stored output writer.
+		 * </p>
+		 * @param tagName The tag name to write.
+		 * @param attributes The tag attributes to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void attrTag(String tagName, Map attributes)throws ConfigException{
 			write("<"+tagName+" ");
 			Iterator i = attributes.keySet().iterator();
@@ -158,7 +269,17 @@ public class XMLConfigWriter {
 			}
 			write(" />");
 		}
-		
+
+		/**
+		 * textTag purpose.
+		 * <p>
+		 * Writes an xml tag with the name, text and attributes specified to the stored output writer.
+		 * </p>
+		 * @param tagName The tag name to write.
+		 * @param data The tag text to write.
+		 * @param attributes The tag attributes to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void textTag(String tagName, Map attributes, String data)throws ConfigException{
 			write("<"+tagName+" ");
 			Iterator i = attributes.keySet().iterator();
@@ -168,21 +289,30 @@ public class XMLConfigWriter {
 			}
 			write(">"+data+"</"+tagName+">");
 		}
-		
+
+		/**
+		 * comment purpose.
+		 * <p>
+		 * Writes an xml comment with the text specified to the stored output writer.
+		 * </p>
+		 * @param comment The comment text to write.
+		 * @throws ConfigException When an IO exception occurs.
+		 */
 		public void comment(String comment)throws ConfigException{
 			writeln("<!--");
 			writeln(comment);
 			writeln("-->");
 		}
 	}
+	
 	/**
 	 * 
 	 * storeServices purpose.
 	 * <p>
-	 * Description ...
+	 * Writes the services.xml file from the model in memory.
 	 * </p>
 	 * @param cw The Configuration Writer
-	 * @throws ConfigException
+	 * @throws ConfigException When an IO exception occurs.
 	 */
 	protected void storeServices(WriterHelper cw) throws ConfigException{
 		LOGGER.fine("In method storeServices");
@@ -251,7 +381,17 @@ public class XMLConfigWriter {
 		}
 		cw.closeTag("serverConfiguration");
 	}
-	
+
+	/**
+	 * 
+	 * storeContact purpose.
+	 * <p>
+	 * Writes a contact into the WriterHelper provided from the Contact provided.
+	 * </p>
+	 * @param cw The Configuration Writer
+	 * @param c The Contact to write.
+	 * @throws ConfigException When an IO exception occurs.
+	 */
 	protected void storeContact(Contact c, WriterHelper cw) throws ConfigException{
 		LOGGER.fine("In method storeContact");
 		if(c!=null && !c.equals(new Contact())){
@@ -280,9 +420,11 @@ public class XMLConfigWriter {
 	 * 
 	 * storeService purpose.
 	 * <p>
-	 * Description ...
+	 * Writes a service into the WriterHelper provided from the WFS or WMS object provided.
 	 * </p>
 	 * @param obj either a WFS or WMS object.
+	 * @param cw The Configuration Writer
+	 * @throws ConfigException When an IO exception occurs or the object provided is not of the correct type.
 	 */
 	protected void storeService(Object obj, WriterHelper cw) throws ConfigException{
 		LOGGER.fine("In method storeService");
@@ -332,7 +474,16 @@ public class XMLConfigWriter {
 			cw.textTag("maintainer",s.getMaintainer());
 		cw.closeTag("service");
 	}
-	
+
+	/**
+	 * 
+	 * storeCatalog purpose.
+	 * <p>
+	 * Writes a catalog into the WriterHelper provided from Catalog provided in memory.
+	 * </p>
+	 * @param cw The Configuration Writer
+	 * @throws ConfigException When an IO exception occurs.
+	 */
 	protected void storeCatalog(WriterHelper cw) throws ConfigException{
 		LOGGER.fine("In method storeCatalog");
 		cw.writeln("<?org.vfny.geoserver.config.org.vfny.geoserver.config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -379,7 +530,17 @@ public class XMLConfigWriter {
 		}
 		cw.closeTag("catalog");
 	}
-	
+
+	/**
+	 * 
+	 * storeDataStore purpose.
+	 * <p>
+	 * Writes a DataStore into the WriterHelper provided.
+	 * </p>
+	 * @param cw The Configuration Writer
+	 * @param ds The Datastore. 
+	 * @throws ConfigException When an IO exception occurs.
+	 */
 	protected void storeDataStore(WriterHelper cw, DataStore ds) throws ConfigException{
 		LOGGER.fine("In method storeDataStore");
 		Map temp = new HashMap();
@@ -407,7 +568,17 @@ public class XMLConfigWriter {
 		}
 		cw.closeTag("datastore");
 	}
-	
+
+	/**
+	 * 
+	 * storeNameSpace purpose.
+	 * <p>
+	 * Writes a NameSpace into the WriterHelper provided.
+	 * </p>
+	 * @param cw The Configuration Writer
+	 * @param ns The Namespace. 
+	 * @throws ConfigException When an IO exception occurs.
+	 */
 	protected void storeNameSpace(WriterHelper cw, NameSpace ns) throws ConfigException{
 		LOGGER.fine("In method storeNameSpace");
 		Map attr = new HashMap();
@@ -420,7 +591,17 @@ public class XMLConfigWriter {
 		if(attr.size()!=0)
 			cw.attrTag("namespace",attr);
 	}
-	
+
+	/**
+	 * 
+	 * storeStyle purpose.
+	 * <p>
+	 * Writes a Style into the WriterHelper provided.
+	 * </p>
+	 * @param cw The Configuration Writer
+	 * @param ns The Style. 
+	 * @throws ConfigException When an IO exception occurs.
+	 */
 	protected void storeStyle(WriterHelper cw, Style s) throws ConfigException{
 		LOGGER.fine("In method storeStyle");
 		Map attr = new HashMap();
@@ -433,7 +614,16 @@ public class XMLConfigWriter {
 		if(attr.size()!=0)
 			cw.attrTag("style",attr);
 	}
-	
+
+	/**
+	 * storeStyle purpose.
+	 * <p>
+	 * Sets up writing FeatureTypes into their Directories.
+	 * </p>
+	 * @param dir The FeatureTypes directory
+	 * @throws ConfigException When an IO exception occurs.
+	 * @see storeFeature(FeatureType,File)
+	 */
 	protected void storeFeatures(File dir) throws ConfigException{
 		LOGGER.fine("In method storeFeatures");
 		Iterator i = model.getCatalog().getFeaturesTypes().keySet().iterator();
@@ -448,7 +638,16 @@ public class XMLConfigWriter {
 			}
 		}
 	}
-	
+
+	/**
+	 * storeStyle purpose.
+	 * <p>
+	 * Writes a FeatureTypes into it's Directory.
+	 * </p>
+	 * @param dir The particular FeatureType directory
+	 * @throws ConfigException When an IO exception occurs.
+	 * @see storeFeatures(File)
+	 */
 	protected void storeFeature(FeatureType ft, File dir) throws ConfigException{
 		LOGGER.fine("In method storeFeature");
 		File f = WriterUtils.initWriteFile(new File(dir,"info.org.vfny.geoserver.config.org.vfny.geoserver.config.xml"),false);
@@ -526,11 +725,41 @@ public class XMLConfigWriter {
 	}
 }
 
+/**
+ * WriterUtils purpose.
+ * <p>
+ * This is a static class which is used by XMLConfigWriter for File IO validation tests. 
+ * <p>
+ * 
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: XMLConfigWriter.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
+ */
 class WriterUtils{
+	/**
+	 * Used internally to create log information to detect errors.
+	 */
 	private static final Logger LOGGER = Logger.getLogger(
 			"org.vfny.geoserver.config");
+			
+	/**
+	 * WriterUtils constructor.
+	 * <p>
+	 * Static class, should never be used.
+	 * </p>
+	 *
+	 */
 	private WriterUtils(){}
 
+	/**
+	 * initFile purpose.
+	 * <p>
+	 * Checks to ensure the handle exists. If the handle is a directory and not created, it is created
+	 * </p>
+	 * @param f the File handle
+	 * @param isDir true when the handle is intended to be a directory.
+	 * @return The file passed in.
+	 * @throws ConfigException When an IO error occurs or the handle is invalid.
+	 */
 	public static File initFile(File f, boolean isDir) throws ConfigException{
 		if(!f.exists()){
 			LOGGER.fine("Creating File: "+f.toString());
@@ -555,7 +784,17 @@ class WriterUtils{
 		LOGGER.fine("File is valid: " + f);
 		return f;
 	}
-	
+
+	/**
+	 * initFile purpose.
+	 * <p>
+	 * Checks to ensure the handle exists and can be writen to. If the handle is a directory and not created, it is created
+	 * </p>
+	 * @param f the File handle
+	 * @param isDir true when the handle is intended to be a directory.
+	 * @return The file passed in.
+	 * @throws ConfigException When an IO error occurs or the handle is invalid.
+	 */
 	public static File initWriteFile(File f, boolean isDir) throws ConfigException{
 		initFile(f,isDir);
 		if(!f.canWrite())

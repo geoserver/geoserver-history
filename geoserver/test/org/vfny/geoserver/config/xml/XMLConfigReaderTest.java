@@ -37,11 +37,11 @@ import org.vfny.geoserver.config.wms.WMS;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReaderTest.java,v 1.1.2.1 2003/12/31 20:05:38 dmzwiers Exp $
+ * @version $Id: XMLConfigReaderTest.java,v 1.1.2.2 2003/12/31 22:25:41 dmzwiers Exp $
  */
 public class XMLConfigReaderTest extends TestCase {
 
-	private static final String testPath1 = "C:\\Java\\workspace\\Geoserver-Config\\tests\\test1";
+	private static final String testPath1 = "C:\\Java\\workspace\\Geoserver-Config\\tests\\test1\\";
 	private static final String testPath2 = "C:\\Java\\workspace\\Geoserver-Config\\tests\\test2\\";
 	private File root1 = null;
 	private File root2 = null;
@@ -57,7 +57,7 @@ public class XMLConfigReaderTest extends TestCase {
 	}
 	
 	public void testLoadServices(){
-		File configFile = new File(root1,"services.org.vfny.geoserver.config.org.vfny.geoserver.config.xml");
+		File configFile = new File(root1,"services.xml");
 		XMLConfigReaderExpose cfe = new XMLConfigReaderExpose();
 		try{
 			cfe.loadServicesWrapper(configFile);
@@ -83,7 +83,7 @@ public class XMLConfigReaderTest extends TestCase {
 		XMLConfigReaderExpose cfe = new XMLConfigReaderExpose();
 		try{
 			// pass incorrect feature dir to avoid running this portion
-			cfe.loadCatalogWrapper(new File(root1,"catalog.org.vfny.geoserver.config.org.vfny.geoserver.config.xml"),new File(root1,"catalog.org.vfny.geoserver.config.org.vfny.geoserver.config.xml"),new File(root1,"data/styles/"));
+			cfe.loadCatalogWrapper(new File(root1,"catalog.xml"),new File(root1,"catalog.xml"));
 		}catch(ConfigException e){
 			fail(e.toString());
 		}
@@ -194,8 +194,8 @@ class XMLConfigReaderExpose extends XMLConfigReader{
 		loadServices(f);
 	}
 	
-	public void loadCatalogWrapper(File f1, File f2, File f3) throws ConfigException{
-		loadCatalog(f1,f2,f3);
+	public void loadCatalogWrapper(File f1, File f2) throws ConfigException{
+		loadCatalog(f1,f2);
 	}
 	
 	public void loadFeatureTypesWrapper(File f) throws ConfigException{
