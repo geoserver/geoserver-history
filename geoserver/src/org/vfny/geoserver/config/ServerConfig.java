@@ -17,7 +17,7 @@ import javax.xml.parsers.*;
  * complete configuration ser for the whole server
  *
  * @author Gabriel Roldán
- * @version $Id: ServerConfig.java,v 1.1.2.6 2003/11/25 20:08:00 groldan Exp $
+ * @version $Id: ServerConfig.java,v 1.1.2.7 2003/11/26 06:21:40 jive Exp $
  */
 public class ServerConfig extends AbstractConfig {
     /** DOCUMENT ME! */
@@ -40,7 +40,10 @@ public class ServerConfig extends AbstractConfig {
 
     /** DOCUMENT ME! */
     private GlobalConfig globalConfig;
-
+    
+    /** Validation Configuration */
+    private ValidationConfig validationConfig;
+    
     private String rootDir;
 
     /**
@@ -57,9 +60,12 @@ public class ServerConfig extends AbstractConfig {
         String configFile = rootDir + "services.xml";
         String catalogFile = rootDir + "catalog.xml";
         Element configElem = loadConfig(configFile);
-        Element catalogElem = loadConfig(catalogFile);
+        Element catalogElem = loadConfig(catalogFile);        
         String featureTypeDir = rootDir + "featureTypes";
+        
         load(configElem, catalogElem, featureTypeDir);
+        
+        validationConfig = new ValidationConfig( new File( rootDir, "validation" ));        
     }
     /**
      * Creates a new ServerConfig Object for JUnit testing.
@@ -75,13 +81,14 @@ public class ServerConfig extends AbstractConfig {
      */
     private ServerConfig(Map config, Catalog gt2catalog)  {
         this.rootDir = get( config, "dir", new File(".") ).toString();
+        
         globalConfig = new GlobalConfig( config );
 
         featureServerConfig = new WFSConfig( config );
         mapServerConfig = new WMSConfig( config );
         catalog = new CatalogConfig( config, gt2catalog );
-
-    }
+        validationConfig = new ValidationConfig( config );
+    }        
     /**
      * DOCUMENT ME!
      *
@@ -117,7 +124,14 @@ public class ServerConfig extends AbstractConfig {
     public CatalogConfig getCatalog() {
         return catalog;
     }
-
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public ValidationConfig getValidationConfig(){
+        return validationConfig;
+    }
     /**
      * DOCUMENT ME!
      *
