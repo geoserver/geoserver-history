@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
  * This class represents a FeatureType element in a Capabilities document
  * along with additional information about the datasource backend.  
  * @author Chris Holmes, TOPP
- * @version $Revision: 1.2 $ $Date: 2003/04/23 21:44:17 $
+ * @version $Revision: 1.3 $ $Date: 2003/04/28 17:20:38 $
  * @tasks REVISIT: consider merging this into TypeInfo.  This class replaces
  * the castor generated FeatureType, but it is now unclear if we _really_ 
  * need this internal class, or if a TypeInfo can just hold it all.
@@ -88,8 +88,7 @@ class FeatureType {
     private LatLonBoundingBox latLongBBox;
 
     /** Holds the parameters for the datasource backend holding this feature*/
-    //put in different place?
-    //change to map?
+    //put in different place? - to differentiate between service info and data.
     private Map dsParams;
 
 
@@ -101,11 +100,29 @@ class FeatureType {
 	this.srs = srs;
     } 
 
+      /**
+     * static factory, reads a FeatureType from an xml file, using
+     * the default root tag.
+     *
+     * @param configFile the path to the configuration file.
+     * @return the FeatureType object constructed from the xml elements
+     * of the file.
+     */
     public static FeatureType getInstance(String featureTypeFile) 
     throws ConfigurationException {
 	return getInstance(featureTypeFile, ROOT_TAG);
     }
 
+    /**
+     * static factory, reads a FeatureType from an xml file, using
+     * the passed in root tag.
+     *
+     * @param configFile the path to the configuration file.
+     * @param rootTag the tag of the element whose children are the appropriate
+     * configuration elements.
+     * @return the FeatureType object constructed from the xml elements
+     * of the file.
+     */
     public static FeatureType getInstance(String featureTypeFile, 
 					  String rootTag) 
 	throws ConfigurationException{
@@ -134,8 +151,9 @@ class FeatureType {
 		
 	    String name = findTextFromTag(featureElem, ServiceConfig.NAME_TAG);
 	    String srs = findTextFromTag(featureElem, SRS_TAG);
-	    if (name == null || srs == null) {
-		String message = "<Name> and <SRS> are " +
+	    if (name.equals("") || srs.equals("")) {
+		String message = "in " + featureTypeFile + 
+		    ", <Name> and <SRS> are " +
 		    "required for a valid feature type.";
 		//REVISIT: if we don't throw exception then the user will just have
 		//an invalid Capabilities document.  Is that what we want?
@@ -172,7 +190,7 @@ class FeatureType {
 	return featureType;
     }
     
-
+    //TODO: put in common utility.
     private static String findTextFromTag(Element root, String tag){
 	return ServiceConfig.findTextFromTag(root, tag);
     }
@@ -369,15 +387,6 @@ class FeatureType {
     {
         this.title = title;
     }
-
-    /**
-     * 
-     * @param user
-    **/
-    //public void setUser(String user)
-    //{
-    //   this.user = user;
-    //}
 
       /**
      * Override of toString method. */
