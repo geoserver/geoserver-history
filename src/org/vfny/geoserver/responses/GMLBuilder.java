@@ -108,6 +108,20 @@ public class GMLBuilder {
 
     private static final String XS_NAMESPACE = "xmlns:xs=" + SCHEMA_URI;
 
+    private static Map gmlMap = new HashMap();
+    
+    static {
+	gmlMap.put("pointproperty", "gml:pointProperty");
+	gmlMap.put("geometryproperty", "gml:geometryProperty");
+	gmlMap.put("polygonproperty", "gml:polygonProperty");
+	gmlMap.put("linestringproperty", "gml:lineStringProperty");
+	gmlMap.put("multipointproperty", "gml:multiPointProperty");
+	gmlMap.put("multilinestringproperty", "gml:multiLineStringProperty");
+	gmlMap.put("multipolygonproperty", "gml:multiPolygonProperty");
+	gmlMap.put("description", "gml:description");
+	gmlMap.put("name", "gml:name");
+    }
+
     /**
      * Constructor to set verbosity
      * @param verbose Sets level of indendation and documentation for response
@@ -377,13 +391,31 @@ public class GMLBuilder {
          * @param value Attribute value as string
          */ 
         public void write( String name, String value ) {            
-            finalResult.append(attribute1).append(name).append(attribute2).
+            if (value != null) {
+		String gmlName = (String)gmlMap.get(name);
+		if (gmlName != null) {
+		    name = gmlName;
+		}
+		finalResult.append(attribute1).append(name);
+		//TODO: handle nulls
+		//Figure out a way so strings do not have xs:nil
+		//prepended.  This is needed for gml:name, so it
+		//passes the test correctly.  Perhaps strings will
+		//naturally come out right?  Empty string is allowed for
+		//string, but integer and date need the xs:nil.
+		if (value.equals("")) {
+		    //should check attributeType for nillable.
+		    finalResult.append(" xs:nil=\"true\"");
+		}
+		finalResult.append(attribute2).
                 append(value).append(attribute3).append(name).
                 append(attribute4);
-        }
+	    } else {
+		
+	    }
         
+	}
     }
-        
     /**
      * Handles the geometry writing tasks for the main class.
      */
@@ -406,6 +438,8 @@ public class GMLBuilder {
 
 	private static final String GEOM_OFFSET = "\n        ";
 
+
+	
         /** XML fragment for any geometry type **/
         private String abstractGeometryStart1;        
         /** XML fragment for any geometry type **/
@@ -421,6 +455,8 @@ public class GMLBuilder {
         /** XML fragment for coord type **/
         private String coordEnd;
         
+	
+
         /** Internal representation of coordinate delimeter (',' for GML is 
          * default) **/
         private String coordinateDelimeter = ",";
@@ -451,6 +487,10 @@ public class GMLBuilder {
                                         String srs, String tagName) { 
             String geometryName = "";
             LOGGER.finest("checking type: " + geometry.toString());
+	    String gmlName = (String)gmlMap.get(tagName);
+	    if (gmlName != null) {
+		tagName = gmlName;
+	    }
 
             // set internal geometry representation
             if( geometry.equals(Point.class) ) {
