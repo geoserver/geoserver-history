@@ -57,7 +57,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </code></pre>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.4 2004/01/06 00:51:11 emperorkefka Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.5 2004/01/06 17:52:43 dmzwiers Exp $
  */
 public class XMLConfigReader {
 	/**
@@ -631,14 +631,17 @@ public class XMLConfigReader {
 			File parentDir = infoFile.getParentFile();
 			ft = loadFeaturePt2(featureElem);
 			ft.setDirName(parentDir.getName());
-try{
-			File pathToSchemaFile = new File(parentDir, "schema.xml");
-			LOGGER.finest("pathToSchema is " + pathToSchemaFile);
-			ft.setSchema(loadSchema(pathToSchemaFile));
-			LOGGER.finer("added featureType " + ft.getName());
-}catch(Exception e){
-	LOGGER.fine("error" + e);
-}
+			//attemp to load a schema
+			try{
+				File pathToSchemaFile = new File(parentDir, "schema.xml");
+				LOGGER.finest("pathToSchema is " + pathToSchemaFile);
+				ft.setSchema(loadSchema(pathToSchemaFile));
+				LOGGER.finer("added featureType " + ft.getName());
+			}catch(Exception e){
+				ft.setSchema("");
+				// prob means schema missing;
+				LOGGER.fine("error" + e);
+			}
 			
 			return ft;
 		}
@@ -894,7 +897,7 @@ try{
  * <p>
  * @see XMLConfigReader
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.1.2.4 2004/01/06 00:51:11 emperorkefka Exp $
+ * @version $Id: XMLConfigReader.java,v 1.1.2.5 2004/01/06 17:52:43 dmzwiers Exp $
  */
 class ReaderUtils{
 	/**
