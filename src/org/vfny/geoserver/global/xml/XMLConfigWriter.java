@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.24 2004/04/05 11:44:40 cholmesny Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.25 2004/04/05 23:50:01 dmzwiers Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -591,8 +591,8 @@ public class XMLConfigWriter {
         throws ConfigurationException {
         LOGGER.fine("In method storeFeatures");
 
+		// write them
         Iterator i = data.getFeaturesTypes().keySet().iterator();
-
         while (i.hasNext()) {
             String s = (String) i.next();
             FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) data.getFeaturesTypes()
@@ -608,6 +608,24 @@ public class XMLConfigWriter {
                 }
             }
         }
+        
+        // delete old ones that are not overwritten
+		File[] fa = dir.listFiles();
+		for(int j=0;j<fa.length;j++){
+			// find dir name
+			i = data.getFeaturesTypes().values().iterator();
+			FeatureTypeInfoDTO fti = null;
+			while(fti==null && i.hasNext()){
+				FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO)i.next();
+				if(ft.getDirName().equals(fa[j].getName())){
+					fti = ft;
+				}
+			}
+			if(fti == null){
+				//delete it
+				fa[j].delete();
+			}
+		}
     }
 
     /**
@@ -836,7 +854,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.24 2004/04/05 11:44:40 cholmesny Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.25 2004/04/05 23:50:01 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */

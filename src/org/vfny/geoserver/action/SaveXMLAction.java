@@ -111,6 +111,8 @@ public class SaveXMLAction extends ConfigAction {
     			throw new ServletException(e);
     		}
     	}
+    	// TODO add deletes of plug ins here
+    	
     	
     	i = testSuites.keySet().iterator();
     	while(i.hasNext()){
@@ -126,6 +128,7 @@ public class SaveXMLAction extends ConfigAction {
     			throw new ServletException(e);
     		}
     	}
+		// TODO add deletes of testSuites here
     	
     	getApplicationState( request ).notifiySaveXML();	
     	// We need to stash the current page?
