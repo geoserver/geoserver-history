@@ -16,6 +16,9 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
@@ -27,12 +30,29 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.2.2.3 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: WMSConfig.java,v 1.2.2.4 2004/01/07 22:48:13 emperorkefka Exp $
  */
 public class WMSConfig extends ServiceConfig{
 
 	private static final String WMS_VERSION = "1.1.1";
 	public static final String CONFIG_KEY = "Config.WMS";
+	
+	/**
+	 * This is a set of <code>dataStoreID.typeName</code> that is 
+	 * enabled for use with WMS.
+	 * <p>
+	 * You can use this information to bother DataConfig for the details such as:
+	 * </p>
+	 * <ul>
+	 * <li>Title</li>
+	 * <li>Abstract</li>
+	 * </ul>
+	 * <p>
+	 * Cool?
+	 * </p>
+	 */
+	private Set enabled = new TreeSet(); // keep sorted
+	
 	/**
 	 * WMS constructor.
 	 * <p>

@@ -12,18 +12,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.action.ConfigAction;
 
 /**
- * @author User
+ * @author rgould
  *
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WFSContentAction extends Action {
+public final class WFSContentAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
 		ActionForm form,
 		HttpServletRequest request,

@@ -19,6 +19,7 @@ package org.vfny.geoserver.config;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
@@ -37,9 +38,9 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @see DataSource
  * @see FeatureTypeInfo
  * @see StyleConfig 
- * @version $Id: CatalogConfig.java,v 1.3.2.3 2004/01/07 21:36:13 dmzwiers Exp $
+ * @version $Id: DataConfig.java,v 1.1.2.1 2004/01/07 22:48:13 emperorkefka Exp $
  */
-public class CatalogConfig implements DataStructure{
+public class DataConfig implements DataStructure{
 	
 	/**
 	 * A set of datastores and their names.
@@ -78,7 +79,7 @@ public class CatalogConfig implements DataStructure{
 	 * </p>
 	 * @see defaultSettings()
 	 */
-	public CatalogConfig(){
+	public DataConfig(){
 		dataStores = new HashMap();
 		nameSpaces = new HashMap();
 		styles = new HashMap();
@@ -94,7 +95,7 @@ public class CatalogConfig implements DataStructure{
 	 * </p>
 	 * @param c The catalog to copy.
 	 */
-	public CatalogConfig(CatalogConfig c){
+	public DataConfig(DataConfig c){
 		try{
 			dataStores = CloneLibrary.clone(c.getDataStores());
 		}catch(Exception e){
@@ -126,7 +127,7 @@ public class CatalogConfig implements DataStructure{
 	 * </p>
 	 * @param data The catalog to copy.
 	 */
-	public CatalogConfig(DataDTO data){
+	public DataConfig(DataDTO data){
 		Iterator i = null;
 		
 		i = data.getDataStores().keySet().iterator();
@@ -262,9 +263,23 @@ public class CatalogConfig implements DataStructure{
 	 * @return A copy of this Data
 	 */
 	public Object clone(){
-		return new CatalogConfig(this);
+		return new DataConfig(this);
 	}
 	
+	/**
+	 * Lookup FeatureTypeConfig for things like WMS.
+	 * 
+	 * @param key Key based on <code>dataStoreID.typeName</code>
+	 * @return FeatureTypeInfo or null if not found
+	 */
+	public FeatureTypeConfig lookupFeatureTypeConfig( String key ){
+		if( featuresTypes.containsKey( key ) ){
+			return (FeatureTypeConfig) featuresTypes.get( key );
+		}
+		else {
+			throw new NoSuchElementException("Could not find FeatureTypeConfig '"+key+"'." );
+		}
+	}
 	/**
 	 * getDataStores purpose.
 	 * <p>

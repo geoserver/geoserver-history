@@ -8,7 +8,7 @@ import java.net.URL;
 
 import javax.servlet.ServletContext;
 
-import org.vfny.geoserver.config.CatalogConfig;
+import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.config.WMSConfig;
@@ -42,8 +42,8 @@ import org.vfny.geoserver.config.WMSConfig;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ConfigAction.java,v 1.1.2.6 2004/01/07 21:36:13 dmzwiers Exp $
+ * @author $Author: emperorkefka $ (last modification)
+ * @version $Id: ConfigAction.java,v 1.1.2.7 2004/01/07 22:51:38 emperorkefka Exp $
  */
 public class ConfigAction extends GeoServerAction {
     
@@ -114,9 +114,9 @@ public class ConfigAction extends GeoServerAction {
      *
      * @return Configuration model for Catalog information.
      */
-    protected CatalogConfig getCatalogConfig() {
+    protected DataConfig getCatalogConfig() {
         ServletContext context = getServlet().getServletContext();
 
-        return (CatalogConfig) context.getAttribute("GeoServer.CatalogConfig");
+        return (DataConfig) context.getAttribute("GeoServer.CatalogConfig");
     }    
 }
