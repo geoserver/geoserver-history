@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Chris Holmes, TOPP
- * @version $Id: DispatcherHandler.java,v 1.4 2004/03/30 04:38:20 cholmesny Exp $
+ * @version $Id: DispatcherHandler.java,v 1.5 2004/07/15 21:13:12 jmacgill Exp $
  */
 public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
@@ -86,6 +86,8 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
                 this.requestType = Dispatcher.LOCK_REQUEST;
             } else if (localName.equals("GetMap")) {
                 this.requestType = Dispatcher.GET_MAP_REQUEST;
+            } else if (localName.equals("GetFeatureInfo")) {
+                this.requestType = Dispatcher.GET_FEATURE_INFO_REQUEST;
             } else {
                 this.requestType = Dispatcher.UNKNOWN;
             }

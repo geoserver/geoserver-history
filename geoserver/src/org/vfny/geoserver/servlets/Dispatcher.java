@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.12 2004/03/30 04:41:49 cholmesny Exp $
+ * @version $Id: Dispatcher.java,v 1.13 2004/07/15 21:13:12 jmacgill Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
@@ -59,6 +59,9 @@ public class Dispatcher extends HttpServlet {
 
     /** Map get feature with lock request type */
     public static final int GET_FEATURE_LOCK_REQUEST = 5;
+    
+    /** WMS get feature info request type */
+    public static final int GET_FEATURE_INFO_REQUEST = 6;
 
     /** int representation of a lock request type */
     public static final int LOCK_REQUEST = 6;
