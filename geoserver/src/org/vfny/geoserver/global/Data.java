@@ -53,7 +53,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: Data.java,v 1.13 2004/01/17 21:06:21 jive Exp $
+ * @version $Id: Data.java,v 1.14 2004/01/17 21:08:08 jive Exp $
  */
 public class Data extends GlobalLayerSupertype implements Catalog {
     /** for debugging */
@@ -233,14 +233,16 @@ public class Data extends GlobalLayerSupertype implements Catalog {
         //
         try {
             System.out.println("----DATASTORE STATUS CHECK----");
-            Map map=statusDataStores();
+            Map status=statusDataStores();
+            outputStatus( status );
         }
         catch (Throwable ignore ){
             //
         }
         try {
             System.out.println("----NAMESPACE STATUS CHECK----");
-            Map map=statusNamespaces();
+            Map status=statusNamespaces();
+            outputStatus( status );            
         }
         catch (Throwable ignore ){
             //
