@@ -262,7 +262,7 @@ public class RPNConverter
 	Term highTerm;
 	Term lowTerm;
 	//TODO: also split on a / of form 199906/200207
-	String[] dates = searchValue.split("\\s+");
+	String[] dates = searchValue.split("[\\s/]+");
 	boolean twoDates = false;
 	
 	if (dates.length > 1) { // = 2?  If more we just use first 2 dates
