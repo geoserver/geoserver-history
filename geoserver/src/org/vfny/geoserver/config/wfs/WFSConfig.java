@@ -27,7 +27,7 @@ import org.vfny.geoserver.config.ServiceConfig;
  * <p>
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.1.2.3 2004/01/03 00:19:20 dmzwiers Exp $
+ * @version $Id: WFSConfig.java,v 1.1.2.4 2004/01/05 18:09:35 dmzwiers Exp $
  */
 public class WFSConfig implements DataStructure{
 	//public static final String WFS_FOLDER = "wfs/1.0.0/";
@@ -39,7 +39,7 @@ public class WFSConfig implements DataStructure{
 	 * Constant when loaded. Describes where to find the service on the server.
 	 */
 	private String describeUrl;
-	
+	private boolean gmlPrefixing = false;
 	/**
 	 * The service parameters for this instance.
 	 */
@@ -73,6 +73,7 @@ public class WFSConfig implements DataStructure{
 		}
 		describeUrl = w.getDescribeUrl();
 		service = (ServiceConfig)w.getService().clone();
+		gmlPrefixing = w.isGmlPrefixing();
 	}
 
 	/**
@@ -149,4 +150,26 @@ public class WFSConfig implements DataStructure{
 			service = new ServiceConfig();
 		this.service = service;
 	}
+	/**
+	 * isGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @return
+	 */
+	public boolean isGmlPrefixing() {
+		return gmlPrefixing;
+	}
+
+	/**
+	 * setGmlPrefixing purpose.
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * @param b
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
+
 }
