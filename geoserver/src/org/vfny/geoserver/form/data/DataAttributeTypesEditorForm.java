@@ -34,7 +34,6 @@ import org.vfny.geoserver.global.xml.GMLUtils;
  */
 public class DataAttributeTypesEditorForm extends ActionForm {
 	
-	private boolean ref;
 	private boolean nillible;
 	private String minOccurs;
 	private String maxOccurs;
@@ -62,11 +61,6 @@ public class DataAttributeTypesEditorForm extends ActionForm {
 		selectedType = config.getType();
 		fragment = config.getFragment();
         System.out.println("Run Level 5");
-		if (selectedType.equals(AttributeTypeInfoConfig.TYPE_FRAGMENT)) {
-			ref = false;
-		} else {
-			ref = true;
-		}
         System.out.println("Run Level 6");
 	}
 	
@@ -143,20 +137,6 @@ public class DataAttributeTypesEditorForm extends ActionForm {
 	 */
 	public void setNillible(boolean nillible) {
 		this.nillible = nillible;
-	}
-
-	/**
-	 * @return Returns the ref.
-	 */
-	public boolean isRef() {
-		return ref;
-	}
-
-	/**
-	 * @param ref The ref to set.
-	 */
-	public void setRef(boolean ref) {
-		this.ref = ref;
 	}
 
 	/**

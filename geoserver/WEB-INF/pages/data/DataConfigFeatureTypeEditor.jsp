@@ -45,6 +45,11 @@
 	</td><td>
 		<html:textarea property="_abstract" cols="60" rows="6"/>
 	</td></tr>
+	<tr><td align="right" valign="top">
+		<bean:message key="label.default"/>:
+	</td><td valign="top" align="left">
+		<html:checkbox property="_default"/>
+	</td></tr>
 
 	<tr><td align="right">&nbsp;</td><td colspan=2><html:submit property="action" value="submit"/><html:reset/></td></tr>						
 	
