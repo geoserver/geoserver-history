@@ -166,6 +166,7 @@ public class GeoSearchTask extends SearchTask
 	//REVISIT: Implement the use of timeout, possibly a timer, if
 	//time is exceeded then throw a new TimeoutExceededException.
 	//Not that necessary now, as searches should be pretty quick.
+	Searcher searcher = null;
 	try {
 
 	  Vector databases = resolveDBs(q.collections);
@@ -173,7 +174,7 @@ public class GeoSearchTask extends SearchTask
 	  //can only deal with one database now, so just get the first
 	  //path string from the collections vector.
 	  LOGGER.finer("using database at " + databases.get(0).toString());
-	  Searcher searcher = new IndexSearcher(databases.get(0).toString());
+	  searcher = new IndexSearcher(databases.get(0).toString());
 	  // Analyzer analyzer = new StopAnalyzer();
 
 	  LOGGER.finer("Evaluating Query: " + q.query); 
@@ -197,13 +198,21 @@ public class GeoSearchTask extends SearchTask
 	      }
 	      break;
 	  }
-      } catch (java.io.IOException e) {
-	  LOGGER.warning("Io except " + e.getMessage());
+	  setFragmentCount(hits.length());
+	  setTaskStatusCode(TASK_COMPLETE);
+	} catch (java.io.IOException e) {
+	    LOGGER.warning("Io except " + e.getMessage());
 	    throw new SearchException("could not complete search" + 
-				      "...server error");
-      }	
-      setFragmentCount(hits.length());
-      setTaskStatusCode(TASK_COMPLETE);
+				      "...server error: " + e.getMessage());
+	} finally {	
+	    try {
+		searcher.close();
+	    }  catch (java.io.IOException e) {
+		LOGGER.warning("Io except " + e.getMessage());
+		throw new SearchException("could not close backend searcher" + 
+ 				       "...server error: " + e.getMessage());
+	    }
+	}
       return(getTaskStatusCode());         
   }
  
@@ -309,6 +318,7 @@ public class GeoSearchTask extends SearchTask
 		int len = (int)file.length();
 		byte[] retArr = new byte[len];
 		file.read(retArr);
+		file.close();
 		retStr =  (new String(retArr));		
 	    } else if (setname.equals(GeoProfile.SUMMARY_SET)) {
 		GeoSummary summary = new GeoSummary(hit, attrMap);
@@ -353,13 +363,14 @@ public class GeoSearchTask extends SearchTask
       try {
       org.apache.lucene.document.Document hit = hits.doc((n - 1));
       filename = hit.get("path");
-
+      FileInputStream fis = new FileInputStream(filename);
       if (setname.equals(GeoProfile.FULL_SET)){
-	  InputSource in = new InputSource(new FileInputStream(filename));
+	  InputSource in = new InputSource(fis);
 	  DocumentBuilderFactory dfactory = 
 	      DocumentBuilderFactory.newInstance();
 	  dfactory.setNamespaceAware(true);
 	  retval = dfactory.newDocumentBuilder().parse(in);
+	  fis.close();
       } else if (setname.equals(GeoProfile.SUMMARY_SET)) {
 	  GeoSummary summary = new GeoSummary(hit, attrMap);
 	  retval = summary.getXmlSummary();
@@ -379,7 +390,7 @@ public class GeoSearchTask extends SearchTask
       } catch (org.xml.sax.SAXException se) {
 	  LOGGER.warning("problems parsing xml file at " + 
 			 filename + " :" + se);
-      }
+      } 
       return retval;
   }
 
@@ -437,35 +448,6 @@ public class GeoSearchTask extends SearchTask
       return null;
   }
 
-    /**    private Properties getProperties(File propFile) {
-	//add defaults for any field?
-	Properties propertyList = null;
-	try {
-	    FileInputStream fis = new FileInputStream(propFile);
-	    propertyList = new Properties();
-	    propertyList.load(fis);
-	    return propertyList;
-	} catch (FileNotFoundException e) {
-	    LOGGER.warning("File not found: " + e.getMessage());
-	} catch (IOException e) {
-	    LOGGER.warning("IO exception: " + e.getMessage());
-	}
-    
-    return propertyList;
-    }*/
-
-
-
-
-
-    /**
-     * Creates the Attribute Map hashtable given the path
-     * to the props file.  
-     *
-     * @param pathToPropFile the location of the mapping file.
-     * @return the mapping of attribute numbers to the attribute xpaths.
-     */
-    
 
 // needed to implement  InformationFragmentSource
     public InformationFragment getFragment(String handle)
