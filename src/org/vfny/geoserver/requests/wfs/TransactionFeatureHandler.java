@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
@@ -17,6 +19,7 @@ import org.geotools.gml.GMLFilterFeature;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.requests.Request;
+import org.vfny.geoserver.requests.Requests;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -27,7 +30,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * Uses SAX to extact a Transactional request from and incoming XML stream.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionFeatureHandler.java,v 1.10 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id: TransactionFeatureHandler.java,v 1.11 2004/02/13 01:07:08 dmzwiers Exp $
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
@@ -64,10 +67,10 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * @param parent The parent of this filter.
      * @param r DOCUMENT ME!
      */
-    public TransactionFeatureHandler(TransactionFilterHandler parent, Request r) {
+    public TransactionFeatureHandler(TransactionFilterHandler parent, HttpServletRequest r) {
         super(parent);
         this.parent = parent;
-        catalog = r.getWFS().getData();
+        catalog = Requests.getWFS(r).getData();
     }
 
     /**

@@ -7,6 +7,7 @@ package org.vfny.geoserver.requests.readers.wfs;
 import java.io.IOException;
 import java.io.Reader;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -29,7 +30,7 @@ import org.xml.sax.helpers.ParserAdapter;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: TransactionXmlReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
+ * @version $Id: TransactionXmlReader.java,v 1.7 2004/02/13 01:07:08 dmzwiers Exp $
  */
 public class TransactionXmlReader extends XmlRequestReader {
     /**
@@ -41,7 +42,7 @@ public class TransactionXmlReader extends XmlRequestReader {
      *
      * @throws WfsTransactionException For any problems reading the request.
      */
-    public Request read(Reader reader) throws WfsTransactionException {
+    public Request read(Reader reader, HttpServletRequest req) throws WfsTransactionException {
         // translate string into a proper SAX input source
         InputSource requestSource = new InputSource(reader);
 
@@ -50,7 +51,7 @@ public class TransactionXmlReader extends XmlRequestReader {
         TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler,
                 null);
         TransactionFeatureHandler featureParser = new TransactionFeatureHandler(filterParser,
-                contentHandler.getRequest());
+                req);
         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(featureParser);
         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);
 

@@ -7,6 +7,7 @@ package org.vfny.geoserver.requests.readers.wms;
 import java.io.IOException;
 import java.io.Reader;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -24,7 +25,7 @@ import org.xml.sax.helpers.ParserAdapter;
  * reads a WMS GetCapabilities request from an XML stream
  *
  * @author Gabriel Roldán
- * @version $Id: CapabilitiesXmlReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
+ * @version $Id: CapabilitiesXmlReader.java,v 1.7 2004/02/13 01:07:08 dmzwiers Exp $
  *
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */
@@ -38,7 +39,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
      *
      * @throws WmsException For any problems reading the request
      */
-    public Request read(Reader reader) throws WmsException {
+    public Request read(Reader reader, HttpServletRequest req) throws WmsException {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers

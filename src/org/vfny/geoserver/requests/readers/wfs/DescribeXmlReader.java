@@ -7,6 +7,7 @@ package org.vfny.geoserver.requests.readers.wfs;
 import java.io.IOException;
 import java.io.Reader;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -43,7 +44,7 @@ public class DescribeXmlReader extends XmlRequestReader {
      *
      * @throws WfsException DOCUMENT ME!
      */
-    public Request read(Reader reader) throws WfsException {
+    public Request read(Reader reader, HttpServletRequest req) throws WfsException {
         /** create a describe feature type request class to return */
         InputSource requestSource = new InputSource(reader);
 

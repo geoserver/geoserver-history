@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -32,7 +33,7 @@ import org.xml.sax.helpers.ParserAdapter;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldán
- * @version $Id: XmlRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
+ * @version $Id: XmlRequestReader.java,v 1.7 2004/02/13 01:07:09 dmzwiers Exp $
  */
 public abstract class XmlRequestReader {
     /** Class logger */
@@ -48,7 +49,7 @@ public abstract class XmlRequestReader {
      *
      * @throws ServiceException DOCUMENT ME!
      */
-    public abstract Request read(Reader reader) throws ServiceException;
+    public abstract Request read(Reader reader, HttpServletRequest req) throws ServiceException;
 
     /**
      * Reads the Filter XML request into a geotools Feature object.
