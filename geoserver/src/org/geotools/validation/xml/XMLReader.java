@@ -4,18 +4,14 @@
  */
 package org.geotools.validation.xml;
 
-import org.geotools.validation.dto.PlugInDTO;
-import org.geotools.validation.dto.TestDTO;
-import org.geotools.validation.dto.TestSuiteDTO;
+import org.geotools.validation.dto.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -23,8 +19,8 @@ import javax.xml.parsers.ParserConfigurationException;
  * Load validation configuration from XML.
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLReader.java,v 1.7 2004/01/21 18:43:39 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: XMLReader.java,v 1.8 2004/01/31 00:24:06 jive Exp $
  */
 public class XMLReader {
     /**
@@ -103,34 +99,14 @@ public class XMLReader {
 
                 for (int i = 0; i < nl.getLength(); i++) {
                     elem = (Element) nl.item(i);
-
-                    String key = "";
-
-                    try {
-                        key = ReaderUtils.getChildText(elem, "name", true);
-                    } catch (SAXException e) {
-                        throw new ValidationException(
-                            "Error reading argument for " + dto.getName()
-                            + " :name required");
-                    }
-
-                    NodeList nl2 = elem.getElementsByTagName("*");
-
-                    if (nl2.getLength() != 2) {
-                        throw new ValidationException("Invalid Argument \""
-                            + dto.getName() + "\" for argument \"" + key + "\"");
-                    }
-
-                    if (((Element) nl2.item(0)).getTagName().equals("name")) {
-                        elem = (Element) nl2.item(1);
-                    } else {
-                        elem = (Element) nl2.item(0);
-                    }
-
-                    // elem whould have the value now
-                    Object val = ArgHelper.getArgumentInstance(elem.getTagName()
-                                                                   .trim(), elem);
-                    m.put(key, val);
+                    ArgumentDTO adto = null;
+                	try{
+                		adto = loadArg(elem,dto);
+                	}catch(ValidationException e){
+                		e.printStackTrace();
+                		// error
+                	}
+                    m.put(adto.getName(),adto);
                 }
             }
         } catch (IOException ioe) {
@@ -229,7 +205,7 @@ public class XMLReader {
                     e);
             }
 
-            List l = new LinkedList();
+            Map l = new HashMap();
             dto.setTests(l);
 
             NodeList nl = elem.getElementsByTagName("test");
@@ -240,7 +216,8 @@ public class XMLReader {
             } else {
                 for (int i = 0; i < nl.getLength(); i++) {
                     try {
-                        l.add(loadTestDTO((Element) nl.item(i), plugIns));
+                    	TestDTO t = loadTestDTO((Element) nl.item(i), plugIns);
+                        l.put(t.getName(),t);
                     } catch (ValidationException e) {
                         throw new ValidationException(
                             "An error occured loading a test in "
@@ -294,6 +271,8 @@ public class XMLReader {
         try {
             String pluginName = ReaderUtils.getChildText(elem, "plugin", true);
             dto.setPlugIn((PlugInDTO) plugIns.get(pluginName));
+            if(dto.getPlugIn()==null)
+            	throw new NullPointerException("Error - should have a plugin here");
         } catch (SAXException e) {
             throw new ValidationException("Error reading the plugin for the "
                 + dto.getName() + " test case.", e);
@@ -307,44 +286,184 @@ public class XMLReader {
 
             for (int i = 0; i < nl.getLength(); i++) {
                 elem = (Element) nl.item(i);
-
-                String key = "";
-
-                try {
-                    key = ReaderUtils.getChildText(elem, "name", true);
-                } catch (SAXException e) {
-                    throw new ValidationException("Error reading argument for "
-                        + dto.getName() + " :name required");
+                ArgumentDTO adto = null;
+                try{
+                	adto = loadArg(elem,dto.getPlugIn());
+                }catch(ValidationException e){
+                	e.printStackTrace();
+                	// error
                 }
-
-                NodeList nl2 = elem.getChildNodes();
-                Element name = null;
-                Element value = null;
-
-                for (int j = 0; j < nl2.getLength(); j++) {
-                    if (nl2.item(j).getNodeType() == Node.ELEMENT_NODE) {
-                        elem = (Element) nl2.item(j);
-
-                        if (elem.getTagName().trim().equals("name")) {
-                            name = elem;
-                        } else {
-                            value = elem;
-                        }
-                    }
-                }
-
-                if ((name == null) || (value == null)) {
-                    throw new ValidationException("Invalid Argument \""
-                        + dto.getName() + "\" for argument \"" + key + "\"");
-                }
-
-                // elem whould have the value now
-                Object val = ArgHelper.getArgumentInstance(elem.getTagName()
-                                                               .trim(), elem);
-                m.put(key, val);
+                if(adto == null || !adto.isFinal())
+                m.put(adto.getName(),adto);
             }
         }
 
         return dto;
     }
+    
+    private static ArgumentDTO loadArg(Element elem, PlugInDTO dto) throws ValidationException{
+    	String key = "";
+    	boolean _fixed = false;
+
+    	try {
+    		_fixed = ReaderUtils.getBooleanAttribute(elem,"final",false);
+    		key = ReaderUtils.getChildText(elem, "name", true);
+    	} catch (SAXException e) {
+    		throw new ValidationException("Error reading argument for "
+    				+ dto.getName() + " :name required");
+    	}
+
+    	NodeList nl2 = elem.getChildNodes();
+    	Element value = null;
+
+    	for (int j = 0; j < nl2.getLength(); j++) {
+    		if (nl2.item(j).getNodeType() == Node.ELEMENT_NODE) {
+    			elem = (Element) nl2.item(j);
+
+    			if (elem.getTagName().trim().equals("name")) {
+    				value = elem;
+    			} else {
+    				value = elem;
+    			}
+    		}
+    	}
+
+    	if (value == null) {
+    		throw new ValidationException("Invalid Argument \""
+    				+ dto.getName() + "\" for argument \"" + key + "\"");
+    	}
+
+    	ArgumentDTO adto = (ArgumentDTO)dto.getArgs().get(key);
+    	// elem whould have the value now
+    	Object val = ArgHelper.getArgumentInstance(value.getTagName().trim(), value);
+    	if(val==null)
+    		throw new ValidationException("Didn't find a real value for argument "+key);
+    	if(adto == null)
+    		adto = new ArgumentDTO();
+    	else
+    		adto = (ArgumentDTO)adto.clone();
+    		
+    	adto.setName(key);
+    	adto.setValue(val);
+    	adto.setFinal(_fixed);
+    	return adto;
+    }
+
+	/**
+	 * loadPlugIns purpose.
+	 * 
+	 * <p>
+	 * Loads all the plugins in the directory
+	 * </p>
+	 *
+	 * @param plugInDir
+	 *
+	 * @return
+	 *
+	 * @throws ValidationException DOCUMENT ME!
+	 */
+	public static Map loadPlugIns(File plugInDir) throws ValidationException {
+	    Map r = null;
+	
+	    try {
+	        plugInDir = ReaderUtils.initFile(plugInDir, true);
+	
+	        File[] fileList = plugInDir.listFiles();
+	        r = new HashMap();
+	
+	        for (int i = 0; i < fileList.length; i++) {
+	            if (fileList[i].canWrite() && fileList[i].isFile()) {
+	                FileReader fr = new FileReader(fileList[i]);
+	                PlugInDTO dto = XMLReader.readPlugIn(fr);
+	                r.put(dto.getName(), dto);
+	            }
+	        }
+	    } catch (IOException e) {
+	        throw new ValidationException("An io error occured while loading the plugin's",
+	            e);
+	    }
+	
+	    return r;
+	}
+
+	/**
+	 * loadValidations purpose.
+	 * 
+	 * <p>
+	 * Loads all the validations in the directory
+	 * </p>
+	 *
+	 * @param validationDir
+	 * @param plugInDTOs Already loaded list of plug-ins to link.
+	 *
+	 * @return
+	 *
+	 * @throws ValidationException DOCUMENT ME!
+	 */
+	public static Map loadValidations(File validationDir, Map plugInDTOs)
+	    throws ValidationException {
+	    Map r = null;
+	
+	    try {
+	        validationDir = ReaderUtils.initFile(validationDir, true);
+	
+	        File[] fileList = validationDir.listFiles();
+	        r = new HashMap();
+	
+	        for (int i = 0; i < fileList.length; i++) {
+	            if (fileList[i].canWrite() && fileList[i].isFile()) {
+	                FileReader fr = new FileReader(fileList[i]);
+	                TestSuiteDTO dto = XMLReader.readTestSuite(fr, plugInDTOs);
+	                r.put(dto.getName(), dto);
+	            }
+	        }
+	    } catch (IOException e) {
+	        throw new ValidationException("An io error occured while loading the plugin's",
+	            e);
+	    }
+	
+	    return r;
+	}
+	
+	public static ArgumentDTO readArgument(Reader r)throws ValidationException{
+		Element elem = null;
+		try{
+			elem =ReaderUtils.loadConfig(r);
+		}catch(Exception e){
+			throw new ValidationException("An io error occured while loading the plugin's",
+					e);
+		}
+		boolean _fixed = false;
+		String key = "";
+
+		try {
+			_fixed = ReaderUtils.getBooleanAttribute(elem,"final",false);
+			key = ReaderUtils.getChildText(elem, "name", true);
+		} catch (SAXException e) {
+			throw new ValidationException(
+					"Error reading argument :name required");
+		}
+
+		NodeList nl2 = elem.getElementsByTagName("*");
+
+		if (nl2.getLength() != 2) {
+			throw new ValidationException("Invalid Argument for argument \"" + key + "\"");
+		}
+
+		if (((Element) nl2.item(0)).getTagName().equals("name")) {
+			elem = (Element) nl2.item(1);
+		} else {
+			elem = (Element) nl2.item(0);
+		}
+
+		// elem whould have the value now
+		Object val = ArgHelper.getArgumentInstance(elem.getTagName()
+				.trim(), elem);
+		ArgumentDTO adto = new ArgumentDTO();
+		adto.setName(key);
+		adto.setValue(val);
+		adto.setFinal(_fixed);
+		
+		return adto;
+	}
 }

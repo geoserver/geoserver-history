@@ -9,7 +9,7 @@ package org.geotools.validation.xml;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationException.java,v 1.3 2004/01/21 01:26:54 jive Exp $
+ * @version $Id: ValidationException.java,v 1.4 2004/01/31 00:24:06 jive Exp $
  */
 public class ValidationException extends Exception {
     public ValidationException() {

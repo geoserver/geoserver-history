@@ -12,19 +12,36 @@ import org.geotools.feature.FeatureType;
  * Defined a per Feature validation test.
  * 
  * <p>
- * FeatureValidation PlugIns are used to check geospatial information for
- * internal consistency.  Each ValidationPlugIn is very specific in nature: it
- * performs one test extermly well.  This simplifies design decisions,
- * documenation configuration and use.
+ * Each ValidationPlugIn is very specific in nature: it performs one test
+ * extermly well.  This simplifies design decisions, documenation
+ * configuration and use.
  * </p>
  * 
  * <p>
  * Following the lead the excelent design work in the JUnit testing framework
  * validation results are collected by a ValidationResults object. This
  * interface for the ValidationResults object also allows it to collect
- * warning information.  The PlugIn is also required to supply some metadata
- * to aid in its deployment, scripting, logging and execution and error
- * recovery.
+ * warning information.
+ * </p>
+ * 
+ * <p>
+ * The PlugIn is also required to supply some metadata to aid in its
+ * deployment, scripting, logging and execution and error recovery:
+ * 
+ * <ul>
+ * <li>
+ * name: user's name of validation test
+ * </li>
+ * <li>
+ * description: user's description of validation test
+ * </li>
+ * <li>
+ * priority: used to schedule validation test
+ * </li>
+ * <li>
+ * typeNames: used to connect validaiton test to transaction opperation
+ * </li>
+ * </ul>
  * </p>
  * 
  * <p>
@@ -41,7 +58,9 @@ import org.geotools.feature.FeatureType;
  * bothering the Database)
  * </li>
  * </ul>
+ * </p>
  * 
+ * <p>
  * Example Use (feature: id=1, name="foo", geom=linestring):
  * <pre><code>
  * RangeFeatureValidation test = new RangeFeatureValidation();
@@ -55,7 +74,7 @@ import org.geotools.feature.FeatureType;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @version $Id: FeatureValidation.java,v 1.6 2004/01/21 01:26:54 jive Exp $
+ * @version $Id: FeatureValidation.java,v 1.7 2004/01/31 00:24:05 jive Exp $
  */
 public interface FeatureValidation extends Validation {
     /**

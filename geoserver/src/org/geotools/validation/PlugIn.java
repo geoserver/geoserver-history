@@ -2,9 +2,10 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geotools.validation.xml;
+package org.geotools.validation;
 
-import org.geotools.validation.Validation;
+import org.geotools.validation.dto.ArgumentDTO;
+import org.geotools.validation.xml.ValidationException;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -54,14 +55,31 @@ class PlugIn {
             throw new ValidationException("Could not use the '" + name
                 + "' plugIn:" + type);
         }
-
-        defaults = config;
+        if(config != null){
+        	defaults = transArgs(config);
+        }
         plugInName = name;
         plugInDescription = description;
 
         propertyMap = propertyMap(beanInfo);
     }
 
+    private Map transArgs(Map config){
+
+    	Map defaults = new HashMap();
+    	Iterator i = config.keySet().iterator();
+    	while(i.hasNext()){
+    		String key = (String)i.next();
+    		Object o = config.get(key);
+    		if(o instanceof ArgumentDTO){
+    			defaults.put(key,((ArgumentDTO)o).getValue());
+    		}else{
+    			defaults.put(key,o);
+    		}
+    	}
+    	return defaults;
+    }
+    
     protected PropertyDescriptor propertyInfo(String name) {
         return (PropertyDescriptor) propertyMap.get(name);
     }
@@ -131,7 +149,7 @@ class PlugIn {
         validate.setName(name);
         validate.setDescription(description);
         configure(validate, defaults);
-        configure(validate, args);
+        configure(validate, transArgs(args));
 
         return validate;
     }
@@ -147,12 +165,10 @@ class PlugIn {
         for (Iterator i = config.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             property = propertyInfo((String) entry.getKey());
-
             if (property == null) {
                 // error here
                 continue;
             }
-
             try {
                 property.getWriteMethod().invoke(bean,
                     new Object[] { entry.getValue() });

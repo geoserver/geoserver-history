@@ -9,8 +9,10 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.validation.attributes.UniqueFIDIntegrityValidation;
-import org.geotools.validation.spatial.IsValidGeometryFeatureValidation;
+import org.geotools.validation.attributes.UniqueFIDValidation;
+import org.geotools.validation.dto.*;
+import org.geotools.validation.spatial.IsValidGeometryValidation;
+import org.geotools.validation.xml.ValidationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,7 +83,7 @@ import java.util.Set;
  *
  * @author bowens, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationProcessor.java,v 1.5 2004/01/21 01:26:54 jive Exp $
+ * @version $Id: ValidationProcessor.java,v 1.6 2004/01/31 00:24:05 jive Exp $
  */
 public class ValidationProcessor {
     // These are no longer used for Integrity Validation tests
@@ -111,19 +113,114 @@ public class ValidationProcessor {
      * ValidationProcessor constructor.
      * 
      * <p>
-     * This constructor initializes several tests if true is passed into it.
-     * These tests are used right now for debugging until we hook up the
-     * plugIn loader.
+     * Builds a ValidationProcessor with the DTO provided.
      * </p>
      *
-     * @param testRun Set to TRUE if you want pre-defined tests set up.
+     * @param testSuites Map a map of names -> TestSuiteDTO objects
+     * @param plugIns Map a map of names -> PlugInDTO objects
      */
-    public ValidationProcessor(boolean testRun) {
+    public ValidationProcessor(Map testSuites, Map plugIns) {
         featureLookup = new HashMap();
         integrityLookup = new HashMap();
 
-        if (testRun) {
-            testInit();
+        // TODO this method body
+        // step 1 make a list required plug-ins
+        Set plugInNames = new HashSet();
+        Iterator i = testSuites.keySet().iterator();
+
+        while (i.hasNext()) {
+            TestSuiteDTO dto = (TestSuiteDTO) testSuites.get(i.next());
+            Iterator j = dto.getTests().keySet().iterator();
+
+            while (j.hasNext()) {
+                TestDTO tdto = (TestDTO) dto.getTests().get(j.next());
+                plugInNames.add(tdto.getPlugIn().getName());
+            }
+        }
+
+        // step 2 configure plug-ins with defaults
+        Map defaultPlugIns = new HashMap(plugInNames.size());
+        i = plugInNames.iterator();
+
+        while (i.hasNext()) {
+            String plugInName = (String) i.next();
+            PlugInDTO dto = (PlugInDTO) plugIns.get(plugInName);
+            Class plugInClass = null;
+
+            try {
+                plugInClass = Class.forName(dto.getClassName());
+            } catch (ClassNotFoundException e) {
+                //Error, using default.
+            	e.printStackTrace();
+            }
+
+            if (plugInClass == null) {
+                plugInClass = Validation.class;
+            }
+
+            Map plugInArgs = dto.getArgs();
+
+            if (plugInArgs == null) {
+                plugInArgs = new HashMap();
+            }
+
+            try {
+                org.geotools.validation.PlugIn plugIn = new org.geotools.validation.PlugIn(plugInName,
+                        plugInClass, dto.getDescription(), plugInArgs);
+                defaultPlugIns.put(plugInName, plugIn);
+            } catch (ValidationException e) {
+                e.printStackTrace();
+
+                //error should log here
+                continue;
+            }
+        }
+
+        // step 3 configure plug-ins with tests + add to processor
+        i = testSuites.keySet().iterator();
+
+        while (i.hasNext()) {
+            TestSuiteDTO tdto = (TestSuiteDTO) testSuites.get(i.next());
+            Iterator j = tdto.getTests().keySet().iterator();
+
+            while (j.hasNext()) {
+                TestDTO dto = (TestDTO) tdto.getTests().get(j.next());
+
+                // deal with test
+                Map testArgs = dto.getArgs();
+
+                if (testArgs == null) {
+                    testArgs = new HashMap();
+                }else{
+                	Map m = new HashMap();
+                	Iterator k = testArgs.keySet().iterator();
+                	while(k.hasNext()){
+                		ArgumentDTO adto = (ArgumentDTO)testArgs.get(k.next());
+                		m.put(adto.getName(),adto.getValue());
+                	}
+                	testArgs = m;
+                }
+
+                try {
+                    org.geotools.validation.PlugIn plugIn = (org.geotools.validation.PlugIn) defaultPlugIns
+                        .get(dto.getPlugIn().getName());
+                    Validation validation = plugIn.createValidation(dto.getName(),
+                            dto.getDescription(), testArgs);
+
+                    if (validation instanceof FeatureValidation) {
+                        addValidation((FeatureValidation) validation);
+                    }
+
+                    if (validation instanceof IntegrityValidation) {
+                        addValidation((IntegrityValidation) validation);
+                    }
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+
+                    //error should log here
+                    continue;
+                }
+            }
         }
     }
 
@@ -136,24 +233,24 @@ public class ValidationProcessor {
      * purpose of this method is to set up test examples.
      * </p>
      */
-    private void testInit() {
+    /*private void testInit() {
         // create a feature validation tests
-        IsValidGeometryFeatureValidation isValidFV = new IsValidGeometryFeatureValidation("isValidALL",
-                "Tests to see if a geometry is valid", Validation.ALL);
-        IsValidGeometryFeatureValidation isValidFV_roads = new IsValidGeometryFeatureValidation("isValidRoads",
-                "Tests to see if a geometry is valid", new String[] { "road" });
+        IsValidGeometryValidation isValidFV = new IsValidGeometryValidation("isValidALL",
+                "Tests to see if a geometry is valid");
+        IsValidGeometryValidation isValidFV_roads = new IsValidGeometryValidation("isValidRoads",
+                "Tests to see if a geometry is valid");
 
         // add them to the featureLookup map
         addToFVLookup(isValidFV);
         addToFVLookup(isValidFV_roads);
 
         // create integrity validation tests
-        UniqueFIDIntegrityValidation uniqueFID = new UniqueFIDIntegrityValidation("uniqueFID",
+        UniqueFIDValidation uniqueFID = new UniqueFIDValidation("uniqueFID",
                 "Checks if each feature has a unique ID", Validation.ALL, "FID");
-        UniqueFIDIntegrityValidation uniqueFID_rivers = new UniqueFIDIntegrityValidation("uniqueFID_rivers",
+        UniqueFIDValidation uniqueFID_rivers = new UniqueFIDValidation("uniqueFID_rivers",
                 "Checks if each feature has a unique ID",
                 new String[] { "river" }, "FID");
-        UniqueFIDIntegrityValidation uniqueFID_road = new UniqueFIDIntegrityValidation("uniqueFID_road",
+        UniqueFIDValidation uniqueFID_road = new UniqueFIDValidation("uniqueFID_road",
                 "Checks if each feature has a unique ID",
                 new String[] { "road" }, "FID");
 
@@ -161,7 +258,7 @@ public class ValidationProcessor {
         addToIVLookup(uniqueFID);
         addToIVLookup(uniqueFID_rivers);
         addToIVLookup(uniqueFID_road);
-    }
+    }*/
 
     /**
      * addToLookup
@@ -175,7 +272,7 @@ public class ValidationProcessor {
      * @param validation
      */
     private void addToFVLookup(FeatureValidation validation) {
-        String[] featureTypeList = validation.getTypeNames();
+        String[] featureTypeList = validation.getTypeRefs();
 
         if (featureTypeList == Validation.ALL) // if null (ALL)
          {
@@ -214,7 +311,7 @@ public class ValidationProcessor {
      * @param validation
      */
     private void addToIVLookup(IntegrityValidation validation) {
-        String[] integrityTypeList = validation.getTypeNames();
+        String[] integrityTypeList = validation.getTypeRefs();
 
         if (integrityTypeList == Validation.ALL) // if null (ALL)
          {
@@ -284,7 +381,7 @@ public class ValidationProcessor {
         if (validations != null) {
             for (int i = 0; i < validations.size(); i++) // for each validation
              {
-                String[] types = ((Validation) validations.get(i)).getTypeNames();
+                String[] types = ((Validation) validations.get(i)).getTypeRefs();
 
                 for (int j = 0; j < types.length; j++) // for each FeatureTypeInfo
 

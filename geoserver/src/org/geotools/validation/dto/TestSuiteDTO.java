@@ -11,8 +11,7 @@
 package org.geotools.validation.dto;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -23,8 +22,8 @@ import java.util.List;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestSuiteDTO.java,v 1.5 2004/01/22 23:22:48 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: TestSuiteDTO.java,v 1.6 2004/01/31 00:24:08 jive Exp $
  */
 public class TestSuiteDTO {
     /** the test suite name */
@@ -34,7 +33,7 @@ public class TestSuiteDTO {
     private String description;
 
     /** the list of tests */
-    private List tests;
+    private Map tests;
 
     /**
      * TestSuiteConfig constructor.
@@ -58,13 +57,13 @@ public class TestSuiteDTO {
     public TestSuiteDTO(TestSuiteDTO ts) {
         name = ts.getName();
         description = ts.getDescription();
-        tests = new LinkedList();
+        tests = new HashMap();
 
-        Iterator i = ts.getTests().iterator();
+        Iterator i = ts.getTests().keySet().iterator();
 
         while (i.hasNext()) {
-            TestDTO t = (TestDTO) i.next();
-            tests.add(new TestDTO(t));
+            TestDTO t = (TestDTO) ts.getTests().get(i.next());
+            tests.put(t.getName(),new TestDTO(t));
         }
     }
 
@@ -178,7 +177,7 @@ public class TestSuiteDTO {
      *
      * @return Returns the tests.
      */
-    public List getTests() {
+    public Map getTests() {
         return tests;
     }
 
@@ -187,7 +186,7 @@ public class TestSuiteDTO {
      *
      * @param tests The tests to set.
      */
-    public void setTests(List tests) {
+    public void setTests(Map tests) {
         this.tests = tests;
     }
 }

@@ -6,122 +6,137 @@
  */
 package org.geotools.validation.xml;
 
-import java.io.*;
-import java.util.*;
-import org.geotools.validation.dto.*;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.geotools.validation.dto.ArgumentDTO;
+import org.geotools.validation.dto.PlugInDTO;
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
+
 /**
  * XMLWriter purpose.
  * <p>
- * Static class used to write DTO objects to XML.
+ * Description of XMLWriter ...
  * </p>
  * 
+ * <p>
+ * Capabilities:
+ * </p>
+ * <ul>
+ * <li>
+ * Feature: description
+ * </li>
+ * </ul>
+ * <p>
+ * Example Use:
+ * </p>
+ * <pre><code>
+ * XMLWriter x = new XMLWriter(...);
+ * </code></pre>
+ * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLWriter.java,v 1.2 2004/01/21 21:51:45 dmzwiers Exp $
+ * @author $Author: jive $ (last modification)
+ * @version $Id: XMLWriter.java,v 1.3 2004/01/31 00:24:06 jive Exp $
  */
 public class XMLWriter {
-	
-	/**
-	 * Does nothing.
-	 */
-	private XMLWriter(){}
-	
-	/**
-	 * writeTest purpose.
-	 * <p>
-	 * Writes the DTO to XML using the current writer.
-	 * </p>
-	 * @param dto The DTO which contains the output data
-	 * @param w non-null writer to write to
-	 */
-	public static void writePlugIn(PlugInDTO dto, Writer w) throws ValidationException{
-		if(w==null || dto==null)
-			throw new NullPointerException("Null parameter passed into XMLWriter:writeTest");
+	public static void writePlugIn(PlugInDTO dto, Writer w){
 		WriterUtils cw = new WriterUtils(w);
-		cw.writeln("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		Map m = new HashMap();
-		m.put("xmlns","testSuiteSchema");
-		m.put("xmlns:gml","http://www.opengis.net/gml");
-		m.put("xmlns:ogc","http://www.opengis.net/ogc");
-		m.put("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-		m.put("xsi:schemaLocation","testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd");
-		cw.openTag("plugin",m);
-		cw.textTag("name",dto.getName());
-		if(dto.getDescription()!=null && dto.getDescription()!="")
-			cw.textTag("description",dto.getDescription());
-		cw.textTag("class",dto.getClassName());
-		if(dto.getArgs()!=null){
-			Iterator i = dto.getArgs().keySet().iterator();
-			while(i.hasNext()){
-				String name = (String)i.next();
-				Object value = dto.getArgs().get(name);
-				cw.openTag("argument");
-				cw.textTag("name",name);
-				cw.writeln(ArgHelper.getArgumentEncoding(value));
-				cw.closeTag("argument");
+		m.put("xmlns","pluginSchema"); 
+		m.put("xmlns:gml","http://www.opengis.net/gml"); 
+		m.put("xmlns:ogc","http://www.opengis.net/ogc"); 
+		m.put("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); 
+		m.put("xsi:schemaLocation","pluginSchema /data/capabilities/validate/pluginSchema.xsd");
+		try{
+			cw.openTag("plugin",m);
+			try{
+				cw.textTag("name",dto.getName());
+				cw.textTag("description",dto.getDescription());
+				cw.textTag("class",dto.getClassName());
+				Iterator i = dto.getArgs().keySet().iterator();
+				while(i.hasNext()){
+					writeArgument((ArgumentDTO)dto.getArgs().get(i.next()),w);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				// 	error log it;
 			}
+			cw.closeTag("plugin");
+		}catch(Exception e){
+			e.printStackTrace();
+			// error log it;
 		}
-		cw.closeTag("plugin");
 	}
-	
-	/**
-	 * writeTest purpose.
-	 * <p>
-	 * Writes the DTO to XML using the current writer.
-	 * </p>
-	 * @param dto The DTO which contains the output data
-	 * @param w non-null writer to write to
-	 */
-	public static void writeTest(TestDTO dto, Writer w) throws ValidationException{
-		if(w==null || dto==null)
-			throw new NullPointerException("Null parameter passed into XMLWriter:writeTest");
+	public static void writeTest(TestDTO dto, Writer w){
 		WriterUtils cw = new WriterUtils(w);
-		cw.openTag("test");
-		cw.textTag("name",dto.getName());
-		if(dto.getDescription()!=null && dto.getDescription()!="")
-			cw.textTag("description",dto.getDescription());
-		cw.textTag("plugin",dto.getPlugIn().getName());
-		if(dto.getArgs()!=null){
-			Iterator i = dto.getArgs().keySet().iterator();
-			while(i.hasNext()){
-				String name = (String)i.next();
-				Object value = dto.getArgs().get(name);
-				cw.openTag("argument");
-				cw.textTag("name",name);
-				cw.writeln(ArgHelper.getArgumentEncoding(value));
-				cw.closeTag("argument");
+		try{
+			cw.openTag("test");
+			try{
+				cw.textTag("name",dto.getName());
+				cw.textTag("description",dto.getDescription());
+				cw.textTag("plugin",dto.getPlugIn().getName());
+				Iterator i = dto.getArgs().keySet().iterator();
+				while(i.hasNext()){
+					writeArgument((ArgumentDTO)dto.getArgs().get(i.next()),w);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				// 	error log it;
 			}
+			cw.closeTag("test");
+		}catch(Exception e){
+			e.printStackTrace();
+			// error log it;
 		}
-		cw.closeTag("test");
 	}
-	
-	/**
-	 * writeTestSuite purpose.
-	 * <p>
-	 * Writes the DTO to XML using the current writer.
-	 * </p>
-	 * @param dto The DTO which contains the output data
-	 * @param w non-null writer to write to
-	 */
-	public static void writeTestSuite(TestSuiteDTO dto, Writer w) throws ValidationException{
-		if(w==null || dto==null)
-			throw new NullPointerException("Null parameter passed into XMLWriter:writeTestSuite");
+	public static void writeTestSuite(TestSuiteDTO dto, Writer w){
 		WriterUtils cw = new WriterUtils(w);
-		cw.writeln("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		Map m = new HashMap();
-		m.put("xmlns","testSuiteSchema");
-		m.put("xmlns:gml","http://www.opengis.net/gml");
-		m.put("xmlns:ogc","http://www.opengis.net/ogc");
-		m.put("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+		m.put("xmlns","testSuiteSchema"); 
+		m.put("xmlns:gml","http://www.opengis.net/gml"); 
+		m.put("xmlns:ogc","http://www.opengis.net/ogc"); 
+		m.put("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); 
 		m.put("xsi:schemaLocation","testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd");
-		cw.openTag("suite",m);
-		cw.textTag("name",dto.getName());
-		if(dto.getDescription()!=null && dto.getDescription()!="")
-			cw.textTag("description",dto.getDescription());
-		Iterator i = dto.getTests().iterator();
-		while(i.hasNext())
-			writeTest((TestDTO)i.next(),w);
-		cw.closeTag("suite");
-		
+		try{
+			cw.openTag("suite",m);
+			try{
+				cw.textTag("name",dto.getName());
+				cw.textTag("description",dto.getDescription());
+				Iterator i = dto.getTests().keySet().iterator();
+				while(i.hasNext()){
+					writeTest((TestDTO)dto.getTests().get(i.next()),w);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				// 	error log it;
+			}
+			cw.closeTag("suite");
+		}catch(Exception e){
+			e.printStackTrace();
+			// error log it;
+		}
+	}
+	public static void writeArgument(ArgumentDTO dto, Writer w){
+		WriterUtils cw = new WriterUtils(w);
+		Map m = new HashMap();
+		if(dto.isFinal())
+			m.put("final",new Boolean(true));
+		try{
+			cw.openTag("argument",m);
+			try{
+				cw.textTag("name",dto.getName());
+				cw.writeln(ArgHelper.getArgumentEncoding(dto.getValue()));
+			}catch(Exception e){
+				e.printStackTrace();
+				// error log it;
+			}
+			cw.closeTag("argument");
+		}catch(Exception e){
+			e.printStackTrace();
+			// error log it;
+		}
 	}
 }

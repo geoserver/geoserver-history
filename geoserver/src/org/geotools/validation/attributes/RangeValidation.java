@@ -50,10 +50,10 @@ import org.geotools.validation.ValidationResults;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: RangeFeatureValidation.java,v 1.5 2004/01/21 01:26:55 jive Exp $
+ * @version $Id: RangeValidation.java,v 1.1 2004/01/31 00:24:06 jive Exp $
  */
-public class RangeFeatureValidation implements FeatureValidation {
-    private String[] names;
+public class RangeValidation implements FeatureValidation {
+    private String typeRef;
     private String description;
     private String name;
     private int max = Integer.MAX_VALUE;
@@ -67,7 +67,7 @@ public class RangeFeatureValidation implements FeatureValidation {
      * Description
      * </p>
      */
-    public RangeFeatureValidation() {
+    public RangeValidation() {
         super();
     }
 
@@ -195,20 +195,19 @@ public class RangeFeatureValidation implements FeatureValidation {
     }
 
     /**
-     * Override setTypeNames.
+     * Set type ref as dataStoreId:typeName.
      * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param names
+     * @param typeRef type referenced 
      *
      * @see org.geotools.validation.Validation#setTypeNames(java.lang.String[])
      */
-    public void setTypeNames(String[] names) {
-        this.names = names;
+    public void setTypeRef( String typeRef ) {
+        this.typeRef = typeRef;
     }
 
+    public String getTypeRef(){
+        return typeRef;
+    }
     /**
      * Override getTypeNames.
      * 
@@ -218,10 +217,16 @@ public class RangeFeatureValidation implements FeatureValidation {
      *
      * @return
      *
-     * @see org.geotools.validation.Validation#getTypeNames()
+     * @see org.geotools.validation.Validation#getTypeRefs()
      */
-    public String[] getTypeNames() {
-        return names;
+    public String[] getTypeRefs() {
+        if( typeRef == null ){
+            return null;
+        }
+        if( typeRef.equals("*")){
+            return ALL;
+        }
+        return new String[]{ typeRef, };
     }
 
     /**
