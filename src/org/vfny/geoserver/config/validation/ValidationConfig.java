@@ -16,7 +16,7 @@ import org.geotools.validation.dto.*;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.2 2004/02/03 00:38:55 dmzwiers Exp $
+ * @version $Id: ValidationConfig.java,v 1.3 2004/02/03 20:09:15 dmzwiers Exp $
  */
 public class ValidationConfig {
 	
@@ -192,7 +192,7 @@ public class ValidationConfig {
 		i = this.testSuites.keySet().iterator();
 		while(i.hasNext()){
 			TestSuiteDTO dto = ((TestSuiteConfig)this.testSuites.get(i.next())).toDTO(plugIns);
-			plugIns.put(dto.getName(),dto);
+			testSuites.put(dto.getName(),dto);
 		}
 		return true;
 	}

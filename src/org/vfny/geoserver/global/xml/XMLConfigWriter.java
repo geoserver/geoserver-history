@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.18 2004/02/02 19:22:18 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.19 2004/02/03 20:09:16 dmzwiers Exp $
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -706,6 +706,10 @@ public class XMLConfigWriter {
 
     protected static void storeFeatureSchema(FeatureTypeInfoDTO fs, File dir)
         throws ConfigurationException {
+    	if(fs.getSchemaName() == null || fs.getSchemaName()=="")
+    		return;
+    	if(fs.getSchemaBase() == null || fs.getSchemaBase()=="")
+    		return;
         File f = WriterUtils.initWriteFile(new File(dir, "schema.xml"), false);
 
         try {
@@ -813,7 +817,7 @@ public class XMLConfigWriter {
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.18 2004/02/02 19:22:18 dmzwiers Exp $
+ * @version $Id: XMLConfigWriter.java,v 1.19 2004/02/03 20:09:16 dmzwiers Exp $
  */
 class WriterUtils {
     /** Used internally to create log information to detect errors. */

@@ -14,6 +14,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.UserContainer;
 
 
@@ -67,8 +68,8 @@ import org.vfny.geoserver.global.UserContainer;
  * </p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ConfigAction.java,v 1.4 2004/02/02 08:56:44 jive Exp $
+ * @author $Author: dmzwiers $ (last modification)
+ * @version $Id: ConfigAction.java,v 1.5 2004/02/03 20:09:15 dmzwiers Exp $
  */
 public class ConfigAction extends GeoServerAction {
 	/**
@@ -145,5 +146,14 @@ public class ConfigAction extends GeoServerAction {
      */
     protected DataConfig getDataConfig() {
         return (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+    }
+
+    /**
+     * Access Catalog Configuration Model from the WebContainer.
+     *
+     * @return Configuration model for Catalog information.
+     */
+    protected ValidationConfig getValidationConfig() {
+    	return (ValidationConfig) getServlet().getServletContext().getAttribute(ValidationConfig.CONFIG_KEY);
     }
 }
