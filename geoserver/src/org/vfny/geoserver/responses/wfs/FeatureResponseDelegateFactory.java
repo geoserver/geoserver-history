@@ -28,6 +28,7 @@ public class FeatureResponseDelegateFactory {
 
     static {
         encoders.add(new GML2FeatureResponseDelegate());
+        encoders.add(new GML2AppSchemaFeatureResponseDelegate());
     }
 
     private FeatureResponseDelegateFactory() {

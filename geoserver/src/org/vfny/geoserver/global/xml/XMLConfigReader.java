@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.43 2004/09/13 16:04:26 cholmesny Exp $
+ * @version $Id: XMLConfigReader.java,v 1.40 2004/04/15 19:08:02 dmzwiers Exp $
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
@@ -179,7 +179,7 @@ public class XMLConfigReader {
      * @throws ConfigurationException When an error occurs.
      */
     protected void loadServices(File configFile) throws ConfigurationException {
-        LOGGER.finer("loading config file: " + configFile);
+        LOGGER.fine("loading config file: " + configFile);
 
         Element configElem = null;
 
@@ -276,7 +276,6 @@ public class XMLConfigReader {
 
         while (i.hasNext()) {
             NameSpaceInfoDTO ns = (NameSpaceInfoDTO) i.next();
-
             if (ns.isDefault()) {
                 data.setDefaultNameSpacePrefix(ns.getPrefix());
                 LOGGER.finer("set default namespace pre to " + ns.getPrefix());
@@ -336,7 +335,7 @@ public class XMLConfigReader {
      */
     protected void loadGlobal(Element globalElem) throws ConfigurationException {
         geoServer = new GeoServerDTO();
-        LOGGER.finer("parsing global configuration parameters");
+        LOGGER.fine("parsing global configuration parameters");
 
         Level loggingLevel = getLoggingLevel(globalElem);
 
@@ -419,14 +418,6 @@ public class XMLConfigReader {
         if (adminPassword != null) {
             geoServer.setAdminPassword(adminPassword);
         }
-
-        elem = ReaderUtils.getChildElement(globalElem, "verboseExceptions",
-                false);
-
-        if (elem != null) {
-            geoServer.setVerboseExceptions(ReaderUtils.getBooleanAttribute(
-                    elem, "value", false, true));
-        }
     }
 
     /**
@@ -504,14 +495,6 @@ public class XMLConfigReader {
         wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(
                 ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
                 "value", false, false));
-
-        Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
-                false);
-
-        if (elem != null) {
-            wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
-                    false, true));
-        }
 
         String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
                 "serviceLevel");
@@ -765,7 +748,7 @@ public class XMLConfigReader {
                 true));
         ds.setTitle(ReaderUtils.getChildText(dsElem, "title", false));
         ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
-        LOGGER.finer("loading connection parameters for DataStoreDTO "
+        LOGGER.fine("loading connection parameters for DataStoreDTO "
             + ds.getNameSpaceId());
         ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(
                     dsElem, "connectionParams", true)));
@@ -870,7 +853,7 @@ public class XMLConfigReader {
             File info = new File(directories[i], "info.xml");
 
             if (info.exists() && info.isFile()) {
-                LOGGER.finer("Info dir:" + info);
+                LOGGER.fine("Info dir:" + info);
 
                 FeatureTypeInfoDTO dto = loadFeature(info);
                 map.put(dto.getKey(), dto);
@@ -1029,6 +1012,8 @@ public class XMLConfigReader {
         }
 
         ft.setDefinitionQuery(loadDefinitionQuery(fTypeRoot));
+        
+        ft.setBypassSQL(ReaderUtils.getChildText(fTypeRoot, "bypassSQL", false));
 
         return ft;
     }
@@ -1080,10 +1065,10 @@ public class XMLConfigReader {
      */
     protected Envelope loadLatLongBBox(Element bboxElem)
         throws ConfigurationException {
-        if (bboxElem == null) {
-            return new Envelope();
-        }
-
+        
+        if(bboxElem == null)
+        	return new Envelope();
+        
         boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem, "dynamic",
                 false, true);
 
@@ -1119,7 +1104,7 @@ public class XMLConfigReader {
         org.geotools.filter.Filter filter = null;
 
         if (defQNode != null) {
-            LOGGER.finer("definitionQuery element found, looking for Filter");
+            LOGGER.fine("definitionQuery element found, looking for Filter");
 
             Element filterNode = ReaderUtils.getChildElement(defQNode,
                     "Filter", false);
@@ -1132,7 +1117,7 @@ public class XMLConfigReader {
                 return filter;
             }
 
-            LOGGER.finer("No Filter definition query found");
+            LOGGER.fine("No Filter definition query found");
         }
 
         return filter;
@@ -1245,7 +1230,11 @@ public class XMLConfigReader {
             String name = ReaderUtils.getAttribute(elem, "name", false);
             String ref = ReaderUtils.getAttribute(elem, "ref", false);
             String type = ReaderUtils.getAttribute(elem, "type", false);
-
+            String outputXpath = ReaderUtils.getAttribute(elem, "xpath", false);
+            ati.setXpath(outputXpath);
+            String dbJavaType = ReaderUtils.getAttribute(elem, "dbJavaType", false);
+            ati.setDbJavaType(dbJavaType);
+            
             NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance()
                                                                  .getNameSpaceTranslator("xs");
             NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance()

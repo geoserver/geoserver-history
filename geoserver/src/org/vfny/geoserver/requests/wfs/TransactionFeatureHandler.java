@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
-
+import java.net.URI;
 
 /**
  * Uses SAX to extact a Transactional request from and incoming XML stream. It
@@ -271,7 +271,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                 //working.  This should be good enough, it'd just be nice to be cleaner.
                 FeatureTypeFactory ftFactory = FeatureTypeFactory
                     .createTemplate(curFeatureType);
-                ftFactory.setNamespace(namespaceURI);
+                ftFactory.setNamespace(new URI (namespaceURI) );
 
                 FeatureType schema = ftFactory.getFeatureType();
                 Feature feature = schema.create(attributes);
@@ -281,7 +281,10 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                 LOGGER.finest("resetting attName at end of feature");
                 attName = "";
                 LOGGER.finer("created feature: " + feature);
-            } catch (org.geotools.feature.SchemaException sve) {
+                
+            } catch (java.net.URISyntaxException sve) {
+                throw new RuntimeException("problem creating schema", sve);
+           } catch (org.geotools.feature.SchemaException sve) {
                 throw new RuntimeException("problem creating schema", sve);
             } catch (org.geotools.feature.IllegalAttributeException ife) {
                 throw new RuntimeException("problem creating feature", ife);

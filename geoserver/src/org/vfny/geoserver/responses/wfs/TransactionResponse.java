@@ -192,7 +192,7 @@ public class TransactionResponse implements Response {
 
                 if (feature != null) {
                     String name = feature.getFeatureType().getTypeName();
-                    String uri = feature.getFeatureType().getNamespace();
+                    String uri = feature.getFeatureType().getNamespace().toString();
                     
                     LOGGER.fine("Locating FeatureSource uri:'"+uri+"' name:'"+name+"'");                                       
                     meta = catalog.getFeatureTypeInfo(name, uri); 

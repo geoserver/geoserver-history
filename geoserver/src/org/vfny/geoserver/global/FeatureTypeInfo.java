@@ -7,6 +7,9 @@ package org.vfny.geoserver.global;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.jdbc.JDBCDataStore;
+import org.geotools.data.jdbc.JDBCFeatureSource;
+import org.geotools.data.jdbc.fidmapper.NullFIDMapper;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -25,7 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.logging.Logger;
 
 /**
  * Represents a FeatureTypeInfo, its user config and autodefined information.
@@ -36,6 +39,9 @@ import java.util.Map;
  * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
+	
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+	
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
     /**
@@ -137,11 +143,25 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     /**
      * The real geotools2 featureType cached for sanity checks.
      * <p>
-     * This will be lazily created so use the accessors
+     * This will be lazily created so use the accessors, except when doing
+     * pass through SQL and schema.xml is not exmpty
      * </p>
      */
-    private FeatureType ft;
+    private FeatureType ft = null;
 
+    /**
+     * pass through SQL - use this SQL, instead of, or augmented by SQL
+     * generation from a WFS filter (the filter as parameter passing mechanism)
+     */
+    private String bypassSQL = null; 
+    
+    
+    /**
+     * Tree representation of XML elements given by xpath attributes in schema.xml
+     */
+    private XMLelementStructure elementTree = null; 
+
+    
     /**
      * FeatureTypeInfo constructor.
      * 
@@ -168,15 +188,47 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         typeName = dto.getName();
         numDecimals = dto.getNumDecimals();
 
+        bypassSQL = dto.getBypassSQL();
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
-
+        
         if ((tmp != null) && !tmp.isEmpty()) {
             Iterator i = tmp.iterator();
 
             while (i.hasNext())
                 schema.add(new AttributeTypeInfo(
                         (AttributeTypeInfoDTO) i.next()));
+            
+            if (bypassSQL != null && !schema.isEmpty()) {
+            	
+            	// need to build a geotools feature type corresponding to the
+            	// bypassSQL, as described by schema. 
+            	ft = buildGeotoolsFeatureType(schema);
+            	
+            	// then need to stick this and a fid mapper into the cache
+            	// maintained by Geotools FeatureTypeHamdler
+            	DataStore datastore = data.getDataStoreInfo(dataStoreId).getDataStore();
+            	
+            	if ( ft != null && datastore instanceof JDBCDataStore ) {
+            	
+            		// the NullFIDMapper is just placeholder, FID mapping happens
+            		// in the schema.xml (xpath attribute)
+            		try {
+	            		org.geotools.data.jdbc.FeatureTypeInfo fti = 
+	            			new org.geotools.data.jdbc.FeatureTypeInfo(
+	            				typeName, ft, new NullFIDMapper(), false);
+	            				((JDBCDataStore) datastore).getFeatureTypeHandler().setFeatureTypeInfo(fti);
+            		} catch (IOException e) {
+            			LOGGER.severe("Could not set FeatureType schema " + typeName + 
+            				" in data store");
+            		}
+            	} else if ( ft == null && datastore instanceof JDBCDataStore ) {
+        			LOGGER.severe("Failed making FeatureType for " + typeName);
+            	}	
+            }
+            
+            // build a tree of XML elements if xpath atts can be found in schema
+            elementTree = new XMLelementStructure(this); 
         }
 
         schemaBase = dto.getSchemaBase();
@@ -220,10 +272,50 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setSchemaName( getSchemaName() );        
         dto.setSRS(SRS);
         dto.setTitle(title);
+        dto.setBypassSQL(bypassSQL);        
 
         return dto;
     }
 
+    
+    /**
+     * buildFeatureType purpose.
+     * 
+     * <p>
+     * Create a Geotools FeatureType for this feature; this should only be called
+     * if the AttributeTypeInfo constructor was able to create Geotools a 
+     * AttributeType(s), typically when a schema.xml with extended attributes 
+     * (dbJavaType) is associated with non null bypassSQL (feature type uses pass 
+     * through SQL operation).  
+     * </p>
+     *
+     * @param schema - a List of Geoserver AttributeTypeInfo 
+     * @return the FeatureType or null if failed
+     */
+    public FeatureType buildGeotoolsFeatureType(List schema) {
+
+    	List attributeTypes = new ArrayList();
+    	
+        Iterator i = schema.iterator();
+        while (i.hasNext()) {
+        	attributeTypes.add( ((AttributeTypeInfo) i.next()).getAttributeType() );
+        } 
+        AttributeType[] types = (AttributeType[]) attributeTypes.toArray(new AttributeType[0]);
+
+    	// should check datastore is assignable to JDBCDataStore
+
+        FeatureType featuretype = null;
+    	if (types.length > 0) {
+    		try {
+    			featuretype = FeatureTypeFactory.newFeatureType(types, typeName, 
+	        			((JDBCDataStore)(data.getDataStoreInfo(dataStoreId).getDataStore())).getNameSpaceURI());
+    		} catch (SchemaException e) {}
+    	}
+    	
+    	return featuretype;
+    }
+    
+    
     /**
      * getNumDecimals purpose.
      * 
@@ -332,6 +424,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }    
 
     /**
+     * GT2 Feature Type name
+     * 
+     * type name withOUT the namespace prefix
+     *
+     * @return String the FeatureTypeInfo name - should be unique for the
+     *         parent Data instance.
+     */
+    public String getGT2FeatureTypeName() {        
+        return typeName;
+    }    
+   
+    
+    /**
      * getFeatureSource purpose.
      * 
      * <p>
@@ -349,6 +454,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         }
 
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
+        if (dataStore instanceof JDBCDataStore && bypassSQL != null &&
+        		!schema.isEmpty() ) {
+        	// for pass through SQL, use the FetaureType built here 
+        	return new JDBCFeatureSource((JDBCDataStore)dataStore, ft);
+        }
+        
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
 
         if (((schema == null) || schema.isEmpty())) { // &&
@@ -360,7 +471,36 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 getFeatureType(realSource), getDefinitionQuery());
         }
     }
+    
+    /**
+     * getFeatureSource purpose.
+     * 
+     * <p>
+     * Returns a real FeatureSource.
+     * </p>
+     *
+     * @return FeatureSource the feature source represented by this info class
+     *
+     * @throws IOException when an error occurs.
+     */
+    public FeatureSource getRealFeatureSource() throws IOException {
+    	
+        if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
+            throw new IOException("featureType: " + getName()
+                + " does not have a properly configured " + "datastore");
+        }
 
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
+        if (dataStore instanceof JDBCDataStore && bypassSQL != null &&
+        		!schema.isEmpty() ) {
+        	// for pass through SQL, use the FetaureType built here 
+        	return new JDBCFeatureSource((JDBCDataStore)dataStore, ft);
+        } else {
+        	return dataStore.getFeatureSource(typeName);
+        }
+    }    
+    
+    
     /*public static FeatureSource reTypeSource(FeatureSource source,
        FeatureTypeInfoDTO ftc) throws SchemaException {
        AttributeType[] attributes = new AttributeType[ftc.getSchemaAttributes()
@@ -956,4 +1096,26 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     public Object getMetaData(String key) {
         return meta.get(key);
     }
+    
+    /**
+     * pass through SQL - use this SQL, instead of, or augmented by SQL
+     * generation from a WFS filter (the filter as parameter passing mechanism)
+     *
+     * <p>
+     * @return String adhocSQL
+     */
+    public String getBypassSQL() {
+        return bypassSQL;
+    }    
+
+    /**
+     * Retrieve a value indicating an override (null otherwise) for WFS getFeature processing
+     *
+     * <p>
+     * @return String executionPattern
+     */
+    public XMLelementStructure getXMLelementStructure() {
+        return elementTree;
+    }
+    
 }

@@ -7,24 +7,22 @@ package org.vfny.geoserver.responses.wms.map;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.IllegalFilterException;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleAttributeExtractor;
+import org.geotools.filter.Filter;
+import org.geotools.filter.FilterFactory;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.WmsException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.requests.wms.GetMapRequest;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.AlphaComposite;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -49,7 +47,7 @@ import javax.imageio.stream.ImageOutputStream;
  * quite well, as it is stateless and therefor loads up nice and fast.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.29 2004/09/16 21:44:28 cholmesny Exp $
+ * @version $Id: JAIMapResponse.java,v 1.25 2004/09/09 15:29:29 cholmesny Exp $
  */
 public class JAIMapResponse extends GetMapDelegate {
     /** A logger for this class. */
@@ -111,7 +109,6 @@ public class JAIMapResponse extends GetMapDelegate {
             } catch (NoClassDefFoundError ncdfe) {
                 supportedFormats = Collections.EMPTY_LIST;
                 LOGGER.warning("could not find jai: " + ncdfe);
-
                 //this will occur if JAI is not present, so please do not
                 //delete, or we get really nasty messages on getCaps for wms.
             }
@@ -240,28 +237,26 @@ public class JAIMapResponse extends GetMapDelegate {
         return format;
     }
 
-    /**
-     * Over ride to return the same filter passed in, as this subclass
-     * automatically handles the bboxing of the filter.  There is probably a
-     * more elegant way to handle this, or rather the SVG renderer should be
-     * improved to be able to select its own bboxes given the filter area
-     * passed in.
-     *
-     * @param filter The additional filter to process with.
-     * @param requestExtent The extent to filter out.
-     * @param ffactory A filterFactory to create new filters.
-     * @param schema The FeatureTypeInfo of the request of this filter.
-     *
-     * @return A custom filter of the bbox and any optional custom filters.
-     *
-     * @throws IllegalFilterException For problems making the filter.
-     */
-    protected Filter buildFilter(Filter filter, Envelope requestExtent,
-        FilterFactory ffactory, FeatureType schema)
-        throws IllegalFilterException {
-        return filter;
-    }
-
+	/**
+	 * Over ride to return the same filter passed in, as this subclass automatically
+	 * handles the bboxing of the filter.  There is probably a more elegant way to
+	 * handle this, or rather the SVG renderer should be improved to be able to select
+	 * its own bboxes given the filter area passed in.
+	 *
+	 * @param filter The additional filter to process with.
+	 * @param requestExtent The extent to filter out.
+	 * @param ffactory A filterFactory to create new filters.
+	 * @param schema The FeatureTypeInfo of the request of this filter.
+	 *
+	 * @return A custom filter of the bbox and any optional custom filters.
+	 *
+	 * @throws IllegalFilterException For problems making the filter.
+	 */
+	protected Filter buildFilter(Filter filter, Envelope requestExtent,
+		FilterFactory ffactory, FeatureType schema)
+		throws IllegalFilterException {
+			return filter;
+		}
     /**
      * Performs the execute request using geotools rendering.
      *
@@ -292,7 +287,7 @@ public class JAIMapResponse extends GetMapDelegate {
                 Style style = styles[i];
                 Query query = queries[i];
                 FeatureSource source = requestedLayers[i].getFeatureSource();
-                checkStyle(style, source);
+
                 layer = new DefaultMapLayer(source, style);
                 layer.setQuery(query);
                 map.addLayer(layer);
@@ -306,19 +301,14 @@ public class JAIMapResponse extends GetMapDelegate {
             //LOGGER.fine("setting up renderer");
             //java.awt.Graphics g = image.getGraphics();
             graphic = image.createGraphics();
-   
+            graphic.setColor(request.getBgColor());
 
             if (!request.isTransparent()) {
-               graphic.setColor(request.getBgColor()); 
-               graphic.fillRect(0, 0, width, height);
-            } else {
-                LOGGER.fine("setting to transparent");
-		int type = AlphaComposite.SRC_OVER;
-		graphic.setComposite(AlphaComposite.getInstance(type, 0));
-	    }
+                graphic.fillRect(0, 0, width, height);
+            }
 
             renderer = new LiteRenderer(map);
-
+            
             //we already do everything that the optimized data loading does...
             //if we set it to true then it does it all twice...
             renderer.setOptimizedDataLoadingEnabled(true);
@@ -336,42 +326,9 @@ public class JAIMapResponse extends GetMapDelegate {
 
             map = null;
             this.image = image;
-        } catch (IOException exp) {
+        } catch (Exception exp) {
             exp.printStackTrace();
-
-            //LOGGER.info("uh, we're in this catch loop");
-            //throw new RuntimeException("can we get a wms exception?");
             throw new WmsException(null, "Internal error : " + exp.getMessage());
-        }
-    }
-
-    /**
-     * Checks to make sure that the style passed in can process this
-     * FeatureSource. This should really be done at start up time, and
-     * returned as part of the  WMS capabilities.
-     *
-     * @param style The style to check
-     * @param source The source requested.
-     *
-     * @throws WmsException DOCUMENT ME!
-     */
-    private void checkStyle(Style style, FeatureSource source)
-        throws WmsException {
-        FeatureType fType = source.getSchema();
-        StyleAttributeExtractor sae = new StyleAttributeExtractor();
-        sae.visit(style);
-
-        String[] styleAttributes = sae.getAttributeNames();
-
-        for (int i = 0; i < styleAttributes.length; i++) {
-            String attName = styleAttributes[i];
-
-            if (fType.getAttributeType(attName) == null) {
-                throw new WmsException(
-                    "The requested Style can not be used with "
-                    + "this featureType.  The style specifies an attribute of "
-                    + attName + " and the featureType definition is: " + fType);
-            }
         }
     }
 

@@ -105,27 +105,16 @@ public final class Requests {
     }
 
     /**
-     * Get base url used - it is not any more assumed to be http://server:port/geoserver/
+     * Get base url used - assumed to be http://server:port/geoserver/
      * 
      * @param httpServletRequest
-     * @return http://server:port/path-defined-context/
+     * @return http://server:port/geoserver/
      */
     public static String getBaseUrl(HttpServletRequest httpServletRequest) {
-/*
- * didier (2004/10/03) assumption removed :
- *       return "http://" + httpServletRequest.getServerName() + ":"
- *       + httpServletRequest.getServerPort() + "/geoserver/";
- */
         return "http://" + httpServletRequest.getServerName() + ":"
-        + httpServletRequest.getServerPort() + httpServletRequest.getContextPath() +"/";
+        + httpServletRequest.getServerPort() + "/geoserver/";
     }
     
-    /**
-     * Get capabilities base url used
-     * 
-     * @param httpServletRequest
-     * @return http://server:port/path-defined-context/data/capabilities
-     */
     public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest) {
     	return getBaseUrl(httpServletRequest) + "data/capabilities";
     }

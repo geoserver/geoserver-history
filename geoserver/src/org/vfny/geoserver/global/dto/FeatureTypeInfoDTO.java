@@ -93,7 +93,14 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * only those oattributes in this list will be exposed by the services
      */
     private Filter definitionQuery = null;
-
+    
+    /**
+     * bypass SQL select statement for jdbc datastore; executed as a
+     * prepared statement with parameters supplied via filter properties.
+     */
+    private String bypassSQL = null;
+    
+ 
     /** The default style name. */
     private String defaultStyle;
 
@@ -147,6 +154,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
+        bypassSQL = dto.getBypassSQL();
     }
 
     /**
@@ -218,6 +226,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (dirName == f.getDirName());
         r = r && (schemaName == f.getSchemaName());
         r = r && (schemaBase == f.getSchemaBase());
+        r = r && (bypassSQL == f.getBypassSQL());
 
         return r;
     }
@@ -577,6 +586,30 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
+     * bypassSQL - specify to bypass SQL generation from filter;
+     * use filter as parameter passing mechanism
+     *
+     * <p>
+     * @param adhocSQL - a string containing an SQL select statement with placeholders
+     */
+    
+    public void setBypassSQL(String SQL) {
+    	// should check this can only select ?
+        bypassSQL = SQL;
+    }
+
+    /**
+     * bypassSQL - use this SQL in bypassing SQL generation from filter;
+     * use filter as parameter passing mechanism
+     *
+     * <p>
+     * @return String adhocSQL
+     */
+    public String getBypassSQL() {
+        return bypassSQL;
+    }    
+    
+     /**
      * getDirName purpose.
      * 
      * <p>
@@ -589,6 +622,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         return dirName;
     }
 
+
+    
     /**
      * setDirName purpose.
      * 

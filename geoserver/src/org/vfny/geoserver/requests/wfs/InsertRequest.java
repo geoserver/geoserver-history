@@ -79,7 +79,7 @@ public class InsertRequest extends SubTransactionRequest {
         if (typeName == null) {
             features.add(feature);
             String name = feature.getFeatureType().getTypeName();
-            String uri = feature.getFeatureType().getNamespace();
+            java.net.URI uri = feature.getFeatureType().getNamespace();
             LOGGER.info("got type " + name +"," + uri);
             setTypeName(feature.getFeatureType().getTypeName());
         } else {

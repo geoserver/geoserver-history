@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * </ul>
  * 
  * <p>
- * For complex types such as  <code>{element
+ * For complex types such as  ls -l<code>{element
  * name='test'}{xs:complexContent}{xs:extension
  * base="gml:AbstractFeatureType"}{xs:sequence}{xs:element name="id"
  * type="xs:string" minOccurs="0"/}{xs:element ref="gml:pointProperty"
@@ -63,7 +63,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /** true when nillable */
     private boolean nillable = true;
-
+   
     /**
      * if is ref and a name is specified, then treat like a simple type (same
      * thing ...) otherwise this is a complex type.
@@ -85,6 +85,15 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
      */
     private boolean isComplex = false;
 
+    /** absolute path in XML doc that this attribute equates to - 
+     * can be element or attribute. Only used if the parent feature type does
+     * pass through SQL - ie info.xml has a bypassSQL element */
+    private String xpath = null;
+
+    /** Java type mapping for attribute in JDBC result set */ 
+    private String dbJavaType = null;
+    
+    
     /**
      * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
      * 
@@ -111,6 +120,8 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         maxOccurs = dto.getMaxOccurs();
         nillable = dto.isNillable();
         isComplex = dto.isComplex();
+        xpath = dto.getXpath();
+        dbJavaType = dto.getDbJavaType();
     }
 
     /**
@@ -140,6 +151,8 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         r = r && (maxOccurs == dto.getMaxOccurs());
         r = r && (nillable == dto.isNillable());
         r = r && (isComplex == dto.isComplex());
+        r = r && (xpath == dto.getXpath());
+        r = r && (dbJavaType == dto.getDbJavaType());
 
         return r;
     }
@@ -178,6 +191,8 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         dto.setNillable(nillable);
         dto.setComplex(isComplex);
         dto.setType(type);
+        dto.setXpath(xpath);
+        dto.setDbJavaType(dbJavaType);
 
         return dto;
     }
@@ -263,6 +278,48 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
     }
 
     /**
+     * getXpath purpose.
+     * 
+     * <p>
+     * Retrieves an XPath abbreviated absolute location path describing the location
+     * of this attribute in an output XML doc as either an element or attribute value.
+     * The body of the output XML can be built from the collection of these paths.
+     * Comes from schema.xml associated with info.xml and only if info.xml has a 
+     * non empty bypassSQL element - pb
+     * </p>
+     * <p>
+     * Applicable only to data stores extending JDBCDataStore
+     * </p>
+     * 
+     * @return XPath abbreviated absolute location path for this db attribute
+     */
+    public String getXpath() {
+        return xpath;
+    }
+ 
+    /**
+     * getDbJavaType purpose.
+     * 
+     * <p>
+     * Retrieves a class name that provides a compatible mapping onto the attribute
+     * in a JDBC result set. Comes from schema.xml associated with info.xml and only
+     * if info.xml has a non empty bypassSQL element. At time of writing this may
+     * be a standard Java class name like String (see JDBCDataStore.TYPE_MAPPINGS)
+     * or a class name from com.vividsolutions.jts.geom.Geometry, see the method
+     * buildAttributeType() in subclassing DataStores, eg Postgis - pb
+     *   
+     * </p>
+     * <p>
+     * Applicable only to data stores extending JDBCDataStore
+     * </p>
+     * 
+     * @return XPath abbreviated absolute location path for this db attribute
+     */
+    public String getDbJavaType() {
+        return dbJavaType;
+    }
+    
+    /**
      * setRef purpose.
      * 
      * <p>
@@ -342,6 +399,50 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         type = string;
     }
 
+    /**
+     * setXpath purpose.
+     * 
+     * <p>
+     * Stores an XPath abbreviated absolute location path describing the location of
+     * this attribute in an output XML doc as either an element or attribute value. 
+     * The body of the output XML can be built from the collection of these paths. 
+     * Typically comes from schema.xml associated with info.xml and only if info.xml
+     * has a non empty bypassSQL element 
+     * </p>
+     *
+     * <p>
+     * Applicable only to data stores extending JDBCDataStore
+     * </p>
+     * 
+     * @param string XPath abbreviated absolute location path for this db attribute
+     */
+    public void setXpath(String string) {
+        xpath = string;
+    }
+
+    /**
+     * setDbJavaType purpose.
+     * 
+     * <p>
+     * Sets a class name that provides a compatible mapping onto the attribute
+     * in a JDBC result set. Typically comes from schema.xml associated with 
+     * info.xml and only if info.xml has a non empty bypassSQL element. At time
+     * of writing this may be a standard Java class name like String
+     * (see JDBCDataStore.TYPE_MAPPINGS) or a class name from 
+     * com.vividsolutions.jts.geom.Geometry, see the method
+     * buildAttributeType() in subclassing DataStores, eg Postgis - pb
+     * </p>
+     * <p>
+     * Applicable only to data stores extending JDBCDataStore
+     * </p>
+     * 
+     * @return XPath abbreviated absolute location path for this db attribute
+     */
+    public void setDbJavaType(String className) {
+        dbJavaType = className;
+    }
+    
+    
     public String toString() {
         return "[AttributeTypeInfoDTO " + name + " minOccurs=" + minOccurs
         + " maxOccurs=" + maxOccurs + " nillable=" + nillable + " type=" + type
