@@ -609,7 +609,7 @@ dataMaxY="";
         	{
         		newSrs = "EPSG:"+srs;
         	}
-        	CoordinateReferenceSystem crsTheirData = CRS.decode("EPSG:"+newSrs);
+        	CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
         	SRSWKT = crsTheirData.toWKT();
         }
         catch (Exception e)  // couldnt decode their code
