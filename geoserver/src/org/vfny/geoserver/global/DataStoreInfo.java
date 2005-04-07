@@ -150,7 +150,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             try {
                 if ("url".equals(key) && value instanceof String) {
                     String path = (String) value;
-		    LOGGER.info("in string url");
+		    LOGGER.finer("in string url");
                     if (path.startsWith("file:data/")) {
                         path = path.substring(5); // remove 'file:' prefix
 
@@ -160,10 +160,10 @@ public class DataStoreInfo extends GlobalLayerSupertype {
 		    //Not sure about this
                 } else if (value instanceof URL
                         && ((URL) value).getProtocol().equals("file")) {
-		    LOGGER.info("in URL url");
+		    LOGGER.finer("in URL url");
                     URL url = (URL) value;
                     String path = url.getPath();
-		    LOGGER.info("path is " + path);
+		    LOGGER.finer("path is " + path);
 		    if (path.startsWith("data/")){
 			File file = new File(baseDir, path);
 			entry.setValue(file.toURL());
