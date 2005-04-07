@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureType;
+import org.opengis.metadata.Identifier;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -78,6 +80,8 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         FeatureTypeConfig ftConfig = new FeatureTypeConfig(dataStoreID,
                 featureType, false);
 
+        // DJB: this comment looks old - SRS support is much better now.  
+        //     TODO: delete this comment (but wait a bit)
         // What is the Spatial Reference System for this FeatureType?
         // 
         // getDefaultGeometry().getCoordinateSystem() should help but is null
@@ -88,7 +92,30 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         // Only other thing we could do is ask for a geometry and see what it's
         // SRID number is?
         //
+        
         ftConfig.setSRS(0);
+        
+        // attempt to get a better SRS
+        try {
+        	CoordinateReferenceSystem crs = featureType.getDefaultGeometry().getCoordinateSystem();
+        	Identifier[] idents = crs.getIdentifiers();
+        	for (int t=0;t<idents.length;t++) //for each ident
+        	{
+        		Identifier id = idents[t];
+        		if (id.toString().indexOf("EPSG:") != -1)    // this should probably use the Citation, but this is easier!
+        		{
+        			//we have an EPSG #, so lets use it!
+        			String str_num = id.toString().substring(id.toString().indexOf(':')+1);
+        			int num = Integer.parseInt(str_num);
+        			ftConfig.setSRS(num);
+        			break;  // take the first EPSG
+        		}
+        	}
+        }catch(Exception e)
+		{
+        	e.printStackTrace(); // not a big deal - we'll default to 0.
+		}
+        
         
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
                 
