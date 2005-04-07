@@ -56,5 +56,6 @@
 	<classpathentry kind="var" path="GEOSERVER/gt2-experiment.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-property.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/geoapi.jar"/>
+	<classpathentry kind="var" path="GEOSERVER/Gif89Encoder090b.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

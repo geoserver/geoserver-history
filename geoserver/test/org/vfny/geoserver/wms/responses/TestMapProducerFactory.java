@@ -140,9 +140,9 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
 
 	/* (non-Javadoc)
 	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 * This just returns java.util.Collections.EMPTY_MAP
 	 */
 	public Map getImplementationHints() {
-		// TODO Auto-generated method stub
-		return null;
+		return java.util.Collections.EMPTY_MAP;
 	}
 }

@@ -93,14 +93,15 @@ public class GifMapProducerFactory implements GetMapProducerFactorySpi {
                 + " not supported by this map producer");
         }
 
-        return new GIFMapProducer();
+        return new GIFMapProducer("image/gif"); // DJB: added "image/gif" or you'll get content encoded as image/png (the default)!!!
     }
-
-	/* (non-Javadoc)
+    
+    /* (non-Javadoc)
 	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 * This just returns java.util.Collections.EMPTY_MAP
 	 */
 	public Map getImplementationHints() {
-		// TODO Auto-generated method stub
-		return null;
+		return java.util.Collections.EMPTY_MAP;
 	}
+	
 }

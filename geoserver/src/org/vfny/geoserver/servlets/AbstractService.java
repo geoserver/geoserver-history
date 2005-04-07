@@ -729,6 +729,7 @@ public abstract class AbstractService extends HttpServlet {
         send(response,
             se.getXmlResponse(geoServer.isVerboseExceptions(), curRequest),
             mimeType);
+        se.printStackTrace();
     }
 
     /**

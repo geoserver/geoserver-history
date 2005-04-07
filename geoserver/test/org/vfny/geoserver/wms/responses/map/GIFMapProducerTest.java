@@ -31,7 +31,7 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
     }
     
     protected DefaultRasterMapProducer getProducerInstance(){
-    	return new GIFMapProducer();
+    	return new GIFMapProducer("image/gif"); //DJB: set content enconding correctly
     }
     
 

@@ -66,4 +66,6 @@ if [ ! -r server/ ]; then
         "$ANT_HOME"/bin/ant prepareEmbedded
      fi
 fi
-exec "$_RUNJAVA" -jar bin/start.jar
+#added headless to true by default, if this messes anyone up let the list
+#know and we can change it back, but it seems like it won't hurt -ch
+exec "$_RUNJAVA" -Djava.awt.headless=true -jar bin/start.jar 

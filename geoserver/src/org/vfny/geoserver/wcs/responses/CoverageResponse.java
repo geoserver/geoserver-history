@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
+import javax.media.jai.PropertySourceImpl;
 import javax.media.jai.RenderedOp;
 
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -258,7 +259,7 @@ public class CoverageResponse implements Response {
 						subEnvelope.getHeight())
 				); 
 
-				RenderedImage image = coverage.getRenderedImage();
+				RenderedImage image = coverage.geophysics(true).getRenderedImage();
 			    WritableRaster raster = (WritableRaster) image.getData();
 				
 			    int nX = raster.getWidth();
@@ -287,29 +288,49 @@ public class CoverageResponse implements Response {
 
 			    
 			    ParameterBlock pbCrop = new ParameterBlock();
-			    pbCrop.addSource(PlanarImage.wrapRenderedImage(image));
+			    pbCrop.addSource((PlanarImage) image);
 			    pbCrop.add(new Double(lonIndex1).floatValue());//x origin
 			    pbCrop.add(new Double(latIndex1).floatValue());//y origin
 			    pbCrop.add(new Float(cnX).floatValue());//width
 			    pbCrop.add(new Float(cnY).floatValue());//height
 			    RenderedOp result = JAI.create("crop", pbCrop);
 			    
+				//getting real (cropped) data
 			    WritableRaster croppedRaster = (WritableRaster) result.getAsBufferedImage().getData();
 			    
-				ColorModel cm = coverage.getRenderedImage().getColorModel();
+			    //creating the buffered image
+				BufferedImage bImage= new BufferedImage(
+						coverage.getSampleDimensions()[0].geophysics(true).getColorModel(),
+						croppedRaster,false,null);
+				
+				//creating a copy of the given grid coverage2D
 				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
-						new BufferedImage(cm,croppedRaster,false,null),
+						bImage,
 						coverage.getCoordinateReferenceSystem(),
-						gSEnvelope);
+						gSEnvelope,
+						coverage.getSampleDimensions(),
+						null,
+						((PropertySourceImpl)coverage).getProperties());
 
 				delegate.prepare(outputFormat, subCoverage);
 			} else {
-				WritableRaster raster = (WritableRaster) coverage.getRenderedImage().getData();
-				ColorModel cm = coverage.getRenderedImage().getColorModel();
+				//getting real data
+				WritableRaster raster = (WritableRaster) coverage.geophysics(true).getRenderedImage().getData();
+				
+				//creating the buffered image
+				BufferedImage bImage= new BufferedImage(
+						coverage.getSampleDimensions()[0].geophysics(true).getColorModel(),
+						raster,false,null);
+				
+				//creating a copy of the given grid coverage2D
 				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
-						new BufferedImage(cm,raster,false,null),
+						bImage,
 						coverage.getCoordinateReferenceSystem(),
-						coverage.getEnvelope());
+						coverage.getEnvelope(),
+						coverage.getSampleDimensions(),
+						null,
+						((PropertySourceImpl)coverage).getProperties());
+
 				delegate.prepare(outputFormat, subCoverage);
 			}
 		} catch (IOException e) {

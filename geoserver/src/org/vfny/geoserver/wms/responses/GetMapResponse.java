@@ -34,6 +34,8 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 
 /**
  * A GetMapResponse object is responsible of generating a map based on a GetMap
@@ -80,18 +82,24 @@ public class GetMapResponse implements Response {
         final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
 
         final WMSMapContext map = new WMSMapContext();
+        
+        //DJB: the WMS spec says that the request must not be 0 area
+        //     if it is, throw a service exception!
+        Envelope env = request.getBbox();
+        if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0))
+        {
+        	throw new WmsException("The request bounding box has zero area.");
+        }
 
         // @task TODO: replace by setAreaOfInterest(Envelope,
         // CoordinateReferenceSystem)
         // with the user supplied SRS parameter
-        // @task TODO: handle map transparency requests by RasterSymbolizer
         map.setAreaOfInterest(request.getBbox());
         map.setMapWidth(request.getWidth());
         map.setMapHeight(request.getHeight());
         map.setBgColor(request.getBgColor());
         map.setTransparent(request.isTransparent());
-        //map.setTransparent(false);
-        
+
         LOGGER.fine("setting up map");
 
         MapLayer layer;

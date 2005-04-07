@@ -36,8 +36,10 @@ public class WMS extends Service {
 
     /** list of WMS Exception Formats */
     private static final String[] EXCEPTION_FORMATS = {
-        "application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
-        "application/vnd.ogc.se_blank"
+        "application/vnd.ogc.se_xml", 
+		   //DJB: these arent actually supported!!
+		//"application/vnd.ogc.se_inimage",
+        //  "application/vnd.ogc.se_blank"
     };
     
     public static final String WEB_CONTAINER_KEY = "WMS";

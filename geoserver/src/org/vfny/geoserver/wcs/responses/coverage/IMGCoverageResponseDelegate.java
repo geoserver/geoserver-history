@@ -74,7 +74,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 					+ " or has not succeed");
 		}
 		try {
-			RenderedImage image = sourceCoverage.getRenderedImage();
+			RenderedImage image = sourceCoverage.geophysics(false).getRenderedImage();
 			PlanarImage surrogateImage = null;
 
 //			if( sourceCoverage.getSampleDimension(0).getColorInterpretation().name().equals("GRAY_INDEX") ) {
@@ -164,11 +164,12 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 //				surrogateImage = JAI.create("format", pbConvert);
 //				//surrogateImage = JAI.create("invert", surrogateImage);
 //			} else {
-				surrogateImage = PlanarImage.wrapRenderedImage(image);
+				//surrogateImage = PlanarImage.wrapRenderedImage(image);
 //			}
 					
 			/** Write image to disk and display it */
-			ImageIO.write(surrogateImage /*highlightImage(surrogateImage)*/, outputFormat.toLowerCase(), output);
+//			ImageIO.write(surrogateImage /*highlightImage(surrogateImage)*/, outputFormat.toLowerCase(), output);
+			ImageIO.write(image /*highlightImage(surrogateImage)*/, outputFormat.toLowerCase(), output);
 			output.flush();
 			output.close();
 		} catch (Exception e) {

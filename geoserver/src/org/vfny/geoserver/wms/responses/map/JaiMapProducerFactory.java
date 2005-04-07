@@ -91,12 +91,13 @@ public class JaiMapProducerFactory implements GetMapProducerFactorySpi {
     		throw new IllegalArgumentException("Can't produce " + mapFormat + " format");
     	return new JAIMapProducer(mapFormat);
     }
-
-	/* (non-Javadoc)
+    
+    /* (non-Javadoc)
 	 * @see org.geotools.factory.Factory#getImplementationHints()
+	 * This just returns java.util.Collections.EMPTY_MAP
 	 */
 	public Map getImplementationHints() {
-		// TODO Auto-generated method stub
-		return null;
+		return java.util.Collections.EMPTY_MAP;
 	}
+	
 }

@@ -65,8 +65,6 @@ class JAIMapProducer extends DefaultRasterMapProducer {
      */
     protected void formatImageOutputStream(String format, BufferedImage image,
         OutputStream outStream) throws WmsException, IOException {
-    	LOGGER.fine("Encoding JAI Layer ..." + format.toString() + " : " + image.toString());
         JAISupport.encode(format, image, outStream);
-    	LOGGER.fine("... JAI Layer Encoded!");
     }
 }

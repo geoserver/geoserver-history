@@ -89,6 +89,7 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
         }
         request.setInfoFormat(format);
 
+        request.setFeatureCount(1); // DJB: according to the WMS spec (7.3.3.7 FEATURE_COUNT) this should be 1.  also tested for by cite
 
         try {
             int maxFeatures = Integer.parseInt(getValue("FEATURE_COUNT"));
