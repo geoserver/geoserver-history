@@ -159,6 +159,16 @@ public class TypesEditorAction extends ConfigAction {
         LOGGER.fine("calculating bbox for their dataset" );
         Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
         
+        if (envelope.isNull()) // there's no data in the featuretype!!
+        {
+        	LOGGER.fine("FeatureType '"+featureType.getTypeName()+"' has a null bounding box" );
+      	    ActionErrors errors = new ActionErrors();
+            errors.add(ActionErrors.GLOBAL_ERROR,
+                new ActionError("error.data.nullBBOX",featureType.getTypeName() ));
+            saveErrors(request, errors);
+            return mapping.findForward("config.data.type.editor");
+        }
+        
         typeForm.setDataMinX(Double.toString(envelope.getMinX()));
         typeForm.setDataMaxX(Double.toString(envelope.getMaxX()));
         typeForm.setDataMinY(Double.toString(envelope.getMinY()));

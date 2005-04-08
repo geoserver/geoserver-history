@@ -598,6 +598,7 @@ dataMaxY="";
      */
     public void setSRS(String srs) 
     {
+    
         SRS = srs;
         try{
         	   // srs should be an Integer - according to FeatureTypeConfig
@@ -608,7 +609,7 @@ dataMaxY="";
         	{
         		newSrs = "EPSG:"+srs;
         	}
-        	CoordinateReferenceSystem crsTheirData = CRS.decode("EPSG:"+newSrs);
+        	CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
         	SRSWKT = crsTheirData.toWKT();
         }
         catch (Exception e)  // couldnt decode their code
