@@ -39,6 +39,10 @@ public class SrsHelpAction extends Action {
 	 *  (a) the properties is a hashtable (b) the file isnt in the correct order anyways (c) strings are hard to sort correct)
 	 * 
 	 * 
+	 * TODO: once geosever support EPSG thats not in the properties file, this should
+	 *       be a bit more abstract and get a list of all EPSG defs from the 
+	 *       Factory (if possible).  Use toWKT() as its nicer to read.
+	 * 
 	 *   Form has two properies - ids  (list of String - the epsg #)
 	 *                            defs (list of String - the epsg WKT definitions)
 	 */
