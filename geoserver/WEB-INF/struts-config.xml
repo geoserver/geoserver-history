@@ -16,6 +16,20 @@
           name: name of of form bean
           type: class of form bean
         -->
+        
+        <form-bean 
+	    name="srsInfoForm" 
+	    type="org.apache.struts.action.DynaActionForm">
+	    <form-property 
+	        name="srsDefinitionList"
+	        type="java.lang.String[]" 
+	    />
+	    <form-property 
+	        name="srsIDList" 
+	        type="java.lang.String[]" 
+	    />
+	</form-bean>
+
     	<form-bean
     		name="loginForm"
     		type="org.vfny.geoserver.form.LoginForm"/>
@@ -126,7 +140,8 @@
         <!-- Demonstrates using index.jsp to forward -->
         <forward
             name="welcome"
-            path="/welcome.do"/>           
+            path="/welcome.do"/>    
+            
                 
         <forward 
         	name="contact"
@@ -774,7 +789,20 @@
         <action
         	path="/admin/loadFromXML"
         	type="org.vfny.geoserver.action.LoadXMLAction"
-        	name="blankBean"/>        	        	
+        	name="blankBean"/>        	
+        	
+        	
+        	<!-- srsHelp -->
+        	
+        <action
+		            path="/srsHelp"
+		            type="org.vfny.geoserver.action.SrsHelpAction"
+		            name="srsInfoForm"
+		            scope="request"
+                 >
+                 <forward name="success" path="/WEB-INF/pages/srsList.jsp"/>
+          </action>
+            
 
 
 <!-- End Submit Actions -->
