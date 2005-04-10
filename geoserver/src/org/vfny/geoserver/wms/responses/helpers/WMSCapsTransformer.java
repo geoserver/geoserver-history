@@ -15,9 +15,12 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.transformer.TransformerIdentityImpl;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -492,6 +495,23 @@ public class WMSCapsTransformer extends TransformerBase {
              * @task REVISIT: should getSRS() return the full URL?
              */
             element("SRS", EPSG + ftype.getSRS());
+              //DJB: I want to be nice to the people reading the capabilities file - I'm going to get the
+              //     human readable name and stick it in the capabilities file
+              // NOTE: this isnt well done because "comment()" isnt in the ContentHandler interface...
+             
+            if (contentHandler instanceof TransformerIdentityImpl)  // HACK HACK HACK -- not sure of the proper way to do this.
+            {
+            	try{
+            		TransformerIdentityImpl ch = (TransformerIdentityImpl) contentHandler;
+            		CoordinateReferenceSystem crs = CRS.decode(EPSG + ftype.getSRS());
+            		String desc = crs.getName().toString()+"\n"+crs.toWKT();
+            		ch.comment(desc.toCharArray(),0,desc.length());
+            	}
+            	catch (Exception e)
+				{
+            		e.printStackTrace();
+				}
+            }
 
             Envelope bbox = null;
 
