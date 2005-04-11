@@ -905,12 +905,17 @@
 <copy failonerror="false" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
 <copy failonerror="false" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
 
+<!-- added by Alex -->
+<copy failonerror="false" toFile="${dir.lib}/JGriB1-0.9.x.jar" file="${dir.maven}/JGriB1/jars/JGriB1-0.9.x.jar" />
+
 	
 <!-- added by DJB to be more complete. -->
 	<copy failonerror="false" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
 	
+	<!-- added by Alex -->
 	<copy failonerror="false" toFile="${dir.lib}/gt2-arcgrid.jar" file="${dir.maven}/gt2/jars/arcgrid-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-image.jar" file="${dir.maven}/gt2/jars/image-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-grib.jar" file="${dir.maven}/gt2/jars/GriB1-${version.geotools}.jar" />
 	
 	<copy failonerror="false" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />

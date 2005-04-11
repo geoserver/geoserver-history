@@ -25,12 +25,11 @@ import javax.media.jai.PropertySourceImpl;
 import javax.media.jai.RenderedOp;
 
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.coverage.grid.stream.StreamGridCoverageExchange;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
 import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridCoverageExchange;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterDescriptor;
@@ -163,6 +162,7 @@ public class CoverageResponse implements Response {
 		
 		try {
 			meta = catalog.getCoverageInfo(request.getCoverage());
+
 			String formatID = meta.getFormatId();
 			DataConfig dataConfig = (DataConfig) request.getHttpServletRequest()
 						.getSession()
@@ -172,9 +172,14 @@ public class CoverageResponse implements Response {
 
 			String realPath = request.getHttpServletRequest().getRealPath("/");
 			URL url = getResource(dfConfig.getUrl(), realPath);
-			GridCoverageExchange gce = new StreamGridCoverageExchange();
-			GridCoverageReader reader = gce.getReader(url);
-			Format format = reader.getFormat();
+
+//			GridCoverageExchange gce = new StreamGridCoverageExchange();
+//			GridCoverageReader reader = gce.getReader(url);
+//			Format format = reader.getFormat();
+
+			Format format = dfConfig.getFactory();
+			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
+
 			ParameterValueGroup params = format.getReadParameters();
 			
 			if( params != null ) {
@@ -238,7 +243,7 @@ public class CoverageResponse implements Response {
 					(GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])
 					: null
 					);
-
+			
 			if( request.getEnvelope() != null && !meta.getEnvelope().contains(request.getEnvelope()) ) {
 				throw new WcsException("InvalidRequestedEnvelope: " + request.getEnvelope().toString());
 			} else if( request.getEnvelope() != null && meta.getEnvelope().contains(request.getEnvelope()) ) {

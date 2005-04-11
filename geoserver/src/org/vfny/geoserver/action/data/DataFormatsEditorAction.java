@@ -24,12 +24,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.coverage.grid.stream.StreamGridCoverageExchange;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
 import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridCoverageExchange;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
@@ -185,9 +184,12 @@ public class DataFormatsEditorAction extends ConfigAction {
 			}
 			
 			URL victimUrl = getResource(url, sc.getRealPath("/"));
-			GridCoverageExchange gce = new StreamGridCoverageExchange();
-			GridCoverageReader reader = gce.getReader(victimUrl);
 			
+//			GridCoverageExchange gce = new StreamGridCoverageExchange();
+//			GridCoverageReader reader = gce.getReader(victimUrl);
+			
+			GridCoverageReader reader = ((AbstractGridFormat) victim).getReader(victimUrl);
+
 			GridCoverage2D gc = (GridCoverage2D) reader.read(
 					vicParams != null ?
 					(GeneralParameterValue[]) vicParams.values().toArray(new GeneralParameterValue[vicParams.values().size()])

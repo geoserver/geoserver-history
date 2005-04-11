@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
-import org.geotools.data.coverage.grid.stream.StreamGridCoverageExchange;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
@@ -29,7 +29,6 @@ import org.geotools.referencing.FactoryFinder;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageExchange;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.InvalidParameterValueException;
@@ -258,9 +257,14 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 
 			String realPath = request.getRealPath("/");
 			URL url = getResource(dfConfig.getUrl(), realPath);
-			GridCoverageExchange gce = new StreamGridCoverageExchange();
-			GridCoverageReader reader = gce.getReader(url);
-			Format format = reader.getFormat();
+
+//			GridCoverageExchange gce = new StreamGridCoverageExchange();
+//			GridCoverageReader reader = gce.getReader(url);
+//			Format format = reader.getFormat();
+
+			Format format = dfConfig.getFactory();
+			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
+
 			ParameterValueGroup params = format.getReadParameters();
 			
 			if( params != null ) {
