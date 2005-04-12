@@ -67,10 +67,13 @@ public class SrsHelpAction extends Action {
     	          
     	            // sort by integer!
     	          	  ArrayList intIds = new ArrayList(5000); // we dont know how many are in the file
-	    	          Enumeration enum = props.propertyNames();
-	    	          while(enum.hasMoreElements())
+                          // didier richard (2005-04-12) :
+                          // as of release 1.5, 'enum' is a keyword, and may not be used as an identifier
+                          // enum -> enumId
+	    	          Enumeration enumId = props.propertyNames();
+	    	          while(enumId.hasMoreElements())
 	    	          {
-	    	          	    String id = (String) enum.nextElement();
+	    	          	    String id = (String) enumId.nextElement();
 	    	          	    intIds.add(new Integer(id)); 
 	    	          }
     	              Integer[] intIdArray  = (Integer[]) intIds.toArray(new Integer[ intIds.size() ] );
