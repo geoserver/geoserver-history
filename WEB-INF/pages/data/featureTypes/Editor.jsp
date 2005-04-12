@@ -42,11 +42,17 @@
 	  <table>
 	  <tr>
 	  <td>
-		<html:text property="SRS" size="47"/>
+		<html:text property="SRS" size="38"/>
 		</td>
 		<td>
 		      <a href="<bean:message key="label.SRSHelp.URL"/>">
               <bean:message key="label.SRSHelp"/>
+            </a>
+        </td>
+        <td>
+        &nbsp;-&nbsp;
+        <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>srsList.do">
+              <bean:message key="label.SRSList"/>
             </a>
         </td>
         </tr>
