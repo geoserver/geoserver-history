@@ -87,7 +87,7 @@
 	</table>
 <!------------------------------------------------------------------------>
 
-<h1> List of Spatial Referencing Systems(SRS) </h1>
+<h1> <bean:message key="srsList.title"/> </h1>
 
 <!------------------------------------------------------------------------>
 <!-- DISPLAY THE LIST OF SRS AND THEIR DEFINITIONS                       ->
@@ -96,7 +96,7 @@
 
 <table border=1 width=95%>
 
-  <tr><th>SRS #</th><th>SRS Definition</th></tr>
+  <tr><th>EPSG #</th><th><bean:message key="srsList.tableTitle"/></th></tr>
   
   
 <!-- This iterator take idx from 0 to however many items there are in the list.
