@@ -19,7 +19,11 @@ import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
+
+import org.geotools.referencing.crs.GeographicCRS;
 import org.geotools.styling.Style;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -89,10 +93,31 @@ public class GetMapResponse implements Response {
         	throw new WmsException("The request bounding box has zero area.");
         }
 
-        // @task TODO: replace by setAreaOfInterest(Envelope,
+        // DJB DONE: replace by setAreaOfInterest(Envelope,
         // CoordinateReferenceSystem)
         // with the user supplied SRS parameter
-        map.setAreaOfInterest(request.getBbox());
+        
+        //if there's a crs in the request, use that.  If not, assume its 4326
+        
+        CoordinateReferenceSystem mapcrs;
+        if ((request.getCrs() == null) || (request.getCrs().equals("")))
+        {
+        	mapcrs = GeographicCRS.WGS84;
+        }
+        else
+        {
+        	//construct the crs object
+        	try {
+        		mapcrs = CRS.decode(request.getCrs());
+        	}
+        	catch (Exception e)
+			{
+        		//couldnt make it - we send off a service exception with the correct info
+        		throw new WmsException(e.getLocalizedMessage(),"InvalidSRS");
+			}
+        }
+        
+        map.setAreaOfInterest(request.getBbox(),mapcrs);
         map.setMapWidth(request.getWidth());
         map.setMapHeight(request.getHeight());
         map.setBgColor(request.getBgColor());
