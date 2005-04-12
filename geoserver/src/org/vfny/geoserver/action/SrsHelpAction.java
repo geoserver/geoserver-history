@@ -4,14 +4,14 @@
  */
 package org.vfny.geoserver.action;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
@@ -23,8 +23,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.referencing.factory.epsg.FactoryFromWKT;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.form.DemoForm;
 
 
@@ -32,14 +34,9 @@ import org.vfny.geoserver.form.DemoForm;
 public class SrsHelpAction extends Action {
 	
 	/**
-	 *  This is a simple action - it reads in the GT2 epsg.properties file and sticks its contents in
-	 *  the Form.
+	 *  This is a simple action - it reads in the GT2 supported EPSG codes. 
 	 * 
-	 *  We do a little monkey business to make sure that we are ordering things by id (its not sorted for 3 reasons -
-	 *  (a) the properties is a hashtable (b) the file isnt in the correct order anyways (c) strings are hard to sort correct)
-	 * 
-	 * 
-	 * TODO: once geosever support EPSG thats not in the properties file, this should
+	 * DONE: once geosever support EPSG thats not in the properties file, this should
 	 *       be a bit more abstract and get a list of all EPSG defs from the 
 	 *       Factory (if possible).  Use toWKT() as its nicer to read.
 	 * 
@@ -50,58 +47,44 @@ public class SrsHelpAction extends Action {
         HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException 
 		{
-    	       ArrayList ids = new ArrayList();
     	       ArrayList defs = new ArrayList();
+    	       ArrayList ids_string = new ArrayList();
     	       
-    	       Properties props = new Properties();
-    	       try
-    	       {    	          
-    	          try{
-    	          	props.load(FactoryFromWKT.class.getResourceAsStream( "epsg.properties"  ));
-    	          }
-    	          catch(Exception e) //saw this being loaded from two places in the GT2 code, lets try both
-				  {
-    	          	props=new Properties();
-    	          	props.load(EPSGCRSAuthorityFactory.class.getResourceAsStream("epsg.properties"));
-				  }
-    	          
-    	            // sort by integer!
-    	          	  ArrayList intIds = new ArrayList(5000); // we dont know how many are in the file
-                          // didier richard (2005-04-12) :
-                          // as of release 1.5, 'enum' is a keyword, and may not be used as an identifier
-                          // enum -> enumId
-	    	          Enumeration enumId = props.propertyNames();
-	    	          while(enumId.hasMoreElements())
-	    	          {
-	    	          	    String id = (String) enumId.nextElement();
-	    	          	    intIds.add(new Integer(id)); 
-	    	          }
-    	              Integer[] intIdArray  = (Integer[]) intIds.toArray(new Integer[ intIds.size() ] );
-    	              Arrays.sort(intIdArray);
-    	              
-    	          
-    	          Pattern comma = Pattern.compile(",");   //see below - for replace "," with ", "
-    	          
-    	          for(int t=0;t<intIdArray.length; t++)
-    	          {
-    	          	    String id = (String) intIdArray[t].toString();
-    	          	    String def = (String) props.getProperty(id);
-    	          	    def = comma.matcher(def).replaceAll(", "); // replace "," with ", " for better html output
-    	          	    ids.add(id);
-    	          	    defs.add(def);
-    	          }
-    	       }
-    	       catch( Exception e )
+    	       Set codes = CRS.getSupportedCode("EPSG");
+    	       
+    	         // make an array of each code (as an int)
+    	       int[] ids = new int[codes.size()];
+    	       int t=0;
+    	       Iterator codeIt = codes.iterator();
+    	       while (codeIt.hasNext())
     	       {
-    	         e.printStackTrace();
+    	       		String code = (String) codeIt.next();
+    	       		String id  = code.substring(code.indexOf(':')+1); //just the number
+    	       		ids[t] = Integer.parseInt(id);
+    	       		t++;
     	       }
+    	       Arrays.sort(ids); //sort to get them in order
     	       
-    
-    	
+    	       for (t=0;t<ids.length;t++) //for each id (in sorted order)
+    	       {
+    	       	   try{  //get its definition
+    	       	   		CoordinateReferenceSystem crs = CRS.decode("EPSG:"+ids[t]);
+    	       	   		String def = crs.toWKT();
+    	       	   		defs.add(def);
+    	       	   		ids_string.add(""+ids[t]);
+    	       	   }
+    	       	   catch(Exception e)
+				   {
+    	       	   	   System.out.println("tried to parse projection "+"EPSG:"+ids[t]+" but couldnt!");
+    	       	   	   //e.printStackTrace(); // dont really expect to get this, so we ignore that one code
+				   }
+    	       	   
+    	       }
+    	         	//send off to the .jsp
     	DynaActionForm  myForm = (DynaActionForm ) form;
 
         myForm.set("srsDefinitionList",defs.toArray(new String[1]) );
-        myForm.set("srsIDList",ids.toArray(new String[1]) );
+        myForm.set("srsIDList",ids_string.toArray(new String[1]) );
 
         // return back to the admin demo
         //
