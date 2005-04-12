@@ -187,7 +187,7 @@ public final class JAISupport {
         //       mostly what we get from jai!
         if (format.equalsIgnoreCase("image/jpeg"))
         {
-            param.setCompressionQuality(0.9f);  // DJB: only do this for jpegs - png freak when you do this!
+            param.setCompressionQuality(0.9f);  // DJB: only do this for jpegs - png freaks when you do this!
             
             
             WritableRaster raster = image.getRaster();
@@ -198,13 +198,7 @@ public final class JAISupport {
 //             now create the new buffer that is used ot write the image:
             BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false, null);
             
-            
-        	//BufferedImage i2 = new BufferedImage(image.getHeight(),image.getWidth(),BufferedImage.TYPE_INT_RGB);  
-        	
-        	//int[] data = new int[image.getWidth()*image.getHeight()];
-        	//image.getRGB(0,0,image.getWidth(),image.getHeight(), data  ,0, image.getHeight());
-        	//i2.setRGB(0,0,image.getWidth(),image.getHeight(),data,0,image.getHeight());
-        	
+                   	
         	image = rgbBuffer;
         }
         
