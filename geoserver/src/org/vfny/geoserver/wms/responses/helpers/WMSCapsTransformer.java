@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.transform.OutputKeys;
@@ -451,7 +452,29 @@ public class WMSCapsTransformer extends TransformerBase {
                     "No common SRS, don't forget to incorporate reprojection support...");
             }
 
-            element("SRS", commonSRS);
+            if (!(commonSRS.equals("")))
+            {
+            	comment("common SRS:");
+            	element("SRS", commonSRS);
+            }
+            
+            //okay - we've sent out the commonSRS, if it exists.
+            
+            comment("All supported EPSG projections:");
+            
+            try {
+            	Set s = CRS.getSupportedCodes("EPSG");
+            	Iterator it = s.iterator();
+            	while (it.hasNext())
+            	{
+            		element("SRS", it.next().toString() );
+            	}
+            }
+            catch (Exception e)
+			{
+            	e.printStackTrace();
+			}
+			
 
             LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
             handleLatLonBBox(latlonBbox);
@@ -482,26 +505,23 @@ public class WMSCapsTransformer extends TransformerBase {
 
             /**
              * @task REVISIT: should getSRS() return the full URL?
+             * no - the spec says it should be a set of <SRS>EPSG:#</SRS>...
              */
             element("SRS", EPSG + ftype.getSRS());
               //DJB: I want to be nice to the people reading the capabilities file - I'm going to get the
               //     human readable name and stick it in the capabilities file
               // NOTE: this isnt well done because "comment()" isnt in the ContentHandler interface...
              
-            if (contentHandler instanceof TransformerIdentityImpl)  // HACK HACK HACK -- not sure of the proper way to do this.
-            {
-            	try{
-            		TransformerIdentityImpl ch = (TransformerIdentityImpl) contentHandler;
+             	try{
             		CoordinateReferenceSystem crs = CRS.decode(EPSG + ftype.getSRS());
-            		String desc = crs.getName().toString()+"\n"+crs.toWKT();
-            		ch.comment(desc.toCharArray(),0,desc.length());
+            		String desc = "WKT definition of this CRS:\n"+crs.toWKT();
+            		comment(desc);
             	}
             	catch (Exception e)
 				{
-            		e.printStackTrace();
+            		e.printStackTrace(); // this shouldnt happen 
 				}
-            }
-
+ 
             Envelope bbox = null;
 
             try {
@@ -636,5 +656,27 @@ public class WMSCapsTransformer extends TransformerBase {
 
             element("LatLonBoundingBox", null, bboxAtts);
         }
+        /**
+         *  adds a comment to the output xml file.
+         *   THIS IS A BIG HACK.
+         *   TODO: do this in the correct manner!
+         * @param comment
+         */
+        public void comment(String comment)
+        {
+        	 if (contentHandler instanceof TransformerIdentityImpl)  // HACK HACK HACK -- not sure of the proper way to do this.
+             {
+             	try{
+             		TransformerIdentityImpl ch = (TransformerIdentityImpl) contentHandler;
+             		ch.comment(comment.toCharArray(),0,comment.length());
+             	}
+             	catch (Exception e)
+    			{
+             		e.printStackTrace();
+    			}
+             }
+        }
+        
     }
 }
+
