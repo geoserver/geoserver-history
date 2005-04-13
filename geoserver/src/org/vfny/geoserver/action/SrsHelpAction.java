@@ -50,7 +50,7 @@ public class SrsHelpAction extends Action {
     	       ArrayList defs = new ArrayList();
     	       ArrayList ids_string = new ArrayList();
     	       
-    	       Set codes = CRS.getSupportedCode("EPSG");
+    	       Set codes = CRS.getSupportedCodes("EPSG");
     	       
     	         // make an array of each code (as an int)
     	       int[] ids = new int[codes.size()];
