@@ -42,7 +42,7 @@
 	  <table>
 	  <tr>
 	  <td>
-		<html:text property="SRS" size="38"/>
+		<html:text property="SRS" size="32"/>
 		</td>
 		<td>
 		      <a href="<bean:message key="label.SRSHelp.URL"/>">
