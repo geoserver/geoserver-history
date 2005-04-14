@@ -51,5 +51,6 @@ if you want them on the server.
 <style filename = "normal.sld" id = "normal"  />
 <style filename = "funkypolyshp.sld" id = "dotty"  />
 <style filename = "usa_ratio.sld" id = "maleVsFemale"  />
+<style filename = "poly.sld" id = "poly"  />
 </styles>
 </catalog>
