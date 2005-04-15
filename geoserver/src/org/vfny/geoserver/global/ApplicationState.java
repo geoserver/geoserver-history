@@ -502,7 +502,10 @@ public class ApplicationState implements PlugIn {
      */
     public Date getXmlTimestamp() {
         if( xmlTimestamp == null){
-            File serviceFile = new File(sc.getRealPath("/WEB-INF/services.xml"));
+        	//DJB: changed for geoserver_data_dir
+        	//File serviceFile = new File(sc.getRealPath("/WEB-INF/services.xml"));
+            File serviceFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(sc),"/WEB-INF/services.xml");
+
             xmlTimestamp = new Date( serviceFile.lastModified() );
         }
         return xmlTimestamp;    

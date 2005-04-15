@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -73,7 +74,10 @@ public class LoadXMLAction extends ConfigAction {
         WFSDTO wfsDTO = null;
         GeoServerDTO geoserverDTO = null;
         DataDTO dataDTO = null;
-        File rootDir = new File(sc.getRealPath("/"));
+        //DJB: changed for geoserver_data_dir    
+       // File rootDir = new File(sc.getRealPath("/"));
+        
+        File rootDir =  GeoserverDataDirectory.getGeoserverDataDirectory(sc);
 
         XMLConfigReader configReader;
 

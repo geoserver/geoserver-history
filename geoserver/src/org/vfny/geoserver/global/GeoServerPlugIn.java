@@ -81,10 +81,11 @@ public class GeoServerPlugIn implements PlugIn {
         }
 
         ServletContext sc = as.getServletContext();
-        String rootDir = sc.getRealPath("/");
+        File geoserverDataDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc); //geoserver_home fix
+         String rootDir = geoserverDataDir.getAbsolutePath();
 
         try {
-            File f = new File(rootDir);
+            File f = geoserverDataDir; //geoserver_home fix
             XMLConfigReader cr = new XMLConfigReader(f);
             GeoServer gs = new GeoServer();
             sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, gs);
