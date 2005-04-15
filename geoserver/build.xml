@@ -919,10 +919,10 @@
 	
 	<copy failonerror="false" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
-	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-wkt-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-experiment.jar" file="${dir.maven}/gt2/jars/experiment-${version.geotools}.jar" />
 
-	<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
+<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" />	
 	<copy failonerror="false" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
@@ -936,7 +936,6 @@
 <copy failonerror="false" file="${dir.geotools}/plugin/postgis/target/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
 <copy failonerror="false" file="${dir.geotools}/plugin/shapefile/target/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
 <copy failonerror="false" file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
-<copy failonerror="false" file="${dir.geotools}/plugin/epsg/target/epsg-${version.geotools}.jar" toFile="${dir.lib}/gt2-epsg.jar" />
 <copy failonerror="false" file="${dir.geotools}/demo/property/target/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
 </target>
 

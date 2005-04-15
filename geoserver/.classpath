@@ -13,8 +13,6 @@
 	<classpathentry kind="var" path="GEOSERVER/commons-lang.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/commons-logging.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/commons-validator.jar"/>
-	<classpathentry kind="var" path="GEOSERVER/epsg.jar"/>
-	<classpathentry kind="var" path="GEOSERVER/epsg-2.1.x.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-arcgrid.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-arcsde.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-epsg.jar"/>
