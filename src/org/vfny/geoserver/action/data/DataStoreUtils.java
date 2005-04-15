@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.global.DataStoreInfo;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -33,8 +35,11 @@ import com.vividsolutions.jts.geom.Envelope;
 public abstract class DataStoreUtils {
     public static DataStore acquireDataStore(Map params, ServletContext sc)
         throws IOException {
-    	String baseDir = sc.getRealPath("/");
-       	DataStore store = DataStoreFinder.getDataStore(getParams(params,baseDir));
+    	//DJB: changed this for geoserver_data_dir   	
+    	//String baseDir = sc.getRealPath("/");
+    	File baseDir =GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+    	
+       	DataStore store = DataStoreFinder.getDataStore(getParams(params,baseDir.getAbsolutePath()));
         if (store == null) {
             //TODO: this should throw an exception, but the classes using
             //this class aren't ready to actually get it...

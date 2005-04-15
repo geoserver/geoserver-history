@@ -34,6 +34,7 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesEditorForm;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import java.io.File;
 import java.io.FileWriter;
@@ -77,7 +78,9 @@ public class StylesEditorAction extends ConfigAction {
             return mapping.findForward("config.data.style");
         }
 
-        File rootDir = new File(getServlet().getServletContext().getRealPath("/"));
+        //DJB: changed for geoserver_data_dir
+        //File rootDir = new File(getServlet().getServletContext().getRealPath("/"));
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(getServlet().getServletContext());
 
         //All styles are stored in the data/styles directory.  When we move to
         //the geoserver_home this call will need to change.

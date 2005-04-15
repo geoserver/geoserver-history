@@ -22,6 +22,7 @@ import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
 import org.geotools.validation.xml.XMLWriter;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
@@ -55,8 +56,9 @@ public class SaveXMLAction extends ConfigAction {
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
-        File rootDir = new File(sc.getRealPath("/"));
-
+       
+        //File rootDir = new File(sc.getRealPath("/"));
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
         try {
             XMLConfigWriter.store((WMSDTO) getWMS(request).toDTO(),
                 (WFSDTO) getWFS(request).toDTO(),
