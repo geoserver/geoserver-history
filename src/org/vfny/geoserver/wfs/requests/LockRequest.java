@@ -29,7 +29,7 @@ public class LockRequest extends WFSRequest {
     private String handle;
 
     /** Specifies a lock expiration. */
-    protected int expiry = -1;
+    protected int expiry = 0; //DJB: this was defaulted to -1 --> the lock would release as soon as it was grabbed!!
 
     /** Specifices whether or not to lock all features grabbed in request */
     protected boolean lockAll = true;
