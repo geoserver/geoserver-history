@@ -332,24 +332,28 @@ public class ApplicationState implements PlugIn {
     		geoserverStatus[3] = geoserverStatus[6] = (int)(100.0*d/(g+b+d));
     	}
 
-    	//datastores
-    	i = tmpVP.keySet().iterator();
+    	//validation
+    	// DJB: noticed that you can have no loaded validation plugins, so this can be null)
     	g = 0;b = 0;d = 0;
-    	while(i.hasNext()){
-    		Object key = i.next();
-    		Object o = tmpVP.get(key);
-    		if(o.equals(Boolean.TRUE)){
-    			g++;
-    			i.remove();
-    			//geoserverDSErrors.remove(key);
-    		}else{
-    			if(o.equals(Boolean.FALSE)){
-    				d++;
-    				i.remove();
-    				//geoserverDSErrors.remove(key);
-    			}else{
-    				b++;
-    			}}
+    	if (tmpVP != null)
+    	{
+	    	i = tmpVP.keySet().iterator();
+	    	while(i.hasNext()){
+	    		Object key = i.next();
+	    		Object o = tmpVP.get(key);
+	    		if(o.equals(Boolean.TRUE)){
+	    			g++;
+	    			i.remove();
+	    			//geoserverDSErrors.remove(key);
+	    		}else{
+	    			if(o.equals(Boolean.FALSE)){
+	    				d++;
+	    				i.remove();
+	    				//geoserverDSErrors.remove(key);
+	    			}else{
+	    				b++;
+	    			}}
+	    	}
     	}
 
     	if(g+b+d==0){
