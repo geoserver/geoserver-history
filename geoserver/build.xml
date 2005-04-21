@@ -505,6 +505,13 @@
 				<include name="*" />
 			</fileset>
 		</copy>
+	
+		<mkdir dir="${basedir}/data/capabilities/sld" />
+		<copy todir="${basedir}/data/capabilities/sld">
+			<fileset dir="${basedir}/capabilities/sld">
+				<include name="*" />
+			</fileset>
+		</copy>	
 
 		<mkdir dir="${basedir}/data/capabilities/validate" />
 		<copy todir="${basedir}/data/capabilities/validate">
