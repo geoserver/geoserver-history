@@ -8,10 +8,7 @@
 <!-- a named layer is the basic building block of an sld document -->
 <NamedLayer>
 <Name>A Test Layer</Name>
-<title>The title of the layer</title>
-<abstract>
-A styling layer used for the unit tests of sldstyler
-</abstract>
+
 <!-- with in a layer you have Named Styles -->
 <UserStyle>
     <!-- again they have names, titles and abstracts -->
@@ -21,16 +18,16 @@ A styling layer used for the unit tests of sldstyler
     <FeatureTypeStyle>
         <Rule>
         <!-- like a linesymbolizer but with a fill too -->
-        <Filter  xmlns:gml="http://www.opengis.net/gml">
-            <Not>
-               <Disjoint>
-                    <PropertyName>Polygons</PropertyName>
+        <ogc:Filter  xmlns:gml="http://www.opengis.net/gml">
+            <ogc:Not>
+               <ogc:Disjoint>
+                    <ogc:PropertyName>Polygons</ogc:PropertyName>
                     <gml:Box srsName="http://www.epsg.com">
                         <gml:coordinates>-110,37 -95,40</gml:coordinates>
                     </gml:Box>
-                </Disjoint>
-           </Not>
-        </Filter>
+                </ogc:Disjoint>
+           </ogc:Not>
+        </ogc:Filter>
         <PolygonSymbolizer>
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->

@@ -4,6 +4,8 @@
 	xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" 
 	xmlns:xlink="http://www.w3.org/1999/xlink" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<NamedLayer>
+         <Name>Forests</Name>
     <UserStyle>
         <Name>Default Styler</Name>
         <Title>Default Styler</Title>
@@ -13,24 +15,26 @@
             <Rule>
                 <Name>name</Name>
                 <Abstract>Abstract</Abstract>
-                <Title>title</Title>
                 <PolygonSymbolizer>
                     <Fill>
                         <GraphicFill>
                         <Graphic>
+                           <ExternalGraphic>
+                          	 <OnlineResource xlink:type="simple" xlink:href="forest_fill.png"/>
+				<Format>image/png</Format>
+				
+                            </ExternalGraphic>
+                            <Opacity>
+			               <ogc:Literal>1.0</ogc:Literal>
+                            </Opacity>
                             <Size>
                                 <ogc:Literal>30</ogc:Literal>
                             </Size>
-                            <Opacity>
-                                <ogc:Literal>1.0</ogc:Literal>
-                            </Opacity>
+                            
                             <Rotation>
                                 <ogc:Literal>0.5</ogc:Literal>
                             </Rotation>
-                            <ExternalGraphic>
-                                <Format>image/png</Format>
-                                <OnlineResource xlink:type="simple" xlink:href="forest_fill.png"/>
-                            </ExternalGraphic>
+                           
                         </Graphic>
                         </GraphicFill>
                         <CssParameter name="fill">
@@ -64,4 +68,5 @@
             </Rule>
         </FeatureTypeStyle>
     </UserStyle>
+    </NamedLayer>
 </StyledLayerDescriptor>
