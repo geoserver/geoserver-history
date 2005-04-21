@@ -5,8 +5,9 @@
 	xmlns:ogc="http://www.opengis.net/ogc"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<NamedLayer><Name>Simple Roads</Name>
 	<UserStyle>
-		<Name>Simple Roads</Name>
+		
 		<Title>Default Styler for simple road segments</Title>
 		<Abstract></Abstract>
 		<FeatureTypeStyle>
@@ -27,4 +28,5 @@
 			</Rule>
 		</FeatureTypeStyle>
 	</UserStyle>
+	</NamedLayer>
 </StyledLayerDescriptor>

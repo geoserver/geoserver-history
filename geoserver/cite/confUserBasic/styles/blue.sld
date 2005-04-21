@@ -3,15 +3,10 @@
 <!-- a named layer is the basic building block of an sld document -->
 <NamedLayer>
 <Name>A Test Layer</Name>
-<title>The title of the layer</title>
-<abstract>
-A styling layer used for the unit tests of sldstyler
-</abstract>
 <!-- with in a layer you have Named Styles -->
 <UserStyle>
     <!-- again they have names, titles and abstracts -->
   <Name>Blue</Name>
-  <Title>A blue linestring style</Title>
   <Abstract>A sample style that uses a filter, printing only the
             lines with a LENGTH property of over 5000.  This will work
             with the default bc_roads layer</Abstract>
@@ -20,12 +15,12 @@ A styling layer used for the unit tests of sldstyler
     <FeatureTypeStyle>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
-        <Filter>
-           <PropertyIsGreaterThan>
-		<PropertyName>LENGTH</PropertyName>
-		<Literal>5000</Literal>
-	   </PropertyIsGreaterThan>
-        </Filter>
+        <ogc:Filter>
+           <ogc:PropertyIsGreaterThan>
+		<ogc:PropertyName>LENGTH</ogc:PropertyName>
+		<ogc:Literal>5000</ogc:Literal>
+	   </ogc:PropertyIsGreaterThan>
+        </ogc:Filter>
         <LineSymbolizer> 
            <Stroke> 
              <CssParameter name="stroke">#0000ff</CssParameter> 

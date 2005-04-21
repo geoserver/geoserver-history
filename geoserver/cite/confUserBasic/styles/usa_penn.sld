@@ -8,10 +8,7 @@
 <!-- a named layer is the basic building block of an sld document -->
 <NamedLayer>
 <Name>A Test Layer</Name>
-<title>The title of the layer</title>
-<abstract>
-A styling layer used for the unit tests of sldstyler
-</abstract>
+
 <!-- with in a layer you have Named Styles -->
 <UserStyle>
     <!-- again they have names, titles and abstracts -->
@@ -21,12 +18,12 @@ A styling layer used for the unit tests of sldstyler
     <FeatureTypeStyle>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
-        <Filter>
-            <PropertyIsEqualTo>
-                <PropertyName>STATE_NAME</PropertyName>
-                <Literal>Pennsylvania</Literal>
-            </PropertyIsEqualTo>
-        </Filter>
+        <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>STATE_NAME</ogc:PropertyName>
+                <ogc:Literal>Pennsylvania</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+        </ogc:Filter>
         <PolygonSymbolizer>
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
