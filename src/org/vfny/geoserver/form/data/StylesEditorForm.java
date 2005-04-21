@@ -27,6 +27,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -44,14 +45,38 @@ public class StylesEditorForm extends ActionForm {
     private boolean _default;
     private boolean defaultChecked = false;
     private boolean defaultInitial;
+    private String[] validationReport = null; // the SLD file with validation errors for it (saxexceptions)
+    
+    /**
+     *  okay this is a bit weird because of how struts html:checkbox works.
+     *   1. if the "thing" is check, then the set method will be called (with "true")
+     *   2. if the "thing" is not checked, then nothing happens!
+     *   
+     *  So, struts says to always set the thing to "false" in the reset method.
+     *    That way, if there's no event (ie. its unset), its state is false
+     *    If there is an event, it'll be set to true.
+     * 
+     *  Unforunately, this doesnt work well when you want a default value (the above give you a default value of false).
+     *  To set the default to "true", then we need two variables.
+     *   The main one, which you set to the default value.
+     *   A secondary one that tells you if the user actually checked it.
+     * 
+     *   In this way, the default value will be sent to the user, but they can uncheck it! 
+     */
+    
+    private boolean fullyValidate;
+    private boolean fullyValidateChecked;
 
 	
     public void reset(ActionMapping arg0, HttpServletRequest request) {
+    	validationReport = null;
         super.reset(arg0, request);
         DataConfig config = ConfigRequests.getDataConfig( request );
 
         UserContainer user = Requests.getUserContainer( request );
         StyleConfig style = user.getStyle();
+        fullyValidate = true; //default value
+        fullyValidateChecked = false; //required by html:checkbox
         if (style == null) {
             // Should not happen (unless they bookmark)
             styleID = "";
@@ -154,6 +179,41 @@ public class StylesEditorForm extends ActionForm {
     public void setSldFile(FormFile filename) {
         this.sldFile= filename;
     }
+    
+    
+    
+    public boolean getFullyValidateChecked() {
+        return fullyValidateChecked;
+    }
+
+
+    public void setFullyValidateChecked(boolean fullyValidateChecked) {
+        this.fullyValidateChecked = fullyValidateChecked;
+    }
+    
+    /**
+     * Access fullyValidate property.
+     * 
+     *  true -> validate against the xsd schema
+     *
+     * @return Returns the fullyValidate.
+     */
+    public boolean getFullyValidate() {
+        return fullyValidate;
+    }
+    /**
+     * Set fullyValidate to fullyValidate.
+     *
+     * @param fullyValidate The fullyValidate to set.
+     */
+    public void setFullyValidate(boolean fullyValidate) {
+    	fullyValidateChecked = true;
+        this.fullyValidate = fullyValidate;
+    }
+    
+   
+    
+    
 
     /**
      * Access styleID property.
@@ -187,5 +247,20 @@ public class StylesEditorForm extends ActionForm {
             return _default;
         }
         return defaultInitial;
+    }
+    
+    public String getValidationReportIndexed(int i)
+    {
+    	return validationReport[i];
+    }
+    
+    public String[] getValidationReport()
+    {
+    	return validationReport;
+    }
+    
+    public void setValidationReport(String[] exs)
+    {
+    	validationReport = exs;
     }
 }
