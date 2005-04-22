@@ -197,7 +197,8 @@ abstract public class Request {
 
 	
 	public String getRootDir(){
-		return httpServletRequest.getSession().getServletContext().getRealPath("/");
+		throw new IllegalArgumentException("getRootDir -- functionality removed - please verify that its okay with geoserver_data_dir");
+		//return httpServletRequest.getSession().getServletContext().getRealPath("/");
 	}
 	
 

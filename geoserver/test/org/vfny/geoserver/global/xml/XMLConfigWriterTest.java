@@ -44,6 +44,7 @@ public class XMLConfigWriterTest extends TestCase {
         super(arg0);
 
         try {
+        	 //DJB: didnt change this for geoserver-home!
             root1 = new File(testPath1);
             root2 = new File(testPath2);
             root3 = new File(testPath3);

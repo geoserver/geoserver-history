@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * DemoForm collects the list of avialable requests for the demo.
@@ -42,7 +43,9 @@ public class DemoForm extends ActionForm {
         super.reset(arg0, request);
         
         ServletContext context = getServlet().getServletContext();
-        this.dir = new File(context.getRealPath("/data/demo"));
+        //DJB: changed this for geoserver_data_dir 
+       // this.dir = new File(context.getRealPath("/data/demo"));
+        this.dir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(context),"/data/demo");
         demoList = new ArrayList();
         demoList.add("");
                 
