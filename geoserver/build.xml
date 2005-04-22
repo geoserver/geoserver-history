@@ -809,11 +809,13 @@
 		<include name="RUNNING.txt" />
 	</fileset>
 </copy>
+	<!--
 	<copy todir="${dir.build}">
 		<fileset dir="${basedir}/bin">
 		<include name="**/*" />
 		</fileset>
-</copy>
+    </copy>
+-->
 <copy todir="${dir.build}/documents/" failonerror="false">
 	<fileset dir="${dir.doc}">
 		<include name="**/*" />
@@ -847,8 +849,11 @@
 	<delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
 	<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
 
+	
 <delete dir="${dir.build}" failonerror="false" />
+	<!--
 <delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
+ -->
 
 </target>
 
