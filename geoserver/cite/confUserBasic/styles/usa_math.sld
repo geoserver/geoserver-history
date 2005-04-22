@@ -8,10 +8,7 @@
 <!-- a named layer is the basic building block of an sld document -->
 <NamedLayer>
 <Name>A Test Layer</Name>
-<title>The title of the layer</title>
-<abstract>
-A styling layer used for the unit tests of sldstyler
-</abstract>
+
 <!-- with in a layer you have Named Styles -->
 <UserStyle>
     <!-- again they have names, titles and abstracts -->
@@ -28,13 +25,13 @@ A styling layer used for the unit tests of sldstyler
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#000000</CssParameter>
               <CssParameter name="opacity">
-                <Div>
-                    <PropertyName>MANUAL</PropertyName>
-                    <PropertyName>WORKERS</PropertyName>
-                </Div>
+                <ogc:Div>
+                    <ogc:PropertyName>MANUAL</ogc:PropertyName>
+                    <ogc:PropertyName>WORKERS</ogc:PropertyName>
+                </ogc:Div>
               </CssParameter>
            </Fill>
-           <stroke/>     
+           <Stroke/>     
         </PolygonSymbolizer>
         
       </Rule>

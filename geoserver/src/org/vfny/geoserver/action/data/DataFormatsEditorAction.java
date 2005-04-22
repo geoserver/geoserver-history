@@ -55,7 +55,6 @@ public class DataFormatsEditorAction extends ConfigAction {
 		DataFormatsEditorForm dataFormatsForm = (DataFormatsEditorForm) form;
 		
 		String dataFormatID = dataFormatsForm.getDataFormatId();
-		//String namespace = dataFormatsForm.getNamespaceId();
 		String type = dataFormatsForm.getType();
 		String url = dataFormatsForm.getUrl();
 		String description = dataFormatsForm.getDescription();
@@ -147,26 +146,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 			}
 		}
 		
-		// put magic namespace into the mix
-		// not sure if we want to do this, as we want the full namespace, not
-		//the id.  But getParams in DataStore may override this - ch
-		//        parameters.put("namespace", dataFormatsForm.getNamespaceId());
-		//        paramTexts.put("namespace", dataFormatsForm.getNamespaceId());
-		
-		//        //dump("editor", connectionParams );
-		//        //dump("texts ",paramTexts );        
-		//        if (!factory.canProcess(parameters)) {
-		//            // We could not use these params!
-		//            //
-		//            ActionErrors errors = new ActionErrors();
-		//            errors.add(ActionErrors.GLOBAL_ERROR,
-		//                new ActionError("error.cannotProcessConnectionParams"));
-		//            saveErrors(request, errors);
-		//
-		//            return mapping.findForward("config.data.store.editor");
-		//        }
-		
-		try {
+ 	try {
 			ServletContext sc = request.getSession().getServletContext();
 			Map niceParams = DataFormatUtils.getParams(parameters, sc);
 			Format victim = factory;
@@ -185,11 +165,9 @@ public class DataFormatsEditorAction extends ConfigAction {
 			
 			URL victimUrl = getResource(url, sc.getRealPath("/"));
 			
-//			GridCoverageExchange gce = new StreamGridCoverageExchange();
-//			GridCoverageReader reader = gce.getReader(victimUrl);
-			
+		
 			GridCoverageReader reader = ((AbstractGridFormat) victim).getReader(victimUrl);
-
+			
 			GridCoverage2D gc = (GridCoverage2D) reader.read(
 					vicParams != null ?
 					(GeneralParameterValue[]) vicParams.values().toArray(new GeneralParameterValue[vicParams.values().size()])

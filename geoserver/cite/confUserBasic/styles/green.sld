@@ -3,10 +3,7 @@
 <!-- a named layer is the basic building block of an sld document -->
 <NamedLayer>
 <Name>A Test Layer</Name>
-<title>The title of the layer</title>
-<abstract>
-A styling layer used for the unit tests of sldstyler
-</abstract>
+
 <!-- with in a layer you have Named Styles -->
 <UserStyle>
     <!-- again they have names, titles and abstracts -->

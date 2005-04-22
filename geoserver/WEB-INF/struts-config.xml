@@ -849,7 +849,9 @@
         	name="dataStylesEditorForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/styleEditor.do"/>
+        	input="/config/data/styleEditor.do">
+        	   <forward name="schemaErrors" path="/WEB-INF/pages/schemaErrors.jsp"/>
+         </action>
         	        	        	
 		<!-- DATA FeatureType Actions -->
         <action

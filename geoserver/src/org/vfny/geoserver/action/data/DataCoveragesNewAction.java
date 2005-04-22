@@ -96,9 +96,6 @@ public class DataCoveragesNewAction extends ConfigAction {
 			ServletContext sc = getServlet().getServletContext();
 			URL url = getResource(dfConfig.getUrl(), sc.getRealPath("/"));
 
-//			GridCoverageExchange gce = new StreamGridCoverageExchange();
-//			GridCoverageReader reader = gce.getReader(url);
-//			Format format = reader.getFormat();
 
 			Format format = dfConfig.getFactory();
 			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);

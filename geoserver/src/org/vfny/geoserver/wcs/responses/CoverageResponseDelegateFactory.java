@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.vfny.geoserver.wcs.responses.coverage.AscCoverageResponseDelegate;
+import org.vfny.geoserver.wcs.responses.coverage.GTopo30CoverageResponseDelegate;
+import org.vfny.geoserver.wcs.responses.coverage.GriB1CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.IMGCoverageResponseDelegate;
 
 
@@ -26,6 +28,8 @@ public class CoverageResponseDelegateFactory {
     static {
         encoders.add(new AscCoverageResponseDelegate());
         encoders.add(new IMGCoverageResponseDelegate());
+        encoders.add(new GTopo30CoverageResponseDelegate());
+        encoders.add(new GriB1CoverageResponseDelegate());
     }
 
     private CoverageResponseDelegateFactory() {

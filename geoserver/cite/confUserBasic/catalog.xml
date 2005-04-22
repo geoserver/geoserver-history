@@ -238,6 +238,13 @@
 			<type>WorldImage</type>
 			<url>file:data/coverages/img_sample/usa.png</url>
 		</format>
+
+	<format enabled = "true" id = "gtopo30" >
+		<description>gtopo30 dem file from usgs</description>
+		<type>Gtopo30</type>
+		<url>file:data/coverages/gtopo_sample/W020N90.DEM</url>
+	</format>
+
   </formats>
 
 	<!-- Defines the namespaces to be used.  All dataStores must refer to a   -->

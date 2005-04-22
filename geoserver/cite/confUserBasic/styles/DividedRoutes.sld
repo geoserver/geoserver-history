@@ -4,6 +4,7 @@
 	xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" 
 	xmlns:xlink="http://www.w3.org/1999/xlink" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<NamedLayer> <Name>DividedRoutes</Name>
     <UserStyle>
         <Name>Default Styler</Name>
         <Title>Default Styler</Title>
@@ -13,7 +14,6 @@
             <Rule>
                 <Name>name</Name>
                 <Abstract>Abstract</Abstract>
-                <Title>title</Title>
                 <LineSymbolizer>
                     <Stroke>
                         <CssParameter name="stroke">
@@ -27,4 +27,5 @@
             </Rule>
         </FeatureTypeStyle>
     </UserStyle>
+    </NamedLayer>
 </StyledLayerDescriptor>
