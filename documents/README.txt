@@ -1,3 +1,49 @@
+GeoServer 1.3.0-beta3 README file
+--------------------------------
+
+Major Changes
+-------------
+1. Geoserver now passes all WFS and WMS CITE tests
+2. Geoserver WMS now does reprojection
+     You can use "&SRS=NONE" if you dont want to do any reprojection.
+3. Geoserver now allows you to define your geoserver data directory
+    (previously called "GEOSERVER_HOME") - see below
+4. Added a bunch of "helpers" for SRS (spatial referencing system) since people will have to define their SRSs now
+5. Full SLD schema validation support
+
+
+
+Minor Changes
+-------------
+1. bug fixes
+2. set of lite renderer improvements
+3. added a WFS lock tutorial (http://docs.codehaus.org/display/GEOS/Feature+Locking)
+4. upgraded to latest geotools
+
+
+You can define your geoserver data directory in three ways:
+
+1."GEOSERVER_DATA_DIR" system property.
+   this will most likely have come from "java -DGEOSERVER_DATA_DIR=..."
+or from you web container's GUI
+2. "GEOSERVER_DATA_DIR" in the web.xml document:
+     <context-param>
+            <param-name>GEOSERVER_DATA_DIR</param-name>
+            <param-value>c:\myGeoserverData</param-value>
+     </context-param>
+3. Defaults to the old behavior - ie. the application root - usually "server/geoserver" in your .WAR.
+
+
+
+
+To make a new one of these data directories, just:
+
+1. create the data directory
+2. copy "data/" from an already running geoserver
+3. create a "WEB-INF/" directory
+5. copy "catalog.xml" and "services.xml" into the WEB-INF/ directory
+
+
 GeoServer 1.3.0-beta2 README file
 --------------------------------
 
