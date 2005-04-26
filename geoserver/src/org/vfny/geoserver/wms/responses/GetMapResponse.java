@@ -102,9 +102,12 @@ public class GetMapResponse implements Response {
         //if there's a crs in the request, use that.  If not, assume its 4326
         
         CoordinateReferenceSystem mapcrs;
-        if ((request.getCrs() == null) || (request.getCrs().equals("")))
+        //DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
+        //     instead we use "NONE" - which is no-projection.
+        //     Previous behavior was to the WSG84 lat/long (4326)
+        if ((request.getCrs() == null) || request.getCrs().equals("")|| request.getCrs().equalsIgnoreCase("NONE"))
         {
-        	mapcrs = GeographicCRS.WGS84;
+        	mapcrs = null;
         }
         else
         {
@@ -119,7 +122,11 @@ public class GetMapResponse implements Response {
 			}
         }
         
-        map.setAreaOfInterest(request.getBbox(),mapcrs);
+        //DJB: added this to be nicer about the "NONE" srs.
+        if (mapcrs !=null)
+        	map.setAreaOfInterest(request.getBbox(),mapcrs);
+        else
+        	map.setAreaOfInterest(request.getBbox());
         map.setMapWidth(request.getWidth());
         map.setMapHeight(request.getHeight());
         map.setBgColor(request.getBgColor());

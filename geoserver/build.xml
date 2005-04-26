@@ -38,7 +38,7 @@
 	<!-- ====================================================================== -->
 
 	<!-- release version -->
-	<property name="name.release" value="1.3.0-beta2" />
+	<property name="name.release" value="1.3.0-beta3" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -816,11 +816,13 @@
 		<include name="RUNNING.txt" />
 	</fileset>
 </copy>
+	<!--
 	<copy todir="${dir.build}">
 		<fileset dir="${basedir}/bin">
 		<include name="**/*" />
 		</fileset>
-</copy>
+    </copy>
+-->
 <copy todir="${dir.build}/documents/" failonerror="false">
 	<fileset dir="${dir.doc}">
 		<include name="**/*" />
@@ -854,8 +856,11 @@
 	<delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
 	<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
 
+	
 <delete dir="${dir.build}" failonerror="false" />
+	<!--
 <delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
+ -->
 
 </target>
 
