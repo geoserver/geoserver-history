@@ -83,11 +83,24 @@ public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
 		}
 		//encode and write to the output
 		GridCoverageWriter writer = new GRIB1Writer(output);
-		if(writer!=null)
-			writer.write(this.sourceCoverage,null);
-		else
-			throw new ServiceException("Could not instantiate a grib writer");
-		output.flush();
+		if(writer!=null){
+            //requested metadata names
+            String[] metadataNames = writer.getMetadataNames();
+
+            if(metadataNames!=null)
+            {
+            	//setting requested  metadata for the writer
+            	for (int j = 0; j < metadataNames.length; j++) 
+            		writer.setMetadataValue(metadataNames[j],          	
+            			sourceCoverage.getMetadataValue(metadataNames[j]));
+            	//write
+            	writer.write(this.sourceCoverage,null);
+            	output.flush();
+            	return;
+            }
+ 		}
+     	throw new ServiceException("Could not instantiate a grib writer");
+		
 
 	}
 

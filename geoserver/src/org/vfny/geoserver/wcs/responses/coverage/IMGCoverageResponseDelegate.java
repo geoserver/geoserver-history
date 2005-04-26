@@ -11,6 +11,9 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import javax.media.jai.PlanarImage;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.gce.image.WorldImageWriter;
+import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridCoverageWriter;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.WcsException;
@@ -32,6 +35,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 	public boolean canProduce(String outputFormat) {
 		
 		if(outputFormat.equalsIgnoreCase("bmp")||
+				outputFormat.equalsIgnoreCase("gif")||
 				outputFormat.equalsIgnoreCase("tiff")||
 				outputFormat.equalsIgnoreCase("png")||
 				outputFormat.equalsIgnoreCase("jpeg")||
@@ -69,13 +73,18 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 					+ " or has not succeed");
 		}
 		try {
-			RenderedImage image = sourceCoverage.geophysics(false).getRenderedImage();
-			PlanarImage surrogateImage = null;
+			
+			//RenderedImage image = sourceCoverage.geophysics(false).getRenderedImage();
+			//PlanarImage surrogateImage = null;
 
-
-					
+			GridCoverageWriter writer= new WorldImageWriter(output);
+		      //writing parameters for png
+	        Format writerParams = writer.getFormat();
+	        writerParams.getWriteParameters().parameter("Format").setValue("gif");	
+	        //	      writing
+	        writer.write(sourceCoverage.geophysics(false), null);
 			/** Write image to disk and display it */
-			ImageIO.write(image /*highlightImage(surrogateImage)*/, outputFormat.toLowerCase(), output);
+			//ImageIO.write(image /*highlightImage(surrogateImage)*/, outputFormat.toLowerCase(), output);
 			output.flush();
 			output.close();
 		} catch (Exception e) {

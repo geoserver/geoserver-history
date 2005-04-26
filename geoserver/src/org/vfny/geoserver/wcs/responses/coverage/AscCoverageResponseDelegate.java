@@ -11,6 +11,7 @@ import java.util.zip.GZIPOutputStream;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.stream.StreamGridCoverageExchange;
 import org.geotools.gce.arcgrid.ArcGridFormat;
+import org.geotools.gce.arcgrid.ArcGridWriter;
 import org.opengis.coverage.grid.GridCoverageExchange;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.ParameterValueGroup;
@@ -75,8 +76,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
         }
 
 		try {
-			GridCoverageExchange gce = new StreamGridCoverageExchange();
-			GridCoverageWriter writer = gce.getWriter(output, new ArcGridFormat());
+			GridCoverageWriter writer = new ArcGridWriter(output);
 			ParameterValueGroup params = writer.getFormat().getWriteParameters();
 		    params.parameter("Compressed").setValue(compressOutput);
 		    writer.write(sourceCoverage, null);
