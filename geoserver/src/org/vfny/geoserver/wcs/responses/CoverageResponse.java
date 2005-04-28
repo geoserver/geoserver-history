@@ -5,9 +5,8 @@
 package org.vfny.geoserver.wcs.responses;
  
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.io.IOException;
@@ -244,99 +243,7 @@ public class CoverageResponse implements Response {
 					: null
 					);
 			
-			if( request.getEnvelope() != null && !meta.getEnvelope().contains(request.getEnvelope()) ) {
-				throw new WcsException("InvalidRequestedEnvelope: " + request.getEnvelope().toString());
-			} else if( request.getEnvelope() != null && meta.getEnvelope().contains(request.getEnvelope()) ) {
-				com.vividsolutions.jts.geom.Envelope envelope = new com.vividsolutions.jts.geom.Envelope();
-				GeneralEnvelope gEnvelope = (GeneralEnvelope) coverage.getEnvelope();
-				envelope.init(
-						gEnvelope.getLowerCorner().getOrdinate(0),
-						gEnvelope.getUpperCorner().getOrdinate(0),
-						gEnvelope.getLowerCorner().getOrdinate(1),
-						gEnvelope.getUpperCorner().getOrdinate(1)
-				);
-				com.vividsolutions.jts.geom.Envelope subEnvelope = request.getEnvelope();
-				GeneralEnvelope gSEnvelope = new GeneralEnvelope(new Rectangle2D.Double(
-						subEnvelope.getMinX(),
-						subEnvelope.getMinY(),
-						subEnvelope.getWidth(),
-						subEnvelope.getHeight())
-				); 
-
-				RenderedImage image = coverage.geophysics(true).getRenderedImage();
-			    WritableRaster raster = (WritableRaster) image.getData();
-				
-			    int nX = raster.getWidth();
-			    int nY = raster.getHeight();
-
-			    double lo1 = envelope.getMinX();
-			    double la1 = envelope.getMinY();
-			    double lo2 = envelope.getMaxX();
-			    double la2 = envelope.getMaxY();
-			    
-			    double los1 = subEnvelope.getMinX();
-			    double las1 = subEnvelope.getMinY();
-			    double los2 = subEnvelope.getMaxX();
-			    double las2 = subEnvelope.getMaxY();
-
-			    double dX = (lo2 - lo1) / nX;
-			    double dY = (la2 - la1) / nY;
-
-			    double lonIndex1 = java.lang.Math.ceil((los1 - lo1) / dX); 
-			    double lonIndex2 = java.lang.Math.floor((los2 - lo1) / dX); 
-			    double latIndex1 = java.lang.Math.floor((la2 - las2) / dY); 
-			    double latIndex2 = java.lang.Math.ceil((la2 - las1) / dY); 
-
-			    int cnX = new Double(lonIndex2 - lonIndex1).intValue();
-			    int cnY = new Double(latIndex2 - latIndex1).intValue();
-
-			    
-			    ParameterBlock pbCrop = new ParameterBlock();
-			    pbCrop.addSource((PlanarImage) image);
-			    pbCrop.add(new Double(lonIndex1).floatValue());//x origin
-			    pbCrop.add(new Double(latIndex1).floatValue());//y origin
-			    pbCrop.add(new Float(cnX).floatValue());//width
-			    pbCrop.add(new Float(cnY).floatValue());//height
-			    RenderedOp result = JAI.create("crop", pbCrop);
-			    
-				//getting real (cropped) data
-			    WritableRaster croppedRaster = (WritableRaster) result.getAsBufferedImage().getData();
-			    
-			    //creating the buffered image
-				BufferedImage bImage= new BufferedImage(
-						coverage.getSampleDimensions()[0].geophysics(true).getColorModel(),
-						croppedRaster,false,null);
-				
-				//creating a copy of the given grid coverage2D
-				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
-						bImage,
-						coverage.getCoordinateReferenceSystem(),
-						gSEnvelope,
-						coverage.getSampleDimensions(),
-						null,
-						((PropertySourceImpl)coverage).getProperties());
-
-				delegate.prepare(outputFormat, subCoverage);
-			} else {
-				//getting real data
-				WritableRaster raster = (WritableRaster) coverage.geophysics(true).getRenderedImage().getData();
-				
-				//creating the buffered image
-				BufferedImage bImage= new BufferedImage(
-						coverage.getSampleDimensions()[0].geophysics(true).getColorModel(),
-						raster,false,null);
-				
-				//creating a copy of the given grid coverage2D
-				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
-						bImage,
-						coverage.getCoordinateReferenceSystem(),
-						coverage.getEnvelope(),
-						coverage.getSampleDimensions(),
-						null,
-						((PropertySourceImpl)coverage).getProperties());
-
-				delegate.prepare(outputFormat, subCoverage);
-			}
+			getCroppedCoverage(request, outputFormat, meta, coverage);
 		} catch (IOException e) {
 			throw new WcsException(e, "problem with CoverageResults",
 					request.getHandle());
@@ -349,6 +256,149 @@ public class CoverageResponse implements Response {
 		} catch (SecurityException e) {
 			throw new WcsException(e, "problem with CoverageResults",
 					request.getHandle());
+		}
+	}
+
+	/**
+	 * @param request
+	 * @param outputFormat
+	 * @param meta
+	 * @param coverage
+	 * @throws WcsException
+	 * @throws IOException
+	 */
+	private void getCroppedCoverage(CoverageRequest request, String outputFormat, CoverageInfo meta, GridCoverage2D coverage) throws WcsException, IOException {
+		if( request.getEnvelope() != null ) {
+			com.vividsolutions.jts.geom.Envelope envelope = new com.vividsolutions.jts.geom.Envelope();
+			GeneralEnvelope gEnvelope = (GeneralEnvelope) coverage.getEnvelope();
+			envelope.init(
+					gEnvelope.getLowerCorner().getOrdinate(0),
+					gEnvelope.getUpperCorner().getOrdinate(0),
+					gEnvelope.getLowerCorner().getOrdinate(1),
+					gEnvelope.getUpperCorner().getOrdinate(1)
+			);
+			com.vividsolutions.jts.geom.Envelope subEnvelope = request.getEnvelope();
+			GeneralEnvelope gSEnvelope = new GeneralEnvelope(new Rectangle2D.Double(
+					subEnvelope.getMinX(),
+					subEnvelope.getMinY(),
+					subEnvelope.getWidth(),
+					subEnvelope.getHeight())
+			); 
+			//getting raw image
+			final RenderedImage image = coverage.getRenderedImage();
+			
+			//getting dimensions of the raw image to evaluate the steps
+			final int nX = image.getWidth();
+			final int nY = image.getHeight();
+			final double lo1 = envelope.getMinX();
+			final double la1 = envelope.getMinY();
+			final double lo2 = envelope.getMaxX();
+			final double la2 = envelope.getMaxY();
+			
+			final double los1 = subEnvelope.getMinX();
+			final double las1 = subEnvelope.getMinY();
+			final double los2 = subEnvelope.getMaxX();
+			final double las2 = subEnvelope.getMaxY();
+			
+			final double dX = (lo2 - lo1) / nX;
+			final double dY = (la2 - la1) / nY;//we have to keep into account axis directions
+			//when using the image
+
+			final double lonIndex1 = java.lang.Math.ceil((los1 - lo1) / dX); 
+			final double lonIndex2 = java.lang.Math.floor((los2 - lo1) / dX); 
+			final double latIndex1 = java.lang.Math.floor((la2 - las2) / dY); 
+			final double latIndex2 = java.lang.Math.ceil((la2 - las1) / dY); 
+			
+			final int cnX = new Double(lonIndex2 - lonIndex1).intValue();
+			final int cnY = new Double(latIndex2 - latIndex1).intValue();
+
+			if( !meta.getEnvelope().intersects(request.getEnvelope()) ) {
+				throw new WcsException("Invalid Requested Envelope: " + request.getEnvelope());
+			} else if( !meta.getEnvelope().contains(request.getEnvelope()) ) {
+				/**creating a a constant image for the overlay or composition*/
+				PlanarImage imgBackground = null;
+				ParameterBlock pb = new ParameterBlock();
+				final int numBands = image.getSampleModel().getNumBands();
+
+				// 1) per il colormodel usare imagelayout passato come rendering hint
+				
+				
+				// Create a ParameterBlock with the parameters for the creation of the   
+				// output image.    
+				pb.add(new Float( subEnvelope.getWidth() / dX));
+				pb.add(new Float( subEnvelope.getHeight() / dY));
+				if( image.getSampleModel().getTransferType() == DataBuffer.TYPE_BYTE) { 
+					Byte[] bandValues = new Byte[numBands];  
+					// Fill the array with a constant value.  
+					for(int band=0;band<bandValues.length;band++)  
+						bandValues[band] = new Byte(new Double(0.0).byteValue());
+					pb.add(bandValues);
+				} else if( image.getSampleModel().getTransferType() == DataBuffer.TYPE_DOUBLE) {
+/*					Double[] bandValues = new Double[numBands];  
+					// Fill the array with a constant value.  
+					for(int band=0;band<bandValues.length-1;band++)  
+						bandValues[band] = Double.NaN;
+					pb.add(bandValues);
+*/				}
+				imgBackground = JAI.create("constant", pb, null);
+				
+				/**translating the old one*/
+				pb.removeParameters();
+				pb.removeSources();
+				pb.addSource(image);
+				pb.add((float)((lo1-los1)/dX));
+				pb.add((float)((las2-la2)/dY));
+				RenderedImage renderableSource=JAI.create("translate",pb);
+				
+				/**overlaying images*/
+				pb.removeSources();
+				pb.removeParameters();
+				//pb.addSource(renderableSource);
+				//pb.add();
+				RenderedImage destOverlayed=JAI.create("overlay",imgBackground, renderableSource);
+
+				//creating a copy of the given grid coverage2D
+				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
+						destOverlayed,
+						coverage.getCoordinateReferenceSystem(),
+						gSEnvelope,
+						coverage.getSampleDimensions(),
+						null,
+						((PropertySourceImpl)coverage).getProperties());
+				
+				delegate.prepare(outputFormat, subCoverage);
+			} else if( meta.getEnvelope().contains(request.getEnvelope()) ) {
+				ParameterBlock pbCrop = new ParameterBlock();
+				pbCrop.addSource((PlanarImage) image);
+				pbCrop.add(new Double(lonIndex1).floatValue());//x origin
+				pbCrop.add(new Double(latIndex1).floatValue());//y origin
+				pbCrop.add(new Float(cnX).floatValue());//width
+				pbCrop.add(new Float(cnY).floatValue());//height
+				RenderedOp result = JAI.create("crop", pbCrop);
+				
+				//creating a copy of the given grid coverage2D
+				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
+						result,
+						coverage.getCoordinateReferenceSystem(),
+						gSEnvelope,
+						coverage.getSampleDimensions(),
+						null,
+						((PropertySourceImpl)coverage).getProperties());
+				
+				delegate.prepare(outputFormat, subCoverage);
+			}
+		} else {
+			RenderedImage image = coverage.geophysics(true).getRenderedImage();
+			//creating a copy of the given grid coverage2D
+			GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
+					image,
+					coverage.getCoordinateReferenceSystem(),
+					coverage.getEnvelope(),
+					coverage.getSampleDimensions(),
+					null,
+					((PropertySourceImpl)coverage).getProperties());
+			
+			delegate.prepare(outputFormat, subCoverage);
 		}
 	}
 	
