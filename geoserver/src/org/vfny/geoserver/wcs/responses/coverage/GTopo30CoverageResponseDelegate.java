@@ -73,9 +73,9 @@ public class GTopo30CoverageResponseDelegate implements
 	public void encode(OutputStream output) throws ServiceException,
 			IOException {
 		//creating a zip outputstream
-		ByteArrayOutputStream outB= new ByteArrayOutputStream();
-		ZipOutputStream outZ= new ZipOutputStream(outB);
-		
+		//ByteArrayOutputStream outB = new ByteArrayOutputStream();
+		ZipOutputStream outZ= new ZipOutputStream(output);
+		output=outZ;
 		
 		//creating a writer
 		GridCoverageWriter writer = new GTopo30Writer(outZ);
@@ -85,14 +85,9 @@ public class GTopo30CoverageResponseDelegate implements
 			writer.write(this.sourceCoverage,null);
 		else
 			throw new ServiceException("Could not create a writer for the format Gtopo30!");
-		
 		outZ.flush();
 		outZ.close();
-		outB.writeTo(output);
-		
-		output.flush();
-
-
+	
 	}
 
 }
