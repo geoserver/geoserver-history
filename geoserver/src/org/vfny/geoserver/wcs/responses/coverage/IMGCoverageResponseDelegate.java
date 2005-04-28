@@ -80,7 +80,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 			GridCoverageWriter writer= new WorldImageWriter(output);
 		      //writing parameters for png
 	        Format writerParams = writer.getFormat();
-	        writerParams.getWriteParameters().parameter("Format").setValue("gif");	
+	        writerParams.getWriteParameters().parameter("Format").setValue(this.outputFormat);	
 	        //	      writing
 	        writer.write(sourceCoverage.geophysics(false), null);
 			/** Write image to disk and display it */
