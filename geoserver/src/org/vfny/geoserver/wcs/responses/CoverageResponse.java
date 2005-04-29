@@ -4,9 +4,14 @@
  */
 package org.vfny.geoserver.wcs.responses;
  
+import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
+import java.awt.image.SampleModel;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +23,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
+import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.PropertySourceImpl;
+import javax.media.jai.RasterFactory;
 import javax.media.jai.RenderedOp;
+import javax.media.jai.operator.CompositeDescriptor;
 
+import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
@@ -56,9 +65,15 @@ import org.vfny.geoserver.wcs.requests.CoverageRequest;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class CoverageResponse implements Response {
+	public static final int TRANS_BLACK = 0;
+	
+	public static final int TRANS_WHITE = 1;
+	
 	/** Standard logging instance for class */
 	private static final Logger LOGGER = Logger.getLogger(
 	"org.vfny.geoserver.responses");
+
+	
 	CoverageResponseDelegate delegate;
 	
 	/**
@@ -285,7 +300,7 @@ public class CoverageResponse implements Response {
 					subEnvelope.getHeight())
 			); 
 			//getting raw image
-			final RenderedImage image = coverage.getRenderedImage();
+			RenderedImage image = coverage.getRenderedImage();
 			
 			//getting dimensions of the raw image to evaluate the steps
 			final int nX = image.getWidth();
@@ -316,57 +331,101 @@ public class CoverageResponse implements Response {
 				throw new WcsException("Invalid Requested Envelope: " + request.getEnvelope());
 			} else if( !meta.getEnvelope().contains(request.getEnvelope()) ) {
 				/**creating a a constant image for the overlay or composition*/
-				PlanarImage imgBackground = null;
-				ParameterBlock pb = new ParameterBlock();
 				final int numBands = image.getSampleModel().getNumBands();
 
-				// 1) per il colormodel usare imagelayout passato come rendering hint
-				
-				
-				// Create a ParameterBlock with the parameters for the creation of the   
-				// output image.    
-				pb.add(new Float( subEnvelope.getWidth() / dX));
-				pb.add(new Float( subEnvelope.getHeight() / dY));
-				if( image.getSampleModel().getTransferType() == DataBuffer.TYPE_BYTE) { 
-					Byte[] bandValues = new Byte[numBands];  
+				if( image.getSampleModel().getDataType() == DataBuffer.TYPE_BYTE ) {
+					ParameterBlock pb = new ParameterBlock();
+					// Create the background Image.
+					Object[] bandValues = null;
+					bandValues = new Byte[(numBands%2 != 0 ? numBands : numBands - 1)];  
 					// Fill the array with a constant value.  
 					for(int band=0;band<bandValues.length;band++)  
-						bandValues[band] = new Byte(new Double(0.0).byteValue());
-					pb.add(bandValues);
-				} else if( image.getSampleModel().getTransferType() == DataBuffer.TYPE_DOUBLE) {
-/*					Double[] bandValues = new Double[numBands];  
-					// Fill the array with a constant value.  
-					for(int band=0;band<bandValues.length-1;band++)  
-						bandValues[band] = Double.NaN;
-					pb.add(bandValues);
-*/				}
-				imgBackground = JAI.create("constant", pb, null);
-				
-				/**translating the old one*/
-				pb.removeParameters();
-				pb.removeSources();
-				pb.addSource(image);
-				pb.add((float)((lo1-los1)/dX));
-				pb.add((float)((las2-la2)/dY));
-				RenderedImage renderableSource=JAI.create("translate",pb);
-				
-				/**overlaying images*/
-				pb.removeSources();
-				pb.removeParameters();
-				//pb.addSource(renderableSource);
-				//pb.add();
-				RenderedImage destOverlayed=JAI.create("overlay",imgBackground, renderableSource);
+						bandValues[band] = new Byte((byte)(numBands%2 != 0 ? 0xFF : 0x00));
+			        pb = new ParameterBlock();
+					pb.add(new Float( subEnvelope.getWidth() / dX)).add(new Float( subEnvelope.getHeight() / dY));
+			        pb.add(bandValues);
+					PlanarImage imgBackground = 
+						(numBands%2 != 0 ? JAI.create("constant", pb, null) : addTransparency(JAI.create("constant", pb, null), TRANS_WHITE));
+					
+			        /**if we add a new band to the Coverage we have to add a new SampleDimension too*/
+			        GridSampleDimension[] sampleDimensions = new GridSampleDimension[(numBands%2 == 0 ? numBands : numBands+1)];
+			        for( int dim = 0; dim<numBands; dim++ ) {
+			        	sampleDimensions[dim] = (GridSampleDimension) coverage.getSampleDimension(dim);
+			        }
+			        
+					/**checking for the source alpha channel, adding one if necessary*/
+					if( numBands%2 != 0 ) {
+				        sampleDimensions[numBands] = new GridSampleDimension();
+					}
+					
+					/**translating the old one*/
+			        pb = new ParameterBlock();
+					pb.addSource(image);
+					pb.add((float)((lo1-los1)/dX));
+					pb.add((float)((las2-la2)/dY));
+					RenderedImage renderableSource=JAI.create("translate",pb);
+					
+					/**overlaying images*/
+			        pb = new ParameterBlock();
+			        pb.addSource(imgBackground).addSource(renderableSource);
+					RenderedImage destOverlayed=
+						(numBands%2 == 0 ? JAI.create("overlay", pb, null) : addTransparency(JAI.create("overlay", pb, null), TRANS_WHITE));
 
-				//creating a copy of the given grid coverage2D
-				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
-						destOverlayed,
-						coverage.getCoordinateReferenceSystem(),
-						gSEnvelope,
-						coverage.getSampleDimensions(),
-						null,
-						((PropertySourceImpl)coverage).getProperties());
-				
-				delegate.prepare(outputFormat, subCoverage);
+					//creating a copy of the given grid coverage2D
+					GridCoverage2D subCoverage = new GridCoverage2D(
+							meta.getName(),
+							destOverlayed,
+							coverage.getCoordinateReferenceSystem(),
+							gSEnvelope,
+							sampleDimensions,
+							null,
+							((PropertySourceImpl)coverage).getProperties());
+					
+					delegate.prepare(outputFormat, subCoverage);
+				} else {
+					ParameterBlock pb = new ParameterBlock();
+			        // Create the background Image.
+			        Object[] bandValues = null;
+			        if( image.getSampleModel().getDataType() == DataBuffer.TYPE_FLOAT ) {
+				        bandValues = new Float[numBands];  
+				        // Fill the array with a constant value.  
+				        for(int band=0;band<bandValues.length;band++)  
+				        	bandValues[band] = new Float(Float.NaN);
+			        } else if( image.getSampleModel().getDataType() == DataBuffer.TYPE_DOUBLE ) {
+				        bandValues = new Double[numBands];  
+				        // Fill the array with a constant value.  
+				        for(int band=0;band<bandValues.length;band++)  
+				        	bandValues[band] = new Double(Double.NaN);
+			        }
+			        pb = new ParameterBlock();
+					pb.add(new Float( subEnvelope.getWidth() / dX)).add(new Float( subEnvelope.getHeight() / dY));
+			        pb.add(bandValues);
+					PlanarImage imgBackground = JAI.create("constant", pb, null);
+
+					/**translating the old one*/
+			        pb = new ParameterBlock();
+					pb.addSource(image);
+					pb.add((float)((lo1-los1)/dX));
+					pb.add((float)((las2-la2)/dY));
+					RenderedImage renderableSource=JAI.create("translate",pb);
+					
+					/**overlaying images*/
+			        pb = new ParameterBlock();
+			        pb.addSource(imgBackground).addSource(renderableSource);
+					RenderedImage destOverlayed=JAI.create("overlay", pb, null);
+
+					//creating a copy of the given grid coverage2D
+					GridCoverage2D subCoverage = new GridCoverage2D(
+							meta.getName(),
+							destOverlayed,
+							coverage.getCoordinateReferenceSystem(),
+							gSEnvelope,
+							coverage.getSampleDimensions(),
+							null,
+							((PropertySourceImpl)coverage).getProperties());
+					
+					delegate.prepare(outputFormat, subCoverage);
+				}
 			} else if( meta.getEnvelope().contains(request.getEnvelope()) ) {
 				ParameterBlock pbCrop = new ParameterBlock();
 				pbCrop.addSource((PlanarImage) image);
@@ -377,7 +436,8 @@ public class CoverageResponse implements Response {
 				RenderedOp result = JAI.create("crop", pbCrop);
 				
 				//creating a copy of the given grid coverage2D
-				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
+				GridCoverage2D subCoverage = new GridCoverage2D(
+						meta.getName(),
 						result,
 						coverage.getCoordinateReferenceSystem(),
 						gSEnvelope,
@@ -390,7 +450,8 @@ public class CoverageResponse implements Response {
 		} else {
 			RenderedImage image = coverage.geophysics(true).getRenderedImage();
 			//creating a copy of the given grid coverage2D
-			GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
+			GridCoverage2D subCoverage = new GridCoverage2D(
+					meta.getName(),
 					image,
 					coverage.getCoordinateReferenceSystem(),
 					coverage.getEnvelope(),
@@ -402,6 +463,47 @@ public class CoverageResponse implements Response {
 		}
 	}
 	
+	public static RenderedOp addTransparency(RenderedImage src, int transparentColor){
+		
+		double[] low  = new double[1];
+		double[] high = new double[1];
+		double[] map  = new double[1];
+		
+		switch (transparentColor) {
+		case TRANS_BLACK :
+			//black to transparent
+			low[0]  = 1.0F;
+			high[0] = 255.0F;
+			map[0]  = 255.0F;
+			break;
+		case TRANS_WHITE :
+			//white to transparent
+			low[0]  = 0.0F;
+			high[0] = 254.0F;
+			map[0]  = 0.0F;
+			break;
+		}
+		
+		ParameterBlock pb = new ParameterBlock();
+		pb.addSource(src);
+		pb.add(low);
+		pb.add(high);
+		pb.add(map);
+		
+		RenderedOp mask = JAI.create("threshold", pb, null);
+		RenderedOp invertedMask = JAI.create("not", mask);
+		
+		ParameterBlock pb1 = new ParameterBlock();
+		pb1.add(new Float(src.getWidth())).add(new Float(src.getHeight()));
+		pb1.add(new Byte[]{new Byte((byte)0x00)});
+		RenderedOp alpha = JAI.create("constant", pb1);
+		
+		RenderedOp alphaMask = JAI.create("add",alpha,transparentColor ==
+			TRANS_BLACK? mask : invertedMask);
+		
+		return JAI.create("BandMerge",src,alphaMask);
+	}
+
 	/**
 	 * Release locks if we are into that sort of thing.
 	 *
