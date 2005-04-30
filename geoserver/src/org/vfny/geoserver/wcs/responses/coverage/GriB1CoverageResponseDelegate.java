@@ -70,6 +70,15 @@ public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
 		return "grb";
 	}
 
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public String getContentDisposition() {
+		return "attachment;filename=test.grb";
+	}
+
 	/* (non-Javadoc)
 	 * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#encode(java.io.OutputStream)
 	 * TODO
@@ -100,8 +109,6 @@ public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
             }
  		}
      	throw new ServiceException("Could not instantiate a grib writer");
-		
-
 	}
 
 }

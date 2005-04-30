@@ -65,6 +65,15 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 		return null;
 	}
 	
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public String getContentDisposition() {
+		return null;
+	}
+
 	public void encode(OutputStream output)
 	throws ServiceException, IOException {
 		if (sourceCoverage == null) {

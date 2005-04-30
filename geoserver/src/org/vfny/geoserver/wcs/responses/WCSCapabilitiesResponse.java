@@ -96,6 +96,16 @@ public class WCSCapabilitiesResponse implements Response {
     }
 
     /**
+     * Just returns <code>null</code>, since no special encoding is applyed to
+     * the output data.
+     *
+     * @return <code>null</code>
+     */
+    public String getContentDisposition() {
+        return null;
+    }
+
+    /**
      * Writes the capabilities document generated in <code>execute()</code> to
      * the given output stream.
      *

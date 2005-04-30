@@ -135,4 +135,12 @@ public class DescribeLayerResponse implements Response {
     public String getContentEncoding() {
         return null;
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

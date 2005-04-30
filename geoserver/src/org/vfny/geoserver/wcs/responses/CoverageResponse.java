@@ -112,6 +112,9 @@ public class CoverageResponse implements Response {
 		return delegate.getContentEncoding();
 	}
 	
+	public String getContentDisposition() {
+		return delegate.getContentDisposition();
+	}
 	/**
 	 * Jody here with one pass replacement for writeTo.
 	 * 

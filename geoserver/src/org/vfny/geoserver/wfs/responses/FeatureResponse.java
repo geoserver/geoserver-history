@@ -464,4 +464,12 @@ public class FeatureResponse implements Response {
         //
         catalog.lockRelease(featureLock.getAuthorization());
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -222,4 +222,12 @@ public class GetFeatureInfoResponse implements Response {
     public static List getFormats() {
         return supportedMimeTypes;
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

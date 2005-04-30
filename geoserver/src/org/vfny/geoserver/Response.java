@@ -174,6 +174,14 @@ public interface Response {
     public String getContentEncoding();
 
     /**
+     * Returns any special content disposition this response will encode its
+     * contents to, such as "filename" and "attachement"
+     *
+     * @return the content disposition writeTo will encode with, or null if none
+     */
+    public String getContentDisposition();
+
+    /**
      * Writes this respone to the provided output stream.
      *
      * <p>

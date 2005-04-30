@@ -389,4 +389,12 @@ public class LockResponse implements Response {
             LOGGER.warning("Abort not complete:" + ioException);
         }
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

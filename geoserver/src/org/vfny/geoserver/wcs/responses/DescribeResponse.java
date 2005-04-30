@@ -117,6 +117,10 @@ public class DescribeResponse implements Response {
 		return null;
 	}
 	
+	public String getContentDisposition() {
+		return null;
+	}
+	
 	public void writeTo(OutputStream out) throws WcsException {
 		try {
 			byte[] content = xmlResponse.getBytes();

@@ -115,4 +115,12 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         }
         writer.flush();
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

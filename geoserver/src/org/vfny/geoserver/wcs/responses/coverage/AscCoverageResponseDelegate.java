@@ -57,9 +57,19 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentEncoding() {
-		return compressOutput ? "gzip" : null;
+		//return compressOutput ? "gzip" : null;
+		return null;
 	}
-	
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public String getContentDisposition() {
+		return compressOutput ? "attachment;filename=test.gz" : null;
+	}
+
 	public void encode(OutputStream output)
 	throws ServiceException, IOException {
 		if (sourceCoverage == null) {

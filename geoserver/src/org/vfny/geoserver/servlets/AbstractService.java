@@ -435,6 +435,13 @@ public abstract class AbstractService extends HttpServlet {
             LOGGER.fine("mime type is: " + mimeType);
             response.setContentType(mimeType);
 
+            String disposition = serviceResponse.getContentDisposition();
+
+            if (disposition != null) {
+                LOGGER.fine("content disposition is: " + disposition);
+                response.setHeader("content-disposition", disposition);
+            }
+
             String encoding = serviceResponse.getContentEncoding();
 
             if (encoding != null) {
@@ -502,6 +509,7 @@ public abstract class AbstractService extends HttpServlet {
         // By this time serviceResponse has finished successfully
         // and strategy is also finished
         //
+        
         try {
             response.getOutputStream().flush();
             response.getOutputStream().close();

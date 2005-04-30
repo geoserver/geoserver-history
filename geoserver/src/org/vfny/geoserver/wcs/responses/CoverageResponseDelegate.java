@@ -25,6 +25,8 @@ public interface CoverageResponseDelegate {
     String getContentType(GeoServer gs);
 
     String getContentEncoding();
+    
+    String getContentDisposition();
 
     void encode(OutputStream output) throws ServiceException, IOException;
 }

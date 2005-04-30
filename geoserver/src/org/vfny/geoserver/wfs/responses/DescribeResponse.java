@@ -516,4 +516,12 @@ public class DescribeResponse implements Response {
     public void abort(Service gs) {
         // nothing to undo
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

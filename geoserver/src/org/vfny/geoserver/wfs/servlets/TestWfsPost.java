@@ -214,7 +214,8 @@ public class TestWfsPost extends HttpServlet {
                 //System.out.println("got encoding from acon: "
                 //    + acon.getContentType());
                 response.setContentType(acon.getContentType());
-
+                response.setHeader("content-disposition", acon.getHeaderField("content-disposition"));
+                
                 OutputStream output = response.getOutputStream();
                 int c;
                 InputStream in = acon.getInputStream();

@@ -57,14 +57,24 @@ public class GTopo30CoverageResponseDelegate implements
 	 * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#getContentType(org.vfny.geoserver.global.GeoServer)
 	 */
 	public String getContentType(GeoServer gs) {
-		return "application/zip";
+		return "application/x-zip";
 	}
 
 	/* (non-Javadoc)
 	 * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#getContentEncoding()
 	 */
 	public String getContentEncoding() {
-		return "zip";
+		//return "zip";
+		return null;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public String getContentDisposition() {
+		return "attachment;filename=test.zip";
 	}
 
 	/* (non-Javadoc)

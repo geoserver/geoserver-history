@@ -839,4 +839,8 @@ public class TransactionResponse implements Response {
         request = null;
         response = null;
     }
+    
+    public String getContentDisposition() {
+    	return null;
+    }
 }
