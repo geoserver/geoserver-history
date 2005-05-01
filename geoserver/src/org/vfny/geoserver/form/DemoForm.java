@@ -4,6 +4,7 @@ package org.vfny.geoserver.form;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -56,6 +57,7 @@ public class DemoForm extends ActionForm {
                 demoList.add( file.getName() );
             }            
         }        
+	Collections.sort(demoList);
     }
 
     /**
