@@ -190,10 +190,6 @@ public class CoverageResponse implements Response {
 			String realPath = request.getHttpServletRequest().getRealPath("/");
 			URL url = getResource(dfConfig.getUrl(), realPath);
 
-//			GridCoverageExchange gce = new StreamGridCoverageExchange();
-//			GridCoverageReader reader = gce.getReader(url);
-//			Format format = reader.getFormat();
-
 			Format format = dfConfig.getFactory();
 			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
 
