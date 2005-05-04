@@ -66,7 +66,6 @@ public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#getContentEncoding()
 	 */
 	public String getContentEncoding() {
-		// TODO Auto-generated method stub
 		return "grb";
 	}
 
@@ -76,7 +75,7 @@ public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentDisposition() {
-		return "attachment;filename=test.grb";
+		return "attachment;filename="+this.sourceCoverage.getName()+"grb";
 	}
 
 	/* (non-Javadoc)

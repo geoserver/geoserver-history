@@ -74,7 +74,7 @@ public class GTopo30CoverageResponseDelegate implements
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentDisposition() {
-		return "attachment;filename=test.zip";
+		return "attachment;filename="+this.sourceCoverage.getName()+".zip";
 	}
 
 	/* (non-Javadoc)

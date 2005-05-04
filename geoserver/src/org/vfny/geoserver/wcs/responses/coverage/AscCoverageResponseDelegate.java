@@ -67,7 +67,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentDisposition() {
-		return compressOutput ? "attachment;filename=test.gz" : null;
+		return "attachment;filename="+this.sourceCoverage.getName()+".asc"+(compressOutput?".gz":"");
 	}
 
 	public void encode(OutputStream output)
