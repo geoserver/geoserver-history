@@ -21,7 +21,11 @@ import org.vfny.geoserver.util.Requests;
  * @version $Id: WcsException.java,v 0.1 Feb 15, 2005 11:11:26 AM $
  */
 public class WcsException extends ServiceException {
-    /** Class logger */
+    /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3618981178615608120L;
+	/** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
 

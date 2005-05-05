@@ -27,7 +27,11 @@ import org.vfny.geoserver.config.WCSConfig;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public final class WCSDescriptionForm extends ActionForm {
-    private String name;
+    /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3258692117605068857L;
+	private String name;
     private String title;
     private String accessConstraints;
     private String fees;

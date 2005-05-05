@@ -104,6 +104,11 @@ public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
             	//write
             	writer.write(this.sourceCoverage,null);
             	output.flush();
+        		//freeing everything
+        		writer.dispose();
+        		writer=null;
+        		this.sourceCoverage.dispose();
+        		this.sourceCoverage=null;            	
             	return;
             }
  		}

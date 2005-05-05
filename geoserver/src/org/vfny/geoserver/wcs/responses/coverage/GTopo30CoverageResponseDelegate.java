@@ -6,7 +6,6 @@
  */
 package org.vfny.geoserver.wcs.responses.coverage;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipOutputStream;
@@ -97,6 +96,12 @@ public class GTopo30CoverageResponseDelegate implements
 			throw new ServiceException("Could not create a writer for the format Gtopo30!");
 		outZ.flush();
 		outZ.close();
+		
+		//freeing everything
+		writer.dispose();
+		writer=null;
+		this.sourceCoverage.dispose();
+		this.sourceCoverage=null;
 	
 	}
 

@@ -28,6 +28,11 @@ import org.vfny.geoserver.wcs.responses.DescribeResponse;
  */
 public class Describe extends WCService {
     /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3257003241991714611L;
+
+	/**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!

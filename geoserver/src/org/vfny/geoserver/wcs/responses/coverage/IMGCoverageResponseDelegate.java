@@ -5,11 +5,8 @@
 package org.vfny.geoserver.wcs.responses.coverage;
 
 
-import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.imageio.ImageIO;
-import javax.media.jai.PlanarImage;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.image.WorldImageWriter;
 import org.opengis.coverage.grid.Format;
@@ -71,7 +68,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentDisposition() {
-		return "attachment;filename="+this.sourceCoverage.getName()+"."+outputFormat;
+		return null;//"attachment;filename="+this.sourceCoverage.getName()+"."+outputFormat;
 	}
 
 	public void encode(OutputStream output)
@@ -83,17 +80,17 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 		}
 		try {
 			
-			//RenderedImage image = sourceCoverage.geophysics(false).getRenderedImage();
-			//PlanarImage surrogateImage = null;
-
 			GridCoverageWriter writer= new WorldImageWriter(output);
 		      //writing parameters for png
 	        Format writerParams = writer.getFormat();
 	        writerParams.getWriteParameters().parameter("Format").setValue(this.outputFormat);	
 	        //	      writing
 	        writer.write(sourceCoverage.geophysics(false), null);
-			/** Write image to disk and display it */
-			//ImageIO.write(image /*highlightImage(surrogateImage)*/, outputFormat.toLowerCase(), output);
+			//freeing everything
+			writer.dispose();
+			writer=null;
+			this.sourceCoverage.dispose();
+			this.sourceCoverage=null;
 			output.flush();
 			output.close();
 		} catch (Exception e) {

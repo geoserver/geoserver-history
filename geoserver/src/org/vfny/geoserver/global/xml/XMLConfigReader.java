@@ -13,7 +13,6 @@ import org.geotools.filter.FilterDOMParser;
 import org.geotools.referencing.FactoryFinder;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Log4JFormatter;
 import org.vfny.geoserver.global.MetaDataLink;

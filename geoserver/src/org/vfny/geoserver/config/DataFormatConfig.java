@@ -11,8 +11,6 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 
 import org.opengis.coverage.grid.*;
-import org.geotools.data.coverage.grid.GridFormatFactorySpi;
-import org.geotools.data.coverage.grid.GridFormatFinder;
 import org.vfny.geoserver.action.data.DataFormatUtils;
 import org.vfny.geoserver.global.dto.FormatInfoDTO;
 

@@ -42,7 +42,12 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  * @task TODO: move the post dispatcher work from WfsDispatcher up here.
  */
 public class Dispatcher extends HttpServlet {
-    /** Class logger */
+    /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3544954350763257913L;
+
+	/** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 

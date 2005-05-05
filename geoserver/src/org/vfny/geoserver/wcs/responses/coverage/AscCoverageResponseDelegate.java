@@ -9,10 +9,7 @@ import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.coverage.grid.stream.StreamGridCoverageExchange;
-import org.geotools.gce.arcgrid.ArcGridFormat;
 import org.geotools.gce.arcgrid.ArcGridWriter;
-import org.opengis.coverage.grid.GridCoverageExchange;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.ServiceException;
@@ -67,7 +64,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentDisposition() {
-		return "attachment;filename="+this.sourceCoverage.getName()+".asc"+(compressOutput?".gz":"");
+		return null;//"attachment;filename="+this.sourceCoverage.getName()+".asc"+(compressOutput?".gz":"");
 	}
 
 	public void encode(OutputStream output)
@@ -95,6 +92,11 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
                 gzipOut.finish();
                 gzipOut.flush();
             }
+    		//freeing everything
+    		writer.dispose();
+    		writer=null;
+    		this.sourceCoverage.dispose();
+    		this.sourceCoverage=null;            
 		} catch (Exception e) {
 			throw new WcsException("Problems Rendering Image", e);
 		}

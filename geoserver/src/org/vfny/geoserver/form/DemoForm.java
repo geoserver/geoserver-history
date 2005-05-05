@@ -25,7 +25,11 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * @version $Id: DemoForm.java,v 1.3 2004/04/16 07:25:20 jive Exp $
  */
 public class DemoForm extends ActionForm {
-    private String action;
+    /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3978983293029005618L;
+	private String action;
 	private String url;
     private String body;
     private String demo;

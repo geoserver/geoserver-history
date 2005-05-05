@@ -36,6 +36,10 @@ import org.vfny.geoserver.util.Requests;
  */
 public class JSPCompiler extends HttpServlet {
 
+	/**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3977581407164248880L;
 	String [] pages;
 	int spot = 0;
     public void init(ServletConfig config) throws ServletException {

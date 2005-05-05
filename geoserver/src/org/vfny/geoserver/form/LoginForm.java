@@ -27,6 +27,10 @@ import org.apache.struts.util.MessageResources;
  * @version $Id: LoginForm.java,v 1.2 2004/02/09 23:30:06 dmzwiers Exp $
  */
 public class LoginForm extends ActionForm {
+	/**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3258410616858358324L;
 	private String username;
     private String password;
     private String confirm;

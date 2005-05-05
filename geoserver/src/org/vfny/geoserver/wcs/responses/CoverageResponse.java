@@ -4,14 +4,9 @@
  */
 package org.vfny.geoserver.wcs.responses;
  
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.color.ColorSpace;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
-import java.awt.image.SampleModel;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.io.IOException;
@@ -23,13 +18,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.PropertySourceImpl;
-import javax.media.jai.RasterFactory;
 import javax.media.jai.RenderedOp;
-import javax.media.jai.operator.CompositeDescriptor;
 
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -251,6 +243,7 @@ public class CoverageResponse implements Response {
 				}
 			}
 			
+			//read the coverage to ber returned
 			coverage = (GridCoverage2D) reader.read(
 					params != null ?
 					(GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])
@@ -396,6 +389,12 @@ public class CoverageResponse implements Response {
 				        for(int band=0;band<bandValues.length;band++)  
 				        	bandValues[band] = new Double(Double.NaN);
 			        }
+			        else if( image.getSampleModel().getDataType() == DataBuffer.TYPE_SHORT) {
+				        bandValues = new Short[numBands];  
+				        // Fill the array with a constant value.  
+				        for(int band=0;band<bandValues.length;band++)  
+				        	bandValues[band] = new Short((short)-9999);
+			        }	
 			        pb = new ParameterBlock();
 					pb.add(new Float( subEnvelope.getWidth() / dX)).add(new Float( subEnvelope.getHeight() / dY));
 			        pb.add(bandValues);
@@ -424,6 +423,7 @@ public class CoverageResponse implements Response {
 							((PropertySourceImpl)coverage).getProperties());
 					
 					delegate.prepare(outputFormat, subCoverage);
+					coverage=null;
 				}
 			} else if( meta.getEnvelope().contains(request.getEnvelope()) ) {
 				ParameterBlock pbCrop = new ParameterBlock();
@@ -445,6 +445,7 @@ public class CoverageResponse implements Response {
 						((PropertySourceImpl)coverage).getProperties());
 				
 				delegate.prepare(outputFormat, subCoverage);
+				coverage=null;
 			}
 		} else {
 			RenderedImage image = coverage.geophysics(true).getRenderedImage();
@@ -459,6 +460,7 @@ public class CoverageResponse implements Response {
 					((PropertySourceImpl)coverage).getProperties());
 			
 			delegate.prepare(outputFormat, subCoverage);
+			coverage=null;
 		}
 	}
 	

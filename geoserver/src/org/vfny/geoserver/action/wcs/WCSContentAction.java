@@ -7,8 +7,6 @@ package org.vfny.geoserver.action.wcs;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,8 +40,6 @@ public final class WCSContentAction extends ConfigAction {
         }
         
         String onlineResource = contentForm.getOnlineResource();
-//        String[] selectedFeatures = contentForm.getSelectedFeatures();
-//        String[] features = contentForm.getFeatures();
 
         WCSConfig config = getWCSConfig();
         config.setEnabled(enabled);

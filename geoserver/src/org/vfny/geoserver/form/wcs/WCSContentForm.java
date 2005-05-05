@@ -21,7 +21,6 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WCSConfig;
-import org.vfny.geoserver.global.dto.WCSDTO;
 
 
 
@@ -32,14 +31,14 @@ import org.vfny.geoserver.global.dto.WCSDTO;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class WCSContentForm extends ActionForm {
-    private boolean enabled;
+    /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3977860674510534961L;
+	private boolean enabled;
     private String onlineResource;
     private String describeURL;
-    //private int serviceLevel;
-    //private String[] selectedFeatures;
-    //private String[] features;
-    //private boolean srsXmlStyle;
-    //private boolean srsXmlStyleChecked = false;
+
 
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
@@ -112,54 +111,16 @@ public class WCSContentForm extends ActionForm {
         onlineResource = string;
     }
 
-//    /**
-//     * DOCUMENT ME!
-//     *
-//     * @return
-//     */
-//    public String[] getFeatures() {
-//        return features;
-//    }
-//
-//    /**
-//     * DOCUMENT ME!
-//     *
-//     * @return
-//     */
-//    public String[] getSelectedFeatures() {
-//        return selectedFeatures;
-//    }
-//
-//    /**
-//     * DOCUMENT ME!
-//     *
-//     * @param strings
-//     */
-//    public void setFeatures(String[] strings) {
-//        features = strings;
-//    }
-//
-//    /**
-//     * DOCUMENT ME!
-//     *
-//     * @param strings
-//     */
-//    public void setSelectedFeatures(String[] strings) {
-//        selectedFeatures = strings;
-//    }
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
 
         enabledChecked = false;
-//        srsXmlStyleChecked = false;
 
         ServletContext context = getServlet().getServletContext();
         WCSConfig config = (WCSConfig) context.getAttribute(WCSConfig.CONFIG_KEY);
         
-//        serviceLevel = config.getServiceLevel();
         this.enabled = config.isEnabled();
-//        this.srsXmlStyle = config.isSrsXmlStyle();
 
         URL url = config.getOnlineResource();
 
@@ -174,11 +135,6 @@ public class WCSContentForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-//        if (serviceLevel != WFSDTO.BASIC &&
-//            serviceLevel != WFSDTO.TRANSACTIONAL &&
-//            serviceLevel != WFSDTO.COMPLETE) {
-//            errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
-//        }
         
         if (onlineResource == null || onlineResource.equals("")) {
         	errors.add("onlineResource", new ActionError("error.wfs.onlineResource.required"));
@@ -210,65 +166,6 @@ public class WCSContentForm extends ActionForm {
     public void setEnabledChecked(boolean b) {
         enabledChecked = b;
     }
-    
-//	/**
-//	 * DOCUMENT ME!
-//	 *
-//	 * @return
-//	 */
-//	public boolean isSrsXmlStyleChecked() {
-//		return srsXmlStyleChecked;
-//	}
-//
-//	/**
-//	 * DOCUMENT ME!
-//	 *
-//	 * @param b
-//	 */
-//	public void setSrsXmlStyleChecked(boolean b) {
-//		srsXmlStyleChecked = b;
-//	}
-//    
-//	/**
-//	 * Access serviceLevel property.
-//	 * 
-//	 * @return Returns the serviceLevel.
-//	 */
-//	public int getServiceLevel() {
-//		return serviceLevel;
-//	}
-//
-//	/**
-//	 * Set serviceLevel to serviceLevel.
-//	 *
-//	 * @param serviceLevel The serviceLevel to set.
-//	 */
-//	public void setServiceLevel(int serviceLevel) {
-//		this.serviceLevel = serviceLevel;
-//	}
-//	
-//	/**
-//	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-//	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-//	 * style.  
-//	 *
-//	 * @return <tt>true</tt> if the srs is reported with the xml style
-//	 */
-//	public boolean isSrsXmlStyle() {
-//		return srsXmlStyle;
-//	}
-//
-//	/**
-//	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-//	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-//	 * style.  
-//	 *
-//	 * @param doXmlStyle whether the srs style should be xml or not.
-//	 */
-//	public void setSrsXmlStyle(boolean doXmlStyle) {
-//		this.srsXmlStyleChecked = true;
-//		this.srsXmlStyle = doXmlStyle;
-//	}
-
+ 
 
 }

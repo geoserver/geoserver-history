@@ -21,6 +21,11 @@ import org.vfny.geoserver.wcs.responses.CoverageResponse;
  */
 public class Coverage extends WCService {
 
+	/**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3257282552237797945L;
+
 	protected Response getResponseHandler() {
         return new CoverageResponse();
     }

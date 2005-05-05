@@ -56,7 +56,11 @@ import org.vfny.geoserver.wcs.WcsException;
  * @version $Id: WcsDispatcher.java,v 0.1 2005/02/15 10:55:15 $
  */
 public class WcsDispatcher extends Dispatcher {
-    /** Class logger */
+    /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3977857384599203894L;
+	/** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets.wcs");
     private static int sequence = 123;

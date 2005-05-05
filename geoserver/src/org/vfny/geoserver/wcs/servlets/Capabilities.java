@@ -23,6 +23,11 @@ import org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse;
  */
 public class Capabilities extends WCService {
     /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3258129176207636277L;
+
+	/**
      * DOCUMENT ME!
      *
      * @param params DOCUMENT ME!
