@@ -546,11 +546,10 @@
 		<!-- clean-up -->
 		<delete file="${dir.build}/log4j.properties" failonerror="true" />
 		
-		<!--
-		 UNCOMMENT ME
+		
 		 
 		<delete dir="${basedir}/data" failonerror="true" />
-		-->
+
 	</target>
 
 	<!-- BUILD JARS FOR SCRIPTS -->
