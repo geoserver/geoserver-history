@@ -112,9 +112,6 @@ public class CoverageResponse implements Response {
 		return delegate.getContentEncoding();
 	}
 	
-	public String getContentDisposition() {
-		return delegate.getContentDisposition();
-	}
 	/**
 	 * Jody here with one pass replacement for writeTo.
 	 * 
@@ -190,6 +187,9 @@ public class CoverageResponse implements Response {
 			String realPath = request.getHttpServletRequest().getRealPath("/");
 			URL url = getResource(dfConfig.getUrl(), realPath);
 
+//			GridCoverageExchange gce = new StreamGridCoverageExchange();
+//			GridCoverageReader reader = gce.getReader(url);
+//			Format format = reader.getFormat();
 
 			Format format = dfConfig.getFactory();
 			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
@@ -402,17 +402,6 @@ public class CoverageResponse implements Response {
 			        pb.add(bandValues);
 					PlanarImage imgBackground = JAI.create("constant", pb, null);
 
-<<<<<<< .mine
-			    
-			    ParameterBlock pbCrop = new ParameterBlock();
-			    pbCrop.addSource((PlanarImage) image);
-			    pbCrop.add(new Double(lonIndex1).floatValue());//x origin
-			    pbCrop.add(new Double(latIndex1).floatValue());//y origin
-			    pbCrop.add(new Float(cnX).floatValue());//width
-			    pbCrop.add(new Float(cnY).floatValue());//height
-			    RenderedOp result = JAI.create("crop", pbCrop);
-			    
-=======
 					/**translating the old one*/
 			        pb = new ParameterBlock();
 					pb.addSource(image);
@@ -445,39 +434,17 @@ public class CoverageResponse implements Response {
 				pbCrop.add(new Float(cnX).floatValue());//width
 				pbCrop.add(new Float(cnY).floatValue());//height
 				RenderedOp result = JAI.create("crop", pbCrop);
->>>>>>> .r3464
 				
 				//creating a copy of the given grid coverage2D
-<<<<<<< .mine
-				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
-						result.createInstance(),
-=======
 				GridCoverage2D subCoverage = new GridCoverage2D(
 						meta.getName(),
 						result,
->>>>>>> .r3464
 						coverage.getCoordinateReferenceSystem(),
 						gSEnvelope,
 						coverage.getSampleDimensions(),
 						null,
 						((PropertySourceImpl)coverage).getProperties());
-<<<<<<< .mine
-
-				delegate.prepare(outputFormat, subCoverage);
-			} else {
-			
-				//creating a copy of the given grid coverage2D
-				GridCoverage2D subCoverage = new GridCoverage2D(meta.getName(),
-						coverage.getRenderedImage(),
-						coverage.getCoordinateReferenceSystem(),
-						coverage.getEnvelope(),
-						coverage.getSampleDimensions(),
-						null,
-						((PropertySourceImpl)coverage).getProperties());
-
-=======
 				
->>>>>>> .r3464
 				delegate.prepare(outputFormat, subCoverage);
 			}
 		} else {
