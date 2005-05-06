@@ -40,7 +40,23 @@ public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
 	 */
 	public boolean canProduce(String outputFormat) {
 		if(outputFormat.compareToIgnoreCase("GriB1")==0)
-			return true;
+			//checking if we can produce a GriB1 from this coverage 
+			//since we might not have enough metadata
+			//depending on the coverage source.
+			//As an instance if we were using an Ascii Grid coverage we would not be able (FOR THE MOMENT)
+			//to produce a GriB1 because of lacking of metadata.
+			if(this.sourceCoverage!=null)
+			{	
+				//getting all the names we need to get
+				final String []names=new GRIB1Writer("fake!!").getMetadataNames();
+				final int length=names.length;
+				//check to have all the metadata we need
+				for(int i=0;i<length;i++)
+					if(this.sourceCoverage.getMetadataValue(names[i])==null)
+						return false;
+				//we have all of them
+				return true;
+			}
 		return false;
 	}
 
