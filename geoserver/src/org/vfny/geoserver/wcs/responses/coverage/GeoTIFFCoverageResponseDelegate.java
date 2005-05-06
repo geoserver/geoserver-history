@@ -8,7 +8,7 @@ package org.vfny.geoserver.wcs.responses.coverage;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.gce.image.WorldImageWriter;
+import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.vfny.geoserver.ServiceException;
@@ -22,35 +22,29 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
-public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
+public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate {
 	private GridCoverage2D sourceCoverage;
 	private String outputFormat;
 	
-	public IMGCoverageResponseDelegate() {
+	public GeoTIFFCoverageResponseDelegate() {
 	}
 	
 	public boolean canProduce(String outputFormat) {
 		
-		if(outputFormat.equalsIgnoreCase("bmp")||
-				outputFormat.equalsIgnoreCase("gif")||
-				outputFormat.equalsIgnoreCase("tiff")||
-				outputFormat.equalsIgnoreCase("png")||
-				outputFormat.equalsIgnoreCase("jpeg")||
-				outputFormat.equalsIgnoreCase("tif"))
+		if(outputFormat.equalsIgnoreCase("geotiff"))
 			return true;
 		return false;
 		
 	}
 	
 	public void prepare(String outputFormat, GridCoverage2D coverage)
-	throws IOException {
-		
+	throws IOException {		
 		this.outputFormat = outputFormat;
 		this.sourceCoverage = coverage;
 	}
 	
 	public String getContentType(GeoServer gs) {
-		return "image/" + outputFormat.toLowerCase();
+		return "image/tiff";
 	}
 	
 	/**
@@ -68,8 +62,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentDisposition() {
-		return outputFormat.equalsIgnoreCase("tiff") || outputFormat.equalsIgnoreCase("tif") ?
-				"attachment;filename="+this.sourceCoverage.getName()+"."+outputFormat : null;
+		return "attachment;filename="+this.sourceCoverage.getName()+".tiff";
 	}
 
 	public void encode(OutputStream output)
@@ -81,11 +74,10 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 		}
 		try {
 			
-			GridCoverageWriter writer= new WorldImageWriter(output);
-		      //writing parameters for png
+			GridCoverageWriter writer= new GeoTiffWriter(output);
+		    //writing parameters for GeoTIFF
 	        Format writerParams = writer.getFormat();
-	        writerParams.getWriteParameters().parameter("Format").setValue(this.outputFormat);	
-	        //	      writing
+	        //writing
 	        writer.write(sourceCoverage.geophysics(false), null);
 			//freeing everything
 			writer.dispose();

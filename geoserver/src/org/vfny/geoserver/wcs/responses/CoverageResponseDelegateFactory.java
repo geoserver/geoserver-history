@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 
 import org.vfny.geoserver.wcs.responses.coverage.AscCoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.GTopo30CoverageResponseDelegate;
+import org.vfny.geoserver.wcs.responses.coverage.GeoTIFFCoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.GriB1CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.IMGCoverageResponseDelegate;
 
@@ -30,6 +31,7 @@ public class CoverageResponseDelegateFactory {
         encoders.add(new IMGCoverageResponseDelegate());
         encoders.add(new GTopo30CoverageResponseDelegate());
         encoders.add(new GriB1CoverageResponseDelegate());
+		encoders.add(new GeoTIFFCoverageResponseDelegate());
     }
 
     private CoverageResponseDelegateFactory() {
