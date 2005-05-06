@@ -68,7 +68,8 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentDisposition() {
-		return null;//"attachment;filename="+this.sourceCoverage.getName()+"."+outputFormat;
+		return outputFormat.equalsIgnoreCase("tiff") || outputFormat.equalsIgnoreCase("tif") ?
+				"attachment;filename="+this.sourceCoverage.getName()+"."+outputFormat : null;
 	}
 
 	public void encode(OutputStream output)

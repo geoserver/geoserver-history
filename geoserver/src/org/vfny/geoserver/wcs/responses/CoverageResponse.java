@@ -187,10 +187,6 @@ public class CoverageResponse implements Response {
 			String realPath = request.getHttpServletRequest().getRealPath("/");
 			URL url = getResource(dfConfig.getUrl(), realPath);
 
-//			GridCoverageExchange gce = new StreamGridCoverageExchange();
-//			GridCoverageReader reader = gce.getReader(url);
-//			Format format = reader.getFormat();
-
 			Format format = dfConfig.getFactory();
 			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
 
@@ -397,6 +393,13 @@ public class CoverageResponse implements Response {
 				        for(int band=0;band<bandValues.length;band++)  
 				        	bandValues[band] = new Double(Double.NaN);
 			        }
+			        else if( image.getSampleModel().getDataType() == DataBuffer.TYPE_SHORT ) {
+				        bandValues = new Short[numBands];  
+				        // Fill the array with a constant value.  
+				        for(int band=0;band<bandValues.length;band++)  
+				        	//TODO this should be parameterized!!!!
+				        	bandValues[band] = new Short((short)-9999);//quick hack for gtopo30 format!!!!!
+			        }			        
 			        pb = new ParameterBlock();
 					pb.add(new Float( subEnvelope.getWidth() / dX)).add(new Float( subEnvelope.getHeight() / dY));
 			        pb.add(bandValues);
@@ -529,5 +532,13 @@ public class CoverageResponse implements Response {
 		}
 		
 		return url;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
