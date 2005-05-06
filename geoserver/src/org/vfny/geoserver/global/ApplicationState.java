@@ -388,17 +388,20 @@ public class ApplicationState implements PlugIn {
     	}
     	
     	geoserverVPErrors = new HashMap();
-    	i = tmpVP.entrySet().iterator();
-    	while(i.hasNext()){
-    		Map.Entry e = (Map.Entry)i.next();
-    		Object dto = e.getKey();
-    		if(dto instanceof PlugInDTO){
-    			geoserverVPErrors.put("PlugIn:"+((PlugInDTO)dto).getName(),e.getValue());
-    		}else{if(dto instanceof TestDTO){
-    			geoserverVPErrors.put("Test:"+((TestDTO)dto).getName(),e.getValue());
-    		}else{if(dto instanceof TestSuiteDTO){
-    			geoserverVPErrors.put("TestSuite:"+((TestSuiteDTO)dto).getName(),e.getValue());
-    		}}}
+    	if (tmpVP !=null) //DJB: protection for no validation services
+    	{
+	    	i = tmpVP.entrySet().iterator();
+	    	while(i.hasNext()){
+	    		Map.Entry e = (Map.Entry)i.next();
+	    		Object dto = e.getKey();
+	    		if(dto instanceof PlugInDTO){
+	    			geoserverVPErrors.put("PlugIn:"+((PlugInDTO)dto).getName(),e.getValue());
+	    		}else{if(dto instanceof TestDTO){
+	    			geoserverVPErrors.put("Test:"+((TestDTO)dto).getName(),e.getValue());
+	    		}else{if(dto instanceof TestSuiteDTO){
+	    			geoserverVPErrors.put("TestSuite:"+((TestSuiteDTO)dto).getName(),e.getValue());
+	    		}}}
+	    	}
     	}
     }
         

@@ -51,7 +51,7 @@
         </td>
         <td>
         &nbsp;-&nbsp;
-        <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>srsList.do">
+        <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>srsHelp.do">
               <bean:message key="label.SRSList"/>
             </a>
         </td>
