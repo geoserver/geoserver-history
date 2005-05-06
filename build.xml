@@ -466,59 +466,12 @@
 
 		<mkdir dir="${basedir}/data" />
 		<copy todir="${basedir}/data">
-			<fileset dir="${conf.path}">
+			<fileset dir="${conf.path}/data/">
 				<include name="**/*" />
 			</fileset>
 		</copy>
 
-		<mkdir dir="${basedir}/data/capabilities" />
-		<copy todir="${basedir}/data/capabilities">
-			<fileset dir="${basedir}/capabilities">
-				<include name="*" />
-			</fileset>
-		</copy>
-
-		<mkdir dir="${basedir}/data/capabilities/wfs" />
-		<mkdir dir="${basedir}/data/capabilities/wfs/1.0.0" />
-		<copy todir="${basedir}/data/capabilities/wfs/1.0.0">
-			<fileset dir="${basedir}/capabilities/wfs">
-				<include name="*" />
-			</fileset>
-		</copy>
-
-		<copy todir="${basedir}/data/capabilities/wms/1.1.1">
-			<fileset dir="${basedir}/capabilities/wms">
-				<include name="*" />
-			</fileset>
-		</copy>
-
-		<mkdir dir="${basedir}/data/capabilities/filter/1.0.0" />
-		<copy todir="${basedir}/data/capabilities/filter/1.0.0">
-			<fileset dir="${basedir}/capabilities/filter">
-				<include name="*" />
-			</fileset>
-		</copy>
-
-		<mkdir dir="${basedir}/data/capabilities/gml/2.1.2" />
-		<copy todir="${basedir}/data/capabilities/gml/2.1.2">
-			<fileset dir="${basedir}/capabilities/gml">
-				<include name="*" />
-			</fileset>
-		</copy>
-	
-		<mkdir dir="${basedir}/data/capabilities/sld" />
-		<copy todir="${basedir}/data/capabilities/sld">
-			<fileset dir="${basedir}/capabilities/sld">
-				<include name="*" />
-			</fileset>
-		</copy>	
-
-		<mkdir dir="${basedir}/data/capabilities/validate" />
-		<copy todir="${basedir}/data/capabilities/validate">
-			<fileset dir="${basedir}/capabilities/validate">
-				<include name="*" />
-			</fileset>
-		</copy>
+		
 
 		<copy todir="${dir.build}">
 			<fileset dir="${basedir}/documents">
@@ -543,9 +496,12 @@
 				<include name="ApplicationResources*.properties" />
 			</classes>
 
+			<webinf dir="${conf.path}/WEB-INF">
+							<include name="services.xml" />
+							<include name="catalog.xml" />
+			</webinf>
+			
 			<webinf dir="${basedir}/data">
-				<include name="services.xml" />
-				<include name="catalog.xml" />
 				<include name="*.html" />
 				<include name="*.png" />
 			</webinf>
@@ -589,7 +545,12 @@
 
 		<!-- clean-up -->
 		<delete file="${dir.build}/log4j.properties" failonerror="true" />
+		
+		<!--
+		 UNCOMMENT ME
+		 
 		<delete dir="${basedir}/data" failonerror="true" />
+		-->
 	</target>
 
 	<!-- BUILD JARS FOR SCRIPTS -->
