@@ -12,7 +12,7 @@
   <LayerList>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:Forests</Name>
       <Title>Forests</Title>
@@ -21,7 +21,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:Ponds</Name>
       <Title>Ponds</Title>
@@ -30,7 +30,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:Lakes</Name>
       <Title>Lakes</Title>
@@ -39,7 +39,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:Streams</Name>
       <Title>Streams</Title>
@@ -48,7 +48,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:NamedPlaces</Name>
       <Title>Named Places</Title>
@@ -57,7 +57,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:Buildings</Name>
       <Title>Buildings</Title>
@@ -66,7 +66,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:DividedRoutes</Name>
       <Title>Divided Routes</Title>
@@ -75,7 +75,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:RoadSegments</Name>
       <Title>Road Segments</Title>
@@ -84,7 +84,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:Bridges</Name>
       <Title>Bridges</Title>
@@ -93,7 +93,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Cite Forests">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>cite:MapNeatline</Name>
       <Title>Map Neatline</Title>
