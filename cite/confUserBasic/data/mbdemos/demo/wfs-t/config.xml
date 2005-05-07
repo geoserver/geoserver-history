@@ -143,7 +143,7 @@
       <tooltip xml:lang="fr">click on map to create a point feature</tooltip>
       <targetModel>featureCollection</targetModel>
       <transactionResponseModel>transaction</transactionResponseModel>
-      <webServiceUrl>http://localhost:8080/geoserver/wfs</webServiceUrl>
+      <webServiceUrl>../../../../wfs</webServiceUrl>
       <featureXpath>/gml:featureMember/topp:tasmania_cities/topp:the_geom/gml:MultiPoint/gml:pointMember/gml:Point/gml:coordinates</featureXpath>
       <defaultModelUrl>template_cities.xml</defaultModelUrl>
       <targetContext>mainMap</targetContext>
@@ -158,7 +158,7 @@
       <tooltip xml:lang="fr">click on map to add a point to a line</tooltip>
       <targetModel>featureCollection</targetModel>
       <transactionResponseModel>transaction</transactionResponseModel>
-      <webServiceUrl>http://localhost:8080/geoserver/wfs</webServiceUrl>
+      <webServiceUrl>../../../../wfs</webServiceUrl>
       <featureXpath>/gml:featureMember/topp:tasmania_roads/topp:the_geom/gml:MultiLineString/gml:lineStringMember/gml:LineString/gml:coordinates</featureXpath>
       <defaultModelUrl>template_road.xml</defaultModelUrl>
       <targetContext>mainMap</targetContext>
