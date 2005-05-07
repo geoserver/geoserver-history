@@ -228,10 +228,6 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="GEOSERVER/gt2-epsg-a.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="var" path="GEOSERVER/gt2-geotiff.jar">
 		<attributes>
 		</attributes>
