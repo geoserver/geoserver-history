@@ -760,7 +760,16 @@
 <antcall target="build-war">
 	<param name="conf.path" value="${basedir}/cite/confUserBasic" />
 </antcall>
-<copy file="${dir.build}/geoserver.war" todir="${dir.release}" />
+	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
+	<zip destfile="${basedir}/geoserver-${name.release}-war.zip">
+		<zipfileset dir="${dir.build}">
+			<include name="geoserver.war" />
+		</zipfileset>
+	</zip>
+	
+<move file="${basedir}/geoserver-${name.release}-war.zip" todir="${dir.release}" />
+	<delete file="${dir.build}/geoserver.war" failonerror="true" />
+	
 </target>
 
 <target name="release-binary" depends="release-common">
