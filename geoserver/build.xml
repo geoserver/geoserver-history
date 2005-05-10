@@ -466,7 +466,7 @@
 
 		<mkdir dir="${basedir}/data" />
 		<copy todir="${basedir}/data">
-			<fileset dir="${conf.path}">
+			<fileset dir="${conf.path}/data/">
 				<include name="**/*" />
 			</fileset>
 		</copy>
@@ -550,9 +550,12 @@
 				<include name="ApplicationResources*.properties" />
 			</classes>
 
+			<webinf dir="${conf.path}/WEB-INF">
+							<include name="services.xml" />
+							<include name="catalog.xml" />
+			</webinf>
+			
 			<webinf dir="${basedir}/data">
-				<include name="services.xml" />
-				<include name="catalog.xml" />
 				<include name="*.html" />
 				<include name="*.png" />
 			</webinf>
@@ -807,7 +810,16 @@
 <antcall target="build-war">
 	<param name="conf.path" value="${basedir}/cite/confUserBasic" />
 </antcall>
-<copy file="${dir.build}/geoserver.war" todir="${dir.release}" />
+	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
+	<zip destfile="${basedir}/geoserver-${name.release}-war.zip">
+		<zipfileset dir="${dir.build}">
+			<include name="geoserver.war" />
+		</zipfileset>
+	</zip>
+	
+<move file="${basedir}/geoserver-${name.release}-war.zip" todir="${dir.release}" />
+	<delete file="${dir.build}/geoserver.war" failonerror="true" />
+	
 </target>
 
 <target name="release-binary" depends="release-common">

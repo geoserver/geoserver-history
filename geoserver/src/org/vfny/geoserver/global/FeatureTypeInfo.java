@@ -766,7 +766,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     /**
      *
      */
-    public FeatureType getFeatureType(FeatureSource fs)
+    private FeatureType getFeatureType(FeatureSource fs)
         throws IOException {
         if (ft == null) {
             int count = 0;
@@ -1012,15 +1012,5 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	return this.schemaFile;
     }
 
-	public List getSchema() {
-		return schema;
-	}
-
-	public String getDataStoreId() {
-		return dataStoreId;
-	}
-	public String getDirName() {
-		return dirName;
-	}
 }
  
