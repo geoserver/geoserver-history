@@ -8,8 +8,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geotools.geometry.JTS;
+import org.geotools.referencing.FactoryFinder;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.CoordinateOperation;
+import org.opengis.referencing.operation.CoordinateOperationFactory;
+import org.opengis.referencing.operation.MathTransform2D;
+import org.opengis.referencing.operation.OperationNotFoundException;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -406,15 +416,58 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleVendorSpecifics(WCS config) {
         }
 
-        private void handleEnvelope(String srsName, Envelope envelope) {
-        	AttributesImpl attributes = new AttributesImpl();
-        	if( srsName != null && srsName != "" ) {
-        		attributes.addAttribute("", "srsName", "srsName", "", srsName);
-        	}
-        	start("lonLatEnvelope", attributes);
-        		element("gml:pos", envelope.getMinX() + " " + envelope.getMinY());
-        		element("gml:pos", envelope.getMaxX() + " " + envelope.getMaxY());
-        	end("lonLatEnvelope");
+        private void handleEnvelope(CoordinateReferenceSystem crs, Envelope envelope) {
+			try {
+				if( !crs.getName().getCode().equalsIgnoreCase("WGS 84") ) {
+					final CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory();
+					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
+				    		"GEOGCS[\"WGS 84\",\n" 								 + 
+				    		"DATUM[\"WGS_1984\",\n"								 + 
+				    		"  SPHEROID[\"WGS 84\",\n" 							 + 
+				    		"    6378137.0, 298.257223563,\n" 					 + 
+				    		"    AUTHORITY[\"EPSG\",\"7030\"]],\n" 				 +
+				    		"  AUTHORITY[\"EPSG\",\"6326\"]],\n"				 + 
+				    		"  PRIMEM[\"Greenwich\", 0.0,\n" 					 +
+				    		"    AUTHORITY[\"EPSG\",\"8901\"]],\n"				 + 
+				    		"  UNIT[\"degree\", 0.017453292519943295],\n"		 + 
+				    		"  AXIS[\"Lon\", EAST],\n"							 +
+				    		"  AXIS[\"Lat\", NORTH],\n"							 +
+				    		"AUTHORITY[\"EPSG\",\"4326\"]]");
+					
+					
+				    final CoordinateReferenceSystem sourceCRS = crs;
+				    
+				    final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
+
+				    MathTransform2D mathTransform = (MathTransform2D) operation.getMathTransform();
+				    
+					Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
+
+		        	AttributesImpl attributes = new AttributesImpl();
+					attributes.addAttribute("", "srsName", "srsName", "", "WGS84(DD)");
+		        	start("lonLatEnvelope", attributes);
+		        		element("gml:pos", targetEnvelope.getMinX() + " " + targetEnvelope.getMinY());
+		        		element("gml:pos", targetEnvelope.getMaxX() + " " + targetEnvelope.getMaxY());
+		        	end("lonLatEnvelope");
+			    } else {
+		        	AttributesImpl attributes = new AttributesImpl();
+					attributes.addAttribute("", "srsName", "srsName", "", "WGS84(DD)");
+		        	start("lonLatEnvelope", attributes);
+		        		element("gml:pos", envelope.getMinX() + " " + envelope.getMinY());
+		        		element("gml:pos", envelope.getMaxX() + " " + envelope.getMaxY());
+		        	end("lonLatEnvelope");
+			    }
+			} catch (OperationNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FactoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         
         /**
@@ -477,7 +530,7 @@ public class WCSCapsTransformer extends TransformerBase {
             	if ((tmp != null) && (tmp != "")) {
             		element("label", tmp);
             	}
-                handleEnvelope(cv.getSrsName(), cv.getEnvelope());
+                handleEnvelope(cv.getCrs(), cv.getEnvelope());
                 handleKeywords(cv.getKeywords());
                 
             end("CoverageOfferingBrief");

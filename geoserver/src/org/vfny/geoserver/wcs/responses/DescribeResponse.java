@@ -235,25 +235,21 @@ public class DescribeResponse implements Response {
 
 				    MathTransform2D mathTransform = (MathTransform2D) operation.getMathTransform();
 				    
-				    if( mathTransform instanceof AffineTransform ) {
-				    	Envelope envelope = cv.getEnvelope();
-				    	Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
-
-				    	tempResponse.append("\n  <lonLatEnvelope" 
-								+ " srsName=\"WGS84(DD)\""
-								+">");
-						tempResponse.append("\n   <gml:pos>" 
-								+ targetEnvelope.getMinX() + " " + targetEnvelope.getMinY() 
-								+ "</gml:pos>");
-						tempResponse.append("\n   <gml:pos>" 
-								+ targetEnvelope.getMaxX() + " " + targetEnvelope.getMaxY() 
-								+ "</gml:pos>");
-						tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-						tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-						tempResponse.append("\n  </lonLatEnvelope>");
-				    } else {
-				    	// @task TODO: Handle non-affine transforms
-				    }
+					Envelope envelope = cv.getEnvelope();
+					Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
+					
+					tempResponse.append("\n  <lonLatEnvelope" 
+							+ " srsName=\"WGS84(DD)\""
+							+">");
+					tempResponse.append("\n   <gml:pos>" 
+							+ targetEnvelope.getMinX() + " " + targetEnvelope.getMinY() 
+							+ "</gml:pos>");
+					tempResponse.append("\n   <gml:pos>" 
+							+ targetEnvelope.getMaxX() + " " + targetEnvelope.getMaxY() 
+							+ "</gml:pos>");
+					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+					tempResponse.append("\n  </lonLatEnvelope>");
 			    } else {
 			    	tempResponse.append("\n  <lonLatEnvelope" 
 			    			+ " srsName=\"WGS84(DD)\""
