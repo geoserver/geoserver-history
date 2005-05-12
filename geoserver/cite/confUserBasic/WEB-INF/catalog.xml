@@ -244,16 +244,6 @@
 		<type>Gtopo30</type>
 		<url>file:data/coverages/gtopo_sample/W020N90.DEM</url>
 	</format>
-
-	<format enabled = "true" id = "geotiff" >
-		<description></description>
-		<type>GeoTIFF</type>
-		<url>file:data/coverages/geotiff_sample/po_168213_blu_0000000.tif</url>
-		<parameters>
-			<parameter value = "true" name = "Rescale"  />
-		</parameters>
-	</format>
-
   </formats>
 
 	<!-- Defines the namespaces to be used.  All dataStores must refer to a   -->
