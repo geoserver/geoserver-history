@@ -1012,5 +1012,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	return this.schemaFile;
     }
 
+	public String getDirName() {
+		return dirName;
+	}
+
 }
  
