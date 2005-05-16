@@ -419,8 +419,8 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleEnvelope(CoordinateReferenceSystem crs, Envelope envelope) {
 			try {
 				if( !crs.getName().getCode().equalsIgnoreCase("WGS 84") ) {
-					final CRSFactory crsFactory = FactoryFinder.getCRSFactory();
-					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory();
+					final CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
+					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(null);
 					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
 				    		"GEOGCS[\"WGS 84\",\n" 								 + 
 				    		"DATUM[\"WGS_1984\",\n"								 + 

@@ -167,8 +167,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         int height = getMapReq.getHeight();
         Envelope bbox = getMapReq.getBbox();
 
-        Coordinate upperLeft = pixelToWorld(x, y, bbox, width, height);
-        Coordinate lowerRight = pixelToWorld(x + 1, y + 1, bbox, width, height);
+        Coordinate upperLeft = pixelToWorld(x - 2, y - 2, bbox, width, height);
+        Coordinate lowerRight = pixelToWorld(x + 2, y + 2, bbox, width, height);
 
         Coordinate[] coords = new Coordinate[5];
         coords[0] = upperLeft;

@@ -208,7 +208,7 @@ public class DataFormatsEditorForm extends ActionForm {
                 try {
     				if( key.equalsIgnoreCase("crs") ) {
 						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
-							CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+							CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
 							CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) getParamValue(i));
 							value = crs;
 						} else {

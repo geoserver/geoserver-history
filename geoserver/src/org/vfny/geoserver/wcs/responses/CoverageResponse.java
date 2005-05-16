@@ -35,6 +35,7 @@ import javax.media.jai.operator.CompositeDescriptor;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
@@ -211,7 +212,7 @@ public class CoverageResponse implements Response {
 					try {
 	    				if( key.equalsIgnoreCase("crs") ) {
 							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+								CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
 								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
 								value = crs;
 							} else {
@@ -359,12 +360,7 @@ public class CoverageResponse implements Response {
 //					if( numBands%2 != 0 ) {
 //				        sampleDimensions[numBands] = new GridSampleDimension();
 //					}
-					try {
-						ImageIO.write(imgBackground.createSnapshot(),"tiff",new File("c:/back.tif"));
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}	
+			
 					/**translating the old one*/
 			        pb = new ParameterBlock();
 					pb.addSource(image);
@@ -383,14 +379,14 @@ public class CoverageResponse implements Response {
 							meta.getName(),
 							destOverlayed,
 							coverage.getCoordinateReferenceSystem(),
-							gSEnvelope);//,
-//							sampleDimensions,
-//							null,
-//							((PropertySourceImpl)coverage).getProperties());
+							gSEnvelope,
+							new Hints(Hints.AVOID_NON_GEOPHYSICS, Boolean.TRUE));//,
+
 					
 					delegate.prepare(outputFormat, subCoverage);
 				
-				}else
+				}
+				else
 				if( image.getSampleModel().getDataType() == DataBuffer.TYPE_USHORT ) {
 					
 					// Create the background Image.
@@ -431,12 +427,7 @@ public class CoverageResponse implements Response {
 						pb1.addSource(image);
 						pb1.addSource(imgBackground1);
 					    imgBackground = JAI.create("bandmerge",pb1,null);	
-						try {
-							ImageIO.write(imgBackground.createSnapshot(),"png",new File("c:/back.png"));
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}						
+					
 					}
 						
 					
@@ -471,11 +462,9 @@ public class CoverageResponse implements Response {
 							meta.getName(),
 							destOverlayed,
 							coverage.getCoordinateReferenceSystem(),
-							gSEnvelope);
-//							null,
-////							sampleDimensions,
-//							null,
-//							((PropertySourceImpl)coverage).getProperties());
+							gSEnvelope,
+							new Hints(Hints.AVOID_NON_GEOPHYSICS, Boolean.TRUE));
+
 					
 					delegate.prepare(outputFormat, subCoverage);
 				} 
@@ -538,8 +527,18 @@ public class CoverageResponse implements Response {
 				pbCrop.add(new Float(cnY).floatValue());//height
 				RenderedOp result = JAI.create("crop", pbCrop);
 				
-				//creating a copy of the given grid coverage2D
-				GridCoverage2D subCoverage = new GridCoverage2D(
+//				creating a copy of the given grid coverage2D
+				GridCoverage2D subCoverage =null;
+				final GridSampleDimension[] sampleDimensions=coverage.getSampleDimensions();
+				boolean hasGeophysic=false;
+				for(int index=0;index<sampleDimensions.length;index++)
+					if(!sampleDimensions[index].getSampleToGeophysics().isIdentity())
+					{
+						hasGeophysic=true;
+						break;
+					}
+				if(hasGeophysic)
+					subCoverage= new GridCoverage2D(
 						meta.getName(),
 						result,
 						coverage.getCoordinateReferenceSystem(),
@@ -547,7 +546,17 @@ public class CoverageResponse implements Response {
 						coverage.getSampleDimensions(),
 						null,
 						((PropertySourceImpl)coverage).getProperties());
-				
+				else
+					subCoverage= new GridCoverage2D(
+							meta.getName(),
+							result,
+							coverage.getCoordinateReferenceSystem(),
+							gSEnvelope,
+							coverage.getSampleDimensions(),
+							null,
+							((PropertySourceImpl)coverage).getProperties(),
+							new Hints(Hints.AVOID_NON_GEOPHYSICS,Boolean.TRUE));				
+					
 				delegate.prepare(outputFormat, subCoverage);
 			}
 		} else {

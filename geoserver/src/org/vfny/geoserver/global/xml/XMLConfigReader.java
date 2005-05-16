@@ -1290,7 +1290,7 @@ public class XMLConfigReader {
 		Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
 		cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
 		
-		CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+		CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
 		try {
 			cv.setCrs(
 					crsFactory.createFromWKT(

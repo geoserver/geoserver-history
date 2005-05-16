@@ -281,7 +281,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 					try {
 	    				if( key.equalsIgnoreCase("crs") ) {
 							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+								CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
 								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
 								value = crs;
 							} else {
@@ -357,6 +357,17 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		}
 		
 		return collection;
+	}
+
+	public GridCoverage getCoverageToLayer(HttpServletRequest request) {
+		GridCoverage gridCoverage = null;
+		try {
+			gridCoverage = getGridCoverage(request, this.coverage);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return gridCoverage;
 	}
 	
 	public Style getDefaultStyle() {

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.feature.FeatureType;
+import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.NamedStyle;
 import org.geotools.styling.SLDParser;
@@ -792,17 +793,119 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 	currLayer.setCoverage(findCoverageLayer(request, layerName));
 				}
 				
-                if( currLayer.getType() == MapLayerInfo.TYPE_VECTOR )
+                if( currLayer.getType() == MapLayerInfo.TYPE_VECTOR ) {
                 	currStyle = findStyleOf(request, currLayer.getFeature(), styledLayers);
-                else if( currLayer.getType() == MapLayerInfo.TYPE_RASTER )
+                	// currStyle = findStyleOf(request, currLayer, styledLayers); // DJB: this looks like a bug, we should get the style from styledLayers[i]
+                	
+                	// the correct thing to do its grab the style from styledLayers[i]
+                	//   inside the styledLayers[i] will either be :
+                	//     a) nothing - in which case grab the layer's default style
+                	//     b) a set of:
+                	//             i) NameStyle -- grab it from the pre-loaded styles
+                	//             ii)UserStyle -- grab it from the sld the user uploaded
+                	//
+                	// NOTE: we're going to get a set of layer->style pairs for (b).
+                	
+                	addStyles(request,currLayer,styledLayers[i],layers,styles);
+                }
+                else if( currLayer.getType() == MapLayerInfo.TYPE_RASTER ) {
                 	currStyle = findStyle(request, "raster");
-                layers.add(currLayer);
-                styles.add(currStyle);
+                	
+                	layers.add(currLayer);
+                	styles.add(currStyle);
+                }
             }
         }
         request.setLayers((MapLayerInfo[])layers.toArray(new MapLayerInfo[layers.size()]));
         request.setStyles(styles);
     }
+
+ 
+
+	/**
+	 * the correct thing to do its grab the style from styledLayers[i]
+     * inside the styledLayers[i] will either be :
+     *  a) nothing - in which case grab the layer's default style
+     *  b) a set of:
+     * i) NameStyle -- grab it from the pre-loaded styles
+     *  ii)UserStyle -- grab it from the sld the user uploaded
+     * 
+     *  NOTE: we're going to get a set of layer->style pairs for (b).
+     *        these are added to layers,styles
+     * 
+     *   NOTE: we also handle some featuretypeconstraints
+     * 
+	 * @param request
+	 * @param currLayer
+	 * @param layer
+	 * @param layers
+	 * @param styles
+	 */
+	private void addStyles(GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer, List layers, List styles) 
+	{
+		if (currLayer == null)
+			return; // protection
+		
+		Style[] layerStyles =null;  
+		FeatureTypeConstraint[]  ftcs = null;
+		
+		if (layer instanceof NamedLayer)
+		{
+			ftcs = ((NamedLayer) layer).getLayerFeatureConstrains();
+			layerStyles = ((NamedLayer) layer).getStyles();
+		}
+		else if (layer instanceof UserLayer)
+		{
+			ftcs = ((UserLayer)layer).getLayerFeatureConstraints();
+			layerStyles = ((UserLayer) layer).getUserStyles();
+		}
+		
+			//DJB:  TODO: this needs to do the whole thing, not just names
+			if (ftcs != null)
+			{
+				for (int t=0;t<ftcs.length;t++)
+				{
+					FeatureTypeConstraint ftc = ftcs[t];
+					if (ftc.getFeatureTypeName() != null)
+					{
+						String ftc_name = ftc.getFeatureTypeName();
+							//taken from lite renderer
+						boolean matches ;
+						try{
+							matches = currLayer.getFeature().getFeatureType().isDescendedFrom(null,ftc_name) || currLayer.getFeature().getFeatureType().getTypeName().equalsIgnoreCase(ftc_name);
+						}
+						catch(Exception e)
+						{
+							matches = false; // bad news
+						}
+						if (!matches)
+							continue ; // this layer is fitered out					
+					}
+				}
+			}
+		
+			//handle no styles -- use default
+			if ( (layerStyles == null) || (layerStyles.length ==0))
+			{
+				layers.add(currLayer);
+				styles.add( currLayer.getDefaultStyle() );
+				return;
+			}
+			
+			for (int t=0;t<layerStyles.length;t++)
+			{
+				if (layerStyles[t] instanceof NamedStyle)
+				{
+					layers.add(currLayer);
+					styles.add(findStyle( request, ((NamedStyle) layerStyles[t]).getName() ));
+				}
+				else 
+				{
+					layers.add(currLayer);
+					styles.add(layerStyles[t]);
+				}
+			}
+	}
 
     /**
      * Finds the style for <code>layer</code> in <code>styledLayers</code> or

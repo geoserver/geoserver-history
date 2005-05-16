@@ -101,7 +101,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 			try {
 				if( key.equalsIgnoreCase("crs") ) {
 					if( params.get(key) != null && ((String) params.get(key)).length() > 0 ) {
-						CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+						CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
 						CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) params.get(key));
 						value = crs;
 					} else {

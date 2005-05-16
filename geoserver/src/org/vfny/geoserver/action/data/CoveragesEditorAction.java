@@ -175,7 +175,7 @@ public class CoveragesEditorAction extends ConfigAction {
 					try {
 						if( key.equalsIgnoreCase("crs") ) {
 							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								CRSFactory crsFactory = FactoryFinder.getCRSFactory();
+								CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
 								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
 								value = crs;
 							} else {
