@@ -206,7 +206,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String version = getRequestVersion();
         request.setVersion(version);
 
-        parseMandatoryParameters(request);
+        parseMandatoryParameters(request,true);
         parseOptionalParameters(request);
 
         return request;
@@ -237,7 +237,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @task TODO: implement parsing of transparent, exceptions and bgcolor
      */
-    private void parseOptionalParameters(GetMapRequest request)
+    public void parseOptionalParameters(GetMapRequest request)
         throws WmsException {
         String crs = getValue("SRS");
 
@@ -292,10 +292,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * </p>
      *
      * @param request DOCUMENT ME!
+     * @parseStylesLayers true = normal operation, false = dont parse the styles and layers (used by the SLD GET/POST)
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private void parseMandatoryParameters(GetMapRequest request)
+    public void parseMandatoryParameters(GetMapRequest request,boolean parseStylesLayers)
         throws WmsException {
         try {
             int width = Integer.parseInt(getValue("WIDTH"));
@@ -319,7 +320,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         //let styles and layers parsing for the end to give more trivial parameters 
         //a chance to fail before incurring in retrieving the SLD or SLD_BODY
-        parseLayersAndStyles(request);
+        if (parseStylesLayers)
+        	parseLayersAndStyles(request);
     }
 
     /**
@@ -560,7 +562,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *         <code>null</code> if such a style does not exists on this
      *         server.
      */
-    private Style findStyle(GetMapRequest request, String currStyleName) {
+    public static Style findStyle(GetMapRequest request, String currStyleName) {
         Style currStyle;
         Map configuredStyles = request.getWMS().getData().getStyles();
 
@@ -800,7 +802,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @param layers
 	 * @param styles
 	 */
-	private void addStyles(GetMapRequest request, FeatureTypeInfo currLayer, StyledLayer layer, List layers, List styles) 
+	public static void addStyles(GetMapRequest request, FeatureTypeInfo currLayer, StyledLayer layer, List layers, List styles) 
 	{
 		if (currLayer == null)
 			return; // protection
@@ -984,7 +986,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private FeatureTypeInfo findLayer(GetMapRequest request, String layerName)
+    public static FeatureTypeInfo findLayer(GetMapRequest request, String layerName)
         throws WmsException {
         Data catalog = request.getWMS().getData();
         FeatureTypeInfo ftype = null;
