@@ -13,7 +13,7 @@
   <LayerList>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Local">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>topp:tasmania_state_boundaries</Name>
       <Title>Tasmania State Boundaries</Title>
@@ -25,7 +25,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Local">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>topp:tasmania_water_bodies</Name>
       <Title>Tasmania Water Bodies</Title>
@@ -37,7 +37,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Local">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>topp:tasmania_roads</Name>
       <Title>Tasmania Roads</Title>
@@ -49,7 +49,7 @@
     </Layer>
     <Layer queryable="1" hidden="0">
       <Server service="OGC:WMS" version="1.1.1" title="Local">
-        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+        <OnlineResource xlink:type="simple" xlink:href="../../../../wms"/>
       </Server>
       <Name>topp:tasmania_cities</Name>
       <Title>Tasmania Major Cities</Title>

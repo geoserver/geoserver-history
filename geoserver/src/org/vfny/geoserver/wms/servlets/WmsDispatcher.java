@@ -72,9 +72,17 @@ public class WmsDispatcher extends Dispatcher {
         throws ServletException, IOException {
         //BufferedReader tempReader = request.getReader();
         //String tempResponse = new String();
-        int targetRequest = 0;
+        //int targetRequest = 0;
         LOGGER.finer("got to post request");
-        doResponse(false, request, response, targetRequest);
+       
+        
+        //DJB: adding parital POST support for SLD-POST.
+        //     currently the only type of POST request we support is GetMap
+        //     So chris' comments above dont apply - we just assume its GetMap and we dont have to read twice.
+        // 
+        
+        int targetRequest = Dispatcher.GET_MAP_REQUEST;
+        doResponse(true, request, response, targetRequest);
     }
 
     /**
@@ -141,10 +149,12 @@ public class WmsDispatcher extends Dispatcher {
             dispatched = null;
         }
 
-        if ((dispatched != null) && !isPost) {
+        if ((dispatched != null))  //DJB: removed "&& !isPost" because we are partially supportin POST now
+        {
             dispatched.init(servletConfig); //only needed for init hack, see
             dispatched.service(request, response);
-        } else {
+        } else 
+        {
             String message;
 
             if (isPost) {
