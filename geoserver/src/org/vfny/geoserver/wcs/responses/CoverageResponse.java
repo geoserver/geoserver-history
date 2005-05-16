@@ -382,7 +382,6 @@ public class CoverageResponse implements Response {
 							gSEnvelope,
 							new Hints(Hints.AVOID_NON_GEOPHYSICS, Boolean.TRUE));//,
 
-					
 					delegate.prepare(outputFormat, subCoverage);
 				
 				}
