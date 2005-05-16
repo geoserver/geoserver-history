@@ -5,16 +5,20 @@
 package org.vfny.geoserver.wms.servlets;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
+import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
+import org.vfny.geoserver.wms.requests.GetMapXmlReader;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 
@@ -33,8 +37,36 @@ public class GetMap extends WMService {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        doGet(request, response);
+        throws ServletException, IOException 
+	{
+    	//DJB: added post support
+    	Request serviceRequest = null;
+    	this.curRequest = request;
+
+        if (!isServiceEnabled(request)) 
+        {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return;
+        }
+        
+        //we need to construct an approriate serviceRequest from the GetMap XML POST.
+        try{
+        	 GetMapXmlReader xmlPostReader = new GetMapXmlReader();
+        	 Reader xml =  request.getReader();
+        	 serviceRequest= xmlPostReader.read(xml,request);
+        }
+        catch (ServiceException se) 
+		{
+            sendError(response, se);
+            return;
+        } 
+        catch (Throwable e) 
+		{
+            sendError(response, e);
+            return;
+        }
+        
+        doService(request, response, serviceRequest);
     }
 
     /**
