@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="GEOSERVER/a2jruntime.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/Beam-1.0.jar"/>
@@ -14,7 +14,6 @@
 	<classpathentry kind="var" path="GEOSERVER/commons-logging.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/commons-validator.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/geoapi.jar"/>
-	<classpathentry kind="var" path="GEOSERVER/geoserver.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-arcgrid.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-arcsde.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-epsg.jar"/>
