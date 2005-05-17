@@ -698,12 +698,7 @@ public class CoverageResponse implements Response {
 			TRANS_BLACK?invertedMask.getRendering():mask.getRendering());
 		
 		RenderedOp dest= JAI.create("BandMerge",pb,null);
-		try {
-			ImageIO.write(dest,"tiff",new File("c:/aa.tif"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return dest;
 		
 	}
