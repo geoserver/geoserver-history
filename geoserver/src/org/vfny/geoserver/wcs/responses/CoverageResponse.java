@@ -4,14 +4,10 @@
  */
 package org.vfny.geoserver.wcs.responses;
  
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.color.ColorSpace;
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
-import java.awt.image.SampleModel;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.io.IOException;
@@ -24,22 +20,22 @@ import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.PropertySourceImpl;
-import javax.media.jai.RasterFactory;
 import javax.media.jai.RenderedOp;
-import javax.media.jai.operator.CompositeDescriptor;
 
+import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
-import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.operation.transform.LinearTransform1D;
+import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterDescriptor;
@@ -47,6 +43,8 @@ import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.spatialschema.geometry.Envelope;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -284,7 +282,13 @@ public class CoverageResponse implements Response {
 	 * @throws WcsException
 	 * @throws IOException
 	 */
-	private void getCroppedCoverage(CoverageRequest request, String outputFormat, CoverageInfo meta, GridCoverage2D coverage) throws WcsException, IOException {
+	private void getCroppedCoverage(
+			CoverageRequest request, 
+			String outputFormat, 
+			CoverageInfo meta, 
+			GridCoverage2D coverage
+	) throws WcsException, IOException {
+	
 		if( request.getEnvelope() != null ) {
 			com.vividsolutions.jts.geom.Envelope envelope = new com.vividsolutions.jts.geom.Envelope();
 			GeneralEnvelope gEnvelope = (GeneralEnvelope) coverage.getEnvelope();
@@ -332,7 +336,9 @@ public class CoverageResponse implements Response {
 			if( !meta.getEnvelope().intersects(request.getEnvelope()) ) {
 				throw new WcsException("Invalid Requested Envelope: " + request.getEnvelope());
 			} else if( !meta.getEnvelope().contains(request.getEnvelope()) ) {
-				/**creating a a constant image for the overlay or composition*/
+				/**
+				 * creating a constant image for the overlay or composition
+				 **/
 				final int numBands = image.getSampleModel().getNumBands();
 				ParameterBlock pb = new ParameterBlock();
 				Number[] bandValues = null;
@@ -375,13 +381,16 @@ public class CoverageResponse implements Response {
 						(numBands%2 == 0 ? JAI.create("overlay", pb, null) : addTransparency(JAI.create("overlay", pb, null), TRANS_BLACK));
 
 					//creating a copy of the given grid coverage2D
-					GridCoverage2D subCoverage = new GridCoverage2D(
+					GridCoverage2D subCoverage = (GridCoverage2D) createCoverage(destOverlayed, coverage.getCoordinateReferenceSystem(), gSEnvelope, coverage.getName().toString()); 
+						
+						/*new GridCoverage2D(
 							meta.getName(),
 							destOverlayed,
 							coverage.getCoordinateReferenceSystem(),
 							gSEnvelope,
 							new Hints(Hints.AVOID_NON_GEOPHYSICS, Boolean.TRUE));//,
-
+*/
+					
 					delegate.prepare(outputFormat, subCoverage);
 				
 				}
@@ -457,12 +466,13 @@ public class CoverageResponse implements Response {
 						(numBands%2 == 0 ? JAI.create("overlay", pb, null) : addTransparency(JAI.create("overlay", pb, null), TRANS_BLACK));
 
 					//creating a copy of the given grid coverage2D
-					GridCoverage2D subCoverage = new GridCoverage2D(
+					GridCoverage2D subCoverage = (GridCoverage2D) createCoverage(destOverlayed, coverage.getCoordinateReferenceSystem(), gSEnvelope, coverage.getName().toString()); 
+						/*new GridCoverage2D(
 							meta.getName(),
 							destOverlayed,
 							coverage.getCoordinateReferenceSystem(),
 							gSEnvelope,
-							new Hints(Hints.AVOID_NON_GEOPHYSICS, Boolean.TRUE));
+							new Hints(Hints.AVOID_NON_GEOPHYSICS, Boolean.TRUE));*/
 
 					
 					delegate.prepare(outputFormat, subCoverage);
@@ -479,8 +489,7 @@ public class CoverageResponse implements Response {
 				        // Fill the array with a constant value.  
 				        for(int band=0;band<bandValues.length;band++)  
 				        	bandValues[band] = new Double(Double.NaN);
-			        }
-			        else if( image.getSampleModel().getDataType() == DataBuffer.TYPE_SHORT ) {
+			        } else if( image.getSampleModel().getDataType() == DataBuffer.TYPE_SHORT ) {
 				        bandValues = new Short[numBands];  
 				        // Fill the array with a constant value.  
 				        for(int band=0;band<bandValues.length;band++)  
@@ -546,7 +555,13 @@ public class CoverageResponse implements Response {
 						null,
 						((PropertySourceImpl)coverage).getProperties());
 				else
-					subCoverage= new GridCoverage2D(
+					subCoverage = (GridCoverage2D) createCoverage(
+							result, 
+							coverage.getCoordinateReferenceSystem(), 
+							gSEnvelope, 
+							coverage.getName().toString()
+					); 
+						/*new GridCoverage2D(
 							meta.getName(),
 							result,
 							coverage.getCoordinateReferenceSystem(),
@@ -554,7 +569,7 @@ public class CoverageResponse implements Response {
 							coverage.getSampleDimensions(),
 							null,
 							((PropertySourceImpl)coverage).getProperties(),
-							new Hints(Hints.AVOID_NON_GEOPHYSICS,Boolean.TRUE));				
+							new Hints(Hints.AVOID_NON_GEOPHYSICS,Boolean.TRUE));*/				
 					
 				delegate.prepare(outputFormat, subCoverage);
 			}
@@ -719,4 +734,55 @@ public class CoverageResponse implements Response {
 		
 		return url;
 	}
+	
+    /**Creating a coverage from an Image.
+     * @param image
+     * @param crs
+     * @param envelope
+     * @param coverageName
+     * @return
+     * @throws MismatchedDimensionException
+     * @throws IOException
+     */
+    private GridCoverage createCoverage(
+    		RenderedImage image,
+			CoordinateReferenceSystem crs, 
+			Envelope envelope, 
+			String coverageName
+	) throws MismatchedDimensionException, IOException {
+    	//building up a coverage
+    	GridCoverage coverage = null;
+    	//deciding the number range
+    	NumberRange geophysicRange=null;
+    	switch(image.getSampleModel().getTransferType()){
+    	case DataBuffer.TYPE_BYTE:
+    		geophysicRange=new NumberRange(0, 255);
+    	break;
+    	case DataBuffer.TYPE_USHORT:
+    		geophysicRange=new NumberRange(0, 655535);
+    	break;
+    	case DataBuffer.TYPE_INT:
+    		geophysicRange=new NumberRange(-Integer.MAX_VALUE,Integer.MAX_VALUE);
+    	break;	
+    	default:
+    		throw new IOException("Data buffer type not supported! Use byte, ushort or int");
+    	}
+    	try {
+    		
+    		//convenieience category in order to 
+    		Category  values = new Category("values",new Color[]{Color.BLACK},geophysicRange,LinearTransform1D.IDENTITY );
+    		
+    		//creating bands
+    		GridSampleDimension bands[]=new GridSampleDimension[image.getSampleModel().getNumBands()];
+    		for(int i=0;i<image.getSampleModel().getNumBands();i++)
+    			bands[i]=new GridSampleDimension(new Category[] {values}, null).geophysics(true);
+    		
+    		//creating coverage
+    		coverage = new GridCoverage2D(coverageName, image, crs, envelope,bands,null,null);
+    	} catch (NoSuchElementException e1) {
+    		throw new IOException("Error when creating the coverage in world image"+e1.getMessage());
+    	}
+    	
+    	return coverage;
+    }
 }
