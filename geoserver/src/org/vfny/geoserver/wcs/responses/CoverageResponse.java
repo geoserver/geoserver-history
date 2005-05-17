@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.PropertySourceImpl;
@@ -33,6 +32,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
 import org.geotools.referencing.operation.transform.LinearTransform1D;
+import org.geotools.resources.GCSUtilities;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -57,6 +57,8 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 
 /**
  * DOCUMENT ME!
@@ -65,9 +67,9 @@ import org.vfny.geoserver.wcs.requests.CoverageRequest;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class CoverageResponse implements Response {
-	public static final int TRANS_BLACK = 0;
+	public static final int TRANSPARENT = 0;
 	
-	public static final int TRANS_WHITE = 1;
+	public static final int OPAQUE = 1;
 	
 	/** Standard logging instance for class */
 	private static final Logger LOGGER = Logger.getLogger(
@@ -334,149 +336,97 @@ public class CoverageResponse implements Response {
 			final int cnY = new Double(latIndex2 - latIndex1).intValue();
 
 			if( !meta.getEnvelope().intersects(request.getEnvelope()) ) {
+				/**
+				 * In such a case we have a requested envelope that is completely outside
+				 * the Coverage envelope.
+				 */
 				throw new WcsException("Invalid Requested Envelope: " + request.getEnvelope());
 			} else if( !meta.getEnvelope().contains(request.getEnvelope()) ) {
 				/**
-				 * creating a constant image for the overlay or composition
+				 * The requested envelope is bigger than the Coverage one or intersects that.
+				 * We should perform the following steps:
+				 * 
+				 * - If the source coverage derives from an GRAYSCALE or RGB image without TRANSPARENCY
+				 *   (i.e. the WritableRaster has an odd number of bands and a DataType like BYTE, USHORT and INT):
+				 *   1. Add TRANSPARENCY to the source image, i.e. we have to add a new MAX-DATATYPE-VALUE constant 
+				 *      band to the image. "MAX-DATATYPE-VALUE" means opaque (we want the original opaque image to
+				 *      remain opaque). 
+				 *   2. Create a 0-value constant image wich has dimesions equals to the union of the two envelopes, 
+				 *      and the same number of bands of the source image+1.
+				 *   3. Positioning through an Affine-Transform the original image to the background.
+				 *   4. Overlaying the transparent background and the source image+transparency.
+				 *   5. Create a new GridCoverage for the delegate.
+				 * 
+				 *   NOTE: if the original image has transparency yet, we simply don't need to add a new band to the
+				 *         source image.
+				 * 
+				 * - if the source coverage derives from a raster
+				 *   (i.e. the WritableRaster has DataType of type FLOAT, DOUBLE and SHORT):
+				 *   1. Overlaying with a background filled with "DataType.NaN".
 				 **/
+				
+				// The source coverage number of Bands
 				final int numBands = image.getSampleModel().getNumBands();
 				ParameterBlock pb = new ParameterBlock();
 				Number[] bandValues = null;
-				if( image.getSampleModel().getDataType() == DataBuffer.TYPE_BYTE ) {
+				
+				// Checking if the source coverage derives from an image.
+				if( image.getSampleModel().getDataType() == DataBuffer.TYPE_BYTE ||
+					image.getSampleModel().getDataType() == DataBuffer.TYPE_USHORT ||
+					image.getSampleModel().getDataType() == DataBuffer.TYPE_INT	
+				) {
+					// Checking if we need to add transparency-band to the source image or not.
+					if(numBands%2 != 0) {
+						image = addTransparency(image, OPAQUE);
+					}
 					
 					// Create the background Image.
-					
-					bandValues = new Byte[(numBands%2 != 0 ? numBands : numBands - 1)];  
-					// Fill the array with a constant value.  
-					for(int band=0;band<bandValues.length;band++)  
-						bandValues[band] = new Byte((byte)(numBands%2 != 0 ? 0xFF : 0x00));
-			        pb = new ParameterBlock();
+					switch(image.getSampleModel().getDataType()){
+						case DataBuffer.TYPE_BYTE:
+							bandValues = new Byte[( numBands%2!=0 ? numBands+1 : numBands )];
+							// Fill the array with a constant value.  
+							for(int band=0;band<bandValues.length;band++)  
+								bandValues[band] = new Byte((byte)(0));
+						break;
+						case DataBuffer.TYPE_USHORT:
+							bandValues = new Short[( numBands%2!=0 ? numBands+1 : numBands )];
+							// Fill the array with a constant value.  
+							for(int band=0;band<bandValues.length;band++)  
+								bandValues[band] = new Short((short)(0));
+						break;
+						case DataBuffer.TYPE_INT:
+							bandValues = new Integer[( numBands%2!=0 ? numBands+1 : numBands )];
+							// Fill the array with a constant value.  
+							for(int band=0;band<bandValues.length;band++)  
+								bandValues[band] = new Integer((int)(0));
+						break;						
+					}
+					  
+			        pb.removeParameters();
+			        pb.removeSources();
 					pb.add(new Float( subEnvelope.getWidth() / dX)).add(new Float( subEnvelope.getHeight() / dY));
 			        pb.add(bandValues);
-					PlanarImage imgBackground = 
-						(numBands%2 != 0 ? JAI.create("constant", pb, null) : addTransparency(JAI.create("constant", pb, null), TRANS_BLACK));
-					
-//			        /**if we add a new band to the Coverage we have to add a new SampleDimension too*/
-//			        GridSampleDimension[] sampleDimensions = new GridSampleDimension[(numBands%2 == 0 ? numBands : numBands+1)];
-//			        for( int dim = 0; dim<numBands; dim++ ) {
-//			        	sampleDimensions[dim] = (GridSampleDimension) coverage.getSampleDimension(dim);
-//			        }
-//			        
-//					/**checking for the source alpha channel, adding one if necessary*/
-//					if( numBands%2 != 0 ) {
-//				        sampleDimensions[numBands] = new GridSampleDimension();
-//					}
+					PlanarImage imgBackground = JAI.create("constant", pb, null);
 			
 					/**translating the old one*/
-			        pb = new ParameterBlock();
+			        pb.removeParameters();
+			        pb.removeSources();
 					pb.addSource(image);
 					pb.add((float)((lo1-los1)/dX));
 					pb.add((float)((las2-la2)/dY));
 					RenderedImage renderableSource=JAI.create("translate",pb);
 					
 					/**overlaying images*/
-			        pb = new ParameterBlock();
+			        pb.removeParameters();
+			        pb.removeSources();
 			        pb.addSource(imgBackground).addSource(renderableSource);
-					RenderedImage destOverlayed=
-						(numBands%2 == 0 ? JAI.create("overlay", pb, null) : addTransparency(JAI.create("overlay", pb, null), TRANS_BLACK));
+					RenderedImage destOverlayed = JAI.create("overlay", pb, null);
 
 					//creating a copy of the given grid coverage2D
 					GridCoverage2D subCoverage = (GridCoverage2D) createCoverage(destOverlayed, coverage.getCoordinateReferenceSystem(), gSEnvelope, coverage.getName().toString()); 
-						
-						/*new GridCoverage2D(
-							meta.getName(),
-							destOverlayed,
-							coverage.getCoordinateReferenceSystem(),
-							gSEnvelope,
-							new Hints(Hints.AVOID_NON_GEOPHYSICS, Boolean.TRUE));//,
-*/
 					
 					delegate.prepare(outputFormat, subCoverage);
-				
 				}
-				else
-				if( image.getSampleModel().getDataType() == DataBuffer.TYPE_USHORT ) {
-					
-					// Create the background Image.
-					bandValues = new Short[(numBands%2 != 0 ? numBands : numBands - 1)];  
-					// Fill the array with a constant value.  
-					for(int band=0;band<bandValues.length;band++)  
-						bandValues[band] = new Short((short)(0));
-			        pb = new ParameterBlock();
-					pb.add(new Float( subEnvelope.getWidth() / dX)).add(new Float( subEnvelope.getHeight() / dY));
-			        pb.add(bandValues);
-
-					
-					//creating the background image for black transparency
-					PlanarImage imgBackground = null;
-					/**
-					 * TODO make it work on more bands than 2
-					 * 
-					 * 
-					 */
-					if(numBands%2 != 0){
-						//odd number of bands, adding transparency
-						imgBackground=JAI.create("constant", pb, null);
-						try {
-							ImageIO.write(imgBackground.createSnapshot(),"tiff",new File("c:/back.tif"));
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}	
-						
-					}
-					else{
-						//we have an even number of bands we already have transparency
-						imgBackground=JAI.create("constant", pb, null);
-						PlanarImage imgBackground1  =JAI.create("constant", pb, null);
-						ParameterBlock pb1 = new ParameterBlock();						
-						pb1.removeParameters();
-						pb1.removeSources();
-						pb1.addSource(image);
-						pb1.addSource(imgBackground1);
-					    imgBackground = JAI.create("bandmerge",pb1,null);	
-					
-					}
-						
-					
-					
-
-//			        /**if we add a new band to the Coverage we have to add a new SampleDimension too*/
-//			        GridSampleDimension[] sampleDimensions = new GridSampleDimension[(numBands%2 == 0 ? numBands : numBands+1)];
-//			        for( int dim = 0; dim<numBands; dim++ ) {
-//			        	sampleDimensions[dim] = (GridSampleDimension) coverage.getSampleDimension(dim);
-//			        }
-//			        
-//					/**checking for the source alpha channel, adding one if necessary*/
-//					if( numBands%2 != 0 ) {
-//				        sampleDimensions[numBands] = new GridSampleDimension();
-//					}
-//					
-					/**translating the old one*/
-			        pb = new ParameterBlock();
-					pb.addSource(image);
-					pb.add((float)((lo1-los1)/dX));
-					pb.add((float)((las2-la2)/dY));
-					RenderedImage renderableSource=JAI.create("translate",pb);
-					
-					/**overlaying images*/
-			        pb = new ParameterBlock();
-			        pb.addSource(imgBackground).addSource(renderableSource);
-					RenderedImage destOverlayed=
-						(numBands%2 == 0 ? JAI.create("overlay", pb, null) : addTransparency(JAI.create("overlay", pb, null), TRANS_BLACK));
-
-					//creating a copy of the given grid coverage2D
-					GridCoverage2D subCoverage = (GridCoverage2D) createCoverage(destOverlayed, coverage.getCoordinateReferenceSystem(), gSEnvelope, coverage.getName().toString()); 
-						/*new GridCoverage2D(
-							meta.getName(),
-							destOverlayed,
-							coverage.getCoordinateReferenceSystem(),
-							gSEnvelope,
-							new Hints(Hints.AVOID_NON_GEOPHYSICS, Boolean.TRUE));*/
-
-					
-					delegate.prepare(outputFormat, subCoverage);
-				} 
 				else {
 			        // Create the background Image.
 			        if( image.getSampleModel().getDataType() == DataBuffer.TYPE_FLOAT ) {
@@ -497,20 +447,23 @@ public class CoverageResponse implements Response {
 				        	bandValues[band] = new Short((short)-9999);//quick hack for gtopo30 format!!!!!
 			        }			 
 				
-			        pb = new ParameterBlock();
+			        pb.removeParameters();
+			        pb.removeSources();
 					pb.add(new Float( subEnvelope.getWidth() / dX)).add(new Float( subEnvelope.getHeight() / dY));
 			        pb.add(bandValues);
 					PlanarImage imgBackground = JAI.create("constant", pb, null);
 
 					/**translating the old one*/
-			        pb = new ParameterBlock();
+			        pb.removeParameters();
+			        pb.removeSources();
 					pb.addSource(image);
 					pb.add((float)((lo1-los1)/dX));
 					pb.add((float)((las2-la2)/dY));
 					RenderedImage renderableSource=JAI.create("translate",pb);
 					
 					/**overlaying images*/
-			        pb = new ParameterBlock();
+			        pb.removeParameters();
+			        pb.removeSources();
 			        pb.addSource(imgBackground).addSource(renderableSource);
 					RenderedImage destOverlayed=JAI.create("overlay", pb, null);
 
@@ -535,17 +488,22 @@ public class CoverageResponse implements Response {
 				pbCrop.add(new Float(cnY).floatValue());//height
 				RenderedOp result = JAI.create("crop", pbCrop);
 				
-//				creating a copy of the given grid coverage2D
+				pbCrop.removeParameters();
+				pbCrop.removeSources();
+				pbCrop.addSource((PlanarImage) result);
+				pbCrop.add(new Double(-lonIndex1).floatValue());//x origin
+				pbCrop.add(new Double(-latIndex1).floatValue());//y origin
+				result=JAI.create("translate",pbCrop);
+				
+				//creating a copy of the given grid coverage2D
 				GridCoverage2D subCoverage =null;
 				final GridSampleDimension[] sampleDimensions=coverage.getSampleDimensions();
-				boolean hasGeophysic=false;
-				for(int index=0;index<sampleDimensions.length;index++)
-					if(!sampleDimensions[index].getSampleToGeophysics().isIdentity())
-					{
-						hasGeophysic=true;
-						break;
-					}
-				if(hasGeophysic)
+				/**
+				 * This method checks if this coverage has a non geophysic
+				 * view associated. In such a case it creates a new coverage based on this non
+				 * geophysic view, otherwise it keeps the original view as it is provided.
+				 */
+				if(GCSUtilities.hasTransform(sampleDimensions))
 					subCoverage= new GridCoverage2D(
 						meta.getName(),
 						result,
@@ -561,15 +519,6 @@ public class CoverageResponse implements Response {
 							gSEnvelope, 
 							coverage.getName().toString()
 					); 
-						/*new GridCoverage2D(
-							meta.getName(),
-							result,
-							coverage.getCoordinateReferenceSystem(),
-							gSEnvelope,
-							coverage.getSampleDimensions(),
-							null,
-							((PropertySourceImpl)coverage).getProperties(),
-							new Hints(Hints.AVOID_NON_GEOPHYSICS,Boolean.TRUE));*/				
 					
 				delegate.prepare(outputFormat, subCoverage);
 			}
@@ -589,118 +538,75 @@ public class CoverageResponse implements Response {
 		}
 	}
 	
-	private static RenderedOp addTransparency(RenderedImage src, int transparentColor){
-		
-		double[] low  = new double[1];
-		double[] high = new double[1];
-		double[] map  = new double[1];
+	private static RenderedOp addTransparency(RenderedImage src, int transparency){
+		Number[] bandValues = null;
+		PlanarImage alphaPlane = null;
+
 		/**
 		 * We are trying to come up with a mask that should spot
 		 * 0 or max as the transparency level
-		 * TODO adjust float and double support
-		 * TODO rename white==max and black==0
 		 */
 		switch(src.getSampleModel().getTransferType()){
-		case DataBuffer.TYPE_FLOAT:
-		case DataBuffer.TYPE_DOUBLE:
 		case DataBuffer.TYPE_BYTE:
-			switch (transparentColor) {
-			case TRANS_BLACK :
-				//black to transparent
-				low[0]  = 1.0F;
-				high[0] = 255.0F;
-				map[0]  = 255.0F;
+			switch (transparency) {
+			case TRANSPARENT :
+				//fill with 0
+				bandValues = new Byte[1];
+				bandValues[0] = new Byte((byte)(0));
 				break;
-			case TRANS_WHITE :
-				//white to transparent
-				low[0]  = 0.0F;
-				high[0] = 254.0F;
-				map[0]  = 0.0F;
+			case OPAQUE :
+				//fill with DataType.MAX
+				bandValues = new Byte[1];
+				bandValues[0] = new Byte((byte)(255));
 				break;
 			}
-			break;
+		break;
 		case DataBuffer.TYPE_USHORT:
-			switch (transparentColor) {
-			case TRANS_BLACK :
-				//black to transparent
-				low[0]  = 1.0F;
-				high[0] = 65535f;
-				map[0]  =65535f;
-				System.out.println("transparent black");
+			switch (transparency) {
+			case TRANSPARENT :
+				//fill with 0
+				bandValues = new Short[1];
+				bandValues[0] = new Short((short)(0));
 				break;
-			case TRANS_WHITE :
-				//white to transparent
-				low[0]  = 0.0F;
-				high[0] = 65534.0F;
-				map[0]  = 0.0F;
+			case OPAQUE :
+				//fill with DataType.MAX
+				bandValues = new Short[1];
+				bandValues[0] = new Short((short)65535);
 				break;
 			}
-			break;
+		break;
 		case DataBuffer.TYPE_INT:
-			return null;//TODO  make sure you also put the threshold values for integer databuffer type
+			switch (transparency) {
+			case TRANSPARENT :
+				//fill with 0
+				bandValues = new Integer[1];
+				bandValues[0] = new Integer((byte)(0));
+				break;
+			case OPAQUE :
+				//fill with DataType.MAX
+				bandValues = new Integer[1];
+				bandValues[0] = new Integer(Integer.MAX_VALUE);
+				break;
+			}
+		break;
 		default:
 			return null;
 		}
-		
-		//thresholding to get a mask for alpha
+
 		ParameterBlock pb = new ParameterBlock();
-		pb.addSource(src);
-		pb.add(low);
-		pb.add(high);
-		pb.add(map);
-		RenderedOp mask = JAI.create("threshold", pb, null);
+		pb.add(new Float(src.getWidth())).add(new Float(src.getHeight()));
+        pb.add(bandValues);
+		alphaPlane = JAI.create("Constant", pb, null);
 
-		
-		//inverted mask when needed to associate transparency to white
-		RenderedOp invertedMask =null;
-		if(transparentColor !=
-			TRANS_BLACK)
-			invertedMask=JAI.create("not", mask);
-		
-		//checking the case when having 3 bands
-		//we have to combine them
-		//and then to threshold again
-		//TODO do it for inverted mask
-		if(mask.getColorModel().getNumComponents()==3){
-			//combine the three bands
-			  double[][] matrix = {
-                      { 1D, 1D, 1D,0D }
-                   };
-
-			  // Create the ParameterBlock.
-			  pb = new ParameterBlock();
-			  pb.addSource(mask);
-			  pb.add(matrix);
-			  
-			  // Perform the band combine operation.
-			  mask = JAI.create("bandcombine", pb, null);
-			  
-			  
-			  //nw we need to threshold again otherwise we would miss
-			  //the black points in the original image
-			  
-			  pb.removeSources();
-			  pb.removeParameters();
-			  pb.addSource(mask);
-			  pb.add(low);
-			  pb.add(high);
-			  pb.add(map);
-			  mask = JAI.create("threshold", pb, null);
-			  System.out.println(mask.getColorModel().getNumComponents());
-				
-		}
-		
 		//merging bands basing the decision on the transparency level
 		pb.removeParameters();
 		pb.removeSources();
 		pb.addSource(src);
-		pb.addSource(transparentColor !=
-			TRANS_BLACK?invertedMask.getRendering():mask.getRendering());
+		pb.addSource(alphaPlane);
 		
 		RenderedOp dest= JAI.create("BandMerge",pb,null);
 
 		return dest;
-		
 	}
 
 	/**
@@ -754,7 +660,7 @@ public class CoverageResponse implements Response {
     		geophysicRange=new NumberRange(0, 255);
     	break;
     	case DataBuffer.TYPE_USHORT:
-    		geophysicRange=new NumberRange(0, 655535);
+    		geophysicRange=new NumberRange(0, 65535);
     	break;
     	case DataBuffer.TYPE_INT:
     		geophysicRange=new NumberRange(-Integer.MAX_VALUE,Integer.MAX_VALUE);

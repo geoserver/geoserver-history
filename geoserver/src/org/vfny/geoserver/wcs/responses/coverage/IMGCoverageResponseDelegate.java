@@ -86,12 +86,12 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 	        Format writerParams = writer.getFormat();
 	        writerParams.getWriteParameters().parameter("Format").setValue(this.outputFormat);	
 	        //	      writing
-	        writer.write(sourceCoverage.geophysics(false), null);
+	        writer.write(sourceCoverage, null);
 			//freeing everything
-			writer.dispose();
-			writer=null;
-			this.sourceCoverage.dispose();
-			this.sourceCoverage=null;
+			//writer.dispose();
+			//writer=null;
+			//this.sourceCoverage.dispose();
+			//this.sourceCoverage=null;
 			output.flush();
 			output.close();
 		} catch (Exception e) {
