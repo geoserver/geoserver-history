@@ -37,6 +37,8 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -229,9 +231,15 @@ public abstract class DefaultRasterLegendProducer
                 } else {
                     Style2D style2d = styleFactory.createStyle(sampleFeature,
                             symbolizer, scaleRange);
-                    LiteShape2 shape = getSampleShape(symbolizer, w, h);
-
-                    shapePainter.paint(graphics, shape, style2d, scaleDenominator);
+                    LiteShape2 shape;
+					try {
+						shape = getSampleShape(symbolizer, w, h);
+					} catch (TransformException e) {
+						throw new WmsException(e.getMessage());
+					} catch (FactoryException e) {
+						throw new WmsException(e.getMessage());
+					}
+					shapePainter.paint(graphics, shape, style2d, scaleDenominator);
                 }
             }
 
@@ -301,12 +309,14 @@ public abstract class DefaultRasterLegendProducer
      * @return an appropiate Line2D, Rectangle2D or LiteShape(Point) for the
      *         symbolizer, wether it is a LineSymbolizer, a PolygonSymbolizer,
      *         or a Point ot Text Symbolizer
+     * @throws FactoryException
+     * @throws TransformException
      *
      * @throws IllegalArgumentException if an unknown symbolizer impl was
      *         passed in.
      */
     private LiteShape2 getSampleShape(Symbolizer symbolizer, int legendWidth,
-        int legendHeight) {
+        int legendHeight) throws TransformException, FactoryException {
         LiteShape2 sampleShape;
         final float hpad = (legendWidth * hpaddingFactor);
         final float vpad = (legendHeight * vpaddingFactor);
@@ -318,7 +328,7 @@ public abstract class DefaultRasterLegendProducer
                         new Coordinate(legendWidth - hpad, vpad)
                     };
                 LineString geom = geomFac.createLineString(coords);
-                this.sampleLine = new LiteShape2(geom, null, false);
+                this.sampleLine = new LiteShape2(geom, null, null, false);
             }
 
             sampleShape = this.sampleLine;
@@ -336,7 +346,7 @@ public abstract class DefaultRasterLegendProducer
                     };
                 LinearRing shell = geomFac.createLinearRing(coords);
                 Polygon geom = geomFac.createPolygon(shell, null);
-                this.sampleRect = new LiteShape2(geom, null, false);
+                this.sampleRect = new LiteShape2(geom, null, null, false);
             }
 
             sampleShape = this.sampleRect;
@@ -346,7 +356,7 @@ public abstract class DefaultRasterLegendProducer
                 Coordinate coord = new Coordinate(legendWidth / 2,
                         legendHeight / 2);
                 this.samplePoint = new LiteShape2(geomFac.createPoint(coord),
-                        null, false);
+                        null, null, false);
             }
 
             sampleShape = this.samplePoint;
