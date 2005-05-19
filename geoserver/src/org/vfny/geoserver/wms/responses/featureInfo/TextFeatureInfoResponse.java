@@ -58,13 +58,14 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         
         int featuresPrinted = 0;  // how many features we've actually printed so far!
         int maxfeatures = getRequest().getFeatureCount(); // will default to 1 if not specified in the request
-
+        
+        FeatureReader reader = null;
         try {
             for (int i = 0; i < results.size(); i++)  //for each layer queried
             {
                 FeatureResults fr = (FeatureResults) results.get(i);
 
-                FeatureReader reader = fr.reader();
+                reader = fr.reader();
                 
                 if ( reader.hasNext() && (featuresPrinted<maxfeatures) ) // if this layer has a hit and we're going to print it
                 {	
@@ -105,9 +106,15 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 					}
                 }
             }
-        } catch (IllegalAttributeException ife) {
+        } 
+        catch (IllegalAttributeException ife) {
             writer.println("Unable to generate information " + ife);
         }
+        finally
+		{
+        	if (reader != null)
+        		reader.close();
+		}
         
         if (featuresPrinted ==0)
         {
