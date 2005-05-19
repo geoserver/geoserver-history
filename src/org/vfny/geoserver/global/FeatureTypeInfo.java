@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,8 +21,11 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
+import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.Filter;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -41,6 +45,10 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
+	
+	/** hash table that takes a epsg# to its definition**/
+	private static Hashtable SRSLookup = new Hashtable();
+	
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
     /**
@@ -157,6 +165,14 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     /** Holds the location of the file that contains schema information. */
     private File schemaFile;
     
+    /** 
+     * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
+     *
+     */
+    public FeatureTypeInfo()
+    {
+    	
+    }
     /**
      * FeatureTypeInfo constructor.
      * 
@@ -807,6 +823,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     AttributeTypeInfo ati = (AttributeTypeInfo) i.next();
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
+                    
+                    if (attributes[count].isGeometry())  //DJB: added this to set SRS
+                    {
+                    	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
+                    	try {
+                    		attributes[count] = new GeometricAttributeType(old,getSRS(SRS)) ;
+                    	}
+                    	catch (Exception e)
+						{
+                    		e.printStackTrace(); //DJB: this is okay to ignore since (a) it should never happen (b) we'll use the default one (crs=null)
+						}
+                    }
 
                     if (attributes[count] == null) {
                         throw new IOException("the FeatureType " + getName()
@@ -1010,6 +1038,26 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public File getSchemaFile() {
 	return this.schemaFile;
+    }
+    
+    /**
+     *  simple way of getting epsg #.
+     *  We cache them so that we dont have to keep reading the DB or the epsg.properties file.
+     *   I cannot image a system with more than a dozen CRSs in it...
+     * 
+     * @param epsg
+     * @return
+     */
+    private CoordinateReferenceSystem getSRS(int epsg) throws Exception
+    {
+    	CoordinateReferenceSystem result = (CoordinateReferenceSystem) SRSLookup.get(  new Integer(epsg) );
+    	if (result == null)
+    	{
+    		//make and add to hash
+    		result = CRS.decode("EPSG:"+epsg);
+    		SRSLookup.put( new Integer(epsg)  , result);
+    	}
+    	return result;
     }
 
 }
