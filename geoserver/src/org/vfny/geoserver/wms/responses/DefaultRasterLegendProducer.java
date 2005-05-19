@@ -295,7 +295,14 @@ public abstract class DefaultRasterLegendProducer
                         new Coordinate(legendWidth - hpad, vpad)
                     };
                 LineString geom = geomFac.createLineString(coords);
-                this.sampleLine = new LiteShape2(geom, null, false);
+                
+                try{
+                	this.sampleLine = new LiteShape2(geom, null,null, false);
+                }
+                catch(Exception e)
+				{
+                	this.sampleLine = null;
+				}
             }
 
             sampleShape = this.sampleLine;
@@ -313,7 +320,13 @@ public abstract class DefaultRasterLegendProducer
                     };
                 LinearRing shell = geomFac.createLinearRing(coords);
                 Polygon geom = geomFac.createPolygon(shell, null);
-                this.sampleRect = new LiteShape2(geom, null, false);
+                try{
+                	this.sampleRect = new LiteShape2(geom, null, null,false);
+                }
+                catch(Exception e)
+				{
+                	this.sampleRect = null;
+				}
             }
 
             sampleShape = this.sampleRect;
@@ -322,8 +335,15 @@ public abstract class DefaultRasterLegendProducer
             if (this.samplePoint == null) {
                 Coordinate coord = new Coordinate(legendWidth / 2,
                         legendHeight / 2);
-                this.samplePoint = new LiteShape2(geomFac.createPoint(coord),
-                        null, false);
+                try{
+                	this.samplePoint = new LiteShape2(geomFac.createPoint(coord), null, null,false);
+                }
+                catch(Exception e)
+				{
+                	this.samplePoint = null;
+				}
+                
+                
             }
 
             sampleShape = this.samplePoint;
