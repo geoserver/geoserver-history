@@ -36,6 +36,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -758,7 +759,19 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 String layerName = sl.getName();
                 if(null == layerName)
                 	throw new WmsException("A UserLayer without layer name was passed");
-                currLayer = findLayer(request, layerName);
+
+
+                	// handle the InLineFeature stuff
+                    // TODO: add support for remote WFS here
+                if ((sl instanceof UserLayer) && (((UserLayer)sl)).getInlineFeatureDatastore()!=null )
+                {
+                	//SPECIAL CASE - we make the temporary version
+                	UserLayer ul = ((UserLayer)sl);
+                	currLayer = new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore(), ul.getInlineFeatureType());
+                }
+                else
+                	currLayer = GetMapKvpReader.findLayer(request, layerName);
+                
                 
                // currStyle = findStyleOf(request, currLayer, styledLayers); // DJB: this looks like a bug, we should get the style from styledLayers[i]
                 

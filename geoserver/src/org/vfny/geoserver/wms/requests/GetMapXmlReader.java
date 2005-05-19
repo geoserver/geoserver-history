@@ -28,8 +28,10 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
+import org.geotools.styling.UserLayer;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.FeatureHandler;
@@ -131,7 +133,7 @@ public class GetMapXmlReader extends XmlRequestReader
 
 		dbf.setExpandEntityReferences(false);
 		dbf.setValidating(false);
-		dbf.setNamespaceAware(false);
+		dbf.setNamespaceAware(true);
 	
 			javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
 			
@@ -260,7 +262,18 @@ public class GetMapXmlReader extends XmlRequestReader
                 String layerName = sl.getName();
                 if(null == layerName)
                 	throw new WmsException("A UserLayer without layer name was passed");
-                currLayer = GetMapKvpReader.findLayer(getMapRequest, layerName);
+                
+                // TODO: add support for remote WFS here
+                //handle the InLineFeature stuff
+                if ((sl instanceof UserLayer) && (((UserLayer)sl)).getInlineFeatureDatastore()!=null )
+                {
+                	//SPECIAL CASE - we make the temporary version
+                	UserLayer ul = ((UserLayer)sl);
+                	currLayer = new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore(), ul.getInlineFeatureType());
+                }
+                else
+                	currLayer = GetMapKvpReader.findLayer(getMapRequest, layerName);
+                
                 GetMapKvpReader.addStyles(getMapRequest,currLayer,styledLayers[i],   layers,styles);
 	        }
 	        
