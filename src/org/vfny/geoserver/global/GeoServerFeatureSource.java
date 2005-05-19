@@ -286,9 +286,26 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
     public FeatureResults getFeatures(Query query) throws IOException {
-        query = makeDefinitionQuery(query);
+        Query newQuery = makeDefinitionQuery(query);
+        
+        // see if the CRS got xfered over
+           // a. old had a CRS, new doesnt
+        boolean requireXferCRS = (newQuery.getCoordinateSystem() == null) && (query.getCoordinateSystem() != null);
+        if ((newQuery.getCoordinateSystem() != null) && (query.getCoordinateSystem() != null))
+        {
+        	 //b. both have CRS, but they're different
+        	requireXferCRS = !(newQuery.getCoordinateSystem().equals(query.getCoordinateSystem()));
+        }
+        	
+        if ( requireXferCRS )
+        {
+        	//carry along the CRS
+        	if (!(newQuery instanceof DefaultQuery))
+        		newQuery = new DefaultQuery(newQuery);
+        	((DefaultQuery)newQuery).setCoordinateSystem( query.getCoordinateSystem());
+        }
 
-        return source.getFeatures(query);
+        return source.getFeatures(newQuery);
     }
 
     /**
