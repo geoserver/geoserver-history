@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.media.jai.JAI;
@@ -239,6 +240,19 @@ public class CoverageResponse implements Response {
 												);
 									}
 								}
+							}
+						} else if( key.equalsIgnoreCase("values_palette") ) {
+							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
+								String tmp = (String) dfConfig.getParameters().get(key);
+								String[] strColors = tmp.split(";");
+								Vector colors = new Vector();
+								for( int i=0; i<strColors.length; i++) {
+									if(Color.decode(strColors[i]) != null) {
+										colors.add(Color.decode(strColors[i]));
+									}
+								}
+								
+								value = colors.toArray(new Color[colors.size()]);
 							}
 						} else {
 							Class[] clArray = {String.class};

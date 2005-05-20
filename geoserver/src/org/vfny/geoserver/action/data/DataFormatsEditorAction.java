@@ -5,6 +5,7 @@
 
 package org.vfny.geoserver.action.data;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -12,6 +13,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -128,6 +130,19 @@ public class DataFormatsEditorAction extends ConfigAction {
 										);
 							}
 						}
+					}
+				} else if( key.equalsIgnoreCase("values_palette") ) {
+					if( params.get(key) != null && ((String) params.get(key)).length() > 0 ) {
+						String tmp = (String) params.get(key);
+						String[] strColors = tmp.split(";");
+						Vector colors = new Vector();
+						for( int col=0; col<strColors.length; col++) {
+							if(Color.decode(strColors[col]) != null) {
+								colors.add(Color.decode(strColors[col]));
+							}
+						}
+						
+						value = colors.toArray(new Color[colors.size()]);
 					}
 				} else {
 					Class[] clArray = {String.class};

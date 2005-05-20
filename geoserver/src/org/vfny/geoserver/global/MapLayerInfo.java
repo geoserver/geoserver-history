@@ -1,6 +1,7 @@
 package org.vfny.geoserver.global;
 
 
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -308,6 +310,19 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 												);
 									}
 								}
+							}
+						} else if( key.equalsIgnoreCase("values_palette") ) {
+							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
+								String tmp = (String) dfConfig.getParameters().get(key);
+								String[] strColors = tmp.split(";");
+								Vector colors = new Vector();
+								for( int i=0; i<strColors.length; i++) {
+									if(Color.decode(strColors[i]) != null) {
+										colors.add(Color.decode(strColors[i]));
+									}
+								}
+								
+								value = colors.toArray(new Color[colors.size()]);
 							}
 						} else {
 							Class[] clArray = {String.class};

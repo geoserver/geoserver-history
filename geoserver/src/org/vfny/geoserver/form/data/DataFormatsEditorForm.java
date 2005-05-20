@@ -5,11 +5,13 @@
 package org.vfny.geoserver.form.data;
 
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -235,6 +237,19 @@ public class DataFormatsEditorForm extends ActionForm {
 											);
 								}
 							}
+						}
+					} else if( key.equalsIgnoreCase("values_palette") ) {
+						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
+							String tmp = (String) getParamValue(i);
+							String[] strColors = tmp.split(";");
+							Vector colors = new Vector();
+							for( int col=0; col<strColors.length; col++) {
+								if(Color.decode(strColors[col]) != null) {
+									colors.add(Color.decode(strColors[col]));
+								}
+							}
+							
+							value = colors.toArray(new Color[colors.size()]);
 						}
 					} else {
                     	Class[] clArray = {getParamValue(i).getClass()};
