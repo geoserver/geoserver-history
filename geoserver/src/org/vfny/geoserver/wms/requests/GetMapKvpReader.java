@@ -37,6 +37,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
+import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -651,6 +652,29 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("About to parse SLD body: " + sldBody);
         }
+                
+        
+        if (getValue("VALIDATESCHEMA") != null)
+        {
+        	InputStream in = new StringBufferInputStream(sldBody);
+        	// user requested to validate the schema.
+        	SLDValidator validator = new SLDValidator();
+        	List errors =null;
+
+        		errors = validator.validateSLD(in, request.getHttpServletRequest().getSession().getServletContext());
+        		try{
+        			in.close();
+        		}
+        		catch(Exception e)
+				{
+        			// do nothing
+				}
+        		if (errors.size() != 0)
+        		{
+        			in = new StringBufferInputStream(sldBody);
+        			throw new WmsException(SLDValidator.getErrorMessage(in,errors));
+        		}
+        }
 
         InputStream in = new StringBufferInputStream(sldBody);
         SLDParser parser = new SLDParser(styleFactory, in);
@@ -665,8 +689,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private void parseSldParam(GetMapRequest request) throws WmsException {
-        String urlValue = getValue("SLD");
+    private void parseSldParam(GetMapRequest request) throws WmsException 
+	{
+        String urlValue = getValue("SLD");               
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("about to load remote SLD document: '" + urlValue + "'");
@@ -682,6 +707,26 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             throw new WmsException(e, msg, "parseSldParam");
         }
 
+        
+        if (getValue("VALIDATESCHEMA") != null)
+        {
+        	// user requested to validate the schema.
+        	SLDValidator validator = new SLDValidator();
+        	List errors =null;
+        	try {
+        		InputStream in = sldUrl.openStream();
+        		errors = validator.validateSLD(in, request.getHttpServletRequest().getSession().getServletContext());
+        		in.close();
+        		if (errors.size() != 0)
+        			throw new WmsException(SLDValidator.getErrorMessage(sldUrl.openStream(),errors));
+        	}
+        	catch (IOException e)
+			{
+        		String msg = "Creating remote SLD url: " + e.getMessage();
+                LOGGER.log(Level.WARNING, msg, e);
+                throw new WmsException(e, msg, "parseSldParam");
+			}
+        }
         SLDParser parser;
 
         try {
