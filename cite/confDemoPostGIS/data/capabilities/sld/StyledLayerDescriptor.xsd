@@ -90,12 +90,26 @@
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="sld:Name" minOccurs="0"/>
-        <xsd:element ref="sld:RemoteOWS" minOccurs="0"/>
+        
+        <xsd:choice minOccurs="0">
+	        <xsd:element ref="sld:InlineFeature"/>
+	        <xsd:element ref="sld:RemoteOWS" minOccurs="0"/>
+	</xsd:choice>
+	
         <xsd:element ref="sld:LayerFeatureConstraints"/>
         <xsd:element ref="sld:UserStyle" maxOccurs="unbounded"/>
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
+  
+  <xsd:element name="InlineFeature">
+    <xsd:complexType>
+      <xsd:sequence> 
+        <xsd:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>     
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
 
   <xsd:element name="RemoteOWS">
     <xsd:annotation>
