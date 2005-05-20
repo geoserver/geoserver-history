@@ -231,14 +231,8 @@ public abstract class DefaultRasterLegendProducer
                 } else {
                     Style2D style2d = styleFactory.createStyle(sampleFeature,
                             symbolizer, scaleRange);
-                    LiteShape2 shape;
-					try {
-						shape = getSampleShape(symbolizer, w, h);
-					} catch (TransformException e) {
-						throw new WmsException(e.getMessage());
-					} catch (FactoryException e) {
-						throw new WmsException(e.getMessage());
-					}
+                LiteShape2 shape = getSampleShape(symbolizer, w, h);
+
 					shapePainter.paint(graphics, shape, style2d, scaleDenominator);
                 }
             }
@@ -316,7 +310,7 @@ public abstract class DefaultRasterLegendProducer
      *         passed in.
      */
     private LiteShape2 getSampleShape(Symbolizer symbolizer, int legendWidth,
-        int legendHeight) throws TransformException, FactoryException {
+        int legendHeight) {
         LiteShape2 sampleShape;
         final float hpad = (legendWidth * hpaddingFactor);
         final float vpad = (legendHeight * vpaddingFactor);
@@ -328,7 +322,14 @@ public abstract class DefaultRasterLegendProducer
                         new Coordinate(legendWidth - hpad, vpad)
                     };
                 LineString geom = geomFac.createLineString(coords);
-                this.sampleLine = new LiteShape2(geom, null, null, false);
+                
+                try{
+                	this.sampleLine = new LiteShape2(geom, null,null, false);
+                }
+                catch(Exception e)
+				{
+                	this.sampleLine = null;
+				}
             }
 
             sampleShape = this.sampleLine;
@@ -346,7 +347,13 @@ public abstract class DefaultRasterLegendProducer
                     };
                 LinearRing shell = geomFac.createLinearRing(coords);
                 Polygon geom = geomFac.createPolygon(shell, null);
-                this.sampleRect = new LiteShape2(geom, null, null, false);
+                try{
+                	this.sampleRect = new LiteShape2(geom, null, null,false);
+                }
+                catch(Exception e)
+				{
+                	this.sampleRect = null;
+				}
             }
 
             sampleShape = this.sampleRect;
@@ -355,8 +362,15 @@ public abstract class DefaultRasterLegendProducer
             if (this.samplePoint == null) {
                 Coordinate coord = new Coordinate(legendWidth / 2,
                         legendHeight / 2);
-                this.samplePoint = new LiteShape2(geomFac.createPoint(coord),
-                        null, null, false);
+                try{
+                	this.samplePoint = new LiteShape2(geomFac.createPoint(coord), null, null,false);
+                }
+                catch(Exception e)
+				{
+                	this.samplePoint = null;
+				}
+                
+                
             }
 
             sampleShape = this.samplePoint;

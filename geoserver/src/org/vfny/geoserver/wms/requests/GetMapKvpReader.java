@@ -37,6 +37,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WmsException;
 
@@ -789,14 +790,24 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 	throw new WmsException("A UserLayer without layer name was passed");
                 
 				currLayer = new MapLayerInfo(); 
-                try {
-                	currLayer.setFeature(findFeatureLayer(request, layerName));
-				} catch (WmsException e) {
-                	currLayer.setCoverage(findCoverageLayer(request, layerName));
-				}
+                	// handle the InLineFeature stuff
+                    // TODO: add support for remote WFS here
+                if ((sl instanceof UserLayer) && (((UserLayer)sl)).getInlineFeatureDatastore()!=null )
+                {
+                	//SPECIAL CASE - we make the temporary version
+                	UserLayer ul = ((UserLayer)sl);
+                	currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore(), ul.getInlineFeatureType()));
+                }
+                else
+                {
+                    try {
+                    	currLayer.setFeature(GetMapKvpReader.findFeatureLayer(request, layerName));
+    				} catch (WmsException e) {
+                    	currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(request, layerName));
+    				}
+                }
 				
                 if( currLayer.getType() == MapLayerInfo.TYPE_VECTOR ) {
-                	currStyle = findStyleOf(request, currLayer.getFeature(), styledLayers);
                 	// currStyle = findStyleOf(request, currLayer, styledLayers); // DJB: this looks like a bug, we should get the style from styledLayers[i]
                 	
                 	// the correct thing to do its grab the style from styledLayers[i]

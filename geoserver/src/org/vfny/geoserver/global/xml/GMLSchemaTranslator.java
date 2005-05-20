@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.geotools.feature.FeatureCollection;
 
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -69,6 +70,7 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
 		elements.add(new AbstractFeatureElement(prefix));
 		elements.add(new AbstractFeatureCollectionBaseElement(prefix));
 		elements.add(new AbstractFeatureCollectionElement(prefix));
+		elements.add(new GeometryPropertyElement(prefix));
 		/*elements.add(new GeometryPropertyElement(prefix));
 		elements.add(new FeatureAssociationElement(prefix));
 		elements.add(new BoundingShapeElement(prefix));
@@ -167,7 +169,7 @@ class AbstractFeatureCollectionElement extends NameSpaceElement{
 
 // I think perhaps it may just need better objects, that can actually use
 // these?  Since the geometry objects they are given can't use them.
-/*class GeometryPropertyElement extends NameSpaceElement{
+class GeometryPropertyElement extends NameSpaceElement{
 	public GeometryPropertyElement(String prefix){super(prefix);}
 	public String getTypeDefName(){return "GeometryPropertyType";}
 	public String getTypeRefName(){return null;}
@@ -184,7 +186,7 @@ class AbstractFeatureCollectionElement extends NameSpaceElement{
 	public Class getJavaClass(){return Geometry.class;}
 	public boolean isAbstract(){return true;}
 }
-
+/*
 class FeatureAssociationElement extends NameSpaceElement{
 	public FeatureAssociationElement(String prefix){super(prefix);}
 	public String getTypeDefName(){return "FeatureAssociationType";}

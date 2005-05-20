@@ -263,7 +263,9 @@ public abstract class NameSpaceTranslator{
 		Set posibilities = getElements(type);
 		
 		if(posibilities.size() == 0)
+		{
 			return null;
+		}
 		if(posibilities.size() == 1)
 			return (NameSpaceElement)posibilities.toArray()[0];
 		

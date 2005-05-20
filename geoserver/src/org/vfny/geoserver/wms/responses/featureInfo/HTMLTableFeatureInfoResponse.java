@@ -59,6 +59,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         PrintWriter writer = new PrintWriter(osw);
         writer.println("<html><body>");
 
+        FeatureReader reader = null;
         try {
             for (int i = 0; i < results.size(); i++) {
                 FeatureResults fr = (FeatureResults) results.get(i);
@@ -77,7 +78,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 writer.println("</tr>");
 
                 //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
-                FeatureReader reader = fr.reader();
+                reader = fr.reader();
 
                 while (reader.hasNext()) {
                     Feature f = reader.next();
@@ -105,7 +106,12 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         } catch (IllegalAttributeException ife) {
             writer.println("Unable to generate information " + ife);
         }
-
+        finally
+		{
+        	if (reader != null)
+        		reader.close();
+		}
+        
         writer.flush();
     }
 
