@@ -1030,31 +1030,33 @@ public class XMLConfigWriter {
 		
 		File[] fa = dir.listFiles();
 		for(int j=0;j<fa.length;j++){
-			// find dir name
-			i = data.getCoverages().values().iterator();
-			CoverageInfoDTO cvi = null;
-			while(cvi==null && i.hasNext()){
-				CoverageInfoDTO cv = (CoverageInfoDTO)i.next();
-				if(cv.getDirName().equals(fa[j].getName())){
-					cvi = cv;
-				}
-			}
-			if(cvi == null){
-				//delete it
-				File[] t = fa[j].listFiles();
-				if (t != null) {
-					for(int x=0;x<t.length;x++) {
-						//hold on to the data, but be sure to get rid of the
-						//geoserver config shit, as these were deleted.
-						if (t[x].getName().equals("info.xml")) {
-							//sorry for the hardcodes, I don't remember if/where
-							//we have these file names.
-							t[x].delete();
-						}
+			if(fa[j].isDirectory()) {
+				// find dir name
+				i = data.getCoverages().values().iterator();
+				CoverageInfoDTO cvi = null;
+				while(cvi==null && i.hasNext()){
+					CoverageInfoDTO cv = (CoverageInfoDTO)i.next();
+					if(cv.getDirName().equals(fa[j].getName())){
+						cvi = cv;
 					}
 				}
-				if (fa[j].listFiles().length == 0) {
-					fa[j].delete();
+				if(cvi == null){
+					//delete it
+					File[] t = fa[j].listFiles();
+					if (t != null) {
+						for(int x=0;x<t.length;x++) {
+							//hold on to the data, but be sure to get rid of the
+							//geoserver config shit, as these were deleted.
+							if (t[x].getName().equals("info.xml")) {
+								//sorry for the hardcodes, I don't remember if/where
+								//we have these file names.
+								t[x].delete();
+							}
+						}
+					}
+					if (fa[j].listFiles().length == 0) {
+						fa[j].delete();
+					}
 				}
 			}
 		}
