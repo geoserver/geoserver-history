@@ -1015,7 +1015,7 @@ class FileStrategy implements AbstractService.ServiceStrategy {
         this.response = response;
         sequence++;
         temp = File.createTempFile("wfs" + sequence, "tmp");
-
+        temp.deleteOnExit();
         safe = new BufferedOutputStream(new FileOutputStream(temp));
 
         return safe;
