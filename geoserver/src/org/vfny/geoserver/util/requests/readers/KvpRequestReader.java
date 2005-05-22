@@ -370,7 +370,7 @@ abstract public class KvpRequestReader {
             //  parse it and keep a record of a 'primary geometry' in the
             //  server.
             try {
-                GeometryFilter finalFilter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
+                GeometryFilter finalFilter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 
                 //leave as null and postgisDatSource will use default geom.
                 //AttributeExpression leftExpression =

@@ -156,14 +156,24 @@ public class DataFormatsEditorForm extends ActionForm {
                     }
 
                     Object value = dfConfig.getParameters().get(key);
-                    String text;
+                    String text = null;
 
-                    if (value == null) {
-                        text = null;
-                    } else if (value instanceof String) {
-                        text = (String) value;
+                    if ("values_palette".equals(key)) {
+                        if(value instanceof Color[]) {
+							for(int i=0; i<((Color[])value).length; i++ ) {
+								text = (i>0?";":"") + ((Color)value).toString();
+							}
+	                    } else if (value instanceof String) {
+	                        text = (String) value;
+	                    }
                     } else {
-                        text = value.toString();
+	                    if (value == null) {
+	                        text = null;
+	                    } else if (value instanceof String) {
+	                        text = (String) value;
+	                    } else {
+	                        text = value.toString();
+	                    }
                     }
 
                     paramKeys.add(key);
@@ -250,6 +260,8 @@ public class DataFormatsEditorForm extends ActionForm {
 							}
 							
 							value = colors.toArray(new Color[colors.size()]);
+						} else {
+							value = "#000000;#3C3C3C;#FFFFFF";
 						}
 					} else {
                     	Class[] clArray = {getParamValue(i).getClass()};

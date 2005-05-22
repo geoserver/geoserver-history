@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global.xml;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -615,7 +616,21 @@ public class XMLConfigWriter {
 			while (i.hasNext()) {
 				String key = (String) i.next();
 				temp.put("name", key);
-				temp.put("value", df.getParameters().get(key).toString().replaceAll("\"","'"));
+				if( "values_palette".equalsIgnoreCase(key) ) {
+					Object value = df.getParameters().get(key);
+					String text = null;
+                    if(value instanceof Color[]) {
+						for(int col=0; col<((Color[])value).length; col++ ) {
+							text = (col>0?";":"") + ((Color)value).toString();
+						}
+                    } else if (value instanceof String) {
+                        text = (String) value;
+                    }
+
+					temp.put("value", text);
+				} else {
+					temp.put("value", df.getParameters().get(key).toString().replaceAll("\"","'"));
+				}
 				cw.attrTag("parameter", temp);
 			}
 			

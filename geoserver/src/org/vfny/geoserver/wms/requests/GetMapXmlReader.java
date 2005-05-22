@@ -5,6 +5,12 @@
 package org.vfny.geoserver.wms.requests;
 
 import java.awt.Color;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -13,6 +19,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,6 +39,8 @@ import org.geotools.styling.UserLayer;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
+import org.vfny.geoserver.util.GETMAPValidator;
+import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
@@ -42,6 +51,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.ParserAdapter;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -52,7 +62,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: GetMapXmlReader.java 3509 2005-05-16 18:39:51Z dblasby $
+ * @version $Id: GetMapXmlReader.java 3535 2005-05-20 21:48:18Z dblasby $
  */
 public class GetMapXmlReader extends XmlRequestReader 
 {
@@ -81,9 +91,10 @@ public class GetMapXmlReader extends XmlRequestReader
 	{
         GetMapRequest getMapRequest = new GetMapRequest();
         getMapRequest.setHttpServletRequest(req);
+        boolean validateSchema = wantToValidate(req);
         
         try{
-        	parseGetMapXML(reader,getMapRequest );
+        	parseGetMapXML(reader,getMapRequest,validateSchema );
         }
         catch (java.net.UnknownHostException unh)
 		{
@@ -101,6 +112,10 @@ public class GetMapXmlReader extends XmlRequestReader
         	//http://doctypechanger.sourceforge.net/
         	
         	throw new WmsException("unknown host - "+unh.getLocalizedMessage()+" - if its in a !DOCTYPE, remove the !DOCTYPE tag.");
+		}
+        catch (SAXParseException se)
+		{
+        	throw new WmsException("line "+se.getLineNumber()+" column "+se.getColumnNumber()+" -- "+  se.getLocalizedMessage() );
 		}
         catch (Exception e)
 		{
@@ -128,8 +143,32 @@ public class GetMapXmlReader extends XmlRequestReader
 	 * @param reader
 	 * @param getMapRequest
 	 */
-	private void parseGetMapXML(Reader xml, GetMapRequest getMapRequest)  throws Exception
+	private void parseGetMapXML(Reader xml, GetMapRequest getMapRequest,boolean validateSchema)  throws Exception
 	{
+		File temp = null;
+		
+		if (validateSchema)  //copy POST to a file
+		{
+			//make tempfile
+	           temp = File.createTempFile("getMapPost", "xml");
+	           temp.deleteOnExit();
+
+	            FileOutputStream fos = new FileOutputStream(temp);
+	            BufferedOutputStream out = new BufferedOutputStream(fos);
+
+	            int c;
+	            while (-1 != (c = xml.read())) {
+	                out.write(c);
+	            }
+
+	            xml.close();
+	            out.flush();
+	            out.close();
+	            xml = new BufferedReader(new FileReader(temp));   // pretend like nothing has happened
+		}
+		
+		try
+		{		
 		javax.xml.parsers.DocumentBuilderFactory dbf = javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
 		dbf.setExpandEntityReferences(false);
@@ -152,12 +191,20 @@ public class GetMapXmlReader extends XmlRequestReader
 				{
 					if (nodeNameEqual(nodeGetMap,"StyledLayerDescriptor"))  //oopsy!!  its a SLD POST with get parameters!
 					{
+								if (validateSchema)
+								{
+									validateSchemaSLD(temp,getMapRequest);
+								}
 						handlePostGet(rootNode,sldParser,getMapRequest);
 						return;
 					}
 						
 					throw new Exception ("GetMap XML parser - start node isnt 'GetMap' or 'StyledLayerDescriptor' tag");
 				}
+						if (validateSchema)
+						{
+							validateSchemaGETMAP(temp,getMapRequest);
+						}
 				NamedNodeMap atts = nodeGetMap.getAttributes();
 				Node wmsVersion = atts.getNamedItem("version");
 				if (wmsVersion == null)
@@ -179,12 +226,19 @@ public class GetMapXmlReader extends XmlRequestReader
 				  
 				   //step e - "VendorType
 				   // we dont actually do anything with this, so...
-				  
-				   //step f - rebuild SLD info.  Ie. fill in the Layer and Style information, just like SLD post-get
-
+						  
+						   //step f - rebuild SLD info.  Ie. fill in the Layer and Style information, just like SLD post-get
+		}
+		finally
+		{
+			if (temp != null)
+				temp.delete();
+		}
                    
 	}
 	
+	
+
 	/**
 	 * 
 	 * This is the hybrid SLD POST way.
@@ -476,5 +530,98 @@ public class GetMapXmlReader extends XmlRequestReader
 		return false;		
 	}
 
+	/**
+	 * 
+	 *  This should only be called if the xml starts with <StyledLayerDescriptor>
+	 *  Don't use on a GetMap.
+	 * 
+	 * @param xml
+	 * @param getMapRequest
+	 * @throws Exception
+	 */
+	public void validateSchemaSLD(File f,GetMapRequest getMapRequest) throws Exception
+	{
+		SLDValidator validator = new SLDValidator();
+    	List errors =null;
+    	try { 
+    		FileInputStream in = null;
+    		try{
+    			in = new FileInputStream(f);
+    			errors = validator.validateSLD(in, getMapRequest.getHttpServletRequest().getSession().getServletContext());
+    		}
+    		finally{
+    			if (in != null)
+    				in.close();
+    		}
+    		
+    		if (errors.size() != 0)
+    		{
+    			in = new FileInputStream(f);
+    			throw new WmsException(SLDValidator.getErrorMessage(in,errors));
+    		}
+    	}
+    	catch (IOException e)
+		{
+    		String msg = "Creating remote SLD url: " + e.getMessage();
+            LOGGER.log(Level.WARNING, msg, e);
+            throw new WmsException(e, msg, "parseSldParam");
+		}
+	}
 	
+	/**
+	 * 
+	 *  This should only be called if the xml starts with <GetMap>
+	 *  Don't use on a SLD.
+	 * 
+	 * @param xml
+	 * @param getMapRequest
+	 * @throws Exception
+	 */
+	public void validateSchemaGETMAP(File f,GetMapRequest getMapRequest) throws Exception
+	{
+		GETMAPValidator validator = new GETMAPValidator();
+    	List errors =null;
+    	try { 
+    		FileInputStream in = null;
+    		try{ 
+    			in = new FileInputStream(f);
+    			errors = validator.validateGETMAP(in, getMapRequest.getHttpServletRequest().getSession().getServletContext());
+    		}
+    		finally{
+    			if (in != null)
+    				in.close();
+    		}
+    		
+    		if (errors.size() != 0)
+    		{
+    			in = new FileInputStream(f);
+    			throw new WmsException(GETMAPValidator.getErrorMessage(in,errors));
+    		}
+    	}
+    	catch (IOException e)
+		{
+    		String msg = "Creating remote GETMAP url: " + e.getMessage();
+            LOGGER.log(Level.WARNING, msg, e);
+            throw new WmsException(e, msg, "GETMAP validator");
+		}
+	}
+	
+	
+    /**
+	 * @param httpServletRequest
+	 * @return
+	 */
+	private boolean wantToValidate(HttpServletRequest request) 
+	{
+		
+		String queryString = request.getQueryString(); // ie.   FORMAT=image/png&TRANSPARENT=TRUE&HEIGHT=480&REQUEST=GetMap&BBOX=-73.94896388053894,40.77323718492597,-73.94105110168456,40.77796711500081&WIDTH=803&SRS=EPSG:4326&VERSION=1.1.1	
+
+		queryString = queryString.toLowerCase();
+		
+		if  (   queryString.startsWith("validateschema") 
+				      || (queryString.indexOf("&validateschema")!=-1) ) 
+			return true;
+		return false;
+	}
+
 }

@@ -193,7 +193,7 @@ public class EncodeSVG {
             try {
                 Expression bboxExpression = fFac.createBBoxExpression(mapContext
                         .getAreaOfInterest());
-                GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_BBOX);
+                GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
                 bboxFilter.addLeftGeometry(bboxExpression);
                 bboxFilter.addRightGeometry(fFac.createAttributeExpression(
                         schema, schema.getDefaultGeometry().getName()));

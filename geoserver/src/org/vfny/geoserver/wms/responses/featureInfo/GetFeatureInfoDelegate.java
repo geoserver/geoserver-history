@@ -216,7 +216,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
     private Filter buildFilter(Envelope requestExtent, FilterFactory ffactory,
         FeatureType schema) throws IllegalFilterException {
         GeometryFilter bboxFilter;
-        bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
+        bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 
         BBoxExpression bboxExpr = ffactory.createBBoxExpression(requestExtent);
         Expression geomAttExpr = ffactory.createAttributeExpression(schema,

@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.servlets;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -52,6 +53,7 @@ public class GetMap extends WMService {
         //we need to construct an approriate serviceRequest from the GetMap XML POST.
         try{
         	 GetMapXmlReader xmlPostReader = new GetMapXmlReader();
+        	
         	 Reader xml =  request.getReader();
         	 serviceRequest= xmlPostReader.read(xml,request);
         }
@@ -104,4 +106,7 @@ public class GetMap extends WMService {
     protected KvpRequestReader getKvpReader(Map params) {
         return new GetMapKvpReader(params);
     }
+    
+
+	
 }

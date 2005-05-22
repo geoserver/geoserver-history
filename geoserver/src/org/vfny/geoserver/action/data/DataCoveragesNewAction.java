@@ -158,6 +158,8 @@ public class DataCoveragesNewAction extends ConfigAction {
 								}
 								
 								value = colors.toArray(new Color[colors.size()]);
+							} else {
+								value = "#000000;#3C3C3C;#FFFFFF";
 							}
 						} else {
 							Class[] clArray = {String.class};

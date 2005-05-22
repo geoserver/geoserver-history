@@ -99,7 +99,7 @@ public class WfsDispatcher extends Dispatcher {
             // - ProcessID is traditional, I don't know how to find that in Java
             sequence++;
             temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
-
+            temp.deleteOnExit();
             FileOutputStream fos = new FileOutputStream(temp);
             BufferedOutputStream out = new BufferedOutputStream(fos);
 
