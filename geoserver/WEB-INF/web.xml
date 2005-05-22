@@ -7,13 +7,14 @@
     <param-name>serviceStratagy</param-name>
     <param-value>SPEED</param-value>
   </context-param>
-  <!--
+  
+ <!--
 	  <context-param>
 		   <param-name>GEOSERVER_DATA_DIR</param-name>
-		    <param-value>c:\geoserver_home</param-value>
-	  </context-param>
+		    <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
+	  </context-param> 
    -->
-  
+
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
     <servlet-name>action</servlet-name>
