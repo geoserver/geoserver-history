@@ -716,7 +716,7 @@ public class FeatureSuite extends RequestTestCase {
 
         // make base comparison objects
         org.geotools.filter.GeometryFilter filter = factory
-            .createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
+            .createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 
         //AttributeExpression leftExpression = 
         //    factory.createAttributeExpression(null); 
