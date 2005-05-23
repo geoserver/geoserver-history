@@ -514,26 +514,28 @@ public class WCSCapsTransformer extends TransformerBase {
         }
 
         private void handleCoverageOfferingBrief(WCS config, CoverageInfo cv) {
-            start("CoverageOfferingBrief");
-            String tmp;
-            
-            	handleMetadataLink(cv.getMetadataLink());
-            	tmp = cv.getDescription();
-            	if ((tmp != null) && (tmp != "")) {
-            		element("description", tmp);
-            	}
-            	tmp = cv.getName();
-            	if ((tmp != null) && (tmp != "")) {
-            		element("name", tmp);
-            	}
-            	tmp = cv.getLabel();
-            	if ((tmp != null) && (tmp != "")) {
-            		element("label", tmp);
-            	}
-                handleEnvelope(cv.getCrs(), cv.getEnvelope());
-                handleKeywords(cv.getKeywords());
+        	if( cv.isEnabled() ) {
+                start("CoverageOfferingBrief");
+                String tmp;
                 
-            end("CoverageOfferingBrief");
+                	handleMetadataLink(cv.getMetadataLink());
+                	tmp = cv.getDescription();
+                	if ((tmp != null) && (tmp != "")) {
+                		element("description", tmp);
+                	}
+                	tmp = cv.getName();
+                	if ((tmp != null) && (tmp != "")) {
+                		element("name", tmp);
+                	}
+                	tmp = cv.getLabel();
+                	if ((tmp != null) && (tmp != "")) {
+                		element("label", tmp);
+                	}
+                    handleEnvelope(cv.getCrs(), cv.getEnvelope());
+                    handleKeywords(cv.getKeywords());
+                    
+                end("CoverageOfferingBrief");
+        	}
         }
     }
 }
