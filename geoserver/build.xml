@@ -38,7 +38,7 @@
 	<!-- ====================================================================== -->
 
 	<!-- release version -->
-	<property name="name.release" value="1.3.0-beta3" />
+	<property name="name.release" value="1.3.0-beta4" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -599,7 +599,11 @@
 
 		<!-- clean-up -->
 		<delete file="${dir.build}/log4j.properties" failonerror="true" />
+		
+		
+		 
 		<delete dir="${basedir}/data" failonerror="true" />
+
 	</target>
 
 	<!-- BUILD JARS FOR SCRIPTS -->
@@ -841,6 +845,13 @@
 		<exclude name="api/**" />
 	</fileset>
 </copy>
+	
+	<copy todir="${dir.build}/bin/" failonerror="false">
+		<fileset dir="${dir.bin}">
+			<include name="**/*" />
+		</fileset>
+	</copy>
+	
 <copy todir="${dir.build}/documents">
 	<fileset dir="${basedir}/documents">
 		<include name="jetty.xml" />
@@ -951,7 +962,7 @@
 	<!--copy failonerror="false" toFile="${dir.lib}/gt2-epsg-a.jar" file="${dir.maven}/gt2/jars/epsg-access-${version.geotools}.jar" /-->
 	<copy failonerror="false" toFile="${dir.lib}/gt2-experiment.jar" file="${dir.maven}/gt2/jars/experiment-${version.geotools}.jar" />
 
-	<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
+<copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" />	
 	<copy failonerror="false" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />

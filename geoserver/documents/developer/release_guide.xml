@@ -126,6 +126,7 @@
     Next generally comes a list of the bug fixes and new features in this
     release, followed by known bugs and information as to where to submit bugs
     and feature requests.</para>
+    <para>Also mention the Geotools tag</para>
   </sect1>
 
   <sect1>
@@ -146,6 +147,52 @@
     be.</action></para>
   </sect1>
 
+  
+
+  <sect1>
+    <title>Tagging the Release</title>
+
+    <para>After the release the source code must be tagged so that others can
+    check it out from cvs. This is best done immediately after uploading to
+    sourceforge, so that the cvs exactly reflects the state of the code that
+    was released. Our convention is to call a release rel followed by the
+    version number, delimited by underscores, as decimals are not allowed in
+    cvs. To tag a release in eclipse (with the svn plugin), right click on geoserver
+    project and go to team->tag/branch.  You will probably want to go from trunk
+    to a version in tag/.
+    </para>
+    <para>
+    Also tag geotools so that people can find the geotools that geoserver was built against.
+     </para>
+  </sect1>
+
+  
+  <sect1>
+    <title>Making .exe installer</title>
+    NOTE: as some point we should move to a java-based (platform independed)
+          installer as this is only good for windows.
+ <itemizedlist>
+ 
+ <listitem> 1. modify documents/geoserver.nsi so that the info in it correct (ie. version numbers) </listitem>
+ <listitem>    + quickly read through the document and make any documentation changes </listitem>
+ <listitem> 2. build a release (ant release-all) as above </listitem>
+ <listitem> 3. make a new temporary directory </listitem>
+ <listitem> 4. uncompress the release/geoserver-1.3.0-beta3-bin.zip  (or whatever you released) to your temp directory </listitem>
+ <listitem> 5. move documents/geoserver.nsi from eclipse (svn archive) to the new temporary directory  </listitem>
+ <listitem> 6. download and install the nullsoft installer if you havent already </listitem>
+ <listitem> 7. run the installer and load the geoserver.nsi file </listitem>
+ </itemizedlist>
+In your temporary directory, you should see a "geoserver-1.3.0-beta3.exe"!
+
+You should install and test this!
+          
+     
+  </sect1>
+  <sect1>
+  <title>Release on JIRA</title>
+     Go to 'administer project' then 'manage versions' then click the appropriate "release" button.
+  </sect1>
+  
   <sect1>
     <title>Uploading to SourceForge</title>
 
@@ -191,21 +238,7 @@
       </listitem>
     </itemizedlist>
   </sect1>
-
-  <sect1>
-    <title>Tagging the Release</title>
-
-    <para>After the release the source code must be tagged so that others can
-    check it out from cvs. This is best done immediately after uploading to
-    sourceforge, so that the cvs exactly reflects the state of the code that
-    was released. Our convention is to call a release rel followed by the
-    version number, delimited by underscores, as decimals are not allowed in
-    cvs. To tag a release in eclipse (with the svn plugin), right click on geoserver
-    project and go to team->tag/branch.  You will probably want to go from trunk
-    to a version in tag/.
-     </para>
-  </sect1>
-
+  
   <sect1>
     <title>Updating the Website</title>
 
@@ -254,29 +287,5 @@
     we did not do any direct announcing there, so I am not sure what the
     policy is on submitting stuff to them.</para>
   </sect1>
-  <sect1>
-    <title>Making .exe installer</title>
-    NOTE: as some point we should move to a java-based (platform independed)
-          installer as this is only good for windows.
- <itemizedlist>
- 
- <listitem> 1. modify documents/geoserver.nsi so that the info in it correct (ie. version numbers) </listitem>
- <listitem>    + quickly read through the document and make any documentation changes </listitem>
- <listitem> 2. build a release (ant release-all) as above </listitem>
- <listitem> 3. make a new temporary directory </listitem>
- <listitem> 4. uncompress the release/geoserver-1.3.0-beta3-bin.zip  (or whatever you released) to your temp directory </listitem>
- <listitem> 5. move documents/geoserver.nsi from eclipse (svn archive) to the new temporary directory  </listitem>
- <listitem> 6. download and install the nullsoft installer if you havent already </listitem>
- <listitem> 7. run the installer and load the geoserver.nsi file </listitem>
- </itemizedlist>
-In your temporary directory, you should see a "geoserver-1.3.0-beta3.exe"!
-
-You should install and test this!
-          
-     
-  </sect1>
-  <sect1>
-  <title>Release on JIRA</title>
-     Go to 'administer project' then 'manage versions' then click the appropriate "release" button.
-  </sect1>
+  
 </article>

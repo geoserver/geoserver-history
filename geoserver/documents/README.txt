@@ -1,3 +1,33 @@
+GeoServer 1.3.0-beta4 README file
+--------------------------------
+
+Geoserver WFS is in excellent shape, and the WMS has improved
+significantly.
+
+* (WMS) Better label rendering
+* (WMS) Better renderer performance
+* (WMS) Better reprojection support
+* (WMS) SLD-POST
+* (WMS) SLD-InlineFeatures
+* (WMS) GetMap POST
+* (WMS) SLD-POST/GetMap POST schema validation
+* (WMS) Parser error checking improvements
+
+* (FILTER) added autogeneration of custom <Function name="..">
+* (FILTER) parser improvements
+* (FILTER) smarter/faster processing
+
+* (PostGIS) minor bug fixes
+* (PostGIS) allow use of VIEWs as FeatureTypes
+
+* (CONFIG) GEOSERVER_DATA_DIR improvements
+* (WAR)    WAR generation improvements
+
+
+Plus a large set of bug fixes and testing.
+
+NOTE: This release is based on the "for_Geoserver-1.3.0beta4" tag.
+
 GeoServer 1.3.0-beta3 README file
 --------------------------------
 
