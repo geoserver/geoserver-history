@@ -312,20 +312,22 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 								}
 							}
 						} else if( key.equalsIgnoreCase("values_palette") ) {
-							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								String tmp = (String) dfConfig.getParameters().get(key);
-								String[] strColors = tmp.split(";");
-								Vector colors = new Vector();
-								for( int i=0; i<strColors.length; i++) {
-									if(Color.decode(strColors[i]) != null) {
-										colors.add(Color.decode(strColors[i]));
-									}
-								}
-								
-								value = colors.toArray(new Color[colors.size()]);
-							} else {
-								value = "#000000;#3C3C3C;#FFFFFF";
-							}
+//							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
+//								String tmp = (String) dfConfig.getParameters().get(key);
+//								String[] strColors = tmp.split(";");
+//								Vector colors = new Vector();
+//								for( int i=0; i<strColors.length; i++) {
+//									if(Color.decode(strColors[i]) != null) {
+//										colors.add(Color.decode(strColors[i]));
+//									}
+//								}
+//								
+//								value = colors.toArray(new Color[colors.size()]);
+//							} else {
+//								value = "#000000;#3C3C3C;#FFFFFF";
+//							}
+							value = param.getValue();
+							reader.getFormat().getReadParameters().parameter("values_palette").setValue(value);
 						} else {
 							Class[] clArray = {String.class};
 							Object[] inArray = {dfConfig.getParameters().get(key)};

@@ -163,22 +163,16 @@ public class GetMapResponse implements Response {
 
                 map.addLayer(layer);
             } else if( layers[i].getType() == MapLayerInfo.TYPE_RASTER ) {
-//    			FeatureCollection fcDem;
-//    			
-//				try {
-//					fcDem = layers[i].getCoverageToFeatures(req.getHttpServletRequest());
-//				} catch (DataSourceException e) {
-//					throw new ServiceException(e.getMessage(), e);
-//				} catch (ClassCastException e) {
-//					throw new ServiceException(e.getMessage(), e);
-//				}
-//				layer = new DefaultMapLayer(fcDem, style);
-//				layer.setVisible(true);
 				map.addLayer(layers[i].getCoverageToLayer(req.getHttpServletRequest()), style);    			
             }
         }
 
         this.delegate.produceMap(map);
+        
+        /*
+         * SIMBOSS: clearing list to avoid memory leak
+         */
+        map.clearLayerList();
     }
 
     /**

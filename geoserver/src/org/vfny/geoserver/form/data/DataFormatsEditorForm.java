@@ -156,15 +156,20 @@ public class DataFormatsEditorForm extends ActionForm {
                     }
 
                     Object value = dfConfig.getParameters().get(key);
-                    String text = null;
+                    String text = "";
 
                     if ("values_palette".equals(key)) {
-                        if(value instanceof Color[]) {
-							for(int i=0; i<((Color[])value).length; i++ ) {
-								text = (i>0?";":"") + ((Color)value).toString();
+                    	Object palVal = val.getValue();
+                        if(palVal instanceof Color[]) {
+							for(int i=0; i<((Color[])palVal).length; i++ ) {
+								String colString = "#" +
+												(Integer.toHexString(((Color)((Color[])palVal)[i]).getRed()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[i]).getRed()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[i]).getRed()) ) + 
+												(Integer.toHexString(((Color)((Color[])palVal)[i]).getGreen()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[i]).getGreen()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[i]).getGreen()) ) + 
+												(Integer.toHexString(((Color)((Color[])palVal)[i]).getBlue()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[i]).getBlue()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[i]).getBlue()) );
+								text += (i>0?";":"") + colString;
 							}
-	                    } else if (value instanceof String) {
-	                        text = (String) value;
+	                    } else if (palVal instanceof String) {
+	                        text = (String) palVal;
 	                    }
                     } else {
 	                    if (value == null) {

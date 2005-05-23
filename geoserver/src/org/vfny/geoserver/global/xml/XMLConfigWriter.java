@@ -627,7 +627,7 @@ public class XMLConfigWriter {
                         text = (String) value;
                     }
 
-					temp.put("value", text);
+					//temp.put("value", text);
 				} else {
 					temp.put("value", df.getParameters().get(key).toString().replaceAll("\"","'"));
 				}
