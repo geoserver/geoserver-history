@@ -126,6 +126,7 @@
     Next generally comes a list of the bug fixes and new features in this
     release, followed by known bugs and information as to where to submit bugs
     and feature requests.</para>
+    <para>Also mention the Geotools tag</para>
   </sect1>
 
   <sect1>
@@ -203,6 +204,9 @@
     cvs. To tag a release in eclipse (with the svn plugin), right click on geoserver
     project and go to team->tag/branch.  You will probably want to go from trunk
     to a version in tag/.
+    </para>
+    <para>
+    Also tag geotools so that people can find the geotools that geoserver was built against.
      </para>
   </sect1>
 
