@@ -791,6 +791,13 @@
 		<exclude name="api/**" />
 	</fileset>
 </copy>
+	
+	<copy todir="${dir.build}/bin/" failonerror="false">
+		<fileset dir="${dir.bin}">
+			<include name="**/*" />
+		</fileset>
+	</copy>
+	
 <copy todir="${dir.build}/documents">
 	<fileset dir="${basedir}/documents">
 		<include name="jetty.xml" />
