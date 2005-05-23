@@ -14,7 +14,7 @@
 
 ;    HOW TO USE THE NULL SOFT INSTALLER IS IN THE DOCUMENTATION/DEVELOPER/RELEASEGUIDE!!
 ;    it has a step-by-step guide.
-;
+;11:00 AM 5/23/2005
 ;
 
 
@@ -27,8 +27,8 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-beta3"
-  OutFile "geoserver-1.3.0-beta3.exe"
+  Name "GeoServer 1.3.0-beta4"
+  OutFile "geoserver-1.3.0-beta4.exe"
 
 
   ;Default installation folder
