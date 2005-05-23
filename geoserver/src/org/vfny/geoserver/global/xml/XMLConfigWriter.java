@@ -615,20 +615,25 @@ public class XMLConfigWriter {
 			
 			while (i.hasNext()) {
 				String key = (String) i.next();
-				temp.put("name", key);
 				if( "values_palette".equalsIgnoreCase(key) ) {
-					Object value = df.getParameters().get(key);
-					String text = null;
-                    if(value instanceof Color[]) {
-						for(int col=0; col<((Color[])value).length; col++ ) {
-							text = (col>0?";":"") + ((Color)value).toString();
+					String text = "";
+                	Object palVal = df.getParameters().get(key);
+                    if(palVal instanceof Color[]) {
+						for(int col=0; col<((Color[])palVal).length; col++ ) {
+							String colString = "#" +
+											(Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()) ) + 
+											(Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()) ) + 
+											(Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()) );
+							text += (col>0?";":"") + colString;
 						}
-                    } else if (value instanceof String) {
-                        text = (String) value;
+                    } else if (palVal instanceof String) {
+                        text = (String) palVal;
                     }
 
-					//temp.put("value", text);
+					temp.put("name", key);
+					temp.put("value", text);
 				} else {
+					temp.put("name", key);
 					temp.put("value", df.getParameters().get(key).toString().replaceAll("\"","'"));
 				}
 				cw.attrTag("parameter", temp);

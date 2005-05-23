@@ -136,9 +136,12 @@ public class DataFormatsEditorAction extends ConfigAction {
 						String tmp = (String) params.get(key);
 						String[] strColors = tmp.split(";");
 						Vector colors = new Vector();
-						for( int col=0; col<strColors.length; col++) {
-							if(Color.decode(strColors[col]) != null) {
-								colors.add(Color.decode(strColors[col]));
+						final int colLength = strColors.length;
+						Color tmpColor = null;
+						for( int col=0; col<colLength; col++) {
+							tmpColor = Color.decode(strColors[col]);
+							if(tmpColor != null) {
+								colors.add(tmpColor);
 							}
 						}
 						
@@ -157,9 +160,13 @@ public class DataFormatsEditorAction extends ConfigAction {
 			
 			if (value != null) {
 				parameters.put(key, value);
-				
-				String text = value.toString();
-				paramTexts.put(key, text);
+				if( key.equalsIgnoreCase("values_palette") ) {
+					paramTexts.put(key, value);
+					
+				} else {
+					String text = value.toString();
+					paramTexts.put(key, text);
+				}
 			}
 		}
 		

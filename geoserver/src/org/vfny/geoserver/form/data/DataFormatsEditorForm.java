@@ -159,7 +159,7 @@ public class DataFormatsEditorForm extends ActionForm {
                     String text = "";
 
                     if ("values_palette".equals(key)) {
-                    	Object palVal = val.getValue();
+                    	Object palVal = value;
                         if(palVal instanceof Color[]) {
 							for(int i=0; i<((Color[])palVal).length; i++ ) {
 								String colString = "#" +
