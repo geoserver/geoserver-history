@@ -134,6 +134,7 @@ public class GetMapResponse implements Response {
 
         LOGGER.fine("setting up map");
 
+        try{ // mapcontext can leak memory -- we make sure we done (see finally block)
         MapLayer layer;
 
         FeatureSource source;
@@ -168,11 +169,18 @@ public class GetMapResponse implements Response {
         }
 
         this.delegate.produceMap(map);
-        
-        /*
-         * SIMBOSS: clearing list to avoid memory leak
-         */
-        map.clearLayerList();
+        }
+        finally
+		{
+        	//clean
+        	try{
+        		map.clearLayerList();
+        	}
+        	catch(Exception e) // we dont want to propogate a new error
+			{
+        		e.printStackTrace();
+			}
+		}
     }
 
     /**
