@@ -210,12 +210,15 @@ public abstract class DataFormatUtils {
 				descr = (ParameterDescriptor)val.getDescriptor();
 				
 				String key = descr.getName().toString();
-				String value = null;
+				Object value = null;
 				
 				if( val.getValue() != null){
 					// Required params may have nice sample values
 					//
-					value = val.getValue().toString();
+					if( "values_palette".equalsIgnoreCase(key) )
+						value = val.getValue();
+					else
+						value = val.getValue().toString();
 				}
 				if (value == null ) {
 					// or not
