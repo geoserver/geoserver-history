@@ -48,7 +48,7 @@ public class SLDValidator
 	public  List validateSLD(InputStream xml,ServletContext servContext)   
 	{
        // File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd");
-	    File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd.xsd");
+	    File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd");
 
         try {       	
         	return validateSLD(xml,schemaFile.toURL().toString());
