@@ -132,36 +132,49 @@ public class GetMapResponse implements Response {
 
         LOGGER.fine("setting up map");
 
-        MapLayer layer;
-
-        FeatureSource source;
-        for (int i = 0; i < layers.length; i++) {
-            Style style = styles[i];
-
-            try {
-                source = layers[i].getFeatureSource();
-            } catch (IOException exp) {
-                LOGGER.log(Level.SEVERE,
-                    "Getting feature source: " + exp.getMessage(), exp);
-                throw new WmsException(null,
-                    "Internal error : " + exp.getMessage());
-            }
-
-            layer = new DefaultMapLayer(source, style);
-
-            Filter definitionFilter = layers[i].getDefinitionQuery();
-
-            if (definitionFilter != null) {
-                Query definitionQuery = new DefaultQuery(source.getSchema()
-                                                               .getTypeName(),
-                        definitionFilter);
-                layer.setQuery(definitionQuery);
-            }
-
-            map.addLayer(layer);
+        try{ // mapcontext can leak memory -- we make sure we done (see finally block)
+	        MapLayer layer;
+	
+	        FeatureSource source;
+	        for (int i = 0; i < layers.length; i++) {
+	            Style style = styles[i];
+	
+	            try {
+	                source = layers[i].getFeatureSource();
+	            } catch (IOException exp) {
+	                LOGGER.log(Level.SEVERE,
+	                    "Getting feature source: " + exp.getMessage(), exp);
+	                throw new WmsException(null,
+	                    "Internal error : " + exp.getMessage());
+	            }
+	
+	            layer = new DefaultMapLayer(source, style);
+	
+	            Filter definitionFilter = layers[i].getDefinitionQuery();
+	
+	            if (definitionFilter != null) {
+	                Query definitionQuery = new DefaultQuery(source.getSchema()
+	                                                               .getTypeName(),
+	                        definitionFilter);
+	                layer.setQuery(definitionQuery);
+	            }
+	
+	            map.addLayer(layer);// mapcontext can leak memory -- we make sure we done (see finally block)
+	        }
+	
+	        this.delegate.produceMap(map);
         }
-
-        this.delegate.produceMap(map);
+        finally
+		{
+        	//clean
+        	try{
+        		map.clearLayerList();
+        	}
+        	catch(Exception e) // we dont want to propogate a new error
+			{
+        		e.printStackTrace();
+			}
+		}
     }
 
     /**
