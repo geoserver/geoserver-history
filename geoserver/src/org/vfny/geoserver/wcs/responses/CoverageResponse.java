@@ -5,8 +5,15 @@
 package org.vfny.geoserver.wcs.responses;
  
 import java.awt.Color;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
+import java.awt.image.DirectColorModel;
+import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
@@ -20,7 +27,9 @@ import java.util.NoSuchElementException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
+import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.PropertySourceImpl;
 import javax.media.jai.RenderedOp;
@@ -390,6 +399,20 @@ public class CoverageResponse implements Response {
 					image.getSampleModel().getDataType() == DataBuffer.TYPE_USHORT ||
 					image.getSampleModel().getDataType() == DataBuffer.TYPE_INT	
 				) {
+					//checking color model
+					if (image.getColorModel() instanceof DirectColorModel ) 
+						image = direct2ComponentColorModel((PlanarImage)image);
+					else
+						/**
+						 * IndexColorModel with more than 8 bits for sample might be a problem because GIF allows only 8 bits based palette 
+						 * therefore I prefere switching to component color model in order to handle this properly.
+						 * 
+						 * NOTE. The only transfert types avalaible for IndexColorModel are byte and ushort.
+						 */
+						if (image.getColorModel() instanceof IndexColorModel &&
+		                        (image.getSampleModel().getTransferType() != DataBuffer.TYPE_BYTE)) {
+							image = this.reformatColorModel2ComponentColorModel((PlanarImage)image);
+		                }								
 					// Checking if we need to add transparency-band to the source image or not.
 					if(numBands%2 != 0) {
 						image = addTransparency(image, OPAQUE);
@@ -538,7 +561,7 @@ public class CoverageResponse implements Response {
 				delegate.prepare(outputFormat, subCoverage);
 			}
 		} else {
-			RenderedImage image = coverage.geophysics(true).getRenderedImage();
+			RenderedImage image = coverage.getRenderedImage();
 			//creating a copy of the given grid coverage2D
 			GridCoverage2D subCoverage = new GridCoverage2D(
 					meta.getName(),
@@ -552,57 +575,155 @@ public class CoverageResponse implements Response {
 			delegate.prepare(outputFormat, subCoverage);
 		}
 	}
-	
+	 /**
+     * Reformat the index color model to a component color model preserving
+     * transparency.
+     * Code from jai-interests archive.
+     * @param surrogateImage
+     *
+     * @return
+     *
+     * @throws IllegalArgumentException DOCUMENT ME!
+     */
+    private PlanarImage reformatColorModel2ComponentColorModel(
+        PlanarImage surrogateImage) throws IllegalArgumentException {
+        // Format the image to be expanded from IndexColorModel to
+        // ComponentColorModel
+        ParameterBlock pbFormat = new ParameterBlock();
+        pbFormat.addSource(surrogateImage);
+        pbFormat.add(surrogateImage.getSampleModel().getTransferType());
+
+        ImageLayout layout = new ImageLayout();
+        ColorModel cm1 = null;
+        final int numBits;
+
+        switch (surrogateImage.getSampleModel().getTransferType()) {
+        case DataBuffer.TYPE_BYTE:
+            numBits = 8;
+            break;
+
+        case DataBuffer.TYPE_USHORT:
+            numBits = 16;
+            break;
+		case DataBuffer.TYPE_SHORT:
+            numBits = 16;
+            break;
+
+        case DataBuffer.TYPE_INT:
+            numBits = 32;
+            break;			
+		case DataBuffer.TYPE_FLOAT:
+            numBits = 32;
+            break;
+		case DataBuffer.TYPE_DOUBLE:
+			numBits=64;
+			break;
+
+        default:
+            throw new IllegalArgumentException(
+                "Unsupported data type for an index color model!");
+        }
+
+        //do we need alpha?
+		final int transparency=surrogateImage.getColorModel().getTransparency();
+		final int transpPixel=((IndexColorModel)surrogateImage.getColorModel()).getTransparentPixel();
+        if (transparency!=Transparency.OPAQUE) {
+            cm1 = new ComponentColorModel(ColorSpace.getInstance(
+                        ColorSpace.CS_sRGB),
+                    new int[] { numBits, numBits, numBits, numBits }, true,
+                    false,transparency,
+                    surrogateImage.getSampleModel().getTransferType());
+        } else {
+            cm1 = new ComponentColorModel(ColorSpace.getInstance(
+                        ColorSpace.CS_sRGB),
+                    new int[] { numBits, numBits, numBits }, false, false,
+					transparency,
+                    surrogateImage.getSampleModel().getTransferType());
+        }
+
+        layout.setColorModel(cm1);
+        layout.setSampleModel(cm1.createCompatibleSampleModel(
+                surrogateImage.getWidth(), surrogateImage.getHeight()));
+
+        RenderingHints hint = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
+        RenderedOp dst = JAI.create("format", pbFormat, hint);
+        surrogateImage = dst.createSnapshot();
+		pbFormat.removeParameters();
+		pbFormat.removeSources();
+		dst.dispose();
+		
+        return surrogateImage;
+    }	
+		/**
+		 * This method allows me to go from DirectColorModel to ComponentColorModel
+		 * which seems to be well acepted from PNGEncoder and TIFFEncoder.
+		 * 
+		 * @param surrogateImage
+		 * @return
+		 */
+		private PlanarImage direct2ComponentColorModel(PlanarImage surrogateImage) {
+			ParameterBlockJAI pb = new ParameterBlockJAI("ColorConvert");
+			pb.addSource(surrogateImage);
+			int numBits=8;
+			if(DataBuffer.TYPE_INT==surrogateImage.getSampleModel().getTransferType())
+				numBits=32;
+			else
+				if(DataBuffer.TYPE_USHORT==surrogateImage.getSampleModel().getTransferType()||
+						DataBuffer.TYPE_SHORT==surrogateImage.getSampleModel().getTransferType())
+					numBits=16;
+				else
+					if(DataBuffer.TYPE_FLOAT==surrogateImage.getSampleModel().getTransferType())
+						numBits=32;
+					else
+						if(DataBuffer.TYPE_DOUBLE==surrogateImage.getSampleModel().getTransferType())
+							numBits=64;
+			ComponentColorModel colorModel = new ComponentColorModel(surrogateImage.getColorModel().getColorSpace(),
+			                                                         new int[] { 
+																			numBits,
+																			numBits,
+																			numBits,
+																			numBits 
+																	 },
+			                                                         false,
+			                                                         surrogateImage.getColorModel().hasAlpha(),
+																	 surrogateImage.getColorModel().getTransparency(),
+																	 surrogateImage.getSampleModel().getTransferType());
+			pb.setParameter("colormodel", colorModel);
+			ImageLayout layout = new ImageLayout();
+			layout.setColorModel(colorModel);
+			layout.setSampleModel(colorModel.createCompatibleSampleModel(surrogateImage.getWidth(), surrogateImage.getHeight()));
+			RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
+			surrogateImage = JAI.create("ColorConvert", pb, hints).createInstance();
+	        pb.removeParameters();
+	        pb.removeSources();
+			
+			return surrogateImage;
+		}
 	private static RenderedOp addTransparency(RenderedImage src, int transparency){
 		Number[] bandValues = null;
 		PlanarImage alphaPlane = null;
-
+        final int transferType = src.getSampleModel().getTransferType();
 		/**
 		 * We are trying to come up with a mask that should spot
 		 * 0 or max as the transparency level
 		 */
-		switch(src.getSampleModel().getTransferType()){
+		switch(transferType){
 		case DataBuffer.TYPE_BYTE:
-			switch (transparency) {
-			case TRANSPARENT :
 				//fill with 0
 				bandValues = new Byte[1];
 				bandValues[0] = new Byte((byte)(0));
-				break;
-			case OPAQUE :
-				//fill with DataType.MAX
-				bandValues = new Byte[1];
-				bandValues[0] = new Byte((byte)(255));
-				break;
-			}
+				
 		break;
 		case DataBuffer.TYPE_USHORT:
-			switch (transparency) {
-			case TRANSPARENT :
+
 				//fill with 0
 				bandValues = new Short[1];
 				bandValues[0] = new Short((short)(0));
-				break;
-			case OPAQUE :
-				//fill with DataType.MAX
-				bandValues = new Short[1];
-				bandValues[0] = new Short((short)65535);
-				break;
-			}
 		break;
 		case DataBuffer.TYPE_INT:
-			switch (transparency) {
-			case TRANSPARENT :
 				//fill with 0
 				bandValues = new Integer[1];
 				bandValues[0] = new Integer((byte)(0));
-				break;
-			case OPAQUE :
-				//fill with DataType.MAX
-				bandValues = new Integer[1];
-				bandValues[0] = new Integer(Integer.MAX_VALUE);
-				break;
-			}
 		break;
 		default:
 			return null;
@@ -612,6 +733,58 @@ public class CoverageResponse implements Response {
 		pb.add(new Float(src.getWidth())).add(new Float(src.getHeight()));
         pb.add(bandValues);
 		alphaPlane = JAI.create("Constant", pb, null);
+		
+
+		/**
+		 * In case we are asking for adding the alpha channel
+		 * we need to ensure that we add transparency at the maximum level.
+		 * 
+		 * NOTE: handling transparenxy with Transfert Type USHORT is tricky because
+		 * if you try to create a constant image directly values 65535 it comes out
+		 * as a SHORT valued image instead of a USHORT because of Java's limitation 
+		 * with unsigned values.
+		 * The trick i:
+		 * 1>Create a constant image type USHORT
+		 * 2>Rescale it using scale 0 or 1 or whatever you like (this value will be multiplied by 0 so...)
+		 * and offset 65535. In such a case everything works fine!!!
+		 */
+		if(transparency==OPAQUE){
+
+            /**
+             * RESCSALE
+             */
+            pb.removeSources();
+            pb.removeParameters();
+
+            //get the transfer type and set the levels for the dynamic
+            double dynamicAcme = 0.0;
+
+            switch (transferType) {
+            case DataBuffer.TYPE_BYTE:
+                dynamicAcme = 255;
+                break;
+            case DataBuffer.TYPE_USHORT:
+                dynamicAcme = 65535;
+                break;
+            case DataBuffer.TYPE_INT:
+                dynamicAcme = Integer.MAX_VALUE;
+                break;
+            }
+
+            pb.addSource(alphaPlane);
+
+            //rescaling each band
+            double[] scale = new double[1];
+            double[] offset = new double[1];
+			scale[0]=1;
+			offset[0]=dynamicAcme;
+
+            pb.add(scale);
+            pb.add(offset);
+			alphaPlane = JAI.create("rescale", pb);
+			
+		
+		}
 
 		//merging bands basing the decision on the transparency level
 		pb.removeParameters();
