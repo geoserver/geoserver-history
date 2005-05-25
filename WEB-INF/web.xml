@@ -5,6 +5,18 @@
   <description>Web Mapping and Feature Services</description>
   <context-param>
     <param-name>serviceStratagy</param-name>
+    <!-- Meaning of the different values :
+         BUFFER
+         - stores the entire response in memory first, before sending it off to
+           the user (may run out of memory)
+
+         SPEED
+         - outputs directly to the response (and cannot recover in the case of an
+           error)
+
+         FILE
+         - outputs to the local filesystem first, before sending it off to the user
+      -->
     <param-value>SPEED</param-value>
   </context-param>
   
