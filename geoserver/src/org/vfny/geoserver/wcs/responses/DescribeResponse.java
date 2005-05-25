@@ -1,14 +1,15 @@
 package org.vfny.geoserver.wcs.responses;
 
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
-import org.geotools.geometry.Envelope2D;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
 import org.opengis.coverage.grid.GridGeometry;
@@ -302,7 +303,6 @@ public class DescribeResponse implements Response {
 					
 					// Grid
 					GridGeometry g = cv.getGrid();
-					GridSampleDimension[] dims = cv.getDimensions();
 					InternationalString[] dimNames = cv.getDimensionNames();
 					tempResponse.append("\n    <gml:Grid"
 							+ (g != null ? " dimension=\"" + g.getGridRange().getDimension() + "\"" : "")
@@ -330,13 +330,55 @@ public class DescribeResponse implements Response {
 				tempResponse.append("\n   </spatialDomain>");
 			tempResponse.append("\n  </domainSet>");
 			
-			// <TODO>rangeSet</TODO>
-			tempResponse.append("\n  <rangeSet>");
-				tempResponse.append("\n   <RangeSet>");
-					tempResponse.append("\n    <name>TODO</name>");
-					tempResponse.append("\n    <label>TODO</label>");
-				tempResponse.append("\n   </RangeSet>");
-			tempResponse.append("\n  </rangeSet>");
+			// rangeSet
+			GridSampleDimension[] dims = cv.getDimensions();
+			TreeSet nodataValues = new TreeSet();
+			if(dims!=null) {
+				int numSampleDimensions = dims.length;
+				tempResponse.append("\n  <rangeSet>");
+					tempResponse.append("\n   <RangeSet>");
+						tempResponse.append("\n    <name>" + cv.getName() + "</name>");
+						tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
+						for(int sample=0;sample<numSampleDimensions;sample++) {
+							List categories = dims[sample].getCategories();
+							for(Iterator catIT=categories.iterator();catIT.hasNext();) {
+								Category cat = (Category) catIT.next();
+								tempResponse.append("\n      <axisDescription>");
+									tempResponse.append("\n        <AxisDescription>");
+										tempResponse.append("\n          <name>dim_" + sample + ":" + cat.getName() + "</name>");
+										tempResponse.append("\n          <label>" + dims[sample].getDescription() + "</label>");
+										tempResponse.append("\n          <values>");
+											tempResponse.append("\n            <interval>");
+												tempResponse.append("\n              <min>" + cat.getRange().getMinimum(true) + "</min>");
+												tempResponse.append("\n              <max>" + cat.getRange().getMaximum(true) + "</max>");
+											tempResponse.append("\n            </interval>");
+										tempResponse.append("\n          </values>");
+									tempResponse.append("\n        </AxisDescription>");
+								tempResponse.append("\n      </axisDescription>");
+							}
+							double[] nodata = dims[sample].getNoDataValues();
+							if(nodata!=null)
+								for(int nd=0;nd<nodata.length;nd++) {
+									if(!nodataValues.contains(new Double(nodata[nd]))) {
+										nodataValues.add(new Double(nodata[nd]));
+									}
+								}
+						}
+						tempResponse.append("\n      <nullValues>");
+						if(nodataValues.size() > 0) {
+							if(nodataValues.size() == 1) {
+								tempResponse.append("\n        <singleValue>" + (Double) nodataValues.first() + "</singleValue>");								
+							} else {
+								tempResponse.append("\n        <interval>");								
+									tempResponse.append("\n          <min>" + (Double) nodataValues.first() + "</min>");								
+									tempResponse.append("\n          <max>" + (Double) nodataValues.last() + "</max>");								
+								tempResponse.append("\n        <interval>");								
+							}
+						}
+						tempResponse.append("\n      </nullValues>");
+					tempResponse.append("\n   </RangeSet>");
+				tempResponse.append("\n  </rangeSet>");
+			}
 			
 			if( ((cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0)) 
 					|| ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() > 0)) ) {

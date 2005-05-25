@@ -55,16 +55,20 @@ public class GetCoverageKvpReader extends KvpRequestReader {
             currentRequest.setRequest(getValue("REQUEST"));
         }
 
-        if (keyExists("SOURCECOVERAGE")) {
-            currentRequest.setCoverage(getValue("SOURCECOVERAGE"));
+        if (keyExists("COVERAGE")) {
+            currentRequest.setCoverage(getValue("COVERAGE"));
         }
 
         if (keyExists("COVERAGEVERSION")) {
             currentRequest.setCoverageVersion(getValue("COVERAGEVERSION"));
         }
 
-        if (keyExists("OUTPUTFORMAT")) {
-            currentRequest.setOutputFormat(getValue("OUTPUTFORMAT"));
+        if (keyExists("FORMAT")) {
+            currentRequest.setOutputFormat(getValue("FORMAT"));
+        }
+
+        if (keyExists("BBOX")) {
+            currentRequest.setEnvelope(getValue("BBOX"));
         }
 
         if (keyExists("ENVELOPE")) {

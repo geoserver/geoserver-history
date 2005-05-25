@@ -1181,6 +1181,8 @@ public class XMLConfigWriter {
 							cw.textTag("axisName", dimNames[dn].toString());
 				cw.closeTag("grid");
 			}
+			
+			
 
 			cw.openTag("supportedCRSs");
 				if ((cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() != 0)) {

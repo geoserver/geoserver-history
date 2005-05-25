@@ -7,6 +7,7 @@ package org.vfny.geoserver.config;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.GridFormatFinder;
@@ -75,6 +76,7 @@ public class CoverageConfig {
 		grid = gc.getGridGeometry();
 		dimensions = gc.getSampleDimensions();
 		dimentionNames = gc.getDimensionNames();
+		new GridSampleDimension(); // QUI <-----------------------------------------<<<<
         crs = gc.getCoordinateReferenceSystem2D();
         srsName = (crs != null ? crs.getName().toString() : "WGS84");
 
