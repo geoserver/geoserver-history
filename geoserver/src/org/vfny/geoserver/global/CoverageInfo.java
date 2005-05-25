@@ -3,8 +3,11 @@ package org.vfny.geoserver.global;
 import java.util.List;
 import java.util.Map;
 
+import org.geotools.coverage.GridSampleDimension;
 import org.geotools.styling.Style;
+import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -31,6 +34,12 @@ public class CoverageInfo extends GlobalLayerSupertype {
     private List keywords;
     
     private Envelope envelope;
+	
+	private GridGeometry grid;
+	
+	private GridSampleDimension[] dimensions;
+	
+	private InternationalString[] dimensionNames;
     
     private List requestCRSs;
     
@@ -71,6 +80,9 @@ public class CoverageInfo extends GlobalLayerSupertype {
         crs = dto.getCrs();
         srsName = dto.getSrsName(); 
         envelope = dto.getEnvelope();
+		grid = dto.getGrid();
+		dimensions = dto.getDimensions();
+		dimensionNames = dto.getDimensionNames();
         requestCRSs = dto.getRequestCRSs();
         responseCRSs = dto.getResponseCRSs();
         nativeFormat = dto.getNativeFormat();
@@ -93,6 +105,9 @@ public class CoverageInfo extends GlobalLayerSupertype {
         dto.setCrs(crs);
         dto.setSrsName(srsName); 
         dto.setEnvelope(envelope);
+		dto.setGrid(grid);
+		dto.setDimensions(dimensions);
+		dto.setDimensionNames(dimensionNames);
         dto.setRequestCRSs(requestCRSs);
         dto.setResponseCRSs(responseCRSs);
         dto.setNativeFormat(nativeFormat);
@@ -314,5 +329,17 @@ public class CoverageInfo extends GlobalLayerSupertype {
     }
 	public CoordinateReferenceSystem getCrs() {
 		return crs;
+	}
+
+	public GridGeometry getGrid() {
+		return grid;
+	}
+
+	public GridSampleDimension[] getDimensions() {
+		return dimensions;
+	}
+
+	public InternationalString[] getDimensionNames() {
+		return dimensionNames;
 	}
 }

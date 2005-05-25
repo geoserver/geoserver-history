@@ -9,10 +9,17 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.filter.FilterDOMParser;
+import org.geotools.geometry.GeneralDirectPosition;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.FactoryFinder;
+import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.util.InternationalString;
+import org.geotools.util.NameFactory;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Log4JFormatter;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -49,6 +56,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1301,7 +1309,12 @@ public class XMLConfigReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		cv.setEnvelope(loadEnvelope(envelope));
+		Envelope gcEnvelope = loadEnvelope(envelope);
+		cv.setEnvelope(gcEnvelope);
+		
+		Element grid = ReaderUtils.getChildElement(coverageRoot, "grid");
+		cv.setGrid(loadGrid(grid, gcEnvelope));
+		cv.setDimensionNames(loadDimensionNames(grid));
 		
 		Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot, "supportedCRSs");
 		String requestCRSs = ReaderUtils.getChildText(supportedCRSs, "requestCRSs");
@@ -1379,6 +1392,76 @@ public class XMLConfigReader {
 		return new Envelope(coords[0].x, coords[1].x, coords[0].y, coords[1].y);
 	}
 
+	protected GridGeometry loadGrid(Element gridElem, Envelope envelope)
+	throws ConfigurationException {
+		GeneralEnvelope gcEnvelope = new GeneralEnvelope(
+				new GeneralDirectPosition(envelope.getMinX(), envelope.getMinY()),
+				new GeneralDirectPosition(envelope.getMaxX(), envelope.getMaxY())
+		);
+		
+		if (gridElem == null) {
+	        //new grid range
+	        GeneralGridRange newGridrange = new GeneralGridRange(new int[] { 0, 0 },
+	                new int[] { 1, 1 });
+	        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope, new boolean[] { false, true });
+
+			return newGridGeometry;
+		}
+				
+		NodeList low = gridElem.getElementsByTagName("low");
+		NodeList high = gridElem.getElementsByTagName("high");
+		int[] lowers = null, upers = null;
+		for( int i = 0; i < low.getLength(); i++ ) {
+			String values = ReaderUtils.getElementText((Element) low.item(i));
+			
+			if (values != null) {
+				String[] ss = values.split(" ");
+				lowers = new int[ss.length];
+				
+				for (int j = 0; j < ss.length; j++)
+					lowers[j] = Integer.parseInt(ss[j].trim());
+			}
+		}
+
+		for( int i = 0; i < high.getLength(); i++ ) {
+			String values = ReaderUtils.getElementText((Element) high.item(i));
+			
+			if (values != null) {
+				String[] ss = values.split(" ");
+				upers = new int[ss.length];
+				
+				for (int j = 0; j < ss.length; j++)
+					upers[j] = Integer.parseInt(ss[j].trim());
+			}
+		}
+
+        //new grid range
+        GeneralGridRange newGridrange = new GeneralGridRange(lowers, upers);
+        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope, new boolean[] { false, true });
+
+		return newGridGeometry;
+	}
+	
+	protected InternationalString[] loadDimensionNames(Element gridElem)
+	throws ConfigurationException {
+		if (gridElem == null) {
+			return null;
+		}
+				
+		NodeList axisNames = gridElem.getElementsByTagName("axisName");
+		InternationalString[] dimNames = new InternationalString[axisNames.getLength()];
+
+		for( int i = 0; i < axisNames.getLength(); i++ ) {
+			String values = ReaderUtils.getElementText((Element) axisNames.item(i));
+			
+			if (values != null) {
+				dimNames[i] = NameFactory.create(values).toInternationalString();
+			}
+		}
+
+		return dimNames;
+	}
+	
 	protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
 		MetaDataLink ml = new MetaDataLink();
 		try {

@@ -28,7 +28,7 @@
           includes and imports
 	============================================================== -->
 	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="gml4wcs.xsd"/>
-	<xs:import namespace="http://www.w3.org/1999/xlink" schemaLocation="./xlinks.xsd"/>
+	<xs:import namespace="http://www.w3.org/1999/xlink" schemaLocation="http://schemas.opengis.net/gml/3.0.0/xlink/xlinks.xsd"/>
 	<xs:include schemaLocation="./wcsCapabilities.xsd"/>
 	<xs:include schemaLocation="./values.xsd"/>
 	<xs:include schemaLocation="./owsBase.xsd"/>
@@ -84,7 +84,7 @@
 					<xs:element ref="supportedFormats"/>
 					<xs:element ref="supportedInterpolations" minOccurs="0">
 						<xs:annotation>
-							<xs:documentation>Specifies whether and how the server can interpolate coverage values over the spatial domain, when a GetCoverage request requires resampling, reprojection, or other generalization. If supportedInterpolations is absent or empty with no default, then clients should assume nearest-neighbor interpolation. If the only interpolation method listed is ‘none’, clients can only retrieve coverages from this layer in its native CRS and at its native resolution. </xs:documentation>
+							<xs:documentation>Specifies whether and how the server can interpolate coverage values over the spatial domain, when a GetCoverage request requires resampling, reprojection, or other generalization. If supportedInterpolations is absent or empty with no default, then clients should assume nearest-neighbor interpolation. If the only interpolation method listed is Â‘noneÂ’, clients can only retrieve coverages from this layer in its native CRS and at its native resolution. </xs:documentation>
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
@@ -159,7 +159,7 @@ addition, a server can describe the internal grid structure of a coverage offeri
 					</xs:element>
 					<xs:element name="nullValues" type="valueEnumType" minOccurs="0">
 						<xs:annotation>
-							<xs:documentation>Values used when valid values are not available. (The coverage encoding may specify a fixed value for null (e.g. “–99999” or “N/A”), but often the choice is up to the provider and must be communicated to the client outside of the coverage itself.) </xs:documentation>
+							<xs:documentation>Values used when valid values are not available. (The coverage encoding may specify a fixed value for null (e.g. Â“Â–99999Â” or Â“N/AÂ”), but often the choice is up to the provider and must be communicated to the client outside of the coverage itself.) </xs:documentation>
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
@@ -195,7 +195,7 @@ addition, a server can describe the internal grid structure of a coverage offeri
 	<!-- ========================================================== -->
 	<xs:complexType name="AxisDescriptionType">
 		<xs:annotation>
-			<xs:documentation>Description of a measured or observed quantity, and list of the “valid” quantity values (values for which measurements are available or “by which” aggregate values are available). The semantic is the URI of the quantity (for example observable or mathematical variable). The refSys attribute is a URI to a reference system, and the refSysLabel is the label used by client to refer the reference system. </xs:documentation>
+			<xs:documentation>Description of a measured or observed quantity, and list of the Â“validÂ” quantity values (values for which measurements are available or Â“by whichÂ” aggregate values are available). The semantic is the URI of the quantity (for example observable or mathematical variable). The refSys attribute is a URI to a reference system, and the refSysLabel is the label used by client to refer the reference system. </xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AbstractDescriptionType">

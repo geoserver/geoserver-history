@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
 import org.geotools.filter.FilterTransformer;
+import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -1156,6 +1158,28 @@ public class XMLConfigWriter {
 						cw.textTag("pos", e.getMaxX() + " " + e.getMaxY());
 					cw.closeTag("envelope");
 				}
+			}
+			
+			if(cv.getGrid() != null) {
+				GridGeometry g = cv.getGrid();
+				InternationalString[] dimNames = cv.getDimensionNames();
+				m = new HashMap();
+				
+				m.put("dimension", new Integer(g.getGridRange().getDimension()));
+				
+				String lowers = "", upers = "";
+				for(int r=0; r<g.getGridRange().getDimension(); r++) {
+					lowers += g.getGridRange().getLower(r) + " ";
+					upers += g.getGridRange().getUpper(r) + " ";
+				}
+				
+				cw.openTag("grid", m);
+					cw.textTag("low", lowers);
+					cw.textTag("high", upers);
+					if(dimNames!=null)
+						for(int dn=0;dn<dimNames.length;dn++)
+							cw.textTag("axisName", dimNames[dn].toString());
+				cw.closeTag("grid");
 			}
 
 			cw.openTag("supportedCRSs");

@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geotools.coverage.GridSampleDimension;
 import org.geotools.geometry.Envelope2D;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
+import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -20,6 +22,7 @@ import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.MathTransformFactory;
 import org.opengis.referencing.operation.OperationNotFoundException;
 import org.opengis.referencing.operation.TransformException;
+import org.opengis.util.InternationalString;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -285,6 +288,7 @@ public class DescribeResponse implements Response {
 
 			tempResponse.append("\n  <domainSet>");
 				tempResponse.append("\n   <spatialDomain>");
+					// Envelope
 					tempResponse.append("\n    <gml:Envelope" 
 							+ (cv.getSrsName() != null && cv.getSrsName() != "" ? " srsName=\"" + cv.getSrsName() + "\"" : "")
 							+">");
@@ -295,6 +299,34 @@ public class DescribeResponse implements Response {
 								+ (cv.getEnvelope() != null ? cv.getEnvelope().getMaxX() + " " + cv.getEnvelope().getMaxY() : "") 
 								+ "</gml:pos>");
 					tempResponse.append("\n    </gml:Envelope>");
+					
+					// Grid
+					GridGeometry g = cv.getGrid();
+					GridSampleDimension[] dims = cv.getDimensions();
+					InternationalString[] dimNames = cv.getDimensionNames();
+					tempResponse.append("\n    <gml:Grid"
+							+ (g != null ? " dimension=\"" + g.getGridRange().getDimension() + "\"" : "")
+							+">");
+					
+						String lowers = "", upers = "";
+						for(int r=0; r<g.getGridRange().getDimension(); r++) {
+							lowers += g.getGridRange().getLower(r) + " ";
+							upers += g.getGridRange().getUpper(r) + " ";
+						}
+						tempResponse.append("\n       <gml:limits>");
+							tempResponse.append("\n         <gml:GridEnvelope>");
+								tempResponse.append("\n         <gml:low>" 
+										+ (cv.getEnvelope() != null ? lowers : "") 
+										+ "</gml:low>");
+								tempResponse.append("\n         <gml:high>" 
+										+ (cv.getEnvelope() != null ? upers : "") 
+										+ "</gml:high>");
+							tempResponse.append("\n         </gml:GridEnvelope>");
+						tempResponse.append("\n       </gml:limits>");
+						if(dimNames!=null)
+							for(int dn=0;dn<dimNames.length;dn++)
+								tempResponse.append("\n       <gml:axisName>" + dimNames[dn] +"</gml:axisName>");
+					tempResponse.append("\n    </gml:Grid>");
 				tempResponse.append("\n   </spatialDomain>");
 			tempResponse.append("\n  </domainSet>");
 			

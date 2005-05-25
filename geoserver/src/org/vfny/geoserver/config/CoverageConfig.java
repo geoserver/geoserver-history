@@ -7,11 +7,14 @@ package org.vfny.geoserver.config;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.GridFormatFinder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
@@ -35,6 +38,9 @@ public class CoverageConfig {
     private String dirName;
     private List keywords;
     private Envelope envelope;
+	private GridGeometry grid;
+	private GridSampleDimension[] dimensions;
+	private InternationalString[] dimentionNames;
     private List requestCRSs;
     private List responseCRSs;
     private String nativeFormat;
@@ -66,6 +72,9 @@ public class CoverageConfig {
         			gEnvelope.getUpperCorner().getOrdinate(1)) ;
         }
         
+		grid = gc.getGridGeometry();
+		dimensions = gc.getSampleDimensions();
+		dimentionNames = gc.getDimensionNames();
         crs = gc.getCoordinateReferenceSystem2D();
         srsName = (crs != null ? crs.getName().toString() : "WGS84");
 
@@ -116,6 +125,9 @@ public class CoverageConfig {
         crs = dto.getCrs();
         srsName = dto.getSrsName();
         envelope = dto.getEnvelope();
+		grid = dto.getGrid();
+		dimensions = dto.getDimensions();
+		dimentionNames = dto.getDimensionNames();
         nativeFormat = dto.getNativeFormat();
         dirName = dto.getDirName();
         requestCRSs = dto.getRequestCRSs();
@@ -136,6 +148,9 @@ public class CoverageConfig {
         c.setCrs(crs);
         c.setSrsName(srsName);
         c.setEnvelope(envelope);
+		c.setGrid(grid);
+		c.setDimensions(dimensions);
+		c.setDimensionNames(dimentionNames);
         c.setNativeFormat(nativeFormat);
         c.setDirName(dirName);
         c.setRequestCRSs(requestCRSs);
@@ -143,7 +158,6 @@ public class CoverageConfig {
         c.setSupportedFormats(supportedFormats);
         c.setDefaultInterpolationMethod(defaultInterpolationMethod);
         c.setInterpolationMethods(interpolationMethods);
-        
 
         return c;
     }
@@ -342,5 +356,29 @@ public class CoverageConfig {
 	}
 	public void setCrs(CoordinateReferenceSystem crs) {
 		this.crs = crs;
+	}
+
+	public GridGeometry getGrid() {
+		return grid;
+	}
+
+	public void setGrid(GridGeometry grid) {
+		this.grid = grid;
+	}
+
+	public GridSampleDimension[] getDimensions() {
+		return dimensions;
+	}
+
+	public void setDimensions(GridSampleDimension[] dimensions) {
+		this.dimensions = dimensions;
+	}
+
+	public InternationalString[] getDimentionNames() {
+		return dimentionNames;
+	}
+
+	public void setDimentionNames(InternationalString[] dimentionNames) {
+		this.dimentionNames = dimentionNames;
 	}
 }

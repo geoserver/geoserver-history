@@ -3,7 +3,10 @@ package org.vfny.geoserver.global.dto;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.geotools.coverage.GridSampleDimension;
+import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.util.InternationalString;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.MetaDataLink;
 
@@ -32,6 +35,12 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private List keywords;
     
     private Envelope envelope;
+	
+	private GridGeometry grid;
+	
+	private GridSampleDimension[] dimensions;
+	
+	private InternationalString[] dimensionNames;
     
     private List requestCRSs;
     
@@ -78,6 +87,9 @@ public final class CoverageInfoDTO implements DataTransferObject {
         crs = dto.getCrs();
         srsName = dto.getSrsName(); 
         envelope = CloneLibrary.clone(dto.getEnvelope());
+		grid = dto.getGrid();
+		dimensions = dto.getDimensions();
+		dimensionNames = dto.getDimensionNames();
         try {
 			requestCRSs = CloneLibrary.clone(dto.getRequestCRSs());
 		} catch (CloneNotSupportedException e1) {
@@ -136,6 +148,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         r = r && (defaultStyle == f.getDefaultStyle());
         r = r && (dirName == f.getDirName());
         r = r && (envelope == f.getEnvelope());
+		r = r && (grid == f.getGrid());
 
         return r;
     }
@@ -158,6 +171,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
         if (envelope != null) {
             r *= envelope.hashCode();
         }
+		
+		if(grid != null) {
+			r *= grid.hashCode();
+		}
 
         if (srsName != null) {
             r *= srsName.hashCode();
@@ -479,5 +496,29 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 	public void setCrs(CoordinateReferenceSystem crs) {
 		this.crs = crs;
+	}
+
+	public GridGeometry getGrid() {
+		return grid;
+	}
+
+	public void setGrid(GridGeometry grid) {
+		this.grid = grid;
+	}
+
+	public GridSampleDimension[] getDimensions() {
+		return dimensions;
+	}
+
+	public void setDimensions(GridSampleDimension[] dimensions) {
+		this.dimensions = dimensions;
+	}
+
+	public InternationalString[] getDimensionNames() {
+		return dimensionNames;
+	}
+
+	public void setDimensionNames(InternationalString[] dimentionNames) {
+		this.dimensionNames = dimentionNames;
 	}
 }

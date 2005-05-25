@@ -31,7 +31,7 @@
           includes and imports
 	========================================================== -->
 	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="gml4wcs.xsd"/>
-	<xs:import namespace="http://www.w3.org/1999/xlink" schemaLocation="./xlinks.xsd"/>
+	<xs:import namespace="http://www.w3.org/1999/xlink" schemaLocation="http://schemas.opengis.net/gml/3.0.0/xlink/xlinks.xsd"/>
 	<xs:include schemaLocation="./describeCoverage.xsd"/>
 	<!-- ======================================================= -->
 	<xs:element name="GetCoverage">
