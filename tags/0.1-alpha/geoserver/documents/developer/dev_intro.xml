@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+  <title>Introduction</title>
+
+  <sect1>
+    <title>Welcome</title>
+
+    <para>The GeoServer project is an integrated Java implementation of the
+    1.0 Web Feature Server and 1.1.1 WMS specification from the <ulink
+    url="http://www.opengis.org">OpenGIS</ulink> Consortium. GeoServer aspires
+    to be the '<ulink url="http://www.apache.org">Apache</ulink>' of OpenGIS
+    data serving and its mission is to enable greater geographic
+    interoperability by reinforcing OpenGIS and other web standards and
+    lowering the barriers to entry for geographic data providers. Developers
+    should keep in mind the four primary goals of GeoServer, listed in order
+    of importance:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">Standards Compliance</emphasis>: The
+        primary intent of the GeoServer project is to promote standardization
+        and it must, therefore, adhere to published standards as closely as
+        possible. GeoServer also attempts to support as many relevant
+        geographic standards as possible.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Data Format Support</emphasis>: In order
+        to make GeoServer a useful product, it must help translate the current
+        cacaphony of geogaphic data formats into a single format. Therefore,
+        supporting several data formats - both relational and flat files - is
+        of primary importance to the project.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Ease of Use</emphasis>: GeoServer is
+        targeted at organizations with minimal technical expertise and must,
+        therefore, be easy to install, configure, and run for organizations
+        with few technical resources.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Efficiency</emphasis>: Given that the
+        volume of data required by geographic applications generally entails
+        severe computational and bandwidth loads, GeoServer strives to be as
+        efficient as possible, while achieving other goals.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The GeoServer Project strives to be as open as possible, making it
+    easy for any one to join the community and contribute, be it with feature
+    suggestions, bug reports, patches, documentation, encouragement, funding,
+    development, design, translation, or more. We want GeoServer to be
+    collaboratively built, so that it can effectively meet a variety of needs,
+    hopefully leading to a world of more open technology and open spatial
+    data. To that end much effort has been put into documentation, so that new
+    developers can easily get their bearings. If there are questions that are
+    not answered by this developer's guide, or other documentation on this
+    site, please ask, it's the only way the developers can know what needs
+    improvement. </para>
+
+    <para>GeoServer has an active developer community that you can engage by
+    joining the GeoServer mailing list and asking questions or making
+    suggestions. </para>
+  </sect1>
+
+  <sect1>
+    <title>Contributing</title>
+
+    <para>The GeoServer Project believes strongly that the code for GeoServer
+    should be open and available to all. The one thing that we do ask is that
+    if you do find the software useful you try to find a way to give back.
+    This can be as simple as suggesting a feature or improvement, reporting a
+    problem, or letting others know about GeoServer. These may seem like very
+    minor things, but commercial software companies pay large amounts of money
+    for these things, but they call them Quality Assurance and Advertising.
+    Every little thing helps to make GeoServer a better project, and while
+    there are a few core developers, the software would not be nearly as
+    advanced as it is today without a community of people testing, making
+    suggestions and spreading the word. You can even help out by just offering
+    words of encouragement to those working on the project, as many developers
+    do not do this for the money, but just to feel proud about something
+    they've worked on. Adding yourself to the <ulink
+    url="http://www.moximedia.com:8080/imf-ows/imf.jsp?site=gs_users">user
+    map</ulink> is a great way to let us know that you appreciate the work
+    done.</para>
+
+    <para>Beyond the simple ways of helping out there are a lot more ways to
+    get involved. Writing code is the obvious one, but there are many tasks
+    that those with different skills can help out on. The obvious one is
+    documentation, a task most developers loathe. We have tried to lower the
+    barrier to entry to write documentation, by starting the <ulink
+    url="http://docs.codehaus.org/display/GEOS/Home">GeoServer Wiki</ulink>.
+    The site is editable by anyone, with an incrediblly simple mark up
+    language that takes about 2 minutes to learn. Please add or modify any
+    information there. It currently could use a nice re-organization, which we
+    hope to start relatively soon. </para>
+
+    <para>Another great way to help out is translation. We would like
+    GeoServer available in as many languages as possible, as we want world
+    wide data to be available to all. The first thing to translate is the web
+    administration tool, which can be easily translated to most any language
+    by making a new ApplicationsResources file. The second way is by
+    translating the documentation. If you are interested in translation just
+    email geoserver-devel@lists.sourceforge.net and we can get you started
+    (and will update this document).</para>
+
+    <para>Most of these developer docs are aimed directly at how developers
+    can contribute. There are always tasks to be done, but we have found in
+    the past that it's better to have a problem you would like to solve,
+    rather than ask developers where you might help out. If you do want to
+    just help out, it's best to have an idea of what kinds of tasks you are
+    interested in. A good place to start to get a sense of what we are working
+    on is our JIRA <ulink
+    url="http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311">task
+    tracker</ulink>. Or just ask the developers list. We also highly encourage
+    companies who would like to spend some of their developers resources on
+    expanding GeoServer's capabilities. In return for major work we are more
+    than happy to put links on the main GeoServer site pointing users to
+    commercial support offered by any company that contributes. </para>
+
+    <para>A final way to help out is if you are part of a large organization
+    using GeoServer. You are more than welcome to use it, with no obligation
+    at all, we work on it so it will be used. But the one thing we would like
+    to say is that if there are some capabilities that GeoServer might be
+    lacking compared to commercial software, it may be more cost effective to
+    employ developers to work directly on the capability you need than to
+    merely pay for the right to use some one else's software. Any improvements
+    made on GeoServer go to the benefit of all, not just those who can afford
+    expensive software. If there is concern over the quality of support
+    available from an Open Source project please see the section on Commercial
+    Support. And if your organization does not have developers we can easily
+    find high quality developers to do the work desired. Support for GeoServer
+    in the past has come from a variety of sources, from non-profits, to
+    government agencies, commercial companies, consulting shops for large
+    clients, and the free time of people who care.</para>
+  </sect1>
+
+  <sect1>
+    <title>A note on the license</title>
+
+    <para>GeoServer is curently released under the <ulink
+    url="license.html">Gnu Public License (GPL)</ulink>. None of our core
+    contributors are fanatic about the GPL, it just seemed to be the best
+    choice at the time, and we have not changed it since. We would like to say
+    that the GPL is not anti-business, as many opponents like to make it out
+    to be. Selling GeoServer is completely legal, as is offering commercial
+    support on it. What it does is protects the rights of developers, by
+    ensuring that no one can take the base of code and improve it without
+    giving it back to those who laid the ground work. The main reason we like
+    it because it keeps the community tighter, lets us know who else is
+    working on GeoServer. If for some reason you would like to develop
+    GeoServer, but your company is scared of the GPL, then please talk to the
+    developers, as we can often come up with a good solution, releasing it
+    under a different license to your company, for example. We don't care
+    about all code being rolled back in, as the GPL stipulates, but we would
+    like to know who else is working on GeoServer. So far we do not think the
+    GPL license has held anyone up, perhaps due to the fact that GeoServer is
+    a seperate enough piece of software that it does not affect others so
+    much. But please let us know if the license does concern you. We are
+    considering Apache or LGPL for GeoServer 2.0, as we are looking to make it
+    more of a framework on top of which other web applications could hang.
+    </para>
+  </sect1>
+</article>
