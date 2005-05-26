@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage format="worldImageSample">
+	<name>Img_Sample</name>
+	<label>World Image</label>
+	<description>A sample Image World Grid Coverage.</description>
+	<metadataLink about="http://localhost:8080/geoserver" type="undef" metadataType="other">
+		NONE
+	</metadataLink>
+	<keywords>Image,WCS</keywords>
+		<envelope crs = "GEOGCS['WGS 84', DATUM['WGS_1984', SPHEROID['WGS 84', 6378137.0, 298.257223563, AUTHORITY['EPSG','7030']], AUTHORITY['EPSG','6326']], PRIMEM['Greenwich', 0.0, AUTHORITY['EPSG','8901']], UNIT['degree', 0.017453292519943295], AXIS['Lon', EAST], AXIS['Lat', NORTH], AUTHORITY['EPSG','4326']]" srsName = "WGS 84" >
+		<pos>-130.85168 20.7052</pos>
+		<pos>-62.0054 54.1141</pos>
+	</envelope>
+	<supportedCRSs>
+		<requestCRSs codeSpace="0">WGS84</requestCRSs>
+		<responseCRSs codeSpace="0">WGS84</responseCRSs>
+	</supportedCRSs>
+	<supportedFormats nativeFormat="WorldImage">
+		<formats codeSpace="0">JPEG,PNG,TIFF,ArcGrid,ArcGrid-GZIP</formats>
+	</supportedFormats>
+	<supportedInterpolations default="nearest neighbor">
+		<interpolationMethods>nearest neighbor</interpolationMethods>
+	</supportedInterpolations>
+</coverage>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<featureType datastore="bc_shapefile">
+  <!-- the name of the featureType in the dataStore, for shapefile it 
+       must match the filename. -->
+  <name>bc_roads</name>
+
+  <!-- EPSG code for the FeatureType -->
+  <SRS>27354</SRS>
+
+  <!-- service elements returned for the capabilities document. -->
+  <title>test bc roads</title>
+  <abstract>This is some road features in British Columbia</abstract>
+  <keywords>road, British Columbia, TOPP</keywords>
+  
+  <!-- The bounding box for this featureType, in lat long coords. -->
+  <latLonBoundingBox dynamic="false"  minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/>
+  <styles default="normal"/>
+</featureType>
