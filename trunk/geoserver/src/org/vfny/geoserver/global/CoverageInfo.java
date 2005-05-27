@@ -3,7 +3,6 @@ package org.vfny.geoserver.global;
 import java.util.List;
 import java.util.Map;
 
-import org.geotools.coverage.GridSampleDimension;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -37,7 +36,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	
 	private GridGeometry grid;
 	
-	private GridSampleDimension[] dimensions;
+	private CoverageDimension[] dimensions;
 	
 	private InternationalString[] dimensionNames;
     
@@ -335,11 +334,13 @@ public class CoverageInfo extends GlobalLayerSupertype {
 		return grid;
 	}
 
-	public GridSampleDimension[] getDimensions() {
-		return dimensions;
-	}
-
 	public InternationalString[] getDimensionNames() {
 		return dimensionNames;
+	}
+	/**
+	 * @return Returns the dimensions.
+	 */
+	public CoverageDimension[] getDimensions() {
+		return dimensions;
 	}
 }

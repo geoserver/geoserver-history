@@ -3,11 +3,11 @@ package org.vfny.geoserver.global.dto;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.geotools.coverage.GridSampleDimension;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -38,7 +38,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	
 	private GridGeometry grid;
 	
-	private GridSampleDimension[] dimensions;
+	private CoverageDimension[] dimensions;
 	
 	private InternationalString[] dimensionNames;
     
@@ -506,19 +506,23 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		this.grid = grid;
 	}
 
-	public GridSampleDimension[] getDimensions() {
-		return dimensions;
-	}
-
-	public void setDimensions(GridSampleDimension[] dimensions) {
-		this.dimensions = dimensions;
-	}
-
 	public InternationalString[] getDimensionNames() {
 		return dimensionNames;
 	}
 
 	public void setDimensionNames(InternationalString[] dimentionNames) {
 		this.dimensionNames = dimentionNames;
+	}
+	/**
+	 * @return Returns the dimensions.
+	 */
+	public CoverageDimension[] getDimensions() {
+		return dimensions;
+	}
+	/**
+	 * @param dimensions The dimensions to set.
+	 */
+	public void setDimensions(CoverageDimension[] dimensions) {
+		this.dimensions = dimensions;
 	}
 }

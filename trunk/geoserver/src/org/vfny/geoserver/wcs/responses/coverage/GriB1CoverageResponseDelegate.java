@@ -39,7 +39,7 @@ public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
 	 * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#canProduce(java.lang.String)
 	 */
 	public boolean canProduce(String outputFormat) {
-		if(outputFormat.compareToIgnoreCase("GriB1")==0)
+		if(outputFormat.equalsIgnoreCase("GriB1"))
 			//checking if we can produce a GriB1 from this coverage 
 			//since we might not have enough metadata
 			//depending on the coverage source.

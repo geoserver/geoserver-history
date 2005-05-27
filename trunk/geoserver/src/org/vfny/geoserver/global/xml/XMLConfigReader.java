@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,11 +35,14 @@ import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.FactoryFinder;
 import org.geotools.util.NameFactory;
+import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.CoverageCategory;
+import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.Log4JFormatter;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -1317,6 +1321,8 @@ public class XMLConfigReader {
 		cv.setGrid(loadGrid(grid, gcEnvelope));
 		cv.setDimensionNames(loadDimensionNames(grid));
 		
+		NodeList dims = coverageRoot.getElementsByTagName("CoverageDimension");
+		cv.setDimensions(loadDimensions(dims));
 		Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot, "supportedCRSs");
 		String requestCRSs = ReaderUtils.getChildText(supportedCRSs, "requestCRSs");
 		if (requestCRSs != null) {
@@ -1462,6 +1468,45 @@ public class XMLConfigReader {
 
 		return dimNames;
 	}
+
+	protected CoverageDimension[] loadDimensions(NodeList dimElems)
+	throws ConfigurationException {
+		CoverageDimension[] dimensions = null;
+		if (dimElems != null && dimElems.getLength()>0) {
+			dimensions = new CoverageDimension[dimElems.getLength()];
+			for(int dim=0;dim<dimElems.getLength();dim++) {
+				dimensions[dim] = new CoverageDimension();
+				dimensions[dim].setName(ReaderUtils.getElementText((Element) ((Element) dimElems.item(dim)).getElementsByTagName("name").item(0)));
+				dimensions[dim].setDescription(ReaderUtils.getElementText((Element) ((Element) dimElems.item(dim)).getElementsByTagName("description").item(0)));
+				NodeList categories = ((Element) dimElems.item(dim)).getElementsByTagName("Category");
+				CoverageCategory[] cats = new CoverageCategory[categories.getLength()];
+				for(int cat=0;cat<categories.getLength();cat++) {
+					cats[cat] = new CoverageCategory();
+					cats[cat].setName(ReaderUtils.getElementText((Element) ((Element) categories.item(cat)).getElementsByTagName("name").item(0)));
+					cats[cat].setLabel(ReaderUtils.getElementText((Element) ((Element) categories.item(cat)).getElementsByTagName("label").item(0)));
+					NodeList interval = ((Element) categories.item(cat)).getElementsByTagName("interval");
+					double min = Double.parseDouble(ReaderUtils.getElementText((Element) ((Element) interval.item(0)).getElementsByTagName("min").item(0)));
+					double max = Double.parseDouble(ReaderUtils.getElementText((Element) ((Element) interval.item(0)).getElementsByTagName("max").item(0)));
+					cats[cat].setInterval(new NumberRange(min, max));
+				}
+				dimensions[dim].setCategories(cats);
+				NodeList nullValues = ((Element) dimElems.item(dim)).getElementsByTagName("nullValues");
+				if(nullValues != null && nullValues.getLength()>0) {
+					NodeList values = ((Element) nullValues.item(0)).getElementsByTagName("value");
+					if(values != null) {
+						Vector nulls = new Vector();
+						for(int nl=0;nl<values.getLength();nl++) {
+							nulls.add(new Double(ReaderUtils.getElementText((Element) values.item(nl))));
+						}
+						dimensions[dim].setNullValues((Double[]) nulls.toArray(new Double[nulls.size()]));
+					}
+				}
+			}
+		}
+				
+		return dimensions;
+	}
+
 	
 	protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
 		MetaDataLink ml = new MetaDataLink();

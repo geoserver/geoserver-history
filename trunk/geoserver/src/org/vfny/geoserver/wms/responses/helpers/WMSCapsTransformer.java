@@ -577,14 +577,14 @@ public class WMSCapsTransformer extends TransformerBase {
              */
             Envelope bbox = coverage.getEnvelope();
 
-            handleLatLonBBox(bbox);
-
             String authority = "";
             if( coverage.getCrs() != null && coverage.getCrs().getIdentifiers().length > 0 ) {
             	authority = coverage.getCrs().getIdentifiers()[0].toString();
             	element("SRS", authority);
             }
-            
+
+            handleLatLonBBox(bbox);
+
             handleBBox(bbox, authority);
 
             //add the layer style

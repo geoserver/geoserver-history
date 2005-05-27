@@ -1,0 +1,76 @@
+/* Copyright (c) 2005 NATO - Undersea Research Centre.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
+package org.vfny.geoserver.global;
+
+/**
+ * Represents a CoverageDimension Attribute.
+ *
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @version $Id: CoverageDimension.java,v 0.1 Feb 16, 2005 1:32:39 PM $
+ */
+public class CoverageDimension extends GlobalLayerSupertype {
+
+	private String name;
+	private String description;
+	private Double[] nullValues;
+	private CoverageCategory[] categories;
+	
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+	 */
+	Object toDTO() {
+		return null;
+	}
+
+	/**
+	 * @return Returns the categories.
+	 */
+	public CoverageCategory[] getCategories() {
+		return categories;
+	}
+	/**
+	 * @param categories The categories to set.
+	 */
+	public void setCategories(CoverageCategory[] categories) {
+		this.categories = categories;
+	}
+	/**
+	 * @return Returns the description.
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * @param description The description to set.
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	/**
+	 * @return Returns the name.
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * @param name The name to set.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	/**
+	 * @return Returns the nullValues.
+	 */
+	public Double[] getNullValues() {
+		return nullValues;
+	}
+	/**
+	 * @param nullValues The nullValues to set.
+	 */
+	public void setNullValues(Double[] nullValues) {
+		this.nullValues = nullValues;
+	}
+}

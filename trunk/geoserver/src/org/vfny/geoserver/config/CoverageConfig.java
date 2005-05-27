@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.config;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +19,8 @@ import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.CoverageCategory;
+import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 
@@ -40,7 +44,7 @@ public class CoverageConfig {
     private List keywords;
     private Envelope envelope;
 	private GridGeometry grid;
-	private GridSampleDimension[] dimensions;
+	private CoverageDimension[] dimensions;
 	private InternationalString[] dimentionNames;
     private List requestCRSs;
     private List responseCRSs;
@@ -74,9 +78,13 @@ public class CoverageConfig {
         }
         
 		grid = gc.getGridGeometry();
-		dimensions = gc.getSampleDimensions();
+		try {
+			dimensions = parseCoverageDimesions(gc.getSampleDimensions());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		dimentionNames = gc.getDimensionNames();
-		new GridSampleDimension(); // QUI <-----------------------------------------<<<<
         crs = gc.getCoordinateReferenceSystem2D();
         srsName = (crs != null ? crs.getName().toString() : "WGS84");
 
@@ -112,7 +120,43 @@ public class CoverageConfig {
         interpolationMethods = new LinkedList(); // ?
     }
 
-    public CoverageConfig(CoverageInfoDTO dto) {
+    /**
+	 * @param sampleDimensions
+	 * @return
+     * @throws UnsupportedEncodingException
+	 */
+	private CoverageDimension[] parseCoverageDimesions(GridSampleDimension[] sampleDimensions) throws UnsupportedEncodingException {
+		CoverageDimension[] dims = new CoverageDimension[sampleDimensions.length];
+		
+		for(int i=0;i<sampleDimensions.length;i++) {
+			dims[i] = new CoverageDimension();
+			dims[i].setName("dim_" + i);
+			dims[i].setDescription(new String(sampleDimensions[i].getDescription().toString().getBytes("UTF-8"), "ISO-8859-1").replace((char) 0xA0,(char) 0x20));
+			Category[] cats = new Category[sampleDimensions[i].getCategories().size()];
+			CoverageCategory[] dimCats = new CoverageCategory[sampleDimensions[i].getCategories().size()];
+			int j=0;
+			for(Iterator c_iT=sampleDimensions[i].getCategories().iterator();c_iT.hasNext();j++) {
+				Category cat = (Category) c_iT.next();
+				dimCats[j] = new CoverageCategory();
+				dimCats[j].setName(new String(cat.getName().toString().getBytes("UTF-8"), "ISO-8859-1").replace((char) 0xA0,(char) 0x20));
+				dimCats[j].setLabel(cat.toString());
+				dimCats[j].setInterval(cat.getRange());
+			}
+			dims[i].setCategories(dimCats);
+			double[] nTemp = sampleDimensions[i].getNoDataValues();
+			if(nTemp != null) {
+				Double[] nulls = new Double[nTemp.length];
+				for(int nd=0;nd<nTemp.length;nd++) {
+					nulls[nd] = new Double(nTemp[nd]);
+				}
+				dims[i].setNullValues(nulls);
+			}
+		}
+		
+		return dims;
+	}
+
+	public CoverageConfig(CoverageInfoDTO dto) {
         if (dto == null) {
             throw new NullPointerException(
                 "Non null CoverageInfoDTO required");
@@ -368,19 +412,23 @@ public class CoverageConfig {
 		this.grid = grid;
 	}
 
-	public GridSampleDimension[] getDimensions() {
-		return dimensions;
-	}
-
-	public void setDimensions(GridSampleDimension[] dimensions) {
-		this.dimensions = dimensions;
-	}
-
 	public InternationalString[] getDimentionNames() {
 		return dimentionNames;
 	}
 
 	public void setDimentionNames(InternationalString[] dimentionNames) {
 		this.dimentionNames = dimentionNames;
+	}
+	/**
+	 * @return Returns the dimensions.
+	 */
+	public CoverageDimension[] getDimensions() {
+		return dimensions;
+	}
+	/**
+	 * @param dimensions The dimensions to set.
+	 */
+	public void setDimensions(CoverageDimension[] dimensions) {
+		this.dimensions = dimensions;
 	}
 }

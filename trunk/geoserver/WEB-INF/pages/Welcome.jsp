@@ -67,13 +67,8 @@
 	</a>
   </li>
   <li>
-  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/GetCoverage?sourcecoverage=Arc_Sample&outputformat=png">
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/GetCoverage?coverage=Arc_Sample&format=png">
   	  getCoverage
-  	</a>
-  </li>
-  <li>
-  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?bbox=-130,24,-66,50&styles=raster,population&Format=image/png&request=GetMap&layers=Img_Sample,topp:states&width=550&height=250&srs=EPSG:4326">
-  	  getMap
   	</a>
   </li>
 </ul>
@@ -107,6 +102,16 @@
     <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms/GetCapabilities">
       getCapabilities
     </a>
+  </li>
+  <li>
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?bbox=-130,24,-66,50&styles=raster,population&Format=image/png&request=GetMap&layers=Img_Sample,topp:states&width=550&height=250&srs=EPSG:4326">
+  	  getMap
+  	</a>
+  </li>
+  <li>
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>data/quickWMS/demo.jsp">
+  	  <strong>quickWMS</strong>
+  	</a>
   </li>
 </ul>
 
