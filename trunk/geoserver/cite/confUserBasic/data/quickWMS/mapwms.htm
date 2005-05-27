@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>quickWMS - mapWMS class</title>
+</head>
+
+<body>
+<link rel="stylesheet" href="help.css">
+<table width="700"><tr><td>
+<!-- WEBpage Information -->
+<tr><td align="justify">
+
+<img src="images/logo.gif" width=62 height=64 border=0 alt="" align="middle">
+ &nbsp;&nbsp;<a href="index.htm"><img src="images/quickWMS.gif" width=121 height=23 border=0 alt=""></a>
+<div align="right">
+&copy; Pedro Pereira Gon&ccedil;alves <br>(<a href="mailto:pedro&#064;inovagis.org">pedro&#064;inovagis.org</a>)<BR>
+</div>
+
+<hr noshade>
+</td></tr><tr><td>
+<b>Version</b> : 0.3 <br>
+<b>Last Change </b>: 2003-10-24<br>
+
+<b>File Name</b> : WMSmap.js
+<br><br>
+<font face="" size="+1" color="Maroon">mapWMS</font>
+<ul> An array of layerWMS. Includes request information status and events.<br>
+	<br><b>create method</b>: <span class="js_bluebold">function</span> function mapWMS(x1, y1, x2, y2, srs)<br><br>
+		Creates the mapWMS class that defines a list of request to a serie of OpenGIS WMS specification compliant servers,
+		where the parameters are:<UL>
+	<li> x1, y1, x2, y2 - geographic coordinates of the study area where (x1, y1) define the bottom-left point and (x2,y2) define the top-right point
+	<li> srs - optional parameter defining the spatial reference system (default value is EPSG:4326)
+	</ul>
+
+	<br><font face="" color="Maroon"><b>Methods</b></font>
+		<ul>
+			<li><b>refresh</b> = <span class="js_bluebold">function</span> () 
+			<br>Updates all the layers in the mapWMS with a new request (updating any changes made to the class)
+			<br><br>
+			<li><b>addLayer</b> = <span class="js_bluebold">function</span>(url, layer, version)
+			<br>Adds a layer from the server expressed in <i>url</i> (without the <b>?</b> and the <b>http://</b>) with the 
+			<i>layer</i> name and using a specific <i>version</i> of the OGC WMS specification. The x1, y1, x2 and y2 are
+			 geographic coordinates in the current used SRS where (x1, y1) define the bottom-left point and (x2,y2) define the top-right point.
+			 <br> <b style="color:red">Change on Version 0.3</b> :  The url should be given with http:// if the link is not relative to the web page (if it is in a different server)
+			<br><br>
+			<li><b>updateBBox</b> = <span class="js_bluebold">function</span> (x1, y1, x2, y2)		
+			<br>Updates the current viewing box with the given parameters
+			<br><br>
+			<li><b>cancelRequest</b> = <span class="js_bluebold">function</span>()
+			<br>Forces the class to stop its current request and goes the last valid view.
+			<br><br>
+			<li><b>zoomTo</b> = <span class="js_bluebold">function</span> (x, y, zoomFactor)
+			<br> Zooms to a give <i>x</i> and <i>y</i> (using the current SRS) with a given <i>ZoomFactor</i> (values bigger than 1 make a zoom in 
+			and values lower than 1 make a zoom out)
+			<br><br>
+			<li><b>notify</b>= <span class="js_bluebold">function</span>(mapRef) - <i>not fully implemented</i> 
+
+			<br><br>
+			<li><b>addListener</b> = <span class="js_bluebold">function</span>(mapRef) - Forces the object to be aware of any changes on the mapRef object - check demo of multiple layer request with mouse events, toolbar and dynamic auxiliary map example [<a href="nav001.htm">view</a>]
+
+			<br><br>
+			<li><b>setStatus</b> = <span class="js_bluebold">function</span> (value)
+			<br>
+			Show the status window using the value parameter for the caption (useful for mapWMS descendents)
+			<br><br>
+			<li><b>writeDOM</b> = <span class="js_bluebold">function</span> (name, left, top, width, height, style)
+			<br>
+			Write the full elements necessary for this class with position expressed by the <i>left</i> and <i>top</i> values, with a 
+			given <i>width</i> and <i>height</i>. The <i>style</i> value is optional and defines the layer CSS style.
+			<br><br>
+		</ul>
+	<br><font face="" color="Maroon"><b>Properties</b></font>
+		<ul>
+			<li><b>caption</b>
+    		<br> Optional parameter for future use on legends and display box
+			<br><br>
+			<li> <b>SRS</b>
+			<br> Optional parameter for defining the Spatial Reference System. Default value is EPSG:4326
+			<br><br>
+			<li> <b>BBox</b>
+			<br> Array defining the current visible geographical bounding box where (BBox[0], BBox[1]) define the bottom-left point and (BBox[2], BBox[3]) define the top-right point.
+			<br><br>
+			<li><b>initBBox</b><br>
+			Array defining the initial geographical bounding box where (BBox[0], BBox[1]) define the bottom-left point and (BBox[2], BBox[3]) define the top-right point.						
+			<br><br>
+			<li> <b>lastBBox</b>
+			<br>Array containing the last accessed geographical bounding box.			
+			<br><br>
+			<li> <b>layers</b><br>
+			Array of layerWMS classes with the map layers requested.			
+			<br><br>
+			<li> <b>writeHTML</b><br>
+			Array of additional HTML lines to add to the main layer (useful for descendents of mapWMS)			
+			<br><br>
+ 			<li><b>listeners</b><br>
+			Array of geographical listeners events - check demo of multiple layer request with mouse events, toolbar and dynamic auxiliary map example [<a href="nav001.htm">view</a>] 
+			<br><br>
+ 			<li><b>directLoading</b> (<b style="color:red">new on version 0.3</b>)<br>
+			Added the option to select direct loading without using the transport image 
+            by default is false in all browsers except in IE 6 (because this browsers will always recall the image even if it has an object in memory)
+			<br><br>
+
+		</ul>
+	<br><font face="" color="Maroon"><b>Events</b></font>
+		<ul>
+			<li><b>onError</b> = <span class="js_bluebold">function</span> ( wmsMap, layerIndex ) - <i>not fully implemented</i> <br> 
+			Event launched when a error happens on loading a given layer (expressed by the <i>layerIndex</i>)
+			<br><br>						
+			<li><b>onBeforeChange</b> = <span class="js_bluebold">function</span> (wmsMap, x1, y1, x2, y2)
+			<br>
+			Event fired before a given change is executed on the visible bounding box of the map layers.
+			If this functions returns false then the change will not occur.
+			<br><br>
+			<li><b>onChange</b>= <span class="js_bluebold">function</span> ( wmsMap ) :  
+			<br>
+			Event launched after the successful change of the visible bounding box .
+		</ul>
+	<br><font face="" color="Maroon"><b>Examples</b></font>
+		<ul>
+			<LI> multiple layer request example [<a href="map012.htm">view</a>]
+		</ul>	
+	<br><font face="" style="text-decoration: none" color="Maroon"><b>Change Log</b></font> 
+		<ul>
+<li>	2003-10-24 : Added the option to select direct loading without using the transport image 
+                          by default is false in all browsers except in IE 6 (because this browsers will always recall the image even if it has a object in memory)
+		</ul>
+	<br>
+		
+	
+<hr noshade>
+</ul>
+</td></tr></table>
+
+</body>
+</html>

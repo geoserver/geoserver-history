@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<!--
+/*
+* Project quickWMS: Generic JavaScript WMS Client 
+* quickWMS - single layer test according to OpenGIS Web Mapping Specification
+* Author : Pedro Pereira Gonçalves (pedro@inovagis.org)
+* File : layer.htm
+* Version : 0.01
+* Last Change : 2003-04-28
+* Dependencies : WMSbrowsers.js, WMSlayer.js
+* Future Developments : 
+* Tested on : Netscape 7.0, Netscape 4.7, IE 5.5, IE 6.0
+* History :
+	2003-10-24 : Added http:// to the DEMIS and ESRIN server urls 
+	2003-04-28 : Netscape 4.7 support added
+    2003-03-20 : File Created
+*/
+-->
+<link rel="stylesheet" href="help.css">
+<script language="Javascript" src="inc/WMSbrowsers.js"></script>
+<script language="Javascript" src="inc/WMSlayer.js"></script>
+<title>quickWMS - simple WMS Client for one layer</title>
+</head>
+<body>
+<script language='Javascript'>
+
+// WMS servers - list here other OGC compliant map servers 
+var demisWMS = "http://www.demis.nl/mapserver/request.asp";
+
+function writeMaps(){
+	var layer = new layerWMS(null, demisWMS, "Bathymetry,Coastlines", "DEMIS Example", "1.0.0");
+	layer.writeDOM ("simpleWMS", 350, 300, 360, 160);
+	layer.refresh(new Array(-180, -80, 180, 80));	
+	}
+
+writeMaps();
+</script>
+
+
+<table width="700"><tr><td>
+<!-- WEBpage Information -->
+<tr><td align="justify">
+
+<img src="images/logo.gif" width=62 height=64 border=0 alt="" align="middle">
+ &nbsp;&nbsp;<a href="index.htm"><img src="images/quickWMS.gif" width=121 height=23 border=0 alt=""></a>
+
+<div align="right">
+<br>&copy; Pedro Pereira Gon&ccedil;alves (<a href="mailto:pedro&#064;inovagis.org">pedro&#064;inovagis.org</a>)<BR>
+</div>
+<hr noshade>
+</td></tr><tr><td><br>
+Project <a href="index.htm">quickWMS</a>: Generic JavaScript WMS Client<br>
+<b>Example</b> : single layer request according to OpenGIS Web Mapping Specification<br>
+<b>Author</b> : Pedro Pereira Gonçalves (pedro&#064;inovagis.org)<br>
+<b>Version</b> : 0.02<br>
+<b>Last Changed</b>: 2003-10-24<br>
+<b>Tested on </b>: Netscape 4.7, 7.0 and 7.1, Mozilla 1.4.1, IE 5.5, IE 6.0, Camino 0.7(Mac-OS )
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<b>Source Code</b>
+<ul>
+            <FONT color=#0000ff>
+<P>&lt;</FONT><FONT color=#800000>script</FONT><FONT color=#ff0000> language</FONT><FONT color=#0000ff>='</FONT><FONT color=#000000>Javascript</FONT><FONT color=#0000ff>'&gt;
+<P>
+</FONT>
+<P><FONT color=green>// WMS servers - list here other OGC compliant map servers <BR></FONT>
+<FONT color=green>// Changes:	2003-10-24 : Added http:// to the DEMIS and ESRIN server urls <br></FONT>
+<FONT color=blue><strong>var</strong></FONT> demisWMS </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <FONT color=blue>"http://www.demis.nl/mapserver/request.asp"</FONT>;</P></FONT></FONT>
+<FONT color=#000000><FONT color=blue><strong>function</strong></FONT> writeMaps ( ) {</P>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<P><strong><FONT color=blue>var</FONT></strong> layer </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <strong><FONT color=blue>new</FONT></strong> <FONT color=brown>layerWMS</FONT>(null, demisWMS,<FONT color=blue> "Bathymetry,Coastlines"</FONT>,<FONT color=blue> "DEMIS Example"</FONT>, <FONT color=blue> "1.0.0"</FONT>,  );<BR>layer.<FONT color=brown>writeDOM</FONT> (<FONT color=blue>"simpleWMS"</FONT>,<FONT color=magenta> 350</FONT>,<FONT color=magenta> 300</FONT>,<FONT color=magenta> 360</FONT>,<FONT color=magenta> 160</FONT>);<BR>layer.<FONT color=brown>refresh</FONT>(<strong><FONT color=blue>new</FONT></strong> <FONT color=blue><strong>Array</strong></FONT>(<FONT color=magenta> -180</FONT>,<FONT color=magenta> -80</FONT>,<FONT color=magenta> 180</FONT>,<FONT color=magenta> 80</FONT>)); </P></BLOCKQUOTE>
+<P>}<BR></FONT><FONT color=#0000ff>
+&lt;/
+</FONT>
+<FONT color=#800000>script</FONT><FONT color=#0000ff>&gt;</P></FONT> 
+</ul>
+<hr noshade>
+</td></tr></table>
+</body>
+</html>
