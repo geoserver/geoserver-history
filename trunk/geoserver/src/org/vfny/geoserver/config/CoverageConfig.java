@@ -138,8 +138,9 @@ public class CoverageConfig {
 			final Unit uom=sampleDimensions[i].getUnits();
 			if(uom!=null)
 			{
+				
 				label.append("(".intern());
-				uom.appendTo(label);
+				parseUom(label,uom);
 				label.append(")".intern());
 			}
 			label.append("[".intern());
@@ -172,6 +173,23 @@ public class CoverageConfig {
 		}
 		
 		return dims;
+	}
+
+	/**
+	 * This method tries to put in order problems with 16 bits characters.
+	 * 
+	 * @param label2
+	 * @param uom
+	 */
+	private void parseUom(StringBuffer label2, Unit uom) {
+		
+		String uomString=uom.toString();
+		uomString=uomString.replaceAll("²","^2");
+		uomString=uomString.replaceAll("³","^3");
+		uomString=uomString.replaceAll("Å","A");
+		uomString=uomString.replaceAll("°","");
+		label2.append(uomString);
+		
 	}
 
 	public CoverageConfig(CoverageInfoDTO dto) {
