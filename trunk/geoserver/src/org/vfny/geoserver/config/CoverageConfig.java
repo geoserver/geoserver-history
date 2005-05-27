@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.units.Unit;
+
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -126,27 +128,43 @@ public class CoverageConfig {
      * @throws UnsupportedEncodingException
 	 */
 	private CoverageDimension[] parseCoverageDimesions(GridSampleDimension[] sampleDimensions) throws UnsupportedEncodingException {
-		CoverageDimension[] dims = new CoverageDimension[sampleDimensions.length];
+		final int length=sampleDimensions.length;
+		CoverageDimension[] dims = new CoverageDimension[length];
 		
-		for(int i=0;i<sampleDimensions.length;i++) {
+		for(int i=0;i<length;i++) {
 			dims[i] = new CoverageDimension();
-			dims[i].setName("dim_" + i);
-			dims[i].setDescription(new String(sampleDimensions[i].getDescription().toString().getBytes("UTF-8"), "ISO-8859-1").replace((char) 0xA0,(char) 0x20));
-			Category[] cats = new Category[sampleDimensions[i].getCategories().size()];
-			CoverageCategory[] dimCats = new CoverageCategory[sampleDimensions[i].getCategories().size()];
+			dims[i].setName("dim_".intern() + i);
+			StringBuffer label=new StringBuffer("GridSampleDimension".intern());
+			final Unit uom=sampleDimensions[i].getUnits();
+			if(uom!=null)
+			{
+				label.append("(".intern());
+				uom.appendTo(label);
+				label.append(")".intern());
+			}
+			label.append("[".intern());
+			label.append(sampleDimensions[i].getMinimumValue());
+			label.append(",".intern());
+			label.append(sampleDimensions[i].getMaximumValue());
+			label.append("]".intern());	
+			dims[i].setDescription(label.toString());
+			final int numCategories=sampleDimensions[i].getCategories().size();
+			Category[] cats = new Category[numCategories];
+			CoverageCategory[] dimCats = new CoverageCategory[numCategories];
 			int j=0;
 			for(Iterator c_iT=sampleDimensions[i].getCategories().iterator();c_iT.hasNext();j++) {
 				Category cat = (Category) c_iT.next();
 				dimCats[j] = new CoverageCategory();
-				dimCats[j].setName(new String(cat.getName().toString().getBytes("UTF-8"), "ISO-8859-1").replace((char) 0xA0,(char) 0x20));
+				dimCats[j].setName(cat.getName().toString());
 				dimCats[j].setLabel(cat.toString());
 				dimCats[j].setInterval(cat.getRange());
 			}
 			dims[i].setCategories(dimCats);
 			double[] nTemp = sampleDimensions[i].getNoDataValues();
 			if(nTemp != null) {
-				Double[] nulls = new Double[nTemp.length];
-				for(int nd=0;nd<nTemp.length;nd++) {
+				final int ntLength=nTemp.length;
+				Double[] nulls = new Double[ntLength];
+				for(int nd=0;nd<ntLength;nd++) {
 					nulls[nd] = new Double(nTemp[nd]);
 				}
 				dims[i].setNullValues(nulls);
