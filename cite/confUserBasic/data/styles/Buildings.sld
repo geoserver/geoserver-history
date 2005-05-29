@@ -31,7 +31,7 @@
                     </Fill>
                     <Stroke>
                         <CssParameter name="stroke">
-                            <ogc:Literal>#000000</ogc:Literal>
+                            <ogc:Literal>#111111</ogc:Literal>
                         </CssParameter>
                         <CssParameter name="stroke-linecap">
                             <ogc:Literal>butt</ogc:Literal>
