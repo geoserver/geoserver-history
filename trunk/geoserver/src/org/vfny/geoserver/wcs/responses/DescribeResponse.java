@@ -348,7 +348,7 @@ public class DescribeResponse implements Response {
 											tempResponse.append("\n          <name>" + dims[sample].getName() + ":Category(" + cat.getName() + ")</name>");
 											tempResponse.append("\n          <label>" + dims[sample].getDescription() + "</label>");
 											tempResponse.append("\n          <values>");
-												tempResponse.append("\n            <interval closure=\"close\">");
+												tempResponse.append("\n            <interval>");
 													tempResponse.append("\n              <min>" + cat.getInterval().getMinimum(true) + "</min>");
 													tempResponse.append("\n              <max>" + cat.getInterval().getMaximum(true) + "</max>");
 												tempResponse.append("\n            </interval>");
