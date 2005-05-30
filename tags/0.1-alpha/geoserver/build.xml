@@ -434,7 +434,7 @@
 		<!-- taking this out until I figure out available tag -->
 		<mkdir dir="${basedir}/conf" />
 		<copy todir="${basedir}/conf">
-			<fileset dir="${basedir}/cite/confNURC" />
+			<fileset dir="${basedir}/cite/confUserBasic" />
 		</copy>
 	</target>
 
@@ -734,7 +734,7 @@
 	</fileset>
 </copy>
 <copy todir="${dir.build}/conf">
-	<fileset dir="${basedir}/cite/confNURC">
+	<fileset dir="${basedir}/cite/confUserBasic">
 		<include name="**/*" />
 	</fileset>
 </copy>
@@ -812,7 +812,7 @@
 
 <target name="release-war" depends="clean, all" description="Genearte the Geoserver.war war release (includes UserBasic)">
 <antcall target="build-war">
-	<param name="conf.path" value="${basedir}/cite/confNURC" />
+	<param name="conf.path" value="${basedir}/cite/confUserBasic" />
 </antcall>
 	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
 	<zip destfile="${basedir}/geoserver-${name.release}-war.zip">
@@ -859,7 +859,7 @@
 	</fileset>
 </copy>
 <antcall target="build-war">
-	<param name="conf.path" value="${basedir}/cite/confNURC" />
+	<param name="conf.path" value="${basedir}/cite/confUserBasic" />
 </antcall>
 <!--copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/-->
 <unwar src="${dir.build}/geoserver.war" dest="${dir.build}/server/geoserver/" />
