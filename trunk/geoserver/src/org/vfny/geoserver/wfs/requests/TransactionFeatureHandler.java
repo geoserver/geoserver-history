@@ -331,6 +331,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             LOGGER.finer("attName now equals " + attName);
             insideAttribute = false;
         } else {
+        	attName = "";
             parent.endElement(namespaceURI, localName, qName);
             LOGGER.finest("end - inside feature");
 

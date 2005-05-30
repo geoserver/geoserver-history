@@ -25,7 +25,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
-import org.geotools.referencing.factory.epsg.FactoryFromWKT;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.form.DemoForm;
 
