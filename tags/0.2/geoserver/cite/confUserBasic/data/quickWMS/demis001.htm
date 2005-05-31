@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<!--
+/*
+* Project quickWMS: Generic JavaScript WMS Client 
+* quickWMS - multiple layer request according to OpenGIS Web Mapping Specification	using Demis Layers
+* Author : Pedro Pereira Gonçalves (pedro@inovagis.org)
+* File : map.htm
+* Version : 0.01
+* Last Change : 2003-10-24
+* Dependencies : WMSbrowsers.js, WMSlayer.js, WMSmap.js
+* Future Developments : 
+* Tested on : Netscape 7.0, Netscape 4.7, IE 5.5, IE 6.0
+* History :
+	2003-10-24 : File Created
+*/
+-->
+<link rel="stylesheet" href="help.css">
+
+<link rel="stylesheet" href="inc/quickWMS.css">
+<script language="Javascript" src="inc/WMSbrowsers.js"></script>
+<script language="Javascript" src="inc/WMSlayer.js"></script>
+<script language="Javascript" src="inc/WMSmap.js"></script>
+<script language="Javascript" src="inc/WMStools.js"></script>
+<script language="Javascript" src="inc/WMSquick.js"></script>
+
+
+<title>WMS Client</title>
+</head>
+<body>
+
+<script language='Javascript'>
+// WMS servers - list here other OGC compliant map servers 
+var demisWMS = "http://www.demis.nl/wms/wms.asp?wms=WorldMap";
+
+	function map_onSelecting  (wmsLayer, x1, y1, x2, y2){
+		 //you can use the variables sent
+		window.status= x1 + "," +y1 + ":" +x2 + "," +y2;
+		return true;
+
+	}
+
+	function map_onSelection (wmsLayer, x1, y1, x2, y2){
+		// or the class properties 		
+		alert( "final =" + wmsLayer.slBox[0]+ "," +wmsLayer.slBox[1] + ":" +wmsLayer.slBox[2] + "," +wmsLayer.slBox[3]);
+		return true;
+
+	}
+
+
+	function writeMaps(){
+		var map = new quickWMS(-180, -90, 180, 90);
+
+		map.addLayer(demisWMS, "Bathymetry,Countries", "1.0.0");
+		map.addLayer(demisWMS, "Topography,Hillshading", "1.0.0");
+		map.addLayer(demisWMS, "Builtup+areas,Coastlines,Waterbodies,Rivers,Streams,Railroads,Highways,Roads,Trails,Borders,Cities,Settlements,Airports,Ocean+features", "1.0.0", "Coastlines, Rivers and built features");
+		map.writeDOM("myMap", 350, 195, 350, 175, "background-color:white;border-style:solid;border-width:1;border-color:black;");
+		map.toolbar = new toolBar(map);
+		map.toolbar.writeDOM(350,170,true);		
+		//map.initialize();
+		map.refresh();
+		// add the events 
+		map.onSelecting = map_onSelecting;
+		map.onSelection = map_onSelection;
+		}
+writeMaps()	
+</script>	
+
+<table width="700"><tr><td>
+<!-- WEBpage Information -->
+<tr><td align="justify">
+
+<img src="images/logo.gif" width=62 height=64 border=0 alt="" align="middle">
+ &nbsp;&nbsp;<a href="index.htm"><img src="images/quickWMS.gif" width=121 height=23 border=0 alt=""></a>
+
+<div align="right">
+&copy; Pedro Pereira Gon&ccedil;alves (<a href="mailto:pedro&#064;inovagis.org">pedro&#064;inovagis.org</a>)<BR>
+</div>
+<hr noshade>
+</td></tr><tr><td>
+
+Project <a href="index.htm">quickWMS</a>: Generic JavaScript WMS Client<br>
+<b>Example</b> : multiple layer request example according to OpenGIS Web Mapping Specification using <a href="quickwms.htm">quickWMS</a> class for using Demis Layers (special case with other parameters)<br>
+<b>Author</b> : Pedro Pereira Gonçalves (pedro&#064;inovagis.org)<br>
+<b>Version</b> : 0.01<br>
+<b>Last Change </b>: 2003-10-24<br>
+<b>Tested on </b>: Netscape 4.7, 7.0 and 7.1, <br>Mozilla 1.4.1, IE 5.5, IE 6.0, Camino 0.7(Mac-OS )
+<br><br><br><br><br><br><br>
+<b>Source Code</b>
+<ul>
+<P>&lt;<FONT color=#800000>script</FONT><FONT color=#ff0000> language</FONT><FONT color=#0000ff>='</FONT><FONT color=#000000>Javascript</FONT><FONT color=#0000ff>'&gt;</FONT></P><FONT color=#0000ff><FONT color=#000000>
+<P><FONT color=green>// WMS servers - list here other OGC compliant map servers <BR></FONT>
+
+<FONT color=blue><strong>var</strong></FONT> demisWMS </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <FONT color=blue>"http://www.demis.nl/wms/wms.asp?wms=WorldMap"</FONT>;<br></FONT></FONT>
+
+<FONT color=#000000>
+<P><FONT color=blue><strong>function</strong></FONT> map_onSelecting  (wmsLayer, x1, y1, x2, y2){	</FONT> 
+<ul>	<FONT color=green>		// you can use the variables sent</FONT>
+<BR>window.status= x1 + "," +y1 + ":" +x2 + "," +y2;
+<BR>		<FONT color=blue><strong>return true</strong></FONT>;
+<BR></ul>
+<BR>	}
+
+<BR>	<FONT color=blue><strong>function</strong></FONT> map_onSelection (wmsLayer, x1, y1, x2, y2){   </FONT>
+<ul><FONT color=green>		// or the class properties  </FONT>
+<BR>		<FONT color=blue><strong>alert</strong></FONT>( "final: " + wmsLayer.<FONT color=brown>slBox</FONT>[0]+ "," +wmsLayer.<FONT color=brown>slBox</FONT>[1] + ":" +wmsLayer.<FONT color=brown>slBox</FONT>[2] + "," +wmsLayer.<FONT color=brown>slBox</FONT>[3]);
+<BR>		<FONT color=blue><strong>return true</strong></FONT>;
+ <BR>
+</ul>	}
+<P><FONT color=blue><strong>function</strong></FONT> writeMaps(){</P>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<P><FONT color=blue><strong>var</strong></FONT> map </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <strong><FONT color=blue>new</FONT></strong> <FONT color=brown>mapWMS</FONT>(<FONT color=magenta>-180</FONT><FONT color=magenta>,-90</FONT>,<FONT color=magenta>180</FONT>,<FONT color=magenta>90</FONT>);
+
+<BR>		map.<FONT color=brown>addLayer</FONT>(demisWMS,  <FONT color=blue>"Bathymetry,Countries"</FONT>, <FONT color=blue>"1.0.0"</FONT>);
+<BR>		map.<FONT color=brown>addLayer</FONT>(demisWMS,  <FONT color=blue>"Topography,Hillshading"</FONT>, <FONT color=blue>"1.0.0"</FONT>);
+<BR>		map.<FONT color=brown>addLayer</FONT>(demisWMS,  <FONT color=blue> "Builtup+areas,Coastlines, Waterbodies,Rivers,Streams,Railroads,Highways, Roads,Trails, Borders,Cities, Settlements,Airports,Ocean+features"</FONT>, <FONT color=blue>"1.0.0"</FONT>,<FONT color=blue>"Coastlines, Rivers and built features"</FONT>);
+
+
+
+
+<BR>map.<FONT color=brown>writeDOM</FONT>(<FONT color=blue>"myMap"</FONT>, <FONT color=magenta>350</FONT>, <FONT color=magenta>175</FONT>, <FONT color=magenta>350</FONT>, <FONT color=magenta>175</FONT>, <FONT color=blue>"background-color:white; border-style:solid; border-width:1; border-color:black;"</FONT>); <BR>
+</FONT>
+map.<FONT color=brown>toolbar</FONT> = <strong><FONT color=blue>new</FONT></strong> <FONT color=brown>toolBar</FONT>(map);<br>
+map.<FONT color=brown>toolbar</FONT>.<FONT color=brown>writeDOM</FONT>(<FONT color=magenta>350</FONT>, <FONT color=magenta>170</FONT>, <strong><FONT color=blue>true</FONT></strong>);<br>		
+
+map.<FONT color=brown>refresh</FONT>();<BR></FONT>
+		<FONT color=green>// add the events </FONT><BR>
+		map.<FONT color=brown>onSelecting</FONT> = map_onSelecting; <BR>
+		map.<FONT color=brown>onSelection</FONT> = map_onSelection;	<BR>
+</P></BLOCKQUOTE>	
+<P><FONT color=#000000>}<BR></FONT>writeMaps();
+
+</P>
+
+
+<BR><FONT color=#0000ff>&lt;/</FONT><FONT color=#800000>script</FONT><FONT color=#0000ff>&gt;</FONT><FONT color=#000000> </P></FONT> 
+
+</ul>
+
+<hr noshade>
+</td></tr></table>
+</body></html>

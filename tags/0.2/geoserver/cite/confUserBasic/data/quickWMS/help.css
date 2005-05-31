@@ -1,0 +1,18 @@
+
+td {font-size: 10pt;color: black;font-family:ARIAL;}
+A {color: #660000;font-family: Arial, Verdana;text-decoration: underline}
+A:hover {text-decoration: none}
+A:visited{}
+.mytext {font-size: 10pt;color: black;font-family: ARIAL;text-align: justify}
+.text {font-size: 10pt;color: black;font-family: ARIAL}
+.textsmall {font-size: 8pt;color: black;font-family: ARIAL}
+.textsp {font-size: 8pt;color: black;font-family: ARIAL;letter-spacing: 0.5em}
+.textright {font-size: 12pt;color: black;font-family: ARIAL;text-align: right}
+.bigtitle {font-weight: bold;font-size: 12pt;color: #630000;font-family: ARIAL}
+.js {font-size: 8pt;color: black;font-family: Courier New;letter-spacing: 0.1em}
+.js_bluebold {font-weight: bolder;color: #000099}
+.js_blue {color: #000099}
+.js_num {color: fuchsia}
+.html_img {color: fuchsia}
+.html_grey {color: #808080;font-style: italic}
+.html {color: #000084}

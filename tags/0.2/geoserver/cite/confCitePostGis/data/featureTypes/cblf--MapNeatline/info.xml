@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<featureType datastore="cblf--MapNeatline">
+  <name>MapNeatline</name>
+  <title>MapNeatline</title>
+  <SRS>63266405</SRS><!-- native wich EPGS code for the FeatureType -->
+  <styles default="normal"/>
+</featureType>

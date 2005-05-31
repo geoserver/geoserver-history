@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+  <title>Feature Type Schema Tutorial</title>
+
+  <sect1>
+    <title>Introduction</title>
+
+    <para>Note: This document should not be needed by most users, as version
+    1.1.0 of GeoServer eliminated the need for the schema.xml files that
+    previously had to be written for all featureTypes. They are now
+    automatically generated. Some users may wish for more control over their
+    schemas, as the generated responses are not as precise as they could be
+    (though they should never be wrong). So this document is kept available
+    for backwards compatibility and for those who wish to include schema.xml
+    files.</para>
+
+    <para>Looking for a comprehensive and accurate tutorial on XML and GML
+    schemas? Go somewhere else. This is a quick and dirty guide for those who
+    are attempting to create valid GML FeatureTypes for their GeoServer
+    installation.</para>
+
+    <para>GeoServer currently puts the burden on you to create a correct
+    schema for each feature type if you wish to include a
+    <emphasis>schema.xml</emphasis> file for your featureType (if not then the
+    response will be generated automatically). GeoServer also has a
+    configuration utility at <ulink
+    url="http://localhost:8081:/GeoServer/">http://localhost:8081:/GeoServer/</ulink>
+    to assist you in creating your <emphasis>schema.xml</emphasis> files. Each
+    <emphasis>schema.xml</emphasis> file is actually an invalid chunk of XML
+    schema that describes a FeatureType and must extend off of the GML
+    AbstractFeatureType base class.</para>
+
+    <para>Note that all elements of this schema must be fully qualified with
+    either <emphasis>xs</emphasis> (for Schema Instance elements) or
+    <emphasis>gml</emphasis> (for Geographic Markup Language elements). The
+    sole exception to this is the feature type itself, which uses the prefix
+    of the namespace associated with the featureType through the featureType's
+    dataStore. If the dataStore or it's namespace is unavailiable, the default
+    namespace is used instead.</para>
+  </sect1>
+
+  <sect1>
+    <title>Example Schema</title>
+
+    <para>Here is an example schema for a feature type (boroughs) with three
+    attributes: <emphasis>cod</emphasis>, <emphasis>name</emphasis>, and
+    <emphasis>the_geom</emphasis>. In this example, <emphasis>cod</emphasis>
+    and <emphasis>name</emphasis> are strings with a length of no greater than
+    10 and <emphasis>the_geom</emphasis> is a polygon representing the
+    borough. The following tutorial will reference this example schema
+    fragment. </para>
+
+    <programlisting>&lt;xs:complexType name="boroughs_Type"&gt;
+    &lt;xs:complexContent&gt;
+    &lt;xs:extension base="gml:AbstractFeatureType"&gt;
+        &lt;xs:sequence&gt;
+
+            &lt;xs:element name="BOROUGHCOD" nillable="true" minOccurs="0" maxOccurs="1"&gt;
+                &lt;xs:simpleType&gt;
+                    &lt;xs:restriction base="xs:string"&gt;
+                        &lt;xs:maxLength value="10"/&gt;
+                    &lt;/xs:restriction&gt;
+                &lt;/xs:simpleType&gt;
+            &lt;/xs:element&gt;
+
+            &lt;xs:element name="BOROUGHNAM" nillable="true" minOccurs="0" maxOccurs="1"&gt;
+                &lt;xs:simpleType&gt;
+                    &lt;xs:restriction base="xs:string"&gt;
+                        &lt;xs:maxLength value="10"/&gt;
+                    &lt;/xs:restriction&gt;
+                &lt;/xs:simpleType&gt;
+            &lt;/xs:element&gt;
+
+            &lt;xs:element name="the_geom" type="gml:PolygonPropertyType" nillable="false" minOccurs="1" maxOccurs="1"/&gt;
+
+         &lt;/xs:sequence&gt;
+    &lt;/xs:extension&gt;
+    &lt;/xs:complexContent&gt;
+&lt;/xs:complexType&gt;</programlisting>
+  </sect1>
+
+  <sect1>
+    <title>Feature Member</title>
+
+    <para>Note that Feature Types correspond to tables in your PostGIS
+    database and can be thought of as 'layers' in traditional
+    GIS.PolygonPropertyType</para>
+
+    <para>Each schema must start with a complex type (no encoding string or
+    comments) . This type then contains complex content, which must extend off
+    of the AbstractFeatureType base class. Note that the type name must match
+    the feature type (i.e. table) name, plus '_Type' exactly. Also note that
+    you should not prepend a namespace in from of the complexType name. Here
+    is the relevent section of the fragment, with the content that you should
+    modify in red.</para>
+
+    <programlisting>&lt;xs:complexType name="<emphasis role="red">boroughs</emphasis>_Type"&gt;
+    &lt;xs:complexContent&gt;
+    &lt;xs:extension base="gml:AbstractFeatureType"&gt;
+        &lt;xs:sequence&gt;</programlisting>
+  </sect1>
+
+  <sect1>
+    <title>Attributes</title>
+
+    <para>Each column in the table is represented by an attribute. You
+    <emphasis role="bold">must</emphasis> prepend each attribute name with the
+    name of the table/featureType and a period, because GeoServer expects you
+    to do so. You may use any valid schema type to describe the contents of
+    this column. However, the maxOccurs for the element should always be set
+    to 1. Here is the relevent section of the fragment, with the content that
+    you should modify in red.</para>
+
+    <programlisting>&lt;xs:element name="<emphasis role="red">BOROUGHCOD</emphasis>" nillable="<emphasis
+        role="red">true</emphasis>" minOccurs="<emphasis role="red">0</emphasis>" maxOccurs="1"&gt;
+  <emphasis role="red">&lt;xs:simpleType&gt;
+    &lt;xs:restriction base="xs:string"&gt;
+      &lt;xs:maxLength value="10"/&gt;
+    &lt;/xs:restriction&gt;
+  &lt;/xs:simpleType&gt;</emphasis>
+&lt;/xs:element&gt;</programlisting>
+  </sect1>
+
+  <sect1>
+    <title>Geographic Attribute</title>
+
+    <para>Each schema must have a single geometric attribute, which may be
+    either an OGC simple geometry or an OGC simple geometry collection. Here
+    is the relevent section of the fragment, with the content that you should
+    modify in red.</para>
+
+    <programlisting>&lt;xs:element name="<emphasis role="red">the_geom</emphasis>" type="gml:<emphasis
+        role="red">PolygonPropertyType</emphasis>" nillable="false" minOccurs="1" maxOccurs="1"/&gt;</programlisting>
+  </sect1>
+
+  <sect1>
+    <title>Conclusion</title>
+
+    <para>This is all that you need to know to create valid GML/XML schema
+    fragments for GeoServer. Make sure to validate them after you create
+    them.</para>
+  </sect1>
+</article>
