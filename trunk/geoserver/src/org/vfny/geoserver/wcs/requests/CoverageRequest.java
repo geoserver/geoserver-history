@@ -31,7 +31,17 @@ public class CoverageRequest extends WCSRequest {
 	protected String handle = null;
 	
 	protected String coverageVersion = null;
-	
+
+	private int gridDimension;
+
+	private Double[] gridLow;
+
+	private Double[] gridHigh;
+
+	private Double[] gridOrigin;
+
+	private Double[] offsetVector;
+
 	public CoverageRequest() {
 		super();
 		setRequest("GetCoverage");
@@ -217,5 +227,77 @@ public class CoverageRequest extends WCSRequest {
 	 */
 	public void setCoverage(String coverage) {
 		this.coverage = coverage;
+	}
+
+	/**
+	 * @return Returns the gridDimension.
+	 */
+	public int getGridDimension() {
+		return gridDimension;
+	}
+	/**
+	 * @param gridDimension The gridDimension to set.
+	 */
+	public void setGridDimension(int gridDimension) {
+		this.gridDimension = gridDimension;
+	}
+
+	/**
+	 * @param value The gridDimension to set.
+	 */
+	public void setGridDimension(String value) {
+		this.gridDimension = Integer.parseInt(value);
+	}
+
+	/**
+	 * @param offsetVector
+	 */
+	public void setOffsetVector(Double[] offsetVector) {
+		this.offsetVector = offsetVector;
+	}
+
+	/**
+	 * @param origin
+	 */
+	public void setGridOrigin(Double[] origin) {
+		this.gridOrigin = origin;
+	}
+
+	/**
+	 * @param highers
+	 */
+	public void setGridHigh(Double[] highers) {
+		this.gridHigh = highers;
+	}
+
+	/**
+	 * @param lowers
+	 */
+	public void setGridLow(Double[] lowers) {
+		this.gridLow = lowers;
+	}
+	/**
+	 * @return Returns the gridHigh.
+	 */
+	public Double[] getGridHigh() {
+		return gridHigh;
+	}
+	/**
+	 * @return Returns the gridLow.
+	 */
+	public Double[] getGridLow() {
+		return gridLow;
+	}
+	/**
+	 * @return Returns the gridOrigin.
+	 */
+	public Double[] getGridOrigin() {
+		return gridOrigin;
+	}
+	/**
+	 * @return Returns the offsetVector.
+	 */
+	public Double[] getOffsetVector() {
+		return offsetVector;
 	}
 }

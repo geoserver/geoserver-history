@@ -303,7 +303,42 @@ public class DescribeResponse implements Response {
 					// Grid
 					GridGeometry g = cv.getGrid();
 					InternationalString[] dimNames = cv.getDimensionNames();
-					tempResponse.append("\n    <gml:Grid"
+					final int gridDimension = g.getGridRange().getDimension();
+					
+					//RectifiedGrid
+					tempResponse.append("\n    <gml:RectifiedGrid"
+							+ (g != null ? " dimension=\"" + gridDimension + "\"" : "")
+							+">");
+					
+						String lowers = "", upers = "";
+						for(int r=0; r<gridDimension; r++) {
+							lowers += g.getGridRange().getLower(r) + " ";
+							upers += g.getGridRange().getUpper(r) + " ";
+						}
+						tempResponse.append("\n       <gml:limits>");
+							tempResponse.append("\n         <gml:GridEnvelope>");
+								tempResponse.append("\n         <gml:low>" 
+										+ (cv.getEnvelope() != null ? lowers : "") 
+										+ "</gml:low>");
+								tempResponse.append("\n         <gml:high>" 
+										+ (cv.getEnvelope() != null ? upers : "") 
+										+ "</gml:high>");
+							tempResponse.append("\n         </gml:GridEnvelope>");
+						tempResponse.append("\n       </gml:limits>");
+						if(dimNames!=null)
+							for(int dn=0;dn<dimNames.length;dn++)
+								tempResponse.append("\n       <gml:axisName>" + dimNames[dn] +"</gml:axisName>");
+						tempResponse.append("\n       <gml:origin>");
+							tempResponse.append("\n       <gml:pos>" 
+									+ (cv.getEnvelope() != null ? cv.getEnvelope().getMinX() + " " + cv.getEnvelope().getMaxY() : "") 
+									+ "</gml:pos>");
+						tempResponse.append("\n       </gml:origin>");
+						tempResponse.append("\n       <gml:offsetVector>" + (cv.getEnvelope() != null ? (cv.getEnvelope().getMaxX() - cv.getEnvelope().getMinX())/(g.getGridRange().getUpper(0) - g.getGridRange().getLower(0)) : 0.0) + " 0.0</gml:offsetVector>");
+						tempResponse.append("\n       <gml:offsetVector>0.0 " + (cv.getEnvelope() != null ? (cv.getEnvelope().getMinY() - cv.getEnvelope().getMaxY())/(g.getGridRange().getUpper(1) - g.getGridRange().getLower(1)) : -0.0) + "</gml:offsetVector>");
+					tempResponse.append("\n    </gml:RectifiedGrid>");
+					
+					//Grid
+/*					tempResponse.append("\n    <gml:Grid"
 							+ (g != null ? " dimension=\"" + g.getGridRange().getDimension() + "\"" : "")
 							+">");
 					
@@ -326,6 +361,7 @@ public class DescribeResponse implements Response {
 							for(int dn=0;dn<dimNames.length;dn++)
 								tempResponse.append("\n       <gml:axisName>" + dimNames[dn] +"</gml:axisName>");
 					tempResponse.append("\n    </gml:Grid>");
+*/				
 				tempResponse.append("\n   </spatialDomain>");
 			tempResponse.append("\n  </domainSet>");
 			

@@ -31,6 +31,18 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     private String currentTag = new String();
     
     private Double[] coordinates = new Double[4];
+    
+    private Double[] lowers = new Double[2];
+    
+    private Double[] highers = new Double[2];
+    
+    private Double[] origin = new Double[2];
+    
+    private Double[] offsetVector = new Double[2];
+    
+    private boolean insideEnvelope = false;
+    
+    private boolean insideGrid = false;
 
     /**
      * Empty constructor.
@@ -73,6 +85,18 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
                     request.setVersion(atts.getValue(i));
                 }
             }
+        }else if(currentTag.equals("Envelope")) {
+        	insideEnvelope = true;
+        } else if(currentTag.equals("Grid") || currentTag.equals("RectifiedGrid")) {
+        	insideGrid = true;
+
+            for (int i = 0; i < atts.getLength(); i++) {
+                String curAtt = atts.getLocalName(i);
+
+                if (curAtt.equals("dimension")) {
+                    request.setGridDimension(atts.getValue(i));
+                }
+            }
         }
     }
 
@@ -89,6 +113,13 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         throws SAXException {
         LOGGER.finer("at end element: " + localName);
         currentTag = "";
+
+      	if(currentTag.equals("Envelope")) {
+        	insideEnvelope = false;
+        } else if(currentTag.equals("Grid") || currentTag.equals("RectifiedGrid")) {
+        	insideGrid = false;
+        }
+
     }
 
     /**
@@ -115,7 +146,7 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         } else if (currentTag.equals("format")) {
             LOGGER.finest("found Output Format: " + s);
             request.setOutputFormat(s);
-        } else if (currentTag.equals("pos")) {
+        } else if (currentTag.equals("pos") && insideEnvelope) {        	
             LOGGER.finer("found Envelope Coordinate: " + s);
             if( coordinates[0] == null ) {
             	String[] coords = s.split(" ");
@@ -149,6 +180,68 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             		coordinates[3] = null;
             	}
             }
+        } else if (currentTag.equals("low") && insideGrid) {        	
+            LOGGER.finer("found Grid Low: " + s);
+        	String[] coords = s.split(" ");
+        	try {
+        		double arg0 = Double.parseDouble(coords[0]);
+        		double arg1 = Double.parseDouble(coords[1]);
+        		
+        		lowers[0] = new Double(arg0);
+        		lowers[1] = new Double(arg1);
+
+                request.setGridLow(lowers);
+        	} catch(Exception e) {
+        		lowers[0] = null;
+        		lowers[1] = null;
+        	}
+        } else if (currentTag.equals("high") && insideGrid) {        	
+            LOGGER.finer("found Grid High: " + s);
+        	String[] coords = s.split(" ");
+        	try {
+        		double arg0 = Double.parseDouble(coords[0]);
+        		double arg1 = Double.parseDouble(coords[1]);
+        		
+        		highers[0] = new Double(arg0);
+        		highers[1] = new Double(arg1);
+
+                request.setGridHigh(highers);
+        	} catch(Exception e) {
+        		highers[0] = null;
+        		highers[1] = null;
+        	}
+        } else if (currentTag.equals("pos") && insideGrid) {        	
+            LOGGER.finer("found Grid Origin: " + s);
+        	String[] coords = s.split(" ");
+        	try {
+        		double arg0 = Double.parseDouble(coords[0]);
+        		double arg1 = Double.parseDouble(coords[1]);
+        		
+        		origin[0] = new Double(arg0);
+        		origin[1] = new Double(arg1);
+
+                request.setGridOrigin(origin);
+        	} catch(Exception e) {
+        		origin[0] = null;
+        		origin[1] = null;
+        	}
+        } else if (currentTag.equals("offsetVector") && insideGrid) {        	
+            LOGGER.finer("found Grid OffsetVector: " + s);
+        	String[] coords = s.split(" ");
+        	try {
+        		double arg0 = Double.parseDouble(coords[0]);
+        		double arg1 = Double.parseDouble(coords[1]);
+        		
+        		if(offsetVector[0] == null) {
+        			offsetVector[0] = new Double(arg0);        			
+        		} else {
+        			offsetVector[1] = new Double(arg1);
+                    request.setOffsetVector(offsetVector);
+        		}
+        	} catch(Exception e) {
+        		offsetVector[0] = null;
+        		offsetVector[1] = null;
+        	}
         }
     }
 }

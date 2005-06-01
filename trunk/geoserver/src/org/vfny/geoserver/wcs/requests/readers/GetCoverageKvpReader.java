@@ -47,6 +47,10 @@ public class GetCoverageKvpReader extends KvpRequestReader {
         // set global request parameters
         LOGGER.finest("setting global request parameters");
 
+        if (keyExists("SERVICE")) {
+            currentRequest.setService(getValue("SERVICE"));
+        }
+
         if (keyExists("VERSION")) {
             currentRequest.setVersion(getValue("VERSION"));
         }
