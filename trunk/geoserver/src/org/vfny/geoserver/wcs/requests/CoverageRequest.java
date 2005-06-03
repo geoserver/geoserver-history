@@ -40,8 +40,6 @@ public class CoverageRequest extends WCSRequest {
 
 	private Double[] gridOrigin;
 
-	private Double[] offsetVector;
-
 	public CoverageRequest() {
 		super();
 		setRequest("GetCoverage");
@@ -253,7 +251,15 @@ public class CoverageRequest extends WCSRequest {
 	 * @param offsetVector
 	 */
 	public void setOffsetVector(Double[] offsetVector) {
-		this.offsetVector = offsetVector;
+		if(this.envelope!=null) {
+        	final double envWidth = Math.abs(envelope.getMaxX() - envelope.getMinX());
+        	final double envHeight = Math.abs(envelope.getMaxY() - envelope.getMinY());
+        	final double width = envWidth / Math.abs(offsetVector[0].doubleValue());
+        	final double height = envHeight / Math.abs(offsetVector[1].doubleValue());
+            setGridOrigin(new Double[] {new Double(0.0), new Double(0.0)});
+            setGridLow(new Double[] {new Double(0.0), new Double(0.0)});
+            setGridHigh(new Double[] {new Double(width), new Double(height)});
+		}
 	}
 
 	/**
@@ -293,11 +299,5 @@ public class CoverageRequest extends WCSRequest {
 	 */
 	public Double[] getGridOrigin() {
 		return gridOrigin;
-	}
-	/**
-	 * @return Returns the offsetVector.
-	 */
-	public Double[] getOffsetVector() {
-		return offsetVector;
 	}
 }

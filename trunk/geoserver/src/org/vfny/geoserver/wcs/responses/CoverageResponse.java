@@ -36,7 +36,11 @@ import javax.media.jai.RenderedOp;
 
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
+import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.operation.Resampler2D;
+import org.geotools.coverage.processing.GridCoverageProcessor2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
@@ -315,6 +319,8 @@ public class CoverageResponse implements Response {
 			GridCoverage2D coverage
 	) throws WcsException, IOException {
 	
+		GridCoverage2D subCoverage =null;
+
 		if( request.getEnvelope() != null ) {
 			com.vividsolutions.jts.geom.Envelope envelope = new com.vividsolutions.jts.geom.Envelope();
 			GeneralEnvelope gEnvelope = (GeneralEnvelope) coverage.getEnvelope();
@@ -461,9 +467,9 @@ public class CoverageResponse implements Response {
 					RenderedImage destOverlayed = JAI.create("overlay", pb, null);
 
 					//creating a copy of the given grid coverage2D
-					GridCoverage2D subCoverage = (GridCoverage2D) createCoverage(destOverlayed, coverage.getCoordinateReferenceSystem(), gSEnvelope, coverage.getName().toString()); 
+					subCoverage = (GridCoverage2D) createCoverage(destOverlayed, coverage.getCoordinateReferenceSystem(), gSEnvelope, coverage.getName().toString()); 
 					
-					delegate.prepare(outputFormat, subCoverage);
+					//delegate.prepare(outputFormat, subCoverage);
 				}
 				else {
 			        // Create the background Image.
@@ -506,7 +512,7 @@ public class CoverageResponse implements Response {
 					RenderedImage destOverlayed=JAI.create("overlay", pb, null);
 
 					//creating a copy of the given grid coverage2D
-					GridCoverage2D subCoverage = new GridCoverage2D(
+					subCoverage = new GridCoverage2D(
 							meta.getName(),
 							destOverlayed,
 							coverage.getCoordinateReferenceSystem(),
@@ -515,7 +521,7 @@ public class CoverageResponse implements Response {
 							null,
 							((PropertySourceImpl)coverage).getProperties());
 					
-					delegate.prepare(outputFormat, subCoverage);
+					//delegate.prepare(outputFormat, subCoverage);
 				}
 			} else if( meta.getEnvelope().contains(request.getEnvelope()) ) {
 				ParameterBlock pbCrop = new ParameterBlock();
@@ -534,7 +540,6 @@ public class CoverageResponse implements Response {
 				result=JAI.create("translate",pbCrop);
 				
 				//creating a copy of the given grid coverage2D
-				GridCoverage2D subCoverage =null;
 				final GridSampleDimension[] sampleDimensions=coverage.getSampleDimensions();
 				/**
 				 * This method checks if this coverage has a non geophysic
@@ -558,12 +563,12 @@ public class CoverageResponse implements Response {
 							coverage.getName().toString()
 					); 
 					
-				delegate.prepare(outputFormat, subCoverage);
+				//delegate.prepare(outputFormat, subCoverage);
 			}
 		} else {
 			RenderedImage image = coverage.getRenderedImage();
 			//creating a copy of the given grid coverage2D
-			GridCoverage2D subCoverage = new GridCoverage2D(
+			subCoverage = new GridCoverage2D(
 					meta.getName(),
 					image,
 					coverage.getCoordinateReferenceSystem(),
@@ -571,7 +576,35 @@ public class CoverageResponse implements Response {
 					coverage.getSampleDimensions(),
 					null,
 					((PropertySourceImpl)coverage).getProperties());
-			
+		}
+
+	
+		if(request.getGridLow()!=null && request.getGridHigh()!=null) {
+			final int[] lowers = new int[] {request.getGridLow()[0].intValue(), request.getGridLow()[1].intValue()};
+			final int[] highers = new int[] {request.getGridHigh()[0].intValue(), request.getGridHigh()[1].intValue()};
+	        //new grid range
+	        GeneralGridRange newGridrange = new GeneralGridRange(lowers, highers);
+	        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange,
+	        		subCoverage.getEnvelope(), new boolean[] { false, true });
+
+	        //getting the needed operation
+	        Resampler2D.Operation op = new Resampler2D.Operation();
+
+	        //getting parameters
+	        ParameterValueGroup group = op.getParameters();
+	        group.parameter("Source").setValue(subCoverage);
+	        group.parameter("CoordinateReferenceSystem").setValue(subCoverage
+	            .getCoordinateReferenceSystem());
+	        group.parameter("GridGeometry").setValue(newGridGeometry);
+	        if(request.getInterpolation()!=null && request.getInterpolation().length()>0) {
+	        	group.parameter("InterpolationType").setValue(request.getInterpolation());
+	        }
+
+	        GridCoverageProcessor2D processor2D = GridCoverageProcessor2D
+	            .getDefault();
+	        GridCoverage2D gcOp = (GridCoverage2D) processor2D.doOperation(op, group);
+			delegate.prepare(outputFormat, gcOp);				
+		}else {
 			delegate.prepare(outputFormat, subCoverage);
 		}
 	}

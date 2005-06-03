@@ -15,6 +15,8 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 /**
  * DOCUMENT ME!
  * 
@@ -77,6 +79,21 @@ public class GetCoverageKvpReader extends KvpRequestReader {
 
         if (keyExists("ENVELOPE")) {
             currentRequest.setEnvelope(getValue("ENVELOPE"));
+        }
+
+        if (keyExists("WIDTH") && keyExists("HEIGHT")) {
+            currentRequest.setGridOrigin(new Double[] {new Double(0.0), new Double(0.0)});
+            currentRequest.setGridLow(new Double[] {new Double(0.0), new Double(0.0)});
+            currentRequest.setGridHigh(new Double[] {Double.valueOf(getValue("WIDTH")), Double.valueOf(getValue("HEIGHT"))});
+        } else if(currentRequest.getEnvelope() != null && (keyExists("RESX") && keyExists("RESY"))) {
+        	final Envelope envelope = currentRequest.getEnvelope();
+        	final double envWidth = Math.abs(envelope.getMaxX() - envelope.getMinX());
+        	final double envHeight = Math.abs(envelope.getMaxY() - envelope.getMinY());
+        	final double width = envWidth / Math.abs(Double.parseDouble(getValue("RESX")));
+        	final double height = envHeight / Math.abs(Double.parseDouble(getValue("RESY")));
+            currentRequest.setGridOrigin(new Double[] {new Double(0.0), new Double(0.0)});
+            currentRequest.setGridLow(new Double[] {new Double(0.0), new Double(0.0)});
+            currentRequest.setGridHigh(new Double[] {new Double(width), new Double(height)});
         }
 
         if (keyExists("INTERPOLATION")) {
