@@ -180,6 +180,14 @@ public class GetMapResponse implements Response {
 			{
         		e.printStackTrace();
 			}
+        	
+        	//call the Garbage Collector six times to be sure he hears us.
+        	Runtime.getRuntime().gc();
+        	Runtime.getRuntime().gc();
+        	Runtime.getRuntime().gc();
+        	Runtime.getRuntime().gc();
+        	Runtime.getRuntime().gc();
+        	Runtime.getRuntime().gc();	
 		}
     }
 
