@@ -57,7 +57,7 @@ public final class JAISupport {
     static ArrayList testedFormats = new ArrayList();
     static {
     	testedFormats.add("image/jpeg");
-    	testedFormats.add("image/png");
+    	//testedFormats.add("image/png");
     };
     
     /**
