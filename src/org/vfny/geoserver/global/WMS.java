@@ -140,11 +140,13 @@ public class WMS extends Service {
      * Informs the user that this WMS supports SLD.  We don't currently
      * handle sld, still needs to be rolled in from geotools, so this now
      * must be false.
+     * 
+     *  //djb: we support it now
      *
      * @return false
      */
     public boolean supportsSLD() {
-        return false;
+        return true; //djb: we support it now
     }
 
     /**
@@ -153,7 +155,7 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsUserLayer() {
-        return false;
+        return true; //djb we support this partially - we support inlinefeatures.  Soon we'll support remote wfs
     }
 
     /**
@@ -162,7 +164,7 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsUserStyle() {
-        return false;
+        return true; //djb: we support this now!
     }
 
     /**
@@ -171,6 +173,6 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsRemoteWFS() {
-        return false;
+        return false;  //djb: hopefully this will change soon.
     }
 }
